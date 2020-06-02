@@ -17,7 +17,6 @@
 package org.jbpm.workflow.instance.node;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -61,6 +60,8 @@ import org.kie.services.time.TimerInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE;
+
 public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl implements EventBasedNodeInstanceInterface,
                                                                                          EventListener {
 
@@ -98,7 +99,6 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
         if (getEventBasedNode().getBoundaryEvents() != null) {
 
             for (String name : getEventBasedNode().getBoundaryEvents()) {
-
                 boolean isActive = ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
                         .isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", name, getProcessInstance().getId());
                 if (isActive) {
@@ -329,7 +329,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     }
 
     public void triggerCompleted() {
-        triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
+        triggerCompleted(CONNECTION_DEFAULT_TYPE, true);
     }
 
     @Override
@@ -463,19 +463,8 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
             VariableScope variableScope = (VariableScope) ((ContextContainer) getProcessInstance().getProcess()).getDefaultContext(VariableScope.VARIABLE_SCOPE);
             VariableScopeInstance variableScopeInstance = (VariableScopeInstance) getProcessInstance().getContextInstance(VariableScope.VARIABLE_SCOPE);
             for (Entry<String, Object> result : results.entrySet()) {
-
                 String variableName = result.getKey();
                 Variable variable = variableScope.findVariable(variableName);
-                if (variable == null) {
-                    // check if there is any match for case file data
-                    variableName = VariableScope.CASE_FILE_PREFIX + variableName;
-                    // check only those that are defined and avoid dynamically created case file variables
-                    List<String> definedVariables = Arrays.asList(variableScope.getVariableNames());
-                    if (definedVariables.contains(variableName)) {
-                        variable = variableScope.findVariable(variableName);
-                    }
-                }
-
                 if (variable != null) {
                     variableScopeInstance.getVariableScope().validateVariable(getProcessInstance().getProcessName(), variableName, result.getValue());
                     variableScopeInstance.setVariable(this, variableName, result.getValue());

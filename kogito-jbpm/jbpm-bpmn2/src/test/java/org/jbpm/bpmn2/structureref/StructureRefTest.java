@@ -15,16 +15,11 @@
  */
 package org.jbpm.bpmn2.structureref;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.util.HashMap;
 import java.util.Map;
 
+import com.thoughtworks.xstream.XStream;
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
-import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.impl.coverter.TypeConverterRegistry;
@@ -33,7 +28,10 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 
-import com.thoughtworks.xstream.XStream;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
 
 public class StructureRefTest extends JbpmBpmn2TestCase {
 
@@ -45,9 +43,9 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         ProcessInstance processInstance = ksession.startProcess("StructureRef");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertEquals(STATE_ACTIVE, processInstance.getState());
 
-        Map<String, Object> res = new HashMap<String, Object>();
+        Map<String, Object> res = new HashMap<>();
         res.put("testHT", "test value");
         ksession.getWorkItemManager().completeWorkItem(
                 workItemHandler.getWorkItem().getId(), res);
@@ -63,9 +61,9 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         ProcessInstance processInstance = ksession.startProcess("StructureRef");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertEquals(STATE_ACTIVE, processInstance.getState());
 
-        Map<String, Object> res = new HashMap<String, Object>();
+        Map<String, Object> res = new HashMap<>();
         res.put("testHT", "true");
         ksession.getWorkItemManager().completeWorkItem(
                 workItemHandler.getWorkItem().getId(), res);
@@ -81,9 +79,9 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         ProcessInstance processInstance = ksession.startProcess("StructureRef");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertEquals(STATE_ACTIVE, processInstance.getState());
 
-        Map<String, Object> res = new HashMap<String, Object>();
+        Map<String, Object> res = new HashMap<>();
         res.put("testHT", "25");
         ksession.getWorkItemManager().completeWorkItem(
                 workItemHandler.getWorkItem().getId(), res);
@@ -99,9 +97,9 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         ProcessInstance processInstance = ksession.startProcess("StructureRef");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertEquals(STATE_ACTIVE, processInstance.getState());
 
-        Map<String, Object> res = new HashMap<String, Object>();
+        Map<String, Object> res = new HashMap<>();
         res.put("testHT", "5.5");
         ksession.getWorkItemManager().completeWorkItem(
                 workItemHandler.getWorkItem().getId(), res);
@@ -122,9 +120,9 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         ProcessInstance processInstance = ksession.startProcess("StructureRef");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertEquals(STATE_ACTIVE, processInstance.getState());
 
-        Map<String, Object> res = new HashMap<String, Object>();
+        Map<String, Object> res = new HashMap<>();
         res.put("testHT", personAsXml);
         ksession.getWorkItemManager().completeWorkItem(
                 workItemHandler.getWorkItem().getId(), res);
@@ -143,9 +141,9 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         ProcessInstance processInstance = ksession.startProcess("StructureRef");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertEquals(STATE_ACTIVE, processInstance.getState());
 
-        Map<String, Object> res = new HashMap<String, Object>();
+        Map<String, Object> res = new HashMap<>();
         res.put("testHT", value);
         ksession.getWorkItemManager().completeWorkItem(
                 workItemHandler.getWorkItem().getId(), res);
@@ -161,7 +159,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("not existing", "invalid boolean");
         assertThrows(IllegalArgumentException.class, () -> ksession.startProcess("StructureRef", params));
 
@@ -175,7 +173,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("test", "invalid boolean");
         assertThrows(IllegalArgumentException.class, () -> ksession.startProcess("StructureRef", params));
     }
@@ -189,9 +187,9 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
                 workItemHandler);
 
         ProcessInstance processInstance = ksession.startProcess("StructureRef");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertEquals(STATE_ACTIVE, processInstance.getState());
 
-        Map<String, Object> res = new HashMap<String, Object>();
+        Map<String, Object> res = new HashMap<>();
         res.put("testHT", true);
 
         try {
@@ -213,7 +211,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         try {
-	        Map<String, Object> params = new HashMap<String, Object>();
+	        Map<String, Object> params = new HashMap<>();
 	        params.put("test", "invalid boolean");
 	        ksession.startProcess("StructureRef", params);
         } catch (IllegalArgumentException e) {
@@ -232,12 +230,11 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("test", "invalid boolean");
         ksession.startProcess("StructureRef", params);
         // enable it back for other tests
         VariableScope.setVariableStrictOption(true);
-
     }
 
     @Test
@@ -249,11 +246,11 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
                 workItemHandler);
 
         ProcessInstance processInstance = ksession.startProcess("StructureRef");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        assertEquals(STATE_ACTIVE, processInstance.getState());
 
         String wrongDataOutput = "not existing";
 
-        Map<String, Object> res = new HashMap<String, Object>();
+        Map<String, Object> res = new HashMap<>();
         res.put(wrongDataOutput, true);
 
         try {

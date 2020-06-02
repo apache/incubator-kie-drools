@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.process.casemgmt;
+package org.kie.kogito.process.flexible;
 
 import java.io.Serializable;
 
@@ -48,4 +48,12 @@ public abstract class ItemDescription implements Serializable {
         return status;
     }
 
+    @Override
+    public String toString() {
+        return "ItemDescription{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", status=" + status +
+                '}';
+    }
 }

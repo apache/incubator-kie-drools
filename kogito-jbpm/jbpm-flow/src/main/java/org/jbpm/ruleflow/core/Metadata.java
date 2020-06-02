@@ -43,6 +43,7 @@ public class Metadata {
     public static final String IS_FOR_COMPENSATION = "isForCompensation";
     public static final String CORRELATION_KEY = "CorrelationKey";
     public static final String CUSTOM_ASYNC = "customAsync";
+    public static final String CUSTOM_AUTO_START = "customAutoStart";
     public static final String COMPENSATION = "Compensation";
     public static final String CUSTOM_SLA_DUE_DATE = "customSLADueDate";
 

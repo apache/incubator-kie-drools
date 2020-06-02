@@ -20,67 +20,51 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.context.AbstractContext;
 
-/**
- * 
- */
 public class VariableScope extends AbstractContext {
-	
-	private static boolean variableStrictEnabled = Boolean.parseBoolean(System.getProperty("org.jbpm.variable.strict", "false"));
+
+    public static final String VARIABLE_STRICT_ENABLED_PROPERTY = "org.jbpm.variable.strict";
+    private static boolean variableStrictEnabled = Boolean.parseBoolean(System.getProperty(VARIABLE_STRICT_ENABLED_PROPERTY, Boolean.FALSE.toString()));
 
     public static final String VARIABLE_SCOPE = "VariableScope";
-    public static final String CASE_FILE_PREFIX = "caseFile_";
 
-    
     private static final long serialVersionUID = 510l;
-    
+
     private List<Variable> variables;
-    
+
     public VariableScope() {
-        this.variables = new ArrayList<Variable>();
+        this.variables = new ArrayList<>();
     }
-    
+
     public String getType() {
         return VariableScope.VARIABLE_SCOPE;
     }
-    
+
     public List<Variable> getVariables() {
         return this.variables;
     }
 
     public void setVariables(final List<Variable> variables) {
-        if ( variables == null ) {
-            throw new IllegalArgumentException( "Variables is null" );
+        if (variables == null) {
+            throw new IllegalArgumentException("Variables is null");
         }
         this.variables = variables;
     }
 
     public String[] getVariableNames() {
-        final String[] result = new String[this.variables.size()];
-        if (this.variables != null) {
-            for ( int i = 0; i < this.variables.size(); i++ ) {
-                result[i] = ((Variable) this.variables.get( i )).getName();
-            }
-        }
-        return result;
+        return variables.stream()
+                .map(Variable::getName)
+                .toArray(String[]::new);
     }
 
     public Variable findVariable(String variableName) {
-        for (Variable variable: getVariables()) {
+        for (Variable variable : getVariables()) {
             if (variable.getName().equals(variableName)) {
                 return variable;
             }
         }
-        if (variableName.startsWith(CASE_FILE_PREFIX) && variableName.indexOf(".") == -1) {
-            Variable caseVariable = new Variable();
-            caseVariable.setName(CASE_FILE_PREFIX+variableName);
-            caseVariable.setType(new ObjectDataType());
-            return caseVariable;
-        }
-        
         return null;
     }
 
@@ -89,36 +73,40 @@ public class VariableScope extends AbstractContext {
             return findVariable((String) param) == null ? null : this;
         }
         throw new IllegalArgumentException(
-            "VariableScopes can only resolve variable names: " + param);
+                "VariableScopes can only resolve variable names: " + param);
     }
-    
-	public void validateVariable(String processName, String name, Object value) {
-		if (!variableStrictEnabled) {
-			return;
-		}
-		Variable var = findVariable(name);
-    	if (var == null) {
-    		throw new IllegalArgumentException("Variable '" + name +"' is not defined in process " + processName);
-    	}
-    	if (var.getType() != null && value != null) {
-	    	boolean isValidType = var.getType().verifyDataType(value);
-	    	if (!isValidType) {
-	    		throw new IllegalArgumentException("Variable '" + name +"' has incorrect data type expected:" 
-	    						+ var.getType().getStringType() + " actual:" + value.getClass().getName());
-	    	}
-    	}
-	}
-	
-	/*
-	 * mainly for test coverage to easily switch between settings 
-	 */
-	public static void setVariableStrictOption(boolean turnedOn) {
-		variableStrictEnabled = turnedOn;
-	}
+
+    public void validateVariable(String processName, String name, Object value) {
+        if (!variableStrictEnabled) {
+            return;
+        }
+        Variable var = findVariable(name);
+        if (var == null) {
+            throw new IllegalArgumentException("Variable '" + name + "' is not defined in process " + processName);
+        }
+        if (var.getType() != null && value != null) {
+            boolean isValidType = var.getType().verifyDataType(value);
+            if (!isValidType) {
+                throw new IllegalArgumentException("Variable '" + name + "' has incorrect data type expected:"
+                        + var.getType().getStringType() + " actual:" + value.getClass().getName());
+            }
+        }
+    }
+
+    /*
+     * mainly for test coverage to easily switch between settings
+     */
+    public static void setVariableStrictOption(boolean turnedOn) {
+        variableStrictEnabled = turnedOn;
+    }
+
+    public static boolean isVariableStrictEnabled() {
+        return variableStrictEnabled;
+    }
 
     public boolean isReadOnly(String name) {
         Variable v = findVariable(name);
-        
+
         if (v != null) {
             return v.hasTag(Variable.READONLY_TAG);
         }
@@ -127,19 +115,23 @@ public class VariableScope extends AbstractContext {
 
     public boolean isRequired(String name) {
         Variable v = findVariable(name);
-        
+
         if (v != null) {
             return v.hasTag(Variable.REQUIRED_TAG);
         }
         return false;
     }
-    
+
     public List<String> tags(String name) {
         Variable v = findVariable(name);
-        
+
         if (v != null) {
             return v.getTags();
         }
         return Collections.emptyList();
+    }
+
+    public void addVariable(Variable variable) {
+        this.variables.add(variable);
     }
 }

@@ -43,10 +43,15 @@ import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.process.workitem.Transition;
 import org.kie.kogito.signal.SignalManager;
 
+import static org.jbpm.process.instance.impl.workitem.Abort.ID;
+import static org.jbpm.process.instance.impl.workitem.Abort.STATUS;
+import static org.kie.api.runtime.process.WorkItem.ABORTED;
+import static org.kie.api.runtime.process.WorkItem.COMPLETED;
+
 public class LightWorkItemManager implements WorkItemManager {
  
-    private Map<String, WorkItem> workItems = new ConcurrentHashMap<String, WorkItem>();
-    private Map<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
+    private Map<String, WorkItem> workItems = new ConcurrentHashMap<>();
+    private Map<String, WorkItemHandler> workItemHandlers = new HashMap<>();
 
     private final ProcessInstanceManager processInstanceManager;
     private final SignalManager signalManager;
@@ -73,8 +78,7 @@ public class LightWorkItemManager implements WorkItemManager {
             handler.executeWorkItem(workItem, this);
             
             eventSupport.fireAfterWorkItemTransition(processInstance, workItem, transition, null);
-        } else throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
-                                                    workItem.getName() );
+        } else throw new WorkItemHandlerNotFoundException(workItem.getName() );
     }    
 
     public void internalAddWorkItem(WorkItem workItem) {
@@ -94,20 +98,15 @@ public class LightWorkItemManager implements WorkItemManager {
                 eventSupport.fireBeforeWorkItemTransition(processInstance, workItem, transition, null);
                 
                 handler.abortWorkItem(workItem, this);
-                workItem.setPhaseId(Abort.ID);
-                workItem.setPhaseStatus(Abort.STATUS);
+                workItem.setPhaseId(ID);
+                workItem.setPhaseStatus(STATUS);
                 eventSupport.fireAfterWorkItemTransition(processInstance, workItem, transition, null);
             } else {
                 workItems.remove( workItem.getId() );
-                throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
-                                                                 workItem.getName() );
+                throw new WorkItemHandlerNotFoundException(workItem.getName() );
             }
             workItems.remove(workItem.getId());
         }
-    }
-
-    public WorkItemHandler getWorkItemHandler(String name) {
-    	return this.workItemHandlers.get(name);
     }
 
     public void retryWorkItem(String workItemId) {
@@ -130,13 +129,12 @@ public class LightWorkItemManager implements WorkItemManager {
             WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
             if (handler != null) {
                 handler.executeWorkItem(workItem, this);
-            } else throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
-                                                        workItem.getName() );
+            } else throw new WorkItemHandlerNotFoundException(workItem.getName() );
         }
     }
     
     public Set<WorkItem> getWorkItems() {
-        return new HashSet<WorkItem>(workItems.values());
+        return new HashSet<>(workItems.values());
     }
 
     public WorkItem getWorkItem(String id) {
@@ -144,12 +142,12 @@ public class LightWorkItemManager implements WorkItemManager {
     }
 
     public void completeWorkItem(String id, Map<String, Object> results, Policy<?>... policies) {
-        transitionWorkItem(id, new TransitionToComplete(results, Arrays.asList(policies)));                    
+        transitionWorkItem(id, new TransitionToComplete(results, Arrays.asList(policies)));
     }
     
     public void internalCompleteWorkItem(WorkItem workItem) {
         ProcessInstance processInstance = processInstanceManager.getProcessInstance(workItem.getProcessInstanceId());                    
-        workItem.setState(WorkItem.COMPLETED);
+        workItem.setState(COMPLETED);
         workItem.setCompleteDate(new Date());
                 
         // process instance may have finished already
@@ -161,6 +159,7 @@ public class LightWorkItemManager implements WorkItemManager {
     }
     
     @SuppressWarnings("unchecked")
+    @Override
     public void transitionWorkItem(String id, Transition<?> transition) {
         WorkItem workItem = workItems.get(id);
         // work item may have been aborted
@@ -183,8 +182,7 @@ public class LightWorkItemManager implements WorkItemManager {
                 
                 eventSupport.fireAfterWorkItemTransition(processInstance, workItem, transition, null);
             } else {
-                throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
-                                                            workItem.getName() );
+                throw new WorkItemHandlerNotFoundException(workItem.getName() );
             }
                 
         } else {
@@ -202,15 +200,15 @@ public class LightWorkItemManager implements WorkItemManager {
             ProcessInstance processInstance = processInstanceManager.getProcessInstance(workItem.getProcessInstanceId());
             Transition<?> transition = new TransitionToAbort(Arrays.asList(policies));
             eventSupport.fireBeforeWorkItemTransition(processInstance, workItem, transition, null);
-            workItem.setState(WorkItem.ABORTED);
+            workItem.setState(ABORTED);
             abortPhase.apply(workItem, transition);
             
             // process instance may have finished already
             if (processInstance != null) {
                 processInstance.signalEvent("workItemAborted", workItem);
             }
-            workItem.setPhaseId(Abort.ID);
-            workItem.setPhaseStatus(Abort.STATUS);
+            workItem.setPhaseId(ID);
+            workItem.setPhaseStatus(STATUS);
             eventSupport.fireAfterWorkItemTransition(processInstance, workItem, transition, null);
             workItems.remove(id);
         }
@@ -253,7 +251,7 @@ public class LightWorkItemManager implements WorkItemManager {
         
     }
     
-    private class TransitionToActive implements Transition<Void> {
+    private static class TransitionToActive implements Transition<Void> {
 
         @Override
         public String phase() {
@@ -267,11 +265,11 @@ public class LightWorkItemManager implements WorkItemManager {
 
         @Override
         public List<Policy<?>> policies() {
-            return null;
+            return Collections.emptyList();
         }       
     }
     
-    private class TransitionToAbort implements Transition<Void> {
+    private static class TransitionToAbort implements Transition<Void> {
 
         private List<Policy<?>> policies;
         
@@ -281,7 +279,7 @@ public class LightWorkItemManager implements WorkItemManager {
         
         @Override
         public String phase() {
-            return Abort.ID;
+            return ID;
         }
 
         @Override
@@ -295,7 +293,7 @@ public class LightWorkItemManager implements WorkItemManager {
         }       
     }
     
-    private class TransitionToComplete implements Transition<Map<String, Object>> {
+    private static class TransitionToComplete implements Transition<Map<String, Object>> {
         private Map<String, Object> data;
         private List<Policy<?>> policies;
         

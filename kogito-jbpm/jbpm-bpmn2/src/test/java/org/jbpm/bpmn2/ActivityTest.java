@@ -762,9 +762,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
-        ProcessInstance processInstance = ksession
-                .startProcess("AdHocSubProcess");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ProcessInstance processInstance = ksession.startProcess("AdHocSubProcess");
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNull(workItem);
         ksession = restoreSession(ksession, true);

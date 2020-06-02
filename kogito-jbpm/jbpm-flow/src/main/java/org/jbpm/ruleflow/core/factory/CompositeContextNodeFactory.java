@@ -33,6 +33,7 @@ public class CompositeContextNodeFactory extends RuleFlowNodeContainerFactory {
     public static final String METHOD_VARIABLE = "variable";
     public static final String METHOD_LINK_INCOMING_CONNECTIONS = "linkIncomingConnections";
     public static final String METHOD_LINK_OUTGOING_CONNECTIONS = "linkOutgoingConnections";
+    public static final String METHOD_AUTO_COMPLETE = "autoComplete";
 
     private RuleFlowNodeContainerFactory nodeContainerFactory;
     private NodeContainer nodeContainer;

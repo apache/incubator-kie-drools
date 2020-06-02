@@ -18,19 +18,16 @@ package org.jbpm.process.instance;
 
 import org.jbpm.process.core.Context;
 
-/**
- * 
- */
 public interface ContextInstance {
-    
+
     String getContextType();
-    
+
     long getContextId();
-    
+
     ContextInstanceContainer getContextInstanceContainer();
-    
+
     Context getContext();
-    
+
     ProcessInstance getProcessInstance();
-    
+
 }

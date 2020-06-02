@@ -61,7 +61,6 @@ import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.jbpm.workflow.instance.impl.WorkItemResolverFactory;
-import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieRuntime;
@@ -78,6 +77,12 @@ import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.jbpm.process.core.context.variable.VariableScope.VARIABLE_SCOPE;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_ABORTED;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED;
+import static org.kie.api.runtime.process.WorkItem.ABORTED;
+import static org.kie.api.runtime.process.WorkItem.COMPLETED;
+
 /**
  * Runtime counterpart of a work item node.
  * 
@@ -87,12 +92,9 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     private static final long serialVersionUID = 510l;
     private static final Logger logger = LoggerFactory.getLogger(WorkItemNodeInstance.class);
 
-    private static boolean variableStrictEnabled = Boolean.parseBoolean(System.getProperty("org.jbpm.variable.strict", "false"));
-    private static List<String> defaultOutputVariables = Arrays.asList(new String[]{"ActorId"});
+    private static List<String> defaultOutputVariables = Arrays.asList("ActorId");
 
-    // NOTE: ContetxInstances are not persisted as current functionality (exception scope) does not require it
-    private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
-    private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
+    private Map<String, List<ContextInstance>> subContextInstances = new HashMap<>();
 
     private String workItemId;
     private transient WorkItem workItem;
@@ -105,8 +107,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 
     public WorkItem getWorkItem() {
         if (workItem == null && workItemId != null) {
-            workItem = ((WorkItemManager) ((ProcessInstance) getProcessInstance())
-                                                                                  .getKnowledgeRuntime().getWorkItemManager()).getWorkItem(workItemId);
+            workItem = ((WorkItemManager) getProcessInstance().getKnowledgeRuntime().getWorkItemManager()).getWorkItem(workItemId);
         }
         return workItem;
     }
@@ -125,14 +126,14 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         this.workItem.setNodeInsstance(this);
     }
 
+    @Override
     public boolean isInversionOfControl() {
         // TODO WorkItemNodeInstance.isInversionOfControl
         return false;
     }
     
     public void internalRegisterWorkItem() {
-        ((WorkItemManager) ((ProcessInstance) getProcessInstance())
-                .getKnowledgeRuntime().getWorkItemManager()).internalAddWorkItem(workItem);
+        ((WorkItemManager) getProcessInstance().getKnowledgeRuntime().getWorkItemManager()).internalAddWorkItem(workItem);
     }
 
     @Override
@@ -153,21 +154,18 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
             addWorkItemListener();
         }
         String deploymentId = (String) getProcessInstance().getKnowledgeRuntime().getEnvironment().get(EnvironmentName.DEPLOYMENT_ID);
-        ((WorkItem) workItem).setDeploymentId(deploymentId);
-        ((WorkItem) workItem).setNodeInstanceId(this.getId());
-        ((WorkItem) workItem).setNodeId(getNodeId());
+        workItem.setDeploymentId(deploymentId);
+        workItem.setNodeInstanceId(this.getId());
+        workItem.setNodeId(getNodeId());
         workItem.setNodeInsstance(this);
         workItem.setProcessInstance(getProcessInstance());
         if (isInversionOfControl()) {
-            ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime()
-                                                    .update(((ProcessInstance) getProcessInstance()).getKnowledgeRuntime().getFactHandle(this), this);
+            getProcessInstance().getKnowledgeRuntime().update(getProcessInstance().getKnowledgeRuntime().getFactHandle(this), this);
         } else {
             try {
-                ((WorkItemManager) ((ProcessInstance) getProcessInstance())
-                                                                           .getKnowledgeRuntime().getWorkItemManager()).internalExecuteWorkItem(
-                                                                                                                                                (org.drools.core.process.instance.WorkItem) workItem);
+                ((WorkItemManager) getProcessInstance().getKnowledgeRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);
             } catch (WorkItemHandlerNotFoundException wihnfe) {
-                getProcessInstance().setState(ProcessInstance.STATE_ABORTED);
+                getProcessInstance().setState(STATE_ABORTED);
                 throw wihnfe;
             } catch (ProcessWorkItemHandlerException handlerException) {
                 this.workItemId = workItem.getId();
@@ -202,29 +200,28 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     protected WorkItem createWorkItem(WorkItemNode workItemNode) {
         Work work = workItemNode.getWork();
         workItem = newWorkItem();
-        ((WorkItem) workItem).setName(work.getName());
-        ((WorkItem) workItem).setProcessInstanceId(getProcessInstance().getId());
-        ((WorkItem) workItem).setParameters(new HashMap<String, Object>(work.getParameters()));
-        ((WorkItem) workItem).setStartDate(new Date());
+        workItem.setName(work.getName());
+        workItem.setProcessInstanceId(getProcessInstance().getId());
+        workItem.setParameters(new HashMap<>(work.getParameters()));
+        workItem.setStartDate(new Date());
         // if there are any dynamic parameters add them
         if (dynamicParameters != null) {
-            ((WorkItem) workItem).getParameters().putAll(dynamicParameters);
+            workItem.getParameters().putAll(dynamicParameters);
         }
 
-        for (Iterator<DataAssociation> iterator = workItemNode.getInAssociations().iterator(); iterator.hasNext();) {
-            DataAssociation association = iterator.next();
+        for (DataAssociation association : workItemNode.getInAssociations()) {
             if (association.getTransformation() != null) {
                 Transformation transformation = association.getTransformation();
                 DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
                 if (transformer != null) {
                     Object parameterValue = transformer.transform(transformation.getCompiledExpression(), getSourceParameters(association));
                     if (parameterValue != null) {
-                        ((WorkItem) workItem).setParameter(association.getTarget(), parameterValue);
+                        workItem.setParameter(association.getTarget(), parameterValue);
                     }
                 }
             } else if (association.getAssignments() == null || association.getAssignments().isEmpty()) {
                 Object parameterValue = null;
-                VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getSources().get(0));
+                VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VARIABLE_SCOPE, association.getSources().get(0));
                 if (variableScopeInstance != null) {
                     parameterValue = variableScopeInstance.getVariable(association.getSources().get(0));
                 } else {
@@ -237,24 +234,22 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                     }
                 }
                 if (parameterValue != null) {
-                    ((WorkItem) workItem).setParameter(association.getTarget(), parameterValue);
+                    workItem.setParameter(association.getTarget(), parameterValue);
                 }
             } else {
-                for (Iterator<Assignment> it = association.getAssignments().iterator(); it.hasNext();) {
-                    handleAssignment(it.next());
-                }
+                association.getAssignments().stream().forEach(this::handleAssignment);
             }
         }
 
         for (Map.Entry<String, Object> entry : workItem.getParameters().entrySet()) {
             if (entry.getValue() instanceof String) {
                 String s = (String) entry.getValue();
-                Map<String, String> replacements = new HashMap<String, String>();
+                Map<String, String> replacements = new HashMap<>();
                 Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(s);
                 while (matcher.find()) {
                     String paramName = matcher.group(1);
                     if (replacements.get(paramName) == null) {
-                        VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, paramName);
+                        VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VARIABLE_SCOPE, paramName);
                         if (variableScopeInstance != null) {
                             Object variableValue = variableScopeInstance.getVariable(paramName);
                             String variableValueString = variableValue == null ? "" : variableValue.toString();
@@ -276,7 +271,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                 for (Map.Entry<String, String> replacement : replacements.entrySet()) {
                     s = s.replace("#{" + replacement.getKey() + "}", replacement.getValue());
                 }
-                ((WorkItem) workItem).setParameter(entry.getKey(), s);
+                workItem.setParameter(entry.getKey(), s);
 
             }
         }
@@ -298,7 +293,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         this.workItem = workItem;
         WorkItemNode workItemNode = getWorkItemNode();
 
-        if (workItemNode != null && workItem.getState() == WorkItem.COMPLETED) {
+        if (workItemNode != null && workItem.getState() == COMPLETED) {
             validateWorkItemResultVariable(getProcessInstance().getProcessName(), workItemNode.getOutAssociations(), workItem);
             for (Iterator<DataAssociation> iterator = getWorkItemNode().getOutAssociations().iterator(); iterator.hasNext();) {
                 DataAssociation association = iterator.next();
@@ -307,7 +302,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                     DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
                     if (transformer != null) {
                         Object parameterValue = transformer.transform(transformation.getCompiledExpression(), workItem.getResults());
-                        VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getTarget());
+                        VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VARIABLE_SCOPE, association.getTarget());
                         if (variableScopeInstance != null && parameterValue != null) {
 
                             variableScopeInstance.getVariableScope().validateVariable(getProcessInstance().getProcessName(), association.getTarget(), parameterValue);
@@ -319,11 +314,11 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                             logger.warn("Continuing without setting variable.");
                         }
                         if (parameterValue != null) {
-                            ((WorkItem) workItem).setParameter(association.getTarget(), parameterValue);
+                            workItem.setParameter(association.getTarget(), parameterValue);
                         }
                     }
                 } else if (association.getAssignments() == null || association.getAssignments().isEmpty()) {
-                    VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getTarget());
+                    VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VARIABLE_SCOPE, association.getTarget());
                     if (variableScopeInstance != null) {
                         Object value = workItem.getResult(association.getSources().get(0));
                         if (value == null) {
@@ -365,9 +360,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 
                 } else {
                     try {
-                        for (Iterator<Assignment> it = association.getAssignments().iterator(); it.hasNext();) {
-                            handleAssignment(it.next());
-                        }
+                        association.getAssignments().forEach(this::handleAssignment);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -377,11 +370,10 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         // handle dynamic nodes
         if (getNode() == null) {
             setMetaData("NodeType", workItem.getName());
-
             mapDynamicOutputData(workItem.getResults());
         }
         if (isInversionOfControl()) {
-            KieRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();
+            KieRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
             kruntime.update(kruntime.getFactHandle(this), this);
         } else {
             triggerCompleted();
@@ -390,33 +382,27 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 
     @Override
     public void cancel() {
-        WorkItem workItem = getWorkItem();
-        if (workItem != null &&
-            workItem.getState() != WorkItem.COMPLETED &&
-            workItem.getState() != WorkItem.ABORTED) {
+        WorkItem item = getWorkItem();
+        if (item != null && item.getState() != COMPLETED && item.getState() != ABORTED) {
             try {
-                ((WorkItemManager) ((ProcessInstance) getProcessInstance())
-                                                                           .getKnowledgeRuntime().getWorkItemManager()).internalAbortWorkItem(workItem.getId());
+                ((WorkItemManager) getProcessInstance().getKnowledgeRuntime().getWorkItemManager()).internalAbortWorkItem(item.getId());
             } catch (WorkItemHandlerNotFoundException wihnfe) {
-                getProcessInstance().setState(ProcessInstance.STATE_ABORTED);
+                getProcessInstance().setState(STATE_ABORTED);
                 throw wihnfe;
             }
         }
         
         if (exceptionHandlingProcessInstanceId != null) {
-            ProcessInstance processInstance = null;
             KieRuntime kruntime = getKieRuntimeForSubprocess();
-        
-            processInstance = (ProcessInstance) kruntime.getProcessInstance(exceptionHandlingProcessInstanceId);
-            
-
+            ProcessInstance processInstance = (ProcessInstance) kruntime.getProcessInstance(exceptionHandlingProcessInstanceId);
             if (processInstance != null) {
-                processInstance.setState(ProcessInstance.STATE_ABORTED);
+                processInstance.setState(STATE_ABORTED);
             }
         }
         super.cancel();
     }
 
+    @Override
     public void addEventListeners() {
         super.addEventListeners();
         addWorkItemListener();
@@ -428,6 +414,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         getProcessInstance().addEventListener("workItemAborted", this, false);
     }
 
+    @Override
     public void removeEventListeners() {
         super.removeEventListeners();
         getProcessInstance().removeEventListener("workItemCompleted", this, false);
@@ -472,13 +459,14 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         }
     }
 
+    @Override
     public String getNodeName() {
         Node node = getNode();
         if (node == null) {
             String nodeName = "[Dynamic]";
-            WorkItem workItem = getWorkItem();
-            if (workItem != null) {
-                nodeName += " " + workItem.getParameter("TaskName");
+            WorkItem item = getWorkItem();
+            if (item != null) {
+                nodeName += " " + item.getParameter("TaskName");
             }
             return nodeName;
         }
@@ -492,12 +480,9 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 
     @Override
     public void addContextInstance(String contextId, ContextInstance contextInstance) {
-        List<ContextInstance> list = this.subContextInstances.get(contextId);
-        if (list == null) {
-            list = new ArrayList<ContextInstance>();
-            this.subContextInstances.put(contextId, list);
-        }
-        list.add(contextInstance);
+        this.subContextInstances
+                .computeIfAbsent(contextId, k -> new ArrayList<>())
+                .add(contextInstance);
     }
 
     @Override
@@ -510,9 +495,9 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 
     @Override
     public ContextInstance getContextInstance(String contextId, long id) {
-        List<ContextInstance> contextInstances = subContextInstances.get(contextId);
-        if (contextInstances != null) {
-            for (ContextInstance contextInstance : contextInstances) {
+        List<ContextInstance> instances = subContextInstances.get(contextId);
+        if (instances != null) {
+            for (ContextInstance contextInstance : instances) {
                 if (contextInstance.getContextId() == id) {
                     return contextInstance;
                 }
@@ -527,7 +512,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         if (conf == null) {
             throw new IllegalArgumentException("Illegal context type (registry not found): " + context.getClass());
         }
-        ContextInstance contextInstance = (ContextInstance) conf.getContextInstance(context, this, (ProcessInstance) getProcessInstance());
+        ContextInstance contextInstance = conf.getContextInstance(context, this, getProcessInstance());
         if (contextInstance == null) {
             throw new IllegalArgumentException("Illegal context type (instance not found): " + context.getClass());
         }
@@ -540,10 +525,10 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     }
 
     protected Map<String, Object> getSourceParameters(DataAssociation association) {
-        Map<String, Object> parameters = new HashMap<String, Object>();
+        Map<String, Object> parameters = new HashMap<>();
         for (String sourceParam : association.getSources()) {
             Object parameterValue = null;
-            VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, sourceParam);
+            VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VARIABLE_SCOPE, sourceParam);
             if (variableScopeInstance != null) {
                 parameterValue = variableScopeInstance.getVariable(sourceParam);
             } else {
@@ -563,19 +548,17 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 
     public void validateWorkItemResultVariable(String processName, List<DataAssociation> outputs, WorkItem workItem) {
         // in case work item results are skip validation as there is no notion of mandatory data outputs
-        if (!variableStrictEnabled || workItem.getResults().isEmpty()) {
+        if (!VariableScope.isVariableStrictEnabled() || workItem.getResults().isEmpty()) {
             return;
         }
 
-        List<String> outputNames = new ArrayList<String>();
+        List<String> outputNames = new ArrayList<>();
         for (DataAssociation association : outputs) {
             if (association.getSources() != null) {
                 outputNames.add(association.getSources().get(0));
             }
             if (association.getAssignments() != null) {
-                for (Iterator<Assignment> it = association.getAssignments().iterator(); it.hasNext();) {
-                    outputNames.add(it.next().getFrom());
-                }
+                association.getAssignments().forEach(a -> outputNames.add(a.getFrom()));
             }
         }
 
@@ -604,20 +587,20 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         // add all parameters of the work item to the newly started process instance
         parameters.putAll(workItem.getParameters());
         
-        KieRuntime kruntime = getKieRuntimeForSubprocess();       
-                
-        ProcessInstance processInstance = ( ProcessInstance ) kruntime.createProcessInstance(handlerException.getProcessId(), parameters);
+        KieRuntime kruntime = getKieRuntimeForSubprocess();
+
+        ProcessInstance processInstance = (ProcessInstance) kruntime.createProcessInstance(handlerException.getProcessId(), parameters);
         
         this.exceptionHandlingProcessInstanceId = processInstance.getId(); 
         ((ProcessInstanceImpl) processInstance).setMetaData("ParentProcessInstanceId", getProcessInstance().getId());
         ((ProcessInstanceImpl) processInstance).setMetaData("ParentNodeInstanceId", getUniqueId());
         
-        ((ProcessInstanceImpl) processInstance).setParentProcessInstanceId(getProcessInstance().getId());
-        ((ProcessInstanceImpl) processInstance).setSignalCompletion(true);
+        processInstance.setParentProcessInstanceId(getProcessInstance().getId());
+        processInstance.setSignalCompletion(true);
 
         kruntime.startProcessInstance(processInstance.getId());
-        if (processInstance.getState() == ProcessInstance.STATE_COMPLETED
-                || processInstance.getState() == ProcessInstance.STATE_ABORTED) {
+        if (processInstance.getState() == STATE_COMPLETED
+                || processInstance.getState() == STATE_ABORTED) {
             exceptionHandlingCompleted(processInstance, handlerException);
         } else {
             addExceptionProcessListener();
@@ -632,8 +615,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                 
         switch (handlerException.getStrategy()) {
             case ABORT:
-                ((WorkItemManager) ((ProcessInstance) getProcessInstance())
-                        .getKnowledgeRuntime().getWorkItemManager()).abortWorkItem(getWorkItem().getId());
+                getProcessInstance().getKnowledgeRuntime().getWorkItemManager().abortWorkItem(getWorkItem().getId());
                 break;
             case RETHROW:
                 String exceptionName = handlerException.getCause().getClass().getName();
@@ -647,16 +629,15 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
             case RETRY:
                 Map<String, Object> parameters = new HashMap<>(getWorkItem().getParameters());
                 
-                parameters.putAll(((WorkflowProcessInstanceImpl)processInstance).getVariables());
+                parameters.putAll(processInstance.getVariables());
                 
-                ((WorkItemManager) ((ProcessInstance) getProcessInstance())
+                ((WorkItemManager) getProcessInstance()
                         .getKnowledgeRuntime().getWorkItemManager()).retryWorkItem(getWorkItem().getId(), parameters);
                 break;
             case COMPLETE:
-                
-                ((WorkItemManager) ((ProcessInstance) getProcessInstance())
-                        .getKnowledgeRuntime().getWorkItemManager()).completeWorkItem(getWorkItem().getId(), 
-                                ((WorkflowProcessInstanceImpl)processInstance).getVariables());                
+                getProcessInstance().getKnowledgeRuntime().getWorkItemManager().completeWorkItem(
+                        getWorkItem().getId(),
+                        processInstance.getVariables());
                 break;
             default:
                 break;
@@ -686,9 +667,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     }
     
     protected KieRuntime getKieRuntimeForSubprocess() {
-        KieRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();        
-        
-        return kruntime;
+        return getProcessInstance().getKnowledgeRuntime();
     }
 
     @Override
@@ -699,7 +678,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         }
 
         List<NamedDataType> outputs = new ArrayList<>();
-        VariableScope variableScope = (VariableScope) getProcessInstance().getContextContainer().getDefaultContext(VariableScope.VARIABLE_SCOPE);
+        VariableScope variableScope = (VariableScope) getProcessInstance().getContextContainer().getDefaultContext(VARIABLE_SCOPE);
         getWorkItemNode().getOutAssociations().forEach(da -> da.getSources().forEach(s -> outputs.add(new NamedDataType(s, variableScope.findVariable(da.getTarget()).getType()))));
 
         GroupedNamedDataType dataTypes = new GroupedNamedDataType();
@@ -708,12 +687,5 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 
         // return just the main completion type of an event
         return Collections.singleton(new IOEventDescription("workItemCompleted", getNodeDefinitionId(), getNodeName(), "workItem", getWorkItemId(), getProcessInstance().getId(), dataTypes));
-    }
-    
-    /*
-     * mainly for test coverage to easily switch between settings 
-     */
-    public static void setVariableStrictOption(boolean turnedOn) {
-        variableStrictEnabled = turnedOn;
     }
 }

@@ -36,6 +36,9 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.Closeable;
 import org.kie.kogito.process.workitem.Policy;
 
+import static org.kie.api.runtime.process.WorkItem.ABORTED;
+import static org.kie.api.runtime.process.WorkItem.COMPLETED;
+
 public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
 
     private static final long serialVersionUID = 510l;
@@ -73,8 +76,7 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
         if (handler != null) {
             handler.executeWorkItem(workItem, this);
-        } else throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
-                                                    workItem.getName() );
+        } else throw new WorkItemHandlerNotFoundException(workItem.getName() );
     }
 
     public void internalAddWorkItem(WorkItem workItem) {
@@ -90,15 +92,10 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
                 handler.abortWorkItem(workItem, this);
             } else {
                 workItems.remove( workItem.getId() );
-                throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
-                                                                 workItem.getName() );
+                throw new WorkItemHandlerNotFoundException(workItem.getName() );
             }
             workItems.remove(workItem.getId());
         }
-    }
-
-    public WorkItemHandler getWorkItemHandler(String name) {
-    	return this.workItemHandlers.get(name);
     }
 
     public void retryWorkItem(String workItemId) {
@@ -121,8 +118,7 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
             WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
             if (handler != null) {
                 handler.executeWorkItem(workItem, this);
-            } else throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
-                                                        workItem.getName() );
+            } else throw new WorkItemHandlerNotFoundException(workItem.getName() );
         }
     }
     
@@ -140,7 +136,7 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         if (workItem != null) {
             (workItem).setResults(results);
             ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
-            (workItem).setState(WorkItem.COMPLETED);
+            (workItem).setState(COMPLETED);
             // process instance may have finished already
             if (processInstance != null) {
                 processInstance.signalEvent("workItemCompleted", workItem);
@@ -154,7 +150,7 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         // work item may have been aborted
         if (workItem != null) {
             ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
-            workItem.setState(WorkItem.ABORTED);
+            workItem.setState(ABORTED);
             // process instance may have finished already
             if (processInstance != null) {
                 processInstance.signalEvent("workItemAborted", workItem);

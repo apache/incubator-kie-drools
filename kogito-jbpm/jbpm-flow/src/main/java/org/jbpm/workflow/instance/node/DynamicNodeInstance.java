@@ -25,8 +25,6 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.spi.Activation;
 import org.drools.core.util.MVELSafeHelper;
-import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
-import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.kie.api.definition.process.Node;
@@ -41,6 +39,9 @@ import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.rule.Match;
+
+import static org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE;
+import static org.jbpm.workflow.core.impl.ExtendedNodeImpl.EVENT_NODE_ENTER;
 
 public class DynamicNodeInstance extends CompositeContextNodeInstance implements AgendaEventListener {
 
@@ -63,43 +64,43 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance implements
     @Override
     public void internalTrigger(NodeInstance from, String type) {
         triggerTime = new Date();
-        triggerEvent(ExtendedNodeImpl.EVENT_NODE_ENTER);
+        triggerEvent(EVENT_NODE_ENTER);
 
     	// if node instance was cancelled, abort
 		if (getNodeInstanceContainer().getNodeInstance(getId()) == null) {
 			return;
 		}
-    	InternalAgenda agenda =  (InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda();
-    	String ruleFlowGroup = getRuleFlowGroupName();
-    	if (ruleFlowGroup != null && !agenda.getRuleFlowGroup(ruleFlowGroup).isActive()) {
-        	agenda.getRuleFlowGroup(ruleFlowGroup).setAutoDeactivate(false);
-        	agenda.activateRuleFlowGroup(ruleFlowGroup, getProcessInstance().getId(), getUniqueId());
-    	}
-//    	if (getDynamicNode().isAutoComplete() && getNodeInstances(false).isEmpty()) {
-//    		triggerCompleted(NodeImpl.CONNECTION_DEFAULT_TYPE);
-//    	}
-
-        
-        String rule = "RuleFlow-AdHocComplete-" + getProcessInstance().getProcessId() + "-" + getDynamicNode().getUniqueId();
-        boolean isActive = ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
-            .isRuleActiveInRuleFlowGroup(getRuleFlowGroupName(), rule, getProcessInstance().getId());
+        boolean isActive = false;
+        // KOGITO-2168 Conditions not supported
+        if(getProcessInstance().getKnowledgeRuntime().getAgenda() != null) {
+            InternalAgenda agenda = (InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda();
+            String ruleFlowGroup = getRuleFlowGroupName();
+            if (ruleFlowGroup != null && !agenda.getRuleFlowGroup(ruleFlowGroup).isActive()) {
+                agenda.getRuleFlowGroup(ruleFlowGroup).setAutoDeactivate(false);
+                agenda.activateRuleFlowGroup(ruleFlowGroup, getProcessInstance().getId(), getUniqueId());
+            }
+            String rule =  "RuleFlow-AdHocComplete-" + getProcessInstance().getProcessId() + "-" + getDynamicNode().getUniqueId();
+            isActive = ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
+                    .isRuleActiveInRuleFlowGroup(getRuleFlowGroupName(), rule, getProcessInstance().getId());
+        }
         if (isActive) {
             triggerCompleted();
         } else {
             addActivationListener();
         }
-    	
+
     	// activate ad hoc fragments if they are marked as such
         List<Node> autoStartNodes = getDynamicNode().getAutoStartNodes();
-        autoStartNodes
-            .forEach(austoStartNode -> triggerSelectedNode(austoStartNode, null));
-
+        autoStartNodes.forEach(austoStartNode -> triggerSelectedNode(austoStartNode, null));
     }
+
+    @Override
     public void addEventListeners() {
         super.addEventListeners();
         addActivationListener();
     }
-    
+
+    @Override
     public void removeEventListeners() {
         super.removeEventListeners();
         getProcessInstance().getKnowledgeRuntime().removeEventListener(this);
@@ -116,6 +117,7 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance implements
             + "-" + getDynamicNode().getUniqueId();
     }
 
+    @Override
 	public void nodeInstanceCompleted(org.jbpm.workflow.instance.NodeInstance nodeInstance, String outType) {
 	    Node nodeInstanceNode = nodeInstance.getNode();
 	    if( nodeInstanceNode != null ) {
@@ -129,9 +131,9 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance implements
 		// TODO what if we reach the end of one branch but others might still need to be created ?
 		// TODO are we sure there will always be node instances left if we are not done yet?
 		if (isTerminated(nodeInstance)) {
-		    triggerCompleted(NodeImpl.CONNECTION_DEFAULT_TYPE);
+		    triggerCompleted(CONNECTION_DEFAULT_TYPE);
 		} else if (getDynamicNode().isAutoComplete() && getNodeInstances(false).isEmpty()) {
-    		triggerCompleted(NodeImpl.CONNECTION_DEFAULT_TYPE);
+    		triggerCompleted(CONNECTION_DEFAULT_TYPE);
     	} else if (completionCondition != null && "mvel".equals(getDynamicNode().getLanguage())) {
     		Object value = MVELSafeHelper.getEvaluator().eval(completionCondition, new NodeInstanceResolverFactory(this));
     		if ( !(value instanceof Boolean) ) {
@@ -139,14 +141,17 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance implements
                 		+ " for expression " + completionCondition);
             }
             if (((Boolean) value).booleanValue()) {
-            	triggerCompleted(NodeImpl.CONNECTION_DEFAULT_TYPE);
+            	triggerCompleted(CONNECTION_DEFAULT_TYPE);
             }
     	}
 	}
 
+	@Override
     public void triggerCompleted(String outType) {
-    	((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
-    		.deactivateRuleFlowGroup(getRuleFlowGroupName());
+	    if(getProcessInstance().getKnowledgeRuntime().getAgenda() != null) {
+	        ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
+                    .deactivateRuleFlowGroup(getRuleFlowGroupName());
+        }
     	super.triggerCompleted(outType);
     }
 
@@ -158,7 +163,7 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance implements
                 Match match = ((MatchCreatedEvent) event).getMatch();                
                 match.getDeclarationIds().forEach(s -> this.setVariable(s.replaceFirst("\\$", ""), match.getDeclarationValue(s)));                
             }            
-            trigger(null, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+            trigger(null, CONNECTION_DEFAULT_TYPE);
         } else if (getActivationEventType().equals(type)) {
             if (event instanceof MatchCreatedEvent) {
                 matchCreated((MatchCreatedEvent) event);
@@ -176,7 +181,6 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance implements
 
     protected boolean isTerminated(NodeInstance from) {
         if (from instanceof EndNodeInstance) {
-            
             return ((EndNodeInstance) from).getEndNode().isTerminate();
         }
         
@@ -185,7 +189,7 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance implements
     
     @SuppressWarnings("unchecked")
     protected void triggerSelectedNode(Node node, Object event) {
-        NodeInstance nodeInstance = getNodeInstance(node);
+        org.jbpm.workflow.instance.NodeInstance nodeInstance = getNodeInstance(node);
         if (event != null) {                             
             Map<String, Object> dynamicParams = new HashMap<>();
             if (event instanceof Map) {
@@ -193,9 +197,9 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance implements
             } else {
                 dynamicParams.put("Data", event);
             }
-            ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).setDynamicParameters(dynamicParams);
+            nodeInstance.setDynamicParameters(dynamicParams);
         }
-        ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).trigger(null, NodeImpl.CONNECTION_DEFAULT_TYPE);
+        nodeInstance.trigger(null, CONNECTION_DEFAULT_TYPE);
     }
     
     public void matchCreated(MatchCreatedEvent event) {
@@ -209,7 +213,7 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance implements
             if (milestoneName.equals(ruleName) && checkProcessInstance((Activation) event.getMatch()) && checkDeclarationMatch(event.getMatch(), (String) getVariable("MatchVariable"))) {
                 synchronized(getProcessInstance()) {
                     DynamicNodeInstance.this.removeEventListeners();
-                    DynamicNodeInstance.this.triggerCompleted(NodeImpl.CONNECTION_DEFAULT_TYPE);
+                    DynamicNodeInstance.this.triggerCompleted(CONNECTION_DEFAULT_TYPE);
                 }
             }
         }

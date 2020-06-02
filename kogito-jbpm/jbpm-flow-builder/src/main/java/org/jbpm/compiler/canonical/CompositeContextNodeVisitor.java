@@ -15,7 +15,13 @@
 
 package org.jbpm.compiler.canonical;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Stream;
+
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
@@ -29,11 +35,6 @@ import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.kie.api.definition.process.Node;
-
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Stream;
 
 import static org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory.METHOD_VARIABLE;
 
@@ -75,12 +76,12 @@ public class CompositeContextNodeVisitor<T extends CompositeContextNode> extends
 
         // composite context node might not have variable scope
         // in that case inherit it from parent
-        if (node.getDefaultContext(VariableScope.VARIABLE_SCOPE) == null) {
-            visitNodes(getNodeId(node), node.getNodes(), body, variableScope, metadata);
-        } else {
-            visitNodes(getNodeId(node), node.getNodes(), body, ((VariableScope) node.getDefaultContext(VariableScope.VARIABLE_SCOPE)), metadata);
+        VariableScope scope = variableScope;
+        if (node.getDefaultContext(VariableScope.VARIABLE_SCOPE) != null && !((VariableScope) node.getDefaultContext(VariableScope.VARIABLE_SCOPE)).getVariables().isEmpty()) {
+            scope = (VariableScope) node.getDefaultContext(VariableScope.VARIABLE_SCOPE);
         }
-
+        body.addStatement(getFactoryMethod(getNodeId(node), CompositeContextNodeFactory.METHOD_AUTO_COMPLETE, new BooleanLiteralExpr(node.isAutoComplete())));
+        visitNodes(getNodeId(node), node.getNodes(), body, scope, metadata);
         visitConnections(getNodeId(node), node.getNodes(), body);
         body.addStatement(getDoneMethod(getNodeId(node)));
     }

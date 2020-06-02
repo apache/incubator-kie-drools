@@ -28,7 +28,7 @@ public abstract class AbstractContextInstance implements ContextInstance, Serial
     private long contextId;
     private ContextInstanceContainer contextInstanceContainer;
     private ProcessInstance processInstance;
-    
+
     public long getContextId() {
         return contextId;
     }
@@ -44,17 +44,17 @@ public abstract class AbstractContextInstance implements ContextInstance, Serial
     public void setContextInstanceContainer(ContextInstanceContainer contextInstanceContainer) {
         this.contextInstanceContainer = contextInstanceContainer;
     }
-    
+
     public Context getContext() {
         return getContextInstanceContainer().getContextContainer().getContext(getContextType(), getContextId());
     }
 
-	public ProcessInstance getProcessInstance() {
-		return processInstance;
-	}
+    public ProcessInstance getProcessInstance() {
+        return processInstance;
+    }
 
-	public void setProcessInstance(ProcessInstance processInstance) {
-		this.processInstance = processInstance;
-	}
-    
+    public void setProcessInstance(ProcessInstance processInstance) {
+        this.processInstance = processInstance;
+    }
+
 }

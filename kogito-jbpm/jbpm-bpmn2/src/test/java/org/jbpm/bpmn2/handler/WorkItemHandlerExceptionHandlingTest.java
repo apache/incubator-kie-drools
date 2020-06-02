@@ -16,15 +16,12 @@
 
 package org.jbpm.bpmn2.handler;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -34,22 +31,21 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.ProcessWorkItemHandlerException.HandlingStrategy;
 import org.kie.api.runtime.process.WorkItem;
 
+import static org.jbpm.process.core.context.variable.VariableScope.VARIABLE_STRICT_ENABLED_PROPERTY;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class WorkItemHandlerExceptionHandlingTest extends JbpmBpmn2TestCase {
 
-    private static Boolean strictVariableSetting = Boolean.parseBoolean(System.getProperty("org.jbpm.variable.strict", "false"));
-    public WorkItemHandlerExceptionHandlingTest() {        
-    }
-    
+    private static Boolean strictVariableSetting = Boolean.parseBoolean(System.getProperty(VARIABLE_STRICT_ENABLED_PROPERTY, Boolean.FALSE.toString()));
+
     @BeforeAll
     public static void setup() throws Exception {        
         VariableScope.setVariableStrictOption(false);
-        WorkItemNodeInstance.setVariableStrictOption(false);
     }
     
     @AfterAll
     public static void clean() throws Exception {        
         VariableScope.setVariableStrictOption(strictVariableSetting);
-        WorkItemNodeInstance.setVariableStrictOption(strictVariableSetting);
     }
 
     @Test

@@ -33,8 +33,8 @@ public class WorkItemImpl implements WorkItem, Serializable {
     private String id;
     private String name;
     private int state = 0;
-    private Map<String, Object> parameters = new HashMap<String, Object>();
-    private Map<String, Object> results = new HashMap<String, Object>();
+    private Map<String, Object> parameters = new HashMap<>();
+    private Map<String, Object> results = new HashMap<>();
     private String processInstanceId;
     private String deploymentId;
     private String nodeInstanceId;
