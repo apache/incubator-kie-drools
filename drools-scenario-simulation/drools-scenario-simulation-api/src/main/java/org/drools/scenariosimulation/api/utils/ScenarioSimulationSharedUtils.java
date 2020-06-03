@@ -26,6 +26,10 @@ public class ScenarioSimulationSharedUtils {
 
     public static final String FILE_EXTENSION = "scesim";
 
+    private ScenarioSimulationSharedUtils() {
+        // Utils Class
+    }
+
     /**
      * Returns true if given string isList or isMap
      * @param className
@@ -55,5 +59,14 @@ public class ScenarioSimulationSharedUtils {
         return Map.class.getCanonicalName().equals(className) ||
                 HashMap.class.getCanonicalName().equals(className) ||
                 LinkedHashMap.class.getCanonicalName().equals(className);
+    }
+
+    /**
+     * Returns true if given string equals to canonical name of <code>java.lang.Enum</code>
+     * @param className
+     * @return
+     */
+    public static boolean isEnumCanonicalName(String className) {
+        return Enum.class.getCanonicalName().equals(className);
     }
 }

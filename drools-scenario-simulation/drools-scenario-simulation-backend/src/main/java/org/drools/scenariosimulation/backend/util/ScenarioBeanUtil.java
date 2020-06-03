@@ -178,13 +178,18 @@ public class ScenarioBeanUtil {
                 return Short.parseShort(cleanStringForNumberParsing(value));
             } else if (clazz.isAssignableFrom(LocalDate.class)) {
                 return LocalDate.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            } else if (Enum.class.isAssignableFrom(clazz)) {
+                return Enum.valueOf(((Class<? extends Enum>) clazz), value);
             }
         } catch (RuntimeException e) {
-            throw new IllegalArgumentException(new StringBuilder().append("Impossible to parse '").append(value).append("' as ").append(className).append(" [").append(e.getMessage()).append("]").toString());
+            throw new IllegalArgumentException(new StringBuilder().append("Impossible to parse '")
+                                                       .append(value).append("' as ").append(className).append(" [")
+                                                       .append(e.getMessage()).append("]").toString());
         }
 
         throw new IllegalArgumentException(new StringBuilder().append("Class ").append(className)
-                                                   .append(" is not supported").toString());
+                                                   .append(" is not natively supported. Please use an MVEL expression" +
+                                                                   " to use it.").toString());
     }
 
     public static String revertValue(Object cleanValue) {
@@ -215,6 +220,8 @@ public class ScenarioBeanUtil {
         } else if (clazz.isAssignableFrom(LocalDate.class)) {
             LocalDate localDate = (LocalDate) cleanValue;
             return String.format("%04d-%02d-%02d", localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth());
+        } else if (Enum.class.isAssignableFrom(clazz)) {
+            return String.valueOf(cleanValue);
         } else {
             return String.valueOf(cleanValue);
         }
