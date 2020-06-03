@@ -19,13 +19,9 @@ Quick Links
 
 **Homepage:** http://kogito.kie.org
 
-**Wiki:** https://github.com/kiegroup/kogito-runtimes/wiki
+**Guides and Documentation:** https://kogito.kie.org/guides/
 
-**JIRA:** https://issues.jboss.org/projects/KOGITO
-
-**jBPM:** https://www.jbpm.org/
-
-**Drools:** https://www.drools.org/
+**JIRA Issues:** https://issues.jboss.org/projects/KOGITO
 
 Requirements
 ------------
@@ -37,56 +33,24 @@ Requirements
 Getting Started
 ---------------
 
-The [Kogito Examples repository](https://github.com/kiegroup/kogito-examples) module contains a number of examples that you can take a look at and try out yourself.
- Please take a look at the readme of each individual example for more details on how the example works and how to run it yourself (either locally or on Kubernetes):
-- Process + Quarkus: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/process-quarkus-example/README.md)
-- Process + Spring Boot: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/process-springboot-example/README.md)
-- Process + Decision + Rules + Quarkus: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/onboarding-example/README.md) - Onboarding example combining one process and two decision services
-- Rules + Quarkus: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/rules-quarkus-helloworld/README.md)
-- DMN + Quarkus: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/dmn-quarkus-example/README.md)
-- Rule Unit + Quarkus: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/ruleunit-quarkus-example/README.md)
-
-Building from source
---------------------
-
-1. Check out the source:
-
-```
-git clone git@github.com:kiegroup/kogito-runtimes.git
-```
-
-If you don't have a GitHub account use this command instead:
-
-```
-git clone https://github.com/kiegroup/kogito-runtimes.git
-```
-
-2. Build with Maven:
-```
-cd kogito-runtimes
-mvn clean install -DskipITs
-```
-
-3. Run integration tests
-The integrations tests are skipped in the command above. To run the tests you need to have docker installed on your machine. To run the tests during the build, just remove the `-DskipITs` argument.
-Possible issues - the tests are running docker containers using [testcontainers](https://github.com/testcontainers/testcontainers-java). That by default requires access to the docker.sock file which might result in a security alert on your system and be blocked. In such case you'll see log message similar to 'Can not connect to Ryuk'. In this case do run the tests with following ENV variable set:
-
-```
-TESTCONTAINERS_RYUK_DISABLED=true mvn clean verify
-```
-When the test run is interrupted though, you might end up with docker containers still running, check those using `docker ps` and stop when neccessary.
-
-
-Contributing to Kogito
---------------------
-
-All contributions are welcome! Before you start please read the [Developing Drools and jBPM](https://github.com/kiegroup/droolsjbpm-build-bootstrap/blob/master/README.md) guide.
-
+The [Kogito Examples repository](https://github.com/kiegroup/kogito-examples) module contains a number of examples that you can take a look at and try out yourself. Please take a look at the readme of each individual example for more details on how the example works and how to run it yourself (either locally or on Kubernetes).
 
 Guides
 --------------------
 
-Here are some of the most notable ones for quick reference:
+The official guides for Kogito can be found at our main website, these include guides for Quarkus and Spring Boot.
 
-- [Quarkus - Using Kogito to add business automation capabilities to an application](https://quarkus.io/guides/kogito-guide) - This guide demonstrates how your Quarkus application can use Kogito to add business automation to power it up with business processes and rules.
+- [Kogito Guides](https://kogito.kie.org/guides/).
+
+If you want to read more about Quarkus:
+
 - [Quarkus - Getting Started](https://quarkus.io/get-started/) - Quarkus Getting Started guide
+- [Quarkus - Using Kogito to add business automation capabilities to an application](https://quarkus.io/guides/kogito) - A simple quick start hosted on the Quarkus web site.
+
+
+
+Building and Contributing to Kogito
+-----------------------------------
+
+All contributions are welcome! Before you start please read the [contribution guide](CONTRIBUTING.md).
+
