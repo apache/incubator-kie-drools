@@ -29,18 +29,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.kie.builder.impl.AbstractKieModule;
 import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
 import org.drools.compiler.kie.builder.impl.KieProject;
-import org.drools.compiler.kie.builder.impl.KnowledgePackagesBuildResult;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kie.builder.impl.ZipKieModule;
@@ -82,6 +81,7 @@ import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 
 import static java.util.stream.Collectors.toList;
+
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.checkStreamMode;
 import static org.drools.model.impl.ModelComponent.areEqualInModel;
 import static org.drools.modelcompiler.util.StringUtil.fileNameToClass;
@@ -93,7 +93,14 @@ public class CanonicalKieModule implements InternalKieModule {
     public static final String MODEL_FILE_DIRECTORY = "META-INF/kie/";
     public static final String MODEL_FILE_NAME = "drools-model";
     public static final String MODEL_VERSION = "Drools-Model-Version:";
+
     private static final String PROJECT_MODEL_RESOURCE_CLASS = PROJECT_MODEL_CLASS.replace('.', '/') + ".class";
+
+    private static final Predicate<String> NON_MODEL_RESOURCES = res -> {
+            ResourceType type = determineResourceType(res);
+            return type != null && !type.isFullyCoveredByExecModel();
+    };
+
     private final InternalKieModule internalKieModule;
     private final Map<String, CanonicalKiePackages> pkgsInKbase = new HashMap<>();
     private final Map<String, Model> models = new HashMap<>();
@@ -205,30 +212,25 @@ public class CanonicalKieModule implements InternalKieModule {
         checkStreamMode(kBaseModel, conf, kpkgs.getKiePackages());
         InternalKnowledgeBase kieBase = new KieBaseBuilder(kBaseModel, kBaseConf).createKieBase(kpkgs);
 
-        if (hasNonModelResources(kBaseModel, kieProject)) {
-            KnowledgePackagesBuildResult knowledgePackagesBuildResult = ((AbstractKieModule) internalKieModule).buildKnowledgePackages(kBaseModel, kieProject, messages);
-            if (knowledgePackagesBuildResult.hasErrors()) {
-                return null;
-            }
-            Collection<KiePackage> pkgs = knowledgePackagesBuildResult.getPkgs();
-            for (KiePackage pk : pkgs) {
-                // Workaround to "mark" already compiled packages (as found inside the kjar and retrieved by createKiePackages(kieProject, kBaseModel, messages, kBaseConf))
-                // as "PMML" packages
-                boolean isInternalKnowldgePackage = pk instanceof InternalKnowledgePackage;
-                final InternalKnowledgePackage originalPackage = kieBase.getPackage(pk.getName());
-                if (originalPackage != null && isInternalKnowldgePackage && ((InternalKnowledgePackage) pk).getResourceTypePackages().get(ResourceType.PMML) != null) {
-                    originalPackage.getResourceTypePackages().put(ResourceType.PMML, ((InternalKnowledgePackage) pk).getResourceTypePackages().get(ResourceType.PMML));
-                } else if (originalPackage == null) {
-                    kieBase.addPackages(pkgs);
-                }
-            }
-        }
-
+        buildNonNativeResources( kBaseModel, kieProject, messages, kieBase );
         return kieBase;
     }
 
-    private boolean hasNonModelResources(KieBaseModelImpl kBaseModel, KieProject kieProject) {
-        return kieProject.getKieModuleForKBase(kBaseModel.getName()).getFileNames().stream().anyMatch(s -> s.endsWith(".dmn") || s.endsWith(".pmml"));
+    private void buildNonNativeResources( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, InternalKnowledgeBase kieBase ) {
+        KnowledgeBuilder kbuilder = kieProject.buildKnowledgePackages(kBaseModel, messages, NON_MODEL_RESOURCES);
+        if ( !kbuilder.hasErrors() ) {
+            for (KiePackage pk : kbuilder.getKnowledgePackages()) {
+                // Workaround to "mark" already compiled packages (as found inside the kjar and retrieved by createKiePackages(kieProject, kBaseModel, messages, kBaseConf))
+                // as "PMML" packages
+                boolean isInternalKnowldgePackage = pk instanceof InternalKnowledgePackage;
+                final InternalKnowledgePackage originalPackage = kieBase.getPackage( pk.getName() );
+                if ( originalPackage != null && isInternalKnowldgePackage && (( InternalKnowledgePackage ) pk).getResourceTypePackages().get( ResourceType.PMML ) != null ) {
+                    originalPackage.getResourceTypePackages().put( ResourceType.PMML, (( InternalKnowledgePackage ) pk).getResourceTypePackages().get( ResourceType.PMML ) );
+                } else if ( originalPackage == null ) {
+                    kieBase.addPackage( pk );
+                }
+            }
+        }
     }
 
     private CanonicalKiePackages createKiePackages(KieProject kieProject, KieBaseModelImpl kBaseModel, ResultsImpl messages, KieBaseConfiguration conf) {
