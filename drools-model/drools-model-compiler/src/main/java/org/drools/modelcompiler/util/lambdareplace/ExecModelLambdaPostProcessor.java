@@ -41,7 +41,6 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.PrettyPrinter;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.model.BitMask;
-import org.drools.modelcompiler.builder.RuleWriter;
 import org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder;
 import org.slf4j.Logger;
@@ -56,7 +55,7 @@ import static org.drools.modelcompiler.util.StreamUtils.optionalToStream;
 
 public class ExecModelLambdaPostProcessor {
 
-    Logger logger = LoggerFactory.getLogger(RuleWriter.class.getCanonicalName());
+    Logger logger = LoggerFactory.getLogger(ExecModelLambdaPostProcessor.class.getCanonicalName());
 
     private final Map<String, CreatedClass> lambdaClasses;
     private final String packageName;
@@ -125,7 +124,8 @@ public class ExecModelLambdaPostProcessor {
         Expression argument = methodCallExpr.getArgument(0);
 
         if (!argument.isClassExpr()) {
-            throw new RuntimeException();
+            logger.warn("argument is not ClassExpr. argument : {}, methodCallExpr : {}", argument, methodCallExpr);
+            return;
         }
 
         String returnType = getType(argument).asString();
@@ -136,10 +136,16 @@ public class ExecModelLambdaPostProcessor {
         Expression argument = methodCallExpr.getArgument(0);
 
         if (!argument.isNameExpr()) {
-            throw new RuntimeException("Argument is not NameExpr : argument = " + argument);
+            logger.warn("argument is not NameExpr. argument : {}, methodCallExpr : {}", argument, methodCallExpr);
+            return;
         }
 
-        String returnType = findVariableType((NameExpr) argument).asString();
+        Optional<Type> optType = findVariableType((NameExpr) argument);
+        if (!optType.isPresent()) {
+            logger.warn("VariableDeclarator type was not found for {}, methodCallExpr : {}", argument, methodCallExpr);
+            return;
+        }
+        String returnType = optType.get().asString();
 
         extractLambdaFromMethodCall(methodCallExpr, () -> new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
     }
@@ -148,10 +154,16 @@ public class ExecModelLambdaPostProcessor {
         Expression argument = methodCallExpr.getArgument(0);
 
         if (!argument.isNameExpr()) {
-            throw new RuntimeException("Argument is not NameExpr : argument = " + argument);
+            logger.warn("argument is not NameExpr. argument : {}, methodCallExpr : {}", argument, methodCallExpr);
+            return;
         }
 
-        String returnType = findVariableType((NameExpr) argument).asString();
+        Optional<Type> optType = findVariableType((NameExpr) argument);
+        if (!optType.isPresent()) {
+            logger.warn("VariableDeclarator type was not found for {}, methodCallExpr : {}", argument, methodCallExpr);
+            return;
+        }
+        String returnType = optType.get().asString();
 
         Optional<MethodCallExpr> bindAsMethodOpt = optionalToStream(methodCallExpr.getParentNode())
             .map(node -> (MethodCallExpr) node)
@@ -166,7 +178,7 @@ public class ExecModelLambdaPostProcessor {
         extractLambdaFromMethodCall(bindAsMethodOpt.get(), () -> new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
     }
 
-    private Type findVariableType(NameExpr nameExpr) {
+    private Optional<Type> findVariableType(NameExpr nameExpr) {
         return optionalToStream(nameExpr.findAncestor(MethodDeclaration.class))
             .flatMap(node -> node.findAll(VariableDeclarator.class).stream())
             .filter(node -> node.getName().equals(nameExpr.getName()))
@@ -175,8 +187,7 @@ public class ExecModelLambdaPostProcessor {
             .flatMap(classOrInterfaceType -> optionalToStream(classOrInterfaceType.getTypeArguments()))
             .filter(typeArgList -> typeArgList.size() == 1)
             .map(typeArgList -> typeArgList.get(0))
-            .findFirst()
-            .orElseThrow(() -> new RuntimeException("VariableDeclarator type was not found for " + nameExpr.getNameAsString()));
+            .findFirst();
     }
 
     protected Type getType(Expression argument) {
