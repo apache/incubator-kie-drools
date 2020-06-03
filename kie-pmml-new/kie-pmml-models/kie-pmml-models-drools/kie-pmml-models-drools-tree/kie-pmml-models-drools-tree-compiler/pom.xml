@@ -23,6 +23,10 @@
       <artifactId>kie-pmml-models-drools-tree-model</artifactId>
     </dependency>
     <!-- EXTERNAL -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-memory-compiler</artifactId>
+    </dependency>
     <!-- TEST -->
     <dependency>
       <groupId>org.kie</groupId>

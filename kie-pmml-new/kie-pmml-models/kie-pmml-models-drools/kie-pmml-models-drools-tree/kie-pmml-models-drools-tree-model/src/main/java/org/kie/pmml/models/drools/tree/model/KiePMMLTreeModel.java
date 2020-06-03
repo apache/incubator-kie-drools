@@ -29,7 +29,7 @@ public class KiePMMLTreeModel extends KiePMMLDroolsModel {
 
     private final String algorithmName;
 
-    private KiePMMLTreeModel(String name, List<KiePMMLExtension> extensions, String algorithmName) {
+    protected KiePMMLTreeModel(String name, List<KiePMMLExtension> extensions, String algorithmName) {
         super(name, extensions);
         this.algorithmName = algorithmName;
     }

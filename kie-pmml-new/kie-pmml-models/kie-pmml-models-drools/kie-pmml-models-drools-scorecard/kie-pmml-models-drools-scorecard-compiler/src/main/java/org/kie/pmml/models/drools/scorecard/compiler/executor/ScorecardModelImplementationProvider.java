@@ -44,7 +44,7 @@ public class ScorecardModelImplementationProvider extends DroolsModelProvider<Sc
     public KiePMMLScorecardModel getKiePMMLDroolsModel(DataDictionary dataDictionary, Scorecard model, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         try {
             return KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(dataDictionary, model, fieldTypeMap);
-        } catch (IOException | IllegalAccessException | InstantiationException e) {
+        } catch (IllegalAccessException | InstantiationException e) {
             throw new KiePMMLException(e.getMessage(), e);
         }
     }
