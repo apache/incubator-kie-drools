@@ -33,7 +33,7 @@ import org.drools.core.reteoo.ObjectSource;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 
-import static org.drools.core.util.XStreamUtils.createTrustingXStream;
+import static org.kie.soup.xstream.XStreamUtils.createTrustingXStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ReteooBuilderTest {

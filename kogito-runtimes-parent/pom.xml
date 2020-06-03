@@ -310,6 +310,11 @@
       </dependency>
 
       <dependency>
+        <groupId>org.kie.soup</groupId>
+        <artifactId>kie-soup-xstream</artifactId>
+        <version>${version.org.kie7}</version>
+      </dependency>
+      <dependency>
         <groupId>com.thoughtworks.xstream</groupId>
         <artifactId>xstream</artifactId>
         <version>${version.com.thoughtworks.xstream}</version>
