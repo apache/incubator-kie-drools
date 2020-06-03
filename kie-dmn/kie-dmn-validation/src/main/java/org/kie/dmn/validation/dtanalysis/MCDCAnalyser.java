@@ -67,7 +67,9 @@ public class MCDCAnalyser {
         if (dt.getHitPolicy() != HitPolicy.UNIQUE && dt.getHitPolicy() != HitPolicy.ANY && dt.getHitPolicy() != HitPolicy.PRIORITY) {
             return; // cannot analyse.
         }
-        // TODO if not enumerated output values, cannot analyse.
+        if (!ddtaTable.getColIDsStringWithoutEnum().isEmpty()) {
+            return; // if not enumerated output values, cannot analyse.
+        }
 
         // Step1
         calculateElseRuleIdx();
