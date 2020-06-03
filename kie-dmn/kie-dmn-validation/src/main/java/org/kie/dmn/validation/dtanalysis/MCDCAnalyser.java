@@ -1,5 +1,6 @@
 package org.kie.dmn.validation.dtanalysis;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -84,7 +85,7 @@ public class MCDCAnalyser {
             step4();
         }
 
-        LOG.info("the final results are as follows. (marked with R the 'red color' records which are duplicates, changing input is marked with * sign)");
+        LOG.info("The final results are as follows. (marked with R the 'red color' records which are duplicates, changing input is marked with * sign)");
         LOG.info("Left Hand Side for Positive:");
         Set<Record> mcdcRecords = new LinkedHashSet<>();
         // cycle positive side first
@@ -111,11 +112,11 @@ public class MCDCAnalyser {
         }
         LOG.info("total of cases: {}", mcdcRecords.size());
         if (LOG.isDebugEnabled()) {
-            outputOpenXLSX();
+            debugOutputAndOpenXLSX();
         }
     }
 
-    private void outputOpenXLSX() {
+    private void debugOutputAndOpenXLSX() {
         XSSFWorkbook wb = new XSSFWorkbook();
         CreationHelper ch = wb.getCreationHelper();
         CellStyle styleColumn = wb.createCellStyle();
@@ -210,17 +211,12 @@ public class MCDCAnalyser {
             // terminate early;
             return;
         }
-        try {
-            boolean isWinPlatform = System.getProperty("os.name").toLowerCase().startsWith("windows");
-            Process process;
-            if (isWinPlatform) {
-                process = Runtime.getRuntime().exec("open " + file.getAbsolutePath());
-            } else {
-                process = Runtime.getRuntime().exec("open " + file.getAbsolutePath());
+        if (Desktop.isDesktopSupported()) {
+            try {
+                Desktop.getDesktop().open(file);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            process.waitFor();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
         }
         LOG.trace(System.getProperty("java.io.tmpdir"));
     }

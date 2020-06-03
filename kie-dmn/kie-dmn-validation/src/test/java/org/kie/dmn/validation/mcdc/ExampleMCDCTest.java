@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.validation.DMNValidator;
 import org.kie.dmn.validation.dtanalysis.AbstractDTAnalysisTest;
+import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
@@ -31,7 +32,7 @@ public class ExampleMCDCTest extends AbstractDTAnalysisTest {
     public void test1() {
         List<DMNMessage> validate = validator.validate(getReader("example1.dmn"), ANALYZE_DECISION_TABLE, DMNValidator.Validation.COMPUTE_DECISION_TABLE_MCDC);
 
-        // DTAnalysis analysis = getAnalysis(validate, "_452a0adf-dd49-47c3-b02d-fe0ad45902c7");
+        DTAnalysis analysis = getAnalysis(validate, "_452a0adf-dd49-47c3-b02d-fe0ad45902c7");
     }
 
     @Test
