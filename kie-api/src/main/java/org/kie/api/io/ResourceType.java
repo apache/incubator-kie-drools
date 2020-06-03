@@ -30,24 +30,28 @@ public class ResourceType
 
     private static final long serialVersionUID = 1613735834228581906L;
 
-    private String name;
+    private final String name;
 
-    private String description;
+    private final String description;
 
-    private String defaultExtension;
+    private final String defaultExtension;
 
-    private String[] otherExtensions;
+    private final String[] otherExtensions;
 
-    private String defaultPath;
+    private final String defaultPath;
+
+    private final boolean fullyCoveredByExecModel;
 
     private static final Map<String, ResourceType> CACHE = Collections.synchronizedMap(new HashMap<String, ResourceType>());
 
     public ResourceType(String name,
+                        boolean fullyCoveredByExecModel,
                         String description,
                         String defaultPath,
                         String defaultExtension,
                         String... otherExtensions) {
         this.name = name;
+        this.fullyCoveredByExecModel = fullyCoveredByExecModel;
         this.description = description;
         this.defaultPath = defaultPath;
         this.defaultExtension = defaultExtension;
@@ -60,12 +64,30 @@ public class ResourceType
                                                          final String defaultExtension,
                                                          final String... otherExtensions) {
 
+        return addResourceTypeToRegistry(resourceType, true, description, defaultPath, defaultExtension, otherExtensions);
+    }
+
+    public static ResourceType addResourceTypeToRegistry(final String resourceType,
+                                                         boolean isNative,
+                                                         final String description,
+                                                         final String defaultPath,
+                                                         final String defaultExtension,
+                                                         final String... otherExtensions) {
+
         ResourceType resource = new ResourceType( resourceType,
+                                                  isNative,
                                                   description,
                                                   defaultPath,
                                                   defaultExtension,
                                                   otherExtensions );
+
         CACHE.put( resourceType, resource );
+        resource.getAllExtensions().forEach( ext -> {
+            if (ext.contains( "." )) {
+                throw new IllegalArgumentException( "A resource extension cannot contain a dot. Found: " + ext );
+            }
+            CACHE.put( "." + ext, resource );
+        } );
         return resource;
     }
 
@@ -161,6 +183,7 @@ public class ResourceType
 
     /** PMML */
     public static final ResourceType PMML = addResourceTypeToRegistry("PMML",
+                                                                      false,
                                                                       "Predictive Model Markup Language",
                                                                       "src/main/resources",
                                                                       "pmml");
@@ -229,12 +252,14 @@ public class ResourceType
 
     /** Decision Model and Notation (DMN) model  */
     public static final ResourceType DMN = addResourceTypeToRegistry("DMN",
-                                                                       "Decision Model and Notation",
-                                                                       "src/main/resources",
-                                                                       "dmn");
+                                                                     false,
+                                                                     "Decision Model and Notation",
+                                                                     "src/main/resources",
+                                                                     "dmn");
 
     /** DMN FEEL expression language */
     public static final ResourceType FEEL = addResourceTypeToRegistry("FEEL",
+                                                                      false,
                                                                      "Friendly Enough Expression Language",
                                                                      "src/main/resources",
                                                                      "feel");
@@ -248,12 +273,8 @@ public class ResourceType
     }
 
     public static ResourceType determineResourceType(final String resourceName) {
-        for (ResourceType type : CACHE.values()) {
-            if (type.matchesExtension(resourceName)) {
-                return type;
-            }
-        }
-        return null;
+        int dotPos = resourceName.lastIndexOf( '.' );
+        return dotPos < 0 ? null : CACHE.get( resourceName.substring( dotPos ) );
     }
 
     public boolean matchesExtension(String resourceName) {
@@ -269,6 +290,10 @@ public class ResourceType
             }
         }
         return false;
+    }
+
+    public boolean isFullyCoveredByExecModel() {
+        return fullyCoveredByExecModel;
     }
 
     public String getDefaultPath() {

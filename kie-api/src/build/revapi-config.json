@@ -59,6 +59,27 @@
                     "methodName": "getNodeByUniqueId",
                     "elementKind": "method",
                     "justification": "get the node within the container with the give id"
+                },
+                {
+                  "code": "java.field.serialVersionUIDUnchanged",
+                  "old": "field org.kie.api.io.ResourceType.serialVersionUID",
+                  "new": "field org.kie.api.io.ResourceType.serialVersionUID",
+                  "serialVersionUID": "1613735834228581906",
+                  "package": "org.kie.api.io",
+                  "classSimpleName": "ResourceType",
+                  "fieldName": "serialVersionUID",
+                  "elementKind": "field",
+                  "justification": "identify kie native resources"
+                },
+                {
+                  "code": "java.method.numberOfParametersChanged",
+                  "old": "method void org.kie.api.io.ResourceType::<init>(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String[])",
+                  "new": "method void org.kie.api.io.ResourceType::<init>(java.lang.String, boolean, java.lang.String, java.lang.String, java.lang.String, java.lang.String[])",
+                  "package": "org.kie.api.io",
+                  "classSimpleName": "ResourceType",
+                  "methodName": "<init>",
+                  "elementKind": "constructor",
+                  "justification": "identify kie native resources"
                 }
             ]
         }
