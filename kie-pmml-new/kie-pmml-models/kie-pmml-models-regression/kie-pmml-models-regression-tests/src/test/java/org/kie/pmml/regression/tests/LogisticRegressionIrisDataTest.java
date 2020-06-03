@@ -23,25 +23,24 @@ import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.data.Percentage;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.api.pmml.PMMLRequestData;
-import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.evaluator.core.PMMLContextImpl;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
 @RunWith(Parameterized.class)
 public class LogisticRegressionIrisDataTest extends AbstractPMMLRegressionTest {
 
     private static final String MODEL_NAME = "LogisticRegressionIrisData";
-    private static final String PMML_SOURCE = "logisticRegressionIrisData.pmml";
     private static final String TARGET_FIELD = "Species";
     private static final String PROBABILITY_SETOSA_FIELD = "Probability_setosa";
     private static final String PROBABILITY_VERSICOLOR_FIELD = "Probability_versicolor";
     private static final String PROBABILITY_VIRGINICA_FIELD = "Probability_virginica";
 
     private static final Percentage TOLERANCE_PERCENTAGE = Percentage.withPercentage(0.001);
+    private static PMMLRuntime pmmlRuntime;
 
     private double sepalLength;
     private double sepalWidth;
@@ -58,6 +57,11 @@ public class LogisticRegressionIrisDataTest extends AbstractPMMLRegressionTest {
         this.expectedResult = expectedResult;
     }
 
+    @BeforeClass
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
+    }
+
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
@@ -71,16 +75,13 @@ public class LogisticRegressionIrisDataTest extends AbstractPMMLRegressionTest {
 
     @Test
     public void testLogisticRegressionIrisData() {
-        final KiePMMLModel pmmlModel = loadPMMLModel(PMML_SOURCE);
-
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("Sepal.Length", sepalLength);
         inputData.put("Sepal.Width", sepalWidth);
         inputData.put("Petal.Length", petalLength);
         inputData.put("Petal.Width", petalWidth);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
-        final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
-        PMML4Result pmml4Result = EXECUTOR.evaluate(null, pmmlModel, new PMMLContextImpl(pmmlRequestData));
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
 

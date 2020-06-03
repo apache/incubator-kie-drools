@@ -18,31 +18,33 @@ package org.kie.pmml.models.drools.tree.tests;
 
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
-import org.dmg.pmml.PMML;
-import org.dmg.pmml.tree.TreeModel;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.internal.utils.KieHelper;
-import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.compiler.testutils.TestUtils;
-import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieRuntimeFactory;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.kie.pmml.models.drools.tree.compiler.executor.TreeModelImplementationProvider;
-import org.kie.pmml.models.drools.tree.evaluator.PMMLTreeModelEvaluator;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public abstract class AbstractPMMLTreeTest {
 
-    protected static final TreeModelImplementationProvider PROVIDER = new TreeModelImplementationProvider();
-    protected static final PMMLModelExecutor EXECUTOR = new PMMLTreeModelEvaluator();
-    private static final ReleaseId RELEASE_ID = new ReleaseIdImpl("org.drools", "kie-pmml-models-testing", "1.0");
-    protected static KieBase kieBase;
+    private static KieContainer kieContainer;
+
+    static {
+        final KieServices kieServices = KieServices.get();
+        kieContainer = kieServices.newKieClasspathContainer();
+    }
+
+    protected static PMMLRuntime getPMMLRuntime(String kbaseName) {
+        KieBase kieBase = kieContainer.getKieBase(kbaseName);
+        final KieRuntimeFactory kieRuntimeFactory = KieRuntimeFactory.of(kieBase);
+        return kieRuntimeFactory.get(PMMLRuntime.class);
+    }
 
     protected static PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {
         String correlationId = "CORRELATION_ID";
@@ -55,27 +57,8 @@ public abstract class AbstractPMMLTreeTest {
         return pmmlRequestDataBuilder.build();
     }
 
-    protected static KiePMMLModel loadPMMLModel(final String resourcePath) {
-        final PMML pmml;
-
-        try {
-            pmml = TestUtils.loadFromFile(resourcePath);
-        } catch (Exception e) {
-            throw new RuntimeException("Error loading PMML", e);
-        }
-
-        Assertions.assertThat(pmml).isNotNull();
-        assertEquals(1, pmml.getModels().size());
-        assertTrue(pmml.getModels().get(0) instanceof TreeModel);
-        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        final KiePMMLModel pmmlModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(),
-                                                                      (TreeModel) pmml.getModels().get(0), knowledgeBuilder);
-        Assertions.assertThat(pmmlModel).isNotNull();
-        kieBase = new KieHelper()
-                .addContent(knowledgeBuilder.getPackageDescrs(pmmlModel.getName().toLowerCase()).get(0))
-                .setReleaseId(RELEASE_ID)
-                .build();
-        Assertions.assertThat(kieBase).isNotNull();
-        return pmmlModel;
+    protected PMML4Result evaluate(PMMLRuntime pmmlRuntime, final Map<String, Object> inputData, String modelName) {
+        final PMMLRequestData pmmlRequestData = getPMMLRequestData(modelName, inputData);
+        return pmmlRuntime.evaluate(modelName, new PMMLContextImpl(pmmlRequestData));
     }
 }

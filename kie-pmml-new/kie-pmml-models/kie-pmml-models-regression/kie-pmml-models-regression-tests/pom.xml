@@ -18,7 +18,6 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-regression-model</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-regression-compiler</artifactId>
@@ -27,23 +26,25 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-regression-evaluator</artifactId>
     </dependency>
-
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-evaluator-assembler</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
       <artifactId>kie-test-util</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-compiler-api</artifactId>

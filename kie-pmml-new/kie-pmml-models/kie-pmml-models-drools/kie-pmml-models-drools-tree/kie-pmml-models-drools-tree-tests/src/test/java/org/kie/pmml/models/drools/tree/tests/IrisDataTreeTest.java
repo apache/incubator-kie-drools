@@ -13,15 +13,16 @@ import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 
 @RunWith(Parameterized.class)
 public class IrisDataTreeTest extends AbstractPMMLTreeTest {
 
     private static final String MODEL_NAME = "IrisTreeModel";
-    private static final String PMML_SOURCE = "irisTree.pmml";
     private static final String TARGET_FIELD = "Predicted_Species";
-    private static KiePMMLModel pmmlModel;
+    private static PMMLRuntime pmmlRuntime;
+
     private double sepalLength;
     private double sepalWidth;
     private double petalLength;
@@ -39,7 +40,7 @@ public class IrisDataTreeTest extends AbstractPMMLTreeTest {
 
     @BeforeClass
     public static void setupClass() {
-        pmmlModel = loadPMMLModel(PMML_SOURCE);
+        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
     }
 
     @Parameterized.Parameters
@@ -60,9 +61,8 @@ public class IrisDataTreeTest extends AbstractPMMLTreeTest {
         inputData.put("Sepal.Width", sepalWidth);
         inputData.put("Petal.Length", petalLength);
         inputData.put("Petal.Width", petalWidth);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
-        final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
-        PMML4Result pmml4Result = EXECUTOR.evaluate(kieBase, pmmlModel, new PMMLContextImpl(pmmlRequestData));
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
     }

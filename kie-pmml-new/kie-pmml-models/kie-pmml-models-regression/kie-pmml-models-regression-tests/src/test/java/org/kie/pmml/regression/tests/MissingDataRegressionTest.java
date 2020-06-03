@@ -16,28 +16,27 @@
 
 package org.kie.pmml.regression.tests;
 
-import org.assertj.core.api.Assertions;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.kie.api.pmml.PMML4Result;
-import org.kie.api.pmml.PMMLRequestData;
-import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.evaluator.core.PMMLContextImpl;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.assertj.core.api.Assertions;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+
 @RunWith(Parameterized.class)
 @Ignore("DROOLS-5209")
 public class MissingDataRegressionTest extends AbstractPMMLRegressionTest {
 
-    private static final String MODEL_NAME = "missingValues_Model";
-    private static final String PMML_SOURCE = "missingDataRegression.pmml";
+    private static final String MODEL_NAME = "MissingDataRegression";
     private static final String TARGET_FIELD = "result";
+    private static PMMLRuntime pmmlRuntime;
 
     private Double x;
     private String y;
@@ -47,6 +46,11 @@ public class MissingDataRegressionTest extends AbstractPMMLRegressionTest {
         this.x = x;
         this.y = y;
         this.expectedResult = expectedResult;
+    }
+
+    @BeforeClass
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
     }
 
     @Parameterized.Parameters
@@ -60,8 +64,6 @@ public class MissingDataRegressionTest extends AbstractPMMLRegressionTest {
 
     @Test
     public void testMissingValuesRegression() {
-        final KiePMMLModel pmmlModel = loadPMMLModel(PMML_SOURCE);
-
         final Map<String, Object> inputData = new HashMap<>();
         if (x != null) {
             inputData.put("x", x.doubleValue());
@@ -69,9 +71,7 @@ public class MissingDataRegressionTest extends AbstractPMMLRegressionTest {
         if (y != null) {
             inputData.put("y", y);
         }
-
-        final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
-        PMML4Result pmml4Result = EXECUTOR.evaluate(null, pmmlModel, new PMMLContextImpl(pmmlRequestData));
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         Assertions.assertThat(pmml4Result).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);

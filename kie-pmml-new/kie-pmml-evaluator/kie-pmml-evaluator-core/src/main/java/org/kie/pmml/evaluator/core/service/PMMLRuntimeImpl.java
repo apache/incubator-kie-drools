@@ -28,8 +28,8 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
-import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
-import org.kie.pmml.evaluator.core.executor.PMMLModelExecutorFinderImpl;
+import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
+import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluatorFinderImpl;
 import org.kie.pmml.evaluator.core.utils.KnowledgeBaseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,9 +39,9 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
     private static final Logger logger = LoggerFactory.getLogger(PMMLRuntimeImpl.class);
 
     private final KieBase knowledgeBase;
-    private final PMMLModelExecutorFinderImpl pmmlModelExecutorFinder;
+    private final PMMLModelEvaluatorFinderImpl pmmlModelExecutorFinder;
 
-    public PMMLRuntimeImpl(KieBase knowledgeBase, PMMLModelExecutorFinderImpl pmmlModelExecutorFinder) {
+    public PMMLRuntimeImpl(KieBase knowledgeBase, PMMLModelEvaluatorFinderImpl pmmlModelExecutorFinder) {
         this.knowledgeBase = knowledgeBase;
         this.pmmlModelExecutorFinder = pmmlModelExecutorFinder;
     }
@@ -70,8 +70,8 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
             logger.debug("evaluate {} {}", model, context);
         }
         addMissingValuesReplacements(model, context);
-        PMMLModelExecutor executor = getFromPMMLModelType(model.getPmmlMODEL())
-                .orElseThrow(() -> new KiePMMLException(String.format("PMMLModelExecutor not found for model %s", model.getPmmlMODEL())));
+        PMMLModelEvaluator executor = getFromPMMLModelType(model.getPmmlMODEL())
+                .orElseThrow(() -> new KiePMMLException(String.format("PMMLModelEvaluator not found for model %s", model.getPmmlMODEL())));
         return executor.evaluate(knowledgeBase, model, context);
     }
 
@@ -104,7 +104,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
      * @param pmmlMODEL
      * @return
      */
-    private Optional<PMMLModelExecutor> getFromPMMLModelType(PMML_MODEL pmmlMODEL) {
+    private Optional<PMMLModelEvaluator> getFromPMMLModelType(PMML_MODEL pmmlMODEL) {
         logger.trace("getFromPMMLModelType {}", pmmlMODEL);
         return pmmlModelExecutorFinder.getImplementations(false)
                 .stream()
