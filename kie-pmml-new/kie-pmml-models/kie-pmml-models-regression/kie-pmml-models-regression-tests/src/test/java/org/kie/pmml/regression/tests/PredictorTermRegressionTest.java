@@ -22,20 +22,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 
 @RunWith(Parameterized.class)
 public class PredictorTermRegressionTest extends AbstractPMMLRegressionTest {
 
-    private static final String MODEL_NAME = "predictorTerm_Model";
-    private static final String PMML_SOURCE = "predictorTermRegression.pmml";
+    private static final String MODEL_NAME = "PredictorTermRegression";
     private static final String TARGET_FIELD = "result";
+    private static PMMLRuntime pmmlRuntime;
 
     private double x;
     private double y;
@@ -45,6 +47,11 @@ public class PredictorTermRegressionTest extends AbstractPMMLRegressionTest {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    @BeforeClass
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
     }
 
     @Parameterized.Parameters
@@ -61,15 +68,11 @@ public class PredictorTermRegressionTest extends AbstractPMMLRegressionTest {
 
     @Test
     public void testPredictorTermRegression() {
-        final KiePMMLModel pmmlModel = loadPMMLModel(PMML_SOURCE);
-
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);
         inputData.put("z", z);
-
-        final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
-        PMML4Result pmml4Result = EXECUTOR.evaluate(null, pmmlModel, new PMMLContextImpl(pmmlRequestData));
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         Assertions.assertThat(pmml4Result).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);

@@ -22,20 +22,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 
 @RunWith(Parameterized.class)
 public class NumericVariablesPolynomialRegressionTest extends AbstractPMMLRegressionTest {
 
-    private static final String MODEL_NAME = "polynomial_Model";
-    private static final String PMML_SOURCE = "numericVariablesPolynomialRegression.pmml";
+    private static final String MODEL_NAME = "NumericVariablesPolynomialRegression";
     private static final String TARGET_FIELD = "result";
+    private static PMMLRuntime pmmlRuntime;
 
     private double x;
     private double y;
@@ -43,6 +45,11 @@ public class NumericVariablesPolynomialRegressionTest extends AbstractPMMLRegres
     public NumericVariablesPolynomialRegressionTest(double x, double y) {
         this.x = x;
         this.y = y;
+    }
+
+    @BeforeClass
+    public static void setupClass() {
+        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
     }
 
     @Parameterized.Parameters
@@ -59,14 +66,10 @@ public class NumericVariablesPolynomialRegressionTest extends AbstractPMMLRegres
 
     @Test
     public void testNumericVariablePolynomialRegression() throws Exception {
-        final KiePMMLModel pmmlModel = loadPMMLModel(PMML_SOURCE);
-
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);
-
-        final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
-        PMML4Result pmml4Result = EXECUTOR.evaluate(null, pmmlModel, new PMMLContextImpl(pmmlRequestData));
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         Assertions.assertThat(pmml4Result).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);

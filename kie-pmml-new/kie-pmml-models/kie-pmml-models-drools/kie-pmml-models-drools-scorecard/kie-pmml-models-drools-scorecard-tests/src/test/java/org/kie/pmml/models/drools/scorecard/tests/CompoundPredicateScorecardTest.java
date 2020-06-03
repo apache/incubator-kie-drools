@@ -16,32 +16,28 @@
 
 package org.kie.pmml.models.drools.scorecard.tests;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.api.pmml.PMMLRequestData;
-import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.evaluator.core.PMMLContextImpl;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
 @RunWith(Parameterized.class)
 public class CompoundPredicateScorecardTest extends AbstractPMMLScorecardTest {
 
-    private static final String MODEL_NAME = "CompundPredicateScorecard";
-    private static final String PMML_SOURCE = "CompoundPredicateScorecard.pmml";
+    private static final String MODEL_NAME = "CompoundPredicateScorecard";
     private static final String TARGET_FIELD = "Score";
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
     private static final String REASON_CODE2_FIELD = "Reason Code 2";
     private static final String REASON_CODE3_FIELD = "Reason Code 3";
-
-    private static KiePMMLModel pmmlModel;
+    private static PMMLRuntime pmmlRuntime;
 
     private double input1;
     private double input2;
@@ -66,22 +62,22 @@ public class CompoundPredicateScorecardTest extends AbstractPMMLScorecardTest {
 
     @BeforeClass
     public static void setupClass() {
-        pmmlModel = loadPMMLModel(PMML_SOURCE);
+        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                { -21.5, -7, "classA", "classB", -93, null, null, null },
-                { -7, -7, "classA", "classB", -93, null, null, null },
-                { 2, 3.5, "classA", "classB", -68, "characteristic1ReasonCode", null, null },
-                { -8, 3, "classA", "classB", -58, "characteristic1ReasonCode", null, null },
-                { -8, -12.5, "classB", "classB", 135, "characteristic3ReasonCode", null, null },
-                { -8, 3, "classB", "classB", 170, "characteristic3ReasonCode", "characteristic1ReasonCode", null },
-                { 5, 3, "classB", "classB", 160, "characteristic3ReasonCode", "characteristic1ReasonCode", null },
-                { -8, -50, "classC", "classC", 230.5, "characteristic3ReasonCode", "characteristic2ReasonCode", null },
-                { -8, 3, "classC", "classC", 265.5, "characteristic3ReasonCode", "characteristic2ReasonCode", "characteristic1ReasonCode" },
-                { 5, 3, "classC", "classC", 255.5, "characteristic3ReasonCode", "characteristic2ReasonCode", "characteristic1ReasonCode" },
+                {-21.5, -7, "classA", "classB", -93, null, null, null},
+                {-7, -7, "classA", "classB", -93, null, null, null},
+                {2, 3.5, "classA", "classB", -68, "characteristic1ReasonCode", null, null},
+                {-8, 3, "classA", "classB", -58, "characteristic1ReasonCode", null, null},
+                {-8, -12.5, "classB", "classB", 135, "characteristic3ReasonCode", null, null},
+                {-8, 3, "classB", "classB", 170, "characteristic3ReasonCode", "characteristic1ReasonCode", null},
+                {5, 3, "classB", "classB", 160, "characteristic3ReasonCode", "characteristic1ReasonCode", null},
+                {-8, -50, "classC", "classC", 230.5, "characteristic3ReasonCode", "characteristic2ReasonCode", null},
+                {-8, 3, "classC", "classC", 265.5, "characteristic3ReasonCode", "characteristic2ReasonCode", "characteristic1ReasonCode"},
+                {5, 3, "classC", "classC", 255.5, "characteristic3ReasonCode", "characteristic2ReasonCode", "characteristic1ReasonCode"},
         });
     }
 
@@ -92,9 +88,7 @@ public class CompoundPredicateScorecardTest extends AbstractPMMLScorecardTest {
         inputData.put("input2", input2);
         inputData.put("input3", input3);
         inputData.put("input4", input4);
-
-        final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
-        PMML4Result pmml4Result = EXECUTOR.evaluate(kieBase, pmmlModel, new PMMLContextImpl(pmmlRequestData));
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(score);
