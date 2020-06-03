@@ -278,6 +278,7 @@ public abstract class AccumulateVisitor {
             Optional<DeclarationSpec> accumulateClassDeclOpt = context.getDeclarationById(inputId);
             if (!decl.isPresent() && accumulateClassDeclOpt.isPresent()) {
                 // when static method is used in accumulate function, "_this" is a pattern input
+                // Note that DrlxParseUtil.generateLambdaWithoutParameters() takes the patternType as a class of "_this"
                 paramExprBindingId = inputId;
                 patternType = accumulateClassDeclOpt.get().getDeclarationClass();
             }

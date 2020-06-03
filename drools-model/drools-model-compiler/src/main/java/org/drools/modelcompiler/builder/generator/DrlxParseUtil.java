@@ -477,24 +477,62 @@ public class DrlxParseUtil {
                                                              Expression expr,
                                                              boolean skipFirstParamAsThis,
                                                              Optional<Class<?>> patternClass) {
+        return generateLambdaWithoutParameters(usedDeclarations, expr, skipFirstParamAsThis, patternClass, null);
+    }
+    public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations,
+                                                             Expression expr,
+                                                             boolean skipFirstParamAsThis,
+                                                             Optional<Class<?>> patternClass,
+                                                             RuleContext ruleContext) {
         DrlxParseUtil.transformDrlNameExprToNameExpr(expr);
         if (skipFirstParamAsThis && usedDeclarations.isEmpty()) {
             return expr;
         }
         LambdaExpr lambdaExpr = new LambdaExpr();
-        lambdaExpr.setEnclosingParameters( true );
+        lambdaExpr.setEnclosingParameters(true);
+
+        // Only when we can resolve all parameter types, do it
+        boolean canResolve = canResolveAllParameterTypes(usedDeclarations, skipFirstParamAsThis, patternClass, ruleContext);
         if (!skipFirstParamAsThis) {
             Type type;
-            if(patternClass.isPresent() && usedDeclarations.isEmpty() && patternClass.filter(c -> !Object.class.equals(c)).isPresent()) {
+            if (canResolve) {
                 type = StaticJavaParser.parseClassOrInterfaceType(patternClass.get().getCanonicalName());
             } else {
                 type = new UnknownType();
             }
             lambdaExpr.addParameter(new Parameter(type, THIS_PLACEHOLDER));
         }
-        usedDeclarations.stream().map( s -> new Parameter( new UnknownType(), s ) ).forEach( lambdaExpr::addParameter );
-        lambdaExpr.setBody( new ExpressionStmt(expr) );
+        usedDeclarations.stream()
+                        .map(s -> {
+                            if (canResolve) {
+                                return new Parameter(getDelarationType(ruleContext, s), s);
+                            } else {
+                                return new Parameter(new UnknownType(), s);
+                            }
+                        })
+                        .forEach(lambdaExpr::addParameter);
+
+        lambdaExpr.setBody(new ExpressionStmt(expr));
         return lambdaExpr;
+    }
+
+    private static boolean canResolveAllParameterTypes(Collection<String> usedDeclarations, boolean skipFirstParamAsThis, Optional<Class<?>> patternClass, RuleContext ruleContext) {
+        if (!skipFirstParamAsThis && !patternClass.isPresent()) {
+            return false;
+        }
+        if (usedDeclarations.isEmpty()) {
+            return true;
+        }
+        return usedDeclarations.stream().map(decl -> getDelarationType(ruleContext, decl)).noneMatch(type -> type instanceof UnknownType);
+    }
+
+    private static Type getDelarationType(RuleContext ruleContext, String variableName) {
+        if (ruleContext == null) {
+            return new UnknownType();
+        }
+        return ruleContext.getDeclarationById(variableName)
+                          .map(DeclarationSpec::getBoxedType)
+                          .orElseGet(UnknownType::new);
     }
 
     public static TypedExpression toMethodCallWithClassCheck(RuleContext context, Expression expr, String bindingId, Class<?> clazz, TypeResolver typeResolver) {

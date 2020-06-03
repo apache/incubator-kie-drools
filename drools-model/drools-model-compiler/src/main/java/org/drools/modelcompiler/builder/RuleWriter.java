@@ -36,7 +36,7 @@ import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrint
 public class RuleWriter {
 
     public static final String DROOLS_CHECK_NON_EXTERNALISED_LAMBDA = "drools.check.nonExternalisedLambda";
-    private static final boolean CHECK_NON_EXTERNALISED_LAMBDA = Boolean.parseBoolean(System.getProperty(DROOLS_CHECK_NON_EXTERNALISED_LAMBDA, "false"));
+    private static boolean checkNonExternalisedLambda = Boolean.parseBoolean(System.getProperty(DROOLS_CHECK_NON_EXTERNALISED_LAMBDA, "false"));
 
     private final PrettyPrinter prettyPrinter = getPrettyPrinter();
 
@@ -87,7 +87,7 @@ public class RuleWriter {
                                 pkgModel.getStaticImports(),
                                 postProcessedCU
                         ).convertLambdas();
-                        if (CHECK_NON_EXTERNALISED_LAMBDA) {
+                        if (checkNonExternalisedLambda) {
                             checkNonExternalisedLambda(postProcessedCU);
                         }
                     }
@@ -108,6 +108,12 @@ public class RuleWriter {
         StringBuilder sb = new StringBuilder();
         lambdaExprs.stream().forEach(lExpr -> sb.append(lExpr.toString() + "\n"));
         throw new NonExternalisedLambdaFoundException("Non externalised lambda found in " + rulesFileName + "\n" + sb.toString());
+    }
+    public static boolean isCheckNonExternalisedLambda() {
+        return checkNonExternalisedLambda;
+    }
+    public static void setCheckNonExternalisedLambda(boolean checkNonExternalisedLambda) {
+        RuleWriter.checkNonExternalisedLambda = checkNonExternalisedLambda;
     }
 
     public class RuleFileSource {

@@ -17,16 +17,16 @@ public class MaterializedLambdaPredicateTest {
 
         //language=JAVA
         String expectedResult = "" +
-                "package org.drools.modelcompiler.util.lambdareplace.P21;\n" +
+                "package org.drools.modelcompiler.util.lambdareplace.P76;\n" +
                 "import static rulename.*; " +
                 "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "" +
                 "@org.drools.compiler.kie.builder.MaterializedLambda() " +
-                "public enum LambdaPredicate21D56248F6A2E8DA3990031D77D229DD implements org.drools.model.functions.Predicate1<org.drools.modelcompiler.domain.Person> {\n" +
+                "public enum LambdaPredicate76225D48A900C3A3B5A4F199EDD5E88A implements org.drools.model.functions.Predicate1<org.drools.modelcompiler.domain.Person> {\n" +
                 " INSTANCE; \n" +
                 "public static final String EXPRESSION_HASH = \"4DEB93975D9859892B1A5FD4B38E2155\";" +
                 "        @Override()\n" +
-                "        public boolean test(org.drools.modelcompiler.domain.Person p) {\n" +
+                "        public boolean test(org.drools.modelcompiler.domain.Person p) throws java.lang.Exception {\n" +
                 "            return p.getAge() > 35;\n" +
                 "        }\n" +
                 "    }\n";
@@ -42,16 +42,16 @@ public class MaterializedLambdaPredicateTest {
 
         //language=JAVA
         String expectedResult = "" +
-                "package org.drools.modelcompiler.util.lambdareplace.PAA;\n" +
+                "package org.drools.modelcompiler.util.lambdareplace.PF5;\n" +
                 "import static rulename.*; " +
                 "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "" +
                 "@org.drools.compiler.kie.builder.MaterializedLambda() " +
-                "public enum LambdaPredicateAA9C2A9BA1F03DB5742F8AC4FBFAABD9 implements org.drools.model.functions.Predicate2<org.drools.modelcompiler.domain.Person, org.drools.modelcompiler.domain.Person>  {\n" +
+                "public enum LambdaPredicateF51471B33192ACC0504CA26C719BFCB7 implements org.drools.model.functions.Predicate2<org.drools.modelcompiler.domain.Person, org.drools.modelcompiler.domain.Person>  {\n" +
                 " INSTANCE; \n" +
                 "public static final String EXPRESSION_HASH = \"DC57C20B4AF3C2BFEB2552943994B6F7\";" +
                 "        @Override()\n" +
-                "        public boolean test(org.drools.modelcompiler.domain.Person p1, org.drools.modelcompiler.domain.Person p2) {\n" +
+                "        public boolean test(org.drools.modelcompiler.domain.Person p1, org.drools.modelcompiler.domain.Person p2) throws java.lang.Exception {\n" +
                 "            return p1.getAge() > p2.getAge();\n" +
                 "        }\n" +
                 "    }\n";
