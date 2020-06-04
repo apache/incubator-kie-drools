@@ -169,6 +169,23 @@ public interface KieServices {
     KieContainer newKieClasspathContainer(String containerId, ClassLoader classLoader);
 
     /**
+     * Creates a new KieContainer for the classpath using the given classLoader,
+     * regardless if there's already an existing one,
+     * enforcing the given containerId.
+     * <p>If enforcing the containerId is successful, the KieContainer and its containerId are registered within the KieServices.
+     * Deregistration can be performed by calling {@link KieContainer#dispose()} on the resulting KieContainer.</p>
+     * @param containerId a unique containerId (non-null).
+     * @param classLoaderContainer classLoader
+     * @param releaseId release id of this container
+     * @return new kie classpath container
+     * @throws IllegalStateException if the containerId is already existing for another container, and therefore cannot be enforced.
+     * @throws UnsupportedOperationException if the operation is not supported by the kie services
+     */
+    default KieContainer newKieClasspathContainer(String containerId, ClassLoader classLoaderContainer, ReleaseId releaseId) {
+        throw new UnsupportedOperationException("new container with release id is not supported");
+    }
+
+    /**
      * Creates a new KieContainer wrapping the KieModule with the given ReleaseId
      * @param releaseId releaseId
      * @return new kie container
@@ -348,4 +365,5 @@ public interface KieServices {
             return LazyHolder.INSTANCE;
         }
     }
+
 }
