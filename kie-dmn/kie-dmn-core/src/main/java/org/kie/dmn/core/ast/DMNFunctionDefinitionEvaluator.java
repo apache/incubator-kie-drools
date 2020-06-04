@@ -143,7 +143,7 @@ public class DMNFunctionDefinitionEvaluator
             DMNContext previousContext = resultContext.getContext();
             // we could be more strict and only set the parameters and the dependencies as values in the new
             // context, but for now, cloning the original context
-            DMNContextFEELCtxWrapper dmnContext = new DMNContextFEELCtxWrapper(ctx);
+            DMNContextFEELCtxWrapper dmnContext = new DMNContextFEELCtxWrapper(ctx, resultContext.getContext().getMetadata().asMap());
             dmnContext.enterFrame();
             try {
                 if (originatorNode instanceof BusinessKnowledgeModelNode) {

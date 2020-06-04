@@ -62,6 +62,7 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
     }
 
     public static class DSFormalParameter extends FormalParameter {
+
         private final String importName;
         private final String elementName;
 
@@ -78,7 +79,6 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
         public String getElementName() {
             return elementName;
         }
-
     }
 
     public static class DMNDSFunction extends BaseFEELFunction {
@@ -102,6 +102,7 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
             DMNContext previousContext = resultContext.getContext();
 
             DMNContext dmnContext = eventManager.getRuntime().newContext();
+            previousContext.getMetadata().asMap().forEach(dmnContext.getMetadata()::set);
             try {
                 if (params.length != parameters.size()) {
                     MsgUtil.reportMessage(LOG,
