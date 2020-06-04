@@ -16,6 +16,8 @@
 
 package org.kie.kogito.index.model;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ProcessInstanceError {
@@ -54,5 +56,23 @@ public class ProcessInstanceError {
                 "nodeDefinitionId='" + nodeDefinitionId + '\'' +
                 ", message='" + message + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ProcessInstanceError that = (ProcessInstanceError) o;
+        return Objects.equals(nodeDefinitionId, that.nodeDefinitionId) &&
+                Objects.equals(message, that.message);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nodeDefinitionId, message);
     }
 }

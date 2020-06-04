@@ -38,7 +38,7 @@ import org.kie.kogito.index.InfinispanServerTestResource;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
-import org.kie.kogito.index.infinispan.protostream.ProtobufService;
+import org.kie.kogito.index.protobuf.ProtobufService;
 import org.kie.kogito.index.messaging.ReactiveMessagingEventConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,0 +1,12 @@
+syntax = "proto2";
+package org.acme.travels.travels;
+
+option kogito_model = "Travels";
+option kogito_id = "travels";
+
+/* @Indexed */
+message Travels {
+    option java_package = "org.acme.travels.travels";
+    /* @Field(store = Store.YES) */
+    optional string id = 1;
+}

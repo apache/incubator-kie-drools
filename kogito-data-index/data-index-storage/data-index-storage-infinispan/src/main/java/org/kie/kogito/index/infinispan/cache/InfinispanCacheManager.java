@@ -38,10 +38,14 @@ import org.kie.kogito.index.cache.CacheService;
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
+import org.kie.kogito.index.storage.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.kogito.index.infinispan.Constants.INFINISPAN_STORAGE;
+
 @ApplicationScoped
+@Storage(INFINISPAN_STORAGE)
 public class InfinispanCacheManager implements CacheService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InfinispanCacheManager.class);
@@ -128,8 +132,9 @@ public class InfinispanCacheManager implements CacheService {
         return manager.getCache(ProtobufMetadataManagerConstants.PROTOBUF_METADATA_CACHE_NAME);
     }
 
-    public Map<String, String> getProcessIdModelCache() {
-        return manager.administration().getOrCreateCache(PROCESS_ID_MODEL_CACHE, (String) null);
+    @Override
+    public Cache<String, String> getProcessIdModelCache() {
+        return new CacheImpl<>(manager.administration().getOrCreateCache(PROCESS_ID_MODEL_CACHE, (String) null), String.class.getName());
     }
 
     @Override

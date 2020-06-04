@@ -36,7 +36,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.InfinispanServerTestResource;
 import org.kie.kogito.index.KafkaTestResource;
-import org.kie.kogito.index.infinispan.protostream.ProtobufService;
+import org.kie.kogito.index.protobuf.ProtobufService;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;

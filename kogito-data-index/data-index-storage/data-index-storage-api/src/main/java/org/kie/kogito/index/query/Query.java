@@ -20,13 +20,13 @@ import java.util.List;
 
 public interface Query<T> {
 
-    Query limit(Integer limit);
+    Query<T> limit(Integer limit);
 
-    Query offset(Integer offset);
+    Query<T> offset(Integer offset);
 
-    Query filter(List<AttributeFilter> filters);
+    Query<T> filter(List<AttributeFilter> filters);
 
-    Query sort(List<AttributeSort> sortBy);
+    Query<T> sort(List<AttributeSort> sortBy);
     
     List<T> execute();
 

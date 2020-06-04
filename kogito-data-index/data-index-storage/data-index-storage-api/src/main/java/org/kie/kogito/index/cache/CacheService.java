@@ -30,4 +30,6 @@ public interface CacheService {
     Cache<String, Job> getJobsCache();
 
     Cache<String, ObjectNode> getDomainModelCache(String processId);
+
+    Cache<String, String> getProcessIdModelCache();
 }

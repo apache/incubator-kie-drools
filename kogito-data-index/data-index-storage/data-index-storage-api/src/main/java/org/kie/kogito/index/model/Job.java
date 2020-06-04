@@ -17,6 +17,7 @@
 package org.kie.kogito.index.model;
 
 import java.time.ZonedDateTime;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -181,5 +182,22 @@ public class Job {
                 ", lastUpdate=" + lastUpdate +
                 ", executionCounter=" + executionCounter +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Job job = (Job) o;
+        return Objects.equals(id, job.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -17,6 +17,7 @@
 package org.kie.kogito.index.event;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.kie.kogito.index.domain.DomainDescriptor;
 
@@ -51,5 +52,24 @@ public class DomainModelRegisteredEvent {
                 ", domainDescriptor=" + domainDescriptor +
                 ", additionalTypes=" + additionalTypes +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DomainModelRegisteredEvent that = (DomainModelRegisteredEvent) o;
+        return Objects.equals(processId, that.processId) &&
+                Objects.equals(domainDescriptor, that.domainDescriptor) &&
+                Objects.equals(additionalTypes, that.additionalTypes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(processId, domainDescriptor, additionalTypes);
     }
 }

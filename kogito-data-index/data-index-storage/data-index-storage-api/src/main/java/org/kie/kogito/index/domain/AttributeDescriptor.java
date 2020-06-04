@@ -16,6 +16,8 @@
 
 package org.kie.kogito.index.domain;
 
+import java.util.Objects;
+
 public class AttributeDescriptor {
 
     private String name;
@@ -51,5 +53,23 @@ public class AttributeDescriptor {
                 "name='" + name + '\'' +
                 ", typeName='" + typeName + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AttributeDescriptor that = (AttributeDescriptor) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(typeName, that.typeName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, typeName);
     }
 }

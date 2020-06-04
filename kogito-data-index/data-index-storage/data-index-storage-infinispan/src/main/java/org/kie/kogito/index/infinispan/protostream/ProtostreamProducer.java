@@ -16,14 +16,11 @@
 
 package org.kie.kogito.index.infinispan.protostream;
 
-import java.io.IOException;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.infinispan.protostream.FileDescriptorSource;
 import org.infinispan.protostream.MessageMarshaller;
 
 @ApplicationScoped
@@ -31,14 +28,6 @@ public class ProtostreamProducer {
 
     @Inject
     ObjectMapper mapper;
-
-    @Produces
-    FileDescriptorSource kogitoTypesDescriptor() throws IOException {
-        FileDescriptorSource source = new FileDescriptorSource();
-        source.addProtoFile("kogito-index.proto", Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/kogito-index.proto"));
-        source.addProtoFile("kogito-types.proto", Thread.currentThread().getContextClassLoader().getResourceAsStream("kogito-types.proto"));
-        return source;
-    }
 
     @Produces
     MessageMarshaller userTaskInstanceMarshaller() {

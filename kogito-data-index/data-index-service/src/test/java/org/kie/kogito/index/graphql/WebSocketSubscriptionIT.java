@@ -39,7 +39,7 @@ import org.kie.kogito.index.TestUtils;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
-import org.kie.kogito.index.infinispan.protostream.ProtobufService;
+import org.kie.kogito.index.protobuf.ProtobufService;
 import org.kie.kogito.index.messaging.ReactiveMessagingEventConsumer;
 import org.kie.kogito.index.model.ProcessInstanceState;
 

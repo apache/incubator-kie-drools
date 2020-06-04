@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.infinispan.protostream;
+package org.kie.kogito.index.protobuf;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -35,7 +35,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 
 @ExtendWith(MockitoExtension.class)
-public class ProtobufMonitorServiceTest {
+class ProtobufMonitorServiceTest {
 
     @Mock
     ProtobufService protobufService;
@@ -44,7 +44,7 @@ public class ProtobufMonitorServiceTest {
     ProtobufMonitorService protobufMonitorService;
 
     @Test
-    public void testLoadingAndUpdatingFiles() throws Exception {
+    void testLoadingAndUpdatingFiles() throws Exception {
         Path dir = null;
         try {
             dir = Files.createTempDirectory(this.getClass().getName());
@@ -84,7 +84,7 @@ public class ProtobufMonitorServiceTest {
     }
 
     @Test
-    public void testAddingSubFolderAfterStart() throws Exception {
+    void testAddingSubFolderAfterStart() throws Exception {
         Path dir = null;
         try {
             dir = Files.createTempDirectory(this.getClass().getName());

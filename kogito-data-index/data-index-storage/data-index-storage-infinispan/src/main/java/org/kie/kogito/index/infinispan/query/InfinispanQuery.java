@@ -59,25 +59,25 @@ public class InfinispanQuery<T> implements Query<T> {
     }
 
     @Override
-    public Query limit(Integer limit) {
+    public Query<T> limit(Integer limit) {
         this.limit = limit;
         return this;
     }
 
     @Override
-    public Query offset(Integer offset) {
+    public Query<T> offset(Integer offset) {
         this.offset = offset;
         return this;
     }
 
     @Override
-    public Query filter(List<AttributeFilter> filters) {
+    public Query<T> filter(List<AttributeFilter> filters) {
         this.filters = filters;
         return this;
     }
 
     @Override
-    public Query sort(List<AttributeSort> sortBy) {
+    public Query<T> sort(List<AttributeSort> sortBy) {
         this.sortBy = sortBy;
         return this;
     }

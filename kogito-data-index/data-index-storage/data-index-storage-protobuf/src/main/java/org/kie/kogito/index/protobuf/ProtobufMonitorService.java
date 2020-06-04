@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.infinispan.protostream;
+package org.kie.kogito.index.protobuf;
 
 import java.io.File;
 import java.io.IOException;
@@ -76,13 +76,13 @@ public class ProtobufMonitorService {
         if (protoFiles.isPresent()) {
             String folderPath = protoFiles.get();
             File protoFolder = new File(folderPath);
-            if (protoFolder.exists() == false) {
-                throw new RuntimeException(format("Could not find proto files folder at: %s", folderPath));
+            if (!protoFolder.exists()) {
+                throw new ProtobufFileMonitorException(format("Could not find proto files folder at: %s", folderPath));
             }
 
             registerFilesFromFolder(protoFolder.toPath());
 
-            if (monitor) {
+            if (Boolean.TRUE.equals(monitor)) {
                 executorService = Executors.newSingleThreadExecutor();
                 executorService.submit(new FolderWatcher(registerProtoFile(), protoFolder.toPath()));
             }
@@ -93,7 +93,7 @@ public class ProtobufMonitorService {
         try (Stream<Path> stream = Files.find(folderPath, Integer.MAX_VALUE, (path, attrs) -> protoFileMatcher.matches(path))) {
             stream.filter(path -> !KOGITO_APPLICATION_PROTO.equals(path.getFileName().toFile().getName())).forEach(path -> registerProtoFile().accept(path));
         } catch (IOException ex) {
-            throw new RuntimeException(format("Could not read content from proto file folder: %s", folderPath), ex);
+            throw new ProtobufFileMonitorException(format("Could not read content from proto file folder: %s", folderPath), ex);
         }
     }
 
@@ -104,10 +104,10 @@ public class ProtobufMonitorService {
                 String content = new String(Files.readAllBytes(path));
                 protobufService.registerProtoBufferType(content);
             } catch (IOException ex) {
-                throw new RuntimeException(format("Could not read content from proto file folder"), ex);
-            } catch (Exception e) {
+                throw new ProtobufFileMonitorException("Could not read content from proto file folder", ex);
+            } catch (ProtobufValidationException e) {
                 LOGGER.error("Failed to register proto file: {}", path, e);
-                throw new RuntimeException(e);
+                throw new ProtobufFileMonitorException(e);
             }
         };
     }

@@ -15,6 +15,7 @@
 
   <modules>
     <module>data-index-storage-api</module>
+    <module>data-index-storage-protobuf</module>
     <module>data-index-storage-infinispan</module>
   </modules>
 

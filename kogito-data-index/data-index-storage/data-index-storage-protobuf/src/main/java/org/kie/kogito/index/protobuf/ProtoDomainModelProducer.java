@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.infinispan.protostream;
+package org.kie.kogito.index.protobuf;
 
 import java.util.List;
 import java.util.Map;
@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import org.infinispan.protostream.descriptors.Descriptor;
 import org.infinispan.protostream.descriptors.FieldDescriptor;
 import org.infinispan.protostream.descriptors.FileDescriptor;
+import org.infinispan.protostream.impl.AnnotatedDescriptorImpl;
 import org.kie.kogito.index.domain.AttributeDescriptor;
 import org.kie.kogito.index.domain.DomainDescriptor;
 import org.kie.kogito.index.event.DomainModelRegisteredEvent;
@@ -50,7 +51,7 @@ public class ProtoDomainModelProducer {
         String rootMessage = (String) descriptor.getOption("kogito_model").getValue();
         String processId = (String) descriptor.getOption("kogito_id").getValue();
 
-        Map<String, Descriptor> map = descriptor.getMessageTypes().stream().collect(toMap(desc -> desc.getName(), desc -> desc));
+        Map<String, Descriptor> map = descriptor.getMessageTypes().stream().collect(toMap(AnnotatedDescriptorImpl::getName, desc -> desc));
 
         Descriptor rootDescriptor = map.remove(rootMessage);
 

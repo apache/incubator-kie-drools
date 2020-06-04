@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.infinispan.protostream;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+package org.kie.kogito.index.protobuf;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -35,13 +30,14 @@ import org.infinispan.protostream.descriptors.FieldDescriptor;
 import org.infinispan.protostream.descriptors.FileDescriptor;
 import org.infinispan.protostream.descriptors.Option;
 import org.infinispan.protostream.impl.SerializationContextImpl;
-import org.infinispan.query.remote.client.ProtobufMetadataManagerConstants;
-import org.kie.kogito.index.infinispan.cache.InfinispanCacheManager;
+import org.kie.kogito.index.event.SchemaRegisteredEvent;
+import org.kie.kogito.index.schema.ProcessDescriptor;
+import org.kie.kogito.index.schema.SchemaDescriptor;
+import org.kie.kogito.index.schema.SchemaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.lang.String.format;
-import static java.util.Collections.emptyList;
 import static org.kie.kogito.index.Constants.KOGITO_DOMAIN_ATTRIBUTE;
 
 @ApplicationScoped
@@ -49,36 +45,40 @@ public class ProtobufService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProtobufService.class);
 
-    @Inject
-    InfinispanCacheManager manager;
+    static final SchemaType SCHEMA_TYPE = new SchemaType("proto");
+
+    static final String DOMAIN_MODEL_PROTO_NAME = "domainModel";
 
     @Inject
     FileDescriptorSource kogitoDescriptors;
 
     @Inject
-    Event<FileDescriptorRegisteredEvent> event;
+    Event<FileDescriptorRegisteredEvent> domainModelEvent;
+
+    @Inject
+    Event<SchemaRegisteredEvent> schemaEvent;
 
     void onStart(@Observes StartupEvent ev) {
         kogitoDescriptors.getFileDescriptors().forEach((name, bytes) -> {
             LOGGER.info("Registering Kogito ProtoBuffer file: {}", name);
-            manager.getProtobufCache().put(name, new String(bytes));
+            schemaEvent.fire(new SchemaRegisteredEvent(new SchemaDescriptor(name, new String(bytes), null), SCHEMA_TYPE));
         });
     }
 
-    public void registerProtoBufferType(String content) throws Exception {
+    public void registerProtoBufferType(String content) throws ProtobufValidationException {
         LOGGER.debug("Registering new ProtoBuffer file with content: \n{}", content);
 
         content = content.replaceAll("kogito.Date", "string");
         SerializationContext ctx = new SerializationContextImpl(Configuration.builder().build());
         try {
             ctx.registerProtoFiles(kogitoDescriptors);
-            ctx.registerProtoFiles(FileDescriptorSource.fromString("", content));
+            ctx.registerProtoFiles(FileDescriptorSource.fromString(DOMAIN_MODEL_PROTO_NAME, content));
         } catch (Exception ex) {
             LOGGER.warn("Error trying to parse proto buffer file: {}", ex.getMessage(), ex);
-            throw ex;
+            throw new ProtobufValidationException(ex.getMessage());
         }
 
-        FileDescriptor desc = ctx.getFileDescriptors().get("");
+        FileDescriptor desc = ctx.getFileDescriptors().get(DOMAIN_MODEL_PROTO_NAME);
         Option processIdOption = desc.getOption("kogito_id");
         if (processIdOption == null || processIdOption.getValue() == null) {
             throw new ProtobufValidationException("Missing marker for process id in proto file, please add option kogito_id=\"processid\"");
@@ -101,49 +101,18 @@ public class ProtobufService {
 
         validateDescriptorField(messageName, descriptor, KOGITO_DOMAIN_ATTRIBUTE);
 
-        Map<String, String> cache = manager.getProtobufCache();
-        cache.put(processId + ".proto", content);
-        manager.getProcessIdModelCache().put(processId, fullTypeName);
-        List<String> errors = checkSchemaErrors(cache);
-        if (errors.isEmpty()) {
-            event.fire(new FileDescriptorRegisteredEvent(desc));
-        } else {
-            String message = "Proto Schema contain errors:\n" + errors.stream().collect(Collectors.joining("\n"));
-            throw new ProtobufValidationException(message);
+        try {
+            schemaEvent.fire(new SchemaRegisteredEvent(new SchemaDescriptor(processId + ".proto", content, new ProcessDescriptor(processId, fullTypeName)), SCHEMA_TYPE));
+        } catch (RuntimeException ex) {
+            throw new ProtobufValidationException(ex.getMessage());
         }
-
-        if (LOGGER.isDebugEnabled()) {
-            listProtoCacheKeys();
-        }
+        domainModelEvent.fire(new FileDescriptorRegisteredEvent(desc));
     }
 
-    private void validateDescriptorField(String messageName, Descriptor descriptor, String processInstancesDomainAttribute) throws Exception {
+    private void validateDescriptorField(String messageName, Descriptor descriptor, String processInstancesDomainAttribute) throws ProtobufValidationException {
         FieldDescriptor processInstances = descriptor.findFieldByName(processInstancesDomainAttribute);
         if (processInstances == null) {
             throw new ProtobufValidationException(format("Could not find %s attribute in proto message: %s", processInstancesDomainAttribute, messageName));
-        }
-    }
-
-    private void listProtoCacheKeys() {
-        LOGGER.debug(">>>>>>list cache keys start");
-        manager.getProtobufCache().entrySet().forEach(e -> LOGGER.debug(e.toString()));
-        LOGGER.debug(">>>>>>list cache keys end");
-    }
-
-    private List<String> checkSchemaErrors(Map<String, String> metadataCache) {
-        if (metadataCache.containsKey(ProtobufMetadataManagerConstants.ERRORS_KEY_SUFFIX)) {
-            List<String> errors = new ArrayList<>();
-            // The existence of this key indicates there are errors in some files
-            String files = metadataCache.get(ProtobufMetadataManagerConstants.ERRORS_KEY_SUFFIX);
-            for (String fname : files.split("\n")) {
-                String errorKey = fname + ProtobufMetadataManagerConstants.ERRORS_KEY_SUFFIX;
-                final String error = metadataCache.get(errorKey);
-                LOGGER.warn("Found errors in Protobuf schema file: {}\n{}\n", fname, error);
-                errors.add(String.format("Protobuf schema file: %s\n%s\n", fname, error));
-            }
-            return errors;
-        } else {
-            return emptyList();
         }
     }
 }
