@@ -148,4 +148,28 @@ public class TypeDeclarationTest extends BaseModelTest {
         int rules = ksession.fireAllRules();
         assertEquals( 1, rules );
     }
+
+    @Test
+    public void testSerialVersionUIDWithAllkeys() throws Exception {
+        // DROOLS-5400
+        String str =
+                "package org.drools.compiler\n" +
+                "import java.util.*\n" +
+                "declare ServiceInformation\n" +
+                "    @serialVersionUID( 0 )\n" +
+                "    code: String @key\n" +
+                "    text : String @key\n" +
+                "    associations : List @key\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Match first and last name\"\n" +
+                "when \n" +
+                "then \n" +
+                "   insert( new ServiceInformation(\"123456\", \"ServiceTest\", new ArrayList()) );\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+        int rules = ksession.fireAllRules();
+        assertEquals( 1, rules );
+    }
 }
