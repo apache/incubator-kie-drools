@@ -26,8 +26,8 @@
     <version.io.quarkus>1.4.2.Final</version.io.quarkus>
     <version.org.kie.kogito>0.10.1</version.org.kie.kogito>
 
-    <!-- TODO remove if https://github.com/kiegroup/droolsjbpm-build-bootstrap/pull/1337 is merged -->
-    <!-- TODO Extending kie-parent 7 is extremely dangerous because it's not aligned to quarkus -->
+    <!-- TODO remove if https://issues.redhat.com/browse/PLANNER-2005 is fixed for 8.x -->
+    <!-- TODO Extending kie-parent 7 is extremely dangerous and messy because it's not aligned to quarkus -->
     <version.asm>7.3.1</version.asm>
     <version.commons-cli>1.4</version.commons-cli>
     <version.commons-codec>1.13</version.commons-codec>
@@ -84,6 +84,18 @@
         <version>${version.org.kie.kogito}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <!-- TODO Junit 4 should not be a dependency https://issues.redhat.com/browse/PLANNER-2005 -->
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${version.junit}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
     </dependencies>
   </dependencyManagement>
