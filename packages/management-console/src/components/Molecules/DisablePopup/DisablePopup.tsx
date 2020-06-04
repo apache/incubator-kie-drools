@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tooltip } from '@patternfly/react-core';
-import { ProcessInstance } from '../../../graphql/types';
+import { ProcessInstance } from '@kogito-apps/common';
 
 interface IOwnProps {
   processInstanceData: ProcessInstance;

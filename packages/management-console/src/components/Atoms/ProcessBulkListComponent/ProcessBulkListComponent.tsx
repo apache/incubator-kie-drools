@@ -7,7 +7,7 @@ import {
   TextList,
   TextListItem
 } from '@patternfly/react-core';
-import ProcessDescriptor from '../../Molecules/ProcessDescriptor/ProcessDescriptor';
+import { ProcessDescriptor } from '@kogito-apps/common';
 
 interface IOwnProps {
   abortedMessageObj: any;

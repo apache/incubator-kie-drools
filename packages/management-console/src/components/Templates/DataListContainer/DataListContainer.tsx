@@ -10,7 +10,10 @@ import {
 } from '@patternfly/react-core';
 import {
   ServerErrors,
-  ouiaPageTypeAndObjectId
+  ouiaPageTypeAndObjectId,
+  useGetProcessInstancesLazyQuery,
+  ProcessInstanceState,
+  useGetProcessInstancesWithBusinessKeyLazyQuery
 } from '@kogito-apps/common';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -21,17 +24,10 @@ import DataListComponent from '../../Organisms/DataListComponent/DataListCompone
 import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateComponent';
 import LoadMoreComponent from '../../Atoms/LoadMoreComponent/LoadMoreComponent';
 import ProcessBulkModalComponent from '../../Atoms/ProcessBulkModalComponent/ProcessBulkModalComponent';
-import {
-  useGetProcessInstancesLazyQuery,
-  ProcessInstanceState,
-  useGetProcessInstancesWithBusinessKeyLazyQuery
-} from '../../../graphql/types';
 import axios from 'axios';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 
-const DataListContainer: React.FC<InjectedOuiaProps> = ({
-  ouiaContext
-}) => {
+const DataListContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
   const [defaultPageSize] = useState(10);
   const [initData, setInitData] = useState<any>({});
   const [checkedArray, setCheckedArray] = useState<any>(['ACTIVE']);
@@ -82,7 +78,9 @@ const DataListContainer: React.FC<InjectedOuiaProps> = ({
     setIsAbortModalOpen(!isAbortModalOpen);
   };
 
-  useEffect(() => { return ouiaPageTypeAndObjectId(ouiaContext, "process-instances") })
+  useEffect(() => {
+    return ouiaPageTypeAndObjectId(ouiaContext, 'process-instances');
+  });
 
   const onFilterClick = async (arr = checkedArray) => {
     resetPagination();

@@ -15,18 +15,18 @@ import {
   Bullseye,
   KebabToggle
 } from '@patternfly/react-core';
-import { ServerErrors } from '@kogito-apps/common';
-import { Link } from 'react-router-dom';
-import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import {
+  ServerErrors,
+  ProcessDescriptor,
   useGetChildInstancesLazyQuery,
   ProcessInstance
-} from '../../../graphql/types';
+} from '@kogito-apps/common';
+import { Link } from 'react-router-dom';
+import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateComponent';
 import { HistoryIcon } from '@patternfly/react-icons';
 import ErrorPopover from '../../Atoms/ErrorPopoverComponent/ErrorPopoverComponent';
 import ProcessBulkModalComponent from '../../Atoms/ProcessBulkModalComponent/ProcessBulkModalComponent';
-import ProcessDescriptor from '../ProcessDescriptor/ProcessDescriptor';
 import DisablePopup from '../DisablePopup/DisablePopup';
 import {
   stateIconCreator,

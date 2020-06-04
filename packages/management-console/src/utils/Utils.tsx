@@ -8,7 +8,7 @@ import {
   ErrorCircleOIcon,
   InfoCircleIcon
 } from '@patternfly/react-icons';
-import { ProcessInstanceState, ProcessInstance } from '../graphql/types';
+import { ProcessInstanceState, ProcessInstance } from '@kogito-apps/common';
 
 export const stateIconCreator = (state: ProcessInstanceState): JSX.Element => {
   switch (state) {

@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
 import { DataList, Bullseye } from '@patternfly/react-core';
-import { ServerErrors } from '@kogito-apps/common';
+import {
+  ServerErrors,
+  useGetProcessInstancesQuery,
+  ProcessInstanceState
+} from '@kogito-apps/common';
 import '../../Templates/DataListContainer/DataList.css';
 import DataListItemComponent from '../../Molecules/DataListItemComponent/DataListItemComponent';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateComponent';
 import '@patternfly/patternfly/patternfly-addons.css';
 import './DataListComponent.css';
-import {
-  useGetProcessInstancesQuery,
-  ProcessInstanceState
-} from '../.././../graphql/types';
 
 interface IOwnProps {
   setInitData: any;

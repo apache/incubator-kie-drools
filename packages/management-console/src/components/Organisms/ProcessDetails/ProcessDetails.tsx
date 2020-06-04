@@ -14,9 +14,8 @@ import {
 import React from 'react';
 import { LevelDownAltIcon, LevelUpAltIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
-import ProcessDescriptor from '../../Molecules/ProcessDescriptor/ProcessDescriptor';
+import { ProcessDescriptor, ProcessInstance } from '@kogito-apps/common';
 import { stateIconCreator } from '../../../utils/Utils';
-import { ProcessInstance } from '../../../graphql/types';
 import EndpointLink from '../../Molecules/EndpointLink/EndpointLink';
 
 interface IOwnProps {

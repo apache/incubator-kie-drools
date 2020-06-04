@@ -25,10 +25,9 @@ import {
 } from '@patternfly/react-icons';
 import Moment from 'react-moment';
 import { Link } from 'react-router-dom';
-import { ProcessInstanceState } from '../../../graphql/types';
 import './DomainExplorerTable.css';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
-import ProcessDescriptor from '../../Molecules/ProcessDescriptor/ProcessDescriptor';
+import { ProcessDescriptor, ProcessInstanceState } from '@kogito-apps/common';
 
 const DomainExplorerTable = ({
   columnFilters,

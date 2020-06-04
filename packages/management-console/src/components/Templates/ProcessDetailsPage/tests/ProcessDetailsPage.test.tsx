@@ -97,8 +97,9 @@ describe('Process Details Page component', () => {
         <MockedProvider mocks={mocks} addTypename={false}>
           <ProcessDetailsPage {...props} />
         </MockedProvider>
-      </MemoryRouter>
-    , 'ProcessDetailsPage');
+      </MemoryRouter>,
+      'ProcessDetailsPage'
+    );
     expect(wrapper).toMatchSnapshot();
   });
 });

@@ -19,9 +19,7 @@ import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateCompo
 import { useGetUserTasksByStatesLazyQuery } from '../../../graphql/types';
 import { ouiaPageTypeAndObjectId } from '@kogito-apps/common';
 
-const DataListContainer: React.FC<InjectedOuiaProps> = ({
-  ouiaContext
-}) => {
+const DataListContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
   const [initData, setInitData] = useState<any>([]);
   const [checkedArray, setCheckedArray] = useState<any>(['Ready']);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +44,9 @@ const DataListContainer: React.FC<InjectedOuiaProps> = ({
     setInitData(data);
   }, [data]);
 
-  useEffect(() => { return ouiaPageTypeAndObjectId(ouiaContext, "user-tasks") })
+  useEffect(() => {
+    return ouiaPageTypeAndObjectId(ouiaContext, 'user-tasks');
+  });
 
   return (
     <React.Fragment>

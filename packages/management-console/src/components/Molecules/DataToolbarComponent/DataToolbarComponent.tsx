@@ -21,7 +21,7 @@ import {
 import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
 import _ from 'lodash';
 import './DatatoolbarComponent.css';
-import { ProcessInstanceState } from '../../../graphql/types';
+import { ProcessInstanceState } from '@kogito-apps/common';
 
 interface IOwnProps {
   checkedArray: any;

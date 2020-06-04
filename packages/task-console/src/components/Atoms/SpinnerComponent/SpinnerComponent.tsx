@@ -1,6 +1,10 @@
 import React from 'react';
-import { Title, EmptyState, EmptyStateIcon } from '@patternfly/react-core';
-import { Spinner } from '@patternfly/react-core/dist/esm/experimental';
+import {
+  Title,
+  EmptyState,
+  EmptyStateIcon,
+  Spinner
+} from '@patternfly/react-core';
 
 interface IOwnProps {
   spinnerText: string;

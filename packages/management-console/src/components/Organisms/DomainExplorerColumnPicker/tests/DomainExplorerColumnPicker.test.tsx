@@ -1,3 +1,4 @@
+// tslint:disable:no-string-literal
 import React from 'react';
 import { shallow, configure, mount } from 'enzyme';
 import DomainExplorerColumnPicker from '../DomainExplorerColumnPicker';
@@ -7,27 +8,27 @@ import reactApollo from 'react-apollo';
 configure({ adapter: new Adapter() });
 
 jest.mock('apollo-client');
-jest.mock('react-apollo',() => {
- const ApolloClient = { query: jest.fn() };
- return {useApolloClient: jest.fn(() => ApolloClient) }
+jest.mock('react-apollo', () => {
+  const ApolloClient = { query: jest.fn() };
+  return { useApolloClient: jest.fn(() => ApolloClient) };
 });
 global.Math.random = () => 0.7336705311965102;
-describe('Domain Explorer Column picker component', () => {  
+describe('Domain Explorer Column picker component', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
   let client;
   let useApolloClient;
 
-const mockUseEffect = () => {
-  // tslint:disable-next-line: react-hooks-nesting
-  client = useApolloClient()
-};
+  const mockUseEffect = () => {
+    // tslint:disable-next-line: react-hooks-nesting
+    client = useApolloClient();
+  };
 
-beforeEach(() => {
-  useApolloClient = jest.spyOn(reactApollo, "useApolloClient");
-  mockUseEffect()
-});
+  beforeEach(() => {
+    useApolloClient = jest.spyOn(reactApollo, 'useApolloClient');
+    mockUseEffect();
+  });
   it('Snapshot testing', () => {
     const props = {
       columnPickerType: 'Travels',
@@ -205,56 +206,81 @@ beforeEach(() => {
       setIsLoadingMore: jest.fn(),
       isLoadingMore: true
     };
-    const mGraphQLResponse = { data: {
-      Travels: [{
-        flight: { arrival: "Hello World", __typename: "Flight", departure: "Hello World", flightNumber: "Hello World", gate: "Hello World", seat: "Hello World" },
-        metadata: {
-          processInstances: [{
-            businessKey: "Hello World",
-            id: "Hello World",
-            lastUpdate: "Sat, 16 May 2020 14:46:29 GMT",
-            processName: "Hello World",
-            start: "Sat, 16 May 2020 14:46:29 GMT",
-            state: "PENDING",
-            __typename: "ProcessInstanceMeta"
+    const mGraphQLResponse = {
+      data: {
+        Travels: [
+          {
+            flight: {
+              arrival: 'Hello World',
+              __typename: 'Flight',
+              departure: 'Hello World',
+              flightNumber: 'Hello World',
+              gate: 'Hello World',
+              seat: 'Hello World'
+            },
+            metadata: {
+              processInstances: [
+                {
+                  businessKey: 'Hello World',
+                  id: 'Hello World',
+                  lastUpdate: 'Sat, 16 May 2020 14:46:29 GMT',
+                  processName: 'Hello World',
+                  start: 'Sat, 16 May 2020 14:46:29 GMT',
+                  state: 'PENDING',
+                  __typename: 'ProcessInstanceMeta'
+                },
+                {
+                  businessKey: 'Hello World',
+                  id: 'Hello World',
+                  lastUpdate: 'Sat, 16 May 2020 14:46:29 GMT',
+                  processName: 'Hello World',
+                  start: 'Sat, 16 May 2020 14:46:29 GMT',
+                  state: 'PENDING',
+                  __typename: 'ProcessInstanceMeta'
+                }
+              ]
+            }
           },
           {
-            businessKey: "Hello World",
-            id: "Hello World",
-            lastUpdate: "Sat, 16 May 2020 14:46:29 GMT",
-            processName: "Hello World",
-            start: "Sat, 16 May 2020 14:46:29 GMT",
-            state: "PENDING",
-            __typename: "ProcessInstanceMeta"
-          }]
-        }
-  
-      },{
-        flight: { arrival: "Hello World", __typename: "Flight", departure: "Hello World", flightNumber: "Hello World", gate: "Hello World", seat: "Hello World" },
-        metadata: {
-          processInstances: [{
-            businessKey: "Hello World",
-            id: "Hello World",
-            lastUpdate: "Sat, 16 May 2020 14:46:29 GMT",
-            processName: "Hello World",
-            start: "Sat, 16 May 2020 14:46:29 GMT",
-            state: "PENDING",
-            __typename: "ProcessInstanceMeta"
-          },
-          {
-            businessKey: "Hello World",
-            id: "Hello World",
-            lastUpdate: "Sat, 16 May 2020 14:46:29 GMT",
-            processName: "Hello World",
-            start: "Sat, 16 May 2020 14:46:29 GMT",
-            state: "PENDING",
-            __typename: "ProcessInstanceMeta"
-          }]
-        }
-  
-      }]
-    }, loading: false, errors: [], networkStatus: '', stale: true };
-    
+            flight: {
+              arrival: 'Hello World',
+              __typename: 'Flight',
+              departure: 'Hello World',
+              flightNumber: 'Hello World',
+              gate: 'Hello World',
+              seat: 'Hello World'
+            },
+            metadata: {
+              processInstances: [
+                {
+                  businessKey: 'Hello World',
+                  id: 'Hello World',
+                  lastUpdate: 'Sat, 16 May 2020 14:46:29 GMT',
+                  processName: 'Hello World',
+                  start: 'Sat, 16 May 2020 14:46:29 GMT',
+                  state: 'PENDING',
+                  __typename: 'ProcessInstanceMeta'
+                },
+                {
+                  businessKey: 'Hello World',
+                  id: 'Hello World',
+                  lastUpdate: 'Sat, 16 May 2020 14:46:29 GMT',
+                  processName: 'Hello World',
+                  start: 'Sat, 16 May 2020 14:46:29 GMT',
+                  state: 'PENDING',
+                  __typename: 'ProcessInstanceMeta'
+                }
+              ]
+            }
+          }
+        ]
+      },
+      loading: false,
+      errors: [],
+      networkStatus: '',
+      stale: true
+    };
+
     client.query.mockReturnValueOnce(mGraphQLResponse);
     const wrapper = shallow(<DomainExplorerColumnPicker {...props} />);
     wrapper.find('#refresh-button').simulate('click');
@@ -292,10 +318,16 @@ beforeEach(() => {
       setIsLoadingMore: jest.fn(),
       isLoadingMore: true
     };
-    const mGraphQLResponse = { data: {
-      Travels: []
-    }, loading: false, errors: [], networkStatus: '', stale: true };
-    
+    const mGraphQLResponse = {
+      data: {
+        Travels: []
+      },
+      loading: false,
+      errors: [],
+      networkStatus: '',
+      stale: true
+    };
+
     client.query.mockReturnValueOnce(mGraphQLResponse);
     const wrapper = shallow(<DomainExplorerColumnPicker {...props} />);
     wrapper.find('#refresh-button').simulate('click');
@@ -312,7 +344,11 @@ beforeEach(() => {
         loading: false
       },
       setDisplayTable: jest.fn(),
-      parameters: [{ flight: ['arrival'] }, { flight: ['departure'] },{hotel: [{address: ['city']}]}],
+      parameters: [
+        { flight: ['arrival'] },
+        { flight: ['departure'] },
+        { hotel: [{ address: ['city'] }] }
+      ],
       setParameters: jest.fn(),
       selected: [],
       setSelected: jest.fn(),
@@ -333,57 +369,75 @@ beforeEach(() => {
       setIsLoadingMore: jest.fn(),
       isLoadingMore: true
     };
-    const mGraphQLResponse = { data: {
-      Travels: [{
-        flight: null,
-        hotel: null,
-        metadata: {
-          processInstances: [{
-            businessKey: "Hello World",
-            id: "Hello World",
-            lastUpdate: "Sat, 16 May 2020 14:46:29 GMT",
-            processName: "Hello World",
-            start: "Sat, 16 May 2020 14:46:29 GMT",
-            state: "PENDING",
-            __typename: "ProcessInstanceMeta"
+    const mGraphQLResponse = {
+      data: {
+        Travels: [
+          {
+            flight: null,
+            hotel: null,
+            metadata: {
+              processInstances: [
+                {
+                  businessKey: 'Hello World',
+                  id: 'Hello World',
+                  lastUpdate: 'Sat, 16 May 2020 14:46:29 GMT',
+                  processName: 'Hello World',
+                  start: 'Sat, 16 May 2020 14:46:29 GMT',
+                  state: 'PENDING',
+                  __typename: 'ProcessInstanceMeta'
+                },
+                {
+                  businessKey: 'Hello World',
+                  id: 'Hello World',
+                  lastUpdate: 'Sat, 16 May 2020 14:46:29 GMT',
+                  processName: 'Hello World',
+                  start: 'Sat, 16 May 2020 14:46:29 GMT',
+                  state: 'PENDING',
+                  __typename: 'ProcessInstanceMeta'
+                }
+              ]
+            }
           },
           {
-            businessKey: "Hello World",
-            id: "Hello World",
-            lastUpdate: "Sat, 16 May 2020 14:46:29 GMT",
-            processName: "Hello World",
-            start: "Sat, 16 May 2020 14:46:29 GMT",
-            state: "PENDING",
-            __typename: "ProcessInstanceMeta"
-          }]
-        }
-  
-      },{
-        flight: { arrival: "Hello World", __typename: "Flight", departure: "Hello World", flightNumber: "Hello World", gate: "Hello World", seat: "Hello World" },
-        metadata: {
-          processInstances: [{
-            businessKey: "Hello World",
-            id: "Hello World",
-            lastUpdate: "Sat, 16 May 2020 14:46:29 GMT",
-            processName: "Hello World",
-            start: "Sat, 16 May 2020 14:46:29 GMT",
-            state: "PENDING",
-            __typename: "ProcessInstanceMeta"
-          },
-          {
-            businessKey: "Hello World",
-            id: "Hello World",
-            lastUpdate: "Sat, 16 May 2020 14:46:29 GMT",
-            processName: "Hello World",
-            start: "Sat, 16 May 2020 14:46:29 GMT",
-            state: "PENDING",
-            __typename: "ProcessInstanceMeta"
-          }]
-        }
-  
-      }]
-    }, loading: false, errors: [], networkStatus: '', stale: true };
-    
+            flight: {
+              arrival: 'Hello World',
+              __typename: 'Flight',
+              departure: 'Hello World',
+              flightNumber: 'Hello World',
+              gate: 'Hello World',
+              seat: 'Hello World'
+            },
+            metadata: {
+              processInstances: [
+                {
+                  businessKey: 'Hello World',
+                  id: 'Hello World',
+                  lastUpdate: 'Sat, 16 May 2020 14:46:29 GMT',
+                  processName: 'Hello World',
+                  start: 'Sat, 16 May 2020 14:46:29 GMT',
+                  state: 'PENDING',
+                  __typename: 'ProcessInstanceMeta'
+                },
+                {
+                  businessKey: 'Hello World',
+                  id: 'Hello World',
+                  lastUpdate: 'Sat, 16 May 2020 14:46:29 GMT',
+                  processName: 'Hello World',
+                  start: 'Sat, 16 May 2020 14:46:29 GMT',
+                  state: 'PENDING',
+                  __typename: 'ProcessInstanceMeta'
+                }
+              ]
+            }
+          }
+        ]
+      },
+      loading: false,
+      errors: [],
+      networkStatus: '',
+      stale: true
+    };
+
     client.query.mockReturnValueOnce(mGraphQLResponse);
     const wrapper = shallow(<DomainExplorerColumnPicker {...props} />);
     wrapper.find('#refresh-button').simulate('click');
@@ -400,7 +454,15 @@ beforeEach(() => {
         loading: false
       },
       setDisplayTable: jest.fn(),
-      parameters: [{ flight: ['arrival'] }, { flight: ['departure'] },{hotel: [{address: [{city: [{test: ['random']}]}]}]},{hotel: [{address: [{city: [{test: [{test2:['random']}]}]}]}]},{hotel: [{address: [{country: [{test: ['random']}]}]}]}],
+      parameters: [
+        { flight: ['arrival'] },
+        { flight: ['departure'] },
+        { hotel: [{ address: [{ city: [{ test: ['random'] }] }] }] },
+        {
+          hotel: [{ address: [{ city: [{ test: [{ test2: ['random'] }] }] }] }]
+        },
+        { hotel: [{ address: [{ country: [{ test: ['random'] }] }] }] }
+      ],
       setParameters: jest.fn(),
       selected: [],
       setSelected: jest.fn(),
@@ -421,57 +483,75 @@ beforeEach(() => {
       setIsLoadingMore: jest.fn(),
       isLoadingMore: true
     };
-    const mGraphQLResponse = { data: {
-      Travels: [{
-        flight: null,
-        hotel: null,
-        metadata: {
-          processInstances: [{
-            businessKey: "Hello World",
-            id: "Hello World",
-            lastUpdate: "Sat, 16 May 2020 14:46:29 GMT",
-            processName: "Hello World",
-            start: "Sat, 16 May 2020 14:46:29 GMT",
-            state: "PENDING",
-            __typename: "ProcessInstanceMeta"
+    const mGraphQLResponse = {
+      data: {
+        Travels: [
+          {
+            flight: null,
+            hotel: null,
+            metadata: {
+              processInstances: [
+                {
+                  businessKey: 'Hello World',
+                  id: 'Hello World',
+                  lastUpdate: 'Sat, 16 May 2020 14:46:29 GMT',
+                  processName: 'Hello World',
+                  start: 'Sat, 16 May 2020 14:46:29 GMT',
+                  state: 'PENDING',
+                  __typename: 'ProcessInstanceMeta'
+                },
+                {
+                  businessKey: 'Hello World',
+                  id: 'Hello World',
+                  lastUpdate: 'Sat, 16 May 2020 14:46:29 GMT',
+                  processName: 'Hello World',
+                  start: 'Sat, 16 May 2020 14:46:29 GMT',
+                  state: 'PENDING',
+                  __typename: 'ProcessInstanceMeta'
+                }
+              ]
+            }
           },
           {
-            businessKey: "Hello World",
-            id: "Hello World",
-            lastUpdate: "Sat, 16 May 2020 14:46:29 GMT",
-            processName: "Hello World",
-            start: "Sat, 16 May 2020 14:46:29 GMT",
-            state: "PENDING",
-            __typename: "ProcessInstanceMeta"
-          }]
-        }
-  
-      },{
-        flight: { arrival: "Hello World", __typename: "Flight", departure: "Hello World", flightNumber: "Hello World", gate: "Hello World", seat: "Hello World" },
-        metadata: {
-          processInstances: [{
-            businessKey: "Hello World",
-            id: "Hello World",
-            lastUpdate: "Sat, 16 May 2020 14:46:29 GMT",
-            processName: "Hello World",
-            start: "Sat, 16 May 2020 14:46:29 GMT",
-            state: "PENDING",
-            __typename: "ProcessInstanceMeta"
-          },
-          {
-            businessKey: "Hello World",
-            id: "Hello World",
-            lastUpdate: "Sat, 16 May 2020 14:46:29 GMT",
-            processName: "Hello World",
-            start: "Sat, 16 May 2020 14:46:29 GMT",
-            state: "PENDING",
-            __typename: "ProcessInstanceMeta"
-          }]
-        }
-  
-      }]
-    }, loading: false, errors: [], networkStatus: '', stale: true };
-    
+            flight: {
+              arrival: 'Hello World',
+              __typename: 'Flight',
+              departure: 'Hello World',
+              flightNumber: 'Hello World',
+              gate: 'Hello World',
+              seat: 'Hello World'
+            },
+            metadata: {
+              processInstances: [
+                {
+                  businessKey: 'Hello World',
+                  id: 'Hello World',
+                  lastUpdate: 'Sat, 16 May 2020 14:46:29 GMT',
+                  processName: 'Hello World',
+                  start: 'Sat, 16 May 2020 14:46:29 GMT',
+                  state: 'PENDING',
+                  __typename: 'ProcessInstanceMeta'
+                },
+                {
+                  businessKey: 'Hello World',
+                  id: 'Hello World',
+                  lastUpdate: 'Sat, 16 May 2020 14:46:29 GMT',
+                  processName: 'Hello World',
+                  start: 'Sat, 16 May 2020 14:46:29 GMT',
+                  state: 'PENDING',
+                  __typename: 'ProcessInstanceMeta'
+                }
+              ]
+            }
+          }
+        ]
+      },
+      loading: false,
+      errors: [],
+      networkStatus: '',
+      stale: true
+    };
+
     client.query.mockReturnValueOnce(mGraphQLResponse);
     const wrapper = shallow(<DomainExplorerColumnPicker {...props} />);
     wrapper.find('#refresh-button').simulate('click');
@@ -490,7 +570,7 @@ beforeEach(() => {
       setDisplayTable: jest.fn(),
       parameters: [{ flight: ['arrival'] }, { flight: ['departure'] }],
       setParameters: jest.fn(),
-      selected: ["cityhotelAddress"],
+      selected: ['cityhotelAddress'],
       setSelected: jest.fn(),
       data: [],
       getPicker: {
@@ -509,80 +589,106 @@ beforeEach(() => {
       setIsLoadingMore: jest.fn(),
       isLoadingMore: true
     };
-    const obj = { 
-        target: { id: 'cityhotelAddress' }, 
-        nativeEvent: {
-            target : { 
-              nextSibling: {
-                innerText: ''
-              },
-              parentElement: {
-                parentElement : {
-                  getAttribute: jest.fn(()=> 'cityhotelAddress')
-                }
-              }
+    const obj = {
+      target: { id: 'cityhotelAddress' },
+      nativeEvent: {
+        target: {
+          nextSibling: {
+            innerText: ''
+          },
+          parentElement: {
+            parentElement: {
+              getAttribute: jest.fn(() => 'cityhotelAddress')
             }
           }
         }
-        const mGraphQLResponse = {response: {data: {
-          Travels: [{
-            flight: { arrival: "Hello World", __typename: "Flight", departure: "Hello World", flightNumber: "Hello World", gate: "Hello World", seat: "Hello World" },
-            metadata: {
-              processInstances: [{
-                businessKey: "Hello World",
-                id: "Hello World",
-                lastUpdate: "Sat, 16 May 2020 14:46:29 GMT",
-                processName: "Hello World",
-                start: "Sat, 16 May 2020 14:46:29 GMT",
-                state: "PENDING",
-                __typename: "ProcessInstanceMeta"
+      }
+    };
+    const mGraphQLResponse = {
+      response: {
+        data: {
+          Travels: [
+            {
+              flight: {
+                arrival: 'Hello World',
+                __typename: 'Flight',
+                departure: 'Hello World',
+                flightNumber: 'Hello World',
+                gate: 'Hello World',
+                seat: 'Hello World'
               },
-              {
-                businessKey: "Hello World",
-                id: "Hello World",
-                lastUpdate: "Sat, 16 May 2020 14:46:29 GMT",
-                processName: "Hello World",
-                start: "Sat, 16 May 2020 14:46:29 GMT",
-                state: "PENDING",
-                __typename: "ProcessInstanceMeta"
-              }]
-            }
-      
-          },{
-            flight: { arrival: "Hello World", __typename: "Flight", departure: "Hello World", flightNumber: "Hello World", gate: "Hello World", seat: "Hello World" },
-            metadata: {
-              processInstances: [{
-                businessKey: "Hello World",
-                id: "Hello World",
-                lastUpdate: "Sat, 16 May 2020 14:46:29 GMT",
-                processName: "Hello World",
-                start: "Sat, 16 May 2020 14:46:29 GMT",
-                state: "PENDING",
-                __typename: "ProcessInstanceMeta"
+              metadata: {
+                processInstances: [
+                  {
+                    businessKey: 'Hello World',
+                    id: 'Hello World',
+                    lastUpdate: 'Sat, 16 May 2020 14:46:29 GMT',
+                    processName: 'Hello World',
+                    start: 'Sat, 16 May 2020 14:46:29 GMT',
+                    state: 'PENDING',
+                    __typename: 'ProcessInstanceMeta'
+                  },
+                  {
+                    businessKey: 'Hello World',
+                    id: 'Hello World',
+                    lastUpdate: 'Sat, 16 May 2020 14:46:29 GMT',
+                    processName: 'Hello World',
+                    start: 'Sat, 16 May 2020 14:46:29 GMT',
+                    state: 'PENDING',
+                    __typename: 'ProcessInstanceMeta'
+                  }
+                ]
+              }
+            },
+            {
+              flight: {
+                arrival: 'Hello World',
+                __typename: 'Flight',
+                departure: 'Hello World',
+                flightNumber: 'Hello World',
+                gate: 'Hello World',
+                seat: 'Hello World'
               },
-              {
-                businessKey: "Hello World",
-                id: "Hello World",
-                lastUpdate: "Sat, 16 May 2020 14:46:29 GMT",
-                processName: "Hello World",
-                start: "Sat, 16 May 2020 14:46:29 GMT",
-                state: "PENDING",
-                __typename: "ProcessInstanceMeta"
-              }]
+              metadata: {
+                processInstances: [
+                  {
+                    businessKey: 'Hello World',
+                    id: 'Hello World',
+                    lastUpdate: 'Sat, 16 May 2020 14:46:29 GMT',
+                    processName: 'Hello World',
+                    start: 'Sat, 16 May 2020 14:46:29 GMT',
+                    state: 'PENDING',
+                    __typename: 'ProcessInstanceMeta'
+                  },
+                  {
+                    businessKey: 'Hello World',
+                    id: 'Hello World',
+                    lastUpdate: 'Sat, 16 May 2020 14:46:29 GMT',
+                    processName: 'Hello World',
+                    start: 'Sat, 16 May 2020 14:46:29 GMT',
+                    state: 'PENDING',
+                    __typename: 'ProcessInstanceMeta'
+                  }
+                ]
+              }
             }
-      
-          }]
-        }}, loading: false, errors: [] };
+          ]
+        }
+      },
+      loading: false,
+      errors: []
+    };
     client.query.mockReturnValueOnce(mGraphQLResponse);
     const wrapper = shallow(<DomainExplorerColumnPicker {...props} />);
     wrapper.find('#refresh-button').simulate('click');
     wrapper.find('#apply-columns').simulate('click');
     await Promise.resolve();
+    wrapper.find('#columnPicker-dropdown').simulate('select', obj);
+    // tslint:disable-next-line
     wrapper
       .find('#columnPicker-dropdown')
-      .simulate('select', obj );
-// tslint:disable-next-line
-    wrapper.find('#columnPicker-dropdown').props()['onToggle']()
+      .props()
+      ['onToggle']();
   });
   it('check invalid column picker', () => {
     const props = {
@@ -615,27 +721,25 @@ beforeEach(() => {
       setIsLoadingMore: jest.fn(),
       isLoadingMore: true
     };
-    const obj = { 
-      target: { id: 'id' }, 
+    const obj = {
+      target: { id: 'id' },
       nativeEvent: {
-          target : { 
-            nextSibling: {
-              innerText: ''
-            },
+        target: {
+          nextSibling: {
+            innerText: ''
+          },
+          parentElement: {
             parentElement: {
-              parentElement : {
-                getAttribute: jest.fn(()=> 'id')
-              }
+              getAttribute: jest.fn(() => 'id')
             }
           }
         }
       }
+    };
     const wrapper = shallow(<DomainExplorerColumnPicker {...props} />);
     wrapper.update();
 
-    wrapper
-    .find('#columnPicker-dropdown')
-    .simulate('select', obj );
+    wrapper.find('#columnPicker-dropdown').simulate('select', obj);
     expect(wrapper).toMatchSnapshot();
   });
   it('check condition remembered params equal to zero', () => {

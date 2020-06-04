@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import DataListComponent from '../DataListComponent';
 import { gql } from 'apollo-boost';
-import { ProcessInstanceState } from '../../../../graphql/types';
+import { ProcessInstanceState } from '@kogito-apps/common';
 import { MockedProvider } from '@apollo/react-testing';
 
 const initData = {

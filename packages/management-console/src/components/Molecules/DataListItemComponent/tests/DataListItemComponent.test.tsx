@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import DataListItemComponent from '../DataListItemComponent';
-import { ProcessInstanceState } from '../../../../graphql/types';
+import { ProcessInstanceState } from '@kogito-apps/common';
 
 const initData = {
   ProcessInstances: [

@@ -1,11 +1,18 @@
-import { Nav, NavList, NavItem, withOuiaContext, InjectedOuiaProps } from '@patternfly/react-core';
+import {
+  Nav,
+  NavList,
+  NavItem,
+  withOuiaContext,
+  InjectedOuiaProps
+} from '@patternfly/react-core';
 import React from 'react';
-import { Redirect, Route, Link, Switch} from 'react-router-dom';
+import { Redirect, Route, Link, Switch } from 'react-router-dom';
 import {
   PageLayout,
   PageNotFound,
   NoData,
-  ouiaAttribute
+  ouiaAttribute,
+  useGetQueryFieldsQuery
 } from '@kogito-apps/common';
 import DataListContainer from '../DataListContainer/DataListContainer';
 import ProcessDetailsPage from '../ProcessDetailsPage/ProcessDetailsPage';
@@ -14,12 +21,11 @@ import DomainExplorerLandingPage from '../DomainExplorerLandingPage/DomainExplor
 import './PageLayoutComponent.css';
 import managementConsoleLogo from '../../../static/managementConsoleLogo.svg';
 
-import { useGetQueryFieldsQuery } from '../../../graphql/types';
-import {History, Location} from 'history'
+import { History, Location } from 'history';
 
 interface IOwnProps {
-  location: Location,
-  history: History
+  location: Location;
+  history: History;
 }
 
 const PageLayoutComponent: React.FC<IOwnProps & InjectedOuiaProps> = ({
@@ -32,14 +38,28 @@ const PageLayoutComponent: React.FC<IOwnProps & InjectedOuiaProps> = ({
     <Nav aria-label="Nav" theme="dark">
       <NavList>
         <NavItem isActive={pathname === '/ProcessInstances'}>
-          <Link to="/ProcessInstances"
-            {...ouiaAttribute(ouiaContext, "data-ouia-navigation-name", "process-instances")}
-          >Process Instances</Link>
+          <Link
+            to="/ProcessInstances"
+            {...ouiaAttribute(
+              ouiaContext,
+              'data-ouia-navigation-name',
+              'process-instances'
+            )}
+          >
+            Process Instances
+          </Link>
         </NavItem>
         <NavItem isActive={pathname === '/DomainExplorer'}>
-          <Link to="/DomainExplorer"
-            {...ouiaAttribute(ouiaContext, "data-ouia-navigation-name", "domain-explorer")}
-          >Domain Explorer</Link>
+          <Link
+            to="/DomainExplorer"
+            {...ouiaAttribute(
+              ouiaContext,
+              'data-ouia-navigation-name',
+              'domain-explorer'
+            )}
+          >
+            Domain Explorer
+          </Link>
         </NavItem>
       </NavList>
     </Nav>

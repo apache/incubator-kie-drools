@@ -22,15 +22,20 @@ import { act } from 'react-dom/test-utils';
  * @param component The actual component with wrappers, e.g. <MockedProvider mocks=mockedData><MyGreatComponent /></MockedProvider>
  * @param name name of the component to be extracted as string, e.g. 'MyGreatComponent'
  */
-export const getWrapperAsync = async (component: ReactElement, name: string): Promise<ReactWrapper> => {
+export const getWrapperAsync = async (
+  component: ReactElement,
+  name: string
+): Promise<ReactWrapper> => {
   const wrapper = mount(component);
   // tslint:disable-next-line: await-promise
   await act(async () => {
-    await wait(0)
-  })
-  const promise: Promise<ReactWrapper> = new Promise(resolve => { resolve(wrapper.update().find(name)) })
-  return promise
-}
+    await wait(0);
+  });
+  const promise: Promise<ReactWrapper> = new Promise(resolve => {
+    resolve(wrapper.update().find(name));
+  });
+  return promise;
+};
 
 /**
  * Wrapper used in snapshot testing to get rid of unnecessary wrappers of components.
@@ -41,10 +46,13 @@ export const getWrapperAsync = async (component: ReactElement, name: string): Pr
  * @param component The actual component with wrappers, e.g. <Router><MyGreatComponent /></Router>
  * @param name name of the component to be extracted as string, e.g. 'MyGreatComponent'
  */
-export const getWrapper = (component: ReactElement, name: string): ReactWrapper => {
+export const getWrapper = (
+  component: ReactElement,
+  name: string
+): ReactWrapper => {
   const wrapper = mount(component);
-  return wrapper.update().find(name)
-}
+  return wrapper.update().find(name);
+};
 
 /**
  * Function to set OUIA:Page Page Type and Page Object Id attributes in page body.
@@ -57,13 +65,19 @@ export const ouiaPageTypeAndObjectId = (
   type: string,
   objectId?: string
 ): (() => void) => {
-  if (!ouiaContext.isOuia) return;
-  document.body.setAttribute('data-ouia-page-type', type)
-  if (objectId) document.body.setAttribute('data-ouia-page-object-id', objectId)
-  return () => {
-    document.body.removeAttribute('data-ouia-page-type')
-    if (objectId) document.body.removeAttribute('data-ouia-page-object-id')
+  if (!ouiaContext.isOuia) {
+    return;
   }
+  document.body.setAttribute('data-ouia-page-type', type);
+  if (objectId) {
+    document.body.setAttribute('data-ouia-page-object-id', objectId);
+  }
+  return () => {
+    document.body.removeAttribute('data-ouia-page-type');
+    if (objectId) {
+      document.body.removeAttribute('data-ouia-page-object-id');
+    }
+  };
 };
 
 /**
@@ -77,8 +91,8 @@ export const ouiaPageTypeAndObjectId = (
  * @param value value of the attribute
  */
 export const ouiaAttribute = (ouiaContext, name: string, value: string) => {
-  return (ouiaContext.isOuia && { [name]: value })
-}
+  return ouiaContext.isOuia && { [name]: value };
+};
 
 /**
  * Function to set OUIA attributes on the component. For use in components that extends on InjectedOUIAProps
@@ -102,17 +116,14 @@ export const ouiaAttribute = (ouiaContext, name: string, value: string) => {
  * @param ouiaType type of the component - typically a string explicitly provided to this function call
  * @param isSafe boolean value indicating if the component is safe = is not doing any loading action.
  */
-export const componentOuiaProps = (
-  ouiaContext,
-  ouiaId,
-  ouiaType,
-  isSafe?
-) => {
-  return ouiaContext.isOuia && {
-    'data-ouia-component-type': ouiaType,
-    'data-ouia-component-id': ouiaId || ouiaContext.ouiaId,
-    'data-ouia-safe': (isSafe) ? true : false
-  }
+export const componentOuiaProps = (ouiaContext, ouiaId, ouiaType, isSafe?) => {
+  return (
+    ouiaContext.isOuia && {
+      'data-ouia-component-type': ouiaType,
+      'data-ouia-component-id': ouiaId || ouiaContext.ouiaId,
+      'data-ouia-safe': isSafe ? true : false
+    }
+  );
 };
 
 /**
@@ -127,9 +138,6 @@ export const componentOuiaProps = (
  * @param ouiaContext ouiaContext provided by the higher-order component wrapper
  * @param ouiaId id string value to be set as an id
  */
-export const attributeOuiaId = (
-  ouiaContext,
-  ouiaId: string
-) => {
-  return ouiaAttribute(ouiaContext, 'ouiaId', ouiaId)
-}
+export const attributeOuiaId = (ouiaContext, ouiaId: string) => {
+  return ouiaAttribute(ouiaContext, 'ouiaId', ouiaId);
+};

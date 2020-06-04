@@ -1,17 +1,17 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import DomainExplorerLandingPage from '../DomainExplorerLandingPage';
-import { useGetQueryFieldsQuery } from '../../../../graphql/types';
+import { useGetQueryFieldsQuery } from '@kogito-apps/common';
 import { MemoryRouter as Router } from 'react-router-dom';
 
-jest.mock('../../../../graphql/types');
+jest.mock('@kogito-apps/common/src/graphql/types');
 describe('Domain Explorer Landing Page Component', () => {
-  const props= {
-    ouiaContext:{
-      isOuia: false, 
+  const props = {
+    ouiaContext: {
+      isOuia: false,
       ouiaId: null
     } as any
-  }
+  };
   it('Snapshot test', () => {
     // @ts-ignore
     useGetQueryFieldsQuery.mockReturnValue({
@@ -30,14 +30,16 @@ describe('Domain Explorer Landing Page Component', () => {
             {
               name: 'visaApplication',
               args: []
-            },
-            
+            }
           ]
         }
       }
     });
     const wrapper = mount(
-      <Router keyLength={0}><DomainExplorerLandingPage {...props} /></Router>);
+      <Router keyLength={0}>
+        <DomainExplorerLandingPage {...props} />
+      </Router>
+    );
     expect(useGetQueryFieldsQuery).toHaveBeenCalled();
     expect(wrapper).toMatchSnapshot();
   });
@@ -92,7 +94,11 @@ describe('Domain Explorer Landing Page Component', () => {
         }
       }
     });
-    const wrapper = mount(<Router keyLength={0}><DomainExplorerLandingPage {...props} /></Router>);
+    const wrapper = mount(
+      <Router keyLength={0}>
+        <DomainExplorerLandingPage {...props} />
+      </Router>
+    );
     expect(useGetQueryFieldsQuery).toHaveBeenCalled();
     expect(wrapper).toMatchSnapshot();
   });

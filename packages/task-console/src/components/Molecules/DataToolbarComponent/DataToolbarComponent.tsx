@@ -5,9 +5,7 @@ import {
   DataToolbarContent,
   DataToolbarFilter,
   DataToolbarToggleGroup,
-  DataToolbarGroup
-} from '@patternfly/react-core/dist/esm/experimental';
-import {
+  DataToolbarGroup,
   Button,
   Select,
   SelectOption,
@@ -108,7 +106,7 @@ const DataToolbarWithFilter: React.FC<IOwnProps> = ({
   const statusMenuItems = [
     <SelectOption key="Ready" value="Ready" />,
     <SelectOption key="Completed" value="Completed" />,
-    <SelectOption key="Aborted" value="Aborted" />,
+    <SelectOption key="Aborted" value="Aborted" />
   ];
 
   const toggleGroupItems = (

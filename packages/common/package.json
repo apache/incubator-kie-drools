@@ -17,7 +17,8 @@
     "test:coverage": "jest --coverage",
     "lint": "tslint -c ./tslint.json --project . './src/**/*.ts{,x}'",
     "format": "prettier --config ../../.prettierrc --check --write './src/**/*.{tsx,ts,js}'",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "codegen": "graphql-codegen"
   },
   "dependencies": {},
   "jest": {

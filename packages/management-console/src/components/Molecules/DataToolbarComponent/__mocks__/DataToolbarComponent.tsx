@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
 const DataToolbarComponent = (): React.ReactElement => {
-  return <></>
+  return <></>;
 };
 
 export default DataToolbarComponent;

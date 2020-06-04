@@ -16,18 +16,19 @@ import {
   InjectedOuiaProps,
   withOuiaContext
 } from '@patternfly/react-core';
-import { ServerErrors, ouiaPageTypeAndObjectId } from '@kogito-apps/common';
+import {
+  ServerErrors,
+  ouiaPageTypeAndObjectId,
+  useGetProcessInstanceByIdQuery,
+  ProcessInstanceState,
+  ProcessDescriptor
+} from '@kogito-apps/common';
 import React, { useState, useEffect } from 'react';
 import { Link, Redirect, RouteComponentProps } from 'react-router-dom';
 import ProcessDetails from '../../Organisms/ProcessDetails/ProcessDetails';
 import ProcessDetailsProcessVariables from '../../Organisms/ProcessDetailsProcessVariables/ProcessDetailsProcessVariables';
 import ProcessDetailsTimeline from '../../Organisms/ProcessDetailsTimeline/ProcessDetailsTimeline';
 import './ProcessDetailsPage.css';
-import {
-  useGetProcessInstanceByIdQuery,
-  ProcessInstanceState
-} from '../../../graphql/types';
-import ProcessDescriptor from '../../Molecules/ProcessDescriptor/ProcessDescriptor';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
 import ProcessBulkModalComponent from '../../Atoms/ProcessBulkModalComponent/ProcessBulkModalComponent';
@@ -39,13 +40,12 @@ import {
 } from '../../../utils/Utils';
 
 interface MatchProps {
-  instanceID: string
+  instanceID: string;
 }
 
-const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, {}, {}> & InjectedOuiaProps> = ({
-  ouiaContext,
-  ...props
-}) => {
+const ProcessDetailsPage: React.FC<
+  RouteComponentProps<MatchProps, {}, {}> & InjectedOuiaProps
+> = ({ ouiaContext, ...props }) => {
   const id = props.match.params.instanceID;
   const [isSkipModalOpen, setIsSkipModalOpen] = useState<boolean>(false);
   const [isRetryModalOpen, setIsRetryModalOpen] = useState<boolean>(false);
@@ -77,7 +77,9 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, {}, {}> & Inj
     };
   });
 
-  useEffect(() => { return ouiaPageTypeAndObjectId(ouiaContext, "process-instances", id) })
+  useEffect(() => {
+    return ouiaPageTypeAndObjectId(ouiaContext, 'process-instances', id);
+  });
 
   const abortButton = () => {
     if (

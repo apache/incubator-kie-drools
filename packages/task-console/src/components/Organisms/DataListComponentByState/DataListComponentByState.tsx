@@ -1,20 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import {DataList, Bullseye} from '@patternfly/react-core';
+import React, { useEffect, useState } from 'react';
+import { DataList, Bullseye } from '@patternfly/react-core';
 import DataListItemComponent from '../../Molecules/DataListItemComponent/DataListItemComponent';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateComponent';
 import '@patternfly/patternfly/patternfly-addons.css';
-import {useGetUserTasksByStatesQuery} from '../.././../graphql/types';
-
-
+import { useGetUserTasksByStatesQuery } from '../../../graphql/types';
 
 interface IOwnProps {
   currentState: string;
 }
 
-const DataListComponentByState: React.FC<IOwnProps> = ({
-  currentState
-}) => {
+const DataListComponentByState: React.FC<IOwnProps> = ({ currentState }) => {
   const {
     loading,
     error,
@@ -66,16 +62,16 @@ const DataListComponentByState: React.FC<IOwnProps> = ({
   return (
     <DataList aria-label="User Task list">
       {!loading &&
-      childList !== undefined &&
-      childList.UserTaskInstances.map((item, index) => {
-        return (
-          <DataListItemComponent
-            id={index}
-            key={item.id}
-            userTaskInstanceData={item}
-          />
-        );
-      })}
+        childList !== undefined &&
+        childList.UserTaskInstances.map((item, index) => {
+          return (
+            <DataListItemComponent
+              id={index}
+              key={item.id}
+              userTaskInstanceData={item}
+            />
+          );
+        })}
       {loading && (
         <Bullseye>
           <SpinnerComponent spinnerText="Loading user tasks..." />

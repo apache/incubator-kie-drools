@@ -16,13 +16,12 @@ import { Redirect, RouteComponentProps } from 'react-router';
 import { ouiaPageTypeAndObjectId } from '@kogito-apps/common';
 
 interface LocationProps {
-  prev?: any,
+  prev?: any;
 }
 
-const ErrorComponent: React.FC<RouteComponentProps<{}, {}, LocationProps> & InjectedOuiaProps> = ({
-  ouiaContext,
-  ...props
-}) => {
+const ErrorComponent: React.FC<
+  RouteComponentProps<{}, {}, LocationProps> & InjectedOuiaProps
+> = ({ ouiaContext, ...props }) => {
   let prevPath;
   if (props.location.state !== undefined) {
     prevPath = props.location.state.prev;
@@ -35,7 +34,9 @@ const ErrorComponent: React.FC<RouteComponentProps<{}, {}, LocationProps> & Inje
 
   const [isRedirect, setIsredirect] = useState(false);
 
-  useEffect(() => { return ouiaPageTypeAndObjectId(ouiaContext, "error") })
+  useEffect(() => {
+    return ouiaPageTypeAndObjectId(ouiaContext, 'error');
+  });
 
   const redirectHandler = () => {
     setIsredirect(true);

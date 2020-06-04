@@ -25,7 +25,9 @@ const DataListContainerExpandable: React.FC<InjectedOuiaProps> = ({
     setIsExpanded(!isExpanded);
   };
 
-  useEffect(() => { return ouiaPageTypeAndObjectId(ouiaContext, "user-tasks") })
+  useEffect(() => {
+    return ouiaPageTypeAndObjectId(ouiaContext, 'user-tasks');
+  });
 
   return (
     <React.Fragment>
@@ -42,10 +44,12 @@ const DataListContainerExpandable: React.FC<InjectedOuiaProps> = ({
         <Grid gutter="md">
           <GridItem span={12}>
             <Card className="dataList">
-              <Expandable toggleText={isExpanded ? 'READY Show Less' : 'READY Show More'} onToggle={onToggle} isExpanded={isExpanded}>
-               <DataListComponentByState
-                  currentState={'Ready'}
-                />
+              <Expandable
+                toggleText={isExpanded ? 'READY Show Less' : 'READY Show More'}
+                onToggle={onToggle}
+                isExpanded={isExpanded}
+              >
+                <DataListComponentByState currentState={'Ready'} />
               </Expandable>
             </Card>
           </GridItem>

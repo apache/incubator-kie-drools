@@ -16,17 +16,16 @@ import { Redirect, RouteComponentProps } from 'react-router';
 import { ouiaPageTypeAndObjectId } from '@kogito-apps/common';
 
 interface LocationProps {
-  prev: any,
-  rememberedData: any,
-  title: string,
-  description: string,
-  buttonText: string
+  prev: any;
+  rememberedData: any;
+  title: string;
+  description: string;
+  buttonText: string;
 }
 
-const NoDataComponent: React.FC<RouteComponentProps<{}, {}, LocationProps> &InjectedOuiaProps> = ({
-  ouiaContext,
-  ...props
-}) => {
+const NoDataComponent: React.FC<
+  RouteComponentProps<{}, {}, LocationProps> & InjectedOuiaProps
+> = ({ ouiaContext, ...props }) => {
   let prevPath;
   if (props.location.state !== undefined) {
     prevPath = props.location.state.prev;
@@ -48,7 +47,9 @@ const NoDataComponent: React.FC<RouteComponentProps<{}, {}, LocationProps> &Inje
     };
   });
 
-  useEffect(() => { return ouiaPageTypeAndObjectId(ouiaContext, "no-data") })
+  useEffect(() => {
+    return ouiaPageTypeAndObjectId(ouiaContext, 'no-data');
+  });
 
   let finalPath = '';
   prevPath.map(item => (finalPath = finalPath + `/${item}`));

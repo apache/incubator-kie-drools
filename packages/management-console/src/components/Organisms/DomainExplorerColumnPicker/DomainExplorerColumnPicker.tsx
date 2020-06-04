@@ -69,7 +69,7 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
   const nullTypes = [null, 'String', 'Boolean', 'Int', 'DateTime'];
   const client = useApolloClient();
 
-  const onSelect = (event) => {
+  const onSelect = event => {
     const selection = event.target.id;
     setEnableRefresh(false);
     if (selected.includes(selection)) {
@@ -92,7 +92,6 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
   };
 
   const filterColumnSelection = (event, selection) => {
-    
     const parent = event.nativeEvent.target.parentElement.parentElement.getAttribute(
       'aria-labelledby'
     );
@@ -224,34 +223,33 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
         }
       });
       try {
-        const response = await client
-          .query({
-            query: gql`
-              ${Query.query}
-            `,
-            variables: Query.variables,
-            fetchPolicy: enableCache ? 'cache-first' : 'network-only'
-          })
-            const firstKey = Object.keys(response.data)[0];
-            if (response.data[firstKey].length > 0) {
-              const resp = response.data;
-              const respKeys = Object.keys(resp)[0];
-              const tableContent = resp[respKeys];
-              const finalResp = [];
-              tableContent.map(content => {
-                const finalObject = validateResponse(content, paramFields);
-                finalResp.push(finalObject);
-              });
-              setColumnFilters(finalResp);
-              setTableLoading(false);
-              setDisplayTable(true);
-              setEnableCache(false);
-              setIsLoadingMore(false);
-            } else {
-              setTableLoading(false);
-              setDisplayEmptyState(true);
-              setEnableCache(false);
-            }
+        const response = await client.query({
+          query: gql`
+            ${Query.query}
+          `,
+          variables: Query.variables,
+          fetchPolicy: enableCache ? 'cache-first' : 'network-only'
+        });
+        const firstKey = Object.keys(response.data)[0];
+        if (response.data[firstKey].length > 0) {
+          const resp = response.data;
+          const respKeys = Object.keys(resp)[0];
+          const tableContent = resp[respKeys];
+          const finalResp = [];
+          tableContent.map(content => {
+            const finalObject = validateResponse(content, paramFields);
+            finalResp.push(finalObject);
+          });
+          setColumnFilters(finalResp);
+          setTableLoading(false);
+          setDisplayTable(true);
+          setEnableCache(false);
+          setIsLoadingMore(false);
+        } else {
+          setTableLoading(false);
+          setDisplayEmptyState(true);
+          setEnableCache(false);
+        }
       } catch (error) {
         setError(error);
       }
