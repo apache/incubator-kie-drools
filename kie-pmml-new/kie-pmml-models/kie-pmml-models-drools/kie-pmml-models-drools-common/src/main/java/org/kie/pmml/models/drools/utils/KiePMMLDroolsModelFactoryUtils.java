@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.models.drools.utils;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +31,6 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Model;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
@@ -63,7 +61,6 @@ public class KiePMMLDroolsModelFactoryUtils {
     }
 
     /**
-     *
      * @param dataDictionary
      * @param model
      * @param fieldTypeMap
@@ -86,7 +83,7 @@ public class KiePMMLDroolsModelFactoryUtils {
         CompilationUnit cloneCU = templateCU.clone();
         cloneCU.setPackageDeclaration(packageName);
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(modelClassName)
-                .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND));
+                .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + modelClassName));
         modelTemplate.setName(className);
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(model.getMiningFunction().value());
         final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing default constructor in ClassOrInterfaceDeclaration %s ", modelTemplate.getName())));
@@ -153,7 +150,6 @@ public class KiePMMLDroolsModelFactoryUtils {
 
     /**
      * Populate the <b>fieldTypeMap</b> <code>Map&lt;String, KiePMMLOriginalTypeGeneratedType&gt;</code>
-     *
      * @param body
      * @param fieldTypeMap
      */

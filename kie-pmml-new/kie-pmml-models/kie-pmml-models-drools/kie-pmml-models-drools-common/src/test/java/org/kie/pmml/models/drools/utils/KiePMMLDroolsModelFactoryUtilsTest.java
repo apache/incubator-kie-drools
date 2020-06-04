@@ -148,27 +148,7 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
                                .map(methodCallExpr -> methodCallExpr.getArgument(0))
                                .filter(Expression::isMethodCallExpr)
                                .map(expressionArgument -> (MethodCallExpr) expressionArgument)
-                               .anyMatch(methodCallExpr -> {
-                                   boolean toReturn = commonEvaluateMethodCallExpr(methodCallExpr, "build", new NodeList<>(), MethodCallExpr.class);
-                                   MethodCallExpr resultFeatureScopeExpr = (MethodCallExpr) methodCallExpr.getScope().get();
-                                   NodeList<Expression> expectedArguments = NodeList.nodeList(new NameExpr(RESULT_FEATURE.class.getName() + "." + outputField.getResultFeature().toString()));
-                                   toReturn &= commonEvaluateMethodCallExpr(resultFeatureScopeExpr, "withResultFeature", expectedArguments, MethodCallExpr.class);
-                                   MethodCallExpr targetFieldScopeExpr = (MethodCallExpr) resultFeatureScopeExpr.getScope().get();
-                                   expectedArguments = NodeList.nodeList(new StringLiteralExpr(outputField.getTargetField().get()));
-                                   toReturn &= commonEvaluateMethodCallExpr(targetFieldScopeExpr, "withTargetField", expectedArguments, MethodCallExpr.class);
-                                   MethodCallExpr valueScopeExpr = (MethodCallExpr) targetFieldScopeExpr.getScope().get();
-                                   expectedArguments = NodeList.nodeList(new StringLiteralExpr(outputField.getValue().toString()));
-                                   toReturn &= commonEvaluateMethodCallExpr(valueScopeExpr, "withValue", expectedArguments, MethodCallExpr.class);
-                                   MethodCallExpr rankScopeExpr = (MethodCallExpr) valueScopeExpr.getScope().get();
-                                   expectedArguments = NodeList.nodeList(new IntegerLiteralExpr(outputField.getRank()));
-                                   toReturn &= commonEvaluateMethodCallExpr(rankScopeExpr, "withRank", expectedArguments, MethodCallExpr.class);
-                                   MethodCallExpr builderScopeExpr = (MethodCallExpr) rankScopeExpr.getScope().get();
-                                   expectedArguments = NodeList.nodeList(new StringLiteralExpr(outputField.getName()), new NameExpr("Collections.emptyList()"));
-                                   toReturn &= commonEvaluateMethodCallExpr(builderScopeExpr, "builder", expectedArguments, NameExpr.class);
-                                   toReturn &= builderScopeExpr.getName().equals(new SimpleName("builder"));
-                                   toReturn &= builderScopeExpr.getScope().get().equals(new NameExpr("KiePMMLOutputField"));
-                                   return toReturn;
-                               }));
+                               .anyMatch(methodCallExpr -> evaluateOutputFieldPopulation(methodCallExpr, outputField)));
         }
     }
 
@@ -185,6 +165,28 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         commonEvaluateFieldTypeMap(blockStmt, fieldTypeMap, fieldTypeMap.size());
     }
 
+    private boolean evaluateOutputFieldPopulation(MethodCallExpr methodCallExpr, KiePMMLOutputField outputField) {
+        boolean toReturn = commonEvaluateMethodCallExpr(methodCallExpr, "build", new NodeList<>(), MethodCallExpr.class);
+        MethodCallExpr resultFeatureScopeExpr = (MethodCallExpr) methodCallExpr.getScope().get();
+        NodeList<Expression> expectedArguments = NodeList.nodeList(new NameExpr(RESULT_FEATURE.class.getName() + "." + outputField.getResultFeature().toString()));
+        toReturn &= commonEvaluateMethodCallExpr(resultFeatureScopeExpr, "withResultFeature", expectedArguments, MethodCallExpr.class);
+        MethodCallExpr targetFieldScopeExpr = (MethodCallExpr) resultFeatureScopeExpr.getScope().get();
+        expectedArguments = NodeList.nodeList(new StringLiteralExpr(outputField.getTargetField().get()));
+        toReturn &= commonEvaluateMethodCallExpr(targetFieldScopeExpr, "withTargetField", expectedArguments, MethodCallExpr.class);
+        MethodCallExpr valueScopeExpr = (MethodCallExpr) targetFieldScopeExpr.getScope().get();
+        expectedArguments = NodeList.nodeList(new StringLiteralExpr(outputField.getValue().toString()));
+        toReturn &= commonEvaluateMethodCallExpr(valueScopeExpr, "withValue", expectedArguments, MethodCallExpr.class);
+        MethodCallExpr rankScopeExpr = (MethodCallExpr) valueScopeExpr.getScope().get();
+        expectedArguments = NodeList.nodeList(new IntegerLiteralExpr(outputField.getRank()));
+        toReturn &= commonEvaluateMethodCallExpr(rankScopeExpr, "withRank", expectedArguments, MethodCallExpr.class);
+        MethodCallExpr builderScopeExpr = (MethodCallExpr) rankScopeExpr.getScope().get();
+        expectedArguments = NodeList.nodeList(new StringLiteralExpr(outputField.getName()), new NameExpr("Collections.emptyList()"));
+        toReturn &= commonEvaluateMethodCallExpr(builderScopeExpr, "builder", expectedArguments, NameExpr.class);
+        toReturn &= builderScopeExpr.getName().equals(new SimpleName("builder"));
+        toReturn &= builderScopeExpr.getScope().get().equals(new NameExpr("KiePMMLOutputField"));
+        return toReturn;
+    }
+
     private void commonEvaluateAssignExpr(BlockStmt blockStmt, Map<String, Expression> assignExpressionMap) {
         List<AssignExpr> retrieved = blockStmt.findAll(AssignExpr.class);
         for (Map.Entry<String, Expression> entry : assignExpressionMap.entrySet()) {
@@ -199,19 +201,21 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         for (Map.Entry<String, KiePMMLOriginalTypeGeneratedType> entry : fieldTypeMap.entrySet()) {
             assertTrue(retrieved.stream()
                                .map(MethodCallExpr::getArguments)
-                               .anyMatch(arguments -> {
-                                   boolean toReturn = arguments.size() == 2;
-                                   Expression firstArgument = arguments.get(0);
-                                   Expression secondArgument = arguments.get(1);
-                                   toReturn &= firstArgument.isStringLiteralExpr() && ((StringLiteralExpr) firstArgument).getValue().equals(entry.getKey());
-                                   toReturn &= secondArgument.isObjectCreationExpr() &&
-                                           ((ObjectCreationExpr) secondArgument).getArgument(0).isStringLiteralExpr() &&
-                                           ((StringLiteralExpr) ((ObjectCreationExpr) secondArgument).getArgument(0)).getValue().equals(entry.getValue().getOriginalType()) &&
-                                           ((ObjectCreationExpr) secondArgument).getArgument(1).isStringLiteralExpr() &&
-                                           ((StringLiteralExpr) ((ObjectCreationExpr) secondArgument).getArgument(1)).getValue().equals(entry.getValue().getGeneratedType());
-                                   return toReturn;
-                               }));
+                               .anyMatch(arguments -> evaluateFieldTypeMapPopulation(entry, arguments)));
         }
+    }
+
+    private boolean evaluateFieldTypeMapPopulation(Map.Entry<String, KiePMMLOriginalTypeGeneratedType> entry, NodeList<Expression> arguments) {
+        boolean toReturn = arguments.size() == 2;
+        Expression firstArgument = arguments.get(0);
+        Expression secondArgument = arguments.get(1);
+        toReturn &= firstArgument.isStringLiteralExpr() && ((StringLiteralExpr) firstArgument).getValue().equals(entry.getKey());
+        toReturn &= secondArgument.isObjectCreationExpr() &&
+                ((ObjectCreationExpr) secondArgument).getArgument(0).isStringLiteralExpr() &&
+                ((StringLiteralExpr) ((ObjectCreationExpr) secondArgument).getArgument(0)).getValue().equals(entry.getValue().getOriginalType()) &&
+                ((ObjectCreationExpr) secondArgument).getArgument(1).isStringLiteralExpr() &&
+                ((StringLiteralExpr) ((ObjectCreationExpr) secondArgument).getArgument(1)).getValue().equals(entry.getValue().getGeneratedType());
+        return toReturn;
     }
 
     private boolean commonEvaluateMethodCallExpr(MethodCallExpr toEvaluate, String name, NodeList<Expression> expectedArguments, Class<? extends Expression> expectedScopeType) {
@@ -226,6 +230,15 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         return toReturn;
     }
 
+    /**
+     * Return a <code>List&lt;MethodCallExpr&gt;</code> where every element <b>scope' name</b> is <code>scope</code>
+     * and every element <b>name</b> is <code>method</code>
+     * @param blockStmt
+     * @param expectedSize
+     * @param scope
+     * @param method
+     * @return
+     */
     private List<MethodCallExpr> getMethodCallExprList(BlockStmt blockStmt, int expectedSize, String scope, String method) {
         Stream<Statement> statementStream = getStatementStream(blockStmt, expectedSize);
         return statementStream
@@ -233,12 +246,23 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
                 .map(expressionStmt -> ((ExpressionStmt) expressionStmt).getExpression())
                 .filter(expression -> expression instanceof MethodCallExpr)
                 .map(expression -> (MethodCallExpr) expression)
-                .filter(methodCallExpr ->
-                                methodCallExpr.getScope().isPresent() &&
-                                        methodCallExpr.getScope().get().isNameExpr() &&
-                                        ((NameExpr) methodCallExpr.getScope().get()).getName().asString().equals(scope) &&
-                                        methodCallExpr.getName().asString().equals(method))
+                .filter(methodCallExpr -> evaluateMethodCallExpr(methodCallExpr, scope, method))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Verify the <b>scope' name</b> scope of the given <code>MethodCallExpr</code> is <code>scope</code>
+     * and the <b>name</b> of the given <code>MethodCallExpr</code> is <code>method</code>
+     * @param methodCallExpr
+     * @param scope
+     * @param method
+     * @return
+     */
+    private boolean evaluateMethodCallExpr(MethodCallExpr methodCallExpr, String scope, String method) {
+        return methodCallExpr.getScope().isPresent() &&
+                methodCallExpr.getScope().get().isNameExpr() &&
+                ((NameExpr) methodCallExpr.getScope().get()).getName().asString().equals(scope) &&
+                methodCallExpr.getName().asString().equals(method);
     }
 
     private Stream<Statement> getStatementStream(BlockStmt blockStmt, int expectedSize) {
