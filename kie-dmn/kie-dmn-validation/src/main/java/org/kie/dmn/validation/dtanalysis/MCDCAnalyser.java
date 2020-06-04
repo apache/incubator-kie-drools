@@ -63,12 +63,12 @@ public class MCDCAnalyser {
         this.dt = dt;
     }
 
-    public void compute() {
+    public List<PosNegBlock> compute() {
         if (dt.getHitPolicy() != HitPolicy.UNIQUE && dt.getHitPolicy() != HitPolicy.ANY && dt.getHitPolicy() != HitPolicy.PRIORITY) {
-            return; // cannot analyse.
+            return Collections.emptyList(); // cannot analyse.
         }
         if (!ddtaTable.getColIDsStringWithoutEnum().isEmpty()) {
-            return; // if not enumerated output values, cannot analyse.
+            return Collections.emptyList(); // if not enumerated output values, cannot analyse.
         }
 
         // Step1
@@ -116,6 +116,7 @@ public class MCDCAnalyser {
         if (LOG.isDebugEnabled()) {
             debugOutputAndOpenXLSX();
         }
+        return selectedBlocks;
     }
 
     private void debugOutputAndOpenXLSX() {

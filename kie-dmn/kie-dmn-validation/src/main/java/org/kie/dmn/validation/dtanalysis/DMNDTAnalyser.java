@@ -62,6 +62,7 @@ import org.kie.dmn.model.api.UnaryTests;
 import org.kie.dmn.validation.DMNValidator;
 import org.kie.dmn.validation.DMNValidator.Validation;
 import org.kie.dmn.validation.dtanalysis.DMNDTAnalyserValueFromNodeVisitor.DMNDTAnalyserOutputClauseVisitor;
+import org.kie.dmn.validation.dtanalysis.MCDCAnalyser.PosNegBlock;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
 import org.kie.dmn.validation.dtanalysis.model.BoundValueComparator;
 import org.kie.dmn.validation.dtanalysis.model.DDTAInputClause;
@@ -149,7 +150,8 @@ public class DMNDTAnalyser {
         analysis.computeHitPolicyRecommender();
         if (flags.contains(Validation.COMPUTE_DECISION_TABLE_MCDC)) {
             LOG.debug("mcdc.");
-            new MCDCAnalyser(ddtaTable, dt).compute();
+            List<PosNegBlock> selectedBlocks = new MCDCAnalyser(ddtaTable, dt).compute();
+            analysis.setMCDCSelectedBlocks(selectedBlocks);
         }
         return analysis;
     }
