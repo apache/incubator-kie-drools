@@ -22,7 +22,7 @@ import {
 import { FilterIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
 import { Redirect, RouteComponentProps } from 'react-router';
-import './DomainExplorerDashboard.css';
+import './DomainExplorerPage.css';
 import DomainExplorerColumnPicker from '../../Organisms/DomainExplorerColumnPicker/DomainExplorerColumnPicker';
 import DomainExplorerTable from '../../Organisms/DomainExplorerTable/DomainExplorerTable';
 import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
@@ -42,7 +42,7 @@ interface LocationProps {
   selected?: any[];
 }
 
-const DomainExplorerDashboard: React.FC<
+const DomainExplorerPage: React.FC<
   IOwnProps &
     RouteComponentProps<MatchProps, {}, LocationProps> &
     InjectedOuiaProps
@@ -308,4 +308,4 @@ const DomainExplorerDashboard: React.FC<
   );
 };
 
-export default React.memo(withOuiaContext(DomainExplorerDashboard));
+export default React.memo(withOuiaContext(DomainExplorerPage));

@@ -16,7 +16,7 @@ import {
 } from '@kogito-apps/common';
 import DataListContainer from '../DataListContainer/DataListContainer';
 import ProcessDetailsPage from '../ProcessDetailsPage/ProcessDetailsPage';
-import DomainExplorerDashboard from '../DomainExplorerDashboard/DomainExplorerDashboard';
+import DomainExplorerPage from '../DomainExplorerPage/DomainExplorerPage';
 import DomainExplorerLandingPage from '../DomainExplorerLandingPage/DomainExplorerLandingPage';
 import './PageLayoutComponent.css';
 import managementConsoleLogo from '../../../static/managementConsoleLogo.svg';
@@ -102,7 +102,7 @@ const PageLayoutComponent: React.FC<IOwnProps & InjectedOuiaProps> = ({
             exact
             path="/DomainExplorer/:domainName"
             render={_props => (
-              <DomainExplorerDashboard {..._props} domains={domains} />
+              <DomainExplorerPage {..._props} domains={domains} />
             )}
           />
           <Route

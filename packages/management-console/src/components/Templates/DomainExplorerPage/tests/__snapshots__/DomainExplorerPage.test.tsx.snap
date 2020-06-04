@@ -94,7 +94,7 @@ exports[`Domain Explorer Dashboard component Check error response for getPicker 
         }
         consumerContext={null}
       >
-        <DomainExplorerDashboard
+        <DomainExplorerPage
           domains={
             Array [
               "Travels",
@@ -349,7 +349,7 @@ exports[`Domain Explorer Dashboard component Check error response for getPicker 
               </PageSection>
             </ServerErrors>
           </withRouter(ServerErrors)>
-        </DomainExplorerDashboard>
+        </DomainExplorerPage>
       </ComponentWithOuia>
     </Memo()>
   </Router>
@@ -427,7 +427,7 @@ exports[`Domain Explorer Dashboard component Check error response for getQueryFi
     }
     consumerContext={null}
   >
-    <DomainExplorerDashboard
+    <DomainExplorerPage
       domains={
         Array [
           "Travels",
@@ -682,7 +682,7 @@ exports[`Domain Explorer Dashboard component Check error response for getQueryFi
           </PageSection>
         </ServerErrors>
       </withRouter(ServerErrors)>
-    </DomainExplorerDashboard>
+    </DomainExplorerPage>
   </ComponentWithOuia>
 </Memo()>
 `;
@@ -781,7 +781,7 @@ exports[`Domain Explorer Dashboard component Check error response for getQueryTy
         }
         consumerContext={null}
       >
-        <DomainExplorerDashboard
+        <DomainExplorerPage
           domains={
             Array [
               "Travels",
@@ -1036,7 +1036,7 @@ exports[`Domain Explorer Dashboard component Check error response for getQueryTy
               </PageSection>
             </ServerErrors>
           </withRouter(ServerErrors)>
-        </DomainExplorerDashboard>
+        </DomainExplorerPage>
       </ComponentWithOuia>
     </Memo()>
   </Router>
@@ -1114,7 +1114,7 @@ exports[`Domain Explorer Dashboard component Mock query testing 1`] = `
     }
     consumerContext={null}
   >
-    <DomainExplorerDashboard
+    <DomainExplorerPage
       domains={
         Array [
           "Travels",
@@ -1562,7 +1562,7 @@ exports[`Domain Explorer Dashboard component Mock query testing 1`] = `
           </PageSection>
         </ServerErrors>
       </withRouter(ServerErrors)>
-    </DomainExplorerDashboard>
+    </DomainExplorerPage>
   </ComponentWithOuia>
 </Memo()>
 `;
@@ -1661,7 +1661,7 @@ exports[`Domain Explorer Dashboard component Snapshot test 1`] = `
         }
         consumerContext={null}
       >
-        <DomainExplorerDashboard
+        <DomainExplorerPage
           domains={
             Array [
               "Travels",
@@ -2109,7 +2109,7 @@ exports[`Domain Explorer Dashboard component Snapshot test 1`] = `
               </PageSection>
             </ServerErrors>
           </withRouter(ServerErrors)>
-        </DomainExplorerDashboard>
+        </DomainExplorerPage>
       </ComponentWithOuia>
     </Memo()>
   </Router>
@@ -2184,7 +2184,7 @@ exports[`Domain Explorer Dashboard component check assertions on rememberedParam
         }
         consumerContext={null}
       >
-        <DomainExplorerDashboard
+        <DomainExplorerPage
           domains={
             Array [
               "Travels",
@@ -2426,7 +2426,7 @@ exports[`Domain Explorer Dashboard component check assertions on rememberedParam
               </PageSection>
             </ServerErrors>
           </withRouter(ServerErrors)>
-        </DomainExplorerDashboard>
+        </DomainExplorerPage>
       </ComponentWithOuia>
     </Memo()>
   </Router>
