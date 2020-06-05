@@ -19,6 +19,7 @@ package org.kie.dmn.validation.dtanalysis.mcdc;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -53,6 +54,8 @@ import org.kie.dmn.validation.dtanalysis.AbstractDTAnalysisTest;
 import org.kie.dmn.validation.dtanalysis.mcdc.MCDCAnalyser.PosNegBlock;
 import org.kie.dmn.validation.dtanalysis.mcdc.MCDCAnalyser.Record;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -63,8 +66,10 @@ import static org.kie.dmn.validation.DMNValidator.Validation.COMPUTE_DECISION_TA
 
 public class ExampleMCDCTest extends AbstractDTAnalysisTest {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ExampleMCDCTest.class);
+
     @Test
-    public void test1() {
+    public void test1() throws Exception {
         final String resourceFileName = "example1.dmn";
         List<DMNMessage> validate = validator.validate(getReader(resourceFileName), ANALYZE_DECISION_TABLE, COMPUTE_DECISION_TABLE_MCDC);
 
@@ -74,10 +79,12 @@ public class ExampleMCDCTest extends AbstractDTAnalysisTest {
 
         assertMCDCCases(resourceFileName, analysis.getSource(), mcdcCases);
         debugOutputAndOpenXLSX(analysis.getSource(), analysis.getMCDCSelectedBlocks());
+        String mcdc2tck = MCDC2TCKGenerator.mcdc2tck(analysis.getSource(), analysis.getMCDCSelectedBlocks());
+        debugTCKXML(mcdc2tck);
     }
 
     @Test
-    public void test2() {
+    public void test2() throws Exception {
         final String resourceFileName = "example2.dmn";
         List<DMNMessage> validate = validator.validate(getReader(resourceFileName), ANALYZE_DECISION_TABLE, COMPUTE_DECISION_TABLE_MCDC);
 
@@ -87,6 +94,8 @@ public class ExampleMCDCTest extends AbstractDTAnalysisTest {
 
         assertMCDCCases(resourceFileName, analysis.getSource(), mcdcCases);
         debugOutputAndOpenXLSX(analysis.getSource(), analysis.getMCDCSelectedBlocks());
+        String mcdc2tck = MCDC2TCKGenerator.mcdc2tck(analysis.getSource(), analysis.getMCDCSelectedBlocks());
+        debugTCKXML(mcdc2tck);
     }
 
     public static class MCDCListener implements DMNRuntimeEventListener {
@@ -236,5 +245,22 @@ public class ExampleMCDCTest extends AbstractDTAnalysisTest {
             throw new UnsupportedOperationException();
         }
         LOG.trace(System.getProperty("java.io.tmpdir"));
+    }
+
+    private static void debugTCKXML(String xmlContent) throws Exception {
+        File file = Files.createTempFile("mcdcTCK", ".xml").toFile();
+        FileWriter fw = new FileWriter(file);
+        fw.append(xmlContent);
+        fw.close();
+        if (Desktop.isDesktopSupported()) {
+            try {
+                Desktop.getDesktop().open(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            throw new UnsupportedOperationException();
+        }
+        LOG.debug(System.getProperty("java.io.tmpdir"));
     }
 }
