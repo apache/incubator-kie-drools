@@ -35,49 +35,51 @@ public interface ProcessInstance extends org.kie.api.runtime.process.ProcessInst
 
     void setProcess(Process process);
 
-    Process getProcess();   
+    Process getProcess();
 
     void setState(int state);
-    
+
     void setState(int state, String outcome);
-    
+
     void setState(int state, String outcome, Object faultData);
-    
+
     void setErrorState(NodeInstance nodeInstanceInError, Exception e);
-    
+
     void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime);
-    
+
     InternalKnowledgeRuntime getKnowledgeRuntime();
 
     void start();
-    
+
     void start(String tigger);
-    
+
     String getOutcome();
-    
+
     void setParentProcessInstanceId(String parentId);
-    
+
     void setRootProcessInstanceId(String parentId);
-    
+
     Map<String, Object> getMetaData();
 
-	Object getFaultData();
-	
-	void setSignalCompletion(boolean signalCompletion);
-	
-	boolean isSignalCompletion();
-	
-	String getDeploymentId();
-	
-	void setDeploymentId(String deploymentId);
-	
-	Date getStartDate();
+    Object getFaultData();
 
-	int getSlaCompliance();
-	
-	Date getSlaDueDate();
-	
-	void configureSLA();
-    
-	void setReferenceId(String referenceId);
+    void setSignalCompletion(boolean signalCompletion);
+
+    boolean isSignalCompletion();
+
+    String getDeploymentId();
+
+    void setDeploymentId(String deploymentId);
+
+    Date getStartDate();
+
+    void setStartDate(Date date);
+
+    int getSlaCompliance();
+
+    Date getSlaDueDate();
+
+    void configureSLA();
+
+    void setReferenceId(String referenceId);
 }

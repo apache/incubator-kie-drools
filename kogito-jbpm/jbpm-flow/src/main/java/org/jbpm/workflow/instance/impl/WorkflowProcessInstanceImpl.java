@@ -474,7 +474,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     @Override
     public void start(String trigger) {
         synchronized (this) {
-            internalSetStartDate(new Date());
+            setStartDate(new Date());
             registerExternalEventNodeListeners();
             // activate timer event sub processes
             Node[] nodes = getNodeContainer().getNodes();
@@ -989,7 +989,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         return endDate;
     }
 
-    public void internalSetStartDate(Date startDate) {
+    public void setStartDate(Date startDate) {
         if (this.startDate == null) {
             this.startDate = startDate;
         }

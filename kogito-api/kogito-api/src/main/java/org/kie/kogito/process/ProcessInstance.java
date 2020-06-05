@@ -16,6 +16,7 @@
 package org.kie.kogito.process;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -168,6 +169,12 @@ public interface ProcessInstance<T> {
      * @return description of the process instance
      */
     String description();
+
+    /**
+     * Returns startDate of this process instance
+     * @return
+     */
+    Date startDate();
 
     /**
      * Returns process error in case process instance is in error state.

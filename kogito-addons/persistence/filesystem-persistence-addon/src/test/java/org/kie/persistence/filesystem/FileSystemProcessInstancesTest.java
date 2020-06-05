@@ -15,15 +15,6 @@
 
 package org.kie.persistence.filesystem;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import java.util.Collections;
 
 import org.drools.core.io.impl.ClassPathResource;
@@ -46,6 +37,15 @@ import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.kogito.uow.UnitOfWork;
 import org.kie.kogito.uow.UnitOfWorkManager;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 
 public class FileSystemProcessInstancesTest {
 
@@ -61,15 +61,48 @@ public class FileSystemProcessInstancesTest {
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
 
         processInstance.start();
+
         assertThat(processInstance.status()).isEqualTo(STATE_ACTIVE);
         assertThat(processInstance.description()).isEqualTo("User Task");
 
         assertThat(process.instances().values()).hasSize(1);
-        
+
         FileSystemProcessInstances fileSystemBasedStorage = (FileSystemProcessInstances) process.instances();
         verify(fileSystemBasedStorage, times(1)).create(any(), any());
         verify(fileSystemBasedStorage, times(1)).setMetadata(any(), eq(FileSystemProcessInstances.PI_DESCRIPTION), eq("User Task"));
         verify(fileSystemBasedStorage, times(1)).setMetadata(any(), eq(FileSystemProcessInstances.PI_STATUS), eq("1"));
+
+        String testVar = (String) processInstance.variables().get("test");
+        assertThat(testVar).isEqualTo("test");
+
+        assertThat(processInstance.description()).isEqualTo("User Task");
+
+        WorkItem workItem = processInstance.workItems(securityPolicy).get(0);
+        assertThat(workItem).isNotNull();
+        assertThat(workItem.getParameters().get("ActorId")).isEqualTo("john");
+        processInstance.completeWorkItem(workItem.getId(), null, securityPolicy);
+        assertThat(processInstance.status()).isEqualTo(STATE_COMPLETED);
+
+        fileSystemBasedStorage = (FileSystemProcessInstances) process.instances();
+        verify(fileSystemBasedStorage, times(2)).remove(any());
+    }
+    
+    @Test
+    public void testBasicFlowWithStartFrom() {
+
+        BpmnProcess process = (BpmnProcess) BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
+        process.setProcessInstancesFactory(new FileSystemProcessInstancesFactory());
+        process.configure();
+
+        ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
+
+        processInstance.startFrom("_2");
+        
+        assertThat(processInstance.status()).isEqualTo(STATE_ACTIVE);
+        assertThat(processInstance.description()).isEqualTo("User Task");
+
+        FileSystemProcessInstances fileSystemBasedStorage = (FileSystemProcessInstances) process.instances();
+        verify(fileSystemBasedStorage, times(1)).update(any(), any());
 
         String testVar = (String) processInstance.variables().get("test");
         assertThat(testVar).isEqualTo("test");

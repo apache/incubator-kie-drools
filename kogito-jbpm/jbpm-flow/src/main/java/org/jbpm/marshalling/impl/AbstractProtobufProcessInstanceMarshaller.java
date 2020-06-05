@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.protobuf.ExtensionRegistry;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
@@ -68,8 +69,6 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
-
-import com.google.protobuf.ExtensionRegistry;
 
 /**
  * Default implementation of a process instance marshaller.
@@ -747,7 +746,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         processInstance.setSignalCompletion(_instance.getSignalCompletion());
         processInstance.setDeploymentId(_instance.getDeploymentId());
         processInstance.setCorrelationKey(_instance.getCorrelationKey());
-        processInstance.internalSetStartDate(new Date(_instance.getStartDate()));
+        processInstance.setStartDate(new Date(_instance.getStartDate()));
         processInstance.internalSetSlaCompliance(_instance.getSlaCompliance());
         if (_instance.getSlaDueDate() > 0) {
             processInstance.internalSetSlaDueDate(new Date(_instance.getSlaDueDate()));

@@ -18,6 +18,7 @@ package org.kie.kogito.process.impl;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -233,6 +234,11 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     @Override
+    public Date startDate() {
+        return this.legacyProcessInstance != null && legacyProcessInstance instanceof WorkflowProcessInstanceImpl ? ((WorkflowProcessInstanceImpl) this.legacyProcessInstance).getStartDate() : null;
+    }
+
+    @Override
     public void updateVariables(T updates) {
         Map<String, Object> map = bind(updates);
 
@@ -258,7 +264,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public void startFrom(String nodeId, String referenceId) {
-
+        ((WorkflowProcessInstance) legacyProcessInstance).setStartDate(new Date());
         ((WorkflowProcessInstance) legacyProcessInstance).setState(STATE_ACTIVE);
         ((WorkflowProcessInstance) legacyProcessInstance).addEventListener("processInstanceCompleted:" + this.id, completionEventListener, false);
         if (referenceId != null) {

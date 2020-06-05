@@ -49,6 +49,7 @@ public class ServiceTaskTest extends AbstractCodegenTest {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
         
+        assertThat(processInstance.startDate()).isNotNull();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED); 
         Model result = (Model)processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKeys("s");
@@ -71,6 +72,7 @@ public class ServiceTaskTest extends AbstractCodegenTest {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
         
+        assertThat(processInstance.startDate()).isNotNull();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED); 
         Model result = (Model)processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKeys("s");
@@ -93,6 +95,7 @@ public class ServiceTaskTest extends AbstractCodegenTest {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.startFrom("_A1EE8114-BF7B-4DAF-ABD7-62EEDCFAEFD4");
         
+        assertThat(processInstance.startDate()).isNotNull();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED); 
         Model result = (Model)processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKeys("s");
