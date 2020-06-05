@@ -17,22 +17,28 @@
 package org.drools.modelcompiler;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.builder.RuleWriter;
 import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.util.lambdareplace.NonExternalisedLambdaFoundException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.api.KieServices;
-import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+/**
+ * This test class enables CheckNonExternalisedLambda option
+ * so it will throw NonExternalisedLambdaFoundException if non-externalized lambda is found.
+ *
+ * Note that other test classes don't throw NonExternalisedLambdaFoundException and proceed with non-externalized lambdas
+ */
 public class ExternalisedLambdaTest extends BaseModelTest {
 
     public ExternalisedLambdaTest(RUN_TYPE testRunType) {
@@ -61,10 +67,9 @@ public class ExternalisedLambdaTest extends BaseModelTest {
                      "  System.out.println(\"Hello\");\n" +
                      "end";
 
-        KieModuleModel kieModuleModel = KieServices.get().newKieModuleModel();
         KieSession ksession = null;
         try {
-            ksession = getKieSession(kieModuleModel, str);
+            ksession = getKieSession(str);
         } catch (NonExternalisedLambdaFoundException e) {
             fail(e.getMessage());
         }
@@ -87,10 +92,9 @@ public class ExternalisedLambdaTest extends BaseModelTest {
                      "  list.add($n);\n" +
                      "end";
 
-        KieModuleModel kieModuleModel = KieServices.get().newKieModuleModel();
         KieSession ksession = null;
         try {
-            ksession = getKieSession(kieModuleModel, str);
+            ksession = getKieSession(str);
         } catch (NonExternalisedLambdaFoundException e) {
             fail(e.getMessage());
         }
@@ -117,10 +121,9 @@ public class ExternalisedLambdaTest extends BaseModelTest {
                      "  list.add($p.getName());\n" +
                      "end";
 
-        KieModuleModel kieModuleModel = KieServices.get().newKieModuleModel();
         KieSession ksession = null;
         try {
-            ksession = getKieSession(kieModuleModel, str);
+            ksession = getKieSession(str);
         } catch (NonExternalisedLambdaFoundException e) {
             fail(e.getMessage());
         }
@@ -148,10 +151,9 @@ public class ExternalisedLambdaTest extends BaseModelTest {
                      "  list.add($i);\n" +
                      "end";
 
-        KieModuleModel kieModuleModel = KieServices.get().newKieModuleModel();
         KieSession ksession = null;
         try {
-            ksession = getKieSession(kieModuleModel, str);
+            ksession = getKieSession(str);
         } catch (NonExternalisedLambdaFoundException e) {
             fail(e.getMessage());
         }
@@ -166,4 +168,32 @@ public class ExternalisedLambdaTest extends BaseModelTest {
         Assertions.assertThat(list).containsExactlyInAnyOrder(43);
     }
 
+    @Test
+    public void testEval() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $p : Person()\n" +
+                "  eval( $p.getAge() == 40 )\n" +
+                "then\n" +
+                "  insert(new Result($p.getName()));\n" +
+                "end";
+
+        KieSession ksession = null;
+        try {
+            ksession = getKieSession(str);
+        } catch (NonExternalisedLambdaFoundException e) {
+            fail(e.getMessage());
+        }
+
+        ksession.insert( new Person( "Mario", 40 ) );
+        ksession.insert( new Person( "Mark", 37 ) );
+        ksession.insert( new Person( "Edson", 35 ) );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
+        assertEquals( 1, results.size() );
+        assertEquals( "Mario", results.iterator().next().getValue() );
+    }
 }
