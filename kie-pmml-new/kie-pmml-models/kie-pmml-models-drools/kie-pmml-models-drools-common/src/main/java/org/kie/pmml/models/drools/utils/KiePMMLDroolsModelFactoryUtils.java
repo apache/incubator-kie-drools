@@ -56,7 +56,7 @@ public class KiePMMLDroolsModelFactoryUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLDroolsModelFactoryUtils.class.getName());
 
-    public KiePMMLDroolsModelFactoryUtils() {
+    private KiePMMLDroolsModelFactoryUtils() {
         // Avoid instantiation
     }
 
