@@ -15,11 +15,9 @@
  */
 package org.kie.pmml.evaluator.assembler.service;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -31,12 +29,7 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
-import org.kie.pmml.commons.exceptions.ExternalException;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.compiler.commons.factories.KiePMMLModelFactory;
-import org.kie.pmml.compiler.executor.PMMLCompiler;
-import org.kie.pmml.compiler.executor.PMMLCompilerImpl;
 import org.kie.pmml.evaluator.api.container.PMMLPackage;
 import org.kie.pmml.evaluator.assembler.container.PMMLPackageImpl;
 import org.slf4j.Logger;
@@ -44,6 +37,12 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
+import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsCompiledFromResource;
+import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsCompiledFromResourcesWithConfigurations;
+import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsFromResourceFromPlugin;
+import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsFromResourcesWithConfigurationsFromPlugin;
+import static org.kie.pmml.evaluator.assembler.service.PMMLLoaderService.getKiePMMLModelsLoadedFromResource;
+import static org.kie.pmml.evaluator.assembler.service.PMMLLoaderService.getKiePMMLModelsLoadedFromResourcesWithConfigurations;
 
 public class PMMLAssemblerService implements KieAssemblerService {
 
@@ -53,6 +52,21 @@ public class PMMLAssemblerService implements KieAssemblerService {
     private static boolean isBuildFromMaven() {
         final String property = System.getProperty("kie-maven-plugin-launcher");
         return property != null && property.equals("true");
+    }
+
+    /**
+     * Returns an array where the first item is the <b>factory class</b> name and the second item is the <b>package</b> name,
+     * built starting from the given <code>Resource</code>
+     * @param resource
+     * @return
+     */
+    static String[] getFactoryClassNamePackageName(Resource resource) {
+        String sourcePath = resource.getSourcePath();
+        String fileName = sourcePath.substring(sourcePath.lastIndexOf('/') + 1);
+        fileName = fileName.replace(".pmml", "");
+        String packageName = getSanitizedPackageName(fileName);
+        String factoryClassName = getSanitizedClassName(fileName + "Factory");
+        return new String[]{factoryClassName, packageName};
     }
 
     @Override
@@ -66,7 +80,11 @@ public class PMMLAssemblerService implements KieAssemblerService {
         if (isBuildFromMaven()) {
             addModels(kbuilderImpl, getKiePMMLModelsFromResourcesWithConfigurationsFromPlugin(kbuilderImpl, resources));
         } else {
-            addModels(kbuilderImpl, getKiePMMLModelsFromResourcesWithConfigurations(kbuilderImpl, resources));
+            List<KiePMMLModel> toAdd = getKiePMMLModelsLoadedFromResourcesWithConfigurations(kbuilderImpl, resources);
+            if (toAdd.isEmpty()) {
+                toAdd = getKiePMMLModelsCompiledFromResourcesWithConfigurations(kbuilderImpl, resources);
+            }
+            addModels(kbuilderImpl, toAdd);
         }
     }
 
@@ -77,7 +95,11 @@ public class PMMLAssemblerService implements KieAssemblerService {
         if (isBuildFromMaven()) {
             addModels(kbuilderImpl, getKiePMMLModelsFromResourceFromPlugin(kbuilderImpl, resource));
         } else {
-            addModels(kbuilderImpl, getKiePMMLModelsFromResource(kbuilderImpl, resource));
+            List<KiePMMLModel> toAdd = getKiePMMLModelsLoadedFromResource(kbuilderImpl, resource);
+            if (toAdd.isEmpty()) {
+                toAdd = getKiePMMLModelsCompiledFromResource(kbuilderImpl, resource);
+            }
+            addModels(kbuilderImpl, toAdd);
         }
     }
 
@@ -90,98 +112,5 @@ public class PMMLAssemblerService implements KieAssemblerService {
             PMMLPackage pmmlPkg = rpkg.computeIfAbsent(ResourceType.PMML, rtp -> new PMMLPackageImpl());
             pmmlPkg.addAll(Collections.singletonList(kiePMMLModel));
         }
-    }
-
-    /**
-     * @param kbuilderImpl
-     * @param resourceWithConfigurations
-     * @return
-     * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
-     * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
-     */
-    protected List<KiePMMLModel> getKiePMMLModelsFromResourcesWithConfigurations(KnowledgeBuilderImpl kbuilderImpl, Collection<ResourceWithConfiguration> resourceWithConfigurations) {
-        return resourceWithConfigurations.stream()
-                .map(ResourceWithConfiguration::getResource)
-                .flatMap(resource -> getKiePMMLModelsFromResource(kbuilderImpl, resource).stream())
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * @param kbuilderImpl
-     * @param resourceWithConfigurations
-     * @return
-     * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
-     * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
-     */
-    protected List<KiePMMLModel> getKiePMMLModelsFromResourcesWithConfigurationsFromPlugin(KnowledgeBuilderImpl kbuilderImpl, Collection<ResourceWithConfiguration> resourceWithConfigurations) {
-        return resourceWithConfigurations.stream()
-                .map(ResourceWithConfiguration::getResource)
-                .flatMap(resource -> getKiePMMLModelsFromResourceFromPlugin(kbuilderImpl, resource).stream())
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * @param kbuilderImpl
-     * @param resource
-     * @return
-     * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
-     * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
-     */
-    protected List<KiePMMLModel> getKiePMMLModelsFromResource(KnowledgeBuilderImpl kbuilderImpl, Resource resource) {
-        String[] classNamePackageName = getFactoryClassNamePackageName(resource);
-        String factoryClassName = classNamePackageName[0];
-        String packageName = classNamePackageName[1];
-        String fullFactoryClassName = packageName + "." + factoryClassName;
-        try {
-            final Class<? extends KiePMMLModelFactory> aClass = (Class<? extends KiePMMLModelFactory>) kbuilderImpl.getRootClassLoader().loadClass(fullFactoryClassName);
-            return aClass.newInstance().getKiePMMLModels();
-        } catch (ClassNotFoundException e) {
-            logger.info(String.format("%s class not found in rootClassLoader, going to compile model", fullFactoryClassName));
-        } catch (Exception e) {
-            throw new KiePMMLException("Exception while instantiating " + fullFactoryClassName, e);
-        }
-        PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
-        try {
-            return pmmlCompiler.getModels(resource.getInputStream(), kbuilderImpl);
-        } catch (IOException e) {
-            throw new ExternalException("ExternalException", e);
-        }
-    }
-
-    /**
-     * @param kbuilderImpl
-     * @param resource
-     * @return
-     */
-    protected List<KiePMMLModel> getKiePMMLModelsFromResourceFromPlugin(KnowledgeBuilderImpl kbuilderImpl, Resource resource) {
-        PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
-        String[] classNamePackageName = getFactoryClassNamePackageName(resource);
-        String factoryClassName = classNamePackageName[0];
-        String packageName = classNamePackageName[1];
-        try {
-            return pmmlCompiler.getModelsFromPlugin(factoryClassName, packageName, resource.getInputStream(), kbuilderImpl);
-        } catch (IOException e) {
-            throw new ExternalException("ExternalException", e);
-        }
-    }
-
-    /**
-     * Returns an array where the first item is the <b>factory class</b> name and the second item is the <b>package</b> name,
-     * built starting from the given <code>Resource</code>
-     * @param resource
-     * @return
-     */
-    private String[] getFactoryClassNamePackageName(Resource resource) {
-        String sourcePath = resource.getSourcePath();
-        String fileName = sourcePath.substring(sourcePath.lastIndexOf('/') + 1);
-        fileName = fileName.replace(".pmml", "");
-        String packageName = getSanitizedPackageName(fileName);
-        String factoryClassName = getSanitizedClassName(fileName + "Factory");
-        return new String[]{factoryClassName, packageName};
-    }
-
-    private PMMLCompiler getCompiler(KnowledgeBuilderImpl kbuilderImpl) {
-        // to retrieve model implementations
-        return new PMMLCompilerImpl();
     }
 }
