@@ -90,6 +90,21 @@ public class PMMLAssemblerService implements KieAssemblerService {
         return new String[]{factoryClassName, packageName};
     }
 
+    /**
+     * Returns an array where the first item is the <b>factory class</b> name and the second item is the <b>package</b> name,
+     * built starting from the given <code>Resource</code>
+     * @param resource
+     * @return
+     */
+    static String[] getFactoryClassNamePackageName(Resource resource) {
+        String sourcePath = resource.getSourcePath();
+        String fileName = sourcePath.substring(sourcePath.lastIndexOf('/') + 1);
+        fileName = fileName.replace(".pmml", "");
+        String packageName = getSanitizedPackageName(fileName);
+        String factoryClassName = getSanitizedClassName(fileName + "Factory");
+        return new String[]{factoryClassName, packageName};
+    }
+
     @Override
     public ResourceType getResourceType() {
         return isToEnable() ? ResourceType.PMML : ResourceType.NOOP;
