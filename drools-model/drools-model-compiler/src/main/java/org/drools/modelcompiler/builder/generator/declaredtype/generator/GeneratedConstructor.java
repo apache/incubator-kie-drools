@@ -100,10 +100,12 @@ class FullArgumentConstructor implements GeneratedConstructor {
             fieldAssignStatement.add(new ExpressionStmt(superCall));
         }
 
+        int nonStaticFields = 0;
         for (FieldDefinition fieldDefinition : typeDeclarationFields) {
             if (fieldDefinition.isStatic()) {
                 continue;
             }
+            nonStaticFields++;
             String fieldName = fieldDefinition.getFieldName();
             Type returnType = parseType(fieldDefinition.getObjectType());
             addConstructorArgument(constructor, returnType, fieldName);
@@ -116,7 +118,7 @@ class FullArgumentConstructor implements GeneratedConstructor {
             generatedClass.addMember( constructor );
         }
 
-        if (!keyFields.isEmpty() && keyFields.size() != inheritedFields.size() + typeDeclarationFields.size()) {
+        if (!keyFields.isEmpty() && keyFields.size() != inheritedFields.size() + nonStaticFields) {
             generateKieFieldsConstructor(keyFields);
         }
     }
