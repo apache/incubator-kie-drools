@@ -39,7 +39,7 @@ import org.kie.dmn.model.api.InputClause;
 import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.api.NamedElement;
 import org.kie.dmn.validation.dtanalysis.DMNDTAnalysisMessage;
-import org.kie.dmn.validation.dtanalysis.MCDCAnalyser.PosNegBlock;
+import org.kie.dmn.validation.dtanalysis.mcdc.MCDCAnalyser.PosNegBlock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

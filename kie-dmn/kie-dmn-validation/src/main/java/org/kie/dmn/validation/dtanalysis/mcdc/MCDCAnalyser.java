@@ -1,4 +1,4 @@
-package org.kie.dmn.validation.dtanalysis;
+package org.kie.dmn.validation.dtanalysis.mcdc;
 
 import java.math.BigDecimal;
 import java.util.AbstractMap.SimpleEntry;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.validation.mcdc;
+package org.kie.dmn.validation.dtanalysis.mcdc;
 
 import java.awt.Desktop;
 import java.io.File;
@@ -50,8 +50,8 @@ import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.InputClause;
 import org.kie.dmn.model.api.OutputClause;
 import org.kie.dmn.validation.dtanalysis.AbstractDTAnalysisTest;
-import org.kie.dmn.validation.dtanalysis.MCDCAnalyser.PosNegBlock;
-import org.kie.dmn.validation.dtanalysis.MCDCAnalyser.Record;
+import org.kie.dmn.validation.dtanalysis.mcdc.MCDCAnalyser.PosNegBlock;
+import org.kie.dmn.validation.dtanalysis.mcdc.MCDCAnalyser.Record;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 
 import static org.hamcrest.CoreMatchers.hasItems;
