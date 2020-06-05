@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_77f33318-c120-42af-bfbd-94ef4a92c52a" id="_77f33318-c120-42af-bfbd-94ef4a92c52a" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_77f33318-c120-42af-bfbd-94ef4a92c52a" exporter="Decision Modeler" exporterVersion="6.9.3" triso:logoChoice="Default">
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:drools="http://www.drools.org/kie/dmn/1.1" xmlns:openapi="https://openapis.org/omg/extension/1.0" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:rss="http://purl.org/rss/2.0/" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"               xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_77f33318-c120-42af-bfbd-94ef4a92c52a" id="_77f33318-c120-42af-bfbd-94ef4a92c52a" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_77f33318-c120-42af-bfbd-94ef4a92c52a" exporter="Decision Modeler" exporterVersion="6.11.3" triso:logoChoice="Default">
     <semantic:extensionElements/>
-    <semantic:itemDefinition name="tRequestType" label="tRequestType">
+    <semantic:itemDefinition name="tRequestType" label="tRequestType" isCollection="false">
         <semantic:typeRef>string</semantic:typeRef>
         <semantic:allowedValues triso:constraintsType="enumeration">
-            <semantic:text>"B","R","E"</semantic:text>
+            <semantic:text>"Borrow","Reserve","Extend"</semantic:text>
         </semantic:allowedValues>
     </semantic:itemDefinition>
-    <semantic:itemDefinition name="tRequesterType" label="tRequesterType">
+    <semantic:itemDefinition name="tRequesterType" label="tRequesterType" isCollection="false">
         <semantic:typeRef>string</semantic:typeRef>
         <semantic:allowedValues triso:constraintsType="enumeration">
-            <semantic:text>"S","T"</semantic:text>
+            <semantic:text>"Student","Teacher"</semantic:text>
         </semantic:allowedValues>
     </semantic:itemDefinition>
-    <semantic:itemDefinition name="tBookType" label="tBookType">
+    <semantic:itemDefinition name="tBookType" label="tBookType" isCollection="false">
         <semantic:typeRef>string</semantic:typeRef>
         <semantic:allowedValues triso:constraintsType="enumeration">
-            <semantic:text>"R","N"</semantic:text>
+            <semantic:text>"Reference","Non reference"</semantic:text>
         </semantic:allowedValues>
     </semantic:itemDefinition>
     <semantic:itemDefinition name="tApproved" label="tApproved" isCollection="false">
@@ -25,46 +25,26 @@
             <semantic:text>"Declined","Approved"</semantic:text>
         </semantic:allowedValues>
     </semantic:itemDefinition>
-    <semantic:decisionService id="_77f33318-c120-42af-bfbd-94ef4a92c52a_DS" name="Whole Model Decision Service" triso:dynamicDecisionService="true" triso:wholeModelService="true">
-        <semantic:variable name="Whole Model Decision Service" id="_77f33318-c120-42af-bfbd-94ef4a92c52a_DS_VAR" typeRef="Any"/>
-        <semantic:outputDecision href="#_281ab7aa-6955-4cc7-beae-8dbcf1f35f1c"/>
-        <semantic:inputData href="#_721ab89a-711a-4a10-9f54-d3b93c386b8c"/>
-        <semantic:inputData href="#_99ff3885-8b53-4a2e-8992-5259300f6d83"/>
-        <semantic:inputData href="#_a8becd45-3e84-4dcb-8612-f9ce157160ad"/>
-        <semantic:inputData href="#_d0424dd0-af82-4df0-87ad-122b69e8fbf0"/>
-        <semantic:inputData href="#_27f691eb-d3a9-4a5e-94f1-32a55ec73ea3"/>
-        <semantic:inputData href="#_905570b8-866b-43e5-9992-261996b669ad"/>
-    </semantic:decisionService>
-    <semantic:decisionService id="_8ef339d3-8da2-426e-a278-77e9d60b6fa4_DS" name="Diagram Page 1" triso:dynamicDecisionService="true">
-        <semantic:variable name="Diagram Page 1" id="_8ef339d3-8da2-426e-a278-77e9d60b6fa4_DS_VAR" typeRef="Any"/>
-        <semantic:outputDecision href="#_281ab7aa-6955-4cc7-beae-8dbcf1f35f1c"/>
-        <semantic:inputData href="#_721ab89a-711a-4a10-9f54-d3b93c386b8c"/>
-        <semantic:inputData href="#_99ff3885-8b53-4a2e-8992-5259300f6d83"/>
-        <semantic:inputData href="#_a8becd45-3e84-4dcb-8612-f9ce157160ad"/>
-        <semantic:inputData href="#_d0424dd0-af82-4df0-87ad-122b69e8fbf0"/>
-        <semantic:inputData href="#_27f691eb-d3a9-4a5e-94f1-32a55ec73ea3"/>
-        <semantic:inputData href="#_905570b8-866b-43e5-9992-261996b669ad"/>
-    </semantic:decisionService>
-    <semantic:inputData id="_721ab89a-711a-4a10-9f54-d3b93c386b8c" name="col1">
-        <semantic:variable name="col1" id="_88e3b309-1cc7-4372-833e-0e25762101f6" typeRef="tRequestType"/>
+    <semantic:inputData id="_721ab89a-711a-4a10-9f54-d3b93c386b8c" name="requestType">
+        <semantic:variable name="requestType" id="_88e3b309-1cc7-4372-833e-0e25762101f6" typeRef="tRequestType"/>
     </semantic:inputData>
-    <semantic:inputData id="_99ff3885-8b53-4a2e-8992-5259300f6d83" name="col2">
-        <semantic:variable name="col2" id="_3bc838bc-ed11-4a7a-bd7c-0b424f8cba5c" typeRef="tRequesterType"/>
+    <semantic:inputData id="_99ff3885-8b53-4a2e-8992-5259300f6d83" name="requester type">
+        <semantic:variable name="requester type" id="_3bc838bc-ed11-4a7a-bd7c-0b424f8cba5c" typeRef="tRequesterType"/>
     </semantic:inputData>
-    <semantic:inputData id="_a8becd45-3e84-4dcb-8612-f9ce157160ad" name="col3">
-        <semantic:variable name="col3" id="_203bb551-4614-40ff-9489-19d71c6a8907" typeRef="tBookType"/>
+    <semantic:inputData id="_a8becd45-3e84-4dcb-8612-f9ce157160ad" name="book type">
+        <semantic:variable name="book type" id="_203bb551-4614-40ff-9489-19d71c6a8907" typeRef="tBookType"/>
     </semantic:inputData>
-    <semantic:inputData id="_d0424dd0-af82-4df0-87ad-122b69e8fbf0" name="col4">
-        <semantic:variable name="col4" id="_11c40a3c-8775-4b0c-a677-498a959e0412" typeRef="number"/>
+    <semantic:inputData id="_d0424dd0-af82-4df0-87ad-122b69e8fbf0" name="book count">
+        <semantic:variable name="book count" id="_11c40a3c-8775-4b0c-a677-498a959e0412" typeRef="number"/>
     </semantic:inputData>
-    <semantic:inputData id="_27f691eb-d3a9-4a5e-94f1-32a55ec73ea3" name="col5">
-        <semantic:variable name="col5" id="_ff06c624-6ac2-4d85-980d-f0e00486d7a5" typeRef="number"/>
+    <semantic:inputData id="_27f691eb-d3a9-4a5e-94f1-32a55ec73ea3" name="duration">
+        <semantic:variable name="duration" id="_ff06c624-6ac2-4d85-980d-f0e00486d7a5" typeRef="number"/>
     </semantic:inputData>
-    <semantic:inputData id="_905570b8-866b-43e5-9992-261996b669ad" name="col6">
-        <semantic:variable name="col6" id="_33410021-a541-46e3-b366-25086e83e907" typeRef="number"/>
+    <semantic:inputData id="_905570b8-866b-43e5-9992-261996b669ad" name="extend count">
+        <semantic:variable name="extend count" id="_33410021-a541-46e3-b366-25086e83e907" typeRef="number"/>
     </semantic:inputData>
-    <semantic:decision id="_281ab7aa-6955-4cc7-beae-8dbcf1f35f1c" name="myDecision">
-        <semantic:variable name="myDecision" id="_1d55b70c-e9fe-4c06-a97c-6d4229cdcc2d" typeRef="tApproved"/>
+    <semantic:decision id="_281ab7aa-6955-4cc7-beae-8dbcf1f35f1c" name="Approval" triso:useOutputTypeAsAnswer="false">
+        <semantic:variable name="Approval" id="_1d55b70c-e9fe-4c06-a97c-6d4229cdcc2d" typeRef="tApproved"/>
         <semantic:informationRequirement id="_635c944f-7968-4e67-93c5-16c2d2453591">
             <semantic:requiredInput href="#_721ab89a-711a-4a10-9f54-d3b93c386b8c"/>
         </semantic:informationRequirement>
@@ -83,44 +63,44 @@
         <semantic:informationRequirement id="_f2b0bcba-f12f-4db1-b78c-5d25fa9f17ec">
             <semantic:requiredInput href="#_905570b8-866b-43e5-9992-261996b669ad"/>
         </semantic:informationRequirement>
-        <semantic:decisionTable id="_e31c78b7-63ef-4112-a0bc-b0546043ebe9" hitPolicy="PRIORITY" outputLabel="myDecision" typeRef="tApproved" triso:expressionId="_2aa4d62c-d6f0-4246-8ebe-2e24838d6dc4">
-            <semantic:input id="_cf7c4b58-db4e-4bea-93a0-607fe87dfca0" triso:allowNull="true" label="col1">
+        <semantic:decisionTable id="_e31c78b7-63ef-4112-a0bc-b0546043ebe9" hitPolicy="PRIORITY" outputLabel="Approval" typeRef="tApproved" triso:expressionId="_2aa4d62c-d6f0-4246-8ebe-2e24838d6dc4">
+            <semantic:input id="_cf7c4b58-db4e-4bea-93a0-607fe87dfca0" triso:allowNull="true" label="requestType">
                 <semantic:inputExpression typeRef="tRequestType">
-                    <semantic:text>col1</semantic:text>
+                    <semantic:text>requestType</semantic:text>
                 </semantic:inputExpression>
                 <semantic:inputValues triso:constraintsType="enumeration">
-                    <semantic:text>"B","R","E",null</semantic:text>
+                    <semantic:text>"Borrow","Reserve","Extend",null</semantic:text>
                 </semantic:inputValues>
             </semantic:input>
-            <semantic:input id="_aa4cf478-e292-46bc-a049-1b4043f5b7aa" triso:allowNull="true" label="col2">
+            <semantic:input id="_aa4cf478-e292-46bc-a049-1b4043f5b7aa" triso:allowNull="true" label="requester type">
                 <semantic:inputExpression typeRef="tRequesterType">
-                    <semantic:text>col2</semantic:text>
+                    <semantic:text>requester type</semantic:text>
                 </semantic:inputExpression>
                 <semantic:inputValues triso:constraintsType="enumeration">
-                    <semantic:text>"S","T",null</semantic:text>
+                    <semantic:text>"Student","Teacher",null</semantic:text>
                 </semantic:inputValues>
             </semantic:input>
-            <semantic:input id="_490814b5-eb62-4b81-9b6c-e2e83b6891e1" triso:allowNull="true" label="col3">
+            <semantic:input id="_490814b5-eb62-4b81-9b6c-e2e83b6891e1" triso:allowNull="true" label="book type">
                 <semantic:inputExpression typeRef="tBookType">
-                    <semantic:text>col3</semantic:text>
+                    <semantic:text>book type</semantic:text>
                 </semantic:inputExpression>
                 <semantic:inputValues triso:constraintsType="enumeration">
-                    <semantic:text>"R","N",null</semantic:text>
+                    <semantic:text>"Reference","Non reference",null</semantic:text>
                 </semantic:inputValues>
             </semantic:input>
-            <semantic:input id="_67b562b6-9836-4c5f-9f02-51bb4c7c0c53" triso:allowNull="true" label="col4">
+            <semantic:input id="_67b562b6-9836-4c5f-9f02-51bb4c7c0c53" triso:allowNull="true" label="book count">
                 <semantic:inputExpression typeRef="number">
-                    <semantic:text>col4</semantic:text>
+                    <semantic:text>book count</semantic:text>
                 </semantic:inputExpression>
             </semantic:input>
-            <semantic:input id="_47e51ab9-4290-4507-af17-5a78dc7fc721" triso:allowNull="true" label="col5">
+            <semantic:input id="_47e51ab9-4290-4507-af17-5a78dc7fc721" triso:allowNull="true" label="duration">
                 <semantic:inputExpression typeRef="number">
-                    <semantic:text>col5</semantic:text>
+                    <semantic:text>duration</semantic:text>
                 </semantic:inputExpression>
             </semantic:input>
-            <semantic:input id="_8bbcc6cc-8f3b-414f-9aa9-40bf43bf421d" triso:allowNull="true" label="col6">
+            <semantic:input id="_8bbcc6cc-8f3b-414f-9aa9-40bf43bf421d" triso:allowNull="true" label="extend count">
                 <semantic:inputExpression typeRef="number">
-                    <semantic:text>col6</semantic:text>
+                    <semantic:text>extend count</semantic:text>
                 </semantic:inputExpression>
             </semantic:input>
             <semantic:output id="_d369c44c-27fe-4290-843d-9cfb094e7104" triso:allowNull="true">
@@ -131,13 +111,13 @@
             <semantic:annotation name="Description"/>
             <semantic:rule id="_0fc587d0-b542-4293-9c54-136eeb1003b2">
                 <semantic:inputEntry id="_19857755-d47f-4cbe-ba4c-0c1c4c0dd009">
-                    <semantic:text>"B"</semantic:text>
+                    <semantic:text>"Borrow"</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_dcb77ebb-ab95-4d96-8c8f-4498b34932f4">
-                    <semantic:text>"S"</semantic:text>
+                    <semantic:text>"Student"</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_53800e86-b7fc-40b4-8a44-1b831c6acb65">
-                    <semantic:text>"R"</semantic:text>
+                    <semantic:text>"Reference"</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_0b882482-fd25-4d79-8422-00f4861814cf">
                     <semantic:text>-</semantic:text>
@@ -157,13 +137,13 @@
             </semantic:rule>
             <semantic:rule id="_8f428b49-8d52-4886-92c9-70b08230781a">
                 <semantic:inputEntry id="_cd4e9797-8fd6-41e0-80cd-e4dc3b46035f">
-                    <semantic:text>"B"</semantic:text>
+                    <semantic:text>"Borrow"</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_8d696932-d822-452b-a608-f70b8ba7d1b8">
-                    <semantic:text>"T"</semantic:text>
+                    <semantic:text>"Teacher"</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_c607e3b7-a54f-4bfd-ac76-eb739e87ac9d">
-                    <semantic:text>"R"</semantic:text>
+                    <semantic:text>"Reference"</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_00508d00-ab0f-4612-8c96-a648038f7809">
                     <semantic:text>&lt;=2</semantic:text>
@@ -183,10 +163,10 @@
             </semantic:rule>
             <semantic:rule id="_54d1e067-d7da-4da6-a05b-6ae61920cc3a">
                 <semantic:inputEntry id="_fcf8bbca-8320-4886-add7-5cbdee2fb165">
-                    <semantic:text>"B"</semantic:text>
+                    <semantic:text>"Borrow"</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_440e66ea-2042-4dca-84ed-514fbccac164">
-                    <semantic:text>"S"</semantic:text>
+                    <semantic:text>"Student"</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_f827f2be-f8f9-47af-9b95-c95694f702ea">
                     <semantic:text>-</semantic:text>
@@ -209,10 +189,10 @@
             </semantic:rule>
             <semantic:rule id="_4746e4e0-530c-4191-a61c-670de50c8048">
                 <semantic:inputEntry id="_da217df3-6ab9-43cc-8d62-c4669ae28976">
-                    <semantic:text>"B"</semantic:text>
+                    <semantic:text>"Borrow"</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_85b4889a-7012-45a6-b76d-c89e634143d9">
-                    <semantic:text>"T"</semantic:text>
+                    <semantic:text>"Teacher"</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_fad37f69-00d2-4ff5-829b-69f010435235">
                     <semantic:text>-</semantic:text>
@@ -235,10 +215,10 @@
             </semantic:rule>
             <semantic:rule id="_c253d3f9-95d9-4469-8900-2edfb904aee8">
                 <semantic:inputEntry id="_214277b1-fdda-4127-937c-cce933ebff26">
-                    <semantic:text>"R"</semantic:text>
+                    <semantic:text>"Reserve"</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_fae7e9f9-52a5-4279-9c6f-5370bbbc8410">
-                    <semantic:text>"S"</semantic:text>
+                    <semantic:text>"Student"</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_c7106bec-470c-471e-9527-7a80415d307f">
                     <semantic:text>-</semantic:text>
@@ -261,10 +241,10 @@
             </semantic:rule>
             <semantic:rule id="_d85b3aa6-789d-4b26-9d89-d45c912cc4a6">
                 <semantic:inputEntry id="_31e06e9a-cb2a-4b5d-a805-6313920c2e5d">
-                    <semantic:text>"R"</semantic:text>
+                    <semantic:text>"Reserve"</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_473eee6d-fcf0-453f-b936-42f123f2b8f4">
-                    <semantic:text>"T"</semantic:text>
+                    <semantic:text>"Teacher"</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_ccb64f9a-141e-4e6e-aaba-1cfd2e3f0e49">
                     <semantic:text>-</semantic:text>
@@ -287,10 +267,10 @@
             </semantic:rule>
             <semantic:rule id="_b27e08bc-94f0-454b-af47-4cb23ea8a69d">
                 <semantic:inputEntry id="_5e2e1aeb-40df-4d6a-96bd-1d9c6cb1d865">
-                    <semantic:text>"E"</semantic:text>
+                    <semantic:text>"Extend"</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_8404866f-e8fb-49ee-8ddc-8b53ff723bc1">
-                    <semantic:text>"S"</semantic:text>
+                    <semantic:text>"Student"</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_88d79c61-00d6-43ff-bec4-b0692d046ae5">
                     <semantic:text>-</semantic:text>
@@ -313,10 +293,10 @@
             </semantic:rule>
             <semantic:rule id="_a7bd5524-86ef-4e6a-b5eb-678c58e99931">
                 <semantic:inputEntry id="_76bca63b-ff22-4b7e-8ae6-b9278d81bd9c">
-                    <semantic:text>"E"</semantic:text>
+                    <semantic:text>"Extend"</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_dbb2c73a-a31b-4c2f-b696-57b30f415734">
-                    <semantic:text>"T"</semantic:text>
+                    <semantic:text>"Teacher"</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_1388c370-f809-405d-a38a-80bce9fa095f">
                     <semantic:text>-</semantic:text>
@@ -365,69 +345,4 @@
             </semantic:rule>
         </semantic:decisionTable>
     </semantic:decision>
-    <dmndi:DMNDI>
-        <dmndi:DMNDiagram id="_8ef339d3-8da2-426e-a278-77e9d60b6fa4" triso:modelElementRef="_a39b6900-c193-4e7e-88fd-aa9084f904b0" name="Page 1">
-            <di:extension/>
-            <dmndi:Size height="1050" width="1485"/>
-            <dmndi:DMNShape id="_15b1fb74-13eb-4ae7-952a-a0afd6584ec3" dmnElementRef="_721ab89a-711a-4a10-9f54-d3b93c386b8c">
-                <dc:Bounds x="96.75882911682129" y="131" width="135.48234176635742" height="60"/>
-                <dmndi:DMNLabel sharedStyle="LS_77f33318-c120-42af-bfbd-94ef4a92c52a_0" trisodmn:defaultBounds="true"/>
-            </dmndi:DMNShape>
-            <dmndi:DMNShape id="_0d448d06-6f2e-42cf-9031-5bb2be84877f" dmnElementRef="_99ff3885-8b53-4a2e-8992-5259300f6d83">
-                <dc:Bounds x="96.75882911682129" y="225" width="135.48234176635742" height="60"/>
-                <dmndi:DMNLabel sharedStyle="LS_77f33318-c120-42af-bfbd-94ef4a92c52a_0" trisodmn:defaultBounds="true"/>
-            </dmndi:DMNShape>
-            <dmndi:DMNShape id="_157a316e-ac1d-4d86-b521-8c82f6cffe06" dmnElementRef="_a8becd45-3e84-4dcb-8612-f9ce157160ad">
-                <dc:Bounds x="96.75882911682129" y="319" width="135.48234176635742" height="60"/>
-                <dmndi:DMNLabel sharedStyle="LS_77f33318-c120-42af-bfbd-94ef4a92c52a_0" trisodmn:defaultBounds="true"/>
-            </dmndi:DMNShape>
-            <dmndi:DMNShape id="_809dcba4-17fd-4103-8c81-c59ce857b2b3" dmnElementRef="_d0424dd0-af82-4df0-87ad-122b69e8fbf0">
-                <dc:Bounds x="96.75882911682129" y="406" width="135.48234176635742" height="60"/>
-                <dmndi:DMNLabel sharedStyle="LS_77f33318-c120-42af-bfbd-94ef4a92c52a_0" trisodmn:defaultBounds="true"/>
-            </dmndi:DMNShape>
-            <dmndi:DMNShape id="_1b108f43-6fe4-42aa-a18f-d286616c20ef" dmnElementRef="_27f691eb-d3a9-4a5e-94f1-32a55ec73ea3">
-                <dc:Bounds x="96.75882911682129" y="487" width="135.48234176635742" height="60"/>
-                <dmndi:DMNLabel sharedStyle="LS_77f33318-c120-42af-bfbd-94ef4a92c52a_0" trisodmn:defaultBounds="true"/>
-            </dmndi:DMNShape>
-            <dmndi:DMNShape id="_a22371fa-8a64-4429-82d7-b0cb73e95fed" dmnElementRef="_905570b8-866b-43e5-9992-261996b669ad">
-                <dc:Bounds x="96.75882911682129" y="571" width="135.48234176635742" height="60"/>
-                <dmndi:DMNLabel sharedStyle="LS_77f33318-c120-42af-bfbd-94ef4a92c52a_0" trisodmn:defaultBounds="true"/>
-            </dmndi:DMNShape>
-            <dmndi:DMNShape id="_42c65aaa-a092-4c5a-ab6f-81a9e9b75e54" dmnElementRef="_281ab7aa-6955-4cc7-beae-8dbcf1f35f1c">
-                <dc:Bounds x="287.2411708831787" y="131" width="153" height="60"/>
-                <dmndi:DMNLabel sharedStyle="LS_77f33318-c120-42af-bfbd-94ef4a92c52a_0" trisodmn:defaultBounds="true"/>
-            </dmndi:DMNShape>
-            <dmndi:DMNEdge id="_3fb11a57-bca0-469b-84ba-5c24433840c2" dmnElementRef="_635c944f-7968-4e67-93c5-16c2d2453591">
-                <di:waypoint x="232.99680137634277" y="161"/>
-                <di:waypoint x="287.2411708831787" y="161"/>
-                <dmndi:DMNLabel sharedStyle="LS_77f33318-c120-42af-bfbd-94ef4a92c52a_0"/>
-            </dmndi:DMNEdge>
-            <dmndi:DMNEdge id="_2d02bd12-e1cd-4e4a-854d-2dd6e9e1fe89" dmnElementRef="_de53b726-0eb8-4b9a-8354-dbfb5f5da9cc">
-                <di:waypoint x="225.99680137634277" y="275"/>
-                <di:waypoint x="287.2411708831787" y="171"/>
-                <dmndi:DMNLabel sharedStyle="LS_77f33318-c120-42af-bfbd-94ef4a92c52a_0"/>
-            </dmndi:DMNEdge>
-            <dmndi:DMNEdge id="_2006c6fe-f06b-433d-93b1-c02681aafebb" dmnElementRef="_642306aa-67e4-40b8-b823-70d84558a9d2">
-                <di:waypoint x="225.99680137634277" y="369"/>
-                <di:waypoint x="303.7411708831787" y="191"/>
-                <dmndi:DMNLabel sharedStyle="LS_77f33318-c120-42af-bfbd-94ef4a92c52a_0"/>
-            </dmndi:DMNEdge>
-            <dmndi:DMNEdge id="_c45534d5-455f-46f3-8655-cd1123385d17" dmnElementRef="_de3a5c7c-5f87-4794-bdcd-337521ee4aa2">
-                <di:waypoint x="225.99680137634277" y="456"/>
-                <di:waypoint x="323.7411708831787" y="191"/>
-                <dmndi:DMNLabel sharedStyle="LS_77f33318-c120-42af-bfbd-94ef4a92c52a_0"/>
-            </dmndi:DMNEdge>
-            <dmndi:DMNEdge id="_d00eb01f-0a65-40c1-bee7-e8575d486d85" dmnElementRef="_85e591a3-a26f-4b6b-9348-e1846603763b">
-                <di:waypoint x="225.99680137634277" y="537"/>
-                <di:waypoint x="333.7411708831787" y="191"/>
-                <dmndi:DMNLabel sharedStyle="LS_77f33318-c120-42af-bfbd-94ef4a92c52a_0"/>
-            </dmndi:DMNEdge>
-            <dmndi:DMNEdge id="_f60d89c8-22f4-4bf4-9000-7cf83842afe4" dmnElementRef="_f2b0bcba-f12f-4db1-b78c-5d25fa9f17ec">
-                <di:waypoint x="225.99680137634277" y="621"/>
-                <di:waypoint x="353.7411708831787" y="191"/>
-                <dmndi:DMNLabel sharedStyle="LS_77f33318-c120-42af-bfbd-94ef4a92c52a_0"/>
-            </dmndi:DMNEdge>
-        </dmndi:DMNDiagram>
-        <dmndi:DMNStyle id="LS_77f33318-c120-42af-bfbd-94ef4a92c52a_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
-    </dmndi:DMNDI>
 </semantic:definitions>
