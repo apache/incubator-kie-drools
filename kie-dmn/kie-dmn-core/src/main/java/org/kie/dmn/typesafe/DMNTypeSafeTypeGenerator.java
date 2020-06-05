@@ -44,16 +44,25 @@ public class DMNTypeSafeTypeGenerator {
     private DMNModelImpl dmnModel;
     private final String disclaimerMarker;
 
+    private boolean withJacksonAnnotation = false;
+
     private List<TypeDefinition> types = new ArrayList<>();
 
     private static final String JAVADOC_BRNL = "<br/>\n";
 
-    public DMNTypeSafeTypeGenerator(DMNModel dmnModel, DMNAllTypesIndex index, DMNTypeSafePackageName.Factory packageName) {
+    public DMNTypeSafeTypeGenerator(DMNModel dmnModel,
+                                    DMNAllTypesIndex index,
+                                    DMNTypeSafePackageName.Factory packageName) {
         this.dmnModel = (DMNModelImpl) dmnModel;
         this.packageName = packageName;
         this.index = index;
         this.disclaimerMarker = disclaimerMarker();
-        processTypes();
+    }
+
+    // So far it's used in Kogito DMN
+    public DMNTypeSafeTypeGenerator withJacksonAnnotation() {
+        this.withJacksonAnnotation = true;
+        return this;
     }
 
     private static String disclaimerMarker() {
@@ -77,9 +86,9 @@ public class DMNTypeSafeTypeGenerator {
         return sb.toString();
     }
 
-    private void processTypes() {
+    public DMNTypeSafeTypeGenerator processTypes() {
         Set<InputDataNode> inputs = dmnModel.getInputs();
-        DMNInputSetType inputSetType = new DMNInputSetType(index);
+        DMNInputSetType inputSetType = new DMNInputSetType(index, withJacksonAnnotation);
         for (InputDataNode i : inputs) {
             inputSetType.addField(i.getName(), i.getType());
         }
@@ -89,10 +98,12 @@ public class DMNTypeSafeTypeGenerator {
         types.add(inputSetType);
 
         for (DMNType type : index.typesToGenerateByNS(dmnModel.getNamespace())) { // this generator shall only be concerned with the types belonging to this generator dmnModel.
-            DMNDeclaredType dmnDeclaredType = new DMNDeclaredType(index, type);
+            DMNDeclaredType dmnDeclaredType = new DMNDeclaredType(index, type, withJacksonAnnotation);
             dmnDeclaredType.setJavadoc(postfixToJavadoc(new StringBuilder("A representation of the DMN defined ItemDefinition type '").append(type.getName()).append("'.").toString(), dmnModel));
             types.add(dmnDeclaredType);
         }
+
+        return this;
     }
 
     public Map<String, String> generateSourceCodeOfAllTypes() {
