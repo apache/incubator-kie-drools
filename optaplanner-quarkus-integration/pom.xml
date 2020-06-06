@@ -54,6 +54,9 @@
     <version.org.jboss.resteasy>4.5.3.Final</version.org.jboss.resteasy>
     <version.com.fasterxml.jackson>2.10.3</version.com.fasterxml.jackson>
     <version.com.fasterxml.jackson.databind>2.10.3</version.com.fasterxml.jackson.databind>
+
+    <!-- TODO Quarkus is riddled with duplicate classes, see https://github.com/quarkusio/quarkus/issues/9834 -->
+    <enforcer.failOnDuplicatedClasses>false</enforcer.failOnDuplicatedClasses>
   </properties>
 
   <modules>

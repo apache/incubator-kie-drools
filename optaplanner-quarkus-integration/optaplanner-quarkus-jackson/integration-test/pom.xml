@@ -21,18 +21,6 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy</artifactId>
-      <exclusions>
-        <exclusion>
-          <!-- TODO REMOVE when upgrading to Quarkus 1.6 https://github.com/quarkusio/quarkus/pull/9839 -->
-          <groupId>com.sun.activation</groupId>
-          <artifactId>jakarta.activation</artifactId>
-        </exclusion>
-        <exclusion>
-          <!-- TODO REMOVE when upgrading Quarkus https://github.com/quarkusio/quarkus/issues/9834 -->
-          <groupId>org.jboss.spec.javax.xml.bind</groupId>
-          <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -57,13 +45,6 @@
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
       <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <!-- TODO REMOVE when upgrading Quarkus https://github.com/quarkusio/quarkus/issues/9834 -->
-          <groupId>org.apache.sling</groupId>
-          <artifactId>org.apache.sling.javax.activation</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
   </dependencies>
 
