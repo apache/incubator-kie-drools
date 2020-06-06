@@ -78,9 +78,9 @@ public class ExampleMCDCTest extends AbstractDTAnalysisTest {
         assertThat(mcdcCases, hasSize(16));
 
         assertMCDCCases(resourceFileName, analysis.getSource(), mcdcCases);
-        debugOutputAndOpenXLSX(analysis.getSource(), analysis.getMCDCSelectedBlocks());
+        //debugOutputAndOpenXLSX(analysis.getSource(), analysis.getMCDCSelectedBlocks());
         String mcdc2tck = MCDC2TCKGenerator.mcdc2tck(analysis.getSource(), analysis.getMCDCSelectedBlocks());
-        debugTCKXML(analysis.getSource(), mcdc2tck);
+        //debugTCKXML(analysis.getSource(), mcdc2tck);
     }
 
     @Test
@@ -93,9 +93,9 @@ public class ExampleMCDCTest extends AbstractDTAnalysisTest {
         assertThat(mcdcCases, hasSize(14));
 
         assertMCDCCases(resourceFileName, analysis.getSource(), mcdcCases);
-        debugOutputAndOpenXLSX(analysis.getSource(), analysis.getMCDCSelectedBlocks());
+        //debugOutputAndOpenXLSX(analysis.getSource(), analysis.getMCDCSelectedBlocks());
         String mcdc2tck = MCDC2TCKGenerator.mcdc2tck(analysis.getSource(), analysis.getMCDCSelectedBlocks());
-        debugTCKXML(analysis.getSource(), mcdc2tck);
+        //debugTCKXML(analysis.getSource(), mcdc2tck);
     }
 
     public static class MCDCListener implements DMNRuntimeEventListener {
@@ -247,7 +247,7 @@ public class ExampleMCDCTest extends AbstractDTAnalysisTest {
         LOG.trace(System.getProperty("java.io.tmpdir"));
     }
 
-    private static void debugTCKXML(DecisionTable dt, String xmlContent) throws Exception {
+    public static void debugTCKXML(DecisionTable dt, String xmlContent) throws Exception {
         File file = Files.createTempFile("mcdcTCK " + dt.getOutputLabel(), ".xml").toFile();
         FileWriter fw = new FileWriter(file);
         fw.append(xmlContent);
