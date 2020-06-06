@@ -225,7 +225,6 @@ class OptaPlannerProcessor {
                         SolverBuildTimeConfig.DEFAULT_SCORE_DRL_URL));
             }
             if (scoreDirectorFactoryConfig.getEasyScoreCalculatorClass() == null
-                    && scoreDirectorFactoryConfig.getEasyScoreCalculatorClass() == null
                     && scoreDirectorFactoryConfig.getConstraintProviderClass() == null
                     && scoreDirectorFactoryConfig.getIncrementalScoreCalculatorClass() == null
                     && scoreDirectorFactoryConfig.getScoreDrlList() == null) {
