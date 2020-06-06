@@ -117,7 +117,11 @@ public class MCDCAnalyser {
 
     private void step4() {
         Set<List<Comparable<?>>> outYetToVisit = step4whichOutputYetToVisit();
-        List<Comparable<?>> pickOutToVisit = outYetToVisit.stream().findFirst().get();
+        Optional<List<Comparable<?>>> findFirst = outYetToVisit.stream().findFirst();
+        if (!findFirst.isPresent()) {
+            throw new IllegalArgumentException("step4 was invoked despite there are no longer output to visit.");
+        }
+        List<Comparable<?>> pickOutToVisit = findFirst.get();
         List<Integer> rules = new ArrayList<>();
         for (int ruleIdx = 0; ruleIdx < ddtaTable.getRule().size(); ruleIdx++) {
             if (ddtaTable.getRule().get(ruleIdx).getOutputEntry().equals(pickOutToVisit)) {
@@ -150,7 +154,11 @@ public class MCDCAnalyser {
                 }
             }
         }
-        PosNegBlock posNegBlock = blocks.stream().sorted(Comparator.comparing(Entry::getValue)).map(Entry::getKey).findFirst().get();
+        Optional<PosNegBlock> posNegBlockFirst = blocks.stream().sorted(Comparator.comparing(Entry::getValue)).map(Entry::getKey).findFirst();
+        if (!posNegBlockFirst.isPresent()) {
+            throw new IllegalStateException("there is no candidable posNegBlocks.");
+        }
+        PosNegBlock posNegBlock = posNegBlockFirst.get();
         LOG.trace("step4 selecting block: \n{}", posNegBlock);
         selectBlock(posNegBlock);
     }
@@ -627,7 +635,7 @@ public class MCDCAnalyser {
                     curBound = bounds.remove(0); //look-ahead.
                 }
                 
-                LOG.trace("prev {} {}, cur {} {}", prevBound, null, curBound, null);
+                LOG.trace("prev {}, cur {}", prevBound, curBound);
                 if (prevBound.isUpperBound() && curBound.isLowerBound()) {
                     // do nothing.
                 } else if (prevBound.isUpperBound() && curBound.isUpperBound()) {
