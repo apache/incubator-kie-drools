@@ -74,7 +74,7 @@ public class MCDCAnalyser {
         calculateElseRuleIdx();
         calculateAllEnumValues();
 
-        // Step2
+        // Step2, 3
         int i = 1;
         while (areInputsYetToBeVisited()) {
             LOG.debug("=== Step23, iteration {}", i);
@@ -226,10 +226,6 @@ public class MCDCAnalyser {
                 if (Stream.of(posCandidate).anyMatch(x -> x == null)) {
                     continue;
                 }
-                //                if (selectedBlocks.stream().map(sb -> sb.posRecord.enums).anyMatch(x -> Arrays.equals(x, posCandidate))) {
-                //                    LOG.debug("Skipping posCandidate {} as already part of a postive record {}", posCandidate);
-                //                    continue;
-                //                }
                 List<Integer> ruleIndexesMatchingValues = ruleIndexesMatchingValues(posCandidate);
                 if (!ruleIndexesMatchingValues.remove((Integer) ruleIdx)) {
                     continue; // the posCandidate is actually matching another rule (in priorities)
@@ -247,12 +243,7 @@ public class MCDCAnalyser {
         }
         LOG.trace("3. Input {}, initial candidate blocks \n{}", idxMostMatchingRules + 1, candidateBlocks);
 
-        List<PosNegBlock> filter1 = candidateBlocks.stream()
-                                                   //.filter(b -> !getVisitedPositiveOutput().contains(b.posRecord.output))
-                                                   .collect(Collectors.toList());
-        LOG.trace("DISABLED 3.FILTER-1 blocks with output which was not already visited {}, the filtered blocks are: \n{}", getVisitedPositiveOutput(), filter1);
-        
-        Set<List<Comparable<?>>> filter1outs = filter1.stream().map(b -> b.posRecord.output).collect(Collectors.toSet());
+        Set<List<Comparable<?>>> filter1outs = candidateBlocks.stream().map(b -> b.posRecord.output).collect(Collectors.toSet());
         LOG.trace("filter1outs {}", filter1outs);
 
         if (filter1outs.stream().filter(not(getVisitedPositiveOutput()::contains)).count() > 0) {
@@ -281,7 +272,7 @@ public class MCDCAnalyser {
         List<Comparable<?>> filter1outWithLessMatchingRules = filter1outsMatchingRules.get(0).getKey();
         LOG.trace("3. positive output of those block with the less matching rules? {}", filter1outWithLessMatchingRules);
 
-        List<PosNegBlock> filter2 = filter1.stream().filter(b -> b.posRecord.output.equals(filter1outWithLessMatchingRules)).collect(Collectors.toList());
+        List<PosNegBlock> filter2 = candidateBlocks.stream().filter(b -> b.posRecord.output.equals(filter1outWithLessMatchingRules)).collect(Collectors.toList());
         LOG.trace("3.FILTER-2 blocks with output corresponding to the less matching rules {}, the blocks are: \n{}", filter1outWithLessMatchingRules, filter2);
 
         List<SimpleEntry<PosNegBlock, Integer>> blockWeighted = filter2.stream()
@@ -322,60 +313,6 @@ public class MCDCAnalyser {
         //        allEnumValues.get(index).removeAll(Arrays.asList(selected.posRecord.enums[index]));
     }
 
-    public static class Check2biii_iv {
-
-        public final int numOfDifferent;
-        public final PosNegBlock block;
-
-        public Check2biii_iv(int numOfDifferent, PosNegBlock block) {
-            this.numOfDifferent = numOfDifferent;
-            this.block = block;
-        }
-
-    }
-
-    private Optional<Check2biii_iv> check2biii_iv(List<PosNegBlock> value) {
-        Check2biii_iv candidate = new Check2biii_iv(0, null);
-        for (PosNegBlock b : value) {
-            Set<List<Comparable<?>>> bNegOutput = b.negRecords.stream().map(nr -> nr.output).collect(Collectors.toSet());
-            bNegOutput.removeAll(getVisitedPositiveOutput());
-            if (bNegOutput.size() > candidate.numOfDifferent) {
-                candidate = new Check2biii_iv(bNegOutput.size(), b);
-            }
-        }
-        LOG.debug("check2biii_iv candidate: \n{}", candidate.block);
-        if (candidate.block != null) {
-            return Optional.of(candidate);
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    private Optional<PosNegBlock> check2bii(List<PosNegBlock> value) {
-        for (PosNegBlock b : value) {
-            List<Record> negRecords = b.negRecords;
-            boolean anyMatch = negRecords.stream().anyMatch(nr -> selectedBlocks.stream().map(sb -> sb.posRecord).anyMatch(pr -> pr.enums.equals(nr.enums)));
-            if (anyMatch) {
-                LOG.debug("check2bii identified; one negative case is a duplicate of a prior (positive) case; this happens for in the block. \n{}", b);
-                return Optional.of(b);
-            }
-        }
-        LOG.debug("None check2bii.");
-        return Optional.empty();
-    }
-
-    private Optional<PosNegBlock> check2bi(List<PosNegBlock> value) {
-        for (PosNegBlock b : value) {
-            Set<List<Comparable<?>>> negOutputSet = b.negRecords.stream().map(neg -> neg.output).collect(Collectors.toSet());
-            if (negOutputSet.size() > 1 && negOutputSet.size() == b.negRecords.size()) {
-                LOG.debug("check2bi identified; outputs {} of the block are all different and they are more than one. \n{}", negOutputSet, b);
-                return Optional.of(b);
-            }
-        }
-        LOG.debug("None check2bi.");
-        return Optional.empty();
-    }
-
     private List<List<Comparable<?>>> getVisitedPositiveOutput() {
         return selectedBlocks.stream().map(b -> b.posRecord.output).collect(Collectors.toList());
     }
@@ -399,36 +336,6 @@ public class MCDCAnalyser {
         }
         Integer max = byIndex.values().stream().map(List::size).max(Integer::compareTo).orElse(0);
         List<Integer> collect = byIndex.entrySet().stream().filter(kv -> kv.getValue().size() == max).map(Entry::getKey).collect(Collectors.toList());
-        return collect;
-    }
-
-    private List<Entry<Integer, List<PosNegBlock>>> whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue(List<Integer> indexesWithMoreElements) {
-        Map<Integer, List<PosNegBlock>> results = new HashMap<>();
-        indexesWithMoreElements.forEach(i -> results.put(i, new ArrayList<>()));
-        for (Integer idx : indexesWithMoreElements) {
-            Object value = allEnumValues.get(idx).get(0);
-            List<Integer> matchingRulesForInput = matchingRulesForInput(idx, value);
-            for (int ruleIdx : matchingRulesForInput) {
-                Object[] knownValues = new Object[ddtaTable.getInputs().size()];
-                knownValues[idx] = value;
-                Object[] posCandidate = findValuesForRule(ruleIdx, knownValues, Collections.unmodifiableList(allEnumValues));
-                if (Stream.of(posCandidate).anyMatch(x -> x == null)) {
-                    continue;
-                }
-                Record posCandidateRecord = new Record(ruleIdx, posCandidate, ddtaTable.getRule().get(ruleIdx).getOutputEntry());
-                Optional<PosNegBlock> calculatePosNegBlock = calculatePosNegBlock(idx, value, posCandidateRecord, Collections.unmodifiableList(allEnumValues));
-                if (calculatePosNegBlock.isPresent()) {
-                    results.get(idx).add(calculatePosNegBlock.get());
-                }
-            }
-        }
-
-        for (Entry<Integer, List<PosNegBlock>> e : results.entrySet()) {
-            LOG.trace("Input {}, has the following number of rules matching the first input value \n{}", e.getKey() + 1, e.getValue());
-        }
-
-        Integer min = results.values().stream().map(List::size).min(Integer::compareTo).orElse(0);
-        List<Entry<Integer, List<PosNegBlock>>> collect = results.entrySet().stream().filter(kv -> kv.getValue().size() == min).collect(Collectors.toList());
         return collect;
     }
 
@@ -683,17 +590,6 @@ public class MCDCAnalyser {
         return result;
     }
 
-    private List<Integer> indexesWithMoreElements(List<List<?>> cc) {
-        Integer max = cc.stream().map(List::size).max(Integer::compareTo).orElse(0);
-        List<Integer> indexes = new ArrayList<>();
-        for (int i = 0; i < cc.size(); i++) {
-            if (cc.get(i).size() == max) {
-                indexes.add(i);
-            }
-        }
-        return indexes;
-    }
-
     private List<Integer> matchingRulesForInput(int colIdx, Object value) {
         List<Integer> results = new ArrayList<>();
         List<DDTARule> rules = ddtaTable.getRule();
@@ -847,10 +743,6 @@ public class MCDCAnalyser {
                 }
             }
         }
-    }
-
-    private boolean isBoundOnElseRule(Bound b) {
-        return elseRuleIdx.orElse(-1).equals(b.getParent().getRule() - 1);
     }
 
     private Object inBetween(Bound a, Bound b) {
