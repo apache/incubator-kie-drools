@@ -1,7 +1,8 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import ProcessDetailsTimeline from '../ProcessDetailsTimeline';
-import { ProcessInstanceState } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import ProcessInstanceState = GraphQL.ProcessInstanceState;
 
 const props = {
   data: {

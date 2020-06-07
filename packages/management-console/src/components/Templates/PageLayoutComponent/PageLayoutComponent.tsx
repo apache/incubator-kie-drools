@@ -12,7 +12,7 @@ import {
   PageNotFound,
   NoData,
   ouiaAttribute,
-  useGetQueryFieldsQuery
+  GraphQL
 } from '@kogito-apps/common';
 import DataListContainer from '../DataListContainer/DataListContainer';
 import ProcessDetailsPage from '../ProcessDetailsPage/ProcessDetailsPage';
@@ -68,7 +68,7 @@ const PageLayoutComponent: React.FC<IOwnProps & InjectedOuiaProps> = ({
   const BrandClick = () => {
     props.history.push('/ProcessInstances');
   };
-  const getQuery = useGetQueryFieldsQuery();
+  const getQuery = GraphQL.useGetQueryFieldsQuery();
   const availableDomains =
     !getQuery.loading && getQuery.data && getQuery.data.__type.fields.slice(2);
   const domains = [];

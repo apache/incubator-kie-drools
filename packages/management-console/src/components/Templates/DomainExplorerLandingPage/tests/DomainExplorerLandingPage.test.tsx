@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import DomainExplorerLandingPage from '../DomainExplorerLandingPage';
-import { useGetQueryFieldsQuery } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
 import { MemoryRouter as Router } from 'react-router-dom';
 
 jest.mock('@kogito-apps/common/src/graphql/types');
@@ -14,7 +14,7 @@ describe('Domain Explorer Landing Page Component', () => {
   };
   it('Snapshot test', () => {
     // @ts-ignore
-    useGetQueryFieldsQuery.mockReturnValue({
+    GraphQL.useGetQueryFieldsQuery.mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -40,12 +40,12 @@ describe('Domain Explorer Landing Page Component', () => {
         <DomainExplorerLandingPage {...props} />
       </Router>
     );
-    expect(useGetQueryFieldsQuery).toHaveBeenCalled();
+    expect(GraphQL.useGetQueryFieldsQuery).toHaveBeenCalled();
     expect(wrapper).toMatchSnapshot();
   });
   it('Assertions', () => {
     // @ts-ignore
-    useGetQueryFieldsQuery.mockReturnValue({
+    GraphQL.useGetQueryFieldsQuery.mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -99,7 +99,7 @@ describe('Domain Explorer Landing Page Component', () => {
         <DomainExplorerLandingPage {...props} />
       </Router>
     );
-    expect(useGetQueryFieldsQuery).toHaveBeenCalled();
+    expect(GraphQL.useGetQueryFieldsQuery).toHaveBeenCalled();
     expect(wrapper).toMatchSnapshot();
   });
 });

@@ -15,9 +15,7 @@ import {
 import {
   ServerErrors,
   ouiaPageTypeAndObjectId,
-  useGetQueryTypesQuery,
-  useGetQueryFieldsQuery,
-  useGetColumnPickerAttributesQuery
+  GraphQL
 } from '@kogito-apps/common';
 import { FilterIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
@@ -100,9 +98,9 @@ const DomainExplorerPage: React.FC<
     return ouiaPageTypeAndObjectId(ouiaContext, 'domain-explorer', domainName);
   });
 
-  const getQuery = useGetQueryFieldsQuery();
-  const getQueryTypes = useGetQueryTypesQuery();
-  const getPicker = useGetColumnPickerAttributesQuery({
+  const getQuery = GraphQL.useGetQueryFieldsQuery();
+  const getQueryTypes = GraphQL.useGetQueryTypesQuery();
+  const getPicker = GraphQL.useGetColumnPickerAttributesQuery({
     variables: { columnPickerType: domainName }
   });
 

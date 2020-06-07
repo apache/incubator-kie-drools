@@ -6,7 +6,8 @@ import {
   Text,
   TextVariants
 } from '@patternfly/react-core';
-import { ProcessInstance } from '../../../graphql/types';
+import { GraphQL } from '../../../graphql/types';
+import ProcessInstance = GraphQL.ProcessInstance;
 
 interface IOwnProps {
   processInstanceData: Pick<

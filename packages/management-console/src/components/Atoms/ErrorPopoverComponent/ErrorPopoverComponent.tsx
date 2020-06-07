@@ -5,7 +5,8 @@ import {
   handleRetry,
   stateIconCreator
 } from '../../../utils/Utils';
-import { ProcessInstance } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import ProcessInstance = GraphQL.ProcessInstance;
 interface IOwnProps {
   processInstanceData: ProcessInstance;
   setModalTitle: (modalTitle: string) => void;

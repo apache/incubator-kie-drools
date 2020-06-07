@@ -11,9 +11,7 @@ import {
 import {
   ServerErrors,
   ouiaPageTypeAndObjectId,
-  useGetProcessInstancesLazyQuery,
-  ProcessInstanceState,
-  useGetProcessInstancesWithBusinessKeyLazyQuery
+  GraphQL
 } from '@kogito-apps/common';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -26,6 +24,7 @@ import LoadMoreComponent from '../../Atoms/LoadMoreComponent/LoadMoreComponent';
 import ProcessBulkModalComponent from '../../Atoms/ProcessBulkModalComponent/ProcessBulkModalComponent';
 import axios from 'axios';
 import { InfoCircleIcon } from '@patternfly/react-icons';
+import ProcessInstanceState = GraphQL.ProcessInstanceState;
 
 const DataListContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
   const [defaultPageSize] = useState(10);
@@ -55,7 +54,7 @@ const DataListContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
   const [
     getProcessInstances,
     { loading, data, error }
-  ] = useGetProcessInstancesLazyQuery({
+  ] = GraphQL.useGetProcessInstancesLazyQuery({
     fetchPolicy: 'network-only',
     notifyOnNetworkStatusChange: true
   });
@@ -63,7 +62,7 @@ const DataListContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
   const [
     getProcessInstancesWithBusinessKey,
     getProcessInstancesWithBK
-  ] = useGetProcessInstancesWithBusinessKeyLazyQuery({
+  ] = GraphQL.useGetProcessInstancesWithBusinessKeyLazyQuery({
     fetchPolicy: 'network-only',
     notifyOnNetworkStatusChange: true
   });

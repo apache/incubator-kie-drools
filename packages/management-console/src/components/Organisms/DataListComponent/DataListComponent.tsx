@@ -1,16 +1,13 @@
 import React, { useEffect } from 'react';
 import { DataList, Bullseye } from '@patternfly/react-core';
-import {
-  ServerErrors,
-  useGetProcessInstancesQuery,
-  ProcessInstanceState
-} from '@kogito-apps/common';
+import { ServerErrors, GraphQL } from '@kogito-apps/common';
 import '../../Templates/DataListContainer/DataList.css';
 import DataListItemComponent from '../../Molecules/DataListItemComponent/DataListItemComponent';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateComponent';
 import '@patternfly/patternfly/patternfly-addons.css';
 import './DataListComponent.css';
+import ProcessInstanceState = GraphQL.ProcessInstanceState;
 
 interface IOwnProps {
   setInitData: any;
@@ -43,7 +40,12 @@ const DataListComponent: React.FC<IOwnProps> = ({
   selectedNumber,
   setSelectedNumber
 }) => {
-  const { loading, error, data, networkStatus } = useGetProcessInstancesQuery({
+  const {
+    loading,
+    error,
+    data,
+    networkStatus
+  } = GraphQL.useGetProcessInstancesQuery({
     variables: {
       state: [ProcessInstanceState.Active],
       offset: 0,

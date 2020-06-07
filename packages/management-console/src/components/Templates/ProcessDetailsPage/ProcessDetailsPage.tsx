@@ -19,8 +19,7 @@ import {
 import {
   ServerErrors,
   ouiaPageTypeAndObjectId,
-  useGetProcessInstanceByIdQuery,
-  ProcessInstanceState,
+  GraphQL,
   ProcessDescriptor
 } from '@kogito-apps/common';
 import React, { useState, useEffect } from 'react';
@@ -38,6 +37,7 @@ import {
   isModalOpen,
   modalToggle
 } from '../../../utils/Utils';
+import ProcessInstanceState = GraphQL.ProcessInstanceState;
 
 interface MatchProps {
   instanceID: string;
@@ -55,7 +55,7 @@ const ProcessDetailsPage: React.FC<
   const [isAbortModalOpen, setIsAbortModalOpen] = useState<boolean>(false);
   const currentPage = JSON.parse(window.localStorage.getItem('state'));
 
-  const { loading, error, data } = useGetProcessInstanceByIdQuery({
+  const { loading, error, data } = GraphQL.useGetProcessInstanceByIdQuery({
     variables: { id }
   });
 

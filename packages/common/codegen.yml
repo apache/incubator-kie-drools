@@ -5,6 +5,13 @@ generates:
   ./src/graphql/types.tsx:
     plugins:
       - add: '/* tslint:disable */'
+      - add:
+          content:
+          - ''
+          - 'export namespace GraphQL {'
+      - add:
+          placement: 'append'
+          content: '}'
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"

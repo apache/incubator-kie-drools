@@ -27,7 +27,8 @@ import Moment from 'react-moment';
 import { Link } from 'react-router-dom';
 import './DomainExplorerTable.css';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
-import { ProcessDescriptor, ProcessInstanceState } from '@kogito-apps/common';
+import { ProcessDescriptor, GraphQL } from '@kogito-apps/common';
+import ProcessInstanceState = GraphQL.ProcessInstanceState;
 
 const DomainExplorerTable = ({
   columnFilters,

@@ -15,12 +15,7 @@ import {
   Bullseye,
   KebabToggle
 } from '@patternfly/react-core';
-import {
-  ServerErrors,
-  ProcessDescriptor,
-  useGetChildInstancesLazyQuery,
-  ProcessInstance
-} from '@kogito-apps/common';
+import { ServerErrors, ProcessDescriptor, GraphQL } from '@kogito-apps/common';
 import { Link } from 'react-router-dom';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateComponent';
@@ -38,6 +33,7 @@ import {
   modalToggle
 } from '../../../utils/Utils';
 import EndpointLink from '../EndpointLink/EndpointLink';
+import ProcessInstance = GraphQL.ProcessInstance;
 interface IOwnProps {
   id: number;
   processInstanceData: ProcessInstance;
@@ -77,7 +73,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
   const [
     getChildInstances,
     { loading, data, error }
-  ] = useGetChildInstancesLazyQuery({
+  ] = GraphQL.useGetChildInstancesLazyQuery({
     fetchPolicy: 'network-only'
   });
   const currentPage = { prev: location.pathname };

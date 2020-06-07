@@ -23,8 +23,9 @@ import {
 } from '@patternfly/react-icons';
 import React, { useState } from 'react';
 import './ProcessDetailsTimeline.css';
-import { ProcessInstance } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
 import { handleRetry, handleSkip } from '../../../utils/Utils';
+import ProcessInstance = GraphQL.ProcessInstance;
 
 export interface IOwnProps {
   data: Pick<

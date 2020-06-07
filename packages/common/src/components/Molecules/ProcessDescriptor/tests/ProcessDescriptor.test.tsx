@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { ProcessDescriptor } from '@kogito-apps/common';
+import ProcessDescriptor from './../ProcessDescriptor';
 import { ProcessInstanceState } from '../../../../graphql/types';
 
 const processInstanceData = {

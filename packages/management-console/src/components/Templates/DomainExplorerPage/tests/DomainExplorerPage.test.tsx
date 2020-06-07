@@ -1,11 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { BrowserRouter } from 'react-router-dom';
-import {
-  useGetQueryTypesQuery,
-  useGetQueryFieldsQuery,
-  useGetColumnPickerAttributesQuery
-} from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
 import DomainExplorerPage from '../DomainExplorerPage';
 import { MockedProvider } from '@apollo/react-testing';
 import gql from 'graphql-tag';
@@ -78,7 +74,7 @@ jest.mock('@kogito-apps/common/src/graphql/types');
 describe('Domain Explorer Dashboard component', () => {
   it('Snapshot test', () => {
     // @ts-ignore
-    useGetColumnPickerAttributesQuery.mockReturnValue({
+    GraphQL.useGetColumnPickerAttributesQuery.mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -112,7 +108,7 @@ describe('Domain Explorer Dashboard component', () => {
       }
     });
     // @ts-ignore
-    useGetQueryFieldsQuery.mockReturnValue({
+    GraphQL.useGetQueryFieldsQuery.mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -131,7 +127,7 @@ describe('Domain Explorer Dashboard component', () => {
       }
     });
     // @ts-ignore
-    useGetQueryTypesQuery.mockReturnValue({
+    GraphQL.useGetQueryTypesQuery.mockReturnValue({
       loading: false,
       data: {}
     });
@@ -147,7 +143,7 @@ describe('Domain Explorer Dashboard component', () => {
   });
   it('Check error response for getQueryFields query', async () => {
     // @ts-ignore
-    useGetQueryFieldsQuery.mockReturnValue({
+    GraphQL.useGetQueryFieldsQuery.mockReturnValue({
       loading: false,
       data: null,
       error: {}
@@ -165,7 +161,7 @@ describe('Domain Explorer Dashboard component', () => {
   });
   it('Mock query testing', async () => {
     // @ts-ignore
-    useGetQueryFieldsQuery.mockReturnValue({
+    GraphQL.useGetQueryFieldsQuery.mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -184,7 +180,7 @@ describe('Domain Explorer Dashboard component', () => {
       }
     });
     // @ts-ignore
-    useGetColumnPickerAttributesQuery.mockReturnValue({
+    GraphQL.useGetColumnPickerAttributesQuery.mockReturnValue({
       loading: false,
       data: {
         __type: {
@@ -218,7 +214,7 @@ describe('Domain Explorer Dashboard component', () => {
       }
     });
     // @ts-ignore
-    useGetQueryTypesQuery.mockReturnValue({
+    GraphQL.useGetQueryTypesQuery.mockReturnValue({
       loading: false,
       data: {}
     });
@@ -257,15 +253,15 @@ describe('Domain Explorer Dashboard component', () => {
     wrapper.update();
     wrapper.setProps({});
     expect(wrapper.find(DomainExplorerPage)).toMatchSnapshot();
-    expect(useGetQueryFieldsQuery).toHaveBeenCalled();
-    expect(useGetQueryTypesQuery).toHaveBeenCalled();
-    expect(useGetColumnPickerAttributesQuery).toBeCalledWith({
+    expect(GraphQL.useGetQueryFieldsQuery).toHaveBeenCalled();
+    expect(GraphQL.useGetQueryTypesQuery).toHaveBeenCalled();
+    expect(GraphQL.useGetColumnPickerAttributesQuery).toBeCalledWith({
       variables: { columnPickerType: 'Travels' }
     });
   });
   it('Check error response for getPicker query', () => {
     // @ts-ignore
-    useGetColumnPickerAttributesQuery.mockReturnValue({
+    GraphQL.useGetColumnPickerAttributesQuery.mockReturnValue({
       loading: false,
       error: {}
     });
@@ -280,7 +276,7 @@ describe('Domain Explorer Dashboard component', () => {
   });
   it('Check error response for getQueryTypes', () => {
     // @ts-ignore
-    useGetQueryTypesQuery.mockReturnValue({
+    GraphQL.useGetQueryTypesQuery.mockReturnValue({
       loading: false,
       data: null,
       error: {}

@@ -2,8 +2,9 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import DataListComponent from '../DataListComponent';
 import { gql } from 'apollo-boost';
-import { ProcessInstanceState } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
 import { MockedProvider } from '@apollo/react-testing';
+import ProcessInstanceState = GraphQL.ProcessInstanceState;
 
 const initData = {
   ProcessInstances: [
