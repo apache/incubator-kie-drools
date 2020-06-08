@@ -14,7 +14,7 @@
   <packaging>jar</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>KIE :: Decision Model Notation :: Core</name>
-  
+
   <properties>
     <java.module.name>org.kie.dmn.core</java.module.name>
   </properties>
@@ -24,6 +24,13 @@
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-bom</artifactId>
+        <version>${version.org.kie}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-bom</artifactId>
         <version>${version.org.kie}</version>
         <type>pom</type>
         <scope>import</scope>
@@ -106,11 +113,24 @@
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
     </dependency>
-    
+
     <!-- Used to provide a default binding for PMML, and test in this module -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>kie-pmml</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <!-- Used to provide a default binding for PMML, and test in this module -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-evaluator-api</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-evaluator-core</artifactId>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
