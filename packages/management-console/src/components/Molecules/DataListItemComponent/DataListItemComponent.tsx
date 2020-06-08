@@ -18,7 +18,7 @@ import {
 import { ServerErrors, ProcessDescriptor, GraphQL } from '@kogito-apps/common';
 import { Link } from 'react-router-dom';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
-import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateComponent';
+import KogitoEmptyState from '../../Atoms/KogitoEmptyState/KogitoEmptyState';
 import { HistoryIcon } from '@patternfly/react-icons';
 import ErrorPopover from '../../Atoms/ErrorPopoverComponent/ErrorPopoverComponent';
 import ProcessBulkModalComponent from '../../Atoms/ProcessBulkModalComponent/ProcessBulkModalComponent';
@@ -459,7 +459,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
               if (instance.id === processInstanceData.id) {
                 if (instance.childDataList.length === 0) {
                   return (
-                    <EmptyStateComponent
+                    <KogitoEmptyState
                       key={idx}
                       iconType="infoCircleIcon"
                       title="No child process instances"

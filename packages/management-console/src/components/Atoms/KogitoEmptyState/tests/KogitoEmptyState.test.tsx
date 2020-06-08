@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import EmptyStateComponent from '../EmptyStateComponent';
+import KogitoEmptyState from '../KogitoEmptyState';
 
 const props1 = {
   iconType: 'warningTriangleIcon',
@@ -9,7 +9,7 @@ const props1 = {
 };
 describe('Emptystate component tests', () => {
   it('snapshot testing', () => {
-    const wrapper = shallow(<EmptyStateComponent {...props1} />);
+    const wrapper = shallow(<KogitoEmptyState {...props1} />);
     expect(wrapper).toMatchSnapshot();
   });
 });
