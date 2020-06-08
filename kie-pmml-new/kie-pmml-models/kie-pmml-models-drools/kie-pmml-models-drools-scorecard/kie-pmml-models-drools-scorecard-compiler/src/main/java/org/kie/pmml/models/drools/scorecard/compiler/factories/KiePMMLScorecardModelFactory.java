@@ -15,33 +15,21 @@
  */
 package org.kie.pmml.models.drools.scorecard.compiler.factories;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
-import com.github.javaparser.ast.expr.AssignExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
-import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
-import org.kie.pmml.commons.model.enums.RESULT_FEATURE;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
@@ -50,10 +38,8 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
-import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.getOutputFields;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
-import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
+import static org.kie.pmml.models.drools.utils.KiePMMLDroolsModelFactoryUtils.getKiePMMLModelCompilationUnit;
 
 /**
  * Class used to generate <code>KiePMMLScorecard</code> out of a <code>DataDictionary</code> and a <code>ScorecardModel</code>
@@ -69,7 +55,7 @@ public class KiePMMLScorecardModelFactory {
         // Avoid instantiation
     }
 
-    public static KiePMMLScorecardModel getKiePMMLScorecardModel(DataDictionary dataDictionary, Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) throws IOException, IllegalAccessException, InstantiationException {
+    public static KiePMMLScorecardModel getKiePMMLScorecardModel(DataDictionary dataDictionary, Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) throws IllegalAccessException, InstantiationException {
         logger.trace("getKiePMMLScorecardModel {}", model);
         String className = getSanitizedClassName(model.getModelName());
         String packageName = getSanitizedPackageName(className);
@@ -79,22 +65,14 @@ public class KiePMMLScorecardModelFactory {
         return (KiePMMLScorecardModel) compiledClasses.get(fullClassName).newInstance();
     }
 
-    public static Map<String, String> getKiePMMLScorecardModelSourcesMap(final DataDictionary dataDictionary, final Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final String packageName) throws IOException {
+    public static Map<String, String> getKiePMMLScorecardModelSourcesMap(final DataDictionary dataDictionary, final Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final String packageName) {
         logger.trace("getKiePMMLScorecardModelSourcesMap {} {} {}", dataDictionary, model, packageName);
+        CompilationUnit cloneCU = getKiePMMLModelCompilationUnit(dataDictionary, model, fieldTypeMap, packageName, KIE_PMML_SCORECARD_MODEL_TEMPLATE_JAVA, KIE_PMML_SCORECARD_MODEL_TEMPLATE);
         String className = getSanitizedClassName(model.getModelName());
-        String targetField = getTargetFieldName(dataDictionary, model).orElse(null);
-        List<KiePMMLOutputField> outputFields = getOutputFields(model);
-        CompilationUnit templateCU = getFromFileName(KIE_PMML_SCORECARD_MODEL_TEMPLATE_JAVA);
-        CompilationUnit cloneCU = templateCU.clone();
-        cloneCU.setPackageDeclaration(packageName);
-        ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(KIE_PMML_SCORECARD_MODEL_TEMPLATE)
-                .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
-        modelTemplate.setName(className);
-        MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(model.getMiningFunction().value());
+        ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(className)
+                .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing default constructor in ClassOrInterfaceDeclaration %s ", modelTemplate.getName())));
-        setConstructor(model, constructorDeclaration, modelTemplate.getName(), targetField, miningFunction);
-        addOutputFieldsPopulation(constructorDeclaration.getBody(), outputFields);
-        addFieldTypeMapPopulation(constructorDeclaration.getBody(), fieldTypeMap);
+        setSuperInvocation(model, constructorDeclaration, modelTemplate.getName());
         Map<String, String> toReturn = new HashMap<>();
         String fullClassName = packageName + "." + className;
         toReturn.put(fullClassName, cloneCU.toString());
@@ -114,45 +92,7 @@ public class KiePMMLScorecardModelFactory {
         return KiePMMLScorecardModelASTFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
     }
 
-    private static void addFieldTypeMapPopulation(BlockStmt body, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-        for (Map.Entry<String, KiePMMLOriginalTypeGeneratedType> entry : fieldTypeMap.entrySet()) {
-            KiePMMLOriginalTypeGeneratedType kiePMMLOriginalTypeGeneratedType = entry.getValue();
-            NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(kiePMMLOriginalTypeGeneratedType.getOriginalType()), new StringLiteralExpr(kiePMMLOriginalTypeGeneratedType.getGeneratedType()));
-            ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
-            objectCreationExpr.setType(KiePMMLOriginalTypeGeneratedType.class.getName());
-            objectCreationExpr.setArguments(expressions);
-            expressions = NodeList.nodeList(new StringLiteralExpr(entry.getKey()), objectCreationExpr);
-            body.addStatement(new MethodCallExpr(new NameExpr("fieldTypeMap"), "put", expressions));
-        }
-    }
-
-    private static void addOutputFieldsPopulation(final BlockStmt body, final List<KiePMMLOutputField> outputFields) {
-        for (KiePMMLOutputField outputField : outputFields) {
-            NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(outputField.getName()), new NameExpr("Collections.emptyList()"));
-            MethodCallExpr builder = new MethodCallExpr(new NameExpr("KiePMMLOutputField"), "builder", expressions);
-            if (outputField.getRank() != null) {
-                expressions = NodeList.nodeList(new IntegerLiteralExpr(outputField.getRank()));
-                builder = new MethodCallExpr(builder, "withRank", expressions);
-            }
-            if (outputField.getValue() != null) {
-                expressions = NodeList.nodeList(new NameExpr(outputField.getValue().toString()));
-                builder = new MethodCallExpr(builder, "withValue", expressions);
-            }
-            if (outputField.getTargetField().isPresent()) {
-                expressions = NodeList.nodeList(new StringLiteralExpr(outputField.getTargetField().get()));
-                builder = new MethodCallExpr(builder, "withTargetField", expressions);
-            }
-            if (outputField.getResultFeature() != null) {
-                expressions = NodeList.nodeList(new NameExpr(RESULT_FEATURE.class.getName() + "." + outputField.getResultFeature().toString()));
-                builder = new MethodCallExpr(builder, "withResultFeature", expressions);
-            }
-            Expression newOutputField = new MethodCallExpr(builder, "build");
-            expressions = NodeList.nodeList(newOutputField);
-            body.addStatement(new MethodCallExpr(new NameExpr("outputFields"), "add", expressions));
-        }
-    }
-
-    private static void setConstructor(final Scorecard scorecard, final ConstructorDeclaration constructorDeclaration, final SimpleName tableName, final String targetField, MINING_FUNCTION miningFunction) {
+    private static void setSuperInvocation(final Scorecard scorecard, final ConstructorDeclaration constructorDeclaration, final SimpleName tableName) {
         constructorDeclaration.setName(tableName);
         final BlockStmt body = constructorDeclaration.getBody();
         body.getStatements().iterator().forEachRemaining(statement -> {
@@ -160,16 +100,6 @@ public class KiePMMLScorecardModelFactory {
                 ExplicitConstructorInvocationStmt superStatement = (ExplicitConstructorInvocationStmt) statement;
                 NameExpr modelNameExpr = (NameExpr) superStatement.getArgument(0);
                 modelNameExpr.setName(String.format("\"%s\"", scorecard.getModelName()));
-            }
-        });
-        final List<AssignExpr> assignExprs = body.findAll(AssignExpr.class);
-        assignExprs.forEach(assignExpr -> {
-            if (assignExpr.getTarget().asNameExpr().getNameAsString().equals("targetField")) {
-                assignExpr.setValue(new StringLiteralExpr(targetField));
-            } else if (assignExpr.getTarget().asNameExpr().getNameAsString().equals("miningFunction")) {
-                assignExpr.setValue(new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
-            } else if (assignExpr.getTarget().asNameExpr().getNameAsString().equals("pmmlMODEL")) {
-                assignExpr.setValue(new NameExpr(PMML_MODEL.SCORECARD_MODEL.getClass().getName() + "." + PMML_MODEL.SCORECARD_MODEL.name()));
             }
         });
     }
