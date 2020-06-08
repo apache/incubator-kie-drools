@@ -39,8 +39,11 @@ class DMNInputSetType implements TypeDefinition {
     private DMNAllTypesIndex index;
     private String javadoc;
 
-    DMNInputSetType(DMNAllTypesIndex index) {
+    private boolean withJacksonAnnotation;
+
+    DMNInputSetType(DMNAllTypesIndex index, boolean withJacksonAnnotation) {
         this.index = index;
+        this.withJacksonAnnotation = withJacksonAnnotation;
     }
 
     public void addField(String key, DMNType type) {
@@ -59,7 +62,7 @@ class DMNInputSetType implements TypeDefinition {
 
     public void initFields() {
         for (Map.Entry<String, DMNType> f : fieldsKey.entrySet()) {
-            DMNDeclaredField dmnDeclaredField = new DMNDeclaredField(index, f);
+            DMNDeclaredField dmnDeclaredField = new DMNDeclaredField(index, f, withJacksonAnnotation);
             fields.add(dmnDeclaredField);
         }
     }

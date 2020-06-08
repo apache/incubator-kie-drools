@@ -38,6 +38,12 @@ public class SimpleAnnotationDefinition implements AnnotationDefinition {
         return values;
     }
 
+
+    public AnnotationDefinition addValue(String key, String value) {
+        values.put(key, value);
+        return this;
+    }
+
     @Override
     public boolean shouldAddAnnotation() {
         return true;

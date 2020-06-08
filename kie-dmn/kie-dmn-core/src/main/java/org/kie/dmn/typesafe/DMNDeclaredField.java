@@ -16,7 +16,7 @@
 
 package org.kie.dmn.typesafe;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -43,12 +43,14 @@ public class DMNDeclaredField implements FieldDefinition {
     private String fieldName;
     private String originalMapKey;
     private DMNType fieldDMNType;
+    private boolean withJacksonAnnotation;
 
-    DMNDeclaredField(DMNAllTypesIndex index, Map.Entry<String, DMNType> dmnField) {
+    DMNDeclaredField(DMNAllTypesIndex index, Map.Entry<String, DMNType> dmnField, boolean withJacksonAnnotation) {
         this.index = index;
         this.fieldName = CodegenStringUtil.escapeIdentifier(StringUtils.lcFirst(dmnField.getKey()));
         this.originalMapKey = dmnField.getKey();
         this.fieldDMNType = dmnField.getValue();
+        this.withJacksonAnnotation = withJacksonAnnotation;
     }
 
     @Override
@@ -84,9 +86,14 @@ public class DMNDeclaredField implements FieldDefinition {
 
     @Override
     public List<AnnotationDefinition> getterAnnotations() {
-        SimpleAnnotationDefinition annotation = new SimpleAnnotationDefinition("org.kie.dmn.feel.lang.FEELProperty");
-        annotation.getValueMap().put("value", "\"" + originalMapKey + "\"");
-        return Collections.singletonList(annotation);
+        List<AnnotationDefinition> annotations = new ArrayList<>();
+        annotations.add(new SimpleAnnotationDefinition("org.kie.dmn.feel.lang.FEELProperty")
+                                .addValue("value", "\"" + originalMapKey + "\""));
+        if (withJacksonAnnotation) {
+            annotations.add(new SimpleAnnotationDefinition("com.fasterxml.jackson.annotation.JsonProperty")
+                                    .addValue("value", "\"" + originalMapKey + "\""));
+        }
+        return annotations;
     }
 
     @Override

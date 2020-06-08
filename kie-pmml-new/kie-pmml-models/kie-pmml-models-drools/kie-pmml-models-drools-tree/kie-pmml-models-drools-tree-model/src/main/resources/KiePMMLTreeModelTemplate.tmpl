@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.pmml.models.drools.tree.model;
 
-package org.drools.modelcompiler.builder.generator.declaredtype.api;
+import java.util.Collections;
 
-import java.util.Map;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
+import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
 
-public interface AnnotationDefinition {
 
-    String getName();
+public class KiePMMLTreeModelTemplate extends KiePMMLTreeModel {
 
-    Map<String, String> getValueMap();
-
-    AnnotationDefinition addValue(String key, String value);
-
-    boolean shouldAddAnnotation();
+    public KiePMMLTreeModelTemplate() {
+        super(modelName, Collections.emptyList(), algorithmName);
+        targetField = targetField;
+        pmmlMODEL = null;
+    }
 }

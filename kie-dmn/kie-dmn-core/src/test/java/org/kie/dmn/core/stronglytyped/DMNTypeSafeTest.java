@@ -85,7 +85,9 @@ public class DMNTypeSafeTest extends BaseVariantTest {
 
         DMNAllTypesIndex index = new DMNAllTypesIndex(new DMNTypeSafePackageName.ModelFactory(), dmnModel);
 
-        Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(dmnModel, index, modelFactory).generateSourceCodeOfAllTypes();
+        Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(dmnModel, index, modelFactory)
+                .processTypes()
+                .generateSourceCodeOfAllTypes();
 
         ClassLoader thisDMNClassLoader = this.getClass().getClassLoader();
         Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(allTypesSourceCode, thisDMNClassLoader);
@@ -165,6 +167,7 @@ public class DMNTypeSafeTest extends BaseVariantTest {
         Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(
                 dmnModel,
                 index, packageName)
+                .processTypes()
                 .generateSourceCodeOfAllTypes();
 
         return KieMemoryCompiler.compile(allTypesSourceCode, classLoader);

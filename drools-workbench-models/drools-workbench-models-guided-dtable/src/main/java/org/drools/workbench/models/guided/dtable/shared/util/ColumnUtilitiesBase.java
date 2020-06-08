@@ -42,6 +42,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.RuleNameColumn;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
@@ -295,6 +296,9 @@ public abstract class ColumnUtilitiesBase {
             return true;
         }
         if (col instanceof DescriptionCol52) {
+            return true;
+        }
+        if (col instanceof RuleNameColumn) {
             return true;
         }
         if (col instanceof MetadataCol52) {
