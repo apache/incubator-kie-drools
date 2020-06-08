@@ -24,19 +24,7 @@
 
   <properties>
     <java.module.name>org.optaplanner.persistence.jpa</java.module.name>
-    <version.org.postgresql>42.2.12</version.org.postgresql>
   </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-        <version>${version.org.postgresql}</version>
-        <scope>test</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <!-- Internal dependencies -->
