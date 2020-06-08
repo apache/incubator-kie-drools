@@ -11,6 +11,7 @@ import { Redirect, Route, Link, Switch } from 'react-router-dom';
 import taskConsoleLogo from '../../../static/taskConsoleLogo.svg';
 import DataListContainerExpandable from '../DataListContainerExpandable/DataListContainerExpandable';
 import DataListContainer from '../DataListContainer/DataListContainer';
+import DataTableContainer from '../DataTableContainer/DataTableContainer';
 import { Location, History } from 'history';
 
 interface IOwnProps {
@@ -73,6 +74,7 @@ const PageLayoutComponent: React.FC<IOwnProps & InjectedOuiaProps> = ({
           component={DataListContainerExpandable}
         />
         <Route exact path="/UserTasksFilters" component={DataListContainer} />
+        <Route exact path="/UserTasksTable" component={DataTableContainer} />
       </Switch>
     </PageLayout>
   );

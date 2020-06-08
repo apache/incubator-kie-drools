@@ -1,4 +1,7 @@
 export {
+  default as KogitoSpinner
+} from './src/components/Atoms/KogitoSpinner/KogitoSpinner';
+export {
   default as PageToolbar
 } from './src/components/Molecules/PageToolbar/PageToolbar';
 export {
