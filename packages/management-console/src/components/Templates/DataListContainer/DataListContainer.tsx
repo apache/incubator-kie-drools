@@ -11,7 +11,8 @@ import {
 import {
   ServerErrors,
   ouiaPageTypeAndObjectId,
-  GraphQL
+  GraphQL,
+  KogitoEmptyState
 } from '@kogito-apps/common';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -19,7 +20,6 @@ import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComp
 import DataToolbarComponent from '../../Molecules/DataToolbarComponent/DataToolbarComponent';
 import './DataList.css';
 import DataListComponent from '../../Organisms/DataListComponent/DataListComponent';
-import KogitoEmptyState from '../../Atoms/KogitoEmptyState/KogitoEmptyState';
 import LoadMoreComponent from '../../Atoms/LoadMoreComponent/LoadMoreComponent';
 import ProcessBulkModalComponent from '../../Atoms/ProcessBulkModalComponent/ProcessBulkModalComponent';
 import axios from 'axios';

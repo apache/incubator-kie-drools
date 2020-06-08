@@ -15,9 +15,8 @@ import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComp
 import DataToolbarComponent from '../../Molecules/DataToolbarComponent/DataToolbarComponent';
 import './DataList.css';
 import DataListComponent from '../../Organisms/DataListComponent/DataListComponent';
-import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateComponent';
 import { useGetUserTasksByStatesLazyQuery } from '../../../graphql/types';
-import { ouiaPageTypeAndObjectId } from '@kogito-apps/common';
+import { ouiaPageTypeAndObjectId, KogitoEmptyState } from '@kogito-apps/common';
 
 const DataListContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
   const [initData, setInitData] = useState<any>([]);
@@ -82,7 +81,7 @@ const DataListContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
                   setIsError={setIsError}
                 />
               ) : (
-                <EmptyStateComponent
+                <KogitoEmptyState
                   iconType="warningTriangleIcon1"
                   title="No status is selected"
                   body="Try selecting at least one status to see results"

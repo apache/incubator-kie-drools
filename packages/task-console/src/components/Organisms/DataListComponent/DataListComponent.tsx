@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { DataList, Bullseye } from '@patternfly/react-core';
 import DataListItemComponent from '../../Molecules/DataListItemComponent/DataListItemComponent';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
-import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateComponent';
+import { KogitoEmptyState } from '@kogito-apps/common';
 import '@patternfly/patternfly/patternfly-addons.css';
 import { useGetUserTasksByStatesQuery } from '../.././../graphql/types';
 
@@ -65,7 +65,7 @@ const DataListComponent: React.FC<IOwnProps> = ({
     setIsError(true);
     return (
       <div className=".pf-u-my-xl">
-        <EmptyStateComponent
+        <KogitoEmptyState
           iconType="warningTriangleIcon"
           title="Oops... error while loading"
           body="Try using the refresh action to reload user tasks"
@@ -91,7 +91,7 @@ const DataListComponent: React.FC<IOwnProps> = ({
       {initData !== undefined &&
         !isLoading &&
         initData.UserTaskInstances.length === 0 && (
-          <EmptyStateComponent
+          <KogitoEmptyState
             iconType="searchIcon"
             title="No results found"
             body="Try using different filters"

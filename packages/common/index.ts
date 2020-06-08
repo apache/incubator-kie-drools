@@ -23,5 +23,8 @@ export {
 export {
   default as ProcessDescriptor
 } from './src/components/Molecules/ProcessDescriptor/ProcessDescriptor';
+export {
+  default as KogitoEmptyState
+} from './src/components/Atoms/KogitoEmptyState/KogitoEmptyState';
 export * from './src/utils/OuiaUtils';
 export * from './src/graphql/types';
