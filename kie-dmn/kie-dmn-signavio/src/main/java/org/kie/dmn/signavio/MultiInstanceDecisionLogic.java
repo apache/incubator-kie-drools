@@ -39,6 +39,13 @@ import org.kie.dmn.core.compiler.DecisionCompiler;
 import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.feel.runtime.functions.AllFunction;
+import org.kie.dmn.feel.runtime.functions.AnyFunction;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+import org.kie.dmn.feel.runtime.functions.MaxFunction;
+import org.kie.dmn.feel.runtime.functions.MinFunction;
+import org.kie.dmn.feel.runtime.functions.SumFunction;
+import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.api.DMNElement.ExtensionElements;
 
 @XStreamAlias("MultiInstanceDecisionLogic")
@@ -176,7 +183,37 @@ public class MultiInstanceDecisionLogic {
                 result.setContext( previousContext );
             }
             
-            return new EvaluatorResultImpl(invokationResults, ResultType.SUCCESS);
+            FEELFnResult<?> r;
+            switch (mi.aggregationFunction) {
+                case "SUM":
+                    r = new SumFunction().invoke(invokationResults);
+                    break;
+                case "MIN":
+                    r = new MinFunction().invoke(invokationResults);
+                    break;
+                case "MAX":
+                    r = new MaxFunction().invoke(invokationResults);
+                    break;
+                case "COUNT":
+                    r = FEELFnResult.ofResult(EvalHelper.getBigDecimalOrNull(invokationResults.size()));
+                    break;
+                case "ALLTRUE":
+                    r = new AllFunction().invoke(invokationResults);
+                    break;
+                case "ANYTRUE":
+                    r = new AnyFunction().invoke(invokationResults);
+                    break;
+                case "ALLFALSE":
+                    FEELFnResult<Boolean> anyResult = new AnyFunction().invoke(invokationResults);
+                    r = anyResult.map(b -> !b);
+                    break;
+                case "COLLECT":
+                default:
+                    r = FEELFnResult.ofResult(invokationResults);
+                    break;
+            }
+
+            return new EvaluatorResultImpl(r.getOrElseThrow(e -> new RuntimeException(e.toString())), ResultType.SUCCESS);
         }
         
     }
