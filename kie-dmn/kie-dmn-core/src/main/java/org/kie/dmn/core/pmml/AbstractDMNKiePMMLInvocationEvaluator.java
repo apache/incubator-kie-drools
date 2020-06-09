@@ -18,9 +18,7 @@ package org.kie.dmn.core.pmml;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 
 import org.kie.api.io.Resource;
@@ -49,7 +47,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractDMNKiePMMLInvocationEvaluator extends AbstractPMMLInvocationEvaluator {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDMNKiePMMLInvocationEvaluator.class);
-    private final PMMLInfo<?> pmmlInfo;
+    protected final PMMLInfo<?> pmmlInfo;
 
     public AbstractDMNKiePMMLInvocationEvaluator(String dmnNS, DMNElement node, Resource pmmlResource, String model, PMMLInfo<?> pmmlInfo) {
         super(dmnNS, node, pmmlResource, model);
@@ -58,63 +56,78 @@ public abstract class AbstractDMNKiePMMLInvocationEvaluator extends AbstractPMML
 
     @Override
     public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
-        PMML4Result resultHolder = getPMML4Result(dmnr);
+        PMML4Result resultHolder = getPMML4Result(eventManager, dmnr);
 
         Map<String, Object> resultVariables = resultHolder.getResultVariables();
-
-        Map<String, Object> result = new HashMap<>();
-        for (Entry<String, Object> kv : resultVariables.entrySet()) {
-            Object r = kv.getValue();
-            if (r instanceof PMML4Field) {
-                final String resultName = kv.getKey();
-                if (resultName != null && !resultName.isEmpty()) {
-                    Optional<String> outputFieldNameFromInfo;
-                    Optional<DMNType> opt = getCompositeOutput();
-                    if (opt.isPresent()) {
-                        CompositeTypeImpl type = (CompositeTypeImpl) opt.get();
-                        outputFieldNameFromInfo = type.getFields()
-                                .keySet()
-                                .stream()
-                                .filter(k -> k.equalsIgnoreCase(resultName))
-                                .findFirst();
-                    } else {
-                        outputFieldNameFromInfo = pmmlInfo.getModels()
-                                .stream()
-                                .filter(m -> model.equals(m.getName()))
-                                .flatMap(m -> m.getOutputFieldNames().stream())
-                                .filter(ofn -> ofn.equalsIgnoreCase(resultName))
-                                .findFirst();
-                    }
-                    if (outputFieldNameFromInfo.isPresent()) {
-                        String name = outputFieldNameFromInfo.get();
-                        try {
-                            Method method = r.getClass().getMethod("getValue");
-                            Object value = method.invoke(r);
-                            result.put(name, EvalHelper.coerceNumber(value));
-                        } catch (Throwable e) {
-                            MsgUtil.reportMessage(LOG,
-                                                  DMNMessage.Severity.WARN,
-                                                  node,
-                                                  ((DMNResultImpl) result),
-                                                  e,
-                                                  null,
-                                                  Msg.INVALID_NAME,
-                                                  name,
-                                                  e.getMessage());
-                            result.put(name, null);
-                        }
-                    }
-                }
-            }
+        Map<String, Object> result = getOutputFieldValues(resultHolder, resultVariables, dmnr);
+        if (result.isEmpty()) {
+            result = getPredictedValues(resultHolder, dmnr);
         }
-
-        Object coercedResult = result.size() > 1 ? result : result.values().iterator().next();
-        return new EvaluatorResultImpl(coercedResult, ResultType.SUCCESS);
+        if (result.isEmpty()) {
+            // TO FIX
+//            MsgUtil.reportMessage(LOG,
+//                                  DMNMessage.Severity.WARN,
+//                                  node,
+//                                  ((DMNResultImpl) toPopulate),
+//                                  e,
+//                                  null,
+//                                  Msg.INVALID_NAME,
+//                                  name,
+//                                  e.getMessage());
+            return new EvaluatorResultImpl(null, ResultType.FAILURE);
+        } else {
+            Object coercedResult = result.size() > 1 ? result : result.values().iterator().next();
+            return new EvaluatorResultImpl(coercedResult, ResultType.SUCCESS);
+        }
     }
 
-    protected abstract PMML4Result getPMML4Result(DMNResult dmnr);
+    /**
+     * Returns the <code>PMML4Result</code>
+     * @param eventManager
+     * @param dmnr
+     * @return
+     */
+    protected abstract PMML4Result getPMML4Result(DMNRuntimeEventManager eventManager, DMNResult dmnr);
 
-    private Optional<DMNType> getCompositeOutput() {
+    /**
+     * Returns a <code>Map&lt;String, Object&gt;</code> of values identified by <b>Output</b> definition
+     * @param pmml4Result
+     * @param resultVariables
+     * @param dmnr
+     * @return
+     */
+    protected abstract Map<String, Object> getOutputFieldValues(PMML4Result pmml4Result, Map<String, Object> resultVariables, DMNResult dmnr);
+
+    /**
+     * Returns a <code>Map&lt;String, Object&gt;</code> of predicted values identified by <b>MiningSchema/Targets</b> definitions
+     * @param pmml4Result
+     * @param dmnr
+     * @return
+     */
+    protected abstract Map<String, Object> getPredictedValues(PMML4Result pmml4Result, DMNResult dmnr);
+
+    protected Optional<String> getOutputFieldNameFromInfo(String resultName) {
+        Optional<String> toReturn;
+        Optional<DMNType> opt = getCompositeOutput();
+        if (opt.isPresent()) {
+            CompositeTypeImpl type = (CompositeTypeImpl) opt.get();
+            toReturn = type.getFields()
+                    .keySet()
+                    .stream()
+                    .filter(k -> k.equalsIgnoreCase(resultName))
+                    .findFirst();
+        } else {
+            toReturn = pmmlInfo.getModels()
+                    .stream()
+                    .filter(m -> model.equals(m.getName()))
+                    .flatMap(m -> m.getOutputFieldNames().stream())
+                    .filter(ofn -> ofn.equalsIgnoreCase(resultName))
+                    .findFirst();
+        }
+        return toReturn;
+    }
+
+    protected Optional<DMNType> getCompositeOutput() {
         Collection<? extends PMMLModelInfo> models = pmmlInfo.getModels();
         return models.stream()
                 .filter(m -> model.equals(m.getName()))

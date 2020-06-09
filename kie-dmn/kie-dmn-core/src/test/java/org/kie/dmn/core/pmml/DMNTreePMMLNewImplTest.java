@@ -28,21 +28,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.api.pmml.PMMLConstants.KIE_PMML_IMPLEMENTATION;
-import static org.kie.api.pmml.PMMLConstants.LEGACY;
 import static org.kie.api.pmml.PMMLConstants.NEW;
 
-public class DMNTreePMMLTest {
+public class DMNTreePMMLNewImplTest {
 
-    public static final Logger LOG = LoggerFactory.getLogger(DMNTreePMMLTest.class);
+    public static final Logger LOG = LoggerFactory.getLogger(DMNTreePMMLNewImplTest.class);
     private static final String SUNGLASSES = "sunglasses";
     private static final String UMBRELLA = "umbrella";
     private static final String NOTHING = "nothing";
 
     @Test
-    public void testTree() {
-        System.setProperty(KIE_PMML_IMPLEMENTATION.getName(), LEGACY.getName());
+    public void testTreeWithOutput() {
+        System.setProperty(KIE_PMML_IMPLEMENTATION.getName(), NEW.getName());
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLTree.dmn",
-                                                                                       DMNTreePMMLTest.class,
+                                                                                       DMNTreePMMLNewImplTest.class,
                                                                                        "test_tree.pmml");
         Assertions.assertThat(runtime).isNotNull();
         Assertions.assertThat(evaluateWeatherDecision(runtime, 30, 10)).isEqualTo(SUNGLASSES);
@@ -52,7 +51,7 @@ public class DMNTreePMMLTest {
 
     @Test
     public void testTreeWithoutOutput() {
-        System.setProperty(KIE_PMML_IMPLEMENTATION.getName(), LEGACY.getName());
+        System.setProperty(KIE_PMML_IMPLEMENTATION.getName(), NEW.getName());
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLTree_no_output.dmn",
                                                                                        DMNTreePMMLNewImplTest.class,
                                                                                        "test_tree_no_output.pmml");
