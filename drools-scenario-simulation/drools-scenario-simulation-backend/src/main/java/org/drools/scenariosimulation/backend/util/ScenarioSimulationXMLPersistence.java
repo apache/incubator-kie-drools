@@ -129,7 +129,7 @@ public class ScenarioSimulationXMLPersistence {
 
     public ScenarioSimulationModel unmarshal(final String rawXml, boolean migrate) throws Exception {
         if (rawXml == null || rawXml.trim().equals("")) {
-            throw new IllegalArgumentException("File content is empty!");
+            throw new IllegalArgumentException("Malformed file, content is empty!");
         }
 
         String xml = migrate ? migrateIfNecessary(rawXml) : rawXml;
