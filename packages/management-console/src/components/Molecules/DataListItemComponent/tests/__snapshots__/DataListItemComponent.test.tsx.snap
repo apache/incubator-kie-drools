@@ -317,7 +317,7 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
       isHidden={true}
     >
       <Bullseye>
-        <EmptyStateSpinner
+        <KogitoSpinner
           spinnerText="Loading process instances..."
         />
       </Bullseye>

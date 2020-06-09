@@ -20,7 +20,8 @@ import {
   ServerErrors,
   ouiaPageTypeAndObjectId,
   GraphQL,
-  ProcessDescriptor
+  ProcessDescriptor,
+  KogitoSpinner
 } from '@kogito-apps/common';
 import React, { useState, useEffect } from 'react';
 import { Link, Redirect, RouteComponentProps } from 'react-router-dom';
@@ -28,7 +29,6 @@ import ProcessDetails from '../../Organisms/ProcessDetails/ProcessDetails';
 import ProcessDetailsProcessVariables from '../../Organisms/ProcessDetailsProcessVariables/ProcessDetailsProcessVariables';
 import ProcessDetailsTimeline from '../../Organisms/ProcessDetailsTimeline/ProcessDetailsTimeline';
 import './ProcessDetailsPage.css';
-import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
 import ProcessBulkModalComponent from '../../Atoms/ProcessBulkModalComponent/ProcessBulkModalComponent';
 import {
@@ -280,7 +280,7 @@ const ProcessDetailsPage: React.FC<
             ) : (
               <Card>
                 <Bullseye>
-                  <SpinnerComponent spinnerText="Loading process details..." />
+                  <KogitoSpinner spinnerText="Loading process details..." />
                 </Bullseye>
               </Card>
             )}

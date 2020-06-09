@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import { DataList, Bullseye } from '@patternfly/react-core';
 import DataListItemComponent from '../../Molecules/DataListItemComponent/DataListItemComponent';
-import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
-import { KogitoEmptyState } from '@kogito-apps/common';
+import { KogitoEmptyState, KogitoSpinner } from '@kogito-apps/common';
 import '@patternfly/patternfly/patternfly-addons.css';
 import { useGetUserTasksByStatesQuery } from '../.././../graphql/types';
 
@@ -48,7 +47,7 @@ const DataListComponent: React.FC<IOwnProps> = ({
   if (loading || isLoading) {
     return (
       <Bullseye>
-        <SpinnerComponent spinnerText="Loading user tasks..." />
+        <KogitoSpinner spinnerText="Loading user tasks..." />
       </Bullseye>
     );
   }
@@ -56,7 +55,7 @@ const DataListComponent: React.FC<IOwnProps> = ({
   if (networkStatus === 4) {
     return (
       <Bullseye>
-        <SpinnerComponent spinnerText="Loading user tasks..." />
+        <KogitoSpinner spinnerText="Loading user tasks..." />
       </Bullseye>
     );
   }

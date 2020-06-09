@@ -15,7 +15,8 @@ import {
 import {
   ServerErrors,
   ouiaPageTypeAndObjectId,
-  GraphQL
+  GraphQL,
+  KogitoSpinner
 } from '@kogito-apps/common';
 import { FilterIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
@@ -24,7 +25,6 @@ import './DomainExplorerPage.css';
 import DomainExplorerColumnPicker from '../../Organisms/DomainExplorerColumnPicker/DomainExplorerColumnPicker';
 import DomainExplorerTable from '../../Organisms/DomainExplorerTable/DomainExplorerTable';
 import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
-import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import LoadMoreComponent from '../../Atoms/LoadMoreComponent/LoadMoreComponent';
 
 interface IOwnProps {
@@ -294,7 +294,7 @@ const DomainExplorerPage: React.FC<
           ) : (
             <Card>
               <Bullseye>
-                <SpinnerComponent spinnerText="Loading domain data..." />
+                <KogitoSpinner spinnerText="Loading domain data..." />
               </Bullseye>
             </Card>
           )}

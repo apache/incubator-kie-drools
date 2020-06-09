@@ -6,10 +6,10 @@ import {
   Spinner
 } from '@patternfly/react-core';
 
-interface IOwnProps {
+interface KogitoSpinnerProps {
   spinnerText: string;
 }
-const KogitoSpinner: React.FC<IOwnProps> = ({ spinnerText }) => {
+const KogitoSpinner: React.FC<KogitoSpinnerProps> = ({ spinnerText }) => {
   return (
     <EmptyState>
       <EmptyStateIcon variant="container" component={Spinner} />
@@ -18,4 +18,5 @@ const KogitoSpinner: React.FC<IOwnProps> = ({ spinnerText }) => {
   );
 };
 
+KogitoSpinner.displayName = 'KogitoSpinner';
 export default KogitoSpinner;

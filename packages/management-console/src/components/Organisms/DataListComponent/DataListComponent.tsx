@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import { DataList, Bullseye } from '@patternfly/react-core';
-import { ServerErrors, GraphQL, KogitoEmptyState } from '@kogito-apps/common';
+import { ServerErrors, GraphQL, KogitoEmptyState, KogitoSpinner } from '@kogito-apps/common';
 import '../../Templates/DataListContainer/DataList.css';
 import DataListItemComponent from '../../Molecules/DataListItemComponent/DataListItemComponent';
-import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import '@patternfly/patternfly/patternfly-addons.css';
 import './DataListComponent.css';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
@@ -75,7 +74,7 @@ const DataListComponent: React.FC<IOwnProps> = ({
   if (loading || isLoading) {
     return (
       <Bullseye>
-        <SpinnerComponent spinnerText="Loading process instances..." />
+        <KogitoSpinner spinnerText="Loading process instances..." />
       </Bullseye>
     );
   }
@@ -83,7 +82,7 @@ const DataListComponent: React.FC<IOwnProps> = ({
   if (networkStatus === 4) {
     return (
       <Bullseye>
-        <SpinnerComponent spinnerText="Loading process instances..." />
+        <KogitoSpinner spinnerText="Loading process instances..." />
       </Bullseye>
     );
   }

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Bullseye } from '@patternfly/react-core';
 import { Table, TableHeader, TableBody } from '@patternfly/react-table';
-import { KogitoSpinner } from '@kogito-apps/common';
-import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateComponent';
+import { KogitoSpinner, KogitoEmptyState } from '@kogito-apps/common';
 import '@patternfly/patternfly/patternfly-addons.css';
 import _ from 'lodash';
 import uuidv4 from 'uuid';
@@ -106,7 +105,7 @@ const DataTable: React.FC<IOwnProps> = ({
       <React.Fragment>{ErrorComponent}</React.Fragment>
     ) : (
       <div className=".pf-u-my-xl">
-        <EmptyStateComponent
+        <KogitoEmptyState
           iconType="warningTriangleIcon"
           title="Oops... error while loading"
           body="Try using the refresh action to reload user tasks"
@@ -128,7 +127,7 @@ const DataTable: React.FC<IOwnProps> = ({
           </Table>
         )}
       {data !== undefined && !isLoading && rows.length === 0 && (
-        <EmptyStateComponent
+        <KogitoEmptyState
           iconType="searchIcon"
           title="No results found"
           body="Try using different filters"

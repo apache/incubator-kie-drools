@@ -592,7 +592,7 @@ exports[`Domain Explorer Table Component check false value of isLoadingMore 1`] 
                     "colSpan": 8,
                   },
                   "title": <Bullseye>
-                    <EmptyStateSpinner
+                    <KogitoSpinner
                       spinnerText="Loading domain explorer"
                     />
                   </Bullseye>,
@@ -1265,7 +1265,7 @@ exports[`Domain Explorer Table Component check null value for process instance a
                     "colSpan": 8,
                   },
                   "title": <Bullseye>
-                    <EmptyStateSpinner
+                    <KogitoSpinner
                       spinnerText="Loading domain explorer"
                     />
                   </Bullseye>,

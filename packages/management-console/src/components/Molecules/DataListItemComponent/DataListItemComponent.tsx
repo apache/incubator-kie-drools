@@ -19,10 +19,10 @@ import {
   ServerErrors,
   ProcessDescriptor,
   GraphQL,
-  KogitoEmptyState
+  KogitoEmptyState,
+  KogitoSpinner
 } from '@kogito-apps/common';
 import { Link } from 'react-router-dom';
-import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import { HistoryIcon } from '@patternfly/react-icons';
 import ErrorPopover from '../../Atoms/ErrorPopoverComponent/ErrorPopoverComponent';
 import ProcessBulkModalComponent from '../../Atoms/ProcessBulkModalComponent/ProcessBulkModalComponent';
@@ -494,7 +494,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
             })}
           {!isLoaded && !error && (
             <Bullseye>
-              <SpinnerComponent spinnerText="Loading process instances..." />
+              <KogitoSpinner spinnerText="Loading process instances..." />
             </Bullseye>
           )}
           {error && <ServerErrors error={error} />}
