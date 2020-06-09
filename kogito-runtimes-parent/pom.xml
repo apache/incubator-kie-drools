@@ -1100,7 +1100,6 @@
                 </archive>
               </configuration>
             </execution>
-            <!-- No OSGi manifestEntries for <goal>jar</goal>: if it supported, then felix has already added them -->
             <execution>
               <id>test-jar</id>
               <goals>
@@ -1112,14 +1111,6 @@
                   <exclude>**/logback-test.xml</exclude>
                   <exclude>**/jndi.properties</exclude>
                 </excludes>
-                <archive>
-                  <manifestEntries>
-                    <Bundle-SymbolicName>${java.module.name}.tests</Bundle-SymbolicName>
-                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
-                    <Bundle-Name>${project.name}</Bundle-Name>
-                    <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
-                  </manifestEntries>
-                </archive>
               </configuration>
             </execution>
           </executions>
@@ -1142,36 +1133,12 @@
               <goals>
                 <goal>jar-no-fork</goal>
               </goals>
-              <configuration>
-                <archive>
-                  <manifestEntries>
-                    <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
-                    <Bundle-SymbolicName>${java.module.name}.source</Bundle-SymbolicName>
-                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
-                    <Bundle-Name>${project.name}</Bundle-Name>
-                    <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
-                    <Eclipse-SourceBundle>${java.module.name};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."</Eclipse-SourceBundle>
-                  </manifestEntries>
-                </archive>
-              </configuration>
             </execution>
             <execution>
               <id>attach-test-sources</id>
               <goals>
                 <goal>test-jar-no-fork</goal>
               </goals>
-              <configuration>
-                <archive>
-                  <manifestEntries>
-                    <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
-                    <Bundle-SymbolicName>${java.module.name}.tests.source</Bundle-SymbolicName>
-                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
-                    <Bundle-Name>${project.name}</Bundle-Name>
-                    <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
-                    <Eclipse-SourceBundle>${java.module.name}.tests;version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."</Eclipse-SourceBundle>
-                  </manifestEntries>
-                </archive>
-              </configuration>
             </execution>
           </executions>
         </plugin>
@@ -1188,45 +1155,6 @@
               </goals>
             </execution>
           </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <version>${version.build.helper.plugin}</version>
-          <executions>
-            <execution>
-              <goals>
-                <goal>parse-version</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.asciidoctor</groupId>
-          <artifactId>asciidoctor-maven-plugin</artifactId>
-          <version>${version.asciidoctor.plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>native2ascii-maven-plugin</artifactId>
-          <version>${version.native2ascii.plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>com.coderplus.maven.plugins</groupId>
-          <artifactId>copy-rename-maven-plugin</artifactId>
-          <version>${version.copyrename.plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <dependencies>
-            <dependency>
-              <!-- Entry needed to enable jdocbook unzipping -->
-              <groupId>org.jboss.maven.plugins</groupId>
-              <artifactId>maven-jdocbook-plugin</artifactId>
-              <version>${version.jdocbook.plugin}</version>
-            </dependency>
-          </dependencies>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -1246,11 +1174,6 @@
             <pushChanges>false</pushChanges>
             <autoVersionSubmodules>true</autoVersionSubmodules>
           </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-shade-plugin</artifactId>
-          <version>${version.shade.plugin}</version>
         </plugin>
         <plugin>
           <groupId>com.mycila.maven-license-plugin</groupId>
@@ -1371,25 +1294,6 @@
     </pluginManagement>
 
     <plugins>
-      <plugin>
-        <!-- Entry needed to provide parsed version properties -->
-        <!-- also adds generated sources to -source artifact -->
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>target/generated-sources/annotations/</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <!-- Entry needed to create test-jars even for packaging types war, bundle, ... -->
         <groupId>org.apache.maven.plugins</groupId>
