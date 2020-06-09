@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,14 +84,6 @@ public enum EnvironmentMode {
      * and it also disables certain concurrency optimizations (such as work stealing).
      */
     REPRODUCIBLE,
-    /**
-     * This mode has been renamed to {@link #NON_REPRODUCIBLE}
-     * because most users prefer to use {@link #REPRODUCIBLE} in production.
-     *
-     * @deprecated Use {@link #NON_REPRODUCIBLE} instead. Will be removed in 8.0.
-     */
-    @Deprecated
-    PRODUCTION,
     /**
      * The non reproducible mode is equally fast or slightly faster than {@link #REPRODUCIBLE}.
      * <p>

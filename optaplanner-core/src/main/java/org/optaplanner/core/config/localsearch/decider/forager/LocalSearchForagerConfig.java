@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,23 +29,10 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("localSearchForagerConfig")
 public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerConfig> {
 
-    @Deprecated // TODO remove in 8.0
-    private Class<? extends LocalSearchForager> foragerClass = null;
-
     protected LocalSearchPickEarlyType pickEarlyType = null;
     protected Integer acceptedCountLimit = null;
     protected FinalistPodiumType finalistPodiumType = null;
     protected Boolean breakTieRandomly = null;
-
-    @Deprecated
-    public Class<? extends LocalSearchForager> getForagerClass() {
-        return foragerClass;
-    }
-
-    @Deprecated
-    public void setForagerClass(Class<? extends LocalSearchForager> foragerClass) {
-        this.foragerClass = foragerClass;
-    }
 
     public LocalSearchPickEarlyType getPickEarlyType() {
         return pickEarlyType;
@@ -108,15 +95,6 @@ public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerC
     // ************************************************************************
 
     public LocalSearchForager buildForager(HeuristicConfigPolicy configPolicy) {
-        if (foragerClass != null) {
-            if (pickEarlyType != null || acceptedCountLimit != null || finalistPodiumType != null) {
-                throw new IllegalArgumentException("The forager with foragerClass (" + foragerClass
-                        + ") must not also have a pickEarlyType (" + pickEarlyType
-                        + "), acceptedCountLimit (" + acceptedCountLimit
-                        + ") or finalistPodiumType (" + finalistPodiumType + ").");
-            }
-            return ConfigUtils.newInstance(this, "foragerClass", foragerClass);
-        }
         LocalSearchPickEarlyType pickEarlyType_ = defaultIfNull(pickEarlyType, LocalSearchPickEarlyType.NEVER);
         int acceptedCountLimit_ = defaultIfNull(acceptedCountLimit, Integer.MAX_VALUE);
         FinalistPodiumType finalistPodiumType_ = defaultIfNull(finalistPodiumType, FinalistPodiumType.HIGHEST_SCORE);
@@ -128,8 +106,6 @@ public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerC
 
     @Override
     public LocalSearchForagerConfig inherit(LocalSearchForagerConfig inheritedConfig) {
-        foragerClass = ConfigUtils.inheritOverwritableProperty(foragerClass,
-                inheritedConfig.getForagerClass());
         pickEarlyType = ConfigUtils.inheritOverwritableProperty(pickEarlyType,
                 inheritedConfig.getPickEarlyType());
         acceptedCountLimit = ConfigUtils.inheritOverwritableProperty(acceptedCountLimit,

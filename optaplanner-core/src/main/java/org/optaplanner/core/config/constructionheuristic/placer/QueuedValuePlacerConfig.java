@@ -90,12 +90,9 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
     @Override
     public QueuedValuePlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy) {
         EntityDescriptor entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor(), entityClass);
-        boolean reinitializeVariableFilterEnabled = configPolicy.isReinitializeVariableFilterEnabled();
-        configPolicy.setReinitializeVariableFilterEnabled(false);
         ValueSelectorConfig valueSelectorConfig_ = buildValueSelectorConfig(configPolicy, entityDescriptor);
         ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(configPolicy, entityDescriptor,
-                SelectionCacheType.PHASE, SelectionOrder.ORIGINAL);
-        configPolicy.setReinitializeVariableFilterEnabled(reinitializeVariableFilterEnabled);
+                SelectionCacheType.PHASE, SelectionOrder.ORIGINAL, false);
 
         MoveSelectorConfig moveSelectorConfig;
         if (ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {

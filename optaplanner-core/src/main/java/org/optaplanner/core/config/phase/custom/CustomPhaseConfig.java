@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -30,7 +29,6 @@ import org.optaplanner.core.config.util.KeyAsElementMapConverter;
 import org.optaplanner.core.impl.phase.custom.CustomPhase;
 import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.phase.custom.DefaultCustomPhase;
-import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -52,10 +50,6 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
 
     @XStreamOmitField
     protected List<CustomPhaseCommand<?>> customPhaseCommandList = null;
-
-    /** @deprecated Use {@link Solver#addProblemFactChange(ProblemFactChange)} instead. */
-    @Deprecated
-    protected Boolean forceUpdateBestSolution = null;
 
     // ************************************************************************
     // Constructors and simple getters/setters
@@ -83,16 +77,6 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
 
     public void setCustomPhaseCommandList(List<CustomPhaseCommand<?>> customPhaseCommandList) {
         this.customPhaseCommandList = customPhaseCommandList;
-    }
-
-    @Deprecated
-    public Boolean getForceUpdateBestSolution() {
-        return forceUpdateBestSolution;
-    }
-
-    @Deprecated
-    public void setForceUpdateBestSolution(Boolean forceUpdateBestSolution) {
-        this.forceUpdateBestSolution = forceUpdateBestSolution;
     }
 
     // ************************************************************************
@@ -151,7 +135,6 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
             customPhaseCommandList_.addAll(customPhaseCommandList);
         }
         phase.setCustomPhaseCommandList(customPhaseCommandList_);
-        phase.setForceUpdateBestSolution(forceUpdateBestSolution == null ? false : forceUpdateBestSolution);
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             phase.setAssertStepScoreFromScratch(true);
@@ -168,8 +151,6 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
                 customPhaseCommandList, inheritedConfig.getCustomPhaseCommandList());
         customProperties = ConfigUtils.inheritMergeableMapProperty(
                 customProperties, inheritedConfig.getCustomProperties());
-        forceUpdateBestSolution = ConfigUtils.inheritOverwritableProperty(forceUpdateBestSolution,
-                inheritedConfig.getForceUpdateBestSolution());
         return this;
     }
 

@@ -45,10 +45,6 @@ public class HeuristicConfigPolicy {
 
     private EntitySorterManner entitySorterManner = EntitySorterManner.NONE;
     private ValueSorterManner valueSorterManner = ValueSorterManner.NONE;
-    /**
-     * @deprecated for removal.
-     */
-    @Deprecated(/* forRemoval = true */)
     private boolean reinitializeVariableFilterEnabled = false;
     private boolean initializedChainedValueFilterEnabled = false;
 
@@ -120,20 +116,8 @@ public class HeuristicConfigPolicy {
         this.valueSorterManner = valueSorterManner;
     }
 
-    /**
-     * @deprecated for removal.
-     */
-    @Deprecated(/* forRemoval = true */)
     public boolean isReinitializeVariableFilterEnabled() {
         return reinitializeVariableFilterEnabled;
-    }
-
-    /**
-     * @deprecated for removal.
-     */
-    @Deprecated(/* forRemoval = true */)
-    public void setReinitializeVariableFilterEnabled(boolean reinitializeVariableFilterEnabled) {
-        this.reinitializeVariableFilterEnabled = reinitializeVariableFilterEnabled;
     }
 
     public Map<String, EntityMimicRecorder> getEntityMimicRecorderMap() {
@@ -156,10 +140,6 @@ public class HeuristicConfigPolicy {
         return initializedChainedValueFilterEnabled;
     }
 
-    public void setInitializedChainedValueFilterEnabled(boolean initializedChainedValueFilterEnabled) {
-        this.initializedChainedValueFilterEnabled = initializedChainedValueFilterEnabled;
-    }
-
     // ************************************************************************
     // Builder methods
     // ************************************************************************
@@ -168,6 +148,13 @@ public class HeuristicConfigPolicy {
         return new HeuristicConfigPolicy(environmentMode, logIndentation,
                 moveThreadCount, moveThreadBufferSize, threadFactoryClass,
                 scoreDirectorFactory);
+    }
+
+    public HeuristicConfigPolicy createFilteredPhaseConfigPolicy() {
+        HeuristicConfigPolicy heuristicConfigPolicy = createPhaseConfigPolicy();
+        heuristicConfigPolicy.reinitializeVariableFilterEnabled = true;
+        heuristicConfigPolicy.initializedChainedValueFilterEnabled = true;
+        return heuristicConfigPolicy;
     }
 
     public HeuristicConfigPolicy createChildThreadConfigPolicy(ChildThreadType childThreadType) {

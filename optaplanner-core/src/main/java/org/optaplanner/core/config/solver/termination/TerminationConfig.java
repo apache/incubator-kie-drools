@@ -38,16 +38,12 @@ import org.optaplanner.core.impl.solver.termination.TimeMillisSpentTermination;
 import org.optaplanner.core.impl.solver.termination.UnimprovedStepCountTermination;
 import org.optaplanner.core.impl.solver.termination.UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination;
 import org.optaplanner.core.impl.solver.termination.UnimprovedTimeMillisSpentTermination;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("termination")
 public class TerminationConfig extends AbstractConfig<TerminationConfig> {
-
-    private static final Logger logger = LoggerFactory.getLogger(TerminationConfig.class);
 
     private Class<? extends Termination> terminationClass = null;
 
@@ -74,11 +70,6 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     private Integer stepCountLimit = null;
     private Integer unimprovedStepCountLimit = null;
 
-    /**
-     * @deprecated Use {@link #scoreCalculationCountLimit} instead. Will be removed in 8.0.
-     */
-    @Deprecated
-    private Long calculateCountLimit = null;
     private Long scoreCalculationCountLimit = null;
 
     @XStreamImplicit(itemFieldName = "termination")
@@ -234,22 +225,6 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
 
     public void setUnimprovedStepCountLimit(Integer unimprovedStepCountLimit) {
         this.unimprovedStepCountLimit = unimprovedStepCountLimit;
-    }
-
-    /**
-     * @deprecated Use {@link #getScoreCalculationCountLimit()} instead. Will be removed in 8.0.
-     */
-    @Deprecated
-    public Long getCalculateCountLimit() {
-        return calculateCountLimit;
-    }
-
-    /**
-     * @deprecated Use {@link #setScoreCalculationCountLimit(Long)} instead. Will be removed in 8.0.
-     */
-    @Deprecated
-    public void setCalculateCountLimit(Long calculateCountLimit) {
-        this.calculateCountLimit = calculateCountLimit;
     }
 
     public Long getScoreCalculationCountLimit() {
@@ -442,14 +417,6 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
         }
         if (stepCountLimit != null) {
             terminationList.add(new StepCountTermination(stepCountLimit));
-        }
-        if (calculateCountLimit != null) {
-            logger.info("Deprecated use of calculateCountLimit ({}) in solver configuration.", calculateCountLimit);
-            if (scoreCalculationCountLimit != null) {
-                throw new IllegalStateException("The calculateCountLimit (" + calculateCountLimit
-                        + ") and scoreCalculationCountLimit (" + scoreCalculationCountLimit + ") cannot be used together.");
-            }
-            terminationList.add(new ScoreCalculationCountTermination(calculateCountLimit));
         }
         if (scoreCalculationCountLimit != null) {
             terminationList.add(new ScoreCalculationCountTermination(scoreCalculationCountLimit));
@@ -671,8 +638,6 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
                 inheritedConfig.getStepCountLimit());
         unimprovedStepCountLimit = ConfigUtils.inheritOverwritableProperty(unimprovedStepCountLimit,
                 inheritedConfig.getUnimprovedStepCountLimit());
-        calculateCountLimit = ConfigUtils.inheritOverwritableProperty(calculateCountLimit,
-                inheritedConfig.getCalculateCountLimit());
         scoreCalculationCountLimit = ConfigUtils.inheritOverwritableProperty(scoreCalculationCountLimit,
                 inheritedConfig.getScoreCalculationCountLimit());
         terminationConfigList = ConfigUtils.inheritMergeableListConfig(

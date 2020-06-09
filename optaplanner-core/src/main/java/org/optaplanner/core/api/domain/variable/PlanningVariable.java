@@ -27,9 +27,7 @@ import java.util.Comparator;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Specifies that a bean property (or a field) can be changed and should be optimized by the optimization algorithms.
@@ -54,40 +52,12 @@ public @interface PlanningVariable {
      * A nullable planning variable will automatically add the planning value null
      * to the {@link ValueRangeProvider}'s range.
      * <p>
-     * In repeated planning use cases, it's recommended to specify a {@link #reinitializeVariableEntityFilter()}
-     * for every nullable planning variable too.
-     * <p>
      * Nullable true is not compatible with {@link PlanningVariableGraphType#CHAINED} true.
      * Nullable true is not compatible with a primitive property type.
      *
      * @return true if null is a valid value for this planning variable
      */
     boolean nullable() default false;
-
-    /**
-     * Construction heuristics only change reinitializable planning variables.
-     * Non reinitializable planning variable is ignored by construction heuristics.
-     * This is especially useful in repeated planning use cases,
-     * in which starting from scratch would waste previous results and time.
-     * <p>
-     * If no reinitializeVariableEntityFilter is specified,
-     * the default considers an entity uninitialized for a variable if its value is null
-     * (even if {@link #nullable()} is true).
-     * <p>
-     * The method {@link SelectionFilter#accept(ScoreDirector, Object)}
-     * returns false if the selection entity should be reinitialized for this variable
-     * and it returns true if the selection entity should not be reinitialized for this variable
-     *
-     * @return {@link NullReinitializeVariableEntityFilter} when it is null (workaround for annotation limitation)
-     * @deprecated for removal. Instead, filter the entity selector of the placer in the construction heuristic.
-     */
-    @Deprecated(/* forRemoval = true */)
-    Class<? extends SelectionFilter> reinitializeVariableEntityFilter() default NullReinitializeVariableEntityFilter.class;
-
-    /** Workaround for annotation limitation in {@link #reinitializeVariableEntityFilter()}. */
-    @Deprecated(/* forRemoval = true */)
-    interface NullReinitializeVariableEntityFilter extends SelectionFilter {
-    }
 
     /**
      * In some use cases, such as Vehicle Routing, planning entities form a specific graph type,

@@ -10,9 +10,6 @@
     <solver>
       <solutionClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionClass>
       <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>
-      <scoreDirectorFactory>
-        <ksessionName>testdataKsession</ksessionName>
-      </scoreDirectorFactory>
       <termination>
         <secondsSpentLimit>0</secondsSpentLimit>
       </termination>

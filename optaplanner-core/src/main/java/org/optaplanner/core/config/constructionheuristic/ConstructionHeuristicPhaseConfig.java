@@ -163,9 +163,7 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
     @Override
     public ConstructionHeuristicPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
-        HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
-        phaseConfigPolicy.setReinitializeVariableFilterEnabled(true);
-        phaseConfigPolicy.setInitializedChainedValueFilterEnabled(true);
+        HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
         DefaultConstructionHeuristicPhase phase = new DefaultConstructionHeuristicPhase(
                 phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
                 buildPhaseTermination(phaseConfigPolicy, solverTermination));

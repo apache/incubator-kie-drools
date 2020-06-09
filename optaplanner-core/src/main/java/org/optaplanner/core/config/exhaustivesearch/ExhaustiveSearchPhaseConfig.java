@@ -122,9 +122,7 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
     @Override
     public ExhaustiveSearchPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
-        HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
-        phaseConfigPolicy.setReinitializeVariableFilterEnabled(true);
-        phaseConfigPolicy.setInitializedChainedValueFilterEnabled(true);
+        HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
         ExhaustiveSearchType exhaustiveSearchType_ = exhaustiveSearchType == null
                 ? ExhaustiveSearchType.BRANCH_AND_BOUND
                 : exhaustiveSearchType;

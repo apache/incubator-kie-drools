@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -39,32 +38,15 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.KieResources;
 import org.kie.api.runtime.KieContainer;
 import org.kie.internal.builder.conf.PropertySpecificOption;
-import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.SolverConfigContext;
-import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.config.util.KeyAsElementMapConverter;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.bendablebigdecimal.BendableBigDecimalScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.bendablelong.BendableLongScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.hardsoftdouble.HardSoftDoubleScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.simplebigdecimal.SimpleBigDecimalScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.simpledouble.SimpleDoubleScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.simplelong.SimpleLongScoreDefinition;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
@@ -81,22 +63,12 @@ import org.slf4j.LoggerFactory;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 @XStreamAlias("scoreDirectorFactory")
 public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFactoryConfig> {
 
     private static final Logger logger = LoggerFactory.getLogger(ScoreDirectorFactoryConfig.class);
     private static final String GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME = "optaplanner.drools.generateTestOnError";
-
-    @Deprecated
-    protected Class<? extends ScoreDefinition> scoreDefinitionClass = null;
-    @Deprecated
-    protected ScoreDefinitionType scoreDefinitionType = null;
-    @Deprecated
-    protected Integer bendableHardLevelsSize = null;
-    @Deprecated
-    protected Integer bendableSoftLevelsSize = null;
 
     protected Class<? extends EasyScoreCalculator> easyScoreCalculatorClass = null;
     @XStreamConverter(KeyAsElementMapConverter.class)
@@ -111,22 +83,12 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     @XStreamConverter(KeyAsElementMapConverter.class)
     protected Map<String, String> incrementalScoreCalculatorCustomProperties = null;
 
-    // TODO remove in 8.0
-    protected String ksessionName = null;
-    @XStreamOmitField
-    @Deprecated // TODO remove in 8.0
-    protected KieBase kieBase = null;
     @XStreamImplicit(itemFieldName = "scoreDrl")
     protected List<String> scoreDrlList = null;
     @XStreamImplicit(itemFieldName = "scoreDrlFile")
     protected List<File> scoreDrlFileList = null;
     @XStreamConverter(KeyAsElementMapConverter.class)
     protected Map<String, String> kieBaseConfigurationProperties = null;
-    /**
-     * @deprecated for removal.
-     */
-    @Deprecated(/* forRemoval = true */)
-    protected Boolean generateDroolsTestOnError = null;
 
     protected String initializingScoreTrend = null;
 
@@ -136,78 +98,6 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
-
-    /**
-     * @return sometimes null
-     * @deprecated Use {@link PlanningScore#scoreDefinitionClass()} instead. Will be removed in 8.0.
-     */
-    @Deprecated
-    public Class<? extends ScoreDefinition> getScoreDefinitionClass() {
-        return scoreDefinitionClass;
-    }
-
-    /**
-     * @param scoreDefinitionClass sometimes null
-     * @deprecated Use {@link PlanningScore#scoreDefinitionClass()} instead. Will be removed in 8.0.
-     */
-    @Deprecated
-    public void setScoreDefinitionClass(Class<? extends ScoreDefinition> scoreDefinitionClass) {
-        this.scoreDefinitionClass = scoreDefinitionClass;
-    }
-
-    /**
-     * @return sometimes null
-     * @deprecated Use {@link PlanningScore} instead. Will be removed in 8.0.
-     */
-    @Deprecated
-    public ScoreDefinitionType getScoreDefinitionType() {
-        return scoreDefinitionType;
-    }
-
-    /**
-     * @param scoreDefinitionType sometimes null
-     * @deprecated Use {@link PlanningScore} instead. Will be removed in 8.0.
-     */
-    @Deprecated
-    public void setScoreDefinitionType(ScoreDefinitionType scoreDefinitionType) {
-        this.scoreDefinitionType = scoreDefinitionType;
-    }
-
-    /**
-     * @return sometimes null
-     * @deprecated Use {@link PlanningScore#bendableHardLevelsSize()} instead. Will be removed in 8.0.
-     */
-    @Deprecated
-    public Integer getBendableHardLevelsSize() {
-        return bendableHardLevelsSize;
-    }
-
-    /**
-     * @param bendableHardLevelsSize sometimes null
-     * @deprecated Use {@link PlanningScore#bendableHardLevelsSize()} instead. Will be removed in 8.0.
-     */
-    @Deprecated
-    public void setBendableHardLevelsSize(Integer bendableHardLevelsSize) {
-        this.bendableHardLevelsSize = bendableHardLevelsSize;
-    }
-
-    /**
-     * @return sometimes null
-     * @deprecated Use {@link PlanningScore#bendableSoftLevelsSize()} instead. Will be removed in 8.0.
-     */
-    @Deprecated
-    public Integer getBendableSoftLevelsSize() {
-        return bendableSoftLevelsSize;
-    }
-
-    /**
-     * @param bendableSoftLevelsSize sometimes null
-     * @deprecated Use {@link PlanningScore#bendableSoftLevelsSize()} instead. Will be removed in 8.0.
-     */
-    @Deprecated
-    public void setBendableSoftLevelsSize(Integer bendableSoftLevelsSize) {
-        this.bendableSoftLevelsSize = bendableSoftLevelsSize;
-    }
 
     public Class<? extends EasyScoreCalculator> getEasyScoreCalculatorClass() {
         return easyScoreCalculatorClass;
@@ -266,36 +156,6 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         this.incrementalScoreCalculatorCustomProperties = incrementalScoreCalculatorCustomProperties;
     }
 
-    public String getKsessionName() {
-        return ksessionName;
-    }
-
-    public void setKsessionName(String ksessionName) {
-        this.ksessionName = ksessionName;
-    }
-
-    /**
-     * @return sometimes null
-     * @deprecated Use {@link #setKsessionName(String)} and
-     *             {@link SolverFactory#createFromKieContainerXmlResource(KieContainer, String)} instead. Might be removed in
-     *             8.0.
-     */
-    @Deprecated
-    public KieBase getKieBase() {
-        return kieBase;
-    }
-
-    /**
-     * @param kieBase sometimes null
-     * @deprecated Use {@link #setKsessionName(String)} and
-     *             {@link SolverFactory#createFromKieContainerXmlResource(KieContainer, String)} instead. Might be removed in
-     *             8.0.
-     */
-    @Deprecated
-    public void setKieBase(KieBase kieBase) {
-        this.kieBase = kieBase;
-    }
-
     public List<String> getScoreDrlList() {
         return scoreDrlList;
     }
@@ -334,22 +194,6 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     public void setAssertionScoreDirectorFactory(ScoreDirectorFactoryConfig assertionScoreDirectorFactory) {
         this.assertionScoreDirectorFactory = assertionScoreDirectorFactory;
-    }
-
-    /**
-     * @deprecated for removal.
-     */
-    @Deprecated(/* forRemoval = true */)
-    public Boolean isGenerateDroolsTestOnError() {
-        return generateDroolsTestOnError;
-    }
-
-    /**
-     * @deprecated for removal.
-     */
-    @Deprecated(/* forRemoval = true */)
-    public void setGenerateDroolsTestOnError(Boolean generateDroolsTestOnError) {
-        this.generateDroolsTestOnError = generateDroolsTestOnError;
     }
 
     // ************************************************************************
@@ -431,67 +275,6 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     // Builder methods
     // ************************************************************************
 
-    public ScoreDefinition buildDeprecatedScoreDefinition() {
-        if (scoreDefinitionType != ScoreDefinitionType.BENDABLE
-                && scoreDefinitionType != ScoreDefinitionType.BENDABLE_LONG
-                && scoreDefinitionType != ScoreDefinitionType.BENDABLE_BIG_DECIMAL
-                && (bendableHardLevelsSize != null || bendableSoftLevelsSize != null)) {
-            throw new IllegalArgumentException("A bendableHardLevelsSize (" + bendableHardLevelsSize
-                    + ") or bendableSoftLevelsSize (" + bendableSoftLevelsSize
-                    + ") needs a scoreDefinitionType (" + scoreDefinitionType + ") that is bendable.");
-        }
-        if ((scoreDefinitionType == ScoreDefinitionType.BENDABLE
-                || scoreDefinitionType == ScoreDefinitionType.BENDABLE_LONG
-                || scoreDefinitionType == ScoreDefinitionType.BENDABLE_BIG_DECIMAL)
-                && (bendableHardLevelsSize == null || bendableSoftLevelsSize == null)) {
-            throw new IllegalArgumentException("With scoreDefinitionType (" + scoreDefinitionType
-                    + ") there must be a bendableHardLevelsSize (" + bendableHardLevelsSize
-                    + ") and a bendableSoftLevelsSize (" + bendableSoftLevelsSize + ").");
-        }
-        if (scoreDefinitionClass != null) {
-            if (scoreDefinitionType != null) {
-                throw new IllegalArgumentException("With scoreDefinitionClass (" + scoreDefinitionClass
-                        + ") there must be no scoreDefinitionType (" + scoreDefinitionType + ").");
-            }
-            return ConfigUtils.newInstance(this, "scoreDefinitionClass", scoreDefinitionClass);
-        }
-        if (scoreDefinitionType != null) {
-            switch (scoreDefinitionType) {
-                case SIMPLE:
-                    return new SimpleScoreDefinition();
-                case SIMPLE_LONG:
-                    return new SimpleLongScoreDefinition();
-                case SIMPLE_DOUBLE:
-                    return new SimpleDoubleScoreDefinition();
-                case SIMPLE_BIG_DECIMAL:
-                    return new SimpleBigDecimalScoreDefinition();
-                case HARD_SOFT:
-                    return new HardSoftScoreDefinition();
-                case HARD_SOFT_LONG:
-                    return new HardSoftLongScoreDefinition();
-                case HARD_SOFT_DOUBLE:
-                    return new HardSoftDoubleScoreDefinition();
-                case HARD_SOFT_BIG_DECIMAL:
-                    return new HardSoftBigDecimalScoreDefinition();
-                case HARD_MEDIUM_SOFT:
-                    return new HardMediumSoftScoreDefinition();
-                case HARD_MEDIUM_SOFT_LONG:
-                    return new HardMediumSoftLongScoreDefinition();
-                case BENDABLE:
-                    return new BendableScoreDefinition(bendableHardLevelsSize, bendableSoftLevelsSize);
-                case BENDABLE_LONG:
-                    return new BendableLongScoreDefinition(bendableHardLevelsSize, bendableSoftLevelsSize);
-                case BENDABLE_BIG_DECIMAL:
-                    return new BendableBigDecimalScoreDefinition(bendableHardLevelsSize, bendableSoftLevelsSize);
-                default:
-                    throw new IllegalStateException("The scoreDefinitionType (" + scoreDefinitionType
-                            + ") is not implemented.");
-            }
-        } else {
-            return null;
-        }
-    }
-
     public <Solution_> InnerScoreDirectorFactory<Solution_> buildScoreDirectorFactory(
             SolverConfigContext configContext, ClassLoader classLoader, EnvironmentMode environmentMode,
             SolutionDescriptor<Solution_> solutionDescriptor) {
@@ -539,12 +322,6 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 throw new IllegalArgumentException("A assertionScoreDirectorFactory ("
                         + assertionScoreDirectorFactory + ") cannot have a non-null assertionScoreDirectorFactory ("
                         + assertionScoreDirectorFactory.getAssertionScoreDirectorFactory() + ").");
-            }
-            if (assertionScoreDirectorFactory.getScoreDefinitionClass() != null
-                    || assertionScoreDirectorFactory.getScoreDefinitionType() != null) {
-                throw new IllegalArgumentException("A assertionScoreDirectorFactory ("
-                        + assertionScoreDirectorFactory + ") must reuse the scoreDefinition of its parent." +
-                        " It cannot have a non-null scoreDefinition* property.");
             }
             if (environmentMode.compareTo(EnvironmentMode.FAST_ASSERT) > 0) {
                 throw new IllegalArgumentException("A non-null assertionScoreDirectorFactory ("
@@ -636,50 +413,26 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     protected <Solution_> DroolsScoreDirectorFactory<Solution_> buildDroolsScoreDirectorFactory(
             SolverConfigContext configContext, ClassLoader classLoader, SolutionDescriptor<Solution_> solutionDescriptor) {
-        // TODO Remove the field in 8.0, keep the property.
-        boolean generateDroolsTestOnError = BooleanUtils.isTrue(this.generateDroolsTestOnError)
-                || Boolean.parseBoolean(System.getProperty(GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME, "false"));
+        boolean generateDroolsTestOnError =
+                Boolean.parseBoolean(System.getProperty(GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME, "false"));
         KieContainer kieContainer = configContext.getKieContainer();
-        if (kieContainer != null || ksessionName != null) {
-            if (kieContainer == null) {
-                throw new IllegalArgumentException("If ksessionName (" + ksessionName
-                        + ") is not null, then the kieContainer (" + kieContainer
-                        + ") must not be null."); // TODO improve error message with "maybe fix it like this"
-            }
+        if (kieContainer != null) {
             if (!ConfigUtils.isEmptyCollection(scoreDrlList) || !ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
-                throw new IllegalArgumentException("If kieContainer or ksessionName (" + ksessionName
-                        + ") is not null, then the scoreDrlList (" + scoreDrlList
-                        + ") and the scoreDrlFileList (" + scoreDrlFileList + ") must be empty.\n"
+                throw new IllegalArgumentException("If kieContainer (" + kieContainer + ") is not null, "
+                        + "then the scoreDrlList (" + scoreDrlList + ") and the scoreDrlFileList (" + scoreDrlFileList
+                        + ") must be empty.\n"
                         + "Maybe this is running in a kjar in kie-server, in which case the DRL's are located"
                         + " by the META-INF/kmodule.xml, so only ksessionName is allowed.");
             }
-            if (kieBase != null) {
-                throw new IllegalArgumentException("If kieContainer or ksessionName (" + ksessionName
-                        + ") is not null, then the kieBase must be null.");
-            }
             if (kieBaseConfigurationProperties != null) {
-                throw new IllegalArgumentException("If kieContainer or ksessionName (" + ksessionName
-                        + ") is not null, then the kieBaseConfigurationProperties ("
-                        + kieBaseConfigurationProperties + ") must be null.");
+                throw new IllegalArgumentException("If kieContainer (" + kieContainer + ") is not null, "
+                        + "then the kieBaseConfigurationProperties (" + kieBaseConfigurationProperties
+                        + ") must be null.");
             }
             if (generateDroolsTestOnError) {
-                return new TestGenDroolsScoreDirectorFactory<>(solutionDescriptor, kieContainer, ksessionName);
+                return new TestGenDroolsScoreDirectorFactory<>(solutionDescriptor, kieContainer);
             } else {
-                return new DroolsScoreDirectorFactory<>(solutionDescriptor, kieContainer, ksessionName);
-            }
-        } else if (kieBase != null) {
-            if (!ConfigUtils.isEmptyCollection(scoreDrlList) || !ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
-                throw new IllegalArgumentException("If kieBase is not null, then the scoreDrlList (" + scoreDrlList
-                        + ") and the scoreDrlFileList (" + scoreDrlFileList + ") must be empty.");
-            }
-            if (kieBaseConfigurationProperties != null) {
-                throw new IllegalArgumentException("If kieBase is not null, then the kieBaseConfigurationProperties ("
-                        + kieBaseConfigurationProperties + ") must be null.");
-            }
-            if (generateDroolsTestOnError) {
-                return new TestGenDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase, null, null);
-            } else {
-                return new DroolsScoreDirectorFactory<>(solutionDescriptor, kieBase);
+                return new DroolsScoreDirectorFactory<>(solutionDescriptor, kieContainer);
             }
         } else if (!ConfigUtils.isEmptyCollection(scoreDrlList) || !ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
             KieServices kieServices = KieServices.Factory.get();
@@ -753,10 +506,10 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                                 + ") is not null, the scoreDrlList (" + scoreDrlList
                                 + ") or the scoreDrlFileList (" + scoreDrlFileList + ") must not be empty.");
             }
-            if (this.generateDroolsTestOnError != null) {
+            if (generateDroolsTestOnError) {
                 throw new IllegalArgumentException(
-                        "If generateDroolsTestOnError (" + generateDroolsTestOnError
-                                + ") is not null, the scoreDrlList (" + scoreDrlList
+                        "If " + GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME + " system property (" +
+                                generateDroolsTestOnError + ") is set, the scoreDrlList (" + scoreDrlList
                                 + ") or the scoreDrlFileList (" + scoreDrlFileList + ") must not be empty.");
             }
             return null;
@@ -765,13 +518,6 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     @Override
     public ScoreDirectorFactoryConfig inherit(ScoreDirectorFactoryConfig inheritedConfig) {
-        if (scoreDefinitionClass == null && scoreDefinitionType == null
-                && bendableHardLevelsSize == null && bendableSoftLevelsSize == null) {
-            scoreDefinitionClass = inheritedConfig.getScoreDefinitionClass();
-            scoreDefinitionType = inheritedConfig.getScoreDefinitionType();
-            bendableHardLevelsSize = inheritedConfig.getBendableHardLevelsSize();
-            bendableSoftLevelsSize = inheritedConfig.getBendableSoftLevelsSize();
-        }
         easyScoreCalculatorClass = ConfigUtils.inheritOverwritableProperty(
                 easyScoreCalculatorClass, inheritedConfig.getEasyScoreCalculatorClass());
         easyScoreCalculatorCustomProperties = ConfigUtils.inheritMergeableMapProperty(
@@ -786,10 +532,6 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 incrementalScoreCalculatorClass, inheritedConfig.getIncrementalScoreCalculatorClass());
         incrementalScoreCalculatorCustomProperties = ConfigUtils.inheritMergeableMapProperty(
                 incrementalScoreCalculatorCustomProperties, inheritedConfig.getIncrementalScoreCalculatorCustomProperties());
-        ksessionName = ConfigUtils.inheritOverwritableProperty(
-                ksessionName, inheritedConfig.getKsessionName());
-        kieBase = ConfigUtils.inheritOverwritableProperty(
-                kieBase, inheritedConfig.getKieBase());
         scoreDrlList = ConfigUtils.inheritMergeableListProperty(
                 scoreDrlList, inheritedConfig.getScoreDrlList());
         scoreDrlFileList = ConfigUtils.inheritMergeableListProperty(
@@ -801,8 +543,6 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
         assertionScoreDirectorFactory = ConfigUtils.inheritOverwritableProperty(
                 assertionScoreDirectorFactory, inheritedConfig.getAssertionScoreDirectorFactory());
-        generateDroolsTestOnError = ConfigUtils.inheritOverwritableProperty(
-                generateDroolsTestOnError, inheritedConfig.isGenerateDroolsTestOnError());
         return this;
     }
 

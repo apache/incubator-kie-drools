@@ -48,21 +48,17 @@ public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirector
 
     private final KieBase kieBase;
     private final KieContainer kieContainer;
-    private final String ksessionName;
 
     protected Map<Rule, Function<Solution_, Score<?>>> ruleToConstraintWeightExtractorMap;
 
     /**
      * @param solutionDescriptor never null
      * @param kieBase never null
-     * @deprecated for removal, legacy code.
      */
-    @Deprecated(/* forRemoval = "true" */)
     public DroolsScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor, KieBase kieBase) {
         super(solutionDescriptor);
         this.kieBase = kieBase;
         kieContainer = null;
-        ksessionName = null;
         checkIfGlobalScoreHolderExists(kieBase);
         createRuleToConstraintWeightExtractorMap(kieBase);
         solutionDescriptor.checkIfProblemFactsExist();
@@ -71,29 +67,19 @@ public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirector
     /**
      * @param solutionDescriptor never null
      * @param kieContainer never null
-     * @param ksessionName null if the default ksession should be used
      */
-    public DroolsScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
-            KieContainer kieContainer, String ksessionName) {
+    public DroolsScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor, KieContainer kieContainer) {
         super(solutionDescriptor);
         this.kieBase = null;
         this.kieContainer = kieContainer;
-        this.ksessionName = ksessionName;
         solutionDescriptor.checkIfProblemFactsExist();
-        // if ksessionName is null, then the default kieSession is used
-        KieSessionModel kieSessionModel = kieContainer.getKieSessionModel(ksessionName);
+        // use the default kieSession
+        KieSessionModel kieSessionModel = kieContainer.getKieSessionModel(null);
         if (kieSessionModel == null) {
-            if (ksessionName == null) {
-                throw new IllegalArgumentException("The kieContainer does not have a default ksession"
-                        + " and the ksessionName (" + ksessionName + ") is not specified.");
-            } else {
-                throw new IllegalArgumentException("The kieContainer does not contain a ksessionName ("
-                        + ksessionName + ") with that name.");
-            }
+            throw new IllegalArgumentException("The kieContainer does not have a default kieSession.");
         }
         if (kieSessionModel.getType() != KieSessionModel.KieSessionType.STATEFUL) {
-            throw new IllegalStateException("The ksessionName (" + ksessionName
-                    + ") with type (" + kieSessionModel.getType() + ") is not stateful.\n"
+            throw new IllegalStateException("The KIE session (" + kieSessionModel.getType() + ") is not stateful.\n"
                     + "Stateless sessions are not allowed because they don't support incremental score calculation"
                     + " and are therefore exponentially slower.");
         }
@@ -164,13 +150,6 @@ public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirector
         return kieContainer;
     }
 
-    /**
-     * @return null if the default ksession should be used
-     */
-    public String getKsessionName() {
-        return ksessionName;
-    }
-
     public Map<Rule, Function<Solution_, Score<?>>> getRuleToConstraintWeightExtractorMap() {
         return ruleToConstraintWeightExtractorMap;
     }
@@ -187,7 +166,7 @@ public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirector
 
     public KieSession newKieSession() {
         if (kieBase == null) {
-            return kieContainer.newKieSession(ksessionName);
+            return kieContainer.newKieSession();
         } else {
             return kieBase.newKieSession();
         }

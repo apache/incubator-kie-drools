@@ -152,11 +152,6 @@ class OptaPlannerProcessor {
 
     private void applySolverProperties(RecorderContext recorderContext,
             IndexView indexView, SolverConfig solverConfig) {
-        if (solverConfig.getScanAnnotatedClassesConfig() != null) {
-            throw new IllegalArgumentException("Do not use scanAnnotatedClasses with the Quarkus extension,"
-                    + " because the Quarkus extension scans too.\n"
-                    + "Maybe delete the scanAnnotatedClasses element in the solver config.");
-        }
         if (solverConfig.getSolutionClass() == null) {
             solverConfig.setSolutionClass(findSolutionClass(recorderContext, indexView));
         }

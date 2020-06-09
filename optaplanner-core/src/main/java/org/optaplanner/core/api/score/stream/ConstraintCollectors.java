@@ -63,8 +63,6 @@ import org.optaplanner.core.impl.score.stream.quad.DefaultQuadConstraintCollecto
 import org.optaplanner.core.impl.score.stream.tri.DefaultTriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.uni.DefaultUniConstraintCollector;
 
-import com.google.common.base.Functions;
-
 /**
  * Creates an {@link UniConstraintCollector}, {@link BiConstraintCollector}, ... instance
  * for use in {@link UniConstraintStream#groupBy(Function, UniConstraintCollector)}, ...
@@ -160,7 +158,7 @@ public final class ConstraintCollectors {
     // ************************************************************************
 
     public static <A> UniConstraintCollector<A, ?, Integer> countDistinct() {
-        return countDistinct(Functions.identity());
+        return countDistinct(Function.identity());
     }
 
     public static <A> UniConstraintCollector<A, ?, Integer> countDistinct(Function<A, ?> groupValueMapping) {

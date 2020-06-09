@@ -265,9 +265,18 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
     public ValueSelector buildValueSelector(HeuristicConfigPolicy configPolicy,
             EntityDescriptor entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
+        return buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder,
+                configPolicy.isReinitializeVariableFilterEnabled());
+    }
+
+    public ValueSelector buildValueSelector(HeuristicConfigPolicy configPolicy, EntityDescriptor entityDescriptor,
+            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder,
+            boolean applyReinitializeVariableFiltering) {
         if (mimicSelectorRef != null) {
             ValueSelector valueSelector = buildMimicReplaying(configPolicy);
-            valueSelector = applyReinitializeVariableFiltering(configPolicy, valueSelector);
+            if (applyReinitializeVariableFiltering) {
+                valueSelector = new ReinitializeVariableValueSelector(valueSelector);
+            }
             valueSelector = applyDowncasting(configPolicy, valueSelector);
             return valueSelector;
         }
@@ -304,7 +313,9 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
         valueSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applySelectedLimit(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyMimicRecording(configPolicy, valueSelector);
-        valueSelector = applyReinitializeVariableFiltering(configPolicy, valueSelector);
+        if (applyReinitializeVariableFiltering) {
+            valueSelector = new ReinitializeVariableValueSelector(valueSelector);
+        }
         valueSelector = applyDowncasting(configPolicy, valueSelector);
         return valueSelector;
     }
@@ -643,14 +654,6 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
                     (EntityIndependentValueSelector) valueSelector);
             configPolicy.addValueMimicRecorder(id, mimicRecordingValueSelector);
             valueSelector = mimicRecordingValueSelector;
-        }
-        return valueSelector;
-    }
-
-    private ValueSelector applyReinitializeVariableFiltering(HeuristicConfigPolicy configPolicy,
-            ValueSelector valueSelector) {
-        if (configPolicy.isReinitializeVariableFilterEnabled()) {
-            valueSelector = new ReinitializeVariableValueSelector(valueSelector);
         }
         return valueSelector;
     }

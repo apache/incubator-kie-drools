@@ -23,11 +23,7 @@ import java.util.HashMap;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.SolverConfigContext;
-import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
 import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirector;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
@@ -35,26 +31,6 @@ import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDire
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 public class ScoreDirectorFactoryConfigTest {
-
-    @Test
-    public void buildSimpleScoreDefinition() {
-        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig();
-        config.setScoreDefinitionType(ScoreDefinitionType.SIMPLE);
-        ScoreDefinition scoreDefinition = config.buildDeprecatedScoreDefinition();
-        assertThat(scoreDefinition)
-                .isInstanceOf(SimpleScoreDefinition.class);
-    }
-
-    @Test
-    public void buildBendableScoreDefinition() {
-        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig();
-        config.setScoreDefinitionType(ScoreDefinitionType.BENDABLE);
-        config.setBendableHardLevelsSize(2);
-        config.setBendableSoftLevelsSize(3);
-        BendableScoreDefinition scoreDefinition = (BendableScoreDefinition) config.buildDeprecatedScoreDefinition();
-        assertThat(scoreDefinition.getHardLevelsSize()).isEqualTo(2);
-        assertThat(scoreDefinition.getSoftLevelsSize()).isEqualTo(3);
-    }
 
     @Test
     public void easyScoreCalculatorWithCustomProperties() {
@@ -176,18 +152,6 @@ public class ScoreDirectorFactoryConfigTest {
             return SimpleScore.ZERO;
         }
 
-    }
-
-    @Test
-    public void testGenerateDroolsTestOption() {
-        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig();
-        assertThat(config.isGenerateDroolsTestOnError()).isNull();
-        config.setGenerateDroolsTestOnError(true);
-        assertThat(config.isGenerateDroolsTestOnError()).isTrue();
-        config.setGenerateDroolsTestOnError(Boolean.FALSE);
-        assertThat(config.isGenerateDroolsTestOnError()).isFalse();
-        config.setGenerateDroolsTestOnError(null);
-        assertThat(config.isGenerateDroolsTestOnError()).isNull();
     }
 
 }

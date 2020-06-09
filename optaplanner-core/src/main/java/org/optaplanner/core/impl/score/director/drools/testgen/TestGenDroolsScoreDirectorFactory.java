@@ -34,9 +34,7 @@ public class TestGenDroolsScoreDirectorFactory<Solution_> extends DroolsScoreDir
      * @param kieBase never null
      * @param scoreDrlList
      * @param scoreDrlFileList
-     * @deprecated for removal, legacy code.
      */
-    @Deprecated(/* forRemoval = "true" */)
     public TestGenDroolsScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
             KieBase kieBase, List<String> scoreDrlList, List<File> scoreDrlFileList) {
         super(solutionDescriptor, kieBase);
@@ -45,8 +43,8 @@ public class TestGenDroolsScoreDirectorFactory<Solution_> extends DroolsScoreDir
     }
 
     public TestGenDroolsScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
-            KieContainer kieContainer, String ksessionName) {
-        super(solutionDescriptor, kieContainer, ksessionName);
+            KieContainer kieContainer) {
+        super(solutionDescriptor, kieContainer);
         this.scoreDrlList = null;
         this.scoreDrlFileList = null;
     }

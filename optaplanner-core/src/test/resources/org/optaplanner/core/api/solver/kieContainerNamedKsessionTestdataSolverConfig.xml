@@ -3,9 +3,4 @@
 <solver>
   <solutionClass>testdata.kjar.ClassloadedTestdataSolution</solutionClass>
   <entityClass>testdata.kjar.ClassloadedTestdataEntity</entityClass>
-
-  <!-- Score configuration -->
-  <scoreDirectorFactory>
-    <ksessionName>testdataKsession</ksessionName>
-  </scoreDirectorFactory>
 </solver>

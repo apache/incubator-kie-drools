@@ -93,17 +93,7 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
                     + ") with nullable (" + nullable + "), which is not compatible with the primitive propertyType ("
                     + variableMemberAccessor.getType() + ").");
         }
-        Class<? extends SelectionFilter> reinitializeVariableEntityFilterClass = planningVariableAnnotation
-                .reinitializeVariableEntityFilter();
-        if (reinitializeVariableEntityFilterClass == PlanningVariable.NullReinitializeVariableEntityFilter.class) {
-            reinitializeVariableEntityFilterClass = null;
-        }
-        if (reinitializeVariableEntityFilterClass != null) {
-            reinitializeVariableEntityFilter = ConfigUtils.newInstance(this,
-                    "reinitializeVariableEntityFilterClass", reinitializeVariableEntityFilterClass);
-        } else {
-            reinitializeVariableEntityFilter = new NullValueReinitializeVariableEntityFilter(this);
-        }
+        reinitializeVariableEntityFilter = new NullValueReinitializeVariableEntityFilter(this);
     }
 
     private void processChained(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {

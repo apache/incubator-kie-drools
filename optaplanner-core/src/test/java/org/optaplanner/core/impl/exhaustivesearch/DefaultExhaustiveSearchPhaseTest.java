@@ -46,8 +46,6 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedEntity;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedSolution;
-import org.optaplanner.core.impl.testdata.domain.reinitialize.TestdataReinitializeEntity;
-import org.optaplanner.core.impl.testdata.domain.reinitialize.TestdataReinitializeSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 public class DefaultExhaustiveSearchPhaseTest {
@@ -199,41 +197,6 @@ public class DefaultExhaustiveSearchPhaseTest {
         solution = PlannerTestUtils.solve(solverConfig, solution);
         assertThat(solution).isNotNull();
         assertThat(solution.getEntityList().size()).isEqualTo(0);
-    }
-
-    @Test
-    public void solveWithReinitializeVariable() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataReinitializeSolution.class, TestdataReinitializeEntity.class);
-        solverConfig.setPhaseConfigList(Collections.singletonList(
-                new ExhaustiveSearchPhaseConfig()));
-
-        TestdataReinitializeSolution solution = new TestdataReinitializeSolution("s1");
-        TestdataValue v1 = new TestdataValue("v1");
-        TestdataValue v2 = new TestdataValue("v2");
-        TestdataValue v3 = new TestdataValue("v3");
-        solution.setValueList(Arrays.asList(v1, v2, v3));
-        solution.setEntityList(Arrays.asList(
-                new TestdataReinitializeEntity("e1", null, false),
-                new TestdataReinitializeEntity("e2", v2, false),
-                new TestdataReinitializeEntity("e3", v2, true),
-                new TestdataReinitializeEntity("e4", null, true)));
-
-        solution = PlannerTestUtils.solve(solverConfig, solution);
-        assertThat(solution).isNotNull();
-        TestdataReinitializeEntity solvedE1 = solution.getEntityList().get(0);
-        assertCode("e1", solvedE1);
-        assertThat(solvedE1.getValue()).isNotNull();
-        TestdataReinitializeEntity solvedE2 = solution.getEntityList().get(1);
-        assertCode("e2", solvedE2);
-        assertThat(solvedE2.getValue()).isNotNull();
-        TestdataReinitializeEntity solvedE3 = solution.getEntityList().get(2);
-        assertCode("e3", solvedE3);
-        assertThat(solvedE3.getValue()).isEqualTo(v2);
-        TestdataReinitializeEntity solvedE4 = solution.getEntityList().get(3);
-        assertCode("e4", solvedE4);
-        assertThat(solvedE4.getValue()).isEqualTo(null);
-        assertThat(solution.getScore().getInitScore()).isEqualTo(-1);
     }
 
 }

@@ -22,6 +22,6 @@
   </configuration>
   <!-- This file is copy pasted to the META-INF director in the KieContainer tests to avoid false positive tests -->
   <kbase name="testdataKbase" packages="testdata.kjar">
-    <ksession name="testdataKsession"/>
+    <ksession name="testdataKsession" default="true"/>
   </kbase>
 </kmodule>

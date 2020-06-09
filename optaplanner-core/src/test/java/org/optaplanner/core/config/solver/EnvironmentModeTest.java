@@ -81,7 +81,6 @@ public class EnvironmentModeTest {
         Solver solver2 = SolverFactory.create(solverConfig).buildSolver();
 
         switch (environmentMode) {
-            case PRODUCTION:
             case NON_REPRODUCIBLE:
                 assertNonReproducibility(solver1, solver2);
                 break;
@@ -119,7 +118,6 @@ public class EnvironmentModeTest {
                 break;
             case REPRODUCIBLE:
             case NON_REPRODUCIBLE:
-            case PRODUCTION:
                 // No exception expected
                 break;
             default:
@@ -148,7 +146,6 @@ public class EnvironmentModeTest {
                 break;
             case REPRODUCIBLE:
             case NON_REPRODUCIBLE:
-            case PRODUCTION:
                 // No exception expected
                 break;
             default:

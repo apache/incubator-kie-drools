@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -125,11 +125,6 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
 
     private void applySolverProperties(SolverConfig solverConfig) {
         EntityScanner entityScanner = new EntityScanner(this.context);
-        if (solverConfig.getScanAnnotatedClassesConfig() != null) {
-            throw new IllegalArgumentException("Do not use scanAnnotatedClasses with the Spring Boot starter,"
-                    + " because the Spring Boot starter scans too.\n"
-                    + "Maybe delete the scanAnnotatedClasses element in the solver config.");
-        }
         if (solverConfig.getSolutionClass() == null) {
             solverConfig.setSolutionClass(findSolutionClass(entityScanner));
         }
