@@ -63,33 +63,6 @@
         <exclude>.git/**</exclude>
       </excludes>
     </fileSet>
-    <!-- Quickstart -->
-<!--    <fileSet>&lt;!&ndash; Note: going outside the module dir is bad, but it is not fetching generated files &ndash;&gt;-->
-<!--      <directory>../optaplanner-quickstarts</directory>-->
-<!--      <outputDirectory>quickstarts</outputDirectory>-->
-<!--      <excludes>-->
-<!--        <exclude>pom.xml</exclude>-->
-<!--        <exclude>update-version.sh</exclude>-->
-
-<!--        <exclude>target/**</exclude>-->
-<!--        <exclude>local/**</exclude>-->
-<!--        <exclude>.*/**</exclude>-->
-<!--        <exclude>nbproject/**</exclude>-->
-<!--        <exclude>*.ipr</exclude>-->
-<!--        <exclude>*.iws</exclude>-->
-<!--        <exclude>*.iml</exclude>-->
-<!--        <exclude>.git/**</exclude>-->
-
-<!--        <exclude>*/target/**</exclude>-->
-<!--        <exclude>*/local/**</exclude>-->
-<!--        <exclude>*/.*/**</exclude>-->
-<!--        <exclude>*/nbproject/**</exclude>-->
-<!--        <exclude>*/*.ipr</exclude>-->
-<!--        <exclude>*/*.iws</exclude>-->
-<!--        <exclude>*/*.iml</exclude>-->
-<!--        <exclude>*/.git/**</exclude>-->
-<!--      </excludes>-->
-<!--    </fileSet>-->
   </fileSets>
 
   <dependencySets>
