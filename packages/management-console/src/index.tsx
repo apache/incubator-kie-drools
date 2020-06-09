@@ -7,11 +7,12 @@ import Keycloak from 'keycloak-js';
 import axios from 'axios';
 import { Nav, NavList, NavItem } from '@patternfly/react-core';
 import { ServerUnavailable } from '@kogito-apps/common';
-import BaseComponent from './components/Templates/BaseComponent/BaseComponent';
 import { HttpLink } from 'apollo-link-http';
 import { onError } from 'apollo-link-error';
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
 import managementConsoleLogo from './static/managementConsoleLogo.svg';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import PageLayoutComponent from './components/Templates/PageLayoutComponent/PageLayoutComponent';
 
 const httpLink = new HttpLink({
   // @ts-ignore
@@ -59,7 +60,11 @@ const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
 const appRender = () => {
   ReactDOM.render(
     <ApolloProvider client={client}>
-      <BaseComponent />
+      <BrowserRouter>
+        <Switch>
+          <Route path="/" component={PageLayoutComponent} />
+        </Switch>
+      </BrowserRouter>
     </ApolloProvider>,
     document.getElementById('root')
   );

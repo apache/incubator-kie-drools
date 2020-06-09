@@ -1,11 +1,12 @@
 import '@patternfly/patternfly/patternfly.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import BaseComponent from './components/Templates/BaseComponent/BaseComponent';
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
 import Keycloak from 'keycloak-js';
 import axios from 'axios';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import PageLayoutComponent from './components/Templates/PageLayoutComponent/PageLayoutComponent';
 
 const client = new ApolloClient({
   uri: process.env.KOGITO_DATAINDEX_HTTP_URL + '/graphql',
@@ -25,7 +26,11 @@ const client = new ApolloClient({
 const appRender = () => {
   ReactDOM.render(
     <ApolloProvider client={client}>
-      <BaseComponent />
+      <BrowserRouter>
+        <Switch>
+          <Route path="/" component={PageLayoutComponent} />
+        </Switch>
+      </BrowserRouter>
     </ApolloProvider>,
     document.getElementById('root')
   );
