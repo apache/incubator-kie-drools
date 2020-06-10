@@ -39,4 +39,4 @@ jobs:
 
       # Builds the JPA module and runs tests in a PostgreSQL container
       - name: Build with Maven
-        run: cd optaplanner-persistence/optaplanner-persistence-jpa && mvn -B verify -Ppostgresql
+        run: cd optaplanner-persistence/optaplanner-persistence-jpa && mvn -B clean install -Ppostgresql
