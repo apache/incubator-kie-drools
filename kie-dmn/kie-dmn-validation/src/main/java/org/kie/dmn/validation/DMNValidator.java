@@ -26,7 +26,16 @@ import org.kie.dmn.model.api.Definitions;
 public interface DMNValidator {
 
     enum Validation {
-        VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE
+        /** Perform DMN XSD schema validation */
+        VALIDATE_SCHEMA,
+        /** Perform static analysis validation */
+        VALIDATE_MODEL,
+        /** Perform standard compilation of the DMN model, reporting any error and other messages as part of validation */
+        VALIDATE_COMPILATION,
+        /** Perform static Decision Table Analysis on all the decision tables */
+        ANALYZE_DECISION_TABLE,
+        /** Experimental flag: compute MC/DC Analysis on decision tables, as part of Decision Table Analysis */
+        COMPUTE_DECISION_TABLE_MCDC
     }
 
     /**

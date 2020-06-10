@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:drools="http://www.drools.org/kie/dmn/1.1" xmlns:openapi="https://openapis.org/omg/extension/1.0" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:rss="http://purl.org/rss/2.0/" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"               xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_77f33318-c120-42af-bfbd-94ef4a92c52a" id="_77f33318-c120-42af-bfbd-94ef4a92c52a" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_77f33318-c120-42af-bfbd-94ef4a92c52a" exporter="Decision Modeler" exporterVersion="6.11.3" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:itemDefinition name="tRequestType" label="tRequestType" isCollection="false">
+        <semantic:typeRef>string</semantic:typeRef>
+        <semantic:allowedValues triso:constraintsType="enumeration">
+            <semantic:text>"Borrow","Reserve","Extend"</semantic:text>
+        </semantic:allowedValues>
+    </semantic:itemDefinition>
+    <semantic:itemDefinition name="tRequesterType" label="tRequesterType" isCollection="false">
+        <semantic:typeRef>string</semantic:typeRef>
+        <semantic:allowedValues triso:constraintsType="enumeration">
+            <semantic:text>"Student","Teacher"</semantic:text>
+        </semantic:allowedValues>
+    </semantic:itemDefinition>
+    <semantic:itemDefinition name="tBookType" label="tBookType" isCollection="false">
+        <semantic:typeRef>string</semantic:typeRef>
+        <semantic:allowedValues triso:constraintsType="enumeration">
+            <semantic:text>"Reference","Non reference"</semantic:text>
+        </semantic:allowedValues>
+    </semantic:itemDefinition>
+    <semantic:itemDefinition name="tApproved" label="tApproved" isCollection="false">
+        <semantic:typeRef>string</semantic:typeRef>
+        <semantic:allowedValues triso:constraintsType="enumeration">
+            <semantic:text>"Declined","Approved"</semantic:text>
+        </semantic:allowedValues>
+    </semantic:itemDefinition>
+    <semantic:inputData id="_721ab89a-711a-4a10-9f54-d3b93c386b8c" name="requestType">
+        <semantic:variable name="requestType" id="_88e3b309-1cc7-4372-833e-0e25762101f6" typeRef="tRequestType"/>
+    </semantic:inputData>
+    <semantic:inputData id="_99ff3885-8b53-4a2e-8992-5259300f6d83" name="requester type">
+        <semantic:variable name="requester type" id="_3bc838bc-ed11-4a7a-bd7c-0b424f8cba5c" typeRef="tRequesterType"/>
+    </semantic:inputData>
+    <semantic:inputData id="_a8becd45-3e84-4dcb-8612-f9ce157160ad" name="book type">
+        <semantic:variable name="book type" id="_203bb551-4614-40ff-9489-19d71c6a8907" typeRef="tBookType"/>
+    </semantic:inputData>
+    <semantic:inputData id="_d0424dd0-af82-4df0-87ad-122b69e8fbf0" name="book count">
+        <semantic:variable name="book count" id="_11c40a3c-8775-4b0c-a677-498a959e0412" typeRef="number"/>
+    </semantic:inputData>
+    <semantic:inputData id="_27f691eb-d3a9-4a5e-94f1-32a55ec73ea3" name="duration">
+        <semantic:variable name="duration" id="_ff06c624-6ac2-4d85-980d-f0e00486d7a5" typeRef="number"/>
+    </semantic:inputData>
+    <semantic:inputData id="_905570b8-866b-43e5-9992-261996b669ad" name="extend count">
+        <semantic:variable name="extend count" id="_33410021-a541-46e3-b366-25086e83e907" typeRef="number"/>
+    </semantic:inputData>
+    <semantic:decision id="_281ab7aa-6955-4cc7-beae-8dbcf1f35f1c" name="Approval" triso:useOutputTypeAsAnswer="false">
+        <semantic:variable name="Approval" id="_1d55b70c-e9fe-4c06-a97c-6d4229cdcc2d" typeRef="tApproved"/>
+        <semantic:informationRequirement id="_635c944f-7968-4e67-93c5-16c2d2453591">
+            <semantic:requiredInput href="#_721ab89a-711a-4a10-9f54-d3b93c386b8c"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_de53b726-0eb8-4b9a-8354-dbfb5f5da9cc">
+            <semantic:requiredInput href="#_99ff3885-8b53-4a2e-8992-5259300f6d83"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_642306aa-67e4-40b8-b823-70d84558a9d2">
+            <semantic:requiredInput href="#_a8becd45-3e84-4dcb-8612-f9ce157160ad"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_de3a5c7c-5f87-4794-bdcd-337521ee4aa2">
+            <semantic:requiredInput href="#_d0424dd0-af82-4df0-87ad-122b69e8fbf0"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_85e591a3-a26f-4b6b-9348-e1846603763b">
+            <semantic:requiredInput href="#_27f691eb-d3a9-4a5e-94f1-32a55ec73ea3"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_f2b0bcba-f12f-4db1-b78c-5d25fa9f17ec">
+            <semantic:requiredInput href="#_905570b8-866b-43e5-9992-261996b669ad"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_e31c78b7-63ef-4112-a0bc-b0546043ebe9" hitPolicy="PRIORITY" outputLabel="Approval" typeRef="tApproved" triso:expressionId="_2aa4d62c-d6f0-4246-8ebe-2e24838d6dc4">
+            <semantic:input id="_cf7c4b58-db4e-4bea-93a0-607fe87dfca0" triso:allowNull="true" label="requestType">
+                <semantic:inputExpression typeRef="tRequestType">
+                    <semantic:text>requestType</semantic:text>
+                </semantic:inputExpression>
+                <semantic:inputValues triso:constraintsType="enumeration">
+                    <semantic:text>"Borrow","Reserve","Extend",null</semantic:text>
+                </semantic:inputValues>
+            </semantic:input>
+            <semantic:input id="_aa4cf478-e292-46bc-a049-1b4043f5b7aa" triso:allowNull="true" label="requester type">
+                <semantic:inputExpression typeRef="tRequesterType">
+                    <semantic:text>requester type</semantic:text>
+                </semantic:inputExpression>
+                <semantic:inputValues triso:constraintsType="enumeration">
+                    <semantic:text>"Student","Teacher",null</semantic:text>
+                </semantic:inputValues>
+            </semantic:input>
+            <semantic:input id="_490814b5-eb62-4b81-9b6c-e2e83b6891e1" triso:allowNull="true" label="book type">
+                <semantic:inputExpression typeRef="tBookType">
+                    <semantic:text>book type</semantic:text>
+                </semantic:inputExpression>
+                <semantic:inputValues triso:constraintsType="enumeration">
+                    <semantic:text>"Reference","Non reference",null</semantic:text>
+                </semantic:inputValues>
+            </semantic:input>
+            <semantic:input id="_67b562b6-9836-4c5f-9f02-51bb4c7c0c53" triso:allowNull="true" label="book count">
+                <semantic:inputExpression typeRef="number">
+                    <semantic:text>book count</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:input id="_47e51ab9-4290-4507-af17-5a78dc7fc721" triso:allowNull="true" label="duration">
+                <semantic:inputExpression typeRef="number">
+                    <semantic:text>duration</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:input id="_8bbcc6cc-8f3b-414f-9aa9-40bf43bf421d" triso:allowNull="true" label="extend count">
+                <semantic:inputExpression typeRef="number">
+                    <semantic:text>extend count</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:output id="_d369c44c-27fe-4290-843d-9cfb094e7104" triso:allowNull="true">
+                <semantic:outputValues triso:constraintsType="enumeration">
+                    <semantic:text>"Declined","Approved",null</semantic:text>
+                </semantic:outputValues>
+            </semantic:output>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_0fc587d0-b542-4293-9c54-136eeb1003b2">
+                <semantic:inputEntry id="_19857755-d47f-4cbe-ba4c-0c1c4c0dd009">
+                    <semantic:text>"Borrow"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_dcb77ebb-ab95-4d96-8c8f-4498b34932f4">
+                    <semantic:text>"Student"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_53800e86-b7fc-40b4-8a44-1b831c6acb65">
+                    <semantic:text>"Reference"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_0b882482-fd25-4d79-8422-00f4861814cf">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_30c0a657-3f53-41cd-ba2f-d82fca2cc3a6">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_5b4cfca7-a103-4d64-a2d3-34ca8e3b0b44">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_d413aae7-4bb6-4575-9bc5-58c3623002fd">
+                    <semantic:text>"Declined"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_8f428b49-8d52-4886-92c9-70b08230781a">
+                <semantic:inputEntry id="_cd4e9797-8fd6-41e0-80cd-e4dc3b46035f">
+                    <semantic:text>"Borrow"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_8d696932-d822-452b-a608-f70b8ba7d1b8">
+                    <semantic:text>"Teacher"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_c607e3b7-a54f-4bfd-ac76-eb739e87ac9d">
+                    <semantic:text>"Reference"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_00508d00-ab0f-4612-8c96-a648038f7809">
+                    <semantic:text>&lt;=2</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_c9d5ed21-e1bb-491e-9469-03cf4ce7d856">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_a18fd9ff-888d-48ac-b33d-29df6342d593">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_e174c349-f26e-4b13-8648-cb9747db03f9">
+                    <semantic:text>"Declined"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_54d1e067-d7da-4da6-a05b-6ae61920cc3a">
+                <semantic:inputEntry id="_fcf8bbca-8320-4886-add7-5cbdee2fb165">
+                    <semantic:text>"Borrow"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_440e66ea-2042-4dca-84ed-514fbccac164">
+                    <semantic:text>"Student"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_f827f2be-f8f9-47af-9b95-c95694f702ea">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_891eeb94-716b-4ec2-9624-ee4b008dee42">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_012a034d-e02d-449d-8034-5f0cfd0f7908">
+                    <semantic:text>&gt;14</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_ed22e7be-3c99-418c-8e6f-5310edd64821">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_e7fd1779-2efc-4457-9745-795ff3fa1191">
+                    <semantic:text>"Declined"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_4746e4e0-530c-4191-a61c-670de50c8048">
+                <semantic:inputEntry id="_da217df3-6ab9-43cc-8d62-c4669ae28976">
+                    <semantic:text>"Borrow"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_85b4889a-7012-45a6-b76d-c89e634143d9">
+                    <semantic:text>"Teacher"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_fad37f69-00d2-4ff5-829b-69f010435235">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_d3ca7e4d-9ec2-494b-9f6f-f2082d206173">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_e6f2db96-5cf2-4201-8f28-d7261388ab84">
+                    <semantic:text>&gt;30</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_5f407acf-e048-4802-a3d2-c4cc7a719a3d">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_199b5162-738c-415a-86db-61a071c1f4e3">
+                    <semantic:text>"Declined"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_c253d3f9-95d9-4469-8900-2edfb904aee8">
+                <semantic:inputEntry id="_214277b1-fdda-4127-937c-cce933ebff26">
+                    <semantic:text>"Reserve"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_fae7e9f9-52a5-4279-9c6f-5370bbbc8410">
+                    <semantic:text>"Student"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_c7106bec-470c-471e-9527-7a80415d307f">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_88ee8bad-0928-4640-acac-42bbd1fd52f0">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_2bde4cbe-5b77-4f81-a340-d5e52cea9785">
+                    <semantic:text>&gt;2</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_33be094a-b9cd-4a64-84f8-82cd67a26c9a">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_c52b4be3-100e-49f0-a35c-f01c426c01b3">
+                    <semantic:text>"Declined"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_d85b3aa6-789d-4b26-9d89-d45c912cc4a6">
+                <semantic:inputEntry id="_31e06e9a-cb2a-4b5d-a805-6313920c2e5d">
+                    <semantic:text>"Reserve"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_473eee6d-fcf0-453f-b936-42f123f2b8f4">
+                    <semantic:text>"Teacher"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_ccb64f9a-141e-4e6e-aaba-1cfd2e3f0e49">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_8edc9a34-afcd-40a1-acaa-bf0485461c4e">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_e1a2b996-4505-414e-9e8e-a870981f87ff">
+                    <semantic:text>&gt;3</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_91c3fdc6-577f-4fb4-8494-a3304e6cf366">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_6fd9d73f-c148-40ba-8b28-88652aa21d19">
+                    <semantic:text>"Declined"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_b27e08bc-94f0-454b-af47-4cb23ea8a69d">
+                <semantic:inputEntry id="_5e2e1aeb-40df-4d6a-96bd-1d9c6cb1d865">
+                    <semantic:text>"Extend"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_8404866f-e8fb-49ee-8ddc-8b53ff723bc1">
+                    <semantic:text>"Student"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_88d79c61-00d6-43ff-bec4-b0692d046ae5">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_0d7f171e-45c4-48aa-8095-0b4a2ea625de">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_50705f9d-b904-4c38-9b22-55e50fbe4491">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_8d4dd87e-e05c-402e-8823-e6d44e38b703">
+                    <semantic:text>&gt;1</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_5fc30ec9-6c5e-4f7d-aa42-b2532a942582">
+                    <semantic:text>"Declined"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_a7bd5524-86ef-4e6a-b5eb-678c58e99931">
+                <semantic:inputEntry id="_76bca63b-ff22-4b7e-8ae6-b9278d81bd9c">
+                    <semantic:text>"Extend"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_dbb2c73a-a31b-4c2f-b696-57b30f415734">
+                    <semantic:text>"Teacher"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_1388c370-f809-405d-a38a-80bce9fa095f">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_bdf16197-4aad-478a-87db-94da5da8208d">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_6d26029e-63e8-4130-b573-389778db9900">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_c27e99d3-c47e-4b7d-9c7f-5d467fc4835c">
+                    <semantic:text>&gt;2</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_b67d5924-9756-4a64-95da-c380089f2bb0">
+                    <semantic:text>"Declined"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_11b980ca-6200-400d-948f-803e6ff4e449">
+                <semantic:inputEntry id="_bdb593d0-44d2-415c-bbbe-893d75d43de1">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_0a0fbbd0-9fbf-43bc-ace2-41af3c1c01e5">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_cb8d9f63-ec24-4b64-87c6-fa8ed6f480f8">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_b3ca1a07-6f02-4cad-b31c-87cac6aaf282">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_2baadb29-9ebb-4910-b265-80dc880b8f21">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_d9200e87-042a-47c5-93d1-c02f2881a1cc">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_6fd10315-3dc0-40eb-b0c2-a7e9c980cea4">
+                    <semantic:text>"Approved"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+</semantic:definitions>
