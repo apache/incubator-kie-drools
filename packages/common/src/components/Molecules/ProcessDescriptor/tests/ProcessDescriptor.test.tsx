@@ -1,7 +1,8 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import ProcessDescriptor from './../ProcessDescriptor';
-import { ProcessInstanceState } from '../../../../graphql/types';
+import { GraphQL } from '../../../../graphql/types';
+import ProcessInstanceState = GraphQL.ProcessInstanceState;
 
 const processInstanceData = {
   id: 'a1e139d5-4e77-48c9-84ae-34578e904e5a',

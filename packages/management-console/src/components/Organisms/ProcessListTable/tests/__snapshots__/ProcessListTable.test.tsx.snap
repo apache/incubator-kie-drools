@@ -1,0 +1,262 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DataList component tests Snapshot tests 1 1`] = `
+<ProcessListTable
+  abortedObj={
+    Object {
+      "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels",
+    }
+  }
+  checkedArray={
+    Array [
+      "ACTIVE",
+    ]
+  }
+  filteredData={
+    Object {
+      "ProcessInstances": Array [
+        Object {
+          "addons": Array [
+            "jobs-management",
+            "prometheus-monitoring",
+            "process-management",
+          ],
+          "childProcessInstances": Array [
+            Object {
+              "id": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e",
+              "processName": "FlightBooking",
+            },
+            Object {
+              "id": "2d962eef-45b8-48a9-ad4e-9cde0ad6af88",
+              "processName": "HotelBooking",
+            },
+          ],
+          "end": null,
+          "endpoint": "http://localhost:4000",
+          "error": Object {
+            "message": "Something went wrong",
+            "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-3459188e90433n",
+          },
+          "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+          "nodes": Array [
+            Object {
+              "definitionId": "CallActivity_2",
+              "enter": "2019-10-22T04:43:01.143Z",
+              "exit": "2019-10-22T04:43:01.146Z",
+              "id": "7cdeba99-cd36-4425-980d-e59d44769a3e",
+              "name": "Book Flight",
+              "type": "SubProcessNode",
+            },
+            Object {
+              "definitionId": "UserTask_2",
+              "enter": "2019-10-22T04:43:01.148Z",
+              "exit": null,
+              "id": "843bd287-fb6e-4ee7-a304-ba9b430e52d8",
+              "name": "Confirm travel",
+              "type": "HumanTaskNode",
+            },
+            Object {
+              "definitionId": "ParallelGateway_2",
+              "enter": "2019-10-22T04:43:01.148Z",
+              "exit": "2019-10-22T04:43:01.148Z",
+              "id": "fd2e12d5-6a4b-4c75-9f31-028d3f032a95",
+              "name": "Join",
+              "type": "Join",
+            },
+            Object {
+              "definitionId": "CallActivity_1",
+              "enter": "2019-10-22T04:43:01.146Z",
+              "exit": "2019-10-22T04:43:01.148Z",
+              "id": "7f7d74c1-78f7-49be-b5ad-8d132f46a49c",
+              "name": "Book Hotel",
+              "type": "SubProcessNode",
+            },
+            Object {
+              "definitionId": "ParallelGateway_1",
+              "enter": "2019-10-22T04:43:01.143Z",
+              "exit": "2019-10-22T04:43:01.146Z",
+              "id": "af0d984c-4abd-4f5c-83a8-426e6b3d102a",
+              "name": "Book",
+              "type": "Split",
+            },
+            Object {
+              "definitionId": "ExclusiveGateway_2",
+              "enter": "2019-10-22T04:43:01.143Z",
+              "exit": "2019-10-22T04:43:01.143Z",
+              "id": "b2761011-3043-4f48-82bd-1395bf651a91",
+              "name": "Join",
+              "type": "Join",
+            },
+            Object {
+              "definitionId": "ExclusiveGateway_1",
+              "enter": "2019-10-22T04:43:01.143Z",
+              "exit": "2019-10-22T04:43:01.143Z",
+              "id": "a91a2600-d0cd-46ff-a6c6-b3081612d1af",
+              "name": "is visa required",
+              "type": "Split",
+            },
+            Object {
+              "definitionId": "BusinessRuleTask_1",
+              "enter": "2019-10-22T04:43:01.135Z",
+              "exit": "2019-10-22T04:43:01.143Z",
+              "id": "1baa5de4-47cc-45a8-8323-005388191e4f",
+              "name": "Visa check",
+              "type": "RuleSetNode",
+            },
+            Object {
+              "definitionId": "StartEvent_1",
+              "enter": "2019-10-22T04:43:01.135Z",
+              "exit": "2019-10-22T04:43:01.135Z",
+              "id": "90e5a337-1c26-4fcc-8ee2-d20e6ba2a1a3",
+              "name": "StartProcess",
+              "type": "StartNode",
+            },
+          ],
+          "parentProcessInstance": null,
+          "parentProcessInstanceId": null,
+          "processId": "travels",
+          "processName": "travels",
+          "roles": Array [],
+          "rootProcessInstanceId": null,
+          "start": "2019-10-22T03:40:44.089Z",
+          "state": "ACTIVE",
+          "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
+        },
+      ],
+    }
+  }
+  filters={
+    Object {
+      "businessKey": Array [],
+      "status": Array [
+        "ACTIVE",
+      ],
+    }
+  }
+  initData={
+    Object {
+      "ProcessInstances": Array [
+        Object {
+          "addons": Array [
+            "jobs-management",
+            "prometheus-monitoring",
+            "process-management",
+          ],
+          "childProcessInstances": Array [
+            Object {
+              "id": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e",
+              "processName": "FlightBooking",
+            },
+            Object {
+              "id": "2d962eef-45b8-48a9-ad4e-9cde0ad6af88",
+              "processName": "HotelBooking",
+            },
+          ],
+          "end": null,
+          "endpoint": "http://localhost:4000",
+          "error": Object {
+            "message": "Something went wrong",
+            "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-3459188e90433n",
+          },
+          "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+          "nodes": Array [
+            Object {
+              "definitionId": "CallActivity_2",
+              "enter": "2019-10-22T04:43:01.143Z",
+              "exit": "2019-10-22T04:43:01.146Z",
+              "id": "7cdeba99-cd36-4425-980d-e59d44769a3e",
+              "name": "Book Flight",
+              "type": "SubProcessNode",
+            },
+            Object {
+              "definitionId": "UserTask_2",
+              "enter": "2019-10-22T04:43:01.148Z",
+              "exit": null,
+              "id": "843bd287-fb6e-4ee7-a304-ba9b430e52d8",
+              "name": "Confirm travel",
+              "type": "HumanTaskNode",
+            },
+            Object {
+              "definitionId": "ParallelGateway_2",
+              "enter": "2019-10-22T04:43:01.148Z",
+              "exit": "2019-10-22T04:43:01.148Z",
+              "id": "fd2e12d5-6a4b-4c75-9f31-028d3f032a95",
+              "name": "Join",
+              "type": "Join",
+            },
+            Object {
+              "definitionId": "CallActivity_1",
+              "enter": "2019-10-22T04:43:01.146Z",
+              "exit": "2019-10-22T04:43:01.148Z",
+              "id": "7f7d74c1-78f7-49be-b5ad-8d132f46a49c",
+              "name": "Book Hotel",
+              "type": "SubProcessNode",
+            },
+            Object {
+              "definitionId": "ParallelGateway_1",
+              "enter": "2019-10-22T04:43:01.143Z",
+              "exit": "2019-10-22T04:43:01.146Z",
+              "id": "af0d984c-4abd-4f5c-83a8-426e6b3d102a",
+              "name": "Book",
+              "type": "Split",
+            },
+            Object {
+              "definitionId": "ExclusiveGateway_2",
+              "enter": "2019-10-22T04:43:01.143Z",
+              "exit": "2019-10-22T04:43:01.143Z",
+              "id": "b2761011-3043-4f48-82bd-1395bf651a91",
+              "name": "Join",
+              "type": "Join",
+            },
+            Object {
+              "definitionId": "ExclusiveGateway_1",
+              "enter": "2019-10-22T04:43:01.143Z",
+              "exit": "2019-10-22T04:43:01.143Z",
+              "id": "a91a2600-d0cd-46ff-a6c6-b3081612d1af",
+              "name": "is visa required",
+              "type": "Split",
+            },
+            Object {
+              "definitionId": "BusinessRuleTask_1",
+              "enter": "2019-10-22T04:43:01.135Z",
+              "exit": "2019-10-22T04:43:01.143Z",
+              "id": "1baa5de4-47cc-45a8-8323-005388191e4f",
+              "name": "Visa check",
+              "type": "RuleSetNode",
+            },
+            Object {
+              "definitionId": "StartEvent_1",
+              "enter": "2019-10-22T04:43:01.135Z",
+              "exit": "2019-10-22T04:43:01.135Z",
+              "id": "90e5a337-1c26-4fcc-8ee2-d20e6ba2a1a3",
+              "name": "StartProcess",
+              "type": "StartNode",
+            },
+          ],
+          "parentProcessInstance": null,
+          "parentProcessInstanceId": null,
+          "processId": "travels",
+          "processName": "travels",
+          "roles": Array [],
+          "rootProcessInstanceId": null,
+          "start": "2019-10-22T03:40:44.089Z",
+          "state": "ACTIVE",
+          "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
+        },
+      ],
+    }
+  }
+  isFilterClicked={false}
+  isLoading={false}
+  isLoadingMore={false}
+  pageSize={10}
+  selectedNumber={0}
+  setAbortedObj={[MockFunction]}
+  setFilteredData={[MockFunction]}
+  setInitData={[MockFunction]}
+  setIsAllChecked={[MockFunction]}
+  setIsError={[MockFunction]}
+  setIsLoading={[MockFunction]}
+  setSelectedNumber={[MockFunction]}
+/>
+`;

@@ -1,0 +1,1003 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PageLayout tests snapshot testing 1`] = `
+<PageLayout
+  history={
+    Array [
+      "/ProcessInstances",
+    ]
+  }
+  location={
+    Object {
+      "pathname": "/ProcessInstances",
+    }
+  }
+  ouiaContext={
+    Object {
+      "isOuia": false,
+      "ouiaId": null,
+    }
+  }
+>
+  <Component
+    BrandAltText="Management Console Logo"
+    BrandClick={[Function]}
+    BrandSrc="managementConsoleLogo.svg"
+    PageNav={
+      <Unknown
+        aria-label="Nav"
+        theme="dark"
+      >
+        <NavList
+          ariaLeftScroll="Scroll left"
+          ariaRightScroll="Scroll right"
+          className=""
+          variant="default"
+        >
+          <NavItem
+            isActive={true}
+          >
+            <Link
+              to="/ProcessInstances"
+            >
+              Process Instances
+            </Link>
+          </NavItem>
+          <NavItem
+            isActive={false}
+          >
+            <Link
+              to="/DomainExplorer"
+            >
+              Domain Explorer
+            </Link>
+          </NavItem>
+        </NavList>
+      </Unknown>
+    }
+  >
+    <ComponentWithOuia
+      component={[Function]}
+      componentProps={
+        Object {
+          "BrandAltText": "Management Console Logo",
+          "BrandClick": [Function],
+          "BrandSrc": "managementConsoleLogo.svg",
+          "PageNav": <Unknown
+            aria-label="Nav"
+            theme="dark"
+          >
+            <NavList
+              ariaLeftScroll="Scroll left"
+              ariaRightScroll="Scroll right"
+              className=""
+              variant="default"
+            >
+              <NavItem
+                isActive={true}
+              >
+                <Link
+                  to="/ProcessInstances"
+                >
+                  Process Instances
+                </Link>
+              </NavItem>
+              <NavItem
+                isActive={false}
+              >
+                <Link
+                  to="/DomainExplorer"
+                >
+                  Domain Explorer
+                </Link>
+              </NavItem>
+            </NavList>
+          </Unknown>,
+          "children": <Switch>
+            <Route
+              exact={true}
+              path="/"
+              render={[Function]}
+            />
+            <Route
+              component={[Function]}
+              exact={true}
+              path="/ProcessInstances"
+            />
+            <Route
+              component={[Function]}
+              exact={true}
+              path="/Process/:instanceID"
+            />
+            <Route
+              component={[Function]}
+              exact={true}
+              path="/DomainExplorer"
+            />
+            <Route
+              exact={true}
+              path="/DomainExplorer/:domainName"
+              render={[Function]}
+            />
+            <Route
+              path="/NoData"
+              render={[Function]}
+            />
+            <Route
+              path="*"
+              render={[Function]}
+            />
+          </Switch>,
+        }
+      }
+      consumerContext={
+        Object {
+          "isOuia": false,
+          "ouiaId": null,
+        }
+      }
+    >
+      <KogitoPageLayout
+        BrandAltText="Management Console Logo"
+        BrandClick={[Function]}
+        BrandSrc="managementConsoleLogo.svg"
+        PageNav={
+          <Unknown
+            aria-label="Nav"
+            theme="dark"
+          >
+            <NavList
+              ariaLeftScroll="Scroll left"
+              ariaRightScroll="Scroll right"
+              className=""
+              variant="default"
+            >
+              <NavItem
+                isActive={true}
+              >
+                <Link
+                  to="/ProcessInstances"
+                >
+                  Process Instances
+                </Link>
+              </NavItem>
+              <NavItem
+                isActive={false}
+              >
+                <Link
+                  to="/DomainExplorer"
+                >
+                  Domain Explorer
+                </Link>
+              </NavItem>
+            </NavList>
+          </Unknown>
+        }
+        ouiaContext={
+          Object {
+            "isOuia": false,
+            "ouiaId": null,
+          }
+        }
+      >
+        <Page
+          breadcrumb={null}
+          className="kogito-common--PageLayout"
+          defaultManagedSidebarIsOpen={true}
+          header={
+            <PageHeader
+              avatar={
+                <Avatar
+                  alt="Kogito Logo"
+                  src="avatar.svg"
+                />
+              }
+              isNavOpen={true}
+              logo={
+                <BrandLogo
+                  alt="Management Console Logo"
+                  brandClick={[Function]}
+                  src="managementConsoleLogo.svg"
+                />
+              }
+              onNavToggle={[Function]}
+              showNavToggle={true}
+              toolbar={
+                <Context.Provider
+                  value="managementConsoleLogo.svg"
+                >
+                  <PageToolbar />
+                </Context.Provider>
+              }
+            />
+          }
+          isManagedSidebar={false}
+          mainContainerId="main-content-page-layout-default-nav"
+          onPageResize={[Function]}
+          sidebar={
+            <PageSidebar
+              isNavOpen={true}
+              nav={
+                <Unknown
+                  aria-label="Nav"
+                  theme="dark"
+                >
+                  <NavList
+                    ariaLeftScroll="Scroll left"
+                    ariaRightScroll="Scroll right"
+                    className=""
+                    variant="default"
+                  >
+                    <NavItem
+                      isActive={true}
+                    >
+                      <Link
+                        to="/ProcessInstances"
+                      >
+                        Process Instances
+                      </Link>
+                    </NavItem>
+                    <NavItem
+                      isActive={false}
+                    >
+                      <Link
+                        to="/DomainExplorer"
+                      >
+                        Domain Explorer
+                      </Link>
+                    </NavItem>
+                  </NavList>
+                </Unknown>
+              }
+              theme="dark"
+            />
+          }
+          skipToContent={null}
+        >
+          <div
+            className="pf-c-page kogito-common--PageLayout"
+          >
+            <PageHeader
+              avatar={
+                <Avatar
+                  alt="Kogito Logo"
+                  src="avatar.svg"
+                />
+              }
+              isNavOpen={true}
+              logo={
+                <BrandLogo
+                  alt="Management Console Logo"
+                  brandClick={[Function]}
+                  src="managementConsoleLogo.svg"
+                />
+              }
+              onNavToggle={[Function]}
+              showNavToggle={true}
+              toolbar={
+                <Context.Provider
+                  value="managementConsoleLogo.svg"
+                >
+                  <PageToolbar />
+                </Context.Provider>
+              }
+            >
+              <header
+                className="pf-c-page__header"
+              >
+                <div
+                  className="pf-c-page__header-brand"
+                >
+                  <div
+                    className="pf-c-page__header-brand-toggle"
+                  >
+                    <Component
+                      aria-controls="page-sidebar"
+                      aria-expanded="true"
+                      aria-label="Global navigation"
+                      id="nav-toggle"
+                      onClick={[Function]}
+                      variant="plain"
+                    >
+                      <ComponentWithOuia
+                        component={[Function]}
+                        componentProps={
+                          Object {
+                            "aria-controls": "page-sidebar",
+                            "aria-expanded": "true",
+                            "aria-label": "Global navigation",
+                            "children": <BarsIcon
+                              color="currentColor"
+                              noVerticalAlign={false}
+                              size="sm"
+                              title={null}
+                            />,
+                            "id": "nav-toggle",
+                            "onClick": [Function],
+                            "variant": "plain",
+                          }
+                        }
+                        consumerContext={
+                          Object {
+                            "isOuia": false,
+                            "ouiaId": null,
+                          }
+                        }
+                      >
+                        <Button
+                          aria-controls="page-sidebar"
+                          aria-expanded="true"
+                          aria-label="Global navigation"
+                          id="nav-toggle"
+                          onClick={[Function]}
+                          ouiaContext={
+                            Object {
+                              "isOuia": false,
+                              "ouiaId": null,
+                            }
+                          }
+                          variant="plain"
+                        >
+                          <button
+                            aria-controls="page-sidebar"
+                            aria-disabled={null}
+                            aria-expanded="true"
+                            aria-label="Global navigation"
+                            className="pf-c-button pf-m-plain"
+                            disabled={false}
+                            id="nav-toggle"
+                            onClick={[Function]}
+                            tabIndex={null}
+                            type="button"
+                          >
+                            <BarsIcon
+                              color="currentColor"
+                              noVerticalAlign={false}
+                              size="sm"
+                              title={null}
+                            >
+                              <svg
+                                aria-hidden={true}
+                                aria-labelledby={null}
+                                fill="currentColor"
+                                height="1em"
+                                role="img"
+                                style={
+                                  Object {
+                                    "verticalAlign": "-0.125em",
+                                  }
+                                }
+                                viewBox="0 0 448 512"
+                                width="1em"
+                              >
+                                <path
+                                  d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"
+                                  transform=""
+                                />
+                              </svg>
+                            </BarsIcon>
+                          </button>
+                        </Button>
+                      </ComponentWithOuia>
+                    </Component>
+                  </div>
+                  <a
+                    className="pf-c-page__header-brand-link"
+                  >
+                    <BrandLogo
+                      alt="Management Console Logo"
+                      brandClick={[Function]}
+                      src="managementConsoleLogo.svg"
+                    >
+                      <Brand
+                        alt="Management Console Logo"
+                        onClick={[Function]}
+                        src="managementConsoleLogo.svg"
+                      >
+                        <img
+                          alt="Management Console Logo"
+                          className="pf-c-brand"
+                          onClick={[Function]}
+                          src="managementConsoleLogo.svg"
+                        />
+                      </Brand>
+                    </BrandLogo>
+                  </a>
+                </div>
+                <div
+                  className="pf-c-page__header-tools"
+                >
+                  <PageToolbar>
+                    <AboutModalBox
+                      handleModalToggleProp={[Function]}
+                      isOpenProp={false}
+                    >
+                      <AboutModal
+                        appendTo={null}
+                        backgroundImageSrc="kogitoAbout.png"
+                        brandImageAlt="Kogito Logo"
+                        brandImageSrc="managementConsoleLogo.svg"
+                        className=""
+                        isOpen={false}
+                        noAboutModalBoxContentContainer={false}
+                        onClose={[Function]}
+                        productName=""
+                        trademark="undefined is part of Kogito, an open source software released under the Apache Software License 2.0"
+                      >
+                        <Portal
+                          containerInfo={<div />}
+                        >
+                          <AboutModalContainer
+                            ariaDescribedById="pf-about-modal-content-0"
+                            ariaLabelledbyId="pf-about-modal-title-0"
+                            backgroundImageSrc="kogitoAbout.png"
+                            brandImageAlt="Kogito Logo"
+                            brandImageSrc="managementConsoleLogo.svg"
+                            className=""
+                            isOpen={false}
+                            noAboutModalBoxContentContainer={false}
+                            onClose={[Function]}
+                            productName=""
+                            trademark="undefined is part of Kogito, an open source software released under the Apache Software License 2.0"
+                          />
+                        </Portal>
+                      </AboutModal>
+                    </AboutModalBox>
+                    <Toolbar>
+                      <div
+                        className="pf-l-toolbar"
+                      >
+                        <ToolbarGroup>
+                          <div
+                            className="pf-l-toolbar__group"
+                          >
+                            <ToolbarItem
+                              className="pf-u-screen-reader pf-u-visible-on-md"
+                            >
+                              <div
+                                className="pf-l-toolbar__item pf-u-screen-reader pf-u-visible-on-md"
+                              >
+                                <Dropdown
+                                  dropdownItems={
+                                    Array [
+                                      <DropdownItem
+                                        onClick={[Function]}
+                                      >
+                                        About
+                                      </DropdownItem>,
+                                    ]
+                                  }
+                                  isOpen={false}
+                                  isPlain={true}
+                                  onSelect={[Function]}
+                                  position="right"
+                                  toggle={
+                                    <DropdownToggle
+                                      onToggle={[Function]}
+                                    >
+                                      Anonymous
+                                    </DropdownToggle>
+                                  }
+                                >
+                                  <Component
+                                    dropdownItems={
+                                      Array [
+                                        <DropdownItem
+                                          onClick={[Function]}
+                                        >
+                                          About
+                                        </DropdownItem>,
+                                      ]
+                                    }
+                                    isOpen={false}
+                                    isPlain={true}
+                                    position="right"
+                                    toggle={
+                                      <DropdownToggle
+                                        onToggle={[Function]}
+                                      >
+                                        Anonymous
+                                      </DropdownToggle>
+                                    }
+                                  >
+                                    <ComponentWithOuia
+                                      component={[Function]}
+                                      componentProps={
+                                        Object {
+                                          "dropdownItems": Array [
+                                            <DropdownItem
+                                              onClick={[Function]}
+                                            >
+                                              About
+                                            </DropdownItem>,
+                                          ],
+                                          "isOpen": false,
+                                          "isPlain": true,
+                                          "position": "right",
+                                          "toggle": <DropdownToggle
+                                            onToggle={[Function]}
+                                          >
+                                            Anonymous
+                                          </DropdownToggle>,
+                                        }
+                                      }
+                                      consumerContext={
+                                        Object {
+                                          "isOuia": false,
+                                          "ouiaId": null,
+                                        }
+                                      }
+                                    >
+                                      <DropdownWithContext
+                                        autoFocus={true}
+                                        className=""
+                                        direction="down"
+                                        dropdownItems={
+                                          Array [
+                                            <DropdownItem
+                                              onClick={[Function]}
+                                            >
+                                              About
+                                            </DropdownItem>,
+                                          ]
+                                        }
+                                        isGrouped={false}
+                                        isOpen={false}
+                                        isPlain={true}
+                                        onSelect={[Function]}
+                                        ouiaComponentType="Dropdown"
+                                        ouiaContext={
+                                          Object {
+                                            "isOuia": false,
+                                            "ouiaId": null,
+                                          }
+                                        }
+                                        position="right"
+                                        toggle={
+                                          <DropdownToggle
+                                            onToggle={[Function]}
+                                          >
+                                            Anonymous
+                                          </DropdownToggle>
+                                        }
+                                      >
+                                        <div
+                                          className="pf-c-dropdown pf-m-align-right"
+                                        >
+                                          <DropdownToggle
+                                            ariaHasPopup={true}
+                                            id="pf-toggle-id-0"
+                                            isOpen={false}
+                                            isPlain={true}
+                                            key=".0"
+                                            onEnter={[Function]}
+                                            onToggle={[Function]}
+                                            parentRef={
+                                              Object {
+                                                "current": <div
+                                                  class="pf-c-dropdown pf-m-align-right"
+                                                >
+                                                  <button
+                                                    aria-expanded="false"
+                                                    aria-haspopup="true"
+                                                    class="pf-c-dropdown__toggle pf-m-plain"
+                                                    id="pf-toggle-id-0"
+                                                    type="button"
+                                                  >
+                                                    <span
+                                                      class="pf-c-dropdown__toggle-text"
+                                                    >
+                                                      Anonymous
+                                                    </span>
+                                                    <svg
+                                                      aria-hidden="true"
+                                                      class="pf-c-dropdown__toggle-icon"
+                                                      fill="currentColor"
+                                                      height="1em"
+                                                      role="img"
+                                                      style="vertical-align: -0.125em;"
+                                                      viewBox="0 0 320 512"
+                                                      width="1em"
+                                                    >
+                                                      <path
+                                                        d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                                        transform=""
+                                                      />
+                                                    </svg>
+                                                  </button>
+                                                </div>,
+                                              }
+                                            }
+                                          >
+                                            <Toggle
+                                              ariaHasPopup={true}
+                                              bubbleEvent={false}
+                                              className=""
+                                              id="pf-toggle-id-0"
+                                              isActive={false}
+                                              isDisabled={false}
+                                              isFocused={false}
+                                              isHovered={false}
+                                              isOpen={false}
+                                              isPlain={true}
+                                              isPrimary={false}
+                                              isSplitButton={false}
+                                              onEnter={[Function]}
+                                              onToggle={[Function]}
+                                              parentRef={
+                                                Object {
+                                                  "current": <div
+                                                    class="pf-c-dropdown pf-m-align-right"
+                                                  >
+                                                    <button
+                                                      aria-expanded="false"
+                                                      aria-haspopup="true"
+                                                      class="pf-c-dropdown__toggle pf-m-plain"
+                                                      id="pf-toggle-id-0"
+                                                      type="button"
+                                                    >
+                                                      <span
+                                                        class="pf-c-dropdown__toggle-text"
+                                                      >
+                                                        Anonymous
+                                                      </span>
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        class="pf-c-dropdown__toggle-icon"
+                                                        fill="currentColor"
+                                                        height="1em"
+                                                        role="img"
+                                                        style="vertical-align: -0.125em;"
+                                                        viewBox="0 0 320 512"
+                                                        width="1em"
+                                                      >
+                                                        <path
+                                                          d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                                          transform=""
+                                                        />
+                                                      </svg>
+                                                    </button>
+                                                  </div>,
+                                                }
+                                              }
+                                            >
+                                              <button
+                                                aria-expanded={false}
+                                                aria-haspopup={true}
+                                                className="pf-c-dropdown__toggle pf-m-plain"
+                                                disabled={false}
+                                                id="pf-toggle-id-0"
+                                                onClick={[Function]}
+                                                onKeyDown={[Function]}
+                                                type="button"
+                                              >
+                                                <span
+                                                  className="pf-c-dropdown__toggle-text"
+                                                >
+                                                  Anonymous
+                                                </span>
+                                                <CaretDownIcon
+                                                  className="pf-c-dropdown__toggle-icon"
+                                                  color="currentColor"
+                                                  noVerticalAlign={false}
+                                                  size="sm"
+                                                  title={null}
+                                                >
+                                                  <svg
+                                                    aria-hidden={true}
+                                                    aria-labelledby={null}
+                                                    className="pf-c-dropdown__toggle-icon"
+                                                    fill="currentColor"
+                                                    height="1em"
+                                                    role="img"
+                                                    style={
+                                                      Object {
+                                                        "verticalAlign": "-0.125em",
+                                                      }
+                                                    }
+                                                    viewBox="0 0 320 512"
+                                                    width="1em"
+                                                  >
+                                                    <path
+                                                      d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                                      transform=""
+                                                    />
+                                                  </svg>
+                                                </CaretDownIcon>
+                                              </button>
+                                            </Toggle>
+                                          </DropdownToggle>
+                                        </div>
+                                      </DropdownWithContext>
+                                    </ComponentWithOuia>
+                                  </Component>
+                                </Dropdown>
+                              </div>
+                            </ToolbarItem>
+                          </div>
+                        </ToolbarGroup>
+                      </div>
+                    </Toolbar>
+                  </PageToolbar>
+                  <Avatar
+                    alt="Kogito Logo"
+                    src="avatar.svg"
+                  >
+                    <img
+                      alt="Kogito Logo"
+                      className="pf-c-avatar"
+                      src="avatar.svg"
+                    />
+                  </Avatar>
+                </div>
+              </header>
+            </PageHeader>
+            <PageSidebar
+              isNavOpen={true}
+              nav={
+                <Unknown
+                  aria-label="Nav"
+                  theme="dark"
+                >
+                  <NavList
+                    ariaLeftScroll="Scroll left"
+                    ariaRightScroll="Scroll right"
+                    className=""
+                    variant="default"
+                  >
+                    <NavItem
+                      isActive={true}
+                    >
+                      <Link
+                        to="/ProcessInstances"
+                      >
+                        Process Instances
+                      </Link>
+                    </NavItem>
+                    <NavItem
+                      isActive={false}
+                    >
+                      <Link
+                        to="/DomainExplorer"
+                      >
+                        Domain Explorer
+                      </Link>
+                    </NavItem>
+                  </NavList>
+                </Unknown>
+              }
+              theme="dark"
+            >
+              <div
+                className="pf-c-page__sidebar pf-m-dark pf-m-expanded"
+                id="page-sidebar"
+              >
+                <div
+                  className="pf-c-page__sidebar-body"
+                >
+                  <Component
+                    aria-label="Nav"
+                    theme="dark"
+                  >
+                    <ComponentWithOuia
+                      component={[Function]}
+                      componentProps={
+                        Object {
+                          "aria-label": "Nav",
+                          "children": <NavList
+                            ariaLeftScroll="Scroll left"
+                            ariaRightScroll="Scroll right"
+                            className=""
+                            variant="default"
+                          >
+                            <NavItem
+                              isActive={true}
+                            >
+                              <Link
+                                to="/ProcessInstances"
+                              >
+                                Process Instances
+                              </Link>
+                            </NavItem>
+                            <NavItem
+                              isActive={false}
+                            >
+                              <Link
+                                to="/DomainExplorer"
+                              >
+                                Domain Explorer
+                              </Link>
+                            </NavItem>
+                          </NavList>,
+                          "theme": "dark",
+                        }
+                      }
+                      consumerContext={
+                        Object {
+                          "isOuia": false,
+                          "ouiaId": null,
+                        }
+                      }
+                    >
+                      <Nav
+                        aria-label="Nav"
+                        className=""
+                        onSelect={[Function]}
+                        onToggle={[Function]}
+                        ouiaContext={
+                          Object {
+                            "isOuia": false,
+                            "ouiaId": null,
+                          }
+                        }
+                        theme="dark"
+                      >
+                        <nav
+                          aria-label="Nav"
+                          className="pf-c-nav pf-m-dark"
+                        >
+                          <NavList
+                            ariaLeftScroll="Scroll left"
+                            ariaRightScroll="Scroll right"
+                            className=""
+                            variant="default"
+                          >
+                            <ul
+                              className="pf-c-nav__list"
+                            >
+                              <NavItem
+                                isActive={true}
+                              >
+                                <li
+                                  className="pf-c-nav__item"
+                                >
+                                  <Link
+                                    aria-current="page"
+                                    className="pf-c-nav__link pf-m-current"
+                                    onClick={[Function]}
+                                    to="/ProcessInstances"
+                                  >
+                                    <LinkAnchor
+                                      aria-current="page"
+                                      className="pf-c-nav__link pf-m-current"
+                                      href="/ProcessInstances"
+                                      navigate={[Function]}
+                                      onClick={[Function]}
+                                    >
+                                      <a
+                                        aria-current="page"
+                                        className="pf-c-nav__link pf-m-current"
+                                        href="/ProcessInstances"
+                                        onClick={[Function]}
+                                      >
+                                        Process Instances
+                                      </a>
+                                    </LinkAnchor>
+                                  </Link>
+                                </li>
+                              </NavItem>
+                              <NavItem
+                                isActive={false}
+                              >
+                                <li
+                                  className="pf-c-nav__item"
+                                >
+                                  <Link
+                                    aria-current={null}
+                                    className="pf-c-nav__link"
+                                    onClick={[Function]}
+                                    to="/DomainExplorer"
+                                  >
+                                    <LinkAnchor
+                                      aria-current={null}
+                                      className="pf-c-nav__link"
+                                      href="/DomainExplorer"
+                                      navigate={[Function]}
+                                      onClick={[Function]}
+                                    >
+                                      <a
+                                        aria-current={null}
+                                        className="pf-c-nav__link"
+                                        href="/DomainExplorer"
+                                        onClick={[Function]}
+                                      >
+                                        Domain Explorer
+                                      </a>
+                                    </LinkAnchor>
+                                  </Link>
+                                </li>
+                              </NavItem>
+                            </ul>
+                          </NavList>
+                        </nav>
+                      </Nav>
+                    </ComponentWithOuia>
+                  </Component>
+                </div>
+              </div>
+            </PageSidebar>
+            <main
+              className="pf-c-page__main"
+              id="main-content-page-layout-default-nav"
+              tabIndex={-1}
+            >
+              <Switch>
+                <Route
+                  component={[Function]}
+                  computedMatch={
+                    Object {
+                      "isExact": true,
+                      "params": Object {},
+                      "path": "/ProcessInstances",
+                      "url": "/ProcessInstances",
+                    }
+                  }
+                  exact={true}
+                  location={
+                    Object {
+                      "hash": "",
+                      "pathname": "/ProcessInstances",
+                      "search": "",
+                      "state": undefined,
+                    }
+                  }
+                  path="/ProcessInstances"
+                >
+                  <DataListContainer
+                    history={
+                      Object {
+                        "action": "REPLACE",
+                        "block": [Function],
+                        "canGo": [Function],
+                        "createHref": [Function],
+                        "entries": Array [
+                          Object {
+                            "hash": "",
+                            "pathname": "/ProcessInstances",
+                            "search": "",
+                            "state": undefined,
+                          },
+                        ],
+                        "go": [Function],
+                        "goBack": [Function],
+                        "goForward": [Function],
+                        "index": 0,
+                        "length": 1,
+                        "listen": [Function],
+                        "location": Object {
+                          "hash": "",
+                          "pathname": "/ProcessInstances",
+                          "search": "",
+                          "state": undefined,
+                        },
+                        "push": [Function],
+                        "replace": [Function],
+                      }
+                    }
+                    location={
+                      Object {
+                        "hash": "",
+                        "pathname": "/ProcessInstances",
+                        "search": "",
+                        "state": undefined,
+                      }
+                    }
+                    match={
+                      Object {
+                        "isExact": true,
+                        "params": Object {},
+                        "path": "/ProcessInstances",
+                        "url": "/ProcessInstances",
+                      }
+                    }
+                  />
+                </Route>
+              </Switch>
+            </main>
+          </div>
+        </Page>
+      </KogitoPageLayout>
+    </ComponentWithOuia>
+  </Component>
+</PageLayout>
+`;

@@ -1,0 +1,545 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProcessListPage component tests Snapshot tests 1`] = `
+<ProcessListPage
+  ouiaContext={
+    Object {
+      "isOuia": false,
+      "ouiaId": null,
+    }
+  }
+>
+  <ProcessListModal
+    abortedMessageObj={Object {}}
+    checkedArray={
+      Array [
+        "ACTIVE",
+      ]
+    }
+    completedMessageObj={Object {}}
+    handleModalToggle={[Function]}
+    isAbortModalOpen={false}
+    isModalOpen={false}
+    isSingleAbort={false}
+  >
+    <Modal
+      actions={
+        Array [
+          <Unknown
+            onClick={[Function]}
+            variant="primary"
+          >
+            OK
+          </Unknown>,
+        ]
+      }
+      appendTo={
+        <body>
+          <div />
+        </body>
+      }
+      ariaDescribedById=""
+      className=""
+      header={
+        <Title
+          headingLevel="h1"
+          size="2xl"
+        />
+      }
+      hideTitle={false}
+      isFooterLeftAligned={false}
+      isLarge={false}
+      isOpen={false}
+      isSmall={true}
+      onClose={[Function]}
+      showClose={true}
+      title=""
+    >
+      <Portal
+        containerInfo={<div />}
+      >
+        <ModalContent
+          actions={
+            Array [
+              <Unknown
+                onClick={[Function]}
+                variant="primary"
+              >
+                OK
+              </Unknown>,
+            ]
+          }
+          ariaDescribedById=""
+          className=""
+          header={
+            <Title
+              headingLevel="h1"
+              size="2xl"
+            />
+          }
+          hideTitle={false}
+          id="pf-modal-0"
+          isFooterLeftAligned={false}
+          isLarge={false}
+          isOpen={false}
+          isSmall={true}
+          onClose={[Function]}
+          showClose={true}
+          title=""
+        />
+      </Portal>
+    </Modal>
+  </ProcessListModal>
+  <PageSection
+    variant="light"
+  >
+    <section
+      className="pf-c-page__main-section pf-m-light"
+    >
+      <PageTitleComponent
+        title="Process Instances"
+      >
+        <Title
+          headingLevel="h1"
+          size="4xl"
+        >
+          <h1
+            className="pf-c-title pf-m-4xl"
+          >
+            Process Instances
+          </h1>
+        </Title>
+      </PageTitleComponent>
+      <Component>
+        <ComponentWithOuia
+          component={[Function]}
+          componentProps={
+            Object {
+              "children": Array [
+                <BreadcrumbItem>
+                  <Link
+                    to="/"
+                  >
+                    Home
+                  </Link>
+                </BreadcrumbItem>,
+                <BreadcrumbItem
+                  isActive={true}
+                >
+                  Process instances
+                </BreadcrumbItem>,
+              ],
+            }
+          }
+          consumerContext={
+            Object {
+              "isOuia": false,
+              "ouiaId": null,
+            }
+          }
+        >
+          <Breadcrumb
+            ouiaContext={
+              Object {
+                "isOuia": false,
+                "ouiaId": null,
+              }
+            }
+          >
+            <nav
+              aria-label="Breadcrumb"
+              className="pf-c-breadcrumb"
+            >
+              <ol
+                className="pf-c-breadcrumb__list"
+              >
+                <BreadcrumbItem>
+                  <li
+                    className="pf-c-breadcrumb__item"
+                  >
+                    <Link
+                      to="/"
+                    >
+                      <LinkAnchor
+                        href="/"
+                        navigate={[Function]}
+                      >
+                        <a
+                          href="/"
+                          onClick={[Function]}
+                        >
+                          Home
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                    <span
+                      className="pf-c-breadcrumb__item-divider"
+                    >
+                      <AngleRightIcon
+                        color="currentColor"
+                        noVerticalAlign={false}
+                        size="sm"
+                        title={null}
+                      >
+                        <svg
+                          aria-hidden={true}
+                          aria-labelledby={null}
+                          fill="currentColor"
+                          height="1em"
+                          role="img"
+                          style={
+                            Object {
+                              "verticalAlign": "-0.125em",
+                            }
+                          }
+                          viewBox="0 0 256 512"
+                          width="1em"
+                        >
+                          <path
+                            d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                            transform=""
+                          />
+                        </svg>
+                      </AngleRightIcon>
+                    </span>
+                  </li>
+                </BreadcrumbItem>
+                <BreadcrumbItem
+                  isActive={true}
+                >
+                  <li
+                    className="pf-c-breadcrumb__item"
+                  >
+                    Process instances
+                  </li>
+                </BreadcrumbItem>
+              </ol>
+            </nav>
+          </Breadcrumb>
+        </ComponentWithOuia>
+      </Component>
+    </section>
+  </PageSection>
+  <PageSection>
+    <section
+      className="pf-c-page__main-section"
+    >
+      <Grid
+        gutter="md"
+      >
+        <div
+          className="pf-l-grid pf-m-gutter"
+        >
+          <GridItem
+            span={12}
+          >
+            <div
+              className="pf-l-grid__item pf-m-12-col"
+            >
+              <Card
+                className="dataList"
+              >
+                <article
+                  className="pf-c-card dataList"
+                >
+                   
+                  <DataToolbarComponent
+                    abortedObj={Object {}}
+                    checkedArray={
+                      Array [
+                        "ACTIVE",
+                      ]
+                    }
+                    filterClick={[Function]}
+                    filters={
+                      Object {
+                        "businessKey": Array [],
+                        "status": Array [
+                          "ACTIVE",
+                        ],
+                      }
+                    }
+                    getProcessInstances={[Function]}
+                    handleAbortAll={[Function]}
+                    initData={Object {}}
+                    isAllChecked={false}
+                    searchWord=""
+                    selectedNumber={0}
+                    setAbortedObj={[Function]}
+                    setCheckedArray={[Function]}
+                    setFilters={[Function]}
+                    setInitData={[Function]}
+                    setIsAllChecked={[Function]}
+                    setIsStatusSelected={[Function]}
+                    setSearchWord={[Function]}
+                    setSelectedNumber={[Function]}
+                  />
+                  <DataListComponent
+                    abortedObj={Object {}}
+                    checkedArray={
+                      Array [
+                        "ACTIVE",
+                      ]
+                    }
+                    filters={
+                      Object {
+                        "businessKey": Array [],
+                        "status": Array [
+                          "ACTIVE",
+                        ],
+                      }
+                    }
+                    initData={Object {}}
+                    isFilterClicked={false}
+                    isLoading={false}
+                    pageSize={10}
+                    selectedNumber={0}
+                    setAbortedObj={[Function]}
+                    setInitData={[Function]}
+                    setIsAllChecked={[Function]}
+                    setIsError={[Function]}
+                    setSelectedNumber={[Function]}
+                  />
+                  <LoadMore
+                    getMoreItems={[Function]}
+                    isLoadingMore={false}
+                    offset={10}
+                    pageSize={10}
+                    setOffset={[Function]}
+                  >
+                    <DataList
+                      aria-label="Simple data list example"
+                    >
+                      <ul
+                        aria-label="Simple data list example"
+                        className="pf-c-data-list"
+                      >
+                        <DataListItem
+                          aria-labelledby="kie-datalist-item"
+                        >
+                          <li
+                            aria-labelledby="kie-datalist-item"
+                            className="pf-c-data-list__item"
+                            id=""
+                          >
+                            <DataListCell
+                              className="kogito-management-console__load-more"
+                              key=".0"
+                              rowid="kie-datalist-item"
+                            >
+                              <div
+                                className="pf-c-data-list__cell kogito-management-console__load-more"
+                                rowid="kie-datalist-item"
+                              >
+                                <Component
+                                  id="load10"
+                                  onClick={[Function]}
+                                  variant="secondary"
+                                >
+                                  <ComponentWithOuia
+                                    component={[Function]}
+                                    componentProps={
+                                      Object {
+                                        "children": "Load 10 more",
+                                        "id": "load10",
+                                        "onClick": [Function],
+                                        "variant": "secondary",
+                                      }
+                                    }
+                                    consumerContext={
+                                      Object {
+                                        "isOuia": false,
+                                        "ouiaId": null,
+                                      }
+                                    }
+                                  >
+                                    <Button
+                                      id="load10"
+                                      onClick={[Function]}
+                                      ouiaContext={
+                                        Object {
+                                          "isOuia": false,
+                                          "ouiaId": null,
+                                        }
+                                      }
+                                      variant="secondary"
+                                    >
+                                      <button
+                                        aria-disabled={null}
+                                        aria-label={null}
+                                        className="pf-c-button pf-m-secondary"
+                                        disabled={false}
+                                        id="load10"
+                                        onClick={[Function]}
+                                        tabIndex={null}
+                                        type="button"
+                                      >
+                                        Load 10 more
+                                      </button>
+                                    </Button>
+                                  </ComponentWithOuia>
+                                </Component>
+                                 
+                                <Component
+                                  id="load20"
+                                  onClick={[Function]}
+                                  variant="secondary"
+                                >
+                                  <ComponentWithOuia
+                                    component={[Function]}
+                                    componentProps={
+                                      Object {
+                                        "children": "Load 20 more",
+                                        "id": "load20",
+                                        "onClick": [Function],
+                                        "variant": "secondary",
+                                      }
+                                    }
+                                    consumerContext={
+                                      Object {
+                                        "isOuia": false,
+                                        "ouiaId": null,
+                                      }
+                                    }
+                                  >
+                                    <Button
+                                      id="load20"
+                                      onClick={[Function]}
+                                      ouiaContext={
+                                        Object {
+                                          "isOuia": false,
+                                          "ouiaId": null,
+                                        }
+                                      }
+                                      variant="secondary"
+                                    >
+                                      <button
+                                        aria-disabled={null}
+                                        aria-label={null}
+                                        className="pf-c-button pf-m-secondary"
+                                        disabled={false}
+                                        id="load20"
+                                        onClick={[Function]}
+                                        tabIndex={null}
+                                        type="button"
+                                      >
+                                        Load 20 more
+                                      </button>
+                                    </Button>
+                                  </ComponentWithOuia>
+                                </Component>
+                                 
+                                <Component
+                                  id="load50"
+                                  onClick={[Function]}
+                                  variant="secondary"
+                                >
+                                  <ComponentWithOuia
+                                    component={[Function]}
+                                    componentProps={
+                                      Object {
+                                        "children": "Load 50 more",
+                                        "id": "load50",
+                                        "onClick": [Function],
+                                        "variant": "secondary",
+                                      }
+                                    }
+                                    consumerContext={
+                                      Object {
+                                        "isOuia": false,
+                                        "ouiaId": null,
+                                      }
+                                    }
+                                  >
+                                    <Button
+                                      id="load50"
+                                      onClick={[Function]}
+                                      ouiaContext={
+                                        Object {
+                                          "isOuia": false,
+                                          "ouiaId": null,
+                                        }
+                                      }
+                                      variant="secondary"
+                                    >
+                                      <button
+                                        aria-disabled={null}
+                                        aria-label={null}
+                                        className="pf-c-button pf-m-secondary"
+                                        disabled={false}
+                                        id="load50"
+                                        onClick={[Function]}
+                                        tabIndex={null}
+                                        type="button"
+                                      >
+                                        Load 50 more
+                                      </button>
+                                    </Button>
+                                  </ComponentWithOuia>
+                                </Component>
+                                 
+                                <Component
+                                  id="load100"
+                                  onClick={[Function]}
+                                  variant="secondary"
+                                >
+                                  <ComponentWithOuia
+                                    component={[Function]}
+                                    componentProps={
+                                      Object {
+                                        "children": "Load 100 more",
+                                        "id": "load100",
+                                        "onClick": [Function],
+                                        "variant": "secondary",
+                                      }
+                                    }
+                                    consumerContext={
+                                      Object {
+                                        "isOuia": false,
+                                        "ouiaId": null,
+                                      }
+                                    }
+                                  >
+                                    <Button
+                                      id="load100"
+                                      onClick={[Function]}
+                                      ouiaContext={
+                                        Object {
+                                          "isOuia": false,
+                                          "ouiaId": null,
+                                        }
+                                      }
+                                      variant="secondary"
+                                    >
+                                      <button
+                                        aria-disabled={null}
+                                        aria-label={null}
+                                        className="pf-c-button pf-m-secondary"
+                                        disabled={false}
+                                        id="load100"
+                                        onClick={[Function]}
+                                        tabIndex={null}
+                                        type="button"
+                                      >
+                                        Load 100 more
+                                      </button>
+                                    </Button>
+                                  </ComponentWithOuia>
+                                </Component>
+                              </div>
+                            </DataListCell>
+                          </li>
+                        </DataListItem>
+                      </ul>
+                    </DataList>
+                  </LoadMore>
+                </article>
+              </Card>
+            </div>
+          </GridItem>
+        </div>
+      </Grid>
+    </section>
+  </PageSection>
+</ProcessListPage>
+`;

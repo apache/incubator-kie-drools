@@ -6,7 +6,7 @@ import { ApolloProvider } from 'react-apollo';
 import Keycloak from 'keycloak-js';
 import axios from 'axios';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import PageLayoutComponent from './components/Templates/PageLayoutComponent/PageLayoutComponent';
+import PageLayout from './components/Templates/PageLayout/PageLayout';
 
 const client = new ApolloClient({
   uri: process.env.KOGITO_DATAINDEX_HTTP_URL + '/graphql',
@@ -28,7 +28,7 @@ const appRender = () => {
     <ApolloProvider client={client}>
       <BrowserRouter>
         <Switch>
-          <Route path="/" component={PageLayoutComponent} />
+          <Route path="/" component={PageLayout} />
         </Switch>
       </BrowserRouter>
     </ApolloProvider>,

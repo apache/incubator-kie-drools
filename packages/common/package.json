@@ -11,6 +11,7 @@
   },
   "scripts": {
     "precommit": "lint-staged",
+    "build:prod": "yarn run lint && yarn run test",
     "test:report": "yarn test --ci --reporters=jest-junit",
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
     "update-snapshot": "jest --updateSnapshot",

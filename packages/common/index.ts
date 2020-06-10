@@ -5,8 +5,8 @@ export {
   default as PageToolbar
 } from './src/components/Molecules/PageToolbar/PageToolbar';
 export {
-  default as PageLayout
-} from './src/components/Templates/PageLayout/PageLayout';
+  default as KogitoPageLayout
+} from './src/components/Templates/KogitoPageLayout/KogitoPageLayout';
 export {
   default as AboutModalBox
 } from './src/components/Molecules/AboutModalBox/AboutModalBox';

@@ -12,7 +12,7 @@ import { onError } from 'apollo-link-error';
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
 import managementConsoleLogo from './static/managementConsoleLogo.svg';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import PageLayoutComponent from './components/Templates/PageLayoutComponent/PageLayoutComponent';
+import PageLayout from './components/Templates/PageLayout/PageLayout';
 
 const httpLink = new HttpLink({
   // @ts-ignore
@@ -62,7 +62,7 @@ const appRender = () => {
     <ApolloProvider client={client}>
       <BrowserRouter>
         <Switch>
-          <Route path="/" component={PageLayoutComponent} />
+          <Route path="/" component={PageLayout} />
         </Switch>
       </BrowserRouter>
     </ApolloProvider>,

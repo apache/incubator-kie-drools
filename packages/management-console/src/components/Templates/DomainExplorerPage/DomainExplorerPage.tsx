@@ -25,7 +25,7 @@ import './DomainExplorerPage.css';
 import DomainExplorerColumnPicker from '../../Organisms/DomainExplorerColumnPicker/DomainExplorerColumnPicker';
 import DomainExplorerTable from '../../Organisms/DomainExplorerTable/DomainExplorerTable';
 import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
-import LoadMoreComponent from '../../Atoms/LoadMoreComponent/LoadMoreComponent';
+import LoadMore from '../../Atoms/LoadMore/LoadMore';
 
 interface IOwnProps {
   domains: any;
@@ -282,7 +282,7 @@ const DomainExplorerPage: React.FC<
                 isLoadingMore={isLoadingMore}
               />
               {!displayEmptyState && (limit === pageSize || isLoadingMore) && (
-                <LoadMoreComponent
+                <LoadMore
                   offset={offset}
                   setOffset={setOffset}
                   getMoreItems={onGetMoreInstances}
