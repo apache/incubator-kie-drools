@@ -33,4 +33,19 @@
     </dependency>
   </dependencies>
 
+  <profiles>
+    <profile>
+      <id>java11-pmml</id>
+      <activation>
+        <jdk>[11,)</jdk>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.glassfish.jaxb</groupId>
+          <artifactId>jaxb-runtime</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
 </project>
