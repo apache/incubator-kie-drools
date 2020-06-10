@@ -50,6 +50,7 @@ import org.drools.mvel.parser.ast.expr.DrlxExpression;
 import org.drools.mvel.parser.printer.PrintUtil;
 
 import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static org.drools.core.rule.Pattern.isCompatibleWithFromReturnType;
@@ -155,7 +156,9 @@ public class FromVisitor {
             }
         }
 
-        fromCall.addArgument( generateLambdaWithoutParameters( bindingIds, parsedExpression, true, Optional.empty() ) );
+        LambdaExpr lambda = (LambdaExpr)generateLambdaWithoutParameters( bindingIds, parsedExpression, true, Optional.empty(), context );
+        fromCall.addArgument(lambda);
+        context.getPackageModel().getLambdaReturnTypes().put(lambda, DrlxParseUtil.getClassFromType(context.getTypeResolver(), parsedExpression.getType()));
         return of( fromCall );
     }
 
@@ -274,7 +277,9 @@ public class FromVisitor {
                                     "' is not compatible with type " + left.getRawClass().getCanonicalName() + " returned by source" ) );
                 }
                 Expression parsedExpression = drlxParseSuccess.getExpr();
-                return generateLambdaWithoutParameters( singleResult.getUsedDeclarations(), parsedExpression );
+                LambdaExpr lambdaExpr = (LambdaExpr)generateLambdaWithoutParameters( singleResult.getUsedDeclarations(), parsedExpression, singleResult.isSkipThisAsParam(), ofNullable(singleResult.getPatternType()), context );
+                context.getPackageModel().getLambdaReturnTypes().put(lambdaExpr, singleResult.getExprType());
+                return lambdaExpr;
             } );
         }
         return null;

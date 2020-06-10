@@ -27,7 +27,7 @@ public class ExecModelLambdaPostProcessorTest {
         CompilationUnit inputCU = parseResource("org/drools/modelcompiler/util/lambdareplace/PatternTestHarness.java");
         CompilationUnit clone = inputCU.clone();
 
-        new ExecModelLambdaPostProcessor(new HashMap<>(), "mypackage", "rulename", new ArrayList<>(), new ArrayList<>(), clone).convertLambdas();
+        new ExecModelLambdaPostProcessor(new HashMap<>(), "mypackage", "rulename", new ArrayList<>(), new ArrayList<>(), new HashMap<>(), clone).convertLambdas();
 
         String PATTERN_HARNESS = "PatternTestHarness";
         MethodDeclaration expectedResult = getMethodChangingName(inputCU, PATTERN_HARNESS, "expectedOutput");

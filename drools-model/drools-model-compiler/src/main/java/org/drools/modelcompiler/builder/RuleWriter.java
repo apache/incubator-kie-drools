@@ -85,6 +85,7 @@ public class RuleWriter {
                                 pkgModel.getRulesFileNameWithPackage(),
                                 pkgModel.getImports(),
                                 pkgModel.getStaticImports(),
+                                pkgModel.getLambdaReturnTypes(),
                                 postProcessedCU
                         ).convertLambdas();
                         if (checkNonExternalisedLambda) {

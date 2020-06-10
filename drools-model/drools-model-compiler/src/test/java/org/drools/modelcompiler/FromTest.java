@@ -23,13 +23,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
+import org.drools.modelcompiler.FunctionsTest.Pojo;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Pet;
 import org.drools.modelcompiler.domain.PetPerson;
 import org.drools.modelcompiler.domain.Woman;
-import org.drools.modelcompiler.FunctionsTest.Pojo;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -330,5 +330,30 @@ public class FromTest extends BaseModelTest {
         ksession.insert( new Pojo( Arrays.asList(1,2,3) ) );
         int rulesFired = ksession.fireAllRules();
         assertEquals( 1, rulesFired );
+    }
+
+    @Test
+    public void testFromCollect() {
+        String str =
+                "package org.drools.compiler.test  \n" +
+                     "import " + Person.class.getCanonicalName() + "\n" +
+                     "import " + List.class.getCanonicalName() + "\n" +
+                     "rule R\n" +
+                     "when\n" +
+                     "    $l : List (size == 2) from collect (Person (age >= 30))\n" +
+                     "then\n" +
+                     "end \n";
+
+        KieSession ksession = getKieSession(str);
+
+        Person p1 = new Person("John", 32);
+        Person p2 = new Person("Paul", 30);
+        Person p3 = new Person("George", 29);
+
+        ksession.insert(p1);
+        ksession.insert(p2);
+        ksession.insert(p3);
+
+        assertEquals(1, ksession.fireAllRules());
     }
 }
