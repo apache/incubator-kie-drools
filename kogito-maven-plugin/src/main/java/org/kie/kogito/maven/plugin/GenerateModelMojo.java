@@ -62,10 +62,10 @@ public class GenerateModelMojo extends AbstractKieMojo {
     @Parameter(required = true, defaultValue = "${project.build.outputDirectory}")
     private File outputDirectory;
 
-    @Parameter(property = "kogito.codegen.rest.directory", defaultValue = "${project.build.directory}/generated-sources/kogito")
-    private File generatedRestSources;
-
     @Parameter(property = "kogito.codegen.sources.directory", defaultValue = "${project.build.directory}/generated-sources/kogito")
+    private File customizableSources;
+
+    @Parameter(readonly = true, defaultValue = "${project.build.directory}/generated-sources/kogito")
     private File generatedSources;
 
     // due to a limitation of the injector, the following 2 params have to be Strings
@@ -110,6 +110,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
     }
 
     private void generateModel() throws MojoExecutionException, IOException {
+        project.addCompileSourceRoot(customizableSources.getPath());
         project.addCompileSourceRoot(generatedSources.getPath());
 
         setSystemProperties(properties);
@@ -241,13 +242,12 @@ public class GenerateModelMojo extends AbstractKieMojo {
     }
 
     private void writeGeneratedFile(GeneratedFile f) throws IOException {
-        Files.write(
-                pathOf(f.relativePath()),
-                f.contents());
+        Files.write( pathOf(f), f.contents() );
     }
 
-    private Path pathOf(String end) {
-        Path path = Paths.get(generatedSources.getPath(), end);
+    private Path pathOf(GeneratedFile f) {
+        File sourceFolder = f.getType().isCustomizable() ? customizableSources : generatedSources;
+        Path path = Paths.get(sourceFolder.getPath(), f.relativePath());
         path.getParent().toFile().mkdirs();
         return path;
     }

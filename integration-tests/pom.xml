@@ -11,5 +11,6 @@
   <modules>
     <module>integration-tests-quarkus</module>
     <module>integration-tests-springboot</module>
+    <module>integration-tests-kogito-plugin</module>
   </modules>
 </project>

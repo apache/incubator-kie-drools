@@ -342,7 +342,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         RuleUnitHelper ruleUnitHelper = new RuleUnitHelper();
 
         if (annotator != null) {
-            generatedFiles.add( new org.kie.kogito.codegen.GeneratedFile( org.kie.kogito.codegen.GeneratedFile.Type.REST,
+            generatedFiles.add( new org.kie.kogito.codegen.GeneratedFile( org.kie.kogito.codegen.GeneratedFile.Type.JSON_MAPPER,
                     packageName.replace('.', '/') + "/KogitoObjectMapper.java", annotator.objectMapperInjectorSource(packageName) ) );
         }
 

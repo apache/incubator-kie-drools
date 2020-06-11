@@ -1,0 +1,11 @@
+package org.acme.travels
+unit PersonValidationService
+
+rule "Is adult"
+when
+    $person: /persons[age > 18]
+then
+    modify($person) { 
+    	setAdult(true) 
+    };
+end

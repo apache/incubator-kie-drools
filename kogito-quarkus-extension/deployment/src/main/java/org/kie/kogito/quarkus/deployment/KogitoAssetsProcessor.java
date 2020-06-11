@@ -70,9 +70,9 @@ import org.slf4j.LoggerFactory;
 
 public class KogitoAssetsProcessor {
 
-    private static final String generatedResourcesDir = System.getProperty("kogito.codegen.sources.directory", "target/generated-resources/kogito");
-    private static final String generatedSourcesDir = System.getProperty("kogito.codegen.resources.directory", "target/generated-sources/kogito/");
-    private static final String generatedRestSourcesDir = System.getProperty("kogito.codegen.rest.directory", "target/generated-sources/kogito/");
+    private static final String generatedResourcesDir = System.getProperty("kogito.codegen.resources.directory", "target/generated-resources/kogito");
+    private static final String generatedSourcesDir = "target/generated-sources/kogito/";
+    private static final String generatedCustomizableSourcesDir = System.getProperty("kogito.codegen.sources.directory", "target/generated-sources/kogito/");
     private static final Logger logger = LoggerFactory.getLogger(KogitoAssetsProcessor.class);
     private final transient String generatedClassesDir = System.getProperty("quarkus.debug.generated-classes-dir");
     private final transient String appPackageName = "org.kie.kogito.app";
@@ -237,7 +237,7 @@ public class KogitoAssetsProcessor {
 
     private void writeGeneratedFiles(AppPaths appPaths, Collection<GeneratedFile> resourceFiles) {
         for (Path projectPath : appPaths.projectPaths) {
-            String restResourcePath = projectPath.resolve( generatedRestSourcesDir ).toString();
+            String restResourcePath = projectPath.resolve( generatedCustomizableSourcesDir ).toString();
             String resourcePath = projectPath.resolve( generatedResourcesDir ).toString();
             String sourcePath = projectPath.resolve( generatedSourcesDir ).toString();
 

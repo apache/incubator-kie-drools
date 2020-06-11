@@ -1,0 +1,41 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>integration-tests</artifactId>
+    <version>8.0.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>integration-tests-kogito-plugin</artifactId>
+  
+  <dependencies>
+  <dependency> <!-- make this IT module to depend on the plugin for Maven reactor build intention -->
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>kogito-maven-plugin</artifactId>
+    <version>${project.version}</version>
+  </dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-invoker-plugin</artifactId>
+        <configuration>
+          <streamLogs>true</streamLogs>
+          <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+          <settingsFile>src/it/settings.xml</settingsFile>
+          <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+          <postBuildHookScript>verify</postBuildHookScript> <!-- no extension required -->
+        </configuration>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>install</goal>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
