@@ -922,20 +922,20 @@
     <profile>
       <activation>
         <property>
-          <name>env.CHANGE_ID</name>
+          <name>env.ghprbPullId</name>
         </property>
       </activation>
       <id>sonarcloud-analysis-pull-request</id>
       <properties>
         <sonar.pullrequest.provider>GitHub</sonar.pullrequest.provider>
         <!--suppress UnresolvedMavenProperty -->
-        <sonar.pullrequest.branch>${env.CHANGE_BRANCH}</sonar.pullrequest.branch>
+        <sonar.pullrequest.branch>${env.ghprbSourceBranch}</sonar.pullrequest.branch>
         <!--suppress UnresolvedMavenProperty -->
-        <sonar.pullrequest.key>${env.CHANGE_ID}</sonar.pullrequest.key>
+        <sonar.pullrequest.key>${env.ghprbPullId}</sonar.pullrequest.key>
         <!--suppress UnresolvedMavenProperty -->
-        <sonar.pullrequest.base>${env.CHANGE_TARGET}</sonar.pullrequest.base>
+        <sonar.pullrequest.base>${env.ghprbTargetBranch}</sonar.pullrequest.base>
         <!--suppress UnresolvedMavenProperty -->
-        <sonar.pullrequest.github.repository>${env.CHANGE_URL}</sonar.pullrequest.github.repository>
+        <sonar.pullrequest.github.repository>${env.ghprbPullLink}</sonar.pullrequest.github.repository>
       </properties>
     </profile>
   </profiles>
