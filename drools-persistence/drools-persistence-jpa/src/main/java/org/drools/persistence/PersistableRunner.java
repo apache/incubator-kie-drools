@@ -63,6 +63,9 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.lang.Boolean.TRUE;
+import static org.drools.persistence.api.TransactionManager.STATUS_ACTIVE;
+
 public class PersistableRunner implements SingleSessionCommandService {
 
     private static Logger              logger           = LoggerFactory.getLogger( PersistableRunner.class );
@@ -578,10 +581,17 @@ public class PersistableRunner implements SingleSessionCommandService {
 
             // Open the entity manager before the transaction begins.
             PersistenceContext persistenceContext = jpm.getApplicationScopedPersistenceContext();
-
+            // We flag the current persistence runner
+            final String DROOLS_PARENT_RUNNER = "DROOLS_PARENT_RUNNER";
+            boolean isParentRunner = txm.getResource(DROOLS_PARENT_RUNNER) == null;
             boolean transactionOwner = false;
+
             try {
+                if (isParentRunner && txm.getStatus() == STATUS_ACTIVE) {
+                    txm.putResource(DROOLS_PARENT_RUNNER, TRUE);
+                }
                 transactionOwner = txm.begin();
+
 
                 persistenceContext.joinTransaction();
 
@@ -600,14 +610,15 @@ public class PersistableRunner implements SingleSessionCommandService {
                 txm.commit( transactionOwner );
 
             } catch ( RuntimeException re ) {
-                rollbackTransaction( re,
-                        transactionOwner );
+                if (isParentRunner) {
+                    rollbackTransaction(re, transactionOwner);
+                }
                 throw re;
             } catch ( Exception t1 ) {
-                rollbackTransaction( t1,
-                        transactionOwner );
-                throw new RuntimeException( "Wrapped exception see cause",
-                        t1 );
+                if (isParentRunner) {
+                    rollbackTransaction(t1, transactionOwner);
+                }
+                throw new RuntimeException("Wrapped exception see cause", t1);
             }
 
             return context;
