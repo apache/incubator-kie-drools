@@ -23,19 +23,15 @@ import java.time.Period;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.junit.jupiter.api.Disabled;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = KogitoSpringbootApplication.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class DSCoercionTest {
@@ -126,7 +122,6 @@ public class DSCoercionTest {
     }
 
     @Disabled("DROOLS-5344")
-    @Ignore("DROOLS-5344")
     @Test
     public void testDSymd() {
         Period DSymd = given().contentType(ContentType.JSON)
