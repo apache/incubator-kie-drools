@@ -200,9 +200,10 @@ public class ExecModelLambdaPostProcessor {
 
         returnType = ClassUtil.boxTypePrimitive(returnType);
 
+        String returnTypeStr;
+
         if (returnType instanceof Class) {
-            // e.g. org.drools.modelcompiler.domain.Pet
-            // go ahead with returnType
+            returnTypeStr = ((Class<?>)returnType).getCanonicalName();
         } else if (returnType instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) returnType;
             java.lang.reflect.Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
@@ -211,8 +212,8 @@ public class ExecModelLambdaPostProcessor {
             }
             java.lang.reflect.Type argType = actualTypeArguments[0];
             if (argType instanceof Class) {
-                // e.g. java.util.List<org.drools.modelcompiler.domain.Child>
-                // go ahead with returnType
+                // java.util.List<org.drools.FromTest$MyPerson> has to be resolved to canonical name java.util.List<org.drools.FromTest.MyPerson>
+                returnTypeStr = canonicalNameParameterizedType(parameterizedType, (Class<?>)argType);
             } else {
                 return; // e.g. java.util.Collection<V> (V is TypeVariable), nested ParameterizedType, GenericArrayType etc.
             }
@@ -220,9 +221,16 @@ public class ExecModelLambdaPostProcessor {
             return; // e.g. GenericArrayType etc.
         }
 
-        final String extractorReturnType = String.valueOf(returnType.getTypeName());
+        final String extractorReturnType = String.valueOf(returnTypeStr);
 
         extractLambdaFromMethodCall(methodCallExpr, () -> new MaterializedLambdaExtractor(packageName, ruleClassName, extractorReturnType));
+    }
+
+    private String canonicalNameParameterizedType(ParameterizedType parameterizedType, Class<?> argType) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(parameterizedType.getRawType().getTypeName());
+        sb.append("<" + argType.getCanonicalName() + ">");
+        return sb.toString();
     }
 
     private Optional<Type> findVariableType(NameExpr nameExpr) {

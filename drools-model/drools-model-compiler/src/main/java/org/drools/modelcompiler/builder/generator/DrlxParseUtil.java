@@ -496,7 +496,7 @@ public class DrlxParseUtil {
         if (!skipFirstParamAsThis) {
             Type type;
             if (canResolve) {
-                type = StaticJavaParser.parseClassOrInterfaceType(patternClass.get().getCanonicalName());
+                type = StaticJavaParser.parseType(patternClass.get().getCanonicalName());
             } else {
                 type = new UnknownType();
             }
