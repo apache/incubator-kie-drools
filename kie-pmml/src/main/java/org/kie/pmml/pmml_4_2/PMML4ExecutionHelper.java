@@ -111,6 +111,7 @@ public class PMML4ExecutionHelper {
                                                               Resource resource,
                                                               KieBaseConfiguration kieBaseConf,
                                                               boolean includeMiningDataSources) {
+            System.out.println("PUPPA: " + PMML4ExecutionHelper.class + " getExecutionHelper");
             return new PMML4ExecutionHelper(modelName, resource, kieBaseConf, includeMiningDataSources);
         }
 
@@ -132,6 +133,8 @@ public class PMML4ExecutionHelper {
     }
 
     private PMML4ExecutionHelper(String modelName, Resource resource, KieBaseConfiguration kieBaseConf, boolean includeMiningDataSources) {
+        System.out.println("PUPPA: " + this + " (constructor)");
+        System.out.println("PUPPA: " + this + " new KieHelper().addResource(resource, ResourceType.PMML).build(kieBaseConf)");
         kbase = new KieHelper().addResource(resource, ResourceType.PMML).build(kieBaseConf);
         initExecutionHelper(modelName, includeMiningDataSources);
     }

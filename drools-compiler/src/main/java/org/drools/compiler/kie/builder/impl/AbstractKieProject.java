@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.compiler.kie.builder.impl;
 
@@ -45,21 +45,14 @@ import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKB
 
 public abstract class AbstractKieProject implements KieProject {
 
-    private static final Logger                  log                        = LoggerFactory.getLogger(KieProject.class);
-
-    protected final Map<String, KieBaseModel>    kBaseModels                = new HashMap<>();
-
-    private KieBaseModel                         defaultKieBase             = null;
-
-    private KieSessionModel                      defaultKieSession          = null;
-
-    private KieSessionModel                      defaultStatelessKieSession = null;
-
-    private Map<KieBaseModel, Set<String>>       includesInKieBase          = new HashMap<>();
-
-    private final Map<String, KieSessionModel>   kSessionModels             = new HashMap<>();
-
+    private static final Logger log = LoggerFactory.getLogger(KieProject.class);
     private static final Predicate<String> BUILD_ALL = s -> true;
+    protected final Map<String, KieBaseModel> kBaseModels = new HashMap<>();
+    private final Map<String, KieSessionModel> kSessionModels = new HashMap<>();
+    private KieBaseModel defaultKieBase = null;
+    private KieSessionModel defaultKieSession = null;
+    private KieSessionModel defaultStatelessKieSession = null;
+    private Map<KieBaseModel, Set<String>> includesInKieBase = new HashMap<>();
 
     public ResultsImpl verify() {
         ResultsImpl messages = new ResultsImpl();
@@ -74,18 +67,19 @@ public abstract class AbstractKieProject implements KieProject {
     }
 
     public void verify(ResultsImpl messages) {
-        for ( KieBaseModel model : kBaseModels.values() ) {
+        System.out.println("PUPPA: " + this + " verify");
+        for (KieBaseModel model : kBaseModels.values()) {
             buildKnowledgePackages((KieBaseModelImpl) model, messages);
         }
     }
 
     public void verify(String[] kBaseNames, ResultsImpl messages) {
-        for ( String modelName : kBaseNames ) {
-            KieBaseModelImpl kieBaseModel = (KieBaseModelImpl) kBaseModels.get( modelName );
-            if ( kieBaseModel == null ) {
-                throw new RuntimeException( "Unknown KieBase. Cannot find a KieBase named: " + modelName );
+        for (String modelName : kBaseNames) {
+            KieBaseModelImpl kieBaseModel = (KieBaseModelImpl) kBaseModels.get(modelName);
+            if (kieBaseModel == null) {
+                throw new RuntimeException("Unknown KieBase. Cannot find a KieBase named: " + modelName);
             }
-            buildKnowledgePackages( kieBaseModel, messages);
+            buildKnowledgePackages(kieBaseModel, messages);
         }
     }
 
@@ -102,7 +96,7 @@ public abstract class AbstractKieProject implements KieProject {
     }
 
     public KieBaseModel getKieBaseModel(String kBaseName) {
-        return kBaseName == null ? getDefaultKieBaseModel() : kBaseModels.get( kBaseName );
+        return kBaseName == null ? getDefaultKieBaseModel() : kBaseModels.get(kBaseName);
     }
 
     public Collection<String> getKieBaseNames() {
@@ -110,27 +104,27 @@ public abstract class AbstractKieProject implements KieProject {
     }
 
     public KieSessionModel getKieSessionModel(String kSessionName) {
-        return kSessionName == null ? getDefaultKieSession() : kSessionModels.get( kSessionName );
+        return kSessionName == null ? getDefaultKieSession() : kSessionModels.get(kSessionName);
     }
 
-    void indexParts( InternalKieModule mainKieModule,
-                     Collection<InternalKieModule> depKieModules,
-                     Map<String, InternalKieModule> kJarFromKBaseName ) {
-        for ( InternalKieModule kJar : depKieModules ) {
-            indexKieModule( kJarFromKBaseName, kJar, false );
+    void indexParts(InternalKieModule mainKieModule,
+                    Collection<InternalKieModule> depKieModules,
+                    Map<String, InternalKieModule> kJarFromKBaseName) {
+        for (InternalKieModule kJar : depKieModules) {
+            indexKieModule(kJarFromKBaseName, kJar, false);
         }
         if (mainKieModule != null) {
-            indexKieModule( kJarFromKBaseName, mainKieModule, true );
+            indexKieModule(kJarFromKBaseName, mainKieModule, true);
         }
     }
 
-    private void indexKieModule( Map<String, InternalKieModule> kJarFromKBaseName, InternalKieModule kJar, boolean isMainModule ) {
+    private void indexKieModule(Map<String, InternalKieModule> kJarFromKBaseName, InternalKieModule kJar, boolean isMainModule) {
         boolean defaultKieBaseFromMain = false;
         boolean defaultKieSessionFromMain = false;
         boolean defaultStatelessKieSessionFromMain = false;
         KieModuleModel kieProject = kJar.getKieModuleModel();
 
-        for ( KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values() ) {
+        for (KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values()) {
             if (kieBaseModel.isDefault()) {
                 if (defaultKieBase == null || (isMainModule && !defaultKieBaseFromMain)) {
                     defaultKieBase = kieBaseModel;
@@ -141,11 +135,11 @@ public abstract class AbstractKieProject implements KieProject {
                 }
             }
 
-            kBaseModels.put( kieBaseModel.getName(), kieBaseModel );
-            ((KieBaseModelImpl) kieBaseModel).setKModule( kieProject ); // should already be set, but just in case
+            kBaseModels.put(kieBaseModel.getName(), kieBaseModel);
+            ((KieBaseModelImpl) kieBaseModel).setKModule(kieProject); // should already be set, but just in case
 
-            kJarFromKBaseName.put( kieBaseModel.getName(), kJar );
-            for ( KieSessionModel kieSessionModel : kieBaseModel.getKieSessionModels().values() ) {
+            kJarFromKBaseName.put(kieBaseModel.getName(), kJar);
+            for (KieSessionModel kieSessionModel : kieBaseModel.getKieSessionModels().values()) {
                 if (kieSessionModel.isDefault()) {
                     if (kieSessionModel.getType() == KieSessionModel.KieSessionType.STATEFUL) {
                         if (defaultKieSession == null || (isMainModule && !defaultKieSessionFromMain)) {
@@ -166,8 +160,8 @@ public abstract class AbstractKieProject implements KieProject {
                     }
                 }
 
-                ((KieSessionModelImpl) kieSessionModel).setKBase( kieBaseModel ); // should already be set, but just in case
-                kSessionModels.put( kieSessionModel.getName(), kieSessionModel );
+                ((KieSessionModelImpl) kieSessionModel).setKBase(kieBaseModel); // should already be set, but just in case
+                kSessionModels.put(kieSessionModel.getName(), kieSessionModel);
             }
         }
     }
@@ -199,7 +193,7 @@ public abstract class AbstractKieProject implements KieProject {
         if (kBaseModel == null) {
             return;
         }
-        Set<String> incs = ((KieBaseModelImpl)kBaseModel).getIncludes();
+        Set<String> incs = ((KieBaseModelImpl) kBaseModel).getIncludes();
         if (incs != null && !incs.isEmpty()) {
             for (String inc : incs) {
                 if (!includes.contains(inc)) {
@@ -210,37 +204,39 @@ public abstract class AbstractKieProject implements KieProject {
         }
     }
 
-    public KnowledgeBuilder buildKnowledgePackages( KieBaseModelImpl kBaseModel, ResultsImpl messages ) {
-        return buildKnowledgePackages( kBaseModel, messages, BUILD_ALL );
+    public KnowledgeBuilder buildKnowledgePackages(KieBaseModelImpl kBaseModel, ResultsImpl messages) {
+        System.out.println("PUPPA: " + this + " buildKnowledgePackages");
+        return buildKnowledgePackages(kBaseModel, messages, BUILD_ALL);
     }
 
-    public KnowledgeBuilder buildKnowledgePackages( KieBaseModelImpl kBaseModel, ResultsImpl messages, Predicate<String> buildFilter ) {
+    public KnowledgeBuilder buildKnowledgePackages(KieBaseModelImpl kBaseModel, ResultsImpl messages, Predicate<String> buildFilter) {
+        System.out.println("PUPPA: " + this + " buildKnowledgePackages");
         InternalKieModule kModule = getKieModuleForKBase(kBaseModel.getName());
-        KnowledgeBuilderImpl kbuilder = ( KnowledgeBuilderImpl ) createKnowledgeBuilder( kBaseModel, kModule );
+        KnowledgeBuilderImpl kbuilder = (KnowledgeBuilderImpl) createKnowledgeBuilder(kBaseModel, kModule);
         if (kbuilder == null) {
             return null;
         }
 
-        kbuilder.setReleaseId( getGAV() );
+        kbuilder.setReleaseId(getGAV());
         boolean useFolders = kbuilder.getBuilderConfiguration().isGroupDRLsInKieBasesByFolder();
 
         Set<Asset> assets = new HashSet<>();
 
         boolean allIncludesAreValid = true;
         for (String include : getTransitiveIncludes(kBaseModel)) {
-            if ( StringUtils.isEmpty( include )) {
+            if (StringUtils.isEmpty(include)) {
                 continue;
             }
             InternalKieModule includeModule = getKieModuleForKBase(include);
             if (includeModule == null) {
                 String text = "Unable to build KieBase, could not find include: " + include;
                 log.error(text);
-                messages.addMessage( Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH, text ).setKieBaseName( kBaseModel.getName() );
+                messages.addMessage(Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH, text).setKieBaseName(kBaseModel.getName());
                 allIncludesAreValid = false;
                 continue;
             }
             if (compileIncludedKieBases()) {
-                addFiles( buildFilter, assets, getKieBaseModel( include ), includeModule, useFolders );
+                addFiles(buildFilter, assets, getKieBaseModel(include), includeModule, useFolders);
             }
         }
 
@@ -248,20 +244,20 @@ public abstract class AbstractKieProject implements KieProject {
             return null;
         }
 
-        addFiles( buildFilter, assets, kBaseModel, kModule, useFolders );
+        addFiles(buildFilter, assets, kBaseModel, kModule, useFolders);
 
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
         // cache KnowledgeBuilder and results
         if (buildFilter == BUILD_ALL) {
-            kModule.cacheKnowledgeBuilderForKieBase( kBaseModel.getName(), kbuilder );
-            kModule.cacheResultsForKieBase( kBaseModel.getName(), messages );
+            kModule.cacheKnowledgeBuilderForKieBase(kBaseModel.getName(), kbuilder);
+            kModule.cacheResultsForKieBase(kBaseModel.getName(), messages);
         }
-        
+
         if (assets.isEmpty()) {
             if (buildFilter == BUILD_ALL) {
-                log.warn( "No files found for KieBase " + kBaseModel.getName() +
-                        (kModule instanceof FileKieModule ? ", searching folder " + kModule.getFile() : ""));
+                log.warn("No files found for KieBase " + kBaseModel.getName() +
+                                 (kModule instanceof FileKieModule ? ", searching folder " + kModule.getFile() : ""));
             }
             return kbuilder;
         }
@@ -271,17 +267,17 @@ public abstract class AbstractKieProject implements KieProject {
         }
         ckbuilder.build();
 
-        if ( kbuilder.hasErrors() ) {
-            for ( KnowledgeBuilderError error : kbuilder.getErrors() ) {
-                messages.addMessage( error ).setKieBaseName( kBaseModel.getName() );
+        if (kbuilder.hasErrors()) {
+            for (KnowledgeBuilderError error : kbuilder.getErrors()) {
+                messages.addMessage(error).setKieBaseName(kBaseModel.getName());
             }
             log.error("Unable to build KieBaseModel:" + kBaseModel.getName() + "\n" + kbuilder.getErrors().toString());
         }
-        if ( kbuilder.hasResults( ResultSeverity.WARNING ) ) {
-            for ( KnowledgeBuilderResult warn : kbuilder.getResults( ResultSeverity.WARNING ) ) {
-                messages.addMessage( warn ).setKieBaseName( kBaseModel.getName() );
+        if (kbuilder.hasResults(ResultSeverity.WARNING)) {
+            for (KnowledgeBuilderResult warn : kbuilder.getResults(ResultSeverity.WARNING)) {
+                messages.addMessage(warn).setKieBaseName(kBaseModel.getName());
             }
-            log.warn( "Warning : " + kBaseModel.getName() + "\n" + kbuilder.getResults( ResultSeverity.WARNING ).toString() );
+            log.warn("Warning : " + kBaseModel.getName() + "\n" + kbuilder.getResults(ResultSeverity.WARNING).toString());
         }
 
         return kbuilder;
@@ -291,42 +287,47 @@ public abstract class AbstractKieProject implements KieProject {
         return true;
     }
 
-    protected KnowledgeBuilder createKnowledgeBuilder( KieBaseModelImpl kBaseModel, InternalKieModule kModule ) {
-        return KnowledgeBuilderFactory.newKnowledgeBuilder( getBuilderConfiguration( kBaseModel, kModule ) );
+    protected KnowledgeBuilder createKnowledgeBuilder(KieBaseModelImpl kBaseModel, InternalKieModule kModule) {
+        return KnowledgeBuilderFactory.newKnowledgeBuilder(getBuilderConfiguration(kBaseModel, kModule));
     }
 
-    private void addFiles( Predicate<String> buildFilter, Set<Asset> assets, KieBaseModel kieBaseModel,
-                           InternalKieModule kieModule, boolean useFolders) {
+    private void addFiles(Predicate<String> buildFilter, Set<Asset> assets, KieBaseModel kieBaseModel,
+                          InternalKieModule kieModule, boolean useFolders) {
         for (String fileName : kieModule.getFileNames()) {
-            if (buildFilter.test( fileName ) && !fileName.startsWith(".") && !fileName.endsWith(".properties") &&
-                    filterFileInKBase(kieModule, kieBaseModel, fileName, () -> kieModule.getResource( fileName ), useFolders)) {
-                assets.add(new Asset( kieModule, fileName ));
+            if (buildFilter.test(fileName) && !fileName.startsWith(".") && !fileName.endsWith(".properties") &&
+                    filterFileInKBase(kieModule, kieBaseModel, fileName, () -> kieModule.getResource(fileName), useFolders)) {
+                assets.add(new Asset(kieModule, fileName));
             }
         }
     }
 
-    protected KnowledgeBuilderConfigurationImpl getBuilderConfiguration( KieBaseModelImpl kBaseModel, InternalKieModule kModule ) {
+    protected KnowledgeBuilderConfigurationImpl getBuilderConfiguration(KieBaseModelImpl kBaseModel, InternalKieModule kModule) {
         KnowledgeBuilderConfigurationImpl pconf = new KnowledgeBuilderConfigurationImpl(getClassLoader());
         pconf.setCompilationCache(kModule.getCompilationCache(kBaseModel.getName()));
-        AbstractKieModule.setModelPropsOnConf( kBaseModel, pconf );
+        AbstractKieModule.setModelPropsOnConf(kBaseModel, pconf);
         return pconf;
     }
 
     private static class Asset {
+
         private final InternalKieModule kmodule;
         private final String name;
 
-        private Asset( InternalKieModule kmodule, String name ) {
+        private Asset(InternalKieModule kmodule, String name) {
             this.kmodule = kmodule;
             this.name = name;
         }
 
         @Override
-        public boolean equals( Object o ) {
-            if ( this == o ) return true;
-            if ( o == null || getClass() != o.getClass() ) return false;
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
             Asset asset = (Asset) o;
-            return kmodule.equals( asset.kmodule ) && name.equals( asset.name );
+            return kmodule.equals(asset.kmodule) && name.equals(asset.name);
         }
 
         @Override

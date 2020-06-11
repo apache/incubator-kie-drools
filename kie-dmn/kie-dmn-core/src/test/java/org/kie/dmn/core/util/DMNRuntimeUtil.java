@@ -95,6 +95,7 @@ public final class DMNRuntimeUtil {
     }
 
     public static DMNRuntime createRuntimeWithAdditionalResources(final String resourceName, final Class testClass, final String... additionalResources) {
+        System.out.println("PUPPA: " + DMNRuntimeUtil.class + " createRuntimeWithAdditionalResources");
         final KieServices ks = KieServices.Factory.get();
         Resource mainResource = ks.getResources().newClassPathResource(resourceName, testClass);
         List<Resource> totalResources = new ArrayList<>();

@@ -182,6 +182,7 @@ public class DMNCompilerImpl implements DMNCompiler {
 
     @Override
     public DMNModel compile(Definitions dmndefs, Resource resource, Collection<DMNModel> dmnModels) {
+        System.out.println("PUPPA: " + this + " compile");
         try {
             return compile(dmndefs, dmnModels, resource, null);
         } catch (Exception e) {
@@ -191,6 +192,7 @@ public class DMNCompilerImpl implements DMNCompiler {
     }
 
     public DMNModel compile(Definitions dmndefs, Collection<DMNModel> dmnModels, Resource resource, Function<String, Reader> relativeResolver) {
+        System.out.println("PUPPA: " + this + " compile");
         if (dmndefs == null) {
             return null;
         }
@@ -359,6 +361,7 @@ public class DMNCompilerImpl implements DMNCompiler {
     }
 
     private void processDrgElements(DMNCompilerContext ctx, DMNModelImpl model, Definitions dmndefs) {
+        System.out.println("PUPPA: " + this + " processDrgElements");
         for ( DRGElement e : dmndefs.getDrgElement() ) {
             boolean foundIt = false;
             for( DRGElementCompiler dc : drgCompilers ) {
