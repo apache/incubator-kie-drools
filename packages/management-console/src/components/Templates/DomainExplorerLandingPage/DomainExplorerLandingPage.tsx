@@ -20,7 +20,7 @@ import {
 } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
 import { CubesIcon } from '@patternfly/react-icons';
-import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
+import PageTitle from '../../Molecules/PageTitle/PageTitle';
 
 import { GraphQL, ouiaPageTypeAndObjectId } from '@kogito-apps/common';
 
@@ -47,7 +47,7 @@ const DomainExplorerLandingPage: React.FC<InjectedOuiaProps> = ({
   return (
     <>
       <PageSection variant="light">
-        <PageTitleComponent title="Domain Explorer" />
+        <PageTitle title="Domain Explorer" />
         <Breadcrumb>
           <BreadcrumbItem>
             <Link to={'/'}>Home</Link>

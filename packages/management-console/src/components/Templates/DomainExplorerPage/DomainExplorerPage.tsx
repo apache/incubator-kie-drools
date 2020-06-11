@@ -24,7 +24,7 @@ import { Redirect, RouteComponentProps } from 'react-router';
 import './DomainExplorerPage.css';
 import DomainExplorerColumnPicker from '../../Organisms/DomainExplorerColumnPicker/DomainExplorerColumnPicker';
 import DomainExplorerTable from '../../Organisms/DomainExplorerTable/DomainExplorerTable';
-import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
+import PageTitle from '../../Molecules/PageTitle/PageTitle';
 import LoadMore from '../../Atoms/LoadMore/LoadMore';
 
 interface IOwnProps {
@@ -239,7 +239,7 @@ const DomainExplorerPage: React.FC<
           />
         )}
       <PageSection variant="light">
-        <PageTitleComponent title="Domain Explorer" />
+        <PageTitle title="Domain Explorer" />
         <Breadcrumb>
           <BreadcrumbItem>
             <Link to={'/'}>Home</Link>

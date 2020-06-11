@@ -29,7 +29,7 @@ import ProcessDetails from '../../Organisms/ProcessDetails/ProcessDetails';
 import ProcessDetailsProcessVariables from '../../Organisms/ProcessDetailsProcessVariables/ProcessDetailsProcessVariables';
 import ProcessDetailsTimeline from '../../Organisms/ProcessDetailsTimeline/ProcessDetailsTimeline';
 import './ProcessDetailsPage.css';
-import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
+import PageTitle from '../../Molecules/PageTitle/PageTitle';
 import ProcessListModal from '../../Atoms/ProcessListModal/ProcessListModal';
 import {
   handleAbort,
@@ -183,7 +183,7 @@ const ProcessDetailsPage: React.FC<
               modalTitle={setTitle(titleType, modalTitle)}
               modalContent={modalContent}
             />
-            <PageTitleComponent title="Process Details" />
+            <PageTitle title="Process Details" />
             {!loading ? (
               <Grid gutter="md" span={12} lg={6} xl={4}>
                 <GridItem span={12}>

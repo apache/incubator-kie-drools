@@ -5,7 +5,7 @@ export interface IOwnProps {
   title: any;
 }
 
-const PageTitleComponent: React.FC<IOwnProps> = ({ title }) => {
+const PageTitle: React.FC<IOwnProps> = ({ title }) => {
   return (
     <React.Fragment>
       <Title headingLevel="h1" size="4xl">
@@ -15,4 +15,4 @@ const PageTitleComponent: React.FC<IOwnProps> = ({ title }) => {
   );
 };
 
-export default PageTitleComponent;
+export default PageTitle;

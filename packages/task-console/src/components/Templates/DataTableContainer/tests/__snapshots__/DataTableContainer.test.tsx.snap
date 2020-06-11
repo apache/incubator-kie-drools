@@ -15,7 +15,7 @@ exports[`DataTableContainer component tests Snapshot tests 1`] = `
     <section
       className="pf-c-page__main-section pf-m-light"
     >
-      <PageTitleComponent
+      <PageTitle
         title="User Tasks"
       >
         <Title
@@ -28,7 +28,7 @@ exports[`DataTableContainer component tests Snapshot tests 1`] = `
             User Tasks
           </h1>
         </Title>
-      </PageTitleComponent>
+      </PageTitle>
       <Component>
         <ComponentWithOuia
           component={[Function]}

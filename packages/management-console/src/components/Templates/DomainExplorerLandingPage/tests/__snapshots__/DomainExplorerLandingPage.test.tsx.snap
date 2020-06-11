@@ -70,7 +70,7 @@ exports[`Domain Explorer Landing Page Component Assertions 1`] = `
             <section
               className="pf-c-page__main-section pf-m-light"
             >
-              <PageTitleComponent
+              <PageTitle
                 title="Domain Explorer"
               >
                 <Title
@@ -83,7 +83,7 @@ exports[`Domain Explorer Landing Page Component Assertions 1`] = `
                     Domain Explorer
                   </h1>
                 </Title>
-              </PageTitleComponent>
+              </PageTitle>
               <Component>
                 <ComponentWithOuia
                   component={[Function]}
@@ -346,7 +346,7 @@ exports[`Domain Explorer Landing Page Component Snapshot test 1`] = `
             <section
               className="pf-c-page__main-section pf-m-light"
             >
-              <PageTitleComponent
+              <PageTitle
                 title="Domain Explorer"
               >
                 <Title
@@ -359,7 +359,7 @@ exports[`Domain Explorer Landing Page Component Snapshot test 1`] = `
                     Domain Explorer
                   </h1>
                 </Title>
-              </PageTitleComponent>
+              </PageTitle>
               <Component>
                 <ComponentWithOuia
                   component={[Function]}

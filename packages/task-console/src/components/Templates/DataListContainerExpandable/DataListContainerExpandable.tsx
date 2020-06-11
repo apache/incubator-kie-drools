@@ -11,9 +11,9 @@ import {
 } from '@patternfly/react-core';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
+import PageTitle from '../../Molecules/PageTitle/PageTitle';
 import './DataListExpandable.css';
-import DataListComponentByState from '../../Organisms/DataListComponentByState/DataListComponentByState';
+import TaskListByState from '../../Organisms/TaskListByState/TaskListByState';
 import { ouiaPageTypeAndObjectId } from '@kogito-apps/common';
 
 const DataListContainerExpandable: React.FC<InjectedOuiaProps> = ({
@@ -32,7 +32,7 @@ const DataListContainerExpandable: React.FC<InjectedOuiaProps> = ({
   return (
     <React.Fragment>
       <PageSection variant="light">
-        <PageTitleComponent title="User Tasks" />
+        <PageTitle title="User Tasks" />
         <Breadcrumb>
           <BreadcrumbItem>
             <Link to={'/'}>Home</Link>
@@ -49,7 +49,7 @@ const DataListContainerExpandable: React.FC<InjectedOuiaProps> = ({
                 onToggle={onToggle}
                 isExpanded={isExpanded}
               >
-                <DataListComponentByState currentState={'Ready'} />
+                <TaskListByState currentState={'Ready'} />
               </Expandable>
             </Card>
           </GridItem>

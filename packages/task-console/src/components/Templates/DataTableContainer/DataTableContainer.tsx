@@ -12,7 +12,7 @@ import {
 import _ from 'lodash';
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
+import PageTitle from '../../Molecules/PageTitle/PageTitle';
 import './DataTable.css';
 import DataTable from '../../Organisms/DataTable/DataTable';
 import { useGetUserTasksByStatesQuery } from '../../../graphql/types';
@@ -54,7 +54,7 @@ const DataTableContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
   return (
     <React.Fragment>
       <PageSection variant="light">
-        <PageTitleComponent title="User Tasks" />
+        <PageTitle title="User Tasks" />
         <Breadcrumb>
           <BreadcrumbItem>
             <Link to={'/'}>Home</Link>

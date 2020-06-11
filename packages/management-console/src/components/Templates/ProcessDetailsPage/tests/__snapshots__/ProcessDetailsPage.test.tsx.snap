@@ -239,7 +239,7 @@ exports[`Process Details Page component Sample test case 1`] = `
           </Portal>
         </Modal>
       </ProcessListModal>
-      <PageTitleComponent
+      <PageTitle
         title="Process Details"
       >
         <Title
@@ -252,7 +252,7 @@ exports[`Process Details Page component Sample test case 1`] = `
             Process Details
           </h1>
         </Title>
-      </PageTitleComponent>
+      </PageTitle>
     </section>
   </PageSection>
   <PageSection>

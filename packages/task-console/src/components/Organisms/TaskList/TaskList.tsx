@@ -1,15 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { DataList, Bullseye } from '@patternfly/react-core';
-import DataListItemComponent from '../../Molecules/DataListItemComponent/DataListItemComponent';
+import TaskListItem from '../../Molecules/TaskListItem/TaskListItem';
 import { KogitoEmptyState, KogitoSpinner } from '@kogito-apps/common';
 import '@patternfly/patternfly/patternfly-addons.css';
-import { useGetUserTasksByStatesQuery } from '../../../graphql/types';
+import { useGetUserTasksByStatesQuery } from '../.././../graphql/types';
 
 interface IOwnProps {
-  currentState: string;
+  setInitData: any;
+  initData: any;
+  isLoading: boolean;
+  setIsError: any;
+  setIsLoading: any;
 }
 
-const DataListComponentByState: React.FC<IOwnProps> = ({ currentState }) => {
+/* enum UserTaskState {
+  Ready = 'Ready',
+  Completed = 'Completed',
+  Aborted = 'Aborted'
+} */
+
+const TaskList: React.FC<IOwnProps> = ({
+  initData,
+  setInitData,
+  isLoading,
+  setIsError
+}) => {
   const {
     loading,
     error,
@@ -18,18 +33,18 @@ const DataListComponentByState: React.FC<IOwnProps> = ({ currentState }) => {
     networkStatus
   } = useGetUserTasksByStatesQuery({
     variables: {
-      state: [currentState]
+      state: ['Ready']
     },
     fetchPolicy: 'network-only',
     notifyOnNetworkStatusChange: true
   });
-  const [childList, setChildList] = useState<any>([]);
 
   useEffect(() => {
-    setChildList(data);
+    setIsError(false);
+    setInitData(data);
   }, [data]);
 
-  if (loading) {
+  if (loading || isLoading) {
     return (
       <Bullseye>
         <KogitoSpinner spinnerText="Loading user tasks..." />
@@ -46,6 +61,7 @@ const DataListComponentByState: React.FC<IOwnProps> = ({ currentState }) => {
   }
 
   if (error) {
+    setIsError(true);
     return (
       <div className=".pf-u-my-xl">
         <KogitoEmptyState
@@ -61,23 +77,27 @@ const DataListComponentByState: React.FC<IOwnProps> = ({ currentState }) => {
   return (
     <DataList aria-label="User Task list">
       {!loading &&
-        childList !== undefined &&
-        childList.UserTaskInstances.map((item, index) => {
+        initData !== undefined &&
+        initData.UserTaskInstances.map((item, index) => {
           return (
-            <DataListItemComponent
+            <TaskListItem
               id={index}
               key={item.id}
               userTaskInstanceData={item}
             />
           );
         })}
-      {loading && (
-        <Bullseye>
-          <KogitoSpinner spinnerText="Loading user tasks..." />
-        </Bullseye>
-      )}
+      {initData !== undefined &&
+        !isLoading &&
+        initData.UserTaskInstances.length === 0 && (
+          <KogitoEmptyState
+            iconType="searchIcon"
+            title="No results found"
+            body="Try using different filters"
+          />
+        )}
     </DataList>
   );
 };
 
-export default DataListComponentByState;
+export default TaskList;

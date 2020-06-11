@@ -96,7 +96,7 @@ exports[`ProcessListPage component tests Snapshot tests 1`] = `
     <section
       className="pf-c-page__main-section pf-m-light"
     >
-      <PageTitleComponent
+      <PageTitle
         title="Process Instances"
       >
         <Title
@@ -109,7 +109,7 @@ exports[`ProcessListPage component tests Snapshot tests 1`] = `
             Process Instances
           </h1>
         </Title>
-      </PageTitleComponent>
+      </PageTitle>
       <Component>
         <ComponentWithOuia
           component={[Function]}

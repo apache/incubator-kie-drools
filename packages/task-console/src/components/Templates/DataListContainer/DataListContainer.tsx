@@ -11,10 +11,10 @@ import {
 import _ from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
-import DataToolbarComponent from '../../Molecules/DataToolbarComponent/DataToolbarComponent';
+import PageTitle from '../../Molecules/PageTitle/PageTitle';
+import DataToolbarComponent from '../../Molecules/DataListToolbar/DataListToolbar';
 import './DataList.css';
-import DataListComponent from '../../Organisms/DataListComponent/DataListComponent';
+import TaskList from '../../Organisms/TaskList/TaskList';
 import { useGetUserTasksByStatesLazyQuery } from '../../../graphql/types';
 import { ouiaPageTypeAndObjectId, KogitoEmptyState } from '@kogito-apps/common';
 
@@ -50,7 +50,7 @@ const DataListContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
   return (
     <React.Fragment>
       <PageSection variant="light">
-        <PageTitleComponent title="User Tasks" />
+        <PageTitle title="User Tasks" />
         <Breadcrumb>
           <BreadcrumbItem>
             <Link to={'/'}>Home</Link>
@@ -73,7 +73,7 @@ const DataListContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
                 />
               )}
               {isStatusSelected ? (
-                <DataListComponent
+                <TaskList
                   initData={initData}
                   setInitData={setInitData}
                   isLoading={isLoading}

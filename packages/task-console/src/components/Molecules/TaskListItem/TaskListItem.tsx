@@ -43,9 +43,7 @@ export interface IOwnProps {
   userTaskInstanceData: IUserTaskInstance;
 }
 
-const DataListItemComponent: React.FC<IOwnProps> = ({
-  userTaskInstanceData
-}) => {
+const TaskListItem: React.FC<IOwnProps> = ({ userTaskInstanceData }) => {
   const [isPiLoaded, setPiLoaded] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertTitle, setAlertTitle] = useState('');
@@ -183,4 +181,4 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
   );
 };
 
-export default DataListItemComponent;
+export default TaskListItem;

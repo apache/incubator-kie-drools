@@ -16,7 +16,7 @@ import {
 } from '@kogito-apps/common';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
+import PageTitle from '../../Molecules/PageTitle/PageTitle';
 import ProcessListToolbar from '../../Molecules/ProcessListToolbar/ProcessListToolbar';
 import './ProcessListPage.css';
 import ProcessListTable from '../../Organisms/ProcessListTable/ProcessListTable';
@@ -301,7 +301,7 @@ const ProcessListPage: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
         isSingleAbort={false}
       />
       <PageSection variant="light">
-        <PageTitleComponent title="Process Instances" />
+        <PageTitle title="Process Instances" />
         <Breadcrumb>
           <BreadcrumbItem>
             <Link to={'/'}>Home</Link>
