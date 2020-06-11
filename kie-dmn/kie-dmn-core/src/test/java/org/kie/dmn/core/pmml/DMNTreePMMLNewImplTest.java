@@ -16,9 +16,12 @@
 
 package org.kie.dmn.core.pmml;
 
+import java.util.function.Consumer;
+
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
@@ -40,7 +43,7 @@ public class DMNTreePMMLNewImplTest {
     @Test
     public void testTreeWithOutput() {
         System.setProperty(KIE_PMML_IMPLEMENTATION.getName(), NEW.getName());
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLTree.dmn",
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLNewTree.dmn",
                                                                                        DMNTreePMMLNewImplTest.class,
                                                                                        "test_tree.pmml");
         Assertions.assertThat(runtime).isNotNull();
@@ -52,7 +55,7 @@ public class DMNTreePMMLNewImplTest {
     @Test
     public void testTreeWithoutOutput() {
         System.setProperty(KIE_PMML_IMPLEMENTATION.getName(), NEW.getName());
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLTree_no_output.dmn",
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLNewTree_no_output.dmn",
                                                                                        DMNTreePMMLNewImplTest.class,
                                                                                        "test_tree_no_output.pmml");
         Assertions.assertThat(runtime).isNotNull();
@@ -62,7 +65,7 @@ public class DMNTreePMMLNewImplTest {
     }
 
     private String evaluateWeatherDecision(final DMNRuntime runtime, final Integer temperature, final Integer humidity) {
-        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_FAA4232D-9D61-4089-BB05-5F5D7C1AECE1", "TestTreeDMN");
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_FAA4232D-9D61-4089-BB05-5F5D7C1AECE2", "TestTreeDMNNew");
         Assertions.assertThat(dmnModel).isNotNull();
         Assertions.assertThat(dmnModel.hasErrors()).isFalse();
 
@@ -72,6 +75,14 @@ public class DMNTreePMMLNewImplTest {
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, dmnContext);
         LOG.debug("{}", dmnResult);
+        if (dmnResult.hasErrors()) {
+            dmnResult.getMessages().forEach(new Consumer<DMNMessage>() {
+                @Override
+                public void accept(DMNMessage dmnMessage) {
+                    LOG.debug("{}", dmnMessage);
+                }
+            });
+        }
         Assertions.assertThat(dmnResult.hasErrors()).isFalse();
 
         final DMNContext resultContext = dmnResult.getContext();

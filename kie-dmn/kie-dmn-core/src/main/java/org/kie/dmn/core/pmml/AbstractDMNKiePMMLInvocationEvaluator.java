@@ -65,15 +65,14 @@ public abstract class AbstractDMNKiePMMLInvocationEvaluator extends AbstractPMML
         }
         if (result.isEmpty()) {
             // TO FIX
-//            MsgUtil.reportMessage(LOG,
-//                                  DMNMessage.Severity.WARN,
-//                                  node,
-//                                  ((DMNResultImpl) toPopulate),
-//                                  e,
-//                                  null,
-//                                  Msg.INVALID_NAME,
-//                                  name,
-//                                  e.getMessage());
+            MsgUtil.reportMessage(LOG,
+                                  DMNMessage.Severity.ERROR,
+                                  node,
+                                  ((DMNResultImpl) dmnr),
+                                  null,
+                                  null,
+                                  Msg.UNABLE_TO_RETRIEVE_PMML_RESULT,
+                                  model);
             return new EvaluatorResultImpl(null, ResultType.FAILURE);
         } else {
             Object coercedResult = result.size() > 1 ? result : result.values().iterator().next();

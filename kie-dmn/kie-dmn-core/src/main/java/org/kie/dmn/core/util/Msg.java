@@ -149,6 +149,8 @@ public final class Msg {
     public static final Message1 DMNDI_MISSING_SHAPE                                 = new Message1( DMNMessageType.DMNDI_MISSING_DIAGRAM, "Missing DMNShape for '%s'" );
     public static final Message1 DMNDI_MISSING_EDGE                                  = new Message1( DMNMessageType.DMNDI_MISSING_DIAGRAM, "Missing DMNEdge for '%s'" );
     public static final Message2 DMNDI_UNKNOWN_REF                                   = new Message2( DMNMessageType.DMNDI_UNKNOWN_REF, "Unable to resolve dmnElementRef '%s' on '%s'" );
+    public static final Message1 UNABLE_TO_RETRIEVE_PMML_RESULT                      = new Message1( DMNMessageType.INVOCATION_ERROR, "Unable to retrieve result from PMML model '%s'" );
+
 
     public static interface Message {
         String getMask();
