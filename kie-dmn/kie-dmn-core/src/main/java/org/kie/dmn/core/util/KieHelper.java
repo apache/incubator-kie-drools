@@ -32,6 +32,7 @@ public final class KieHelper {
 
     public static KieContainer getKieContainer(ReleaseId releaseId,
                                                Resource... resources ) {
+        System.out.println("PUPPA: " + KieHelper.class + " getKieContainer");
         KieServices ks = KieServices.Factory.get();
         createAndDeployJar( ks, releaseId, resources );
         return ks.newKieContainer( releaseId );
@@ -40,6 +41,7 @@ public final class KieHelper {
     public static KieModule createAndDeployJar(KieServices ks,
                                                ReleaseId releaseId,
                                                Resource... resources) {
+        System.out.println("PUPPA: " + KieHelper.class + " createAndDeployJar");
         byte[] jar = createJar(ks, releaseId, resources);
 
         KieModule km = deployJarIntoRepository(ks, jar);
@@ -47,6 +49,7 @@ public final class KieHelper {
     }
 
     public static byte[] createJar(KieServices ks, ReleaseId releaseId, Resource... resources) {
+        System.out.println("PUPPA: " + KieHelper.class + " createJar");
         KieFileSystem kfs = ks.newKieFileSystem().generateAndWritePomXML( releaseId );
         for (int i = 0; i < resources.length; i++) {
             if (resources[i] != null) {
@@ -61,6 +64,7 @@ public final class KieHelper {
         }
         InternalKieModule kieModule = (InternalKieModule) ks.getRepository()
                 .getKieModule(releaseId);
+        System.out.println("PUPPA: " + KieHelper.class + " kieModule " + kieModule);
         byte[] jar = kieModule.getBytes();
         return jar;
     }

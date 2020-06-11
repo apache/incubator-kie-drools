@@ -123,6 +123,7 @@ public class DMNEvaluatorCompiler {
     }
 
     public DMNExpressionEvaluator compileExpression(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, Expression expression) {
+        System.out.println("PUPPA: " + this + " compileExpression");
         if ( expression == null ) {
             if( node instanceof DecisionNode ) {
                 MsgUtil.reportMessage( logger,
@@ -355,6 +356,7 @@ public class DMNEvaluatorCompiler {
     }
 
     private DMNExpressionEvaluator compileFunctionDefinition(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String functionName, FunctionDefinition funcDef) {
+        System.out.println("PUPPA: " + this + " compileFunctionDefinition");
         FunctionKind kind = funcDef.getKind();
         if( kind == null ) {
             // unknown function kind
@@ -486,6 +488,7 @@ public class DMNEvaluatorCompiler {
     }
 
     private DMNExpressionEvaluator compileFunctionDefinitionPMML(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String functionName, FunctionDefinition funcDef) {
+        System.out.println("PUPPA: " + this + " compileFunctionDefinition");
         if (funcDef.getExpression() instanceof Context) {
             Context context = (Context) funcDef.getExpression();
             String pmmlDocument = null;

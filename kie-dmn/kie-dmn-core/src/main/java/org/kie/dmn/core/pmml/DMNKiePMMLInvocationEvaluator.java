@@ -53,6 +53,7 @@ public class DMNKiePMMLInvocationEvaluator extends AbstractDMNKiePMMLInvocationE
 
     public DMNKiePMMLInvocationEvaluator(String dmnNS, DMNElement node, Resource pmmlResource, String model, PMMLInfo<?> pmmlInfo) {
         super(dmnNS, node, pmmlResource, model, pmmlInfo);
+        System.out.println("PUPPA: " + this + " (constructor)");
         helper = PMML4ExecutionHelperFactory.getExecutionHelper(model,
                                                                 pmmlResource,
                                                                 null,

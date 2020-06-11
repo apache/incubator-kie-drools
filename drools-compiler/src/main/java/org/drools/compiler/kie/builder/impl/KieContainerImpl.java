@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 import javax.management.ObjectName;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -60,6 +61,7 @@ import org.kie.api.builder.model.FileLoggerModel;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.MBeansOption;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieLoggers;
@@ -373,6 +375,7 @@ public class KieContainerImpl
     }
 
     public KieBase getKieBase(String kBaseName) {
+        System.out.println("PUPPA: " + this + " getKieBase");
         KieBase kBase = kBases.get( kBaseName );
         if ( kBase == null ) {
             KieBaseModelImpl kBaseModel = getKieBaseModelImpl(kBaseName);
@@ -389,6 +392,14 @@ public class KieContainerImpl
                 }
             }
         }
+        System.out.println("PUPPA: " + this + " kBase " + kBase);
+        System.out.println("PUPPA: " + this + " kBase.getKiePackages() " + kBase.getKiePackages());
+        kBase.getKiePackages().forEach(new Consumer<KiePackage>() {
+            @Override
+            public void accept(KiePackage kiePackage) {
+                System.out.println("PUPPA: " + this + " kiePackage.getName() " + kiePackage.getName());
+            }
+        });
         return kBase;
     }
 
@@ -411,6 +422,7 @@ public class KieContainerImpl
     }
 
     private KieBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf) {
+        System.out.println("PUPPA: " + this + " createKieBase");
         InternalKieModule kModule = kieProject.getKieModuleForKBase( kBaseModel.getName() );
         InternalKnowledgeBase kBase = kModule.createKieBase(kBaseModel, kieProject, messages, conf);
         if ( kBase == null ) {
@@ -422,6 +434,15 @@ public class KieContainerImpl
         kBase.initMBeans();
 
         generateCompiledAlphaNetwork(kBaseModel, kModule, kBase);
+
+        System.out.println("PUPPA: " + this + " kBase " + kBase);
+        System.out.println("PUPPA: " + this + " kBase.getKiePackages() " + kBase.getKiePackages());
+        kBase.getKiePackages().forEach(new Consumer<KiePackage>() {
+            @Override
+            public void accept(KiePackage kiePackage) {
+                System.out.println("PUPPA: " + this + " kiePackage.getName() " + kiePackage.getName());
+            }
+        });
 
         return kBase;
     }

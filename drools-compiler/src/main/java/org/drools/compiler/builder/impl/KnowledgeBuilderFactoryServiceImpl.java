@@ -55,6 +55,7 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
     }
 
     public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBuilderConfiguration conf) {
+        System.out.println("PUPPA: " + this + " newKnowledgeBuilder");
         return new KnowledgeBuilderImpl( (KnowledgeBuilderConfigurationImpl) conf );
     }
 
