@@ -188,7 +188,7 @@ public class ExecModelLambdaPostProcessor {
     }
 
     private void convertFromCall(MethodCallExpr methodCallExpr) {
-        Optional<Expression> lambdaOpt = methodCallExpr.getArguments().stream().filter(arg -> arg.isLambdaExpr()).findFirst();
+        Optional<Expression> lambdaOpt = methodCallExpr.getArguments().stream().filter(Expression::isLambdaExpr).findFirst();
         if (!lambdaOpt.isPresent()) {
             return; // Don't need to handle. e.g. D.from(var_$children)
         }
