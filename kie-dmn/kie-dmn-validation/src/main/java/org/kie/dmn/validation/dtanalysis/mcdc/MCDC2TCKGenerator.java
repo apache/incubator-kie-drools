@@ -69,7 +69,9 @@ public class MCDC2TCKGenerator {
 
     private static void appendRecordToTestCases(DecisionTable dt, TestCases testCases, String withId, Record record) {
         ObjectFactory factory = new ObjectFactory();
-        TestCase testCase = factory.createTestCasesTestCase().withId(withId);
+        TestCase testCase = factory.createTestCasesTestCase()
+                                   .withId("mcdc_" + withId)
+                                   .withName("Test case " + withId);
         testCase.withDescription(record.toString());
         for (int i = 0; i < record.enums.length; i++) {
             Object en = record.enums[i];
