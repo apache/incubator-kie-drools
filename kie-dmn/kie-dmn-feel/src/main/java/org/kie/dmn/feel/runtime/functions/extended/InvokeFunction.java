@@ -34,6 +34,7 @@ import org.kie.dmn.feel.runtime.functions.ParameterName;
  * @deprecated Since DMNv1.2 it shall be possible to use the DMN standard's Import functionality
  * to import Business Knowledge Model (BKM) nodes and Decision Service in order to be invoked from another model
  */
+@Deprecated
 public class InvokeFunction extends BaseFEELFunction {
 
     public InvokeFunction() {
