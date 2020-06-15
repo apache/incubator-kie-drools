@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Assume;
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
@@ -30,11 +31,20 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DMNNeuralNetworkPMMLTest {
+import static org.kie.api.pmml.PMMLConstants.LEGACY;
+
+public class DMNNeuralNetworkPMMLTest extends AbstractDMNPMMLTest {
+
     private static final Logger LOG = LoggerFactory.getLogger(DMNNeuralNetworkPMMLTest.class);
 
     private DMNRuntime runtime;
     private DMNModel dmnModel;
+
+    @Before
+    public void resetEnvironment() {
+        LOG.debug("resetEnvironment");
+        resetEnvironment(LEGACY.getName());
+    }
 
     @Test
     public void testNeuralNetworks() {
@@ -58,7 +68,7 @@ public class DMNNeuralNetworkPMMLTest {
     }
 
     public String evaluateNeuralNetwork(final double sepalLength, final double sepalWidth, final double petalLength,
-                                      final double petalWidth) {
+                                        final double petalWidth) {
         final DMNContext dmnContext = DMNFactory.newContext();
         dmnContext.set("Sepal.Length", sepalLength);
         dmnContext.set("Sepal.Width", sepalWidth);

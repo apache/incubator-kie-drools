@@ -36,6 +36,7 @@ import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.api.internal.utils.ServiceDiscoveryImpl;
 import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.ServiceRegistryImpl;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
@@ -104,14 +105,17 @@ public final class DMNRuntimeUtil {
 
     public static void resetServices() {
         final ServiceDiscoveryImpl serviceDiscovery = ServiceDiscoveryImpl.getInstance();
-        final ServiceRegistry instance = ServiceRegistry.getInstance();
         serviceDiscovery.reset();
-        Map<String, Object> resetServices = serviceDiscovery.getServices();
-        KieAssemblersImpl resetKieAssemblers = (KieAssemblersImpl)resetServices.get("org.kie.api.internal.assembler.KieAssemblers");
-        KieAssemblersImpl kieAssemblers = (KieAssemblersImpl)instance.get(KieAssemblers.class);
-        Map<ResourceType, KieAssemblerService> registeredKieAssemblers = kieAssemblers.getAssemblers();
-        resetKieAssemblers.getAssemblers()
-                .forEach(registeredKieAssemblers::put);
+        final ServiceRegistryImpl instance = (ServiceRegistryImpl)ServiceRegistry.getInstance();
+        instance.reload();
+//
+//
+//        Map<String, Object> resetServices = serviceDiscovery.getServices();
+//        KieAssemblersImpl resetKieAssemblers = (KieAssemblersImpl)resetServices.get("org.kie.api.internal.assembler.KieAssemblers");
+//        KieAssemblersImpl kieAssemblers = (KieAssemblersImpl)instance.get(KieAssemblers.class);
+//        Map<ResourceType, KieAssemblerService> registeredKieAssemblers = kieAssemblers.getAssemblers();
+//        resetKieAssemblers.getAssemblers()
+//                .forEach(registeredKieAssemblers::put);
     }
 
     public static DMNRuntime createRuntimeWithAdditionalResources(final String resourceName, final Class testClass, final String... additionalResources) {

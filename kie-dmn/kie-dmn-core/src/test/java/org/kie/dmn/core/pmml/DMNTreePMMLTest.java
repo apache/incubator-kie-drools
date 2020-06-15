@@ -17,37 +17,34 @@
 package org.kie.dmn.core.pmml;
 
 import org.assertj.core.api.Assertions;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
-import org.kie.api.KieServices;
-import org.kie.api.builder.ReleaseId;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.api.DMNFactory;
-import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.api.pmml.PMMLConstants.KIE_PMML_IMPLEMENTATION;
 import static org.kie.api.pmml.PMMLConstants.LEGACY;
-import static org.kie.api.pmml.PMMLConstants.NEW;
-import static org.kie.dmn.core.util.DMNRuntimeUtil.resetServices;
 
-public class DMNTreePMMLTest {
+public class DMNTreePMMLTest extends AbstractDMNPMMLTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNTreePMMLTest.class);
     private static final String SUNGLASSES = "sunglasses";
     private static final String UMBRELLA = "umbrella";
     private static final String NOTHING = "nothing";
 
+    @Before
+    public void resetEnvironment() {
+        LOG.debug("resetEnvironment");
+        resetEnvironment(LEGACY.getName());
+    }
+
     @Test
     public void testTreeWithOutput() {
-        System.setProperty(KIE_PMML_IMPLEMENTATION.getName(), LEGACY.getName());
-        resetServices();
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLTree.dmn",
                                                                                        DMNTreePMMLTest.class,
                                                                                        "test_tree.pmml");
@@ -55,13 +52,10 @@ public class DMNTreePMMLTest {
         Assertions.assertThat(evaluateWeatherDecision(runtime, 30, 10)).isEqualTo(SUNGLASSES);
         Assertions.assertThat(evaluateWeatherDecision(runtime, 5, 70)).isEqualTo(UMBRELLA);
         Assertions.assertThat(evaluateWeatherDecision(runtime, 10, 15)).isEqualTo(NOTHING);
-        cleanUp(runtime);
     }
 
     @Test
     public void testTreeWithoutOutput() {
-        System.setProperty(KIE_PMML_IMPLEMENTATION.getName(), LEGACY.getName());
-        resetServices();
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLTree_no_output.dmn",
                                                                                        DMNTreePMMLNewImplTest.class,
                                                                                        "test_tree_no_output.pmml");
@@ -69,7 +63,6 @@ public class DMNTreePMMLTest {
         Assertions.assertThat(evaluateWeatherDecision(runtime, 30, 10)).isEqualTo(SUNGLASSES);
         Assertions.assertThat(evaluateWeatherDecision(runtime, 5, 70)).isEqualTo(UMBRELLA);
         Assertions.assertThat(evaluateWeatherDecision(runtime, 10, 15)).isEqualTo(NOTHING);
-        cleanUp(runtime);
     }
 
     private String evaluateWeatherDecision(final DMNRuntime runtime, final Integer temperature, final Integer humidity) {
@@ -92,10 +85,5 @@ public class DMNTreePMMLTest {
         Assertions.assertThat(weatherDecision).isNotNull();
 
         return weatherDecision;
-    }
-
-    private void cleanUp(final DMNRuntime runtime) {
-        ReleaseId releaseId = ((KnowledgeBaseImpl) ((DMNRuntimeImpl) runtime).getInternalKnowledgeBase()).getResolvedReleaseId();
-        KieServices.get().getRepository().removeKieModule(releaseId);
     }
 }
