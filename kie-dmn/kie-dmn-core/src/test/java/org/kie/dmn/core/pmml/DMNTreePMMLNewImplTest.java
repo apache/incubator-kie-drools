@@ -20,7 +20,6 @@ import java.util.function.Consumer;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
@@ -37,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.api.pmml.PMMLConstants.KIE_PMML_IMPLEMENTATION;
 import static org.kie.api.pmml.PMMLConstants.NEW;
+import static org.kie.dmn.core.util.DMNRuntimeUtil.resetServices;
 
 public class DMNTreePMMLNewImplTest {
 
@@ -48,7 +48,7 @@ public class DMNTreePMMLNewImplTest {
     @Test
     public void testTreeWithOutput() {
         System.setProperty(KIE_PMML_IMPLEMENTATION.getName(), NEW.getName());
-        System.out.println("PUPPA: " + this + " testTreeWithOutput");
+        resetServices();
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLNewTree.dmn",
                                                                                        DMNTreePMMLNewImplTest.class,
                                                                                        "test_tree_new.pmml");
@@ -59,10 +59,10 @@ public class DMNTreePMMLNewImplTest {
         cleanUp(runtime);
     }
 
-//    @Ignore
     @Test
     public void testTreeWithoutOutput() {
         System.setProperty(KIE_PMML_IMPLEMENTATION.getName(), NEW.getName());
+        resetServices();
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLNewTree_no_output.dmn",
                                                                                        DMNTreePMMLNewImplTest.class,
                                                                                        "test_tree_new_no_output.pmml");

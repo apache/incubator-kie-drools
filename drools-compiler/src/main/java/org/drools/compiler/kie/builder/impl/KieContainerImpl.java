@@ -375,7 +375,6 @@ public class KieContainerImpl
     }
 
     public KieBase getKieBase(String kBaseName) {
-        System.out.println("PUPPA: " + this + " getKieBase");
         KieBase kBase = kBases.get( kBaseName );
         if ( kBase == null ) {
             KieBaseModelImpl kBaseModel = getKieBaseModelImpl(kBaseName);
@@ -392,14 +391,6 @@ public class KieContainerImpl
                 }
             }
         }
-        System.out.println("PUPPA: " + this + " kBase " + kBase);
-        System.out.println("PUPPA: " + this + " kBase.getKiePackages() " + kBase.getKiePackages());
-        kBase.getKiePackages().forEach(new Consumer<KiePackage>() {
-            @Override
-            public void accept(KiePackage kiePackage) {
-                System.out.println("PUPPA: " + this + " kiePackage.getName() " + kiePackage.getName());
-            }
-        });
         return kBase;
     }
 
@@ -422,7 +413,6 @@ public class KieContainerImpl
     }
 
     private KieBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf) {
-        System.out.println("PUPPA: " + this + " createKieBase");
         InternalKieModule kModule = kieProject.getKieModuleForKBase( kBaseModel.getName() );
         InternalKnowledgeBase kBase = kModule.createKieBase(kBaseModel, kieProject, messages, conf);
         if ( kBase == null ) {
@@ -434,15 +424,6 @@ public class KieContainerImpl
         kBase.initMBeans();
 
         generateCompiledAlphaNetwork(kBaseModel, kModule, kBase);
-
-        System.out.println("PUPPA: " + this + " kBase " + kBase);
-        System.out.println("PUPPA: " + this + " kBase.getKiePackages() " + kBase.getKiePackages());
-        kBase.getKiePackages().forEach(new Consumer<KiePackage>() {
-            @Override
-            public void accept(KiePackage kiePackage) {
-                System.out.println("PUPPA: " + this + " kiePackage.getName() " + kiePackage.getName());
-            }
-        });
 
         return kBase;
     }

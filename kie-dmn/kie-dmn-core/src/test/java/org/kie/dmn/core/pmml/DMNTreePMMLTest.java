@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.api.pmml.PMMLConstants.KIE_PMML_IMPLEMENTATION;
 import static org.kie.api.pmml.PMMLConstants.LEGACY;
 import static org.kie.api.pmml.PMMLConstants.NEW;
+import static org.kie.dmn.core.util.DMNRuntimeUtil.resetServices;
 
 public class DMNTreePMMLTest {
 
@@ -46,7 +47,7 @@ public class DMNTreePMMLTest {
     @Test
     public void testTreeWithOutput() {
         System.setProperty(KIE_PMML_IMPLEMENTATION.getName(), LEGACY.getName());
-        System.out.println("PUPPA: " + this + " testTreeWithOutput");
+        resetServices();
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLTree.dmn",
                                                                                        DMNTreePMMLTest.class,
                                                                                        "test_tree.pmml");
@@ -57,10 +58,10 @@ public class DMNTreePMMLTest {
         cleanUp(runtime);
     }
 
-//    @Ignore
     @Test
     public void testTreeWithoutOutput() {
         System.setProperty(KIE_PMML_IMPLEMENTATION.getName(), LEGACY.getName());
+        resetServices();
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLTree_no_output.dmn",
                                                                                        DMNTreePMMLNewImplTest.class,
                                                                                        "test_tree_no_output.pmml");

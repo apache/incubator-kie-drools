@@ -86,7 +86,6 @@ public class DMNAssemblerService implements KieAssemblerService {
 
     @Override
     public void addResources(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
-        System.out.println("PUPPA: " + this + " addResources");
         EvalHelper.clearGenericAccessorCache();
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         DMNCompilerImpl dmnCompiler = (DMNCompilerImpl) kbuilderImpl.getCachedOrCreate(DMN_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
@@ -145,7 +144,6 @@ public class DMNAssemblerService implements KieAssemblerService {
     }
 
     private DMNModel internalAddResource(KnowledgeBuilderImpl kbuilder, DMNCompiler dmnCompiler, DMNResource dmnRes, Collection<DMNModel> dmnModels) throws Exception {
-        System.out.println("PUPPA: " + this + " internalAddResource");
         ResourceWithConfiguration r = dmnRes.getResAndConfig();
         r.getBeforeAdd().accept(kbuilder);
         DMNModel dmnModel = compileResourceToModel(kbuilder, dmnCompiler, r.getResource(), dmnRes, dmnModels);
@@ -172,7 +170,6 @@ public class DMNAssemblerService implements KieAssemblerService {
     }
 
     private DMNModel compileResourceToModel(KnowledgeBuilderImpl kbuilderImpl, DMNCompiler dmnCompiler, Resource resource, DMNResource dmnRes, Collection<DMNModel> dmnModels) {
-        System.out.println("PUPPA: " + this + " compileResourceToModel");
         DMNModel model = dmnRes != null ?
                 dmnCompiler.compile(dmnRes.getDefinitions(), resource, dmnModels) :
                 dmnCompiler.compile(resource, dmnModels);

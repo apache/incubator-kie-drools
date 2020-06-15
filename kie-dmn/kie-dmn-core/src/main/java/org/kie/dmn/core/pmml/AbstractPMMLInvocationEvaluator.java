@@ -116,7 +116,6 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
         }
 
         public static AbstractPMMLInvocationEvaluator newInstance(DMNModelImpl model, ClassLoader classLoader, DMNElement funcDef, Resource pmmlResource, String pmmlModel, PMMLInfo<?> pmmlInfo) {
-            System.out.println("PUPPA: " + AbstractPMMLInvocationEvaluator.class + " newInstance");
             try {
                 @SuppressWarnings("unchecked")
                 Class<AbstractPMMLInvocationEvaluator> cl = (Class<AbstractPMMLInvocationEvaluator>) classLoader.loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
@@ -150,7 +149,6 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
     }
 
     private static AbstractDMNKiePMMLInvocationEvaluator getAbstractDMNKiePMMLInvocationEvaluator(String nameSpace, DMNElement funcDef, Resource pmmlResource, String pmmlModel, PMMLInfo<?> pmmlInfo) {
-        System.out.println("PUPPA: " + AbstractPMMLInvocationEvaluator.class + " getAbstractDMNKiePMMLInvocationEvaluator");
         final boolean legacyImplementationPresent = isLegacyImplementationPresent();
         final boolean newImplementationPresent = isNewImplementationPresent();
         if (legacyImplementationPresent && newImplementationPresent) {
@@ -169,7 +167,6 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
     }
 
     private static DMNKiePMMLInvocationEvaluator getDMNKiePMMLInvocationEvaluator(String nameSpace, DMNElement funcDef, Resource pmmlResource, String pmmlModel, PMMLInfo<?> pmmlInfo) {
-        System.out.println("PUPPA: " + AbstractPMMLInvocationEvaluator.class + " getDMNKiePMMLInvocationEvaluator");
         try {
             return new DMNKiePMMLInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
         } catch (NoClassDefFoundError e) {

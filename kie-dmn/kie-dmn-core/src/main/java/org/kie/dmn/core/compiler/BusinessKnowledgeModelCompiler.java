@@ -58,7 +58,6 @@ public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
     }
     @Override
     public void compileEvaluator(DMNNode node, DMNCompilerImpl compiler, DMNCompilerContext ctx, DMNModelImpl model) {
-        System.out.println("PUPPA: " + this + " compileEvaluator");
         BusinessKnowledgeModelNodeImpl bkmi = (BusinessKnowledgeModelNodeImpl) node;
         compiler.linkRequirements( model, bkmi );
 

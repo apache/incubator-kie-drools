@@ -289,7 +289,6 @@ public class PMML4Compiler {
     }
 
     public String generateTheory(PMML pmml) {
-        System.out.println("PUPPA: " + this + " generateTheory");
         StringBuilder sb = new StringBuilder();
         PMML4Unit unit = new PMML4UnitImpl(pmml);
 
@@ -351,7 +350,6 @@ public class PMML4Compiler {
     }
 
     private static KieBase checkBuildingResources(PMML pmml) throws IOException {
-        System.out.println("PUPPA: " + PMML4Compiler.class + " checkBuildingResources");
         KieServices ks = KieServices.Factory.get();
         KieContainer kieContainer = ks.getKieClasspathContainer(PMML4Compiler.class.getClassLoader());
 
@@ -545,7 +543,6 @@ public class PMML4Compiler {
     }
 
     public List<PMMLResource> precompile(PMML pmml, ClassLoader classLoader) {
-        System.out.println("PUPPA: " + this + " precompile");
         List<PMMLResource> resources = new ArrayList<>();
         KieServices services = KieServices.Factory.get();
         KieModuleModel module = services.newKieModuleModel();
@@ -685,7 +682,6 @@ public class PMML4Compiler {
     }
 
     public String compile(PMML pmml, ClassLoader classLoader) {
-        System.out.println("PUPPA: " + this + " compile");
         helper.setResolver(classLoader);
 
         if (getResults().isEmpty()) {

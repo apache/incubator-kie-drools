@@ -95,12 +95,10 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     }
 
     public void build() {
-        System.out.println("PUPPA: " + this + " build");
         build(true);
     }
 
     public void build(boolean buildRules) {
-        System.out.println("PUPPA: " + this + " build");
         buildException = null;
         kBuilder.registerBuildResources(getResources());
         buildResources();
@@ -156,7 +154,6 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     }
 
     private void buildOthers() {
-        System.out.println("PUPPA: " + this + " buildOthers");
         try {
             for (Map.Entry<ResourceType, List<ResourceDescr>> entry : resourcesByType.entrySet()) {
                 List<ResourceWithConfiguration> rds = entry.getValue().stream().map(CompositeKnowledgeBuilderImpl::descrToResourceWithConfiguration).collect(Collectors.toList());

@@ -289,7 +289,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
 
     public KnowledgeBuilderImpl(InternalKnowledgeBase kBase,
                                 KnowledgeBuilderConfigurationImpl configuration) {
-        System.out.println("PUPPA: " + this + " (constructor)");
         if (configuration == null) {
             this.configuration = new KnowledgeBuilderConfigurationImpl();
         } else {
@@ -309,7 +308,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
         this.results = new ArrayList<>();
 
         this.kBase = kBase;
-        System.out.println("PUPPA: " + this + " kBase " + kBase);
 
         processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
         typeBuilder = new TypeDeclarationBuilder(this);
@@ -779,7 +777,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
 
     @Deprecated
     void addPackageForExternalType(ResourceType type, List<ResourceWithConfiguration> resources) throws Exception {
-        System.out.println("PUPPA: " + this + " addPackageForExternalType");
         KieAssemblers assemblers = ServiceRegistry.getInstance().get(KieAssemblers.class);
 
         assemblers.addResources(this, resources, type);

@@ -191,13 +191,11 @@ public class KieBuilderImpl
 
     @Override
     public KieBuilder buildAll() {
-        System.out.println("PUPPA: " + this + " buildAll");
         return buildAll( KieModuleKieProject::new, o -> true );
     }
 
     @Override
     public KieBuilder buildAll( Class<? extends ProjectType> projectClass ) {
-        System.out.println("PUPPA: " + this + " buildAll");
         if (projectClass == null) {
             return buildAll();
         }
@@ -215,12 +213,10 @@ public class KieBuilderImpl
 
     @Override
     public KieBuilder buildAll( Predicate<String> classFilter ) {
-        System.out.println("PUPPA: " + this + " buildAll");
         return buildAll( KieModuleKieProject::new, classFilter );
     }
 
     public KieBuilder buildAll( BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> kprojectSupplier, Predicate<String> classFilter ) {
-        System.out.println("PUPPA: " + this + " buildAll");
         final PomModel currentProjectPomModel = init(pomModel);
 
         // kModuleModel will be null if a provided pom.xml or kmodule.xml is invalid
@@ -250,7 +246,6 @@ public class KieBuilderImpl
 
             buildKieProject( results, kProject, trgMfs );
             kModule = kProject.getInternalKieModule();
-            System.out.println("PUPPA: " + this + " kModule " + kModule);
         }
         return this;
     }
@@ -280,7 +275,6 @@ public class KieBuilderImpl
     private static void buildKieProject( ResultsImpl messages,
                                          KieModuleKieProject kProject,
                                          MemoryFileSystem trgMfs ) {
-        System.out.println("PUPPA: " + KieBuilderImpl.class + " buildKieProject");
         kProject.init();
         kProject.verify( messages );
 
