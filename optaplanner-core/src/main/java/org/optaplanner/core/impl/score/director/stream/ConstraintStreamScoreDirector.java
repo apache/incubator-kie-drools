@@ -58,6 +58,9 @@ public class ConstraintStreamScoreDirector<Solution_>
     }
 
     private void resetConstraintStreamingSession() {
+        if (session != null) {
+            session.close();
+        }
         session = scoreDirectorFactory.newConstraintStreamingSession(constraintMatchEnabledPreference, workingSolution);
         Collection<Object> workingFacts = getSolutionDescriptor().getAllFacts(workingSolution);
         for (Object fact : workingFacts) {
