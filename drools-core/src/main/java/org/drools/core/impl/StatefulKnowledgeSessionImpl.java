@@ -2204,7 +2204,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         @Override
         public ProcessInstance getProcessInstance( long processInstanceId ) {
-            throw new UnsupportedOperationException( );
+            return null;
         }
 
         @Override
