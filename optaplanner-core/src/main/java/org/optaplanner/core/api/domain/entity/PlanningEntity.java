@@ -25,9 +25,7 @@ import java.util.Comparator;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Specifies that the class is a planning entity.
@@ -39,27 +37,6 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 @Target({ TYPE })
 @Retention(RUNTIME)
 public @interface PlanningEntity {
-
-    /**
-     * A pinned planning entity is never changed during planning,
-     * this is useful in repeated planning use cases (such as continuous planning and real-time planning).
-     * <p>
-     * This applies to all the planning variables of this planning entity.
-     * To pin individual variables, see https://issues.redhat.com/browse/PLANNER-124
-     * <p>
-     * The method {@link SelectionFilter#accept(ScoreDirector, Object)} returns false
-     * if the selection entity is pinned and it returns true if the selection entity is movable
-     *
-     * @return {@link NullMovableEntitySelectionFilter} when it is null (workaround for annotation limitation)
-     * @deprecated in favor of {@link #pinningFilter()}.
-     */
-    @Deprecated(/* forRemoval = true */)
-    Class<? extends SelectionFilter> movableEntitySelectionFilter() default NullMovableEntitySelectionFilter.class;
-
-    /** Workaround for annotation limitation in {@link #movableEntitySelectionFilter()}. */
-    @Deprecated(/* forRemoval = true */)
-    interface NullMovableEntitySelectionFilter extends SelectionFilter {
-    }
 
     /**
      * A pinned planning entity is never changed during planning,

@@ -20,7 +20,6 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.AbstractScore;
-import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 
 /**
@@ -33,8 +32,7 @@ import org.optaplanner.core.api.score.Score;
  *
  * @see Score
  */
-public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore>
-        implements FeasibilityScore<HardMediumSoftScore> {
+public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore> {
 
     public static final HardMediumSoftScore ZERO = new HardMediumSoftScore(0, 0, 0, 0);
     public static final HardMediumSoftScore ONE_HARD = new HardMediumSoftScore(0, 1, 0, 0);
@@ -58,23 +56,7 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
         return new HardMediumSoftScore(initScore, hardScore, mediumScore, softScore);
     }
 
-    /**
-     * @deprecated in favor of {@link #ofUninitialized(int, int, int, int)}
-     */
-    @Deprecated
-    public static HardMediumSoftScore valueOfUninitialized(int initScore, int hardScore, int mediumScore, int softScore) {
-        return new HardMediumSoftScore(initScore, hardScore, mediumScore, softScore);
-    }
-
     public static HardMediumSoftScore of(int hardScore, int mediumScore, int softScore) {
-        return new HardMediumSoftScore(0, hardScore, mediumScore, softScore);
-    }
-
-    /**
-     * @deprecated in favor of {@link #of(int, int, int)}
-     */
-    @Deprecated
-    public static HardMediumSoftScore valueOf(int hardScore, int mediumScore, int softScore) {
         return new HardMediumSoftScore(0, hardScore, mediumScore, softScore);
     }
 
@@ -270,11 +252,6 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
     @Override
     public String toString() {
         return getInitPrefix() + hardScore + HARD_LABEL + "/" + mediumScore + MEDIUM_LABEL + "/" + softScore + SOFT_LABEL;
-    }
-
-    @Override
-    public boolean isCompatibleArithmeticArgument(Score otherScore) {
-        return otherScore instanceof HardMediumSoftScore;
     }
 
 }

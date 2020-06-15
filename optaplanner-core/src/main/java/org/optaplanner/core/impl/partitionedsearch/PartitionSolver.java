@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,7 @@ package org.optaplanner.core.impl.partitionedsearch;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.phase.Phase;
-import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.AbstractSolver;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
@@ -45,34 +43,9 @@ public class PartitionSolver<Solution_> extends AbstractSolver<Solution_> {
         this.solverScope = solverScope;
     }
 
-    @Override
-    public InnerScoreDirectorFactory<Solution_> getScoreDirectorFactory() {
-        return solverScope.getScoreDirector().getScoreDirectorFactory();
-    }
-
     // ************************************************************************
     // Complex getters
     // ************************************************************************
-
-    @Override
-    public Solution_ getBestSolution() {
-        return solverScope.getBestSolution();
-    }
-
-    @Override
-    public Score getBestScore() {
-        return solverScope.getBestScore();
-    }
-
-    @Override
-    public String explainBestScore() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public long getTimeMillisSpent() {
-        throw new UnsupportedOperationException();
-    }
 
     @Override
     public boolean isSolving() {

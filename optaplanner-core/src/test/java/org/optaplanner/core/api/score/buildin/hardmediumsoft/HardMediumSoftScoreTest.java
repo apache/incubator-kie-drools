@@ -71,14 +71,6 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void toInitializedScore() {
-        assertThat(HardMediumSoftScore.of(-147, -258, -369).toInitializedScore())
-                .isEqualTo(HardMediumSoftScore.of(-147, -258, -369));
-        assertThat(HardMediumSoftScore.ofUninitialized(-7, -147, -258, -369).toInitializedScore())
-                .isEqualTo(HardMediumSoftScore.of(-147, -258, -369));
-    }
-
-    @Test
     public void withInitScore() {
         assertThat(HardMediumSoftScore.of(-147, -258, -369).withInitScore(-7))
                 .isEqualTo(HardMediumSoftScore.ofUninitialized(-7, -147, -258, -369));

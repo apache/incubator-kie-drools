@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,9 @@ import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
-import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
-import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
@@ -46,16 +44,12 @@ public class ScoreUtils {
             return SimpleScore.parseScore(scoreString);
         } else if (SimpleLongScore.class.equals(scoreClass)) {
             return SimpleLongScore.parseScore(scoreString);
-        } else if (SimpleDoubleScore.class.equals(scoreClass)) {
-            return SimpleDoubleScore.parseScore(scoreString);
         } else if (SimpleBigDecimalScore.class.equals(scoreClass)) {
             return SimpleBigDecimalScore.parseScore(scoreString);
         } else if (HardSoftScore.class.equals(scoreClass)) {
             return HardSoftScore.parseScore(scoreString);
         } else if (HardSoftLongScore.class.equals(scoreClass)) {
             return HardSoftLongScore.parseScore(scoreString);
-        } else if (HardSoftDoubleScore.class.equals(scoreClass)) {
-            return HardSoftDoubleScore.parseScore(scoreString);
         } else if (HardSoftBigDecimalScore.class.equals(scoreClass)) {
             return HardSoftBigDecimalScore.parseScore(scoreString);
         } else if (HardMediumSoftScore.class.equals(scoreClass)) {

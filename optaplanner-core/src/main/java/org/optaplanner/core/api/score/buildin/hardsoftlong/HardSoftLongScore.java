@@ -19,7 +19,6 @@ package org.optaplanner.core.api.score.buildin.hardsoftlong;
 import java.util.Objects;
 
 import org.optaplanner.core.api.score.AbstractScore;
-import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 
 /**
@@ -31,8 +30,7 @@ import org.optaplanner.core.api.score.Score;
  *
  * @see Score
  */
-public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
-        implements FeasibilityScore<HardSoftLongScore> {
+public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore> {
 
     public static final HardSoftLongScore ZERO = new HardSoftLongScore(0, 0L, 0L);
     public static final HardSoftLongScore ONE_HARD = new HardSoftLongScore(0, 1L, 0L);
@@ -52,23 +50,7 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
         return new HardSoftLongScore(initScore, hardScore, softScore);
     }
 
-    /**
-     * @deprecated in favor of {@link #ofUninitialized(int, long, long)}
-     */
-    @Deprecated
-    public static HardSoftLongScore valueOfUninitialized(int initScore, long hardScore, long softScore) {
-        return new HardSoftLongScore(initScore, hardScore, softScore);
-    }
-
     public static HardSoftLongScore of(long hardScore, long softScore) {
-        return new HardSoftLongScore(0, hardScore, softScore);
-    }
-
-    /**
-     * @deprecated in favor of {@link #of(long, long)}
-     */
-    @Deprecated
-    public static HardSoftLongScore valueOf(long hardScore, long softScore) {
         return new HardSoftLongScore(0, hardScore, softScore);
     }
 
@@ -231,11 +213,6 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
     @Override
     public String toString() {
         return getInitPrefix() + hardScore + HARD_LABEL + "/" + softScore + SOFT_LABEL;
-    }
-
-    @Override
-    public boolean isCompatibleArithmeticArgument(Score otherScore) {
-        return otherScore instanceof HardSoftLongScore;
     }
 
 }

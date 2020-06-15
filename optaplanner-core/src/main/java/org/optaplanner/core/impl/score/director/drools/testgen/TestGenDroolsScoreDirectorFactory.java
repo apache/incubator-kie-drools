@@ -19,7 +19,6 @@ import java.io.File;
 import java.util.List;
 
 import org.kie.api.KieBase;
-import org.kie.api.runtime.KieContainer;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
@@ -40,13 +39,6 @@ public class TestGenDroolsScoreDirectorFactory<Solution_> extends DroolsScoreDir
         super(solutionDescriptor, kieBase);
         this.scoreDrlList = scoreDrlList;
         this.scoreDrlFileList = scoreDrlFileList;
-    }
-
-    public TestGenDroolsScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
-            KieContainer kieContainer) {
-        super(solutionDescriptor, kieContainer);
-        this.scoreDrlList = null;
-        this.scoreDrlFileList = null;
     }
 
     @Override

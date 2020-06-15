@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,16 +25,14 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
 public abstract class AbstractOriginalChangeIterator<S extends Move> extends UpcomingSelectionIterator<S> {
 
-    private final EntitySelector entitySelector;
     private final ValueSelector valueSelector;
 
-    private Iterator<Object> entityIterator;
+    private final Iterator<Object> entityIterator;
     private Iterator<Object> valueIterator;
 
     private Object upcomingEntity;
 
     public AbstractOriginalChangeIterator(EntitySelector entitySelector, ValueSelector valueSelector) {
-        this.entitySelector = entitySelector;
         this.valueSelector = valueSelector;
         entityIterator = entitySelector.iterator();
         // Don't do hasNext() in constructor (to avoid upcoming selections breaking mimic recording)

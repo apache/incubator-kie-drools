@@ -16,63 +16,14 @@
 
 package org.optaplanner.core.api.score.buildin.simplelong;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.BiConsumer;
-
-import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
-import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.api.score.holder.ScoreHolder;
 
 /**
  * @see SimpleLongScore
  */
-public class SimpleLongScoreHolder extends AbstractScoreHolder<SimpleLongScore> {
-
-    protected final Map<Rule, BiConsumer<RuleContext, Long>> matchExecutorByNumberMap = new LinkedHashMap<>();
-
-    protected long score;
-
-    public SimpleLongScoreHolder(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled, SimpleLongScore.ZERO);
-    }
-
-    public long getScore() {
-        return score;
-    }
-
-    // ************************************************************************
-    // Setup methods
-    // ************************************************************************
-
-    @Override
-    public void configureConstraintWeight(Rule rule, SimpleLongScore constraintWeight) {
-        super.configureConstraintWeight(rule, constraintWeight);
-        BiConsumer<RuleContext, Long> matchExecutor;
-        if (constraintWeight.equals(SimpleLongScore.ZERO)) {
-            matchExecutor = (RuleContext kcontext, Long matchWeight) -> {
-            };
-        } else {
-            matchExecutor = (RuleContext kcontext, Long matchWeight) -> addConstraintMatch(kcontext,
-                    constraintWeight.getScore() * matchWeight);
-        }
-        matchExecutorByNumberMap.put(rule, matchExecutor);
-    }
-
-    // ************************************************************************
-    // Penalize and reward methods
-    // ************************************************************************
-
-    /**
-     * Penalize a match by the {@link ConstraintWeight} negated.
-     *
-     * @param kcontext never null, the magic variable in DRL
-     */
-    public void penalize(RuleContext kcontext) {
-        impactScore(kcontext, -1L);
-    }
+public interface SimpleLongScoreHolder extends ScoreHolder<SimpleLongScore> {
 
     /**
      * Penalize a match by the {@link ConstraintWeight} negated and multiplied with the weightMultiplier for all score levels.
@@ -80,18 +31,7 @@ public class SimpleLongScoreHolder extends AbstractScoreHolder<SimpleLongScore> 
      * @param kcontext never null, the magic variable in DRL
      * @param weightMultiplier at least 0
      */
-    public void penalize(RuleContext kcontext, long weightMultiplier) {
-        impactScore(kcontext, -weightMultiplier);
-    }
-
-    /**
-     * Reward a match by the {@link ConstraintWeight}.
-     *
-     * @param kcontext never null, the magic variable in DRL
-     */
-    public void reward(RuleContext kcontext) {
-        impactScore(kcontext, 1L);
-    }
+    void penalize(RuleContext kcontext, long weightMultiplier);
 
     /**
      * Reward a match by the {@link ConstraintWeight} multiplied with the weightMultiplier for all score levels.
@@ -99,45 +39,13 @@ public class SimpleLongScoreHolder extends AbstractScoreHolder<SimpleLongScore> 
      * @param kcontext never null, the magic variable in DRL
      * @param weightMultiplier at least 0
      */
-    public void reward(RuleContext kcontext, long weightMultiplier) {
-        impactScore(kcontext, weightMultiplier);
-    }
+    void reward(RuleContext kcontext, long weightMultiplier);
 
-    @Override
-    public void impactScore(RuleContext kcontext) {
-        impactScore(kcontext, 1L);
-    }
-
-    @Override
-    public void impactScore(RuleContext kcontext, long weightMultiplier) {
-        Rule rule = kcontext.getRule();
-        BiConsumer<RuleContext, Long> matchExecutor = matchExecutorByNumberMap.get(rule);
-        if (matchExecutor == null) {
-            throw new IllegalStateException("The DRL rule (" + rule.getPackageName() + ":" + rule.getName()
-                    + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
-                    + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
-        }
-        matchExecutor.accept(kcontext, weightMultiplier);
-    }
-
-    // ************************************************************************
-    // Other match methods
-    // ************************************************************************
+    void impactScore(RuleContext kcontext, long weightMultiplier);
 
     /**
      * @param kcontext never null, the magic variable in DRL
      * @param weight higher is better, negative for a penalty, positive for a reward
      */
-    public void addConstraintMatch(RuleContext kcontext, long weight) {
-        score += weight;
-        registerConstraintMatch(kcontext,
-                () -> score -= weight,
-                () -> SimpleLongScore.of(weight));
-    }
-
-    @Override
-    public SimpleLongScore extractScore(int initScore) {
-        return SimpleLongScore.ofUninitialized(initScore, score);
-    }
-
+    void addConstraintMatch(RuleContext kcontext, long weight);
 }

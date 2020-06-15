@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.api.score.buildin.simplelong;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 public class SimpleLongScoreTest extends AbstractScoreTest {
 
@@ -51,12 +51,6 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
     @Test
     public void parseScoreIllegalArgument() {
         assertThatIllegalArgumentException().isThrownBy(() -> SimpleLongScore.parseScore("-147hard/-258soft"));
-    }
-
-    @Test
-    public void toInitializedScore() {
-        assertThat(SimpleLongScore.of(-147L).toInitializedScore()).isEqualTo(SimpleLongScore.of(-147L));
-        assertThat(SimpleLongScore.ofUninitialized(-7, -147L).toInitializedScore()).isEqualTo(SimpleLongScore.of(-147L));
     }
 
     @Test

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- This file is copy pasted to another package in the KieContainer test to avoid false positive tests -->
-<solver>
-  <solutionClass>testdata.kjar.ClassloadedTestdataSolution</solutionClass>
-  <entityClass>testdata.kjar.ClassloadedTestdataEntity</entityClass>
-</solver>

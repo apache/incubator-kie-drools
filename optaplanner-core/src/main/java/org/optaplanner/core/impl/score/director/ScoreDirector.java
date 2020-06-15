@@ -215,14 +215,6 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
     @Override
     void close();
 
-    /**
-     * @deprecated in favor of {@link #close()}
-     */
-    @Deprecated
-    default void dispose() {
-        close();
-    }
-
     // TODO VariableDescriptor is not likely to go to public API: move these into InnerScoreDirector
 
     void beforeVariableChanged(VariableDescriptor variableDescriptor, Object entity);

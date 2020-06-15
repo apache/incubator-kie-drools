@@ -41,7 +41,6 @@ import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.AbstractConfig;
-import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -275,15 +274,14 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     // Builder methods
     // ************************************************************************
 
-    public <Solution_> InnerScoreDirectorFactory<Solution_> buildScoreDirectorFactory(
-            SolverConfigContext configContext, ClassLoader classLoader, EnvironmentMode environmentMode,
-            SolutionDescriptor<Solution_> solutionDescriptor) {
+    public <Solution_> InnerScoreDirectorFactory<Solution_> buildScoreDirectorFactory(ClassLoader classLoader,
+            EnvironmentMode environmentMode, SolutionDescriptor<Solution_> solutionDescriptor) {
         AbstractScoreDirectorFactory<Solution_> easyScoreDirectorFactory = buildEasyScoreDirectorFactory(solutionDescriptor);
         AbstractScoreDirectorFactory<Solution_> constraintStreamScoreDirectorFactory =
                 buildConstraintStreamScoreDirectorFactory(solutionDescriptor);
         AbstractScoreDirectorFactory<Solution_> incrementalScoreDirectorFactory = buildIncrementalScoreDirectorFactory(
                 solutionDescriptor);
-        AbstractScoreDirectorFactory<Solution_> droolsScoreDirectorFactory = buildDroolsScoreDirectorFactory(configContext,
+        AbstractScoreDirectorFactory<Solution_> droolsScoreDirectorFactory = buildDroolsScoreDirectorFactory(
                 classLoader, solutionDescriptor);
         if (Stream.of(easyScoreDirectorFactory, constraintStreamScoreDirectorFactory,
                 incrementalScoreDirectorFactory, droolsScoreDirectorFactory)
@@ -329,7 +327,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                         + environmentMode + ") of " + EnvironmentMode.FAST_ASSERT + " or lower.");
             }
             scoreDirectorFactory.setAssertionScoreDirectorFactory(
-                    assertionScoreDirectorFactory.buildScoreDirectorFactory(configContext, classLoader,
+                    assertionScoreDirectorFactory.buildScoreDirectorFactory(classLoader,
                             EnvironmentMode.NON_REPRODUCIBLE, solutionDescriptor));
         }
         scoreDirectorFactory.setInitializingScoreTrend(InitializingScoreTrend.parseTrend(
@@ -411,30 +409,11 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         }
     }
 
-    protected <Solution_> DroolsScoreDirectorFactory<Solution_> buildDroolsScoreDirectorFactory(
-            SolverConfigContext configContext, ClassLoader classLoader, SolutionDescriptor<Solution_> solutionDescriptor) {
+    protected <Solution_> DroolsScoreDirectorFactory<Solution_> buildDroolsScoreDirectorFactory(ClassLoader classLoader,
+            SolutionDescriptor<Solution_> solutionDescriptor) {
         boolean generateDroolsTestOnError =
                 Boolean.parseBoolean(System.getProperty(GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME, "false"));
-        KieContainer kieContainer = configContext.getKieContainer();
-        if (kieContainer != null) {
-            if (!ConfigUtils.isEmptyCollection(scoreDrlList) || !ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
-                throw new IllegalArgumentException("If kieContainer (" + kieContainer + ") is not null, "
-                        + "then the scoreDrlList (" + scoreDrlList + ") and the scoreDrlFileList (" + scoreDrlFileList
-                        + ") must be empty.\n"
-                        + "Maybe this is running in a kjar in kie-server, in which case the DRL's are located"
-                        + " by the META-INF/kmodule.xml, so only ksessionName is allowed.");
-            }
-            if (kieBaseConfigurationProperties != null) {
-                throw new IllegalArgumentException("If kieContainer (" + kieContainer + ") is not null, "
-                        + "then the kieBaseConfigurationProperties (" + kieBaseConfigurationProperties
-                        + ") must be null.");
-            }
-            if (generateDroolsTestOnError) {
-                return new TestGenDroolsScoreDirectorFactory<>(solutionDescriptor, kieContainer);
-            } else {
-                return new DroolsScoreDirectorFactory<>(solutionDescriptor, kieContainer);
-            }
-        } else if (!ConfigUtils.isEmptyCollection(scoreDrlList) || !ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
+        if (!ConfigUtils.isEmptyCollection(scoreDrlList) || !ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
             KieServices kieServices = KieServices.Factory.get();
             KieResources kieResources = kieServices.getResources();
             KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
@@ -485,7 +464,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
             } else if (results.hasMessages(Message.Level.WARNING)) {
                 logger.warn("There are warnings in a score DRL:\n{}", results);
             }
-            kieContainer = kieServices.newKieContainer(kieBuilder.getKieModule().getReleaseId());
+            KieContainer kieContainer = kieServices.newKieContainer(kieBuilder.getKieModule().getReleaseId());
 
             KieBaseConfiguration kieBaseConfiguration = kieServices.newKieBaseConfiguration();
             if (kieBaseConfigurationProperties != null) {

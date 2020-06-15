@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,9 @@ import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
-import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
-import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.persistence.jackson.api.score.buildin.hardsoft.HardSoftScoreJacksonJsonDeserializer;
 
@@ -62,16 +60,12 @@ public class PolymorphicScoreJacksonJsonDeserializer extends JsonDeserializer<Sc
             return SimpleScore.parseScore(scoreString);
         } else if (scoreClassSimpleName.equals(SimpleLongScore.class.getSimpleName())) {
             return SimpleLongScore.parseScore(scoreString);
-        } else if (scoreClassSimpleName.equals(SimpleDoubleScore.class.getSimpleName())) {
-            return SimpleDoubleScore.parseScore(scoreString);
         } else if (scoreClassSimpleName.equals(SimpleBigDecimalScore.class.getSimpleName())) {
             return SimpleBigDecimalScore.parseScore(scoreString);
         } else if (scoreClassSimpleName.equals(HardSoftScore.class.getSimpleName())) {
             return HardSoftScore.parseScore(scoreString);
         } else if (scoreClassSimpleName.equals(HardSoftLongScore.class.getSimpleName())) {
             return HardSoftLongScore.parseScore(scoreString);
-        } else if (scoreClassSimpleName.equals(HardSoftDoubleScore.class.getSimpleName())) {
-            return HardSoftDoubleScore.parseScore(scoreString);
         } else if (scoreClassSimpleName.equals(HardSoftBigDecimalScore.class.getSimpleName())) {
             return HardSoftBigDecimalScore.parseScore(scoreString);
         } else if (scoreClassSimpleName.equals(HardMediumSoftScore.class.getSimpleName())) {

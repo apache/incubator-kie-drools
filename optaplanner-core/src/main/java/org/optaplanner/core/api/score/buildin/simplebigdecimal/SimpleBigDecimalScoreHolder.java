@@ -17,63 +17,15 @@
 package org.optaplanner.core.api.score.buildin.simplebigdecimal;
 
 import java.math.BigDecimal;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.BiConsumer;
 
-import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
-import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.api.score.holder.ScoreHolder;
 
 /**
  * @see SimpleBigDecimalScore
  */
-public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder<SimpleBigDecimalScore> {
-
-    protected final Map<Rule, BiConsumer<RuleContext, BigDecimal>> matchExecutorByNumberMap = new LinkedHashMap<>();
-
-    protected BigDecimal score = BigDecimal.ZERO;
-
-    public SimpleBigDecimalScoreHolder(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled, SimpleBigDecimalScore.ZERO);
-    }
-
-    public BigDecimal getScore() {
-        return score;
-    }
-
-    // ************************************************************************
-    // Setup methods
-    // ************************************************************************
-
-    @Override
-    public void configureConstraintWeight(Rule rule, SimpleBigDecimalScore constraintWeight) {
-        super.configureConstraintWeight(rule, constraintWeight);
-        BiConsumer<RuleContext, BigDecimal> matchExecutor;
-        if (constraintWeight.equals(SimpleBigDecimalScore.ZERO)) {
-            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> {
-            };
-        } else {
-            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> addConstraintMatch(kcontext,
-                    constraintWeight.getScore().multiply(matchWeight));
-        }
-        matchExecutorByNumberMap.put(rule, matchExecutor);
-    }
-
-    // ************************************************************************
-    // Penalize and reward methods
-    // ************************************************************************
-
-    /**
-     * Penalize a match by the {@link ConstraintWeight} negated.
-     *
-     * @param kcontext never null, the magic variable in DRL
-     */
-    public void penalize(RuleContext kcontext) {
-        impactScore(kcontext, BigDecimal.ONE.negate());
-    }
+public interface SimpleBigDecimalScoreHolder extends ScoreHolder<SimpleBigDecimalScore> {
 
     /**
      * Penalize a match by the {@link ConstraintWeight} negated and multiplied with the weightMultiplier for all score levels.
@@ -81,18 +33,7 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder<SimpleBigDe
      * @param kcontext never null, the magic variable in DRL
      * @param weightMultiplier at least 0
      */
-    public void penalize(RuleContext kcontext, BigDecimal weightMultiplier) {
-        impactScore(kcontext, weightMultiplier.negate());
-    }
-
-    /**
-     * Reward a match by the {@link ConstraintWeight}.
-     *
-     * @param kcontext never null, the magic variable in DRL
-     */
-    public void reward(RuleContext kcontext) {
-        impactScore(kcontext, BigDecimal.ONE);
-    }
+    void penalize(RuleContext kcontext, BigDecimal weightMultiplier);
 
     /**
      * Reward a match by the {@link ConstraintWeight} multiplied with the weightMultiplier for all score levels.
@@ -100,45 +41,14 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder<SimpleBigDe
      * @param kcontext never null, the magic variable in DRL
      * @param weightMultiplier at least 0
      */
-    public void reward(RuleContext kcontext, BigDecimal weightMultiplier) {
-        impactScore(kcontext, weightMultiplier);
-    }
+    void reward(RuleContext kcontext, BigDecimal weightMultiplier);
 
-    @Override
-    public void impactScore(RuleContext kcontext) {
-        impactScore(kcontext, BigDecimal.ONE);
-    }
-
-    @Override
-    public void impactScore(RuleContext kcontext, BigDecimal weightMultiplier) {
-        Rule rule = kcontext.getRule();
-        BiConsumer<RuleContext, BigDecimal> matchExecutor = matchExecutorByNumberMap.get(rule);
-        if (matchExecutor == null) {
-            throw new IllegalStateException("The DRL rule (" + rule.getPackageName() + ":" + rule.getName()
-                    + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
-                    + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
-        }
-        matchExecutor.accept(kcontext, weightMultiplier);
-    }
-
-    // ************************************************************************
-    // Other match methods
-    // ************************************************************************
+    void impactScore(RuleContext kcontext, BigDecimal weightMultiplier);
 
     /**
      * @param kcontext never null, the magic variable in DRL
      * @param weight never null, higher is better, negative for a penalty, positive for a reward
      */
-    public void addConstraintMatch(RuleContext kcontext, BigDecimal weight) {
-        score = score.add(weight);
-        registerConstraintMatch(kcontext,
-                () -> score = score.subtract(weight),
-                () -> SimpleBigDecimalScore.of(weight));
-    }
-
-    @Override
-    public SimpleBigDecimalScore extractScore(int initScore) {
-        return SimpleBigDecimalScore.ofUninitialized(initScore, score);
-    }
+    void addConstraintMatch(RuleContext kcontext, BigDecimal weight);
 
 }

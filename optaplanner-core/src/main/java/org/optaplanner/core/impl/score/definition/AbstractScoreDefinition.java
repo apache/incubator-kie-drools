@@ -42,10 +42,6 @@ public abstract class AbstractScoreDefinition<S extends Score<S>> implements Sco
         return number == 0L ? 1L : number;
     }
 
-    protected static double sanitize(double number) {
-        return number == 0d ? 1d : number;
-    }
-
     protected static BigDecimal sanitize(BigDecimal number) {
         return number.signum() == 0 ? BigDecimal.ONE : number;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,16 +91,14 @@ public class InitializedValueSelector extends AbstractValueSelector {
 
     protected class JustInTimeInitializedValueIterator extends UpcomingSelectionIterator<Object> {
 
-        private final Object entity;
         private final Iterator<Object> childValueIterator;
         private final long bailOutSize;
 
         public JustInTimeInitializedValueIterator(Object entity, Iterator<Object> childValueIterator) {
-            this(entity, childValueIterator, determineBailOutSize(entity));
+            this(childValueIterator, determineBailOutSize(entity));
         }
 
-        public JustInTimeInitializedValueIterator(Object entity, Iterator<Object> childValueIterator, long bailOutSize) {
-            this.entity = entity;
+        public JustInTimeInitializedValueIterator(Iterator<Object> childValueIterator, long bailOutSize) {
             this.childValueIterator = childValueIterator;
             this.bailOutSize = bailOutSize;
         }

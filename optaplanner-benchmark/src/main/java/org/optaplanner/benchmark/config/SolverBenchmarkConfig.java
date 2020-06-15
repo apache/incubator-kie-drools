@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.config.AbstractConfig;
-import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -81,8 +80,8 @@ public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBench
     // Builder methods
     // ************************************************************************
 
-    public void buildSolverBenchmark(SolverConfigContext solverConfigContext, ClassLoader classLoader,
-            PlannerBenchmarkResult plannerBenchmark, Solution_[] extraProblems) {
+    public void buildSolverBenchmark(ClassLoader classLoader, PlannerBenchmarkResult plannerBenchmark,
+            Solution_[] extraProblems) {
         validate();
         SolverBenchmarkResult solverBenchmarkResult = new SolverBenchmarkResult(plannerBenchmark);
         solverBenchmarkResult.setName(name);
@@ -91,7 +90,7 @@ public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBench
             solverConfig.setClassLoader(classLoader);
         }
         solverBenchmarkResult.setSolverConfig(solverConfig);
-        SolutionDescriptor<Object> solutionDescriptor = solverConfig.buildSolutionDescriptor(solverConfigContext);
+        SolutionDescriptor<Object> solutionDescriptor = solverConfig.buildSolutionDescriptor();
         for (Solution_ extraProblem : extraProblems) {
             if (!solutionDescriptor.getSolutionClass().isInstance(extraProblem)) {
                 throw new IllegalArgumentException("The solverBenchmark name (" + name
@@ -106,7 +105,7 @@ public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBench
         ProblemBenchmarksConfig problemBenchmarksConfig_ = problemBenchmarksConfig == null ? new ProblemBenchmarksConfig()
                 : problemBenchmarksConfig;
         plannerBenchmark.getSolverBenchmarkResultList().add(solverBenchmarkResult);
-        problemBenchmarksConfig_.buildProblemBenchmarkList(solverConfigContext, solverBenchmarkResult, extraProblems);
+        problemBenchmarksConfig_.buildProblemBenchmarkList(solverBenchmarkResult, extraProblems);
     }
 
     protected void validate() {

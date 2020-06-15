@@ -87,15 +87,6 @@ public class BendableLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void toInitializedScoreHSS() {
-        assertThat(scoreDefinitionHSS.createScore(-5432109876L, -9876543210L, -3456789012L).toInitializedScore())
-                .isEqualTo(scoreDefinitionHSS.createScore(-5432109876L, -9876543210L, -3456789012L));
-        assertThat(
-                scoreDefinitionHSS.createScoreUninitialized(-7, -5432109876L, -9876543210L, -3456789012L).toInitializedScore())
-                        .isEqualTo(scoreDefinitionHSS.createScore(-5432109876L, -9876543210L, -3456789012L));
-    }
-
-    @Test
     public void withInitScore() {
         assertThat(scoreDefinitionHSS.createScore(-5432109876L, -9876543210L, -3456789012L).withInitScore(-7))
                 .isEqualTo(scoreDefinitionHSS.createScoreUninitialized(-7, -5432109876L, -9876543210L, -3456789012L));

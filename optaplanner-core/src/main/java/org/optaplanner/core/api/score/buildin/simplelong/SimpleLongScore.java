@@ -44,23 +44,7 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
         return new SimpleLongScore(initScore, score);
     }
 
-    /**
-     * @deprecated in favor of {@link #ofUninitialized(int, long)}
-     */
-    @Deprecated
-    public static SimpleLongScore valueOfUninitialized(int initScore, long score) {
-        return new SimpleLongScore(initScore, score);
-    }
-
     public static SimpleLongScore of(long score) {
-        return new SimpleLongScore(0, score);
-    }
-
-    /**
-     * @deprecated in favor of {@link #of(long)}
-     */
-    @Deprecated
-    public static SimpleLongScore valueOf(long score) {
         return new SimpleLongScore(0, score);
     }
 
@@ -185,17 +169,12 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
 
     @Override
     public String toShortString() {
-        return buildShortString((n) -> ((Long) n).longValue() != 0L, "");
+        return buildShortString((n) -> n.longValue() != 0L, "");
     }
 
     @Override
     public String toString() {
         return getInitPrefix() + score;
-    }
-
-    @Override
-    public boolean isCompatibleArithmeticArgument(Score otherScore) {
-        return otherScore instanceof SimpleLongScore;
     }
 
 }

@@ -57,14 +57,6 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void toInitializedScore() {
-        assertThat(SimpleBigDecimalScore.of(new BigDecimal("-147.2")).toInitializedScore())
-                .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("-147.2")));
-        assertThat(SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-147.2")).toInitializedScore())
-                .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("-147.2")));
-    }
-
-    @Test
     public void withInitScore() {
         assertThat(SimpleBigDecimalScore.of(new BigDecimal("-147.2")).withInitScore(-7))
                 .isEqualTo(SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-147.2")));

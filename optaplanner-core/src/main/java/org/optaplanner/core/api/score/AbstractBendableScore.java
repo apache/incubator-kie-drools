@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
  *
  * @see BendableScore
  */
-public abstract class AbstractBendableScore<S extends FeasibilityScore<S>> extends AbstractScore<S> {
+public abstract class AbstractBendableScore<S extends Score<S>> extends AbstractScore<S> {
 
     protected static final String HARD_LABEL = "hard";
     protected static final String SOFT_LABEL = "soft";

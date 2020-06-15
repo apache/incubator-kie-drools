@@ -26,7 +26,6 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -75,7 +74,6 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         return randomFactory;
     }
 
-    @Override
     public InnerScoreDirectorFactory<Solution_> getScoreDirectorFactory() {
         return solverScope.getScoreDirector().getScoreDirectorFactory();
     }
@@ -96,34 +94,6 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     // Complex getters
     // ************************************************************************
 
-    @Override
-    public Solution_ getBestSolution() {
-        return solverScope.getBestSolution();
-    }
-
-    @Override
-    public Score getBestScore() {
-        return solverScope.getBestScore();
-    }
-
-    @Override
-    public String explainBestScore() {
-        Solution_ bestSolution = solverScope.getBestSolution();
-        if (bestSolution == null) {
-            return null;
-        }
-        // Do not simply call getBestScore() because this method is thread-safe
-        // That would create a race condition with the getBestSolution() call earlier.
-        if (solverScope.getSolutionDescriptor().getScore(bestSolution) == null) {
-            return null;
-        }
-        try (ScoreDirector<Solution_> scoreDirector = getScoreDirectorFactory().buildScoreDirector()) {
-            scoreDirector.setWorkingSolution(bestSolution);
-            return scoreDirector.explainScore();
-        }
-    }
-
-    @Override
     public long getTimeMillisSpent() {
         Long startingSystemTimeMillis = solverScope.getStartingSystemTimeMillis();
         if (startingSystemTimeMillis == null) {

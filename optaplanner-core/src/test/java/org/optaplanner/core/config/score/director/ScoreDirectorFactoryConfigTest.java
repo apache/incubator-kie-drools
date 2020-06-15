@@ -22,7 +22,6 @@ import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirector;
@@ -41,7 +40,7 @@ public class ScoreDirectorFactoryConfigTest {
         customProperties.put("intProperty", "7");
         config.setEasyScoreCalculatorCustomProperties(customProperties);
         EasyScoreDirector<TestdataSolution> scoreDirector = (EasyScoreDirector<TestdataSolution>) config
-                .buildScoreDirectorFactory(new SolverConfigContext(), getClass().getClassLoader(),
+                .buildScoreDirectorFactory(getClass().getClassLoader(),
                         EnvironmentMode.REPRODUCIBLE, TestdataSolution.buildSolutionDescriptor())
                 .buildScoreDirector();
         TestCustomPropertiesEasyScoreCalculator scoreCalculator = (TestCustomPropertiesEasyScoreCalculator) scoreDirector
@@ -89,7 +88,7 @@ public class ScoreDirectorFactoryConfigTest {
         customProperties.put("intProperty", "7");
         config.setIncrementalScoreCalculatorCustomProperties(customProperties);
         IncrementalScoreDirector<TestdataSolution> scoreDirector = (IncrementalScoreDirector<TestdataSolution>) config
-                .buildScoreDirectorFactory(new SolverConfigContext(), getClass().getClassLoader(),
+                .buildScoreDirectorFactory(getClass().getClassLoader(),
                         EnvironmentMode.REPRODUCIBLE, TestdataSolution.buildSolutionDescriptor())
                 .buildScoreDirector();
         TestCustomPropertiesIncrementalScoreCalculator scoreCalculator =

@@ -28,57 +28,11 @@ import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInvers
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
-import org.optaplanner.core.impl.testdata.domain.pinned.chained.TestdataLegacyPinnedChainedEntity;
-import org.optaplanner.core.impl.testdata.domain.pinned.chained.TestdataLegacyPinnedChainedSolution;
 import org.optaplanner.core.impl.testdata.domain.pinned.chained.TestdataPinnedChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.pinned.chained.TestdataPinnedChainedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 public class MovableChainedTrailingValueFilterTest {
-
-    @Test
-    public void legacyPinnedChained() {
-        GenuineVariableDescriptor variableDescriptor =
-                TestdataLegacyPinnedChainedEntity.buildVariableDescriptorForChainedObject();
-        SolutionDescriptor solutionDescriptor = variableDescriptor.getEntityDescriptor().getSolutionDescriptor();
-        InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(solutionDescriptor);
-
-        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
-        TestdataLegacyPinnedChainedEntity a1 = new TestdataLegacyPinnedChainedEntity("a1", a0, true);
-        TestdataLegacyPinnedChainedEntity a2 = new TestdataLegacyPinnedChainedEntity("a2", a1, false);
-        TestdataLegacyPinnedChainedEntity a3 = new TestdataLegacyPinnedChainedEntity("a3", a2, false);
-
-        TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
-        TestdataLegacyPinnedChainedEntity b1 = new TestdataLegacyPinnedChainedEntity("b1", b0, false);
-        TestdataLegacyPinnedChainedEntity b2 = new TestdataLegacyPinnedChainedEntity("b2", b1, false);
-
-        TestdataChainedAnchor c0 = new TestdataChainedAnchor("c0");
-        TestdataLegacyPinnedChainedEntity c1 = new TestdataLegacyPinnedChainedEntity("c1", c0, true);
-        TestdataLegacyPinnedChainedEntity c2 = new TestdataLegacyPinnedChainedEntity("c2", c1, true);
-
-        TestdataLegacyPinnedChainedSolution solution = new TestdataLegacyPinnedChainedSolution("solution");
-        solution.setChainedAnchorList(Arrays.asList(a0, b0, c0));
-        solution.setChainedEntityList(Arrays.asList(a1, a2, a3, b1, b2, c1, c2));
-
-        scoreDirector.setWorkingSolution(solution);
-        SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
-                .demand(new SingletonInverseVariableDemand(variableDescriptor));
-
-        MovableChainedTrailingValueFilter filter = new MovableChainedTrailingValueFilter(variableDescriptor);
-
-        assertThat(filter.accept(scoreDirector, a0)).isFalse();
-        assertThat(filter.accept(scoreDirector, a1)).isTrue();
-        assertThat(filter.accept(scoreDirector, a2)).isTrue();
-        assertThat(filter.accept(scoreDirector, a3)).isTrue();
-
-        assertThat(filter.accept(scoreDirector, b0)).isTrue();
-        assertThat(filter.accept(scoreDirector, b1)).isTrue();
-        assertThat(filter.accept(scoreDirector, b2)).isTrue();
-
-        assertThat(filter.accept(scoreDirector, c0)).isFalse();
-        assertThat(filter.accept(scoreDirector, c1)).isFalse();
-        assertThat(filter.accept(scoreDirector, c2)).isTrue();
-    }
 
     @Test
     public void pinnedChained() {

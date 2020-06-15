@@ -16,9 +16,6 @@
 
 package org.optaplanner.benchmark.api;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,21 +26,19 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.kie.api.KieServices;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.runtime.KieContainer;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 import org.optaplanner.core.api.solver.DivertingClassLoader;
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.phase.custom.NoChangeCustomPhaseCommand;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-import org.optaplanner.core.impl.testdata.util.KieContainerHelper;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 public class PlannerBenchmarkFactoryTest {
 
@@ -114,21 +109,6 @@ public class PlannerBenchmarkFactoryTest {
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
         solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
         assertThatIllegalArgumentException().isThrownBy(() -> benchmarkFactory.buildPlannerBenchmark(solution, null));
-    }
-
-    @Test
-    @Deprecated
-    public void createFromSolverFactory() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataSolution.class, TestdataEntity.class);
-        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
-        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromSolverFactory(
-                solverFactory);
-        TestdataSolution solution = new TestdataSolution("s1");
-        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
-        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
-        PlannerBenchmark benchmark = benchmarkFactory.buildPlannerBenchmark(solution);
-        benchmark.benchmark();
     }
 
     // ************************************************************************
@@ -271,45 +251,6 @@ public class PlannerBenchmarkFactoryTest {
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertThat(plannerBenchmark).isNotNull();
         plannerBenchmark.benchmark();
-    }
-
-    // ************************************************************************
-    // Static creation methods: PlannerBenchmarkConfig
-    // ************************************************************************
-
-    // ************************************************************************
-    // Static creation methods: KieContainer
-    // ************************************************************************
-
-    @Test
-    public void createFromReleaseId() throws IOException {
-        ReleaseId releaseId = deployTestingKjar();
-        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromKieContainerXmlResource(
-                releaseId, "testdata/kjar/benchmarkConfig.solver");
-        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-        assertThat(plannerBenchmark).isNotNull();
-        plannerBenchmark.benchmark();
-    }
-
-    @Test
-    public void createFromKieContainer() throws IOException {
-        ReleaseId releaseId = deployTestingKjar();
-        KieContainer kieContainer = KieServices.Factory.get().newKieContainer(releaseId);
-        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromKieContainerXmlResource(
-                kieContainer, "testdata/kjar/benchmarkConfig.solver");
-        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-        assertThat(plannerBenchmark).isNotNull();
-        plannerBenchmark.benchmark();
-    }
-
-    private ReleaseId deployTestingKjar() throws IOException {
-        KieContainerHelper kieContainerHelper = new KieContainerHelper();
-
-        ReleaseId releaseId = kieContainerHelper.deployTestdataBenchmarkKjar(
-                "buildSolverWithReleaseId",
-                "org/optaplanner/benchmark/api/kieContainerNamedKsessionKmodule.xml",
-                "org/optaplanner/benchmark/api/testdataKieContainerBenchmarkConfig.xml");
-        return releaseId;
     }
 
 }

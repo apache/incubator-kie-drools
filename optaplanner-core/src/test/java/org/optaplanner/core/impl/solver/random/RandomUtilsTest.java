@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 public class RandomUtilsTest {
 
     @Test
-    public void testNextLong() throws Exception {
+    public void testNextLong() {
         Random random = new Random(37);
         RandomUtils.nextLong(random, 10L + (long) Integer.MAX_VALUE);
     }

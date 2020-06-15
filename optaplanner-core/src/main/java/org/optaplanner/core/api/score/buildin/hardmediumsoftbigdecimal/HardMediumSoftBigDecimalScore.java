@@ -22,7 +22,6 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.AbstractScore;
-import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 
 /**
@@ -35,8 +34,7 @@ import org.optaplanner.core.api.score.Score;
  *
  * @see Score
  */
-public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediumSoftBigDecimalScore>
-        implements FeasibilityScore<HardMediumSoftBigDecimalScore> {
+public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediumSoftBigDecimalScore> {
 
     public static final HardMediumSoftBigDecimalScore ZERO = new HardMediumSoftBigDecimalScore(0, BigDecimal.ZERO,
             BigDecimal.ZERO, BigDecimal.ZERO);
@@ -65,24 +63,7 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
         return new HardMediumSoftBigDecimalScore(initScore, hardScore, mediumScore, softScore);
     }
 
-    /**
-     * @deprecated in favor of {@link #ofUninitialized(int, BigDecimal, BigDecimal, BigDecimal)}
-     */
-    @Deprecated
-    public static HardMediumSoftBigDecimalScore valueOfUninitialized(int initScore, BigDecimal hardScore,
-            BigDecimal mediumScore, BigDecimal softScore) {
-        return new HardMediumSoftBigDecimalScore(initScore, hardScore, mediumScore, softScore);
-    }
-
     public static HardMediumSoftBigDecimalScore of(BigDecimal hardScore, BigDecimal mediumScore, BigDecimal softScore) {
-        return new HardMediumSoftBigDecimalScore(0, hardScore, mediumScore, softScore);
-    }
-
-    /**
-     * @deprecated in favor of {@link #of(BigDecimal, BigDecimal, BigDecimal)}
-     */
-    @Deprecated
-    public static HardMediumSoftBigDecimalScore valueOf(BigDecimal hardScore, BigDecimal mediumScore, BigDecimal softScore) {
         return new HardMediumSoftBigDecimalScore(0, hardScore, mediumScore, softScore);
     }
 
@@ -294,11 +275,6 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
     @Override
     public String toString() {
         return getInitPrefix() + hardScore + HARD_LABEL + "/" + mediumScore + MEDIUM_LABEL + "/" + softScore + SOFT_LABEL;
-    }
-
-    @Override
-    public boolean isCompatibleArithmeticArgument(Score otherScore) {
-        return otherScore instanceof HardMediumSoftBigDecimalScore;
     }
 
 }

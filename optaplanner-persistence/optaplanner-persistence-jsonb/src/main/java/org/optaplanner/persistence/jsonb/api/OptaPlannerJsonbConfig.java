@@ -29,11 +29,9 @@ import org.optaplanner.persistence.jsonb.api.score.buildin.hardmediumsoftbigdeci
 import org.optaplanner.persistence.jsonb.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreJsonbAdapter;
 import org.optaplanner.persistence.jsonb.api.score.buildin.hardsoft.HardSoftScoreJsonbAdapter;
 import org.optaplanner.persistence.jsonb.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreJsonbAdapter;
-import org.optaplanner.persistence.jsonb.api.score.buildin.hardsoftdouble.HardSoftDoubleScoreJsonbAdapter;
 import org.optaplanner.persistence.jsonb.api.score.buildin.hardsoftlong.HardSoftLongScoreJsonbAdapter;
 import org.optaplanner.persistence.jsonb.api.score.buildin.simple.SimpleScoreJsonbAdapter;
 import org.optaplanner.persistence.jsonb.api.score.buildin.simplebigdecimal.SimpleBigDecimalScoreJsonbAdapter;
-import org.optaplanner.persistence.jsonb.api.score.buildin.simpledouble.SimpleDoubleScoreJsonbAdapter;
 import org.optaplanner.persistence.jsonb.api.score.buildin.simplelong.SimpleLongScoreJsonbAdapter;
 
 /**
@@ -54,11 +52,9 @@ public class OptaPlannerJsonbConfig {
                         new HardMediumSoftLongScoreJsonbAdapter(),
                         new HardSoftScoreJsonbAdapter(),
                         new HardSoftBigDecimalScoreJsonbAdapter(),
-                        new HardSoftDoubleScoreJsonbAdapter(),
                         new HardSoftLongScoreJsonbAdapter(),
                         new SimpleScoreJsonbAdapter(),
                         new SimpleBigDecimalScoreJsonbAdapter(),
-                        new SimpleDoubleScoreJsonbAdapter(),
                         new SimpleLongScoreJsonbAdapter());
 
         return config;
@@ -78,11 +74,9 @@ public class OptaPlannerJsonbConfig {
                 new HardMediumSoftLongScoreJsonbAdapter(),
                 new HardSoftScoreJsonbAdapter(),
                 new HardSoftBigDecimalScoreJsonbAdapter(),
-                new HardSoftDoubleScoreJsonbAdapter(),
                 new HardSoftLongScoreJsonbAdapter(),
                 new SimpleScoreJsonbAdapter(),
                 new SimpleBigDecimalScoreJsonbAdapter(),
-                new SimpleDoubleScoreJsonbAdapter(),
                 new SimpleLongScoreJsonbAdapter() };
     }
 }

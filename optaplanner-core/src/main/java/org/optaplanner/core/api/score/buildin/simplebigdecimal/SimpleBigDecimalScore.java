@@ -46,23 +46,7 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
         return new SimpleBigDecimalScore(initScore, score);
     }
 
-    /**
-     * @deprecated in favor of {@link #ofUninitialized(int, BigDecimal)}
-     */
-    @Deprecated
-    public static SimpleBigDecimalScore valueOfUninitialized(int initScore, BigDecimal score) {
-        return new SimpleBigDecimalScore(initScore, score);
-    }
-
     public static SimpleBigDecimalScore of(BigDecimal score) {
-        return new SimpleBigDecimalScore(0, score);
-    }
-
-    /**
-     * @deprecated in favor of {@link #of(BigDecimal)}
-     */
-    @Deprecated
-    public static SimpleBigDecimalScore valueOf(BigDecimal score) {
         return new SimpleBigDecimalScore(0, score);
     }
 
@@ -207,11 +191,6 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
     @Override
     public String toString() {
         return getInitPrefix() + score;
-    }
-
-    @Override
-    public boolean isCompatibleArithmeticArgument(Score otherScore) {
-        return otherScore instanceof SimpleBigDecimalScore;
     }
 
 }

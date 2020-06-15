@@ -16,107 +16,29 @@
 
 package org.optaplanner.core.api.score.holder;
 
-import java.util.Collection;
-import java.util.Map;
-
-import org.kie.api.definition.rule.Rule;
-import org.kie.api.runtime.KieSession;
-import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
+import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.ScoreManager;
-import org.optaplanner.core.api.score.constraint.ConstraintMatch;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.api.score.constraint.Indictment;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 
 /**
- * This class is injected as a global by {@link DroolsScoreDirector} into the Drools DRL.
- * Other {@link ScoreDirector} implementations do not use this class.
- * <p>
- * An implementation must extend {@link AbstractScoreHolder} to ensure backwards compatibility in future versions.
+ * This is the base interface for all score holder implementations, used exclusively by Drools-based score calculators.
  *
  * @param <Score_> the {@link Score} type
- * @see AbstractScoreHolder
  */
 public interface ScoreHolder<Score_ extends Score<Score_>> {
 
     /**
-     * Extracts the {@link Score}, calculated by the {@link KieSession} for {@link DroolsScoreDirector}.
-     * <p>
-     * Should not be called directly, use {@link ScoreDirector#calculateScore()} instead.
+     * Penalize a match by the {@link ConstraintWeight} negated.
      *
-     * @param initScore {@code <= 0}, managed by OptaPlanner, needed as a parameter in the {@link Score}'s creation
-     *        method, see {@link Score#getInitScore()}
-     * @return never null, the {@link Score} of the working {@link PlanningSolution}
-     * @deprecated for removal from public API, see {@link ScoreManager}.
+     * @param kcontext never null, the magic variable in DRL
      */
-    @Deprecated(/* forRemoval = true */)
-    Score_ extractScore(int initScore);
+    void penalize(RuleContext kcontext);
 
     /**
-     * Sets up a {@link ConstraintWeight} from the {@link ConstraintConfiguration} during initialization.
+     * Reward a match by the {@link ConstraintWeight}.
      *
-     * @param rule never null
-     * @param constraintWeight never null, with {@link Score#getInitScore()} equal to 0.
-     * @deprecated for removal from public API
+     * @param kcontext never null, the magic variable in DRL
      */
-    @Deprecated(/* forRemoval = true */)
-    void configureConstraintWeight(Rule rule, Score_ constraintWeight);
-
-    /**
-     * Must be in sync with {@link ScoreDirector#isConstraintMatchEnabled()}
-     * for the {@link ScoreDirector} which contains this {@link ScoreHolder}.
-     * <p>
-     * Defaults to true.
-     *
-     * @return false if the {@link ConstraintMatch}s and {@link ConstraintMatchTotal}s do not need to be collected
-     *         which is a performance boost
-     * @see #getConstraintMatchTotals()
-     * @deprecated for removal from public API
-     */
-    @Deprecated(/* forRemoval = true */)
-    boolean isConstraintMatchEnabled();
-
-    /**
-     * Explains the {@link Score} of {@link #extractScore(int)}.
-     * <p>
-     * Should not be called directly, use {@link ScoreDirector#getConstraintMatchTotals()} instead.
-     *
-     * @return never null
-     * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} is false
-     * @see ScoreDirector#getConstraintMatchTotals()
-     * @deprecated for removal from public API, see {@link ScoreManager}
-     */
-    @Deprecated(/* forRemoval = true */)
-    Collection<ConstraintMatchTotal> getConstraintMatchTotals();
-
-    /**
-     * Explains the {@link Score} of {@link #extractScore(int)}.
-     * <p>
-     * Should not be called directly, use {@link ScoreDirector#getConstraintMatchTotalMap()} instead.
-     *
-     * @return never null
-     * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} is false
-     * @see ScoreDirector#getConstraintMatchTotalMap()
-     * @deprecated for removal from public API, see {@link ScoreManager}
-     */
-    @Deprecated(/* forRemoval = true */)
-    Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap();
-
-    /**
-     * Explains the impact of each planning entity or problem fact on the {@link Score}.
-     * <p>
-     * Should not be called directly, use {@link ScoreDirector#getIndictmentMap()} instead.
-     *
-     * @return never null
-     * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
-     * @see ScoreDirector#getIndictmentMap()
-     * @deprecated for removal from public API, see {@link ScoreManager}
-     */
-    @Deprecated(/* forRemoval = true */)
-    Map<Object, Indictment> getIndictmentMap();
+    void reward(RuleContext kcontext);
 
 }

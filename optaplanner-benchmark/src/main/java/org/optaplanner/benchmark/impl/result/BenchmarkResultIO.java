@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,6 @@ import java.util.List;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
-import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.solver.io.XStreamConfigReader;
 import org.optaplanner.persistence.xstream.api.score.AbstractScoreXStreamConverter;
@@ -70,8 +69,7 @@ public class BenchmarkResultIO {
         }
     }
 
-    public List<PlannerBenchmarkResult> readPlannerBenchmarkResultList(SolverConfigContext configContext,
-            File benchmarkDirectory) {
+    public List<PlannerBenchmarkResult> readPlannerBenchmarkResultList(File benchmarkDirectory) {
         if (!benchmarkDirectory.exists() || !benchmarkDirectory.isDirectory()) {
             throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory
                     + ") does not exist or is not a directory.");
@@ -86,16 +84,14 @@ public class BenchmarkResultIO {
         for (File benchmarkReportDirectory : benchmarkReportDirectories) {
             File plannerBenchmarkResultFile = new File(benchmarkReportDirectory, PLANNER_BENCHMARK_RESULT_FILENAME);
             if (plannerBenchmarkResultFile.exists()) {
-                PlannerBenchmarkResult plannerBenchmarkResult = readPlannerBenchmarkResult(configContext,
-                        plannerBenchmarkResultFile);
+                PlannerBenchmarkResult plannerBenchmarkResult = readPlannerBenchmarkResult(plannerBenchmarkResultFile);
                 plannerBenchmarkResultList.add(plannerBenchmarkResult);
             }
         }
         return plannerBenchmarkResultList;
     }
 
-    protected PlannerBenchmarkResult readPlannerBenchmarkResult(SolverConfigContext configContext,
-            File plannerBenchmarkResultFile) {
+    protected PlannerBenchmarkResult readPlannerBenchmarkResult(File plannerBenchmarkResultFile) {
         if (!plannerBenchmarkResultFile.exists()) {
             throw new IllegalArgumentException("The plannerBenchmarkResultFile (" + plannerBenchmarkResultFile
                     + ") does not exist.");
@@ -115,7 +111,7 @@ public class BenchmarkResultIO {
         }
         plannerBenchmarkResult.setBenchmarkReportDirectory(plannerBenchmarkResultFile.getParentFile());
         restoreOmittedBidirectionalFields(plannerBenchmarkResult);
-        restoreOtherOmittedFields(configContext, plannerBenchmarkResult);
+        restoreOtherOmittedFields(plannerBenchmarkResult);
         return plannerBenchmarkResult;
     }
 
@@ -154,11 +150,10 @@ public class BenchmarkResultIO {
         }
     }
 
-    private void restoreOtherOmittedFields(SolverConfigContext configContext, PlannerBenchmarkResult plannerBenchmarkResult) {
+    private void restoreOtherOmittedFields(PlannerBenchmarkResult plannerBenchmarkResult) {
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             SolverConfig solverConfig = solverBenchmarkResult.getSolverConfig();
-            solverBenchmarkResult.setScoreDefinition(
-                    solverConfig.buildSolutionDescriptor(configContext).getScoreDefinition());
+            solverBenchmarkResult.setScoreDefinition(solverConfig.buildSolutionDescriptor().getScoreDefinition());
         }
     }
 

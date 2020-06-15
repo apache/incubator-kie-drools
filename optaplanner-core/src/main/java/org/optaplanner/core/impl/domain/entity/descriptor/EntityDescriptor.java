@@ -159,16 +159,8 @@ public class EntityDescriptor<Solution_> {
     }
 
     private void processMovable(DescriptorPolicy descriptorPolicy, PlanningEntity entityAnnotation) {
-        Class<? extends SelectionFilter> movableEntitySelectionFilterClass = entityAnnotation.movableEntitySelectionFilter();
-        boolean hasSelectionFilter = movableEntitySelectionFilterClass != PlanningEntity.NullMovableEntitySelectionFilter.class;
         Class<? extends PinningFilter> pinningFilterClass = entityAnnotation.pinningFilter();
         boolean hasPinningFilter = pinningFilterClass != PlanningEntity.NullPinningFilter.class;
-        if (hasPinningFilter && hasSelectionFilter) {
-            throw new IllegalStateException("The entityClass (" + entityClass
-                    + ") uses both movableEntitySelectionFilter (" + movableEntitySelectionFilterClass +
-                    ") and pinningFilter (" + pinningFilterClass + ").\n" +
-                    "Maybe use only pinningFilterClass on your @" + PlanningEntity.class.getSimpleName() + " annotation.");
-        }
         if (hasPinningFilter) {
             declaredMovableEntitySelectionFilter = new SelectionFilter() {
 
@@ -180,9 +172,6 @@ public class EntityDescriptor<Solution_> {
                     return !pinningFilter.accept(scoreDirector.getWorkingSolution(), selection);
                 }
             };
-        } else if (hasSelectionFilter) {
-            declaredMovableEntitySelectionFilter = ConfigUtils.newInstance(this,
-                    "movableEntitySelectionFilterClass", movableEntitySelectionFilterClass);
         }
     }
 

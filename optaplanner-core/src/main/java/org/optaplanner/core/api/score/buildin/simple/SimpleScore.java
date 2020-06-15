@@ -44,23 +44,7 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
         return new SimpleScore(initScore, score);
     }
 
-    /**
-     * @deprecated in favor of {@link #ofUninitialized(int, int)}
-     */
-    @Deprecated
-    public static SimpleScore valueOfUninitialized(int initScore, int score) {
-        return new SimpleScore(initScore, score);
-    }
-
     public static SimpleScore of(int score) {
-        return new SimpleScore(0, score);
-    }
-
-    /**
-     * @deprecated in favor of {@link #of(int)}
-     */
-    @Deprecated
-    public static SimpleScore valueOf(int score) {
         return new SimpleScore(0, score);
     }
 
@@ -191,11 +175,6 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
     @Override
     public String toString() {
         return getInitPrefix() + score;
-    }
-
-    @Override
-    public boolean isCompatibleArithmeticArgument(Score otherScore) {
-        return otherScore instanceof SimpleScore;
     }
 
 }

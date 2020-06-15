@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,6 @@ import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.core.config.AbstractConfig;
-import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
@@ -126,16 +125,16 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
     // Builder methods
     // ************************************************************************
 
-    public <Solution_> void buildProblemBenchmarkList(SolverConfigContext solverConfigContext,
-            SolverBenchmarkResult solverBenchmarkResult, Solution_[] extraProblems) {
+    public <Solution_> void buildProblemBenchmarkList(SolverBenchmarkResult solverBenchmarkResult,
+            Solution_[] extraProblems) {
         PlannerBenchmarkResult plannerBenchmarkResult = solverBenchmarkResult.getPlannerBenchmarkResult();
         List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList = plannerBenchmarkResult
                 .getUnifiedProblemBenchmarkResultList();
         for (ProblemProvider<Solution_> problemProvider : buildProblemProviderList(
-                solverConfigContext, solverBenchmarkResult, extraProblems)) {
+                solverBenchmarkResult, extraProblems)) {
             // 2 SolverBenchmarks containing equal ProblemBenchmarks should contain the same instance
             ProblemBenchmarkResult<Solution_> newProblemBenchmarkResult = buildProblemBenchmark(
-                    solverConfigContext, plannerBenchmarkResult, problemProvider);
+                    plannerBenchmarkResult, problemProvider);
             ProblemBenchmarkResult problemBenchmarkResult;
             int index = unifiedProblemBenchmarkResultList.indexOf(newProblemBenchmarkResult);
             if (index < 0) {
@@ -144,13 +143,12 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
             } else {
                 problemBenchmarkResult = unifiedProblemBenchmarkResultList.get(index);
             }
-            buildSingleBenchmark(solverConfigContext, solverBenchmarkResult, problemBenchmarkResult);
+            buildSingleBenchmark(solverBenchmarkResult, problemBenchmarkResult);
         }
     }
 
     private <Solution_> List<ProblemProvider<Solution_>> buildProblemProviderList(
-            SolverConfigContext solverConfigContext, SolverBenchmarkResult solverBenchmarkResult,
-            Solution_[] extraProblems) {
+            SolverBenchmarkResult solverBenchmarkResult, Solution_[] extraProblems) {
         if (ConfigUtils.isEmptyCollection(inputSolutionFileList) && extraProblems.length == 0) {
             throw new IllegalArgumentException(
                     "The solverBenchmarkResult (" + solverBenchmarkResult.getName() + ") has no problems.\n"
@@ -161,7 +159,7 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
         List<ProblemProvider<Solution_>> problemProviderList = new ArrayList<>(
                 extraProblems.length + (inputSolutionFileList == null ? 0 : inputSolutionFileList.size()));
         SolutionDescriptor<Solution_> solutionDescriptor = solverBenchmarkResult.getSolverConfig()
-                .buildSolutionDescriptor(solverConfigContext);
+                .buildSolutionDescriptor();
         int extraProblemIndex = 0;
         for (Solution_ extraProblem : extraProblems) {
             if (extraProblem == null) {
@@ -208,9 +206,8 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
         }
     }
 
-    private <Solution_> ProblemBenchmarkResult<Solution_> buildProblemBenchmark(SolverConfigContext solverConfigContext,
-            PlannerBenchmarkResult plannerBenchmarkResult,
-            ProblemProvider<Solution_> problemProvider) {
+    private <Solution_> ProblemBenchmarkResult<Solution_> buildProblemBenchmark(
+            PlannerBenchmarkResult plannerBenchmarkResult, ProblemProvider<Solution_> problemProvider) {
         ProblemBenchmarkResult<Solution_> problemBenchmarkResult = new ProblemBenchmarkResult<>(plannerBenchmarkResult);
         problemBenchmarkResult.setName(problemProvider.getProblemName());
         problemBenchmarkResult.setProblemProvider(problemProvider);
@@ -237,8 +234,8 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
         return problemBenchmarkResult;
     }
 
-    private void buildSingleBenchmark(SolverConfigContext solverConfigContext,
-            SolverBenchmarkResult solverBenchmarkResult, ProblemBenchmarkResult problemBenchmarkResult) {
+    private void buildSingleBenchmark(SolverBenchmarkResult solverBenchmarkResult,
+            ProblemBenchmarkResult problemBenchmarkResult) {
         SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
         buildSubSingleBenchmarks(singleBenchmarkResult, solverBenchmarkResult.getSubSingleCount());
         for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {

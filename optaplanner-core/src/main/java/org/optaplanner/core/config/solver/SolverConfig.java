@@ -37,7 +37,6 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.AbstractConfig;
-import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
@@ -493,18 +492,16 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * <p>
      * Will be removed in 8.0 (by putting it in an InnerSolverConfig).
      *
-     * @param configContext never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      * @return never null
      */
-    public <Solution_> Solver<Solution_> buildSolver(SolverConfigContext configContext) {
-        configContext.validate();
+    public <Solution_> Solver<Solution_> buildSolver() {
         EnvironmentMode environmentMode_ = determineEnvironmentMode();
         boolean daemon_ = defaultIfNull(daemon, false);
 
         RandomFactory randomFactory = buildRandomFactory(environmentMode_);
         Integer moveThreadCount_ = resolveMoveThreadCount();
-        InnerScoreDirectorFactory<Solution_> scoreDirectorFactory = buildScoreDirectorFactory(configContext, environmentMode_);
+        InnerScoreDirectorFactory<Solution_> scoreDirectorFactory = buildScoreDirectorFactory(environmentMode_);
         boolean constraintMatchEnabledPreference = environmentMode_.isAsserted();
         DefaultSolverScope<Solution_> solverScope = new DefaultSolverScope<>();
         solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(true, constraintMatchEnabledPreference));
@@ -586,19 +583,17 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * <p>
      * Will be removed in 8.0 (by putting it in an InnerSolverConfig).
      *
-     * @param configContext never null
-     * @param environmentMode never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+     * @param environmentMode never null
      * @return never null
      */
-    public <Solution_> InnerScoreDirectorFactory<Solution_> buildScoreDirectorFactory(SolverConfigContext configContext,
-            EnvironmentMode environmentMode) {
-        SolutionDescriptor<Solution_> solutionDescriptor = buildSolutionDescriptor(configContext);
+    public <Solution_> InnerScoreDirectorFactory<Solution_> buildScoreDirectorFactory(EnvironmentMode environmentMode) {
+        SolutionDescriptor<Solution_> solutionDescriptor = buildSolutionDescriptor();
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_ = scoreDirectorFactoryConfig == null
                 ? new ScoreDirectorFactoryConfig()
                 : scoreDirectorFactoryConfig;
         return scoreDirectorFactoryConfig_.buildScoreDirectorFactory(
-                configContext, classLoader, environmentMode, solutionDescriptor);
+                classLoader, environmentMode, solutionDescriptor);
     }
 
     // TODO https://issues.redhat.com/browse/PLANNER-1688
@@ -610,7 +605,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      * @return never null
      */
-    public <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(SolverConfigContext configContext) {
+    public <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor() {
         if (solutionClass == null) {
             throw new IllegalArgumentException("The solver configuration must have a solutionClass (" + solutionClass +
                     "). If you're using the Quarkus extension or Spring Boot starter, it should have been filled in " +
@@ -621,8 +616,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                     entityClassList + "). If you're using the Quarkus extension or Spring Boot starter, " +
                     "it should have been filled in already.");
         }
-        return SolutionDescriptor.buildSolutionDescriptor((Class<Solution_>) solutionClass, entityClassList,
-                null);
+        return SolutionDescriptor.buildSolutionDescriptor((Class<Solution_>) solutionClass, entityClassList);
     }
 
     protected <Solution_> List<Phase<Solution_>> buildPhaseList(HeuristicConfigPolicy configPolicy,

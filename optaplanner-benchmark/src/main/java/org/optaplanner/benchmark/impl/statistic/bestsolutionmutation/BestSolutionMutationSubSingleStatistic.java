@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,9 +47,8 @@ public class BestSolutionMutationSubSingleStatistic<Solution_>
     @Override
     public void open(Solver<Solution_> solver) {
         DefaultSolver<Solution_> defaultSolver = (DefaultSolver<Solution_>) solver;
-        InnerScoreDirectorFactory<Solution_> scoreDirectorFactory = (InnerScoreDirectorFactory<Solution_>) defaultSolver
-                .getScoreDirectorFactory();
-        SolutionDescriptor<Solution_> solutionDescriptor = scoreDirectorFactory.getSolutionDescriptor();
+        InnerScoreDirectorFactory<Solution_> innerScoreDirectorFactory = defaultSolver.getScoreDirectorFactory();
+        SolutionDescriptor<Solution_> solutionDescriptor = innerScoreDirectorFactory.getSolutionDescriptor();
         listener.setMutationCounter(new MutationCounter<>(solutionDescriptor));
         solver.addEventListener(listener);
     }

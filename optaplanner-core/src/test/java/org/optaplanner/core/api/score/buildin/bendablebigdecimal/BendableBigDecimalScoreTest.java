@@ -136,18 +136,6 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void toInitializedScoreHSS() {
-        assertThat(scoreDefinitionHSS.createScore(BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369))
-                .toInitializedScore())
-                        .isEqualTo(scoreDefinitionHSS.createScore(BigDecimal.valueOf(-147), BigDecimal.valueOf(-258),
-                                BigDecimal.valueOf(-369)));
-        assertThat(scoreDefinitionHSS.createScoreUninitialized(-7, BigDecimal.valueOf(-147), BigDecimal.valueOf(-258),
-                BigDecimal.valueOf(-369)).toInitializedScore())
-                        .isEqualTo(scoreDefinitionHSS.createScore(BigDecimal.valueOf(-147), BigDecimal.valueOf(-258),
-                                BigDecimal.valueOf(-369)));
-    }
-
-    @Test
     public void withInitScore() {
         assertThat(scoreDefinitionHSS.createScore(BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369))
                 .withInitScore(-7)).isEqualTo(

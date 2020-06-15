@@ -116,20 +116,6 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
         }
     }
 
-    protected static double parseLevelAsDouble(Class<? extends Score> scoreClass,
-            String scoreString, String levelString) {
-        if (levelString.equals("*")) {
-            return Double.MIN_VALUE;
-        }
-        try {
-            return Double.parseDouble(levelString);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("The scoreString (" + scoreString
-                    + ") for the scoreClass (" + scoreClass.getSimpleName() + ") has a levelString (" + levelString
-                    + ") which is not a valid double.", e);
-        }
-    }
-
     protected static BigDecimal parseLevelAsBigDecimal(Class<? extends Score> scoreClass,
             String scoreString, String levelString) {
         if (levelString.equals("*")) {
@@ -193,19 +179,6 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
     @Override
     public boolean isSolutionInitialized() {
         return initScore >= 0;
-    }
-
-    /**
-     * @deprecated We do not use it anymore.
-     */
-    @Deprecated(/* forRemoval = true */)
-    protected void assertNoInitScore() {
-        if (initScore != 0) {
-            throw new IllegalStateException("The score (" + this + ")'s initScore (" + initScore
-                    + ") should be 0.\n"
-                    + "Maybe the score calculator is calculating the initScore too,"
-                    + " although it's the score director's responsibility.");
-        }
     }
 
     protected String getInitPrefix() {

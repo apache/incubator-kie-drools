@@ -28,11 +28,11 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
-import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 
 /**
  * Drools implementation of {@link ScoreDirector}, which directs the Rule Engine to calculate the {@link Score}
@@ -47,7 +47,7 @@ public class DroolsScoreDirector<Solution_>
     public static final String GLOBAL_SCORE_HOLDER_KEY = "scoreHolder";
 
     protected KieSession kieSession;
-    protected ScoreHolder scoreHolder;
+    protected AbstractScoreHolder scoreHolder;
 
     public DroolsScoreDirector(DroolsScoreDirectorFactory<Solution_> scoreDirectorFactory,
             boolean lookUpEnabled, boolean constraintMatchEnabledPreference) {
@@ -82,10 +82,6 @@ public class DroolsScoreDirector<Solution_>
         }
     }
 
-    // TODO remove in 8.0
-    // The scoreHolder method is not actually deprecated for removal.
-    // It will only be moved to a different type at a time when we can make that change in public API.
-    @SuppressWarnings("deprecation")
     private void resetScoreHolder() {
         scoreHolder = getScoreDefinition().buildScoreHolder(constraintMatchEnabledPreference);
         scoreDirectorFactory.getRuleToConstraintWeightExtractorMap().forEach(
@@ -101,10 +97,6 @@ public class DroolsScoreDirector<Solution_>
         return getSolutionDescriptor().getAllFacts(workingSolution);
     }
 
-    // TODO remove in 8.0
-    // The scoreHolder method is not actually deprecated for removal.
-    // It will only be moved to a different type at a time when we can make that change in public API.
-    @SuppressWarnings("deprecation")
     @Override
     public Score calculateScore() {
         variableListenerSupport.assertNotificationQueuesAreEmpty();
@@ -114,19 +106,11 @@ public class DroolsScoreDirector<Solution_>
         return score;
     }
 
-    // TODO remove in 8.0
-    // The scoreHolder method is not actually deprecated for removal.
-    // It will only be moved to a different type at a time when we can make that change in public API.
-    @SuppressWarnings("deprecation")
     @Override
     public boolean isConstraintMatchEnabled() {
         return scoreHolder.isConstraintMatchEnabled();
     }
 
-    // TODO remove in 8.0
-    // The scoreHolder method is not actually deprecated for removal.
-    // It will only be moved to a different type at a time when we can make that change in public API.
-    @SuppressWarnings("deprecation")
     @Override
     public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
         if (workingSolution == null) {
@@ -138,10 +122,6 @@ public class DroolsScoreDirector<Solution_>
         return scoreHolder.getConstraintMatchTotals();
     }
 
-    // TODO remove in 8.0
-    // The scoreHolder method is not actually deprecated for removal.
-    // It will only be moved to a different type at a time when we can make that change in public API.
-    @SuppressWarnings("deprecation")
     @Override
     public Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap() {
         if (workingSolution == null) {
@@ -153,10 +133,6 @@ public class DroolsScoreDirector<Solution_>
         return scoreHolder.getConstraintMatchTotalMap();
     }
 
-    // TODO remove in 8.0
-    // The scoreHolder method is not actually deprecated for removal.
-    // It will only be moved to a different type at a time when we can make that change in public API.
-    @SuppressWarnings("deprecation")
     @Override
     public Map<Object, Indictment> getIndictmentMap() {
         if (workingSolution == null) {

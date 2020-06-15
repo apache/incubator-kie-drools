@@ -87,19 +87,6 @@ public class HardMediumSoftBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void toInitializedScore() {
-        assertThat(HardMediumSoftBigDecimalScore.of(new BigDecimal("-147.2"), new BigDecimal("-3.20"), new BigDecimal("-258.3"))
-                .toInitializedScore())
-                        .isEqualTo(HardMediumSoftBigDecimalScore.of(new BigDecimal("-147.2"), new BigDecimal("-3.20"),
-                                new BigDecimal("-258.3")));
-        assertThat(HardMediumSoftBigDecimalScore
-                .ofUninitialized(-7, new BigDecimal("-147.2"), new BigDecimal("-3.20"), new BigDecimal("-258.3"))
-                .toInitializedScore())
-                        .isEqualTo(HardMediumSoftBigDecimalScore.of(new BigDecimal("-147.2"), new BigDecimal("-3.20"),
-                                new BigDecimal("-258.3")));
-    }
-
-    @Test
     public void withInitScore() {
         assertThat(HardMediumSoftBigDecimalScore.of(new BigDecimal("-147.2"), new BigDecimal("-3.20"), new BigDecimal("-258.3"))
                 .withInitScore(-7)).isEqualTo(

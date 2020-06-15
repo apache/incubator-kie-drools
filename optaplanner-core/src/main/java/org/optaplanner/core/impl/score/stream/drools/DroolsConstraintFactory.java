@@ -27,12 +27,12 @@ import java.util.function.LongSupplier;
 
 import org.drools.model.Global;
 import org.drools.model.impl.ModelImpl;
-import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
+import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
@@ -64,15 +64,11 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
     // SessionFactory creation
     // ************************************************************************
 
-    // TODO remove in 8.0
-    // The AbstractScoreHolder and its methods are not actually deprecated for removal.
-    // They will only be moved to a different place at a time when we can make that change in public API.
-    @SuppressWarnings("deprecation")
     @Override
     public ConstraintSessionFactory<Solution_> buildSessionFactory(Constraint[] constraints) {
         ModelImpl model = new ModelImpl();
 
-        AbstractScoreHolder<?> scoreHolder = (AbstractScoreHolder<?>) solutionDescriptor.getScoreDefinition()
+        AbstractScoreHolder<?> scoreHolder = solutionDescriptor.getScoreDefinition()
                 .buildScoreHolder(false);
         Class<? extends AbstractScoreHolder<?>> scoreHolderClass = (Class<? extends AbstractScoreHolder<?>>) scoreHolder
                 .getClass();

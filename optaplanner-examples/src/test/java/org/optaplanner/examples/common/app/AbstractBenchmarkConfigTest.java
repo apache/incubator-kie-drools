@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
-import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 
 public abstract class AbstractBenchmarkConfigTest {
@@ -53,12 +52,11 @@ public abstract class AbstractBenchmarkConfigTest {
     }
 
     private static void buildEverySolver(PlannerBenchmark plannerBenchmark) {
-        SolverConfigContext configContext = new SolverConfigContext();
         PlannerBenchmarkResult plannerBenchmarkResult = ((DefaultPlannerBenchmark) plannerBenchmark)
                 .getPlannerBenchmarkResult();
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             SolverConfig solverConfig = solverBenchmarkResult.getSolverConfig();
-            solverConfig.buildSolver(configContext);
+            solverConfig.buildSolver();
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,6 @@ import java.util.concurrent.Callable;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
-import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.solver.DefaultSolver;
@@ -39,7 +37,6 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private final SubSingleBenchmarkResult subSingleBenchmarkResult;
-    private final SolverConfigContext solverConfigContext;
     private final boolean warmUp;
 
     private Throwable failureThrowable = null;
@@ -48,18 +45,8 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
      * @param subSingleBenchmarkResult never null
      */
     public SubSingleBenchmarkRunner(SubSingleBenchmarkResult subSingleBenchmarkResult, boolean warmUp) {
-        this(subSingleBenchmarkResult, warmUp, new SolverConfigContext());
-    }
-
-    /**
-     * @param subSingleBenchmarkResult never null
-     * @param solverConfigContext never null
-     */
-    public SubSingleBenchmarkRunner(SubSingleBenchmarkResult subSingleBenchmarkResult, boolean warmUp,
-            SolverConfigContext solverConfigContext) {
         this.subSingleBenchmarkResult = subSingleBenchmarkResult;
         this.warmUp = warmUp;
-        this.solverConfigContext = solverConfigContext;
     }
 
     public SubSingleBenchmarkResult getSubSingleBenchmarkResult() {
@@ -96,12 +83,11 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
                 .getSolverConfig();
         if (subSingleBenchmarkResult.getSingleBenchmarkResult().getSubSingleCount() > 1) {
             solverConfig = new SolverConfig(solverConfig);
-            solverConfig.offerRandomSeedFromSubSingleIndex((long) subSingleBenchmarkResult.getSubSingleBenchmarkIndex());
+            solverConfig.offerRandomSeedFromSubSingleIndex(subSingleBenchmarkResult.getSubSingleBenchmarkIndex());
         }
         // Defensive copy of solverConfig for every SingleBenchmarkResult to reset Random, tabu lists, ...
-        DefaultSolverFactory<Solution_> solverFactory = new DefaultSolverFactory<>(
-                new SolverConfig(solverConfig), solverConfigContext);
-        Solver<Solution_> solver = solverFactory.buildSolver();
+        DefaultSolverFactory<Solution_> solverFactory = new DefaultSolverFactory<>(new SolverConfig(solverConfig));
+        DefaultSolver<Solution_> solver = (DefaultSolver<Solution_>) solverFactory.buildSolver();
 
         for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap().values()) {
             subSingleStatistic.open(solver);
@@ -111,7 +97,7 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
         Solution_ solution = solver.solve(problem);
         long timeMillisSpent = solver.getTimeMillisSpent();
 
-        DefaultSolverScope<Solution_> solverScope = ((DefaultSolver<Solution_>) solver).getSolverScope();
+        DefaultSolverScope<Solution_> solverScope = solver.getSolverScope();
         SolutionDescriptor<Solution_> solutionDescriptor = solverScope.getSolutionDescriptor();
         problemBenchmarkResult.registerScale(solutionDescriptor.getEntityCount(solution),
                 solutionDescriptor.getGenuineVariableCount(solution),

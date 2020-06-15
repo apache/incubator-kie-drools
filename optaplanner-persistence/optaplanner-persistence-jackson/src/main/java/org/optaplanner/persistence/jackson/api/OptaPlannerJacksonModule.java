@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,9 @@ import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
-import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
-import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.persistence.jackson.api.score.PolymorphicScoreJacksonJsonDeserializer;
 import org.optaplanner.persistence.jackson.api.score.PolymorphicScoreJacksonJsonSerializer;
@@ -46,16 +44,12 @@ import org.optaplanner.persistence.jackson.api.score.buildin.hardsoft.HardSoftSc
 import org.optaplanner.persistence.jackson.api.score.buildin.hardsoft.HardSoftScoreJacksonJsonSerializer;
 import org.optaplanner.persistence.jackson.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreJacksonJsonDeserializer;
 import org.optaplanner.persistence.jackson.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreJacksonJsonSerializer;
-import org.optaplanner.persistence.jackson.api.score.buildin.hardsoftdouble.HardSoftDoubleScoreJacksonJsonDeserializer;
-import org.optaplanner.persistence.jackson.api.score.buildin.hardsoftdouble.HardSoftDoubleScoreJacksonJsonSerializer;
 import org.optaplanner.persistence.jackson.api.score.buildin.hardsoftlong.HardSoftLongScoreJacksonJsonDeserializer;
 import org.optaplanner.persistence.jackson.api.score.buildin.hardsoftlong.HardSoftLongScoreJacksonJsonSerializer;
 import org.optaplanner.persistence.jackson.api.score.buildin.simple.SimpleScoreJacksonJsonDeserializer;
 import org.optaplanner.persistence.jackson.api.score.buildin.simple.SimpleScoreJacksonJsonSerializer;
 import org.optaplanner.persistence.jackson.api.score.buildin.simplebigdecimal.SimpleBigDecimalScoreJacksonJsonDeserializer;
 import org.optaplanner.persistence.jackson.api.score.buildin.simplebigdecimal.SimpleBigDecimalScoreJacksonJsonSerializer;
-import org.optaplanner.persistence.jackson.api.score.buildin.simpledouble.SimpleDoubleScoreJacksonJsonDeserializer;
-import org.optaplanner.persistence.jackson.api.score.buildin.simpledouble.SimpleDoubleScoreJacksonJsonSerializer;
 import org.optaplanner.persistence.jackson.api.score.buildin.simplelong.SimpleLongScoreJacksonJsonDeserializer;
 import org.optaplanner.persistence.jackson.api.score.buildin.simplelong.SimpleLongScoreJacksonJsonSerializer;
 
@@ -83,16 +77,12 @@ public class OptaPlannerJacksonModule {
         module.addDeserializer(SimpleScore.class, new SimpleScoreJacksonJsonDeserializer());
         module.addSerializer(SimpleLongScore.class, new SimpleLongScoreJacksonJsonSerializer());
         module.addDeserializer(SimpleLongScore.class, new SimpleLongScoreJacksonJsonDeserializer());
-        module.addSerializer(SimpleDoubleScore.class, new SimpleDoubleScoreJacksonJsonSerializer());
-        module.addDeserializer(SimpleDoubleScore.class, new SimpleDoubleScoreJacksonJsonDeserializer());
         module.addSerializer(SimpleBigDecimalScore.class, new SimpleBigDecimalScoreJacksonJsonSerializer());
         module.addDeserializer(SimpleBigDecimalScore.class, new SimpleBigDecimalScoreJacksonJsonDeserializer());
         module.addSerializer(HardSoftScore.class, new HardSoftScoreJacksonJsonSerializer());
         module.addDeserializer(HardSoftScore.class, new HardSoftScoreJacksonJsonDeserializer());
         module.addSerializer(HardSoftLongScore.class, new HardSoftLongScoreJacksonJsonSerializer());
         module.addDeserializer(HardSoftLongScore.class, new HardSoftLongScoreJacksonJsonDeserializer());
-        module.addSerializer(HardSoftDoubleScore.class, new HardSoftDoubleScoreJacksonJsonSerializer());
-        module.addDeserializer(HardSoftDoubleScore.class, new HardSoftDoubleScoreJacksonJsonDeserializer());
         module.addSerializer(HardSoftBigDecimalScore.class, new HardSoftBigDecimalScoreJacksonJsonSerializer());
         module.addDeserializer(HardSoftBigDecimalScore.class, new HardSoftBigDecimalScoreJacksonJsonDeserializer());
         module.addSerializer(HardMediumSoftScore.class, new HardMediumSoftScoreJacksonJsonSerializer());

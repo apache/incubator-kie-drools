@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,9 @@ import org.optaplanner.persistence.xstream.api.score.buildin.hardmediumsoftbigde
 import org.optaplanner.persistence.xstream.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreXStreamConverter;
 import org.optaplanner.persistence.xstream.api.score.buildin.hardsoft.HardSoftScoreXStreamConverter;
 import org.optaplanner.persistence.xstream.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreXStreamConverter;
-import org.optaplanner.persistence.xstream.api.score.buildin.hardsoftdouble.HardSoftDoubleScoreXStreamConverter;
 import org.optaplanner.persistence.xstream.api.score.buildin.hardsoftlong.HardSoftLongScoreXStreamConverter;
 import org.optaplanner.persistence.xstream.api.score.buildin.simple.SimpleScoreXStreamConverter;
 import org.optaplanner.persistence.xstream.api.score.buildin.simplebigdecimal.SimpleBigDecimalScoreXStreamConverter;
-import org.optaplanner.persistence.xstream.api.score.buildin.simpledouble.SimpleDoubleScoreXStreamConverter;
 import org.optaplanner.persistence.xstream.api.score.buildin.simplelong.SimpleLongScoreXStreamConverter;
 
 import com.thoughtworks.xstream.XStream;
@@ -39,12 +37,10 @@ public abstract class AbstractScoreXStreamConverter implements Converter {
     public static void registerScoreConverters(XStream xStream) {
         xStream.registerConverter(new SimpleScoreXStreamConverter());
         xStream.registerConverter(new SimpleLongScoreXStreamConverter());
-        xStream.registerConverter(new SimpleDoubleScoreXStreamConverter());
         xStream.registerConverter(new SimpleBigDecimalScoreXStreamConverter());
 
         xStream.registerConverter(new HardSoftScoreXStreamConverter());
         xStream.registerConverter(new HardSoftLongScoreXStreamConverter());
-        xStream.registerConverter(new HardSoftDoubleScoreXStreamConverter());
         xStream.registerConverter(new HardSoftBigDecimalScoreXStreamConverter());
 
         xStream.registerConverter(new HardMediumSoftScoreXStreamConverter());

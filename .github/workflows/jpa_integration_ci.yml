@@ -6,9 +6,11 @@ on:
   push:
     branches:
       - master
+      - future-8.x
   pull_request:
     branches:
       - master
+      - future-8.x
 
 env:
   # To prevent build failures due to "Connection reset" during artifact download.

@@ -16,15 +16,15 @@
 
 package org.optaplanner.core.api.score.buildin.hardsoftbigdecimal;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-
 import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
 
@@ -74,15 +74,6 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
     @Test
     public void parseScoreIllegalArgument() {
         assertThatIllegalArgumentException().isThrownBy(() -> HardSoftBigDecimalScore.parseScore("-147.2"));
-    }
-
-    @Test
-    public void toInitializedScore() {
-        assertThat(HardSoftBigDecimalScore.of(new BigDecimal("-147.2"), new BigDecimal("-258.3")).toInitializedScore())
-                .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("-147.2"), new BigDecimal("-258.3")));
-        assertThat(HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-147.2"), new BigDecimal("-258.3"))
-                .toInitializedScore())
-                        .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("-147.2"), new BigDecimal("-258.3")));
     }
 
     @Test

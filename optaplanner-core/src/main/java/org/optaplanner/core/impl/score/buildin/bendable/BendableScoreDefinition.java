@@ -20,8 +20,6 @@ import java.util.Arrays;
 import java.util.stream.IntStream;
 
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
-import org.optaplanner.core.api.score.buildin.bendable.BendableScoreHolder;
-import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.definition.AbstractBendableScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
@@ -110,8 +108,8 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
     }
 
     @Override
-    public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
-        return new BendableScoreHolder(constraintMatchEnabled, hardLevelsSize, softLevelsSize);
+    public BendableScoreHolderImpl buildScoreHolder(boolean constraintMatchEnabled) {
+        return new BendableScoreHolderImpl(constraintMatchEnabled, hardLevelsSize, softLevelsSize);
     }
 
     @Override

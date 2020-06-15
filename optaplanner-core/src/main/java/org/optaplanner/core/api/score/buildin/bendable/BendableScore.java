@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import org.optaplanner.core.api.score.AbstractBendableScore;
-import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 
@@ -35,8 +34,7 @@ import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
  *
  * @see Score
  */
-public final class BendableScore extends AbstractBendableScore<BendableScore>
-        implements FeasibilityScore<BendableScore> {
+public final class BendableScore extends AbstractBendableScore<BendableScore> {
 
     /**
      * @param scoreString never null
@@ -69,14 +67,6 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
     }
 
     /**
-     * @deprecated in favor of {@link #ofUninitialized(int, int[], int[])}
-     */
-    @Deprecated
-    public static BendableScore valueOfUninitialized(int initScore, int[] hardScores, int[] softScores) {
-        return new BendableScore(initScore, hardScores, softScores);
-    }
-
-    /**
      * Creates a new {@link BendableScore}.
      *
      * @param hardScores never null, never change that array afterwards: it must be immutable
@@ -84,14 +74,6 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
      * @return never null
      */
     public static BendableScore of(int[] hardScores, int[] softScores) {
-        return new BendableScore(0, hardScores, softScores);
-    }
-
-    /**
-     * @deprecated in favor of {@link #of(int[], int[])}
-     */
-    @Deprecated
-    public static BendableScore valueOf(int[] hardScores, int[] softScores) {
         return new BendableScore(0, hardScores, softScores);
     }
 
@@ -448,16 +430,6 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
                     + ") is not compatible with the other score (" + other
                     + ") with softScoreSize (" + other.getSoftLevelsSize() + ").");
         }
-    }
-
-    @Override
-    public boolean isCompatibleArithmeticArgument(Score otherScore) {
-        if (!(otherScore instanceof BendableScore)) {
-            return false;
-        }
-        BendableScore otherBendableScore = (BendableScore) otherScore;
-        return hardScores.length == otherBendableScore.hardScores.length
-                && softScores.length == otherBendableScore.softScores.length;
     }
 
 }

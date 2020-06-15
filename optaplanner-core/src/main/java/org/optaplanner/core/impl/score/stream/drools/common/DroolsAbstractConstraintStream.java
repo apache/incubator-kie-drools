@@ -25,7 +25,7 @@ import java.util.function.Function;
 import org.drools.model.Global;
 import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;

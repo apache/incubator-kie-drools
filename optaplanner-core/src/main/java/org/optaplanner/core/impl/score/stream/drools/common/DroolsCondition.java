@@ -38,7 +38,7 @@ import org.drools.model.view.ViewItemBuilder;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;

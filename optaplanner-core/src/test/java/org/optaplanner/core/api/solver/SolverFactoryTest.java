@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.api.solver;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,13 +28,15 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 public class SolverFactoryTest {
 
@@ -144,24 +143,6 @@ public class SolverFactoryTest {
             Score score = scoreDirector.calculateScore();
             assertThat(score).isNotNull();
         }
-    }
-
-    @Test
-    @Deprecated
-    public void cloneSolverFactory() {
-        SolverFactory<TestdataSolution> solverFactoryTemplate = SolverFactory.createFromXmlResource(
-                "org/optaplanner/core/api/solver/testdataSolverConfig.xml");
-        solverFactoryTemplate.getSolverConfig().setTerminationConfig(new TerminationConfig());
-        SolverFactory<TestdataSolution> solverFactory1 = solverFactoryTemplate.cloneSolverFactory();
-        SolverFactory<TestdataSolution> solverFactory2 = solverFactoryTemplate.cloneSolverFactory();
-        assertThat(solverFactory2).isNotSameAs(solverFactory1);
-        solverFactory1.getSolverConfig().getTerminationConfig().setMinutesSpentLimit(1L);
-        solverFactory2.getSolverConfig().getTerminationConfig().setMinutesSpentLimit(2L);
-        assertThat(solverFactory1.getSolverConfig().getTerminationConfig().getMinutesSpentLimit()).isEqualTo((Long) 1L);
-        assertThat(solverFactory2.getSolverConfig().getTerminationConfig().getMinutesSpentLimit()).isEqualTo((Long) 2L);
-        Solver<TestdataSolution> solver1 = solverFactory1.buildSolver();
-        Solver<TestdataSolution> solver2 = solverFactory2.buildSolver();
-        assertThat(solver2).isNotSameAs(solver1);
     }
 
 }

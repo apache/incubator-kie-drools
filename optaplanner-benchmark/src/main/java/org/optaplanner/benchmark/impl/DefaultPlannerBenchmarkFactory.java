@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.optaplanner.benchmark.impl;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
-import org.optaplanner.core.config.SolverConfigContext;
 
 /**
  * @see PlannerBenchmarkFactory
@@ -27,19 +26,12 @@ import org.optaplanner.core.config.SolverConfigContext;
 public class DefaultPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
 
     protected final PlannerBenchmarkConfig plannerBenchmarkConfig;
-    protected final SolverConfigContext solverConfigContext;
 
     public DefaultPlannerBenchmarkFactory(PlannerBenchmarkConfig plannerBenchmarkConfig) {
-        this(plannerBenchmarkConfig, new SolverConfigContext());
-    }
-
-    public DefaultPlannerBenchmarkFactory(PlannerBenchmarkConfig plannerBenchmarkConfig,
-            SolverConfigContext solverConfigContext) {
         if (plannerBenchmarkConfig == null) {
             throw new IllegalStateException("The plannerBenchmarkConfig (" + plannerBenchmarkConfig + ") cannot be null.");
         }
         this.plannerBenchmarkConfig = plannerBenchmarkConfig;
-        this.solverConfigContext = solverConfigContext;
     }
 
     // ************************************************************************
@@ -48,23 +40,13 @@ public class DefaultPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
 
     @Override
     public PlannerBenchmark buildPlannerBenchmark() {
-        return plannerBenchmarkConfig.buildPlannerBenchmark(solverConfigContext);
+        return plannerBenchmarkConfig.buildPlannerBenchmark();
     }
 
     @Override
     @SafeVarargs
     public final <Solution_> PlannerBenchmark buildPlannerBenchmark(Solution_... problems) {
-        return plannerBenchmarkConfig.buildPlannerBenchmark(solverConfigContext, problems);
-    }
-
-    @Override
-    @Deprecated
-    public PlannerBenchmarkConfig getPlannerBenchmarkConfig() {
-        return plannerBenchmarkConfig;
-    }
-
-    public SolverConfigContext getSolverConfigContext() {
-        return solverConfigContext;
+        return plannerBenchmarkConfig.buildPlannerBenchmark(problems);
     }
 
 }

@@ -35,11 +35,11 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.event.rule.RuleEventManager;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListener;
+import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
@@ -75,7 +75,7 @@ public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstrain
     @Override
     public ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
         // Make sure the constraint justifications match what comes out of Bavet.
-        AbstractScoreHolder scoreHolder = (AbstractScoreHolder) getScoreDefinition().buildScoreHolder(constraintMatchEnabled);
+        AbstractScoreHolder scoreHolder = getScoreDefinition().buildScoreHolder(constraintMatchEnabled);
         scoreHolder.setJustificationListConverter(
                 (justificationList, rule) -> {
                     DroolsConstraint<Solution_> constraint = compiledRuleToConstraintMap.get(rule);

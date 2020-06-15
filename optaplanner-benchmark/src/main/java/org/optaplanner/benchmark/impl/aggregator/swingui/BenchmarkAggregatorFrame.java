@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,7 +74,6 @@ import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
-import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.swing.impl.SwingUncaughtExceptionHandler;
 import org.optaplanner.swing.impl.SwingUtils;
 import org.slf4j.Logger;
@@ -127,16 +126,6 @@ public class BenchmarkAggregatorFrame extends JFrame {
         BenchmarkAggregatorFrame benchmarkAggregatorFrame = new BenchmarkAggregatorFrame(benchmarkAggregator);
         benchmarkAggregatorFrame.init();
         benchmarkAggregatorFrame.setVisible(true);
-    }
-
-    /**
-     * @param benchmarkFactory never null
-     * @deprecated in favor of {@link #createAndDisplayFromXmlResource(String)}
-     *             or {@link #createAndDisplay(PlannerBenchmarkConfig)}.
-     */
-    @Deprecated
-    public static void createAndDisplay(PlannerBenchmarkFactory benchmarkFactory) {
-        createAndDisplay(benchmarkFactory.getPlannerBenchmarkConfig());
     }
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
@@ -269,8 +258,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
     }
 
     private void initPlannerBenchmarkResultList() {
-        SolverConfigContext configContext = new SolverConfigContext();
-        plannerBenchmarkResultList = benchmarkResultIO.readPlannerBenchmarkResultList(configContext,
+        plannerBenchmarkResultList = benchmarkResultIO.readPlannerBenchmarkResultList(
                 benchmarkAggregator.getBenchmarkDirectory());
         for (PlannerBenchmarkResult plannerBenchmarkResult : plannerBenchmarkResultList) {
             plannerBenchmarkResult.accumulateResults(

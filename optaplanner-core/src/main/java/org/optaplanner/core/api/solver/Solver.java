@@ -23,14 +23,7 @@ import java.util.concurrent.Future;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.ScoreManager;
-import org.optaplanner.core.api.score.constraint.ConstraintMatch;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.api.score.constraint.Indictment;
-import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -81,74 +74,6 @@ public interface Solver<Solution_> {
      * @see Future#cancel(boolean)
      */
     boolean terminateEarly();
-
-    /**
-     * The best solution is the {@link PlanningSolution best solution} found during solving:
-     * it might or might not be optimal, feasible or even initialized.
-     * <p>
-     * The {@link #solve} method also returns the best solution,
-     * but this method is useful in rare asynchronous situations (although
-     * {@link SolverEventListener#bestSolutionChanged(BestSolutionChangedEvent)} is often more appropriate).
-     * <p>
-     * This method is thread-safe.
-     *
-     * @return never null (unless {@link #solve(Object)} hasn't been called yet),
-     *         but it can return the uninitialized {@link PlanningSolution} with a {@link Score} null.
-     * @deprecated in favor of {@link #addEventListener(SolverEventListener)} or
-     *             {@link SolverJob#getFinalBestSolution()}.
-     */
-    @Deprecated(/* forRemoval = true */)
-    Solution_ getBestSolution();
-
-    /**
-     * Returns the {@link Score} of the {@link #getBestSolution()}.
-     * <p>
-     * This is useful for generic code, which doesn't know the type of the {@link PlanningSolution}
-     * to retrieve the {@link Score} from the {@link #getBestSolution()} easily.
-     * <p>
-     * This method is thread-safe.
-     *
-     * @return null if the {@link PlanningSolution} is still uninitialized
-     * @deprecated in favor of {@link ScoreManager#updateScore(Object)}
-     */
-    @Deprecated(/* forRemoval = true */)
-    Score getBestScore();
-
-    /**
-     * Returns a diagnostic text that explains the {@link #getBestSolution()} through the {@link ConstraintMatch} API
-     * to identify which constraints or planning entities cause that {@link #getBestScore()} quality.
-     * In case of an {@link Score#isFeasible() infeasible} solution,
-     * this can help diagnose the cause of that.
-     * <p>
-     * Do not parse this string.
-     * Instead, to provide this information in a UI or a service, use {@link SolverFactory#getScoreDirectorFactory()}
-     * to retrieve {@link ScoreDirector#getConstraintMatchTotalMap()} and {@link ScoreDirector#getIndictmentMap()}
-     * and convert those into a domain specific API.
-     * <p>
-     * This method is thread-safe.
-     *
-     * @return null if {@link #getBestScore()} returns null
-     * @see ScoreDirector#explainScore()
-     * @deprecated in favor of {@link ScoreManager#explainScore(Object)}
-     */
-    @Deprecated(/* forRemoval = true */)
-    String explainBestScore();
-
-    /**
-     * Returns the amount of milliseconds spent solving since the last start.
-     * If it hasn't started it yet, it returns 0.
-     * If it hasn't ended yet, it returns the time between the last start and now.
-     * If it has ended already, it returns the time between the last start and the ending.
-     * <p>
-     * A {@link #addProblemFactChange(ProblemFactChange)} triggers a restart which resets this time.
-     * <p>
-     * This method is thread-safe.
-     *
-     * @return the amount of milliseconds spent solving since the last (re)start, at least 0
-     * @deprecated in favor of {@link SolverJob#getSolvingDuration()}.
-     */
-    @Deprecated(/* forRemoval = true */)
-    long getTimeMillisSpent();
 
     /**
      * This method is thread-safe.
@@ -215,17 +140,5 @@ public interface Solver<Solution_> {
      * @param eventListener never null
      */
     void removeEventListener(SolverEventListener<Solution_> eventListener);
-
-    /**
-     * Useful to reuse the {@link Score} calculation (for example in a UI)
-     * and to explain the {@link Score} to the user
-     * with the {@link ConstraintMatchTotal} and {@link Indictment} API.
-     *
-     * @return never null
-     * @deprecated in favor of {@link SolverFactory#getScoreDirectorFactory()}
-     *             Will be removed in 8.0.
-     */
-    @Deprecated
-    ScoreDirectorFactory<Solution_> getScoreDirectorFactory();
 
 }
