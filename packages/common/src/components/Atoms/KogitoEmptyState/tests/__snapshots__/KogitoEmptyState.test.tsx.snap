@@ -1,30 +1,299 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Emptystate component tests snapshot testing 1`] = `
-<Bullseye>
-  <EmptyState
-    variant="full"
-  >
-    <EmptyStateIcon
-      color="var(--pf-global--warning-color--100)"
-      icon={[Function]}
-      size="sm"
-    />
-    <Title
-      headingLevel="h5"
-      size="lg"
+exports[`KogitoEmptyState component tests Info test 1`] = `
+<Component
+  body="This process has no related sub processes"
+  title="No child process instances"
+  type={3}
+>
+  <Bullseye>
+    <div
+      className="pf-l-bullseye"
     >
-      No child process instances
-    </Title>
-    <EmptyStateBody>
-      This process has no related sub processes
-    </EmptyStateBody>
-    <Component
-      onClick={[Function]}
-      variant="primary"
+      <EmptyState
+        variant="full"
+      >
+        <div
+          className="pf-c-empty-state"
+        >
+          <EmptyStateIcon
+            color="var(--pf-global--info-color--100)"
+            icon={[Function]}
+            size="sm"
+          >
+            <InfoCircleIcon
+              aria-hidden="true"
+              className="pf-c-empty-state__icon"
+              color="var(--pf-global--info-color--100)"
+              size="sm"
+            >
+              <MockedComponent />
+            </InfoCircleIcon>
+          </EmptyStateIcon>
+          <Title
+            headingLevel="h5"
+            size="lg"
+          >
+            <h5
+              className="pf-c-title pf-m-lg"
+            >
+              No child process instances
+            </h5>
+          </Title>
+          <EmptyStateBody>
+            <div
+              className="pf-c-empty-state__body"
+            >
+              This process has no related sub processes
+            </div>
+          </EmptyStateBody>
+        </div>
+      </EmptyState>
+    </div>
+  </Bullseye>
+</Component>
+`;
+
+exports[`KogitoEmptyState component tests Refresh test 1`] = `
+<Component
+  body="This process has no related sub processes"
+  onClick={[MockFunction]}
+  title="No child process instances"
+  type={1}
+>
+  <Bullseye>
+    <div
+      className="pf-l-bullseye"
     >
-      Refresh
-    </Component>
-  </EmptyState>
-</Bullseye>
+      <EmptyState
+        variant="full"
+      >
+        <div
+          className="pf-c-empty-state"
+        >
+          <EmptyStateIcon
+            color="var(--pf-global--warning-color--100)"
+            icon={[Function]}
+            size="sm"
+          >
+            <ExclamationTriangleIcon
+              aria-hidden="true"
+              className="pf-c-empty-state__icon"
+              color="var(--pf-global--warning-color--100)"
+              size="sm"
+            >
+              <MockedComponent />
+            </ExclamationTriangleIcon>
+          </EmptyStateIcon>
+          <Title
+            headingLevel="h5"
+            size="lg"
+          >
+            <h5
+              className="pf-c-title pf-m-lg"
+            >
+              No child process instances
+            </h5>
+          </Title>
+          <EmptyStateBody>
+            <div
+              className="pf-c-empty-state__body"
+            >
+              This process has no related sub processes
+            </div>
+          </EmptyStateBody>
+          <Component
+            onClick={[MockFunction]}
+            variant="primary"
+          >
+            <ComponentWithOuia
+              component={[Function]}
+              componentProps={
+                Object {
+                  "children": "Refresh",
+                  "onClick": [MockFunction],
+                  "variant": "primary",
+                }
+              }
+              consumerContext={null}
+            >
+              <Button
+                onClick={[MockFunction]}
+                ouiaContext={
+                  Object {
+                    "isOuia": false,
+                    "ouiaId": null,
+                  }
+                }
+                variant="primary"
+              >
+                <button
+                  aria-disabled={null}
+                  aria-label={null}
+                  className="pf-c-button pf-m-primary"
+                  disabled={false}
+                  onClick={[MockFunction]}
+                  tabIndex={null}
+                  type="button"
+                >
+                  Refresh
+                </button>
+              </Button>
+            </ComponentWithOuia>
+          </Component>
+        </div>
+      </EmptyState>
+    </div>
+  </Bullseye>
+</Component>
+`;
+
+exports[`KogitoEmptyState component tests Reset test 1`] = `
+<Component
+  body="This process has no related sub processes"
+  onClick={[MockFunction]}
+  title="No child process instances"
+  type={2}
+>
+  <Bullseye>
+    <div
+      className="pf-l-bullseye"
+    >
+      <EmptyState
+        variant="full"
+      >
+        <div
+          className="pf-c-empty-state"
+        >
+          <EmptyStateIcon
+            color="var(--pf-global--warning-color--100)"
+            icon={[Function]}
+            size="sm"
+          >
+            <ExclamationTriangleIcon
+              aria-hidden="true"
+              className="pf-c-empty-state__icon"
+              color="var(--pf-global--warning-color--100)"
+              size="sm"
+            >
+              <MockedComponent />
+            </ExclamationTriangleIcon>
+          </EmptyStateIcon>
+          <Title
+            headingLevel="h5"
+            size="lg"
+          >
+            <h5
+              className="pf-c-title pf-m-lg"
+            >
+              No child process instances
+            </h5>
+          </Title>
+          <EmptyStateBody>
+            <div
+              className="pf-c-empty-state__body"
+            >
+              This process has no related sub processes
+            </div>
+          </EmptyStateBody>
+          <Component
+            onClick={[MockFunction]}
+            variant="link"
+          >
+            <ComponentWithOuia
+              component={[Function]}
+              componentProps={
+                Object {
+                  "children": "Reset to default",
+                  "onClick": [MockFunction],
+                  "variant": "link",
+                }
+              }
+              consumerContext={null}
+            >
+              <Button
+                onClick={[MockFunction]}
+                ouiaContext={
+                  Object {
+                    "isOuia": false,
+                    "ouiaId": null,
+                  }
+                }
+                variant="link"
+              >
+                <button
+                  aria-disabled={null}
+                  aria-label={null}
+                  className="pf-c-button pf-m-link"
+                  disabled={false}
+                  onClick={[MockFunction]}
+                  tabIndex={null}
+                  type="button"
+                >
+                  <span
+                    className="pf-c-button__text"
+                  >
+                    Reset to default
+                  </span>
+                </button>
+              </Button>
+            </ComponentWithOuia>
+          </Component>
+        </div>
+      </EmptyState>
+    </div>
+  </Bullseye>
+</Component>
+`;
+
+exports[`KogitoEmptyState component tests Search test 1`] = `
+<Component
+  body="This process has no related sub processes"
+  title="No child process instances"
+  type={0}
+>
+  <Bullseye>
+    <div
+      className="pf-l-bullseye"
+    >
+      <EmptyState
+        variant="full"
+      >
+        <div
+          className="pf-c-empty-state"
+        >
+          <EmptyStateIcon
+            icon={[Function]}
+            size="sm"
+          >
+            <SearchIcon
+              aria-hidden="true"
+              className="pf-c-empty-state__icon"
+              size="sm"
+            >
+              <MockedComponent />
+            </SearchIcon>
+          </EmptyStateIcon>
+          <Title
+            headingLevel="h5"
+            size="lg"
+          >
+            <h5
+              className="pf-c-title pf-m-lg"
+            >
+              No child process instances
+            </h5>
+          </Title>
+          <EmptyStateBody>
+            <div
+              className="pf-c-empty-state__body"
+            >
+              This process has no related sub processes
+            </div>
+          </EmptyStateBody>
+        </div>
+      </EmptyState>
+    </div>
+  </Bullseye>
+</Component>
 `;

@@ -4,17 +4,18 @@ import {
   Card,
   Grid,
   GridItem,
-  PageSection,
   InjectedOuiaProps,
+  PageSection,
   withOuiaContext
 } from '@patternfly/react-core';
 import {
-  ServerErrors,
-  ouiaPageTypeAndObjectId,
   GraphQL,
-  KogitoEmptyState
+  KogitoEmptyState,
+  KogitoEmptyStateType,
+  ouiaPageTypeAndObjectId,
+  ServerErrors
 } from '@kogito-apps/common';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import PageTitle from '../../Molecules/PageTitle/PageTitle';
 import ProcessListToolbar from '../../Molecules/ProcessListToolbar/ProcessListToolbar';
@@ -81,7 +82,7 @@ const ProcessListPage: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
     return ouiaPageTypeAndObjectId(ouiaContext, 'process-instances');
   });
 
-  const onFilterClick = async (arr = checkedArray) => {
+  const onFilterClick = (arr = checkedArray) => {
     resetPagination();
     const searchWordsArray = [];
     const copyOfBusinessKeysArray = [...filters.businessKey];
@@ -210,6 +211,13 @@ const ProcessListPage: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
           </>
         );
     }
+  };
+
+  const resetClick = () => {
+    setSearchWord('');
+    setCheckedArray(['ACTIVE']);
+    setFilters({ ...filters, status: ['ACTIVE'] });
+    onFilterClick(['ACTIVE']);
   };
 
   const handleAbortAll = () => {
@@ -356,14 +364,10 @@ const ProcessListPage: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
                 />
               ) : (
                 <KogitoEmptyState
-                  iconType="warningTriangleIcon1"
+                  type={KogitoEmptyStateType.Reset}
                   title="No status is selected"
                   body="Try selecting at least one status to see results"
-                  filterClick={onFilterClick}
-                  setFilters={setFilters}
-                  setCheckedArray={setCheckedArray}
-                  setSearchWord={setSearchWord}
-                  filters={filters}
+                  onClick={resetClick}
                 />
               )}
               {(!loading || isLoadingMore) &&

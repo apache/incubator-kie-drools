@@ -1,63 +1,55 @@
 import React from 'react';
 import {
-  Title,
-  EmptyState,
-  EmptyStateIcon,
-  EmptyStateBody,
   Bullseye,
   Button,
-  EmptyStateVariant
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateVariant,
+  Title
 } from '@patternfly/react-core';
 import {
-  SearchIcon,
   ExclamationTriangleIcon,
-  InfoCircleIcon
+  InfoCircleIcon,
+  SearchIcon
 } from '@patternfly/react-icons';
 import '@patternfly/patternfly/patternfly-addons.css';
 
+export enum KogitoEmptyStateType {
+  Search,
+  Refresh,
+  Reset,
+  Info
+}
+
 interface IOwnProps {
-  iconType: string;
+  type: KogitoEmptyStateType;
   title: string;
   body: string;
-  filterClick?: any;
-  setFilters?: any;
-  setCheckedArray?: any;
-  refetch?: any;
-  setSearchWord?: any;
-  filters?: any;
+  onClick?: () => void;
 }
-const KogitoEmptyState: React.FC<IOwnProps> = ({
-  iconType,
+
+export const KogitoEmptyState: React.FC<IOwnProps> = ({
+  type,
   title,
   body,
-  filterClick,
-  setFilters,
-  setCheckedArray,
-  refetch,
-  setSearchWord,
-  filters
+  onClick
 }) => {
-  const resetClick = () => {
-    setSearchWord('');
-    filterClick(['ACTIVE']);
-    setCheckedArray(['ACTIVE']);
-    setFilters({ ...filters, status: ['ACTIVE'] });
-  };
   return (
     <Bullseye>
       <EmptyState variant={EmptyStateVariant.full}>
-        {iconType === 'searchIcon' && (
+        {type === KogitoEmptyStateType.Search && (
           <EmptyStateIcon icon={SearchIcon} size="sm" />
         )}
-        {(iconType === 'warningTriangleIcon' ||
-          iconType === 'warningTriangleIcon1') && (
+        {(type === KogitoEmptyStateType.Refresh ||
+          type === KogitoEmptyStateType.Reset) && (
           <EmptyStateIcon
             icon={ExclamationTriangleIcon}
             size="sm"
             color="var(--pf-global--warning-color--100)"
           />
         )}
-        {iconType === 'infoCircleIcon' && (
+        {type === KogitoEmptyStateType.Info && (
           <EmptyStateIcon
             icon={InfoCircleIcon}
             size="sm"
@@ -71,14 +63,14 @@ const KogitoEmptyState: React.FC<IOwnProps> = ({
 
         <EmptyStateBody>{body}</EmptyStateBody>
 
-        {iconType === 'warningTriangleIcon' && (
-          <Button variant="primary" onClick={() => refetch()}>
+        {type === KogitoEmptyStateType.Refresh && (
+          <Button variant="primary" onClick={onClick}>
             Refresh
           </Button>
         )}
 
-        {iconType === 'warningTriangleIcon1' && (
-          <Button variant="link" onClick={resetClick}>
+        {type === KogitoEmptyStateType.Reset && (
+          <Button variant="link" onClick={onClick}>
             Reset to default
           </Button>
         )}
@@ -86,5 +78,3 @@ const KogitoEmptyState: React.FC<IOwnProps> = ({
     </Bullseye>
   );
 };
-
-export default KogitoEmptyState;

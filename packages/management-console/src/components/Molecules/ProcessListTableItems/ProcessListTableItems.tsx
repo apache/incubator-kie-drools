@@ -1,6 +1,7 @@
 import Moment from 'react-moment';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
+  Bullseye,
   DataListAction,
   DataListCell,
   DataListCheck,
@@ -12,15 +13,15 @@ import {
   Dropdown,
   DropdownItem,
   DropdownPosition,
-  Bullseye,
   KebabToggle
 } from '@patternfly/react-core';
 import {
-  ServerErrors,
-  ProcessDescriptor,
   GraphQL,
   KogitoEmptyState,
-  KogitoSpinner
+  KogitoEmptyStateType,
+  KogitoSpinner,
+  ProcessDescriptor,
+  ServerErrors
 } from '@kogito-apps/common';
 import { Link } from 'react-router-dom';
 import { HistoryIcon } from '@patternfly/react-icons';
@@ -28,16 +29,17 @@ import ErrorPopover from '../../Atoms/ErrorPopover/ErrorPopover';
 import ProcessListModal from '../../Atoms/ProcessListModal/ProcessListModal';
 import DisablePopup from '../DisablePopup/DisablePopup';
 import {
-  stateIconCreator,
-  setTitle,
-  handleSkip,
-  handleRetry,
   handleAbort,
+  handleRetry,
+  handleSkip,
   isModalOpen,
-  modalToggle
+  modalToggle,
+  setTitle,
+  stateIconCreator
 } from '../../../utils/Utils';
 import EndpointLink from '../EndpointLink/EndpointLink';
 import ProcessInstance = GraphQL.ProcessInstance;
+
 interface IOwnProps {
   id: number;
   processInstanceData: ProcessInstance;
@@ -465,7 +467,7 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
                   return (
                     <KogitoEmptyState
                       key={idx}
-                      iconType="infoCircleIcon"
+                      type={KogitoEmptyStateType.Info}
                       title="No child process instances"
                       body="This process has no related sub processes"
                     />

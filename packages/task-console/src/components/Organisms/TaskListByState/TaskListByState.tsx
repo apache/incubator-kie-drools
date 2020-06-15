@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { DataList, Bullseye } from '@patternfly/react-core';
 import TaskListItem from '../../Molecules/TaskListItem/TaskListItem';
-import { KogitoEmptyState, KogitoSpinner } from '@kogito-apps/common';
+import { KogitoEmptyState, KogitoEmptyStateType, KogitoSpinner } from '@kogito-apps/common';
 import '@patternfly/patternfly/patternfly-addons.css';
 import { useGetUserTasksByStatesQuery } from '../../../graphql/types';
 
@@ -49,10 +49,10 @@ const TaskListByState: React.FC<IOwnProps> = ({ currentState }) => {
     return (
       <div className=".pf-u-my-xl">
         <KogitoEmptyState
-          iconType="warningTriangleIcon"
+          type={KogitoEmptyStateType.Refresh}
           title="Oops... error while loading"
           body="Try using the refresh action to reload user tasks"
-          refetch={refetch}
+          onClick={refetch}
         />
       </div>
     );

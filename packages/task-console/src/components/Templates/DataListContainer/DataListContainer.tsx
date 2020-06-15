@@ -16,7 +16,11 @@ import DataToolbarComponent from '../../Molecules/DataListToolbar/DataListToolba
 import './DataList.css';
 import TaskList from '../../Organisms/TaskList/TaskList';
 import { useGetUserTasksByStatesLazyQuery } from '../../../graphql/types';
-import { ouiaPageTypeAndObjectId, KogitoEmptyState } from '@kogito-apps/common';
+import {
+  ouiaPageTypeAndObjectId,
+  KogitoEmptyState,
+  KogitoEmptyStateType
+} from '@kogito-apps/common';
 
 const DataListContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
   const [initData, setInitData] = useState<any>([]);
@@ -31,7 +35,7 @@ const DataListContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
     { loading, data }
   ] = useGetUserTasksByStatesLazyQuery({ fetchPolicy: 'network-only' });
 
-  const onFilterClick = async (arr = checkedArray) => {
+  const onFilterClick = (arr = checkedArray) => {
     setIsLoading(true);
     setIsError(false);
     setIsStatusSelected(true);
@@ -46,6 +50,12 @@ const DataListContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
   useEffect(() => {
     return ouiaPageTypeAndObjectId(ouiaContext, 'user-tasks');
   });
+
+  const resetClick = () => {
+    setCheckedArray(['Ready']);
+    setFilters({ ...filters, status: ['Ready'] });
+    onFilterClick(['Ready']);
+  };
 
   return (
     <React.Fragment>
@@ -82,12 +92,10 @@ const DataListContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
                 />
               ) : (
                 <KogitoEmptyState
-                  iconType="warningTriangleIcon1"
+                  type={KogitoEmptyStateType.Reset}
                   title="No status is selected"
                   body="Try selecting at least one status to see results"
-                  filterClick={onFilterClick}
-                  setFilters={setFilters}
-                  setCheckedArray={setCheckedArray}
+                  onClick={resetClick}
                 />
               )}
             </Card>

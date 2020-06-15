@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { DataList, Bullseye } from '@patternfly/react-core';
-import { ServerErrors, GraphQL, KogitoEmptyState,KogitoSpinner } from '@kogito-apps/common';
+import { ServerErrors, GraphQL, KogitoEmptyState, KogitoEmptyStateType,KogitoSpinner } from '@kogito-apps/common';
 import '../../Templates/ProcessListPage/ProcessListPage.css';
 import ProcessListTableItems from '../../Molecules/ProcessListTableItems/ProcessListTableItems';
 import '@patternfly/patternfly/patternfly-addons.css';
@@ -118,7 +118,7 @@ const ProcessListTable: React.FC<IOwnProps> = ({
         !isLoading &&
         initData.ProcessInstances.length === 0 && (
           <KogitoEmptyState
-            iconType="searchIcon"
+            type={KogitoEmptyStateType.Search}
             title="No results found"
             body="Try using different filters"
           />
