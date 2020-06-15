@@ -11,7 +11,7 @@
 
   <artifactId>drools-core-dynamic</artifactId>
 
-  <name>Drools :: Core :: Dynamic</name>
+  <name>Kogito :: Drools :: Drools Core Dynamic</name>
 
   <properties>
     <java.module.name>org.kie.kogito.drools.core.dynamic</java.module.name>

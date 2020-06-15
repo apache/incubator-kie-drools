@@ -10,6 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>kogito-tracing-decision-common</artifactId>
+  <name>Kogito :: Add-Ons :: Tracing :: Common</name>
 
   <properties>
     <maven.compiler.release>11</maven.compiler.release>

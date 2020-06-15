@@ -13,7 +13,7 @@
   <artifactId>jbpm-flow-builder</artifactId>
   <packaging>jar</packaging>
 
-  <name>jBPM :: Flow Builder</name>
+  <name>Kogito :: jBPM :: Flow Builder</name>
   <description>jBPM Flow Builder</description>
 
   <properties>

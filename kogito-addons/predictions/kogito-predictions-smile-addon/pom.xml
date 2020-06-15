@@ -8,7 +8,7 @@
     <version>8.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>kogito-predictions-smile-addon</artifactId>
-  <name>Kogito Predictions SMILE addon</name>
+  <name>Kogito :: Add-Ons :: Predictions :: SMILE</name>
   <description>Kogito Prediction based on SMILE addon</description>
 
   <dependencies>

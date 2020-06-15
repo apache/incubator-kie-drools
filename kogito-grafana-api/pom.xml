@@ -9,6 +9,8 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>grafana-api</artifactId>
+  <name>Kogito :: Grafana API</name>
+
 
   <dependencyManagement>
     <dependencies>

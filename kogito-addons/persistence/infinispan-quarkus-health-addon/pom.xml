@@ -26,6 +26,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>infinispan-quarkus-health-addon</artifactId>
+  <name>Kogito :: Add-Ons :: Persistence :: Infinispan Health Check for Quarkus</name>
+
   <description>Infinispan Health Check for Quarkus</description>
 
   <dependencies>

@@ -11,7 +11,7 @@
   </parent>
 
   <artifactId>kogito-quarkus-parent</artifactId>
-  <name>Kogito - Quarkus Extension</name>
+  <name>Kogito :: Quarkus Extension</name>
 
   <packaging>pom</packaging>
 

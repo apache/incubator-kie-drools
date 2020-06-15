@@ -12,7 +12,7 @@
 
     <artifactId>drools-core-static</artifactId>
 
-    <name>Drools :: Core :: Static</name>
+    <name>Kogito :: Drools :: Drools Core Static</name>
     <properties>
       <java.module.name>org.kie.kogito.drools.core.static</java.module.name>
     </properties>

@@ -12,7 +12,7 @@
   <artifactId>jbpm</artifactId>
   <packaging>pom</packaging>
 
-  <name>jBPM :: Multiproject</name>
+  <name>Kogito :: jBPM</name>
   <description>jBPM: a Business Process Management</description>
   <url>http://www.jbpm.org</url>
 

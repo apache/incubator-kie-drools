@@ -10,7 +10,7 @@
 
   <artifactId>kogito-cloud-services</artifactId>
   <packaging>pom</packaging>
-  <name>Kogito Cloud Services</name>
+  <name>Kogito :: Cloud</name>
   <description>Kogito Cloud Services</description>
 
   <dependencyManagement>

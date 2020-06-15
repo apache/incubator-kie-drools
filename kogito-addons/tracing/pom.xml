@@ -11,6 +11,7 @@
 
   <artifactId>tracing</artifactId>
   <packaging>pom</packaging>
+  <name>Kogito :: Add-Ons :: Tracing</name>
 
   <modules>
     <module>tracing-decision-common</module>

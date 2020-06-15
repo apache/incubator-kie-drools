@@ -7,7 +7,8 @@
   </parent>
   <artifactId>persistence</artifactId>
   <packaging>pom</packaging>
-  <name>Kogito Persistence AddOns</name>
+  <name>Kogito :: Add-Ons :: Persistence</name>
+
   <description>Kogito Persistence Implementations</description>
   <modules>
     <module>infinispan-persistence-addon</module>

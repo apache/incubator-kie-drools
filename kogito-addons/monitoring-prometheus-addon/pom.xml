@@ -8,7 +8,8 @@
     <version>8.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>monitoring-prometheus-addon</artifactId>
-  <name>Prometheus Monitoring AddOn</name>
+  <name>Kogito :: Add-Ons :: Monitoring Prometheus</name>
+
   <description>Monitoring based on Prometheus</description>
 
   <dependencies>

@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>kogito-quarkus-integration-test-legacy</artifactId>
-    <name>Kogito - Quarkus - Integration Tests (Legacy API)</name>
+    <name>Kogito :: Quarkus Extension :: Integration Tests (Legacy API)</name>
 
      <dependencies>
         <dependency>

@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>kogito-quarkus-integration-test-hot-reload</artifactId>
-    <name>Kogito - Quarkus - Integration Tests (Hot Reload)</name>
+    <name>Kogito :: Quarkus Extension :: Integration Tests (Hot Reload)</name>
 
     <dependencies>
         <dependency>

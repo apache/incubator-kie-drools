@@ -11,7 +11,7 @@
 
   <artifactId>kogito-dmn</artifactId>
 
-  <name>Kogito :: Decision Model Notation</name>
+  <name>Kogito :: Drools :: Kogito Decision Model Notation</name>
   <description>Kogito wrapper for Kie Drools DMN open source engine</description>
 
   <dependencies>

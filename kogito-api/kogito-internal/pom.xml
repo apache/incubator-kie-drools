@@ -11,8 +11,7 @@
 
   <artifactId>kogito-internal</artifactId>
   <packaging>jar</packaging>
-
-  <name>Kogito :: Internal</name>
+  <name>Kogito :: API :: Internal</name>
   <description>The Kogito internal API which might NOT be backwards compatible between releases.</description>
 
   <properties>

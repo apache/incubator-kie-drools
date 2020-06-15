@@ -9,7 +9,7 @@
   </parent>
   <artifactId>addons</artifactId>
   <packaging>pom</packaging>
-  <name>Add-Ons to the runtimes</name>
+  <name>Kogito :: Add-Ons</name>
   <description>Various Add-Ons to the runtimes modules (administration, monitoring, etc)</description>
   <modules>
     <module>monitoring-prometheus-addon</module>

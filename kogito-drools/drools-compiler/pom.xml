@@ -13,7 +13,7 @@
   <artifactId>drools-compiler</artifactId>
   <packaging>jar</packaging>
 
-  <name>Drools :: Compiler</name>
+  <name>Kogito :: Drools :: Drools Compiler</name>
 
   <properties>
     <java.module.name>org.kie.kogito.drools.compiler</java.module.name>

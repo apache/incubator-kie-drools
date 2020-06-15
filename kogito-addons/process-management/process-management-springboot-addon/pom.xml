@@ -26,6 +26,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>process-management-springboot-addon</artifactId>
+  <name>Kogito :: Add-Ons :: Process Management :: SpringBoot Addon</name>
   <description>Management of process instances for Spring Boot</description>
 
   <dependencies>

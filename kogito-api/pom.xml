@@ -12,7 +12,7 @@
   <artifactId>kogito-api-parent</artifactId>
   <packaging>pom</packaging>
 
-  <name>Kogito :: API Parent</name>
+  <name>Kogito :: API</name>
   <description>The common API for Kogito</description>
 
   <properties>

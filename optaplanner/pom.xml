@@ -11,7 +11,7 @@
 
   <artifactId>kogito-optaplanner</artifactId>
 
-  <name>Kogito OptaPlanner integration (wrapper)</name>
+  <name>Kogito :: OptaPlanner integration (wrapper)</name>
   <description>
     Kogito integration with OptaPlanner, implemented as a wrapper.
   </description>

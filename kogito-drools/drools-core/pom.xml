@@ -13,7 +13,7 @@
   <artifactId>drools-core</artifactId>
   <packaging>jar</packaging>
 
-  <name>Drools :: Core</name>
+  <name>Kogito :: Drools :: Drools Core</name>
 
   <properties>
     <java.module.name>org.kie.kogito.drools.core</java.module.name>

@@ -7,7 +7,7 @@
   </parent>
   <artifactId>archetypes</artifactId>
   <packaging>pom</packaging>
-  <name>Kogito Maven Archetypes</name>
+  <name>Kogito :: Maven Archetypes</name>
   <description>Various Kogito Maven archetypes for project generation</description>
 
   <properties>

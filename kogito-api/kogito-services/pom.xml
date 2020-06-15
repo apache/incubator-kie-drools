@@ -12,7 +12,7 @@
   <artifactId>kogito-services</artifactId>
   <packaging>jar</packaging>
 
-  <name>Kogito :: Services</name>
+  <name>Kogito :: API :: Services</name>
   <description>The common Services for Kogito</description>
 
   <properties>

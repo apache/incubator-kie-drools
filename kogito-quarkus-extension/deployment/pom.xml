@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>kogito-quarkus-deployment</artifactId>
-    <name>Kogito - Quarkus - Deployment</name>
+    <name>Kogito :: Quarkus Extension :: Deployment</name>
 
     <dependencies>
         <!-- quarkus -->

@@ -13,7 +13,7 @@
   <artifactId>kogito-bom</artifactId>
   <packaging>pom</packaging>
 
-  <name>Kogito BOM</name>
+  <name>Kogito :: BOM</name>
 
   <dependencyManagement>
     <dependencies>

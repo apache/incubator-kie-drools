@@ -11,7 +11,7 @@
 
     <artifactId>kogito-scenario-simulation</artifactId>
 
-    <name>Kogito :: Scenario Simulation Runner</name>
+    <name>Kogito :: Drools :: Kogito Scenario Simulation Runner</name>
     <description>Kogito wrapper Scenario Simulation Runner</description>
 
     <dependencies>

@@ -26,6 +26,8 @@
   </parent>
 
   <artifactId>kogito-ruleunits</artifactId>
+  <name>Kogito :: Drools :: Kogito RuleUnits</name>
+
   <packaging>jar</packaging>
 
   <!-- Logging -->

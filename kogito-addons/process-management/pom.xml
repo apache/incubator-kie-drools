@@ -26,6 +26,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>process-management</artifactId>
+  <name>Kogito :: Add-Ons :: Process Management</name>
   <packaging>pom</packaging>
   <modules>
     <module>process-management-common</module>

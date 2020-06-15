@@ -28,6 +28,7 @@
   <artifactId>kogito-drools</artifactId>
   <packaging>jar</packaging>
 
+  <name>Kogito :: Drools :: Kogito Drools</name>
 
   <!-- Logging -->
   <dependencies>

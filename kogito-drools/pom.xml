@@ -12,7 +12,7 @@
   <artifactId>drools</artifactId>
   <packaging>pom</packaging>
 
-  <name>Drools Multiproject</name>
+  <name>Kogito :: Drools</name>
   <description>
     Drools Expert is the rule engine and Drools Fusion does complex event processing (CEP).
   </description>

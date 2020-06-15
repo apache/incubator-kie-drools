@@ -12,7 +12,7 @@
 
   <artifactId>kogito-quarkus-archetype</artifactId>
   <packaging>maven-archetype</packaging>
-  <name>Quarkus Kogito Archetype</name>
+  <name>Kogito :: Maven Archetypes :: Quarkus</name>
   <description>Kogito based on Quarkus runtime Archetype</description>
 
   <build>

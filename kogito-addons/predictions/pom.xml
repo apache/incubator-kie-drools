@@ -7,7 +7,7 @@
   </parent>
   <artifactId>predictions</artifactId>
   <packaging>pom</packaging>
-  <name>Kogito Predictions</name>
+  <name>Kogito :: Add-Ons :: Predictions</name>
   <description>Kogito Predictions</description>
   <modules>
     <module>kogito-predictions-api</module>

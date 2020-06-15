@@ -12,7 +12,7 @@
 
     <artifactId>drools-core-reflective</artifactId>
 
-    <name>Drools :: Core :: Reflective</name>
+    <name>Kogito :: Drools :: Drools Core Reflective</name>
     <properties>
       <java.module.name>org.kie.kogito.drools.core.reflective</java.module.name>
     </properties>

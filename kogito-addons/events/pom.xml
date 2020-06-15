@@ -7,7 +7,8 @@
   </parent>
   <artifactId>events</artifactId>
   <packaging>pom</packaging>
-  <name>Kogito Events</name>
+  <name>Kogito :: Add-Ons :: Events</name>
+
   <description>Kogito Events</description>
   <modules>
     <module>kogito-events-reactive-messaging-addon</module>

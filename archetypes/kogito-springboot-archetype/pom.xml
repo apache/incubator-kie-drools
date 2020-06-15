@@ -9,7 +9,7 @@
   </parent>
   <artifactId>kogito-springboot-archetype</artifactId>
   <packaging>maven-archetype</packaging>
-  <name>SpringBoot Kogito Archetype</name>
+  <name>Kogito :: Maven Archetypes :: SpringBoot</name>
   <description>Kogito based on SpringBoot runtime Archetype</description>
 
   <build>

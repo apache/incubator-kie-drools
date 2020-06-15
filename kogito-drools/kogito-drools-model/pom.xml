@@ -26,6 +26,7 @@
   </parent>
 
   <artifactId>kogito-drools-model</artifactId>
+  <name>Kogito :: Drools :: Kogito Drools Model</name>
 
   <!-- Logging -->
   <dependencies>

@@ -12,7 +12,7 @@
   <artifactId>kogito-api</artifactId>
   <packaging>jar</packaging>
 
-  <name>Kogito :: Public API</name>
+  <name>Kogito :: API :: Public API</name>
   <description>The Kogito public API which is backwards compatible between releases.</description>
 
   <properties>

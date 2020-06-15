@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>jbpm-serverless-workflow</artifactId>
-  <name>jBPM :: Serverless Workflow</name>
+  <name>Kogito :: jBPM :: Serverless Workflow</name>
   <description>jBPM Serverless Workflow</description>
 
   <properties>

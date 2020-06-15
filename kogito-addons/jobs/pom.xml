@@ -7,7 +7,7 @@
   </parent>
   <artifactId>jobs</artifactId>
   <packaging>pom</packaging>
-  <name>Jobs</name>
+  <name>Kogito :: Add-Ons :: Jobs</name>
   <description>Jobs (timers and async jobs)</description>
   <modules>
     <module>jobs-api</module>
