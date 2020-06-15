@@ -360,7 +360,8 @@ public class FromTest extends BaseModelTest {
     }
 
     @Test
-    public void testArray() {
+    public void testThisArray() {
+        // This test verifies the behavior when ArrayType is used as "_this" (which $childrenA is converted to) in from clause.
         String str =
                 "package org.drools.compiler.test  \n" +
                      "import " + Adult.class.getCanonicalName() + "\n" +
@@ -384,6 +385,35 @@ public class FromTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Assertions.assertThat(list).containsExactlyInAnyOrder(2);
+    }
+
+    @Test
+    public void testFromArray() {
+        // This test verifies the behavior when the return type is ArrayType
+        String str =
+                "package org.drools.compiler.test  \n" +
+                     "import " + Adult.class.getCanonicalName() + "\n" +
+                     "import " + Person.class.getCanonicalName() + "\n" +
+                     "global java.util.List list;\n" +
+                     "rule R\n" +
+                     "when\n" +
+                     "    $adult : Adult()\n" +
+                     "    $p : Person() from $adult.childrenA\n" +
+                     "then\n" +
+                     "    list.add($p.getName());\n" +
+                     "end \n";
+        
+        KieSession ksession = getKieSession(str);
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        Adult john = new Adult("John", 39);
+        john.setChildrenA(new Person[]{new Person("Julian"), new Person("Sean")});
+
+        ksession.insert(john);
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Julian", "Sean");
     }
 
     @Test
