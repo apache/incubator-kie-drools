@@ -127,6 +127,12 @@
       <artifactId>kie-pmml-evaluator-api</artifactId>
       <scope>provided</scope>
       <optional>true</optional>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
@@ -151,12 +157,24 @@
       <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
       <scope>provided</scope>
       <optional>true</optional>
+      <exclusions>
+        <exclusion>
+          <groupId>org.glassfish.jaxb</groupId>
+          <artifactId>jaxb-runtime</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
       <scope>provided</scope>
       <optional>true</optional>
+      <exclusions>
+        <exclusion>
+          <groupId>org.glassfish.jaxb</groupId>
+          <artifactId>jaxb-runtime</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <!-- used by DMN for general (runtime-agnostic) inspection of PMML model -->
     <dependency>
