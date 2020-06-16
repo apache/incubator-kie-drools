@@ -4,8 +4,7 @@
     <parent>
         <groupId>org.kie.kogito</groupId>
         <artifactId>integration-tests</artifactId>
-        <version>8.0.0-SNAPSHOT</version>
-        <relativePath>../../../..</relativePath>
+        <version>@project.version@</version>
     </parent>
     <artifactId>integration-tests-springboot-it</artifactId>
     <dependencyManagement>
