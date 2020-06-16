@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.compiler.kie.builder.impl;
 
@@ -81,8 +81,8 @@ import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 import static org.drools.core.util.Drools.isJndiAvailable;
 
 public class KieContainerImpl
-    implements
-    InternalKieContainer {
+        implements
+        InternalKieContainer {
 
     private static final Logger log = LoggerFactory.getLogger( KieContainerImpl.class );
 
@@ -100,7 +100,7 @@ public class KieContainerImpl
     private ReleaseId configuredReleaseId;
     private ReleaseId containerReleaseId;
 
-	private final String containerId;
+    private final String containerId;
 
     private final Map<String, KieSessionConfiguration> sessionConfsCache = new ConcurrentHashMap<>();
 
@@ -150,30 +150,30 @@ public class KieContainerImpl
         this.containerReleaseId = containerReleaseId;
     }
 
-	private void initMBeans(String containerId) {
-		if ( isMBeanOptionEnabled() ) {
-	        KieContainerMonitor monitor = new KieContainerMonitor(this);
-	        ObjectName on = DroolsManagementAgent.createObjectNameBy(containerId);
-	        DroolsManagementAgent.getInstance().registerMBean( this, monitor, on );
+    private void initMBeans(String containerId) {
+        if ( isMBeanOptionEnabled() ) {
+            KieContainerMonitor monitor = new KieContainerMonitor(this);
+            ObjectName on = DroolsManagementAgent.createObjectNameBy(containerId);
+            DroolsManagementAgent.getInstance().registerMBean( this, monitor, on );
         }
-	}
+    }
 
     @Override
     public String getContainerId() {
-    	return this.containerId;
+        return this.containerId;
     }
 
     @Override
     public ReleaseId getConfiguredReleaseId() {
-		return configuredReleaseId;
-	}
+        return configuredReleaseId;
+    }
 
-	@Override
-	public ReleaseId getResolvedReleaseId() {
-		return getReleaseId();
-	}
+    @Override
+    public ReleaseId getResolvedReleaseId() {
+        return getReleaseId();
+    }
 
-	public ReleaseId getReleaseId() {
+    public ReleaseId getReleaseId() {
         return kProject.getGAV();
     }
 
@@ -212,7 +212,7 @@ public class KieContainerImpl
     public Results updateDependencyToVersion(ReleaseId currentReleaseId, ReleaseId newReleaseId) {
         ReleaseId installedReleaseId = getReleaseId();
         if (currentReleaseId.getGroupId().equals(installedReleaseId.getGroupId()) &&
-            currentReleaseId.getArtifactId().equals(installedReleaseId.getArtifactId())) {
+                currentReleaseId.getArtifactId().equals(installedReleaseId.getArtifactId())) {
             // upgrading the kProject itself: taking the kmodule from there
             return updateToVersion(newReleaseId);
         }
@@ -221,8 +221,8 @@ public class KieContainerImpl
         // upgrading a transitive dependency: taking the kmodule from the krepo
         // if the new and the current release are equal (a snapshot) check if there is an older version with the same releaseId
         InternalKieModule currentKM = currentReleaseId.equals(newReleaseId) ?
-                                      (InternalKieModule) ((KieRepositoryImpl) kr).getOldKieModule(currentReleaseId) :
-                                      (InternalKieModule) kr.getKieModule(currentReleaseId);
+                (InternalKieModule) ((KieRepositoryImpl) kr).getOldKieModule(currentReleaseId) :
+                (InternalKieModule) kr.getKieModule(currentReleaseId);
         return update(currentKM, newReleaseId);
     }
 
@@ -281,9 +281,9 @@ public class KieContainerImpl
 
     private boolean isModifyingUsedFunction(KieJarChangeSet cs) {
         return cs.getChanges().values()
-                 .stream()
-                 .flatMap(resourceChangeSet -> resourceChangeSet.getChanges().stream())
-                 .anyMatch(change -> change.getType() == ResourceChange.Type.FUNCTION && change.getChangeType() == ChangeType.UPDATED);
+                .stream()
+                .flatMap(resourceChangeSet -> resourceChangeSet.getChanges().stream())
+                .anyMatch(change -> change.getType() == ResourceChange.Type.FUNCTION && change.getChangeType() == ChangeType.UPDATED);
     }
 
     private Collection<String> getUnchangedResources( InternalKieModule newKM, KieJarChangeSet cs ) {
@@ -533,8 +533,8 @@ public class KieContainerImpl
 
     public KieSession newKieSession(String kSessionName, Environment environment, KieSessionConfiguration conf) {
         KieSessionModelImpl kSessionModel = kSessionName != null ?
-                                            (KieSessionModelImpl) getKieSessionModel(kSessionName) :
-                                            (KieSessionModelImpl) findKieSessionModel(false);
+                (KieSessionModelImpl) getKieSessionModel(kSessionName) :
+                (KieSessionModelImpl) findKieSessionModel(false);
 
         if ( kSessionModel == null ) {
             log.error("Unknown KieSession name: " + kSessionName);
@@ -605,8 +605,8 @@ public class KieContainerImpl
 
     public StatelessKieSession newStatelessKieSession(String kSessionName, KieSessionConfiguration conf) {
         KieSessionModelImpl kSessionModel = kSessionName != null ?
-                                            (KieSessionModelImpl) getKieSessionModel(kSessionName) :
-                                            (KieSessionModelImpl) findKieSessionModel(true);
+                (KieSessionModelImpl) getKieSessionModel(kSessionName) :
+                (KieSessionModelImpl) findKieSessionModel(true);
 
         if ( kSessionModel == null ) {
             log.error("Unknown KieSession name: " + kSessionName);
@@ -654,7 +654,7 @@ public class KieContainerImpl
 
     private KieSessionConfiguration getKieSessionConfiguration( KieSessionModel kSessionModel ) {
         KieSessionConfiguration ksConf = sessionConfsCache.computeIfAbsent(kSessionModel.getName(),
-                k -> new SessionConfigurationImpl( null, kProject.getClassLoader() ) );
+                                                                           k -> new SessionConfigurationImpl( null, kProject.getClassLoader() ) );
         ksConf.setOption( kSessionModel.getClockType() );
         ksConf.setOption( kSessionModel.getBeliefSystem() );
         return ksConf;

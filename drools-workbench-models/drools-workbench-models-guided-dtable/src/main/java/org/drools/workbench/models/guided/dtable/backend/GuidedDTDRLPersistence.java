@@ -84,6 +84,9 @@ import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
 
 import static org.drools.workbench.models.datamodel.rule.Attribute.NEGATE_RULE;
+import static org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52.RULE_DESCRIPTION_INDEX;
+import static org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52.RULE_NAME_COLUMN_INDEX;
+import static org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52.RULE_NUMBER_INDEX;
 
 /**
  * This takes care of converting GuidedDT object to DRL (via the RuleModel).
@@ -118,11 +121,13 @@ public class GuidedDTDRLPersistence {
             TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider(allColumns,
                                                                                     row);
 
-            Integer num = (Integer) row.get(0).getNumericValue();
-            String desc = row.get(1).getStringValue();
+            Integer num = (Integer) row.get(RULE_NUMBER_INDEX).getNumericValue();
+            String desc = row.get(RULE_DESCRIPTION_INDEX).getStringValue();
 
             BRLRuleModel rm = new BRLRuleModel(dt);
-            rm.name = getName(dt.getTableName(),
+
+            rm.name = getName(dt,
+                              row,
                               num);
 
             doMetadata(allColumns,
@@ -149,9 +154,9 @@ public class GuidedDTDRLPersistence {
                 rm.parentName = dt.getParentName();
             }
 
-            sb.append("//from row number: " + (i + 1) + "\n");
+            sb.append(String.format("//from row number: %d\n", i + 1));
             if (desc != null && desc.length() > 0) {
-                sb.append("//" + desc + "\n");
+                sb.append(String.format("//%s\n", desc));
             }
 
             GuidedDTBRDRLPersistence drlMarshaller = new GuidedDTBRDRLPersistence(rowDataProvider);
@@ -924,9 +929,19 @@ public class GuidedDTDRLPersistence {
         }
     }
 
-    String getName(String tableName,
+    String getName(GuidedDecisionTable52 dt,
+                   List<DTCellValue52> row,
                    Number num) {
-        return "Row " + num.longValue() + " " + tableName;
+        final DTCellValue52 ruleNameValue = row.get(RULE_NAME_COLUMN_INDEX);
+        if (hasStringValue(ruleNameValue)) {
+            return ruleNameValue.getStringValue();
+        } else {
+            return String.format("Row %d %s", num.longValue(), dt.getTableName());
+        }
+    }
+
+    private boolean hasStringValue(final DTCellValue52 dtCellValue52) {
+        return dtCellValue52 != null && dtCellValue52.getStringValue() != null && !dtCellValue52.getStringValue().trim().isEmpty();
     }
 
     boolean validCell(String c,

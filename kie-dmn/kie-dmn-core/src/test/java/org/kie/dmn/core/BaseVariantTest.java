@@ -155,6 +155,15 @@ public abstract class BaseVariantTest {
         this.testConfig = testConfig;
     }
 
+    public DMNRuntime createRuntime(final Class testClass) {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime(testClass);
+        if (testConfig.isTypeSafe()) {
+            createTypeSafeInput(runtime);
+        }
+        return runtime;
+    }
+
+
     public DMNRuntime createRuntime(String string, Class<?> class1) {
         DMNRuntime runtime = testConfig.createRuntime(string, class1);
         if (testConfig.isTypeSafe()) {
@@ -178,16 +187,19 @@ public abstract class BaseVariantTest {
     private void createTypeSafeInput(DMNRuntime runtime) {
         String prefix = String.format("%s%s", testName, testConfig.name());
         factory = new DMNTypeSafePackageName.ModelFactory(prefix);
-        DMNAllTypesIndex index = new DMNAllTypesIndex(runtime.getModels(), factory);
+        DMNAllTypesIndex index = new DMNAllTypesIndex(factory, runtime.getModels().toArray(new DMNModel[]{}));
         Map<String, String> allSources = new HashMap<>();
 
         for (DMNModel m : runtime.getModels()) {
             Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, index, factory)
+                    .processTypes()
                     .generateSourceCodeOfAllTypes();
             allSources.putAll(allTypesSourceCode);
         }
 
-        allCompiledClasses = KieMemoryCompiler.compile(allSources, this.getClass().getClassLoader());
+        if(!allSources.isEmpty()) {
+            allCompiledClasses = KieMemoryCompiler.compile(allSources, this.getClass().getClassLoader());
+        }
     }
 
     protected DMNResult evaluateModel(DMNRuntime runtime, DMNModel dmnModel, DMNContext context) {

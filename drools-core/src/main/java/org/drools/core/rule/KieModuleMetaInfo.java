@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
-import static org.kie.soup.commons.xstream.XStreamUtils.createTrustingXStream;
+import static org.kie.soup.xstream.XStreamUtils.createTrustingXStream;
 
 public class KieModuleMetaInfo implements Serializable{
     private static final XStream xStream = createTrustingXStream(new DomDriver());

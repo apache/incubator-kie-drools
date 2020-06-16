@@ -16,7 +16,6 @@
 
 package org.drools.modelcompiler;
 
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -31,10 +30,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.spi.Consequence;
-import org.drools.model.functions.IntrospectableLambda;
-import org.drools.modelcompiler.consequence.LambdaConsequence;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
@@ -48,19 +43,15 @@ import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.KieServices;
-import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class CompilerTest extends BaseModelTest {
@@ -1980,39 +1971,6 @@ public class CompilerTest extends BaseModelTest {
         Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);;
     }
 
-    @Test
-    public void testConsequenceNoVariable() throws Exception {
-        // DROOLS-4924
-        String str =
-                "package defaultpkg;\n" +
-                "import " + Person.class.getCanonicalName() + ";" +
-                "rule R when\n" +
-                "  $p : Person(name == \"Mario\")\n" +
-                "then\n" +
-                "  System.out.println(\"Hello\");\n" +
-                "end";
-
-        KieModuleModel kieModuleModel = KieServices.get().newKieModuleModel();
-        kieModuleModel.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
-
-        KieSession ksession = getKieSession(kieModuleModel, str );
-
-        if (testRunType == RUN_TYPE.FLOW_DSL || testRunType == RUN_TYPE.PATTERN_DSL) {
-            RuleImpl rule = (RuleImpl)ksession.getKieBase().getRule("defaultpkg", "R");
-            Consequence consequence = rule.getConsequence();
-            Field field = LambdaConsequence.class.getDeclaredField("consequence");
-            field.setAccessible(true);
-            org.drools.model.Consequence internalConsequence = (org.drools.model.Consequence) field.get(consequence);
-            Object lambda = ((IntrospectableLambda) internalConsequence.getBlock()).getLambda();
-            assertThat(lambda.getClass().getName(), containsString("LambdaConsequence")); // materialized Lambda
-        }
-
-        Person me = new Person( "Mario", 40 );
-        ksession.insert( me );
-
-        assertEquals( 1, ksession.fireAllRules() );
-    }
-
     @Test()
     public void testMultipleModify() {
         String str =
@@ -2271,5 +2229,38 @@ public class CompilerTest extends BaseModelTest {
 
         ksession.insert(appObj);
         assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test()
+    public void testRhsOrderWithModify() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  $p1 : Person(name == \"John\")\n" +
+                "  $p2 : Person(name == \"Paul\")\n" +
+                "then\n" +
+                "  list.add($p1.getAge());\n" +
+                "  list.add($p2.getAge());\n" +
+                "  modify($p1) { setAge($p1.getAge()+1) }\n" +
+                "  list.add($p1.getAge());\n" +
+                "  list.add($p2.getAge());\n" +
+                "  modify($p2) { setAge($p2.getAge()+5) }\n" +
+                "  list.add($p1.getAge());\n" +
+                "  list.add($p2.getAge());\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+        final List<Integer> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        Person p1 = new Person( "John", 40 );
+        Person p2 = new Person( "Paul", 38 );
+
+        ksession.insert( p1 );
+        ksession.insert( p2 );
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder(40, 38, 41, 38, 41, 43);
     }
 }

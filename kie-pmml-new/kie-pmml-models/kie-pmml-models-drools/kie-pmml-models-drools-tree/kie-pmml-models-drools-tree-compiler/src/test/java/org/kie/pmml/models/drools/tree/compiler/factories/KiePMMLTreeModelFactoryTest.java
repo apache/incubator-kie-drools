@@ -16,9 +16,9 @@
 
 package org.kie.pmml.models.drools.tree.compiler.factories;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.compiler.testutils.TestUtils;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
@@ -36,7 +37,6 @@ import org.slf4j.LoggerFactory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.pmml.compiler.commons.factories.TransformationsMapFactory.getTransformationsMap;
 
 public class KiePMMLTreeModelFactoryTest {
 
@@ -57,15 +57,21 @@ public class KiePMMLTreeModelFactoryTest {
     }
 
     @Test
-    public void getKiePMMLTreeModel() {
+    public void getKiePMMLTreeModel() throws InstantiationException, IllegalAccessException {
         final DataDictionary dataDictionary = pmml.getDataDictionary();
-        final Map<String, Function> transformationsMap = getTransformationsMap(pmml.getTransformationDictionary());
-        KiePMMLTreeModel retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary, transformationsMap, treeModel);
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
+        KiePMMLTreeModel retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary, treeModel, fieldTypeMap);
         assertNotNull(retrieved);
         assertEquals(treeModel.getModelName(), retrieved.getName());
-        assertNotNull(retrieved.getPackageDescr());
         assertEquals(TARGET_FIELD, retrieved.getTargetField());
-        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = retrieved.getFieldTypeMap();
+    }
+
+    @Test
+    public void getKiePMMLDroolsAST() {
+        final DataDictionary dataDictionary = pmml.getDataDictionary();
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
+        KiePMMLDroolsAST retrieved = KiePMMLTreeModelFactory.getKiePMMLDroolsAST(dataDictionary, treeModel, fieldTypeMap);
+        assertNotNull(retrieved);
         List<DataField> dataFields = dataDictionary.getDataFields();
         assertEquals(dataFields.size(), fieldTypeMap.size());
         dataFields.forEach(dataField -> assertTrue(fieldTypeMap.containsKey(dataField.getName().getValue())));

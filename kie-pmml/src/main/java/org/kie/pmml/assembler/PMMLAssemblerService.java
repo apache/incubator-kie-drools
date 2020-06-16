@@ -57,6 +57,9 @@ import org.kie.pmml.pmml_4_2.PMMLResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.api.pmml.PMMLConstants.KIE_PMML_IMPLEMENTATION;
+import static org.kie.api.pmml.PMMLConstants.LEGACY;
+
 public class PMMLAssemblerService implements KieAssemblerService {
 
     private ClassLoader rootClassLoader;
@@ -66,9 +69,27 @@ public class PMMLAssemblerService implements KieAssemblerService {
     private static final PMML4Compiler pmmlCompiler = new PMML4Compiler();
     private static final Logger log = LoggerFactory.getLogger( PMMLAssemblerService.class );
 
+    private static boolean isOtherImplementationPresent() {
+        try {
+            Thread.currentThread().getContextClassLoader().loadClass("org.kie.pmml.evaluator.assembler.service.PMMLAssemblerService");
+            return true;
+        } catch (NoClassDefFoundError | ClassNotFoundException e) {
+            return false;
+        }
+    }
+
+    private static boolean isToEnable() {
+        if (!isOtherImplementationPresent()) {
+            return true;
+        } else {
+            final String property = System.getProperty(KIE_PMML_IMPLEMENTATION.getName(), LEGACY.getName());
+            return property.equals(LEGACY.getName());
+        }
+    }
+
     @Override
     public ResourceType getResourceType() {
-        return ResourceType.PMML;
+        return isToEnable() ? ResourceType.PMML : ResourceType.NOOP;
     }
 
     @Override

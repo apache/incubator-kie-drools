@@ -18,6 +18,7 @@ package org.kie.dmn.core.pmml;
 
 import java.io.InputStream;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,10 +27,17 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
+import static org.kie.api.pmml.PMMLConstants.LEGACY;
 
-public class PMMLInfoTest {
+public class PMMLInfoTest extends AbstractDMNPMMLTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(PMMLInfoTest.class);
+
+    @Before
+    public void resetEnvironment() {
+        LOG.debug("resetEnvironment");
+        resetEnvironment(LEGACY.getName());
+    }
 
     @Test
     public void testPMMLInfo() throws Exception {

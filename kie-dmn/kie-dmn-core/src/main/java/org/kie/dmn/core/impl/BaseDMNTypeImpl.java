@@ -28,6 +28,9 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.EvalHelper;
 
+/**
+ * @see DMNType
+ */
 public abstract class BaseDMNTypeImpl
         implements DMNType {
 
@@ -38,6 +41,7 @@ public abstract class BaseDMNTypeImpl
     private List<UnaryTest> allowedValues;
     private DMNType         baseType;
     private Type            feelType;
+    private DMNType         belongingType;
 
     public BaseDMNTypeImpl(String namespace, String name, String id, boolean collection, DMNType baseType, Type feelType) {
         this.namespace = namespace;
@@ -180,4 +184,12 @@ public abstract class BaseDMNTypeImpl
     }
     
     protected abstract boolean internalIsAssignableValue(Object o);
+
+    public void setBelongingType(DMNType belongingType) {
+        this.belongingType = belongingType;
+    }
+    
+    public DMNType getBelongingType() {
+        return this.belongingType;
+    }
 }

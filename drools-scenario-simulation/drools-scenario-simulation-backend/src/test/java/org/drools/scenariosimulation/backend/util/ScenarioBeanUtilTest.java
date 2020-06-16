@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.drools.scenariosimulation.backend.model.Dispute;
 import org.drools.scenariosimulation.backend.model.NotEmptyConstructor;
@@ -31,10 +30,14 @@ import org.drools.scenariosimulation.backend.model.Person;
 import org.drools.scenariosimulation.backend.model.SubPerson;
 import org.drools.scenariosimulation.backend.runner.RuleScenarioRunnerHelperTest;
 import org.drools.scenariosimulation.backend.runner.ScenarioException;
+import org.drools.scenariosimulation.backend.util.model.EnumTest;
 import org.junit.Test;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorEmptyMessage;
+import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.of;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.convertValue;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.getField;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.loadClass;
@@ -57,7 +60,7 @@ public class ScenarioBeanUtilTest {
         paramsToSet.put(Arrays.asList("creator", "firstName"), FIRST_NAME);
         paramsToSet.put(Arrays.asList("creator", "age"), AGE);
 
-        Object result = ScenarioBeanUtil.fillBean(Optional.empty(), Dispute.class.getCanonicalName(), paramsToSet, classLoader);
+        Object result = ScenarioBeanUtil.fillBean(errorEmptyMessage(), Dispute.class.getCanonicalName(), paramsToSet, classLoader);
 
         assertTrue(result instanceof Dispute);
 
@@ -74,7 +77,7 @@ public class ScenarioBeanUtilTest {
         paramsToSet.put(Arrays.asList("creator", "firstName"), FIRST_NAME);
         paramsToSet.put(Arrays.asList("creator", "age"), AGE);
 
-        Object result = ScenarioBeanUtil.fillBean(Optional.of(dispute), Dispute.class.getCanonicalName(), paramsToSet, classLoader);
+        Object result = ScenarioBeanUtil.fillBean(of(dispute), Dispute.class.getCanonicalName(), paramsToSet, classLoader);
 
         assertTrue(result instanceof Dispute);
         assertSame(dispute, result);
@@ -85,7 +88,7 @@ public class ScenarioBeanUtilTest {
 
     @Test(expected = ScenarioException.class)
     public void fillBeanLoadClassTest() {
-        ScenarioBeanUtil.fillBean(Optional.empty(), "FakeCanonicalName", new HashMap<>(), classLoader);
+        ScenarioBeanUtil.fillBean(errorEmptyMessage(), "FakeCanonicalName", new HashMap<>(), classLoader);
     }
 
     @Test(expected = ScenarioException.class)
@@ -93,7 +96,7 @@ public class ScenarioBeanUtilTest {
         Map<List<String>, Object> paramsToSet = new HashMap<>();
         paramsToSet.put(singletonList("name"), null);
 
-        ScenarioBeanUtil.fillBean(Optional.empty(), NotEmptyConstructor.class.getCanonicalName(), paramsToSet, classLoader);
+        ScenarioBeanUtil.fillBean(errorEmptyMessage(), NotEmptyConstructor.class.getCanonicalName(), paramsToSet, classLoader);
     }
 
     @Test(expected = ScenarioException.class)
@@ -101,7 +104,7 @@ public class ScenarioBeanUtilTest {
         Map<List<String>, Object> paramsToSet = new HashMap<>();
         paramsToSet.put(singletonList("fakeField"), null);
 
-        ScenarioBeanUtil.fillBean(Optional.empty(), Dispute.class.getCanonicalName(), paramsToSet, classLoader);
+        ScenarioBeanUtil.fillBean(errorEmptyMessage(), Dispute.class.getCanonicalName(), paramsToSet, classLoader);
     }
 
     @Test(expected = ScenarioException.class)
@@ -109,7 +112,7 @@ public class ScenarioBeanUtilTest {
         Map<List<String>, Object> paramsToSet = new HashMap<>();
         paramsToSet.put(singletonList("fakeField"), null);
 
-        ScenarioBeanUtil.fillBean(Optional.empty(), null, paramsToSet, classLoader);
+        ScenarioBeanUtil.fillBean(errorEmptyMessage(), null, paramsToSet, classLoader);
     }
 
     @Test(expected = ScenarioException.class)
@@ -117,7 +120,15 @@ public class ScenarioBeanUtilTest {
         Map<List<String>, Object> paramsToSet = new HashMap<>();
         paramsToSet.put(singletonList("description"), new ArrayList<>());
 
-        ScenarioBeanUtil.fillBean(Optional.empty(), Dispute.class.getCanonicalName(), paramsToSet, classLoader);
+        ScenarioBeanUtil.fillBean(errorEmptyMessage(), Dispute.class.getCanonicalName(), paramsToSet, classLoader);
+    }
+
+    @Test
+    public void fillBeanEmptyValueTest() {
+        Map<List<String>, Object> paramsToSet = new HashMap<>();
+        paramsToSet.put(emptyList(), null);
+
+        assertNull(ScenarioBeanUtil.fillBean(of(null), String.class.getCanonicalName(), paramsToSet, classLoader));
     }
 
     @Test
@@ -190,6 +201,7 @@ public class ScenarioBeanUtilTest {
         assertEquals("0".getBytes()[0], convertValue(byte.class.getCanonicalName(), Byte.toString("0".getBytes()[0]), classLoader));
         assertEquals("0".getBytes()[0], convertValue(Byte.class.getCanonicalName(), Byte.toString("0".getBytes()[0]), classLoader));
         assertEquals(LocalDate.of(2018, 5, 20), convertValue(LocalDate.class.getCanonicalName(), "2018-05-20", classLoader));
+        assertEquals(EnumTest.FIRST, convertValue(EnumTest.class.getCanonicalName(), "FIRST", classLoader));
         assertNull(convertValue(Float.class.getCanonicalName(), null, classLoader));
     }
 
@@ -210,6 +222,7 @@ public class ScenarioBeanUtilTest {
         assertEquals(String.valueOf("0".getBytes()[0]), revertValue("0".getBytes()[0]));
         assertEquals("null", revertValue(null));
         assertEquals("2018-10-20", revertValue(LocalDate.of(2018, 10, 20)));
+        assertEquals("FIRST", revertValue(EnumTest.FIRST));
     }
 
     @Test
@@ -250,6 +263,7 @@ public class ScenarioBeanUtilTest {
         assertEquals(Byte.toString("0".getBytes()[0]), revertValue(convertValue(byte.class.getCanonicalName(), Byte.toString("0".getBytes()[0]), classLoader)));
         assertEquals(Byte.toString("0".getBytes()[0]), revertValue(convertValue(Byte.class.getCanonicalName(), Byte.toString("0".getBytes()[0]), classLoader)));
         assertEquals("2018-05-20", revertValue(convertValue(LocalDate.class.getCanonicalName(), "2018-05-20", classLoader)));
+        assertEquals("FIRST", revertValue(convertValue(EnumTest.class.getCanonicalName(), "FIRST", classLoader)));
         assertEquals("null", revertValue(convertValue(Float.class.getCanonicalName(), null, classLoader)));
     }
 
@@ -285,6 +299,7 @@ public class ScenarioBeanUtilTest {
         assertEquals("0".getBytes()[0], convertValue(byte.class.getCanonicalName(), revertValue("0".getBytes()[0]), classLoader));
         assertEquals("0".getBytes()[0], convertValue(Byte.class.getCanonicalName(), revertValue("0".getBytes()[0]), classLoader));
         assertEquals(LocalDate.of(2018, 10, 20), convertValue(LocalDate.class.getCanonicalName(), revertValue(LocalDate.of(2018, 10, 20)), classLoader));
+        assertEquals(EnumTest.FIRST, convertValue(EnumTest.class.getCanonicalName(), revertValue(EnumTest.FIRST), classLoader));
         assertNull(convertValue(String.class.getCanonicalName(), revertValue(null), classLoader));
     }
 
@@ -299,7 +314,7 @@ public class ScenarioBeanUtilTest {
     public void convertValueFailUnsupportedTest() {
         assertThatThrownBy(() -> convertValue(RuleScenarioRunnerHelperTest.class.getCanonicalName(), "Test", classLoader))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageEndingWith(" is not supported");
+                .hasMessageEndingWith("Please use an MVEL expression to use it.");
     }
 
     @Test
@@ -325,9 +340,19 @@ public class ScenarioBeanUtilTest {
     }
 
     @Test
+    public void convertValueEnumWrongValue() {
+        String enumTestCanonicalName = EnumTest.class.getCanonicalName();
+        assertThatThrownBy(() -> convertValue(EnumTest.class.getCanonicalName(), "FIRS", classLoader))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("Impossible to parse 'FIRS' as " + enumTestCanonicalName);
+    }
+
+    @Test
     public void loadClassTest() {
         assertEquals(String.class, loadClass(String.class.getCanonicalName(), classLoader));
         assertEquals(int.class, loadClass(int.class.getCanonicalName(), classLoader));
+        assertEquals(RuleScenarioRunnerHelperTest.class, loadClass(RuleScenarioRunnerHelperTest.class.getCanonicalName(), classLoader));
+        assertEquals(EnumTest.class, loadClass(EnumTest.class.getCanonicalName(), classLoader));
 
         assertThatThrownBy(() -> loadClass(null, classLoader))
                 .isInstanceOf(ScenarioException.class)

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.signavio.com/dmn/1.1/diagram/c9ba63acc22a4a3ebf40ea20ea4a3151.xml" exporterVersion="14.0.0" name="survey MID" id="id-83dacec918e54fe8a8b10ef443d597e0" sigExt:revisionId="f73e8d92020641c0b1843ab59e5ac36b" sigExt:revisionNumber="4" xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:sig="http://www.signavio.com/dmn/1.1/diagram/c9ba63acc22a4a3ebf40ea20ea4a3151.xml" xmlns:sigExt="http://www.signavio.com/schema/dmn/1.1/" xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
+    <extensionElements/>
+    <itemDefinition isCollection="false" name="num" id="id-860e9de87cb3ecc8cc1ddc7313e75b66" label="num">
+        <typeRef>feel:number</typeRef>
+    </itemDefinition>
+    <itemDefinition isCollection="false" name="iterating" id="id-b4cd51b147e03a42015b28fd44ca41d2" label="iterating">
+        <typeRef>feel:boolean</typeRef>
+    </itemDefinition>
+    <itemDefinition isCollection="true" name="numbers" id="id-6f904d40aac75d6ca52473502b218323" label="numbers">
+        <typeRef>feel:number</typeRef>
+    </itemDefinition>
+    <itemDefinition isCollection="false" name="decision" id="id-41a539624c1e6515cee01f2e56cc5609" label="decision">
+        <typeRef>feel:boolean</typeRef>
+    </itemDefinition>
+    <inputData name="numbers" id="id-ea4efca92503617f8c83b40a1cecd911" label="numbers" sigExt:shapeId="sid-53A0283C-E779-4FD5-BBA4-A3B0FBF0C1E0" sigExt:diagramId="c9ba63acc22a4a3ebf40ea20ea4a3151">
+        <extensionElements/>
+        <variable typeRef="sig:numbers" name="numbers" id="id-ea4efca92503617f8c83b40a1cecd911_variable"/>
+    </inputData>
+    <inputData name="num_iterator" id="id-6b0ea3f240e89ea2ef6e18ed2f2063d6" label="num" sigExt:shapeId="sid-90AB1454-B7AA-4EDA-8A5B-084366FD5DE5" sigExt:diagramId="c9ba63acc22a4a3ebf40ea20ea4a3151">
+        <extensionElements/>
+        <variable typeRef="sig:num" name="num_iterator" id="id-6b0ea3f240e89ea2ef6e18ed2f2063d6_variable"/>
+    </inputData>
+    <decision name="iterating" id="id-afadd292c42275cf935c8edc1dbad2f2" label="iterating" sigExt:shapeId="sid-C88C7354-DED5-415E-ADA3-70F8EEBCC989" sigExt:diagramId="c9ba63acc22a4a3ebf40ea20ea4a3151">
+        <extensionElements>
+            <sigExt:MultiInstanceDecisionLogic>
+                <sigExt:iterationExpression>numbers</sigExt:iterationExpression>
+                <sigExt:iteratorShapeId>id-6b0ea3f240e89ea2ef6e18ed2f2063d6</sigExt:iteratorShapeId>
+                <sigExt:aggregationFunction>ANYTRUE</sigExt:aggregationFunction>
+                <sigExt:topLevelDecisionId>id-dfb05ce325452aa5aec15c91224c73ac</sigExt:topLevelDecisionId>
+            </sigExt:MultiInstanceDecisionLogic>
+        </extensionElements>
+        <variable typeRef="sig:iterating" name="iterating" id="id-afadd292c42275cf935c8edc1dbad2f2_variable"/>
+        <informationRequirement>
+            <requiredInput href="#id-ea4efca92503617f8c83b40a1cecd911"/>
+        </informationRequirement>
+    </decision>
+    <decision name="decision" id="id-dfb05ce325452aa5aec15c91224c73ac" label="decision" sigExt:shapeId="sid-A6AEF208-9828-4527-86D0-74F462405E73" sigExt:diagramId="c9ba63acc22a4a3ebf40ea20ea4a3151">
+        <extensionElements/>
+        <variable typeRef="sig:decision" name="decision" id="id-dfb05ce325452aa5aec15c91224c73ac_variable"/>
+        <informationRequirement>
+            <requiredInput href="#id-6b0ea3f240e89ea2ef6e18ed2f2063d6"/>
+        </informationRequirement>
+        <literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401">
+            <text>(num_iterator&gt;0)</text>
+        </literalExpression>
+    </decision>
+</definitions>

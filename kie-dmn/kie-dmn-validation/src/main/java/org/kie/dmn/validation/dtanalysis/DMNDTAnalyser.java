@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -58,7 +59,11 @@ import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.api.OutputClause;
 import org.kie.dmn.model.api.UnaryTests;
+import org.kie.dmn.validation.DMNValidator;
+import org.kie.dmn.validation.DMNValidator.Validation;
 import org.kie.dmn.validation.dtanalysis.DMNDTAnalyserValueFromNodeVisitor.DMNDTAnalyserOutputClauseVisitor;
+import org.kie.dmn.validation.dtanalysis.mcdc.MCDCAnalyser;
+import org.kie.dmn.validation.dtanalysis.mcdc.MCDCAnalyser.PosNegBlock;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
 import org.kie.dmn.validation.dtanalysis.model.BoundValueComparator;
 import org.kie.dmn.validation.dtanalysis.model.DDTAInputClause;
@@ -86,13 +91,16 @@ public class DMNDTAnalyser {
         outputClauseVisitor = new DMNDTAnalyserOutputClauseVisitor((List) dmnProfiles);
     }
 
-    public List<DTAnalysis> analyse(DMNModel model) {
+    public List<DTAnalysis> analyse(DMNModel model, Set<DMNValidator.Validation> flags) {
+        if (!flags.contains(Validation.ANALYZE_DECISION_TABLE)) {
+            throw new IllegalArgumentException();
+        }
         List<DTAnalysis> results = new ArrayList<>();
 
         List<? extends DecisionTable> decisionTables = model.getDefinitions().findAllChildren(DecisionTable.class);
         for (DecisionTable dt : decisionTables) {
             try {
-                DTAnalysis result = dmnDTAnalysis(model, dt);
+                DTAnalysis result = dmnDTAnalysis(model, dt, flags);
                 results.add(result);
             } catch (Throwable t) {
                 LOG.debug("Skipped dmnDTAnalysis for table: {}", dt.getId(), t);
@@ -104,7 +112,7 @@ public class DMNDTAnalyser {
         return results;
     }
 
-    private DTAnalysis dmnDTAnalysis(DMNModel model, DecisionTable dt) {
+    private DTAnalysis dmnDTAnalysis(DMNModel model, DecisionTable dt, Set<Validation> flags) {
         DDTATable ddtaTable = new DDTATable();
         compileTableInputClauses(model, dt, ddtaTable);
         compileTableOutputClauses(model, dt, ddtaTable);
@@ -141,6 +149,11 @@ public class DMNDTAnalyser {
         analysis.compute2ndNFViolations();
         LOG.debug("computeHitPolicyRecommender");
         analysis.computeHitPolicyRecommender();
+        if (flags.contains(Validation.COMPUTE_DECISION_TABLE_MCDC)) {
+            LOG.debug("mcdc.");
+            List<PosNegBlock> selectedBlocks = new MCDCAnalyser(ddtaTable, dt).compute();
+            analysis.setMCDCSelectedBlocks(selectedBlocks);
+        }
         return analysis;
     }
 
@@ -237,7 +250,7 @@ public class DMNDTAnalyser {
                     List<Comparable<?>> discreteValues = getDiscreteValues(utln);
                     Collections.sort((List) discreteValues);
                     Interval discreteDomainMinMax = new Interval(RangeBoundary.CLOSED, discreteValues.get(0), discreteValues.get(discreteValues.size() - 1), RangeBoundary.CLOSED, 0, jColIdx + 1);
-                    DDTAInputClause ic = new DDTAInputClause(discreteDomainMinMax, discreteValues);
+                    DDTAInputClause ic = new DDTAInputClause(discreteDomainMinMax, discreteValues, getDiscreteValues(utln));
                     ddtaTable.getInputs().add(ic);
                 } else if (utln.getElements().size() == 1) {
                     UnaryTestNode utn0 = (UnaryTestNode) utln.getElements().get(0);

@@ -19,7 +19,6 @@ package org.drools.core.reteoo;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Collection;
 
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
@@ -90,9 +89,8 @@ public class NotNode extends BetaNode {
     }    
 
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     Sink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new NotNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+        return new NotNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,

@@ -153,7 +153,7 @@ public abstract class AbstractExpressionBuilder {
         return drlxParseResult.isStatic() ? expr :
                 generateLambdaWithoutParameters(usedDeclarations,
                                                 expr,
-                                                drlxParseResult.isSkipThisAsParam(), ofNullable(drlxParseResult.getPatternType()));
+                                                drlxParseResult.isSkipThisAsParam(), ofNullable(drlxParseResult.getPatternType()), context);
     }
 
     boolean hasIndex( SingleDrlxParseSuccess drlxParseResult ) {

@@ -26,6 +26,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -78,11 +80,11 @@ public class DMNModelImpl
     private Resource resource;
     private Definitions definitions;
     
-    private Map<String, InputDataNode>              inputs       = new HashMap<>();
-    private Map<String, DecisionNode>               decisions    = new HashMap<>();
-    private Map<String, BusinessKnowledgeModelNode> bkms         = new HashMap<>();
-    private Map<String, ItemDefNode>                itemDefs     = new HashMap<>();
-    private Map<String, DecisionServiceNode> decisionServices    = new HashMap<>();
+    private Map<String, InputDataNode>              inputs       = new LinkedHashMap<>();
+    private Map<String, DecisionNode>               decisions    = new LinkedHashMap<>();
+    private Map<String, BusinessKnowledgeModelNode> bkms         = new LinkedHashMap<>();
+    private Map<String, ItemDefNode>                itemDefs     = new LinkedHashMap<>();
+    private Map<String, DecisionServiceNode> decisionServices    = new LinkedHashMap<>();
 
     // these are messages created at loading/compilation time
     private DMNMessageManager messages = new DefaultDMNMessagesManager();
@@ -186,7 +188,7 @@ public class DMNModelImpl
 
     @Override
     public Set<InputDataNode> getInputs() {
-        return this.inputs.values().stream().collect( Collectors.toSet() );
+        return this.inputs.values().stream().collect( Collectors.toCollection(LinkedHashSet::new) );
     }
 
     public void addDecision(DecisionNode dn) {
@@ -221,7 +223,7 @@ public class DMNModelImpl
 
     @Override
     public Set<DecisionNode> getDecisions() {
-        return this.decisions.values().stream().collect(Collectors.toSet());
+        return this.decisions.values().stream().collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     @Override
@@ -266,7 +268,7 @@ public class DMNModelImpl
 
     @Override
     public Collection<DecisionServiceNode> getDecisionServices() {
-        return this.decisionServices.values().stream().collect(Collectors.toSet());
+        return this.decisionServices.values().stream().collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public void addBusinessKnowledgeModel(BusinessKnowledgeModelNode bkm) {
@@ -293,7 +295,7 @@ public class DMNModelImpl
 
     @Override
     public Set<BusinessKnowledgeModelNode> getBusinessKnowledgeModels() {
-        return this.bkms.values().stream().collect(Collectors.toSet());
+        return this.bkms.values().stream().collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private void collectRequiredInputs(Collection<DMNNode> deps, Set<InputDataNode> inputs) {
@@ -333,7 +335,7 @@ public class DMNModelImpl
 
     @Override
     public Set<ItemDefNode> getItemDefinitions() {
-        return this.itemDefs.values().stream().collect( Collectors.toSet() );
+        return this.itemDefs.values().stream().collect( Collectors.toCollection(LinkedHashSet::new) );
     }
 
     @Override

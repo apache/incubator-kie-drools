@@ -40,4 +40,9 @@ public class TestingModelImplementationProvider implements ModelImplementationPr
     public KiePMMLTestingModel getKiePMMLModel(final DataDictionary dataDictionary, final Map<String, Function> transformationsMap, RegressionModel model, Object kBuilder) {
         return new KiePMMLTestingModel("TEST_MODEL", Collections.emptyList());
     }
+
+    @Override
+    public KiePMMLTestingModel getKiePMMLModelFromPlugin(String packageName, DataDictionary dataDictionary, RegressionModel model, Object kBuilder) {
+        return getKiePMMLModel(dataDictionary, model, kBuilder);
+    }
 }

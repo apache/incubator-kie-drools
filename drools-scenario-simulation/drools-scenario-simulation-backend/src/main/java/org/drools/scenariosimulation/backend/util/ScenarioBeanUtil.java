@@ -16,15 +16,17 @@
 
 package org.drools.scenariosimulation.backend.util;
 
+import org.drools.scenariosimulation.backend.runner.ScenarioException;
+import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
+
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import org.drools.scenariosimulation.backend.runner.ScenarioException;
+import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorEmptyMessage;
 
 public class ScenarioBeanUtil {
 
@@ -45,11 +47,11 @@ public class ScenarioBeanUtil {
     }
 
     public static <T> T fillBean(String className, Map<List<String>, Object> params, ClassLoader classLoader) {
-        return fillBean(Optional.empty(), className, params, classLoader);
+        return fillBean(errorEmptyMessage(), className, params, classLoader);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T fillBean(Optional<Object> initialInstance, String className, Map<List<String>, Object> params, ClassLoader classLoader) {
+    public static <T> T fillBean(ValueWrapper<Object> initialInstance, String className, Map<List<String>, Object> params, ClassLoader classLoader) {
 
         T beanToFill = (T) initialInstance.orElseGet(() -> newInstance(loadClass(className, classLoader)));
 
@@ -176,13 +178,18 @@ public class ScenarioBeanUtil {
                 return Short.parseShort(cleanStringForNumberParsing(value));
             } else if (clazz.isAssignableFrom(LocalDate.class)) {
                 return LocalDate.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            } else if (Enum.class.isAssignableFrom(clazz)) {
+                return Enum.valueOf(((Class<? extends Enum>) clazz), value);
             }
         } catch (RuntimeException e) {
-            throw new IllegalArgumentException(new StringBuilder().append("Impossible to parse '").append(value).append("' as ").append(className).append(" [").append(e.getMessage()).append("]").toString());
+            throw new IllegalArgumentException(new StringBuilder().append("Impossible to parse '")
+                                                       .append(value).append("' as ").append(className).append(" [")
+                                                       .append(e.getMessage()).append("]").toString());
         }
 
         throw new IllegalArgumentException(new StringBuilder().append("Class ").append(className)
-                                                   .append(" is not supported").toString());
+                                                   .append(" is not natively supported. Please use an MVEL expression" +
+                                                                   " to use it.").toString());
     }
 
     public static String revertValue(Object cleanValue) {
@@ -213,6 +220,8 @@ public class ScenarioBeanUtil {
         } else if (clazz.isAssignableFrom(LocalDate.class)) {
             LocalDate localDate = (LocalDate) cleanValue;
             return String.format("%04d-%02d-%02d", localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth());
+        } else if (Enum.class.isAssignableFrom(clazz)) {
+            return String.valueOf(cleanValue);
         } else {
             return String.valueOf(cleanValue);
         }

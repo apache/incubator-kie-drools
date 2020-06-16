@@ -49,7 +49,10 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.lang.descr.AccumulateDescr;
+import org.drools.compiler.lang.descr.DeclarativeInvokerDescr;
+import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
@@ -117,11 +120,17 @@ public class AccumulateInline {
         initInlineAccumulateTemplate();
 
         parseInitBlock();
-        Collection<String> allNamesInActionBlock = parseActionBlock(externalDeclarations);
-        parseReverseBlock(externalDeclarations, allNamesInActionBlock);
+        try {
+            Collection<String> allNamesInActionBlock = parseActionBlock( externalDeclarations );
+            parseReverseBlock( externalDeclarations, allNamesInActionBlock );
+        } catch (UnsupportedInlineAccumulate e) {
+            parseAccumulatePattern();
+            throw e;
+        }
         parseResultMethod();
 
         if (!usedExternalDeclarations.isEmpty()) {
+            parseAccumulatePattern();
             throw new UnsupportedInlineAccumulate();
         }
 
@@ -156,6 +165,24 @@ public class AccumulateInline {
         contextData = this.accumulateInlineClass.findFirst(ClassOrInterfaceDeclaration.class
                 , c -> "ContextData".equals(c.getNameAsString()))
                 .orElseThrow(InvalidInlineTemplateException::new);
+    }
+
+    void parseAccumulatePattern() {
+        PatternDescr pattern = accumulateDescr.getInputPattern();
+        if ( pattern == null || pattern.getSource() == null ) {
+            return;
+        }
+
+        PatternSourceDescr sourceDescr = pattern.getSource();
+        if ( sourceDescr instanceof FromDescr ) {
+            DeclarativeInvokerDescr invokerDescr = (( FromDescr ) sourceDescr).getDataSource();
+            String mvelBlock = addCurlyBracesToBlock( addSemicolon( invokerDescr.getText() ) );
+            ParsingResult fromCodeCompilationResult = mvelCompiler.compile( mvelBlock );
+            BlockStmt fromBlock = fromCodeCompilationResult.statementResults();
+            for (Statement stmt : fromBlock.getStatements()) {
+                stmt.findAll(NameExpr.class).stream().map(Node::toString).filter(context::hasDeclaration).forEach(usedExternalDeclarations::add);
+            }
+        }
     }
 
     private void parseInitBlock() {

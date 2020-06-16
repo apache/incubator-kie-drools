@@ -15,18 +15,16 @@
  */
 package org.kie.pmml.evaluator.core.service;
 
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.internal.runtime.KieRuntimeService;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
-import org.kie.pmml.evaluator.core.executor.PMMLModelExecutorFinderImpl;
+import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluatorFinderImpl;
 
 public class PMMLRuntimeService implements KieRuntimeService<PMMLRuntime> {
 
     @Override
     public PMMLRuntime newKieRuntime(KieBase kieBase) {
-        InternalKnowledgeBase kb = (InternalKnowledgeBase) kieBase;
-        return new PMMLRuntimeImpl(kb, new PMMLModelExecutorFinderImpl());
+        return new PMMLRuntimeImpl(kieBase, new PMMLModelEvaluatorFinderImpl());
     }
 
     @Override

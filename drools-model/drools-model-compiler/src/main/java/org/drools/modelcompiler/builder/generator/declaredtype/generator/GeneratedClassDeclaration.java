@@ -73,6 +73,7 @@ public class GeneratedClassDeclaration {
         String generatedClassName = typeDefinition.getTypeName();
         generatedClass = createBasicDeclaredClass(generatedClassName);
         addAnnotations(generatedClass, typeDefinition.getAnnotationsToBeAdded());
+        typeDefinition.getJavadoc().ifPresent(generatedClass::setJavadocComment);
 
         generateInheritanceDefinition();
 
@@ -85,7 +86,7 @@ public class GeneratedClassDeclaration {
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.info(String.format("Generated class:%n%s", JavaParserCompiler.getPrettyPrinter().print(generatedClass)));
+            LOG.debug(String.format("Generated class:%n%s", JavaParserCompiler.getPrettyPrinter().print(generatedClass)));
         }
 
         return generatedClass;
@@ -177,8 +178,13 @@ public class GeneratedClassDeclaration {
         }
 
         if (fieldDefinition.createAccessors()) {
-            field.createSetter();
+            MethodDeclaration setter = field.createSetter();
+            fieldDefinition.overriddenSetterName().ifPresent(setter::setName);
+            fieldDefinition.setterAnnotations().forEach(a -> addAnnotationToMethodDeclaration(setter, a));
+
             MethodDeclaration getter = field.createGetter();
+            fieldDefinition.overriddenGetterName().ifPresent(getter::setName);
+            fieldDefinition.getterAnnotations().forEach(a -> addAnnotationToMethodDeclaration(getter, a));
 
             if (fieldDefinition.isKeyField()) {
                 generatedEqualsMethod.add(getter, fieldName);
@@ -186,9 +192,16 @@ public class GeneratedClassDeclaration {
             }
         }
 
-        addAnnotations(field, fieldDefinition.getAnnotations());
+        addAnnotations(field, fieldDefinition.getFieldAnnotations());
 
         generatedToString.add(format("+ {0}+{1}", quote(fieldName + "="), fieldName));
+    }
+
+    private void addAnnotationToMethodDeclaration(MethodDeclaration setter, AnnotationDefinition a) {
+        NormalAnnotationExpr annotation = new NormalAnnotationExpr();
+        annotation.setName(a.getName());
+        a.getValueMap().forEach(annotation::addPair);
+        setter.addAnnotation(annotation);
     }
 
     private void addAnnotations(NodeWithAnnotations<?> fieldAnnotated, List<AnnotationDefinition> annotations) {

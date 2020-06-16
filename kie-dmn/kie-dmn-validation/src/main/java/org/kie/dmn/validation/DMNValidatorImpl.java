@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -68,6 +69,7 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.DecisionService;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
 import org.kie.dmn.validation.dtanalysis.DMNDTAnalyser;
@@ -165,7 +167,8 @@ public class DMNValidatorImpl implements DMNValidator {
                 ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1x/dmn-validation-rules-know-req.drl", getClass() ),
                 ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1x/dmn-validation-rules-know-source.drl", getClass() ),
                 ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1_1/dmn-validation-rules-typeref.drl", getClass() ),
-                ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1_2/dmn-validation-rules-typeref.drl", getClass()));
+                ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1_2/dmn-validation-rules-typeref.drl", getClass() ),
+                ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1_2/dmn-validation-rules-dmndi.drl", getClass()));
         if( kieContainer != null ) {
             if (LOG.isDebugEnabled()) {
                 for (String kbName : kieContainer.getKieBaseNames()) {
@@ -334,7 +337,7 @@ public class DMNValidatorImpl implements DMNValidator {
                             results.addAll(model.getMessages());
                             otherModel_DMNModels.add(model);
                             if (flags.contains(ANALYZE_DECISION_TABLE)) {
-                                List<DTAnalysis> vs = validator.dmnDTValidator.analyse(model);
+                                List<DTAnalysis> vs = validator.dmnDTValidator.analyse(model, flags);
                                 List<DMNMessage> dtAnalysisResults = vs.stream().flatMap(a -> a.asDMNMessages().stream()).collect(Collectors.toList());
                                 results.addAllUnfiltered(dtAnalysisResults);
                             }
@@ -489,7 +492,7 @@ public class DMNValidatorImpl implements DMNValidator {
             results.addAll( validateCompilation( dmnModel ) );
         }
         if (flags.contains( ANALYZE_DECISION_TABLE )) {
-            results.addAllUnfiltered(validateDT(dmnModel));
+            results.addAllUnfiltered(analyseDT(dmnModel, flags));
         }
     }
 
@@ -563,8 +566,12 @@ public class DMNValidatorImpl implements DMNValidator {
         StatelessKieSession kieSession = kieContainer.get().newStatelessKieSession(kieSessionName);
         MessageReporter reporter = new MessageReporter();
         kieSession.setGlobal( "reporter", reporter );
-        
-        List<DMNModelInstrumentedBase> dmnModelElements = allChildren(dmnModel).collect(toList());
+
+        // exclude dynamicDecisionService for validation
+        List<DMNModelInstrumentedBase> dmnModelElements = allChildren(dmnModel)
+                       .filter(d -> !(d instanceof DecisionService &&
+                               Boolean.parseBoolean(d.getAdditionalAttributes().get(new QName("http://www.trisotech.com/2015/triso/modeling", "dynamicDecisionService")))))
+                       .collect(toList());
         BatchExecutionCommand batch = CommandFactory.newBatchExecution(Arrays.asList(CommandFactory.newInsertElements(dmnModelElements, "DEFAULT", false, "DEFAULT"),
                                                                                      CommandFactory.newInsertElements(otherModel_Definitions, "DMNImports", false, "DMNImports")));
         kieSession.execute(batch);
@@ -585,12 +592,12 @@ public class DMNValidatorImpl implements DMNValidator {
         return Collections.emptyList();
     }
 
-    private List<DMNMessage> validateDT(Definitions dmnModel) {
+    private List<DMNMessage> analyseDT(Definitions dmnModel, Set<Validation> flags) {
         if (dmnModel != null) {
             DMNCompilerImpl compiler = new DMNCompilerImpl(dmnCompilerConfig);
             DMNModel model = compiler.compile(dmnModel);
             if (model != null) {
-                List<DTAnalysis> vs = dmnDTValidator.analyse(model);
+                List<DTAnalysis> vs = dmnDTValidator.analyse(model, flags);
                 List<DMNMessage> results = vs.stream().flatMap(a -> a.asDMNMessages().stream()).collect(Collectors.toList());
                 return results;
             } else {

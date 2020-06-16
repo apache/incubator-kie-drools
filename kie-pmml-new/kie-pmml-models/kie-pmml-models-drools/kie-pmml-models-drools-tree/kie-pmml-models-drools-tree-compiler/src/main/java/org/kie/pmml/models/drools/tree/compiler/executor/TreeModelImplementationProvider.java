@@ -16,17 +16,16 @@
 package org.kie.pmml.models.drools.tree.compiler.executor;
 
 import java.util.Map;
-import java.util.function.Function;
 
 import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.tree.TreeModel;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.provider.DroolsModelProvider;
 import org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelFactory;
 import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel.PMML_MODEL_TYPE;
 
@@ -35,17 +34,27 @@ import static org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel.PMML_MODEL_
  */
 public class TreeModelImplementationProvider extends DroolsModelProvider<TreeModel, KiePMMLTreeModel> {
 
-    private static final Logger logger = LoggerFactory.getLogger(TreeModelImplementationProvider.class.getName());
-
     @Override
     public PMML_MODEL getPMMLModelType() {
-        logger.trace("getPMMLModelType");
         return PMML_MODEL_TYPE;
     }
 
     @Override
-    public KiePMMLTreeModel getKiePMMLDroolsModel(final DataDictionary dataDictionary, final Map<String, Function> transformationsMap, TreeModel model) {
-        logger.trace("getKiePMMLDroolsModel {} {} {}", dataDictionary, transformationsMap, model);
-        return KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary, transformationsMap, model);
+    public KiePMMLTreeModel getKiePMMLDroolsModel(DataDictionary dataDictionary, TreeModel model, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+        try {
+            return KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary, model, fieldTypeMap);
+        } catch (IllegalAccessException | InstantiationException e) {
+            throw new KiePMMLException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public KiePMMLDroolsAST getKiePMMLDroolsAST(DataDictionary dataDictionary, TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+        return KiePMMLTreeModelFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
+    }
+
+    @Override
+    public Map<String, String> getKiePMMLDroolsModelSourcesMap(DataDictionary dataDictionary, TreeModel model, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, String packageName) {
+        return KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(dataDictionary, model, fieldTypeMap, packageName);
     }
 }

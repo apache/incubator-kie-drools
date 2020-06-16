@@ -19,6 +19,7 @@ package org.drools.core.command.impl;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.drools.core.command.GetSessionClockCommand;
 import org.drools.core.command.runtime.AddEventListenerCommand;
@@ -51,6 +52,7 @@ import org.drools.core.command.runtime.process.RegisterWorkItemHandlerCommand;
 import org.drools.core.command.runtime.process.SignalEventCommand;
 import org.drools.core.command.runtime.process.StartCorrelatedProcessCommand;
 import org.drools.core.command.runtime.process.StartProcessCommand;
+import org.drools.core.command.runtime.process.StartProcessFromNodeIdsCommand;
 import org.drools.core.command.runtime.process.StartProcessInstanceCommand;
 import org.drools.core.command.runtime.rule.AgendaGroupSetFocusCommand;
 import org.drools.core.command.runtime.rule.ClearActivationGroupCommand;
@@ -106,6 +108,8 @@ import org.kie.internal.command.RegistryContext;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+import static java.util.Arrays.stream;
 
 public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     implements
@@ -579,5 +583,21 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
         
         return this.runner.execute(new GetProcessInstanceByCorrelationKeyCommand(correlationKey));
+    }
+
+
+    @Override
+    public ProcessInstance startProcessFromNodeIds(String processId, CorrelationKey key, Map<String, Object> params, String... nodeIds) {
+        StartProcessFromNodeIdsCommand command = new StartProcessFromNodeIdsCommand();
+        command.setProcessId(processId);
+        command.setParameters(params);
+        command.setNodeIds(stream(nodeIds).collect(Collectors.toList()));
+        command.setCorrelationKey(key);
+        return runner.execute(command);
+    }
+
+    @Override
+    public ProcessInstance startProcessFromNodeIds(String processId, Map<String, Object> params, String... nodeIds) {
+        return startProcessFromNodeIds(processId, null, params, nodeIds);
     }
 }

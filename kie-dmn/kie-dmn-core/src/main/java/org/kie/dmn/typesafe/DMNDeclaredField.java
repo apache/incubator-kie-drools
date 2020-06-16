@@ -28,10 +28,12 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.util.StringUtils;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.SimpleAnnotationDefinition;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.drools.core.util.StringUtils.ucFirst;
 
 public class DMNDeclaredField implements FieldDefinition {
 
@@ -41,13 +43,14 @@ public class DMNDeclaredField implements FieldDefinition {
     private String fieldName;
     private String originalMapKey;
     private DMNType fieldDMNType;
-    private List<AnnotationDefinition> annotations = new ArrayList<>();
+    private boolean withJacksonAnnotation;
 
-    DMNDeclaredField(DMNAllTypesIndex index, Map.Entry<String, DMNType> dmnField) {
+    DMNDeclaredField(DMNAllTypesIndex index, Map.Entry<String, DMNType> dmnField, boolean withJacksonAnnotation) {
         this.index = index;
-        this.fieldName = CodegenStringUtil.escapeIdentifier(dmnField.getKey());
+        this.fieldName = CodegenStringUtil.escapeIdentifier(StringUtils.lcFirst(dmnField.getKey()));
         this.originalMapKey = dmnField.getKey();
         this.fieldDMNType = dmnField.getValue();
+        this.withJacksonAnnotation = withJacksonAnnotation;
     }
 
     @Override
@@ -61,49 +64,19 @@ public class DMNDeclaredField implements FieldDefinition {
 
     @Override
     public String getObjectType() {
-        if (fieldDMNType.isCollection()) {
-            String typeName = getBaseType(fieldDMNType);
-            String typeNameWithPackage = withPackage(typeName);
-            return String.format("java.util.Collection<%s>", typeNameWithPackage);
-        } else {
-            return fieldTypeWithPackage();
+        String asJava = index.asJava(fieldDMNType);
+        if (fieldDMNType.isCollection() && fieldDMNType.isComposite() && fieldDMNType.getBaseType() == null) {
+            return DMNAllTypesIndex.juCollection(asJava); // Anonymous inner composite collection, need to render as a FIELD of Java type Collection<GeneratedType>
         }
-    }
-
-    private String fieldTypeWithPackage() {
-        return withPackage(getFieldNameWithAnyCheck());
-    }
-
-    private String getFieldNameWithAnyCheck() {
-        String name = fieldDMNType.getName();
-        if ("Any".equals(name)) {
-            return OBJECT_TYPE;
-        } else if (!fieldDMNType.getAllowedValues().isEmpty()) {
-            return getBaseType(fieldDMNType);
-        } else {
-            return name;
-        }
+        return asJava;
     }
 
     // This returns the generic type i.e. when Collection<String> then String
     private String fieldTypeUnwrapped() {
         if (fieldDMNType.isCollection()) {
-            String typeName = getBaseType(fieldDMNType);
-            return withPackage(typeName);
+            return index.asJava(DMNTypeUtils.genericOfCollection(fieldDMNType));
         }
-        return fieldTypeWithPackage();
-    }
-
-    private String withPackage(String typeName) {
-        String typeNameUpperCase = StringUtils.ucFirst(typeName);
-        Optional<DMNTypeSafePackageName> dmnTypeSafePackageName = index.namespaceOfClass(typeName);
-        return dmnTypeSafePackageName.map(p -> p.appendPackage(typeNameUpperCase)).orElse(typeNameUpperCase);
-    }
-
-    public String getBaseType(DMNType fieldType) {
-        Optional<DMNType> baseType = Optional.ofNullable(fieldType.getBaseType());
-        return baseType.map(DMNType::getName)
-                .orElse(OBJECT_TYPE);
+        throw new IllegalArgumentException();
     }
 
     @Override
@@ -112,7 +85,14 @@ public class DMNDeclaredField implements FieldDefinition {
     }
 
     @Override
-    public List<AnnotationDefinition> getAnnotations() {
+    public List<AnnotationDefinition> getterAnnotations() {
+        List<AnnotationDefinition> annotations = new ArrayList<>();
+        annotations.add(new SimpleAnnotationDefinition("org.kie.dmn.feel.lang.FEELProperty")
+                                .addValue("value", "\"" + originalMapKey + "\""));
+        if (withJacksonAnnotation) {
+            annotations.add(new SimpleAnnotationDefinition("com.fasterxml.jackson.annotation.JsonProperty")
+                                    .addValue("value", "\"" + originalMapKey + "\""));
+        }
         return annotations;
     }
 
@@ -138,20 +118,32 @@ public class DMNDeclaredField implements FieldDefinition {
 
     public BlockStmt createFromMapEntry(BlockStmt simplePropertyBlock,
                                         BlockStmt pojoPropertyBlock,
-                                        BlockStmt collectionsPropertyBlock) {
-        if (fieldDMNType.isCollection() && fieldIsDifferentThanObject()) {
+                                        BlockStmt collectionsPropertyBlock, BlockStmt collectionsBasic) {
+        if (fieldDMNType.isCollection() && fieldIsBasic()) {
+            return replaceTemplate(collectionsBasic, fieldTypeUnwrapped());
+        } else if (fieldDMNType.isCollection() && fieldIsDifferentThanObject()) {
             return replaceTemplate(collectionsPropertyBlock, fieldTypeUnwrapped());
         } else if (fieldDMNType.isComposite()) {
-            return replaceTemplate(pojoPropertyBlock, fieldTypeWithPackage());
+            return replaceTemplate(pojoPropertyBlock, getObjectType());
         } else if (fieldIsDifferentThanObject()) {
-            return replaceTemplate(simplePropertyBlock, fieldTypeWithPackage());
+            return replaceTemplate(simplePropertyBlock, getObjectType());
+        } else if (DMNTypeUtils.isFEELAny(fieldDMNType)) { // feel:Any
+            return replaceTemplate(simplePropertyBlock, getObjectType());
         } else {
             return new BlockStmt();
         }
     }
 
+    private boolean fieldIsBasic() {
+        return fieldDMNType.getBaseType() != null && !fieldDMNType.getBaseType().isComposite();
+    }
+
     private boolean fieldIsDifferentThanObject() {
-        return !fieldTypeUnwrapped().equals(OBJECT_TYPE);
+        if (DMNTypeUtils.isFEELAny(fieldDMNType)) {
+            return false;
+        }
+        boolean isOtherObject = fieldDMNType.isCollection() ? fieldTypeUnwrapped().equals(OBJECT_TYPE) : getObjectType().equals(OBJECT_TYPE);
+        return !isOtherObject;
     }
 
     private BlockStmt replaceTemplate(BlockStmt pojoPropertyBlock, String objectType) {
@@ -181,4 +173,19 @@ public class DMNDeclaredField implements FieldDefinition {
     private boolean propertyTypePlaceHolder(Object n) {
         return n.toString().equals("PropertyType");
     }
+
+    @Override
+    public Optional<String> overriddenGetterName() {
+        String value = "get" + CodegenStringUtil.escapeIdentifier(ucFirst(originalMapKey));
+        if (value.equals("getClass")) { // see Object#getClass() exists
+            value = "get_class";
+        }
+        return Optional.of(value);
+    }
+
+    @Override
+    public Optional<String> overriddenSetterName() {
+        return Optional.of("set" + CodegenStringUtil.escapeIdentifier(ucFirst(originalMapKey)));
+    }
+
 }

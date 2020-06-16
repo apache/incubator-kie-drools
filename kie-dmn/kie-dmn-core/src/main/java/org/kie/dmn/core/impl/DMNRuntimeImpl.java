@@ -278,6 +278,7 @@ public class DMNRuntimeImpl
                     }
                     Object c = coerceUsingType(originalValue,
                                                depType,
+                                               typeCheck,
                                                (r, t) -> MsgUtil.reportMessage(logger,
                                                                                DMNMessage.Severity.WARN,
                                                                                decisionService.getDecisionService(),
@@ -425,11 +426,14 @@ public class DMNRuntimeImpl
         }
     }
 
-    public static Object coerceUsingType(Object value, DMNType type, BiConsumer<Object, DMNType> nullCallback) {
+    public static Object coerceUsingType(Object value, DMNType type, boolean typeCheck, BiConsumer<Object, DMNType> nullCallback) {
         Object result = value;
         if (!type.isCollection() && value instanceof Collection && ((Collection<?>) value).size() == 1) {
             // as per Decision evaluation result.
             result = ((Collection<?>) value).toArray()[0];
+        }
+        if (!typeCheck) {
+            return result;
         }
         if (type.isAssignableValue(result)) {
             return result;

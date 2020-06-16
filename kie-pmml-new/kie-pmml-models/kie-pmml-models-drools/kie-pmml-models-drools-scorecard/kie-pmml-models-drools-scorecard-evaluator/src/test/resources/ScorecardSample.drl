@@ -1,0 +1,213 @@
+package sample_score
+
+import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder
+import org.dmg.pmml.SimplePredicate
+import org.kie.api.pmml.PMML4Result
+
+global PMML4Result $pmml4Result
+
+declare  AGE
+
+    value : double
+end
+
+declare  OCCUPATION
+
+    value : String
+end
+
+declare  RESIDENCESTATE
+
+    value : String
+end
+
+declare  VALIDLICENSE
+
+    value : boolean
+end
+
+declare  OVERALLSCORE
+
+    value : double
+end
+
+
+rule "_AgeScore"
+when
+    $statusHolder : KiePMMLStatusHolder( status == null )
+then
+
+$statusHolder.setStatus("_AgeScore");
+$statusHolder.accumulate(0.345);
+update($statusHolder);
+
+end
+
+rule "_AgeScore_0"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_AgeScore" )
+
+    AGE( value <= 5.0 )
+then
+
+$statusHolder.setStatus("_OccupationScore");
+$statusHolder.accumulate(10.0);
+$pmml4Result.addResultVariable("calculatedScore", null);
+update($statusHolder);
+
+end
+
+rule "_AgeScore_1"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_AgeScore" )
+
+    AGE( value >= 5.0 && value < 12.0 )
+then
+
+$statusHolder.setStatus("_OccupationScore");
+$statusHolder.accumulate(30.0);
+$pmml4Result.addResultVariable("calculatedScore", null);
+update($statusHolder);
+
+end
+
+rule "_AgeScore_2"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_AgeScore" )
+
+    AGE( value >= 13.0 && value < 44.0 )
+then
+
+$statusHolder.setStatus("_OccupationScore");
+$statusHolder.accumulate(40.0);
+$pmml4Result.addResultVariable("calculatedScore", null);
+update($statusHolder);
+
+end
+
+rule "_AgeScore_3"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_AgeScore" )
+
+    AGE( value >= 45.0 )
+then
+
+$statusHolder.setStatus("_OccupationScore");
+$statusHolder.accumulate(25.0);
+$pmml4Result.addResultVariable("calculatedScore", null);
+update($statusHolder);
+
+end
+
+rule "_OccupationScore_0"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_OccupationScore" )
+    OCCUPATION( value in ("SKYDIVER", "ASTRONAUT") )
+then
+
+$statusHolder.setStatus("_ResidenceStateScore");
+$statusHolder.accumulate(-10.0);
+$pmml4Result.addResultVariable("calculatedScore", null);
+update($statusHolder);
+
+end
+
+rule "_OccupationScore_1"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_OccupationScore" )
+    OCCUPATION( value in ("TEACHER", "INSTRUCTOR") )
+then
+
+$statusHolder.setStatus("_ResidenceStateScore");
+$statusHolder.accumulate(10.0);
+$pmml4Result.addResultVariable("calculatedScore", null);
+update($statusHolder);
+
+end
+
+rule "_OccupationScore_2"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_OccupationScore" )
+    OCCUPATION( value in ("PROGRAMMER", "STUDENT") )
+then
+
+$statusHolder.setStatus("_ResidenceStateScore");
+$statusHolder.accumulate(5.0);
+$pmml4Result.addResultVariable("calculatedScore", null);
+update($statusHolder);
+
+end
+
+rule "_ResidenceStateScore_0"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_ResidenceStateScore" )
+
+    RESIDENCESTATE( value == "AP" )
+then
+
+$statusHolder.setStatus("_ValidLicenseScore");
+$statusHolder.accumulate(-10.0);
+$pmml4Result.addResultVariable("calculatedScore", null);
+update($statusHolder);
+
+end
+
+rule "_ResidenceStateScore_1"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_ResidenceStateScore" )
+
+    RESIDENCESTATE( value == "KN" )
+then
+
+$statusHolder.setStatus("_ValidLicenseScore");
+$statusHolder.accumulate(10.0);
+$pmml4Result.addResultVariable("calculatedScore", null);
+update($statusHolder);
+
+end
+
+rule "_ResidenceStateScore_2"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_ResidenceStateScore" )
+
+    RESIDENCESTATE( value == "TN" )
+then
+
+$statusHolder.setStatus("_ValidLicenseScore");
+$statusHolder.accumulate(5.0);
+$pmml4Result.addResultVariable("calculatedScore", null);
+update($statusHolder);
+
+end
+
+rule "_ValidLicenseScore_0"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_ValidLicenseScore" )
+
+    VALIDLICENSE( value == true )
+then
+
+$statusHolder.setStatus("DONE");
+$statusHolder.accumulate(1.0);
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), $statusHolder.getAccumulator());
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable("calculatedScore", null);
+update($statusHolder);
+
+end
+
+rule "_ValidLicenseScore_1"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_ValidLicenseScore" )
+
+    VALIDLICENSE( value == false )
+then
+
+$statusHolder.setStatus("DONE");
+$statusHolder.accumulate(-1.0);
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), $statusHolder.getAccumulator());
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable("calculatedScore", null);
+update($statusHolder);
+
+end

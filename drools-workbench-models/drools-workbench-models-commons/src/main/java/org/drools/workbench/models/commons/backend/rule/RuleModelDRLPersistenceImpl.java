@@ -3100,7 +3100,9 @@ public class RuleModelDRLPersistenceImpl
                 if (eqPos > 0) {
                     String field = line.substring(0,
                                                   eqPos).trim();
-                    if ("java.text.SimpleDateFormat sdf".equals(field) || "org.drools.core.process.instance.WorkItemManager wim".equals(field)) {
+                    if ("java.text.SimpleDateFormat sdf".equals(field) ||
+                            "java.time.format.DateTimeFormatter dtf".equals(field) ||
+                            "org.drools.core.process.instance.WorkItemManager wim".equals(field)) {
                         addFreeFormLine = false;
                     }
                     String[] split = field.split(" ");

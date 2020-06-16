@@ -43,7 +43,7 @@ public class KiePMMLRegressionTableClassificationFactoryTest extends AbstractKie
         KiePMMLOutputField outputFieldNum = getOutputField("NUM-1", RESULT_FEATURE.PROBABILITY, "NumPred-0");
         KiePMMLOutputField outputFieldPrev = getOutputField("PREV", RESULT_FEATURE.PREDICTED_VALUE, null);
         List<KiePMMLOutputField> outputFields = Arrays.asList(outputFieldCat, outputFieldNum, outputFieldPrev);
-        Map<String, KiePMMLTableSourceCategory> retrieved = KiePMMLRegressionTableClassificationFactory.getRegressionTables(regressionTables, RegressionModel.NormalizationMethod.SOFTMAX, OpType.CATEGORICAL, outputFields, "targetField");
+        Map<String, KiePMMLTableSourceCategory> retrieved = KiePMMLRegressionTableClassificationFactory.getRegressionTables(regressionTables, RegressionModel.NormalizationMethod.SOFTMAX, OpType.CATEGORICAL, outputFields, "targetField", "packageName");
         assertNotNull(retrieved);
         assertEquals(3, retrieved.size());
         retrieved.values().forEach(kiePMMLTableSourceCategory -> commonValidateKiePMMLRegressionTable(kiePMMLTableSourceCategory.getSource()));

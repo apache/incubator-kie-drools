@@ -63,8 +63,8 @@ public interface GeneratedConstructor {
 class FullArgumentConstructor implements GeneratedConstructor {
 
     private final NodeWithConstructors<?> generatedClass;
-    private final Modifier.Keyword[] modifiers;
     private final boolean shouldCallSuper;
+    private final boolean publicConstructor;
     private List<? extends FieldDefinition> typeDeclarationFields;
 
     FullArgumentConstructor(NodeWithConstructors<?> generatedClass,
@@ -73,18 +73,21 @@ class FullArgumentConstructor implements GeneratedConstructor {
                             boolean shouldCallSuper) {
         this.generatedClass = generatedClass;
         this.typeDeclarationFields = typeDeclarationFields;
-        this.modifiers = publicConstructor ? new Modifier.Keyword[]{Modifier.publicModifier().getKeyword()} : new Modifier.Keyword[0];
+        this.publicConstructor = publicConstructor;
         this.shouldCallSuper = shouldCallSuper;
     }
 
     @Override
     public void generateConstructor(Collection<FieldDefinition> inheritedFields, List<FieldDefinition> keyFields) {
-
-        ConstructorDeclaration constructor = generatedClass.addConstructor(modifiers);
+        NodeList<Modifier> modifiers = publicConstructor ? new NodeList<>(Modifier.publicModifier()) : new NodeList<Modifier>();
+        ConstructorDeclaration constructor = new ConstructorDeclaration(modifiers, generatedClass.getNameAsString());
         NodeList<Statement> fieldAssignStatement = nodeList();
 
         MethodCallExpr superCall = new MethodCallExpr(null, "super");
         for (FieldDefinition typeField : inheritedFields) {
+            if (typeField.isStatic()) {
+                continue;
+            }
             String fieldName = typeField.getFieldName();
             addConstructorArgument(constructor, typeField.getObjectType(), fieldName);
             superCall.addArgument(fieldName);
@@ -97,7 +100,12 @@ class FullArgumentConstructor implements GeneratedConstructor {
             fieldAssignStatement.add(new ExpressionStmt(superCall));
         }
 
+        int nonStaticFields = 0;
         for (FieldDefinition fieldDefinition : typeDeclarationFields) {
+            if (fieldDefinition.isStatic()) {
+                continue;
+            }
+            nonStaticFields++;
             String fieldName = fieldDefinition.getFieldName();
             Type returnType = parseType(fieldDefinition.getObjectType());
             addConstructorArgument(constructor, returnType, fieldName);
@@ -106,12 +114,17 @@ class FullArgumentConstructor implements GeneratedConstructor {
             constructor.setBody(new BlockStmt(fieldAssignStatement));
         }
 
-        if (!keyFields.isEmpty() && keyFields.size() != inheritedFields.size() + typeDeclarationFields.size()) {
+        if (constructor.getParameters().isNonEmpty()) {
+            generatedClass.addMember( constructor );
+        }
+
+        if (!keyFields.isEmpty() && keyFields.size() != inheritedFields.size() + nonStaticFields) {
             generateKieFieldsConstructor(keyFields);
         }
     }
 
     private void generateKieFieldsConstructor(List<FieldDefinition> keyFields) {
+        Modifier.Keyword[] modifiers = publicConstructor ? new Modifier.Keyword[]{Modifier.publicModifier().getKeyword()} : new Modifier.Keyword[0];
         ConstructorDeclaration constructor = generatedClass.addConstructor(modifiers);
         NodeList<Statement> fieldStatements = nodeList();
         MethodCallExpr keySuperCall = new MethodCallExpr(null, "super");

@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -52,6 +51,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableRegressionFactory.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableRegressionFactory.addMethod;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableRegressionFactory.populateGetTargetCategory;
+import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 
 public class KiePMMLRegressionTableClassificationFactory {
 
@@ -69,18 +69,19 @@ public class KiePMMLRegressionTableClassificationFactory {
         // Avoid instantiation
     }
 
-    public static Map<String, KiePMMLTableSourceCategory> getRegressionTables(final List<RegressionTable> regressionTables, final RegressionModel.NormalizationMethod normalizationMethod, final OpType opType, final List<KiePMMLOutputField> outputFields, final String targetField) throws IOException {
+    public static Map<String, KiePMMLTableSourceCategory> getRegressionTables(final List<RegressionTable> regressionTables, final RegressionModel.NormalizationMethod normalizationMethod, final OpType opType, final List<KiePMMLOutputField> outputFields, final String targetField, final String packageName) throws IOException {
         logger.trace("getRegressionTables {}", regressionTables);
-        CompilationUnit templateCU = StaticJavaParser.parseResource(KIE_PMML_REGRESSION_TABLE_CLASSIFICATION_TEMPLATE_JAVA);
-        Map<String, KiePMMLTableSourceCategory> toReturn = KiePMMLRegressionTableRegressionFactory.getRegressionTables(regressionTables, RegressionModel.NormalizationMethod.NONE, targetField);
-        Map.Entry<String, String> regressionTableEntry = getRegressionTable(templateCU, toReturn, normalizationMethod, opType, outputFields, targetField);
+        CompilationUnit templateCU = getFromFileName(KIE_PMML_REGRESSION_TABLE_CLASSIFICATION_TEMPLATE_JAVA);
+        Map<String, KiePMMLTableSourceCategory> toReturn = KiePMMLRegressionTableRegressionFactory.getRegressionTables(regressionTables, RegressionModel.NormalizationMethod.NONE, targetField, packageName);
+        Map.Entry<String, String> regressionTableEntry = getRegressionTable(templateCU, toReturn, normalizationMethod, opType, outputFields, targetField, packageName);
         toReturn.put(regressionTableEntry.getKey(), new KiePMMLTableSourceCategory(regressionTableEntry.getValue(), ""));
         return toReturn;
     }
 
-    public static Map.Entry<String, String> getRegressionTable(final CompilationUnit templateCU, final Map<String, KiePMMLTableSourceCategory> regressionTablesMap, final RegressionModel.NormalizationMethod normalizationMethod, final OpType opType, final List<KiePMMLOutputField> outputFields, final String targetField) throws IOException {
+    public static Map.Entry<String, String> getRegressionTable(final CompilationUnit templateCU, final Map<String, KiePMMLTableSourceCategory> regressionTablesMap, final RegressionModel.NormalizationMethod normalizationMethod, final OpType opType, final List<KiePMMLOutputField> outputFields, final String targetField, final String packageName) throws IOException {
         logger.trace("getRegressionTable {}", regressionTablesMap);
         CompilationUnit cloneCU = templateCU.clone();
+        cloneCU.setPackageDeclaration(packageName);
         final REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod = REGRESSION_NORMALIZATION_METHOD.byName(normalizationMethod.value());
         final OP_TYPE op_type = OP_TYPE.byName(opType.value());
         ClassOrInterfaceDeclaration tableTemplate = cloneCU.getClassByName(KIE_PMML_REGRESSION_TABLE_CLASSIFICATION_TEMPLATE)
@@ -192,7 +193,7 @@ public class KiePMMLRegressionTableClassificationFactory {
     private static void populateGetProbabilityMapMethod(final RegressionModel.NormalizationMethod normalizationMethod, final ClassOrInterfaceDeclaration tableTemplate) {
         try {
             String methodName = String.format("get%sProbabilityMap", normalizationMethod.name());
-            templateEvaluate = StaticJavaParser.parseResource(KIE_PMML_GET_PROBABILITY_MAP_METHOD_TEMPLATE_JAVA);
+            templateEvaluate = getFromFileName(KIE_PMML_GET_PROBABILITY_MAP_METHOD_TEMPLATE_JAVA);
             cloneEvaluate = templateEvaluate.clone();
             ClassOrInterfaceDeclaration evaluateTemplateClass = cloneEvaluate.getClassByName(KIE_PMML_GET_PROBABILITY_MAP_METHOD_TEMPLATE)
                     .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));

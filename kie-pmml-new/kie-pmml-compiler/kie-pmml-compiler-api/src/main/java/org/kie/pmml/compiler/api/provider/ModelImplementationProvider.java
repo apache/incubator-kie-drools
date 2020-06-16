@@ -15,12 +15,8 @@
  */
 package org.kie.pmml.compiler.api.provider;
 
-import java.util.Map;
-import java.util.function.Function;
-
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Model;
-import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
@@ -33,13 +29,24 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
     PMML_MODEL getPMMLModelType();
 
     /**
-     * Creates a specific <code>KiePMMLModel</code> with the given <code>DataDictionary</code>, <b>transformationsMap</b>, and <code>Model</code>
      * @param dataDictionary
-     * @param transformationsMap
      * @param model
      * @param kBuilder Using <code>Object</code> to avoid coupling with drools
      * @return
      * @throws KiePMMLInternalException
      */
-    E getKiePMMLModel(final DataDictionary dataDictionary, final Map<String, Function> transformationsMap, T model, Object kBuilder);
+    E getKiePMMLModel(DataDictionary dataDictionary, T model, Object kBuilder);
+
+    /**
+     * Method to be called following a <b>kie-maven-plugin</b> invocation
+     *
+     * @param packageName the package into which put all the generated classes out of the given <code>Model</code>
+     *
+     * @param dataDictionary
+     * @param model
+     * @param kBuilder Using <code>Object</code> to avoid coupling with drools
+     * @return
+     * @throws KiePMMLInternalException
+     */
+    E getKiePMMLModelFromPlugin(String packageName, DataDictionary dataDictionary, T model, Object kBuilder);
 }

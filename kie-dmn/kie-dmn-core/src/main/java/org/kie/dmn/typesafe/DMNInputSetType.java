@@ -31,16 +31,19 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
 
 class DMNInputSetType implements TypeDefinition {
-
     List<DMNDeclaredField> fields = new ArrayList<>();
 
     Map<String, DMNType> fieldsKey = new HashMap<>();
 
     List<AnnotationDefinition> annotations = new ArrayList<>();
     private DMNAllTypesIndex index;
+    private String javadoc;
 
-    DMNInputSetType(DMNAllTypesIndex index) {
+    private boolean withJacksonAnnotation;
+
+    DMNInputSetType(DMNAllTypesIndex index, boolean withJacksonAnnotation) {
         this.index = index;
+        this.withJacksonAnnotation = withJacksonAnnotation;
     }
 
     public void addField(String key, DMNType type) {
@@ -59,7 +62,7 @@ class DMNInputSetType implements TypeDefinition {
 
     public void initFields() {
         for (Map.Entry<String, DMNType> f : fieldsKey.entrySet()) {
-            DMNDeclaredField dmnDeclaredField = new DMNDeclaredField(index, f);
+            DMNDeclaredField dmnDeclaredField = new DMNDeclaredField(index, f, withJacksonAnnotation);
             fields.add(dmnDeclaredField);
         }
     }
@@ -92,5 +95,14 @@ class DMNInputSetType implements TypeDefinition {
     @Override
     public List<FieldDefinition> findInheritedDeclaredFields() {
         return Collections.emptyList();
+    }
+
+    public void setJavadoc(String javadoc) {
+        this.javadoc = javadoc;
+    }
+
+    @Override
+    public Optional<String> getJavadoc() {
+        return Optional.of(this.javadoc);
     }
 }

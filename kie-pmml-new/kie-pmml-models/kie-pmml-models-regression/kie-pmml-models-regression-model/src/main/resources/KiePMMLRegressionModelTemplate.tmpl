@@ -21,10 +21,8 @@ import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 
 public class KiePMMLRegressionModelTemplate extends KiePMMLRegressionModel {
 
-    private static final String MODEL_NAME = "LinReg2";
-
     public KiePMMLRegressionModelTemplate() {
-        super(MODEL_NAME);
+        super(modelName);
         regressionTable = null;
         targetField = null;
         miningFunction = null;

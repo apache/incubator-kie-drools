@@ -15,6 +15,10 @@
 
 package org.drools.compiler.phreak;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -40,14 +44,12 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.TestCase.assertNotSame;
 import static junit.framework.TestCase.assertSame;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class RemoveRuleTest {
 
@@ -583,8 +585,8 @@ public class RemoveRuleTest {
         RuleTerminalNode rtn1 = getRtn( "org.kie.r1", kbase1 );
         RuleTerminalNode rtn2 = getRtn( "org.kie.r2", kbase1 );
 
-        assertEquals( 2, wm.getNodeMemory(rtn1).getSegmentMemories().length );
-        assertEquals( 2, wm.getNodeMemory(rtn2).getSegmentMemories().length );
+        assertEquals( 1, wm.getNodeMemory(rtn1).getSegmentMemories().length );
+        assertEquals( 1, wm.getNodeMemory(rtn2).getSegmentMemories().length );
 
         kbase1.removeRule("org.kie", "r2");
         assertEquals( 1, wm.getNodeMemory(rtn1).getSegmentMemories().length );
@@ -600,8 +602,8 @@ public class RemoveRuleTest {
         RuleTerminalNode rtn1 = getRtn( "org.kie.r1", kbase1 );
         RuleTerminalNode rtn2 = getRtn( "org.kie.r2", kbase1 );
 
-        assertEquals( 2, wm.getNodeMemory(rtn1).getSegmentMemories().length );
-        assertEquals( 2, wm.getNodeMemory(rtn2).getSegmentMemories().length );
+        assertEquals( 1, wm.getNodeMemory(rtn1).getSegmentMemories().length );
+        assertEquals( 1, wm.getNodeMemory(rtn2).getSegmentMemories().length );
 
         kbase1.removeRule("org.kie", "r2");
         assertEquals( 1, wm.getNodeMemory(rtn1).getSegmentMemories().length );

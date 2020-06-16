@@ -17,23 +17,25 @@ package org.kie.pmml.models.drools.tuples;
 
 import java.util.Objects;
 
+import org.kie.pmml.commons.model.enums.OPERATOR;
+
 /**
  * Tupla representing the operator and the value to be applied to a given field
  */
 public class KiePMMLOperatorValue {
 
     public static final String VALUE_CONSTRAINT_PATTERN = "value %s %s";
-    private final String operator;
+    private final OPERATOR operator;
     private final Object value;
     private final String constraintsString;
 
-    public KiePMMLOperatorValue(String operator, Object value) {
+    public KiePMMLOperatorValue(OPERATOR operator, Object value) {
         this.operator = operator;
         this.value = value;
         constraintsString = buildConstraintsString();
     }
 
-    public String getOperator() {
+    public OPERATOR getOperator() {
         return operator;
     }
 
@@ -72,6 +74,6 @@ public class KiePMMLOperatorValue {
     }
 
     protected String buildConstraintsString() {
-        return String.format(VALUE_CONSTRAINT_PATTERN, operator, value);
+        return String.format(VALUE_CONSTRAINT_PATTERN, operator.getOperator(), value);
     }
 }

@@ -21,7 +21,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
-import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
+import org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR;
+import org.kie.pmml.commons.model.enums.OPERATOR;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 
 import static org.junit.Assert.assertEquals;
@@ -29,16 +30,16 @@ import static org.junit.Assert.assertEquals;
 public class KiePMMLFieldOperatorValueTest {
 
     private static final String NAME = "NAME";
-    private static final String OPERATOR = "OPERATOR";
+    private static final BOOLEAN_OPERATOR BOOLEANOPERATOR = BOOLEAN_OPERATOR.SURROGATE;
 
     @Test
     public void getConstraintsAsString() {
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = getKiePMMLFieldOperatorValueWithName();
-        String expected = "value < 35 OPERATOR value > 85";
+        String expected = "value < 35 surrogate value > 85";
         String retrieved = kiePMMLFieldOperatorValue.getConstraintsAsString();
         assertEquals(expected, retrieved);
         kiePMMLFieldOperatorValue = getKiePMMLFieldOperatorValueWithoutName();
-        expected = "value < 35 OPERATOR value > 85";
+        expected = "value < 35 surrogate value > 85";
         retrieved = kiePMMLFieldOperatorValue.buildConstraintsString();
         assertEquals(expected, retrieved);
     }
@@ -46,29 +47,29 @@ public class KiePMMLFieldOperatorValueTest {
     @Test
     public void buildConstraintsString() {
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = getKiePMMLFieldOperatorValueWithName();
-        String expected = "value < 35 OPERATOR value > 85";
+        String expected = "value < 35 surrogate value > 85";
         String retrieved = kiePMMLFieldOperatorValue.buildConstraintsString();
         assertEquals(expected, retrieved);
         kiePMMLFieldOperatorValue = getKiePMMLFieldOperatorValueWithoutName();
-        expected = "value < 35 OPERATOR value > 85";
+        expected = "value < 35 surrogate value > 85";
         retrieved = kiePMMLFieldOperatorValue.buildConstraintsString();
         assertEquals(expected, retrieved);
     }
 
     private KiePMMLFieldOperatorValue getKiePMMLFieldOperatorValueWithName() {
-        List<KiePMMLOperatorValue> kiePMMLOperatorValues = Arrays.asList(new KiePMMLOperatorValue("<", 35),
-                                                                         new KiePMMLOperatorValue(">", 85));
-        return new KiePMMLFieldOperatorValue(NAME, OPERATOR, kiePMMLOperatorValues, Collections.emptyList());
+        List<KiePMMLOperatorValue> kiePMMLOperatorValues = Arrays.asList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35),
+                                                                         new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85));
+        return new KiePMMLFieldOperatorValue(NAME, BOOLEANOPERATOR, kiePMMLOperatorValues, Collections.emptyList());
     }
 
     private KiePMMLFieldOperatorValue getKiePMMLFieldOperatorValueWithoutName() {
         String humidityField = "HUMIDITY";
         final List<KiePMMLFieldOperatorValue> nestedKiePMMLFieldOperatorValues = Arrays
-                .asList(new KiePMMLFieldOperatorValue(humidityField, "or", Collections.singletonList(new KiePMMLOperatorValue("<", 56)), null),
-                        new KiePMMLFieldOperatorValue(humidityField, "or", Collections.singletonList(new KiePMMLOperatorValue(">", 91)), null));
-        List<KiePMMLOperatorValue> kiePMMLOperatorValues = Arrays.asList(new KiePMMLOperatorValue("<", 35),
-                                                                         new KiePMMLOperatorValue(">", 85));
+                .asList(new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 56)), null),
+                        new KiePMMLFieldOperatorValue(humidityField, BOOLEAN_OPERATOR.OR, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 91)), null));
+        List<KiePMMLOperatorValue> kiePMMLOperatorValues = Arrays.asList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35),
+                                                                         new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85));
 
-        return new KiePMMLFieldOperatorValue(null, OPERATOR, kiePMMLOperatorValues, nestedKiePMMLFieldOperatorValues);
+        return new KiePMMLFieldOperatorValue(null, BOOLEANOPERATOR, kiePMMLOperatorValues, nestedKiePMMLFieldOperatorValues);
     }
 }

@@ -44,6 +44,7 @@ public class KiePMMLOutputFieldFactory {
                 .withResultFeature(RESULT_FEATURE.byName(outputField.getResultFeature().value()))
                 .withTargetField(outputField.getTargetField() != null ? outputField.getTargetField().getValue() : null)
                 .withValue(outputField.getValue())
+                .withRank(outputField.getRank())
                 .build();
     }
 }

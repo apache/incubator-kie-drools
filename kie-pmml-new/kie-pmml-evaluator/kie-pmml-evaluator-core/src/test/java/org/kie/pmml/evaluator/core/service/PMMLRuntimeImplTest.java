@@ -85,7 +85,7 @@ public class PMMLRuntimeImplTest {
         }
 
         @Override
-        public Object evaluate(Map<String, Object> requestData) {
+        public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData) {
             return null;
         }
 

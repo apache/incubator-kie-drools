@@ -24,5 +24,7 @@ public interface AnnotationDefinition {
 
     Map<String, String> getValueMap();
 
+    AnnotationDefinition addValue(String key, String value);
+
     boolean shouldAddAnnotation();
 }

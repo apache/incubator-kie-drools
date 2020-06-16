@@ -199,9 +199,7 @@ public abstract class AbstractKieModule
                 // Messages already populated by the buildKnowlegePackages
                 return new KnowledgePackagesBuildResult(true, pkgs);
             }
-
-            // if we get to here, then we know the pkgs is now cached
-            pkgs = getKnowledgePackagesForKieBase(kBaseModel.getName());
+            pkgs = kbuilder.getKnowledgePackages();
         }
 
         return new KnowledgePackagesBuildResult(false, pkgs);

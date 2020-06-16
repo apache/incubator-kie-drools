@@ -16,7 +16,6 @@
 package org.kie.pmml.models.drools.tree.model;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
@@ -30,7 +29,7 @@ public class KiePMMLTreeModel extends KiePMMLDroolsModel {
 
     private final String algorithmName;
 
-    private KiePMMLTreeModel(String name, List<KiePMMLExtension> extensions, String algorithmName) {
+    protected KiePMMLTreeModel(String name, List<KiePMMLExtension> extensions, String algorithmName) {
         super(name, extensions);
         this.algorithmName = algorithmName;
     }
@@ -45,11 +44,6 @@ public class KiePMMLTreeModel extends KiePMMLDroolsModel {
 
     public String getAlgorithmName() {
         return algorithmName;
-    }
-
-    @Override
-    public Object evaluate(Map<String, Object> requestData) {
-        return null;
     }
 
     @Override

@@ -17,6 +17,7 @@
 package org.kie.dmn.core.pmml;
 
 import org.drools.compiler.kie.builder.impl.DrlProject;
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -48,13 +49,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.kie.api.pmml.PMMLConstants.LEGACY;
 
-public class DMNRuntimeKiePMMLTest {
+public class DMNRuntimeKiePMMLTest extends AbstractDMNPMMLTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNRuntimeKiePMMLTest.class);
 
     public DMNRuntimeKiePMMLTest() {
         super();
+    }
+
+    @Before
+    public void resetEnvironment() {
+        LOG.debug("resetEnvironment");
+        resetEnvironment(LEGACY.getName());
     }
 
     @Test
@@ -82,7 +90,7 @@ public class DMNRuntimeKiePMMLTest {
         assertEquals(0, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size());
 
         kfs.write("src/main/resources/org/acme/KiePMMLScoreCard.dmn", ks.getResources().newClassPathResource("KiePMMLScoreCard_NOPMMLmodelName.dmn", DMNRuntimeKiePMMLTest.class));
-        KieBuilderSet kieBuilderSet = ((InternalKieBuilder) kieBuilder).createFileSet( Message.Level.WARNING, "src/main/resources/org/acme/KiePMMLScoreCard.dmn" );
+        KieBuilderSet kieBuilderSet = ((InternalKieBuilder) kieBuilder).createFileSet(Message.Level.WARNING, "src/main/resources/org/acme/KiePMMLScoreCard.dmn");
         IncrementalResults addResults = kieBuilderSet.build();
         LOG.debug("getAddedMessages: {}", addResults.getAddedMessages());
         assertFalse(addResults.getAddedMessages().isEmpty());

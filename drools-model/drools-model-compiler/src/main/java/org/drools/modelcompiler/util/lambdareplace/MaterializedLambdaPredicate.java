@@ -46,6 +46,7 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
     @Override
     void createMethodDeclaration(EnumDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("test", Modifier.Keyword.PUBLIC);
+        methodDeclaration.setThrownExceptions(NodeList.nodeList(parseClassOrInterfaceType("java.lang.Exception")));
         methodDeclaration.addAnnotation("Override");
         methodDeclaration.setType(new PrimitiveType(PrimitiveType.Primitive.BOOLEAN));
 

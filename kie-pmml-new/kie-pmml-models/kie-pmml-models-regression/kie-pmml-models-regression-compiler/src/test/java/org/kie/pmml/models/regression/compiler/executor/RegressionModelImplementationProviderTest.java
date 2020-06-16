@@ -21,12 +21,11 @@ import org.dmg.pmml.regression.RegressionModel;
 import org.junit.Test;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.compiler.testutils.TestUtils;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
-//import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
 
 public class RegressionModelImplementationProviderTest {
 
@@ -47,6 +46,8 @@ public class RegressionModelImplementationProviderTest {
         assertNotNull(pmml);
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
+        final KiePMMLRegressionModel kiePMMLModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(), (RegressionModel) pmml.getModels().get(0), RELEASE_ID);
+        assertNotNull(kiePMMLModel);
     }
 
     @Test

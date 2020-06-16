@@ -16,10 +16,13 @@
 
 package org.kie.dmn.core.pmml;
 
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Map;
 
 import org.drools.compiler.kie.builder.impl.DrlProject;
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -39,10 +42,12 @@ import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
+import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.services.KieAssemblersImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,8 +60,11 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.kie.api.pmml.PMMLConstants.KIE_PMML_IMPLEMENTATION;
+import static org.kie.api.pmml.PMMLConstants.LEGACY;
+import static org.kie.dmn.core.util.DMNRuntimeUtil.resetServices;
 
-public class DMNRuntimePMMLTest {
+public class DMNRuntimePMMLTest extends AbstractDMNPMMLTest {
 
     public DMNRuntimePMMLTest() {
         super();
@@ -65,6 +73,12 @@ public class DMNRuntimePMMLTest {
     public static final Logger LOG = LoggerFactory.getLogger(DMNRuntimePMMLTest.class);
 
     private static final double COMPARISON_DELTA = 0.000001;
+
+    @Before
+    public void resetEnvironment() {
+        LOG.debug("resetEnvironment");
+        resetEnvironment(LEGACY.getName());
+    }
 
     @Test
     public void testBasic() {
@@ -80,6 +94,16 @@ public class DMNRuntimePMMLTest {
                                                                                        DMNRuntimePMMLTest.class,
                                                                                        "test_scorecard.pmml");
         runDMNModelInvokingPMML(runtime);
+    }
+
+    @Test
+    public void testBasicNoKieAssembler() {
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
+                                                 .setRelativeImportResolver((ns, n, uri) -> new InputStreamReader(DMNRuntimePMMLTest.class.getResourceAsStream(uri)))
+                                                 .buildConfiguration()
+                                                 .fromResources(Arrays.asList(ResourceFactory.newClassPathResource("KiePMMLScoreCard.dmn", DMNRuntimePMMLTest.class)))
+                                                 .getOrElseThrow(e -> new RuntimeException("Error compiling DMN model(s)", e));
+        runDMNModelInvokingPMML(dmnRuntime);
     }
 
     static void runDMNModelInvokingPMML(final DMNRuntime runtime) {

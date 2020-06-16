@@ -29,6 +29,7 @@ import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodDefinit
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
+import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 
 class DMNDeclaredType implements TypeDefinition {
 
@@ -36,16 +37,28 @@ class DMNDeclaredType implements TypeDefinition {
     private final DMNType dmnType;
     List<DMNDeclaredField> fields = new ArrayList<>();
     List<AnnotationDefinition> annotations = new ArrayList<>();
+    private String javadoc;
+    private boolean withJacksonAnnotation;
 
-    DMNDeclaredType(DMNAllTypesIndex index, DMNType dmnType) {
+    DMNDeclaredType(DMNAllTypesIndex index, DMNType dmnType, boolean withJacksonAnnotation) {
         this.index = index;
         this.dmnType = dmnType;
+        this.withJacksonAnnotation = withJacksonAnnotation;
         initFields();
     }
 
     @Override
     public String getTypeName() {
-        return StringUtils.ucFirst(dmnType.getName());
+        return asJavaSimpleName(dmnType);
+    }
+
+    public static String asJavaSimpleName(DMNType dmnType) {
+        String sn = StringUtils.ucFirst(CodegenStringUtil.escapeIdentifier(dmnType.getName()));
+        if (DMNTypeUtils.isInnerComposite(dmnType)) {
+            String parentSN = asJavaSimpleName(DMNTypeUtils.getBelongingType(dmnType));
+            sn = parentSN + "_" + sn;
+        }
+        return sn;
     }
 
     @Override
@@ -56,7 +69,7 @@ class DMNDeclaredType implements TypeDefinition {
     private void initFields() {
         Map<String, DMNType> dmnFields = dmnType.getFields();
         for (Map.Entry<String, DMNType> field : dmnFields.entrySet()) {
-            DMNDeclaredField dmnDeclaredField = new DMNDeclaredField(index, field);
+            DMNDeclaredField dmnDeclaredField = new DMNDeclaredField(index, field, withJacksonAnnotation);
             fields.add(dmnDeclaredField);
         }
     }
@@ -70,6 +83,7 @@ class DMNDeclaredType implements TypeDefinition {
     public Optional<String> getSuperTypeName() {
         return Optional.ofNullable(dmnType.getBaseType())
                 .map(DMNType::getName)
+                .map(StringUtils::ucFirst)
                 .filter(index::isIndexedClass);
     }
 
@@ -91,5 +105,14 @@ class DMNDeclaredType implements TypeDefinition {
     @Override
     public List<FieldDefinition> findInheritedDeclaredFields() {
         return Collections.emptyList();
+    }
+
+    public void setJavadoc(String javadoc) {
+        this.javadoc = javadoc;
+    }
+
+    @Override
+    public Optional<String> getJavadoc() {
+        return Optional.of(this.javadoc);
     }
 }

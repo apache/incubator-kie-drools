@@ -82,7 +82,7 @@ public class JavaFunction
         Class[] paramTypes = method.getParameterTypes();
         params = adjustForVariableParameters( paramTypes, params );
         for( int i = 0; i < paramTypes.length; i++ ) {
-            if( paramTypes[i].isAssignableFrom( params[i].getClass() ) ) {
+            if (params[i] != null && paramTypes[i].isAssignableFrom(params[i].getClass())) {
                 actual[i] = params[i];
             } else {
                 // try to coerce

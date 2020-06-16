@@ -16,12 +16,7 @@
 
 package org.kie.dmn.signavio;
 
-import static org.hamcrest.Matchers.contains;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,27 +35,19 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 public class SignavioTest {
     public static final Logger LOG = LoggerFactory.getLogger(SignavioTest.class);
     
     @Test
     public void test() {
-        final KieServices ks = KieServices.Factory.get();
-        final KieFileSystem kfs = ks.newKieFileSystem();
-        
-        KieModuleModel kmm = ks.newKieModuleModel();
-        kmm.setConfigurationProperty("org.kie.dmn.profiles.signavio", "org.kie.dmn.signavio.KieDMNSignavioProfile");
-        kfs.writeKModuleXML(kmm.toXML());
-        kfs.write(ks.getResources().newClassPathResource("Test_Signavio_multiple.dmn", this.getClass()));
-        
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-        Results results = kieBuilder.getResults();
-        LOG.info("buildAll() completed.");
-        results.getMessages(Level.WARNING).forEach( e -> LOG.warn("{}", e));
-        assertTrue( results.getMessages(Level.WARNING).size() == 0 );
-
-        final KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
-        DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        DMNRuntime runtime = createRuntime("Test_Signavio_multiple.dmn");
         
         List<DMNModel> models = runtime.getModels();
         
@@ -68,41 +55,26 @@ public class SignavioTest {
         context.set("persons", Arrays.asList(new String[]{"p1", "p2"}));
         
         DMNModel model0 = models.get(0);
-        System.out.println("EVALUATE ALL:");
+        LOG.info("EVALUATE ALL:");
         DMNResult evaluateAll = runtime.evaluateAll(model0, context);
-        System.out.println(evaluateAll);
+        LOG.info("{}", evaluateAll);
         
         assertThat( (List<?>) evaluateAll.getContext().get( "Greeting for each Person in Persons" ), contains( "Hello p1", "Hello p2" ) );
     }
 
     @Test
     public void testUsingSignavioFunctions() {
-        final KieServices ks = KieServices.Factory.get();
-        final KieFileSystem kfs = ks.newKieFileSystem();
-
-        KieModuleModel kmm = ks.newKieModuleModel();
-        kmm.setConfigurationProperty("org.kie.dmn.profiles.signavio", "org.kie.dmn.signavio.KieDMNSignavioProfile");
-        kfs.writeKModuleXML(kmm.toXML());
-        kfs.write(ks.getResources().newClassPathResource("Using_Signavio_functions.dmn", this.getClass()));
-
-        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
-        Results results = kieBuilder.getResults();
-        LOG.info("buildAll() completed.");
-        results.getMessages(Level.WARNING).forEach(e -> LOG.warn("{}", e));
-        assertTrue(results.getMessages(Level.WARNING).size() == 0);
-
-        final KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
-        DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        DMNRuntime runtime = createRuntime("Using_Signavio_functions.dmn");
 
         List<DMNModel> models = runtime.getModels();
 
         DMNContext context = runtime.newContext();
 
         DMNModel model0 = models.get(0);
-        System.out.println("EVALUATE ALL:");
+        LOG.info("EVALUATE ALL:");
         DMNResult evaluateAll = runtime.evaluateAll(model0, context);
-        System.out.println(evaluateAll);
-        System.out.println(evaluateAll.getContext());
+        LOG.info("{}", evaluateAll);
+        LOG.info("{}", evaluateAll.getContext());
         evaluateAll.getMessages().forEach(System.out::println);
 
         assertEquals(true, evaluateAll.getContext().get("myContext"));
@@ -113,22 +85,8 @@ public class SignavioTest {
      */
     @Test
     public void testUsingSignavioFunctionsInLiteralExpression() {
-        final KieServices ks = KieServices.Factory.get();
-        final KieFileSystem kfs = ks.newKieFileSystem();
+        DMNRuntime runtime = createRuntime("Starts_with_an_A.dmn");
 
-        KieModuleModel kmm = ks.newKieModuleModel();
-        kmm.setConfigurationProperty("org.kie.dmn.profiles.signavio", "org.kie.dmn.signavio.KieDMNSignavioProfile");
-        kfs.writeKModuleXML(kmm.toXML());
-        kfs.write(ks.getResources().newClassPathResource("Starts_with_an_A.dmn", this.getClass()));
-
-        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
-        Results results = kieBuilder.getResults();
-        LOG.info("buildAll() completed.");
-        results.getMessages(Level.WARNING).forEach(e -> LOG.warn("{}", e));
-        assertTrue(results.getMessages(Level.WARNING).size() == 0);
-
-        final KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
-        DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
         assertStartsWithAnA(runtime, "Abc", true);
         assertStartsWithAnA(runtime, "Xyz", false);
     }
@@ -144,5 +102,86 @@ public class SignavioTest {
         assertFalse(evaluateAll.getMessages().toString(), evaluateAll.hasErrors());
 
         assertEquals(startsWithAnA, evaluateAll.getContext().get("startsWithAnA"));
+    }
+
+    @Test
+    public void testSurveyMIDSUM() {
+        DMNRuntime runtime = createRuntime("survey MID SUM.dmn");
+        checkSurveryMID(runtime, Arrays.asList(1, 2, 3), new BigDecimal(6));
+    }
+
+    private void checkSurveryMID(DMNRuntime runtime, Object numbers, Object iterating) {
+        List<DMNModel> models = runtime.getModels();
+
+        DMNContext context = runtime.newContext();
+        context.set("numbers", numbers);
+
+        DMNModel model0 = models.get(0);
+        LOG.info("EVALUATE ALL:");
+        DMNResult evaluateAll = runtime.evaluateAll(model0, context);
+        LOG.info("{}", evaluateAll);
+
+        assertThat(evaluateAll.getDecisionResultByName("iterating").getResult(), is(iterating));
+    }
+
+    private DMNRuntime createRuntime(String modelFileName) {
+        final KieServices ks = KieServices.Factory.get();
+        final KieFileSystem kfs = ks.newKieFileSystem();
+
+        KieModuleModel kmm = ks.newKieModuleModel();
+        kmm.setConfigurationProperty("org.kie.dmn.profiles.signavio", "org.kie.dmn.signavio.KieDMNSignavioProfile");
+        kfs.writeKModuleXML(kmm.toXML());
+        kfs.write(ks.getResources().newClassPathResource(modelFileName, this.getClass()));
+
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        Results results = kieBuilder.getResults();
+        LOG.info("buildAll() completed.");
+        results.getMessages(Level.WARNING).forEach(e -> LOG.warn("{}", e));
+        assertTrue(results.getMessages(Level.WARNING).size() == 0);
+
+        final KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
+        DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        return runtime;
+    }
+
+    @Test
+    public void testSurveyMIDMIN() {
+        DMNRuntime runtime = createRuntime("survey MID MIN.dmn");
+        checkSurveryMID(runtime, Arrays.asList(1, 2, 3), new BigDecimal(1));
+    }
+
+    @Test
+    public void testSurveyMIDMAX() {
+        DMNRuntime runtime = createRuntime("survey MID MAX.dmn");
+        checkSurveryMID(runtime, Arrays.asList(1, 2, 3), new BigDecimal(3));
+    }
+
+    @Test
+    public void testSurveyMIDCOUNT() {
+        DMNRuntime runtime = createRuntime("survey MID COUNT.dmn");
+        checkSurveryMID(runtime, Arrays.asList(1, 1, 1), new BigDecimal(3));// the COUNT in MID is list size, checked on Simulator.
+    }
+
+    @Test
+    public void testSurveyMIDALLTRUE() {
+        DMNRuntime runtime = createRuntime("survey MID ALLTRUE.dmn");
+        checkSurveryMID(runtime, Arrays.asList(1, 2), true);
+        checkSurveryMID(runtime, Arrays.asList(-1, 2), false);
+    }
+
+    @Test
+    public void testSurveyMIDANYTRUE() {
+        DMNRuntime runtime = createRuntime("survey MID ANYTRUE.dmn");
+        checkSurveryMID(runtime, Arrays.asList(1, -2), true);
+        checkSurveryMID(runtime, Arrays.asList(-1, -2), false);
+    }
+
+    @Test
+    public void testSurveyMIDALLFALSE() {
+        DMNRuntime runtime = createRuntime("survey MID ALLFALSE.dmn");
+        checkSurveryMID(runtime, Arrays.asList(1, 2), false);
+        checkSurveryMID(runtime, Arrays.asList(-1, 2), false);
+        checkSurveryMID(runtime, Arrays.asList(1, -2), false);
+        checkSurveryMID(runtime, Arrays.asList(-1, -2), true);
     }
 }

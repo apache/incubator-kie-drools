@@ -21,10 +21,12 @@ import java.util.StringJoiner;
 import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
+import org.kie.pmml.models.drools.tuples.KiePMMLReasonCodeAndValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.DONE;
+import static org.kie.pmml.commons.model.enums.RESULT_FEATURE.PREDICTED_VALUE;
 
 /**
  * Class used to generate the <b>rhs</b> of a rule (descr) out of a <b>KiePMMLDroolsRule</b>
@@ -35,7 +37,13 @@ public class KiePMMLDescrRhsFactory {
     public static final String ADD_PMML4_RESULT_VARIABLE = "\r\n" + KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER + ".addResultVariable(" + KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER + ".getResultObjectName()" + ", %s);";
     public static final String ADD_PMML4_OUTPUT_FIELD = "\r\n" + KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER + ".addResultVariable(\"%s\", %s);";
 
-    public static final String UPDATE_STATUS_HOLDER = "\r\n" + KiePMMLDescrRulesFactory.STATUS_HOLDER + ".setStatus(\"%s\");\r\nupdate(" + KiePMMLDescrRulesFactory.STATUS_HOLDER + ");";
+    public static final String ADD_OUTPUTFIELD_VALUE = "\r\n" + KiePMMLDescrFactory.OUTPUTFIELDS_MAP_IDENTIFIER + ".put(\"%s\", %s);";
+
+    public static final String UPDATE_STATUS_HOLDER_STATUS = "\r\n" + KiePMMLDescrRulesFactory.STATUS_HOLDER + ".setStatus(\"%s\");";
+    public static final String UPDATE_STATUS_HOLDER_ACCUMULATE = "\r\n" + KiePMMLDescrRulesFactory.STATUS_HOLDER + ".accumulate(%s);";
+    public static final String UPDATE_STATUS_HOLDER = "\r\nupdate(" + KiePMMLDescrRulesFactory.STATUS_HOLDER + ");";
+    public static final String RETURN_ACCUMULATION = "\r\n" + KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER + ".addResultVariable($pmml4Result.getResultObjectName(), $statusHolder.getAccumulator());";
+
     public static final String FOCUS_AGENDA_GROUP = "\r\nkcontext.getKieRuntime().getAgenda().getAgendaGroup( \"%s\" ).setFocus();";
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLDescrRhsFactory.class.getName());
@@ -62,42 +70,56 @@ public class KiePMMLDescrRhsFactory {
     protected void declareDefaultThen(final KiePMMLDroolsRule rule) {
         StringJoiner joiner = new StringJoiner("");
         if (rule.getStatusToSet() != null) {
-            joiner.add(String.format(UPDATE_STATUS_HOLDER, rule.getStatusToSet()));
+            joiner.add(String.format(UPDATE_STATUS_HOLDER_STATUS, rule.getStatusToSet()));
+        }
+        if (rule.getStatusToSet() != null || rule.getToAccumulate() != null) {
+            joiner.add(UPDATE_STATUS_HOLDER);
         }
         commonDeclareThen(rule, joiner);
         builder.rhs(joiner.toString());
     }
 
     protected void declareIfThen(final KiePMMLDroolsRule rule) {
-        builder.rhs(String.format(UPDATE_STATUS_HOLDER, rule.getStatusToSet()));
+        builder.rhs(String.format(UPDATE_STATUS_HOLDER_STATUS, rule.getStatusToSet()));
         StringJoiner joiner = new StringJoiner("");
-        joiner.add(String.format(UPDATE_STATUS_HOLDER, DONE));
+        joiner.add(String.format(UPDATE_STATUS_HOLDER_STATUS, DONE));
         commonDeclareThen(rule, joiner);
         builder.namedRhs(KiePMMLDescrRulesFactory.BREAK_LABEL, joiner.toString());
     }
 
     protected void commonDeclareThen(final KiePMMLDroolsRule rule, final StringJoiner joiner) {
+        if (rule.getFocusedAgendaGroup() != null) {
+            joiner.add(String.format(FOCUS_AGENDA_GROUP, rule.getFocusedAgendaGroup()));
+        }
+        if (rule.getToAccumulate() != null) {
+            joiner.add(String.format(UPDATE_STATUS_HOLDER_ACCUMULATE, rule.getToAccumulate()));
+        }
+        if (rule.isAccumulationResult()) {
+            joiner.add(RETURN_ACCUMULATION);
+        }
         if (rule.getResultCode() != null) {
             joiner.add(String.format(SET_PMML4_RESULT_CODE, rule.getResultCode()));
         }
         if (rule.getResult() != null) {
             joiner.add(String.format(ADD_PMML4_RESULT_VARIABLE, rule.getResult()));
         }
-        if (rule.getFocusedAgendaGroup() != null) {
-            joiner.add(String.format(FOCUS_AGENDA_GROUP, rule.getFocusedAgendaGroup()));
+        if (rule.getReasonCodeAndValue() != null) {
+            final KiePMMLReasonCodeAndValue reasonCodeAndValue = rule.getReasonCodeAndValue();
+            joiner.add(String.format(ADD_OUTPUTFIELD_VALUE, reasonCodeAndValue.getReasonCode(), reasonCodeAndValue.getValue()));
         }
         if (rule.getOutputFields() != null) {
-            commonDeclareOutputFields(rule.getOutputFields(), rule.getResult(), joiner);
+            if (rule.getResult() != null) {
+                commonDeclareOutputFields(rule.getOutputFields(), rule.getResult(), joiner);
+            } else if (rule.isAccumulationResult()) {
+                commonDeclareOutputFields(rule.getOutputFields(), "$statusHolder.getAccumulator()", joiner);
+            }
         }
     }
 
     protected void commonDeclareOutputFields(final List<KiePMMLOutputField> outputFields, final Object result, final StringJoiner joiner) {
         outputFields.forEach(kiePMMLOutputField -> {
-            switch (kiePMMLOutputField.getResultFeature()) {
-                case PREDICTED_VALUE:
-                    joiner.add(String.format(ADD_PMML4_OUTPUT_FIELD, kiePMMLOutputField.getName(), result));
-                default:
-                    // Not managed, yet
+            if (PREDICTED_VALUE.equals(kiePMMLOutputField.getResultFeature())) {
+                joiner.add(String.format(ADD_PMML4_OUTPUT_FIELD, kiePMMLOutputField.getName(), result));
             }
         });
     }

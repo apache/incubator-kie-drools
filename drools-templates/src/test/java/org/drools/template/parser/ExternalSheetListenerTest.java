@@ -15,6 +15,12 @@
 
 package org.drools.template.parser;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -35,12 +41,6 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -453,6 +453,11 @@ public class ExternalSheetListenerTest {
                 @Override
                 public void fireUntilHalt(org.kie.api.runtime.rule.AgendaFilter agendaFilter) {
 
+                }
+
+                @Override
+                public ProcessInstance startProcessFromNodeIds(String processId, Map<String, Object> params, String... nodeIds) {
+                    return null;
                 }
             };
         }

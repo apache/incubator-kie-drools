@@ -64,9 +64,15 @@ public class EvaluationContextImpl implements EvaluationContext {
         this.dmnRuntime = dmnRuntime;
     }
 
+    private EvaluationContextImpl(FEELEventListenersManager eventsManager) {
+        this.eventsManager = eventsManager;
+    }
+
     @Override
     public EvaluationContext current() {
-        EvaluationContextImpl ec = new EvaluationContextImpl(rootClassLoader, eventsManager, new ArrayDeque<>(stack));
+        EvaluationContextImpl ec = new EvaluationContextImpl(eventsManager);
+        ec.stack = stack.clone();
+        ec.rootClassLoader = this.rootClassLoader;
         ec.dmnRuntime = this.dmnRuntime;
         ec.performRuntimeTypeCheck = this.performRuntimeTypeCheck;
         return ec;

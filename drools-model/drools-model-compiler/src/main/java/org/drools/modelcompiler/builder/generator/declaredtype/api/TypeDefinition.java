@@ -37,4 +37,8 @@ public interface TypeDefinition {
     List<FieldDefinition> findInheritedDeclaredFields();
 
     default List<MethodDefinition> getMethods() { return Collections.emptyList(); }
+
+    default Optional<String> getJavadoc() {
+        return Optional.empty();
+    }
  }

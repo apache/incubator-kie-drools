@@ -24,7 +24,6 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -54,6 +53,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.groupingBy;
+import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 
 public class KiePMMLRegressionTableRegressionFactory {
 
@@ -77,21 +77,22 @@ public class KiePMMLRegressionTableRegressionFactory {
         // Avoid instantiation
     }
 
-    public static Map<String, KiePMMLTableSourceCategory> getRegressionTables(final List<RegressionTable> regressionTables, final RegressionModel.NormalizationMethod normalizationMethod, final String targetField) throws IOException {
+    public static Map<String, KiePMMLTableSourceCategory> getRegressionTables(final List<RegressionTable> regressionTables, final RegressionModel.NormalizationMethod normalizationMethod, final String targetField, final String packageName) throws IOException {
         logger.trace("getRegressionTables {}", regressionTables);
-        CompilationUnit templateCU = StaticJavaParser.parseResource(KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE_JAVA);
+        CompilationUnit templateCU = getFromFileName(KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE_JAVA);
         Map<String, KiePMMLTableSourceCategory> toReturn = new HashMap<>();
         for (RegressionTable regressionTable : regressionTables) {
-            final Map.Entry<String, String> regressionTableEntry = getRegressionTable(templateCU, regressionTable, normalizationMethod, targetField);
+            final Map.Entry<String, String> regressionTableEntry = getRegressionTable(templateCU, regressionTable, normalizationMethod, targetField, packageName);
             String targetCategory = regressionTable.getTargetCategory() != null ? regressionTable.getTargetCategory().toString() : "";
             toReturn.put(regressionTableEntry.getKey(), new KiePMMLTableSourceCategory(regressionTableEntry.getValue(), targetCategory));
         }
         return toReturn;
     }
 
-    public static Map.Entry<String, String> getRegressionTable(final CompilationUnit templateCU, final RegressionTable regressionTable, final RegressionModel.NormalizationMethod normalizationMethod, final String targetField) {
+    public static Map.Entry<String, String> getRegressionTable(final CompilationUnit templateCU, final RegressionTable regressionTable, final RegressionModel.NormalizationMethod normalizationMethod, final String targetField, final String packageName) {
         logger.trace("getRegressionTable {}", regressionTable);
         CompilationUnit cloneCU = templateCU.clone();
+        cloneCU.setPackageDeclaration(packageName);
         ClassOrInterfaceDeclaration tableTemplate = cloneCU.getClassByName(KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE)
                 .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
         String className = "KiePMMLRegressionTableRegression" + classArity.addAndGet(1);
@@ -170,7 +171,7 @@ public class KiePMMLRegressionTableRegressionFactory {
      */
     private static MethodDeclaration addNumericPredictor(final NumericPredictor numericPredictor, final ClassOrInterfaceDeclaration tableTemplate, int predictorArity) {
         try {
-            templateEvaluate = StaticJavaParser.parseResource(KIE_PMML_EVALUATE_METHOD_TEMPLATE_JAVA);
+            templateEvaluate = getFromFileName(KIE_PMML_EVALUATE_METHOD_TEMPLATE_JAVA);
             cloneEvaluate = templateEvaluate.clone();
             ClassOrInterfaceDeclaration evaluateTemplateClass = cloneEvaluate.getClassByName(KIE_PMML_EVALUATE_METHOD_TEMPLATE)
                     .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
@@ -251,7 +252,7 @@ public class KiePMMLRegressionTableRegressionFactory {
      */
     private static MethodDeclaration addGroupedCategoricalPredictor(final List<CategoricalPredictor> categoricalPredictors, final ClassOrInterfaceDeclaration tableTemplate, int predictorArity) {
         try {
-            templateEvaluate = StaticJavaParser.parseResource(KIE_PMML_EVALUATE_METHOD_TEMPLATE_JAVA);
+            templateEvaluate = getFromFileName(KIE_PMML_EVALUATE_METHOD_TEMPLATE_JAVA);
             cloneEvaluate = templateEvaluate.clone();
             ClassOrInterfaceDeclaration evaluateTemplateClass = cloneEvaluate.getClassByName(KIE_PMML_EVALUATE_METHOD_TEMPLATE)
                     .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
@@ -314,7 +315,7 @@ public class KiePMMLRegressionTableRegressionFactory {
      */
     private static MethodDeclaration addPredictorTerm(final PredictorTerm predictorTerm, final ClassOrInterfaceDeclaration tableTemplate, int predictorArity) {
         try {
-            templateEvaluate = StaticJavaParser.parseResource(KIE_PMML_EVALUATE_METHOD_TEMPLATE_JAVA);
+            templateEvaluate = getFromFileName(KIE_PMML_EVALUATE_METHOD_TEMPLATE_JAVA);
             cloneEvaluate = templateEvaluate.clone();
             ClassOrInterfaceDeclaration evaluateTemplateClass = cloneEvaluate.getClassByName(KIE_PMML_EVALUATE_METHOD_TEMPLATE)
                     .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
@@ -383,7 +384,7 @@ public class KiePMMLRegressionTableRegressionFactory {
      */
     protected static void populateUpdateResult(final ClassOrInterfaceDeclaration tableTemplate, final RegressionModel.NormalizationMethod normalizationMethod) {
         try {
-            templateEvaluate = StaticJavaParser.parseResource(KIE_PMML_UPDATE_RESULT_METHOD_TEMPLATE_JAVA);
+            templateEvaluate = getFromFileName(KIE_PMML_UPDATE_RESULT_METHOD_TEMPLATE_JAVA);
             cloneEvaluate = templateEvaluate.clone();
             ClassOrInterfaceDeclaration evaluateTemplateClass = cloneEvaluate.getClassByName(KIE_PMML_UPDATE_RESULT_METHOD_TEMPLATE)
                     .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
