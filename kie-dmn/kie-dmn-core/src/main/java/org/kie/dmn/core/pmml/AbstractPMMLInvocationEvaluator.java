@@ -195,7 +195,7 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
 
     private static boolean isLegacyImplementationPresent() {
         try {
-            Thread.currentThread().getContextClassLoader().loadClass("org.kie.pmml.pmml_4_2.PMML4ExecutionHelper");
+            Class.forName("org.kie.pmml.pmml_4_2.PMML4ExecutionHelper");
             return true;
         } catch (NoClassDefFoundError | ClassNotFoundException e) {
             return false;
@@ -204,7 +204,7 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
 
     private static boolean isNewImplementationPresent() {
         try {
-            Thread.currentThread().getContextClassLoader().loadClass("org.kie.pmml.evaluator.api.executor.PMMLRuntime");
+            Class.forName("org.kie.pmml.evaluator.api.executor.PMMLRuntime");
             return true;
         } catch (NoClassDefFoundError | ClassNotFoundException e) {
             return false;
