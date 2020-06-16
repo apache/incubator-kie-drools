@@ -27,6 +27,7 @@ import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.FastIterator;
+import org.drools.core.util.PerfLogUtils;
 
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 
@@ -38,6 +39,8 @@ public class PhreakNotNode {
                        TupleSets<LeftTuple> srcLeftTuples,
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
+
+        PerfLogUtils.startMetrics(notNode);
 
         TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
 
@@ -87,6 +90,8 @@ public class PhreakNotNode {
 
         srcRightTuples.resetAll();
         srcLeftTuples.resetAll();
+
+        PerfLogUtils.logAndEndMetrics();
     }
 
     public void doLeftInserts(NotNode notNode,
@@ -159,6 +164,7 @@ public class PhreakNotNode {
                     }
 
                     // we know that only unblocked LeftTuples are  still in the memory
+                    PerfLogUtils.incrementEvalCount();
                     if ( constraints.isAllowedCachedRight( contextEntry,
                                                            leftTuple ) ) {
                         leftTuple.setBlocker( rightTuple );
@@ -242,6 +248,7 @@ public class PhreakNotNode {
             }
 
             // if we where not blocked before (or changed buckets), or the previous blocker no longer blocks, then find the next blocker
+            PerfLogUtils.incrementEvalCount();
             if (blocker == null || !constraints.isAllowedCachedLeft(contextEntry,
                                                                     blocker.getFactHandleForEvaluation())) {
                 if (blocker != null) {
@@ -251,6 +258,7 @@ public class PhreakNotNode {
 
                 // find first blocker, because it's a modify, we need to start from the beginning again
                 for (RightTuple newBlocker = firstRightTuple; newBlocker != null; newBlocker = (RightTuple) rightIt.next(newBlocker)) {
+                    PerfLogUtils.incrementEvalCount();
                     if (constraints.isAllowedCachedLeft(contextEntry,
                                                         newBlocker.getFactHandleForEvaluation())) {
                         leftTuple.setBlocker(newBlocker);
@@ -327,6 +335,7 @@ public class PhreakNotNode {
                     }
 
                     // we know that only unblocked LeftTuples are  still in the memory
+                    PerfLogUtils.incrementEvalCount();
                     if ( constraints.isAllowedCachedRight( contextEntry,
                                                            leftTuple ) ) {
                         leftTuple.setBlocker( rightTuple );
@@ -383,6 +392,7 @@ public class PhreakNotNode {
                     for ( RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) rightIt.next( newBlocker ) ) {
                         // cannot select a RightTuple queued in the delete list
                         // There may be UPDATE RightTuples too, but that's ok. They've already been re-added to the correct bucket, safe to be reprocessed.
+                        PerfLogUtils.incrementEvalCount();
                         if ( leftTuple.getStagedType() != LeftTuple.DELETE && newBlocker.getStagedType() != LeftTuple.DELETE &&
                              constraints.isAllowedCachedLeft( contextEntry, newBlocker.getFactHandleForEvaluation() ) ) {
 
@@ -484,6 +494,7 @@ public class PhreakNotNode {
 
                     // we know that older tuples have been checked so continue next
                     for (RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) it.next(newBlocker)) {
+                        PerfLogUtils.incrementEvalCount();
                         if (!newBlocker.isDeleted() && constraints.isAllowedCachedLeft(contextEntry,
                                                                                        newBlocker.getFactHandleForEvaluation())) {
                             leftTuple.setBlocker(newBlocker);

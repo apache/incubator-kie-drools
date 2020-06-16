@@ -34,6 +34,7 @@ import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.FastIterator;
+import org.drools.core.util.PerfLogUtils;
 
 import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
 
@@ -52,6 +53,8 @@ public class PhreakAccumulateNode {
                        TupleSets<LeftTuple> srcLeftTuples,
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
+
+        PerfLogUtils.startMetrics(accNode);
 
         BetaMemory bm = am.getBetaMemory();
         TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
@@ -113,6 +116,8 @@ public class PhreakAccumulateNode {
         srcRightTuples.resetAll();
 
         srcLeftTuples.resetAll();
+
+        PerfLogUtils.logAndEndMetrics();
     }
 
     public void doLeftInserts(AccumulateNode accNode,
@@ -162,6 +167,7 @@ public class PhreakAccumulateNode {
                                                                     rightIt); rightTuple != null; ) {
                 RightTuple nextRightTuple = (RightTuple) rightIt.next(rightTuple);
 
+                PerfLogUtils.incrementEvalCount();
                 if (constraints.isAllowedCachedLeft(contextEntry,
                                                     rightTuple.getFactHandleForEvaluation())) {
                     // add a match
@@ -217,6 +223,7 @@ public class PhreakAccumulateNode {
                 FastIterator leftIt = accNode.getLeftIterator( ltm );
 
                 for ( LeftTuple leftTuple = accNode.getFirstLeftTuple( rightTuple, ltm, leftIt ); leftTuple != null; leftTuple = (LeftTuple) leftIt.next( leftTuple ) ) {
+                    PerfLogUtils.incrementEvalCount();
                     if ( constraints.isAllowedCachedRight( contextEntry,
                                                            leftTuple ) ) {
                         final AccumulateContext accctx = (AccumulateContext) leftTuple.getContextObject();
@@ -318,6 +325,7 @@ public class PhreakAccumulateNode {
             // either we are indexed and changed buckets or
             // we had no children before, but there is a bucket to potentially match, so try as normal assert
             for (; rightTuple != null; rightTuple = (RightTuple) rightIt.next(rightTuple)) {
+                PerfLogUtils.incrementEvalCount();
                 if (constraints.isAllowedCachedLeft(bm.getContext(),
                                                     rightTuple.getFactHandleForEvaluation())) {
                     // add a new match
@@ -330,6 +338,7 @@ public class PhreakAccumulateNode {
             boolean isDirty = false;
             // in the same bucket, so iterate and compare
             for (; rightTuple != null; rightTuple = (RightTuple) rightIt.next(rightTuple)) {
+                PerfLogUtils.incrementEvalCount();
                 if (constraints.isAllowedCachedLeft(bm.getContext(),
                                                     rightTuple.getFactHandleForEvaluation())) {
                     if (childLeftTuple == null || childLeftTuple.getRightParent() != rightTuple) {
@@ -449,6 +458,7 @@ public class PhreakAccumulateNode {
             // either we are indexed and changed buckets or
             // we had no children before, but there is a bucket to potentially match, so try as normal assert
             for (; leftTuple != null; leftTuple = (LeftTuple) leftIt.next(leftTuple)) {
+                PerfLogUtils.incrementEvalCount();
                 if (constraints.isAllowedCachedRight(bm.getContext(),
                                                      leftTuple)) {
                     if (leftTuple.getStagedType() == LeftTuple.NONE) {
@@ -464,6 +474,7 @@ public class PhreakAccumulateNode {
         } else {
             // in the same bucket, so iterate and compare
             for (; leftTuple != null; leftTuple = (LeftTuple) leftIt.next(leftTuple)) {
+                PerfLogUtils.incrementEvalCount();
                 if (constraints.isAllowedCachedRight(bm.getContext(),
                                                      leftTuple)) {
                     if (leftTuple.getStagedType() == LeftTuple.NONE) {
@@ -633,6 +644,7 @@ public class PhreakAccumulateNode {
         BetaConstraints resultBinder = accNode.getResultBinder();
         boolean isAllowed = true;
         for ( AlphaNodeFieldConstraint resultConstraint : resultConstraints ) {
+            PerfLogUtils.incrementEvalCount();
             if ( !resultConstraint.isAllowed( accctx.resultFactHandle,
                                               workingMemory ) ) {
                 isAllowed = false;
@@ -643,6 +655,7 @@ public class PhreakAccumulateNode {
             resultBinder.updateFromTuple(memory.resultsContext,
                                          workingMemory,
                                          leftTuple);
+            PerfLogUtils.incrementEvalCount();
             if (!resultBinder.isAllowedCachedLeft(memory.resultsContext,
                                                   accctx.getResultFactHandle())) {
                 isAllowed = false;

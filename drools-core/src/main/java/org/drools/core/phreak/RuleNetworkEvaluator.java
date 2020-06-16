@@ -68,6 +68,7 @@ import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
+import org.drools.core.util.PerfLogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -752,6 +753,7 @@ public class RuleNetworkEvaluator {
         FastIterator it = betaNode.getRightIterator(rtm);
         for (RightTuple rightTuple = betaNode.getFirstRightTuple(leftTuple, rtm, null, it); rightTuple != null; ) {
             RightTuple nextRight = (RightTuple) it.next(rightTuple);
+            PerfLogUtils.incrementEvalCount();
             if (constraints.isAllowedCachedLeft(contextEntry,
                                                 rightTuple.getFactHandleForEvaluation())) {
                 leftTuple.setBlocker(rightTuple);

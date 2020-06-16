@@ -37,6 +37,7 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
+import org.drools.core.util.PerfLogUtils;
 
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 
@@ -56,6 +57,8 @@ public class PhreakFromNode {
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
 
+        PerfLogUtils.startMetrics(fromNode);
+
         if (srcLeftTuples.getDeleteFirst() != null) {
             doLeftDeletes(fm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
@@ -69,6 +72,8 @@ public class PhreakFromNode {
         }
 
         srcLeftTuples.resetAll();
+
+        PerfLogUtils.logAndEndMetrics();
     }
 
     public void doLeftInserts(FromNode fromNode,
@@ -263,6 +268,7 @@ public class PhreakFromNode {
                                      FromMemory fm ) {
         if (alphaConstraints != null) {
             for (int i = 0, length = alphaConstraints.length; i < length; i++) {
+                PerfLogUtils.incrementEvalCount();
                 if (!alphaConstraints[i].isAllowed(factHandle, wm)) {
                     return false;
                 }
@@ -280,6 +286,7 @@ public class PhreakFromNode {
                                   boolean useLeftMemory,
                                   TupleSets<LeftTuple> trgLeftTuples,
                                   TupleSets<LeftTuple> stagedLeftTuples ) {
+        PerfLogUtils.incrementEvalCount();
         if (betaConstraints.isAllowedCachedLeft(context, rightTuple.getFactHandleForEvaluation())) {
 
             if (rightTuple.getFirstChild() == null) {
