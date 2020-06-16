@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.simulatedannealing
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
 /**
@@ -39,7 +39,7 @@ public interface Termination extends PhaseLifecycleListener {
      * @param solverScope never null
      * @return true if the search should terminate.
      */
-    boolean isSolverTerminated(DefaultSolverScope solverScope);
+    boolean isSolverTerminated(SolverScope solverScope);
 
     /**
      * Called by the {@link Phase} after every step and every move to determine if the search should stop.
@@ -65,10 +65,10 @@ public interface Termination extends PhaseLifecycleListener {
      * @return timeGradient t for which {@code 0.0 <= t <= 1.0 or -1.0} when it is not supported.
      *         At the start of a solver t is 0.0 and at the end t would be 1.0.
      */
-    double calculateSolverTimeGradient(DefaultSolverScope solverScope);
+    double calculateSolverTimeGradient(SolverScope solverScope);
 
     /**
-     * See {@link #calculateSolverTimeGradient(DefaultSolverScope)}.
+     * See {@link #calculateSolverTimeGradient(SolverScope)}.
      *
      * @param phaseScope never null
      * @return timeGradient t for which {@code 0.0 <= t <= 1.0 or -1.0} when it is not supported.
@@ -84,6 +84,6 @@ public interface Termination extends PhaseLifecycleListener {
      * @return not null
      * @throws UnsupportedOperationException if not supported by this termination
      */
-    Termination createChildThreadTermination(DefaultSolverScope solverScope, ChildThreadType childThreadType);
+    Termination createChildThreadTermination(SolverScope solverScope, ChildThreadType childThreadType);
 
 }

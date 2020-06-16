@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.event.SolverEventSupport;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +64,7 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
     // ************************************************************************
 
     @Override
-    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
         // Starting bestSolution is already set by Solver.solve(Solution)
         InnerScoreDirector<Solution_> scoreDirector = solverScope.getScoreDirector();
         Score score = scoreDirector.calculateScore();
@@ -88,7 +88,7 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
     public void processWorkingSolutionDuringStep(AbstractStepScope<Solution_> stepScope) {
         AbstractPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         Score score = stepScope.getScore();
-        DefaultSolverScope<Solution_> solverScope = phaseScope.getSolverScope();
+        SolverScope<Solution_> solverScope = phaseScope.getSolverScope();
         boolean bestScoreImproved = score.compareTo(solverScope.getBestScore()) > 0;
         stepScope.setBestScoreImproved(bestScoreImproved);
         if (bestScoreImproved) {
@@ -102,7 +102,7 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
 
     public void processWorkingSolutionDuringMove(Score score, AbstractStepScope<Solution_> stepScope) {
         AbstractPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
-        DefaultSolverScope<Solution_> solverScope = phaseScope.getSolverScope();
+        SolverScope<Solution_> solverScope = phaseScope.getSolverScope();
         boolean bestScoreImproved = score.compareTo(solverScope.getBestScore()) > 0;
         // The method processWorkingSolutionDuringMove() is called 0..* times
         // stepScope.getBestScoreImproved() is initialized on false before the first call here
@@ -118,13 +118,13 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
         }
     }
 
-    public void updateBestSolution(DefaultSolverScope<Solution_> solverScope) {
+    public void updateBestSolution(SolverScope<Solution_> solverScope) {
         Solution_ newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
         Score newBestScore = solverScope.getSolutionDescriptor().getScore(newBestSolution);
         updateBestSolution(solverScope, newBestScore, newBestSolution);
     }
 
-    protected void updateBestSolution(DefaultSolverScope<Solution_> solverScope, Score bestScore,
+    protected void updateBestSolution(SolverScope<Solution_> solverScope, Score bestScore,
             Solution_ bestSolution) {
         if (bestScore.isSolutionInitialized()) {
             if (!solverScope.isBestSolutionInitialized()) {

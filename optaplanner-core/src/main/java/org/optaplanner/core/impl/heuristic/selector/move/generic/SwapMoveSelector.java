@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractOrig
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedSwapMove;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class SwapMoveSelector extends GenericMoveSelector {
 
@@ -87,7 +87,7 @@ public class SwapMoveSelector extends GenericMoveSelector {
     }
 
     @Override
-    public void solvingStarted(DefaultSolverScope solverScope) {
+    public void solvingStarted(SolverScope solverScope) {
         super.solvingStarted(solverScope);
         if (anyChained) {
             inverseVariableSupplyList = new ArrayList<>(variableDescriptorList.size());
@@ -106,7 +106,7 @@ public class SwapMoveSelector extends GenericMoveSelector {
     }
 
     @Override
-    public void solvingEnded(DefaultSolverScope solverScope) {
+    public void solvingEnded(SolverScope solverScope) {
         super.solvingEnded(solverScope);
         if (anyChained) {
             inverseVariableSupplyList = null;

@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.FixedTab
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
@@ -47,7 +47,7 @@ public class EntityTabuAcceptorTest {
         TestdataEntity e3 = new TestdataEntity("e3");
         TestdataEntity e4 = new TestdataEntity("e4");
 
-        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
+        SolverScope<TestdataSolution> solverScope = new SolverScope<>();
         solverScope.setBestScore(SimpleScore.of(0));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         acceptor.phaseStarted(phaseScope);
@@ -132,7 +132,7 @@ public class EntityTabuAcceptorTest {
         TestdataEntity e3 = new TestdataEntity("e3");
         TestdataEntity e4 = new TestdataEntity("e4");
 
-        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
+        SolverScope<TestdataSolution> solverScope = new SolverScope<>();
         solverScope.setBestScore(SimpleScore.of(0));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         acceptor.phaseStarted(phaseScope);
@@ -229,7 +229,7 @@ public class EntityTabuAcceptorTest {
         TestdataEntity e0 = new TestdataEntity("e0");
         TestdataEntity e1 = new TestdataEntity("e1");
 
-        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
+        SolverScope<TestdataSolution> solverScope = new SolverScope<>();
         solverScope.setBestScore(SimpleScore.of(-100));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         acceptor.phaseStarted(phaseScope);

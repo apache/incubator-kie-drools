@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptorTe
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 public class HillClimbingAcceptorTest extends AbstractAcceptorTest {
@@ -33,7 +33,7 @@ public class HillClimbingAcceptorTest extends AbstractAcceptorTest {
     public void hillClimbingEnabled() {
         HillClimbingAcceptor acceptor = new HillClimbingAcceptor();
 
-        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
+        SolverScope<TestdataSolution> solverScope = new SolverScope<>();
         solverScope.setBestScore(SimpleScore.of(-1000));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);

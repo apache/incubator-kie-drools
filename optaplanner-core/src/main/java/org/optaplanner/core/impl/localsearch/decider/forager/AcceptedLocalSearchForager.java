@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.localsearch.decider.forager.finalist.FinalistPo
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 /**
  * A {@link LocalSearchForager} which forages accepted moves and ignores unaccepted moves.
@@ -61,7 +61,7 @@ public class AcceptedLocalSearchForager extends AbstractLocalSearchForager {
     // ************************************************************************
 
     @Override
-    public void solvingStarted(DefaultSolverScope solverScope) {
+    public void solvingStarted(SolverScope solverScope) {
         super.solvingStarted(solverScope);
         finalistPodium.solvingStarted(solverScope);
     }
@@ -158,7 +158,7 @@ public class AcceptedLocalSearchForager extends AbstractLocalSearchForager {
     }
 
     @Override
-    public void solvingEnded(DefaultSolverScope solverScope) {
+    public void solvingEnded(SolverScope solverScope) {
         super.solvingEnded(solverScope);
         finalistPodium.solvingEnded(solverScope);
     }

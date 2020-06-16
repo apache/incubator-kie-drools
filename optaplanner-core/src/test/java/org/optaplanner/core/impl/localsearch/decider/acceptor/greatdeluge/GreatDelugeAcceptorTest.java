@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptorTe
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
@@ -37,7 +37,7 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
         acceptor.setWaterLevelIncrementScore(SimpleScore.of(100));
 
-        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
+        SolverScope<TestdataSolution> solverScope = new SolverScope<>();
         solverScope.setBestScore(SimpleScore.of(-1000));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
@@ -108,7 +108,7 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
         acceptor.setInitialWaterLevel(HardMediumSoftScore.of(0, -100, -400));
         acceptor.setWaterLevelIncrementScore(HardMediumSoftScore.of(0, 100, 100));
 
-        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
+        SolverScope<TestdataSolution> solverScope = new SolverScope<>();
         solverScope.setBestScore(HardMediumSoftScore.of(0, -200, -1000));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
@@ -151,7 +151,7 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
         acceptor.setWaterLevelIncrementRatio(0.1);
 
-        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
+        SolverScope<TestdataSolution> solverScope = new SolverScope<>();
         solverScope.setBestScore(SimpleScore.of(-8));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.solver.event;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 /**
  * An adapter for {@link SolverLifecycleListener}.
@@ -27,12 +27,12 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 public abstract class SolverLifecycleListenerAdapter<Solution_> implements SolverLifecycleListener<Solution_> {
 
     @Override
-    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
         // Hook method
     }
 
     @Override
-    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
         // Hook method
     }
 

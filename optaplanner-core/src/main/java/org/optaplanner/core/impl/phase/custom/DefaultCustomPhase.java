@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.phase.custom.scope.CustomPhaseScope;
 import org.optaplanner.core.impl.phase.custom.scope.CustomStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
@@ -55,7 +55,7 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
     // ************************************************************************
 
     @Override
-    public void solve(DefaultSolverScope<Solution_> solverScope) {
+    public void solve(SolverScope<Solution_> solverScope) {
         CustomPhaseScope<Solution_> phaseScope = new CustomPhaseScope<>(solverScope);
         phaseStarted(phaseScope);
 

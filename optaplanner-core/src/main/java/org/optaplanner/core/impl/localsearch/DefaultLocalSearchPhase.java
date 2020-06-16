@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
@@ -60,7 +60,7 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
     // ************************************************************************
 
     @Override
-    public void solve(DefaultSolverScope<Solution_> solverScope) {
+    public void solve(SolverScope<Solution_> solverScope) {
         LocalSearchPhaseScope<Solution_> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         phaseStarted(phaseScope);
 
@@ -106,7 +106,7 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
     }
 
     @Override
-    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
         decider.solvingStarted(solverScope);
     }
@@ -160,7 +160,7 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
     }
 
     @Override
-    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
         super.solvingEnded(solverScope);
         decider.solvingEnded(solverScope);
     }

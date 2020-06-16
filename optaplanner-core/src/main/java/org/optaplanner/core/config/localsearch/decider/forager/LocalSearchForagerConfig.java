@@ -19,8 +19,8 @@ package org.optaplanner.core.config.localsearch.decider.forager;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 import org.optaplanner.core.config.AbstractConfig;
-import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.localsearch.decider.forager.AcceptedLocalSearchForager;
 import org.optaplanner.core.impl.localsearch.decider.forager.LocalSearchForager;
 

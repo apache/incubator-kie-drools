@@ -38,7 +38,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
@@ -166,7 +166,7 @@ public class DefaultSubChainSelectorTest {
         DefaultSubChainSelector subChainSelector = new DefaultSubChainSelector(
                 valueSelector, false, 1, Integer.MAX_VALUE);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getScoreDirector()).thenReturn(scoreDirector);
         subChainSelector.solvingStarted(solverScope);
 
@@ -249,7 +249,7 @@ public class DefaultSubChainSelectorTest {
         DefaultSubChainSelector subChainSelector = new DefaultSubChainSelector(
                 valueSelector, false, 1, Integer.MAX_VALUE);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getScoreDirector()).thenReturn(scoreDirector);
         subChainSelector.solvingStarted(solverScope);
 
@@ -323,7 +323,7 @@ public class DefaultSubChainSelectorTest {
         DefaultSubChainSelector subChainSelector = new DefaultSubChainSelector(
                 valueSelector, false, 2, 3);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getScoreDirector()).thenReturn(scoreDirector);
         subChainSelector.solvingStarted(solverScope);
 
@@ -378,7 +378,7 @@ public class DefaultSubChainSelectorTest {
         DefaultSubChainSelector subChainSelector = new DefaultSubChainSelector(
                 valueSelector, false, 3, 3);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getScoreDirector()).thenReturn(scoreDirector);
         subChainSelector.solvingStarted(solverScope);
 
@@ -425,7 +425,7 @@ public class DefaultSubChainSelectorTest {
         DefaultSubChainSelector subChainSelector = new DefaultSubChainSelector(
                 valueSelector, true, 1, Integer.MAX_VALUE);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getScoreDirector()).thenReturn(scoreDirector);
         when(solverScope.getWorkingRandom()).thenReturn(new Random(0L));
         subChainSelector.solvingStarted(solverScope);
@@ -483,7 +483,7 @@ public class DefaultSubChainSelectorTest {
         DefaultSubChainSelector subChainSelector = new DefaultSubChainSelector(
                 valueSelector, true, 2, 3);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getScoreDirector()).thenReturn(scoreDirector);
         when(solverScope.getWorkingRandom()).thenReturn(new Random(0L));
         subChainSelector.solvingStarted(solverScope);
@@ -536,7 +536,7 @@ public class DefaultSubChainSelectorTest {
         DefaultSubChainSelector subChainSelector = new DefaultSubChainSelector(
                 valueSelector, true, 3, 3);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getScoreDirector()).thenReturn(scoreDirector);
         when(solverScope.getWorkingRandom()).thenReturn(new Random(0L));
         subChainSelector.solvingStarted(solverScope);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
 public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination extends AbstractTermination {
@@ -67,13 +67,13 @@ public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination extend
     }
 
     @Override
-    public void solvingStarted(DefaultSolverScope solverScope) {
+    public void solvingStarted(SolverScope solverScope) {
         bestScoreImprovementHistoryQueue = new ArrayDeque<>();
         solverSafeTimeMillis = solverScope.getBestSolutionTimeMillis() + unimprovedTimeMillisSpentLimit;
     }
 
     @Override
-    public void solvingEnded(DefaultSolverScope solverScope) {
+    public void solvingEnded(SolverScope solverScope) {
         bestScoreImprovementHistoryQueue = null;
         solverSafeTimeMillis = -1L;
     }
@@ -91,7 +91,7 @@ public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination extend
     @Override
     public void stepEnded(AbstractStepScope stepScope) {
         if (stepScope.getBestScoreImproved()) {
-            DefaultSolverScope solverScope = stepScope.getPhaseScope().getSolverScope();
+            SolverScope solverScope = stepScope.getPhaseScope().getSolverScope();
             long bestSolutionTimeMillis = solverScope.getBestSolutionTimeMillis();
             Score bestScore = solverScope.getBestScore();
             for (Iterator<Pair<Long, Score>> it = bestScoreImprovementHistoryQueue.iterator(); it.hasNext();) {
@@ -118,7 +118,7 @@ public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination extend
     // ************************************************************************
 
     @Override
-    public boolean isSolverTerminated(DefaultSolverScope solverScope) {
+    public boolean isSolverTerminated(SolverScope solverScope) {
         return isTerminated(solverSafeTimeMillis);
     }
 
@@ -141,7 +141,7 @@ public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination extend
     // ************************************************************************
 
     @Override
-    public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
+    public double calculateSolverTimeGradient(SolverScope solverScope) {
         return calculateTimeGradient(solverSafeTimeMillis);
     }
 
@@ -163,7 +163,7 @@ public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination extend
 
     @Override
     public UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination createChildThreadTermination(
-            DefaultSolverScope solverScope, ChildThreadType childThreadType) {
+            SolverScope solverScope, ChildThreadType childThreadType) {
         return new UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination(
                 unimprovedTimeMillisSpentLimit, unimprovedScoreDifferenceThreshold);
     }

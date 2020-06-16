@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.api.score.constraint;
 
-import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -28,7 +27,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * Explains the {@link Score} of a {@link PlanningSolution}, from the opposite side than {@link ConstraintMatchTotal}.
  * Retrievable from {@link ScoreDirector#getIndictmentMap()}.
  */
-public final class Indictment implements Serializable, Comparable<Indictment> {
+public final class Indictment {
 
     private final Object justification;
 
@@ -102,16 +101,6 @@ public final class Indictment implements Serializable, Comparable<Indictment> {
     // ************************************************************************
     // Infrastructure methods
     // ************************************************************************
-
-    @Override
-    public int compareTo(Indictment other) {
-        if (!(justification instanceof Comparable)) {
-            throw new IllegalStateException("The justification (" + justification + ") does not implement "
-                    + Comparable.class.getSimpleName() + ", so it cannot be compared with otherJustification ("
-                    + other.justification + ").");
-        }
-        return ((Comparable) justification).compareTo(other.justification);
-    }
 
     @Override
     public boolean equals(Object o) {

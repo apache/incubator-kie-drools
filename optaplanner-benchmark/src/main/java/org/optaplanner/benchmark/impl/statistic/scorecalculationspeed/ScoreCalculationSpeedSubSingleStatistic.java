@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class ScoreCalculationSpeedSubSingleStatistic<Solution_>
         extends ProblemBasedSubSingleStatistic<Solution_, ScoreCalculationSpeedStatisticPoint> {
@@ -73,7 +73,7 @@ public class ScoreCalculationSpeedSubSingleStatistic<Solution_>
         public void stepEnded(AbstractStepScope<Solution_> stepScope) {
             long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpentUpToNow();
             if (timeMillisSpent >= nextTimeMillisThreshold) {
-                DefaultSolverScope<Solution_> solverScope = stepScope.getPhaseScope().getSolverScope();
+                SolverScope<Solution_> solverScope = stepScope.getPhaseScope().getSolverScope();
                 long calculationCount = solverScope.getScoreCalculationCount();
                 long calculationCountInterval = calculationCount - lastCalculationCount;
                 long timeMillisSpentInterval = timeMillisSpent - lastTimeMillisSpent;

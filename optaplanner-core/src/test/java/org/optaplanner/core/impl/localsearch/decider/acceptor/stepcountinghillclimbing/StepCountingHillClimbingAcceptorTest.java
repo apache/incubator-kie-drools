@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptorTe
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 public class StepCountingHillClimbingAcceptorTest extends AbstractAcceptorTest {
@@ -36,7 +36,7 @@ public class StepCountingHillClimbingAcceptorTest extends AbstractAcceptorTest {
         StepCountingHillClimbingAcceptor acceptor = new StepCountingHillClimbingAcceptor(2,
                 StepCountingHillClimbingType.STEP);
 
-        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
+        SolverScope<TestdataSolution> solverScope = new SolverScope<>();
         solverScope.setBestScore(SimpleScore.of(-1000));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
@@ -148,7 +148,7 @@ public class StepCountingHillClimbingAcceptorTest extends AbstractAcceptorTest {
         StepCountingHillClimbingAcceptor acceptor = new StepCountingHillClimbingAcceptor(2,
                 StepCountingHillClimbingType.EQUAL_OR_IMPROVING_STEP);
 
-        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
+        SolverScope<TestdataSolution> solverScope = new SolverScope<>();
         solverScope.setBestScore(SimpleScore.of(-1000));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
@@ -260,7 +260,7 @@ public class StepCountingHillClimbingAcceptorTest extends AbstractAcceptorTest {
         StepCountingHillClimbingAcceptor acceptor = new StepCountingHillClimbingAcceptor(2,
                 StepCountingHillClimbingType.IMPROVING_STEP);
 
-        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
+        SolverScope<TestdataSolution> solverScope = new SolverScope<>();
         solverScope.setBestScore(SimpleScore.of(-1000));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);

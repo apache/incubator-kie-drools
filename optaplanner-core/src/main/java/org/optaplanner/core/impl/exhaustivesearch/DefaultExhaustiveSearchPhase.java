@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
@@ -101,7 +101,7 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
     // ************************************************************************
 
     @Override
-    public void solve(DefaultSolverScope<Solution_> solverScope) {
+    public void solve(SolverScope<Solution_> solverScope) {
         SortedSet<ExhaustiveSearchNode> expandableNodeQueue = new TreeSet<>(nodeComparator);
         ExhaustiveSearchPhaseScope<Solution_> phaseScope = new ExhaustiveSearchPhaseScope<>(solverScope);
         phaseScope.setExpandableNodeQueue(expandableNodeQueue);
@@ -122,7 +122,7 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
     }
 
     @Override
-    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
         entitySelector.solvingStarted(solverScope);
         decider.solvingStarted(solverScope);
@@ -265,7 +265,7 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
     }
 
     @Override
-    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
         super.solvingEnded(solverScope);
         entitySelector.solvingEnded(solverScope);
         decider.solvingEnded(solverScope);

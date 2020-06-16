@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,7 +110,7 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
     // ************************************************************************
 
     @Override
-    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
         // bestSolutionRecaller.solvingStarted(...) is called by DefaultSolver
         // solverPhaseLifecycleSupport.solvingStarted(...) is called by DefaultSolver
         termination.solvingStarted(solverScope);
@@ -118,7 +118,7 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
     }
 
     @Override
-    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
         // bestSolutionRecaller.solvingEnded(...) is called by DefaultSolver
         // solverPhaseLifecycleSupport.solvingEnded(...) is called by DefaultSolver
         termination.solvingEnded(solverScope);

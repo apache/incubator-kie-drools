@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import java.time.Clock;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class UnimprovedTimeMillisSpentTerminationTest {
 
@@ -39,7 +39,7 @@ public class UnimprovedTimeMillisSpentTerminationTest {
 
     @Test
     public void solverTermination() {
-        DefaultSolverScope<?> solverScope = mock(DefaultSolverScope.class);
+        SolverScope<?> solverScope = mock(SolverScope.class);
         Clock clock = mock(Clock.class);
 
         Termination termination = new UnimprovedTimeMillisSpentTermination(1000L, clock);

@@ -38,7 +38,6 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
-import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
@@ -47,6 +46,7 @@ import org.optaplanner.core.config.solver.recaller.BestSolutionRecallerConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.DefaultSolver;
@@ -54,7 +54,7 @@ import org.optaplanner.core.impl.solver.io.XStreamConfigReader;
 import org.optaplanner.core.impl.solver.random.DefaultRandomFactory;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.BasicPlumbingTermination;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
@@ -503,7 +503,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         Integer moveThreadCount_ = resolveMoveThreadCount();
         InnerScoreDirectorFactory<Solution_> scoreDirectorFactory = buildScoreDirectorFactory(environmentMode_);
         boolean constraintMatchEnabledPreference = environmentMode_.isAsserted();
-        DefaultSolverScope<Solution_> solverScope = new DefaultSolverScope<>();
+        SolverScope<Solution_> solverScope = new SolverScope<>();
         solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(true, constraintMatchEnabledPreference));
 
         BestSolutionRecaller<Solution_> bestSolutionRecaller = new BestSolutionRecallerConfig()

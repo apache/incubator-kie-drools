@@ -31,7 +31,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverStatus;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -164,7 +164,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
 
     @Override
     public Duration getSolvingDuration() {
-        DefaultSolverScope<Solution_> solverScope = solver.getSolverScope();
+        SolverScope<Solution_> solverScope = solver.getSolverScope();
         Long startingSystemTimeMillis = solverScope.getStartingSystemTimeMillis();
         if (startingSystemTimeMillis == null) {
             // The solver hasn't started yet

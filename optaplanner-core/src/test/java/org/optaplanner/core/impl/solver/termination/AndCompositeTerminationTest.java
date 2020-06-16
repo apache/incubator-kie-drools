@@ -25,7 +25,7 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class AndCompositeTerminationTest {
 
@@ -36,7 +36,7 @@ public class AndCompositeTerminationTest {
 
         Termination compositeTermination = new AndCompositeTermination(termination1, termination2);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
 
         when(termination1.isSolverTerminated(solverScope)).thenReturn(false);
         when(termination2.isSolverTerminated(solverScope)).thenReturn(false);
@@ -88,7 +88,7 @@ public class AndCompositeTerminationTest {
 
         Termination compositeTermination = new AndCompositeTermination(Arrays.asList(termination1, termination2));
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
 
         when(termination1.calculateSolverTimeGradient(solverScope)).thenReturn(0.0);
         when(termination2.calculateSolverTimeGradient(solverScope)).thenReturn(0.0);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchLayer;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -37,7 +37,7 @@ public class ExhaustiveSearchPhaseScope<Solution_> extends AbstractPhaseScope<So
 
     private ExhaustiveSearchStepScope<Solution_> lastCompletedStepScope;
 
-    public ExhaustiveSearchPhaseScope(DefaultSolverScope<Solution_> solverScope) {
+    public ExhaustiveSearchPhaseScope(SolverScope<Solution_> solverScope) {
         super(solverScope);
         lastCompletedStepScope = new ExhaustiveSearchStepScope<>(this, -1);
     }

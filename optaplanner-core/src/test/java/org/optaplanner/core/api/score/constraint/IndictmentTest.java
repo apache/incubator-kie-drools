@@ -69,15 +69,4 @@ public class IndictmentTest {
                 new Indictment("c", SimpleScore.ZERO));
     }
 
-    @Test
-    public void compareTo() {
-        PlannerAssert.assertCompareToOrder(
-                new Indictment("a", SimpleScore.ZERO),
-                new Indictment("aa", SimpleScore.ZERO),
-                new Indictment("ab", SimpleScore.ZERO),
-                new Indictment("b", SimpleScore.ZERO),
-                new Indictment("c", SimpleScore.ZERO),
-                new Indictment("d", SimpleScore.ZERO));
-    }
-
 }

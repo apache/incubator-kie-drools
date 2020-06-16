@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
@@ -44,7 +44,7 @@ public class SelectedCountLimitValueSelectorTest {
                 new TestdataValue("v5"));
         EntityIndependentValueSelector valueSelector = new SelectedCountLimitValueSelector(childValueSelector, 3L);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         valueSelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -103,7 +103,7 @@ public class SelectedCountLimitValueSelectorTest {
                 new TestdataValue("v1"), new TestdataValue("v2"), new TestdataValue("v3"));
         EntityIndependentValueSelector valueSelector = new SelectedCountLimitValueSelector(childValueSelector, 5L);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         valueSelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -164,7 +164,7 @@ public class SelectedCountLimitValueSelectorTest {
                 new TestdataValue("v5"));
         ValueSelector valueSelector = new SelectedCountLimitValueSelector(childValueSelector, 3L);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         valueSelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -224,7 +224,7 @@ public class SelectedCountLimitValueSelectorTest {
                 new TestdataValue("v1"), new TestdataValue("v2"), new TestdataValue("v3"));
         ValueSelector valueSelector = new SelectedCountLimitValueSelector(childValueSelector, 5L);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         valueSelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);

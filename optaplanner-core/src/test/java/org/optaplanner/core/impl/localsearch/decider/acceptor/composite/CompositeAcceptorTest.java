@@ -31,14 +31,14 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.CompositeAcceptor;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 public class CompositeAcceptorTest {
 
     @Test
     public void phaseLifecycle() {
-        DefaultSolverScope<TestdataSolution> solverScope = mock(DefaultSolverScope.class);
+        SolverScope<TestdataSolution> solverScope = mock(SolverScope.class);
         LocalSearchPhaseScope<TestdataSolution> phaseScope = mock(LocalSearchPhaseScope.class);
         LocalSearchStepScope<TestdataSolution> stepScope = mock(LocalSearchStepScope.class);
 

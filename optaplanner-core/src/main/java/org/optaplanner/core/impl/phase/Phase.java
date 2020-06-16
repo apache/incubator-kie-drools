@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.phase.event.PhaseLifecycleSupport;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.DefaultSolver;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 /**
  * A phase of a {@link Solver}.
@@ -44,7 +44,7 @@ public interface Phase<Solution_> extends PhaseLifecycleListener<Solution_> {
      * Add a {@link PhaseLifecycleListener} that is only notified
      * of the {@link PhaseLifecycleListener#phaseStarted(AbstractPhaseScope) phase}
      * and the {@link PhaseLifecycleListener#stepStarted(AbstractStepScope)} step} starting/ending events from this phase
-     * (and the {@link PhaseLifecycleListener#solvingStarted(DefaultSolverScope)} solving} events too of course).
+     * (and the {@link PhaseLifecycleListener#solvingStarted(SolverScope)} solving} events too of course).
      * <p>
      * To get notified for all phases, use {@link DefaultSolver#addPhaseLifecycleListener(PhaseLifecycleListener)} instead.
      *
@@ -58,6 +58,6 @@ public interface Phase<Solution_> extends PhaseLifecycleListener<Solution_> {
      */
     void removePhaseLifecycleListener(PhaseLifecycleListener<Solution_> phaseLifecycleListener);
 
-    void solve(DefaultSolverScope<Solution_> solverScope);
+    void solve(SolverScope<Solution_> solverScope);
 
 }

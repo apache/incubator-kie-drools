@@ -36,7 +36,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicRecordingVa
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicReplayingValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
@@ -59,7 +59,7 @@ public class QueuedValuePlacerTest extends AbstractEntityPlacerTest {
                 false);
         QueuedValuePlacer placer = new QueuedValuePlacer(recordingValueSelector, moveSelector);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         placer.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);

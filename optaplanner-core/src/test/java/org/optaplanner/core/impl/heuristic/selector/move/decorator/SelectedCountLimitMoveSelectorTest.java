@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class SelectedCountLimitMoveSelectorTest {
 
@@ -39,7 +39,7 @@ public class SelectedCountLimitMoveSelectorTest {
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"), new DummyMove("a4"), new DummyMove("a5"));
         MoveSelector moveSelector = new SelectedCountLimitMoveSelector(childMoveSelector, 3L);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         moveSelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -97,7 +97,7 @@ public class SelectedCountLimitMoveSelectorTest {
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"));
         MoveSelector moveSelector = new SelectedCountLimitMoveSelector(childMoveSelector, 5L);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         moveSelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);

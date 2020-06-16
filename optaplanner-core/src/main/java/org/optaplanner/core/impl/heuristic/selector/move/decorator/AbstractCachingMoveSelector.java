@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecyc
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public abstract class AbstractCachingMoveSelector extends AbstractMoveSelector implements SelectionCacheLifecycleListener {
 
@@ -64,7 +64,7 @@ public abstract class AbstractCachingMoveSelector extends AbstractMoveSelector i
     // ************************************************************************
 
     @Override
-    public void constructCache(DefaultSolverScope solverScope) {
+    public void constructCache(SolverScope solverScope) {
         long childSize = childMoveSelector.getSize();
         if (childSize > (long) Integer.MAX_VALUE) {
             throw new IllegalStateException("The selector (" + this
@@ -79,7 +79,7 @@ public abstract class AbstractCachingMoveSelector extends AbstractMoveSelector i
     }
 
     @Override
-    public void disposeCache(DefaultSolverScope solverScope) {
+    public void disposeCache(SolverScope solverScope) {
         cachedMoveList = null;
     }
 

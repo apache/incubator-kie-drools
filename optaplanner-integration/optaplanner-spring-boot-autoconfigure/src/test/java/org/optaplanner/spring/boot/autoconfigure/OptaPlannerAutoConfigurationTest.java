@@ -16,6 +16,8 @@
 
 package org.optaplanner.spring.boot.autoconfigure;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.time.Duration;
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -41,8 +43,6 @@ import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class OptaPlannerAutoConfigurationTest {
 

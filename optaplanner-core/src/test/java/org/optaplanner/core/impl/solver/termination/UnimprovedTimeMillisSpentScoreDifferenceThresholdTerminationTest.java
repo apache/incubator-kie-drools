@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTerminationTest {
 
@@ -48,7 +48,7 @@ public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTerminationTest {
 
     @Test
     public void scoreImproves_terminationIsPostponed() {
-        DefaultSolverScope<?> solverScope = mock(DefaultSolverScope.class);
+        SolverScope<?> solverScope = mock(SolverScope.class);
         AbstractPhaseScope<?> phaseScope = mock(LocalSearchPhaseScope.class);
         AbstractStepScope<?> stepScope = mock(LocalSearchStepScope.class);
         Clock clock = mock(Clock.class);
@@ -101,7 +101,7 @@ public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTerminationTest {
 
     @Test
     public void scoreImprovesTooLate_terminates() {
-        DefaultSolverScope<?> solverScope = mock(DefaultSolverScope.class);
+        SolverScope<?> solverScope = mock(SolverScope.class);
         AbstractPhaseScope<?> phaseScope = mock(LocalSearchPhaseScope.class);
         AbstractStepScope<?> stepScope = mock(LocalSearchStepScope.class);
         Clock clock = mock(Clock.class);

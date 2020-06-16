@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.config.heuristic.policy;
+package org.optaplanner.core.impl.heuristic;
 
 import java.util.HashMap;
 import java.util.Map;

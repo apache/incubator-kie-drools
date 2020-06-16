@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptorTe
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 public class LateAcceptanceAcceptorTest extends AbstractAcceptorTest {
@@ -36,7 +36,7 @@ public class LateAcceptanceAcceptorTest extends AbstractAcceptorTest {
         acceptor.setLateAcceptanceSize(3);
         acceptor.setHillClimbingEnabled(false);
 
-        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
+        SolverScope<TestdataSolution> solverScope = new SolverScope<>();
         solverScope.setBestScore(SimpleScore.of(-1000));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
@@ -149,7 +149,7 @@ public class LateAcceptanceAcceptorTest extends AbstractAcceptorTest {
         acceptor.setLateAcceptanceSize(2);
         acceptor.setHillClimbingEnabled(true);
 
-        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
+        SolverScope<TestdataSolution> solverScope = new SolverScope<>();
         solverScope.setBestScore(SimpleScore.of(-1000));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);

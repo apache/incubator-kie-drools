@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.BasicPlumbingTermination;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -48,7 +48,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     protected final AtomicBoolean solving = new AtomicBoolean(false);
 
-    protected final DefaultSolverScope<Solution_> solverScope;
+    protected final SolverScope<Solution_> solverScope;
 
     // ************************************************************************
     // Constructors and simple getters/setters
@@ -58,7 +58,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
             BestSolutionRecaller<Solution_> bestSolutionRecaller, BasicPlumbingTermination basicPlumbingTermination,
             Termination termination,
             List<Phase<Solution_>> phaseList,
-            DefaultSolverScope<Solution_> solverScope) {
+            SolverScope<Solution_> solverScope) {
         super(bestSolutionRecaller, termination, phaseList);
         this.environmentMode = environmentMode;
         this.randomFactory = randomFactory;
@@ -86,7 +86,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         return phaseList;
     }
 
-    public DefaultSolverScope<Solution_> getSolverScope() {
+    public SolverScope<Solution_> getSolverScope() {
         return solverScope;
     }
 
@@ -164,7 +164,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         return solverScope.getBestSolution();
     }
 
-    public void outerSolvingStarted(DefaultSolverScope<Solution_> solverScope) {
+    public void outerSolvingStarted(SolverScope<Solution_> solverScope) {
         solving.set(true);
         basicPlumbingTermination.resetTerminateEarly();
         solverScope.setStartingSolverCount(0);
@@ -172,7 +172,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     }
 
     @Override
-    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
         solverScope.startingNow();
         solverScope.getScoreDirector().resetCalculationCount();
         super.solvingStarted(solverScope);
@@ -187,12 +187,12 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     }
 
     @Override
-    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
         super.solvingEnded(solverScope);
         solverScope.endingNow();
     }
 
-    public void outerSolvingEnded(DefaultSolverScope<Solution_> solverScope) {
+    public void outerSolvingEnded(SolverScope<Solution_> solverScope) {
         // Must be kept open for doProblemFactChange
         solverScope.getScoreDirector().close();
         logger.info("Solving ended: time spent ({}), best score ({}), score calculation speed ({}/sec),"

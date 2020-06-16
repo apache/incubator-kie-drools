@@ -21,7 +21,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
 public class BestScoreFeasibleTermination extends AbstractTermination {
@@ -42,7 +42,7 @@ public class BestScoreFeasibleTermination extends AbstractTermination {
     }
 
     @Override
-    public boolean isSolverTerminated(DefaultSolverScope solverScope) {
+    public boolean isSolverTerminated(SolverScope solverScope) {
         return isTerminated(solverScope.getBestScore());
     }
 
@@ -56,7 +56,7 @@ public class BestScoreFeasibleTermination extends AbstractTermination {
     }
 
     @Override
-    public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
+    public double calculateSolverTimeGradient(SolverScope solverScope) {
         return calculateFeasibilityTimeGradient(
                 solverScope.getStartingInitializedScore(), solverScope.getBestScore());
     }
@@ -88,7 +88,7 @@ public class BestScoreFeasibleTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public Termination createChildThreadTermination(DefaultSolverScope solverScope, ChildThreadType childThreadType) {
+    public Termination createChildThreadTermination(SolverScope solverScope, ChildThreadType childThreadType) {
         // TODO FIXME through some sort of solverlistener and async behaviour...
         throw new UnsupportedOperationException("This terminationClass (" + getClass()
                 + ") does not yet support being used in child threads of type (" + childThreadType + ").");

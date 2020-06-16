@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.solver.AbstractSolver;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
@@ -31,14 +31,14 @@ import org.optaplanner.core.impl.solver.termination.Termination;
  */
 public class PartitionSolver<Solution_> extends AbstractSolver<Solution_> {
 
-    protected final DefaultSolverScope<Solution_> solverScope;
+    protected final SolverScope<Solution_> solverScope;
 
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
 
     public PartitionSolver(BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination,
-            List<Phase<Solution_>> phaseList, DefaultSolverScope<Solution_> solverScope) {
+            List<Phase<Solution_>> phaseList, SolverScope<Solution_> solverScope) {
         super(bestSolutionRecaller, termination, phaseList);
         this.solverScope = solverScope;
     }
@@ -96,13 +96,13 @@ public class PartitionSolver<Solution_> extends AbstractSolver<Solution_> {
     }
 
     @Override
-    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
         solverScope.setWorkingSolutionFromBestSolution();
         super.solvingStarted(solverScope);
     }
 
     @Override
-    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
         super.solvingEnded(solverScope);
         solverScope.getScoreDirector().close();
         // TODO log?

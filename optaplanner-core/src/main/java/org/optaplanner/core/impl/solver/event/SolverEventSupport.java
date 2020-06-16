@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 /**
  * Internal API.
@@ -38,7 +38,7 @@ public class SolverEventSupport<Solution_> extends AbstractEventSupport<SolverEv
         this.solver = solver;
     }
 
-    public void fireBestSolutionChanged(DefaultSolverScope<Solution_> solverScope, Solution_ newBestSolution) {
+    public void fireBestSolutionChanged(SolverScope<Solution_> solverScope, Solution_ newBestSolution) {
         final Iterator<SolverEventListener<Solution_>> it = eventListenerSet.iterator();
         long timeMillisSpent = solverScope.getBestSolutionTimeMillisSpent();
         Score bestScore = solverScope.getBestScore();

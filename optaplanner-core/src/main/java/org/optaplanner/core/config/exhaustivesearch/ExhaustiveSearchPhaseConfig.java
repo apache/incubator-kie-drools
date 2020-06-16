@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
@@ -43,6 +42,7 @@ import org.optaplanner.core.impl.exhaustivesearch.ExhaustiveSearchPhase;
 import org.optaplanner.core.impl.exhaustivesearch.decider.ExhaustiveSearchDecider;
 import org.optaplanner.core.impl.exhaustivesearch.node.bounder.ScoreBounder;
 import org.optaplanner.core.impl.exhaustivesearch.node.bounder.TrendBasedScoreBounder;
+import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.ManualEntityMimicRecorder;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;

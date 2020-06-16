@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeurist
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +66,7 @@ public class ConstructionHeuristicDecider<Solution_> {
     // Worker methods
     // ************************************************************************
 
-    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
         forager.solvingStarted(solverScope);
     }
 
@@ -86,7 +86,7 @@ public class ConstructionHeuristicDecider<Solution_> {
         forager.phaseEnded(phaseScope);
     }
 
-    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
         forager.solvingEnded(solverScope);
     }
 

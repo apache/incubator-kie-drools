@@ -16,15 +16,15 @@
 
 package org.optaplanner.core.impl.score.buildin.bendable;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScoreHolder;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreHolderTest;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 public class BendableScoreHolderImplTest extends AbstractScoreHolderTest {
 

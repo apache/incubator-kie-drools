@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.solver.termination;
 
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
 public class ScoreCalculationCountTermination extends AbstractTermination {
@@ -38,7 +38,7 @@ public class ScoreCalculationCountTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public boolean isSolverTerminated(DefaultSolverScope solverScope) {
+    public boolean isSolverTerminated(SolverScope solverScope) {
         return isTerminated(solverScope.getScoreDirector());
     }
 
@@ -57,7 +57,7 @@ public class ScoreCalculationCountTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
+    public double calculateSolverTimeGradient(SolverScope solverScope) {
         return calculateTimeGradient(solverScope.getScoreDirector());
     }
 
@@ -78,7 +78,7 @@ public class ScoreCalculationCountTermination extends AbstractTermination {
 
     @Override
     public ScoreCalculationCountTermination createChildThreadTermination(
-            DefaultSolverScope solverScope, ChildThreadType childThreadType) {
+            SolverScope solverScope, ChildThreadType childThreadType) {
         if (childThreadType == ChildThreadType.PART_THREAD) {
             // The ScoreDirector.calculationCount of partitions is maxed, not summed.
             return new ScoreCalculationCountTermination(scoreCalculationCountLimit);

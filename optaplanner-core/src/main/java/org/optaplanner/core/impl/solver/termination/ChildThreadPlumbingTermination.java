@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.solver.termination;
 
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
 public class ChildThreadPlumbingTermination extends AbstractTermination {
@@ -44,7 +44,7 @@ public class ChildThreadPlumbingTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public synchronized boolean isSolverTerminated(DefaultSolverScope solverScope) {
+    public synchronized boolean isSolverTerminated(SolverScope solverScope) {
         // Destroying a thread pool with solver threads will only cause it to interrupt those child solver threads
         if (Thread.currentThread().isInterrupted()) { // Does not clear the interrupted flag
             logger.info("A child solver thread got interrupted, so these child solvers are terminating early.");
@@ -61,7 +61,7 @@ public class ChildThreadPlumbingTermination extends AbstractTermination {
     }
 
     @Override
-    public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
+    public double calculateSolverTimeGradient(SolverScope solverScope) {
         return -1.0; // Not supported
     }
 
@@ -77,7 +77,7 @@ public class ChildThreadPlumbingTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public Termination createChildThreadTermination(DefaultSolverScope solverScope, ChildThreadType childThreadType) {
+    public Termination createChildThreadTermination(SolverScope solverScope, ChildThreadType childThreadType) {
         return this;
     }
 

@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
@@ -30,8 +32,6 @@ import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScoreUtilsTest {
 

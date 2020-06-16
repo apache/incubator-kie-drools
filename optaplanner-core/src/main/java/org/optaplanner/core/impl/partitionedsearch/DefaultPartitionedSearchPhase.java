@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,9 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.recaller.BestSolutionRecallerConfig;
+import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.partitionedsearch.event.PartitionedSearchPhaseLifecycleListener;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
@@ -40,7 +40,7 @@ import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.ChildThreadPlumbingTermination;
 import org.optaplanner.core.impl.solver.termination.OrCompositeTermination;
 import org.optaplanner.core.impl.solver.termination.Termination;
@@ -90,7 +90,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
     // ************************************************************************
 
     @Override
-    public void solve(DefaultSolverScope<Solution_> solverScope) {
+    public void solve(SolverScope<Solution_> solverScope) {
         PartitionedSearchPhaseScope<Solution_> phaseScope = new PartitionedSearchPhaseScope<>(solverScope);
         List<Solution_> partList = solutionPartitioner.splitWorkingSolution(
                 solverScope.getScoreDirector(), runnablePartThreadLimit);
@@ -166,7 +166,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
 
     public PartitionSolver<Solution_> buildPartitionSolver(
             ChildThreadPlumbingTermination childThreadPlumbingTermination, Semaphore runnablePartThreadSemaphore,
-            DefaultSolverScope<Solution_> solverScope) {
+            SolverScope<Solution_> solverScope) {
         BestSolutionRecaller<Solution_> bestSolutionRecaller = new BestSolutionRecallerConfig()
                 .buildBestSolutionRecaller(configPolicy.getEnvironmentMode());
         Termination partTermination = new OrCompositeTermination(childThreadPlumbingTermination,
@@ -178,7 +178,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
             partPhaseIndex++;
         }
         // TODO create PartitionSolverScope alternative to deal with 3 layer terminations
-        DefaultSolverScope<Solution_> partSolverScope = solverScope.createChildThreadSolverScope(ChildThreadType.PART_THREAD);
+        SolverScope<Solution_> partSolverScope = solverScope.createChildThreadSolverScope(ChildThreadType.PART_THREAD);
         partSolverScope.setRunnableThreadSemaphore(runnablePartThreadSemaphore);
         return new PartitionSolver<>(bestSolutionRecaller, partTermination, phaseList, partSolverScope);
     }

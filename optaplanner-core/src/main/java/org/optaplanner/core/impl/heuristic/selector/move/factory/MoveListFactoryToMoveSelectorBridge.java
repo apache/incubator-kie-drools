@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecyc
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRandomIterator;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 /**
  * Bridges a {@link MoveListFactory} to a {@link MoveSelector}.
@@ -67,14 +67,14 @@ public class MoveListFactoryToMoveSelectorBridge extends AbstractMoveSelector
     // ************************************************************************
 
     @Override
-    public void constructCache(DefaultSolverScope solverScope) {
+    public void constructCache(SolverScope solverScope) {
         cachedMoveList = moveListFactory.createMoveList(solverScope.getScoreDirector().getWorkingSolution());
         logger.trace("    Created cachedMoveList: size ({}), moveSelector ({}).",
                 cachedMoveList.size(), this);
     }
 
     @Override
-    public void disposeCache(DefaultSolverScope solverScope) {
+    public void disposeCache(SolverScope solverScope) {
         cachedMoveList = null;
     }
 

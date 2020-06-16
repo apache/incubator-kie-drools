@@ -17,10 +17,10 @@
 package org.optaplanner.core.config.constructionheuristic.decider.forager;
 
 import org.optaplanner.core.config.AbstractConfig;
-import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.DefaultConstructionHeuristicForager;
+import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 

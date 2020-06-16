@@ -27,7 +27,6 @@ import org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConf
 import org.optaplanner.core.config.constructionheuristic.placer.PooledEntityPlacerConfig;
 import org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig;
 import org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig;
-import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
@@ -42,6 +41,7 @@ import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuri
 import org.optaplanner.core.impl.constructionheuristic.decider.MultiThreadedConstructionHeuristicDecider;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
 import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
+import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;

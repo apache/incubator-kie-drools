@@ -22,7 +22,7 @@ import static org.mockito.Mockito.mock;
 import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
+import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.termination.TimeMillisSpentTermination;
 import org.optaplanner.core.impl.solver.termination.UnimprovedTimeMillisSpentTermination;

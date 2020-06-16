@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class SelectionCacheLifecycleBridge implements PhaseLifecycleListener {
 
@@ -39,7 +39,7 @@ public class SelectionCacheLifecycleBridge implements PhaseLifecycleListener {
     }
 
     @Override
-    public void solvingStarted(DefaultSolverScope solverScope) {
+    public void solvingStarted(SolverScope solverScope) {
         if (cacheType == SelectionCacheType.SOLVER) {
             selectionCacheLifecycleListener.constructCache(solverScope);
         }
@@ -74,7 +74,7 @@ public class SelectionCacheLifecycleBridge implements PhaseLifecycleListener {
     }
 
     @Override
-    public void solvingEnded(DefaultSolverScope solverScope) {
+    public void solvingEnded(SolverScope solverScope) {
         if (cacheType == SelectionCacheType.SOLVER) {
             selectionCacheLifecycleListener.disposeCache(solverScope);
         }

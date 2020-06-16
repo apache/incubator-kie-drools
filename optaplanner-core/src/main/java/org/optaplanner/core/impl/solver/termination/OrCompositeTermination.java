@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.solver.termination;
 import java.util.List;
 
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
 public class OrCompositeTermination extends AbstractCompositeTermination {
@@ -41,7 +41,7 @@ public class OrCompositeTermination extends AbstractCompositeTermination {
      * @return true if any of the Termination is terminated.
      */
     @Override
-    public boolean isSolverTerminated(DefaultSolverScope solverScope) {
+    public boolean isSolverTerminated(SolverScope solverScope) {
         for (Termination termination : terminationList) {
             if (termination.isSolverTerminated(solverScope)) {
                 return true;
@@ -76,7 +76,7 @@ public class OrCompositeTermination extends AbstractCompositeTermination {
      * @return the maximum timeGradient of the Terminations.
      */
     @Override
-    public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
+    public double calculateSolverTimeGradient(SolverScope solverScope) {
         double timeGradient = 0.0;
         for (Termination termination : terminationList) {
             double nextTimeGradient = termination.calculateSolverTimeGradient(solverScope);
@@ -112,7 +112,7 @@ public class OrCompositeTermination extends AbstractCompositeTermination {
 
     @Override
     public OrCompositeTermination createChildThreadTermination(
-            DefaultSolverScope solverScope, ChildThreadType childThreadType) {
+            SolverScope solverScope, ChildThreadType childThreadType) {
         return new OrCompositeTermination(createChildThreadTerminationList(solverScope, childThreadType));
     }
 

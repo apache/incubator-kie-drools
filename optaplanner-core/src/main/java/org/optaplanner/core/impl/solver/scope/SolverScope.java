@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class DefaultSolverScope<Solution_> {
+public class SolverScope<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -219,8 +219,8 @@ public class DefaultSolverScope<Solution_> {
         scoreDirector.setWorkingSolution(scoreDirector.cloneSolution(bestSolution));
     }
 
-    public DefaultSolverScope<Solution_> createChildThreadSolverScope(ChildThreadType childThreadType) {
-        DefaultSolverScope<Solution_> childThreadSolverScope = new DefaultSolverScope<>();
+    public SolverScope<Solution_> createChildThreadSolverScope(ChildThreadType childThreadType) {
+        SolverScope<Solution_> childThreadSolverScope = new SolverScope<>();
         childThreadSolverScope.startingSolverCount = startingSolverCount;
         // TODO FIXME use RandomFactory
         // Experiments show that this trick to attain reproducibility doesn't break uniform distribution

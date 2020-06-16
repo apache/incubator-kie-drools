@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.FixedSelect
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class UnionMoveSelectorTest {
 
@@ -46,7 +46,7 @@ public class UnionMoveSelectorTest {
                 new DummyMove("b1"), new DummyMove("b2")));
         UnionMoveSelector moveSelector = new UnionMoveSelector(childMoveSelectorList, false);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         moveSelector.solvingStarted(solverScope);
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
@@ -72,7 +72,7 @@ public class UnionMoveSelectorTest {
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class));
         UnionMoveSelector moveSelector = new UnionMoveSelector(childMoveSelectorList, false);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         moveSelector.solvingStarted(solverScope);
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
@@ -107,7 +107,7 @@ public class UnionMoveSelectorTest {
         Random workingRandom = mock(Random.class);
         when(workingRandom.nextDouble()).thenReturn(1.0 / 1020.0, 1019.0 / 1020.0, 1000.0 / 1020.0, 0.0, 999.0 / 1020.0);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.solvingStarted(solverScope);
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -144,7 +144,7 @@ public class UnionMoveSelectorTest {
         Random workingRandom = mock(Random.class);
         when(workingRandom.nextDouble()).thenReturn(1.0);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.solvingStarted(solverScope);
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);

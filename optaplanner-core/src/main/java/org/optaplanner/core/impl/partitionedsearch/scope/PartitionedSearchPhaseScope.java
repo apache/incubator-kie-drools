@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.partitionedsearch.scope;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -29,7 +29,7 @@ public class PartitionedSearchPhaseScope<Solution_> extends AbstractPhaseScope<S
 
     private PartitionedSearchStepScope<Solution_> lastCompletedStepScope;
 
-    public PartitionedSearchPhaseScope(DefaultSolverScope<Solution_> solverScope) {
+    public PartitionedSearchPhaseScope(SolverScope<Solution_> solverScope) {
         super(solverScope);
         lastCompletedStepScope = new PartitionedSearchStepScope<>(this, -1);
     }

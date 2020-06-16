@@ -25,7 +25,7 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -97,7 +97,7 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
         Solution_ solution = solver.solve(problem);
         long timeMillisSpent = solver.getTimeMillisSpent();
 
-        DefaultSolverScope<Solution_> solverScope = solver.getSolverScope();
+        SolverScope<Solution_> solverScope = solver.getSolverScope();
         SolutionDescriptor<Solution_> solutionDescriptor = solverScope.getSolutionDescriptor();
         problemBenchmarkResult.registerScale(solutionDescriptor.getEntityCount(solution),
                 solutionDescriptor.getGenuineVariableCount(solution),

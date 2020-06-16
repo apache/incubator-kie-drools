@@ -23,8 +23,8 @@ import java.util.List;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.AbstractConfig;
-import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.termination.AbstractCompositeTermination;
 import org.optaplanner.core.impl.solver.termination.AndCompositeTermination;

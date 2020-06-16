@@ -24,14 +24,14 @@ import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class ScoreCalculationCountTerminationTest {
 
     @Test
     public void solveTermination() {
         Termination termination = new ScoreCalculationCountTermination(1000L);
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
         when(solverScope.getScoreDirector()).thenReturn(scoreDirector);
 

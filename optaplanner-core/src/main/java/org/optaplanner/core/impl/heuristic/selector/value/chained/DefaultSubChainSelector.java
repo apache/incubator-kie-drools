@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.pillar.DefaultPillarS
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 /**
  * This is the common {@link SubChainSelector} implementation.
@@ -100,7 +100,7 @@ public class DefaultSubChainSelector extends AbstractSelector
     }
 
     @Override
-    public void solvingStarted(DefaultSolverScope solverScope) {
+    public void solvingStarted(SolverScope solverScope) {
         super.solvingStarted(solverScope);
         SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
         GenuineVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
@@ -108,7 +108,7 @@ public class DefaultSubChainSelector extends AbstractSelector
     }
 
     @Override
-    public void solvingEnded(DefaultSolverScope solverScope) {
+    public void solvingEnded(SolverScope solverScope) {
         super.solvingEnded(solverScope);
         inverseVariableSupply = null;
     }
@@ -118,7 +118,7 @@ public class DefaultSubChainSelector extends AbstractSelector
     // ************************************************************************
 
     @Override
-    public void constructCache(DefaultSolverScope solverScope) {
+    public void constructCache(SolverScope solverScope) {
         InnerScoreDirector scoreDirector = solverScope.getScoreDirector();
         GenuineVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
         long valueSize = valueSelector.getSize();
@@ -152,7 +152,7 @@ public class DefaultSubChainSelector extends AbstractSelector
     }
 
     @Override
-    public void disposeCache(DefaultSolverScope solverScope) {
+    public void disposeCache(SolverScope solverScope) {
         anchorTrailingChainList = null;
     }
 

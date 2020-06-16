@@ -23,13 +23,13 @@ import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class EntityRatioTabuSizeStrategyTest {
 
     @Test
     public void tabuSize() {
-        LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(mock(DefaultSolverScope.class));
+        LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(mock(SolverScope.class));
         when(phaseScope.getWorkingEntityCount()).thenReturn(100);
         LocalSearchStepScope stepScope = new LocalSearchStepScope(phaseScope);
         assertThat(new EntityRatioTabuSizeStrategy(0.1).determineTabuSize(stepScope)).isEqualTo(10);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.solver.termination;
 
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
 public class StepCountTermination extends AbstractTermination {
@@ -41,7 +41,7 @@ public class StepCountTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public boolean isSolverTerminated(DefaultSolverScope solverScope) {
+    public boolean isSolverTerminated(SolverScope solverScope) {
         throw new UnsupportedOperationException(
                 getClass().getSimpleName() + " can only be used for phase termination.");
     }
@@ -57,7 +57,7 @@ public class StepCountTermination extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
+    public double calculateSolverTimeGradient(SolverScope solverScope) {
         throw new UnsupportedOperationException(
                 getClass().getSimpleName() + " can only be used for phase termination.");
     }
@@ -75,7 +75,7 @@ public class StepCountTermination extends AbstractTermination {
 
     @Override
     public StepCountTermination createChildThreadTermination(
-            DefaultSolverScope solverScope, ChildThreadType childThreadType) {
+            SolverScope solverScope, ChildThreadType childThreadType) {
         return new StepCountTermination(stepCountLimit);
     }
 

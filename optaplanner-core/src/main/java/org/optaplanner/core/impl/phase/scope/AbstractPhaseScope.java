@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      hhttp://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,7 +24,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +35,7 @@ public abstract class AbstractPhaseScope<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected final DefaultSolverScope<Solution_> solverScope;
+    protected final SolverScope<Solution_> solverScope;
 
     protected Long startingSystemTimeMillis;
     protected Long startingScoreCalculationCount;
@@ -46,11 +46,11 @@ public abstract class AbstractPhaseScope<Solution_> {
 
     protected int bestSolutionStepIndex;
 
-    public AbstractPhaseScope(DefaultSolverScope<Solution_> solverScope) {
+    public AbstractPhaseScope(SolverScope<Solution_> solverScope) {
         this.solverScope = solverScope;
     }
 
-    public DefaultSolverScope<Solution_> getSolverScope() {
+    public SolverScope<Solution_> getSolverScope() {
         return solverScope;
     }
 

@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.solver;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -37,9 +40,6 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedEntity;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 public class DefaultSolverTest {
 

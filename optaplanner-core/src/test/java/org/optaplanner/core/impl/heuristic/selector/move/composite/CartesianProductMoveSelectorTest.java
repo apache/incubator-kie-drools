@@ -39,7 +39,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMoveSelec
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarEntity;
 
@@ -64,7 +64,7 @@ public class CartesianProductMoveSelectorTest {
         CartesianProductMoveSelector moveSelector = new CartesianProductMoveSelector(childMoveSelectorList,
                 ignoreEmptyChildIterators, false);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         moveSelector.solvingStarted(solverScope);
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
@@ -130,7 +130,7 @@ public class CartesianProductMoveSelectorTest {
         CartesianProductMoveSelector moveSelector = new CartesianProductMoveSelector(childMoveSelectorList,
                 ignoreEmptyChildIterators, false);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         moveSelector.solvingStarted(solverScope);
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
@@ -174,7 +174,7 @@ public class CartesianProductMoveSelectorTest {
         CartesianProductMoveSelector moveSelector = new CartesianProductMoveSelector(childMoveSelectorList,
                 ignoreEmptyChildIterators, false);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         moveSelector.solvingStarted(solverScope);
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
@@ -215,7 +215,7 @@ public class CartesianProductMoveSelectorTest {
         CartesianProductMoveSelector moveSelector = new CartesianProductMoveSelector(childMoveSelectorList,
                 ignoreEmptyChildIterators, false);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         moveSelector.solvingStarted(solverScope);
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
@@ -258,7 +258,7 @@ public class CartesianProductMoveSelectorTest {
         CartesianProductMoveSelector moveSelector = new CartesianProductMoveSelector(childMoveSelectorList,
                 ignoreEmptyChildIterators, true);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         moveSelector.solvingStarted(solverScope);
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
@@ -295,7 +295,7 @@ public class CartesianProductMoveSelectorTest {
         CartesianProductMoveSelector moveSelector = new CartesianProductMoveSelector(childMoveSelectorList,
                 ignoreEmptyChildIterators, true);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         moveSelector.solvingStarted(solverScope);
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
@@ -339,7 +339,7 @@ public class CartesianProductMoveSelectorTest {
         CartesianProductMoveSelector moveSelector = new CartesianProductMoveSelector(childMoveSelectorList,
                 ignoreEmptyChildIterators, true);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         moveSelector.solvingStarted(solverScope);
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
@@ -378,7 +378,7 @@ public class CartesianProductMoveSelectorTest {
         CartesianProductMoveSelector moveSelector = new CartesianProductMoveSelector(childMoveSelectorList,
                 ignoreEmptyChildIterators, true);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         moveSelector.solvingStarted(solverScope);
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
@@ -439,7 +439,7 @@ public class CartesianProductMoveSelectorTest {
         MoveSelector moveSelector = new CartesianProductMoveSelector(moveSelectorList,
                 ignoreEmptyChildIterators, false);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         moveSelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
@@ -505,7 +505,7 @@ public class CartesianProductMoveSelectorTest {
         MoveSelector moveSelector = new CartesianProductMoveSelector(moveSelectorList,
                 ignoreEmptyChildIterators, true);
 
-        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        SolverScope solverScope = mock(SolverScope.class);
         moveSelector.solvingStarted(solverScope);
 
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);

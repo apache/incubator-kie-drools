@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptorTe
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 public class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
@@ -40,7 +40,7 @@ public class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
         SimulatedAnnealingAcceptor acceptor = new SimulatedAnnealingAcceptor();
         acceptor.setStartingTemperature(SimpleScore.of(200));
 
-        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
+        SolverScope<TestdataSolution> solverScope = new SolverScope<>();
         solverScope.setBestScore(SimpleScore.of(-1000));
         Random workingRandom = mock(Random.class);
         solverScope.setWorkingRandom(workingRandom);
