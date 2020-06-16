@@ -230,7 +230,6 @@
     <module>drools</module>
     <module>jbpm</module>
     <module>kogito-cloud-services</module>
-    <module>optaplanner</module>
     <module>kogito-codegen</module>
     <module>kogito-springboot</module>
     <module>addons</module>
@@ -272,18 +271,6 @@
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-scenario-simulation-backend</artifactId>
-        <version>${version.org.kie7}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-core</artifactId>
-        <version>${version.org.kie7}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-core</artifactId>
-        <type>test-jar</type>
         <version>${version.org.kie7}</version>
       </dependency>
 
