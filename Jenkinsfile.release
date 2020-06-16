@@ -43,18 +43,18 @@ pipeline {
       }
       stage('Branch and update version') {
         steps {
-          sh 'cd kogito-runtimes/scripts/release && ./01-create-local-release-branches.sh ${params.RELEASE_VERSION} ${params.BASE_BRANCH} ${params.TARGET_BRANCH}'
-          sh 'cd kogito-runtimes/scripts/release && ./02-update-version-all.sh ${params.RELEASE_VERSION}'
+          sh "cd kogito-runtimes/scripts/release && ./01-create-local-release-branches.sh ${params.RELEASE_VERSION} ${params.BASE_BRANCH} ${params.TARGET_BRANCH}"
+          sh "cd kogito-runtimes/scripts/release && ./02-update-version-all.sh ${params.RELEASE_VERSION}"
         }
       }   
       stage('Build') {
         steps {
-            sh 'cd kogito-runtimes/scripts/release && ./03-build-local-release-branches.sh'  
+            sh "cd kogito-runtimes/scripts/release && ./03-build-local-release-branches.sh"  
         }
       }
       stage('Tag and release') {
         steps {
-            sh 'cd kogito-runtimes/scripts/release && ./04-commit-local-release-branches.sh ${params.RELEASE_VERSION}'
+            sh "cd kogito-runtimes/scripts/release && ./04-commit-local-release-branches.sh ${params.RELEASE_VERSION}"
         }
       }
       stage('Approval') {
@@ -64,7 +64,7 @@ pipeline {
       }
       stage('Push release tag') {
         steps {
-            sh 'cd kogito-runtimes/scripts/release && ./05-tag-and-push-local-release-branches.sh ${params.RELEASE_VERSION} ${params.TARGET_BRANCH}'        
+            sh "cd kogito-runtimes/scripts/release && ./05-tag-and-push-local-release-branches.sh ${params.RELEASE_VERSION} ${params.TARGET_BRANCH}"        
         }
       }
       stage('Deploy to maven') {
@@ -76,7 +76,7 @@ pipeline {
       }
       stage('Results') {
         steps {
-          sh 'echo "Release of ${params.RELEASE_VERSION} done successfully"' 
+          echo "Release of ${params.RELEASE_VERSION} done successfully" 
         }
       }
     }
