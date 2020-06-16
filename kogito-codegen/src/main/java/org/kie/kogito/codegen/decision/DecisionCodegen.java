@@ -203,13 +203,9 @@ public class DecisionCodegen extends AbstractGenerator {
                     model,
                     index, factory )
                     .generateSourceCodeOfAllTypes();
-
-            allTypesSourceCode.entrySet().stream()
-                    .map(kv -> {
-                        String key = kv.getKey().replace(".", "/") + ".java";
-                        return new GeneratedFile(GeneratedFile.Type.CLASS, key, kv.getValue());
-                    })
-                    .forEach(generatedFiles::add);
+            
+            allTypesSourceCode.forEach((k,v) -> storeFile(GeneratedFile.Type.CLASS, k.replace(".", "/") + ".java", v));
+            
         } catch(Exception e) {
             logger.error("Unable to generate Strongly Typed Input for: {} {}", model.getNamespace(), model.getName());
             throw e;
