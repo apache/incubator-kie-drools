@@ -1,11 +1,11 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,9 +16,8 @@
 
 package org.optaplanner.core.api.score.buildin.bendablelong;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
@@ -42,13 +41,13 @@ public class BendableLongScoreHolderTest extends AbstractScoreHolderTest {
 
         RuleContext hard1 = mockRuleContext("hard1");
         scoreHolder.addHardConstraintMatch(hard1, 0, -1L);
-        assertEquals(BendableLongScore.of(new long[] { -1L }, new long[] { 0L, 0L }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -1L }, new long[] { 0L, 0L }));
 
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
         scoreHolder.addHardConstraintMatch(hard2Undo, 0, -8);
-        assertEquals(BendableLongScore.of(new long[] { -9L }, new long[] { 0L, 0L }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -9L }, new long[] { 0L, 0L }));
         callOnDelete(hard2Undo);
-        assertEquals(BendableLongScore.of(new long[] { -1L }, new long[] { 0L, 0L }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -1L }, new long[] { 0L, 0L }));
 
         RuleContext medium1 = mockRuleContext("medium1");
         scoreHolder.addSoftConstraintMatch(medium1, 0, -10L);
@@ -82,16 +81,16 @@ public class BendableLongScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addSoftConstraintMatch(medium2Undo, 0, -9999L);
         callOnDelete(medium2Undo);
 
-        assertEquals(BendableLongScore.of(new long[] { -7004001L }, new long[] { -50020L, -600300L }),
-                scoreHolder.extractScore(0));
-        assertEquals(BendableLongScore.ofUninitialized(-7, new long[] { -7004001L }, new long[] { -50020L, -600300L }),
-                scoreHolder.extractScore(-7));
+        assertThat(scoreHolder.extractScore(0))
+                .isEqualTo(BendableLongScore.of(new long[] { -7004001L }, new long[] { -50020L, -600300L }));
+        assertThat(scoreHolder.extractScore(-7))
+                .isEqualTo(BendableLongScore.ofUninitialized(-7, new long[] { -7004001L }, new long[] { -50020L, -600300L }));
         if (constraintMatchEnabled) {
-            assertEquals(BendableLongScore.of(new long[] { -1L }, new long[] { 0L, 0L }),
-                    findConstraintMatchTotal(scoreHolder, "hard1").getScore());
-            assertEquals(BendableLongScore.of(new long[] { 0L }, new long[] { 0L, -300L }),
-                    scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
-            assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
+            assertThat(findConstraintMatchTotal(scoreHolder, "hard1").getScore()).isEqualTo(
+                    BendableLongScore.of(new long[] { -1L }, new long[] { 0L, 0L }));
+            assertThat(scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore()).isEqualTo(
+                    BendableLongScore.of(new long[] { 0L }, new long[] { 0L, -300L }));
+            assertThat(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION)).isNull();
         }
     }
 
@@ -119,19 +118,20 @@ public class BendableLongScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.configureConstraintWeight(soft2, BendableLongScore.ofSoft(1, 2, 1, 100L));
 
         scoreHolder.penalize(mockRuleContext(hard1));
-        assertEquals(BendableLongScore.of(new long[] { -10L }, new long[] { 0L, 0L }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -10L }, new long[] { 0L, 0L }));
 
         scoreHolder.penalize(mockRuleContext(hard2), 2L);
-        assertEquals(BendableLongScore.of(new long[] { -210L }, new long[] { 0L, 0L }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -210L }, new long[] { 0L, 0L }));
 
         scoreHolder.penalize(mockRuleContext(medium1), 9L);
-        assertEquals(BendableLongScore.of(new long[] { -210L }, new long[] { -90L, 0L }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -210L }, new long[] { -90L, 0L }));
 
         scoreHolder.reward(mockRuleContext(soft1));
-        assertEquals(BendableLongScore.of(new long[] { -210L }, new long[] { -90L, 10L }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -210L }, new long[] { -90L, 10L }));
 
         scoreHolder.reward(mockRuleContext(soft2), 3L);
-        assertEquals(BendableLongScore.of(new long[] { -210L }, new long[] { -90L, 310L }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0))
+                .isEqualTo(BendableLongScore.of(new long[] { -210L }, new long[] { -90L, 310L }));
     }
 
     @Test

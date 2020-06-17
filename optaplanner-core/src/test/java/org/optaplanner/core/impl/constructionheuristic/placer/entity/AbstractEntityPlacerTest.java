@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,7 @@
 
 package org.optaplanner.core.impl.constructionheuristic.placer.entity;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 
 import java.util.Iterator;
@@ -31,26 +29,26 @@ public abstract class AbstractEntityPlacerTest {
 
     public static void assertEntityPlacement(Placement placement, String entityCode, String... valueCodes) {
         Iterator<Move> iterator = placement.iterator();
-        assertNotNull(iterator);
+        assertThat(iterator).isNotNull();
         for (String valueCode : valueCodes) {
-            assertTrue(iterator.hasNext());
+            assertThat(iterator.hasNext()).isTrue();
             ChangeMove<?> move = (ChangeMove) iterator.next();
             assertCode(entityCode, move.getEntity());
             assertCode(valueCode, move.getToPlanningValue());
         }
-        assertFalse(iterator.hasNext());
+        assertThat(iterator.hasNext()).isFalse();
     }
 
     public static void assertValuePlacement(Placement placement, String valueCode, String... entityCodes) {
         Iterator<Move> iterator = placement.iterator();
-        assertNotNull(iterator);
+        assertThat(iterator).isNotNull();
         for (String entityCode : entityCodes) {
-            assertTrue(iterator.hasNext());
+            assertThat(iterator.hasNext()).isTrue();
             ChangeMove<?> move = (ChangeMove) iterator.next();
             assertCode(entityCode, move.getEntity());
             assertCode(valueCode, move.getToPlanningValue());
         }
-        assertFalse(iterator.hasNext());
+        assertThat(iterator.hasNext()).isFalse();
     }
 
 }

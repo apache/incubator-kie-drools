@@ -1,11 +1,11 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,9 +16,7 @@
 
 package org.optaplanner.examples.common.app;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import java.io.File;
@@ -121,27 +119,28 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
 
     private void assertScoreAndConstraintMatches(SolverFactory<Solution_> solverFactory,
             Solution_ bestSolution, String bestScoreLimitString) {
-        assertNotNull(bestSolution);
+        assertThat(bestSolution).isNotNull();
         InnerScoreDirectorFactory<Solution_> scoreDirectorFactory = (InnerScoreDirectorFactory<Solution_>) solverFactory
                 .getScoreDirectorFactory();
         Score bestScore = scoreDirectorFactory.getSolutionDescriptor().getScore(bestSolution);
         ScoreDefinition scoreDefinition = scoreDirectorFactory.getScoreDefinition();
         Score bestScoreLimit = scoreDefinition.parseScore(bestScoreLimitString);
-        assertTrue("The bestScore (" + bestScore + ") must be at least the bestScoreLimit (" + bestScoreLimit + ").",
-                bestScore.compareTo(bestScoreLimit) >= 0);
+        assertThat(bestScore.compareTo(bestScoreLimit))
+                .as("The bestScore (" + bestScore + ") must be at least the bestScoreLimit (" + bestScoreLimit + ").")
+                .isGreaterThanOrEqualTo(0);
 
         try (ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
             scoreDirector.setWorkingSolution(bestSolution);
             Score score = scoreDirector.calculateScore();
-            assertEquals(score, bestScore);
+            assertThat(bestScore).isEqualTo(score);
             if (scoreDirector.isConstraintMatchEnabled()) {
                 Collection<ConstraintMatchTotal> constraintMatchTotals = scoreDirector.getConstraintMatchTotals();
-                assertNotNull(constraintMatchTotals);
-                assertEquals(score, constraintMatchTotals.stream()
+                assertThat(constraintMatchTotals).isNotNull();
+                assertThat(constraintMatchTotals.stream()
                         .map(ConstraintMatchTotal::getScore)
                         .reduce(Score::add)
-                        .orElse(scoreDefinition.getZeroScore()));
-                assertNotNull(scoreDirector.getIndictmentMap());
+                        .orElse(scoreDefinition.getZeroScore())).isEqualTo(score);
+                assertThat(scoreDirector.getIndictmentMap()).isNotNull();
             }
         }
     }

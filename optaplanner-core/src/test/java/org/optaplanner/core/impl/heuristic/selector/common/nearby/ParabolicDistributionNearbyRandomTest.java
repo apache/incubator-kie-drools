@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -38,11 +38,11 @@ public class ParabolicDistributionNearbyRandomTest {
         NearbyRandom nearbyRandom = new ParabolicDistributionNearbyRandom(100);
 
         when(random.nextDouble()).thenReturn(0.0);
-        assertEquals(0, nearbyRandom.nextInt(random, 500));
+        assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(0);
         when(random.nextDouble()).thenReturn(1.0 - Math.pow(1 - 1.0 / 100.0, 3.0));
-        assertEquals(1, nearbyRandom.nextInt(random, 500));
+        assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(1);
         when(random.nextDouble()).thenReturn(1.0 - Math.pow(1 - 2.0 / 100.0, 3.0));
-        assertEquals(2, nearbyRandom.nextInt(random, 500));
+        assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(2);
     }
 
     @Test
@@ -51,12 +51,12 @@ public class ParabolicDistributionNearbyRandomTest {
         NearbyRandom nearbyRandom = new ParabolicDistributionNearbyRandom(100);
 
         when(random.nextDouble()).thenReturn(Math.nextAfter(1.0, Double.NEGATIVE_INFINITY));
-        assertEquals(99, nearbyRandom.nextInt(random, 500));
-        assertEquals(9, nearbyRandom.nextInt(random, 10));
+        assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(99);
+        assertThat(nearbyRandom.nextInt(random, 10)).isEqualTo(9);
 
         when(random.nextDouble()).thenReturn(0.0);
-        assertEquals(0, nearbyRandom.nextInt(random, 500));
-        assertEquals(0, nearbyRandom.nextInt(random, 10));
+        assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(0);
+        assertThat(nearbyRandom.nextInt(random, 10)).isEqualTo(0);
     }
 
 }

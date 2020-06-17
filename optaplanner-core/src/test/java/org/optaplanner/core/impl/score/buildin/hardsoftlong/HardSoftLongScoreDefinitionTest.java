@@ -17,8 +17,6 @@
 package org.optaplanner.core.impl.score.buildin.hardsoftlong;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
@@ -41,17 +39,17 @@ public class HardSoftLongScoreDefinitionTest {
 
     @Test
     public void getLevelSize() {
-        assertEquals(2, new HardSoftLongScoreDefinition().getLevelsSize());
+        assertThat(new HardSoftLongScoreDefinition().getLevelsSize()).isEqualTo(2);
     }
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[] { "hard score", "soft score" }, new HardSoftLongScoreDefinition().getLevelLabels());
+        assertThat(new HardSoftLongScoreDefinition().getLevelLabels()).isEqualTo(new String[] { "hard score", "soft score" });
     }
 
     @Test
     public void getFeasibleLevelsSize() {
-        assertEquals(1, new HardSoftLongScoreDefinition().getFeasibleLevelsSize());
+        assertThat(new HardSoftLongScoreDefinition().getFeasibleLevelsSize()).isEqualTo(1);
     }
 
     @Test
@@ -60,9 +58,9 @@ public class HardSoftLongScoreDefinitionTest {
         HardSoftLongScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 2),
                 HardSoftLongScore.of(-1L, -2L));
-        assertEquals(0, optimisticBound.getInitScore());
-        assertEquals(Long.MAX_VALUE, optimisticBound.getHardScore());
-        assertEquals(Long.MAX_VALUE, optimisticBound.getSoftScore());
+        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(optimisticBound.getHardScore()).isEqualTo(Long.MAX_VALUE);
+        assertThat(optimisticBound.getSoftScore()).isEqualTo(Long.MAX_VALUE);
     }
 
     @Test
@@ -71,9 +69,9 @@ public class HardSoftLongScoreDefinitionTest {
         HardSoftLongScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 2),
                 HardSoftLongScore.of(-1L, -2L));
-        assertEquals(0, optimisticBound.getInitScore());
-        assertEquals(-1L, optimisticBound.getHardScore());
-        assertEquals(-2L, optimisticBound.getSoftScore());
+        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(optimisticBound.getHardScore()).isEqualTo(-1L);
+        assertThat(optimisticBound.getSoftScore()).isEqualTo(-2L);
     }
 
     @Test
@@ -82,9 +80,9 @@ public class HardSoftLongScoreDefinitionTest {
         HardSoftLongScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 2),
                 HardSoftLongScore.of(-1L, -2L));
-        assertEquals(0, pessimisticBound.getInitScore());
-        assertEquals(-1L, pessimisticBound.getHardScore());
-        assertEquals(-2L, pessimisticBound.getSoftScore());
+        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(pessimisticBound.getHardScore()).isEqualTo(-1L);
+        assertThat(pessimisticBound.getSoftScore()).isEqualTo(-2L);
     }
 
     @Test
@@ -93,9 +91,9 @@ public class HardSoftLongScoreDefinitionTest {
         HardSoftLongScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 2),
                 HardSoftLongScore.of(-1L, -2L));
-        assertEquals(0, pessimisticBound.getInitScore());
-        assertEquals(Long.MIN_VALUE, pessimisticBound.getHardScore());
-        assertEquals(Long.MIN_VALUE, pessimisticBound.getSoftScore());
+        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(pessimisticBound.getHardScore()).isEqualTo(Long.MIN_VALUE);
+        assertThat(pessimisticBound.getSoftScore()).isEqualTo(Long.MIN_VALUE);
     }
 
     @Test

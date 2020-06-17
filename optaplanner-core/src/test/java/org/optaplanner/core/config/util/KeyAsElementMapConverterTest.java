@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.config.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 
@@ -41,8 +41,8 @@ public class KeyAsElementMapConverterTest {
         xStream.processAnnotations(KeyAsElementMapConverterTestBean.class);
         xStream.allowTypes(new Class[] { KeyAsElementMapConverterTestBean.class });
         KeyAsElementMapConverterTestBean bean = (KeyAsElementMapConverterTestBean) xStream.fromXML(xml);
-        assertEquals("value1", bean.customProperties.get("alpha"));
-        assertEquals("7", bean.customProperties.get("beta"));
+        assertThat(bean.customProperties.get("alpha")).isEqualTo("value1");
+        assertThat(bean.customProperties.get("beta")).isEqualTo("7");
     }
 
     @XStreamAlias("keyAsElementMapConverterTestBean")

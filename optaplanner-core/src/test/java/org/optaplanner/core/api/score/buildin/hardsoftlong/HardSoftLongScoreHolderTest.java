@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,7 @@
 
 package org.optaplanner.core.api.score.buildin.hardsoftlong;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
@@ -41,13 +40,13 @@ public class HardSoftLongScoreHolderTest extends AbstractScoreHolderTest {
 
         RuleContext hard1 = mockRuleContext("hard1");
         scoreHolder.addHardConstraintMatch(hard1, -1L);
-        assertEquals(HardSoftLongScore.of(-1L, -0L), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardSoftLongScore.of(-1L, -0L));
 
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
         scoreHolder.addHardConstraintMatch(hard2Undo, -8L);
-        assertEquals(HardSoftLongScore.of(-9L, -0L), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardSoftLongScore.of(-9L, -0L));
         callOnDelete(hard2Undo);
-        assertEquals(HardSoftLongScore.of(-1L, -0L), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardSoftLongScore.of(-1L, -0L));
 
         RuleContext soft1 = mockRuleContext("soft1", DEFAULT_JUSTIFICATION, OTHER_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft1, -10L);
@@ -72,12 +71,14 @@ public class HardSoftLongScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addMultiConstraintMatch(multi2Undo, -999L, -999L);
         callOnDelete(multi2Undo);
 
-        assertEquals(HardSoftLongScore.of(-50301L, -4020L), scoreHolder.extractScore(0));
-        assertEquals(HardSoftLongScore.ofUninitialized(-7, -50301L, -4020L), scoreHolder.extractScore(-7));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardSoftLongScore.of(-50301L, -4020L));
+        assertThat(scoreHolder.extractScore(-7)).isEqualTo(HardSoftLongScore.ofUninitialized(-7, -50301L, -4020L));
         if (constraintMatchEnabled) {
-            assertEquals(HardSoftLongScore.of(-1L, 0L), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
-            assertEquals(HardSoftLongScore.of(0L, -20L), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
-            assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
+            assertThat(findConstraintMatchTotal(scoreHolder, "hard1").getScore())
+                    .isEqualTo(HardSoftLongScore.of(-1L, 0L));
+            assertThat(scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore())
+                    .isEqualTo(HardSoftLongScore.of(0L, -20L));
+            assertThat(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION)).isNull();
         }
     }
 
@@ -103,16 +104,16 @@ public class HardSoftLongScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.configureConstraintWeight(soft2, HardSoftLongScore.ofSoft(100L));
 
         scoreHolder.penalize(mockRuleContext(hard1));
-        assertEquals(HardSoftLongScore.of(-10L, 0L), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardSoftLongScore.of(-10L, 0L));
 
         scoreHolder.penalize(mockRuleContext(hard2), 2L);
-        assertEquals(HardSoftLongScore.of(-210L, 0L), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardSoftLongScore.of(-210L, 0L));
 
         scoreHolder.reward(mockRuleContext(soft1));
-        assertEquals(HardSoftLongScore.of(-210L, 10L), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardSoftLongScore.of(-210L, 10L));
 
         scoreHolder.reward(mockRuleContext(soft2), 3L);
-        assertEquals(HardSoftLongScore.of(-210L, 310L), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardSoftLongScore.of(-210L, 310L));
     }
 
 }

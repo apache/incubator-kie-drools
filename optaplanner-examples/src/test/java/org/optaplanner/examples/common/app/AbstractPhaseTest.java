@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.common.app;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicContainer.dynamicContainer;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
@@ -49,7 +49,7 @@ public abstract class AbstractPhaseTest<Solution_, T> extends LoggingTest {
             T solverFactoryParam);
 
     protected void assertSolution(Solution_ bestSolution) {
-        assertNotNull(bestSolution);
+        assertThat(bestSolution).isNotNull();
     }
 
     @TestFactory
@@ -78,7 +78,7 @@ public abstract class AbstractPhaseTest<Solution_, T> extends LoggingTest {
         Solution_ bestSolution = solver.solve(problem);
         assertSolution(bestSolution);
         ScoreManager<Solution_> scoreManager = ScoreManager.create(solverFactory);
-        assertNotNull(scoreManager.updateScore(bestSolution));
+        assertThat(scoreManager.updateScore(bestSolution)).isNotNull();
     }
 
     private static File buildFile(File unsolvedDataDir, String unsolvedFileName) {

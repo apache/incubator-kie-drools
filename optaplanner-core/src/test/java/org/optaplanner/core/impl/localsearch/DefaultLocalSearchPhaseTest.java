@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,7 @@
 
 package org.optaplanner.core.impl.localsearch;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 
 import java.util.Arrays;
@@ -57,16 +56,16 @@ public class DefaultLocalSearchPhaseTest {
                 new TestdataEntity("e3", v1)));
 
         solution = PlannerTestUtils.solve(solverConfig, solution);
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
         TestdataEntity solvedE1 = solution.getEntityList().get(0);
         assertCode("e1", solvedE1);
-        assertNotNull(solvedE1.getValue());
+        assertThat(solvedE1.getValue()).isNotNull();
         TestdataEntity solvedE2 = solution.getEntityList().get(1);
         assertCode("e2", solvedE2);
-        assertNotNull(solvedE2.getValue());
+        assertThat(solvedE2.getValue()).isNotNull();
         TestdataEntity solvedE3 = solution.getEntityList().get(2);
         assertCode("e3", solvedE3);
-        assertNotNull(solvedE3.getValue());
+        assertThat(solvedE3.getValue()).isNotNull();
     }
 
     @Test
@@ -89,16 +88,16 @@ public class DefaultLocalSearchPhaseTest {
                 new TestdataPinnedEntity("e3", null, false, true)));
 
         solution = PlannerTestUtils.solve(solverConfig, solution);
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
         TestdataPinnedEntity solvedE1 = solution.getEntityList().get(0);
         assertCode("e1", solvedE1);
-        assertNotNull(solvedE1.getValue());
+        assertThat(solvedE1.getValue()).isNotNull();
         TestdataPinnedEntity solvedE2 = solution.getEntityList().get(1);
         assertCode("e2", solvedE2);
-        assertEquals(v2, solvedE2.getValue());
+        assertThat(solvedE2.getValue()).isEqualTo(v2);
         TestdataPinnedEntity solvedE3 = solution.getEntityList().get(2);
         assertCode("e3", solvedE3);
-        assertEquals(null, solvedE3.getValue());
+        assertThat(solvedE3.getValue()).isEqualTo(null);
     }
 
     @Test
@@ -118,8 +117,8 @@ public class DefaultLocalSearchPhaseTest {
         solution.setEntityList(Collections.emptyList());
 
         solution = PlannerTestUtils.solve(solverConfig, solution);
-        assertNotNull(solution);
-        assertEquals(0, solution.getEntityList().size());
+        assertThat(solution).isNotNull();
+        assertThat(solution.getEntityList().size()).isEqualTo(0);
     }
 
     @Test
@@ -143,16 +142,16 @@ public class DefaultLocalSearchPhaseTest {
                 new TestdataEntity("e3", v1)));
 
         solution = PlannerTestUtils.solve(solverConfig, solution);
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
         TestdataEntity solvedE1 = solution.getEntityList().get(0);
         assertCode("e1", solvedE1);
-        assertNotNull(solvedE1.getValue());
+        assertThat(solvedE1.getValue()).isNotNull();
         TestdataEntity solvedE2 = solution.getEntityList().get(1);
         assertCode("e2", solvedE2);
-        assertNotNull(solvedE2.getValue());
+        assertThat(solvedE2.getValue()).isNotNull();
         TestdataEntity solvedE3 = solution.getEntityList().get(2);
         assertCode("e3", solvedE3);
-        assertNotNull(solvedE3.getValue());
+        assertThat(solvedE3.getValue()).isNotNull();
     }
 
     @Test
@@ -176,16 +175,16 @@ public class DefaultLocalSearchPhaseTest {
                 new TestdataPinnedEntity("e3", null, false, true)));
 
         solution = PlannerTestUtils.solve(solverConfig, solution);
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
         TestdataPinnedEntity solvedE1 = solution.getEntityList().get(0);
         assertCode("e1", solvedE1);
-        assertNotNull(solvedE1.getValue());
+        assertThat(solvedE1.getValue()).isNotNull();
         TestdataPinnedEntity solvedE2 = solution.getEntityList().get(1);
         assertCode("e2", solvedE2);
-        assertEquals(v2, solvedE2.getValue());
+        assertThat(solvedE2.getValue()).isEqualTo(v2);
         TestdataPinnedEntity solvedE3 = solution.getEntityList().get(2);
         assertCode("e3", solvedE3);
-        assertEquals(null, solvedE3.getValue());
+        assertThat(solvedE3.getValue()).isEqualTo(null);
     }
 
     @Test
@@ -206,8 +205,8 @@ public class DefaultLocalSearchPhaseTest {
         solution.setEntityList(Collections.emptyList());
 
         solution = PlannerTestUtils.solve(solverConfig, solution);
-        assertNotNull(solution);
-        assertEquals(0, solution.getEntityList().size());
+        assertThat(solution).isNotNull();
+        assertThat(solution.getEntityList().size()).isEqualTo(0);
     }
 
 }

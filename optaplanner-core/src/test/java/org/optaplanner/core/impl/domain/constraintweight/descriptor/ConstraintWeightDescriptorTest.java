@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,7 @@
 
 package org.optaplanner.core.impl.domain.constraintweight.descriptor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -38,15 +37,14 @@ public class ConstraintWeightDescriptorTest {
 
         ConstraintWeightDescriptor<TestdataConstraintConfigurationSolution> firstWeightDescriptor =
                 constraintConfigurationDescriptor.getConstraintWeightDescriptor("firstWeight");
-        assertEquals(TestdataConstraintConfigurationSolution.class.getPackage().getName(),
-                firstWeightDescriptor.getConstraintPackage());
-        assertEquals("First weight", firstWeightDescriptor.getConstraintName());
+        assertThat(firstWeightDescriptor.getConstraintPackage())
+                .isEqualTo(TestdataConstraintConfigurationSolution.class.getPackage().getName());
+        assertThat(firstWeightDescriptor.getConstraintName()).isEqualTo("First weight");
 
         ConstraintWeightDescriptor<TestdataConstraintConfigurationSolution> secondWeightDescriptor =
                 constraintConfigurationDescriptor.getConstraintWeightDescriptor("secondWeight");
-        assertEquals("packageOverwrittenOnField",
-                secondWeightDescriptor.getConstraintPackage());
-        assertEquals("Second weight", secondWeightDescriptor.getConstraintName());
+        assertThat(secondWeightDescriptor.getConstraintPackage()).isEqualTo("packageOverwrittenOnField");
+        assertThat(secondWeightDescriptor.getConstraintName()).isEqualTo("Second weight");
 
         TestdataConstraintConfigurationSolution solution = new TestdataConstraintConfigurationSolution("solution");
         TestdataConstraintConfiguration constraintConfiguration = new TestdataConstraintConfiguration(
@@ -55,10 +53,10 @@ public class ConstraintWeightDescriptorTest {
         constraintConfiguration.setSecondWeight(SimpleScore.of(7));
         solution.setConstraintConfiguration(constraintConfiguration);
 
-        assertSame(constraintConfiguration,
-                solutionDescriptor.getConstraintConfigurationMemberAccessor().executeGetter(solution));
-        assertEquals(SimpleScore.ZERO, firstWeightDescriptor.createExtractor().apply(solution));
-        assertEquals(SimpleScore.of(7), secondWeightDescriptor.createExtractor().apply(solution));
+        assertThat(solutionDescriptor.getConstraintConfigurationMemberAccessor().executeGetter(solution))
+                .isSameAs(constraintConfiguration);
+        assertThat(firstWeightDescriptor.createExtractor().apply(solution)).isEqualTo(SimpleScore.ZERO);
+        assertThat(secondWeightDescriptor.createExtractor().apply(solution)).isEqualTo(SimpleScore.of(7));
     }
 
     @Test
@@ -70,21 +68,20 @@ public class ConstraintWeightDescriptorTest {
 
         ConstraintWeightDescriptor<TestdataExtendedConstraintConfigurationSolution> firstWeightDescriptor =
                 constraintConfigurationDescriptor.getConstraintWeightDescriptor("firstWeight");
-        assertEquals(TestdataConstraintConfigurationSolution.class.getPackage().getName(),
-                firstWeightDescriptor.getConstraintPackage());
-        assertEquals("First weight", firstWeightDescriptor.getConstraintName());
+        assertThat(firstWeightDescriptor.getConstraintPackage())
+                .isEqualTo(TestdataConstraintConfigurationSolution.class.getPackage().getName());
+        assertThat(firstWeightDescriptor.getConstraintName()).isEqualTo("First weight");
 
         ConstraintWeightDescriptor<TestdataExtendedConstraintConfigurationSolution> secondWeightDescriptor =
                 constraintConfigurationDescriptor.getConstraintWeightDescriptor("secondWeight");
-        assertEquals("packageOverwrittenOnField",
-                secondWeightDescriptor.getConstraintPackage());
-        assertEquals("Second weight", secondWeightDescriptor.getConstraintName());
+        assertThat(secondWeightDescriptor.getConstraintPackage()).isEqualTo("packageOverwrittenOnField");
+        assertThat(secondWeightDescriptor.getConstraintName()).isEqualTo("Second weight");
 
         ConstraintWeightDescriptor<TestdataExtendedConstraintConfigurationSolution> thirdWeightDescriptor =
                 constraintConfigurationDescriptor.getConstraintWeightDescriptor("thirdWeight");
-        assertEquals(TestdataExtendedConstraintConfigurationSolution.class.getPackage().getName(),
-                thirdWeightDescriptor.getConstraintPackage());
-        assertEquals("Third weight", thirdWeightDescriptor.getConstraintName());
+        assertThat(thirdWeightDescriptor.getConstraintPackage())
+                .isEqualTo(TestdataExtendedConstraintConfigurationSolution.class.getPackage().getName());
+        assertThat(thirdWeightDescriptor.getConstraintName()).isEqualTo("Third weight");
 
         TestdataExtendedConstraintConfigurationSolution solution = new TestdataExtendedConstraintConfigurationSolution(
                 "solution");
@@ -95,11 +92,11 @@ public class ConstraintWeightDescriptorTest {
         constraintConfiguration.setThirdWeight(SimpleScore.of(9));
         solution.setConstraintConfiguration(constraintConfiguration);
 
-        assertSame(constraintConfiguration,
-                solutionDescriptor.getConstraintConfigurationMemberAccessor().executeGetter(solution));
-        assertEquals(SimpleScore.ZERO, firstWeightDescriptor.createExtractor().apply(solution));
-        assertEquals(SimpleScore.of(7), secondWeightDescriptor.createExtractor().apply(solution));
-        assertEquals(SimpleScore.of(9), thirdWeightDescriptor.createExtractor().apply(solution));
+        assertThat(solutionDescriptor.getConstraintConfigurationMemberAccessor().executeGetter(solution))
+                .isSameAs(constraintConfiguration);
+        assertThat(firstWeightDescriptor.createExtractor().apply(solution)).isEqualTo(SimpleScore.ZERO);
+        assertThat(secondWeightDescriptor.createExtractor().apply(solution)).isEqualTo(SimpleScore.of(7));
+        assertThat(thirdWeightDescriptor.createExtractor().apply(solution)).isEqualTo(SimpleScore.of(9));
     }
 
 }

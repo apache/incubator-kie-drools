@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,8 @@
 
 package org.optaplanner.core.api.solver;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,7 +54,7 @@ public class SolverFactoryTest {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/core/api/solver/testdataSolverConfig.xml");
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        assertThat(solver).isNotNull();
     }
 
     @Test
@@ -65,7 +63,7 @@ public class SolverFactoryTest {
         SolverFactory solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/core/api/solver/testdataSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        assertThat(solver).isNotNull();
     }
 
     @Test
@@ -81,7 +79,7 @@ public class SolverFactoryTest {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlResource(
                 "divertThroughClassLoader/org/optaplanner/core/api/solver/classloaderTestdataSolverConfig.xml", classLoader);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        assertThat(solver).isNotNull();
     }
 
     @Test
@@ -93,7 +91,7 @@ public class SolverFactoryTest {
         }
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlFile(file);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        assertThat(solver).isNotNull();
     }
 
     @Test
@@ -107,7 +105,7 @@ public class SolverFactoryTest {
         }
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlFile(file, classLoader);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        assertThat(solver).isNotNull();
     }
 
     @Test
@@ -115,7 +113,7 @@ public class SolverFactoryTest {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        assertThat(solver).isNotNull();
     }
 
     @Test
@@ -128,7 +126,7 @@ public class SolverFactoryTest {
                 .withScoreDrls("divertThroughClassLoader/org/optaplanner/core/api/solver/classloaderTestdataConstraints.drl"));
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        assertThat(solver).isNotNull();
     }
 
     @Test
@@ -136,7 +134,7 @@ public class SolverFactoryTest {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
         ScoreDirectorFactory<TestdataSolution> scoreDirectorFactory = solverFactory.getScoreDirectorFactory();
-        assertNotNull(scoreDirectorFactory);
+        assertThat(scoreDirectorFactory).isNotNull();
 
         TestdataSolution solution = new TestdataSolution("s1");
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
@@ -144,7 +142,7 @@ public class SolverFactoryTest {
         try (ScoreDirector<TestdataSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
             scoreDirector.setWorkingSolution(solution);
             Score score = scoreDirector.calculateScore();
-            assertNotNull(score);
+            assertThat(score).isNotNull();
         }
     }
 
@@ -156,14 +154,14 @@ public class SolverFactoryTest {
         solverFactoryTemplate.getSolverConfig().setTerminationConfig(new TerminationConfig());
         SolverFactory<TestdataSolution> solverFactory1 = solverFactoryTemplate.cloneSolverFactory();
         SolverFactory<TestdataSolution> solverFactory2 = solverFactoryTemplate.cloneSolverFactory();
-        assertNotSame(solverFactory1, solverFactory2);
+        assertThat(solverFactory2).isNotSameAs(solverFactory1);
         solverFactory1.getSolverConfig().getTerminationConfig().setMinutesSpentLimit(1L);
         solverFactory2.getSolverConfig().getTerminationConfig().setMinutesSpentLimit(2L);
-        assertEquals((Long) 1L, solverFactory1.getSolverConfig().getTerminationConfig().getMinutesSpentLimit());
-        assertEquals((Long) 2L, solverFactory2.getSolverConfig().getTerminationConfig().getMinutesSpentLimit());
+        assertThat(solverFactory1.getSolverConfig().getTerminationConfig().getMinutesSpentLimit()).isEqualTo((Long) 1L);
+        assertThat(solverFactory2.getSolverConfig().getTerminationConfig().getMinutesSpentLimit()).isEqualTo((Long) 2L);
         Solver<TestdataSolution> solver1 = solverFactory1.buildSolver();
         Solver<TestdataSolution> solver2 = solverFactory2.buildSolver();
-        assertNotSame(solver1, solver2);
+        assertThat(solver2).isNotSameAs(solver1);
     }
 
 }

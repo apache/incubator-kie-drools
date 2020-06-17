@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.impl.domain.variable.custom;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 
@@ -76,31 +76,31 @@ public class CustomVariableListenerTest {
         a.setValue(val1);
         scoreDirector.afterVariableChanged(variableDescriptor, a);
         scoreDirector.triggerVariableListeners();
-        assertEquals("1/firstShadow", a.getFirstShadow());
-        assertEquals(null, a.getThirdShadow());
+        assertThat(a.getFirstShadow()).isEqualTo("1/firstShadow");
+        assertThat(a.getThirdShadow()).isEqualTo(null);
 
         scoreDirector.beforeVariableChanged(variableDescriptor, a);
         a.setValue(val3);
         scoreDirector.afterVariableChanged(variableDescriptor, a);
         scoreDirector.triggerVariableListeners();
-        assertEquals("3/firstShadow", a.getFirstShadow());
-        assertEquals(null, a.getThirdShadow());
+        assertThat(a.getFirstShadow()).isEqualTo("3/firstShadow");
+        assertThat(a.getThirdShadow()).isEqualTo(null);
 
         scoreDirector.beforeVariableChanged(variableDescriptor, c);
         c.setValue(val1);
         scoreDirector.afterVariableChanged(variableDescriptor, c);
         scoreDirector.triggerVariableListeners();
-        assertEquals("1/firstShadow", c.getFirstShadow());
-        assertEquals("1/firstShadow/secondShadow", c.getSecondShadow());
-        assertEquals("1/firstShadow/secondShadow/thirdShadow", c.getThirdShadow());
+        assertThat(c.getFirstShadow()).isEqualTo("1/firstShadow");
+        assertThat(c.getSecondShadow()).isEqualTo("1/firstShadow/secondShadow");
+        assertThat(c.getThirdShadow()).isEqualTo("1/firstShadow/secondShadow/thirdShadow");
 
         scoreDirector.beforeVariableChanged(variableDescriptor, c);
         c.setValue(val3);
         scoreDirector.afterVariableChanged(variableDescriptor, c);
         scoreDirector.triggerVariableListeners();
-        assertEquals("3/firstShadow", c.getFirstShadow());
-        assertEquals("3/firstShadow/secondShadow", c.getSecondShadow());
-        assertEquals("3/firstShadow/secondShadow/thirdShadow", c.getThirdShadow());
+        assertThat(c.getFirstShadow()).isEqualTo("3/firstShadow");
+        assertThat(c.getSecondShadow()).isEqualTo("3/firstShadow/secondShadow");
+        assertThat(c.getThirdShadow()).isEqualTo("3/firstShadow/secondShadow/thirdShadow");
     }
 
     @Test
@@ -130,36 +130,36 @@ public class CustomVariableListenerTest {
         a.setPrimaryValue(val1);
         scoreDirector.afterVariableChanged(primaryVariableDescriptor, a);
         scoreDirector.triggerVariableListeners();
-        assertEquals(null, a.getComposedCode());
-        assertEquals(null, a.getReverseComposedCode());
+        assertThat(a.getComposedCode()).isEqualTo(null);
+        assertThat(a.getReverseComposedCode()).isEqualTo(null);
 
         scoreDirector.beforeVariableChanged(secondaryVariableDescriptor, a);
         a.setSecondaryValue(val3);
         scoreDirector.afterVariableChanged(secondaryVariableDescriptor, a);
         scoreDirector.triggerVariableListeners();
-        assertEquals("1-3", a.getComposedCode());
-        assertEquals("3-1", a.getReverseComposedCode());
+        assertThat(a.getComposedCode()).isEqualTo("1-3");
+        assertThat(a.getReverseComposedCode()).isEqualTo("3-1");
 
         scoreDirector.beforeVariableChanged(secondaryVariableDescriptor, a);
         a.setSecondaryValue(val4);
         scoreDirector.afterVariableChanged(secondaryVariableDescriptor, a);
         scoreDirector.triggerVariableListeners();
-        assertEquals("1-4", a.getComposedCode());
-        assertEquals("4-1", a.getReverseComposedCode());
+        assertThat(a.getComposedCode()).isEqualTo("1-4");
+        assertThat(a.getReverseComposedCode()).isEqualTo("4-1");
 
         scoreDirector.beforeVariableChanged(primaryVariableDescriptor, a);
         a.setPrimaryValue(val2);
         scoreDirector.afterVariableChanged(primaryVariableDescriptor, a);
         scoreDirector.triggerVariableListeners();
-        assertEquals("2-4", a.getComposedCode());
-        assertEquals("4-2", a.getReverseComposedCode());
+        assertThat(a.getComposedCode()).isEqualTo("2-4");
+        assertThat(a.getReverseComposedCode()).isEqualTo("4-2");
 
         scoreDirector.beforeVariableChanged(primaryVariableDescriptor, a);
         a.setPrimaryValue(null);
         scoreDirector.afterVariableChanged(primaryVariableDescriptor, a);
         scoreDirector.triggerVariableListeners();
-        assertEquals(null, a.getComposedCode());
-        assertEquals(null, a.getReverseComposedCode());
+        assertThat(a.getComposedCode()).isEqualTo(null);
+        assertThat(a.getReverseComposedCode()).isEqualTo(null);
 
         scoreDirector.beforeVariableChanged(primaryVariableDescriptor, c);
         c.setPrimaryValue(val1);
@@ -168,8 +168,8 @@ public class CustomVariableListenerTest {
         c.setSecondaryValue(val3);
         scoreDirector.afterVariableChanged(secondaryVariableDescriptor, c);
         scoreDirector.triggerVariableListeners();
-        assertEquals("1-3", c.getComposedCode());
-        assertEquals("3-1", c.getReverseComposedCode());
+        assertThat(c.getComposedCode()).isEqualTo("1-3");
+        assertThat(c.getReverseComposedCode()).isEqualTo("3-1");
     }
 
 }

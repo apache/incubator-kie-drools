@@ -52,7 +52,6 @@ import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.DummySimpleScoreEasyScoreCalculator;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -137,7 +136,7 @@ public class PlannerTestUtils {
     public static <Solution_> InnerScoreDirector<Solution_> mockScoreDirector(
             SolutionDescriptor<Solution_> solutionDescriptor) {
         EasyScoreDirectorFactory<Solution_> scoreDirectorFactory = new EasyScoreDirectorFactory<>(solutionDescriptor,
-                (EasyScoreCalculator<Solution_>) (solution_) -> SimpleScore.of(0));
+                (solution_) -> SimpleScore.of(0));
         scoreDirectorFactory.setInitializingScoreTrend(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1));
         return mock(InnerScoreDirector.class,

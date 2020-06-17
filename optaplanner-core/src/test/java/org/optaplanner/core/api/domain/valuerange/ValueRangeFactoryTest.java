@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.api.domain.valuerange;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 
@@ -37,8 +37,7 @@ public class ValueRangeFactoryTest {
         solution.setEntityList(Arrays.asList(new TestdataValueRangeEntity("e1"), new TestdataValueRangeEntity("e2")));
 
         solution = PlannerTestUtils.solve(solverConfig, solution);
-        ;
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
     }
 
 }

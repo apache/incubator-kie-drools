@@ -16,8 +16,7 @@
 
 package org.optaplanner.persistence.jpa;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 
@@ -69,7 +68,7 @@ public abstract class AbstractScoreJpaTest {
             throw new RuntimeException("Transaction failed.", e);
         }
         Long id = jpaEntity.getId();
-        assertNotNull(id);
+        assertThat(id).isNotNull();
         return id;
     }
 
@@ -93,7 +92,7 @@ public abstract class AbstractScoreJpaTest {
             EntityManager em = entityManagerFactory.createEntityManager();
             E jpaEntity = em.find(jpaEntityClass, id);
             em.persist(jpaEntity);
-            assertEquals(oldScore, jpaEntity.getScore());
+            assertThat(jpaEntity.getScore()).isEqualTo(oldScore);
             jpaEntity.setScore(newScore);
             jpaEntity = em.merge(jpaEntity);
             transactionManager.commit();
@@ -109,7 +108,7 @@ public abstract class AbstractScoreJpaTest {
             transactionManager.begin();
             EntityManager em = entityManagerFactory.createEntityManager();
             E jpaEntity = em.find(jpaEntityClass, id);
-            assertEquals(score, jpaEntity.getScore());
+            assertThat(jpaEntity.getScore()).isEqualTo(score);
             transactionManager.commit();
         } catch (NotSupportedException | SystemException | RollbackException | HeuristicMixedException
                 | HeuristicRollbackException e) {

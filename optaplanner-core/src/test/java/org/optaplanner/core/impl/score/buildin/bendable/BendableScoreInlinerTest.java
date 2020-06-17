@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.buildin.bendable;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.function.Consumer;
 
@@ -34,36 +34,36 @@ public class BendableScoreInlinerTest {
         Consumer<Score<?>> scoreConsumer = null;
 
         BendableScoreInliner scoreInliner = new BendableScoreInliner(constraintMatchEnabled, 1, 2);
-        assertEquals(BendableScore.zero(1, 2), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.zero(1, 2));
 
         IntWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(BendableScore.ofHard(1, 2, 0, -90));
         UndoScoreImpacter hardUndo = hardImpacter.impactScore(1, scoreConsumer);
-        assertEquals(BendableScore.of(new int[] { -90 }, new int[] { 0, 0 }), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -90 }, new int[] { 0, 0 }));
         scoreInliner.buildWeightedScoreImpacter(BendableScore.ofHard(1, 2, 0, -800)).impactScore(1, scoreConsumer);
-        assertEquals(BendableScore.of(new int[] { -890 }, new int[] { 0, 0 }), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -890 }, new int[] { 0, 0 }));
         hardUndo.undoScoreImpact();
-        assertEquals(BendableScore.of(new int[] { -800 }, new int[] { 0, 0 }), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -800 }, new int[] { 0, 0 }));
 
         IntWeightedScoreImpacter mediumImpacter = scoreInliner.buildWeightedScoreImpacter(BendableScore.ofSoft(1, 2, 0, -7));
         UndoScoreImpacter mediumUndo = mediumImpacter.impactScore(1, scoreConsumer);
-        assertEquals(BendableScore.of(new int[] { -800 }, new int[] { -7, 0 }), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -800 }, new int[] { -7, 0 }));
         mediumUndo.undoScoreImpact();
-        assertEquals(BendableScore.of(new int[] { -800 }, new int[] { 0, 0 }), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -800 }, new int[] { 0, 0 }));
 
         IntWeightedScoreImpacter softImpacter = scoreInliner.buildWeightedScoreImpacter(BendableScore.ofSoft(1, 2, 1, -1));
         UndoScoreImpacter softUndo = softImpacter.impactScore(3, scoreConsumer);
-        assertEquals(BendableScore.of(new int[] { -800 }, new int[] { 0, -3 }), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -800 }, new int[] { 0, -3 }));
         softImpacter.impactScore(10, scoreConsumer);
-        assertEquals(BendableScore.of(new int[] { -800 }, new int[] { 0, -13 }), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -800 }, new int[] { 0, -13 }));
         softUndo.undoScoreImpact();
-        assertEquals(BendableScore.of(new int[] { -800 }, new int[] { 0, -10 }), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -800 }, new int[] { 0, -10 }));
 
         IntWeightedScoreImpacter allLevelsImpacter = scoreInliner
                 .buildWeightedScoreImpacter(BendableScore.of(new int[] { -1000 }, new int[] { -2000, -3000 }));
         UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(1, scoreConsumer);
-        assertEquals(BendableScore.of(new int[] { -1800 }, new int[] { -2000, -3010 }), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -1800 }, new int[] { -2000, -3010 }));
         allLevelsUndo.undoScoreImpact();
-        assertEquals(BendableScore.of(new int[] { -800 }, new int[] { 0, -10 }), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -800 }, new int[] { 0, -10 }));
     }
 
 }

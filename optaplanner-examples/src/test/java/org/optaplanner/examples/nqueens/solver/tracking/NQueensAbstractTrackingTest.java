@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.nqueens.solver.tracking;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -24,8 +24,8 @@ public abstract class NQueensAbstractTrackingTest {
 
     protected void assertTrackingList(List<NQueensStepTracking> expected, List<NQueensStepTracking> recorded) {
         for (int i = 0; i < expected.size(); i++) {
-            assertEquals(expected.get(i).getColumnIndex(), recorded.get(i).getColumnIndex());
-            assertEquals(expected.get(i).getRowIndex(), recorded.get(i).getRowIndex());
+            assertThat(recorded.get(i).getColumnIndex()).isEqualTo(expected.get(i).getColumnIndex());
+            assertThat(recorded.get(i).getRowIndex()).isEqualTo(expected.get(i).getRowIndex());
         }
     }
 

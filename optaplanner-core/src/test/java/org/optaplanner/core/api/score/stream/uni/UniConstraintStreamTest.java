@@ -17,9 +17,9 @@
 package org.optaplanner.core.api.score.stream.uni;
 
 import static java.util.Comparator.comparing;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.count;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countDistinct;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.max;
@@ -1197,7 +1197,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertEquals(SimpleScore.of(-42), scoreDirector.calculateScore());
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-42));
     }
 
     @TestTemplate
@@ -1221,7 +1221,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertEquals(SimpleLongScore.of(-42L), scoreDirector.calculateScore());
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(-42L));
     }
 
     @TestTemplate
@@ -1246,7 +1246,8 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertEquals(SimpleBigDecimalScore.of(new BigDecimal("-2.4")), scoreDirector.calculateScore());
+        assertThat(scoreDirector.calculateScore())
+                .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("-2.4")));
     }
 
     @TestTemplate
@@ -1288,7 +1289,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertEquals(SimpleScore.of(42), scoreDirector.calculateScore());
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(42));
     }
 
     @TestTemplate
@@ -1312,7 +1313,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertEquals(SimpleLongScore.of(42L), scoreDirector.calculateScore());
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(42L));
     }
 
     @TestTemplate
@@ -1337,7 +1338,8 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertEquals(SimpleBigDecimalScore.of(new BigDecimal("2.4")), scoreDirector.calculateScore());
+        assertThat(scoreDirector.calculateScore())
+                .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("2.4")));
     }
 
     @TestTemplate
@@ -1451,16 +1453,16 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         // From scratch
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
-        assertEquals(0, zeroWeightMonitorCount.getAndSet(0L));
-        assertEquals(3, oneWeightMonitorCount.getAndSet(0L));
+        assertThat(zeroWeightMonitorCount.getAndSet(0L)).isEqualTo(0);
+        assertThat(oneWeightMonitorCount.getAndSet(0L)).isEqualTo(3);
 
         // Incremental
         scoreDirector.beforeProblemPropertyChanged(entity1);
         entity1.setStringProperty("myProperty2");
         scoreDirector.afterProblemPropertyChanged(entity1);
         scoreDirector.calculateScore();
-        assertEquals(0, zeroWeightMonitorCount.get());
-        assertEquals(1, oneWeightMonitorCount.get());
+        assertThat(zeroWeightMonitorCount.get()).isEqualTo(0);
+        assertThat(oneWeightMonitorCount.get()).isEqualTo(1);
     }
 
     @TestTemplate
@@ -1493,14 +1495,14 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         // From scratch
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
-        assertEquals(3, monitorCount.getAndSet(0L));
+        assertThat(monitorCount.getAndSet(0L)).isEqualTo(3);
 
         // Incremental
         scoreDirector.beforeProblemPropertyChanged(entity1);
         entity1.setStringProperty("myProperty2");
         scoreDirector.afterProblemPropertyChanged(entity1);
         scoreDirector.calculateScore();
-        assertEquals(1, monitorCount.get());
+        assertThat(monitorCount.get()).isEqualTo(1);
     }
 
     @TestTemplate

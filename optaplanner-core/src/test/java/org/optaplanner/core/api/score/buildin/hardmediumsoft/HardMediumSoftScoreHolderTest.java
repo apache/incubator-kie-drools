@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,7 @@
 
 package org.optaplanner.core.api.score.buildin.hardmediumsoft;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
@@ -41,13 +40,13 @@ public class HardMediumSoftScoreHolderTest extends AbstractScoreHolderTest {
 
         RuleContext hard1 = mockRuleContext("hard1");
         scoreHolder.addHardConstraintMatch(hard1, -1);
-        assertEquals(HardMediumSoftScore.of(-1, 0, 0), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-1, 0, 0));
 
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
         scoreHolder.addHardConstraintMatch(hard2Undo, -8);
-        assertEquals(HardMediumSoftScore.of(-9, 0, 0), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-9, 0, 0));
         callOnDelete(hard2Undo);
-        assertEquals(HardMediumSoftScore.of(-1, 0, 0), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-1, 0, 0));
 
         RuleContext medium1 = mockRuleContext("medium1");
         scoreHolder.addMediumConstraintMatch(medium1, -10);
@@ -81,13 +80,14 @@ public class HardMediumSoftScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addMediumConstraintMatch(medium2Undo, -9999);
         callOnDelete(medium2Undo);
 
-        assertEquals(HardMediumSoftScore.of(-7004001, -50020, -600300), scoreHolder.extractScore(0));
-        assertEquals(HardMediumSoftScore.ofUninitialized(-7, -7004001, -50020, -600300), scoreHolder.extractScore(-7));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-7004001, -50020, -600300));
+        assertThat(scoreHolder.extractScore(-7)).isEqualTo(HardMediumSoftScore.ofUninitialized(-7, -7004001, -50020, -600300));
         if (constraintMatchEnabled) {
-            assertEquals(HardMediumSoftScore.of(-1, 0, 0), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
-            assertEquals(HardMediumSoftScore.of(0, 0, -300),
-                    scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
-            assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
+            assertThat(findConstraintMatchTotal(scoreHolder, "hard1").getScore())
+                    .isEqualTo(HardMediumSoftScore.of(-1, 0, 0));
+            assertThat(scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore())
+                    .isEqualTo(HardMediumSoftScore.of(0, 0, -300));
+            assertThat(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION)).isNull();
         }
     }
 
@@ -115,19 +115,19 @@ public class HardMediumSoftScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.configureConstraintWeight(soft2, HardMediumSoftScore.ofSoft(100));
 
         scoreHolder.penalize(mockRuleContext(hard1));
-        assertEquals(HardMediumSoftScore.of(-10, 0, 0), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-10, 0, 0));
 
         scoreHolder.penalize(mockRuleContext(hard2), 2);
-        assertEquals(HardMediumSoftScore.of(-210, 0, 0), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-210, 0, 0));
 
         scoreHolder.penalize(mockRuleContext(medium1), 9);
-        assertEquals(HardMediumSoftScore.of(-210, -90, 0), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-210, -90, 0));
 
         scoreHolder.reward(mockRuleContext(soft1));
-        assertEquals(HardMediumSoftScore.of(-210, -90, 10), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-210, -90, 10));
 
         scoreHolder.reward(mockRuleContext(soft2), 3);
-        assertEquals(HardMediumSoftScore.of(-210, -90, 310), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-210, -90, 310));
     }
 
 }

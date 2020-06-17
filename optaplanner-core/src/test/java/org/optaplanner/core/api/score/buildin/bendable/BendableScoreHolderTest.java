@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,8 @@
 
 package org.optaplanner.core.api.score.buildin.bendable;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
@@ -42,13 +41,13 @@ public class BendableScoreHolderTest extends AbstractScoreHolderTest {
 
         RuleContext hard1 = mockRuleContext("hard1");
         scoreHolder.addHardConstraintMatch(hard1, 0, -1);
-        assertEquals(BendableScore.of(new int[] { -1 }, new int[] { 0, 0 }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -1 }, new int[] { 0, 0 }));
 
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
         scoreHolder.addHardConstraintMatch(hard2Undo, 0, -8);
-        assertEquals(BendableScore.of(new int[] { -9 }, new int[] { 0, 0 }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -9 }, new int[] { 0, 0 }));
         callOnDelete(hard2Undo);
-        assertEquals(BendableScore.of(new int[] { -1 }, new int[] { 0, 0 }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -1 }, new int[] { 0, 0 }));
 
         RuleContext medium1 = mockRuleContext("medium1");
         scoreHolder.addSoftConstraintMatch(medium1, 0, -10);
@@ -82,15 +81,16 @@ public class BendableScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addSoftConstraintMatch(medium2Undo, 0, -9999);
         callOnDelete(medium2Undo);
 
-        assertEquals(BendableScore.of(new int[] { -7004001 }, new int[] { -50020, -600300 }), scoreHolder.extractScore(0));
-        assertEquals(BendableScore.ofUninitialized(-7, new int[] { -7004001 }, new int[] { -50020, -600300 }),
-                scoreHolder.extractScore(-7));
+        assertThat(scoreHolder.extractScore(0))
+                .isEqualTo(BendableScore.of(new int[] { -7004001 }, new int[] { -50020, -600300 }));
+        assertThat(scoreHolder.extractScore(-7))
+                .isEqualTo(BendableScore.ofUninitialized(-7, new int[] { -7004001 }, new int[] { -50020, -600300 }));
         if (constraintMatchEnabled) {
-            assertEquals(BendableScore.of(new int[] { -1 }, new int[] { 0, 0 }),
-                    findConstraintMatchTotal(scoreHolder, "hard1").getScore());
-            assertEquals(BendableScore.of(new int[] { 0 }, new int[] { 0, -300 }),
-                    scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
-            assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
+            assertThat(findConstraintMatchTotal(scoreHolder, "hard1").getScore())
+                    .isEqualTo(BendableScore.of(new int[] { -1 }, new int[] { 0, 0 }));
+            assertThat(scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore())
+                    .isEqualTo(BendableScore.of(new int[] { 0 }, new int[] { 0, -300 }));
+            assertThat(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION)).isNull();
         }
     }
 
@@ -118,19 +118,19 @@ public class BendableScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.configureConstraintWeight(soft2, BendableScore.ofSoft(1, 2, 1, 100));
 
         scoreHolder.penalize(mockRuleContext(hard1));
-        assertEquals(BendableScore.of(new int[] { -10 }, new int[] { 0, 0 }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -10 }, new int[] { 0, 0 }));
 
         scoreHolder.penalize(mockRuleContext(hard2), 2);
-        assertEquals(BendableScore.of(new int[] { -210 }, new int[] { 0, 0 }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -210 }, new int[] { 0, 0 }));
 
         scoreHolder.penalize(mockRuleContext(medium1), 9);
-        assertEquals(BendableScore.of(new int[] { -210 }, new int[] { -90, 0 }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -210 }, new int[] { -90, 0 }));
 
         scoreHolder.reward(mockRuleContext(soft1));
-        assertEquals(BendableScore.of(new int[] { -210 }, new int[] { -90, 10 }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -210 }, new int[] { -90, 10 }));
 
         scoreHolder.reward(mockRuleContext(soft2), 3);
-        assertEquals(BendableScore.of(new int[] { -210 }, new int[] { -90, 310 }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(BendableScore.of(new int[] { -210 }, new int[] { -90, 310 }));
     }
 
     @Test

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.api.score.buildin.simplebigdecimal;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 
@@ -52,11 +52,11 @@ public class SimpleBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         callOnUpdate(scoreRule3);
         scoreHolder.addConstraintMatch(scoreRule3, new BigDecimal("-0.03")); // Overwrite existing
 
-        assertEquals(SimpleBigDecimalScore.ofUninitialized(0, new BigDecimal("-10.03")), scoreHolder.extractScore(0));
-        assertEquals(SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.03")), scoreHolder.extractScore(-7));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleBigDecimalScore.ofUninitialized(0, new BigDecimal("-10.03")));
+        assertThat(scoreHolder.extractScore(-7)).isEqualTo(SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.03")));
         if (constraintMatchEnabled) {
-            assertEquals(SimpleBigDecimalScore.of(new BigDecimal("-10.00")),
-                    findConstraintMatchTotal(scoreHolder, "scoreRule1").getScore());
+            assertThat(findConstraintMatchTotal(scoreHolder, "scoreRule1").getScore())
+                    .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("-10.00")));
         }
     }
 
@@ -78,10 +78,10 @@ public class SimpleBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.configureConstraintWeight(constraint2, SimpleBigDecimalScore.of(new BigDecimal("100.0")));
 
         scoreHolder.penalize(mockRuleContext(constraint1));
-        assertEquals(SimpleBigDecimalScore.of(new BigDecimal("-10.0")), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("-10.0")));
 
         scoreHolder.penalize(mockRuleContext(constraint2), new BigDecimal("2.0"));
-        assertEquals(SimpleBigDecimalScore.of(new BigDecimal("-210.0")), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("-210.0")));
 
         scoreHolder = new SimpleBigDecimalScoreHolder(constraintMatchEnabled);
         Rule constraint3 = mockRule("constraint3");
@@ -90,10 +90,10 @@ public class SimpleBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.configureConstraintWeight(constraint4, SimpleBigDecimalScore.of(new BigDecimal("100.0")));
 
         scoreHolder.reward(mockRuleContext(constraint3));
-        assertEquals(SimpleBigDecimalScore.of(new BigDecimal("10.0")), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("10.0")));
 
         scoreHolder.reward(mockRuleContext(constraint4), new BigDecimal("3.0"));
-        assertEquals(SimpleBigDecimalScore.of(new BigDecimal("310.0")), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("310.0")));
     }
 
 }

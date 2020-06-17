@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.domain.variable.inverserelation;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 
@@ -64,12 +64,12 @@ public class SingletonInverseVariableListenerTest {
         solution.setChainedAnchorList(Arrays.asList(a0, b0));
         solution.setChainedEntityList(Arrays.asList(a1, a2, a3, b1));
 
-        assertEquals(null, b1.getNextEntity());
+        assertThat(b1.getNextEntity()).isEqualTo(null);
 
         variableListener.beforeVariableChanged(scoreDirector, a3);
         a3.setChainedObject(b1);
         variableListener.afterVariableChanged(scoreDirector, a3);
-        assertEquals(a3, b1.getNextEntity());
+        assertThat(b1.getNextEntity()).isEqualTo(a3);
 
         InOrder inOrder = inOrder(scoreDirector);
         inOrder.verify(scoreDirector).beforeVariableChanged(nextEntityVariableDescriptor, b1);

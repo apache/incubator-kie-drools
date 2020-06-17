@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.buildin.bendablelong;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.function.Consumer;
 
@@ -34,39 +34,40 @@ public class BendableLongScoreInlinerTest {
         Consumer<Score<?>> scoreConsumer = null;
 
         BendableLongScoreInliner scoreInliner = new BendableLongScoreInliner(constraintMatchEnabled, 1, 2);
-        assertEquals(BendableLongScore.zero(1, 2), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.zero(1, 2));
 
         LongWeightedScoreImpacter hardImpacter = scoreInliner
                 .buildWeightedScoreImpacter(BendableLongScore.ofHard(1, 2, 0, -90L));
         UndoScoreImpacter hardUndo = hardImpacter.impactScore(1L, scoreConsumer);
-        assertEquals(BendableLongScore.of(new long[] { -90L }, new long[] { 0L, 0L }), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -90L }, new long[] { 0L, 0L }));
         scoreInliner.buildWeightedScoreImpacter(BendableLongScore.ofHard(1, 2, 0, -800L)).impactScore(1L, scoreConsumer);
-        assertEquals(BendableLongScore.of(new long[] { -890L }, new long[] { 0L, 0L }), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -890L }, new long[] { 0L, 0L }));
         hardUndo.undoScoreImpact();
-        assertEquals(BendableLongScore.of(new long[] { -800L }, new long[] { 0L, 0L }), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -800L }, new long[] { 0L, 0L }));
 
         LongWeightedScoreImpacter mediumImpacter = scoreInliner
                 .buildWeightedScoreImpacter(BendableLongScore.ofSoft(1, 2, 0, -7L));
         UndoScoreImpacter mediumUndo = mediumImpacter.impactScore(1L, scoreConsumer);
-        assertEquals(BendableLongScore.of(new long[] { -800L }, new long[] { -7L, 0L }), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -800L }, new long[] { -7L, 0L }));
         mediumUndo.undoScoreImpact();
-        assertEquals(BendableLongScore.of(new long[] { -800L }, new long[] { 0L, 0L }), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -800L }, new long[] { 0L, 0L }));
 
         LongWeightedScoreImpacter softImpacter = scoreInliner
                 .buildWeightedScoreImpacter(BendableLongScore.ofSoft(1, 2, 1, -1L));
         UndoScoreImpacter softUndo = softImpacter.impactScore(3L, scoreConsumer);
-        assertEquals(BendableLongScore.of(new long[] { -800L }, new long[] { 0L, -3L }), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -800L }, new long[] { 0L, -3L }));
         softImpacter.impactScore(10L, scoreConsumer);
-        assertEquals(BendableLongScore.of(new long[] { -800L }, new long[] { 0L, -13L }), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -800L }, new long[] { 0L, -13L }));
         softUndo.undoScoreImpact();
-        assertEquals(BendableLongScore.of(new long[] { -800L }, new long[] { 0L, -10L }), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -800L }, new long[] { 0L, -10L }));
 
         LongWeightedScoreImpacter allLevelsImpacter = scoreInliner
                 .buildWeightedScoreImpacter(BendableLongScore.of(new long[] { -1000L }, new long[] { -2000L, -3000L }));
         UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(1L, scoreConsumer);
-        assertEquals(BendableLongScore.of(new long[] { -1800L }, new long[] { -2000L, -3010L }), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0))
+                .isEqualTo(BendableLongScore.of(new long[] { -1800L }, new long[] { -2000L, -3010L }));
         allLevelsUndo.undoScoreImpact();
-        assertEquals(BendableLongScore.of(new long[] { -800L }, new long[] { 0L, -10L }), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(BendableLongScore.of(new long[] { -800L }, new long[] { 0L, -10L }));
     }
 
 }

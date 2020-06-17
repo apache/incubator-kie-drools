@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,8 @@
 
 package org.optaplanner.core.api.score.buildin.bendablebigdecimal;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import java.math.BigDecimal;
 
@@ -44,16 +43,19 @@ public class BendableBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
 
         RuleContext hard1 = mockRuleContext("hard1");
         scoreHolder.addHardConstraintMatch(hard1, 0, new BigDecimal("-0.01"));
-        assertEquals(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-0.01") },
-                new BigDecimal[] { new BigDecimal("0.00"), new BigDecimal("0.00") }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0))
+                .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-0.01") },
+                        new BigDecimal[] { new BigDecimal("0.00"), new BigDecimal("0.00") }));
 
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
         scoreHolder.addHardConstraintMatch(hard2Undo, 0, new BigDecimal("-0.08"));
-        assertEquals(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-0.09") },
-                new BigDecimal[] { new BigDecimal("0.00"), new BigDecimal("0.00") }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0))
+                .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-0.09") },
+                        new BigDecimal[] { new BigDecimal("0.00"), new BigDecimal("0.00") }));
         callOnDelete(hard2Undo);
-        assertEquals(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-0.01") },
-                new BigDecimal[] { new BigDecimal("0.00"), new BigDecimal("0.00") }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0))
+                .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-0.01") },
+                        new BigDecimal[] { new BigDecimal("0.00"), new BigDecimal("0.00") }));
 
         RuleContext medium1 = mockRuleContext("medium1");
         scoreHolder.addSoftConstraintMatch(medium1, 0, new BigDecimal("-0.10"));
@@ -90,24 +92,22 @@ public class BendableBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addSoftConstraintMatch(medium2Undo, 0, new BigDecimal("-99.99"));
         callOnDelete(medium2Undo);
 
-        assertEquals(
-                BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-70040.01") },
-                        new BigDecimal[] { new BigDecimal("-500.20"), new BigDecimal("-6003.00") }),
-                scoreHolder.extractScore(0));
-        assertEquals(
-                BendableBigDecimalScore.ofUninitialized(-7, new BigDecimal[] { new BigDecimal("-70040.01") },
-                        new BigDecimal[] { new BigDecimal("-500.20"), new BigDecimal("-6003.00") }),
-                scoreHolder.extractScore(-7));
+        assertThat(scoreHolder.extractScore(0))
+                .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-70040.01") },
+                        new BigDecimal[] { new BigDecimal("-500.20"), new BigDecimal("-6003.00") }));
+        assertThat(scoreHolder.extractScore(-7))
+                .isEqualTo(BendableBigDecimalScore.ofUninitialized(-7, new BigDecimal[] { new BigDecimal("-70040.01") },
+                        new BigDecimal[] { new BigDecimal("-500.20"), new BigDecimal("-6003.00") }));
         if (constraintMatchEnabled) {
-            assertEquals(
-                    BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-0.01") },
-                            new BigDecimal[] { new BigDecimal("0.00"), new BigDecimal("0.00") }),
-                    findConstraintMatchTotal(scoreHolder, "hard1").getScore());
-            assertEquals(
-                    BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("0.00") },
-                            new BigDecimal[] { new BigDecimal("0.00"), new BigDecimal("-3.00") }),
-                    scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
-            assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
+            assertThat(findConstraintMatchTotal(scoreHolder, "hard1").getScore())
+                    .isEqualTo(BendableBigDecimalScore.of(
+                            new BigDecimal[] { new BigDecimal("-0.01") },
+                            new BigDecimal[] { new BigDecimal("0.00"), new BigDecimal("0.00") }));
+            assertThat(scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore())
+                    .isEqualTo(BendableBigDecimalScore.of(
+                            new BigDecimal[] { new BigDecimal("0.00") },
+                            new BigDecimal[] { new BigDecimal("0.00"), new BigDecimal("-3.00") }));
+            assertThat(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION)).isNull();
         }
     }
 
@@ -135,24 +135,29 @@ public class BendableBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.configureConstraintWeight(soft2, BendableBigDecimalScore.ofSoft(1, 2, 1, new BigDecimal("100.0")));
 
         scoreHolder.penalize(mockRuleContext(hard1));
-        assertEquals(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-10.0") },
-                new BigDecimal[] { new BigDecimal("0.0"), new BigDecimal("0.0") }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0))
+                .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-10.0") },
+                        new BigDecimal[] { new BigDecimal("0.0"), new BigDecimal("0.0") }));
 
         scoreHolder.penalize(mockRuleContext(hard2), new BigDecimal("2.0"));
-        assertEquals(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-210.0") },
-                new BigDecimal[] { new BigDecimal("0.0"), new BigDecimal("0.0") }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0))
+                .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-210.0") },
+                        new BigDecimal[] { new BigDecimal("0.0"), new BigDecimal("0.0") }));
 
         scoreHolder.penalize(mockRuleContext(medium1), new BigDecimal("9.0"));
-        assertEquals(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-210.0") },
-                new BigDecimal[] { new BigDecimal("-90.0"), new BigDecimal("0.0") }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0))
+                .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-210.0") },
+                        new BigDecimal[] { new BigDecimal("-90.0"), new BigDecimal("0.0") }));
 
         scoreHolder.reward(mockRuleContext(soft1));
-        assertEquals(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-210.0") },
-                new BigDecimal[] { new BigDecimal("-90.0"), new BigDecimal("10.0") }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0))
+                .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-210.0") },
+                        new BigDecimal[] { new BigDecimal("-90.0"), new BigDecimal("10.0") }));
 
         scoreHolder.reward(mockRuleContext(soft2), new BigDecimal("3.0"));
-        assertEquals(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-210.0") },
-                new BigDecimal[] { new BigDecimal("-90.0"), new BigDecimal("310.0") }), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0))
+                .isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-210.0") },
+                        new BigDecimal[] { new BigDecimal("-90.0"), new BigDecimal("310.0") }));
     }
 
     @Test

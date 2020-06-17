@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,7 @@
 
 package org.optaplanner.core.config.solver;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -37,11 +36,11 @@ public class SolverConfigTest {
         String originalXml = IOUtils.toString(
                 getClass().getClassLoader().getResourceAsStream(solverConfigResource), StandardCharsets.UTF_8);
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
-        assertNotNull(SolverFactory.create(solverConfig).buildSolver());
+        assertThat(SolverFactory.create(solverConfig).buildSolver()).isNotNull();
         XStream xStream = XStreamConfigReader.buildXStream(getClass().getClassLoader());
         xStream.setMode(XStream.NO_REFERENCES);
         String savedXml = xStream.toXML(solverConfig);
-        assertEquals(originalXml.trim(), savedXml.trim());
+        assertThat(savedXml.trim()).isEqualTo(originalXml.trim());
     }
 
 }

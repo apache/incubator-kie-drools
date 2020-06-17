@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
@@ -55,7 +55,7 @@ public class ChainedChangeMoveTest {
 
         ChainedChangeMove<TestdataChainedSolution> move = new ChainedChangeMove<>(a3, variableDescriptor, inverseVariableSupply,
                 b1);
-        assertEquals(true, move.isMoveDoable(scoreDirector));
+        assertThat(move.isMoveDoable(scoreDirector)).isTrue();
         ChainedChangeMove<TestdataChainedSolution> undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
@@ -89,7 +89,7 @@ public class ChainedChangeMoveTest {
 
         ChainedChangeMove<TestdataChainedSolution> move = new ChainedChangeMove<>(a2, variableDescriptor, inverseVariableSupply,
                 b0);
-        assertEquals(true, move.isMoveDoable(scoreDirector));
+        assertThat(move.isMoveDoable(scoreDirector)).isTrue();
         ChainedChangeMove<TestdataChainedSolution> undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
@@ -123,7 +123,7 @@ public class ChainedChangeMoveTest {
 
         ChainedChangeMove<TestdataChainedSolution> move = new ChainedChangeMove<>(a2, variableDescriptor, inverseVariableSupply,
                 a3);
-        assertEquals(true, move.isMoveDoable(scoreDirector));
+        assertThat(move.isMoveDoable(scoreDirector)).isTrue();
         ChainedChangeMove<TestdataChainedSolution> undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
@@ -155,7 +155,7 @@ public class ChainedChangeMoveTest {
 
         ChainedChangeMove<TestdataChainedSolution> move = new ChainedChangeMove<>(a2, variableDescriptor, inverseVariableSupply,
                 a2);
-        assertEquals(false, move.isMoveDoable(scoreDirector));
+        assertThat(move.isMoveDoable(scoreDirector)).isFalse();
     }
 
     @Test
@@ -176,7 +176,7 @@ public class ChainedChangeMoveTest {
 
         ChainedChangeMove<TestdataChainedSolution> move = new ChainedChangeMove<>(a2, variableDescriptor, inverseVariableSupply,
                 a1);
-        assertEquals(false, move.isMoveDoable(scoreDirector));
+        assertThat(move.isMoveDoable(scoreDirector)).isFalse();
     }
 
     @Test
@@ -215,8 +215,10 @@ public class ChainedChangeMoveTest {
     }
 
     public void assertSameProperties(Object entity, Object toPlanningVariable, ChainedChangeMove move) {
-        assertSame(entity, move.getEntity());
-        assertSame(toPlanningVariable, move.getToPlanningValue());
+        assertSoftly(softly -> {
+            softly.assertThat(move.getEntity()).isSameAs(entity);
+            softly.assertThat(move.getToPlanningValue()).isSameAs(toPlanningVariable);
+        });
     }
 
 }

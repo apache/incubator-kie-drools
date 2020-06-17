@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -32,14 +32,14 @@ public class ValueRatioTabuSizeStrategyTest {
         LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(mock(DefaultSolverScope.class));
         when(phaseScope.getWorkingValueCount()).thenReturn(100);
         LocalSearchStepScope stepScope = new LocalSearchStepScope(phaseScope);
-        assertEquals(10, new ValueRatioTabuSizeStrategy(0.1).determineTabuSize(stepScope));
-        assertEquals(50, new ValueRatioTabuSizeStrategy(0.5).determineTabuSize(stepScope));
+        assertThat(new ValueRatioTabuSizeStrategy(0.1).determineTabuSize(stepScope)).isEqualTo(10);
+        assertThat(new ValueRatioTabuSizeStrategy(0.5).determineTabuSize(stepScope)).isEqualTo(50);
         // Rounding
-        assertEquals(11, new ValueRatioTabuSizeStrategy(0.1051).determineTabuSize(stepScope));
-        assertEquals(10, new ValueRatioTabuSizeStrategy(0.1049).determineTabuSize(stepScope));
+        assertThat(new ValueRatioTabuSizeStrategy(0.1051).determineTabuSize(stepScope)).isEqualTo(11);
+        assertThat(new ValueRatioTabuSizeStrategy(0.1049).determineTabuSize(stepScope)).isEqualTo(10);
         // Corner cases
-        assertEquals(1, new ValueRatioTabuSizeStrategy(0.0000001).determineTabuSize(stepScope));
-        assertEquals(99, new ValueRatioTabuSizeStrategy(0.9999999).determineTabuSize(stepScope));
+        assertThat(new ValueRatioTabuSizeStrategy(0.0000001).determineTabuSize(stepScope)).isEqualTo(1);
+        assertThat(new ValueRatioTabuSizeStrategy(0.9999999).determineTabuSize(stepScope)).isEqualTo(99);
     }
 
 }

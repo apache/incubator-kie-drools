@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.common.persistence;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.examples.common.persistence.generator.StringDataGenerator;
@@ -28,18 +28,18 @@ public class StringDataGeneratorTest {
         StringDataGenerator generator = new StringDataGenerator();
         generator.addPart("a", "b", "c", "d");
         generator.addPart("h", "i", "j", "k");
-        assertEquals("a h", generator.generateNextValue());
-        assertEquals("b i", generator.generateNextValue());
-        assertEquals("c j", generator.generateNextValue());
-        assertEquals("d k", generator.generateNextValue());
-        assertEquals("a i", generator.generateNextValue());
-        assertEquals("b j", generator.generateNextValue());
-        assertEquals("c k", generator.generateNextValue());
-        assertEquals("d h", generator.generateNextValue());
-        assertEquals("a j", generator.generateNextValue());
-        assertEquals("b k", generator.generateNextValue());
-        assertEquals("c h", generator.generateNextValue());
-        assertEquals("d i", generator.generateNextValue());
+        assertThat(generator.generateNextValue()).isEqualTo("a h");
+        assertThat(generator.generateNextValue()).isEqualTo("b i");
+        assertThat(generator.generateNextValue()).isEqualTo("c j");
+        assertThat(generator.generateNextValue()).isEqualTo("d k");
+        assertThat(generator.generateNextValue()).isEqualTo("a i");
+        assertThat(generator.generateNextValue()).isEqualTo("b j");
+        assertThat(generator.generateNextValue()).isEqualTo("c k");
+        assertThat(generator.generateNextValue()).isEqualTo("d h");
+        assertThat(generator.generateNextValue()).isEqualTo("a j");
+        assertThat(generator.generateNextValue()).isEqualTo("b k");
+        assertThat(generator.generateNextValue()).isEqualTo("c h");
+        assertThat(generator.generateNextValue()).isEqualTo("d i");
     }
 
     @Test
@@ -48,14 +48,14 @@ public class StringDataGeneratorTest {
         generator.addPart("a", "b", "c", "d");
         generator.addPart("h", "i", "j", "k");
         generator.addPart("o", "p", "q", "r");
-        assertEquals("a h o", generator.generateNextValue());
-        assertEquals("b i p", generator.generateNextValue());
-        assertEquals("c j q", generator.generateNextValue());
-        assertEquals("d k r", generator.generateNextValue());
-        assertEquals("a h p", generator.generateNextValue());
-        assertEquals("b i q", generator.generateNextValue());
-        assertEquals("c j r", generator.generateNextValue());
-        assertEquals("d k o", generator.generateNextValue());
+        assertThat(generator.generateNextValue()).isEqualTo("a h o");
+        assertThat(generator.generateNextValue()).isEqualTo("b i p");
+        assertThat(generator.generateNextValue()).isEqualTo("c j q");
+        assertThat(generator.generateNextValue()).isEqualTo("d k r");
+        assertThat(generator.generateNextValue()).isEqualTo("a h p");
+        assertThat(generator.generateNextValue()).isEqualTo("b i q");
+        assertThat(generator.generateNextValue()).isEqualTo("c j r");
+        assertThat(generator.generateNextValue()).isEqualTo("d k o");
     }
 
     @Test
@@ -65,18 +65,18 @@ public class StringDataGeneratorTest {
         generator.addPart("h", "i", "j", "k");
         generator.addPart("o", "p", "q", "r");
         generator.addPart("v", "w", "x", "y");
-        assertEquals("a h o v", generator.generateNextValue());
-        assertEquals("b i p w", generator.generateNextValue());
-        assertEquals("c j q x", generator.generateNextValue());
-        assertEquals("d k r y", generator.generateNextValue());
-        assertEquals("a h p w", generator.generateNextValue());
-        assertEquals("b i q x", generator.generateNextValue());
-        assertEquals("c j r y", generator.generateNextValue());
-        assertEquals("d k o v", generator.generateNextValue());
-        assertEquals("a h q x", generator.generateNextValue());
-        assertEquals("b i r y", generator.generateNextValue());
-        assertEquals("c j o v", generator.generateNextValue());
-        assertEquals("d k p w", generator.generateNextValue());
+        assertThat(generator.generateNextValue()).isEqualTo("a h o v");
+        assertThat(generator.generateNextValue()).isEqualTo("b i p w");
+        assertThat(generator.generateNextValue()).isEqualTo("c j q x");
+        assertThat(generator.generateNextValue()).isEqualTo("d k r y");
+        assertThat(generator.generateNextValue()).isEqualTo("a h p w");
+        assertThat(generator.generateNextValue()).isEqualTo("b i q x");
+        assertThat(generator.generateNextValue()).isEqualTo("c j r y");
+        assertThat(generator.generateNextValue()).isEqualTo("d k o v");
+        assertThat(generator.generateNextValue()).isEqualTo("a h q x");
+        assertThat(generator.generateNextValue()).isEqualTo("b i r y");
+        assertThat(generator.generateNextValue()).isEqualTo("c j o v");
+        assertThat(generator.generateNextValue()).isEqualTo("d k p w");
     }
 
     @Test
@@ -87,14 +87,14 @@ public class StringDataGeneratorTest {
         generator.addPart("o", "p", "q", "r");
         generator.addPart("v", "w", "x", "y");
         generator.predictMaximumSizeAndReset(9);
-        assertEquals("a v", generator.generateNextValue());
-        assertEquals("b w", generator.generateNextValue());
-        assertEquals("c x", generator.generateNextValue());
-        assertEquals("d y", generator.generateNextValue());
-        assertEquals("a w", generator.generateNextValue());
-        assertEquals("b x", generator.generateNextValue());
-        assertEquals("c y", generator.generateNextValue());
-        assertEquals("d v", generator.generateNextValue());
+        assertThat(generator.generateNextValue()).isEqualTo("a v");
+        assertThat(generator.generateNextValue()).isEqualTo("b w");
+        assertThat(generator.generateNextValue()).isEqualTo("c x");
+        assertThat(generator.generateNextValue()).isEqualTo("d y");
+        assertThat(generator.generateNextValue()).isEqualTo("a w");
+        assertThat(generator.generateNextValue()).isEqualTo("b x");
+        assertThat(generator.generateNextValue()).isEqualTo("c y");
+        assertThat(generator.generateNextValue()).isEqualTo("d v");
     }
 
     @Test
@@ -105,14 +105,14 @@ public class StringDataGeneratorTest {
         generator.addPart("o", "p", "q", "r");
         generator.addPart("v", "w", "x", "y");
         generator.predictMaximumSizeAndReset((4 * 4) + 3);
-        assertEquals("a o v", generator.generateNextValue());
-        assertEquals("b p w", generator.generateNextValue());
-        assertEquals("c q x", generator.generateNextValue());
-        assertEquals("d r y", generator.generateNextValue());
-        assertEquals("a o w", generator.generateNextValue());
-        assertEquals("b p x", generator.generateNextValue());
-        assertEquals("c q y", generator.generateNextValue());
-        assertEquals("d r v", generator.generateNextValue());
+        assertThat(generator.generateNextValue()).isEqualTo("a o v");
+        assertThat(generator.generateNextValue()).isEqualTo("b p w");
+        assertThat(generator.generateNextValue()).isEqualTo("c q x");
+        assertThat(generator.generateNextValue()).isEqualTo("d r y");
+        assertThat(generator.generateNextValue()).isEqualTo("a o w");
+        assertThat(generator.generateNextValue()).isEqualTo("b p x");
+        assertThat(generator.generateNextValue()).isEqualTo("c q y");
+        assertThat(generator.generateNextValue()).isEqualTo("d r v");
     }
 
 }

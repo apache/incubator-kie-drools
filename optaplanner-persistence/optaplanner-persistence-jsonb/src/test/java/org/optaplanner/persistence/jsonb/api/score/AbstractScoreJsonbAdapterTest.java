@@ -16,8 +16,8 @@
 
 package org.optaplanner.persistence.jsonb.api.score;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.io.Serializable;
 
@@ -43,7 +43,7 @@ public class AbstractScoreJsonbAdapterTest {
         } catch (JsonbException e) {
             throw new IllegalStateException("Marshalling or unmarshalling for input (" + input + ") failed.", e);
         }
-        assertEquals(expectedScore, output.getScore());
+        assertThat(output.getScore()).isEqualTo(expectedScore);
 
         String newLine = System.lineSeparator();
         String regex;

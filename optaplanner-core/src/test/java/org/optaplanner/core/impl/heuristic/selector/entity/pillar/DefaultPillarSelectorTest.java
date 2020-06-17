@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.pillar;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -429,15 +429,15 @@ public class DefaultPillarSelectorTest {
 
     private void assertAllCodesOfPillarSelector(PillarSelector pillarSelector, String... codes) {
         assertAllCodesOfIterator(pillarSelector.iterator(), codes);
-        assertEquals(true, pillarSelector.isCountable());
-        assertEquals(false, pillarSelector.isNeverEnding());
-        assertEquals(codes.length, pillarSelector.getSize());
+        assertThat(pillarSelector.isCountable()).isTrue();
+        assertThat(pillarSelector.isNeverEnding()).isFalse();
+        assertThat(pillarSelector.getSize()).isEqualTo(codes.length);
     }
 
     private void assertCodesOfNeverEndingPillarSelector(PillarSelector pillarSelector, String... codes) {
         assertCodesOfIterator(pillarSelector.iterator(), codes);
-        assertEquals(true, pillarSelector.isCountable());
-        assertEquals(true, pillarSelector.isNeverEnding());
+        assertThat(pillarSelector.isCountable()).isTrue();
+        assertThat(pillarSelector.isNeverEnding()).isTrue();
     }
 
 }

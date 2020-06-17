@@ -17,8 +17,6 @@
 package org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 
@@ -41,18 +39,18 @@ public class HardSoftBigDecimalScoreDefinitionTest {
 
     @Test
     public void getLevelsSize() {
-        assertEquals(2, new HardSoftBigDecimalScoreDefinition().getLevelsSize());
+        assertThat(new HardSoftBigDecimalScoreDefinition().getLevelsSize()).isEqualTo(2);
     }
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[] { "hard score", "soft score" },
-                new HardSoftBigDecimalScoreDefinition().getLevelLabels());
+        assertThat(new HardSoftBigDecimalScoreDefinition().getLevelLabels())
+                .isEqualTo(new String[] { "hard score", "soft score" });
     }
 
     @Test
     public void getFeasibleLevelsSize() {
-        assertEquals(1, new HardSoftBigDecimalScoreDefinition().getFeasibleLevelsSize());
+        assertThat(new HardSoftBigDecimalScoreDefinition().getFeasibleLevelsSize()).isEqualTo(1);
     }
 
     // Optimistic and pessimistic bounds are currently not supported for this score definition

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.benchmark.impl.result;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -84,16 +84,16 @@ public class PlannerBenchmarkResultTest {
         PlannerBenchmarkResult mergedResult = PlannerBenchmarkResult.createMergedResult(Arrays.asList(
                 p1SolverXProblemA, p1SolverXProblemB, p1SolverYProblemA, p1SolverYProblemB, p2SolverZProblemA));
 
-        assertEquals(true, mergedResult.getAggregation());
+        assertThat(mergedResult.getAggregation()).isTrue();
         List<ProblemBenchmarkResult> mergedProblemBenchmarkResultList = mergedResult.getUnifiedProblemBenchmarkResultList();
         List<SolverBenchmarkResult> mergedSolverBenchmarkResultList = mergedResult.getSolverBenchmarkResultList();
-        assertEquals(3, mergedSolverBenchmarkResultList.size());
-        assertEquals("Solver X", mergedSolverBenchmarkResultList.get(0).getName());
-        assertEquals("Solver Y", mergedSolverBenchmarkResultList.get(1).getName());
-        assertEquals("Solver Z", mergedSolverBenchmarkResultList.get(2).getName());
-        assertEquals(2, mergedProblemBenchmarkResultList.size());
-        assertEquals("problemA", mergedProblemBenchmarkResultList.get(0).getProblemProvider().getProblemName());
-        assertEquals("problemB", mergedProblemBenchmarkResultList.get(1).getProblemProvider().getProblemName());
+        assertThat(mergedSolverBenchmarkResultList.size()).isEqualTo(3);
+        assertThat(mergedSolverBenchmarkResultList.get(0).getName()).isEqualTo("Solver X");
+        assertThat(mergedSolverBenchmarkResultList.get(1).getName()).isEqualTo("Solver Y");
+        assertThat(mergedSolverBenchmarkResultList.get(2).getName()).isEqualTo("Solver Z");
+        assertThat(mergedProblemBenchmarkResultList.size()).isEqualTo(2);
+        assertThat(mergedProblemBenchmarkResultList.get(0).getProblemProvider().getProblemName()).isEqualTo("problemA");
+        assertThat(mergedProblemBenchmarkResultList.get(1).getProblemProvider().getProblemName()).isEqualTo("problemB");
     }
 
     protected SingleBenchmarkResult createSingleBenchmarkResult(

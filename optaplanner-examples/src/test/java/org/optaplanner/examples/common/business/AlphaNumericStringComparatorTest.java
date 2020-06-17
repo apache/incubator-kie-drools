@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,9 @@
 
 package org.optaplanner.examples.common.business;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Comparator;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
 public class AlphaNumericStringComparatorTest {
@@ -45,13 +44,17 @@ public class AlphaNumericStringComparatorTest {
     }
 
     public <T> void assertCompareEquals(Comparator<T> comparator, T a, T b) {
-        assertEquals(0, comparator.compare(a, b));
-        assertEquals(0, comparator.compare(b, a));
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(a).usingComparator(comparator).isEqualTo(b);
+            softly.assertThat(b).usingComparator(comparator).isEqualTo(a);
+        });
     }
 
     public <T> void assertCompareLower(Comparator<T> comparator, T a, T b) {
-        assertEquals(-1, comparator.compare(a, b));
-        assertEquals(1, comparator.compare(b, a));
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(comparator.compare(a, b)).isEqualTo(-1);
+            softly.assertThat(comparator.compare(b, a)).isEqualTo(1);
+        });
     }
 
 }

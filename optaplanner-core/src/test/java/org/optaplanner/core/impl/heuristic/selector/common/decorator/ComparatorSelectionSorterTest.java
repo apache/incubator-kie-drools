@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.common.decorator;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,13 +37,13 @@ public class ComparatorSelectionSorterTest {
         ComparatorSelectionSorter<TestdataSolution, Integer> selectionSorter = new ComparatorSelectionSorter<>(
                 new TestComparator(), SelectionSorterOrder.ASCENDING);
         selectionSorter.sort(null, arrayToSort);
-        assertTrue(ascendingSort(arrayToSort));
+        assertThat(ascendingSort(arrayToSort)).isTrue();
 
         arrayToSort = new ArrayList<>();
         Collections.addAll(arrayToSort, baseArray);
         selectionSorter = new ComparatorSelectionSorter<>(new TestComparator(), SelectionSorterOrder.DESCENDING);
         selectionSorter.sort(null, arrayToSort);
-        assertTrue(descendingSort(arrayToSort));
+        assertThat(descendingSort(arrayToSort)).isTrue();
     }
 
     private boolean ascendingSort(List<Integer> list) {

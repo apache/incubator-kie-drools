@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,7 @@
 
 package org.optaplanner.core.impl.phase;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 
 import java.util.Arrays;
@@ -51,17 +50,17 @@ public class NoChangePhaseTest {
                 new TestdataEntity("e3", v1)));
 
         solution = PlannerTestUtils.solve(solverConfig, solution);
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
         TestdataEntity solvedE1 = solution.getEntityList().get(0);
         assertCode("e1", solvedE1);
-        assertEquals(null, solvedE1.getValue());
+        assertThat(solvedE1.getValue()).isEqualTo(null);
         TestdataEntity solvedE2 = solution.getEntityList().get(1);
         assertCode("e2", solvedE2);
-        assertEquals(v2, solvedE2.getValue());
+        assertThat(solvedE2.getValue()).isEqualTo(v2);
         TestdataEntity solvedE3 = solution.getEntityList().get(2);
         assertCode("e3", solvedE3);
-        assertEquals(v1, solvedE3.getValue());
-        assertEquals(-1, solution.getScore().getInitScore());
+        assertThat(solvedE3.getValue()).isEqualTo(v1);
+        assertThat(solution.getScore().getInitScore()).isEqualTo(-1);
     }
 
 }

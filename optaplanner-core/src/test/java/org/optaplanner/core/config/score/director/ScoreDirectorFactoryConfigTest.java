@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,7 @@
 
 package org.optaplanner.core.config.score.director;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertInstanceOf;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 
@@ -45,7 +41,8 @@ public class ScoreDirectorFactoryConfigTest {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig();
         config.setScoreDefinitionType(ScoreDefinitionType.SIMPLE);
         ScoreDefinition scoreDefinition = config.buildDeprecatedScoreDefinition();
-        assertInstanceOf(SimpleScoreDefinition.class, scoreDefinition);
+        assertThat(scoreDefinition)
+                .isInstanceOf(SimpleScoreDefinition.class);
     }
 
     @Test
@@ -55,8 +52,8 @@ public class ScoreDirectorFactoryConfigTest {
         config.setBendableHardLevelsSize(2);
         config.setBendableSoftLevelsSize(3);
         BendableScoreDefinition scoreDefinition = (BendableScoreDefinition) config.buildDeprecatedScoreDefinition();
-        assertEquals(2, scoreDefinition.getHardLevelsSize());
-        assertEquals(3, scoreDefinition.getSoftLevelsSize());
+        assertThat(scoreDefinition.getHardLevelsSize()).isEqualTo(2);
+        assertThat(scoreDefinition.getSoftLevelsSize()).isEqualTo(3);
     }
 
     @Test
@@ -73,8 +70,8 @@ public class ScoreDirectorFactoryConfigTest {
                 .buildScoreDirector();
         TestCustomPropertiesEasyScoreCalculator scoreCalculator = (TestCustomPropertiesEasyScoreCalculator) scoreDirector
                 .getEasyScoreCalculator();
-        assertEquals("string 1", scoreCalculator.getStringProperty());
-        assertEquals(7, scoreCalculator.getIntProperty());
+        assertThat(scoreCalculator.getStringProperty()).isEqualTo("string 1");
+        assertThat(scoreCalculator.getIntProperty()).isEqualTo(7);
     }
 
     public static class TestCustomPropertiesEasyScoreCalculator implements EasyScoreCalculator<TestdataSolution> {
@@ -121,8 +118,8 @@ public class ScoreDirectorFactoryConfigTest {
                 .buildScoreDirector();
         TestCustomPropertiesIncrementalScoreCalculator scoreCalculator =
                 (TestCustomPropertiesIncrementalScoreCalculator) scoreDirector.getIncrementalScoreCalculator();
-        assertEquals("string 1", scoreCalculator.getStringProperty());
-        assertEquals(7, scoreCalculator.getIntProperty());
+        assertThat(scoreCalculator.getStringProperty()).isEqualTo("string 1");
+        assertThat(scoreCalculator.getIntProperty()).isEqualTo(7);
     }
 
     public static class TestCustomPropertiesIncrementalScoreCalculator implements IncrementalScoreCalculator<TestdataSolution> {
@@ -184,13 +181,13 @@ public class ScoreDirectorFactoryConfigTest {
     @Test
     public void testGenerateDroolsTestOption() {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig();
-        assertNull(config.isGenerateDroolsTestOnError());
+        assertThat(config.isGenerateDroolsTestOnError()).isNull();
         config.setGenerateDroolsTestOnError(true);
-        assertTrue(config.isGenerateDroolsTestOnError());
+        assertThat(config.isGenerateDroolsTestOnError()).isTrue();
         config.setGenerateDroolsTestOnError(Boolean.FALSE);
-        assertFalse(config.isGenerateDroolsTestOnError());
+        assertThat(config.isGenerateDroolsTestOnError()).isFalse();
         config.setGenerateDroolsTestOnError(null);
-        assertNull(config.isGenerateDroolsTestOnError());
+        assertThat(config.isGenerateDroolsTestOnError()).isNull();
     }
 
 }

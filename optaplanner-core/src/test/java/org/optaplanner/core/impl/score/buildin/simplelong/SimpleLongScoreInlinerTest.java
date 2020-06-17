@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.buildin.simplelong;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.function.Consumer;
 
@@ -34,23 +34,23 @@ public class SimpleLongScoreInlinerTest {
         Consumer<Score<?>> scoreConsumer = null;
 
         SimpleLongScoreInliner scoreInliner = new SimpleLongScoreInliner(constraintMatchEnabled);
-        assertEquals(SimpleLongScore.ZERO, scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.ZERO);
 
         LongWeightedScoreImpacter impacter1 = scoreInliner.buildWeightedScoreImpacter(SimpleLongScore.of(-90L));
         UndoScoreImpacter undo1 = impacter1.impactScore(1L, scoreConsumer);
-        assertEquals(SimpleLongScore.of(-90L), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.of(-90L));
         scoreInliner.buildWeightedScoreImpacter(SimpleLongScore.of(-800L)).impactScore(1L, scoreConsumer);
-        assertEquals(SimpleLongScore.of(-890L), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.of(-890L));
         undo1.undoScoreImpact();
-        assertEquals(SimpleLongScore.of(-800L), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.of(-800L));
 
         LongWeightedScoreImpacter impacter2 = scoreInliner.buildWeightedScoreImpacter(SimpleLongScore.of(-1L));
         UndoScoreImpacter undo2 = impacter2.impactScore(3L, scoreConsumer);
-        assertEquals(SimpleLongScore.of(-803L), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.of(-803L));
         impacter2.impactScore(10L, scoreConsumer);
-        assertEquals(SimpleLongScore.of(-813L), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.of(-813L));
         undo2.undoScoreImpact();
-        assertEquals(SimpleLongScore.of(-810L), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleLongScore.of(-810L));
     }
 
 }

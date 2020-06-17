@@ -17,8 +17,7 @@
 package org.optaplanner.core.impl.score.buildin.hardsoftdouble;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.data.Offset.offset;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
@@ -41,17 +40,17 @@ public class HardSoftDoubleScoreDefinitionTest {
 
     @Test
     public void getLevelSize() {
-        assertEquals(2, new HardSoftDoubleScoreDefinition().getLevelsSize());
+        assertThat(new HardSoftDoubleScoreDefinition().getLevelsSize()).isEqualTo(2);
     }
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[] { "hard score", "soft score" }, new HardSoftDoubleScoreDefinition().getLevelLabels());
+        assertThat(new HardSoftDoubleScoreDefinition().getLevelLabels()).isEqualTo(new String[] { "hard score", "soft score" });
     }
 
     @Test
     public void getFeasibleLevelsSize() {
-        assertEquals(1, new HardSoftDoubleScoreDefinition().getFeasibleLevelsSize());
+        assertThat(new HardSoftDoubleScoreDefinition().getFeasibleLevelsSize()).isEqualTo(1);
     }
 
     @Test
@@ -60,9 +59,9 @@ public class HardSoftDoubleScoreDefinitionTest {
         HardSoftDoubleScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 2),
                 HardSoftDoubleScore.of(-1.7, -2.2));
-        assertEquals(0, optimisticBound.getInitScore());
-        assertEquals(Double.POSITIVE_INFINITY, optimisticBound.getHardScore(), 0.0);
-        assertEquals(Double.POSITIVE_INFINITY, optimisticBound.getSoftScore(), 0.0);
+        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(optimisticBound.getHardScore()).isEqualTo(Double.POSITIVE_INFINITY, offset(0.0));
+        assertThat(optimisticBound.getSoftScore()).isEqualTo(Double.POSITIVE_INFINITY, offset(0.0));
     }
 
     @Test
@@ -71,9 +70,9 @@ public class HardSoftDoubleScoreDefinitionTest {
         HardSoftDoubleScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 2),
                 HardSoftDoubleScore.of(-1.7, -2.2));
-        assertEquals(0, optimisticBound.getInitScore());
-        assertEquals(-1.7, optimisticBound.getHardScore(), 0.0);
-        assertEquals(-2.2, optimisticBound.getSoftScore(), 0.0);
+        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(optimisticBound.getHardScore()).isEqualTo(-1.7, offset(0.0));
+        assertThat(optimisticBound.getSoftScore()).isEqualTo(-2.2, offset(0.0));
     }
 
     @Test
@@ -82,9 +81,9 @@ public class HardSoftDoubleScoreDefinitionTest {
         HardSoftDoubleScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 2),
                 HardSoftDoubleScore.of(-1.7, -2.2));
-        assertEquals(0, pessimisticBound.getInitScore());
-        assertEquals(-1.7, pessimisticBound.getHardScore(), 0.0);
-        assertEquals(-2.2, pessimisticBound.getSoftScore(), 0.0);
+        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(pessimisticBound.getHardScore()).isEqualTo(-1.7, offset(0.0));
+        assertThat(pessimisticBound.getSoftScore()).isEqualTo(-2.2, offset(0.0));
     }
 
     @Test
@@ -93,9 +92,9 @@ public class HardSoftDoubleScoreDefinitionTest {
         HardSoftDoubleScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 2),
                 HardSoftDoubleScore.of(-1, -2));
-        assertEquals(0, pessimisticBound.getInitScore());
-        assertEquals(Double.NEGATIVE_INFINITY, pessimisticBound.getHardScore(), 0.0);
-        assertEquals(Double.NEGATIVE_INFINITY, pessimisticBound.getSoftScore(), 0.0);
+        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(pessimisticBound.getHardScore()).isEqualTo(Double.NEGATIVE_INFINITY, offset(0.0));
+        assertThat(pessimisticBound.getSoftScore()).isEqualTo(Double.NEGATIVE_INFINITY, offset(0.0));
     }
 
     @Test

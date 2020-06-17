@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,7 @@
 
 package org.optaplanner.core.impl.exhaustivesearch;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -139,17 +138,17 @@ public class DefaultExhaustiveSearchPhaseTest {
                 new TestdataEntity("e3", v1)));
 
         solution = PlannerTestUtils.solve(solverConfig, solution);
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
         TestdataEntity solvedE1 = solution.getEntityList().get(0);
         assertCode("e1", solvedE1);
-        assertNotNull(solvedE1.getValue());
+        assertThat(solvedE1.getValue()).isNotNull();
         TestdataEntity solvedE2 = solution.getEntityList().get(1);
         assertCode("e2", solvedE2);
-        assertEquals(v2, solvedE2.getValue());
+        assertThat(solvedE2.getValue()).isEqualTo(v2);
         TestdataEntity solvedE3 = solution.getEntityList().get(2);
         assertCode("e3", solvedE3);
-        assertEquals(v1, solvedE3.getValue());
-        assertEquals(0, solution.getScore().getInitScore());
+        assertThat(solvedE3.getValue()).isEqualTo(v1);
+        assertThat(solution.getScore().getInitScore()).isEqualTo(0);
     }
 
     @Test
@@ -170,17 +169,17 @@ public class DefaultExhaustiveSearchPhaseTest {
                 new TestdataPinnedEntity("e3", null, false, true)));
 
         solution = PlannerTestUtils.solve(solverConfig, solution);
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
         TestdataPinnedEntity solvedE1 = solution.getEntityList().get(0);
         assertCode("e1", solvedE1);
-        assertNotNull(solvedE1.getValue());
+        assertThat(solvedE1.getValue()).isNotNull();
         TestdataPinnedEntity solvedE2 = solution.getEntityList().get(1);
         assertCode("e2", solvedE2);
-        assertEquals(v2, solvedE2.getValue());
+        assertThat(solvedE2.getValue()).isEqualTo(v2);
         TestdataPinnedEntity solvedE3 = solution.getEntityList().get(2);
         assertCode("e3", solvedE3);
-        assertEquals(null, solvedE3.getValue());
-        assertEquals(-1, solution.getScore().getInitScore());
+        assertThat(solvedE3.getValue()).isEqualTo(null);
+        assertThat(solution.getScore().getInitScore()).isEqualTo(-1);
     }
 
     @Test
@@ -198,8 +197,8 @@ public class DefaultExhaustiveSearchPhaseTest {
         solution.setEntityList(Collections.emptyList());
 
         solution = PlannerTestUtils.solve(solverConfig, solution);
-        assertNotNull(solution);
-        assertEquals(0, solution.getEntityList().size());
+        assertThat(solution).isNotNull();
+        assertThat(solution.getEntityList().size()).isEqualTo(0);
     }
 
     @Test
@@ -221,20 +220,20 @@ public class DefaultExhaustiveSearchPhaseTest {
                 new TestdataReinitializeEntity("e4", null, true)));
 
         solution = PlannerTestUtils.solve(solverConfig, solution);
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
         TestdataReinitializeEntity solvedE1 = solution.getEntityList().get(0);
         assertCode("e1", solvedE1);
-        assertNotNull(solvedE1.getValue());
+        assertThat(solvedE1.getValue()).isNotNull();
         TestdataReinitializeEntity solvedE2 = solution.getEntityList().get(1);
         assertCode("e2", solvedE2);
-        assertNotNull(solvedE2.getValue());
+        assertThat(solvedE2.getValue()).isNotNull();
         TestdataReinitializeEntity solvedE3 = solution.getEntityList().get(2);
         assertCode("e3", solvedE3);
-        assertEquals(v2, solvedE3.getValue());
+        assertThat(solvedE3.getValue()).isEqualTo(v2);
         TestdataReinitializeEntity solvedE4 = solution.getEntityList().get(3);
         assertCode("e4", solvedE4);
-        assertEquals(null, solvedE4.getValue());
-        assertEquals(-1, solution.getScore().getInitScore());
+        assertThat(solvedE4.getValue()).isEqualTo(null);
+        assertThat(solution.getScore().getInitScore()).isEqualTo(-1);
     }
 
 }

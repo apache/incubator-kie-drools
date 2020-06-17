@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.mimic;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -99,34 +98,37 @@ public class MimicReplayingEntitySelectorTest {
     private void runOriginalAsserts(MimicRecordingEntitySelector recordingEntitySelector,
             MimicReplayingEntitySelector replayingEntitySelector) {
         Iterator<Object> recordingIterator = recordingEntitySelector.iterator();
-        assertNotNull(recordingIterator);
+        assertThat(recordingIterator).isNotNull();
         Iterator<Object> replayingIterator = replayingEntitySelector.iterator();
-        assertNotNull(replayingIterator);
+        assertThat(replayingIterator).isNotNull();
 
-        assertEquals(true, recordingIterator.hasNext());
-        assertEquals(true, replayingIterator.hasNext());
+        assertThat(recordingIterator.hasNext()).isTrue();
+        assertThat(replayingIterator.hasNext()).isTrue();
         assertCode("e1", recordingIterator.next());
         assertCode("e1", replayingIterator.next());
-        assertEquals(true, recordingIterator.hasNext());
-        assertEquals(true, replayingIterator.hasNext());
+        assertThat(recordingIterator.hasNext()).isTrue();
+        assertThat(replayingIterator.hasNext()).isTrue();
         assertCode("e2", recordingIterator.next());
         assertCode("e2", replayingIterator.next());
-        assertEquals(false, replayingIterator.hasNext()); // Extra call
-        assertEquals(true, recordingIterator.hasNext());
-        assertEquals(true, replayingIterator.hasNext());
-        assertEquals(true, replayingIterator.hasNext()); // Duplicated call
+        // Extra call
+        assertThat(replayingIterator.hasNext()).isFalse();
+        assertThat(recordingIterator.hasNext()).isTrue();
+        assertThat(replayingIterator.hasNext()).isTrue();
+        // Duplicated call
+        assertThat(replayingIterator.hasNext()).isTrue();
         assertCode("e3", recordingIterator.next());
         assertCode("e3", replayingIterator.next());
-        assertEquals(false, recordingIterator.hasNext());
-        assertEquals(false, replayingIterator.hasNext());
-        assertEquals(false, replayingIterator.hasNext()); // Duplicated call
+        assertThat(recordingIterator.hasNext()).isFalse();
+        assertThat(replayingIterator.hasNext()).isFalse();
+        // Duplicated call
+        assertThat(replayingIterator.hasNext()).isFalse();
 
-        assertEquals(true, recordingEntitySelector.isCountable());
-        assertEquals(true, replayingEntitySelector.isCountable());
-        assertEquals(false, recordingEntitySelector.isNeverEnding());
-        assertEquals(false, replayingEntitySelector.isNeverEnding());
-        assertEquals(3L, recordingEntitySelector.getSize());
-        assertEquals(3L, replayingEntitySelector.getSize());
+        assertThat(recordingEntitySelector.isCountable()).isTrue();
+        assertThat(replayingEntitySelector.isCountable()).isTrue();
+        assertThat(recordingEntitySelector.isNeverEnding()).isFalse();
+        assertThat(replayingEntitySelector.isNeverEnding()).isFalse();
+        assertThat(recordingEntitySelector.getSize()).isEqualTo(3L);
+        assertThat(replayingEntitySelector.getSize()).isEqualTo(3L);
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.domain.valuerange.buildin.collection;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -33,31 +33,31 @@ public class ListValueRangeTest {
 
     @Test
     public void getSize() {
-        assertEquals(4L, new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).getSize());
-        assertEquals(5L, new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8)).getSize());
-        assertEquals(3L, new ListValueRange<>(Arrays.asList(-15, 25, 0)).getSize());
-        assertEquals(3L, new ListValueRange<>(Arrays.asList("b", "z", "a")).getSize());
-        assertEquals(0L, new ListValueRange<>(Collections.emptyList()).getSize());
+        assertThat(new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).getSize()).isEqualTo(4L);
+        assertThat(new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8)).getSize()).isEqualTo(5L);
+        assertThat(new ListValueRange<>(Arrays.asList(-15, 25, 0)).getSize()).isEqualTo(3L);
+        assertThat(new ListValueRange<>(Arrays.asList("b", "z", "a")).getSize()).isEqualTo(3L);
+        assertThat(new ListValueRange<>(Collections.emptyList()).getSize()).isEqualTo(0L);
     }
 
     @Test
     public void get() {
-        assertEquals(5, new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).get(2L).intValue());
-        assertEquals(-120, new ListValueRange<>(Arrays.asList(100, -120)).get(1L).intValue());
-        assertEquals("c", new ListValueRange<>(Arrays.asList("b", "z", "a", "c", "g", "d")).get(3L));
+        assertThat(new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).get(2L).intValue()).isEqualTo(5);
+        assertThat(new ListValueRange<>(Arrays.asList(100, -120)).get(1L).intValue()).isEqualTo(-120);
+        assertThat(new ListValueRange<>(Arrays.asList("b", "z", "a", "c", "g", "d")).get(3L)).isEqualTo("c");
     }
 
     @Test
     public void contains() {
-        assertEquals(true, new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).contains(5));
-        assertEquals(false, new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).contains(4));
-        assertEquals(false, new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).contains(null));
-        assertEquals(true, new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8)).contains(7));
-        assertEquals(false, new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8)).contains(9));
-        assertEquals(true, new ListValueRange<>(Arrays.asList(-15, 25, 0)).contains(-15));
-        assertEquals(false, new ListValueRange<>(Arrays.asList(-15, 25, 0)).contains(-14));
-        assertEquals(true, new ListValueRange<>(Arrays.asList("b", "z", "a")).contains("a"));
-        assertEquals(false, new ListValueRange<>(Arrays.asList("b", "z", "a")).contains("n"));
+        assertThat(new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).contains(5)).isTrue();
+        assertThat(new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).contains(4)).isFalse();
+        assertThat(new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).contains(null)).isFalse();
+        assertThat(new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8)).contains(7)).isTrue();
+        assertThat(new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8)).contains(9)).isFalse();
+        assertThat(new ListValueRange<>(Arrays.asList(-15, 25, 0)).contains(-15)).isTrue();
+        assertThat(new ListValueRange<>(Arrays.asList(-15, 25, 0)).contains(-14)).isFalse();
+        assertThat(new ListValueRange<>(Arrays.asList("b", "z", "a")).contains("a")).isTrue();
+        assertThat(new ListValueRange<>(Arrays.asList("b", "z", "a")).contains("n")).isFalse();
     }
 
     @Test

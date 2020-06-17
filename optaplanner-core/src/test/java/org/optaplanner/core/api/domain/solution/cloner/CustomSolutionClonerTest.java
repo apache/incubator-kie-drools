@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package org.optaplanner.core.api.domain.solution.cloner;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -38,7 +38,7 @@ public class CustomSolutionClonerTest {
 
         TestdataCorrectlyClonedSolution solution = new TestdataCorrectlyClonedSolution();
         TestdataCorrectlyClonedSolution solved = PlannerTestUtils.solve(solverConfig, solution);
-        assertTrue("Custom solution cloner was not used", solved.isClonedByCustomCloner());
+        assertThat(solved.isClonedByCustomCloner()).as("Custom solution cloner was not used").isTrue();
     }
 
     @Test

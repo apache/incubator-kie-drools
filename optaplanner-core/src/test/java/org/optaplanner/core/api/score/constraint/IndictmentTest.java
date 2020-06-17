@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package org.optaplanner.core.api.score.constraint;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -32,28 +32,28 @@ public class IndictmentTest {
         TestdataEntity e2 = new TestdataEntity("e2");
         TestdataEntity e3 = new TestdataEntity("e3");
         Indictment indictment = new Indictment(e1, SimpleScore.ZERO);
-        assertEquals(SimpleScore.ZERO, indictment.getScore());
+        assertThat(indictment.getScore()).isEqualTo(SimpleScore.ZERO);
 
         ConstraintMatch match1 = new ConstraintMatch("package1", "constraint1", asList(e1), SimpleScore.of(-1));
         indictment.addConstraintMatch(match1);
-        assertEquals(SimpleScore.of(-1), indictment.getScore());
+        assertThat(indictment.getScore()).isEqualTo(SimpleScore.of(-1));
         // Different constraintName
         ConstraintMatch match2 = new ConstraintMatch("package1", "constraint2", asList(e1), SimpleScore.of(-20));
         indictment.addConstraintMatch(match2);
-        assertEquals(SimpleScore.of(-21), indictment.getScore());
+        assertThat(indictment.getScore()).isEqualTo(SimpleScore.of(-21));
         indictment.addConstraintMatch(new ConstraintMatch("package1", "constraint3", asList(e1, e2), SimpleScore.of(-300)));
-        assertEquals(SimpleScore.of(-321), indictment.getScore());
+        assertThat(indictment.getScore()).isEqualTo(SimpleScore.of(-321));
         // Different justification
         indictment.addConstraintMatch(new ConstraintMatch("package1", "constraint3", asList(e1, e3), SimpleScore.of(-4000)));
-        assertEquals(SimpleScore.of(-4321), indictment.getScore());
+        assertThat(indictment.getScore()).isEqualTo(SimpleScore.of(-4321));
         // Almost duplicate, but e2 and e1 are in reverse order, so different justification
         indictment.addConstraintMatch(new ConstraintMatch("package1", "constraint3", asList(e2, e1), SimpleScore.of(-50000)));
-        assertEquals(SimpleScore.of(-54321), indictment.getScore());
+        assertThat(indictment.getScore()).isEqualTo(SimpleScore.of(-54321));
 
         indictment.removeConstraintMatch(match2);
-        assertEquals(SimpleScore.of(-54301), indictment.getScore());
+        assertThat(indictment.getScore()).isEqualTo(SimpleScore.of(-54301));
         indictment.removeConstraintMatch(match1);
-        assertEquals(SimpleScore.of(-54300), indictment.getScore());
+        assertThat(indictment.getScore()).isEqualTo(SimpleScore.of(-54300));
     }
 
     @Test

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.impl.domain.valuerange.buildin.primboolean;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllElementsOfIterator;
@@ -31,20 +31,20 @@ public class BooleanValueRangeTest {
 
     @Test
     public void getSize() {
-        assertEquals(2L, new BooleanValueRange().getSize());
+        assertThat(new BooleanValueRange().getSize()).isEqualTo(2L);
     }
 
     @Test
     public void get() {
-        assertEquals(Boolean.FALSE, new BooleanValueRange().get(0L));
-        assertEquals(Boolean.TRUE, new BooleanValueRange().get(1L));
+        assertThat(new BooleanValueRange().get(0L)).isEqualTo(Boolean.FALSE);
+        assertThat(new BooleanValueRange().get(1L)).isEqualTo(Boolean.TRUE);
     }
 
     @Test
     public void contains() {
-        assertEquals(true, new BooleanValueRange().contains(Boolean.FALSE));
-        assertEquals(true, new BooleanValueRange().contains(Boolean.TRUE));
-        assertEquals(false, new BooleanValueRange().contains(null));
+        assertThat(new BooleanValueRange().contains(Boolean.FALSE)).isTrue();
+        assertThat(new BooleanValueRange().contains(Boolean.TRUE)).isTrue();
+        assertThat(new BooleanValueRange().contains(null)).isFalse();
     }
 
     @Test

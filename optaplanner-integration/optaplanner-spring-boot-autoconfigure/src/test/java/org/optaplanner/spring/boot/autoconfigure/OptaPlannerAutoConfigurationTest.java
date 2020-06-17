@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,8 @@
 
 package org.optaplanner.spring.boot.autoconfigure;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -65,16 +61,17 @@ public class OptaPlannerAutoConfigurationTest {
                 .withClassLoader(new FilteredClassLoader(new ClassPathResource("solverConfig.xml")))
                 .run(context -> {
                     SolverConfig solverConfig = context.getBean(SolverConfig.class);
-                    assertNotNull(solverConfig);
-                    assertEquals(TestdataSpringSolution.class, solverConfig.getSolutionClass());
-                    assertEquals(Collections.singletonList(TestdataSpringEntity.class), solverConfig.getEntityClassList());
-                    assertEquals(TestdataSpringConstraintProvider.class,
-                            solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass());
+                    assertThat(solverConfig).isNotNull();
+                    assertThat(solverConfig.getSolutionClass()).isEqualTo(TestdataSpringSolution.class);
+                    assertThat(solverConfig.getEntityClassList())
+                            .isEqualTo(Collections.singletonList(TestdataSpringEntity.class));
+                    assertThat(solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass())
+                            .isEqualTo(TestdataSpringConstraintProvider.class);
                     // No termination defined
-                    assertNull(solverConfig.getTerminationConfig());
+                    assertThat(solverConfig.getTerminationConfig()).isNull();
                     SolverFactory<TestdataSpringSolution> solverFactory = context.getBean(SolverFactory.class);
-                    assertNotNull(solverFactory);
-                    assertNotNull(solverFactory.buildSolver());
+                    assertThat(solverFactory).isNotNull();
+                    assertThat(solverFactory.buildSolver()).isNotNull();
                 });
     }
 
@@ -83,16 +80,17 @@ public class OptaPlannerAutoConfigurationTest {
         contextRunner
                 .run(context -> {
                     SolverConfig solverConfig = context.getBean(SolverConfig.class);
-                    assertNotNull(solverConfig);
-                    assertEquals(TestdataSpringSolution.class, solverConfig.getSolutionClass());
-                    assertEquals(Collections.singletonList(TestdataSpringEntity.class), solverConfig.getEntityClassList());
-                    assertEquals(TestdataSpringConstraintProvider.class,
-                            solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass());
+                    assertThat(solverConfig).isNotNull();
+                    assertThat(solverConfig.getSolutionClass()).isEqualTo(TestdataSpringSolution.class);
+                    assertThat(solverConfig.getEntityClassList())
+                            .isEqualTo(Collections.singletonList(TestdataSpringEntity.class));
+                    assertThat(solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass())
+                            .isEqualTo(TestdataSpringConstraintProvider.class);
                     // Properties defined in solverConfig.xml
-                    assertEquals(2L, solverConfig.getTerminationConfig().getSecondsSpentLimit().longValue());
+                    assertThat(solverConfig.getTerminationConfig().getSecondsSpentLimit().longValue()).isEqualTo(2L);
                     SolverFactory<TestdataSpringSolution> solverFactory = context.getBean(SolverFactory.class);
-                    assertNotNull(solverFactory);
-                    assertNotNull(solverFactory.buildSolver());
+                    assertThat(solverFactory).isNotNull();
+                    assertThat(solverFactory.buildSolver()).isNotNull();
                 });
     }
 
@@ -103,16 +101,17 @@ public class OptaPlannerAutoConfigurationTest {
                         "optaplanner.solver-config-xml=org/optaplanner/spring/boot/autoconfigure/customSpringBootSolverConfig.xml")
                 .run(context -> {
                     SolverConfig solverConfig = context.getBean(SolverConfig.class);
-                    assertNotNull(solverConfig);
-                    assertEquals(TestdataSpringSolution.class, solverConfig.getSolutionClass());
-                    assertEquals(Collections.singletonList(TestdataSpringEntity.class), solverConfig.getEntityClassList());
-                    assertEquals(TestdataSpringConstraintProvider.class,
-                            solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass());
+                    assertThat(solverConfig).isNotNull();
+                    assertThat(solverConfig.getSolutionClass()).isEqualTo(TestdataSpringSolution.class);
+                    assertThat(solverConfig.getEntityClassList())
+                            .isEqualTo(Collections.singletonList(TestdataSpringEntity.class));
+                    assertThat(solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass())
+                            .isEqualTo(TestdataSpringConstraintProvider.class);
                     // Properties defined in customSpringBootSolverConfig.xml
-                    assertEquals(3L, solverConfig.getTerminationConfig().getMinutesSpentLimit().longValue());
+                    assertThat(solverConfig.getTerminationConfig().getMinutesSpentLimit().longValue()).isEqualTo(3L);
                     SolverFactory<TestdataSpringSolution> solverFactory = context.getBean(SolverFactory.class);
-                    assertNotNull(solverFactory);
-                    assertNotNull(solverFactory.buildSolver());
+                    assertThat(solverFactory).isNotNull();
+                    assertThat(solverFactory.buildSolver()).isNotNull();
                 });
     }
 
@@ -130,22 +129,22 @@ public class OptaPlannerAutoConfigurationTest {
                 .withPropertyValues("optaplanner.solver.environment-mode=FULL_ASSERT")
                 .run(context -> {
                     SolverConfig solverConfig = context.getBean(SolverConfig.class);
-                    assertEquals(EnvironmentMode.FULL_ASSERT, solverConfig.getEnvironmentMode());
-                    assertNotNull(context.getBean(SolverFactory.class));
+                    assertThat(solverConfig.getEnvironmentMode()).isEqualTo(EnvironmentMode.FULL_ASSERT);
+                    assertThat(context.getBean(SolverFactory.class)).isNotNull();
                 });
         contextRunner
                 .withPropertyValues("optaplanner.solver.daemon=true")
                 .run(context -> {
                     SolverConfig solverConfig = context.getBean(SolverConfig.class);
-                    assertTrue(solverConfig.getDaemon());
-                    assertNotNull(context.getBean(SolverFactory.class));
+                    assertThat(solverConfig.getDaemon()).isTrue();
+                    assertThat(context.getBean(SolverFactory.class)).isNotNull();
                 });
         contextRunner
                 .withPropertyValues("optaplanner.solver.move-thread-count=2")
                 .run(context -> {
                     SolverConfig solverConfig = context.getBean(SolverConfig.class);
-                    assertEquals("2", solverConfig.getMoveThreadCount());
-                    assertNotNull(context.getBean(SolverFactory.class));
+                    assertThat(solverConfig.getMoveThreadCount()).isEqualTo("2");
+                    assertThat(context.getBean(SolverFactory.class)).isNotNull();
                 });
     }
 
@@ -155,22 +154,22 @@ public class OptaPlannerAutoConfigurationTest {
                 .withPropertyValues("optaplanner.solver.termination.spent-limit=4h")
                 .run(context -> {
                     TerminationConfig terminationConfig = context.getBean(SolverConfig.class).getTerminationConfig();
-                    assertEquals(Duration.ofHours(4), terminationConfig.getSpentLimit());
-                    assertNotNull(context.getBean(SolverFactory.class));
+                    assertThat(terminationConfig.getSpentLimit()).isEqualTo(Duration.ofHours(4));
+                    assertThat(context.getBean(SolverFactory.class)).isNotNull();
                 });
         contextRunner
                 .withPropertyValues("optaplanner.solver.termination.unimproved-spent-limit=5h")
                 .run(context -> {
                     TerminationConfig terminationConfig = context.getBean(SolverConfig.class).getTerminationConfig();
-                    assertEquals(Duration.ofHours(5), terminationConfig.getUnimprovedSpentLimit());
-                    assertNotNull(context.getBean(SolverFactory.class));
+                    assertThat(terminationConfig.getUnimprovedSpentLimit()).isEqualTo(Duration.ofHours(5));
+                    assertThat(context.getBean(SolverFactory.class)).isNotNull();
                 });
         contextRunner
                 .withPropertyValues("optaplanner.solver.termination.best-score-limit=6")
                 .run(context -> {
                     TerminationConfig terminationConfig = context.getBean(SolverConfig.class).getTerminationConfig();
-                    assertEquals(SimpleScore.of(6).toString(), terminationConfig.getBestScoreLimit());
-                    assertNotNull(context.getBean(SolverFactory.class));
+                    assertThat(terminationConfig.getBestScoreLimit()).isEqualTo(SimpleScore.of(6).toString());
+                    assertThat(context.getBean(SolverFactory.class)).isNotNull();
                 });
     }
 
@@ -179,16 +178,16 @@ public class OptaPlannerAutoConfigurationTest {
         contextRunner
                 .run(context -> {
                     SolverFactory<TestdataSpringSolution> solverFactory = context.getBean(SolverFactory.class);
-                    assertNotNull(solverFactory);
+                    assertThat(solverFactory).isNotNull();
                     ScoreManager<TestdataSpringSolution> scoreManager = context.getBean(ScoreManager.class);
-                    assertNotNull(scoreManager);
+                    assertThat(scoreManager).isNotNull();
                     // TODO in 8.0, once SolverFactory.getScoreDirectorFactory() doesn't create a new instance every time
                     // assertSame(solverFactory.getScoreDirectorFactory(), ((DefaultScoreManager<TestdataSpringSolution>) scoreManager).getScoreDirectorFactory());
                     SolverManager<TestdataSpringSolution, Long> solverManager = context.getBean(SolverManager.class);
-                    assertNotNull(solverManager);
+                    assertThat(solverManager).isNotNull();
                     // There is only one SolverFactory instance
-                    assertSame(solverFactory,
-                            ((DefaultSolverManager<TestdataSpringSolution, Long>) solverManager).getSolverFactory());
+                    assertThat(((DefaultSolverManager<TestdataSpringSolution, Long>) solverManager).getSolverFactory())
+                            .isSameAs(solverFactory);
                 });
     }
 
@@ -208,8 +207,8 @@ public class OptaPlannerAutoConfigurationTest {
                             .collect(Collectors.toList()));
                     SolverJob<TestdataSpringSolution, Long> solverJob = solverManager.solve(1L, problem);
                     TestdataSpringSolution solution = solverJob.getFinalBestSolution();
-                    assertNotNull(solution);
-                    assertTrue(solution.getScore().getScore() >= 0);
+                    assertThat(solution).isNotNull();
+                    assertThat(solution.getScore().getScore()).isGreaterThanOrEqualTo(0);
                 });
     }
 

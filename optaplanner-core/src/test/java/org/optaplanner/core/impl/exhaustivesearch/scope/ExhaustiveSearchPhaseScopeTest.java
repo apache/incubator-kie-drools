@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package org.optaplanner.core.impl.exhaustivesearch.scope;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.TreeSet;
 
@@ -37,7 +37,7 @@ public class ExhaustiveSearchPhaseScopeTest extends AbstractNodeComparatorTest {
         phase.addExpandableNode(buildNode(0, "2", 0, 0));
         phase.setBestPessimisticBound(SimpleScore.of(Integer.MIN_VALUE));
         phase.registerPessimisticBound(SimpleScore.of(1));
-        assertEquals(1, phase.getExpandableNodeQueue().size());
+        assertThat(phase.getExpandableNodeQueue().size()).isEqualTo(1);
     }
 
 }

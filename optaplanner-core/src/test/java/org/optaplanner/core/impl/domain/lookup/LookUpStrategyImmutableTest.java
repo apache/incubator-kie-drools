@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package org.optaplanner.core.impl.domain.lookup;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.math.BigDecimal;
@@ -103,7 +103,7 @@ public class LookUpStrategyImmutableTest {
     @ParameterizedTest(name = "{index}: {0}")
     @MethodSource("data")
     public void lookUpImmutable(Object internalObject, Object externalObject) {
-        assertEquals(internalObject, lookUpManager.lookUpWorkingObject(externalObject));
+        assertThat(lookUpManager.lookUpWorkingObject(externalObject)).isEqualTo(internalObject);
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,9 @@
 
 package org.optaplanner.core.impl.solver.thread;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSame;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.fail;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -145,7 +144,7 @@ public class OrderByMoveIndexBlockingQueueTest {
             queue.take();
             fail("There was no RuntimeException thrown.");
         } catch (RuntimeException e) {
-            assertSame(exception, e.getCause());
+            assertThat(e.getCause()).isSameAs((Throwable) exception);
         }
     }
 
@@ -170,19 +169,19 @@ public class OrderByMoveIndexBlockingQueueTest {
             queue.startNextStep(1);
             fail("There was no RuntimeException thrown.");
         } catch (RuntimeException e) {
-            assertSame(exception, e.getCause());
+            assertThat(e.getCause()).isSameAs((Throwable) exception);
         }
     }
 
     private void assertResult(String moveCode, int score, OrderByMoveIndexBlockingQueue.MoveResult<TestdataSolution> result) {
         assertCode(moveCode, result.getMove());
-        assertEquals(SimpleScore.of(score), result.getScore());
+        assertThat(result.getScore()).isEqualTo(SimpleScore.of(score));
     }
 
     private void assertResult(String moveCode, boolean doable,
             OrderByMoveIndexBlockingQueue.MoveResult<TestdataSolution> result) {
         assertCode(moveCode, result.getMove());
-        assertEquals(doable, result.isMoveDoable());
+        assertThat(result.isMoveDoable()).isEqualTo(doable);
     }
 
 }

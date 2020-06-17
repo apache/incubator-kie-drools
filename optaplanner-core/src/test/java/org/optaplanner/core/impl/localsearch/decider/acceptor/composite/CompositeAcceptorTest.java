@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor.composite;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -67,11 +67,11 @@ public class CompositeAcceptorTest {
 
     @Test
     public void isAccepted() {
-        assertEquals(true, isCompositeAccepted(true, true, true));
-        assertEquals(false, isCompositeAccepted(false, true, true));
-        assertEquals(false, isCompositeAccepted(true, false, true));
-        assertEquals(false, isCompositeAccepted(true, true, false));
-        assertEquals(false, isCompositeAccepted(false, false, false));
+        assertThat(isCompositeAccepted(true, true, true)).isTrue();
+        assertThat(isCompositeAccepted(false, true, true)).isFalse();
+        assertThat(isCompositeAccepted(true, false, true)).isFalse();
+        assertThat(isCompositeAccepted(true, true, false)).isFalse();
+        assertThat(isCompositeAccepted(false, false, false)).isFalse();
     }
 
     private boolean isCompositeAccepted(boolean... childAccepts) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.nqueens.solver.tracking;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,7 +61,7 @@ public class NQueensConstructionHeuristicTrackingTest extends NQueensAbstractTra
         solver.addPhaseLifecycleListener(listener);
         NQueens bestSolution = solver.solve(problem);
 
-        assertNotNull(bestSolution);
+        assertThat(bestSolution).isNotNull();
         assertTrackingList(expectedCoordinates, listener.getTrackingList());
     }
 

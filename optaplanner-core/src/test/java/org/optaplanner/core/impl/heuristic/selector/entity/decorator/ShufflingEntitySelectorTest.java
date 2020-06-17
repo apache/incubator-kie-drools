@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.Test;
@@ -28,13 +28,13 @@ public class ShufflingEntitySelectorTest {
     @Test
     public void isNeverEnding() {
         ShufflingEntitySelector selector = new ShufflingEntitySelector(mock(EntitySelector.class), SelectionCacheType.PHASE);
-        assertEquals(false, selector.isNeverEnding());
+        assertThat(selector.isNeverEnding()).isFalse();
     }
 
     @Test
     public void isCountable() {
         ShufflingEntitySelector selector = new ShufflingEntitySelector(mock(EntitySelector.class), SelectionCacheType.PHASE);
-        assertEquals(true, selector.isCountable());
+        assertThat(selector.isCountable()).isTrue();
     }
 
 }

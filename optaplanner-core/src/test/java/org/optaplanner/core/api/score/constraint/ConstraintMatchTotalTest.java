@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package org.optaplanner.core.api.score.constraint;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -32,22 +32,22 @@ public class ConstraintMatchTotalTest {
         TestdataEntity e2 = new TestdataEntity("e2");
         TestdataEntity e3 = new TestdataEntity("e3");
         ConstraintMatchTotal constraintMatchTotal = new ConstraintMatchTotal("package1", "constraint1", SimpleScore.ZERO);
-        assertEquals(SimpleScore.ZERO, constraintMatchTotal.getScore());
+        assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.ZERO);
 
         ConstraintMatch match1 = constraintMatchTotal.addConstraintMatch(asList(e1, e2), SimpleScore.of(-1));
-        assertEquals(SimpleScore.of(-1), constraintMatchTotal.getScore());
+        assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.of(-1));
         ConstraintMatch match2 = constraintMatchTotal.addConstraintMatch(asList(e1, e3), SimpleScore.of(-20));
-        assertEquals(SimpleScore.of(-21), constraintMatchTotal.getScore());
+        assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.of(-21));
         // Almost duplicate, but e2 and e1 are in reverse order, so different justification
         ConstraintMatch match3 = constraintMatchTotal.addConstraintMatch(asList(e2, e1), SimpleScore.of(-300));
-        assertEquals(SimpleScore.of(-321), constraintMatchTotal.getScore());
+        assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.of(-321));
 
         constraintMatchTotal.removeConstraintMatch(match2);
-        assertEquals(SimpleScore.of(-301), constraintMatchTotal.getScore());
+        assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.of(-301));
         constraintMatchTotal.removeConstraintMatch(match1);
-        assertEquals(SimpleScore.of(-300), constraintMatchTotal.getScore());
+        assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.of(-300));
         constraintMatchTotal.removeConstraintMatch(match3);
-        assertEquals(SimpleScore.ZERO, constraintMatchTotal.getScore());
+        assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.ZERO);
     }
 
     @Test

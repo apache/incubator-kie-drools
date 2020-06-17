@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,7 @@
 package org.optaplanner.core.impl.partitionedsearch;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -76,7 +73,7 @@ public class DefaultPartitionedSearchPhaseTest {
         phase.addPhaseLifecycleListener(new PhaseLifecycleListenerAdapter<TestdataSolution>() {
             @Override
             public void phaseStarted(AbstractPhaseScope<TestdataSolution> phaseScope) {
-                assertEquals(Integer.valueOf(partCount), ((PartitionedSearchPhaseScope) phaseScope).getPartCount());
+                assertThat(((PartitionedSearchPhaseScope) phaseScope).getPartCount()).isEqualTo(Integer.valueOf(partCount));
             }
         });
         solver.solve(createSolution(partCount * partSize, 2));
@@ -121,7 +118,7 @@ public class DefaultPartitionedSearchPhaseTest {
 
         TestdataSolution solution = createSolution(partCount * partSize - 1, 100);
         solution.getEntityList().add(new TestdataFaultyEntity("XYZ"));
-        assertEquals(partSize * partCount, solution.getEntityList().size());
+        assertThat(solution.getEntityList().size()).isEqualTo(partSize * partCount);
 
         SolverFactory<TestdataSolution> solverFactory = createSolverFactory(false, SolverConfig.MOVE_THREAD_COUNT_NONE,
                 partSize);
@@ -162,12 +159,12 @@ public class DefaultPartitionedSearchPhaseTest {
 
         // make sure solver has started solving before terminating early
         solvingStarted.await();
-        assertTrue(solver.terminateEarly());
-        assertTrue(solver.isTerminateEarly());
+        assertThat(solver.terminateEarly()).isTrue();
+        assertThat(solver.isTerminateEarly()).isTrue();
 
         executor.shutdown();
-        assertTrue(executor.awaitTermination(100, TimeUnit.MILLISECONDS));
-        assertNotNull(solutionFuture.get());
+        assertThat(executor.awaitTermination(100, TimeUnit.MILLISECONDS)).isTrue();
+        assertThat(solutionFuture.get()).isNotNull();
     }
 
     @Test
@@ -195,8 +192,9 @@ public class DefaultPartitionedSearchPhaseTest {
         executor.shutdownNow();
 
         // This verifies that PartitionQueue doesn't clear interrupted flag when the main solver thread is interrupted.
-        assertTrue("Executor must terminate successfully when it's shut down abruptly",
-                executor.awaitTermination(100, TimeUnit.MILLISECONDS));
+        assertThat(executor.awaitTermination(100, TimeUnit.MILLISECONDS))
+                .as("Executor must terminate successfully when it's shut down abruptly")
+                .isTrue();
 
         // This verifies that interruption is propagated to caller (wrapped as an IllegalStateException)
         try {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,8 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.generic;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertInstanceOf;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.AbstractSelectorConfigTest;
@@ -44,7 +43,8 @@ public class ChangeMoveSelectorConfigTest extends AbstractSelectorConfigTest {
         moveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig("secondaryValue"));
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(ChangeMoveSelector.class, moveSelector);
+        assertThat(moveSelector)
+                .isInstanceOf(ChangeMoveSelector.class);
     }
 
     @Test
@@ -64,8 +64,9 @@ public class ChangeMoveSelectorConfigTest extends AbstractSelectorConfigTest {
         ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig();
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(UnionMoveSelector.class, moveSelector);
-        assertEquals(3, ((UnionMoveSelector) moveSelector).getChildMoveSelectorList().size());
+        assertThat(moveSelector)
+                .isInstanceOf(UnionMoveSelector.class);
+        assertThat(((UnionMoveSelector) moveSelector).getChildMoveSelectorList().size()).isEqualTo(3);
     }
 
     @Test
@@ -75,7 +76,8 @@ public class ChangeMoveSelectorConfigTest extends AbstractSelectorConfigTest {
         moveSelectorConfig.setEntitySelectorConfig(new EntitySelectorConfig(TestdataHerdEntity.class));
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(ChangeMoveSelector.class, moveSelector);
+        assertThat(moveSelector)
+                .isInstanceOf(ChangeMoveSelector.class);
     }
 
     @Test
@@ -95,8 +97,9 @@ public class ChangeMoveSelectorConfigTest extends AbstractSelectorConfigTest {
         ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig();
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(UnionMoveSelector.class, moveSelector);
-        assertEquals(2, ((UnionMoveSelector) moveSelector).getChildMoveSelectorList().size());
+        assertThat(moveSelector)
+                .isInstanceOf(UnionMoveSelector.class);
+        assertThat(((UnionMoveSelector) moveSelector).getChildMoveSelectorList().size()).isEqualTo(2);
     }
 
 }

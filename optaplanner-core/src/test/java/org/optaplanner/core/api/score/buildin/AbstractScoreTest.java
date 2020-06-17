@@ -16,21 +16,21 @@
 
 package org.optaplanner.core.api.score.buildin;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.optaplanner.core.api.score.Score;
 
 public abstract class AbstractScoreTest {
 
-    public static void assertScoreNotFeasible(Score... scores) {
+    protected static void assertScoreNotFeasible(Score... scores) {
         for (Score score : scores) {
-            assertEquals(score + " should not be feasible.", false, score.isFeasible());
+            assertThat(score.isFeasible()).as(score + " should not be feasible.").isFalse();
         }
     }
 
-    public static void assertScoreFeasible(Score... scores) {
+    protected static void assertScoreFeasible(Score... scores) {
         for (Score score : scores) {
-            assertEquals(score + " should be feasible.", true, score.isFeasible());
+            assertThat(score.isFeasible()).as(score + " should be feasible.").isTrue();
         }
     }
 

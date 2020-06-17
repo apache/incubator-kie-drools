@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
  */
 package org.optaplanner.core.impl.score.director.easy;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -37,7 +37,7 @@ public class EasyScoreDirectorTest {
     @Test
     public void constraintMatchTotalsUnsupported() {
         EasyScoreDirector<Object> director = new EasyScoreDirector<>(mockEasyScoreDirectorFactory(), false, true, null);
-        assertFalse(director.isConstraintMatchEnabled());
+        assertThat(director.isConstraintMatchEnabled()).isFalse();
         assertThatIllegalStateException()
                 .isThrownBy(director::getConstraintMatchTotals)
                 .withMessageContaining("not supported");
@@ -54,7 +54,7 @@ public class EasyScoreDirectorTest {
     public void shadowVariableCorruption() {
         EasyScoreDirectorFactory<TestdataCorruptedShadowedSolution> scoreDirectorFactory = new EasyScoreDirectorFactory<>(
                 TestdataCorruptedShadowedSolution.buildSolutionDescriptor(),
-                (EasyScoreCalculator<TestdataCorruptedShadowedSolution>) (solution_) -> SimpleScore.of(0));
+                (solution_) -> SimpleScore.of(0));
         scoreDirectorFactory.setInitializingScoreTrend(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1));
         EasyScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false,
@@ -77,12 +77,8 @@ public class EasyScoreDirectorTest {
         e2.setValue(v1);
         scoreDirector.afterVariableChanged(e2, "value");
         scoreDirector.triggerVariableListeners();
-        // TODO After upgrade to JUnit 5, clean this up
-        try {
-            scoreDirector.assertShadowVariablesAreNotStale(SimpleScore.ofUninitialized(0, 0), "FirstChange");
-            fail("IllegalStateException wasn't thrown.");
-        } catch (IllegalStateException e) {
-            // ok
-        }
+        assertThatThrownBy(
+                () -> scoreDirector.assertShadowVariablesAreNotStale(SimpleScore.ofUninitialized(0, 0), "FirstChange"))
+                        .isInstanceOf(IllegalStateException.class);
     }
 }

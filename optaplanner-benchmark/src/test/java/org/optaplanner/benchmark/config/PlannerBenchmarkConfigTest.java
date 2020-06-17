@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,9 @@
 
 package org.optaplanner.benchmark.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -110,28 +108,28 @@ public class PlannerBenchmarkConfigTest {
         List<SolverBenchmarkConfig> configs = Arrays.asList(sbc1, sbc2, sbc3);
         config.setSolverBenchmarkConfigList(configs);
         config.generateSolverBenchmarkConfigNames();
-        assertEquals("Config_1", sbc3.getName());
+        assertThat(sbc3.getName()).isEqualTo("Config_1");
         TreeSet<String> names = new TreeSet<>();
         for (SolverBenchmarkConfig sc : configs) {
             names.add(sc.getName());
         }
         for (int i = 0; i < configs.size(); i++) {
-            assertTrue(names.contains("Config_" + i));
+            assertThat(names).contains("Config_" + i);
         }
     }
 
     @Test
     public void resolveParallelBenchmarkCountAutomatically() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
-        assertEquals(1, config.resolveParallelBenchmarkCountAutomatically(-1));
-        assertEquals(1, config.resolveParallelBenchmarkCountAutomatically(0));
-        assertEquals(1, config.resolveParallelBenchmarkCountAutomatically(1));
-        assertEquals(1, config.resolveParallelBenchmarkCountAutomatically(2));
-        assertEquals(2, config.resolveParallelBenchmarkCountAutomatically(3));
-        assertEquals(2, config.resolveParallelBenchmarkCountAutomatically(4));
-        assertEquals(3, config.resolveParallelBenchmarkCountAutomatically(5));
-        assertEquals(4, config.resolveParallelBenchmarkCountAutomatically(6));
-        assertEquals(9, config.resolveParallelBenchmarkCountAutomatically(17));
+        assertThat(config.resolveParallelBenchmarkCountAutomatically(-1)).isEqualTo(1);
+        assertThat(config.resolveParallelBenchmarkCountAutomatically(0)).isEqualTo(1);
+        assertThat(config.resolveParallelBenchmarkCountAutomatically(1)).isEqualTo(1);
+        assertThat(config.resolveParallelBenchmarkCountAutomatically(2)).isEqualTo(1);
+        assertThat(config.resolveParallelBenchmarkCountAutomatically(3)).isEqualTo(2);
+        assertThat(config.resolveParallelBenchmarkCountAutomatically(4)).isEqualTo(2);
+        assertThat(config.resolveParallelBenchmarkCountAutomatically(5)).isEqualTo(3);
+        assertThat(config.resolveParallelBenchmarkCountAutomatically(6)).isEqualTo(4);
+        assertThat(config.resolveParallelBenchmarkCountAutomatically(17)).isEqualTo(9);
     }
 
     @Test
@@ -139,13 +137,13 @@ public class PlannerBenchmarkConfigTest {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setParallelBenchmarkCount(ConfigUtils.AVAILABLE_PROCESSOR_COUNT + "+1");
         // resolved benchmark count cannot be higher than available processors
-        assertEquals(Runtime.getRuntime().availableProcessors(), config.resolveParallelBenchmarkCount());
+        assertThat(config.resolveParallelBenchmarkCount()).isEqualTo(Runtime.getRuntime().availableProcessors());
     }
 
     @Test
     public void parallelBenchmarkDisabledByDefault() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
-        assertEquals(1, config.resolveParallelBenchmarkCount());
+        assertThat(config.resolveParallelBenchmarkCount()).isEqualTo(1);
     }
 
     @Test
@@ -162,7 +160,7 @@ public class PlannerBenchmarkConfigTest {
         config.setWarmUpMinutesSpentLimit(2L);
         config.setWarmUpSecondsSpentLimit(5L);
         config.setWarmUpMillisecondsSpentLimit(753L);
-        assertEquals(3_725_753L, (long) config.calculateWarmUpTimeMillisSpentLimit());
+        assertThat(config.calculateWarmUpTimeMillisSpentLimit()).isEqualTo(3_725_753L);
     }
 
     @Test
@@ -171,11 +169,11 @@ public class PlannerBenchmarkConfigTest {
         String originalXml = IOUtils.toString(
                 getClass().getClassLoader().getResourceAsStream(benchmarkConfigResource), StandardCharsets.UTF_8);
         PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromXmlResource(benchmarkConfigResource);
-        assertNotNull(PlannerBenchmarkFactory.create(benchmarkConfig).buildPlannerBenchmark(new TestdataSolution()));
+        assertThat(PlannerBenchmarkFactory.create(benchmarkConfig).buildPlannerBenchmark(new TestdataSolution())).isNotNull();
         XStream xStream = XStreamConfigReader.buildXStreamPortable(getClass().getClassLoader(), PlannerBenchmarkConfig.class);
         xStream.setMode(XStream.NO_REFERENCES);
         String savedXml = xStream.toXML(benchmarkConfig);
-        assertEquals(originalXml.trim(), savedXml.trim());
+        assertThat(savedXml.trim()).isEqualTo(originalXml.trim());
     }
 
 }

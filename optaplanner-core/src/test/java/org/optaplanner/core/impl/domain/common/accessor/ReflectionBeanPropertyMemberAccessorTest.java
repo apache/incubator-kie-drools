@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,7 @@
 
 package org.optaplanner.core.impl.domain.common.accessor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -30,16 +29,16 @@ public class ReflectionBeanPropertyMemberAccessorTest {
     public void methodAnnotatedEntity() throws NoSuchMethodException {
         ReflectionBeanPropertyMemberAccessor memberAccessor = new ReflectionBeanPropertyMemberAccessor(
                 TestdataEntity.class.getMethod("getValue"));
-        assertEquals("value", memberAccessor.getName());
-        assertEquals(TestdataValue.class, memberAccessor.getType());
-        assertEquals(true, memberAccessor.isAnnotationPresent(PlanningVariable.class));
+        assertThat(memberAccessor.getName()).isEqualTo("value");
+        assertThat(memberAccessor.getType()).isEqualTo(TestdataValue.class);
+        assertThat(memberAccessor.isAnnotationPresent(PlanningVariable.class)).isTrue();
 
         TestdataValue v1 = new TestdataValue("v1");
         TestdataValue v2 = new TestdataValue("v2");
         TestdataEntity e1 = new TestdataEntity("e1", v1);
-        assertSame(v1, memberAccessor.executeGetter(e1));
+        assertThat(memberAccessor.executeGetter(e1)).isSameAs(v1);
         memberAccessor.executeSetter(e1, v2);
-        assertSame(v2, e1.getValue());
+        assertThat(e1.getValue()).isSameAs(v2);
     }
 
 }

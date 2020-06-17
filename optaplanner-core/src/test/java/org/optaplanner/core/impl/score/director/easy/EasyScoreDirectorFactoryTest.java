@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.director.easy;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -44,7 +44,8 @@ public class EasyScoreDirectorFactoryTest {
         solution.setValueList(Collections.emptyList());
         solution.setEntityList(Collections.emptyList());
         director.setWorkingSolution(solution);
-        assertEquals(SimpleScore.ofUninitialized(0, -10), director.calculateScore());
+        assertThat(director.calculateScore())
+                .isEqualTo(SimpleScore.ofUninitialized(0, -10));
     }
 
 }

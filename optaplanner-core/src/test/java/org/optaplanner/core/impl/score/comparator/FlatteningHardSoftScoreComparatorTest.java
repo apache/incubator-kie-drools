@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.comparator;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -56,8 +56,8 @@ public class FlatteningHardSoftScoreComparatorTest {
     @ParameterizedTest(name = "{index}: {0}")
     @MethodSource("parameters")
     public void compare(int expectedResult, int modifier, String firstScore, String secondScore) {
-        assertEquals(expectedResult, new FlatteningHardSoftScoreComparator(modifier)
+        assertThat(new FlatteningHardSoftScoreComparator(modifier)
                 .compare(new HardSoftScoreDefinition().parseScore(firstScore),
-                        new HardSoftScoreDefinition().parseScore(secondScore)));
+                        new HardSoftScoreDefinition().parseScore(secondScore))).isEqualTo(expectedResult);
     }
 }

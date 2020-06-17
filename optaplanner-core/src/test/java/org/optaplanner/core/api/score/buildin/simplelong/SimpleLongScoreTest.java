@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.api.score.buildin.simplelong;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
@@ -28,27 +28,24 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void parseScore() {
-        assertEquals(SimpleLongScore.of(-147L),
-                SimpleLongScore.parseScore("-147"));
-        assertEquals(SimpleLongScore.ofUninitialized(-7, -147L),
-                SimpleLongScore.parseScore("-7init/-147"));
-        assertEquals(SimpleLongScore.of(Long.MIN_VALUE),
-                SimpleLongScore.parseScore("*"));
+        assertThat(SimpleLongScore.parseScore("-147")).isEqualTo(SimpleLongScore.of(-147L));
+        assertThat(SimpleLongScore.parseScore("-7init/-147")).isEqualTo(SimpleLongScore.ofUninitialized(-7, -147L));
+        assertThat(SimpleLongScore.parseScore("*")).isEqualTo(SimpleLongScore.of(Long.MIN_VALUE));
     }
 
     @Test
     public void toShortString() {
-        assertEquals("0", SimpleLongScore.of(0L).toShortString());
-        assertEquals("-147", SimpleLongScore.of(-147L).toShortString());
-        assertEquals("-7init/-147", SimpleLongScore.ofUninitialized(-7, -147L).toShortString());
-        assertEquals("-7init", SimpleLongScore.ofUninitialized(-7, 0L).toShortString());
+        assertThat(SimpleLongScore.of(0L).toShortString()).isEqualTo("0");
+        assertThat(SimpleLongScore.of(-147L).toShortString()).isEqualTo("-147");
+        assertThat(SimpleLongScore.ofUninitialized(-7, -147L).toShortString()).isEqualTo("-7init/-147");
+        assertThat(SimpleLongScore.ofUninitialized(-7, 0L).toShortString()).isEqualTo("-7init");
     }
 
     @Test
     public void testToString() {
-        assertEquals("0", SimpleLongScore.of(0).toString());
-        assertEquals("-147", SimpleLongScore.of(-147L).toString());
-        assertEquals("-7init/-147", SimpleLongScore.ofUninitialized(-7, -147L).toString());
+        assertThat(SimpleLongScore.of(0).toString()).isEqualTo("0");
+        assertThat(SimpleLongScore.of(-147L).toString()).isEqualTo("-147");
+        assertThat(SimpleLongScore.ofUninitialized(-7, -147L).toString()).isEqualTo("-7init/-147");
     }
 
     @Test
@@ -58,78 +55,58 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void toInitializedScore() {
-        assertEquals(SimpleLongScore.of(-147L),
-                SimpleLongScore.of(-147L).toInitializedScore());
-        assertEquals(SimpleLongScore.of(-147L),
-                SimpleLongScore.ofUninitialized(-7, -147L).toInitializedScore());
+        assertThat(SimpleLongScore.of(-147L).toInitializedScore()).isEqualTo(SimpleLongScore.of(-147L));
+        assertThat(SimpleLongScore.ofUninitialized(-7, -147L).toInitializedScore()).isEqualTo(SimpleLongScore.of(-147L));
     }
 
     @Test
     public void withInitScore() {
-        assertEquals(SimpleLongScore.ofUninitialized(-7, -147L),
-                SimpleLongScore.of(-147L).withInitScore(-7));
+        assertThat(SimpleLongScore.of(-147L).withInitScore(-7)).isEqualTo(SimpleLongScore.ofUninitialized(-7, -147L));
     }
 
     @Test
     public void add() {
-        assertEquals(SimpleLongScore.of(19L),
-                SimpleLongScore.of(20L).add(
-                        SimpleLongScore.of(-1L)));
-        assertEquals(SimpleLongScore.ofUninitialized(-77, 19L),
-                SimpleLongScore.ofUninitialized(-70, 20L).add(
-                        SimpleLongScore.ofUninitialized(-7, -1L)));
+        assertThat(SimpleLongScore.of(20L).add(
+                SimpleLongScore.of(-1L))).isEqualTo(SimpleLongScore.of(19L));
+        assertThat(SimpleLongScore.ofUninitialized(-70, 20L).add(
+                SimpleLongScore.ofUninitialized(-7, -1L))).isEqualTo(SimpleLongScore.ofUninitialized(-77, 19L));
     }
 
     @Test
     public void subtract() {
-        assertEquals(SimpleLongScore.of(21L),
-                SimpleLongScore.of(20L).subtract(
-                        SimpleLongScore.of(-1L)));
-        assertEquals(SimpleLongScore.ofUninitialized(-63, 21L),
-                SimpleLongScore.ofUninitialized(-70, 20L).subtract(
-                        SimpleLongScore.ofUninitialized(-7, -1L)));
+        assertThat(SimpleLongScore.of(20L).subtract(
+                SimpleLongScore.of(-1L))).isEqualTo(SimpleLongScore.of(21L));
+        assertThat(SimpleLongScore.ofUninitialized(-70, 20L).subtract(
+                SimpleLongScore.ofUninitialized(-7, -1L))).isEqualTo(SimpleLongScore.ofUninitialized(-63, 21L));
     }
 
     @Test
     public void multiply() {
-        assertEquals(SimpleLongScore.of(6L),
-                SimpleLongScore.of(5L).multiply(1.2));
-        assertEquals(SimpleLongScore.of(1L),
-                SimpleLongScore.of(1L).multiply(1.2));
-        assertEquals(SimpleLongScore.of(4L),
-                SimpleLongScore.of(4L).multiply(1.2));
-        assertEquals(SimpleLongScore.ofUninitialized(-14, 8L),
-                SimpleLongScore.ofUninitialized(-7, 4L).multiply(2.0));
+        assertThat(SimpleLongScore.of(5L).multiply(1.2)).isEqualTo(SimpleLongScore.of(6L));
+        assertThat(SimpleLongScore.of(1L).multiply(1.2)).isEqualTo(SimpleLongScore.of(1L));
+        assertThat(SimpleLongScore.of(4L).multiply(1.2)).isEqualTo(SimpleLongScore.of(4L));
+        assertThat(SimpleLongScore.ofUninitialized(-7, 4L).multiply(2.0)).isEqualTo(SimpleLongScore.ofUninitialized(-14, 8L));
     }
 
     @Test
     public void divide() {
-        assertEquals(SimpleLongScore.of(5L),
-                SimpleLongScore.of(25L).divide(5.0));
-        assertEquals(SimpleLongScore.of(4L),
-                SimpleLongScore.of(21L).divide(5.0));
-        assertEquals(SimpleLongScore.of(4L),
-                SimpleLongScore.of(24L).divide(5.0));
-        assertEquals(SimpleLongScore.ofUninitialized(-7, 4L),
-                SimpleLongScore.ofUninitialized(-14, 8L).divide(2.0));
+        assertThat(SimpleLongScore.of(25L).divide(5.0)).isEqualTo(SimpleLongScore.of(5L));
+        assertThat(SimpleLongScore.of(21L).divide(5.0)).isEqualTo(SimpleLongScore.of(4L));
+        assertThat(SimpleLongScore.of(24L).divide(5.0)).isEqualTo(SimpleLongScore.of(4L));
+        assertThat(SimpleLongScore.ofUninitialized(-14, 8L).divide(2.0)).isEqualTo(SimpleLongScore.ofUninitialized(-7, 4L));
     }
 
     @Test
     public void power() {
-        assertEquals(SimpleLongScore.of(25L),
-                SimpleLongScore.of(5L).power(2.0));
-        assertEquals(SimpleLongScore.of(5L),
-                SimpleLongScore.of(25L).power(0.5));
-        assertEquals(SimpleLongScore.ofUninitialized(-343, 125L),
-                SimpleLongScore.ofUninitialized(-7, 5L).power(3.0));
+        assertThat(SimpleLongScore.of(5L).power(2.0)).isEqualTo(SimpleLongScore.of(25L));
+        assertThat(SimpleLongScore.of(25L).power(0.5)).isEqualTo(SimpleLongScore.of(5L));
+        assertThat(SimpleLongScore.ofUninitialized(-7, 5L).power(3.0)).isEqualTo(SimpleLongScore.ofUninitialized(-343, 125L));
     }
 
     @Test
     public void negate() {
-        assertEquals(SimpleLongScore.of(-5L),
-                SimpleLongScore.of(5L).negate());
-        assertEquals(SimpleLongScore.of(5L),
-                SimpleLongScore.of(-5L).negate());
+        assertThat(SimpleLongScore.of(5L).negate()).isEqualTo(SimpleLongScore.of(-5L));
+        assertThat(SimpleLongScore.of(-5L).negate()).isEqualTo(SimpleLongScore.of(5L));
     }
 
     @Test
@@ -169,14 +146,14 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 SimpleLongScore.of(123L),
                 output -> {
-                    assertEquals(0, output.getInitScore());
-                    assertEquals(123L, output.getScore());
+                    assertThat(output.getInitScore()).isEqualTo(0);
+                    assertThat(output.getScore()).isEqualTo(123L);
                 });
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 SimpleLongScore.ofUninitialized(-7, 123L),
                 output -> {
-                    assertEquals(-7, output.getInitScore());
-                    assertEquals(123L, output.getScore());
+                    assertThat(output.getInitScore()).isEqualTo(-7);
+                    assertThat(output.getScore()).isEqualTo(123L);
                 });
     }
 

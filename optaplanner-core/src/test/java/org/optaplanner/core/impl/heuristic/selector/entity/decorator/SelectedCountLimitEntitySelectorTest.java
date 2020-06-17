@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfEntitySelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterator;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertEquals;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
 
 import org.junit.jupiter.api.Test;
@@ -156,14 +156,14 @@ public class SelectedCountLimitEntitySelectorTest {
     public void isCountable() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, true, 5L);
-        assertEquals(true, entitySelector.isCountable());
+        assertThat(entitySelector.isCountable()).isTrue();
     }
 
     @Test
     public void isNeverEnding() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, true, 5L);
-        assertEquals(false, entitySelector.isNeverEnding());
+        assertThat(entitySelector.isNeverEnding()).isFalse();
     }
 
     @Test
@@ -171,11 +171,11 @@ public class SelectedCountLimitEntitySelectorTest {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         when(childEntitySelector.getSize()).thenReturn(1L);
         EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, true, 5L);
-        assertEquals(1, entitySelector.getSize());
+        assertThat(entitySelector.getSize()).isEqualTo(1);
         when(childEntitySelector.getSize()).thenReturn(5L);
-        assertEquals(5, entitySelector.getSize());
+        assertThat(entitySelector.getSize()).isEqualTo(5);
         when(childEntitySelector.getSize()).thenReturn(10L);
-        assertEquals(5, entitySelector.getSize());
+        assertThat(entitySelector.getSize()).isEqualTo(5);
     }
 
     @Test

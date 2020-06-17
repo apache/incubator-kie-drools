@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package org.optaplanner.core.impl.score.director.drools;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
@@ -42,15 +42,15 @@ public class DroolsScoreDirectorTest {
     public void constraintMatchTotalsNeverNull() {
         DroolsScoreDirector<Object> director = new DroolsScoreDirector<>(mockDroolsScoreDirectorFactory(), false, true);
         director.setWorkingSolution(new Object());
-        assertNotNull(director.getConstraintMatchTotals());
-        assertNotNull(director.getConstraintMatchTotalMap());
+        assertThat(director.getConstraintMatchTotals()).isNotNull();
+        assertThat(director.getConstraintMatchTotalMap()).isNotNull();
     }
 
     @Test
     public void indictmentMapNeverNull() {
         DroolsScoreDirector<Object> director = new DroolsScoreDirector<>(mockDroolsScoreDirectorFactory(), false, true);
         director.setWorkingSolution(new Object());
-        assertNotNull(director.getIndictmentMap());
+        assertThat(director.getIndictmentMap()).isNotNull();
     }
 
     @SuppressWarnings("unchecked")

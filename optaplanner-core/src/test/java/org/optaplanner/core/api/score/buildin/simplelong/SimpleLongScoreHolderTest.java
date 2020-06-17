@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.api.score.buildin.simplelong;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
@@ -50,10 +50,11 @@ public class SimpleLongScoreHolderTest extends AbstractScoreHolderTest {
         callOnUpdate(scoreRule3);
         scoreHolder.addConstraintMatch(scoreRule3, -3L); // Overwrite existing
 
-        assertEquals(SimpleLongScore.ofUninitialized(0, -1003L), scoreHolder.extractScore(0));
-        assertEquals(SimpleLongScore.ofUninitialized(-7, -1003L), scoreHolder.extractScore(-7));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleLongScore.ofUninitialized(0, -1003L));
+        assertThat(scoreHolder.extractScore(-7)).isEqualTo(SimpleLongScore.ofUninitialized(-7, -1003L));
         if (constraintMatchEnabled) {
-            assertEquals(SimpleLongScore.of(-1000L), findConstraintMatchTotal(scoreHolder, "scoreRule1").getScore());
+            assertThat(findConstraintMatchTotal(scoreHolder, "scoreRule1").getScore())
+                    .isEqualTo(SimpleLongScore.of(-1000L));
         }
     }
 
@@ -75,10 +76,10 @@ public class SimpleLongScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.configureConstraintWeight(constraint2, SimpleLongScore.of(100L));
 
         scoreHolder.penalize(mockRuleContext(constraint1));
-        assertEquals(SimpleLongScore.of(-10L), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleLongScore.of(-10L));
 
         scoreHolder.penalize(mockRuleContext(constraint2), 2L);
-        assertEquals(SimpleLongScore.of(-210L), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleLongScore.of(-210L));
 
         scoreHolder = new SimpleLongScoreHolder(constraintMatchEnabled);
         Rule constraint3 = mockRule("constraint3");
@@ -87,10 +88,10 @@ public class SimpleLongScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.configureConstraintWeight(constraint4, SimpleLongScore.of(100L));
 
         scoreHolder.reward(mockRuleContext(constraint3));
-        assertEquals(SimpleLongScore.of(10L), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleLongScore.of(10L));
 
         scoreHolder.reward(mockRuleContext(constraint4), 3L);
-        assertEquals(SimpleLongScore.of(310L), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleLongScore.of(310L));
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,8 @@
 
 package org.optaplanner.core.impl.solver.termination;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -36,28 +37,27 @@ public class UnimprovedStepCountTerminationTest {
         when(phaseScope.getBestSolutionStepIndex()).thenReturn(10);
         when(lastCompletedStepScope.getStepIndex()).thenReturn(10);
         when(phaseScope.getNextStepIndex()).thenReturn(11);
-        assertEquals(false, termination.isPhaseTerminated(phaseScope));
-        assertEquals(0.0, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isFalse();
+        assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(0.0, offset(0.0));
         when(lastCompletedStepScope.getStepIndex()).thenReturn(11);
         when(phaseScope.getNextStepIndex()).thenReturn(12);
-        assertEquals(false, termination.isPhaseTerminated(phaseScope));
-        assertEquals(0.25, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isFalse();
+        assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(0.25, offset(0.0));
         when(lastCompletedStepScope.getStepIndex()).thenReturn(12);
         when(phaseScope.getNextStepIndex()).thenReturn(13);
-        assertEquals(false, termination.isPhaseTerminated(phaseScope));
-        assertEquals(0.5, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isFalse();
+        assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(0.5, offset(0.0));
         when(lastCompletedStepScope.getStepIndex()).thenReturn(13);
         when(phaseScope.getNextStepIndex()).thenReturn(14);
-        assertEquals(false, termination.isPhaseTerminated(phaseScope));
-        assertEquals(0.75, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isFalse();
+        assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(0.75, offset(0.0));
         when(lastCompletedStepScope.getStepIndex()).thenReturn(14);
         when(phaseScope.getNextStepIndex()).thenReturn(15);
-        assertEquals(true, termination.isPhaseTerminated(phaseScope));
-        assertEquals(1.0, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isTrue();
+        assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(1.0, offset(0.0));
         when(lastCompletedStepScope.getStepIndex()).thenReturn(15);
         when(phaseScope.getNextStepIndex()).thenReturn(16);
-        assertEquals(true, termination.isPhaseTerminated(phaseScope));
-        assertEquals(1.0, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isTrue();
+        assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(1.0, offset(0.0));
     }
-
 }

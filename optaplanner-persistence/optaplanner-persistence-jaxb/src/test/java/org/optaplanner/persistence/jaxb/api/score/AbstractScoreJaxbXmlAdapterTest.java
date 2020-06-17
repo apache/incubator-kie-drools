@@ -16,8 +16,8 @@
 
 package org.optaplanner.persistence.jaxb.api.score;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.io.Serializable;
 import java.io.StringReader;
@@ -58,7 +58,7 @@ public abstract class AbstractScoreJaxbXmlAdapterTest {
         } catch (JAXBException e) {
             throw new IllegalStateException("Marshalling or unmarshalling for input (" + input + ") failed.", e);
         }
-        assertEquals(expectedScore, output.getScore());
+        assertThat(output.getScore()).isEqualTo(expectedScore);
         String regex;
         if (expectedScore != null) {
             regex = "<\\?[^\\?]*\\?>" // XML header
@@ -105,7 +105,7 @@ public abstract class AbstractScoreJaxbXmlAdapterTest {
         } catch (JAXBException e) {
             throw new IllegalStateException("Marshalling or unmarshalling for input (" + input + ") failed.", e);
         }
-        assertEquals(expectedScore, output.getScore());
+        assertThat(output.getScore()).isEqualTo(expectedScore);
         String regex;
         if (expectedScore != null) {
             regex = "\\{\\R" // Opening bracket

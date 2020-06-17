@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package org.optaplanner.core.api.score.holder;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.Assert.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -33,7 +33,7 @@ public class ScoreHolderTest {
 
     @Test
     public void constraintMatchTotalsNeverNull() {
-        assertNotNull(buildScoreHolder(true).getConstraintMatchTotals());
+        assertThat(buildScoreHolder(true).getConstraintMatchTotals()).isNotNull();
     }
 
     private ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {

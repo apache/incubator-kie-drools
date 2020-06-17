@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.api.score.buildin.simpledouble;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
@@ -50,10 +50,11 @@ public class SimpleDoubleScoreHolderTest extends AbstractScoreHolderTest {
         callOnUpdate(scoreRule3);
         scoreHolder.addConstraintMatch(scoreRule3, -0.03); // Overwrite existing
 
-        assertEquals(SimpleDoubleScore.ofUninitialized(0, -10.03), scoreHolder.extractScore(0));
-        assertEquals(SimpleDoubleScore.ofUninitialized(-7, -10.03), scoreHolder.extractScore(-7));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleDoubleScore.ofUninitialized(0, -10.03));
+        assertThat(scoreHolder.extractScore(-7)).isEqualTo(SimpleDoubleScore.ofUninitialized(-7, -10.03));
         if (constraintMatchEnabled) {
-            assertEquals(SimpleDoubleScore.of(-10.00), findConstraintMatchTotal(scoreHolder, "scoreRule1").getScore());
+            assertThat(findConstraintMatchTotal(scoreHolder, "scoreRule1").getScore())
+                    .isEqualTo(SimpleDoubleScore.of(-10.00));
         }
     }
 
@@ -75,10 +76,10 @@ public class SimpleDoubleScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.configureConstraintWeight(constraint2, SimpleDoubleScore.of(100.0));
 
         scoreHolder.penalize(mockRuleContext(constraint1));
-        assertEquals(SimpleDoubleScore.of(-10.0), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleDoubleScore.of(-10.0));
 
         scoreHolder.penalize(mockRuleContext(constraint2), 2.0);
-        assertEquals(SimpleDoubleScore.of(-210.0), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleDoubleScore.of(-210.0));
 
         scoreHolder = new SimpleDoubleScoreHolder(constraintMatchEnabled);
         Rule constraint3 = mockRule("constraint3");
@@ -87,10 +88,10 @@ public class SimpleDoubleScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.configureConstraintWeight(constraint4, SimpleDoubleScore.of(100.0));
 
         scoreHolder.reward(mockRuleContext(constraint3));
-        assertEquals(SimpleDoubleScore.of(10.0), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleDoubleScore.of(10.0));
 
         scoreHolder.reward(mockRuleContext(constraint4), 3.0);
-        assertEquals(SimpleDoubleScore.of(310.0), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleDoubleScore.of(310.0));
     }
 
 }

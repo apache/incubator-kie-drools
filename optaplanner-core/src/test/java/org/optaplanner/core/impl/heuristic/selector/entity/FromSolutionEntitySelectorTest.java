@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -383,7 +383,7 @@ public class FromSolutionEntitySelectorTest {
     @Test
     public void listIteratorWithRandomSelection() {
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
-        when(entityDescriptor.getEntityClass()).thenReturn((Class) TestdataEntity.class);
+        when(entityDescriptor.getEntityClass()).thenReturn(TestdataEntity.class);
         FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, true);
         assertThatIllegalStateException().isThrownBy(entitySelector::listIterator);
@@ -392,7 +392,7 @@ public class FromSolutionEntitySelectorTest {
     @Test
     public void indexedListIteratorWithRandomSelection() {
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
-        when(entityDescriptor.getEntityClass()).thenReturn((Class) TestdataEntity.class);
+        when(entityDescriptor.getEntityClass()).thenReturn(TestdataEntity.class);
         FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, true);
         assertThatIllegalStateException().isThrownBy(() -> entitySelector.listIterator(0));

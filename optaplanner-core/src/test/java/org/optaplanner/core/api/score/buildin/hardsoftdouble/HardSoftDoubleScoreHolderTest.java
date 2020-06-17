@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,7 @@
 
 package org.optaplanner.core.api.score.buildin.hardsoftdouble;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
@@ -41,7 +40,7 @@ public class HardSoftDoubleScoreHolderTest extends AbstractScoreHolderTest {
 
         RuleContext hard1 = mockRuleContext("hard1");
         scoreHolder.addHardConstraintMatch(hard1, -0.01);
-        assertEquals(HardSoftDoubleScore.of(-0.01, -0.00), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardSoftDoubleScore.of(-0.01, -0.00));
 
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
         scoreHolder.addHardConstraintMatch(hard2Undo, -0.08);
@@ -72,13 +71,14 @@ public class HardSoftDoubleScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addMultiConstraintMatch(multi2Undo, -9.99, -9.99);
         callOnDelete(multi2Undo);
 
-        assertEquals(HardSoftDoubleScore.of(-503.01, -40.20), scoreHolder.extractScore(0));
-        assertEquals(HardSoftDoubleScore.ofUninitialized(-7, -503.01, -40.20), scoreHolder.extractScore(-7));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardSoftDoubleScore.of(-503.01, -40.20));
+        assertThat(scoreHolder.extractScore(-7)).isEqualTo(HardSoftDoubleScore.ofUninitialized(-7, -503.01, -40.20));
         if (constraintMatchEnabled) {
-            assertEquals(HardSoftDoubleScore.of(-0.01, 0), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
-            assertEquals(HardSoftDoubleScore.of(0.0, -0.20),
-                    scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
-            assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
+            assertThat(findConstraintMatchTotal(scoreHolder, "hard1").getScore())
+                    .isEqualTo(HardSoftDoubleScore.of(-0.01, 0));
+            assertThat(scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore())
+                    .isEqualTo(HardSoftDoubleScore.of(0.0, -0.20));
+            assertThat(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION)).isNull();
         }
     }
 
@@ -104,16 +104,16 @@ public class HardSoftDoubleScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.configureConstraintWeight(soft2, HardSoftDoubleScore.ofSoft(100.0));
 
         scoreHolder.penalize(mockRuleContext(hard1));
-        assertEquals(HardSoftDoubleScore.of(-10.0, 0.0), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardSoftDoubleScore.of(-10.0, 0.0));
 
         scoreHolder.penalize(mockRuleContext(hard2), 2.0);
-        assertEquals(HardSoftDoubleScore.of(-210.0, 0.0), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardSoftDoubleScore.of(-210.0, 0.0));
 
         scoreHolder.reward(mockRuleContext(soft1));
-        assertEquals(HardSoftDoubleScore.of(-210.0, 10.0), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardSoftDoubleScore.of(-210.0, 10.0));
 
         scoreHolder.reward(mockRuleContext(soft2), 3.0);
-        assertEquals(HardSoftDoubleScore.of(-210.0, 310.0), scoreHolder.extractScore(0));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardSoftDoubleScore.of(-210.0, 310.0));
     }
 
 }

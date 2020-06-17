@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.exhaustivesearch.node.comparator;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -56,8 +56,14 @@ public abstract class AbstractNodeComparatorTest {
 
     protected static void assertLesser(Comparator<ExhaustiveSearchNode> comparator,
             ExhaustiveSearchNode a, ExhaustiveSearchNode b) {
-        assertTrue("Node (" + a + ") must be lesser than node (" + b + ").", comparator.compare(a, b) < 0);
-        assertTrue("Node (" + b + ") must be greater than node (" + a + ").", comparator.compare(b, a) > 0);
+        assertSoftly(softly -> {
+            softly.assertThat(comparator.compare(a, b))
+                    .as("Node (" + a + ") must be lesser than node (" + b + ").")
+                    .isLessThan(0);
+            softly.assertThat(comparator.compare(b, a))
+                    .as("Node (" + b + ") must be greater than node (" + a + ").")
+                    .isGreaterThan(0);
+        });
     }
 
     protected static void assertScoreCompareToOrder(Comparator<ExhaustiveSearchNode> comparator,

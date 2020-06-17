@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,13 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfEntitySelector;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertFalse;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertInstanceOf;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertNotInstanceOf;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertTrue;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
 
 import org.junit.jupiter.api.Test;
@@ -135,9 +132,9 @@ public class CachingEntitySelectorTest {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE,
                 true);
-        assertTrue(cachingEntitySelector.isNeverEnding());
+        assertThat(cachingEntitySelector.isNeverEnding()).isTrue();
         cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, false);
-        assertFalse(cachingEntitySelector.isNeverEnding());
+        assertThat(cachingEntitySelector.isNeverEnding()).isFalse();
     }
 
     @Test
@@ -148,11 +145,13 @@ public class CachingEntitySelectorTest {
         CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE,
                 true);
         cachingEntitySelector.constructCache(null);
-        assertInstanceOf(CachedListRandomIterator.class, cachingEntitySelector.iterator());
+        assertThat(cachingEntitySelector.iterator())
+                .isInstanceOf(CachedListRandomIterator.class);
 
         cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, false);
         cachingEntitySelector.constructCache(null);
-        assertNotInstanceOf(CachedListRandomIterator.class, cachingEntitySelector.iterator());
+        assertThat(cachingEntitySelector.iterator())
+                .isNotInstanceOf(CachedListRandomIterator.class);
     }
 
 }

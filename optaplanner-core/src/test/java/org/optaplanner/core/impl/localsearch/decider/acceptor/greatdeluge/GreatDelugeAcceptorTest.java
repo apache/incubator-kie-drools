@@ -1,6 +1,22 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.optaplanner.core.impl.localsearch.decider.acceptor.greatdeluge;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.Test;
@@ -34,12 +50,13 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
         LocalSearchStepScope<TestdataSolution> stepScope0 = new LocalSearchStepScope<>(phaseScope);
         acceptor.stepStarted(stepScope0);
         LocalSearchMoveScope<TestdataSolution> moveScope0 = buildMoveScope(stepScope0, -500);
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -900)));
-        assertEquals(true, acceptor.isAccepted(moveScope0));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -800)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope0, -2000)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -1000)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -900))); // Repeated call
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -900))).isTrue();
+        assertThat(acceptor.isAccepted(moveScope0)).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -800))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -2000))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -1000))).isTrue();
+        // Repeated call
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -900))).isTrue();
 
         stepScope0.setStep(moveScope0.getMove());
         stepScope0.setScore(moveScope0.getScore());
@@ -52,12 +69,12 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
         LocalSearchStepScope<TestdataSolution> stepScope1 = new LocalSearchStepScope<>(phaseScope);
         acceptor.stepStarted(stepScope1);
         LocalSearchMoveScope<TestdataSolution> moveScope1 = buildMoveScope(stepScope1, -600);
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -2000)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -700)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -1000)));
-        assertEquals(true, acceptor.isAccepted(moveScope1));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -500)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -901)));
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -2000))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -700))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -1000))).isFalse();
+        assertThat(acceptor.isAccepted(moveScope1)).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -500))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -901))).isFalse();
 
         stepScope1.setStep(moveScope1.getMove());
         stepScope1.setScore(moveScope1.getScore());
@@ -70,12 +87,12 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
         LocalSearchStepScope<TestdataSolution> stepScope2 = new LocalSearchStepScope<>(phaseScope);
         acceptor.stepStarted(stepScope2);
         LocalSearchMoveScope<TestdataSolution> moveScope2 = buildMoveScope(stepScope1, -350);
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, -900)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, -2000)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, -700)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, -801)));
-        assertEquals(true, acceptor.isAccepted(moveScope2));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, -500)));
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, -900))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, -2000))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, -700))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, -801))).isFalse();
+        assertThat(acceptor.isAccepted(moveScope2)).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, -500))).isTrue();
 
         stepScope1.setStep(moveScope2.getMove());
         stepScope1.setScore(moveScope2.getScore());
@@ -105,19 +122,20 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
         acceptor.stepStarted(stepScope0);
         LocalSearchMoveScope<TestdataSolution> moveScope0 = new LocalSearchMoveScope<>(stepScope0, 0, mock(Move.class));
         moveScope0.setScore(HardMediumSoftScore.of(0, -100, -300));
-        assertEquals(true, acceptor.isAccepted(moveScope0));
+        assertThat(acceptor.isAccepted(moveScope0)).isTrue();
         LocalSearchMoveScope<TestdataSolution> moveScope1 = new LocalSearchMoveScope<>(stepScope0, 0, mock(Move.class));
         moveScope1.setScore(HardMediumSoftScore.of(0, -100, -500));
-        assertEquals(true, acceptor.isAccepted(moveScope1)); // Aspiration
+        // Aspiration
+        assertThat(acceptor.isAccepted(moveScope1)).isTrue();
         LocalSearchMoveScope<TestdataSolution> moveScope2 = new LocalSearchMoveScope<>(stepScope0, 0, mock(Move.class));
         moveScope2.setScore(HardMediumSoftScore.of(0, -50, -800));
-        assertEquals(true, acceptor.isAccepted(moveScope2));
+        assertThat(acceptor.isAccepted(moveScope2)).isTrue();
         LocalSearchMoveScope<TestdataSolution> moveScope3 = new LocalSearchMoveScope<>(stepScope0, 0, mock(Move.class));
         moveScope3.setScore(HardMediumSoftScore.of(-5, -50, -100));
-        assertEquals(false, acceptor.isAccepted(moveScope3));
+        assertThat(acceptor.isAccepted(moveScope3)).isFalse();
         LocalSearchMoveScope<TestdataSolution> moveScope4 = new LocalSearchMoveScope<>(stepScope0, 0, mock(Move.class));
         moveScope4.setScore(HardMediumSoftScore.of(0, -22, -200));
-        assertEquals(true, acceptor.isAccepted(moveScope4));
+        assertThat(acceptor.isAccepted(moveScope4)).isTrue();
 
         stepScope0.setStep(moveScope4.getMove());
         stepScope0.setScore(moveScope4.getScore());
@@ -146,10 +164,10 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
         LocalSearchStepScope<TestdataSolution> stepScope0 = new LocalSearchStepScope<>(phaseScope);
         acceptor.stepStarted(stepScope0);
         LocalSearchMoveScope<TestdataSolution> moveScope0 = buildMoveScope(stepScope0, -5);
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -8)));
-        assertEquals(true, acceptor.isAccepted(moveScope0));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -7)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope0, -9)));
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -8))).isTrue();
+        assertThat(acceptor.isAccepted(moveScope0)).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -7))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -9))).isFalse();
 
         stepScope0.setStep(moveScope0.getMove());
         stepScope0.setScore(moveScope0.getScore());
@@ -162,11 +180,11 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
         LocalSearchStepScope<TestdataSolution> stepScope1 = new LocalSearchStepScope<>(phaseScope);
         acceptor.stepStarted(stepScope1);
         LocalSearchMoveScope<TestdataSolution> moveScope1 = buildMoveScope(stepScope1, -6);
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -10)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -7)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -9)));
-        assertEquals(true, acceptor.isAccepted(moveScope1));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -8)));
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -10))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -7))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -9))).isFalse();
+        assertThat(acceptor.isAccepted(moveScope1)).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -8))).isTrue();
 
         stepScope1.setStep(moveScope1.getMove());
         stepScope1.setScore(moveScope1.getScore());
@@ -179,10 +197,10 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
         LocalSearchStepScope<TestdataSolution> stepScope2 = new LocalSearchStepScope<>(phaseScope);
         acceptor.stepStarted(stepScope2);
         LocalSearchMoveScope<TestdataSolution> moveScope2 = buildMoveScope(stepScope1, -4);
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, -9)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, -8)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, -7)));
-        assertEquals(true, acceptor.isAccepted(moveScope2));
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, -9))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, -8))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, -7))).isTrue();
+        assertThat(acceptor.isAccepted(moveScope2)).isTrue();
 
         stepScope1.setStep(moveScope2.getMove());
         stepScope1.setScore(moveScope2.getScore());

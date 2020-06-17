@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.move;
 
-import static org.junit.Assert.assertEquals;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertInstanceOf;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 
 import org.junit.jupiter.api.Test;
@@ -28,22 +27,23 @@ public class NoChangeMoveTest {
 
     @Test
     public void isMoveDoable() {
-        assertEquals(true, new NoChangeMove<>().isMoveDoable(null));
+        assertThat(new NoChangeMove<>().isMoveDoable(null)).isTrue();
     }
 
     @Test
     public void createUndoMove() {
-        assertInstanceOf(NoChangeMove.class, new NoChangeMove<>().createUndoMove(null));
+        assertThat(new NoChangeMove<>().createUndoMove(null))
+                .isInstanceOf(NoChangeMove.class);
     }
 
     @Test
     public void getPlanningEntities() {
-        assertEquals(true, new NoChangeMove<>().getPlanningEntities().isEmpty());
+        assertThat(new NoChangeMove<>().getPlanningEntities().isEmpty()).isTrue();
     }
 
     @Test
     public void getPlanningValues() {
-        assertEquals(true, new NoChangeMove<>().getPlanningValues().isEmpty());
+        assertThat(new NoChangeMove<>().getPlanningValues().isEmpty()).isTrue();
     }
 
     @Test

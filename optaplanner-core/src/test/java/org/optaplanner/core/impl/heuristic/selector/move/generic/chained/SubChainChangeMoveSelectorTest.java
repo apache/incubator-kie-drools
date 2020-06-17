@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -77,19 +77,19 @@ public class SubChainChangeMoveSelectorTest {
 
         when(subChainSelector.isCountable()).thenReturn(false);
         when(valueSelector.isCountable()).thenReturn(true);
-        assertEquals(false, testedSelector.isCountable());
+        assertThat(testedSelector.isCountable()).isFalse();
 
         when(subChainSelector.isCountable()).thenReturn(true);
         when(valueSelector.isCountable()).thenReturn(false);
-        assertEquals(false, testedSelector.isCountable());
+        assertThat(testedSelector.isCountable()).isFalse();
 
         when(subChainSelector.isCountable()).thenReturn(true);
         when(valueSelector.isCountable()).thenReturn(true);
-        assertEquals(true, testedSelector.isCountable());
+        assertThat(testedSelector.isCountable()).isTrue();
 
         when(subChainSelector.isCountable()).thenReturn(false);
         when(valueSelector.isCountable()).thenReturn(false);
-        assertEquals(false, testedSelector.isCountable());
+        assertThat(testedSelector.isCountable()).isFalse();
     }
 
     @Test
@@ -103,11 +103,11 @@ public class SubChainChangeMoveSelectorTest {
 
         when(subChainSelector.getSize()).thenReturn(1L);
         when(valueSelector.getSize()).thenReturn(2L);
-        assertEquals(2, testedSelector.getSize());
+        assertThat(testedSelector.getSize()).isEqualTo(2);
 
         when(subChainSelector.getSize()).thenReturn(100L);
         when(valueSelector.getSize()).thenReturn(200L);
-        assertEquals(20000, testedSelector.getSize());
+        assertThat(testedSelector.getSize()).isEqualTo(20000);
     }
 
 }

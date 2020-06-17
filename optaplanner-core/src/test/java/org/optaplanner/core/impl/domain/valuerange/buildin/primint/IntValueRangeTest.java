@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.domain.valuerange.buildin.primint;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -31,46 +31,46 @@ public class IntValueRangeTest {
 
     @Test
     public void getSize() {
-        assertEquals(10L, new IntValueRange(0, 10).getSize());
-        assertEquals(20L, new IntValueRange(100, 120).getSize());
-        assertEquals(40L, new IntValueRange(-15, 25).getSize());
-        assertEquals(0L, new IntValueRange(7, 7).getSize());
-        assertEquals(Integer.MAX_VALUE + 900L, new IntValueRange(-1000, Integer.MAX_VALUE - 100).getSize());
+        assertThat(new IntValueRange(0, 10).getSize()).isEqualTo(10L);
+        assertThat(new IntValueRange(100, 120).getSize()).isEqualTo(20L);
+        assertThat(new IntValueRange(-15, 25).getSize()).isEqualTo(40L);
+        assertThat(new IntValueRange(7, 7).getSize()).isEqualTo(0L);
+        assertThat(new IntValueRange(-1000, Integer.MAX_VALUE - 100).getSize()).isEqualTo(Integer.MAX_VALUE + 900L);
         // IncrementUnit
-        assertEquals(5L, new IntValueRange(0, 10, 2).getSize());
-        assertEquals(5L, new IntValueRange(-1, 9, 2).getSize());
-        assertEquals(4L, new IntValueRange(100, 120, 5).getSize());
+        assertThat(new IntValueRange(0, 10, 2).getSize()).isEqualTo(5L);
+        assertThat(new IntValueRange(-1, 9, 2).getSize()).isEqualTo(5L);
+        assertThat(new IntValueRange(100, 120, 5).getSize()).isEqualTo(4L);
     }
 
     @Test
     public void get() {
-        assertEquals(3, new IntValueRange(0, 10).get(3L).intValue());
-        assertEquals(103, new IntValueRange(100, 120).get(3L).intValue());
-        assertEquals(-4, new IntValueRange(-5, 25).get(1L).intValue());
-        assertEquals(1, new IntValueRange(-5, 25).get(6L).intValue());
-        assertEquals(4, new IntValueRange(-1000, Integer.MAX_VALUE - 100).get(1004L).intValue());
+        assertThat(new IntValueRange(0, 10).get(3L).intValue()).isEqualTo(3);
+        assertThat(new IntValueRange(100, 120).get(3L).intValue()).isEqualTo(103);
+        assertThat(new IntValueRange(-5, 25).get(1L).intValue()).isEqualTo(-4);
+        assertThat(new IntValueRange(-5, 25).get(6L).intValue()).isEqualTo(1);
+        assertThat(new IntValueRange(-1000, Integer.MAX_VALUE - 100).get(1004L).intValue()).isEqualTo(4);
         // IncrementUnit
-        assertEquals(6, new IntValueRange(0, 10, 2).get(3L).intValue());
-        assertEquals(5, new IntValueRange(-1, 9, 2).get(3L).intValue());
-        assertEquals(115, new IntValueRange(100, 120, 5).get(3L).intValue());
+        assertThat(new IntValueRange(0, 10, 2).get(3L).intValue()).isEqualTo(6);
+        assertThat(new IntValueRange(-1, 9, 2).get(3L).intValue()).isEqualTo(5);
+        assertThat(new IntValueRange(100, 120, 5).get(3L).intValue()).isEqualTo(115);
     }
 
     @Test
     public void contains() {
-        assertEquals(true, new IntValueRange(0, 10).contains(3));
-        assertEquals(false, new IntValueRange(0, 10).contains(10));
-        assertEquals(false, new IntValueRange(0, 10).contains(null));
-        assertEquals(true, new IntValueRange(100, 120).contains(100));
-        assertEquals(false, new IntValueRange(100, 120).contains(99));
-        assertEquals(true, new IntValueRange(-5, 25).contains(-4));
-        assertEquals(false, new IntValueRange(-5, 25).contains(-20));
+        assertThat(new IntValueRange(0, 10).contains(3)).isTrue();
+        assertThat(new IntValueRange(0, 10).contains(10)).isFalse();
+        assertThat(new IntValueRange(0, 10).contains(null)).isFalse();
+        assertThat(new IntValueRange(100, 120).contains(100)).isTrue();
+        assertThat(new IntValueRange(100, 120).contains(99)).isFalse();
+        assertThat(new IntValueRange(-5, 25).contains(-4)).isTrue();
+        assertThat(new IntValueRange(-5, 25).contains(-20)).isFalse();
         // IncrementUnit
-        assertEquals(true, new IntValueRange(0, 10, 2).contains(2));
-        assertEquals(false, new IntValueRange(0, 10, 2).contains(3));
-        assertEquals(true, new IntValueRange(-1, 9, 2).contains(1));
-        assertEquals(false, new IntValueRange(-1, 9, 2).contains(2));
-        assertEquals(true, new IntValueRange(100, 120, 5).contains(115));
-        assertEquals(false, new IntValueRange(100, 120, 5).contains(114));
+        assertThat(new IntValueRange(0, 10, 2).contains(2)).isTrue();
+        assertThat(new IntValueRange(0, 10, 2).contains(3)).isFalse();
+        assertThat(new IntValueRange(-1, 9, 2).contains(1)).isTrue();
+        assertThat(new IntValueRange(-1, 9, 2).contains(2)).isFalse();
+        assertThat(new IntValueRange(100, 120, 5).contains(115)).isTrue();
+        assertThat(new IntValueRange(100, 120, 5).contains(114)).isFalse();
     }
 
     @Test

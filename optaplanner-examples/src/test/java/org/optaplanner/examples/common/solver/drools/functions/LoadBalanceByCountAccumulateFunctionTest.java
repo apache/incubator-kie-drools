@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.common.solver.drools.functions;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
@@ -31,21 +31,20 @@ public class LoadBalanceByCountAccumulateFunctionTest {
         Object b = new Object();
         Object c = new Object();
         function.accumulate(context, a);
-        assertEquals(1000, function.getResult(context).getZeroDeviationSquaredSumRootMillis());
+        assertThat(function.getResult(context).getZeroDeviationSquaredSumRootMillis()).isEqualTo(1000);
         function.accumulate(context, a);
-        assertEquals(2000, function.getResult(context).getZeroDeviationSquaredSumRootMillis());
+        assertThat(function.getResult(context).getZeroDeviationSquaredSumRootMillis()).isEqualTo(2000);
         function.accumulate(context, a);
-        assertEquals(3000, function.getResult(context).getZeroDeviationSquaredSumRootMillis());
+        assertThat(function.getResult(context).getZeroDeviationSquaredSumRootMillis()).isEqualTo(3000);
         function.reverse(context, a);
-        assertEquals(2000, function.getResult(context).getZeroDeviationSquaredSumRootMillis());
+        assertThat(function.getResult(context).getZeroDeviationSquaredSumRootMillis()).isEqualTo(2000);
         function.accumulate(context, b);
-        assertEquals(2236, function.getResult(context).getZeroDeviationSquaredSumRootMillis());
+        assertThat(function.getResult(context).getZeroDeviationSquaredSumRootMillis()).isEqualTo(2236);
         function.accumulate(context, c);
-        assertEquals(2449, function.getResult(context).getZeroDeviationSquaredSumRootMillis());
+        assertThat(function.getResult(context).getZeroDeviationSquaredSumRootMillis()).isEqualTo(2449);
         function.accumulate(context, c);
-        assertEquals(3000, function.getResult(context).getZeroDeviationSquaredSumRootMillis());
+        assertThat(function.getResult(context).getZeroDeviationSquaredSumRootMillis()).isEqualTo(3000);
         function.reverse(context, b);
-        assertEquals(2828, function.getResult(context).getZeroDeviationSquaredSumRootMillis());
+        assertThat(function.getResult(context).getZeroDeviationSquaredSumRootMillis()).isEqualTo(2828);
     }
-
 }

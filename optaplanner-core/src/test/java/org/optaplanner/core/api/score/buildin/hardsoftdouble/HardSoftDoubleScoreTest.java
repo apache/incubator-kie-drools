@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,9 @@
 
 package org.optaplanner.core.api.score.buildin.hardsoftdouble;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.data.Offset.offset;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
@@ -28,38 +29,37 @@ public class HardSoftDoubleScoreTest extends AbstractScoreTest {
 
     @Test
     public void of() {
-        assertEquals(HardSoftDoubleScore.of(-147.2, 0.0),
-                HardSoftDoubleScore.ofHard(-147.2));
-        assertEquals(HardSoftDoubleScore.of(0.0, -258.3),
-                HardSoftDoubleScore.ofSoft(-258.3));
+        assertThat(HardSoftDoubleScore.ofHard(-147.2)).isEqualTo(HardSoftDoubleScore.of(-147.2, 0.0));
+        assertThat(HardSoftDoubleScore.ofSoft(-258.3)).isEqualTo(HardSoftDoubleScore.of(0.0, -258.3));
     }
 
     @Test
     public void parseScore() {
-        assertEquals(HardSoftDoubleScore.of(-147.2, -258.3),
-                HardSoftDoubleScore.parseScore("-147.2hard/-258.3soft"));
-        assertEquals(HardSoftDoubleScore.ofUninitialized(-7, -147.2, -258.3),
-                HardSoftDoubleScore.parseScore("-7init/-147.2hard/-258.3soft"));
-        assertEquals(HardSoftDoubleScore.of(-147.2, Double.MIN_VALUE),
-                HardSoftDoubleScore.parseScore("-147.2hard/*soft"));
+        assertThat(HardSoftDoubleScore.parseScore("-147.2hard/-258.3soft")).isEqualTo(HardSoftDoubleScore.of(-147.2, -258.3));
+        assertThat(HardSoftDoubleScore.parseScore("-7init/-147.2hard/-258.3soft"))
+                .isEqualTo(HardSoftDoubleScore.ofUninitialized(-7, -147.2, -258.3));
+        assertThat(HardSoftDoubleScore.parseScore("-147.2hard/*soft"))
+                .isEqualTo(HardSoftDoubleScore.of(-147.2, Double.MIN_VALUE));
     }
 
     @Test
     public void toShortString() {
-        assertEquals("0", HardSoftDoubleScore.of(0.0, 0.0).toShortString());
-        assertEquals("-258.3soft", HardSoftDoubleScore.of(0.0, -258.3).toShortString());
-        assertEquals("-147.2hard", HardSoftDoubleScore.of(-147.2, 0.0).toShortString());
-        assertEquals("-147.2hard/-258.3soft", HardSoftDoubleScore.of(-147.2, -258.3).toShortString());
-        assertEquals("-7init", HardSoftDoubleScore.ofUninitialized(-7, 0.0, 0.0).toShortString());
-        assertEquals("-7init/-258.3soft", HardSoftDoubleScore.ofUninitialized(-7, 0.0, -258.3).toShortString());
-        assertEquals("-7init/-147.2hard/-258.3soft", HardSoftDoubleScore.ofUninitialized(-7, -147.2, -258.3).toShortString());
+        assertThat(HardSoftDoubleScore.of(0.0, 0.0).toShortString()).isEqualTo("0");
+        assertThat(HardSoftDoubleScore.of(0.0, -258.3).toShortString()).isEqualTo("-258.3soft");
+        assertThat(HardSoftDoubleScore.of(-147.2, 0.0).toShortString()).isEqualTo("-147.2hard");
+        assertThat(HardSoftDoubleScore.of(-147.2, -258.3).toShortString()).isEqualTo("-147.2hard/-258.3soft");
+        assertThat(HardSoftDoubleScore.ofUninitialized(-7, 0.0, 0.0).toShortString()).isEqualTo("-7init");
+        assertThat(HardSoftDoubleScore.ofUninitialized(-7, 0.0, -258.3).toShortString()).isEqualTo("-7init/-258.3soft");
+        assertThat(HardSoftDoubleScore.ofUninitialized(-7, -147.2, -258.3).toShortString())
+                .isEqualTo("-7init/-147.2hard/-258.3soft");
     }
 
     @Test
     public void testToString() {
-        assertEquals("0.0hard/-258.3soft", HardSoftDoubleScore.of(0.0, -258.3).toString());
-        assertEquals("-147.2hard/-258.3soft", HardSoftDoubleScore.of(-147.2, -258.3).toString());
-        assertEquals("-7init/-147.2hard/-258.3soft", HardSoftDoubleScore.ofUninitialized(-7, -147.2, -258.3).toString());
+        assertThat(HardSoftDoubleScore.of(0.0, -258.3).toString()).isEqualTo("0.0hard/-258.3soft");
+        assertThat(HardSoftDoubleScore.of(-147.2, -258.3).toString()).isEqualTo("-147.2hard/-258.3soft");
+        assertThat(HardSoftDoubleScore.ofUninitialized(-7, -147.2, -258.3).toString())
+                .isEqualTo("-7init/-147.2hard/-258.3soft");
     }
 
     @Test
@@ -69,16 +69,16 @@ public class HardSoftDoubleScoreTest extends AbstractScoreTest {
 
     @Test
     public void toInitializedScore() {
-        assertEquals(HardSoftDoubleScore.of(-147.2, -258.3),
-                HardSoftDoubleScore.of(-147.2, -258.3).toInitializedScore());
-        assertEquals(HardSoftDoubleScore.of(-147.2, -258.3),
-                HardSoftDoubleScore.ofUninitialized(-7, -147.2, -258.3).toInitializedScore());
+        assertThat(HardSoftDoubleScore.of(-147.2, -258.3).toInitializedScore())
+                .isEqualTo(HardSoftDoubleScore.of(-147.2, -258.3));
+        assertThat(HardSoftDoubleScore.ofUninitialized(-7, -147.2, -258.3).toInitializedScore())
+                .isEqualTo(HardSoftDoubleScore.of(-147.2, -258.3));
     }
 
     @Test
     public void withInitScore() {
-        assertEquals(HardSoftDoubleScore.ofUninitialized(-7, -147.2, -258.3),
-                HardSoftDoubleScore.of(-147.2, -258.3).withInitScore(-7));
+        assertThat(HardSoftDoubleScore.of(-147.2, -258.3).withInitScore(-7))
+                .isEqualTo(HardSoftDoubleScore.ofUninitialized(-7, -147.2, -258.3));
     }
 
     @Test
@@ -98,64 +98,52 @@ public class HardSoftDoubleScoreTest extends AbstractScoreTest {
 
     @Test
     public void add() {
-        assertEquals(HardSoftDoubleScore.of(19.0, -320.0),
-                HardSoftDoubleScore.of(20.0, -20.0).add(
-                        HardSoftDoubleScore.of(-1.0, -300.0)));
-        assertEquals(HardSoftDoubleScore.ofUninitialized(-77, 19.0, -320.0),
-                HardSoftDoubleScore.ofUninitialized(-70, 20.0, -20.0).add(
-                        HardSoftDoubleScore.ofUninitialized(-7, -1.0, -300.0)));
+        assertThat(HardSoftDoubleScore.of(20.0, -20.0).add(
+                HardSoftDoubleScore.of(-1.0, -300.0))).isEqualTo(HardSoftDoubleScore.of(19.0, -320.0));
+        assertThat(HardSoftDoubleScore.ofUninitialized(-70, 20.0, -20.0).add(
+                HardSoftDoubleScore.ofUninitialized(-7, -1.0, -300.0)))
+                        .isEqualTo(HardSoftDoubleScore.ofUninitialized(-77, 19.0, -320.0));
     }
 
     @Test
     public void subtract() {
-        assertEquals(HardSoftDoubleScore.of(21.0, 280.0),
-                HardSoftDoubleScore.of(20.0, -20.0).subtract(
-                        HardSoftDoubleScore.of(-1.0, -300.0)));
-        assertEquals(HardSoftDoubleScore.ofUninitialized(-63, 21.0, 280.0),
-                HardSoftDoubleScore.ofUninitialized(-70, 20.0, -20.0).subtract(
-                        HardSoftDoubleScore.ofUninitialized(-7, -1.0, -300.0)));
+        assertThat(HardSoftDoubleScore.of(20.0, -20.0).subtract(
+                HardSoftDoubleScore.of(-1.0, -300.0))).isEqualTo(HardSoftDoubleScore.of(21.0, 280.0));
+        assertThat(HardSoftDoubleScore.ofUninitialized(-70, 20.0, -20.0).subtract(
+                HardSoftDoubleScore.ofUninitialized(-7, -1.0, -300.0)))
+                        .isEqualTo(HardSoftDoubleScore.ofUninitialized(-63, 21.0, 280.0));
     }
 
     @Test
     public void multiply() {
-        assertEquals(HardSoftDoubleScore.of(6.0, -6.0),
-                HardSoftDoubleScore.of(5.0, -5.0).multiply(1.2));
-        assertEquals(HardSoftDoubleScore.of(1.2, -1.2),
-                HardSoftDoubleScore.of(1.0, -1.0).multiply(1.2));
-        assertEquals(HardSoftDoubleScore.of(4.8, -4.8),
-                HardSoftDoubleScore.of(4.0, -4.0).multiply(1.2));
-        assertEquals(HardSoftDoubleScore.ofUninitialized(-14, 8.6, -10.4),
-                HardSoftDoubleScore.ofUninitialized(-7, 4.3, -5.2).multiply(2.0));
+        assertThat(HardSoftDoubleScore.of(5.0, -5.0).multiply(1.2)).isEqualTo(HardSoftDoubleScore.of(6.0, -6.0));
+        assertThat(HardSoftDoubleScore.of(1.0, -1.0).multiply(1.2)).isEqualTo(HardSoftDoubleScore.of(1.2, -1.2));
+        assertThat(HardSoftDoubleScore.of(4.0, -4.0).multiply(1.2)).isEqualTo(HardSoftDoubleScore.of(4.8, -4.8));
+        assertThat(HardSoftDoubleScore.ofUninitialized(-7, 4.3, -5.2).multiply(2.0))
+                .isEqualTo(HardSoftDoubleScore.ofUninitialized(-14, 8.6, -10.4));
     }
 
     @Test
     public void divide() {
-        assertEquals(HardSoftDoubleScore.of(5.0, -5.0),
-                HardSoftDoubleScore.of(25.0, -25.0).divide(5.0));
-        assertEquals(HardSoftDoubleScore.of(4.2, -4.2),
-                HardSoftDoubleScore.of(21.0, -21.0).divide(5.0));
-        assertEquals(HardSoftDoubleScore.of(4.8, -4.8),
-                HardSoftDoubleScore.of(24.0, -24.0).divide(5.0));
-        assertEquals(HardSoftDoubleScore.ofUninitialized(-7, 4.3, -5.2),
-                HardSoftDoubleScore.ofUninitialized(-14, 8.6, -10.4).divide(2.0));
+        assertThat(HardSoftDoubleScore.of(25.0, -25.0).divide(5.0)).isEqualTo(HardSoftDoubleScore.of(5.0, -5.0));
+        assertThat(HardSoftDoubleScore.of(21.0, -21.0).divide(5.0)).isEqualTo(HardSoftDoubleScore.of(4.2, -4.2));
+        assertThat(HardSoftDoubleScore.of(24.0, -24.0).divide(5.0)).isEqualTo(HardSoftDoubleScore.of(4.8, -4.8));
+        assertThat(HardSoftDoubleScore.ofUninitialized(-14, 8.6, -10.4).divide(2.0))
+                .isEqualTo(HardSoftDoubleScore.ofUninitialized(-7, 4.3, -5.2));
     }
 
     @Test
     public void power() {
-        assertEquals(HardSoftDoubleScore.of(16.0, 2.25),
-                HardSoftDoubleScore.of(-4.0, 1.5).power(2.0));
-        assertEquals(HardSoftDoubleScore.of(4.0, 1.5),
-                HardSoftDoubleScore.of(16.0, 2.25).power(0.5));
-        assertEquals(HardSoftDoubleScore.ofUninitialized(-343, -64.0, 125.0),
-                HardSoftDoubleScore.ofUninitialized(-7, -4.0, 5.0).power(3.0));
+        assertThat(HardSoftDoubleScore.of(-4.0, 1.5).power(2.0)).isEqualTo(HardSoftDoubleScore.of(16.0, 2.25));
+        assertThat(HardSoftDoubleScore.of(16.0, 2.25).power(0.5)).isEqualTo(HardSoftDoubleScore.of(4.0, 1.5));
+        assertThat(HardSoftDoubleScore.ofUninitialized(-7, -4.0, 5.0).power(3.0))
+                .isEqualTo(HardSoftDoubleScore.ofUninitialized(-343, -64.0, 125.0));
     }
 
     @Test
     public void negate() {
-        assertEquals(HardSoftDoubleScore.of(-4.0, 1.5),
-                HardSoftDoubleScore.of(4.0, -1.5).negate());
-        assertEquals(HardSoftDoubleScore.of(4.0, -1.5),
-                HardSoftDoubleScore.of(-4.0, 1.5).negate());
+        assertThat(HardSoftDoubleScore.of(4.0, -1.5).negate()).isEqualTo(HardSoftDoubleScore.of(-4.0, 1.5));
+        assertThat(HardSoftDoubleScore.of(-4.0, 1.5).negate()).isEqualTo(HardSoftDoubleScore.of(4.0, -1.5));
     }
 
     @Test
@@ -200,16 +188,16 @@ public class HardSoftDoubleScoreTest extends AbstractScoreTest {
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 HardSoftDoubleScore.of(-12.3, 3400.5),
                 output -> {
-                    assertEquals(0, output.getInitScore());
-                    assertEquals(-12.3, output.getHardScore(), 0.0);
-                    assertEquals(3400.5, output.getSoftScore(), 0.0);
+                    assertThat(output.getInitScore()).isEqualTo(0);
+                    assertThat(output.getHardScore()).isEqualTo(-12.3, offset(0.0));
+                    assertThat(output.getSoftScore()).isEqualTo(3400.5, offset(0.0));
                 });
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 HardSoftDoubleScore.ofUninitialized(-7, -12.3, 3400.5),
                 output -> {
-                    assertEquals(-7, output.getInitScore());
-                    assertEquals(-12.3, output.getHardScore(), 0.0);
-                    assertEquals(3400.5, output.getSoftScore(), 0.0);
+                    assertThat(output.getInitScore()).isEqualTo(-7);
+                    assertThat(output.getHardScore()).isEqualTo(-12.3, offset(0.0));
+                    assertThat(output.getSoftScore()).isEqualTo(3400.5, offset(0.0));
                 });
     }
 

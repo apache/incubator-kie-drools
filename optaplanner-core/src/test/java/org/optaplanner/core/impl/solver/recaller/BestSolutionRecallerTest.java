@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.solver.recaller;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -103,11 +103,11 @@ public class BestSolutionRecallerTest {
         BestSolutionRecaller<AbstractSolution> recaller = createBestSolutionRecaller();
         recaller.processWorkingSolutionDuringStep(stepScope);
         if (stepImprovesBestSolution) {
-            assertEquals(stepSolution, solverScope.getBestSolution());
-            assertEquals(stepScore, solverScope.getBestScore());
+            assertThat(solverScope.getBestSolution()).isEqualTo(stepSolution);
+            assertThat(solverScope.getBestScore()).isEqualTo(stepScore);
         } else {
-            assertEquals(originalBestSolution, solverScope.getBestSolution());
-            assertEquals(originalBestScore, solverScope.getBestScore());
+            assertThat(solverScope.getBestSolution()).isEqualTo(originalBestSolution);
+            assertThat(solverScope.getBestScore()).isEqualTo(originalBestScore);
         }
     }
 
@@ -158,11 +158,11 @@ public class BestSolutionRecallerTest {
         BestSolutionRecaller<AbstractSolution> recaller = createBestSolutionRecaller();
         recaller.processWorkingSolutionDuringMove(moveScore, stepScope);
         if (moveImprovesBestSolution) {
-            assertEquals(moveSolution, solverScope.getBestSolution());
-            assertEquals(moveScore, solverScope.getBestScore());
+            assertThat(solverScope.getBestSolution()).isEqualTo(moveSolution);
+            assertThat(solverScope.getBestScore()).isEqualTo(moveScore);
         } else {
-            assertEquals(originalBestSolution, solverScope.getBestSolution());
-            assertEquals(originalBestScore, solverScope.getBestScore());
+            assertThat(solverScope.getBestSolution()).isEqualTo(originalBestSolution);
+            assertThat(solverScope.getBestScore()).isEqualTo(originalBestScore);
         }
     }
 

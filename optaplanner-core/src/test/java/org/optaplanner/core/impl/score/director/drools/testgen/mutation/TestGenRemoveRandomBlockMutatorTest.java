@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,7 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.mutation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,14 +40,14 @@ public class TestGenRemoveRandomBlockMutatorTest {
         TestGenRemoveRandomBlockMutator<Integer> m = new TestGenRemoveRandomBlockMutator<>(list);
         ArrayList<Integer> removed = new ArrayList<>();
         while (m.canMutate()) {
-            assertTrue(m.canMutate());
+            assertThat(m.canMutate()).isTrue();
             m.mutate();
             removed.addAll(m.getRemovedBlock());
         }
-        assertFalse(m.canMutate());
+        assertThat(m.canMutate()).isFalse();
 
         for (int i = 0; i < LIST_SIZE; i++) {
-            assertTrue(removed.contains(list.get(i)));
+            assertThat(removed.contains(list.get(i))).isTrue();
         }
     }
 
@@ -59,8 +57,8 @@ public class TestGenRemoveRandomBlockMutatorTest {
         m.mutate();
         List<Integer> removedBlock = m.getRemovedBlock();
         m.revert();
-        assertTrue(m.getResult().containsAll(removedBlock));
-        assertEquals(LIST_SIZE, m.getResult().size());
+        assertThat(m.getResult().containsAll(removedBlock)).isTrue();
+        assertThat(m.getResult().size()).isEqualTo(LIST_SIZE);
     }
 
     @Test
@@ -74,7 +72,7 @@ public class TestGenRemoveRandomBlockMutatorTest {
         }
 
         for (int i = 0; i < LIST_SIZE; i++) {
-            assertTrue(removed.contains(list.get(i)));
+            assertThat(removed.contains(list.get(i))).isTrue();
         }
     }
 

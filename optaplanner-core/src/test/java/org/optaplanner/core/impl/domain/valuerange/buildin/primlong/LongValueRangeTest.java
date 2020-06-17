@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.domain.valuerange.buildin.primlong;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -31,46 +31,46 @@ public class LongValueRangeTest {
 
     @Test
     public void getSize() {
-        assertEquals(10L, new LongValueRange(0L, 10L).getSize());
-        assertEquals(20L, new LongValueRange(100L, 120L).getSize());
-        assertEquals(40L, new LongValueRange(-15L, 25L).getSize());
-        assertEquals(0L, new LongValueRange(7L, 7L).getSize());
-        assertEquals(Long.MAX_VALUE - 2000L, new LongValueRange(-1000L, Long.MAX_VALUE - 3000L).getSize());
+        assertThat(new LongValueRange(0L, 10L).getSize()).isEqualTo(10L);
+        assertThat(new LongValueRange(100L, 120L).getSize()).isEqualTo(20L);
+        assertThat(new LongValueRange(-15L, 25L).getSize()).isEqualTo(40L);
+        assertThat(new LongValueRange(7L, 7L).getSize()).isEqualTo(0L);
+        assertThat(new LongValueRange(-1000L, Long.MAX_VALUE - 3000L).getSize()).isEqualTo(Long.MAX_VALUE - 2000L);
         // IncrementUnit
-        assertEquals(5L, new LongValueRange(0L, 10L, 2L).getSize());
-        assertEquals(5L, new LongValueRange(-1L, 9L, 2L).getSize());
-        assertEquals(4L, new LongValueRange(100L, 120L, 5L).getSize());
+        assertThat(new LongValueRange(0L, 10L, 2L).getSize()).isEqualTo(5L);
+        assertThat(new LongValueRange(-1L, 9L, 2L).getSize()).isEqualTo(5L);
+        assertThat(new LongValueRange(100L, 120L, 5L).getSize()).isEqualTo(4L);
     }
 
     @Test
     public void get() {
-        assertEquals(3L, new LongValueRange(0L, 10L).get(3L).intValue());
-        assertEquals(103L, new LongValueRange(100L, 120L).get(3L).intValue());
-        assertEquals(-4L, new LongValueRange(-5L, 25L).get(1L).intValue());
-        assertEquals(1L, new LongValueRange(-5L, 25L).get(6L).intValue());
-        assertEquals(4L, new LongValueRange(-1000L, Long.MAX_VALUE - 3000L).get(1004L).intValue());
+        assertThat((long) new LongValueRange(0L, 10L).get(3L).intValue()).isEqualTo(3L);
+        assertThat((long) new LongValueRange(100L, 120L).get(3L).intValue()).isEqualTo(103L);
+        assertThat((long) new LongValueRange(-5L, 25L).get(1L).intValue()).isEqualTo(-4L);
+        assertThat((long) new LongValueRange(-5L, 25L).get(6L).intValue()).isEqualTo(1L);
+        assertThat((long) new LongValueRange(-1000L, Long.MAX_VALUE - 3000L).get(1004L).intValue()).isEqualTo(4L);
         // IncrementUnit
-        assertEquals(6L, new LongValueRange(0L, 10L, 2L).get(3L).intValue());
-        assertEquals(5L, new LongValueRange(-1L, 9L, 2L).get(3L).intValue());
-        assertEquals(115L, new LongValueRange(100L, 120L, 5L).get(3L).intValue());
+        assertThat((long) new LongValueRange(0L, 10L, 2L).get(3L).intValue()).isEqualTo(6L);
+        assertThat((long) new LongValueRange(-1L, 9L, 2L).get(3L).intValue()).isEqualTo(5L);
+        assertThat((long) new LongValueRange(100L, 120L, 5L).get(3L).intValue()).isEqualTo(115L);
     }
 
     @Test
     public void contains() {
-        assertEquals(true, new LongValueRange(0L, 10L).contains(3L));
-        assertEquals(false, new LongValueRange(0L, 10L).contains(10L));
-        assertEquals(false, new LongValueRange(0L, 10L).contains(null));
-        assertEquals(true, new LongValueRange(100L, 120L).contains(100L));
-        assertEquals(false, new LongValueRange(100L, 120L).contains(99L));
-        assertEquals(true, new LongValueRange(-5L, 25L).contains(-4L));
-        assertEquals(false, new LongValueRange(-5L, 25L).contains(-20L));
+        assertThat(new LongValueRange(0L, 10L).contains(3L)).isTrue();
+        assertThat(new LongValueRange(0L, 10L).contains(10L)).isFalse();
+        assertThat(new LongValueRange(0L, 10L).contains(null)).isFalse();
+        assertThat(new LongValueRange(100L, 120L).contains(100L)).isTrue();
+        assertThat(new LongValueRange(100L, 120L).contains(99L)).isFalse();
+        assertThat(new LongValueRange(-5L, 25L).contains(-4L)).isTrue();
+        assertThat(new LongValueRange(-5L, 25L).contains(-20L)).isFalse();
         // IncrementUnit
-        assertEquals(true, new LongValueRange(0L, 10L, 2L).contains(2L));
-        assertEquals(false, new LongValueRange(0L, 10L, 2L).contains(3L));
-        assertEquals(true, new LongValueRange(-1L, 9L, 2L).contains(1L));
-        assertEquals(false, new LongValueRange(-1L, 9L, 2L).contains(2L));
-        assertEquals(true, new LongValueRange(100L, 120L, 5L).contains(115L));
-        assertEquals(false, new LongValueRange(100L, 120L, 5L).contains(114L));
+        assertThat(new LongValueRange(0L, 10L, 2L).contains(2L)).isTrue();
+        assertThat(new LongValueRange(0L, 10L, 2L).contains(3L)).isFalse();
+        assertThat(new LongValueRange(-1L, 9L, 2L).contains(1L)).isTrue();
+        assertThat(new LongValueRange(-1L, 9L, 2L).contains(2L)).isFalse();
+        assertThat(new LongValueRange(100L, 120L, 5L).contains(115L)).isTrue();
+        assertThat(new LongValueRange(100L, 120L, 5L).contains(114L)).isFalse();
     }
 
     @Test

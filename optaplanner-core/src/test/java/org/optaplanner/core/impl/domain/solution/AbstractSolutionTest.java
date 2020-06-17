@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,7 @@
 
 package org.optaplanner.core.impl.domain.solution;
 
-import static org.junit.Assert.assertEquals;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCollectionContainsExactly;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,11 +36,11 @@ public class AbstractSolutionTest {
     public void getScore() {
         TestdataAbstractSolutionBasedSolution solution = new TestdataAbstractSolutionBasedSolution();
         solution.setScore(null);
-        assertEquals(null, solution.getScore());
+        assertThat(solution.getScore()).isEqualTo((SimpleScore) null);
         solution.setScore(SimpleScore.of(-10));
-        assertEquals(SimpleScore.of(-10), solution.getScore());
+        assertThat(solution.getScore()).isEqualTo(SimpleScore.of(-10));
         solution.setScore(SimpleScore.of(-2));
-        assertEquals(SimpleScore.of(-2), solution.getScore());
+        assertThat(solution.getScore()).isEqualTo(SimpleScore.of(-2));
     }
 
     @Test
@@ -61,7 +60,7 @@ public class AbstractSolutionTest {
         solution.setSingleEntity(singleEntity);
         SimpleScore score = SimpleScore.of(-10);
         solution.setScore(score);
-        assertCollectionContainsExactly(solution.getProblemFactList(), singleValue, v1, v2, v3);
+        assertThat(solution.getProblemFactList()).containsExactly(singleValue, v1, v2, v3);
     }
 
     @Test
@@ -76,7 +75,7 @@ public class AbstractSolutionTest {
         solution.setEntityList(null);
         solution.setSingleEntity(null);
         solution.setScore(null);
-        assertCollectionContainsExactly(solution.getProblemFactList(), v1, v2, v3);
+        assertThat(solution.getProblemFactList()).containsExactly(v1, v2, v3);
     }
 
     public static class TestdataAbstractSolutionBasedSolution extends AbstractSolution<SimpleScore> {

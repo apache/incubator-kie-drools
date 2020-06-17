@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package org.optaplanner.persistence.jackson.api.score;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -44,7 +44,7 @@ public abstract class AbstractScoreJacksonJsonSerializerAndDeserializerTest
         } catch (IOException e) {
             throw new IllegalStateException("Marshalling or unmarshalling for input (" + input + ") failed.", e);
         }
-        assertEquals(expectedScore, output.getScore());
+        assertThat(output.getScore()).isEqualTo(expectedScore);
         String regex;
         if (expectedScore != null) {
             regex = "\\{\\s*" // Start of element

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.solver.termination;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -29,34 +29,33 @@ public class BasicPlumbingTerminationTest {
     public void addProblemFactChangeWithoutDaemon() {
         AtomicInteger count = new AtomicInteger(0);
         BasicPlumbingTermination basicPlumbingTermination = new BasicPlumbingTermination(false);
-        assertEquals(false, basicPlumbingTermination.waitForRestartSolverDecision());
+        assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isFalse();
         basicPlumbingTermination.addProblemFactChange(scoreDirector -> count.getAndIncrement());
-        assertEquals(true, basicPlumbingTermination.waitForRestartSolverDecision());
-        assertEquals(0, count.get());
+        assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isTrue();
+        assertThat(count).hasValue(0);
         basicPlumbingTermination.startProblemFactChangesProcessing().removeIf(problemFactChange -> {
             problemFactChange.doChange(null);
             return true;
         });
-        assertEquals(false, basicPlumbingTermination.waitForRestartSolverDecision());
-        assertEquals(1, count.get());
+        assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isFalse();
+        assertThat(count).hasValue(1);
     }
 
     @Test
     public void addProblemFactChangesWithoutDaemon() {
         AtomicInteger count = new AtomicInteger(0);
         BasicPlumbingTermination basicPlumbingTermination = new BasicPlumbingTermination(false);
-        assertEquals(false, basicPlumbingTermination.waitForRestartSolverDecision());
+        assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isFalse();
         basicPlumbingTermination.addProblemFactChanges(Arrays.asList(
                 scoreDirector -> count.getAndIncrement(),
                 scoreDirector -> count.getAndAdd(20)));
-        assertEquals(true, basicPlumbingTermination.waitForRestartSolverDecision());
-        assertEquals(0, count.get());
+        assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isTrue();
+        assertThat(count).hasValue(0);
         basicPlumbingTermination.startProblemFactChangesProcessing().removeIf(problemFactChange -> {
             problemFactChange.doChange(null);
             return true;
         });
-        assertEquals(false, basicPlumbingTermination.waitForRestartSolverDecision());
-        assertEquals(21, count.get());
+        assertThat(basicPlumbingTermination.waitForRestartSolverDecision()).isFalse();
+        assertThat(count).hasValue(21);
     }
-
 }

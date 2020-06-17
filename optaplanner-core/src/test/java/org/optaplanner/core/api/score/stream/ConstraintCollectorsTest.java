@@ -24,7 +24,7 @@ import static java.util.Collections.emptySortedMap;
 import static java.util.Collections.emptySortedSet;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countLongBi;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countLongQuad;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countLongTri;
@@ -2546,25 +2546,33 @@ public class ConstraintCollectorsTest {
     private static <A, B, C> void assertResult(QuadConstraintCollector<A, A, A, A, B, C> collector, Object container,
             C expectedResult) {
         C actualResult = collector.finisher().apply((B) container);
-        assertEquals("Collector (" + collector + ") did not produce expected result.", expectedResult, actualResult);
+        assertThat(actualResult)
+                .as("Collector (" + collector + ") did not produce expected result.")
+                .isEqualTo(expectedResult);
     }
 
     private static <A, B, C> void assertResult(TriConstraintCollector<A, A, A, B, C> collector, Object container,
             C expectedResult) {
         C actualResult = collector.finisher().apply((B) container);
-        assertEquals("Collector (" + collector + ") did not produce expected result.", expectedResult, actualResult);
+        assertThat(actualResult)
+                .as("Collector (" + collector + ") did not produce expected result.")
+                .isEqualTo(expectedResult);
     }
 
     private static <A, B, C> void assertResult(BiConstraintCollector<A, A, B, C> collector, Object container,
             C expectedResult) {
         C actualResult = collector.finisher().apply((B) container);
-        assertEquals("Collector (" + collector + ") did not produce expected result.", expectedResult, actualResult);
+        assertThat(actualResult)
+                .as("Collector (" + collector + ") did not produce expected result.")
+                .isEqualTo(expectedResult);
     }
 
     private static <A, B, C> void assertResult(UniConstraintCollector<A, B, C> collector, Object container,
             C expectedResult) {
         C actualResult = collector.finisher().apply((B) container);
-        assertEquals("Collector (" + collector + ") did not produce expected result.", expectedResult, actualResult);
+        assertThat(actualResult)
+                .as("Collector (" + collector + ") did not produce expected result.")
+                .isEqualTo(expectedResult);
     }
 
 }

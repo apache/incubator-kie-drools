@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,8 @@
 
 package org.optaplanner.core.config.solver;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -42,13 +39,14 @@ public class SolverConfigMultiThreadedTest {
     @Test
     public void moveThreadCountAutoIsCorrectlyResolvedWhenCpuCountIsPositive() {
         final int cpuCount = 16;
-        assertEquals(Integer.valueOf(cpuCount - 2), mockSolverConfigForMoveThreadCountAuto(cpuCount).resolveMoveThreadCount());
+        assertThat(mockSolverConfigForMoveThreadCountAuto(cpuCount).resolveMoveThreadCount())
+                .isEqualTo(Integer.valueOf(cpuCount - 2));
     }
 
     @Test
     public void moveThreadCountAutoIsResolvedToNullWhenCpuCountIsNegative() {
         final int cpuCount = -2;
-        assertNull(mockSolverConfigForMoveThreadCountAuto(cpuCount).resolveMoveThreadCount());
+        assertThat(mockSolverConfigForMoveThreadCountAuto(cpuCount).resolveMoveThreadCount()).isNull();
     }
 
     private SolverConfig mockSolverConfigForMoveThreadCountAuto(int mockCpuCount) {
@@ -62,7 +60,7 @@ public class SolverConfigMultiThreadedTest {
     public void moveThreadCountIsCorrectlyResolvedWhenValueIsPositive() {
         SolverConfig solverConfig = new SolverConfig();
         solverConfig.setMoveThreadCount("2");
-        assertEquals(Integer.valueOf(2), solverConfig.resolveMoveThreadCount());
+        assertThat(solverConfig.resolveMoveThreadCount()).isEqualTo(Integer.valueOf(2));
     }
 
     @Test
@@ -76,7 +74,7 @@ public class SolverConfigMultiThreadedTest {
     public void moveThreadCountIsResolvedToNullWhenValueIsNone() {
         SolverConfig solverConfig = new SolverConfig();
         solverConfig.setMoveThreadCount(SolverConfig.MOVE_THREAD_COUNT_NONE);
-        assertNull(solverConfig.resolveMoveThreadCount());
+        assertThat(solverConfig.resolveMoveThreadCount()).isNull();
     }
 
     @Test
@@ -100,8 +98,8 @@ public class SolverConfigMultiThreadedTest {
         TestdataSolution solution = createTestSolution(entityCount, valueCount);
 
         solution = PlannerTestUtils.solve(solverConfig, solution);
-        assertNotNull(solution);
-        assertTrue(solution.getScore().isSolutionInitialized());
+        assertThat(solution).isNotNull();
+        assertThat(solution.getScore().isSolutionInitialized()).isTrue();
     }
 
     private TestdataSolution createTestSolution(int entityCount, int valueCount) {
@@ -130,9 +128,9 @@ public class SolverConfigMultiThreadedTest {
         TestdataSolution solution = createTestSolution(3, 5);
 
         solution = PlannerTestUtils.solve(solverConfig, solution);
-        assertNotNull(solution);
-        assertTrue(solution.getScore().isSolutionInitialized());
-        assertTrue(MockThreadFactory.hasBeenCalled());
+        assertThat(solution).isNotNull();
+        assertThat(solution.getScore().isSolutionInitialized()).isTrue();
+        assertThat(MockThreadFactory.hasBeenCalled()).isTrue();
     }
 
 }

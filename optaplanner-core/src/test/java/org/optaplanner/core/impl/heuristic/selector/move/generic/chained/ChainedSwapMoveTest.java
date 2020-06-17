@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -290,8 +289,10 @@ public class ChainedSwapMoveTest {
     }
 
     public void assertSameProperties(Object leftEntity, Object rightEntity, ChainedSwapMove<?> move) {
-        assertSame(leftEntity, move.getLeftEntity());
-        assertSame(rightEntity, move.getRightEntity());
+        assertSoftly(softly -> {
+            softly.assertThat(move.getLeftEntity()).isSameAs(leftEntity);
+            softly.assertThat(move.getRightEntity()).isSameAs(rightEntity);
+        });
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.buildin.simple;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.function.Consumer;
 
@@ -34,23 +34,23 @@ public class SimpleScoreInlinerTest {
         Consumer<Score<?>> scoreConsumer = null;
 
         SimpleScoreInliner scoreInliner = new SimpleScoreInliner(constraintMatchEnabled);
-        assertEquals(SimpleScore.ZERO, scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.ZERO);
 
         IntWeightedScoreImpacter impacter1 = scoreInliner.buildWeightedScoreImpacter(SimpleScore.of(-90));
         UndoScoreImpacter undo1 = impacter1.impactScore(1, scoreConsumer);
-        assertEquals(SimpleScore.of(-90), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-90));
         scoreInliner.buildWeightedScoreImpacter(SimpleScore.of(-800)).impactScore(1, scoreConsumer);
-        assertEquals(SimpleScore.of(-890), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-890));
         undo1.undoScoreImpact();
-        assertEquals(SimpleScore.of(-800), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-800));
 
         IntWeightedScoreImpacter impacter2 = scoreInliner.buildWeightedScoreImpacter(SimpleScore.of(-1));
         UndoScoreImpacter undo2 = impacter2.impactScore(3, scoreConsumer);
-        assertEquals(SimpleScore.of(-803), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-803));
         impacter2.impactScore(10, scoreConsumer);
-        assertEquals(SimpleScore.of(-813), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-813));
         undo2.undoScoreImpact();
-        assertEquals(SimpleScore.of(-810), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(SimpleScore.of(-810));
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.api.score.buildin.simple;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
@@ -28,24 +28,24 @@ public class SimpleScoreTest extends AbstractScoreTest {
 
     @Test
     public void parseScore() {
-        assertEquals(SimpleScore.of(-147), SimpleScore.parseScore("-147"));
-        assertEquals(SimpleScore.ofUninitialized(-7, -147), SimpleScore.parseScore("-7init/-147"));
-        assertEquals(SimpleScore.of(Integer.MIN_VALUE), SimpleScore.parseScore("*"));
+        assertThat(SimpleScore.parseScore("-147")).isEqualTo(SimpleScore.of(-147));
+        assertThat(SimpleScore.parseScore("-7init/-147")).isEqualTo(SimpleScore.ofUninitialized(-7, -147));
+        assertThat(SimpleScore.parseScore("*")).isEqualTo(SimpleScore.of(Integer.MIN_VALUE));
     }
 
     @Test
     public void toShortString() {
-        assertEquals("0", SimpleScore.of(0).toShortString());
-        assertEquals("-147", SimpleScore.of(-147).toShortString());
-        assertEquals("-7init/-147", SimpleScore.ofUninitialized(-7, -147).toShortString());
-        assertEquals("-7init", SimpleScore.ofUninitialized(-7, 0).toShortString());
+        assertThat(SimpleScore.of(0).toShortString()).isEqualTo("0");
+        assertThat(SimpleScore.of(-147).toShortString()).isEqualTo("-147");
+        assertThat(SimpleScore.ofUninitialized(-7, -147).toShortString()).isEqualTo("-7init/-147");
+        assertThat(SimpleScore.ofUninitialized(-7, 0).toShortString()).isEqualTo("-7init");
     }
 
     @Test
     public void testToString() {
-        assertEquals("0", SimpleScore.of(0).toString());
-        assertEquals("-147", SimpleScore.of(-147).toString());
-        assertEquals("-7init/-147", SimpleScore.ofUninitialized(-7, -147).toString());
+        assertThat(SimpleScore.of(0).toString()).isEqualTo("0");
+        assertThat(SimpleScore.of(-147).toString()).isEqualTo("-147");
+        assertThat(SimpleScore.ofUninitialized(-7, -147).toString()).isEqualTo("-7init/-147");
     }
 
     @Test
@@ -55,78 +55,58 @@ public class SimpleScoreTest extends AbstractScoreTest {
 
     @Test
     public void toInitializedScore() {
-        assertEquals(SimpleScore.of(-147),
-                SimpleScore.of(-147).toInitializedScore());
-        assertEquals(SimpleScore.of(-147),
-                SimpleScore.ofUninitialized(-7, -147).toInitializedScore());
+        assertThat(SimpleScore.of(-147).toInitializedScore()).isEqualTo(SimpleScore.of(-147));
+        assertThat(SimpleScore.ofUninitialized(-7, -147).toInitializedScore()).isEqualTo(SimpleScore.of(-147));
     }
 
     @Test
     public void withInitScore() {
-        assertEquals(SimpleScore.ofUninitialized(-7, -147),
-                SimpleScore.of(-147).withInitScore(-7));
+        assertThat(SimpleScore.of(-147).withInitScore(-7)).isEqualTo(SimpleScore.ofUninitialized(-7, -147));
     }
 
     @Test
     public void add() {
-        assertEquals(SimpleScore.of(19),
-                SimpleScore.of(20).add(
-                        SimpleScore.of(-1)));
-        assertEquals(SimpleScore.ofUninitialized(-77, 19),
-                SimpleScore.ofUninitialized(-70, 20).add(
-                        SimpleScore.ofUninitialized(-7, -1)));
+        assertThat(SimpleScore.of(20).add(
+                SimpleScore.of(-1))).isEqualTo(SimpleScore.of(19));
+        assertThat(SimpleScore.ofUninitialized(-70, 20).add(
+                SimpleScore.ofUninitialized(-7, -1))).isEqualTo(SimpleScore.ofUninitialized(-77, 19));
     }
 
     @Test
     public void subtract() {
-        assertEquals(SimpleScore.of(21),
-                SimpleScore.of(20).subtract(
-                        SimpleScore.of(-1)));
-        assertEquals(SimpleScore.ofUninitialized(-63, 21),
-                SimpleScore.ofUninitialized(-70, 20).subtract(
-                        SimpleScore.ofUninitialized(-7, -1)));
+        assertThat(SimpleScore.of(20).subtract(
+                SimpleScore.of(-1))).isEqualTo(SimpleScore.of(21));
+        assertThat(SimpleScore.ofUninitialized(-70, 20).subtract(
+                SimpleScore.ofUninitialized(-7, -1))).isEqualTo(SimpleScore.ofUninitialized(-63, 21));
     }
 
     @Test
     public void multiply() {
-        assertEquals(SimpleScore.of(6),
-                SimpleScore.of(5).multiply(1.2));
-        assertEquals(SimpleScore.of(1),
-                SimpleScore.of(1).multiply(1.2));
-        assertEquals(SimpleScore.of(4),
-                SimpleScore.of(4).multiply(1.2));
-        assertEquals(SimpleScore.ofUninitialized(-14, 8),
-                SimpleScore.ofUninitialized(-7, 4).multiply(2.0));
+        assertThat(SimpleScore.of(5).multiply(1.2)).isEqualTo(SimpleScore.of(6));
+        assertThat(SimpleScore.of(1).multiply(1.2)).isEqualTo(SimpleScore.of(1));
+        assertThat(SimpleScore.of(4).multiply(1.2)).isEqualTo(SimpleScore.of(4));
+        assertThat(SimpleScore.ofUninitialized(-7, 4).multiply(2.0)).isEqualTo(SimpleScore.ofUninitialized(-14, 8));
     }
 
     @Test
     public void divide() {
-        assertEquals(SimpleScore.of(5),
-                SimpleScore.of(25).divide(5.0));
-        assertEquals(SimpleScore.of(4),
-                SimpleScore.of(21).divide(5.0));
-        assertEquals(SimpleScore.of(4),
-                SimpleScore.of(24).divide(5.0));
-        assertEquals(SimpleScore.ofUninitialized(-7, 4),
-                SimpleScore.ofUninitialized(-14, 8).divide(2.0));
+        assertThat(SimpleScore.of(25).divide(5.0)).isEqualTo(SimpleScore.of(5));
+        assertThat(SimpleScore.of(21).divide(5.0)).isEqualTo(SimpleScore.of(4));
+        assertThat(SimpleScore.of(24).divide(5.0)).isEqualTo(SimpleScore.of(4));
+        assertThat(SimpleScore.ofUninitialized(-14, 8).divide(2.0)).isEqualTo(SimpleScore.ofUninitialized(-7, 4));
     }
 
     @Test
     public void power() {
-        assertEquals(SimpleScore.of(25),
-                SimpleScore.of(5).power(2.0));
-        assertEquals(SimpleScore.of(5),
-                SimpleScore.of(25).power(0.5));
-        assertEquals(SimpleScore.ofUninitialized(-343, 125),
-                SimpleScore.ofUninitialized(-7, 5).power(3.0));
+        assertThat(SimpleScore.of(5).power(2.0)).isEqualTo(SimpleScore.of(25));
+        assertThat(SimpleScore.of(25).power(0.5)).isEqualTo(SimpleScore.of(5));
+        assertThat(SimpleScore.ofUninitialized(-7, 5).power(3.0)).isEqualTo(SimpleScore.ofUninitialized(-343, 125));
     }
 
     @Test
     public void negate() {
-        assertEquals(SimpleScore.of(-5),
-                SimpleScore.of(5).negate());
-        assertEquals(SimpleScore.of(5),
-                SimpleScore.of(-5).negate());
+        assertThat(SimpleScore.of(5).negate()).isEqualTo(SimpleScore.of(-5));
+        assertThat(SimpleScore.of(-5).negate()).isEqualTo(SimpleScore.of(5));
     }
 
     @Test
@@ -164,14 +144,14 @@ public class SimpleScoreTest extends AbstractScoreTest {
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 SimpleScore.of(123),
                 output -> {
-                    assertEquals(0, output.getInitScore());
-                    assertEquals(123, output.getScore());
+                    assertThat(output.getInitScore()).isEqualTo(0);
+                    assertThat(output.getScore()).isEqualTo(123);
                 });
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 SimpleScore.ofUninitialized(-7, 123),
                 output -> {
-                    assertEquals(-7, output.getInitScore());
-                    assertEquals(123, output.getScore());
+                    assertThat(output.getInitScore()).isEqualTo(-7);
+                    assertThat(output.getScore()).isEqualTo(123);
                 });
     }
 

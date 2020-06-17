@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.domain.valuerange.buildin.bigdecimal;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -32,62 +32,64 @@ public class BigDecimalValueRangeTest {
 
     @Test
     public void getSize() {
-        assertEquals(10L, new BigDecimalValueRange(new BigDecimal("0"), new BigDecimal("10")).getSize());
-        assertEquals(200L, new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.0")).getSize());
-        assertEquals(4007L, new BigDecimalValueRange(new BigDecimal("-15.00"), new BigDecimal("25.07")).getSize());
-        assertEquals(0L, new BigDecimalValueRange(new BigDecimal("7.0"), new BigDecimal("7.0")).getSize());
+        assertThat(new BigDecimalValueRange(new BigDecimal("0"), new BigDecimal("10")).getSize()).isEqualTo(10L);
+        assertThat(new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.0")).getSize()).isEqualTo(200L);
+        assertThat(new BigDecimalValueRange(new BigDecimal("-15.00"), new BigDecimal("25.07")).getSize()).isEqualTo(4007L);
+        assertThat(new BigDecimalValueRange(new BigDecimal("7.0"), new BigDecimal("7.0")).getSize()).isEqualTo(0L);
         // IncrementUnit
-        assertEquals(5L,
-                new BigDecimalValueRange(new BigDecimal("0.0"), new BigDecimal("10.0"), new BigDecimal("2.0")).getSize());
-        assertEquals(5L,
-                new BigDecimalValueRange(new BigDecimal("-1.0"), new BigDecimal("9.0"), new BigDecimal("2.0")).getSize());
-        assertEquals(4L,
-                new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.4"), new BigDecimal("5.1")).getSize());
+        assertThat(new BigDecimalValueRange(new BigDecimal("0.0"), new BigDecimal("10.0"), new BigDecimal("2.0")).getSize())
+                .isEqualTo(5L);
+        assertThat(new BigDecimalValueRange(new BigDecimal("-1.0"), new BigDecimal("9.0"), new BigDecimal("2.0")).getSize())
+                .isEqualTo(5L);
+        assertThat(new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.4"), new BigDecimal("5.1")).getSize())
+                .isEqualTo(4L);
     }
 
     @Test
     public void get() {
-        assertEquals(new BigDecimal("3"), new BigDecimalValueRange(new BigDecimal("0"), new BigDecimal("10")).get(3L));
-        assertEquals(new BigDecimal("100.3"),
-                new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.0")).get(3L));
-        assertEquals(new BigDecimal("-4"), new BigDecimalValueRange(new BigDecimal("-5"), new BigDecimal("25")).get(1L));
-        assertEquals(new BigDecimal("-4.94"),
-                new BigDecimalValueRange(new BigDecimal("-5.00"), new BigDecimal("25.00")).get(6L));
+        assertThat(new BigDecimalValueRange(new BigDecimal("0"), new BigDecimal("10")).get(3L)).isEqualTo(new BigDecimal("3"));
+        assertThat(new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.0")).get(3L))
+                .isEqualTo(new BigDecimal("100.3"));
+        assertThat(new BigDecimalValueRange(new BigDecimal("-5"), new BigDecimal("25")).get(1L))
+                .isEqualTo(new BigDecimal("-4"));
+        assertThat(new BigDecimalValueRange(new BigDecimal("-5.00"), new BigDecimal("25.00")).get(6L))
+                .isEqualTo(new BigDecimal("-4.94"));
         // IncrementUnit
-        assertEquals(new BigDecimal("6.0"),
-                new BigDecimalValueRange(new BigDecimal("0.0"), new BigDecimal("10.0"), new BigDecimal("2.0")).get(3L));
-        assertEquals(new BigDecimal("5.0"),
-                new BigDecimalValueRange(new BigDecimal("-1.0"), new BigDecimal("9.0"), new BigDecimal("2.0")).get(3L));
-        assertEquals(new BigDecimal("115.3"),
-                new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.4"), new BigDecimal("5.1")).get(3L));
+        assertThat(new BigDecimalValueRange(new BigDecimal("0.0"), new BigDecimal("10.0"), new BigDecimal("2.0")).get(3L))
+                .isEqualTo(new BigDecimal("6.0"));
+        assertThat(new BigDecimalValueRange(new BigDecimal("-1.0"), new BigDecimal("9.0"), new BigDecimal("2.0")).get(3L))
+                .isEqualTo(new BigDecimal("5.0"));
+        assertThat(new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.4"), new BigDecimal("5.1")).get(3L))
+                .isEqualTo(new BigDecimal("115.3"));
     }
 
     @Test
     public void contains() {
-        assertEquals(true, new BigDecimalValueRange(new BigDecimal("0"), new BigDecimal("10")).contains(new BigDecimal("3")));
-        assertEquals(false, new BigDecimalValueRange(new BigDecimal("0"), new BigDecimal("10")).contains(new BigDecimal("10")));
-        assertEquals(false, new BigDecimalValueRange(new BigDecimal("0"), new BigDecimal("10")).contains(null));
-        assertEquals(true,
-                new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.0")).contains(new BigDecimal("100.0")));
-        assertEquals(false,
-                new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.0")).contains(new BigDecimal("99.9")));
-        assertEquals(true,
-                new BigDecimalValueRange(new BigDecimal("-5.3"), new BigDecimal("25.2")).contains(new BigDecimal("-5.2")));
-        assertEquals(false,
-                new BigDecimalValueRange(new BigDecimal("-5.3"), new BigDecimal("25.2")).contains(new BigDecimal("-5.4")));
+        assertThat(new BigDecimalValueRange(new BigDecimal("0"), new BigDecimal("10")).contains(new BigDecimal("3"))).isTrue();
+        assertThat(new BigDecimalValueRange(new BigDecimal("0"), new BigDecimal("10")).contains(new BigDecimal("10")))
+                .isFalse();
+        assertThat(new BigDecimalValueRange(new BigDecimal("0"), new BigDecimal("10")).contains(null)).isFalse();
+        assertThat(new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.0")).contains(new BigDecimal("100.0")))
+                .isTrue();
+        assertThat(new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.0")).contains(new BigDecimal("99.9")))
+                .isFalse();
+        assertThat(new BigDecimalValueRange(new BigDecimal("-5.3"), new BigDecimal("25.2")).contains(new BigDecimal("-5.2")))
+                .isTrue();
+        assertThat(new BigDecimalValueRange(new BigDecimal("-5.3"), new BigDecimal("25.2")).contains(new BigDecimal("-5.4")))
+                .isFalse();
         // IncrementUnit
-        assertEquals(true, new BigDecimalValueRange(new BigDecimal("0.0"), new BigDecimal("10.0"), new BigDecimal("2.0"))
-                .contains(new BigDecimal("2.0")));
-        assertEquals(false, new BigDecimalValueRange(new BigDecimal("0.0"), new BigDecimal("10.0"), new BigDecimal("2.0"))
-                .contains(new BigDecimal("3.0")));
-        assertEquals(true, new BigDecimalValueRange(new BigDecimal("-1.0"), new BigDecimal("9.0"), new BigDecimal("2.0"))
-                .contains(new BigDecimal("1.0")));
-        assertEquals(false, new BigDecimalValueRange(new BigDecimal("-1.0"), new BigDecimal("9.0"), new BigDecimal("2.0"))
-                .contains(new BigDecimal("2.0")));
-        assertEquals(true, new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.4"), new BigDecimal("5.1"))
-                .contains(new BigDecimal("115.3")));
-        assertEquals(false, new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.4"), new BigDecimal("5.1"))
-                .contains(new BigDecimal("115.0")));
+        assertThat(new BigDecimalValueRange(new BigDecimal("0.0"), new BigDecimal("10.0"), new BigDecimal("2.0"))
+                .contains(new BigDecimal("2.0"))).isTrue();
+        assertThat(new BigDecimalValueRange(new BigDecimal("0.0"), new BigDecimal("10.0"), new BigDecimal("2.0"))
+                .contains(new BigDecimal("3.0"))).isFalse();
+        assertThat(new BigDecimalValueRange(new BigDecimal("-1.0"), new BigDecimal("9.0"), new BigDecimal("2.0"))
+                .contains(new BigDecimal("1.0"))).isTrue();
+        assertThat(new BigDecimalValueRange(new BigDecimal("-1.0"), new BigDecimal("9.0"), new BigDecimal("2.0"))
+                .contains(new BigDecimal("2.0"))).isFalse();
+        assertThat(new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.4"), new BigDecimal("5.1"))
+                .contains(new BigDecimal("115.3"))).isTrue();
+        assertThat(new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.4"), new BigDecimal("5.1"))
+                .contains(new BigDecimal("115.0"))).isFalse();
     }
 
     @Test

@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.domain.lookup;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCompareToOrder;
 
 import java.util.Comparator;
@@ -53,7 +53,7 @@ public class ClassAndPlanningIdComparatorTest {
         Object firstObject = new ClassAndPlanningIdComparator(false);
         Object secondObject = new ClassAndPlanningIdComparator(false);
         int result = comparator.compare(firstObject, secondObject);
-        assertEquals(0, result);
+        assertThat(result).isEqualTo(0);
     }
 
 }

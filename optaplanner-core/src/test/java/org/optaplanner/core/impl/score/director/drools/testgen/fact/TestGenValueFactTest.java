@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,7 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -41,12 +38,12 @@ public class TestGenValueFactTest {
         TestdataValue instance = new TestdataValue();
         TestGenValueFact fact = new TestGenValueFact(321, instance);
 
-        assertSame(instance, fact.getInstance());
-        assertEquals("testdataValue_321", fact.toString());
+        assertThat(fact.getInstance()).isSameAs(instance);
+        assertThat(fact.toString()).isEqualTo("testdataValue_321");
 
         StringBuilder sb = new StringBuilder(100);
         fact.printInitialization(sb);
-        assertEquals("TestdataValue testdataValue_321 = new TestdataValue();", sb.toString().trim());
+        assertThat(sb.toString().trim()).isEqualTo("TestdataValue testdataValue_321 = new TestdataValue();");
     }
 
     @Test
@@ -60,23 +57,23 @@ public class TestGenValueFactTest {
         instances.put(entity, f1);
 
         f1.setUp(instances);
-        assertEquals(1, f1.getImports().size());
-        assertTrue(f1.getImports().contains(TestdataEntity.class));
-        assertEquals(0, f1.getDependencies().size());
+        assertThat(f1.getImports().size()).isEqualTo(1);
+        assertThat(f1.getImports().contains(TestdataEntity.class)).isTrue();
+        assertThat(f1.getDependencies().size()).isEqualTo(0);
 
         entity.setValue(value);
         instances.put(value, f2);
 
         f2.setUp(instances);
-        assertEquals(1, f2.getImports().size());
-        assertTrue(f2.getImports().contains(TestdataValue.class));
-        assertTrue(f1.getDependencies().isEmpty());
+        assertThat(f2.getImports().size()).isEqualTo(1);
+        assertThat(f2.getImports().contains(TestdataValue.class)).isTrue();
+        assertThat(f1.getDependencies().isEmpty()).isTrue();
 
         f1.setUp(instances);
-        assertEquals(1, f1.getImports().size());
-        assertTrue(f1.getImports().contains(TestdataEntity.class));
-        assertEquals(1, f1.getDependencies().size());
-        assertTrue(f1.getDependencies().contains(f2));
+        assertThat(f1.getImports().size()).isEqualTo(1);
+        assertThat(f1.getImports().contains(TestdataEntity.class)).isTrue();
+        assertThat(f1.getDependencies().size()).isEqualTo(1);
+        assertThat(f1.getDependencies().contains(f2)).isTrue();
     }
 
     @Test
@@ -123,22 +120,22 @@ public class TestGenValueFactTest {
         fa.setUp(instances);
 
         List<TestGenFact> dependencies = fa.getDependencies();
-        assertEquals(8, dependencies.size());
-        assertTrue(dependencies.contains(fb));
-        assertTrue(dependencies.contains(fc));
-        assertTrue(dependencies.contains(fd));
-        assertTrue(dependencies.contains(fe));
-        assertTrue(dependencies.contains(ff));
-        assertTrue(dependencies.contains(fg));
-        assertTrue(dependencies.contains(fh));
-        assertTrue(dependencies.contains(fi));
+        assertThat(dependencies.size()).isEqualTo(8);
+        assertThat(dependencies.contains(fb)).isTrue();
+        assertThat(dependencies.contains(fc)).isTrue();
+        assertThat(dependencies.contains(fd)).isTrue();
+        assertThat(dependencies.contains(fe)).isTrue();
+        assertThat(dependencies.contains(ff)).isTrue();
+        assertThat(dependencies.contains(fg)).isTrue();
+        assertThat(dependencies.contains(fh)).isTrue();
+        assertThat(dependencies.contains(fi)).isTrue();
 
         List<Class<?>> imports = fa.getImports();
-        assertTrue(imports.contains(TestdataEntityCollectionPropertyEntity.class));
-        assertTrue(imports.contains(ArrayList.class));
-        assertTrue(imports.contains(HashSet.class));
-        assertTrue(imports.contains(HashMap.class));
-        assertTrue(imports.contains(String.class));
+        assertThat(imports.contains(TestdataEntityCollectionPropertyEntity.class)).isTrue();
+        assertThat(imports.contains(ArrayList.class)).isTrue();
+        assertThat(imports.contains(HashSet.class)).isTrue();
+        assertThat(imports.contains(HashMap.class)).isTrue();
+        assertThat(imports.contains(String.class)).isTrue();
     }
 
     /**
@@ -153,9 +150,9 @@ public class TestGenValueFactTest {
         HashMap<Object, TestGenFact> instances = new HashMap<>();
         fact.setUp(instances);
         instance.setDescription("");
-        assertEquals("", instance.getDescription());
+        assertThat(instance.getDescription()).isEqualTo((CharSequence) "");
         fact.reset();
-        assertEquals("desc", instance.getDescription());
+        assertThat(instance.getDescription()).isEqualTo((CharSequence) "desc");
     }
 
     @Test
@@ -176,8 +173,8 @@ public class TestGenValueFactTest {
 
         // create the inline value of the inverse list
         TestGenInlineValue val = new TestGenInlineValue(inverseList, instances);
-        assertTrue(val.getImports().contains(Arrays.class));
-        assertEquals("Arrays.asList(" + fa.getVariableName() + ", " + fb.getVariableName() + ")", val.toString());
+        assertThat(val.getImports().contains(Arrays.class)).isTrue();
+        assertThat(val.toString()).isEqualTo("Arrays.asList(" + fa.getVariableName() + ", " + fb.getVariableName() + ")");
     }
 
     @Test
@@ -194,7 +191,7 @@ public class TestGenValueFactTest {
         try {
             Field testField = TestClassWithFields.class.getDeclaredField(fieldName);
             Method m = TestGenValueFact.getParseMethod(testField);
-            assertNotNull(m);
+            assertThat(m).isNotNull();
         } catch (UnsupportedOperationException | NoSuchFieldException ex) {
             throw new RuntimeException(ex);
         }

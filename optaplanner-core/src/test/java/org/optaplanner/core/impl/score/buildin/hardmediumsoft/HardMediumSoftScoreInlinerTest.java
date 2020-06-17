@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.buildin.hardmediumsoft;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.function.Consumer;
 
@@ -34,36 +34,36 @@ public class HardMediumSoftScoreInlinerTest {
         Consumer<Score<?>> scoreConsumer = null;
 
         HardMediumSoftScoreInliner scoreInliner = new HardMediumSoftScoreInliner(constraintMatchEnabled);
-        assertEquals(HardMediumSoftScore.ZERO, scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.ZERO);
 
         IntWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(HardMediumSoftScore.ofHard(-90));
         UndoScoreImpacter hardUndo = hardImpacter.impactScore(1, scoreConsumer);
-        assertEquals(HardMediumSoftScore.of(-90, 0, 0), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-90, 0, 0));
         scoreInliner.buildWeightedScoreImpacter(HardMediumSoftScore.ofHard(-800)).impactScore(1, scoreConsumer);
-        assertEquals(HardMediumSoftScore.of(-890, 0, 0), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-890, 0, 0));
         hardUndo.undoScoreImpact();
-        assertEquals(HardMediumSoftScore.of(-800, 0, 0), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-800, 0, 0));
 
         IntWeightedScoreImpacter mediumImpacter = scoreInliner.buildWeightedScoreImpacter(HardMediumSoftScore.ofMedium(-7));
         UndoScoreImpacter mediumUndo = mediumImpacter.impactScore(1, scoreConsumer);
-        assertEquals(HardMediumSoftScore.of(-800, -7, 0), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-800, -7, 0));
         mediumUndo.undoScoreImpact();
-        assertEquals(HardMediumSoftScore.of(-800, 0, 0), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-800, 0, 0));
 
         IntWeightedScoreImpacter softImpacter = scoreInliner.buildWeightedScoreImpacter(HardMediumSoftScore.ofSoft(-1));
         UndoScoreImpacter softUndo = softImpacter.impactScore(3, scoreConsumer);
-        assertEquals(HardMediumSoftScore.of(-800, 0, -3), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-800, 0, -3));
         softImpacter.impactScore(10, scoreConsumer);
-        assertEquals(HardMediumSoftScore.of(-800, 0, -13), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-800, 0, -13));
         softUndo.undoScoreImpact();
-        assertEquals(HardMediumSoftScore.of(-800, 0, -10), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-800, 0, -10));
 
         IntWeightedScoreImpacter allLevelsImpacter = scoreInliner
                 .buildWeightedScoreImpacter(HardMediumSoftScore.of(-1000, -2000, -3000));
         UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(1, scoreConsumer);
-        assertEquals(HardMediumSoftScore.of(-1800, -2000, -3010), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-1800, -2000, -3010));
         allLevelsUndo.undoScoreImpact();
-        assertEquals(HardMediumSoftScore.of(-800, 0, -10), scoreInliner.extractScore(0));
+        assertThat(scoreInliner.extractScore(0)).isEqualTo(HardMediumSoftScore.of(-800, 0, -10));
     }
 
 }

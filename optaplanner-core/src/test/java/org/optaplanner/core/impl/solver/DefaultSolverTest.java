@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,8 @@
 
 package org.optaplanner.core.impl.solver;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -59,9 +57,9 @@ public class DefaultSolverTest {
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
-        assertEquals(true, solution.getScore().isSolutionInitialized());
-        assertSame(solution, solver.getBestSolution());
+        assertThat(solution).isNotNull();
+        assertThat(solution.getScore().isSolutionInitialized()).isTrue();
+        assertThat(solver.getBestSolution()).isSameAs(solution);
     }
 
     @Test
@@ -78,8 +76,8 @@ public class DefaultSolverTest {
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
-        assertSame(solution, solver.getBestSolution());
+        assertThat(solution).isNotNull();
+        assertThat(solver.getBestSolution()).isSameAs(solution);
     }
 
     @Test
@@ -95,9 +93,9 @@ public class DefaultSolverTest {
         solution.setEntityList(Collections.emptyList());
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
-        assertEquals(true, solution.getScore().isSolutionInitialized());
-        assertSame(solution, solver.getBestSolution());
+        assertThat(solution).isNotNull();
+        assertThat(solution.getScore().isSolutionInitialized()).isTrue();
+        assertThat(solver.getBestSolution()).isSameAs(solution);
     }
 
     @Test
@@ -114,9 +112,9 @@ public class DefaultSolverTest {
         solution.setChainedEntityList(Collections.emptyList());
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
-        assertEquals(true, solution.getScore().isSolutionInitialized());
-        assertSame(solution, solver.getBestSolution());
+        assertThat(solution).isNotNull();
+        assertThat(solution.getScore().isSolutionInitialized()).isTrue();
+        assertThat(solver.getBestSolution()).isSameAs(solution);
     }
 
     // TODO https://issues.redhat.com/browse/PLANNER-1738
@@ -132,9 +130,9 @@ public class DefaultSolverTest {
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
-        assertEquals(false, solution.getScore().isSolutionInitialized());
-        assertSame(solution, solver.getBestSolution());
+        assertThat(solution).isNotNull();
+        assertThat(solution.getScore().isSolutionInitialized()).isFalse();
+        assertThat(solver.getBestSolution()).isSameAs(solution);
     }
 
     @Test
@@ -150,9 +148,9 @@ public class DefaultSolverTest {
         solution.setChainedEntityList(Arrays.asList(new TestdataChainedEntity("e1"), new TestdataChainedEntity("e2")));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
-        assertEquals(false, solution.getScore().isSolutionInitialized());
-        assertSame(solution, solver.getBestSolution());
+        assertThat(solution).isNotNull();
+        assertThat(solution.getScore().isSolutionInitialized()).isFalse();
+        assertThat(solver.getBestSolution()).isSameAs(solution);
     }
 
     @Test
@@ -168,9 +166,9 @@ public class DefaultSolverTest {
         solution.setEntityList(Collections.emptyList());
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
-        assertEquals(true, solution.getScore().isSolutionInitialized());
-        assertSame(solution, solver.getBestSolution());
+        assertThat(solution).isNotNull();
+        assertThat(solution.getScore().isSolutionInitialized()).isTrue();
+        assertThat(solver.getBestSolution()).isSameAs(solution);
     }
 
     @Test
@@ -188,9 +186,9 @@ public class DefaultSolverTest {
                 new TestdataPinnedEntity("e2", false, true)));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
-        assertEquals(false, solution.getScore().isSolutionInitialized());
-        assertSame(solution, solver.getBestSolution());
+        assertThat(solution).isNotNull();
+        assertThat(solution.getScore().isSolutionInitialized()).isFalse();
+        assertThat(solver.getBestSolution()).isSameAs(solution);
     }
 
     @Test
@@ -209,9 +207,9 @@ public class DefaultSolverTest {
                 new TestdataEntity("e3"), new TestdataEntity("e4"), new TestdataEntity("e5")));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
-        assertEquals(false, solution.getScore().isSolutionInitialized());
-        assertSame(solution, solver.getBestSolution());
+        assertThat(solution).isNotNull();
+        assertThat(solution.getScore().isSolutionInitialized()).isFalse();
+        assertThat(solver.getBestSolution()).isSameAs(solution);
     }
 
     @Test
@@ -231,9 +229,9 @@ public class DefaultSolverTest {
                 new TestdataEntity("e3"), new TestdataEntity("e4"), new TestdataEntity("e5")));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
-        assertEquals(false, solution.getScore().isSolutionInitialized());
-        assertSame(solution, solver.getBestSolution());
+        assertThat(solution).isNotNull();
+        assertThat(solution.getScore().isSolutionInitialized()).isFalse();
+        assertThat(solver.getBestSolution()).isSameAs(solution);
     }
 
 }

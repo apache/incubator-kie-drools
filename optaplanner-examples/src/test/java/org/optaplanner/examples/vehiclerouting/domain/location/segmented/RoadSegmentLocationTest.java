@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.vehiclerouting.domain.location.segmented;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -51,18 +51,18 @@ public class RoadSegmentLocationTest {
         z.setNearbyTravelDistanceMap(createNearbyTravelDistanceMap(z, d));
         z.setHubTravelDistanceMap(createHubTravelDistanceMap(z, x, y));
 
-        assertEquals(sumOfArcs(a, b), a.getDistanceTo(b));
-        assertEquals(sumOfArcs(a, c), a.getDistanceTo(c));
-        assertEquals(sumOfArcs(a, x, z, d), a.getDistanceTo(d));
-        assertEquals(sumOfArcs(b, a), b.getDistanceTo(a));
-        assertEquals(sumOfArcs(b, y, c), b.getDistanceTo(c));
-        assertEquals(sumOfArcs(b, y, z, d), b.getDistanceTo(d));
-        assertEquals(sumOfArcs(c, a), c.getDistanceTo(a));
-        assertEquals(sumOfArcs(c, y, b), c.getDistanceTo(b));
-        assertEquals(sumOfArcs(c, x, z, d), c.getDistanceTo(d));
-        assertEquals(sumOfArcs(d, z, x, a), d.getDistanceTo(a));
-        assertEquals(sumOfArcs(d, z, y, b), d.getDistanceTo(b));
-        assertEquals(sumOfArcs(d, z, x, c), d.getDistanceTo(c));
+        assertThat(a.getDistanceTo(b)).isEqualTo(sumOfArcs(a, b));
+        assertThat(a.getDistanceTo(c)).isEqualTo(sumOfArcs(a, c));
+        assertThat(a.getDistanceTo(d)).isEqualTo(sumOfArcs(a, x, z, d));
+        assertThat(b.getDistanceTo(a)).isEqualTo(sumOfArcs(b, a));
+        assertThat(b.getDistanceTo(c)).isEqualTo(sumOfArcs(b, y, c));
+        assertThat(b.getDistanceTo(d)).isEqualTo(sumOfArcs(b, y, z, d));
+        assertThat(c.getDistanceTo(a)).isEqualTo(sumOfArcs(c, a));
+        assertThat(c.getDistanceTo(b)).isEqualTo(sumOfArcs(c, y, b));
+        assertThat(c.getDistanceTo(d)).isEqualTo(sumOfArcs(c, x, z, d));
+        assertThat(d.getDistanceTo(a)).isEqualTo(sumOfArcs(d, z, x, a));
+        assertThat(d.getDistanceTo(b)).isEqualTo(sumOfArcs(d, z, y, b));
+        assertThat(d.getDistanceTo(c)).isEqualTo(sumOfArcs(d, z, x, c));
     }
 
     protected int sumOfArcs(Location fromLocation, Location... stopLocations) {

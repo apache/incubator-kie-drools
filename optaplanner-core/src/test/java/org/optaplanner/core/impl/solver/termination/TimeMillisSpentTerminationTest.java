@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,8 @@
 
 package org.optaplanner.core.impl.solver.termination;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -32,23 +33,23 @@ public class TimeMillisSpentTerminationTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
 
         when(solverScope.calculateTimeMillisSpentUpToNow()).thenReturn(0L);
-        assertEquals(false, termination.isSolverTerminated(solverScope));
-        assertEquals(0.0, termination.calculateSolverTimeGradient(solverScope), 0.0);
+        assertThat(termination.isSolverTerminated(solverScope)).isFalse();
+        assertThat(termination.calculateSolverTimeGradient(solverScope)).isEqualTo(0.0, offset(0.0));
         when(solverScope.calculateTimeMillisSpentUpToNow()).thenReturn(100L);
-        assertEquals(false, termination.isSolverTerminated(solverScope));
-        assertEquals(0.1, termination.calculateSolverTimeGradient(solverScope), 0.0);
+        assertThat(termination.isSolverTerminated(solverScope)).isFalse();
+        assertThat(termination.calculateSolverTimeGradient(solverScope)).isEqualTo(0.1, offset(0.0));
         when(solverScope.calculateTimeMillisSpentUpToNow()).thenReturn(500L);
-        assertEquals(false, termination.isSolverTerminated(solverScope));
-        assertEquals(0.5, termination.calculateSolverTimeGradient(solverScope), 0.0);
+        assertThat(termination.isSolverTerminated(solverScope)).isFalse();
+        assertThat(termination.calculateSolverTimeGradient(solverScope)).isEqualTo(0.5, offset(0.0));
         when(solverScope.calculateTimeMillisSpentUpToNow()).thenReturn(700L);
-        assertEquals(false, termination.isSolverTerminated(solverScope));
-        assertEquals(0.7, termination.calculateSolverTimeGradient(solverScope), 0.0);
+        assertThat(termination.isSolverTerminated(solverScope)).isFalse();
+        assertThat(termination.calculateSolverTimeGradient(solverScope)).isEqualTo(0.7, offset(0.0));
         when(solverScope.calculateTimeMillisSpentUpToNow()).thenReturn(1000L);
-        assertEquals(true, termination.isSolverTerminated(solverScope));
-        assertEquals(1.0, termination.calculateSolverTimeGradient(solverScope), 0.0);
+        assertThat(termination.isSolverTerminated(solverScope)).isTrue();
+        assertThat(termination.calculateSolverTimeGradient(solverScope)).isEqualTo(1.0, offset(0.0));
         when(solverScope.calculateTimeMillisSpentUpToNow()).thenReturn(1200L);
-        assertEquals(true, termination.isSolverTerminated(solverScope));
-        assertEquals(1.0, termination.calculateSolverTimeGradient(solverScope), 0.0);
+        assertThat(termination.isSolverTerminated(solverScope)).isTrue();
+        assertThat(termination.calculateSolverTimeGradient(solverScope)).isEqualTo(1.0, offset(0.0));
     }
 
     @Test
@@ -57,23 +58,22 @@ public class TimeMillisSpentTerminationTest {
         AbstractPhaseScope phaseScope = mock(AbstractPhaseScope.class);
 
         when(phaseScope.calculatePhaseTimeMillisSpentUpToNow()).thenReturn(0L);
-        assertEquals(false, termination.isPhaseTerminated(phaseScope));
-        assertEquals(0.0, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isFalse();
+        assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(0.0, offset(0.0));
         when(phaseScope.calculatePhaseTimeMillisSpentUpToNow()).thenReturn(100L);
-        assertEquals(false, termination.isPhaseTerminated(phaseScope));
-        assertEquals(0.1, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isFalse();
+        assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(0.1, offset(0.0));
         when(phaseScope.calculatePhaseTimeMillisSpentUpToNow()).thenReturn(500L);
-        assertEquals(false, termination.isPhaseTerminated(phaseScope));
-        assertEquals(0.5, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isFalse();
+        assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(0.5, offset(0.0));
         when(phaseScope.calculatePhaseTimeMillisSpentUpToNow()).thenReturn(700L);
-        assertEquals(false, termination.isPhaseTerminated(phaseScope));
-        assertEquals(0.7, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isFalse();
+        assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(0.7, offset(0.0));
         when(phaseScope.calculatePhaseTimeMillisSpentUpToNow()).thenReturn(1000L);
-        assertEquals(true, termination.isPhaseTerminated(phaseScope));
-        assertEquals(1.0, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isTrue();
+        assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(1.0, offset(0.0));
         when(phaseScope.calculatePhaseTimeMillisSpentUpToNow()).thenReturn(1200L);
-        assertEquals(true, termination.isPhaseTerminated(phaseScope));
-        assertEquals(1.0, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isTrue();
+        assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(1.0, offset(0.0));
     }
-
 }
