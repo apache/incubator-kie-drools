@@ -1040,3 +1040,268 @@ even ( 2 ) = true
 ----
 
 // ----------------------------------------------------------------------------
+
+== Date and time functions
+
+Functions for date and time specific operations.
+
+=== is(value1, value2)
+
+Returns true if both values are the same element in the FEEL semantic domain
+
+.Parameters
+* `value1` of any type
+* `value2` of any type
+
+.Examples
+[source,FEEL]
+----
+is(date("2012-12-25"), time("23:00:50")) = false
+is(date("2012-12-25"), date("2012-12-25")) = true
+is(time("23:00:50z"), time("23:00:50")) = false
+----
+
+// ----------------------------------------------------------------------------
+
+== Range functions
+
+Temporal ordering functions to establish relationships between single scalar values and ranges of such values.
+These functions are heavily inspired by their equivalent in the HL7 CQL (Clinical Quality Language) standard version 1.4.
+
+=== before()
+
+A before B
+
+.Signatures
+a. before(point1 point2)
+b. before(point range)
+c. before(range point)
+d. before(range1,range2)
+
+.Evaluates to true if and only if
+a. `point1 < point2`
+b. `point < range.start or (point = range.start and not(range.start included) )`
+c. `range.end < point or (range.end = point and not(range.end included) )`
+d. `range1.end < range2.start or (( not(range1.end included) or not(range2.start included)) and range1.end = range2.start)`
+
+.Examples
+[source,FEEL]
+----
+before( 1, 10 ) = true
+before( 10, 1 ) = false
+before( 1, [1..10] ) = false 
+before( 1, (1..10] ) = true 
+before( 1, [5..10] ) = true 
+before( [1..10], 10 ) = false 
+before( [1..10), 10 ) = true 
+before( [1..10], 15 ) = true 
+before( [1..10], [15..20] ) = true 
+before( [1..10], [10..20] ) = false 
+before( [1..10), [10..20] ) = true 
+before( [1..10], (10..20] ) = true
+----
+
+// ----------------------------------------------------------------------------
+
+=== after()
+
+A after B
+
+.Signatures
+a. after(point1 point2)
+b. after(point range)
+c. after(range, point)
+d. after(range1 range2)
+
+.Evaluates to true if and only if
+a. `point1 > point2`
+b. `point > range.end or (point = range.end and not(range.end included) )`
+c. `range.start > point or (range.start = point and not(range.start included) )`
+d. `range1.start > range2.end or (( not(range1.start included) or not(range2.end included) ) and range1.start = range2.end)`
+
+.Examples
+[source,FEEL]
+----
+after( 10, 5 ) = true
+after( 5, 10 ) = false
+after( 12, [1..10] ) = true
+after( 10, [1..10) ) = true 
+after( 10, [1..10] ) = false 
+after( [11..20], 12 ) = false 
+after( [11..20], 10 ) = true 
+after( (11..20], 11 ) = true 
+after( [11..20], 11 ) = false 
+after( [11..20], [1..10] ) = true 
+after( [1..10], [11..20] ) = false 
+after( [11..20], [1..11) ) = true 
+after( (11..20], [1..11] ) = true
+----
+
+// ----------------------------------------------------------------------------
+
+=== meets()
+
+A meets B
+
+.Signatures
+a. meets(range1, range2)
+
+.Evaluates to true if and only if
+a. `range1.end included and range2.start included and range1.end = range2.start`
+
+.Examples
+[source,FEEL]
+----
+meets( [1..5], [5..10] ) = true 
+meets( [1..5), [5..10] ) = false 
+meets( [1..5], (5..10] ) = false 
+meets( [1..5], [6..10] ) = false
+----
+
+// ----------------------------------------------------------------------------
+
+=== met by()
+
+A met by B
+
+.Signatures
+a. met by(range1, range2)
+
+.Evaluates to true if and only if
+a. `range1.start included and range2.end included and range1.start = range2.end`
+
+.Examples
+[source,FEEL]
+----
+met by( [5..10], [1..5] ) = true
+met by( [5..10], [1..5) ) = false
+met by( (5..10], [1..5] ) = false
+met by( [6..10], [1..5] ) = false
+----
+
+// ----------------------------------------------------------------------------
+
+== Temporal functions
+
+Functions for general temporal operations.
+
+=== day of year( date )
+
+Returns the Gregorian number of the day of the year
+
+.Parameters
+* `date` of type `date` or `date and time`
+
+.Examples
+[source,FEEL]
+----
+day of year( date(2019, 9, 17) ) = 260
+----
+
+// ----------------------------------------------------------------------------
+
+=== day of year( date )
+
+Returns the Gregorian day of the week, either of “Monday”, “Tuesday”, “Wednesday”, “Thursday”, “Friday”, “Saturday”, “Sunday”
+
+.Parameters
+* `date` of type `date` or `date and time`
+
+.Examples
+[source,FEEL]
+----
+day of week( date(2019, 9, 17) ) = "Tuesday"
+----
+
+// ----------------------------------------------------------------------------
+
+=== month of year( date )
+
+Returns the Gregorian month, either of “January”, “February”, “March”, “April”, “May”, “June”, “July”, “August”, “September”, “October”, “November”, “December”
+
+.Parameters
+* `date` of type `date` or `date and time`
+
+.Examples
+[source,FEEL]
+----
+month of year( date(2019, 9, 17) ) = "September"
+----
+
+// ----------------------------------------------------------------------------
+
+=== month of year( date )
+
+Returns the Gregorian week of the year accordingly to ISO 8601
+
+.Parameters
+* `date` of type `date` or `date and time`
+
+.Examples
+[source,FEEL]
+----
+week of year( date(2019, 9, 17) ) = 38
+week of year( date(2003, 12, 29) ) = 1
+week of year( date(2004, 1, 4) ) = 1
+week of year( date(2005, 1, 1) ) = 53
+week of year( date(2005, 1, 3) ) = 1
+week of year( date(2005, 1, 9) ) = 1
+----
+
+// ----------------------------------------------------------------------------
+
+== Sort function
+
+Function for sorting operations.
+
+=== sort(list, precedes)
+
+Returns a list of the same elements but ordered accordingly to the sorting function
+
+.Parameters
+* `list` of type `list`
+* `precedes` of type `function`
+
+.Examples
+[source,FEEL]
+----
+sort(list: [3,1,4,5,2], precedes: function(x,y) x < y) = [1,2,3,4,5]
+----
+
+// ----------------------------------------------------------------------------
+
+== Context functions
+
+Function for context operations.
+
+=== get value(m, key)
+
+Returns the value from the context, for the specified entry key
+
+.Parameters
+* `m` of type `context`
+* `key` of type `string`
+
+.Examples
+[source,FEEL]
+----
+get value({key1 : "value1"}, "key1") = "value1"
+get value({key1 : "value1"}, "unexistent-key") = null
+----
+
+// ----------------------------------------------------------------------------
+
+=== get entries(m)
+
+Computes a list of key and value pair for the given context
+
+.Parameters
+* `m` of type `context`
+
+.Examples
+[source,FEEL]
+----
+get entries({key1 : "value1", key2 : "value2"}) = [ { key : "key1", value : "value1" }, {key : "key2", value : "value2"} ]
+----
+
+// ----------------------------------------------------------------------------
