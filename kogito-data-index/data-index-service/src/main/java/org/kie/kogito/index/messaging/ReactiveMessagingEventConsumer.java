@@ -33,7 +33,6 @@ import io.vertx.core.eventbus.MessageConsumer;
 import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
-import org.kie.kogito.index.event.DomainModelRegisteredEvent;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
@@ -41,6 +40,7 @@ import org.kie.kogito.index.json.ProcessInstanceMetaMapper;
 import org.kie.kogito.index.json.UserTaskInstanceMetaMapper;
 import org.kie.kogito.index.service.IndexingService;
 import org.kie.kogito.index.vertx.ObjectNodeMessageCodec;
+import org.kie.kogito.persistence.api.proto.DomainModelRegisteredEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

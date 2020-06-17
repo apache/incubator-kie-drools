@@ -26,12 +26,12 @@ import graphql.language.ObjectField;
 import graphql.language.ObjectValue;
 import graphql.schema.DataFetchingEnvironment;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.index.query.SortDirection;
+import org.kie.kogito.persistence.api.query.SortDirection;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.kogito.index.query.QueryFilterFactory.orderBy;
+import static org.kie.kogito.persistence.api.query.QueryFilterFactory.orderBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

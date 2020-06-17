@@ -59,6 +59,7 @@
   </dependencyManagement>
 
   <modules>
+    <module>persistence-commons</module>
     <module>jobs-service</module>
     <module>data-index</module>
     <module>management-console</module>

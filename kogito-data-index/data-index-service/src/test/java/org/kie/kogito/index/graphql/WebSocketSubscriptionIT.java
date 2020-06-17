@@ -39,9 +39,9 @@ import org.kie.kogito.index.TestUtils;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
-import org.kie.kogito.index.protobuf.ProtobufService;
 import org.kie.kogito.index.messaging.ReactiveMessagingEventConsumer;
 import org.kie.kogito.index.model.ProcessInstanceState;
+import org.kie.kogito.persistence.protobuf.ProtobufService;
 
 import static io.restassured.RestAssured.given;
 import static io.vertx.ext.web.handler.graphql.ApolloWSMessageType.COMPLETE;

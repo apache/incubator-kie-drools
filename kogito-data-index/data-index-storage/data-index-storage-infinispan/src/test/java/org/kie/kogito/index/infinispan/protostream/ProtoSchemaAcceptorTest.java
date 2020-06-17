@@ -17,10 +17,10 @@
 package org.kie.kogito.index.infinispan.protostream;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.index.schema.SchemaType;
+import org.kie.kogito.index.infinispan.schema.ProtoSchemaAcceptor;
+import org.kie.kogito.persistence.api.schema.SchemaType;
 
-import static org.kie.kogito.index.infinispan.Constants.INFINISPAN_STORAGE;
-import static org.kie.kogito.index.infinispan.protostream.ProtoSchemaAcceptor.PROTO_SCHEMA_TYPE;
+import static org.kie.kogito.persistence.infinispan.Constants.INFINISPAN_STORAGE;
 import static org.wildfly.common.Assert.assertFalse;
 import static org.wildfly.common.Assert.assertTrue;
 
@@ -31,7 +31,7 @@ class ProtoSchemaAcceptorTest {
     @Test
     void supportedStorageTypeAndSchemaType() {
         protoSchemaAcceptor.storageType = INFINISPAN_STORAGE;
-        assertTrue(protoSchemaAcceptor.accept(new SchemaType(PROTO_SCHEMA_TYPE)));
+        assertTrue(protoSchemaAcceptor.accept(new SchemaType(ProtoSchemaAcceptor.PROTO_SCHEMA_TYPE)));
     }
 
     @Test
@@ -43,6 +43,6 @@ class ProtoSchemaAcceptorTest {
     @Test
     void unsupportedStorageType() {
         protoSchemaAcceptor.storageType = "test";
-        assertFalse(protoSchemaAcceptor.accept(new SchemaType(PROTO_SCHEMA_TYPE)));
+        assertFalse(protoSchemaAcceptor.accept(new SchemaType(ProtoSchemaAcceptor.PROTO_SCHEMA_TYPE)));
     }
 }

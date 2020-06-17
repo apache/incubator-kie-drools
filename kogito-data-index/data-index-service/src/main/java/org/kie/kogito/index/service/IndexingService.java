@@ -24,22 +24,22 @@ import javax.inject.Inject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.kie.kogito.index.cache.Cache;
-import org.kie.kogito.index.cache.CacheService;
+import org.kie.kogito.index.DataIndexStorageService;
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.NodeInstance;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
+import org.kie.kogito.persistence.api.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
 import static org.kie.kogito.index.Constants.ID;
 import static org.kie.kogito.index.Constants.KOGITO_DOMAIN_ATTRIBUTE;
+import static org.kie.kogito.index.Constants.LAST_UPDATE;
 import static org.kie.kogito.index.Constants.PROCESS_ID;
 import static org.kie.kogito.index.Constants.PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
 import static org.kie.kogito.index.Constants.USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE;
-import static org.kie.kogito.index.Constants.LAST_UPDATE;
 import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 
 @ApplicationScoped
@@ -48,7 +48,7 @@ public class IndexingService {
     private static final Logger LOGGER = LoggerFactory.getLogger(IndexingService.class);
 
     @Inject
-    CacheService manager;
+    DataIndexStorageService manager;
 
     public void indexProcessInstance(ProcessInstance pi) {
         ProcessInstance previousPI = manager.getProcessInstancesCache().get(pi.getId());
@@ -69,7 +69,7 @@ public class IndexingService {
 
     public void indexModel(ObjectNode json) {
         String processId = json.remove(PROCESS_ID).asText();
-        Cache<String, ObjectNode> cache = manager.getDomainModelCache(processId);
+        Storage<String, ObjectNode> cache = manager.getDomainModelCache(processId);
         if (cache == null) {
 //          Unknown process type, ignore
             LOGGER.debug("Ignoring Kogito cloud event for unknown process: {}", processId);

@@ -22,21 +22,21 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.kie.kogito.index.query.AttributeFilter;
+import org.kie.kogito.persistence.api.query.AttributeFilter;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
-public class GraphQLQueryParser implements Function<Object, List<AttributeFilter>> {
+public class GraphQLQueryParser implements Function<Object, List<AttributeFilter<?>>> {
 
-    private final Map<String, Function<Object, Stream<AttributeFilter>>> mapper = new HashMap<>();
+    private final Map<String, Function<Object, Stream<AttributeFilter<?>>>> mapper = new HashMap<>();
 
-    public void mapAttribute(String name, Function<Object, Stream<AttributeFilter>> mapperFunction) {
+    public void mapAttribute(String name, Function<Object, Stream<AttributeFilter<?>>> mapperFunction) {
         mapper.put(name, mapperFunction);
     }
 
     @Override
-    public List<AttributeFilter> apply(Object where) {
+    public List<AttributeFilter<?>> apply(Object where) {
         return where == null ? emptyList() : ((Map<String, Object>) where).entrySet().stream().filter(entry -> mapper.containsKey(entry.getKey())).flatMap(entry -> mapper.get(entry.getKey()).apply(entry.getValue())).collect(toList());
     }
 

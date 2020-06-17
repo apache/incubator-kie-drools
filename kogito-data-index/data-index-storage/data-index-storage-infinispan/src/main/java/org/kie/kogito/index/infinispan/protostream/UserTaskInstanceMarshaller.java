@@ -22,6 +22,7 @@ import java.util.HashSet;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.infinispan.protostream.MessageMarshaller;
 import org.kie.kogito.index.model.UserTaskInstance;
+import org.kie.kogito.persistence.infinispan.protostream.AbstractMarshaller;
 
 public class UserTaskInstanceMarshaller extends AbstractMarshaller implements MessageMarshaller<UserTaskInstance> {
 

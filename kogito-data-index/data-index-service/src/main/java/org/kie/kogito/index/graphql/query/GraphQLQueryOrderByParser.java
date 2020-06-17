@@ -27,12 +27,12 @@ import graphql.language.ObjectField;
 import graphql.language.ObjectValue;
 import graphql.language.VariableReference;
 import graphql.schema.DataFetchingEnvironment;
-import org.kie.kogito.index.query.AttributeSort;
-import org.kie.kogito.index.query.SortDirection;
+import org.kie.kogito.persistence.api.query.AttributeSort;
+import org.kie.kogito.persistence.api.query.SortDirection;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
-import static org.kie.kogito.index.query.QueryFilterFactory.orderBy;
+import static org.kie.kogito.persistence.api.query.QueryFilterFactory.orderBy;
 
 public class GraphQLQueryOrderByParser implements Function<DataFetchingEnvironment, List<AttributeSort>> {
 

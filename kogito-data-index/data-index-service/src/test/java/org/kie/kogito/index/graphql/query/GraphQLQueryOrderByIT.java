@@ -33,11 +33,10 @@ import graphql.schema.GraphQLType;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
-
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.InfinispanServerTestResource;
 import org.kie.kogito.index.graphql.GraphQLSchemaManager;
-import org.kie.kogito.index.protobuf.ProtobufService;
+import org.kie.kogito.persistence.protobuf.ProtobufService;
 
 import static io.restassured.RestAssured.given;
 import static java.lang.String.format;

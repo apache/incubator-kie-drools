@@ -20,34 +20,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import graphql.schema.GraphQLScalarType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kie.kogito.index.cache.CacheService;
+import org.kie.kogito.index.DataIndexStorageService;
 import org.kie.kogito.index.graphql.GraphQLScalarTypeProducer;
 import org.kie.kogito.index.graphql.GraphQLSchemaManager;
-import org.kie.kogito.index.query.AttributeFilter;
-import org.kie.kogito.index.query.FilterCondition;
+import org.kie.kogito.persistence.api.query.AttributeFilter;
+import org.kie.kogito.persistence.api.query.FilterCondition;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import graphql.schema.GraphQLScalarType;
-
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.kogito.index.query.FilterCondition.AND;
-import static org.kie.kogito.index.query.FilterCondition.BETWEEN;
-import static org.kie.kogito.index.query.FilterCondition.EQUAL;
-import static org.kie.kogito.index.query.QueryFilterFactory.contains;
-import static org.kie.kogito.index.query.QueryFilterFactory.containsAll;
-import static org.kie.kogito.index.query.QueryFilterFactory.containsAny;
-import static org.kie.kogito.index.query.QueryFilterFactory.equalTo;
-import static org.kie.kogito.index.query.QueryFilterFactory.in;
-import static org.kie.kogito.index.query.QueryFilterFactory.isNull;
-import static org.kie.kogito.index.query.QueryFilterFactory.notNull;
+import static org.kie.kogito.persistence.api.query.FilterCondition.AND;
+import static org.kie.kogito.persistence.api.query.FilterCondition.BETWEEN;
+import static org.kie.kogito.persistence.api.query.FilterCondition.EQUAL;
+import static org.kie.kogito.persistence.api.query.QueryFilterFactory.contains;
+import static org.kie.kogito.persistence.api.query.QueryFilterFactory.containsAll;
+import static org.kie.kogito.persistence.api.query.QueryFilterFactory.containsAny;
+import static org.kie.kogito.persistence.api.query.QueryFilterFactory.equalTo;
+import static org.kie.kogito.persistence.api.query.QueryFilterFactory.in;
+import static org.kie.kogito.persistence.api.query.QueryFilterFactory.isNull;
+import static org.kie.kogito.persistence.api.query.QueryFilterFactory.notNull;
 
 @ExtendWith(MockitoExtension.class)
 public class GraphQLQueryMapperTest {
@@ -56,7 +55,7 @@ public class GraphQLQueryMapperTest {
     GraphQLSchemaManager manager;
 
     @Mock
-    CacheService cacheService;
+    DataIndexStorageService cacheService;
 
     @Spy
     GraphQLScalarType qlDateTimeScalarType = new GraphQLScalarTypeProducer().dateTimeScalar();
@@ -91,10 +90,10 @@ public class GraphQLQueryMapperTest {
         state.put("state", singletonMap("equal", 1));
         where.put("and", asList(id, state));
 
-        List<AttributeFilter> filters = processInstanceParser.apply(where);
+        List<AttributeFilter<?>> filters = processInstanceParser.apply(where);
 
         assertThat(filters).hasSize(1);
-        AttributeFilter filter = filters.get(0);
+        AttributeFilter<?> filter = filters.get(0);
         assertThat(filter.getCondition()).isEqualTo(AND);
         assertThat(filter.getValue()).asList().hasSize(3).containsExactly(
                 in("id", asList("adasdasd", "bla")),
@@ -112,7 +111,7 @@ public class GraphQLQueryMapperTest {
         between.put("to", "2020-01-01");
         where.put("end", singletonMap("between", between));
 
-        List<AttributeFilter> filters = processInstanceParser.apply(where);
+        List<AttributeFilter<?>> filters = processInstanceParser.apply(where);
 
         assertThat(filters).hasSize(2);
         assertAttributeFilter("start", EQUAL, filters.get(0), "2019-01-01");
@@ -124,7 +123,7 @@ public class GraphQLQueryMapperTest {
         Map<String, Object> where = new HashMap<>();
         where.put("nodes", singletonMap("name", singletonMap("equal", "StartNode")));
 
-        List<AttributeFilter> filters = processInstanceParser.apply(where);
+        List<AttributeFilter<?>> filters = processInstanceParser.apply(where);
 
         assertThat(filters).hasSize(1);
         assertAttributeFilter("nodes.name", EQUAL, filters.get(0), "StartNode");
@@ -145,7 +144,7 @@ public class GraphQLQueryMapperTest {
         roles.put("containsAny", asList("admin", "kogito"));
         where.put("or", asList(id, state, singletonMap("roles", roles)));
 
-        List<AttributeFilter> filters = processInstanceParser.apply(where);
+        List<AttributeFilter<?>> filters = processInstanceParser.apply(where);
 
         assertThat(filters).hasSize(1).first().extracting(f -> f.getValue()).asList().containsExactly(
                 in("processName", asList("travels")),
