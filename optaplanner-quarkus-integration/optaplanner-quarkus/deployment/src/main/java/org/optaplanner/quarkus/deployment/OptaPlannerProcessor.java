@@ -70,12 +70,8 @@ class OptaPlannerProcessor {
 
     @BuildStep
     HotDeploymentWatchedFileBuildItem watchSolverConfigXml() {
-        String solverConfigXML;
-        if (optaPlannerBuildTimeConfig.solverConfigXml.isPresent()) {
-            solverConfigXML = optaPlannerBuildTimeConfig.solverConfigXml.get();
-        } else {
-            solverConfigXML = OptaPlannerBuildTimeConfig.DEFAULT_SOLVER_CONFIG_URL;
-        }
+        String solverConfigXML = optaPlannerBuildTimeConfig.solverConfigXml
+                .orElse(OptaPlannerBuildTimeConfig.DEFAULT_SOLVER_CONFIG_URL);
         return new HotDeploymentWatchedFileBuildItem(solverConfigXML);
     }
 
