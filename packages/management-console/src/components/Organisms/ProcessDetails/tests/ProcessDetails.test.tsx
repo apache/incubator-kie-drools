@@ -13,6 +13,7 @@ const props = {
         state: ProcessInstanceState.Active,
         parentProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
         endpoint: 'test',
+        businessKey: 'Tr21',
         start: '2019-10-22T03:40:44.089Z',
         end: '2019-10-22T03:40:44.089Z',
         parentProcessInstance: null,
@@ -49,10 +50,55 @@ const props2 = {
         state: ProcessInstanceState.Active,
         parentProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
         endpoint: 'test',
-        start: '2019-10-22T03:40:44.089Z',
+        start: null,
+        serviceUrl: 'http://localhost:4000/',
         end: '2019-10-22T03:40:44.089Z',
-        parentProcessInstance: null,
-        childProcessInstances: [],
+        parentProcessInstance: {
+          id: '2d962eef-45b8-48a9-ad4e-11-22',
+          processName: 'Travels22',
+          businessKey: 'Tra11',
+          processId: 'Travels33',
+          state: ProcessInstanceState.Completed,
+          endpoint: 'http://localhost:4000/',
+          servuceUrl: 'http://localhost:4000/',
+          nodes: [
+            {
+              nodeId: '1',
+              name: 'End Event 1',
+              definitionId: 'EndEvent_1',
+              id: '27107f38-d888-4edf-9a4f-11b9e6d751b6',
+              enter: '2019-10-22T03:37:30.798Z',
+              exit: '2019-10-22T03:37:30.798Z',
+              type: 'EndNode'
+            }
+          ],
+          start: '2019-10-22T03:40:44.089Z',
+          lastUpdate: '2019-10-22T03:40:44.089Z'
+        },
+        childProcessInstances: [
+          {
+            id: '23944e2-874R22-48a9-abcd-11-22',
+            processName: 'Travels33',
+            businessKey: 'Tra33',
+            processId: 'Travels33',
+            state: ProcessInstanceState.Completed,
+            endpoint: 'http://localhost:4000/',
+            servuceUrl: 'http://localhost:4000/',
+            start: '2019-10-22T03:40:44.089Z',
+            nodes: [
+              {
+                nodeId: '1',
+                name: 'End Event 1',
+                definitionId: 'EndEvent_1',
+                id: '27107f38-d888-4edf-9a4f-11b9e6d751b6',
+                enter: '2019-10-22T03:37:30.798Z',
+                exit: '2019-10-22T03:37:30.798Z',
+                type: 'EndNode'
+              }
+            ],
+            lastUpdate: '2019-10-22T03:40:44.089Z'
+          }
+        ],
         lastUpdate: '2019-10-22T03:40:44.089Z'
       }
     ]
@@ -69,12 +115,12 @@ const props2 = {
   childResult: []
 };
 
-describe('Process Details component', () => {
-  it('Snapshot tests', () => {
+describe('ProcessDetails component tests', () => {
+  it('Snapshot testing with basic data loaded', () => {
     const wrapper = shallow(<ProcessDetails {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
-  it('Sample test case', () => {
+  it('should find a paragraph', () => {
     const wrapper = shallow(<ProcessDetails {...props2} />);
     expect(
       wrapper

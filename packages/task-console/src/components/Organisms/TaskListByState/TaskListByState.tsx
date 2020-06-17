@@ -14,7 +14,6 @@ const TaskListByState: React.FC<IOwnProps> = ({ currentState }) => {
     loading,
     error,
     data,
-    refetch,
     networkStatus
   } = useGetUserTasksByStatesQuery({
     variables: {
@@ -52,7 +51,6 @@ const TaskListByState: React.FC<IOwnProps> = ({ currentState }) => {
           type={KogitoEmptyStateType.Refresh}
           title="Oops... error while loading"
           body="Try using the refresh action to reload user tasks"
-          onClick={refetch}
         />
       </div>
     );

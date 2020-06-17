@@ -243,7 +243,7 @@ exports[`ProcessListPage component tests Snapshot tests 1`] = `
                   className="pf-c-card dataList"
                 >
                    
-                  <ProcessListToolbar
+                  <MockedProcessListToolbar
                     abortedObj={Object {}}
                     checkedArray={
                       Array [
@@ -274,7 +274,7 @@ exports[`ProcessListPage component tests Snapshot tests 1`] = `
                     setSearchWord={[Function]}
                     setSelectedNumber={[Function]}
                   />
-                  <ProcessListTable
+                  <MockedProcessListTable
                     abortedObj={Object {}}
                     checkedArray={
                       Array [

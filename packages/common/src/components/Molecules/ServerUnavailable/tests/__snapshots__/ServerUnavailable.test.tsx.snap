@@ -1,0 +1,83 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ServerUnavailable component tests snapshot testing  1`] = `
+<Fragment>
+  <BrowserRouter>
+    <Page
+      breadcrumb={null}
+      className="kogito-common--PageLayout"
+      defaultManagedSidebarIsOpen={true}
+      header={
+        <PageHeader
+          avatar={
+            <Avatar
+              alt="Kogito Logo"
+              src="avatar.svg"
+            />
+          }
+          isNavOpen={true}
+          logo={
+            <Brand
+              alt="Management Console Logo"
+              src=".../../../../static/logo.png"
+            />
+          }
+          onNavToggle={[Function]}
+          showNavToggle={true}
+          toolbar={
+            <Context.Provider
+              value=".../../../../static/logo.png"
+            >
+              <PageToolbar />
+            </Context.Provider>
+          }
+        />
+      }
+      isManagedSidebar={true}
+      mainContainerId="main-content-page-layout-default-nav"
+      onPageResize={[Function]}
+      sidebar={
+        <PageSidebar
+          isNavOpen={true}
+          theme="dark"
+        />
+      }
+      skipToContent={null}
+    >
+      <PageSection
+        variant="light"
+      >
+        <Bullseye>
+          <EmptyState
+            variant="full"
+          >
+            <EmptyStateIcon
+              color="var(--pf-global--danger-color--100)"
+              icon={[Function]}
+              size="md"
+            />
+            <Title
+              headingLevel="h1"
+              size="4xl"
+            >
+              Error connecting server
+            </Title>
+            <EmptyStateBody>
+              The undefined could not access the server to display content.
+            </EmptyStateBody>
+            <EmptyStateBody>
+              Try reloading the page, or contact your administrator for more information.
+            </EmptyStateBody>
+            <Component
+              onClick={[Function]}
+              variant="primary"
+            >
+              Refresh
+            </Component>
+          </EmptyState>
+        </Bullseye>
+      </PageSection>
+    </Page>
+  </BrowserRouter>
+</Fragment>
+`;

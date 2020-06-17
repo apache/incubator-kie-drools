@@ -1,0 +1,173 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DisablePopup component tests snapshot testing for no process-management addon and only service URL 1`] = `
+<Tooltip
+  appendTo={[Function]}
+  aria="describedby"
+  boundary="window"
+  className=""
+  content="Management add-on capability not enabled. Contact your administrator to set up"
+  distance={-15}
+  enableFlip={true}
+  entryDelay={500}
+  exitDelay={500}
+  flipBehavior={
+    Array [
+      "top",
+      "right",
+      "bottom",
+      "left",
+      "top",
+      "right",
+      "bottom",
+    ]
+  }
+  id=""
+  isAppLauncher={false}
+  isContentLeftAligned={false}
+  isVisible={false}
+  maxWidth="18.75rem"
+  position="top"
+  tippyProps={Object {}}
+  trigger="mouseenter focus"
+  zIndex={9999}
+>
+  <Checkbox
+    className=""
+    id="test"
+    isChecked={false}
+    isDisabled={false}
+    isValid={true}
+    onChange={[Function]}
+  />
+</Tooltip>
+`;
+
+exports[`DisablePopup component tests snapshot testing for no service URL and no process-management addon 1`] = `
+<Tooltip
+  appendTo={[Function]}
+  aria="describedby"
+  boundary="window"
+  className=""
+  content="Management add-on capability not enabled & missing the kogito.service.url property. Contact your administrator to set up."
+  distance={-15}
+  enableFlip={true}
+  entryDelay={500}
+  exitDelay={500}
+  flipBehavior={
+    Array [
+      "top",
+      "right",
+      "bottom",
+      "left",
+      "top",
+      "right",
+      "bottom",
+    ]
+  }
+  id=""
+  isAppLauncher={false}
+  isContentLeftAligned={false}
+  isVisible={false}
+  maxWidth="18.75rem"
+  position="top"
+  tippyProps={Object {}}
+  trigger="mouseenter focus"
+  zIndex={9999}
+>
+  <Checkbox
+    className=""
+    id="test"
+    isChecked={false}
+    isDisabled={false}
+    isValid={true}
+    onChange={[Function]}
+  />
+</Tooltip>
+`;
+
+exports[`DisablePopup component tests snapshot testing for no service URL and only process-management addon 1`] = `
+<Tooltip
+  appendTo={[Function]}
+  aria="describedby"
+  boundary="window"
+  className=""
+  content="This Kogito runtime is missing the kogito.service.url property. Contact your administrator to set up."
+  distance={-15}
+  enableFlip={true}
+  entryDelay={500}
+  exitDelay={500}
+  flipBehavior={
+    Array [
+      "top",
+      "right",
+      "bottom",
+      "left",
+      "top",
+      "right",
+      "bottom",
+    ]
+  }
+  id=""
+  isAppLauncher={false}
+  isContentLeftAligned={false}
+  isVisible={false}
+  maxWidth="18.75rem"
+  position="top"
+  tippyProps={Object {}}
+  trigger="mouseenter focus"
+  zIndex={9999}
+>
+  <Checkbox
+    className=""
+    id="test"
+    isChecked={false}
+    isDisabled={false}
+    isValid={true}
+    onChange={[Function]}
+  />
+</Tooltip>
+`;
+
+exports[`DisablePopup component tests snapshot testing for service URL and process-management addon available 1`] = `
+<Tooltip
+  appendTo={[Function]}
+  aria="describedby"
+  boundary="window"
+  className=""
+  content=""
+  distance={-15}
+  enableFlip={true}
+  entryDelay={500}
+  exitDelay={500}
+  flipBehavior={
+    Array [
+      "top",
+      "right",
+      "bottom",
+      "left",
+      "top",
+      "right",
+      "bottom",
+    ]
+  }
+  id=""
+  isAppLauncher={false}
+  isContentLeftAligned={false}
+  isVisible={false}
+  maxWidth="18.75rem"
+  position="top"
+  tippyProps={Object {}}
+  trigger="mouseenter focus"
+  zIndex={9999}
+>
+  <Checkbox
+    className=""
+    id="test"
+    isChecked={false}
+    isDisabled={false}
+    isValid={true}
+    onChange={[Function]}
+  />
+</Tooltip>
+`;

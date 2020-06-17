@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Process Details Timeline component Sample test case 1`] = `
+exports[`ProcessDetailsTimeline component tests Snapshot testing for no service url 1`] = `
 <Card>
   <CardHeader>
     <Title
@@ -26,7 +26,7 @@ exports[`Process Details Timeline component Sample test case 1`] = `
             aria="describedby"
             boundary="window"
             className=""
-            content="Completed"
+            content="Something went wrong"
             distance={15}
             enableFlip={true}
             entryDelay={500}
@@ -52,9 +52,356 @@ exports[`Process Details Timeline component Sample test case 1`] = `
             trigger="mouseenter focus"
             zIndex={9999}
           >
-            <CheckCircleIcon
+            <ErrorCircleOIcon
               className="kogito-management-console--timeline-status"
-              color="var(--pf-global--success-color--100)"
+              color="var(--pf-global--danger-color--100)"
+              noVerticalAlign={false}
+              size="sm"
+              title={null}
+            />
+          </Tooltip>
+        </SplitItem>
+        <SplitItem
+          isFilled={true}
+        >
+          <TextContent>
+            <Text
+              component="p"
+            >
+              End Event 1
+              <span>
+                <Tooltip
+                  appendTo={[Function]}
+                  aria="describedby"
+                  boundary="window"
+                  className=""
+                  content="Human task"
+                  distance={15}
+                  enableFlip={true}
+                  entryDelay={500}
+                  exitDelay={500}
+                  flipBehavior={
+                    Array [
+                      "top",
+                      "right",
+                      "bottom",
+                      "left",
+                      "top",
+                      "right",
+                      "bottom",
+                    ]
+                  }
+                  id=""
+                  isAppLauncher={false}
+                  isContentLeftAligned={false}
+                  isVisible={false}
+                  maxWidth="18.75rem"
+                  position="top"
+                  tippyProps={Object {}}
+                  trigger="mouseenter focus"
+                  zIndex={9999}
+                >
+                  <UserIcon
+                    className="pf-u-ml-sm"
+                    color="var(--pf-global--icon--Color--light)"
+                    noVerticalAlign={false}
+                    size="sm"
+                    title={null}
+                  />
+                </Tooltip>
+              </span>
+              <Text
+                component="small"
+              >
+                Active
+              </Text>
+            </Text>
+          </TextContent>
+        </SplitItem>
+        <SplitItem>
+          <Dropdown
+            dropdownItems={
+              Array [
+                <DropdownItem
+                  component="button"
+                  onClick={[Function]}
+                >
+                  Retry
+                </DropdownItem>,
+                <DropdownItem
+                  component="button"
+                  onClick={[Function]}
+                >
+                  Skip
+                </DropdownItem>,
+              ]
+            }
+            id="dropdown-kebab"
+            isOpen={false}
+            isPlain={true}
+            onSelect={[Function]}
+            toggle={
+              <KebabToggle
+                id="timeline-kebab-toggle-0"
+                onToggle={[Function]}
+              />
+            }
+          />
+        </SplitItem>
+         
+      </Split>
+      <Split
+        className="kogito-management-console--timeline-item"
+        gutter="sm"
+        key="2f588da5-a323-4111-9017-3093ef9319d1"
+      >
+        <SplitItem>
+          <Tooltip
+            appendTo={[Function]}
+            aria="describedby"
+            boundary="window"
+            className=""
+            content="Active"
+            distance={15}
+            enableFlip={true}
+            entryDelay={500}
+            exitDelay={500}
+            flipBehavior={
+              Array [
+                "top",
+                "right",
+                "bottom",
+                "left",
+                "top",
+                "right",
+                "bottom",
+              ]
+            }
+            id=""
+            isAppLauncher={false}
+            isContentLeftAligned={false}
+            isVisible={false}
+            maxWidth="18.75rem"
+            position="top"
+            tippyProps={Object {}}
+            trigger="mouseenter focus"
+            zIndex={9999}
+          >
+            <OnRunningIcon
+              className="kogito-management-console--timeline-status"
+              color="currentColor"
+              noVerticalAlign={false}
+              size="sm"
+              title={null}
+            />
+          </Tooltip>
+        </SplitItem>
+        <SplitItem
+          isFilled={true}
+        >
+          <TextContent>
+            <Text
+              component="p"
+            >
+              Book flight
+              <span />
+              <Text
+                component="small"
+              >
+                Active
+              </Text>
+            </Text>
+          </TextContent>
+        </SplitItem>
+        <SplitItem>
+          <Dropdown
+            isPlain={true}
+            toggle={
+              <KebabToggle
+                id="timeline-kebab-toggle-disabled-1"
+                isDisabled={true}
+              />
+            }
+          />
+        </SplitItem>
+         
+      </Split>
+      <Split
+        className="kogito-management-console--timeline-item"
+        gutter="sm"
+        key="6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2"
+      >
+        <SplitItem>
+          <Tooltip
+            appendTo={[Function]}
+            aria="describedby"
+            boundary="window"
+            className=""
+            content="Active"
+            distance={15}
+            enableFlip={true}
+            entryDelay={500}
+            exitDelay={500}
+            flipBehavior={
+              Array [
+                "top",
+                "right",
+                "bottom",
+                "left",
+                "top",
+                "right",
+                "bottom",
+              ]
+            }
+            id=""
+            isAppLauncher={false}
+            isContentLeftAligned={false}
+            isVisible={false}
+            maxWidth="18.75rem"
+            position="top"
+            tippyProps={Object {}}
+            trigger="mouseenter focus"
+            zIndex={9999}
+          >
+            <OnRunningIcon
+              className="kogito-management-console--timeline-status"
+              color="currentColor"
+              noVerticalAlign={false}
+              size="sm"
+              title={null}
+            />
+          </Tooltip>
+        </SplitItem>
+        <SplitItem
+          isFilled={true}
+        >
+          <TextContent>
+            <Text
+              component="p"
+            >
+              StartProcess
+              <span>
+                <Tooltip
+                  appendTo={[Function]}
+                  aria="describedby"
+                  boundary="window"
+                  className=""
+                  content="Human task"
+                  distance={15}
+                  enableFlip={true}
+                  entryDelay={500}
+                  exitDelay={500}
+                  flipBehavior={
+                    Array [
+                      "top",
+                      "right",
+                      "bottom",
+                      "left",
+                      "top",
+                      "right",
+                      "bottom",
+                    ]
+                  }
+                  id=""
+                  isAppLauncher={false}
+                  isContentLeftAligned={false}
+                  isVisible={false}
+                  maxWidth="18.75rem"
+                  position="top"
+                  tippyProps={Object {}}
+                  trigger="mouseenter focus"
+                  zIndex={9999}
+                >
+                  <UserIcon
+                    className="pf-u-ml-sm"
+                    color="var(--pf-global--icon--Color--light)"
+                    noVerticalAlign={false}
+                    size="sm"
+                    title={null}
+                  />
+                </Tooltip>
+              </span>
+              <Text
+                component="small"
+              >
+                Active
+              </Text>
+            </Text>
+          </TextContent>
+        </SplitItem>
+        <SplitItem>
+          <Dropdown
+            isPlain={true}
+            toggle={
+              <KebabToggle
+                id="timeline-kebab-toggle-disabled-2"
+                isDisabled={true}
+              />
+            }
+          />
+        </SplitItem>
+         
+      </Split>
+    </Stack>
+  </CardBody>
+</Card>
+`;
+
+exports[`ProcessDetailsTimeline component tests Snapshot testing for service url available 1`] = `
+<Card>
+  <CardHeader>
+    <Title
+      headingLevel="h3"
+      size="xl"
+    >
+      Timeline
+    </Title>
+  </CardHeader>
+  <CardBody>
+    <Stack
+      className="kogito-management-console--timeline"
+      gutter="md"
+    >
+      <Split
+        className="kogito-management-console--timeline-item"
+        gutter="sm"
+        key="7244ba1b-75ec-4789-8c65-499a0c5b1a6f"
+      >
+        <SplitItem>
+          <Tooltip
+            appendTo={[Function]}
+            aria="describedby"
+            boundary="window"
+            className=""
+            content="Something went wrong"
+            distance={15}
+            enableFlip={true}
+            entryDelay={500}
+            exitDelay={500}
+            flipBehavior={
+              Array [
+                "top",
+                "right",
+                "bottom",
+                "left",
+                "top",
+                "right",
+                "bottom",
+              ]
+            }
+            id=""
+            isAppLauncher={false}
+            isContentLeftAligned={false}
+            isVisible={false}
+            maxWidth="18.75rem"
+            position="top"
+            tippyProps={Object {}}
+            trigger="mouseenter focus"
+            zIndex={9999}
+          >
+            <ErrorCircleOIcon
+              className="kogito-management-console--timeline-status"
+              color="var(--pf-global--danger-color--100)"
               noVerticalAlign={false}
               size="sm"
               title={null}
@@ -98,11 +445,30 @@ exports[`Process Details Timeline component Sample test case 1`] = `
         </SplitItem>
         <SplitItem>
           <Dropdown
+            dropdownItems={
+              Array [
+                <DropdownItem
+                  component="button"
+                  onClick={[Function]}
+                >
+                  Retry
+                </DropdownItem>,
+                <DropdownItem
+                  component="button"
+                  onClick={[Function]}
+                >
+                  Skip
+                </DropdownItem>,
+              ]
+            }
+            id="dropdown-kebab"
+            isOpen={false}
             isPlain={true}
+            onSelect={[Function]}
             toggle={
               <KebabToggle
-                id="timeline-kebab-toggle-disabled-0"
-                isDisabled={true}
+                id="timeline-kebab-toggle-0"
+                onToggle={[Function]}
               />
             }
           />

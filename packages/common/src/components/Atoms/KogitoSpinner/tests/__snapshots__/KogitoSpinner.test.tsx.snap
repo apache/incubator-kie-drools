@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`KogitoSpinner component tests snapshot testing with loading test 1`] = `
+<EmptyState>
+  <EmptyStateIcon
+    component={[Function]}
+    variant="container"
+  />
+  <Title
+    size="lg"
+  >
+    loading...
+  </Title>
+</EmptyState>
+`;

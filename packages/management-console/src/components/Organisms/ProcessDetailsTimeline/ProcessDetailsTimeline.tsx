@@ -165,6 +165,7 @@ const ProcessDetailsTimeline: React.FC<IOwnProps> = ({
                         data.error &&
                         content.definitionId === data.error.nodeDefinitionId ? (
                           <Dropdown
+                            id="dropdown-kebab"
                             onSelect={onDropdownSelect}
                             toggle={
                               <KebabToggle

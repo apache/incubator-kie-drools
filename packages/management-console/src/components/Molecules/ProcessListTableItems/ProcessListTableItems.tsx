@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import Moment from 'react-moment';
 import React, { useEffect, useState } from 'react';
 import {
@@ -211,7 +212,7 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
     }
   };
   useEffect(() => {
-    if (data !== undefined && !loading && !loadingInitData) {
+    if (!loading && !loadingInitData && data !== undefined) {
       data.ProcessInstances.map((instance: any) => {
         instance.isChecked = false;
       });
@@ -298,7 +299,6 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
       return [];
     }
   };
-
   return (
     <React.Fragment>
       <ProcessListModal

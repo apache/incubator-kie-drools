@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Process Details Diagram component Snapshot tests 1`] = `
+exports[`ProcessDetailsDiagram component tests Snapshot testing 1`] = `
 <Card>
   <CardHeader>
     <Title

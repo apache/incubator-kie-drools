@@ -2,7 +2,6 @@ import { ReactElement } from 'react';
 import { mount, ReactWrapper } from 'enzyme';
 import wait from 'waait';
 import { act } from 'react-dom/test-utils';
-
 /**
  * Wrapper used in asynchronous snapshot tests to wait for the asynchronous action to complete and get rid
  * of unnecessary wrappers of components in resulting snapshots.

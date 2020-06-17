@@ -1,7 +1,7 @@
 import React from 'react';
 
-const ProcessListToolbar = (): React.ReactElement => {
+const MockedProcessListToolbar = (): React.ReactElement => {
   return <></>;
 };
 
-export default ProcessListToolbar;
+export default MockedProcessListToolbar;

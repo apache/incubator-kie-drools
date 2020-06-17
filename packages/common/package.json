@@ -34,6 +34,11 @@
       "tsx",
       "js"
     ],
+    "coveragePathIgnorePatterns": [
+      "./src/utils",
+      "./src/static",
+      "./src/graphql"
+    ],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],

@@ -20,7 +20,6 @@ import DomainExplorerPage from '../DomainExplorerPage/DomainExplorerPage';
 import DomainExplorerLandingPage from '../DomainExplorerLandingPage/DomainExplorerLandingPage';
 import './PageLayout.css';
 import managementConsoleLogo from '../../../static/managementConsoleLogo.svg';
-
 import { History, Location } from 'history';
 
 interface IOwnProps {

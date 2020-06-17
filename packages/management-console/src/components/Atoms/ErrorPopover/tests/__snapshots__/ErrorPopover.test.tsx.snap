@@ -1,0 +1,648 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Errorpopover component tests snapshot testing with error object 1`] = `
+<ErrorPopover
+  handleRetryModalToggle={[MockFunction]}
+  handleSkipModalToggle={[MockFunction]}
+  processInstanceData={
+    Object {
+      "addons": Array [
+        "jobs-management",
+        "prometheus-monitoring",
+        "process-management",
+      ],
+      "businessKey": "T1234",
+      "childProcessInstances": Array [],
+      "end": "2019-10-22T05:40:44.089Z",
+      "endpoint": "http://localhost:4000",
+      "error": Object {
+        "message": "Something went wrong",
+        "nodeDefinitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
+      },
+      "id": "e4448857-fa0c-403b-ad69-f0a353458b9d",
+      "lastUpdate": "2019-10-22T03:40:44.089Z",
+      "nodes": Array [
+        Object {
+          "definitionId": "EndEvent_1",
+          "enter": "2019-10-22T03:37:38.586Z",
+          "exit": "2019-10-22T03:37:38.586Z",
+          "id": "870bdda0-be04-4e59-bb0b-f9b665eaacc9",
+          "name": "End Event 1",
+          "nodeId": "1",
+          "type": "EndNode",
+        },
+        Object {
+          "definitionId": "UserTask_2",
+          "enter": "2019-10-22T03:37:30.807Z",
+          "exit": "2019-10-22T03:37:38.586Z",
+          "id": "6b4a4fe9-4aab-4e8c-bb79-27b8b6b88d1f",
+          "name": "Confirm travel",
+          "nodeId": "2",
+          "type": "HumanTaskNode",
+        },
+        Object {
+          "definitionId": "CallActivity_1",
+          "enter": "2019-10-22T03:37:30.793Z",
+          "exit": "2019-10-22T03:37:30.803Z",
+          "id": "dd33de7c-c39c-484a-83a8-3e1b007fce95",
+          "name": "Book Hotel",
+          "nodeId": "3",
+          "type": "SubProcessNode",
+        },
+        Object {
+          "definitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
+          "enter": "2019-10-22T03:37:30.806Z",
+          "exit": "2019-10-22T03:37:30.807Z",
+          "id": "08c153e8-2766-4675-81f7-29943efdf411",
+          "name": "Join",
+          "nodeId": "4",
+          "type": "Join",
+        },
+        Object {
+          "definitionId": "CallActivity_2",
+          "enter": "2019-10-22T03:37:30.803Z",
+          "exit": "2019-10-22T03:37:30.806Z",
+          "id": "683cf307-f082-4a8e-9c85-d5a11b13903a",
+          "name": "Book Flight",
+          "nodeId": "4",
+          "type": "SubProcessNode",
+        },
+        Object {
+          "definitionId": "ParallelGateway_1",
+          "enter": "2019-10-22T03:37:30.792Z",
+          "exit": "2019-10-22T03:37:30.803Z",
+          "id": "cf057e58-4113-46c0-be13-6de42ea8377e",
+          "name": "Book",
+          "nodeId": "5",
+          "type": "Split",
+        },
+        Object {
+          "definitionId": "ExclusiveGateway_2",
+          "enter": "2019-10-22T03:37:30.792Z",
+          "exit": "2019-10-22T03:37:30.792Z",
+          "id": "415a52c0-dc1f-4a93-9238-862dc8072262",
+          "name": "Join",
+          "nodeId": "6",
+          "type": "Join",
+        },
+        Object {
+          "definitionId": "ExclusiveGateway_1",
+          "enter": "2019-10-22T03:37:30.79Z",
+          "exit": "2019-10-22T03:37:30.792Z",
+          "id": "52d64298-3f28-4aba-a812-dba4077c9665",
+          "name": "is visa required",
+          "nodeId": "7",
+          "type": "Split",
+        },
+        Object {
+          "definitionId": "BusinessRuleTask_1",
+          "enter": "2019-10-22T03:37:30.755Z",
+          "exit": "2019-10-22T03:37:30.79Z",
+          "id": "6fdee287-08f6-49c2-af2d-2d125ba76ab7",
+          "name": "Visa check",
+          "nodeId": "8",
+          "type": "RuleSetNode",
+        },
+        Object {
+          "definitionId": "StartEvent_1",
+          "enter": "2019-10-22T03:37:30.753Z",
+          "exit": "2019-10-22T03:37:30.754Z",
+          "id": "d98c1762-9d3c-4228-9ffc-bc3f423079c0",
+          "name": "StartProcess",
+          "nodeId": "9",
+          "type": "StartNode",
+        },
+      ],
+      "parentProcessInstance": null,
+      "parentProcessInstanceId": null,
+      "processId": "travels",
+      "processName": "travels",
+      "roles": Array [],
+      "rootProcessInstanceId": null,
+      "serviceUrl": "http://localhost:4000",
+      "start": "2019-10-22T03:40:44.089Z",
+      "state": "ERROR",
+      "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
+    }
+  }
+  setModalContent={[MockFunction]}
+  setModalTitle={[MockFunction]}
+  setTitleType={[MockFunction]}
+>
+  <Popover
+    appendTo={[Function]}
+    aria-label=""
+    bodyContent={
+      <div>
+        Something went wrong
+      </div>
+    }
+    boundary="window"
+    className=""
+    closeBtnAriaLabel="Close"
+    distance={25}
+    enableFlip={true}
+    flipBehavior={
+      Array [
+        "top",
+        "right",
+        "bottom",
+        "left",
+        "top",
+        "right",
+        "bottom",
+      ]
+    }
+    footerContent={
+      Array [
+        <Unknown
+          className="pf-u-mr-sm"
+          id="skip-button"
+          onClick={[Function]}
+          variant="secondary"
+        >
+          Skip
+        </Unknown>,
+        <Unknown
+          className="pf-u-mr-sm"
+          id="retry-button"
+          onClick={[Function]}
+          variant="secondary"
+        >
+          Retry
+        </Unknown>,
+      ]
+    }
+    headerContent={
+      <div>
+        Process error
+      </div>
+    }
+    hideOnOutsideClick={true}
+    isVisible={null}
+    maxWidth="calc(2rem + 18.75rem)"
+    onHidden={[Function]}
+    onHide={[Function]}
+    onMount={[Function]}
+    onShow={[Function]}
+    onShown={[Function]}
+    position="auto"
+    shouldClose={[Function]}
+    tippyProps={Object {}}
+    zIndex={300}
+  >
+    <PopoverBase
+      appendTo={[Function]}
+      arrow={true}
+      boundary="window"
+      content={<React.Fragment />}
+      distance={25}
+      flip={true}
+      flipBehavior={
+        Array [
+          "top",
+          "right",
+          "bottom",
+          "left",
+          "top",
+          "right",
+          "bottom",
+        ]
+      }
+      hideOnClick={true}
+      interactive={true}
+      interactiveBorder={0}
+      isVisible={null}
+      lazy={true}
+      maxWidth="calc(2rem + 18.75rem)"
+      onCreate={[Function]}
+      onHidden={[Function]}
+      onHide={[Function]}
+      onMount={[Function]}
+      onShow={[Function]}
+      onShown={[Function]}
+      placement="auto"
+      popperOptions={
+        Object {
+          "modifiers": Object {
+            "hide": Object {
+              "enabled": true,
+            },
+            "preventOverflow": Object {
+              "enabled": true,
+            },
+          },
+        }
+      }
+      theme="pf-popover"
+      trigger="click"
+      zIndex={300}
+    >
+      <Component
+        isInline={true}
+        variant="link"
+      >
+        <ComponentWithOuia
+          component={[Function]}
+          componentProps={
+            Object {
+              "children": <React.Fragment>
+                <ErrorCircleOIcon
+                  className="pf-u-mr-sm"
+                  color="var(--pf-global--danger-color--100)"
+                  noVerticalAlign={false}
+                  size="sm"
+                  title={null}
+                />
+                Error
+              </React.Fragment>,
+              "isInline": true,
+              "variant": "link",
+            }
+          }
+          consumerContext={null}
+        >
+          <Button
+            isInline={true}
+            ouiaContext={
+              Object {
+                "isOuia": false,
+                "ouiaId": null,
+              }
+            }
+            variant="link"
+          >
+            <button
+              aria-disabled={null}
+              aria-label={null}
+              className="pf-c-button pf-m-link pf-m-inline"
+              disabled={false}
+              tabIndex={null}
+              type="button"
+            >
+              <span
+                className="pf-c-button__text"
+              >
+                <ErrorCircleOIcon
+                  className="pf-u-mr-sm"
+                  color="var(--pf-global--danger-color--100)"
+                  noVerticalAlign={false}
+                  size="sm"
+                  title={null}
+                >
+                  <svg
+                    aria-hidden={true}
+                    aria-labelledby={null}
+                    className="pf-u-mr-sm"
+                    fill="var(--pf-global--danger-color--100)"
+                    height="1em"
+                    role="img"
+                    style={
+                      Object {
+                        "verticalAlign": "-0.125em",
+                      }
+                    }
+                    viewBox="0 64 1024 1024"
+                    width="1em"
+                  >
+                    <path
+                      d="M512.073-73.143c-282.331 0-512.073 229.669-512.073 512 0 282.258 229.742 512 512.073 512 282.258 0 511.927-229.742 511.927-512 0-282.331-229.669-512-511.927-512zM512.073 826.514c-213.797 0-387.73-173.861-387.73-387.657 0-213.87 173.861-387.657 387.73-387.657 213.723 0 387.657 173.787 387.657 387.73 0 213.723-173.934 387.584-387.657 387.584v0zM730.77 316.196c0.073 4.901-1.829 9.216-5.632 13.019l-109.714 109.714 110.373 110.373c3.803 3.803 5.632 8.119 5.632 13.019s-1.975 9.216-5.778 13.093l-77.166 77.166c-3.877 3.803-8.192 5.778-13.093 5.778s-9.216-1.829-13.019-5.632l-110.373-110.373-110.373 110.373c-3.803 3.803-8.119 5.632-13.019 5.632s-9.216-1.975-13.093-5.778l-77.166-77.166c-3.803-3.877-5.778-8.192-5.778-13.093s1.829-9.216 5.632-13.019l110.373-110.373-110.373-109.714c-3.803-3.803-5.632-8.119-5.632-13.019s1.975-9.216 5.778-13.093l77.166-77.166c3.877-3.877 8.192-5.778 13.093-5.778s9.216 1.829 13.019 5.632l110.373 109.714 109.714-109.714c3.803-3.803 8.119-5.632 13.019-5.632s9.216 1.975 13.093 5.778l77.166 77.166c3.877 3.803 5.778 8.192 5.851 13.019v0z"
+                      transform="rotate(180 0 512) scale(-1 1)"
+                    />
+                  </svg>
+                </ErrorCircleOIcon>
+                Error
+              </span>
+            </button>
+          </Button>
+        </ComponentWithOuia>
+      </Component>
+      <Portal
+        containerInfo={<div />}
+      />
+    </PopoverBase>
+  </Popover>
+</ErrorPopover>
+`;
+
+exports[`Errorpopover component tests snapshot testing without error object 1`] = `
+<ErrorPopover
+  handleRetryModalToggle={[MockFunction]}
+  handleSkipModalToggle={[MockFunction]}
+  processInstanceData={
+    Object {
+      "addons": Array [
+        "jobs-management",
+        "prometheus-monitoring",
+        "process-management",
+      ],
+      "businessKey": "T1234",
+      "childProcessInstances": Array [],
+      "end": "2019-10-22T05:40:44.089Z",
+      "endpoint": "http://localhost:4000",
+      "error": null,
+      "id": "e4448857-fa0c-403b-ad69-f0a353458b9d",
+      "lastUpdate": "2019-10-22T03:40:44.089Z",
+      "nodes": Array [
+        Object {
+          "definitionId": "EndEvent_1",
+          "enter": "2019-10-22T03:37:38.586Z",
+          "exit": "2019-10-22T03:37:38.586Z",
+          "id": "870bdda0-be04-4e59-bb0b-f9b665eaacc9",
+          "name": "End Event 1",
+          "nodeId": "1",
+          "type": "EndNode",
+        },
+        Object {
+          "definitionId": "UserTask_2",
+          "enter": "2019-10-22T03:37:30.807Z",
+          "exit": "2019-10-22T03:37:38.586Z",
+          "id": "6b4a4fe9-4aab-4e8c-bb79-27b8b6b88d1f",
+          "name": "Confirm travel",
+          "nodeId": "2",
+          "type": "HumanTaskNode",
+        },
+        Object {
+          "definitionId": "CallActivity_1",
+          "enter": "2019-10-22T03:37:30.793Z",
+          "exit": "2019-10-22T03:37:30.803Z",
+          "id": "dd33de7c-c39c-484a-83a8-3e1b007fce95",
+          "name": "Book Hotel",
+          "nodeId": "3",
+          "type": "SubProcessNode",
+        },
+        Object {
+          "definitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
+          "enter": "2019-10-22T03:37:30.806Z",
+          "exit": "2019-10-22T03:37:30.807Z",
+          "id": "08c153e8-2766-4675-81f7-29943efdf411",
+          "name": "Join",
+          "nodeId": "4",
+          "type": "Join",
+        },
+        Object {
+          "definitionId": "CallActivity_2",
+          "enter": "2019-10-22T03:37:30.803Z",
+          "exit": "2019-10-22T03:37:30.806Z",
+          "id": "683cf307-f082-4a8e-9c85-d5a11b13903a",
+          "name": "Book Flight",
+          "nodeId": "4",
+          "type": "SubProcessNode",
+        },
+        Object {
+          "definitionId": "ParallelGateway_1",
+          "enter": "2019-10-22T03:37:30.792Z",
+          "exit": "2019-10-22T03:37:30.803Z",
+          "id": "cf057e58-4113-46c0-be13-6de42ea8377e",
+          "name": "Book",
+          "nodeId": "5",
+          "type": "Split",
+        },
+        Object {
+          "definitionId": "ExclusiveGateway_2",
+          "enter": "2019-10-22T03:37:30.792Z",
+          "exit": "2019-10-22T03:37:30.792Z",
+          "id": "415a52c0-dc1f-4a93-9238-862dc8072262",
+          "name": "Join",
+          "nodeId": "6",
+          "type": "Join",
+        },
+        Object {
+          "definitionId": "ExclusiveGateway_1",
+          "enter": "2019-10-22T03:37:30.79Z",
+          "exit": "2019-10-22T03:37:30.792Z",
+          "id": "52d64298-3f28-4aba-a812-dba4077c9665",
+          "name": "is visa required",
+          "nodeId": "7",
+          "type": "Split",
+        },
+        Object {
+          "definitionId": "BusinessRuleTask_1",
+          "enter": "2019-10-22T03:37:30.755Z",
+          "exit": "2019-10-22T03:37:30.79Z",
+          "id": "6fdee287-08f6-49c2-af2d-2d125ba76ab7",
+          "name": "Visa check",
+          "nodeId": "8",
+          "type": "RuleSetNode",
+        },
+        Object {
+          "definitionId": "StartEvent_1",
+          "enter": "2019-10-22T03:37:30.753Z",
+          "exit": "2019-10-22T03:37:30.754Z",
+          "id": "d98c1762-9d3c-4228-9ffc-bc3f423079c0",
+          "name": "StartProcess",
+          "nodeId": "9",
+          "type": "StartNode",
+        },
+      ],
+      "parentProcessInstance": null,
+      "parentProcessInstanceId": null,
+      "processId": "travels",
+      "processName": "travels",
+      "roles": Array [],
+      "rootProcessInstanceId": null,
+      "serviceUrl": "http://localhost:4000",
+      "start": "2019-10-22T03:40:44.089Z",
+      "state": "ERROR",
+      "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
+    }
+  }
+  setModalContent={[MockFunction]}
+  setModalTitle={[MockFunction]}
+  setTitleType={[MockFunction]}
+>
+  <Popover
+    appendTo={[Function]}
+    aria-label=""
+    bodyContent={
+      <div>
+        No error message found
+      </div>
+    }
+    boundary="window"
+    className=""
+    closeBtnAriaLabel="Close"
+    distance={25}
+    enableFlip={true}
+    flipBehavior={
+      Array [
+        "top",
+        "right",
+        "bottom",
+        "left",
+        "top",
+        "right",
+        "bottom",
+      ]
+    }
+    footerContent={
+      Array [
+        <Unknown
+          className="pf-u-mr-sm"
+          id="skip-button"
+          onClick={[Function]}
+          variant="secondary"
+        >
+          Skip
+        </Unknown>,
+        <Unknown
+          className="pf-u-mr-sm"
+          id="retry-button"
+          onClick={[Function]}
+          variant="secondary"
+        >
+          Retry
+        </Unknown>,
+      ]
+    }
+    headerContent={
+      <div>
+        Process error
+      </div>
+    }
+    hideOnOutsideClick={true}
+    isVisible={null}
+    maxWidth="calc(2rem + 18.75rem)"
+    onHidden={[Function]}
+    onHide={[Function]}
+    onMount={[Function]}
+    onShow={[Function]}
+    onShown={[Function]}
+    position="auto"
+    shouldClose={[Function]}
+    tippyProps={Object {}}
+    zIndex={300}
+  >
+    <PopoverBase
+      appendTo={[Function]}
+      arrow={true}
+      boundary="window"
+      content={<React.Fragment />}
+      distance={25}
+      flip={true}
+      flipBehavior={
+        Array [
+          "top",
+          "right",
+          "bottom",
+          "left",
+          "top",
+          "right",
+          "bottom",
+        ]
+      }
+      hideOnClick={true}
+      interactive={true}
+      interactiveBorder={0}
+      isVisible={null}
+      lazy={true}
+      maxWidth="calc(2rem + 18.75rem)"
+      onCreate={[Function]}
+      onHidden={[Function]}
+      onHide={[Function]}
+      onMount={[Function]}
+      onShow={[Function]}
+      onShown={[Function]}
+      placement="auto"
+      popperOptions={
+        Object {
+          "modifiers": Object {
+            "hide": Object {
+              "enabled": true,
+            },
+            "preventOverflow": Object {
+              "enabled": true,
+            },
+          },
+        }
+      }
+      theme="pf-popover"
+      trigger="click"
+      zIndex={300}
+    >
+      <Component
+        isInline={true}
+        variant="link"
+      >
+        <ComponentWithOuia
+          component={[Function]}
+          componentProps={
+            Object {
+              "children": <React.Fragment>
+                <ErrorCircleOIcon
+                  className="pf-u-mr-sm"
+                  color="var(--pf-global--danger-color--100)"
+                  noVerticalAlign={false}
+                  size="sm"
+                  title={null}
+                />
+                Error
+              </React.Fragment>,
+              "isInline": true,
+              "variant": "link",
+            }
+          }
+          consumerContext={null}
+        >
+          <Button
+            isInline={true}
+            ouiaContext={
+              Object {
+                "isOuia": false,
+                "ouiaId": null,
+              }
+            }
+            variant="link"
+          >
+            <button
+              aria-disabled={null}
+              aria-label={null}
+              className="pf-c-button pf-m-link pf-m-inline"
+              disabled={false}
+              tabIndex={null}
+              type="button"
+            >
+              <span
+                className="pf-c-button__text"
+              >
+                <ErrorCircleOIcon
+                  className="pf-u-mr-sm"
+                  color="var(--pf-global--danger-color--100)"
+                  noVerticalAlign={false}
+                  size="sm"
+                  title={null}
+                >
+                  <svg
+                    aria-hidden={true}
+                    aria-labelledby={null}
+                    className="pf-u-mr-sm"
+                    fill="var(--pf-global--danger-color--100)"
+                    height="1em"
+                    role="img"
+                    style={
+                      Object {
+                        "verticalAlign": "-0.125em",
+                      }
+                    }
+                    viewBox="0 64 1024 1024"
+                    width="1em"
+                  >
+                    <path
+                      d="M512.073-73.143c-282.331 0-512.073 229.669-512.073 512 0 282.258 229.742 512 512.073 512 282.258 0 511.927-229.742 511.927-512 0-282.331-229.669-512-511.927-512zM512.073 826.514c-213.797 0-387.73-173.861-387.73-387.657 0-213.87 173.861-387.657 387.73-387.657 213.723 0 387.657 173.787 387.657 387.73 0 213.723-173.934 387.584-387.657 387.584v0zM730.77 316.196c0.073 4.901-1.829 9.216-5.632 13.019l-109.714 109.714 110.373 110.373c3.803 3.803 5.632 8.119 5.632 13.019s-1.975 9.216-5.778 13.093l-77.166 77.166c-3.877 3.803-8.192 5.778-13.093 5.778s-9.216-1.829-13.019-5.632l-110.373-110.373-110.373 110.373c-3.803 3.803-8.119 5.632-13.019 5.632s-9.216-1.975-13.093-5.778l-77.166-77.166c-3.803-3.877-5.778-8.192-5.778-13.093s1.829-9.216 5.632-13.019l110.373-110.373-110.373-109.714c-3.803-3.803-5.632-8.119-5.632-13.019s1.975-9.216 5.778-13.093l77.166-77.166c3.877-3.877 8.192-5.778 13.093-5.778s9.216 1.829 13.019 5.632l110.373 109.714 109.714-109.714c3.803-3.803 8.119-5.632 13.019-5.632s9.216 1.975 13.093 5.778l77.166 77.166c3.877 3.803 5.778 8.192 5.851 13.019v0z"
+                      transform="rotate(180 0 512) scale(-1 1)"
+                    />
+                  </svg>
+                </ErrorCircleOIcon>
+                Error
+              </span>
+            </button>
+          </Button>
+        </ComponentWithOuia>
+      </Component>
+      <Portal
+        containerInfo={<div />}
+      />
+    </PopoverBase>
+  </Popover>
+</ErrorPopover>
+`;

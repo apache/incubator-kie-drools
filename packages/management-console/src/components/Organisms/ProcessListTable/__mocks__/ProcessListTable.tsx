@@ -1,7 +1,7 @@
 import React from 'react';
 
-const ProcessListTable = (): React.ReactElement => {
+const MockedProcessListTable = (): React.ReactElement => {
   return <></>;
 };
 
-export default ProcessListTable;
+export default MockedProcessListTable;

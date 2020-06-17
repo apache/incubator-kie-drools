@@ -209,6 +209,7 @@ exports[`Domain Explorer Container component Check error response for getPicker 
                           An error occurred while accessing data.
                            
                           <Component
+                            id="display-error"
                             isInline={true}
                             onClick={[Function]}
                             variant="link"
@@ -218,6 +219,7 @@ exports[`Domain Explorer Container component Check error response for getPicker 
                               componentProps={
                                 Object {
                                   "children": "See more details",
+                                  "id": "display-error",
                                   "isInline": true,
                                   "onClick": [Function],
                                   "variant": "link",
@@ -226,6 +228,7 @@ exports[`Domain Explorer Container component Check error response for getPicker 
                               consumerContext={null}
                             >
                               <Button
+                                id="display-error"
                                 isInline={true}
                                 onClick={[Function]}
                                 ouiaContext={
@@ -241,6 +244,7 @@ exports[`Domain Explorer Container component Check error response for getPicker 
                                   aria-label={null}
                                   className="pf-c-button pf-m-link pf-m-inline"
                                   disabled={false}
+                                  id="display-error"
                                   onClick={[Function]}
                                   tabIndex={null}
                                   type="button"
@@ -257,6 +261,7 @@ exports[`Domain Explorer Container component Check error response for getPicker 
                         </div>
                       </EmptyStateBody>
                       <Component
+                        id="goback-button"
                         onClick={[Function]}
                         variant="primary"
                       >
@@ -265,6 +270,7 @@ exports[`Domain Explorer Container component Check error response for getPicker 
                           componentProps={
                             Object {
                               "children": "Go back",
+                              "id": "goback-button",
                               "onClick": [Function],
                               "variant": "primary",
                             }
@@ -272,6 +278,7 @@ exports[`Domain Explorer Container component Check error response for getPicker 
                           consumerContext={null}
                         >
                           <Button
+                            id="goback-button"
                             onClick={[Function]}
                             ouiaContext={
                               Object {
@@ -286,6 +293,7 @@ exports[`Domain Explorer Container component Check error response for getPicker 
                               aria-label={null}
                               className="pf-c-button pf-m-primary"
                               disabled={false}
+                              id="goback-button"
                               onClick={[Function]}
                               tabIndex={null}
                               type="button"
@@ -494,6 +502,7 @@ exports[`Domain Explorer Container component Check error response for getQueryFi
                       An error occurred while accessing data.
                        
                       <Component
+                        id="display-error"
                         isInline={true}
                         onClick={[Function]}
                         variant="link"
@@ -503,6 +512,7 @@ exports[`Domain Explorer Container component Check error response for getQueryFi
                           componentProps={
                             Object {
                               "children": "See more details",
+                              "id": "display-error",
                               "isInline": true,
                               "onClick": [Function],
                               "variant": "link",
@@ -511,6 +521,7 @@ exports[`Domain Explorer Container component Check error response for getQueryFi
                           consumerContext={null}
                         >
                           <Button
+                            id="display-error"
                             isInline={true}
                             onClick={[Function]}
                             ouiaContext={
@@ -526,6 +537,7 @@ exports[`Domain Explorer Container component Check error response for getQueryFi
                               aria-label={null}
                               className="pf-c-button pf-m-link pf-m-inline"
                               disabled={false}
+                              id="display-error"
                               onClick={[Function]}
                               tabIndex={null}
                               type="button"
@@ -542,6 +554,7 @@ exports[`Domain Explorer Container component Check error response for getQueryFi
                     </div>
                   </EmptyStateBody>
                   <Component
+                    id="goback-button"
                     onClick={[Function]}
                     variant="primary"
                   >
@@ -550,6 +563,7 @@ exports[`Domain Explorer Container component Check error response for getQueryFi
                       componentProps={
                         Object {
                           "children": "Go back",
+                          "id": "goback-button",
                           "onClick": [Function],
                           "variant": "primary",
                         }
@@ -557,6 +571,7 @@ exports[`Domain Explorer Container component Check error response for getQueryFi
                       consumerContext={null}
                     >
                       <Button
+                        id="goback-button"
                         onClick={[Function]}
                         ouiaContext={
                           Object {
@@ -571,6 +586,7 @@ exports[`Domain Explorer Container component Check error response for getQueryFi
                           aria-label={null}
                           className="pf-c-button pf-m-primary"
                           disabled={false}
+                          id="goback-button"
                           onClick={[Function]}
                           tabIndex={null}
                           type="button"
@@ -800,6 +816,7 @@ exports[`Domain Explorer Container component Check error response for getQueryTy
                           An error occurred while accessing data.
                            
                           <Component
+                            id="display-error"
                             isInline={true}
                             onClick={[Function]}
                             variant="link"
@@ -809,6 +826,7 @@ exports[`Domain Explorer Container component Check error response for getQueryTy
                               componentProps={
                                 Object {
                                   "children": "See more details",
+                                  "id": "display-error",
                                   "isInline": true,
                                   "onClick": [Function],
                                   "variant": "link",
@@ -817,6 +835,7 @@ exports[`Domain Explorer Container component Check error response for getQueryTy
                               consumerContext={null}
                             >
                               <Button
+                                id="display-error"
                                 isInline={true}
                                 onClick={[Function]}
                                 ouiaContext={
@@ -832,6 +851,7 @@ exports[`Domain Explorer Container component Check error response for getQueryTy
                                   aria-label={null}
                                   className="pf-c-button pf-m-link pf-m-inline"
                                   disabled={false}
+                                  id="display-error"
                                   onClick={[Function]}
                                   tabIndex={null}
                                   type="button"
@@ -848,6 +868,7 @@ exports[`Domain Explorer Container component Check error response for getQueryTy
                         </div>
                       </EmptyStateBody>
                       <Component
+                        id="goback-button"
                         onClick={[Function]}
                         variant="primary"
                       >
@@ -856,6 +877,7 @@ exports[`Domain Explorer Container component Check error response for getQueryTy
                           componentProps={
                             Object {
                               "children": "Go back",
+                              "id": "goback-button",
                               "onClick": [Function],
                               "variant": "primary",
                             }
@@ -863,6 +885,7 @@ exports[`Domain Explorer Container component Check error response for getQueryTy
                           consumerContext={null}
                         >
                           <Button
+                            id="goback-button"
                             onClick={[Function]}
                             ouiaContext={
                               Object {
@@ -877,6 +900,7 @@ exports[`Domain Explorer Container component Check error response for getQueryTy
                               aria-label={null}
                               className="pf-c-button pf-m-primary"
                               disabled={false}
+                              id="goback-button"
                               onClick={[Function]}
                               tabIndex={null}
                               type="button"
@@ -1085,6 +1109,7 @@ exports[`Domain Explorer Container component Mock query testing 1`] = `
                       An error occurred while accessing data.
                        
                       <Component
+                        id="display-error"
                         isInline={true}
                         onClick={[Function]}
                         variant="link"
@@ -1094,6 +1119,7 @@ exports[`Domain Explorer Container component Mock query testing 1`] = `
                           componentProps={
                             Object {
                               "children": "See more details",
+                              "id": "display-error",
                               "isInline": true,
                               "onClick": [Function],
                               "variant": "link",
@@ -1102,6 +1128,7 @@ exports[`Domain Explorer Container component Mock query testing 1`] = `
                           consumerContext={null}
                         >
                           <Button
+                            id="display-error"
                             isInline={true}
                             onClick={[Function]}
                             ouiaContext={
@@ -1117,6 +1144,7 @@ exports[`Domain Explorer Container component Mock query testing 1`] = `
                               aria-label={null}
                               className="pf-c-button pf-m-link pf-m-inline"
                               disabled={false}
+                              id="display-error"
                               onClick={[Function]}
                               tabIndex={null}
                               type="button"
@@ -1133,6 +1161,7 @@ exports[`Domain Explorer Container component Mock query testing 1`] = `
                     </div>
                   </EmptyStateBody>
                   <Component
+                    id="goback-button"
                     onClick={[Function]}
                     variant="primary"
                   >
@@ -1141,6 +1170,7 @@ exports[`Domain Explorer Container component Mock query testing 1`] = `
                       componentProps={
                         Object {
                           "children": "Go back",
+                          "id": "goback-button",
                           "onClick": [Function],
                           "variant": "primary",
                         }
@@ -1148,6 +1178,7 @@ exports[`Domain Explorer Container component Mock query testing 1`] = `
                       consumerContext={null}
                     >
                       <Button
+                        id="goback-button"
                         onClick={[Function]}
                         ouiaContext={
                           Object {
@@ -1162,6 +1193,7 @@ exports[`Domain Explorer Container component Mock query testing 1`] = `
                           aria-label={null}
                           className="pf-c-button pf-m-primary"
                           disabled={false}
+                          id="goback-button"
                           onClick={[Function]}
                           tabIndex={null}
                           type="button"
@@ -1368,6 +1400,7 @@ exports[`Domain Explorer Container component Snapshot test 1`] = `
                       An error occurred while accessing data.
                        
                       <Component
+                        id="display-error"
                         isInline={true}
                         onClick={[Function]}
                         variant="link"
@@ -1377,6 +1410,7 @@ exports[`Domain Explorer Container component Snapshot test 1`] = `
                           componentProps={
                             Object {
                               "children": "See more details",
+                              "id": "display-error",
                               "isInline": true,
                               "onClick": [Function],
                               "variant": "link",
@@ -1385,6 +1419,7 @@ exports[`Domain Explorer Container component Snapshot test 1`] = `
                           consumerContext={null}
                         >
                           <Button
+                            id="display-error"
                             isInline={true}
                             onClick={[Function]}
                             ouiaContext={
@@ -1400,6 +1435,7 @@ exports[`Domain Explorer Container component Snapshot test 1`] = `
                               aria-label={null}
                               className="pf-c-button pf-m-link pf-m-inline"
                               disabled={false}
+                              id="display-error"
                               onClick={[Function]}
                               tabIndex={null}
                               type="button"
@@ -1416,6 +1452,7 @@ exports[`Domain Explorer Container component Snapshot test 1`] = `
                     </div>
                   </EmptyStateBody>
                   <Component
+                    id="goback-button"
                     onClick={[Function]}
                     variant="primary"
                   >
@@ -1424,6 +1461,7 @@ exports[`Domain Explorer Container component Snapshot test 1`] = `
                       componentProps={
                         Object {
                           "children": "Go back",
+                          "id": "goback-button",
                           "onClick": [Function],
                           "variant": "primary",
                         }
@@ -1431,6 +1469,7 @@ exports[`Domain Explorer Container component Snapshot test 1`] = `
                       consumerContext={null}
                     >
                       <Button
+                        id="goback-button"
                         onClick={[Function]}
                         ouiaContext={
                           Object {
@@ -1445,6 +1484,7 @@ exports[`Domain Explorer Container component Snapshot test 1`] = `
                           aria-label={null}
                           className="pf-c-button pf-m-primary"
                           disabled={false}
+                          id="goback-button"
                           onClick={[Function]}
                           tabIndex={null}
                           type="button"
@@ -1608,6 +1648,7 @@ exports[`Domain Explorer Container component check assertions on rememberedParam
                       An error occurred while accessing data.
                        
                       <Component
+                        id="display-error"
                         isInline={true}
                         onClick={[Function]}
                         variant="link"
@@ -1617,6 +1658,7 @@ exports[`Domain Explorer Container component check assertions on rememberedParam
                           componentProps={
                             Object {
                               "children": "See more details",
+                              "id": "display-error",
                               "isInline": true,
                               "onClick": [Function],
                               "variant": "link",
@@ -1625,6 +1667,7 @@ exports[`Domain Explorer Container component check assertions on rememberedParam
                           consumerContext={null}
                         >
                           <Button
+                            id="display-error"
                             isInline={true}
                             onClick={[Function]}
                             ouiaContext={
@@ -1640,6 +1683,7 @@ exports[`Domain Explorer Container component check assertions on rememberedParam
                               aria-label={null}
                               className="pf-c-button pf-m-link pf-m-inline"
                               disabled={false}
+                              id="display-error"
                               onClick={[Function]}
                               tabIndex={null}
                               type="button"
@@ -1656,6 +1700,7 @@ exports[`Domain Explorer Container component check assertions on rememberedParam
                     </div>
                   </EmptyStateBody>
                   <Component
+                    id="goback-button"
                     onClick={[Function]}
                     variant="primary"
                   >
@@ -1664,6 +1709,7 @@ exports[`Domain Explorer Container component check assertions on rememberedParam
                       componentProps={
                         Object {
                           "children": "Go back",
+                          "id": "goback-button",
                           "onClick": [Function],
                           "variant": "primary",
                         }
@@ -1671,6 +1717,7 @@ exports[`Domain Explorer Container component check assertions on rememberedParam
                       consumerContext={null}
                     >
                       <Button
+                        id="goback-button"
                         onClick={[Function]}
                         ouiaContext={
                           Object {
@@ -1685,6 +1732,7 @@ exports[`Domain Explorer Container component check assertions on rememberedParam
                           aria-label={null}
                           className="pf-c-button pf-m-primary"
                           disabled={false}
+                          id="goback-button"
                           onClick={[Function]}
                           tabIndex={null}
                           type="button"

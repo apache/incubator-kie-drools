@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Process Variables component Assertion for props 1`] = `
+exports[`ProcessVariables component tests snapshot testing with variables 1`] = `
 <Card>
   <CardHeader>
     <Title
@@ -76,7 +76,7 @@ exports[`Process Variables component Assertion for props 1`] = `
 </Card>
 `;
 
-exports[`Process Variables component Sample test case 1`] = `
+exports[`ProcessVariables component tests snapshot testing without variables 1`] = `
 <Card>
   <CardHeader>
     <Title

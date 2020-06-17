@@ -684,11 +684,13 @@ describe('Domain Explorer Column picker component', () => {
     wrapper.find('#apply-columns').simulate('click');
     await Promise.resolve();
     wrapper.find('#columnPicker-dropdown').simulate('select', obj);
-    // tslint:disable-next-line
     wrapper
       .find('#columnPicker-dropdown')
       .props()
-      ['onToggle']();
+      [
+        // tslint:disable-next-line
+        'onToggle'
+      ]();
   });
   it('check invalid column picker', () => {
     const props = {

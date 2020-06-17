@@ -68,6 +68,7 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
   const [isFilterClicked, setIsFilterClicked] = useState<boolean>(false);
   const [shouldRefresh, setShouldRefresh] = useState<boolean>(true);
   const [isCheckboxDropdownOpen, setisCheckboxDropdownOpen] = useState(false);
+
   const onFilterClick = () => {
     if (checkedArray.length === 0) {
       setFilters({ ...filters, status: checkedArray });
@@ -82,7 +83,8 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
     setShouldRefresh(true);
   };
 
-  const onSelect = (event, selection) => {
+  const onSelect = event => {
+    const selection = event.target.id;
     setIsFilterClicked(false);
     setShouldRefresh(false);
     if (selection) {
@@ -328,18 +330,21 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
     <DropdownItem
       key="none"
       onClick={() => handleCheckboxSelectClick('none', false)}
+      id="none"
     >
       Select none
     </DropdownItem>,
     <DropdownItem
       key="all-parent"
       onClick={() => handleCheckboxSelectClick('parent', false)}
+      id="all-parent"
     >
       Select all parent processes
     </DropdownItem>,
     <DropdownItem
       key="all-parent-child"
       onClick={() => handleCheckboxSelectClick('parent&child', false)}
+      id="all-parent-child"
     >
       Select all processes
     </DropdownItem>
@@ -356,7 +361,7 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
   const toggleGroupItems = (
     <React.Fragment>
       <DataToolbarGroup variant="filter-group">
-        <DataToolbarItem variant="bulk-select">
+        <DataToolbarItem variant="bulk-select" id="bulk-select">
           <Dropdown
             position={DropdownPosition.left}
             toggle={
@@ -387,6 +392,7 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
           deleteChip={onDelete}
           className="kogito-management-console__state-dropdown-list pf-u-mr-sm"
           categoryName="Status"
+          id="datatoolbar-filter-status"
         >
           <Select
             variant={SelectVariant.checkbox}
@@ -396,6 +402,7 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
             selections={checkedArray}
             isExpanded={isExpanded}
             placeholderText="Status"
+            id="status-select"
           >
             {statusMenuItems}
           </Select>
@@ -404,6 +411,7 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
           chips={filters.businessKey}
           deleteChip={onDelete}
           categoryName="Business key"
+          id="datatoolbar-filter-businesskey"
         >
           <InputGroup>
             <TextInput
@@ -420,7 +428,11 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
           </InputGroup>
         </DataToolbarFilter>
         <DataToolbarItem>
-          <Button variant="primary" onClick={onFilterClick}>
+          <Button
+            variant="primary"
+            onClick={onFilterClick}
+            id="Apply-filter-button"
+          >
             Apply filter
           </Button>
         </DataToolbarItem>
@@ -455,6 +467,7 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
             variant="plain"
             onClick={onRefreshClick}
             aria-label="Refresh list"
+            id="refresh-button"
           >
             <SyncIcon />
           </Button>

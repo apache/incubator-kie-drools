@@ -1,0 +1,86 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PageToolbar component tests snapshot testing with kogito_auth_enabled param 1`] = `
+<Fragment>
+  <AboutModalBox
+    handleModalToggleProp={[Function]}
+    isOpenProp={false}
+  />
+  <Toolbar>
+    <ToolbarGroup>
+      <ToolbarItem
+        className="pf-u-screen-reader pf-u-visible-on-md"
+      >
+        <Dropdown
+          dropdownItems={
+            Array [
+              <DropdownItem
+                onClick={[Function]}
+              >
+                About
+              </DropdownItem>,
+              <DropdownSeparator />,
+              <DropdownItem
+                component="button"
+                onClick={[Function]}
+              >
+                Log out
+              </DropdownItem>,
+            ]
+          }
+          isOpen={false}
+          isPlain={true}
+          onSelect={[Function]}
+          position="right"
+          toggle={
+            <DropdownToggle
+              onToggle={[Function]}
+            >
+              Ajay
+            </DropdownToggle>
+          }
+        />
+      </ToolbarItem>
+    </ToolbarGroup>
+  </Toolbar>
+</Fragment>
+`;
+
+exports[`PageToolbar component tests snapshot testing with kogito-auth_enabled as null 1`] = `
+<Fragment>
+  <AboutModalBox
+    handleModalToggleProp={[Function]}
+    isOpenProp={false}
+  />
+  <Toolbar>
+    <ToolbarGroup>
+      <ToolbarItem
+        className="pf-u-screen-reader pf-u-visible-on-md"
+      >
+        <Dropdown
+          dropdownItems={
+            Array [
+              <DropdownItem
+                onClick={[Function]}
+              >
+                About
+              </DropdownItem>,
+            ]
+          }
+          isOpen={false}
+          isPlain={true}
+          onSelect={[Function]}
+          position="right"
+          toggle={
+            <DropdownToggle
+              onToggle={[Function]}
+            >
+              Anonymous
+            </DropdownToggle>
+          }
+        />
+      </ToolbarItem>
+    </ToolbarGroup>
+  </Toolbar>
+</Fragment>
+`;

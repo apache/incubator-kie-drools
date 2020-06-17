@@ -943,7 +943,7 @@ exports[`PageLayout tests snapshot testing 1`] = `
                   }
                   path="/ProcessInstances"
                 >
-                  <ProcessListPage
+                  <MockedProcessListPage
                     history={
                       Object {
                         "action": "REPLACE",

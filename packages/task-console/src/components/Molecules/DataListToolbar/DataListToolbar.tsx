@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import {
-  DataToolbar,
-  DataToolbarItem,
-  DataToolbarContent,
-  DataToolbarFilter,
-  DataToolbarToggleGroup,
-  DataToolbarGroup,
   Button,
   Select,
   SelectOption,
-  SelectVariant
+  SelectVariant,
+  DataToolbarFilter,
+  DataToolbarGroup,
+  DataToolbarItem,
+  DataToolbarToggleGroup,
+  DataToolbar,
+  DataToolbarContent
 } from '@patternfly/react-core';
 import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
 import _ from 'lodash';

@@ -44,12 +44,7 @@ const ProcessListTable: React.FC<IOwnProps> = ({
   selectedNumber,
   setSelectedNumber
 }) => {
-  const {
-    loading,
-    error,
-    data,
-    networkStatus
-  } = GraphQL.useGetProcessInstancesQuery({
+  const { loading, error, data } = GraphQL.useGetProcessInstancesQuery({
     variables: {
       state: [ProcessInstanceState.Active],
       offset: 0,
@@ -58,7 +53,6 @@ const ProcessListTable: React.FC<IOwnProps> = ({
     fetchPolicy: 'network-only',
     notifyOnNetworkStatusChange: true
   });
-
   useEffect(() => {
     setIsError(false);
     setAbortedObj({});
@@ -78,14 +72,6 @@ const ProcessListTable: React.FC<IOwnProps> = ({
   }, [data]);
 
   if (loading || isLoading) {
-    return (
-      <Bullseye>
-        <KogitoSpinner spinnerText="Loading process instances..." />
-      </Bullseye>
-    );
-  }
-
-  if (networkStatus === 4) {
     return (
       <Bullseye>
         <KogitoSpinner spinnerText="Loading process instances..." />

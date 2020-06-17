@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DataToolbar component tests Snapshot tests 1`] = `
+exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
 <DataToolbar
   className="pf-m-toggle-group-container kogito-management-console__state-dropdown-list"
   clearAllFilters={[Function]}
@@ -29,22 +29,26 @@ exports[`DataToolbar component tests Snapshot tests 1`] = `
         variant="filter-group"
       >
         <DataToolbarItem
+          id="bulk-select"
           variant="bulk-select"
         >
           <Dropdown
             dropdownItems={
               Array [
                 <DropdownItem
+                  id="none"
                   onClick={[Function]}
                 >
                   Select none
                 </DropdownItem>,
                 <DropdownItem
+                  id="all-parent"
                   onClick={[Function]}
                 >
                   Select all parent processes
                 </DropdownItem>,
                 <DropdownItem
+                  id="all-parent-child"
                   onClick={[Function]}
                 >
                   Select all processes
@@ -62,7 +66,7 @@ exports[`DataToolbar component tests Snapshot tests 1`] = `
                       aria-label="Select all"
                       className=""
                       id="select-all-checkbox"
-                      isChecked={false}
+                      isChecked={true}
                       isDisabled={false}
                       isValid={true}
                       onChange={[Function]}
@@ -77,13 +81,23 @@ exports[`DataToolbar component tests Snapshot tests 1`] = `
         </DataToolbarItem>
         <DataToolbarFilter
           categoryName="Status"
-          chips={Array []}
+          chips={
+            Array [
+              "ACTIVE",
+              "COMPLETED",
+              "ERROR",
+              "ABORTED",
+              "SUSPENDED",
+            ]
+          }
           className="kogito-management-console__state-dropdown-list pf-u-mr-sm"
           deleteChip={[Function]}
+          id="datatoolbar-filter-status"
           showToolbarItem={true}
         >
           <Component
             aria-label="Status"
+            id="status-select"
             isExpanded={false}
             onSelect={[Function]}
             onToggle={[Function]}
@@ -183,8 +197,13 @@ exports[`DataToolbar component tests Snapshot tests 1`] = `
         </DataToolbarFilter>
         <DataToolbarFilter
           categoryName="Business key"
-          chips={Array []}
+          chips={
+            Array [
+              "tra",
+            ]
+          }
           deleteChip={[Function]}
+          id="datatoolbar-filter-businesskey"
           showToolbarItem={true}
         >
           <InputGroup>
@@ -203,6 +222,7 @@ exports[`DataToolbar component tests Snapshot tests 1`] = `
         </DataToolbarFilter>
         <DataToolbarItem>
           <Component
+            id="Apply-filter-button"
             onClick={[Function]}
             variant="primary"
           >
@@ -217,6 +237,7 @@ exports[`DataToolbar component tests Snapshot tests 1`] = `
       <DataToolbarItem>
         <Component
           aria-label="Refresh list"
+          id="refresh-button"
           onClick={[Function]}
           variant="plain"
         >

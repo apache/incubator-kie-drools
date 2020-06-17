@@ -20,12 +20,12 @@ const props2 = {
     ]
   }
 };
-describe('Process Variables component', () => {
-  it('Sample test case', () => {
+describe('ProcessVariables component tests', () => {
+  it('snapshot testing without variables', () => {
     const wrapper = shallow(<ProcessDetailsProcessVariables {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
-  it('Assertion for props', () => {
+  it('snapshot testing with variables', () => {
     const wrapper = shallow(<ProcessDetailsProcessVariables {...props2} />);
     expect(wrapper).toMatchSnapshot();
   });

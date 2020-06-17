@@ -39,6 +39,7 @@ const ErrorPopover: React.FC<IOwnProps> = ({
         processInstanceData.serviceUrl && [
           <Button
             key="confirm1"
+            id="skip-button"
             variant="secondary"
             onClick={() =>
               handleSkip(
@@ -56,6 +57,7 @@ const ErrorPopover: React.FC<IOwnProps> = ({
           <Button
             key="confirm2"
             variant="secondary"
+            id="retry-button"
             onClick={() =>
               handleRetry(
                 processInstanceData,

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Process Details component Snapshot tests 1`] = `
+exports[`ProcessDetails component tests Snapshot testing with basic data loaded 1`] = `
 <Card>
   <CardHeader>
     <Title
@@ -19,6 +19,16 @@ exports[`Process Details component Snapshot tests 1`] = `
         <Text
           component="p"
         />
+      </FormGroup>
+      <FormGroup
+        fieldId="businessKey"
+        label="Business key"
+      >
+        <Text
+          component="p"
+        >
+          Tr21
+        </Text>
       </FormGroup>
       <FormGroup
         fieldId="state"

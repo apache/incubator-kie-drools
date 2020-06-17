@@ -43,8 +43,9 @@ interface MatchProps {
   instanceID: string;
 }
 
-const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, {}, {}> &
-  InjectedOuiaProps> = ({ ouiaContext, ...props }) => {
+const ProcessDetailsPage: React.FC<
+  RouteComponentProps<MatchProps, {}, {}> & InjectedOuiaProps
+> = ({ ouiaContext, ...props }) => {
   const id = props.match.params.instanceID;
   const [isSkipModalOpen, setIsSkipModalOpen] = useState<boolean>(false);
   const [isRetryModalOpen, setIsRetryModalOpen] = useState<boolean>(false);
@@ -112,7 +113,6 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, {}, {}> &
       );
     }
   };
-
   let prevPath;
   const BreadCrumb = [];
   let BreadCrumbRoute = [];

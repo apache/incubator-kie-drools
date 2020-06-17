@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -24,8 +25,8 @@ import './ProcessListPage.css';
 import ProcessListTable from '../../Organisms/ProcessListTable/ProcessListTable';
 import ProcessListModal from '../../Atoms/ProcessListModal/ProcessListModal';
 import axios from 'axios';
-import { InfoCircleIcon } from '@patternfly/react-icons';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
+import { setTitle } from '../../../utils/Utils';
 
 const ProcessListPage: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
   const [defaultPageSize] = useState(10);
@@ -188,31 +189,6 @@ const ProcessListPage: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
     }
   }, [getProcessInstancesWithBK.data]);
 
-  const setTitle = (titleStatus, titleText) => {
-    switch (titleStatus) {
-      case 'success':
-        return (
-          <>
-            <InfoCircleIcon
-              className="pf-u-mr-sm"
-              color="var(--pf-global--info-color--100)"
-            />{' '}
-            {titleText}{' '}
-          </>
-        );
-      case 'failure':
-        return (
-          <>
-            <InfoCircleIcon
-              className="pf-u-mr-sm"
-              color="var(--pf-global--danger-color--100)"
-            />{' '}
-            {titleText}{' '}
-          </>
-        );
-    }
-  };
-
   const resetClick = () => {
     setSearchWord('');
     setCheckedArray(['ACTIVE']);
@@ -295,11 +271,7 @@ const ProcessListPage: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
   return (
     <React.Fragment>
       <ProcessListModal
-        modalTitle={
-          titleType === 'success'
-            ? setTitle(titleType, modalTitle)
-            : setTitle(titleType, modalTitle)
-        }
+        modalTitle={setTitle(titleType, modalTitle)}
         isModalOpen={isAbortModalOpen}
         abortedMessageObj={abortedMessageObj}
         completedMessageObj={completedMessageObj}

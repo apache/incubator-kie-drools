@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PageNotFound component tests snapshot testing with location object 1`] = `
+<Fragment>
+  <PageSection
+    variant="light"
+  >
+    <Bullseye>
+      <EmptyState
+        variant="full"
+      >
+        <EmptyStateIcon
+          color="var(--pf-global--danger-color--100)"
+          icon={[Function]}
+          size="md"
+        />
+        <Title
+          headingLevel="h1"
+          size="4xl"
+        >
+          404 Error: page not found
+        </Title>
+        <EmptyStateBody>
+          This page could not be found.
+        </EmptyStateBody>
+        <Component
+          onClick={[Function]}
+          variant="primary"
+        />
+      </EmptyState>
+    </Bullseye>
+  </PageSection>
+</Fragment>
+`;
+
+exports[`PageNotFound component tests snapshot testing without location object 1`] = `
+<Fragment>
+  <PageSection
+    variant="light"
+  >
+    <Bullseye>
+      <EmptyState
+        variant="full"
+      >
+        <EmptyStateIcon
+          color="var(--pf-global--danger-color--100)"
+          icon={[Function]}
+          size="md"
+        />
+        <Title
+          headingLevel="h1"
+          size="4xl"
+        >
+          404 Error: page not found
+        </Title>
+        <EmptyStateBody>
+          This page could not be found.
+        </EmptyStateBody>
+        <Component
+          onClick={[Function]}
+          variant="primary"
+        />
+      </EmptyState>
+    </Bullseye>
+  </PageSection>
+</Fragment>
+`;

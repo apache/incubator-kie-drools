@@ -1,7 +1,7 @@
 import React from 'react';
 
-const ProcessListPage = (): React.ReactElement => {
+const MockedProcessListPage = (): React.ReactElement => {
   return <></>;
 };
 
-export default ProcessListPage;
+export default MockedProcessListPage;

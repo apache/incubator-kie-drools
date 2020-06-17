@@ -1,0 +1,575 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`KogitoPageLayout component tests snapshot tests 1`] = `
+<KogitoPageLayout
+  BrandAltText="Kogito logo"
+  BrandClick={[MockFunction]}
+  BrandSrc="../../../../static/kogito.png"
+  PageNav={
+    <React.Fragment>
+      page Navigation elements
+    </React.Fragment>
+  }
+  ouiaContext={
+    Object {
+      "isOuia": false,
+      "ouiaId": null,
+    }
+  }
+>
+  <Page
+    breadcrumb={null}
+    className="kogito-common--PageLayout"
+    defaultManagedSidebarIsOpen={true}
+    header={
+      <PageHeader
+        avatar={
+          <Avatar
+            alt="Kogito Logo"
+            src="avatar.svg"
+          />
+        }
+        isNavOpen={true}
+        logo={
+          <BrandLogo
+            alt="Kogito logo"
+            brandClick={[MockFunction]}
+            src="../../../../static/kogito.png"
+          />
+        }
+        onNavToggle={[Function]}
+        showNavToggle={true}
+        toolbar={
+          <Context.Provider
+            value="../../../../static/kogito.png"
+          >
+            <PageToolbar />
+          </Context.Provider>
+        }
+      />
+    }
+    isManagedSidebar={false}
+    mainContainerId="main-content-page-layout-default-nav"
+    onPageResize={[Function]}
+    sidebar={
+      <PageSidebar
+        isNavOpen={true}
+        nav={
+          <React.Fragment>
+            page Navigation elements
+          </React.Fragment>
+        }
+        theme="dark"
+      />
+    }
+    skipToContent={null}
+  >
+    <div
+      className="pf-c-page kogito-common--PageLayout"
+    >
+      <PageHeader
+        avatar={
+          <Avatar
+            alt="Kogito Logo"
+            src="avatar.svg"
+          />
+        }
+        isNavOpen={true}
+        logo={
+          <BrandLogo
+            alt="Kogito logo"
+            brandClick={[MockFunction]}
+            src="../../../../static/kogito.png"
+          />
+        }
+        onNavToggle={[Function]}
+        showNavToggle={true}
+        toolbar={
+          <Context.Provider
+            value="../../../../static/kogito.png"
+          >
+            <PageToolbar />
+          </Context.Provider>
+        }
+      >
+        <header
+          className="pf-c-page__header"
+        >
+          <div
+            className="pf-c-page__header-brand"
+          >
+            <div
+              className="pf-c-page__header-brand-toggle"
+            >
+              <Component
+                aria-controls="page-sidebar"
+                aria-expanded="true"
+                aria-label="Global navigation"
+                id="nav-toggle"
+                onClick={[Function]}
+                variant="plain"
+              >
+                <ComponentWithOuia
+                  component={[Function]}
+                  componentProps={
+                    Object {
+                      "aria-controls": "page-sidebar",
+                      "aria-expanded": "true",
+                      "aria-label": "Global navigation",
+                      "children": <BarsIcon
+                        color="currentColor"
+                        noVerticalAlign={false}
+                        size="sm"
+                        title={null}
+                      />,
+                      "id": "nav-toggle",
+                      "onClick": [Function],
+                      "variant": "plain",
+                    }
+                  }
+                  consumerContext={
+                    Object {
+                      "isOuia": false,
+                      "ouiaId": null,
+                    }
+                  }
+                >
+                  <Button
+                    aria-controls="page-sidebar"
+                    aria-expanded="true"
+                    aria-label="Global navigation"
+                    id="nav-toggle"
+                    onClick={[Function]}
+                    ouiaContext={
+                      Object {
+                        "isOuia": false,
+                        "ouiaId": null,
+                      }
+                    }
+                    variant="plain"
+                  >
+                    <button
+                      aria-controls="page-sidebar"
+                      aria-disabled={null}
+                      aria-expanded="true"
+                      aria-label="Global navigation"
+                      className="pf-c-button pf-m-plain"
+                      disabled={false}
+                      id="nav-toggle"
+                      onClick={[Function]}
+                      tabIndex={null}
+                      type="button"
+                    >
+                      <BarsIcon
+                        color="currentColor"
+                        noVerticalAlign={false}
+                        size="sm"
+                        title={null}
+                      >
+                        <svg
+                          aria-hidden={true}
+                          aria-labelledby={null}
+                          fill="currentColor"
+                          height="1em"
+                          role="img"
+                          style={
+                            Object {
+                              "verticalAlign": "-0.125em",
+                            }
+                          }
+                          viewBox="0 0 448 512"
+                          width="1em"
+                        >
+                          <path
+                            d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"
+                            transform=""
+                          />
+                        </svg>
+                      </BarsIcon>
+                    </button>
+                  </Button>
+                </ComponentWithOuia>
+              </Component>
+            </div>
+            <a
+              className="pf-c-page__header-brand-link"
+            >
+              <BrandLogo
+                alt="Kogito logo"
+                brandClick={[MockFunction]}
+                src="../../../../static/kogito.png"
+              >
+                <Brand
+                  alt="Kogito logo"
+                  onClick={[MockFunction]}
+                  src="../../../../static/kogito.png"
+                >
+                  <img
+                    alt="Kogito logo"
+                    className="pf-c-brand"
+                    onClick={[MockFunction]}
+                    src="../../../../static/kogito.png"
+                  />
+                </Brand>
+              </BrandLogo>
+            </a>
+          </div>
+          <div
+            className="pf-c-page__header-tools"
+          >
+            <PageToolbar>
+              <AboutModalBox
+                handleModalToggleProp={[Function]}
+                isOpenProp={false}
+              >
+                <AboutModal
+                  appendTo={null}
+                  backgroundImageSrc="kogitoAbout.png"
+                  brandImageAlt="Kogito Logo"
+                  brandImageSrc="../../../../static/kogito.png"
+                  className=""
+                  isOpen={false}
+                  noAboutModalBoxContentContainer={false}
+                  onClose={[Function]}
+                  productName=""
+                  trademark="undefined is part of Kogito, an open source software released under the Apache Software License 2.0"
+                >
+                  <Portal
+                    containerInfo={<div />}
+                  >
+                    <AboutModalContainer
+                      ariaDescribedById="pf-about-modal-content-0"
+                      ariaLabelledbyId="pf-about-modal-title-0"
+                      backgroundImageSrc="kogitoAbout.png"
+                      brandImageAlt="Kogito Logo"
+                      brandImageSrc="../../../../static/kogito.png"
+                      className=""
+                      isOpen={false}
+                      noAboutModalBoxContentContainer={false}
+                      onClose={[Function]}
+                      productName=""
+                      trademark="undefined is part of Kogito, an open source software released under the Apache Software License 2.0"
+                    />
+                  </Portal>
+                </AboutModal>
+              </AboutModalBox>
+              <Toolbar>
+                <div
+                  className="pf-l-toolbar"
+                >
+                  <ToolbarGroup>
+                    <div
+                      className="pf-l-toolbar__group"
+                    >
+                      <ToolbarItem
+                        className="pf-u-screen-reader pf-u-visible-on-md"
+                      >
+                        <div
+                          className="pf-l-toolbar__item pf-u-screen-reader pf-u-visible-on-md"
+                        >
+                          <Dropdown
+                            dropdownItems={
+                              Array [
+                                <DropdownItem
+                                  onClick={[Function]}
+                                >
+                                  About
+                                </DropdownItem>,
+                              ]
+                            }
+                            isOpen={false}
+                            isPlain={true}
+                            onSelect={[Function]}
+                            position="right"
+                            toggle={
+                              <DropdownToggle
+                                onToggle={[Function]}
+                              >
+                                Anonymous
+                              </DropdownToggle>
+                            }
+                          >
+                            <Component
+                              dropdownItems={
+                                Array [
+                                  <DropdownItem
+                                    onClick={[Function]}
+                                  >
+                                    About
+                                  </DropdownItem>,
+                                ]
+                              }
+                              isOpen={false}
+                              isPlain={true}
+                              position="right"
+                              toggle={
+                                <DropdownToggle
+                                  onToggle={[Function]}
+                                >
+                                  Anonymous
+                                </DropdownToggle>
+                              }
+                            >
+                              <ComponentWithOuia
+                                component={[Function]}
+                                componentProps={
+                                  Object {
+                                    "dropdownItems": Array [
+                                      <DropdownItem
+                                        onClick={[Function]}
+                                      >
+                                        About
+                                      </DropdownItem>,
+                                    ],
+                                    "isOpen": false,
+                                    "isPlain": true,
+                                    "position": "right",
+                                    "toggle": <DropdownToggle
+                                      onToggle={[Function]}
+                                    >
+                                      Anonymous
+                                    </DropdownToggle>,
+                                  }
+                                }
+                                consumerContext={
+                                  Object {
+                                    "isOuia": false,
+                                    "ouiaId": null,
+                                  }
+                                }
+                              >
+                                <DropdownWithContext
+                                  autoFocus={true}
+                                  className=""
+                                  direction="down"
+                                  dropdownItems={
+                                    Array [
+                                      <DropdownItem
+                                        onClick={[Function]}
+                                      >
+                                        About
+                                      </DropdownItem>,
+                                    ]
+                                  }
+                                  isGrouped={false}
+                                  isOpen={false}
+                                  isPlain={true}
+                                  onSelect={[Function]}
+                                  ouiaComponentType="Dropdown"
+                                  ouiaContext={
+                                    Object {
+                                      "isOuia": false,
+                                      "ouiaId": null,
+                                    }
+                                  }
+                                  position="right"
+                                  toggle={
+                                    <DropdownToggle
+                                      onToggle={[Function]}
+                                    >
+                                      Anonymous
+                                    </DropdownToggle>
+                                  }
+                                >
+                                  <div
+                                    className="pf-c-dropdown pf-m-align-right"
+                                  >
+                                    <DropdownToggle
+                                      ariaHasPopup={true}
+                                      id="pf-toggle-id-0"
+                                      isOpen={false}
+                                      isPlain={true}
+                                      key=".0"
+                                      onEnter={[Function]}
+                                      onToggle={[Function]}
+                                      parentRef={
+                                        Object {
+                                          "current": <div
+                                            class="pf-c-dropdown pf-m-align-right"
+                                          >
+                                            <button
+                                              aria-expanded="false"
+                                              aria-haspopup="true"
+                                              class="pf-c-dropdown__toggle pf-m-plain"
+                                              id="pf-toggle-id-0"
+                                              type="button"
+                                            >
+                                              <span
+                                                class="pf-c-dropdown__toggle-text"
+                                              >
+                                                Anonymous
+                                              </span>
+                                              <svg
+                                                aria-hidden="true"
+                                                class="pf-c-dropdown__toggle-icon"
+                                                fill="currentColor"
+                                                height="1em"
+                                                role="img"
+                                                style="vertical-align: -0.125em;"
+                                                viewBox="0 0 320 512"
+                                                width="1em"
+                                              >
+                                                <path
+                                                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                                  transform=""
+                                                />
+                                              </svg>
+                                            </button>
+                                          </div>,
+                                        }
+                                      }
+                                    >
+                                      <Toggle
+                                        ariaHasPopup={true}
+                                        bubbleEvent={false}
+                                        className=""
+                                        id="pf-toggle-id-0"
+                                        isActive={false}
+                                        isDisabled={false}
+                                        isFocused={false}
+                                        isHovered={false}
+                                        isOpen={false}
+                                        isPlain={true}
+                                        isPrimary={false}
+                                        isSplitButton={false}
+                                        onEnter={[Function]}
+                                        onToggle={[Function]}
+                                        parentRef={
+                                          Object {
+                                            "current": <div
+                                              class="pf-c-dropdown pf-m-align-right"
+                                            >
+                                              <button
+                                                aria-expanded="false"
+                                                aria-haspopup="true"
+                                                class="pf-c-dropdown__toggle pf-m-plain"
+                                                id="pf-toggle-id-0"
+                                                type="button"
+                                              >
+                                                <span
+                                                  class="pf-c-dropdown__toggle-text"
+                                                >
+                                                  Anonymous
+                                                </span>
+                                                <svg
+                                                  aria-hidden="true"
+                                                  class="pf-c-dropdown__toggle-icon"
+                                                  fill="currentColor"
+                                                  height="1em"
+                                                  role="img"
+                                                  style="vertical-align: -0.125em;"
+                                                  viewBox="0 0 320 512"
+                                                  width="1em"
+                                                >
+                                                  <path
+                                                    d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                                    transform=""
+                                                  />
+                                                </svg>
+                                              </button>
+                                            </div>,
+                                          }
+                                        }
+                                      >
+                                        <button
+                                          aria-expanded={false}
+                                          aria-haspopup={true}
+                                          className="pf-c-dropdown__toggle pf-m-plain"
+                                          disabled={false}
+                                          id="pf-toggle-id-0"
+                                          onClick={[Function]}
+                                          onKeyDown={[Function]}
+                                          type="button"
+                                        >
+                                          <span
+                                            className="pf-c-dropdown__toggle-text"
+                                          >
+                                            Anonymous
+                                          </span>
+                                          <CaretDownIcon
+                                            className="pf-c-dropdown__toggle-icon"
+                                            color="currentColor"
+                                            noVerticalAlign={false}
+                                            size="sm"
+                                            title={null}
+                                          >
+                                            <svg
+                                              aria-hidden={true}
+                                              aria-labelledby={null}
+                                              className="pf-c-dropdown__toggle-icon"
+                                              fill="currentColor"
+                                              height="1em"
+                                              role="img"
+                                              style={
+                                                Object {
+                                                  "verticalAlign": "-0.125em",
+                                                }
+                                              }
+                                              viewBox="0 0 320 512"
+                                              width="1em"
+                                            >
+                                              <path
+                                                d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                                transform=""
+                                              />
+                                            </svg>
+                                          </CaretDownIcon>
+                                        </button>
+                                      </Toggle>
+                                    </DropdownToggle>
+                                  </div>
+                                </DropdownWithContext>
+                              </ComponentWithOuia>
+                            </Component>
+                          </Dropdown>
+                        </div>
+                      </ToolbarItem>
+                    </div>
+                  </ToolbarGroup>
+                </div>
+              </Toolbar>
+            </PageToolbar>
+            <Avatar
+              alt="Kogito Logo"
+              src="avatar.svg"
+            >
+              <img
+                alt="Kogito Logo"
+                className="pf-c-avatar"
+                src="avatar.svg"
+              />
+            </Avatar>
+          </div>
+        </header>
+      </PageHeader>
+      <PageSidebar
+        isNavOpen={true}
+        nav={
+          <React.Fragment>
+            page Navigation elements
+          </React.Fragment>
+        }
+        theme="dark"
+      >
+        <div
+          className="pf-c-page__sidebar pf-m-dark pf-m-expanded"
+          id="page-sidebar"
+        >
+          <div
+            className="pf-c-page__sidebar-body"
+          >
+            page Navigation elements
+          </div>
+        </div>
+      </PageSidebar>
+      <main
+        className="pf-c-page__main"
+        id="main-content-page-layout-default-nav"
+        tabIndex={-1}
+      >
+        children rendered
+      </main>
+    </div>
+  </Page>
+</KogitoPageLayout>
+`;

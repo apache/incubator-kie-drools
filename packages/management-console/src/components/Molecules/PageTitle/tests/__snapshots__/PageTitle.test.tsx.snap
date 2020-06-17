@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PageTitle component tests snapshot testing 1`] = `
+<Fragment>
+  <Title
+    headingLevel="h1"
+    size="4xl"
+  >
+    Kogito
+  </Title>
+</Fragment>
+`;

@@ -36,6 +36,7 @@ const ServerErrors = props => {
             <Button
               variant="link"
               isInline
+              id="display-error"
               onClick={() => setDisplayError(!displayError)}
             >
               See more details
@@ -53,7 +54,11 @@ const ServerErrors = props => {
               </ClipboardCopy>
             </EmptyStateBody>
           )}
-          <Button variant="primary" onClick={() => props.history.goBack()}>
+          <Button
+            variant="primary"
+            id="goback-button"
+            onClick={() => props.history.goBack()}
+          >
             Go back
           </Button>
         </EmptyState>

@@ -51,6 +51,9 @@
       "../../config/Jest-config/test-setup.js",
       "core-js"
     ],
+    "coveragePathIgnorePatterns": [
+      "./src/static"
+    ],
     "moduleFileExtensions": [
       "ts",
       "tsx",
