@@ -214,7 +214,7 @@
                   <npmRegistryURL>${env.NPM_REGISTRY_URL}</npmRegistryURL>
                   <arguments>run build:prod</arguments>
                   <environmentVariables>
-                    <KOGITO_MANAGEMENTCONSOLE_VERSION>${project.version}</KOGITO_MANAGEMENTCONSOLE_VERSION>
+                    <KOGITO_APP_VERSION>${project.version}</KOGITO_APP_VERSION>
                 </environmentVariables>
                 </configuration>
               </execution>
