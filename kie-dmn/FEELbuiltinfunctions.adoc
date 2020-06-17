@@ -1181,6 +1181,293 @@ met by( [6..10], [1..5] ) = false
 
 // ----------------------------------------------------------------------------
 
+=== overlaps()
+
+A overlaps B
+
+.Signatures
+a. overlaps(range1, range2)
+
+.Evaluates to true if and only if
+a. `(range1.end > range2.start or (range1.end = range2.start and (range1.end included or range2.end included))) and (range1.start < range2.end or (range1.start = range2.end and range1.start included and range2.end included))`
+
+.Examples
+[source,FEEL]
+----
+overlaps( [1..5], [3..8] ) = true
+overlaps( [3..8], [1..5] ) = true 
+overlaps( [1..8], [3..5] ) = true 
+overlaps( [3..5], [1..8] ) = true 
+overlaps( [1..5], [6..8] ) = false
+overlaps( [6..8], [1..5] ) = false
+overlaps( [1..5], [5..8] ) = true 
+overlaps( [1..5], (5..8] ) = false
+overlaps( [1..5), [5..8] ) = false
+overlaps( [1..5), (5..8] ) = false
+overlaps( [5..8], [1..5] ) = true 
+overlaps( (5..8], [1..5] ) = false
+overlaps( [5..8], [1..5) ) = false
+overlaps( (5..8], [1..5) ) = false
+----
+
+// ----------------------------------------------------------------------------
+
+=== overlaps before()
+
+A overlaps before B
+
+.Signatures
+a. overlaps before(range1 range2)
+
+.Evaluates to true if and only if
+a. `(range1.start < range2.start or (range1.start = range2.start and range1.start included and range2.start included)) and (range1.end > range2.start or (range1.end = range2.start and range1.end included and range2.start included)) and (range1.end < range2.end or (range1.end = range2.end and (not(range1.end included) or range2.end included )))`
+
+.Examples
+[source,FEEL]
+----
+overlaps before( [1..5], [3..8] ) = true 
+overlaps before( [1..5], [6..8] ) = false 
+overlaps before( [1..5], [5..8] ) = true 
+overlaps before( [1..5], (5..8] ) = false 
+overlaps before( [1..5), [5..8] ) = false 
+overlaps before( [1..5), (1..5] ) = true 
+overlaps before( [1..5], (1..5] ) = true
+overlaps before( [1..5), [1..5] ) = false 
+overlaps before( [1..5], [1..5] ) = false
+----
+
+// ----------------------------------------------------------------------------
+
+=== overlaps after()
+
+A overlaps after B
+
+.Signatures
+a. overlaps after(range1 range2)
+
+.Evaluates to true if and only if
+a. `(range2.start < range1.start or (range2.start = range1.start and range2.start included and not( range1.start included))) and (range2.end > range1.start or (range2.end = range1.start  and range2.end included and range1.start included )) and (range2.end < range1.end or (range2.end = range1.end and (not(range2.end included) or range1.end included)))` 
+
+.Examples
+[source,FEEL]
+----
+overlaps after( [3..8], [1..5] )= true 
+overlaps after( [6..8], [1..5] )= false
+overlaps after( [5..8], [1..5] )= true 
+overlaps after( (5..8], [1..5] )= false
+overlaps after( [5..8], [1..5) )= false
+overlaps after( (1..5], [1..5) )= true 
+overlaps after( (1..5], [1..5] )= true 
+overlaps after( [1..5], [1..5) )= false
+overlaps after( [1..5], [1..5] )= false
+overlaps after( (1..5), [1..5] )= false
+overlaps after( (1..5], [1..6] )= false
+overlaps after( (1..5], (1..5] )= false
+overlaps after( (1..5], [2..5] )= false
+----
+
+// ----------------------------------------------------------------------------
+
+=== finishes()
+
+A finishes B
+
+.Signatures
+a.  finishes(point, range)
+b. finishes(range1, range2)
+
+.Evaluates to true if and only if
+a. `range.end included and range.end = point`
+b. `range1.end included = range2.end included and range1.end = range2.end and (range1.start > range2.start or (range1.start = range2.start and (not(range1.start included) or range2.start included)))`
+
+.Examples
+[source,FEEL]
+----
+finishes( 10, [1..10] ) = true 
+finishes( 10, [1..10) ) = false 
+finishes( [5..10], [1..10] ) = true 
+finishes( [5..10), [1..10] ) = false 
+finishes( [5..10), [1..10) ) = true 
+finishes( [1..10], [1..10] ) = true 
+finishes( (1..10], [1..10] ) = true
+----
+
+// ----------------------------------------------------------------------------
+
+=== finished by()
+
+A finished by B
+
+.Signatures
+a. finished by(range, point)
+b. finished by(range1 range2)
+
+.Evaluates to true if and only if
+a. `range.end included and range.end = point`
+b. `range1.end included = range2.end included and range1.end = range2.end and (range1.start < range2.start or (range1.start = range2.start and (range1.start included or not(range2.start included))))`
+
+.Examples
+[source,FEEL]
+----
+finished by( [1..10], 10 ) = true
+finished by( [1..10), 10 ) = false
+finished by( [1..10], [5..10] ) = true
+finished by( [1..10], [5..10) ) = false
+finished by( [1..10), [5..10) ) = true
+finished by( [1..10], [1..10] ) = true
+finished by( [1..10], (1..10] ) = true
+----
+
+// ----------------------------------------------------------------------------
+
+=== includes()
+
+A includes B
+
+.Signatures
+a. includes(range, point)
+b. includes(range1, range2)
+
+.Evaluates to true if and only if
+a. `(range.start < point and range.end > point) or (range.start = point and range.start included) or (range.end = point and range.end included)`
+b. `(range1.start < range2.start or (range1.start = range2.start and (range1.start included or not(range2.start included)))) and (range1.end > range2.end or (range1.end = range2.end and (range1.end included or not(range2.end included))))`
+
+.Examples
+[source,FEEL]
+----
+includes( [1..10], 5 ) = true 
+includes( [1..10], 12 ) = false 
+includes( [1..10], 1 ) = true 
+includes( [1..10], 10 ) = true 
+includes( (1..10], 1 ) = false 
+includes( [1..10), 10 ) = false 
+includes( [1..10], [4..6] ) = true 
+includes( [1..10], [1..5] ) = true 
+includes( (1..10], (1..5] ) = true 
+includes( [1..10], (1..10) ) = true 
+includes( [1..10), [5..10) ) = true 
+includes( [1..10], [1..10) ) = true 
+includes( [1..10], (1..10] ) = true 
+includes( [1..10], [1..10] ) = true
+----
+
+// ----------------------------------------------------------------------------
+
+=== during()
+
+A during B
+
+.Signatures
+a.  during(point, range)
+b. during(range1 range2)
+
+.Evaluates to true if and only if
+a. `(range.start < point and range.end > point) or (range.start = point and range.start included) or (range.end = point and range.end included)`
+b. `(range2.start < range1.start or (range2.start = range1.start and (range2.start included or not(range1.start included)))) and (range2.end > range1.end or (range2.end = range1.end and (range2.end included or not(range1.end included))))`
+
+.Examples
+[source,FEEL]
+----
+during( 5, [1..10] ) = true
+during( 12, [1..10] ) = false
+during( 1, [1..10] ) = true
+during( 10, [1..10] ) = true
+during( 1, (1..10] ) = false
+during( 10, [1..10) ) = false
+during( [4..6], [1..10] ) = true
+during( [1..5], [1..10] ) = true
+during( (1..5], (1..10] ) = true
+during( (1..10), [1..10] ) = true
+during( [5..10), [1..10) ) = true
+during( [1..10), [1..10] ) = true
+during( (1..10], [1..10] ) = true
+during( [1..10], [1..10] ) = true
+----
+
+// ----------------------------------------------------------------------------
+
+=== starts()
+
+A starts B
+
+.Signatures
+a. starts(point, range)
+b. starts(range1, range2)
+
+.Evaluates to true if and only if
+a. `range.start = point and range.start included`
+b. `range1.start = range2.start and range1.start included = range2.start included and (range1.end < range2.end or (range1.end = range2.end and (not(range1.end included) or range2.end included)))`
+
+.Examples
+[source,FEEL]
+----
+starts( 1, [1..10] ) = true
+starts( 1, (1..10] ) = false
+starts( 2, [1..10] ) = false
+starts( [1..5], [1..10] ) = true
+starts( (1..5], (1..10] ) = true
+starts( (1..5], [1..10] ) = false
+starts( [1..5], (1..10] ) = false
+starts( [1..10], [1..10] ) = true
+starts( [1..10), [1..10] ) = true
+starts( (1..10), (1..10) ) = true
+----
+
+// ----------------------------------------------------------------------------
+
+=== started by()
+
+A started by B
+
+.Signatures
+a. started by(range, point)
+b. started by(range1, range2)
+
+.Evaluates to true if and only if
+a. `range.start = point and range.start included`
+b. `range1.start = range2.start and range1.start included = range2.start included and (range2.end < range1.end or (range2.end = range1.end and (not(range2.end included) or range1.end included)))`
+
+.Examples
+[source,FEEL]
+----
+started by( [1..10], 1 ) = true
+started by( (1..10], 1 ) = false
+started by( [1..10], 2 ) = false
+started by( [1..10], [1..5] ) = true
+started by( (1..10], (1..5] ) = true
+started by( [1..10], (1..5] ) = false
+started by( (1..10], [1..5] ) = false
+started by( [1..10], [1..10] ) = true
+started by( [1..10], [1..10) ) = true
+started by( (1..10), (1..10) ) = true
+----
+
+// ----------------------------------------------------------------------------
+
+=== coincides()
+
+A coincides B
+
+.Signatures
+a. coincides(point1, point2)
+b. coincides(range1, range2)
+
+.Evaluates to true if and only if
+a. `point1 = point2`
+b. `range1.start = range2.start and range1.start included = range2.start included and range1.end = range2.end and range1.end included = range2.end included`
+
+.Examples
+[source,FEEL]
+----
+coincides( 5, 5 ) = true
+coincides( 3, 4 ) = false
+coincides( [1..5], [1..5] ) = true
+coincides( (1..5), [1..5] ) = false
+coincides( [1..5], [2..6] ) = false
+----
+
+// ----------------------------------------------------------------------------
+
 == Temporal functions
 
 Functions for general temporal operations.
