@@ -1,0 +1,545 @@
+= FEEL built-in functions
+
+To promote interoperability, FEEL includes a library of built-in functions, described below.
+The built-in functions are implemented and available to be used in the Drools DMN engine; this document provides and overall description and helpful examples.
+The formal specification of these functions can be referenced in the original DMN Specification document from OMG.
+
+== Conversion functions
+
+These functions support conversion between values of different types.
+Some specific string formats are used, such as:
+
+* `date string` as specified by XML Schema Part 2 Datatypes, for example `2020-06-01`
+* `time string` either 
+** as specified by XML Schema Part 2 Datatypes, for example `23:59:00z`
+** a local time as specified by ISO 8601 followed by `@` and a IANA Timezone, for example `00:01:00@Etc/UTC`
+* `date time string` a composite of a `date string` followed by `T` and a `time string`, for example `2012-12-25T11:00:00Z`
+* `duration string` as a date time duration or year month duration as specified by the XQuery 1.0 and XPath 2.0 Data Model, for example `P1Y2M`
+
+=== date(from)
+
+Convert `from` to a `date`.
+
+.Parameters
+* `from` of type `string` of `date string` format
+
+.Examples
+[source,FEEL]
+----
+date("2012-12-25") - date("2012-12-24") = duration("P1D")
+----
+
+// ----------------------------------------------------------------------------
+
+=== date(from)
+
+Convert `from` to a `date`, setting time components to null.
+
+.Parameters
+* `from` of type `date and time`
+
+.Examples
+[source,FEEL]
+----
+date(date and time("2012-12-25T11:00:00Z")) = date("2012-12-25")
+----
+
+// ----------------------------------------------------------------------------
+
+=== date(year, month, day)
+
+Produce a `date` from year, month and day values.
+
+.Parameters
+* `year` of type `number`
+* `month` of type `number`
+* `day` of type `number`
+
+.Examples
+[source,FEEL]
+----
+date(2012, 12, 25) = date("2012-12-25")
+----
+
+// ----------------------------------------------------------------------------
+
+=== date and time(date, time)
+
+Produce a `date and time` from the given date ignoring any time components and the given time. 
+
+.Parameters
+* `date` of type `date` or `date and time`
+* `time` of type `time`
+
+.Examples
+[source,FEEL]
+----
+date and time ("2012-12-24T23:59:00") = date and time(date("2012-12-24"), time("23:59:00"))
+----
+
+// ----------------------------------------------------------------------------
+
+=== date and time(from)
+
+Produce a `date and time` from the given string. 
+
+.Parameters
+* `from` of type `string` of `date time string` format
+
+.Examples
+[source,FEEL]
+----
+date and time("2012-12-24T23:59:00") + duration("PT1M") = date and time("2012-12-25T00:00:00")
+----
+
+// ----------------------------------------------------------------------------
+
+=== time(from)
+
+Produce a `time` from the given string. 
+
+.Parameters
+* `from` of type `string` of `time string` format
+
+.Examples
+[source,FEEL]
+----
+time("23:59:00z") + duration("PT2M") = time("00:01:00@Etc/UTC")
+----
+
+// ----------------------------------------------------------------------------
+
+=== time(from)
+
+Produce a `time` from the given parameter, ignoring any date components 
+
+.Parameters
+* `from` of type `time` or `date and time`
+
+.Examples
+[source,FEEL]
+----
+time(date and time("2012-12-25T11:00:00Z")) = time("11:00:00Z")
+----
+
+// ----------------------------------------------------------------------------
+
+=== time(hour, minute, second, offset?)
+
+Produce a `time` from the given hour, minute and second component values 
+
+.Parameters
+* `hour` of type `number`
+* `minute` of type `number`
+* `second` of type `number`
+* `offset` and optional parameter of type `days and time duration` or null
+
+.Examples
+[source,FEEL]
+----
+time("23:59:00z") = time(23, 59, 0, duration("PT0H"))
+----
+
+// ----------------------------------------------------------------------------
+
+=== number(from, grouping separator, decimal separator)
+
+Converts `from` into a `number` using the specified separators.
+
+.Parameters
+* `from` of type `string` representing a valid number
+* `grouping separator` one of space (` `) or comma (`,`) or period (`.`) or null
+* `decimal separator` as above, but different from the group separator, or also null
+
+.Examples
+[source,FEEL]
+----
+number("1 000,0", " ", ",") = number("1,000.0", ",", ".")
+----
+
+// ----------------------------------------------------------------------------
+
+=== string(from)
+
+Provide a string representation of the supplied parameter.
+
+.Parameters
+* `from` a non-null value
+
+.Examples
+[source,FEEL]
+----
+string(1.1) = "1.1"
+string(null) = null
+----
+
+// ----------------------------------------------------------------------------
+
+=== duration(from)
+
+Convert `from` to a `days and time` or `years and months duration`.
+
+.Parameters
+* `from` of type `string` of `duration string` format
+
+.Examples
+[source,FEEL]
+----
+date and time("2012-12-24T23:59:00") - date and time("2012-12-22T03:45:00") = duration("P2DT20H14M")
+duration("P2Y2M") = duration("P26M")
+----
+
+// ----------------------------------------------------------------------------
+
+=== years and months duration(from, to)
+
+Calculate the years and months duration between the two supplied parameters
+
+.Parameters
+* `from` of type `date` or `date and time` 
+* `to` same type as above
+
+.Examples
+[source,FEEL]
+----
+years and months duration( date("2011-12-22"), date("2013-08-24") ) = duration("P1Y8M")
+----
+
+// ----------------------------------------------------------------------------
+
+== Boolean functions
+
+Function for Boolean operations.
+
+=== not(negand)
+
+Perform the logical negation of the `negand` operand.
+
+.Parameters
+* `negand` of type `boolean`
+
+.Examples
+[source,FEEL]
+----
+not(true) = false
+not(null) = null
+----
+
+// ----------------------------------------------------------------------------
+
+== String functions
+
+Functions for string operations.
+
+NOTE: in FEEL unicode characters are counted using their codepoints.
+
+=== substring(string, start position, length?)
+
+Returns the substring from start position for the given length; the first character is at position value `1`.
+
+.Parameters
+* `string` of type `string`
+* `start position` of type `number`
+* `length` optional parameter of type `number`
+
+.Examples
+[source,FEEL]
+----
+substring("foobar",3) = "obar"
+substring("foobar",3,3) = "oba"
+substring("foobar", -2, 1) = "a"
+substring("\U01F40Eab", 2) = "ab"
+----
+
+NOTE: in FEEL the string literal ``"\U01F40Eab"`` is the `🐎ab` string
+
+// ----------------------------------------------------------------------------
+
+=== string length(string)
+
+Calculates the length of the string
+
+.Parameters
+* `string` of type `string`
+
+.Examples
+[source,FEEL]
+----
+string length("foo") = 3
+string length("\U01F40Eab") = 3
+----
+
+// ----------------------------------------------------------------------------
+
+=== upper case(string)
+
+Produce an upper case version of the string
+
+.Parameters
+* `string` of type `string`
+
+.Examples
+[source,FEEL]
+----
+upper case("aBc4") = "ABC4"
+----
+
+// ----------------------------------------------------------------------------
+
+=== lower case(string)
+
+Produce an lower case version of the string
+
+.Parameters
+* `string` of type `string`
+
+.Examples
+[source,FEEL]
+----
+lower case("aBc4") = "abc4"
+----
+
+// ----------------------------------------------------------------------------
+
+=== substring before(string, match)
+
+Calculates the substring before the match
+
+.Parameters
+* `string` of type `string`
+* `match` of type `string`
+
+.Examples
+[source,FEEL]
+----
+substring before("foobar", "bar") = "foo"
+substring before("foobar", "xyz") = ""
+----
+
+// ----------------------------------------------------------------------------
+
+=== substring after(string, match)
+
+Calculates the substring after the match
+
+.Parameters
+* `string` of type `string`
+* `match` of type `string`
+
+.Examples
+[source,FEEL]
+----
+substring after("foobar", "ob") = "ar"
+substring after("", "a") = ""
+----
+
+// ----------------------------------------------------------------------------
+
+=== replace(input, pattern, replacement, flags?)
+
+Calculates the regular expression replacement
+
+.Parameters
+* `input` of type `string`
+* `pattern` of type `string`
+* `replacement` of type `string`
+* `flags` optional parameter of type `string`
+
+NOTE: uses regular expression parameters as defined in XQuery 1.0 and XPath 2.0
+
+.Examples
+[source,FEEL]
+----
+replace("abcd", "(ab)|(a)", "[1=$1][2=$2]") = "[1=ab][2=]cd"
+----
+
+// ----------------------------------------------------------------------------
+
+=== contains(string, match)
+
+Returns true if the string contains the match
+
+.Parameters
+* `string` of type `string`
+* `match` of type `string`
+
+.Examples
+[source,FEEL]
+----
+contains("foobar", "of") = false
+----
+
+// ----------------------------------------------------------------------------
+
+=== starts with(string, match)
+
+Returns true if the string starts with the match
+
+.Parameters
+* `string` of type `string`
+* `match` of type `string`
+
+.Examples
+[source,FEEL]
+----
+starts with("foobar", "fo") = true
+----
+
+// ----------------------------------------------------------------------------
+
+=== ends with(string, match)
+
+Returns true if the string ends with the match
+
+.Parameters
+* `string` of type `string`
+* `match` of type `string`
+
+.Examples
+[source,FEEL]
+----
+ends with("foobar", "r") = true
+----
+
+// ----------------------------------------------------------------------------
+
+=== matches(input, pattern, flags?)
+
+Returns true if the input matches the regular expression
+
+.Parameters
+* `input` of type `string`
+* `pattern` of type `string`
+* `flags` optional parameter of type `string`
+
+NOTE: uses regular expression parameters as defined in XQuery 1.0 and XPath 2.0
+
+.Examples
+[source,FEEL]
+----
+matches("foobar", "^fo*b") = true
+----
+
+// ----------------------------------------------------------------------------
+
+=== split(string, delimiter)
+
+Returns a list of the original string, splitted at the delimiter regexp pattern.
+
+.Parameters
+* `string` of type `string`
+* `delimiter` of type `string` for a regular expression pattern
+
+NOTE: uses regular expression parameters as defined in XQuery 1.0 and XPath 2.0
+
+.Examples
+[source,FEEL]
+----
+split( "John Doe", "\\s" ) = ["John", "Doe"]
+split( "a;b;c;;", ";" ) = ["a","b","c","",""]
+----
+
+// ----------------------------------------------------------------------------
+
+== List functions
+
+Functions for list operations.
+
+=== list contains(list, element)
+
+Returns true if the list contains the element
+
+.Parameters
+* `list` of type `list`
+* `element` of any type, including null
+
+.Examples
+[source,FEEL]
+----
+list contains([1,2,3], 2) = true
+----
+
+// ----------------------------------------------------------------------------
+
+=== count(list)
+
+Counts the element in the list
+
+.Parameters
+* `list` of type `list`
+
+.Examples
+[source,FEEL]
+----
+count([1,2,3]) = 3
+count([]) = 0
+count([1,[2,3]]) = 2
+----
+
+// ----------------------------------------------------------------------------
+
+=== min(list)
+
+Returns the minimum comparable element in the list
+
+.Parameters
+* `list` of type `list`
+
+.Alternative signature
+----
+min(e1, e2, ..., eN)
+----
+
+.Examples
+[source,FEEL]
+----
+min([1,2,3]) = 1
+min(1) = 1
+min([1]) = 1
+----
+
+// ----------------------------------------------------------------------------
+
+=== max(list)
+
+Returns the maximum comparable element in the list
+
+.Parameters
+* `list` of type `list`
+
+.Alternative signature
+----
+max(e1, e2, ..., eN)
+----
+
+.Examples
+[source,FEEL]
+----
+max(1,2,3) = 3
+max([]) = null
+----
+
+// ----------------------------------------------------------------------------
+
+=== sum(list)
+
+Returns the sum of the numbers in the list
+
+.Parameters
+* `list` of type `list` of `number` elements
+
+.Alternative signature
+----
+sum(n1, n2, ..., nN)
+----
+
+.Examples
+[source,FEEL]
+----
+sum([1,2,3]) = 6
+sum(1,2,3) = 6
+sum(1) = 1
+sum([]) = null
+----
+
+// ----------------------------------------------------------------------------
