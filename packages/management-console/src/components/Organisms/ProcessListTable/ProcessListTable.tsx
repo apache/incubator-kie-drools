@@ -1,6 +1,12 @@
 import React, { useEffect } from 'react';
 import { DataList, Bullseye } from '@patternfly/react-core';
-import { ServerErrors, GraphQL, KogitoEmptyState, KogitoEmptyStateType,KogitoSpinner } from '@kogito-apps/common';
+import {
+  ServerErrors,
+  GraphQL,
+  KogitoEmptyState,
+  KogitoEmptyStateType,
+  KogitoSpinner
+} from '@kogito-apps/common';
 import '../../Templates/ProcessListPage/ProcessListPage.css';
 import ProcessListTableItems from '../../Molecules/ProcessListTableItems/ProcessListTableItems';
 import '@patternfly/patternfly/patternfly-addons.css';

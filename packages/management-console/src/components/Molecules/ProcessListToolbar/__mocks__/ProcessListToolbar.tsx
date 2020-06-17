@@ -1,7 +1,7 @@
 import React from 'react';
 
-const DataToolbarComponent = (): React.ReactElement => {
+const ProcessListToolbar = (): React.ReactElement => {
   return <></>;
 };
 
-export default DataToolbarComponent;
+export default ProcessListToolbar;

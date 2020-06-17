@@ -26,7 +26,9 @@ import {
 import Moment from 'react-moment';
 import { Link } from 'react-router-dom';
 import './DomainExplorerTable.css';
-import { ProcessDescriptor, GraphQL, KogitoSpinner } from '@kogito-apps/common';
+import ProcessDescriptor from '../ProcessDescriptor/ProcessDescriptor';
+import KogitoSpinner from '../../Atoms/KogitoSpinner/KogitoSpinner';
+import { GraphQL } from '../../../graphql/types';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
 
 const DomainExplorerTable = ({
@@ -170,14 +172,14 @@ const DomainExplorerTable = ({
                   )
                 };
                 tempValue.push(ele);
-              } else if (rest === 'start') {
-                const ele = {
-                  title: <Moment fromNow>{data[i].toString()}</Moment>
-                };
-                tempValue.push(ele);
               } else if (rest === 'state') {
                 const ele = {
                   title: stateIcon(data[i].toString())
+                };
+                tempValue.push(ele);
+              } else if (rest === 'start') {
+                const ele = {
+                  title: <Moment fromNow>{data[i].toString()}</Moment>
                 };
                 tempValue.push(ele);
               } else if (rest === 'lastUpdate') {
@@ -214,7 +216,8 @@ const DomainExplorerTable = ({
         let metaArray = [];
         const metaKeys = [];
         const metaValues = [];
-        metaArray = item.metadata.processInstances;
+        const firstKey = Object.keys(item.metadata)[0];
+        metaArray = item.metadata[firstKey];
         const tempParents = getKeys(item);
         parentkeys.push(tempParents.tempKeys);
         values.push({

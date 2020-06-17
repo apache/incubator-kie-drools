@@ -1,7 +1,7 @@
 import React from 'react';
 
-const DataListContainer = (): React.ReactElement => {
+const ProcessListPage = (): React.ReactElement => {
   return <></>;
 };
 
-export default DataListContainer;
+export default ProcessListPage;

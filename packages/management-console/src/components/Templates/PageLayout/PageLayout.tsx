@@ -102,7 +102,11 @@ const PageLayout: React.FC<IOwnProps & InjectedOuiaProps> = ({
             exact
             path="/DomainExplorer/:domainName"
             render={_props => (
-              <DomainExplorerPage {..._props} domains={domains} />
+              <DomainExplorerPage
+                {..._props}
+                domains={domains}
+                loadingState={getQuery.loading}
+              />
             )}
           />
           <Route

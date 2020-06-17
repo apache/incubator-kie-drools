@@ -26,7 +26,8 @@
     "preset": "ts-jest/presets/js-with-ts",
     "setupFiles": [
       "../../config/Jest-config/test-shim.js",
-      "../../config/Jest-config/test-setup.js"
+      "../../config/Jest-config/test-setup.js",
+      "core-js"
     ],
     "moduleFileExtensions": [
       "ts",
