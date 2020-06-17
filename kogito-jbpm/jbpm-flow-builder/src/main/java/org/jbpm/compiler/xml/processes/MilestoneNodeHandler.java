@@ -47,7 +47,7 @@ public class MilestoneNodeHandler extends AbstractNodeHandler {
     public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
 		MilestoneNode milestoneNode = (MilestoneNode) node;
 		writeNode("milestone", milestoneNode, xmlDump, includeMeta);
-        String constraint = milestoneNode.getConstraint();
+        String constraint = milestoneNode.getCondition();
         if (constraint != null || milestoneNode.getTimers() != null || milestoneNode.containsActions()) {
             xmlDump.append(">\n");
             if (includeMeta) {

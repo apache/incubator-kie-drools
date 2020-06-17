@@ -31,7 +31,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class RuleFlowProcessValidatorTest {
 
@@ -44,13 +45,13 @@ public class RuleFlowProcessValidatorTest {
     private Node node = mock(Node.class);
 
     @BeforeEach
-    public void setUp() throws Exception {
-        errors = new ArrayList<ProcessValidationError>();
+    public void setUp() {
+        errors = new ArrayList<>();
         validator = RuleFlowProcessValidator.getInstance();
     }
 
     @Test
-    public void testAddErrorMessage() throws Exception {
+    void testAddErrorMessage() {
         when(node.getName()).thenReturn("nodeName");
         when(node.getId()).thenReturn(Long.MAX_VALUE);
         validator.addErrorMessage(process,
@@ -64,7 +65,7 @@ public class RuleFlowProcessValidatorTest {
     }
 
     @Test
-    public void testDynamicNodeValidationInNotDynamicProcess() throws Exception {
+    void testDynamicNodeValidationInNotDynamicProcess() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.core.process");
         process.setName("Dynamic Node Process");
@@ -76,7 +77,6 @@ public class RuleFlowProcessValidatorTest {
         dynamicNode.setId(1);
         dynamicNode.setAutoComplete(false);
         // empty completion expression to trigger validation error
-        dynamicNode.setCompletionExpression("");
         process.addNode(dynamicNode);
 
         ProcessValidationError[] errors = validator.validateProcess(process);
@@ -100,7 +100,7 @@ public class RuleFlowProcessValidatorTest {
     }
 
     @Test
-    public void testDynamicNodeValidationInDynamicProcess() throws Exception {
+    void testDynamicNodeValidationInDynamicProcess() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.core.process");
         process.setName("Dynamic Node Process");
@@ -111,7 +111,7 @@ public class RuleFlowProcessValidatorTest {
         dynamicNode.setName("MyDynamicNode");
         dynamicNode.setId(1);
         dynamicNode.setAutoComplete(false);
-        dynamicNode.setCompletionExpression("completion-expression");
+        dynamicNode.setCompletionExpression(kcontext -> true);
         process.addNode(dynamicNode);
 
         ProcessValidationError[] errors = validator.validateProcess(process);
@@ -126,7 +126,6 @@ public class RuleFlowProcessValidatorTest {
         dynamicNode2.setName("MyDynamicNode");
         dynamicNode2.setId(1);
         dynamicNode2.setAutoComplete(false);
-        dynamicNode2.setCompletionExpression("");
         process.addNode(dynamicNode2);
 
         ProcessValidationError[] errors2 = validator.validateProcess(process);
@@ -139,7 +138,7 @@ public class RuleFlowProcessValidatorTest {
     }
 
     @Test
-    public void testEmptyPackageName() throws Exception {
+    void testEmptyPackageName() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.core.process");
         process.setName("Empty Package Name Process");
@@ -153,7 +152,7 @@ public class RuleFlowProcessValidatorTest {
     }
 
     @Test
-    public void testNoPackageName() throws Exception {
+    void testNoPackageName() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.core.process");
         process.setName("No Package Name Process");
@@ -166,7 +165,7 @@ public class RuleFlowProcessValidatorTest {
     }
 
     @Test
-    public void testCompositeNodeNoStart() throws Exception {
+    void testCompositeNodeNoStart() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.core.process.process");
         process.setName("Process");

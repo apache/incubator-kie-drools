@@ -25,15 +25,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import org.jbpm.process.core.ParameterDefinition;
-import org.jbpm.process.core.Work;
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
-import org.jbpm.process.core.impl.WorkImpl;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.compiler.xml.ProcessBuildData;
+import org.jbpm.process.core.ParameterDefinition;
+import org.jbpm.process.core.Work;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.process.core.impl.ParameterDefinitionImpl;
+import org.jbpm.process.core.impl.WorkImpl;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.NodeImpl;
@@ -49,6 +49,8 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+
+import static org.jbpm.ruleflow.core.Metadata.CONDITION;
 
 public class TaskHandler extends AbstractNodeHandler {
     
@@ -335,17 +337,12 @@ public class TaskHandler extends AbstractNodeHandler {
 		// replace node in case it's milestone
 		if (node instanceof WorkItemNode && ((WorkItemNode)node).getWork().getName().equals("Milestone")) {
 		    WorkItemNode workItemNode = (WorkItemNode) node;
-		    
-		    String milestoneCondition = (String)((WorkItemNode)node).getWork().getParameter("Condition");
-		    if (milestoneCondition == null) {
-		        milestoneCondition = "";// if not given that means once activated it's achieved
-		    }
-		    
+
+		    String milestoneCondition = (String)((WorkItemNode)node).getWork().getParameter(CONDITION);
 		    MilestoneNode milestoneNode = new MilestoneNode();
 		    milestoneNode.setId(workItemNode.getId());
-		    milestoneNode.setConstraint(milestoneCondition);
-		    milestoneNode.setMatchVariable((String)((WorkItemNode)node).getWork().getParameter("MatchVariable"));
 		    milestoneNode.setMetaData(workItemNode.getMetaData());
+		    milestoneNode.setCondition(milestoneCondition);
 		    milestoneNode.setName(workItemNode.getName());
 		    milestoneNode.setParentContainer(workItemNode.getParentContainer());
 		    
@@ -360,7 +357,7 @@ public class TaskHandler extends AbstractNodeHandler {
 	}
     
 	protected void handleForEachNode(final Node node, final Element element, final String uri, 
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+            final String localName, final ExtensibleXmlParser parser) {
     	ForEachNode forEachNode = (ForEachNode) node;
     	org.w3c.dom.Node xmlNode = element.getFirstChild();
     	

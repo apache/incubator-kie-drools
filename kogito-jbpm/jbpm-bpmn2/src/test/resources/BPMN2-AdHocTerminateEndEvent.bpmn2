@@ -12,6 +12,7 @@
       <bpmn2:outgoing>_29F48C6F-FEEE-4C1E-BFFC-1C9665E57CA7</bpmn2:outgoing>
     </bpmn2:startEvent>
     <bpmn2:adHocSubProcess id="_A85E71CC-FE0B-41BF-A911-12A040822E9D" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="" ordering="Sequential">
+      <bpmn2:completionCondition>autocomplete</bpmn2:completionCondition>
       <bpmn2:extensionElements>
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[]]></drools:metaValue>

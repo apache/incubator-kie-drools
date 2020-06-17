@@ -46,6 +46,10 @@ public class Metadata {
     public static final String CUSTOM_AUTO_START = "customAutoStart";
     public static final String COMPENSATION = "Compensation";
     public static final String CUSTOM_SLA_DUE_DATE = "customSLADueDate";
+    public static final String INCOMING_CONNECTION = "IncomingConnection";
+    public static final String OUTGOING_CONNECTION = "OutgoingConnection";
+    public static final String CUSTOM_ACTIVATION_CONDITION = "customActivationCondition";
+    public static final String COMPLETION_CONDITION = "completionCondition";
 
     private Metadata() {
     }

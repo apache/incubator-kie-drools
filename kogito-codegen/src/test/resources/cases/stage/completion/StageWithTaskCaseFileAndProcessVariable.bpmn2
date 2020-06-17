@@ -58,7 +58,7 @@
           </bpmn2:resourceAssignmentExpression>
         </bpmn2:potentialOwner>
       </bpmn2:userTask>
-      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_DO018URZEeeSxP1_nretag" language="http://www.mvel.org/2.0"><![CDATA[return caseFile_continue == continue;]]></bpmn2:completionCondition>
+      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_DO018URZEeeSxP1_nretag" language="http://www.mvel.org/2.0"><![CDATA[v$continue]]></bpmn2:completionCondition>
     </bpmn2:adHocSubProcess>
     <bpmn2:startEvent id="_A20B467F-6693-4AB8-A744-55FD62321D42" drools:selectable="true" color:background-color="#9acd32" color:border-color="#000000" color:color="#000000" name="">
       <bpmn2:extensionElements>

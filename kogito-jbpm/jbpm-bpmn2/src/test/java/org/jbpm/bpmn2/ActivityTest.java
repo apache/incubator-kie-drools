@@ -26,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +63,6 @@ import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicUtils;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.junit.jupiter.api.AfterEach;
@@ -720,203 +718,6 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 .startProcess("SubProcessTerminate");
         assertProcessInstanceCompleted(processInstance);
         assertEquals(5, list.size());
-    }
-
-    @Test
-    public void testAdHocSubProcess() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-AdHocSubProcess.bpmn2",
-                "BPMN2-AdHocSubProcess.drl");
-        ksession = createKnowledgeSession(kbase);
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        ProcessInstance processInstance = ksession
-                .startProcess("AdHocSubProcess");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        assertEquals("Entry", ((WorkflowProcessInstance) processInstance).getVariable("x"));
-        
-        Collection<NodeInstance> nodeInstances = ((WorkflowProcessInstance) processInstance).getNodeInstances();
-        assertThat(nodeInstances).hasSize(1).hasOnlyElementsOfTypes(DynamicNodeInstance.class).extracting("triggerTime").doesNotContainNull();
-        WorkItem workItem = workItemHandler.getWorkItem();
-        assertNull(workItem);
-        ksession = restoreSession(ksession, true);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        ksession.fireAllRules();
-        logger.debug("Signaling Hello2");
-        ksession.signalEvent("Hello2", null, processInstance.getId());
-        workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
-        ksession = restoreSession(ksession, true);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-    }
-
-    @Test
-    public void testAdHocSubProcessAutoComplete() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper(
-                "BPMN2-AdHocSubProcessAutoComplete.bpmn2",
-                "BPMN2-AdHocSubProcess.drl");
-        ksession = createKnowledgeSession(kbase);
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        ProcessInstance processInstance = ksession.startProcess("AdHocSubProcess");
-        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        WorkItem workItem = workItemHandler.getWorkItem();
-        assertNull(workItem);
-        ksession = restoreSession(ksession, true);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        ksession.fireAllRules();
-        workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
-        ksession = restoreSession(ksession, true);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        assertEquals("Exit", getProcessVarValue(processInstance, "y"));
-        assertProcessInstanceFinished(processInstance, ksession);
-    }
-
-    @Test
-    public void testAdHocSubProcessAutoCompleteExpression() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper(
-                "BPMN2-AdHocSubProcessAutoCompleteExpression.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("counter", new Integer(2));
-        ProcessInstance processInstance = ksession.startProcess("AdHocSubProcess", params);
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        WorkItem workItem = workItemHandler.getWorkItem();
-        assertNull(workItem);
-        ksession.signalEvent("Hello1", null, processInstance.getId());
-        ksession = restoreSession(ksession, true);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-
-        workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
-        Map<String, Object> results = new HashMap<String, Object>();
-        results.put("testHT", new Integer(1));
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), results);
-        assertProcessInstanceActive(processInstance.getId(), ksession);
-
-        ksession.signalEvent("Hello1", null, processInstance.getId());
-        workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
-        results = new HashMap<String, Object>();
-        results.put("testHT", new Integer(0));
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), results);
-
-        assertProcessInstanceFinished(processInstance, ksession);
-    }
-
-    @Test
-    public void testAdHocSubProcessAutoCompleteDynamicTask() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper(
-                "BPMN2-AdHocSubProcessAutoComplete.bpmn2",
-                "BPMN2-AdHocSubProcess.drl");
-        ksession = createKnowledgeSession(kbase);
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        TestWorkItemHandler workItemHandler2 = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("OtherTask",
-                workItemHandler2);
-        ProcessInstance processInstance = ksession
-                .startProcess("AdHocSubProcess");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        DynamicNodeInstance dynamicContext = (DynamicNodeInstance) ((WorkflowProcessInstance) processInstance)
-                .getNodeInstances().iterator().next();
-        DynamicUtils.addDynamicWorkItem(dynamicContext, ksession, "OtherTask",
-                new HashMap<String, Object>());
-        WorkItem workItem = workItemHandler.getWorkItem();
-        assertNull(workItem);
-        ksession = restoreSession(ksession, true);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        ksession.fireAllRules();
-        workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
-        ksession = restoreSession(ksession, true);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        assertProcessInstanceActive(processInstance);
-        workItem = workItemHandler2.getWorkItem();
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        assertProcessInstanceFinished(processInstance, ksession);
-        ksession.dispose();
-    }
-
-    @Test
-    public void testAdHocSubProcessAutoCompleteDynamicSubProcess()
-            throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper(
-                "BPMN2-AdHocSubProcessAutoComplete.bpmn2",
-                "BPMN2-AdHocSubProcess.drl", "BPMN2-MinimalProcess.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        TestWorkItemHandler workItemHandler2 = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("OtherTask",
-                workItemHandler2);
-        ProcessInstance processInstance = ksession
-                .startProcess("AdHocSubProcess");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        ksession.fireAllRules();
-        DynamicNodeInstance dynamicContext = (DynamicNodeInstance) ((WorkflowProcessInstance) processInstance)
-                .getNodeInstances().iterator().next();
-        DynamicUtils.addDynamicSubProcess(dynamicContext, ksession, "Minimal",
-                new HashMap<String, Object>());
-        ksession = restoreSession(ksession, true);
-        WorkItem workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        // assertProcessInstanceActive(processInstance.getId(), ksession);
-        // workItem = workItemHandler2.getWorkItem();
-        // ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        assertProcessInstanceFinished(processInstance, ksession);
-    }
-
-    @Test
-    public void testAdHocSubProcessAutoCompleteDynamicSubProcess2()
-            throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper(
-                "BPMN2-AdHocSubProcessAutoComplete.bpmn2",
-                "BPMN2-AdHocSubProcess.drl", "BPMN2-ServiceProcess.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        TestWorkItemHandler workItemHandler2 = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Service Task",
-                workItemHandler2);
-        ProcessInstance processInstance = ksession
-                .startProcess("AdHocSubProcess");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        ksession.fireAllRules();
-        DynamicNodeInstance dynamicContext = (DynamicNodeInstance) ((WorkflowProcessInstance) processInstance)
-                .getNodeInstances().iterator().next();
-        DynamicUtils.addDynamicSubProcess(dynamicContext, ksession,
-                "ServiceProcess", new HashMap<String, Object>());
-        ksession = restoreSession(ksession, true);
-        WorkItem workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        assertProcessInstanceActive(processInstance);
-        workItem = workItemHandler2.getWorkItem();
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        assertProcessInstanceFinished(processInstance, ksession);
     }
 
     @Test
@@ -1642,42 +1443,6 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
         assertEquals(1, listPerson.size());
         assertEquals(1, listAddress.size());
-        assertProcessInstanceFinished(processInstance, ksession);
-    }
-
-    @Test
-    public void testAdHocSubProcessWithTerminateEndEvent() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper(
-                "BPMN2-AdHocTerminateEndEvent.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-
-        Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("complete", false);
-
-        ProcessInstance processInstance = ksession.startProcess("AdHocWithTerminateEnd", parameters);
-        assertProcessInstanceActive(processInstance);
-
-        WorkItem workItem = workItemHandler.getWorkItem();
-        assertNull(workItem);
-        ksession = restoreSession(ksession, true);
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-
-        // signal human task with none end event
-        ksession.signalEvent("First task", null, processInstance.getId());
-
-        workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        assertProcessInstanceActive(processInstance);
-
-        // signal human task that leads to terminate end event that should complete ad hoc task
-        ksession.signalEvent("Terminate", null, processInstance.getId());
-        workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-
         assertProcessInstanceFinished(processInstance, ksession);
     }
 

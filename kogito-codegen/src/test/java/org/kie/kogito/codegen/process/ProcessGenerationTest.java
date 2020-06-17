@@ -306,10 +306,6 @@ public class ProcessGenerationTest extends AbstractCodegenTest {
     private static final BiConsumer<Node, Node> milestoneNodeAsserter = (eNode, cNode) -> {
         assertEquals(MilestoneNode.class, eNode.getClass());
         assertEquals(MilestoneNode.class, cNode.getClass());
-        MilestoneNode expected = (MilestoneNode) eNode;
-        MilestoneNode current = (MilestoneNode) cNode;
-        assertEquals(expected.getConstraint(), current.getConstraint(), "Constraint");
-        assertEquals(expected.getMatchVariable(), current.getMatchVariable(), "MatchVariable");
     };
 
     private static final BiConsumer<Node, Node> compositeNodeAsserter = (eNode, cNode) -> {

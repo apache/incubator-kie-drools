@@ -20,6 +20,7 @@ import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.utils.StringEscapeUtils;
+import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.StateNodeFactory;
 import org.jbpm.workflow.core.node.StateNode;
@@ -52,7 +53,7 @@ public class StateNodeVisitor extends CompositeContextNodeVisitor<StateNode> {
     }
 
     @Override
-    public Stream<MethodCallExpr> visitCustomFields(StateNode node) {
+    public Stream<MethodCallExpr> visitCustomFields(StateNode node, VariableScope variableScope) {
         if (node.getConstraints() == null) {
             return Stream.empty();
         }

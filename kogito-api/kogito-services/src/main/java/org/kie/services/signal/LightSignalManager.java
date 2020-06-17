@@ -61,24 +61,15 @@ public class LightSignalManager implements SignalManager {
 	
 	public void signalEvent(String type, Object event) {
 	    if (!listeners.containsKey(type)) {
-	        
-	        if (event instanceof ProcessInstance) {
-	            
-	            if (listeners.containsKey(((ProcessInstance) event).getProcessId())) {
-	                listeners.getOrDefault(((ProcessInstance) event).getProcessId(), Collections.emptyList())
-	                .forEach(e -> e.signalEvent(type, event));
-	                
-	                return;
-	            }
-	        }
-	        
+			if (event instanceof ProcessInstance && listeners.containsKey(((ProcessInstance) event).getProcessId())) {
+				listeners.getOrDefault(((ProcessInstance) event).getProcessId(), Collections.emptyList())
+						.forEach(e -> e.signalEvent(type, event));
+				return;
+			}
 	        signalManagerHub.publish(type, event);
 	    }
-	    
 	    listeners.getOrDefault(type, Collections.emptyList())
 				.forEach(e -> e.signalEvent(type, event));
-	    
-
 	}
 
 	public void signalEvent(String processInstanceId, String type, Object event) {
@@ -91,15 +82,8 @@ public class LightSignalManager implements SignalManager {
         if (listeners.containsKey(type)) {
             return true;
         }
-        
         // handle processInstance events that are registered as child processes
-        if (event instanceof ProcessInstance) {
-            
-            if (listeners.containsKey(((ProcessInstance) event).getProcessId())) {
-                return true;
-            }
-        }
-        
-        return false;
+        return event instanceof ProcessInstance &&
+				listeners.containsKey(((ProcessInstance) event).getProcessId());
     }	
 }

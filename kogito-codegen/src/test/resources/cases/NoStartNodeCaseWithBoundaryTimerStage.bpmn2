@@ -2,7 +2,9 @@
 <!-- origin at X=0.0 Y=0.0 -->
 <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmn20="http://www.omg.org/bpmn20" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xmlns:ns="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="_pGbIcDuFEeqlirl1r42RDw" exporter="org.eclipse.bpmn2.modeler.core" exporterVersion="1.4.3.Final-v20180418-1358-B1" targetNamespace="http://www.omg.org/bpmn20">
   <bpmn2:itemDefinition id="_readyItem" isCollection="false" structureRef="Boolean"/>
+  <bpmn2:itemDefinition id="_caseFile_stage1_finishedItem" isCollection="false" structureRef="Boolean"/>
   <bpmn2:process id="NoStartNodeCaseWithBoundaryTimerStage" drools:adHoc="true" drools:packageName="com.myspace.case_test" drools:version="1.0" name="sample-case" isExecutable="true">
+    <bpmn2:property id="caseFile_stage1_finished" itemSubjectRef="_caseFile_stage1_finishedItem" name="caseFile_stage1_finished"/>
     <bpmn2:sequenceFlow id="_E28E897A-1553-4C74-B78C-D8C03448064C" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_9BA107AB-9119-489E-873F-319C80A3D872" targetRef="_C2F20295-F97F-4ABB-8F62-FC8CC243BFA4"/>
     <bpmn2:sequenceFlow id="_8C3DD5EF-FF36-4929-9651-04D7B62A6C12" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_C962DC6C-D200-459A-81B3-DC6AF084EFEE" targetRef="_6B9B4983-AE90-4702-A0E9-37BF149629C9"/>
     <bpmn2:sequenceFlow id="_B6EA146B-EAF3-4645-82FC-FFB9D40F0F9C" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_6B9B4983-AE90-4702-A0E9-37BF149629C9" targetRef="_18AF4E55-2DF4-4B8E-90D2-C0033747334F"/>
@@ -74,7 +76,7 @@ System.out.println(&quot;timer on stage 1&quot;);</bpmn2:script>
           <drools:metaValue><![CDATA[Stage 1]]></drools:metaValue>
         </drools:metaData>
         <drools:metaData name="customActivationCondition">
-          <drools:metaValue><![CDATA[          $file : CaseData()          $ready : Boolean(this == true) from $file.getData("readyToActivate") ]]></drools:metaValue>
+          <drools:metaValue><![CDATA[Boolean.parseBoolean((String) kcontext.getVariable("readyToActivate"))]]></drools:metaValue>
         </drools:metaData>
       </bpmn2:extensionElements>
       <bpmn2:outgoing>_8C3DD5EF-FF36-4929-9651-04D7B62A6C12</bpmn2:outgoing>
@@ -125,7 +127,7 @@ System.out.println(&quot;timer on stage 1&quot;);</bpmn2:script>
           </bpmn2:assignment>
         </bpmn2:dataInputAssociation>
       </bpmn2:userTask>
-      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_pGbIkjuFEeqlirl1r42RDw" language="http://www.jboss.org/drools/rule">CaseData(data.get(&quot;stage1_finished&quot;) == true)</bpmn2:completionCondition>
+      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_pGbIkjuFEeqlirl1r42RDw" language="http://www.jboss.org/drools/rule">caseFile_stage1_finished</bpmn2:completionCondition>
     </bpmn2:adHocSubProcess>
     <bpmn2:boundaryEvent id="_9BA107AB-9119-489E-873F-319C80A3D872" drools:selectable="true" drools:boundaryca="false" drools:dockerinfo="147.0^144.0|" color:background-color="#f5deb3" color:border-color="#a0522d" color:color="#000000" name="boundaryEvent" attachedToRef="_C962DC6C-D200-459A-81B3-DC6AF084EFEE" cancelActivity="false">
       <bpmn2:extensionElements>

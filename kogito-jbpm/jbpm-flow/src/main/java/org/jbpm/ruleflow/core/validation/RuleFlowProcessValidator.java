@@ -309,12 +309,6 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                                     errors,
                                     "Milestone has no outgoing connection.");
                 }
-                if (milestone.getConstraint() == null) {
-                    addErrorMessage(process,
-                                    node,
-                                    errors,
-                                    "Milestone has no constraint.");
-                }
                 if (milestone.getTimers() != null) {
                     for (Timer timer : milestone.getTimers().keySet()) {
                         validateTimer(timer,
@@ -525,7 +519,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                                     "Dynamic has no outgoing connection");
                 }
 
-                if ("".equals(dynamicNode.getCompletionExpression()) && !dynamicNode.isAutoComplete()) {
+                if (!dynamicNode.hasCompletionCondition() && !dynamicNode.isAutoComplete()) {
                     addErrorMessage(process,
                                     node,
                                     errors,

@@ -16,15 +16,17 @@
 
 package org.jbpm.ruleflow.core.factory;
 
+import java.util.function.Predicate;
+
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.MilestoneNode;
+import org.kie.api.runtime.process.ProcessContext;
 
 public class MilestoneNodeFactory extends StateBasedNodeFactory {
 
-    public static final String METHOD_CONSTRAINT = "constraint";
-    public static final String METHOD_MATCH_VARIABLE = "matchVariable";
+    public static final String METHOD_CONDITION = "condition";
 
     public MilestoneNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
         super(nodeContainerFactory, nodeContainer, id);
@@ -62,13 +64,14 @@ public class MilestoneNodeFactory extends StateBasedNodeFactory {
         return this;
     }
 
-    public MilestoneNodeFactory matchVariable(String matchVariable) {
-        getMilestoneNode().setMatchVariable(matchVariable);
+    @Override
+    public MilestoneNodeFactory metaData(String name, Object value) {
+        super.metaData(name, value);
         return this;
     }
 
-    public MilestoneNodeFactory constraint(String constraint) {
-        getMilestoneNode().setConstraint(constraint);
+    public MilestoneNodeFactory condition(Predicate<ProcessContext> condition) {
+        getMilestoneNode().setCondition(condition);
         return this;
     }
 }

@@ -58,6 +58,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 
 import static org.jbpm.process.test.NodeCreator.connect;
@@ -92,8 +93,7 @@ public class FactoryTest extends AbstractBaseTest {
                 .metaData("MICollectionOutput", "_2_listOutOutput")
                 .metaData("x", 96)
                 .metaData("y", 16)
-                .activationExpression("x == oldValue")
-                .completionExpression("true")
+                .activationExpression(kcontext -> Objects.equals(kcontext.getVariable("x"), kcontext.getVariable("oldValue")))
                 .variable("x", new ObjectDataType("java.lang.String"))
                 .exceptionHandler(RuntimeException.class.getName(), "java", "System.out.println(\"Error\");")
                 .autoComplete(true)

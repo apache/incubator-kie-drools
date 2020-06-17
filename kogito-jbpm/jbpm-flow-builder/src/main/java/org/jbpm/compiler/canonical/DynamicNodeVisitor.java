@@ -15,17 +15,17 @@
 
 package org.jbpm.compiler.canonical;
 
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.utils.StringEscapeUtils;
-import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
-import org.jbpm.ruleflow.core.factory.DynamicNodeFactory;
-import org.jbpm.workflow.core.node.DynamicNode;
-import org.kie.api.definition.process.Node;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Stream;
+
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
+import org.jbpm.ruleflow.core.factory.DynamicNodeFactory;
+import org.jbpm.workflow.core.node.DynamicNode;
+import org.kie.api.definition.process.Node;
 
 import static org.jbpm.ruleflow.core.factory.DynamicNodeFactory.METHOD_ACTIVATION_EXPRESSION;
 import static org.jbpm.ruleflow.core.factory.DynamicNodeFactory.METHOD_COMPLETION_EXPRESSION;
@@ -53,15 +53,23 @@ public class DynamicNodeVisitor extends CompositeContextNodeVisitor<DynamicNode>
     }
 
     @Override
-    public Stream<MethodCallExpr> visitCustomFields(DynamicNode node) {
+    public Stream<MethodCallExpr> visitCustomFields(DynamicNode node, VariableScope variableScope) {
         Collection<MethodCallExpr> methods = new ArrayList<>();
         methods.add(getFactoryMethod(getNodeId(node), METHOD_LANGUAGE, getOrNullExpr(node.getLanguage())));
-        if (node.getActivationExpression() != null) {
-            methods.add(getFactoryMethod(getNodeId(node), METHOD_ACTIVATION_EXPRESSION, getOrNullExpr(StringEscapeUtils.escapeJava(node.getActivationExpression()))));
+        if (node.getActivationCondition() != null && !node.getActivationCondition().trim().isEmpty()) {
+            methods.add(getActivationConditionStatement(node, variableScope));
         }
-        if (node.getCompletionExpression() != null) {
-            methods.add(getFactoryMethod(getNodeId(node), METHOD_COMPLETION_EXPRESSION, getOrNullExpr(StringEscapeUtils.escapeJava(node.getCompletionExpression()))));
+        if (node.getCompletionCondition() != null && !node.getCompletionCondition().trim().isEmpty()) {
+            methods.add(getCompletionConditionStatement(node, variableScope));
         }
         return methods.stream();
+    }
+
+    private MethodCallExpr getActivationConditionStatement(DynamicNode node, VariableScope scope) {
+        return getFactoryMethod(getNodeId(node), METHOD_ACTIVATION_EXPRESSION, createLambdaExpr(node.getActivationCondition(), scope));
+    }
+
+    private MethodCallExpr getCompletionConditionStatement(DynamicNode node, VariableScope scope) {
+        return getFactoryMethod(getNodeId(node), METHOD_COMPLETION_EXPRESSION, createLambdaExpr(node.getCompletionCondition(), scope));
     }
 }

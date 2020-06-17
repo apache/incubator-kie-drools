@@ -18,8 +18,6 @@ package org.jbpm.integrationtests.test;
 
 import java.io.Serializable;
 
-import org.jbpm.integrationtests.test.Person;
-
 public class Person
     implements
     Serializable {
@@ -92,13 +90,9 @@ public class Person
             return false;
         }
         if ( this.name == null ) {
-            if ( other.name != null ) {
-                return false;
-            }
-        } else if ( !this.name.equals( other.name ) ) {
-            return false;
+            return other.name == null;
         }
-        return true;
+        return this.name.equals(other.name);
     }
 
 }

@@ -18,6 +18,7 @@ package org.jbpm.compiler.canonical;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.EventSubProcessNodeFactory;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
@@ -53,7 +54,7 @@ public class EventSubProcessNodeVisitor extends CompositeContextNodeVisitor<Even
     }
 
     @Override
-    public Stream<MethodCallExpr> visitCustomFields(EventSubProcessNode node) {
+    public Stream<MethodCallExpr> visitCustomFields(EventSubProcessNode node, VariableScope variableScope) {
         Collection<MethodCallExpr> methods = new ArrayList<>();
         methods.add(getFactoryMethod(getNodeId(node), METHOD_KEEP_ACTIVE, new BooleanLiteralExpr(node.isKeepActive())));
         node.getEvents()

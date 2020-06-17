@@ -16,9 +16,12 @@
 
 package org.jbpm.compiler.canonical;
 
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -26,8 +29,10 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.UnknownType;
 import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.context.variable.Variable;
@@ -162,5 +167,21 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
         body.addStatement(getFactoryMethod(factoryField, "connection", new LongLiteralExpr(connection.getFrom().getId()),
                 new LongLiteralExpr(connection.getTo().getId()),
                 new StringLiteralExpr(getOrDefault((String) connection.getMetaData().get("UniqueId"), ""))));
+    }
+
+
+    protected static LambdaExpr createLambdaExpr(String consequence, VariableScope scope) {
+        BlockStmt conditionBody = new BlockStmt();
+        List<Variable> variables = scope.getVariables();
+        variables.stream()
+                .map(ActionNodeVisitor::makeAssignment)
+                .forEach(conditionBody::addStatement);
+
+        conditionBody.addStatement(new ReturnStmt(new EnclosedExpr(new NameExpr(consequence))));
+
+        return new LambdaExpr(
+                new Parameter(new UnknownType(), KCONTEXT_VAR), // (kcontext) ->
+                conditionBody
+        );
     }
 }

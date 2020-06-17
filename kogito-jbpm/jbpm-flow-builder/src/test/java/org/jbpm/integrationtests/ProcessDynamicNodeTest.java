@@ -205,7 +205,8 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
                 "  <nodes>\n" +
                 "    <start id=\"1\" name=\"Start\" />\n" + 
                 "    <dynamic id=\"2\" name=\"DynamicNode\" >\n" +
-                "      <nodes>\n" +
+				"      <completionCondition>autocomplete</completionCondition>\n" +
+				"      <nodes>\n" +
                 "        <actionNode id=\"1\" name=\"Action\" >\n" +
                 "          <action type=\"expression\" dialect=\"mvel\" >System.out.println(\"Action\");</action>\n" +
                 "        </actionNode>\n" +
@@ -259,6 +260,7 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
                 "  <nodes>\n" +
                 "    <start id=\"1\" name=\"Start\" />\n" + 
                 "    <dynamic id=\"2\" name=\"DynamicNode\" >\n" +
+				"      <completionCondition>autocomplete</completionCondition>\n" +
                 "      <nodes>\n" +
                 "        <actionNode id=\"1\" name=\"Action\" >\n" +
                 "          <action type=\"expression\" dialect=\"mvel\" >System.out.println(\"Action\");</action>\n" +

@@ -17,6 +17,9 @@ package org.kie.kogito.process.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,6 +33,7 @@ import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.flexible.Milestone;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,7 +48,7 @@ class MilestoneTest extends AbstractCodegenTest {
 
     @Test
     void testSimpleMilestone() throws Exception {
-        Application app = generateCodeProcessesOnly("cases/SimpleMilestone.bpmn");
+        Application app = generateCodeProcessesOnly("cases/milestones/SimpleMilestone.bpmn");
         assertThat(app).isNotNull();
 
         Process<? extends Model> p = app.processes().processById("TestCase.SimpleMilestone");
@@ -52,14 +56,14 @@ class MilestoneTest extends AbstractCodegenTest {
         assertState(processInstance, ProcessInstance.STATE_PENDING);
 
         Collection<Milestone> expected = new ArrayList<>();
-        expected.add(new Milestone.Builder("").withName("AutoStartMilestone").withCondition("").withStatus(AVAILABLE).build());
-        expected.add(new Milestone.Builder("").withName("SimpleMilestone").withCondition("").withStatus(AVAILABLE).build());
+        expected.add(new Milestone.Builder("").withName("AutoStartMilestone").withStatus(AVAILABLE).build());
+        expected.add(new Milestone.Builder("").withName("SimpleMilestone").withStatus(AVAILABLE).build());
         assertMilestones(expected, processInstance.milestones());
 
         processInstance.start();
         assertState(processInstance, ProcessInstance.STATE_COMPLETED);
 
-        expected = expected.stream().map(m -> new Milestone.Builder(m).withStatus(COMPLETED).build()).collect(Collectors.toList());
+        expected = expected.stream().map(m -> new Milestone.Builder(m.getId()).withName(m.getName()).withStatus(COMPLETED).build()).collect(Collectors.toList());
         assertMilestones(expected, processInstance.milestones());
 
         RuleFlowProcessInstance legacyProcessInstance = (RuleFlowProcessInstance) ((AbstractProcessInstance<?>) processInstance).legacyProcessInstance;
@@ -75,20 +79,33 @@ class MilestoneTest extends AbstractCodegenTest {
 
     @Test
     void testConditionalMilestone() throws Exception {
-        Application app = generateCodeProcessesOnly("cases/UserTaskCase.bpmn2");
+        Application app = generateCodeProcessesOnly("cases/milestones/ConditionalMilestone.bpmn");
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("UserTaskCase");
-        ProcessInstance<?> processInstance = p.createInstance(p.createModel());
+        Process<? extends Model> p = app.processes().processById("TestCase.ConditionalMilestone");
+        Model model = p.createModel();
+        Map<String, Object> params = new HashMap<>();
+        params.put("favouriteColour", "orange");
+        model.fromMap(params);
+        ProcessInstance<?> processInstance = p.createInstance(model);
         assertState(processInstance, ProcessInstance.STATE_PENDING);
 
-
         Collection<Milestone> expected = new ArrayList<>();
-        expected.add(new Milestone.Builder("").withName("Milestone1").withStatus(AVAILABLE).withCondition("").build());
-        expected.add(new Milestone.Builder("").withName("Milestone2").withStatus(AVAILABLE).withCondition("CaseData(data.get(\"dataComplete\") == true)").build());
+        expected.add(new Milestone.Builder("").withName("Milestone").withStatus(AVAILABLE).build());
+        assertMilestones(expected, processInstance.milestones());
 
-        Collection<Milestone> milestones = processInstance.milestones();
-        assertMilestones(expected, milestones);
+        processInstance.start();
+        assertState(processInstance, ProcessInstance.STATE_ACTIVE);
+
+        expected = expected.stream().map(m -> new Milestone.Builder(m.getId()).withName(m.getName()).withStatus(AVAILABLE).build()).collect(Collectors.toList());
+        assertMilestones(expected, processInstance.milestones());
+
+        List<WorkItem> workItems = processInstance.workItems();
+        params.put("favouriteColour", "blue");
+        processInstance.completeWorkItem(workItems.get(0).getId(), params);
+
+        expected = expected.stream().map(m -> new Milestone.Builder(m.getId()).withName(m.getName()).withStatus(COMPLETED).build()).collect(Collectors.toList());
+        assertMilestones(expected, processInstance.milestones());
     }
 
     private void assertMilestones(Collection<Milestone> expected, Collection<Milestone> milestones) {
@@ -98,7 +115,6 @@ class MilestoneTest extends AbstractCodegenTest {
         assertNotNull(milestones);
         assertThat(milestones.size()).isEqualTo(expected.size());
         expected.forEach(e -> assertThat(milestones.stream().anyMatch(c -> Objects.equals(c.getName(), e.getName()) &&
-                Objects.equals(c.getCondition(), e.getCondition()) &&
                 Objects.equals(c.getStatus(), e.getStatus()))).withFailMessage("Expected: " + e + " - Not present in: " + milestones).isTrue());
     }
 

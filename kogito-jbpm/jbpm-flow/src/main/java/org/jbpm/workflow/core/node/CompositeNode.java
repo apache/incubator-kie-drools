@@ -29,9 +29,6 @@ import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.NodeContainerImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
 
-/**
- * 
- */
 public class CompositeNode extends StateBasedNode implements NodeContainer, EventNodeInterface {
 
     private static final long serialVersionUID = 510l;
@@ -40,7 +37,6 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
     private Map<String, CompositeNode.NodeAndType> inConnectionMap = new HashMap<String, CompositeNode.NodeAndType>();
     private Map<String, CompositeNode.NodeAndType> outConnectionMap = new HashMap<String, CompositeNode.NodeAndType>();
 	private boolean cancelRemainingInstances = true;
-
 	private boolean autoComplete = true;
 	
     public CompositeNode() {

@@ -256,6 +256,7 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
             "  <nodes>\n" +
             "    <start id=\"1\" name=\"Start\" />\n" +
             "    <composite id=\"2\" name=\"Composite\" >\n" +
+			"	   <completionCondition>autocomplete</completionCondition>\n" +
             "      <variables>\n" +
             "        <variable name=\"SomeVar\" >\n" +
             "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +

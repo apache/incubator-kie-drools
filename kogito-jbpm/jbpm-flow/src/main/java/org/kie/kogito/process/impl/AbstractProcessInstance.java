@@ -397,7 +397,6 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
                     return new Milestone.Builder(uid)
                             .withName(n.getName())
                             .withStatus(getStatus(uid))
-                            .withCondition(n.getConstraint())
                             .build();
                 })
                 .collect(Collectors.toList());

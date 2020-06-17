@@ -45,10 +45,8 @@ public abstract class AbstractBaseTest {
     public KieSession createKieSession(KiePackage... pkg) { 
         try { 
             return createKieSession(false, pkg);
-        } catch(Exception e ) { 
-            String msg = "There's no reason fo an exception to be thrown here (because the kbase is not being serialized)!";
-            fail( msg );
-            throw new RuntimeException(msg, e);
+        } catch(Exception e ) {
+            throw new RuntimeException("There's no reason for an exception to be thrown here (because the kbase is not being serialized)!", e);
         }
     } 
    

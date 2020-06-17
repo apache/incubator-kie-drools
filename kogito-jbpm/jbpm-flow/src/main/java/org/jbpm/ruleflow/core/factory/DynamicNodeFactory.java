@@ -16,12 +16,15 @@
 
 package org.jbpm.ruleflow.core.factory;
 
+import java.util.function.Predicate;
+
 import org.jbpm.process.core.context.exception.ExceptionHandler;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.jbpm.workflow.core.node.DynamicNode;
+import org.kie.api.runtime.process.ProcessContext;
 
 public class DynamicNodeFactory extends CompositeContextNodeFactory {
 
@@ -106,12 +109,12 @@ public class DynamicNodeFactory extends CompositeContextNodeFactory {
         return this;
     }
 
-    public DynamicNodeFactory activationExpression(String activationExpression) {
+    public DynamicNodeFactory activationExpression(Predicate<ProcessContext> activationExpression) {
         getDynamicNode().setActivationExpression(activationExpression);
         return this;
     }
 
-    public DynamicNodeFactory completionExpression(String completionExpression) {
+    public DynamicNodeFactory completionExpression(Predicate<ProcessContext>  completionExpression) {
         getDynamicNode().setCompletionExpression(completionExpression);
         return this;
     }

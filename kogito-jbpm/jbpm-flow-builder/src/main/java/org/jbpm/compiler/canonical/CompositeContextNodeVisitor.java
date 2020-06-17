@@ -72,7 +72,7 @@ public class CompositeContextNodeVisitor<T extends CompositeContextNode> extends
             visitVariableScope(getNodeId(node), variableScopeNode, body, new HashSet<>());
         }
 
-        visitCustomFields(node).forEach(body::addStatement);
+        visitCustomFields(node, variableScope).forEach(body::addStatement);
 
         // composite context node might not have variable scope
         // in that case inherit it from parent
@@ -86,7 +86,7 @@ public class CompositeContextNodeVisitor<T extends CompositeContextNode> extends
         body.addStatement(getDoneMethod(getNodeId(node)));
     }
 
-    protected Stream<MethodCallExpr> visitCustomFields(T compositeContextNode) {
+    protected Stream<MethodCallExpr> visitCustomFields(T compositeContextNode, VariableScope variableScope) {
         return Stream.empty();
     }
 

@@ -59,7 +59,6 @@ import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
-import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.EndNodeInstance;
 import org.jbpm.workflow.instance.node.EventBasedNodeInstanceInterface;
 import org.jbpm.workflow.instance.node.EventNodeInstance;
@@ -545,8 +544,6 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
                         addEventListener(resolveVariable(type), EMPTY_EVENT_LISTENER, true);
                     }
                 }
-            } else if (node instanceof DynamicNode && ((DynamicNode) node).getActivationEventName() != null) {
-                addEventListener(((DynamicNode) node).getActivationEventName(), EMPTY_EVENT_LISTENER, true);
             }
         }
         if (getWorkflowProcess().getMetaData().containsKey(COMPENSATION)) {
@@ -624,10 +621,6 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
                             if (node instanceof EventSubProcessNode && (resolveVariables(((EventSubProcessNode) node).getEvents()).contains(type))) {
                                 EventSubProcessNodeInstance eventNodeInstance = (EventSubProcessNodeInstance) getNodeInstance(node);
                                 eventNodeInstance.signalEvent(type, event);
-                            }
-                            if (node instanceof DynamicNode && type.equals(((DynamicNode) node).getActivationEventName())) {
-                                DynamicNodeInstance dynamicNodeInstance = (DynamicNodeInstance) getNodeInstance(node);
-                                dynamicNodeInstance.signalEvent(type, event);
                             } else {
                                 List<NodeInstance> nodeInstances = getNodeInstances(node.getId(), currentView);
                                 if (nodeInstances != null && !nodeInstances.isEmpty()) {

@@ -18,22 +18,13 @@ package org.kie.kogito.process.flexible;
 
 public class Milestone extends ItemDescription {
 
-    private final String condition;
-
-    private Milestone(String id, String name, Status status, String condition) {
+    private Milestone(String id, String name, Status status) {
         super(id, name, status);
-        this.condition = condition;
-    }
-
-    public String getCondition() {
-        return condition;
     }
 
     @Override
     public String toString() {
-        return "Milestone{" +
-                "condition='" + condition + '\'' +
-                ", {" + super.toString() + "}";
+        return "Milestone{" + super.toString() + "}";
     }
 
     public static class Builder {
@@ -41,17 +32,9 @@ public class Milestone extends ItemDescription {
         private String id;
         private String name;
         private Status status;
-        private String condition;
 
         public Builder(String id) {
             this.id = id;
-        }
-
-        public Builder(Milestone m) {
-            this.id = m.getId();
-            this.name = m.getName();
-            this.status = m.getStatus();
-            this.condition = m.getCondition();
         }
 
         public Builder withName(String name) {
@@ -64,13 +47,9 @@ public class Milestone extends ItemDescription {
             return this;
         }
 
-        public Builder withCondition(String condition) {
-            this.condition = condition;
-            return this;
-        }
-
         public Milestone build() {
-            return new Milestone(id, name, status, condition);
+            return new Milestone(id, name, status);
         }
     }
+
 }

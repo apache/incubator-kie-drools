@@ -40,7 +40,7 @@ public class ProcessContext implements org.kie.api.runtime.process.ProcessContex
             return processInstance;
         }
         if (nodeInstance != null) {
-            return (ProcessInstance) nodeInstance.getProcessInstance();
+            return nodeInstance.getProcessInstance();
         }
         return null;
     }
@@ -53,8 +53,9 @@ public class ProcessContext implements org.kie.api.runtime.process.ProcessContex
         return nodeInstance;
     }
 
-    public void setNodeInstance(NodeInstance nodeInstance) {
+    public ProcessContext setNodeInstance(NodeInstance nodeInstance) {
         this.nodeInstance = nodeInstance;
+        return this;
     }
     
     public Object getVariable(String variableName) {

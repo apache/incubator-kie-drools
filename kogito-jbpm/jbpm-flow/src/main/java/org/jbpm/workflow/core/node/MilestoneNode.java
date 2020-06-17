@@ -16,71 +16,67 @@
 
 package org.jbpm.workflow.core.node;
 
+import java.util.function.Predicate;
+
 import org.kie.api.definition.process.Connection;
-import org.jbpm.workflow.core.Constraint;
-import org.jbpm.workflow.core.impl.ConnectionRef;
+import org.kie.api.runtime.process.ProcessContext;
+
+import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 
 /**
  * Default implementation of a milestone node.
- * 
  */
 public class MilestoneNode extends StateBasedNode implements Constrainable {
 
-	private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510L;
 
-	private String constraint;
-	private String matchVariable;
+    /**
+     * String representation of the conditionPredicate. Not used at runtime
+     */
+    private String condition;
+    private Predicate<ProcessContext> conditionPredicate;
 
-    public void addConstraint(ConnectionRef connection, Constraint constraint) {
-    	if (connection != null) {
-    		throw new IllegalArgumentException(
-				"A Milestone node only accepts one simple constraint");
-    	}
-        this.constraint = constraint.getConstraint();
-    }
-    
-    public void setConstraint(String constraint){
-        this.constraint = constraint;
+    public void setCondition(String condition) {
+        this.condition = condition;
     }
 
-    public String getConstraint(){
-        return this.constraint;
-    }    
-    
-    public String getMatchVariable() {
-        return matchVariable;
+    public String getCondition() {
+        return condition;
     }
-    
-    public void setMatchVariable(String matchVariable) {
-        this.matchVariable = matchVariable;
+
+    public void setCondition(Predicate<ProcessContext> conditionPredicate) {
+        this.conditionPredicate = conditionPredicate;
+    }
+
+    public boolean canComplete(ProcessContext context) {
+        return conditionPredicate == null || conditionPredicate.test(context);
     }
 
     public void validateAddIncomingConnection(final String type, final Connection connection) {
         super.validateAddIncomingConnection(type, connection);
         if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
-        	throw new IllegalArgumentException(
-                    "This type of node [" + connection.getTo().getMetaData().get("UniqueId") + ", " + connection.getTo().getName() 
-                    + "] only accepts default incoming connection type!");
+            throwValidationException(connection, "only accepts default incoming connection type!");
         }
-        if (getFrom() != null && !"true".equals(System.getProperty("jbpm.enable.multi.con"))) {
-        	throw new IllegalArgumentException(
-                    "This type of node [" + connection.getTo().getMetaData().get("UniqueId") + ", " + connection.getTo().getName() 
-                    + "] cannot have more than one incoming connection!");
+        if (getFrom() != null && !Boolean.parseBoolean(System.getProperty("jbpm.enable.multi.con"))) {
+            throwValidationException(connection, "cannot have more than one incoming connection!");
         }
     }
 
     public void validateAddOutgoingConnection(final String type, final Connection connection) {
         super.validateAddOutgoingConnection(type, connection);
         if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
-        	throw new IllegalArgumentException(
-                    "This type of node [" + connection.getFrom().getMetaData().get("UniqueId") + ", " + connection.getFrom().getName() 
-                    + "] only accepts default outgoing connection type!");
+            throwValidationException(connection, "only accepts default outgoing connection type!");
         }
-        if (getTo() != null && !"true".equals(System.getProperty("jbpm.enable.multi.con"))) {
-        	throw new IllegalArgumentException(
-                    "This type of node [" + connection.getFrom().getMetaData().get("UniqueId") + ", " + connection.getFrom().getName() 
-                    + "] cannot have more than one outgoing connection!");
+        if (getTo() != null && !Boolean.parseBoolean(System.getProperty("jbpm.enable.multi.con"))) {
+            throwValidationException(connection, "cannot have more than one outgoing connection!");
         }
     }
-    
+
+    private static void throwValidationException(Connection connection, String msg) {
+        throw new IllegalArgumentException("This type of node ["
+                + connection.getFrom().getMetaData().get(UNIQUE_ID) + ", "
+                + connection.getFrom().getName() + "] "
+                + msg);
+    }
+
 }

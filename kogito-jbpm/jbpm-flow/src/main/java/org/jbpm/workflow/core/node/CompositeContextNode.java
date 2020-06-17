@@ -23,9 +23,6 @@ import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.AbstractContext;
 import org.jbpm.process.core.impl.ContextContainerImpl;
 
-/**
- * 
- */
 public class CompositeContextNode extends CompositeNode implements ContextContainer {
 
     private static final long serialVersionUID = 510l;
