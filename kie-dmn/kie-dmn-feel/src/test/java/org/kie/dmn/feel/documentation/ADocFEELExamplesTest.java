@@ -20,6 +20,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.asciidoctor.Asciidoctor;
@@ -33,13 +34,19 @@ import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.lang.FEELProfile;
+import org.kie.dmn.feel.parser.feel11.profiles.KieExtendedFEELProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ADocFEELExamplesTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(ADocFEELExamplesTest.class);
-    private final FEEL feel = FEEL.newInstance();
+    private static final List<FEELProfile> profiles = new ArrayList<>();
+    {
+        profiles.add(new KieExtendedFEELProfile());
+    }
+    private final FEEL feel = FEEL.newInstance(profiles);
 
     /**
      * Dev notes: the availability of the .adoc resource to this test and its refresh is governed by Maven.
