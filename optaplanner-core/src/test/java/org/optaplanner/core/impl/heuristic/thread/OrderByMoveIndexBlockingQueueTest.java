@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.solver.thread;
+package org.optaplanner.core.impl.heuristic.thread;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -30,7 +30,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.heuristic.move.DummyMove;
-import org.optaplanner.core.impl.heuristic.thread.OrderByMoveIndexBlockingQueue;
 import org.optaplanner.core.impl.partitionedsearch.queue.PartitionQueueTest;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.slf4j.Logger;
