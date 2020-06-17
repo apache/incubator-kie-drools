@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.partitionedsearch.queue;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
@@ -140,12 +140,7 @@ public class PartitionQueueTest {
         assertThat(it.next()).isSameAs(moveA1);
         assertThat(it.hasNext()).isTrue();
         assertThat(it.next()).isSameAs(moveC2);
-        try {
-            it.hasNext();
-            fail("There was no RuntimeException thrown.");
-        } catch (RuntimeException e) {
-            assertThat(e.getCause()).isSameAs((Throwable) exception);
-        }
+        assertThatIllegalStateException().isThrownBy(it::hasNext).withCause(exception);
     }
 
     public PartitionChangeMove<TestdataSolution> buildMove() {

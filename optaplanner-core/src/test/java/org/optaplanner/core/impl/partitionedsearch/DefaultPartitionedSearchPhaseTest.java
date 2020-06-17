@@ -16,7 +16,8 @@
 package org.optaplanner.core.impl.partitionedsearch;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -123,13 +124,10 @@ public class DefaultPartitionedSearchPhaseTest {
         SolverFactory<TestdataSolution> solverFactory = createSolverFactory(false, SolverConfig.MOVE_THREAD_COUNT_NONE,
                 partSize);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        try {
-            solver.solve(solution);
-            fail("The exception was not propagated.");
-        } catch (IllegalStateException ex) {
-            assertThat(ex).hasMessageMatching(".*partIndex.*Relayed.*");
-            assertThat(ex).hasRootCauseExactlyInstanceOf(TestdataFaultyEntity.TestException.class);
-        }
+        assertThatIllegalStateException()
+                .isThrownBy(() -> solver.solve(solution))
+                .withMessageMatching(".*partIndex.*Relayed.*")
+                .withRootCauseExactlyInstanceOf(TestdataFaultyEntity.TestException.class);
     }
 
     @Test
@@ -197,13 +195,10 @@ public class DefaultPartitionedSearchPhaseTest {
                 .isTrue();
 
         // This verifies that interruption is propagated to caller (wrapped as an IllegalStateException)
-        try {
-            solutionFuture.get();
-            fail("InterruptedException should have been propagated to solver thread.");
-        } catch (ExecutionException ex) {
-            assertThat(ex).hasCause(new IllegalStateException("Solver thread was interrupted in Partitioned Search."));
-            assertThat(ex).hasRootCauseExactlyInstanceOf(InterruptedException.class);
-        }
+        assertThatThrownBy(solutionFuture::get)
+                .isInstanceOf(ExecutionException.class)
+                .hasCause(new IllegalStateException("Solver thread was interrupted in Partitioned Search."))
+                .hasRootCauseExactlyInstanceOf(InterruptedException.class);
     }
 
 }

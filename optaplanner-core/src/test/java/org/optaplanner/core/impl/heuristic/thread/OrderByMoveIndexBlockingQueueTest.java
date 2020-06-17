@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.heuristic.thread;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 
 import java.util.concurrent.ExecutionException;
@@ -139,12 +139,7 @@ public class OrderByMoveIndexBlockingQueueTest {
         executorService.submit(() -> queue.addMove(0, 1, 2, new DummyMove("b2"), SimpleScore.of(-2)));
         assertResult("b0", false, queue.take());
         assertResult("b1", -1, queue.take());
-        try {
-            queue.take();
-            fail("There was no RuntimeException thrown.");
-        } catch (RuntimeException e) {
-            assertThat(e.getCause()).isSameAs((Throwable) exception);
-        }
+        assertThatThrownBy(queue::take).hasCause(exception);
     }
 
     @Test
@@ -159,17 +154,14 @@ public class OrderByMoveIndexBlockingQueueTest {
         executorService.submit(() -> queue.addMove(1, 0, 3, new DummyMove("a3"), SimpleScore.of(-3)));
         IllegalArgumentException exception = new IllegalArgumentException();
         Future<?> exceptionFuture = executorService.submit(() -> queue.addExceptionThrown(1, exception));
-        try {
+        assertThatThrownBy(() -> {
             assertResult("a0", 0, queue.take());
             assertResult("a1", -1, queue.take());
             assertResult("a2", -2, queue.take());
 
             exceptionFuture.get(); // Avoid random failing test when the task hasn't started yet
             queue.startNextStep(1);
-            fail("There was no RuntimeException thrown.");
-        } catch (RuntimeException e) {
-            assertThat(e.getCause()).isSameAs((Throwable) exception);
-        }
+        }).hasCause(exception);
     }
 
     private void assertResult(String moveCode, int score, OrderByMoveIndexBlockingQueue.MoveResult<TestdataSolution> result) {

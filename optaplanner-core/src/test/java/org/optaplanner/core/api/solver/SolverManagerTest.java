@@ -136,7 +136,7 @@ public class SolverManagerTest {
 
     @Test
     @Timeout(60)
-    public void exceptionInSolver() throws InterruptedException {
+    public void exceptionInSolver() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
                 .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
                         scoreDirector -> {
@@ -149,20 +149,17 @@ public class SolverManagerTest {
         SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solve(1L,
                 problemId -> PlannerTestUtils.generateTestdataSolution("s1"),
                 null, (problemId, throwable) -> exceptionCount.incrementAndGet());
-        try {
-            solverJob1.getFinalBestSolution();
-            fail("Exception got eaten.");
-        } catch (ExecutionException e) {
-            assertThat(exceptionCount.get()).isEqualTo(1);
-            assertThat(e.getCause().getCause().getMessage()).isEqualTo("exceptionInSolver");
-        }
+        assertThatThrownBy(solverJob1::getFinalBestSolution)
+                .isInstanceOf(ExecutionException.class)
+                .hasRootCauseMessage("exceptionInSolver");
+        assertThat(exceptionCount.get()).isEqualTo(1);
         assertThat(solverManager.getSolverStatus(1L)).isEqualTo(NOT_SOLVING);
         assertThat(solverJob1.getSolverStatus()).isEqualTo(NOT_SOLVING);
     }
 
     @Test
     @Timeout(60)
-    public void exceptionInConsumer() throws InterruptedException {
+    public void exceptionInConsumer() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
                 .withPhases(new ConstructionHeuristicPhaseConfig());
         SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(
@@ -174,13 +171,10 @@ public class SolverManagerTest {
                 bestSolution -> {
                     throw new IllegalStateException("exceptionInConsumer");
                 }, (problemId, throwable) -> exceptionCount.incrementAndGet());
-        try {
-            solverJob1.getFinalBestSolution();
-            fail("Exception got eaten.");
-        } catch (ExecutionException e) {
-            assertThat(exceptionCount.get()).isEqualTo(1);
-            assertThat(e.getCause().getCause().getMessage()).isEqualTo("exceptionInConsumer");
-        }
+        assertThatThrownBy(solverJob1::getFinalBestSolution)
+                .isInstanceOf(ExecutionException.class)
+                .hasRootCauseMessage("exceptionInConsumer");
+        assertThat(exceptionCount.get()).isEqualTo(1);
         assertThat(solverManager.getSolverStatus(1L)).isEqualTo(NOT_SOLVING);
         assertThat(solverJob1.getSolverStatus()).isEqualTo(NOT_SOLVING);
     }
