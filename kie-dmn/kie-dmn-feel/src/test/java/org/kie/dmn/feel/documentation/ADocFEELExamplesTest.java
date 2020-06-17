@@ -77,7 +77,7 @@ public class ADocFEELExamplesTest {
                     if (b.getAttribute("language", "unknown").equals("FEEL")) {
                         for (String l : lines) {
                             String titled = sectionTitle + ": " + l;
-                            LOG.debug(titled);
+                            LOG.info("checking DOC {}", titled);
                             Object FEELResult = feel.evaluate(l);
                             Assert.assertThat(titled, FEELResult, Matchers.is(true));
                         }
