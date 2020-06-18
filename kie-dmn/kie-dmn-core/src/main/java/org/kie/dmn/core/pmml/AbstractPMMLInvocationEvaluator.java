@@ -140,64 +140,68 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
             AbstractPMMLInvocationEvaluator toReturn = getAbstractDMNKiePMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlResource, pmmlModel, pmmlInfo);
             if (toReturn != null) {
                 return toReturn;
+            } else {
+                MsgUtil.reportMessage(LOG,
+                                      DMNMessage.Severity.WARN,
+                                      funcDef,
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.FUNC_DEF_PMML_NOT_SUPPORTED,
+                                      funcDef.getIdentifierString());
             }
-            MsgUtil.reportMessage(LOG,
-                                  DMNMessage.Severity.WARN,
-                                  funcDef,
-                                  model,
-                                  null,
-                                  null,
-                                  Msg.FUNC_DEF_PMML_NOT_SUPPORTED,
-                                  funcDef.getIdentifierString());
             return new AbstractPMMLInvocationEvaluator.DummyPMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlResource, pmmlModel);
         }
     }
 
+    /**
+     * Retrieve the required <code>AbstractDMNKiePMMLInvocationEvaluator</code>. It may return <code>null</code>
+     * because it is eventually expected by original code
+     * @see {@link DummyPMMLInvocationEvaluator}
+     *
+     * @param nameSpace
+     * @param funcDef
+     * @param pmmlResource
+     * @param pmmlModel
+     * @param pmmlInfo
+     * @return
+     */
     private static AbstractDMNKiePMMLInvocationEvaluator getAbstractDMNKiePMMLInvocationEvaluator(String nameSpace, DMNElement funcDef, Resource pmmlResource, String pmmlModel, PMMLInfo<?> pmmlInfo) {
-        PMMLConstants requiredKiePMMLImplementation = getRequiredKiePMMLImplementation();
-        switch (requiredKiePMMLImplementation) {
+        Optional<PMMLConstants> requiredKiePMMLImplementation = getRequiredKiePMMLImplementation();
+        return requiredKiePMMLImplementation.map(pmmlConstants -> {
+            switch (pmmlConstants) {
                 case LEGACY:
                     return getDMNKiePMMLInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
                 case NEW:
                     return getDMNKiePMMLNewInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
                 default:
-                    throw new IllegalArgumentException("Unexpected PMMLConstants " + requiredKiePMMLImplementation);
-        }
+                    return null;
+            }
+        }).orElse(null);
     }
-//
-//        final boolean legacyImplementationPresent = isLegacyImplementationPresent();
-//        final boolean newImplementationPresent = isNewImplementationPresent();
-//        if (legacyImplementationPresent && newImplementationPresent) {
-//            if (isLegacyPMMLRequired()) {
-//                return getDMNKiePMMLInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
-//            } else {
-//                return getDMNKiePMMLNewInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
-//            }
-//        } else if (legacyImplementationPresent) {
-//            return getDMNKiePMMLInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
-//        } else if (newImplementationPresent) {
-//            return getDMNKiePMMLNewInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
-//        } else {
-//            return null;
-//        }
 
-    private static PMMLConstants getRequiredKiePMMLImplementation() {
+    /**
+     * Retrieve the <code>Optional</code> with required <b>KiePMML</b> implementation. It may return <code>Optional.empty()</code>
+     * because it is eventually expected by original code
+     * @see {@link DummyPMMLInvocationEvaluator}
+     * @return
+     */
+    private static Optional<PMMLConstants> getRequiredKiePMMLImplementation() {
         final boolean legacyImplementationPresent = isLegacyImplementationPresent();
         final boolean newImplementationPresent = isNewImplementationPresent();
         if (legacyImplementationPresent && newImplementationPresent) {
             if (isLegacyPMMLRequired()) {
-                return LEGACY;
+                return Optional.of(LEGACY);
             } else {
-                return NEW;
+                return Optional.of(NEW);
             }
         } else if (legacyImplementationPresent) {
-            return LEGACY;
+            return Optional.of(LEGACY);
         } else if (newImplementationPresent) {
-            return NEW;
+            return Optional.of(NEW);
         } else {
-            throw new IllegalStateException("No KiePMML implementation found");
+            return Optional.empty();
         }
-
     }
 
     private static DMNKiePMMLInvocationEvaluator getDMNKiePMMLInvocationEvaluator(String nameSpace, DMNElement funcDef, Resource pmmlResource, String pmmlModel, PMMLInfo<?> pmmlInfo) {
