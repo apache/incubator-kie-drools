@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,15 @@
 
 package org.optaplanner.core.config.heuristic.selector.value;
 
+import javax.xml.bind.annotation.XmlEnum;
+
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
 /**
  * The manner of sorting a values for a {@link PlanningVariable}.
  */
+
+@XmlEnum
 public enum ValueSorterManner {
     NONE,
     INCREASING_STRENGTH,

@@ -21,6 +21,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
@@ -78,6 +81,11 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPla
     }
 
     // TODO This is a List due to XStream limitations. With JAXB it could be just a MoveSelectorConfig instead.
+    @XmlElements({
+            @XmlElement(name = "unionMoveSelector", type = UnionMoveSelectorConfig.class),
+            @XmlElement(name = "cartesianProductMoveSelector", type = CartesianProductMoveSelectorConfig.class),
+            @XmlElement(name = "changeMoveSelector", type = ChangeMoveSelectorConfig.class)
+    })
     @XStreamImplicit()
     private List<MoveSelectorConfig> moveSelectorConfigList = null;
 

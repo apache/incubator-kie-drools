@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,13 @@
 
 package org.optaplanner.core.config.heuristic.selector.common;
 
+import javax.xml.bind.annotation.XmlEnum;
+
 /**
  * There is no INHERIT by design because 2 sequential caches provides no benefit, only memory overhead.
  */
+
+@XmlEnum
 public enum SelectionCacheType {
     /**
      * Just in time, when the move is created. This is effectively no caching. This is the default for most selectors.

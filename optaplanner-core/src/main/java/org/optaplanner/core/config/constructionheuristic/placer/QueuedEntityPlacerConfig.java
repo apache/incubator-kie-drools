@@ -21,11 +21,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -74,8 +78,15 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPla
         return config;
     }
 
+    @XmlElement(name = "entitySelector")
     @XStreamAlias("entitySelector")
     protected EntitySelectorConfig entitySelectorConfig = null;
+
+    @XmlElements({
+            @XmlElement(name = "unionMoveSelector", type = UnionMoveSelectorConfig.class),
+            @XmlElement(name = "cartesianProductMoveSelector", type = CartesianProductMoveSelectorConfig.class),
+            @XmlElement(name = "changeMoveSelector", type = ChangeMoveSelectorConfig.class)
+    })
     @XStreamImplicit()
     protected List<MoveSelectorConfig> moveSelectorConfigList = null;
 

@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.heuristic.selector.move.decorator;
 
 import java.util.Iterator;
-import java.util.List;
 
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
@@ -30,14 +29,14 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 public class FilteringMoveSelector extends AbstractMoveSelector {
 
     protected final MoveSelector childMoveSelector;
-    protected final List<SelectionFilter> filterList;
+    protected final SelectionFilter filter;
     protected final boolean bailOutEnabled;
 
     protected ScoreDirector scoreDirector = null;
 
-    public FilteringMoveSelector(MoveSelector childMoveSelector, List<SelectionFilter> filterList) {
+    public FilteringMoveSelector(MoveSelector childMoveSelector, SelectionFilter filter) {
         this.childMoveSelector = childMoveSelector;
-        this.filterList = filterList;
+        this.filter = filter;
         bailOutEnabled = childMoveSelector.isNeverEnding();
         phaseLifecycleSupport.addEventListener(childMoveSelector);
     }
@@ -120,7 +119,7 @@ public class FilteringMoveSelector extends AbstractMoveSelector {
     }
 
     protected boolean accept(ScoreDirector scoreDirector, Move move) {
-        for (SelectionFilter filter : filterList) {
+        if (filter != null) {
             if (!filter.accept(scoreDirector, move)) {
                 return false;
             }

@@ -33,6 +33,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -70,6 +75,8 @@ import com.thoughtworks.xstream.converters.ConversionException;
  * To read it from XML, use {@link #createFromXmlResource(String)}.
  * To build a {@link SolverFactory} with it, use {@link SolverFactory#create(SolverConfig)}.
  */
+@XmlRootElement(name = "solver")
+
 @XStreamAlias("solver")
 public class SolverConfig extends AbstractConfig<SolverConfig> {
 
@@ -217,6 +224,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     private static final Logger logger = LoggerFactory.getLogger(SolverConfig.class);
 
+    @XmlTransient
     @XStreamOmitField
     private ClassLoader classLoader = null;
 
@@ -242,6 +250,9 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     @XStreamAlias("termination")
     private TerminationConfig terminationConfig;
 
+    @XmlElements({
+            @XmlElement(name = "constructionHeuristic", type = ConstructionHeuristicPhaseConfig.class)
+    })
     @XStreamImplicit()
     protected List<PhaseConfig> phaseConfigList = null;
 

@@ -22,6 +22,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+
 import org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicForagerConfig;
 import org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig;
 import org.optaplanner.core.config.constructionheuristic.placer.PooledEntityPlacerConfig;
@@ -31,6 +34,7 @@ import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -60,13 +64,24 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
     protected ValueSorterManner valueSorterManner = null;
 
     // TODO This is a List due to XStream limitations. With JAXB it could be just a EntityPlacerConfig instead.
+    @XmlElements({
+            @XmlElement(name = "queuedEntityPlacer", type = QueuedEntityPlacerConfig.class),
+            @XmlElement(name = "queuedValuePlacer", type = QueuedValuePlacerConfig.class),
+            @XmlElement(name = "pooledEntityPlacer", type = PooledEntityPlacerConfig.class)
+    })
     @XStreamImplicit
     protected List<EntityPlacerConfig> entityPlacerConfigList = null;
 
     /** Simpler alternative for {@link #entityPlacerConfigList}. */
+    @XmlElements({
+            @XmlElement(name = "unionMoveSelector", type = UnionMoveSelectorConfig.class),
+            @XmlElement(name = "cartesianProductMoveSelector", type = CartesianProductMoveSelectorConfig.class),
+            @XmlElement(name = "changeMoveSelector", type = ChangeMoveSelectorConfig.class)
+    })
     @XStreamImplicit()
     protected List<MoveSelectorConfig> moveSelectorConfigList = null;
 
+    @XmlElement(name = "forager")
     @XStreamAlias("forager")
     protected ConstructionHeuristicForagerConfig foragerConfig = null;
 

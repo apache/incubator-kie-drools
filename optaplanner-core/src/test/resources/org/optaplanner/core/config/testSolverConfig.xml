@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+  <constructionHeuristic>
+    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+    <forager>
+      <pickEarlyType>FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD</pickEarlyType>
+    </forager>
+    <queuedEntityPlacer>
+      <entitySelector id="placerEntitySelector">
+        <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>
+        <cacheType>PHASE</cacheType>
+        <selectionOrder>SORTED</selectionOrder>
+        <sorterManner>DECREASING_DIFFICULTY</sorterManner>
+      </entitySelector>
+      <cartesianProductMoveSelector>
+        <changeMoveSelector>
+          <entitySelector mimicSelectorRef="placerEntitySelector"/>
+          <valueSelector variableName="subValue">
+            <downcastEntityClass>org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedEntity</downcastEntityClass>
+            <cacheType>PHASE</cacheType>
+            <selectionOrder>SORTED</selectionOrder>
+            <sorterManner>INCREASING_STRENGTH</sorterManner>
+          </valueSelector>
+        </changeMoveSelector>
+        <changeMoveSelector>
+          <entitySelector mimicSelectorRef="placerEntitySelector"/>
+          <valueSelector variableName="value">
+            <cacheType>PHASE</cacheType>
+            <selectionOrder>SORTED</selectionOrder>
+            <sorterManner>INCREASING_STRENGTH</sorterManner>
+          </valueSelector>
+        </changeMoveSelector>
+      </cartesianProductMoveSelector>
+    </queuedEntityPlacer>
+    <pooledEntityPlacer>
+      <changeMoveSelector/>
+    </pooledEntityPlacer>
+    <queuedValuePlacer>
+      <changeMoveSelector/>
+    </queuedValuePlacer>
+    <unionMoveSelector>
+      <changeMoveSelector/>
+    </unionMoveSelector>
+  </constructionHeuristic>
+</solver>
