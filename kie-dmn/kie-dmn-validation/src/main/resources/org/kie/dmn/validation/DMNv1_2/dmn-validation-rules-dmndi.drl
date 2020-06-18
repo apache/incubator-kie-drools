@@ -30,7 +30,7 @@ rule DRGELEMENT_MISSING_DMNSHAPE
 when
     DMNDI()
     $element : DRGElement()
-    not DMNShape(dmnElementRef == $element.id)
+    not DMNShape(dmnElementRef.prefix == XMLConstants.DEFAULT_NS_PREFIX, dmnElementRef.localPart == $element.id)
 then
     reporter.report(DMNMessage.Severity.WARN, $element, Msg.DMNDI_MISSING_SHAPE, $element.getIdentifierString());
 end
@@ -39,7 +39,7 @@ rule TEXTANNOTATION_MISSING_DMNSHAPE
 when
     DMNDI()
     $textAnn : TextAnnotation()
-    not DMNShape(dmnElementRef == $textAnn.id)
+    not DMNShape(dmnElementRef.prefix == XMLConstants.DEFAULT_NS_PREFIX, dmnElementRef.localPart == $textAnn.id)
 then
     reporter.report(DMNMessage.Severity.WARN, $textAnn, Msg.DMNDI_MISSING_SHAPE, $textAnn.getIdentifierString());
 end
@@ -48,7 +48,7 @@ rule INFORMATIONREQUIREMENT_MISSING_DMNEDGE
 when
     DMNDI()
     $req : InformationRequirement()
-    not DMNEdge(dmnElementRef == $req.id)
+    not DMNEdge(dmnElementRef.prefix == XMLConstants.DEFAULT_NS_PREFIX, dmnElementRef.localPart == $req.id)
 then
     reporter.report(DMNMessage.Severity.WARN, $req, Msg.DMNDI_MISSING_EDGE, $req.getIdentifierString());
 end
@@ -57,7 +57,7 @@ rule KNOWLEDGEREQUIREMENT_MISSING_DMNEDGE
 when
     DMNDI()
     $req : KnowledgeRequirement()
-    not DMNEdge(dmnElementRef == $req.id)
+    not DMNEdge(dmnElementRef.prefix == XMLConstants.DEFAULT_NS_PREFIX, dmnElementRef.localPart == $req.id)
 then
     reporter.report(DMNMessage.Severity.WARN, $req, Msg.DMNDI_MISSING_EDGE, $req.getIdentifierString());
 end
@@ -66,7 +66,7 @@ rule AUTHORITYREQUIREMENT_MISSING_DMNEDGE
 when
     DMNDI()
     $req : AuthorityRequirement()
-    not DMNEdge(dmnElementRef == $req.id)
+    not DMNEdge(dmnElementRef.prefix == XMLConstants.DEFAULT_NS_PREFIX, dmnElementRef.localPart == $req.id)
 then
     reporter.report(DMNMessage.Severity.WARN, $req, Msg.DMNDI_MISSING_EDGE, $req.getIdentifierString());
 end
@@ -75,7 +75,7 @@ rule ASSOCIATION_MISSING_DMNEDGE
 when
     DMNDI()
     $asso : Association()
-    not DMNEdge(dmnElementRef == $asso.id)
+    not DMNEdge(dmnElementRef.prefix == XMLConstants.DEFAULT_NS_PREFIX, dmnElementRef.localPart == $asso.id)
 then
     reporter.report(DMNMessage.Severity.WARN, $asso, Msg.DMNDI_MISSING_EDGE, $asso.getIdentifierString());
 end
@@ -84,8 +84,8 @@ rule DMNSHAPE_UNKNOWN_REF_WITHOUT_IMPORT
 when
     DMNDI()
     $shape : DMNShape(dmnElementRef.prefix == XMLConstants.DEFAULT_NS_PREFIX)
-    not DRGElement(id == $shape.dmnElementRef)
-    not TextAnnotation(id == $shape.dmnElementRef)
+    not DRGElement(id == $shape.dmnElementRef.localPart)
+    not TextAnnotation(id == $shape.dmnElementRef.localPart)
 then
     reporter.report(DMNMessage.Severity.ERROR, $shape, Msg.DMNDI_UNKNOWN_REF, $shape.getDmnElementRef(), $shape.getIdentifierString());
 end
@@ -107,10 +107,10 @@ rule DMNEGDE_UNKNOWN_REF_WITHOUT_IMPORT
 when
     DMNDI()
     $edge : DMNEdge(dmnElementRef.prefix == XMLConstants.DEFAULT_NS_PREFIX)
-    not InformationRequirement(id == $edge.dmnElementRef)
-    not KnowledgeRequirement(id == $edge.dmnElementRef)
-    not AuthorityRequirement(id == $edge.dmnElementRef)
-    not Association(id == $edge.dmnElementRef)
+    not InformationRequirement(id == $edge.dmnElementRef.localPart)
+    not KnowledgeRequirement(id == $edge.dmnElementRef.localPart)
+    not AuthorityRequirement(id == $edge.dmnElementRef.localPart)
+    not Association(id == $edge.dmnElementRef.localPart)
 then
     reporter.report(DMNMessage.Severity.ERROR, $edge, Msg.DMNDI_UNKNOWN_REF, $edge.getDmnElementRef(), $edge.getIdentifierString());
 end
