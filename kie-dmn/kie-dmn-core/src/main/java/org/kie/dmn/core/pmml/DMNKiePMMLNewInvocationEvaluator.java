@@ -56,7 +56,6 @@ public class DMNKiePMMLNewInvocationEvaluator extends AbstractDMNKiePMMLInvocati
 
     @Override
     protected PMML4Result getPMML4Result(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
-        LOG.debug("getPMML4Result");
         PMMLContext pmmlContext = getPMMLPMMLContext(UUID.randomUUID().toString(), model, dmnr);
         String sanitizedKieBase = getSanitizedPackageName(model);
         PMMLRuntime pmmlRuntime = getPMMLRuntime(eventManager, sanitizedKieBase);
@@ -65,7 +64,6 @@ public class DMNKiePMMLNewInvocationEvaluator extends AbstractDMNKiePMMLInvocati
 
     @Override
     protected Map<String, Object> getOutputFieldValues(PMML4Result pmml4Result, Map<String, Object> resultVariables, DMNResult dmnr) {
-        LOG.debug("getOutputFieldValues");
         Map<String, Object> toReturn = new HashMap<>();
         for (Map.Entry<String, Object> kv : resultVariables.entrySet()) {
             String resultName = kv.getKey();
@@ -80,7 +78,6 @@ public class DMNKiePMMLNewInvocationEvaluator extends AbstractDMNKiePMMLInvocati
 
     @Override
     protected Map<String, Object> getPredictedValues(PMML4Result pmml4Result, DMNResult dmnr) {
-        LOG.debug("pmml4Result");
         Map<String, Object> toReturn = new HashMap<>();
         String resultName = pmml4Result.getResultObjectName();
         Object value = pmml4Result.getResultVariables().get(resultName);
@@ -114,8 +111,10 @@ public class DMNKiePMMLNewInvocationEvaluator extends AbstractDMNKiePMMLInvocati
         KieContainer kieContainer = knowledgeBase.getKieContainer();
         KieBase kieBase;
         if (kieContainer.getKieBaseNames().contains(sanitizedKieBase)) {
+            LOG.debug("Retrieving {} KieBase", sanitizedKieBase);
             kieBase = kieContainer.getKieBase(sanitizedKieBase);
         } else {
+            LOG.debug("Retrieving default KieBase");
             kieBase = kieContainer.getKieBase();
         }
         final KieRuntimeFactory kieRuntimeFactory = KieRuntimeFactory.of(kieBase);

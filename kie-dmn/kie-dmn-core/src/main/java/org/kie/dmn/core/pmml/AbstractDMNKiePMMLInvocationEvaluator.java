@@ -64,7 +64,6 @@ public abstract class AbstractDMNKiePMMLInvocationEvaluator extends AbstractPMML
             result = getPredictedValues(resultHolder, dmnr);
         }
         if (result.isEmpty()) {
-            // TO FIX
             MsgUtil.reportMessage(LOG,
                                   DMNMessage.Severity.ERROR,
                                   node,

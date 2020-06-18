@@ -108,14 +108,6 @@ public final class DMNRuntimeUtil {
         serviceDiscovery.reset();
         final ServiceRegistryImpl instance = (ServiceRegistryImpl)ServiceRegistry.getInstance();
         instance.reload();
-//
-//
-//        Map<String, Object> resetServices = serviceDiscovery.getServices();
-//        KieAssemblersImpl resetKieAssemblers = (KieAssemblersImpl)resetServices.get("org.kie.api.internal.assembler.KieAssemblers");
-//        KieAssemblersImpl kieAssemblers = (KieAssemblersImpl)instance.get(KieAssemblers.class);
-//        Map<ResourceType, KieAssemblerService> registeredKieAssemblers = kieAssemblers.getAssemblers();
-//        resetKieAssemblers.getAssemblers()
-//                .forEach(registeredKieAssemblers::put);
     }
 
     public static DMNRuntime createRuntimeWithAdditionalResources(final String resourceName, final Class testClass, final String... additionalResources) {

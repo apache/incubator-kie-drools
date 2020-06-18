@@ -31,10 +31,8 @@ import org.kie.api.pmml.PMML4OutputField;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
-import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator.FormalParameter;
-import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
@@ -107,7 +105,7 @@ public class DMNKiePMMLInvocationEvaluator extends AbstractDMNKiePMMLInvocationE
     private Map<String, Object> getTargetObjects(Collection<String> targetFieldNames, PMML4Result pmml4Result, DMNResult dmnr) {
         Map<String, Object> toReturn = new HashMap<>();
         pmml4Result.getResultVariables().forEach((key, value) -> {
-            if (containsIgnoreCase(targetFieldNames, key) && value instanceof PMML4OutputField) {
+            if (containsIgnoredCaseString(targetFieldNames, key) && value instanceof PMML4OutputField) {
                 PMML4OutputField pmml4OutputField = (PMML4OutputField) value;
                 populateWithReflection(toReturn, key, pmml4OutputField, dmnr);
             }
@@ -148,7 +146,7 @@ public class DMNKiePMMLInvocationEvaluator extends AbstractDMNKiePMMLInvocationE
      * @param searchedString
      * @return
      */
-    private boolean containsIgnoreCase(Collection<String> containingCollection, String searchedString) {
+    private boolean containsIgnoredCaseString(Collection<String> containingCollection, String searchedString) {
         return containingCollection.contains(searchedString) || containingCollection.contains(searchedString.toLowerCase());
     }
 

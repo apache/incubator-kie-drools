@@ -20,9 +20,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.kie.api.io.Resource;
+import org.kie.api.pmml.PMMLConstants;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNType;
@@ -42,6 +45,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.api.pmml.PMMLConstants.KIE_PMML_IMPLEMENTATION;
 import static org.kie.api.pmml.PMMLConstants.LEGACY;
+import static org.kie.api.pmml.PMMLConstants.NEW;
 
 public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEvaluator {
 
@@ -52,6 +56,7 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
     protected final List<FormalParameter> parameters = new ArrayList<>();
     protected final Resource documentResource;
     protected final String model;
+
 
     public AbstractPMMLInvocationEvaluator(String dmnNS, DMNElement node, Resource resource, String model) {
         this.dmnNS = dmnNS;
@@ -149,21 +154,50 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
     }
 
     private static AbstractDMNKiePMMLInvocationEvaluator getAbstractDMNKiePMMLInvocationEvaluator(String nameSpace, DMNElement funcDef, Resource pmmlResource, String pmmlModel, PMMLInfo<?> pmmlInfo) {
+        PMMLConstants requiredKiePMMLImplementation = getRequiredKiePMMLImplementation();
+        switch (requiredKiePMMLImplementation) {
+                case LEGACY:
+                    return getDMNKiePMMLInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
+                case NEW:
+                    return getDMNKiePMMLNewInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
+                default:
+                    throw new IllegalArgumentException("Unexpected PMMLConstants " + requiredKiePMMLImplementation);
+        }
+    }
+//
+//        final boolean legacyImplementationPresent = isLegacyImplementationPresent();
+//        final boolean newImplementationPresent = isNewImplementationPresent();
+//        if (legacyImplementationPresent && newImplementationPresent) {
+//            if (isLegacyPMMLRequired()) {
+//                return getDMNKiePMMLInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
+//            } else {
+//                return getDMNKiePMMLNewInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
+//            }
+//        } else if (legacyImplementationPresent) {
+//            return getDMNKiePMMLInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
+//        } else if (newImplementationPresent) {
+//            return getDMNKiePMMLNewInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
+//        } else {
+//            return null;
+//        }
+
+    private static PMMLConstants getRequiredKiePMMLImplementation() {
         final boolean legacyImplementationPresent = isLegacyImplementationPresent();
         final boolean newImplementationPresent = isNewImplementationPresent();
         if (legacyImplementationPresent && newImplementationPresent) {
             if (isLegacyPMMLRequired()) {
-                return getDMNKiePMMLInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
+                return LEGACY;
             } else {
-                return getDMNKiePMMLNewInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
+                return NEW;
             }
         } else if (legacyImplementationPresent) {
-            return getDMNKiePMMLInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
+            return LEGACY;
         } else if (newImplementationPresent) {
-            return getDMNKiePMMLNewInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
+            return NEW;
         } else {
-            return null;
+            throw new IllegalStateException("No KiePMML implementation found");
         }
+
     }
 
     private static DMNKiePMMLInvocationEvaluator getDMNKiePMMLInvocationEvaluator(String nameSpace, DMNElement funcDef, Resource pmmlResource, String pmmlModel, PMMLInfo<?> pmmlInfo) {
