@@ -372,6 +372,13 @@
         <version>${project.version}</version>
         <classifier>javadoc</classifier>
       </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>persistence-commons-infinispan</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+      </dependency>
+
 
       <dependency>
         <groupId>org.kie.kogito</groupId>
