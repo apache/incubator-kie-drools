@@ -19,6 +19,15 @@
       <semantic:text>std( Values )</semantic:text>
     </semantic:literalExpression>
   </semantic:decision>
+  <semantic:decision id="bis_9560599d-1de7-4956-9377-ddf715e517f1" name="using ignoring">
+    <semantic:variable id="bis_b01330bf-5711-425d-b87c-6dda9853a102" name="using ignoring" typeRef="feel:number"/>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#bis_631861c9-cbe7-4f3c-8f47-359999a7f612"/>
+    </semantic:knowledgeRequirement>
+    <semantic:literalExpression id="bis_00d53a09-da16-470a-936b-826484702d04">
+      <semantic:text>ignoring( null )</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
   <semantic:businessKnowledgeModel id="_631861c9-cbe7-4f3c-8f47-359999a7f612" name="std">
     <semantic:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="J" id="_4847b62d-7271-4668-81a1-de181e74366f">
       <semantic:formalParameter id="_601a0cb6-7639-4dce-ac37-368d81ad7e1f" name="Values" typeRef="tNumberList"/>
@@ -38,5 +47,25 @@
       </semantic:context>
     </semantic:encapsulatedLogic>
     <semantic:variable id="_c59b0149-d642-4006-92ee-8afeec017da4" name="std" typeRef="feel:number"/>
+  </semantic:businessKnowledgeModel>
+  <semantic:businessKnowledgeModel id="bis_631861c9-cbe7-4f3c-8f47-359999a7f612" name="ignoring">
+    <semantic:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="J" id="bis_4847b62d-7271-4668-81a1-de181e74366f">
+      <semantic:formalParameter id="bis_601a0cb6-7639-4dce-ac37-368d81ad7e1f" name="ds" typeRef="feel:Any"/>
+      <semantic:context>
+        <semantic:contextEntry>
+          <semantic:variable id="bis_b64fb5ae-c054-437f-8160-fea41ea827b5" name="class" typeRef="feel:string"/>
+          <semantic:literalExpression id="bis_4b037302-5f0d-4d02-a372-38efab53cbb3">
+            <semantic:text>"com.acme.functions.StandardDeviation"</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+        <semantic:contextEntry>
+          <semantic:variable id="bis_1862cf34-9755-40eb-a86c-aabcdf090bea" name="method signature" typeRef="feel:string"/>
+          <semantic:literalExpression id="bis_23295d6e-b630-48a5-b889-e60c19d32165">
+            <semantic:text>"ignoring(org.apache.commons.math3.stat.descriptive.DescriptiveStatistics)"</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+      </semantic:context>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="bis_c59b0149-d642-4006-92ee-8afeec017da4" name="ignoring" typeRef="feel:number"/>
   </semantic:businessKnowledgeModel>
 </semantic:definitions>

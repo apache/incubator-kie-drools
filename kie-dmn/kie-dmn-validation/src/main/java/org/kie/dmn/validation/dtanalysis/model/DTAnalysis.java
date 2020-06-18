@@ -32,7 +32,6 @@ import org.kie.dmn.api.core.DMNMessage.Severity;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.ast.DashNode;
-import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.FunctionDefinition;
 import org.kie.dmn.model.api.HitPolicy;
@@ -40,6 +39,7 @@ import org.kie.dmn.model.api.InputClause;
 import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.api.NamedElement;
 import org.kie.dmn.validation.dtanalysis.DMNDTAnalysisMessage;
+import org.kie.dmn.validation.dtanalysis.mcdc.MCDCAnalyser.PosNegBlock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,8 +61,7 @@ public class DTAnalysis {
     private final Throwable error;
     private final DDTATable ddtaTable;
     private final Collection<DMNMessage> passThruMessages = new ArrayList<>();
-
-
+    private List<PosNegBlock> selectedBlocks;
 
     public DTAnalysis(DecisionTable sourceDT, DDTATable ddtaTable) {
         this.sourceDT = sourceDT;
@@ -96,7 +95,7 @@ public class DTAnalysis {
         this.gaps.add(gap);
     }
 
-    public DMNModelInstrumentedBase getSource() {
+    public DecisionTable getSource() {
         return sourceDT;
     }
 
@@ -759,5 +758,13 @@ public class DTAnalysis {
                 }
             }
         }
+    }
+
+    public void setMCDCSelectedBlocks(List<PosNegBlock> selectedBlocks) {
+        this.selectedBlocks = selectedBlocks;
+    }
+
+    public List<PosNegBlock> getMCDCSelectedBlocks() {
+        return Collections.unmodifiableList(selectedBlocks);
     }
 }

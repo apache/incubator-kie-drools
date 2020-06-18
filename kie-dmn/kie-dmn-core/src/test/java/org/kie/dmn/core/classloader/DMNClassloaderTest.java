@@ -65,6 +65,10 @@ public class DMNClassloaderTest extends BaseInterpretedVsCompiledTest {
                                   "        }\n" +
                                   "        return new BigDecimal( stats.getStandardDeviation() );\n" +
                                   "    }\n" +
+                                  "\n" +
+                                  "    public static BigDecimal ignoring( DescriptiveStatistics ds ) {\n" +
+                                  "         return std(java.util.Arrays.asList(new BigDecimal(1), new BigDecimal(3), new BigDecimal(5)));" +
+                                  "    }\n" +
                                   "}";
 
         final KieServices ks = KieServices.Factory.get();
@@ -95,6 +99,7 @@ public class DMNClassloaderTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("Standard Deviation"), is(new BigDecimal(1)));
+        assertThat(result.get("using ignoring"), is(new BigDecimal(2)));
     }
 
     static String getPom(final ReleaseId releaseId, final ReleaseId... dependencies) {

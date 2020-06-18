@@ -107,7 +107,7 @@ public class FunctionDefNode
                                 if( numberOfParams == params.size() ) {
                                     Class[] paramTypes = new Class[ numberOfParams ];
                                     for( int i = 0; i < numberOfParams; i++ ) {
-                                        paramTypes[i] = getType( paramTypeNames[i] );
+                                        paramTypes[i] = getType(paramTypeNames[i], ctx.getRootClassLoader());
                                     }
                                     Method method = clazz.getMethod( methodName, paramTypes );
                                     return new JavaFunction(ANONYMOUS, params, clazz, method);
@@ -129,13 +129,12 @@ public class FunctionDefNode
         }
     }
 
-    public static Class<?> getType(String typeName)
-            throws ClassNotFoundException {
+    public static Class<?> getType(String typeName, ClassLoader classLoader) throws ClassNotFoundException {
         // first check if it is primitive
         Class<?> type = convertPrimitiveNameToType( typeName );
         if( type == null ) {
             // if it is not, then try to load it
-            type = Class.forName( typeName );
+            type = Class.forName(typeName, true, classLoader);
 
         }
         return type;
