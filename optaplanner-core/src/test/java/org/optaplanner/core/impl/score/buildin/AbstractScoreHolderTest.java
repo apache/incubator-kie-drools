@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.impl.score.buildin;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -108,7 +108,7 @@ public abstract class AbstractScoreHolderTest {
 
     @Test
     public void constraintMatchTotalsNeverNull() {
-        assertNotNull(buildScoreHolder(true).getConstraintMatchTotals());
+        assertThat(buildScoreHolder(true).getConstraintMatchTotals()).isNotNull();
     }
 
     private AbstractScoreHolder<SimpleScore> buildScoreHolder(boolean constraintMatchEnabled) {

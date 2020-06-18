@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,7 +80,7 @@ class TestGenTestWriter {
             imports.add("java.io.File");
         }
         if (scoreDefinition != null) {
-            imports.add("org.junit.Assert");
+            imports.add("org.junit.jupiter.api.Assertions");
             imports.add(ScoreHolder.class.getCanonicalName());
             imports.add(scoreDefinition.getClass().getCanonicalName());
         }
@@ -158,7 +158,7 @@ class TestGenTestWriter {
         if (scoreEx != null) {
             sb
                     .append("        // This is the corrupted score, just to make sure the bug is reproducible\n")
-                    .append("        Assert.assertEquals(\"").append(scoreEx.getWorkingScore())
+                    .append("        Assertions.assertEquals(\"").append(scoreEx.getWorkingScore())
                     .append("\", scoreHolder.extractScore(0).toString());\n");
             // demonstrate the uncorrupted score
             sb
@@ -175,7 +175,7 @@ class TestGenTestWriter {
             }
             sb
                     .append("        kieSession.fireAllRules();\n")
-                    .append("        Assert.assertEquals(\"").append(scoreEx.getUncorruptedScore())
+                    .append("        Assertions.assertEquals(\"").append(scoreEx.getUncorruptedScore())
                     .append("\", scoreHolder.extractScore(0).toString());\n");
         }
         sb

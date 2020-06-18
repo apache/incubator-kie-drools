@@ -51,11 +51,6 @@
                   <artifactId>hibernate-core</artifactId>
                   <version>${version.org.hibernate}</version>
                 </additionalDependency>
-                <additionalDependency>
-                  <groupId>junit</groupId>
-                  <artifactId>junit</artifactId>
-                  <version>${version.junit}</version>
-                </additionalDependency>
               </additionalDependencies>
             </configuration>
           </execution>
