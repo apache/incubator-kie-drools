@@ -23,6 +23,7 @@ import org.kie.api.task.UserGroupCallback;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.Content;
+import org.kie.api.task.model.Email;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
@@ -167,5 +168,13 @@ public interface TaskPersistenceContext {
      */
 
     List<TaskSummary> doTaskSummaryCriteriaQuery(String userId, UserGroupCallback userGroupCallback, Object queryWhere);
+
+    Email findEmail(String emailId);
+
+    Email persistEmail(Email email);
+
+    Email updateEmail(Email email);
+
+    Email removeEmail(Email email);
 
 }

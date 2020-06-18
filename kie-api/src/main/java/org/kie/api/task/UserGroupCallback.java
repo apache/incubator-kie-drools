@@ -38,4 +38,5 @@ public interface UserGroupCallback {
      * @return List of group ids.
      */
     List<String> getGroupsForUser(String userId);
+
 }

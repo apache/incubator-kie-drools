@@ -18,6 +18,7 @@ package org.kie.internal.task.api;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.Content;
+import org.kie.api.task.model.Email;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
@@ -96,4 +97,8 @@ public interface TaskModelFactory {
     User newUser();
 
     User newUser(String id);
+
+    Email newEmail();
+
+    Email newEmail(String id);
 }
