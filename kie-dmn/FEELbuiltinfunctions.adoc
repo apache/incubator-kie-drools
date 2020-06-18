@@ -1,3 +1,5 @@
+// If changing name, location, and structure of this document, align with Docs team
+
 = FEEL built-in functions
 
 To promote interoperability, FEEL includes a library of built-in functions, described below.
