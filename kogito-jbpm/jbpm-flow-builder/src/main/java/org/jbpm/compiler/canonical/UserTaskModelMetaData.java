@@ -19,8 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
 import java.util.Optional;
+import java.util.regex.Matcher;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -49,6 +49,9 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.node.HumanTaskNode;
+import org.kie.kogito.UserTask;
+import org.kie.kogito.UserTaskParam;
+import org.kie.kogito.UserTaskParam.ParamType;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -57,8 +60,9 @@ public class UserTaskModelMetaData {
 
     private static final String TASK_INTPUT_CLASS_SUFFIX = "TaskInput";
     private static final String TASK_OUTTPUT_CLASS_SUFFIX = "TaskOutput";
+    private static final String TASK_NAME = "TaskName";
     
-    protected static final List<String> INTERNAL_FIELDS = Arrays.asList("TaskName", "NodeName", "ActorId", "GroupId", "Priority", "Comment", "Skippable", "Content", "Locale");
+    protected static final List<String> INTERNAL_FIELDS = Arrays.asList(TASK_NAME, "NodeName", "ActorId", "GroupId", "Priority", "Comment", "Skippable", "Content", "Locale");
 
     private final String packageName;
 
@@ -68,10 +72,10 @@ public class UserTaskModelMetaData {
     private final String processId;
 
     private String inputModelClassName;
-    private String inputMoodelClassSimpleName;
+    private String inputModelClassSimpleName;
 
     private String outputModelClassName;
-    private String outputMoodelClassSimpleName;
+    private String outputModelClassSimpleName;
 
     public UserTaskModelMetaData(String packageName, VariableScope processVariableScope, VariableScope variableScope, HumanTaskNode humanTaskNode, String processId) {
         this.packageName = packageName;
@@ -80,11 +84,11 @@ public class UserTaskModelMetaData {
         this.humanTaskNode = humanTaskNode;
         this.processId = processId;
 
-        this.inputMoodelClassSimpleName = StringUtils.capitalize(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + humanTaskNode.getId() + "_" + TASK_INTPUT_CLASS_SUFFIX);
-        this.inputModelClassName = packageName + '.' + inputMoodelClassSimpleName;
+        this.inputModelClassSimpleName = StringUtils.capitalize(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + humanTaskNode.getId() + "_" + TASK_INTPUT_CLASS_SUFFIX);
+        this.inputModelClassName = packageName + '.' + inputModelClassSimpleName;
 
-        this.outputMoodelClassSimpleName = StringUtils.capitalize(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + humanTaskNode.getId() + "_" + TASK_OUTTPUT_CLASS_SUFFIX);
-        this.outputModelClassName = packageName + '.' + outputMoodelClassSimpleName;
+        this.outputModelClassSimpleName = StringUtils.capitalize(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + humanTaskNode.getId() + "_" + TASK_OUTTPUT_CLASS_SUFFIX);
+        this.outputModelClassName = packageName + '.' + outputModelClassSimpleName;
 
     }
 
@@ -110,12 +114,12 @@ public class UserTaskModelMetaData {
 
     
     public String getInputMoodelClassSimpleName() {
-        return inputMoodelClassSimpleName;
+        return inputModelClassSimpleName;
     }
 
     
     public void setInputMoodelClassSimpleName(String inputMoodelClassSimpleName) {
-        this.inputMoodelClassSimpleName = inputMoodelClassSimpleName;
+        this.inputModelClassSimpleName = inputMoodelClassSimpleName;
     }
 
     
@@ -130,20 +134,33 @@ public class UserTaskModelMetaData {
 
     
     public String getOutputMoodelClassSimpleName() {
-        return outputMoodelClassSimpleName;
+        return outputModelClassSimpleName;
     }
 
     
     public void setOutputMoodelClassSimpleName(String outputMoodelClassSimpleName) {
-        this.outputMoodelClassSimpleName = outputMoodelClassSimpleName;
+        this.outputModelClassSimpleName = outputMoodelClassSimpleName;
     }
     
     public String getName() {
-        return (String) humanTaskNode.getWork().getParameters().getOrDefault("TaskName", humanTaskNode.getName());
+        return (String) humanTaskNode.getWork().getParameters().getOrDefault(TASK_NAME, humanTaskNode.getName());
     }
     
     public long getId() {
         return humanTaskNode.getId();
+    }
+
+    private void addUserTaskAnnotation(ClassOrInterfaceDeclaration modelClass) {
+        String taskName = (String) humanTaskNode.getWork().getParameter(TASK_NAME);
+        if (taskName == null)
+            taskName = humanTaskNode.getName();
+        modelClass.addAndGetAnnotation(UserTask.class).addPair("taskName", new StringLiteralExpr(taskName)).addPair("processName", new StringLiteralExpr(StringUtils.capitalize(ProcessToExecModelGenerator
+                                                                                                                                                                                                           .extractProcessId(processId))));
+    }
+
+    private void addUserTaskParamAnnotation(FieldDeclaration fd, UserTaskParam.ParamType paramType) {
+        fd.tryAddImportToParentCompilationUnit(ParamType.class);
+        fd.addAndGetAnnotation(UserTaskParam.class).addPair("value", ParamType.class.getSimpleName() + '.' + paramType);
     }
 
     private CompilationUnit compilationUnitInput() {
@@ -158,7 +175,9 @@ public class UserTaskModelMetaData {
         ClassOrInterfaceDeclaration modelClass = processMethod.get();
         compilationUnit.addOrphanComment(new LineComment("Task input model for user task '" + humanTaskNode.getName() + "' in process '" + processId + "'"));
         
-        modelClass.setName(inputMoodelClassSimpleName);
+        addUserTaskAnnotation(modelClass);
+        
+        modelClass.setName(inputModelClassSimpleName);
 
         // setup of static fromMap method body
         ClassOrInterfaceType modelType = new ClassOrInterfaceType(null, modelClass.getNameAsString());
@@ -186,7 +205,10 @@ public class UserTaskModelMetaData {
                                                                                              .setType(variable.getType().getStringType())
                                                                                              .setName(entry.getKey()))
                                                         .addModifier(Modifier.Keyword.PRIVATE);
+
             modelClass.addMember(fd);
+
+            addUserTaskParamAnnotation(fd, UserTaskParam.ParamType.INPUT);
 
             fd.createGetter();
             fd.createSetter();
@@ -215,6 +237,7 @@ public class UserTaskModelMetaData {
                                                                                              .setName(entry.getKey()))
                                                         .addModifier(Modifier.Keyword.PRIVATE);
             modelClass.addMember(fd);
+            addUserTaskParamAnnotation(fd, UserTaskParam.ParamType.INPUT);
 
             fd.createGetter();
             fd.createSetter();
@@ -241,6 +264,7 @@ public class UserTaskModelMetaData {
         return compilationUnit;
     }
 
+
     @SuppressWarnings({"unchecked"})
     private CompilationUnit compilationUnitOutput() {
         CompilationUnit compilationUnit = parse(this.getClass().getResourceAsStream("/class-templates/TaskOutputTemplate.java"));
@@ -251,8 +275,9 @@ public class UserTaskModelMetaData {
             throw new RuntimeException("Cannot find class declaration in the template");
         }
         ClassOrInterfaceDeclaration modelClass = processMethod.get();
-        compilationUnit.addOrphanComment(new LineComment("Task output model for user task '" + humanTaskNode.getName() + "' in process '" + processId + "'"));        
-        modelClass.setName(outputMoodelClassSimpleName);
+        compilationUnit.addOrphanComment(new LineComment("Task output model for user task '" + humanTaskNode.getName() + "' in process '" + processId + "'"));
+        addUserTaskAnnotation(modelClass);
+        modelClass.setName(outputModelClassSimpleName);
 
         // setup of the toMap method body
         BlockStmt toMapBody = new BlockStmt();
@@ -289,6 +314,7 @@ public class UserTaskModelMetaData {
                                                                                              .setName(entry.getKey()))
                                                         .addModifier(Modifier.Keyword.PRIVATE);
             modelClass.addMember(fd);
+            addUserTaskParamAnnotation(fd, UserTaskParam.ParamType.OUTPUT);
 
             fd.createGetter();
             fd.createSetter();

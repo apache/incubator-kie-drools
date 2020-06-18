@@ -92,12 +92,14 @@
     <version.com.fasterxml.jackson>2.10.3</version.com.fasterxml.jackson>
     <version.com.github.haifengl.smile>1.5.2</version.com.github.haifengl.smile>
     <version.com.github.javaparser>3.13.10</version.com.github.javaparser>
+    <version.com.github.victools>4.12.1</version.com.github.victools>
     <version.com.google.protobuf>3.6.1</version.com.google.protobuf>
     <version.com.oracle.substratevm>19.2.1</version.com.oracle.substratevm>
     <version.com.squareup.okhttp3>3.14.6</version.com.squareup.okhttp3>
     <version.com.sun.xml.bind>2.3.0</version.com.sun.xml.bind>
     <version.com.thoughtworks.xstream>1.4.11.1</version.com.thoughtworks.xstream>
     <version.cz.xtf>0.14</version.cz.xtf>
+    
 
     <version.javassist>3.20.0-GA</version.javassist>
     <version.javax.activation>1.2.0</version.javax.activation>
@@ -145,6 +147,7 @@
     <version.spring.framework>5.2.4.RELEASE</version.spring.framework>
     <version.xmlunit>2.2.1</version.xmlunit>
     <version.jsonschema2pojo-maven-plugin>1.0.1</version.jsonschema2pojo-maven-plugin>
+    
 
     <!-- container images for testing -->
     <container.image.infinispan>quay.io/infinispan/server:${version.org.infinispan.image}</container.image.infinispan>
@@ -765,6 +768,13 @@
         <artifactId>cloudevents-api</artifactId>
         <version>${version.io.cloudevents}</version>
       </dependency>
+      
+       <dependency>
+         <groupId>com.github.victools</groupId>
+         <artifactId>jsonschema-generator</artifactId>
+         <version>${version.com.github.victools}</version>
+      </dependency>
+      
     </dependencies>
   </dependencyManagement>
 

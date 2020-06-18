@@ -44,9 +44,11 @@ import org.drools.compiler.commons.jci.compilers.JavaCompilerSettings;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.kie.kogito.Model;
+import org.kie.kogito.UserTask;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratorContext;
+import org.kie.kogito.codegen.JsonSchemaGenerator;
 import org.kie.kogito.codegen.process.persistence.PersistenceGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator;
 import org.kie.kogito.process.ProcessInstancesFactory;
@@ -65,8 +67,6 @@ public class ProcessClassesMojo extends AbstractKieMojo {
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     protected MavenProject project;
     
-    @Parameter(required = true, defaultValue = "${project.build.directory}")
-    private File targetDirectory;
     
     @Parameter(required = true, defaultValue = "${project.basedir}/src/main/resources")
     private File kieSourcesDirectory;
@@ -81,8 +81,8 @@ public class ProcessClassesMojo extends AbstractKieMojo {
                 settings.addClasspath(path);
             }
     
-            URL[] urlsForClassLoader = pathUrls.toArray(new URL[pathUrls.size()]);            
-    
+            URL[] urlsForClassLoader = pathUrls.toArray(new URL[pathUrls.size()]);
+
             // need to define parent classloader which knows all dependencies of the plugin
             try (URLClassLoader cl = new URLClassLoader(urlsForClassLoader, Thread.currentThread().getContextClassLoader())) {
                 ConfigurationBuilder builder = new ConfigurationBuilder();
@@ -112,7 +112,7 @@ public class ProcessClassesMojo extends AbstractKieMojo {
                 GeneratorContext context = GeneratorContext.ofResourcePath(kieSourcesDirectory);
                 context.withBuildContext(discoverKogitoRuntimeContext(project));
 
-                PersistenceGenerator persistenceGenerator = new PersistenceGenerator(targetDirectory, modelClasses, !classes.isEmpty(), new ReflectionProtoGenerator(), cl, parameters);
+                PersistenceGenerator persistenceGenerator = new PersistenceGenerator(new File(project.getBuild().getDirectory()), modelClasses, !classes.isEmpty(), new ReflectionProtoGenerator(), cl, parameters);
                 persistenceGenerator.setPackageName(appPackageName);
                 persistenceGenerator.setDependencyInjection(discoverDependencyInjectionAnnotator(project));
                 persistenceGenerator.setContext(context);
@@ -131,6 +131,7 @@ public class ProcessClassesMojo extends AbstractKieMojo {
                     srcMfs.write(fileName, entry.contents());
                 }
 
+                Path path = Paths.get(project.getBuild().getOutputDirectory());
 
                 if (sources.length > 0) {
 
@@ -141,22 +142,41 @@ public class ProcessClassesMojo extends AbstractKieMojo {
 
                     for (String fileName : trgMfs.getFileNames()) {
                         byte[] data = trgMfs.getBytes(fileName);
-                        writeFile(fileName, data);
+                        writeFile(path, fileName, data);
                     }
                 }
+
+                generateJsonSchema(path, reflections);
             }
         } catch (Exception e) {
             throw new MojoExecutionException("Error during processing model classes", e);
         }
     }
     
-    private Path writeFile(String fileName, byte[] data) throws IOException {
-        Path path = Paths.get(targetDirectory.getAbsolutePath(), "classes", fileName);
+    private void generateJsonSchema(Path path, Reflections reflections) throws MojoFailureException {
+        try {
+            Collection<GeneratedFile> files = new JsonSchemaGenerator.Builder(reflections.getTypesAnnotatedWith(UserTask.class).stream()).withGenSchemaPredicate(x -> true).build().generate();
+            if (!files.isEmpty()) {
+                Path parentPath = path.resolve("META-INF").resolve("jsonSchema");
+                Files.createDirectories(parentPath);
+                for (GeneratedFile file : files) {
+                    if (getLog().isInfoEnabled()) {
+                        getLog().info("Creating JSON schema file " + file.relativePath());
+                    }
+                    Files.write(parentPath.resolve(file.relativePath()), file.contents());
+                }
+            }
+        } catch (Exception ex) {
+            throw new MojoFailureException("Error generating json schema for tasks", ex);
+        }
+    }
+
+    private Path writeFile(Path parentPath, String fileName, byte[] data) throws IOException {
+        Path path = parentPath.resolve(fileName);
         if (!path.getParent().toFile().exists()) {
             Files.createDirectories(path.getParent());
         }
         Files.write(path, data);
-
         return path;
     }
 

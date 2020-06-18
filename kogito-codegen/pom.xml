@@ -69,6 +69,12 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-dmn</artifactId> <!-- depend on the utility wrapper module to avoid repeating dependency exclusions -->
     </dependency>
+    <!-- Json schema generator -->  
+    <dependency>
+      <groupId>com.github.victools</groupId>
+      <artifactId>jsonschema-generator</artifactId>
+    </dependency>
+    
     <!-- image metadata handling -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>

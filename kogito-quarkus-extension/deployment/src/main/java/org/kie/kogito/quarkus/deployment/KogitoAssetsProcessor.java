@@ -56,9 +56,11 @@ import org.kie.internal.jci.CompilationProblem;
 import org.kie.internal.kogito.codegen.Generated;
 import org.kie.internal.kogito.codegen.VariableInfo;
 import org.kie.kogito.Model;
+import org.kie.kogito.UserTask;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratorContext;
+import org.kie.kogito.codegen.JsonSchemaGenerator;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.decision.DecisionCodegen;
 import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
@@ -146,6 +148,19 @@ public class KogitoAssetsProcessor {
         return generatedFiles;
     }
 
+
+    private Collection<GeneratedFile> getJsonSchemaFiles(Index index, MemoryFileSystem trgMfs) throws IOException {
+        MemoryClassLoader cl = new MemoryClassLoader(trgMfs, Thread.currentThread().getContextClassLoader());
+        return new JsonSchemaGenerator.Builder(index.getAnnotations(createDotName(UserTask.class.getCanonicalName())).stream().map(instance -> {
+                try {
+                    return cl.loadClass(instance.target().toString());
+                } catch (ClassNotFoundException e) {
+                    throw new IllegalStateException(e);
+                }
+            })).withGenSchemaPredicate(x -> true).build().generate();
+
+    }
+
     @BuildStep
     public List<ReflectiveHierarchyIgnoreWarningBuildItem> reflectiveDMNREST() {
         List<ReflectiveHierarchyIgnoreWarningBuildItem> result = new ArrayList<>();
@@ -200,10 +215,12 @@ public class KogitoAssetsProcessor {
                     (className, data) -> generateBeanBuildItem( combinedIndexBuildItem, kogitoIndexer, kogitoIndex, className, data ),
                     launchMode.getLaunchMode(), result);
 
+
             Index index = kogitoIndexer.complete();
 
             generatePersistenceInfo(appPaths, generatedBeans, CompositeIndex.create(combinedIndexBuildItem.getIndex(), index),
                     launchMode, resource, curateOutcomeBuildItem);
+
 
             reflectiveClass.produce(
                     new ReflectiveClassBuildItem(true, true, "org.kie.kogito.event.AbstractDataEvent"));
@@ -232,6 +249,7 @@ public class KogitoAssetsProcessor {
             dataEvents.forEach(c -> reflectiveClass.produce(
                     new ReflectiveClassBuildItem(true, true, c.name().toString())));
 
+            writeGeneratedFiles(appPaths, getJsonSchemaFiles(index, trgMfs));
         }
     }
 
@@ -239,13 +257,16 @@ public class KogitoAssetsProcessor {
         for (Path projectPath : appPaths.projectPaths) {
             String restResourcePath = projectPath.resolve( generatedCustomizableSourcesDir ).toString();
             String resourcePath = projectPath.resolve( generatedResourcesDir ).toString();
+            String jsonSchemaPath = projectPath.resolve(generatedResourcesDir).resolve("jsonSchema").toString();
             String sourcePath = projectPath.resolve( generatedSourcesDir ).toString();
 
             for (GeneratedFile f : resourceFiles) {
                 try {
                     if ( f.getType() == GeneratedFile.Type.RESOURCE ) {
                         writeGeneratedFile( f, resourcePath );
-                    } else if ( f.getType().isCustomizable() ) {
+                    } else if (f.getType() == GeneratedFile.Type.JSON_SCHEMA) {
+                        writeGeneratedFile(f, jsonSchemaPath);
+                    } else if (f.getType().isCustomizable()) {
                         writeGeneratedFile( f, restResourcePath );
                     } else {
                         writeGeneratedFile( f, sourcePath );

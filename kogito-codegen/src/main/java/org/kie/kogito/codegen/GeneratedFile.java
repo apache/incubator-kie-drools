@@ -35,7 +35,8 @@ public class GeneratedFile {
         CLASS( false ),
         MESSAGE_CONSUMER( false ),
         MESSAGE_PRODUCER( false ),
-        RESOURCE( false );
+        RESOURCE(false),
+        JSON_SCHEMA(true);
 
         private final boolean customizable;
 
