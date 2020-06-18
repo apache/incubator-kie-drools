@@ -27,7 +27,9 @@ exports[`AboutModal component tests snapshot testing 1`] = `
       </TextListItem>
       <TextListItem
         component="dd"
-      />
+      >
+        1.2.3-MOCKED-VERSION
+      </TextListItem>
       <TextListItem
         component="dt"
       >
