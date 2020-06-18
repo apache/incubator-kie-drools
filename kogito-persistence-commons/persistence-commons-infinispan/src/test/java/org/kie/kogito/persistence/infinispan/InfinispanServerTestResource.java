@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index;
+package org.kie.kogito.persistence.infinispan;
 
 import java.util.Collections;
 import java.util.Map;
@@ -29,7 +29,7 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
-public class InfinispanServerTestResource implements QuarkusTestResourceWithCleanupLifecycleManager {
+public abstract class InfinispanServerTestResource implements QuarkusTestResourceWithCleanupLifecycleManager {
 
     private static final String LOCALHOST = "127.0.0.1";
     private static final int PORT = 11232;
@@ -45,8 +45,11 @@ public class InfinispanServerTestResource implements QuarkusTestResourceWithClea
     @Override
     public Map<String, String> start() {
         if (INFINISPAN_IMAGE == null) {
-            throw new RuntimeException("Please define a valid Infinispan image in system property container.image.infinispan");
+            // Workaround for the well known issue in quarkus https://github.com/quarkusio/quarkus/issues/9854
+            LOGGER.warn("System property container.image.infinispan is not set. The test is started without the infinispan container.");
+            return Collections.emptyMap();
         }
+
         LOGGER.info("Using Infinispan image: {}", INFINISPAN_IMAGE);
         infinispan = new FixedHostPortGenericContainer(INFINISPAN_IMAGE)
                 .withFixedExposedPort(PORT, 11222)
@@ -71,10 +74,10 @@ public class InfinispanServerTestResource implements QuarkusTestResourceWithClea
         if (cacheManager == null) {
             ConfigurationBuilder builder = new ConfigurationBuilder();
             builder
-                .addServer()
+                    .addServer()
                     .host(LOCALHOST)
                     .port(PORT)
-                .security()
+                    .security()
                     .authentication()
                     .username(ADMIN)
                     .password(ADMIN)
@@ -88,12 +91,8 @@ public class InfinispanServerTestResource implements QuarkusTestResourceWithClea
         return cacheManager;
     }
 
-    private boolean shouldCleanCache(String cacheName) {
-        return cacheName.equals("processinstances")
-                || cacheName.endsWith("_domain")
-                || cacheName.equals("jobs")
-                || cacheName.equals("usertaskinstances");
-    }
+    abstract public boolean shouldCleanCache(String cacheName);
+
     @Override
     public void cleanup() {
         if (!infinispan.isRunning()) {

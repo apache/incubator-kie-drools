@@ -33,7 +33,7 @@ import io.vertx.kafka.client.producer.KafkaProducerRecord;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.index.InfinispanServerTestResource;
+import org.kie.kogito.index.DataIndexInfinispanServerTestResource;
 import org.kie.kogito.index.KafkaTestResource;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
 
@@ -45,7 +45,7 @@ import static org.kie.kogito.index.TestUtils.getTravelsProtoBufferFile;
 import static org.kie.kogito.index.TestUtils.readFileContent;
 
 @QuarkusTest
-@QuarkusTestResource(InfinispanServerTestResource.class)
+@QuarkusTestResource(DataIndexInfinispanServerTestResource.class)
 @QuarkusTestResource(KafkaTestResource.class)
 public class ReactiveMessagingEventConsumerKafkaIT {
 

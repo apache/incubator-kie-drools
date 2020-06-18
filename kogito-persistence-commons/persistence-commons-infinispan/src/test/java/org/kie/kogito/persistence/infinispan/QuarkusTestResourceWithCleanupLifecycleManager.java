@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index;
+package org.kie.kogito.persistence.infinispan;
 
 import java.util.Arrays;
 

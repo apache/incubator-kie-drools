@@ -34,7 +34,7 @@ import io.vertx.core.http.WebSocket;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.handler.graphql.ApolloWSMessageType;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.index.InfinispanServerTestResource;
+import org.kie.kogito.index.DataIndexInfinispanServerTestResource;
 import org.kie.kogito.index.TestUtils;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
@@ -56,7 +56,7 @@ import static org.kie.kogito.index.TestUtils.getTravelsProtoBufferFile;
 import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
 
 @QuarkusTest
-@QuarkusTestResource(InfinispanServerTestResource.class)
+@QuarkusTestResource(DataIndexInfinispanServerTestResource.class)
 public class WebSocketSubscriptionIT {
 
     @Inject

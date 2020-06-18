@@ -26,8 +26,8 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.index.DataIndexInfinispanServerTestResource;
 import org.kie.kogito.index.DataIndexStorageService;
-import org.kie.kogito.index.InfinispanServerTestResource;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.persistence.api.query.AttributeFilter;
 
@@ -51,7 +51,7 @@ import static org.kie.kogito.persistence.api.query.QueryFilterFactory.lessThanEq
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.notNull;
 
 @QuarkusTest
-@QuarkusTestResource(InfinispanServerTestResource.class)
+@QuarkusTestResource(DataIndexInfinispanServerTestResource.class)
 public class QueryIT {
 
     @Inject

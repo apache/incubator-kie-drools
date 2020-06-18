@@ -34,7 +34,7 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.index.InfinispanServerTestResource;
+import org.kie.kogito.index.DataIndexInfinispanServerTestResource;
 import org.kie.kogito.index.graphql.GraphQLSchemaManager;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
 
@@ -44,7 +44,7 @@ import static org.hamcrest.CoreMatchers.isA;
 import static org.kie.kogito.index.TestUtils.getTravelsProtoBufferFile;
 
 @QuarkusTest
-@QuarkusTestResource(InfinispanServerTestResource.class)
+@QuarkusTestResource(DataIndexInfinispanServerTestResource.class)
 public class GraphQLQueryOrderByIT {
 
     @Inject

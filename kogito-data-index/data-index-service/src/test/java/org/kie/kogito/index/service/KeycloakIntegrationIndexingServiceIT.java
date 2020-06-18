@@ -21,14 +21,14 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 import org.keycloak.representations.AccessTokenResponse;
-import org.kie.kogito.index.InfinispanServerTestResource;
+import org.kie.kogito.index.DataIndexInfinispanServerTestResource;
 import org.kie.kogito.index.KeycloakServerTestResource;
 
 import static io.restassured.RestAssured.given;
 
 @QuarkusTest
 @QuarkusTestResource(KeycloakServerTestResource.class)
-@QuarkusTestResource(InfinispanServerTestResource.class)
+@QuarkusTestResource(DataIndexInfinispanServerTestResource.class)
 public class KeycloakIntegrationIndexingServiceIT {
 
     private static final String KEYCLOAK_SERVER_URL = System.getProperty("keycloak.url", "http://localhost:8281/auth");
