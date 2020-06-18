@@ -124,7 +124,7 @@ public class SingleRangeCheck extends CheckBase {
         if (errors.isEmpty() && dimensions.size() >= 2) {
             for (int i = 0; i < dimensions.size() - 1; i++) {
                 for (int j = i + 1; j < dimensions.size(); j++) {
-                    if (!checkBidimensionalRanges(dimensions.get(i), dimensions.get(j))) {
+                    if (!checkBidimensionalRanges((List)dimensions.get(i), (List)dimensions.get(j))) {
                         errors.add(new RangeError(partition.getValue(), partition.getKey(), null));
                     }
                 }
