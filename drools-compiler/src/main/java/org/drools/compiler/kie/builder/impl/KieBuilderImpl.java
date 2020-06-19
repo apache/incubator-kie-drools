@@ -389,6 +389,7 @@ public class KieBuilderImpl
         if (discoverPackage) {
             String packageNameForFile = packageNameFromAsset(fileName, file.get());
             if (packageNameForFile != null) {
+                packageNameForFile = getRelativePackageName( packageNameForFile );
                 if ( !packageNameForFile.equals( packageNameFromFolder ) ) {
                     log.warn( "File '" + fileName + "' is in folder '" + folderNameForFile + "' but declares package '" + packageNameForFile +
                             "'. It is advised to have a correspondance between package and folder names." );
