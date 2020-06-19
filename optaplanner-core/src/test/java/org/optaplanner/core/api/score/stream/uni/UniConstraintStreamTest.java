@@ -57,8 +57,6 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolu
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
 
-import com.google.common.base.Functions;
-
 public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     public UniConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
@@ -754,7 +752,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
                     .groupBy(TestdataLavishEntity::getEntityGroup)
-                    .join(TestdataLavishEntity.class, equal(Functions.identity(), TestdataLavishEntity::getEntityGroup))
+                    .join(TestdataLavishEntity.class, equal(Function.identity(), TestdataLavishEntity::getEntityGroup))
                     .filter((group, entity) -> group.equals(entityGroup1))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });

@@ -22,7 +22,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -40,9 +40,6 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
-
-import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.ListMultimap;
 
 public class SelectorTestUtils {
 
@@ -119,22 +116,22 @@ public class SelectorTestUtils {
     public static ValueSelector mockValueSelectorForEntity(Class<?> entityClass, Object entity, String variableName,
             Object... values) {
         return mockValueSelectorForEntity(entityClass, variableName,
-                ImmutableListMultimap.builder().putAll(entity, values).build());
+                Collections.singletonMap(entity, Arrays.asList(values)));
     }
 
-    public static ValueSelector mockValueSelectorForEntity(Class<?> entityClass, String variableName,
-            ListMultimap<Object, Object> entityToValues) {
+    private static ValueSelector mockValueSelectorForEntity(Class<?> entityClass, String variableName,
+            Map<Object, List<Object>> entityToValues) {
         GenuineVariableDescriptor variableDescriptor = mockVariableDescriptor(entityClass, variableName);
         return mockValueSelectorForEntity(variableDescriptor, entityToValues);
     }
 
-    public static ValueSelector mockValueSelectorForEntity(GenuineVariableDescriptor variableDescriptor,
-            ListMultimap<Object, Object> entityToValues) {
+    private static ValueSelector mockValueSelectorForEntity(GenuineVariableDescriptor variableDescriptor,
+            Map<Object, List<Object>> entityToValues) {
         ValueSelector valueSelector = mock(ValueSelector.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
-        for (Map.Entry<Object, Collection<Object>> entry : entityToValues.asMap().entrySet()) {
+        for (Map.Entry<Object, List<Object>> entry : entityToValues.entrySet()) {
             Object entity = entry.getKey();
-            final List<Object> valueList = (List<Object>) entry.getValue();
+            final List<Object> valueList = entry.getValue();
             when(valueSelector.getSize(entity)).thenAnswer(invocation -> (long) valueList.size());
             when(valueSelector.iterator(entity)).thenAnswer(invocation -> valueList.iterator());
             when(valueSelector.getSize(entity)).thenReturn((long) valueList.size());
@@ -171,6 +168,7 @@ public class SelectorTestUtils {
         MoveSelector moveSelector = mock(MoveSelector.class);
         final List<Move> moveList = Arrays.asList(moves);
         when(moveSelector.iterator()).thenAnswer(invocation -> moveList.iterator());
+        when(moveSelector.spliterator()).thenAnswer(invocation -> moveList.spliterator());
         when(moveSelector.isCountable()).thenReturn(true);
         when(moveSelector.isNeverEnding()).thenReturn(false);
         when(moveSelector.getCacheType()).thenReturn(SelectionCacheType.JUST_IN_TIME);

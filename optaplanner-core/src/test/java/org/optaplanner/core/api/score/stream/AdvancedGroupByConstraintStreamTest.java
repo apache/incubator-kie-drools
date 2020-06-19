@@ -41,8 +41,6 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEnti
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntityGroup;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 
-import com.google.common.base.Functions;
-
 public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStreamTest {
 
     public AdvancedGroupByConstraintStreamTest(boolean constraintMatchEnabled,
@@ -468,7 +466,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
                     .groupBy(TestdataLavishEntity::getEntityGroup, count())
-                    .ifExists(TestdataLavishEntityGroup.class, equal((groupA, count) -> groupA, Functions.identity()))
+                    .ifExists(TestdataLavishEntityGroup.class, equal((groupA, count) -> groupA, Function.identity()))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (groupA, count) -> count);
         });
 
@@ -503,7 +501,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
                     .ifExists(TestdataLavishEntityGroup.class,
-                            equal(TestdataLavishEntity::getEntityGroup, Functions.identity()))
+                            equal(TestdataLavishEntity::getEntityGroup, Function.identity()))
                     .groupBy(TestdataLavishEntity::getEntityGroup, count())
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (groupA, count) -> count);
         });

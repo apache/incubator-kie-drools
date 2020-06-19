@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 package org.optaplanner.examples.curriculumcourse.domain.solver;
 
-import static com.google.common.base.Functions.identity;
 import static java.util.Collections.reverseOrder;
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingInt;
+import static java.util.function.Function.identity;
 
 import java.util.Comparator;
 

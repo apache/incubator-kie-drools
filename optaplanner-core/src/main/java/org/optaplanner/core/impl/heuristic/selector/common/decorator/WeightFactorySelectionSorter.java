@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,6 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.Selector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-import com.google.common.collect.Ordering;
-
 /**
  * Sorts a selection {@link List} based on a {@link SelectionSorterWeightFactory}.
  *
@@ -47,7 +45,7 @@ public class WeightFactorySelectionSorter<Solution_, T> implements SelectionSort
         this.selectionSorterWeightFactory = selectionSorterWeightFactory;
         switch (selectionSorterOrder) {
             case ASCENDING:
-                this.appliedWeightComparator = Ordering.natural();
+                this.appliedWeightComparator = Comparator.naturalOrder();
                 break;
             case DESCENDING:
                 this.appliedWeightComparator = Collections.reverseOrder();

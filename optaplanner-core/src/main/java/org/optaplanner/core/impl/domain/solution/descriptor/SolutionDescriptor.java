@@ -29,7 +29,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -96,8 +95,6 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Iterators;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -1037,19 +1034,8 @@ public class SolutionDescriptor<Solution_> {
     }
 
     public Iterator<Object> extractAllEntitiesIterator(Solution_ solution) {
-        List<Iterator<Object>> iteratorList = new ArrayList<>(
-                entityMemberAccessorMap.size() + entityCollectionMemberAccessorMap.size());
-        for (MemberAccessor memberAccessor : entityMemberAccessorMap.values()) {
-            Object entity = extractMemberObject(memberAccessor, solution);
-            if (entity != null) {
-                iteratorList.add(Collections.singletonList(entity).iterator());
-            }
-        }
-        for (MemberAccessor memberAccessor : entityCollectionMemberAccessorMap.values()) {
-            Collection<Object> entityCollection = extractMemberCollectionOrArray(memberAccessor, solution, false);
-            iteratorList.add(entityCollection.iterator());
-        }
-        return Iterators.concat(iteratorList.iterator());
+        return extractAllEntitiesStream(solution)
+                .iterator();
     }
 
     public Stream<Object> extractAllEntitiesStream(Solution_ solution) {

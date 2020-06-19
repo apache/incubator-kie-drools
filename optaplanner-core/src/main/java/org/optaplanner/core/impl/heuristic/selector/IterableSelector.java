@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.heuristic.selector;
 
+import java.util.Spliterator;
+import java.util.Spliterators;
+
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 
 public interface IterableSelector<T> extends Selector, Iterable<T> {
@@ -31,4 +34,12 @@ public interface IterableSelector<T> extends Selector, Iterable<T> {
      */
     long getSize();
 
+    @Override
+    default Spliterator<T> spliterator() {
+        if (isCountable()) {
+            return Spliterators.spliterator(iterator(), getSize(), Spliterator.ORDERED);
+        } else {
+            return Iterable.super.spliterator();
+        }
+    }
 }
