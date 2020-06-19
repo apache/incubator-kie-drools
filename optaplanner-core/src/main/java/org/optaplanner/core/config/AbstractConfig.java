@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -35,6 +38,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
  *
  * @param <C> the same class as the implementing subclass
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractConfig<C extends AbstractConfig> {
 
     // ************************************************************************

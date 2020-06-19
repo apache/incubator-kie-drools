@@ -76,7 +76,6 @@ import com.thoughtworks.xstream.converters.ConversionException;
  * To build a {@link SolverFactory} with it, use {@link SolverFactory#create(SolverConfig)}.
  */
 @XmlRootElement(name = "solver")
-
 @XStreamAlias("solver")
 public class SolverConfig extends AbstractConfig<SolverConfig> {
 
