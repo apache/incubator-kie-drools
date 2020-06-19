@@ -111,10 +111,27 @@
       <artifactId>yasson</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.asciidoctor</groupId>
+      <artifactId>asciidoctorj</artifactId>
+      <scope>test</scope>
+    </dependency>
     
   </dependencies>
 
   <build>
+    <testResources>
+      <testResource> <!-- as I will be including additional testResource directory, I need to re-explicit the default to Maven (standard Maven behaviour) -->
+          <directory>${project.basedir}/src/test/resources</directory>
+      </testResource>
+      <testResource>
+          <directory>${project.basedir}/../</directory>
+          <includes>
+              <include>FEELbuiltinfunctions.adoc</include>
+          </includes>
+          <filtering>false</filtering>
+      </testResource>
+    </testResources>
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
