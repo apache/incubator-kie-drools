@@ -105,6 +105,8 @@ public class PatternBuilder
 
         Constraints constraints = createConstraints(context, pattern);
 
+        context.getKnowledgeBase().getAlphaNodeOrderingStrategy().reorderAlphaConstraints(constraints.alphaConstraints);
+
         // Create BetaConstraints object
         context.setBetaconstraints( constraints.betaConstraints );
 

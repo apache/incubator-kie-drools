@@ -43,6 +43,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
+import org.drools.core.addon.AlphaNodeOrderingStrategy;
+import org.drools.core.addon.CountBasedOrderingStrategy;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
@@ -191,6 +193,8 @@ public class KnowledgeBaseImpl
 
     private KieSessionsPool sessionPool;
 
+    private AlphaNodeOrderingStrategy alphaNodeOrderingStrategy = new CountBasedOrderingStrategy();
+
     public KnowledgeBaseImpl() { }
 
     public KnowledgeBaseImpl(final String id,
@@ -220,6 +224,8 @@ public class KnowledgeBaseImpl
         if (this.config.getSessionPoolSize() > 0) {
             sessionPool = newKieSessionsPool( this.config.getSessionPoolSize() );
         }
+
+        alphaNodeOrderingStrategy = AlphaNodeOrderingStrategy.createAlphaNodeOrderingStrategy(this.config.getAlphaNodeOrderingOption());
     }
 
     @Override
@@ -842,6 +848,8 @@ public class KnowledgeBaseImpl
             wm.flushPropagations();
         }
 
+        alphaNodeOrderingStrategy.analyzeAlphaConstraints(collectRules(pkgs, clonedPkgs));
+
         // we need to merge all byte[] first, so that the root classloader can resolve classes
         for (InternalKnowledgePackage newPkg : clonedPkgs) {
             newPkg.checkValidity();
@@ -949,6 +957,13 @@ public class KnowledgeBaseImpl
         if (config.isMultithreadEvaluation() && !hasMultiplePartitions()) {
             disableMultithreadEvaluation("The rete network cannot be partitioned: disabling multithread evaluation");
         }
+    }
+
+    private Set<Rule> collectRules(Map<String, InternalKnowledgePackage> pkgs, Collection<InternalKnowledgePackage> newPkgs) {
+        Set<Rule> ruleSet = new HashSet<>();
+        pkgs.forEach((pkgName, pkg) -> ruleSet.addAll(pkg.getRules()));
+        newPkgs.forEach(pkg -> ruleSet.addAll(pkg.getRules())); // okay to overwrite
+        return ruleSet;
     }
 
     public void processAllTypesDeclaration( Collection<InternalKnowledgePackage> pkgs ) {
@@ -1798,5 +1813,9 @@ public class KnowledgeBaseImpl
             receiveNodes = new ArrayList<>();
         }
         receiveNodes.add(node);
+    }
+
+    public AlphaNodeOrderingStrategy getAlphaNodeOrderingStrategy() {
+        return alphaNodeOrderingStrategy;
     }
 }

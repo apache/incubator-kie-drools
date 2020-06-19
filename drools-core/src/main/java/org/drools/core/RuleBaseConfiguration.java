@@ -36,6 +36,7 @@ import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.conf.AlphaNodeOrderingOption;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
@@ -153,6 +154,8 @@ public class RuleBaseConfiguration
 
     private IndexPrecedenceOption indexPrecedenceOption;
 
+    private AlphaNodeOrderingOption alphaNodeOrderingOption;
+
     // if "true", rulebase builder will try to split
     // the rulebase into multiple partitions that can be evaluated
     // in parallel by using multiple internal threads
@@ -212,6 +215,7 @@ public class RuleBaseConfiguration
         out.writeBoolean(declarativeAgenda);
         out.writeObject(componentFactory);
         out.writeInt(sessionPoolSize);
+        out.writeObject(alphaNodeOrderingOption);
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -244,6 +248,7 @@ public class RuleBaseConfiguration
         declarativeAgenda = in.readBoolean();
         componentFactory = (KieComponentFactory) in.readObject();
         sessionPoolSize = in.readInt();
+        alphaNodeOrderingOption = (AlphaNodeOrderingOption) in.readObject();
     }
 
     /**
@@ -337,6 +342,8 @@ public class RuleBaseConfiguration
             setMBeansEnabled( MBeansOption.isEnabled(value));
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             setClassLoaderCacheEnabled( StringUtils.isEmpty( value ) ? true : Boolean.valueOf(value));
+        } else if ( name.equals( AlphaNodeOrderingOption.PROPERTY_NAME ) ) {
+            setAlphaNodeOrderingOption( AlphaNodeOrderingOption.determineAlphaNodeOrdering( StringUtils.isEmpty( value ) ? "count" : value));
         }
     }
 
@@ -392,6 +399,8 @@ public class RuleBaseConfiguration
             return isMBeansEnabled() ? "enabled" : "disabled";
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             return Boolean.toString( isClassLoaderCacheEnabled() );
+        } else if ( name.equals( AlphaNodeOrderingOption.PROPERTY_NAME ) ) {
+            return getAlphaNodeOrderingOption().getValue();
         }
 
         return null;
@@ -484,6 +493,9 @@ public class RuleBaseConfiguration
         
         setDeclarativeAgendaEnabled( Boolean.valueOf( this.chainedProperties.getProperty( DeclarativeAgendaOption.PROPERTY_NAME,
                                                                                           "false" ) ) );
+
+        setAlphaNodeOrderingOption(AlphaNodeOrderingOption.determineAlphaNodeOrdering(this.chainedProperties.getProperty(AlphaNodeOrderingOption.PROPERTY_NAME,
+                                                                                                                         "count")));
     }
 
     /**
@@ -616,6 +628,15 @@ public class RuleBaseConfiguration
     public void setEventProcessingMode(final EventProcessingOption mode) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.eventProcessingMode = mode;
+    }
+
+    public AlphaNodeOrderingOption getAlphaNodeOrderingOption() {
+        return this.alphaNodeOrderingOption;
+    }
+
+    public void setAlphaNodeOrderingOption(final AlphaNodeOrderingOption option) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.alphaNodeOrderingOption = option;
     }
 
     public int getCompositeKeyDepth() {
@@ -1163,6 +1184,8 @@ public class RuleBaseConfiguration
             return (T) (this.isClassLoaderCacheEnabled() ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
         } else if (DeclarativeAgendaOption.class.equals(option)) {
             return (T) (this.isDeclarativeAgenda() ? DeclarativeAgendaOption.ENABLED : DeclarativeAgendaOption.DISABLED);
+        } else if (AlphaNodeOrderingOption.class.equals(option)) {
+            return (T) getAlphaNodeOrderingOption();
         }
         return null;
 
@@ -1211,6 +1234,8 @@ public class RuleBaseConfiguration
             setClassLoaderCacheEnabled( ( (ClassLoaderCacheOption) option ).isClassLoaderCacheEnabled());
         } else if (option instanceof DeclarativeAgendaOption) {
             setDeclarativeAgendaEnabled(((DeclarativeAgendaOption) option).isDeclarativeAgendaEnabled());
+        } else if (option instanceof AlphaNodeOrderingOption) {
+            setAlphaNodeOrderingOption( (AlphaNodeOrderingOption) option);
         }
 
     }
