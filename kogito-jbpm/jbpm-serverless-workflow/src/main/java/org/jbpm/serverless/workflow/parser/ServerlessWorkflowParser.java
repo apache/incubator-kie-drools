@@ -56,6 +56,7 @@ public class ServerlessWorkflowParser {
     private static final String SYSOUT_TYPE_PARAM = "message";
     private static final String SERVICE_TYPE = "service";
     private static final String DECISION_TYPE = "decision";
+    private static final String INTEGRATION_TYPE = "integration";
     private static final String RULE_TYPE = "rule";
     private static final String NODE_START_NAME = "Start";
     private static final String NODE_END_NAME = "End";
@@ -429,8 +430,12 @@ public class ServerlessWorkflowParser {
                         current = factory.ruleSetNode(idCounter.getAndIncrement(), action.getFunctionRef().getRefName(), actionFunction, embeddedSubProcess);
                         factory.connect(start.getId(), current.getId(), start.getId() + "_" + current.getId(), embeddedSubProcess);
                         start = current;
+                    } else if (INTEGRATION_TYPE.equals(actionFunction.getType())) {
+                        current = factory.camelRouteServiceNode(idCounter.getAndIncrement(), action.getFunctionRef().getRefName(), actionFunction, embeddedSubProcess);
+                        factory.connect(start.getId(), current.getId(), start.getId() + "_" + current.getId(), embeddedSubProcess);
+                        start = current;
                     } else {
-                        LOGGER.warn("currently unsupported function type, supported types are 'script', 'sysout', 'service', 'decision', 'ruleunit'");
+                        LOGGER.warn("currently unsupported function type, supported types are 'script', 'sysout', 'service', 'decision', 'rule', 'integration'");
                         LOGGER.warn("defaulting to script type");
                         String script = ServerlessWorkflowUtils.scriptFunctionScript("");
                         current = factory.scriptNode(idCounter.getAndIncrement(), action.getFunctionRef().getRefName(), script, embeddedSubProcess);

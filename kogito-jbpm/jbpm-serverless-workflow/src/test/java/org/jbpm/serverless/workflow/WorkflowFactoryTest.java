@@ -397,4 +397,32 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
         assertThat(eventNode.getMetaData(Metadata.MESSAGE_TYPE)).isEqualTo("com.fasterxml.jackson.databind.JsonNode");
     }
 
+    @Test
+    public void testCamelRouteServiceNode() {
+        TestNodeContainer nodeContainer = new TestNodeContainer();
+        Function function = new Function().withName("testFunction").withType("testType")
+                .withResource("testResource").withMetadata(
+                        new HashMap<String, String>() {{
+                            put("endpoint", "direct:testendpoint");
+                        }}
+                );
+        WorkItemNode workItemNode = testFactory.camelRouteServiceNode(1L, "testService", function, nodeContainer);
+        assertThat(workItemNode).isNotNull();
+        assertThat(workItemNode.getName()).isEqualTo("testService");
+        assertThat(workItemNode.getMetaData().get("Type")).isEqualTo("Service Task");
+        assertThat(workItemNode.getWork()).isNotNull();
+
+        Work work = workItemNode.getWork();
+        assertThat(work.getName()).isEqualTo("org.apache.camel.ProducerTemplate.requestBody");
+        assertThat(work.getParameter("endpoint")).isEqualTo("direct:testendpoint");
+        assertThat(work.getParameter("Interface")).isEqualTo("org.apache.camel.ProducerTemplate");
+        assertThat(work.getParameter("Operation")).isEqualTo("requestBody");
+        assertThat(work.getParameter("interfaceImplementationRef")).isEqualTo("org.apache.camel.ProducerTemplate");
+
+        assertThat(workItemNode.getInMappings()).isNotNull();
+        assertThat(workItemNode.getInMappings()).hasSize(1);
+        assertThat(workItemNode.getOutMappings()).isNotNull();
+        assertThat(workItemNode.getOutMappings()).hasSize(1);
+    }
+
 }
