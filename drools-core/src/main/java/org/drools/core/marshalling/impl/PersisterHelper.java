@@ -43,7 +43,6 @@ import org.drools.core.marshalling.impl.ProtobufMessages.Header;
 import org.drools.core.marshalling.impl.ProtobufMessages.Header.StrategyIndex.Builder;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NodeTypeEnums;
-import org.drools.core.reteoo.PropagationQueuingNode.PropagateAction;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.SlidingTimeWindow.BehaviorExpireWMAction;
 import org.drools.core.spi.Tuple;
@@ -60,12 +59,6 @@ public class PersisterHelper {
         switch ( type ) {
             case WorkingMemoryAction.WorkingMemoryReteAssertAction : {
                 return new WorkingMemoryReteAssertAction( context );
-            }
-//            case WorkingMemoryAction.DeactivateCallback : {
-//                return new DeactivateCallback( context );
-//            }
-            case WorkingMemoryAction.PropagateAction : {
-                return new PropagateAction( context );
             }
             case WorkingMemoryAction.LogicalRetractCallback : {
                 return new BeliefSystemLogicalCallback( context );
@@ -88,14 +81,6 @@ public class PersisterHelper {
             case ASSERT : {
                 return new WorkingMemoryReteAssertAction( context, 
                                                           _action );
-            }
-//            case DEACTIVATE_CALLBACK : {
-//                return new DeactivateCallback(context,
-//                                              _action );
-//            }
-            case PROPAGATE : {
-                return new PropagateAction(context,
-                                           _action );
             }
             case LOGICAL_RETRACT : {
                 return new BeliefSystemLogicalCallback(context,
