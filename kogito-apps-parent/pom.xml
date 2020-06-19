@@ -55,6 +55,12 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-apps-ui-packages</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -62,6 +68,7 @@
     <module>persistence-commons</module>
     <module>jobs-service</module>
     <module>data-index</module>
+    <module>ui-packages</module>
     <module>management-console</module>
     <module>explainability-service</module>
     <module>trusty</module>

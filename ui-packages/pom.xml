@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <parent>
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>kogito-apps</artifactId>
+    <version>8.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <packaging>pom</packaging>
+  
+  <artifactId>kogito-apps-ui-packages</artifactId>
+  <name>Kogito Apps :: UI Packages</name>
+
+  <properties>
+    <path.to.root>${project.basedir}</path.to.root> <!-- package.json in root dir-->
+    <path.to.packages>${path.to.root}/packages</path.to.packages>
+    <sonar.sources>${path.to.packages}</sonar.sources>
+    <sonar.exclusions>**/__mocks__/**</sonar.exclusions>
+    <sonar.test.inclusions>**/*test.ts,**/*test.tsx</sonar.test.inclusions>
+    <sonar.javascript.lcov.reportPaths>
+      ${path.to.packages}/common/coverage/lcov.info,
+      ${path.to.packages}/management-console/coverage/lcov.info,
+      ${path.to.packages}/task-console/coverage/lcov.info
+    </sonar.javascript.lcov.reportPaths>
+  </properties>
+  <build>
+    <plugins>
+      <!-- frontend related plugins-->
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <configuration>
+          <workingDirectory>${path.to.root}</workingDirectory>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <!--
+        Installs node and yarn in the webapp's node and node_modules folders.
+        Run 'mvn package -Dui.deps':
+          * the first time you have checked out the source.
+          * whenever the dependencies have been changed in package.json (delete the webapp's node_modules folder first!)
+      -->
+      <id>install-node-yarn</id>
+      <activation>
+        <property><name>!skip.ui.deps</name></property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>install-node-and-npm</id>
+                <goals>
+                  <goal>install-node-and-npm</goal>
+                </goals>
+                <configuration>
+                  <nodeVersion>${version.node}</nodeVersion>
+                  <npmVersion>${version.npm}</npmVersion>
+                </configuration>
+              </execution>
+              <execution>
+                <id>install-node-and-yarn</id>
+                <goals>
+                  <goal>install-node-and-yarn</goal>
+                </goals>
+                <configuration>
+                  <nodeVersion>${version.node}</nodeVersion>
+                  <yarnVersion>${version.yarn}</yarnVersion>
+                </configuration>
+              </execution>
+              <execution>
+                <id>yarn install</id>
+                <goals>
+                  <goal>yarn</goal>
+                </goals>
+                <configuration>
+                  <npmRegistryURL>${env.NPM_REGISTRY_URL}</npmRegistryURL>
+                  <arguments>install --fetch-retry-mintimeout=100000 --fetch-retries=10</arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>install-ui-deps</id>
+      <activation>
+        <property><name>!skip.ui.deps</name></property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>yarn init</id>
+                <goals>
+                  <goal>yarn</goal>
+                </goals>
+                <configuration>
+                  <npmRegistryURL>${env.NPM_REGISTRY_URL}</npmRegistryURL>
+                  <arguments>run init</arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>build-ui</id>
+      <activation>
+        <property><name>!skip.ui.build</name></property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>yarn run build</id>
+                <goals>
+                  <goal>yarn</goal>
+                </goals>
+                <configuration>
+                  <npmRegistryURL>${env.NPM_REGISTRY_URL}</npmRegistryURL>
+                  <arguments>run build:prod</arguments>
+                  <environmentVariables>
+                    <KOGITO_APP_VERSION>${project.version}</KOGITO_APP_VERSION>
+                </environmentVariables>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

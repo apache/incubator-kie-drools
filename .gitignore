@@ -31,3 +31,4 @@ package-lock.json
 /packages/cypress*
 /cypress*
 
+.factorypath

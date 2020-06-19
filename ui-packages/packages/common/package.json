@@ -11,11 +11,11 @@
   },
   "scripts": {
     "precommit": "lint-staged",
-    "build:prod": "yarn run lint && yarn run test",
+    "build:prod": "yarn run lint && yarn run test:coverage",
     "test:report": "yarn test --ci --reporters=jest-junit",
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
     "update-snapshot": "jest --updateSnapshot",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "yarn test --coverage",
     "lint": "tslint -c ./tslint.json --project . './src/**/*.ts{,x}'",
     "format": "prettier --config ../../.prettierrc --check --write './src/**/*.{tsx,ts,js}'",
     "clean": "rimraf dist",
