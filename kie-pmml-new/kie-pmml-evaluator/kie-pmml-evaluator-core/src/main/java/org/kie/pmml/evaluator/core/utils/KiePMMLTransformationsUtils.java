@@ -32,7 +32,7 @@ public class KiePMMLTransformationsUtils {
     }
 
     public static void doTransformations(KiePMMLModel model, PMMLContext context) {
-        doTransformations(model.getTransformationsMap(), context.getRequestData());
+//        doTransformations(model.getTransformationsMap(), context.getRequestData());
     }
 
     protected static void doTransformations(final Map<String, Function> transformationsMap, final PMMLRequestData requestData) {

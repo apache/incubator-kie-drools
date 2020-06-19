@@ -46,9 +46,9 @@ public abstract class KiePMMLRegressionModel extends KiePMMLModel {
         return regressionTable;
     }
 
-    public void setTransformationsMap(Map<String, Function> transformationsMap) {
-        this.transformationsMap = transformationsMap;
-    }
+//    public void setTransformationsMap(Map<String, Function> transformationsMap) {
+//        this.transformationsMap = transformationsMap;
+//    }
 
 
 }
