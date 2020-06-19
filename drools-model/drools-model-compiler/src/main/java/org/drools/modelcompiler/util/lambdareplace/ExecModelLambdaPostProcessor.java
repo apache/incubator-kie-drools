@@ -175,7 +175,8 @@ public class ExecModelLambdaPostProcessor {
         String returnType = optType.get().asString();
 
         Optional<MethodCallExpr> bindAsMethodOpt = optionalToStream(methodCallExpr.getParentNode())
-            .map(node -> (MethodCallExpr) node)
+            .filter(MethodCallExpr.class::isInstance)
+            .map(MethodCallExpr.class::cast)
             .filter(parentMethod -> parentMethod.getNameAsString().equals(BIND_AS_CALL))
             .findFirst();
 
@@ -238,7 +239,8 @@ public class ExecModelLambdaPostProcessor {
             .flatMap(node -> node.findAll(VariableDeclarator.class).stream())
             .filter(node -> node.getName().equals(nameExpr.getName()))
             .map(VariableDeclarator::getType)
-            .map(type -> (ClassOrInterfaceType)type)
+            .filter(ClassOrInterfaceType.class::isInstance)
+            .map(ClassOrInterfaceType.class::cast)
             .flatMap(classOrInterfaceType -> optionalToStream(classOrInterfaceType.getTypeArguments()))
             .filter(typeArgList -> typeArgList.size() == 1)
             .map(typeArgList -> typeArgList.get(0))
