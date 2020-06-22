@@ -6,6 +6,8 @@ import ProcessInstanceState = GraphQL.ProcessInstanceState;
 import GetProcessInstancesDocument = GraphQL.GetProcessInstancesDocument;
 import { BrowserRouter } from 'react-router-dom';
 
+Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
+
 const initData1 = {
   ProcessInstances: [
     {
