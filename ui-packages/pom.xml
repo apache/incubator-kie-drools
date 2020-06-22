@@ -18,6 +18,7 @@
     <path.to.packages>${path.to.root}/packages</path.to.packages>
     <sonar.sources>${path.to.packages}</sonar.sources>
     <sonar.exclusions>**/__mocks__/**</sonar.exclusions>
+    <sonar.inclusions>*/src/**</sonar.inclusions>
     <sonar.test.inclusions>**/*test.ts,**/*test.tsx</sonar.test.inclusions>
     <sonar.javascript.lcov.reportPaths>
       ${path.to.packages}/common/coverage/lcov.info,
