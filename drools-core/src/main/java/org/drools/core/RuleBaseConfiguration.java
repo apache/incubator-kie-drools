@@ -635,7 +635,7 @@ public class RuleBaseConfiguration
     }
 
     public void setAlphaNodeOrderingOption(final AlphaNodeOrderingOption option) {
-        checkCanChange(); // throws an exception if a change isn't possible;
+        checkCanChange();
         this.alphaNodeOrderingOption = option;
     }
 

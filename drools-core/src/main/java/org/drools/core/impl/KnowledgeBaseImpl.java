@@ -193,7 +193,7 @@ public class KnowledgeBaseImpl
 
     private KieSessionsPool sessionPool;
 
-    private AlphaNodeOrderingStrategy alphaNodeOrderingStrategy = new CountBasedOrderingStrategy();
+    private transient AlphaNodeOrderingStrategy alphaNodeOrderingStrategy = new CountBasedOrderingStrategy();
 
     public KnowledgeBaseImpl() { }
 
@@ -506,6 +506,8 @@ public class KnowledgeBaseImpl
         }
 
         this.getConfiguration().getComponentFactory().initTraitFactory(this);
+
+        this.alphaNodeOrderingStrategy = AlphaNodeOrderingStrategy.createAlphaNodeOrderingStrategy(this.config.getAlphaNodeOrderingOption());
 
         rewireReteAfterDeserialization();
     }

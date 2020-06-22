@@ -65,19 +65,19 @@ public class CountBasedOrderingStrategy implements AlphaNodeOrderingStrategy {
 
         // TODO: Other cases
 
-        //        System.out.println("analyzedAlphaConstraints : " + analyzedAlphaConstraints);
+        System.out.println("analyzedAlphaConstraints : " + analyzedAlphaConstraints);
     }
 
     @Override
     public void reorderAlphaConstraints(List<AlphaNodeFieldConstraint> alphaConstraints) {
         // greater usage count is earlier
-        //        System.out.println("alphaConstraints : " + alphaConstraints);
+        System.out.println("** before alphaConstraints : " + alphaConstraints);
         alphaConstraints.sort((constraint1, constraint2) -> {
             Integer count1 = analyzedAlphaConstraints.getOrDefault(constraint1, 1);
             Integer count2 = analyzedAlphaConstraints.getOrDefault(constraint2, 1);
             return count2.compareTo(count1);
         });
-        //        System.out.println("reordered alphaConstraints : " + alphaConstraints);
+        System.out.println(" ** after alphaConstraints : " + alphaConstraints);
     }
 
 }

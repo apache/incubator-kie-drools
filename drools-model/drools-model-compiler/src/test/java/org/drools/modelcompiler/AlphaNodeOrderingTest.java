@@ -23,6 +23,10 @@ import java.util.stream.Collectors;
 
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.rule.constraint.MvelConstraint;
+import org.drools.modelcompiler.domain.Address;
+import org.drools.modelcompiler.domain.FactASuper;
+import org.drools.modelcompiler.domain.FactBSub;
+import org.drools.modelcompiler.domain.FactCSub;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -69,7 +73,7 @@ public class AlphaNodeOrderingTest extends BaseModelTest {
 
         KieSession ksession = getKieSession(model, str);
 
-//        ReteDumper.dumpRete(ksession);
+        //        ReteDumper.dumpRete(ksession);
         List<AlphaNode> alphaNodes = ReteDumper.collectNodes(ksession)
                                                .stream()
                                                .filter(AlphaNode.class::isInstance)
@@ -79,22 +83,22 @@ public class AlphaNodeOrderingTest extends BaseModelTest {
 
         if (testRunType == RUN_TYPE.STANDARD_FROM_DRL) {
             // Not found a good way to assert constraints in case of externalized LambdaConstraint
-            // Anyway alphaNodes.size() == 4 means that alpha nodes are reordered so effectively shared
+            // Anyway alphaNodes.size() == 4 means that alpha nodes are reordered and effectively shared
             Optional<AlphaNode> optAlphaNot3 = alphaNodes.stream()
-                                                         .filter(node -> ((MvelConstraint)node.getConstraint()).getExpression().equals("age != 3"))
+                                                         .filter(node -> ((MvelConstraint) node.getConstraint()).getExpression().equals("age != 3"))
                                                          .findFirst();
             assertTrue(optAlphaNot3.isPresent());
 
             AlphaNode alphaNot3 = optAlphaNot3.get();
 
             AlphaNode alphaNot2 = getNextAlphaNode(alphaNot3);
-            assertEquals("age != 2", ((MvelConstraint)alphaNot2.getConstraint()).getExpression());
+            assertEquals("age != 2", ((MvelConstraint) alphaNot2.getConstraint()).getExpression());
 
             AlphaNode alphaNot1 = getNextAlphaNode(alphaNot2);
-            assertEquals("age != 1", ((MvelConstraint)alphaNot1.getConstraint()).getExpression());
+            assertEquals("age != 1", ((MvelConstraint) alphaNot1.getConstraint()).getExpression());
 
             AlphaNode alphaNot0 = getNextAlphaNode(alphaNot1);
-            assertEquals("age != 0", ((MvelConstraint)alphaNot0.getConstraint()).getExpression());
+            assertEquals("age != 0", ((MvelConstraint) alphaNot0.getConstraint()).getExpression());
         }
 
         ksession.insert(new Person("Mario", 1));
@@ -151,5 +155,87 @@ public class AlphaNodeOrderingTest extends BaseModelTest {
 
         ksession.insert(new Person("Mario", 1));
         assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testNullCheck() {
+
+        // address.street == "ABC street" has larger usage count.
+        // So reordering results in [address.street == "ABC street", address != null] for R1
+        //   -> NullPointerException
+
+        String str =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                     "import " + Address.class.getCanonicalName() + "\n" +
+                     "rule R1 when\n" +
+                     "  $p : Person(address != null, address.street == \"ABC street\")\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  $a : Address(street != null)" +
+                     "  $p : Person(address == $a, name != \"Mario\", address.street == \"ABC street\")\n" +
+                     "then\n" +
+                     "end\n";
+
+        KieModuleModel model = KieServices.get().newKieModuleModel();
+        model.newKieBaseModel("kb")
+             .setDefault(true)
+             .setAlphaNodeOrdering(AlphaNodeOrderingOption.COUNT)
+             .newKieSessionModel("ks")
+             .setDefault(true);
+
+        KieSession ksession = getKieSession(model, str);
+
+                ReteDumper.dumpRete(ksession);
+        List<AlphaNode> alphaNodes = ReteDumper.collectNodes(ksession)
+                                               .stream()
+                                               .filter(AlphaNode.class::isInstance)
+                                               .map(node -> (AlphaNode) node)
+                                               .collect(Collectors.toList());
+        assertEquals(4, alphaNodes.size()); // 5 in case of AlphaNodeOrderingOption.NONE
+
+        ksession.insert(new Person("Mario"));
+        assertEquals(0, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testInstanceof() {
+
+        // address.street == "ABC street" has larger usage count.
+        // So reordering results in [address.street == "ABC street", address != null] for R1
+        //   -> NullPointerException
+
+        String str =
+                "import " + FactASuper.class.getCanonicalName() + "\n" +
+                     "import " + FactBSub.class.getCanonicalName() + "\n" +
+                     "import " + FactCSub.class.getCanonicalName() + "\n" +
+                     "rule R1 when\n" +
+                     "  $p : FactASuper((this instanceof FactBSub), name != \"Paul\")\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  $p : FactASuper((this instanceof FactCSub), name != \"Paul\")\n" +
+                     "then\n" +
+                     "end\n";
+
+        KieModuleModel model = KieServices.get().newKieModuleModel();
+        model.newKieBaseModel("kb")
+             .setDefault(true)
+             .setAlphaNodeOrdering(AlphaNodeOrderingOption.COUNT)
+             .newKieSessionModel("ks")
+             .setDefault(true);
+
+        KieSession ksession = getKieSession(model, str);
+
+                ReteDumper.dumpRete(ksession);
+        List<AlphaNode> alphaNodes = ReteDumper.collectNodes(ksession)
+                                               .stream()
+                                               .filter(AlphaNode.class::isInstance)
+                                               .map(node -> (AlphaNode) node)
+                                               .collect(Collectors.toList());
+        assertEquals(3, alphaNodes.size()); // 4 in case of AlphaNodeOrderingOption.NONE
+
+        ksession.insert(new FactASuper());
+        assertEquals(0, ksession.fireAllRules());
     }
 }
