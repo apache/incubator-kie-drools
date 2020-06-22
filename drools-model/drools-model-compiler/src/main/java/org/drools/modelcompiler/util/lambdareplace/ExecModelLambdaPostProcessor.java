@@ -42,6 +42,7 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.PrettyPrinter;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.model.BitMask;
+import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder;
 import org.drools.modelcompiler.util.ClassUtil;
@@ -75,6 +76,17 @@ public class ExecModelLambdaPostProcessor {
     }
 
     public static final PrettyPrinter MATERIALIZED_LAMBDA_PRETTY_PRINTER = new PrettyPrinter(configuration);
+
+    public ExecModelLambdaPostProcessor(PackageModel pkgModel,
+                                        CompilationUnit clone) {
+        this.lambdaClasses = pkgModel.getLambdaClasses();
+        this.packageName = pkgModel.getName();
+        this.ruleClassName = pkgModel.getRulesFileNameWithPackage();
+        this.imports = pkgModel.getImports();
+        this.staticImports = pkgModel.getStaticImports();
+        this.lambdaReturnTypes = pkgModel.getLambdaReturnTypes();
+        this.clone = clone;
+    }
 
     public ExecModelLambdaPostProcessor(Map<String, CreatedClass> lambdaClasses,
                                         String packageName,
