@@ -40,58 +40,61 @@ public class PhreakNotNode {
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
 
-        PerfLogUtils.startMetrics(notNode);
+        try {
+            PerfLogUtils.startMetrics(notNode);
 
-        TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
+            TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
 
-        if (srcLeftTuples.getDeleteFirst() != null) {
-            // left deletes must come before right deletes. Otherwise right deletes could
-            // stage an insertion, that is later deleted in the rightDelete, causing potential problems
-            doLeftDeletes(bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            if (srcLeftTuples.getDeleteFirst() != null) {
+                // left deletes must come before right deletes. Otherwise right deletes could
+                // stage an insertion, that is later deleted in the rightDelete, causing potential problems
+                doLeftDeletes(bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            }
+
+
+            if (srcLeftTuples.getUpdateFirst() != null) {
+                // must happen before right inserts, so it can find left tuples to block.
+                RuleNetworkEvaluator.doUpdatesExistentialReorderLeftMemory(bm,
+                                                                           srcLeftTuples);
+            }
+
+            if ( srcRightTuples.getUpdateFirst() != null) {
+                RuleNetworkEvaluator.doUpdatesExistentialReorderRightMemory(bm,
+                                                                            notNode,
+                                                                            srcRightTuples); // this also preserves the next rightTuple
+            }
+
+            if (srcRightTuples.getInsertFirst() != null) {
+                // must come before right updates and inserts, as they might cause insert propagation, while this causes delete propagations, resulting in staging clash.
+                doRightInserts(notNode, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
+            }
+
+
+
+            if (srcRightTuples.getUpdateFirst() != null) {
+                // must come after rightInserts and before rightDeletes, to avoid staging clash
+                doRightUpdates(notNode, sink, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
+            }
+
+            if (srcRightTuples.getDeleteFirst() != null) {
+                // must come after rightUpdates, to avoid staging clash
+                doRightDeletes(notNode, sink, bm, wm, srcRightTuples, trgLeftTuples);
+            }
+
+            if (srcLeftTuples.getUpdateFirst() != null) {
+                doLeftUpdates(notNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            }
+
+            if (srcLeftTuples.getInsertFirst() != null) {
+                doLeftInserts(notNode, sink, bm, wm, srcLeftTuples, trgLeftTuples);
+            }
+
+            srcRightTuples.resetAll();
+            srcLeftTuples.resetAll();
+
+        } finally {
+            PerfLogUtils.logAndEndMetrics();
         }
-
-
-        if (srcLeftTuples.getUpdateFirst() != null) {
-            // must happen before right inserts, so it can find left tuples to block.
-            RuleNetworkEvaluator.doUpdatesExistentialReorderLeftMemory(bm,
-                                                                       srcLeftTuples);
-        }
-
-        if ( srcRightTuples.getUpdateFirst() != null) {
-            RuleNetworkEvaluator.doUpdatesExistentialReorderRightMemory(bm,
-                                                                        notNode,
-                                                                        srcRightTuples); // this also preserves the next rightTuple
-        }
-
-        if (srcRightTuples.getInsertFirst() != null) {
-            // must come before right updates and inserts, as they might cause insert propagation, while this causes delete propagations, resulting in staging clash.
-            doRightInserts(notNode, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
-        }
-
-
-
-        if (srcRightTuples.getUpdateFirst() != null) {
-            // must come after rightInserts and before rightDeletes, to avoid staging clash
-            doRightUpdates(notNode, sink, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
-        }
-
-        if (srcRightTuples.getDeleteFirst() != null) {
-            // must come after rightUpdates, to avoid staging clash
-            doRightDeletes(notNode, sink, bm, wm, srcRightTuples, trgLeftTuples);
-        }
-
-        if (srcLeftTuples.getUpdateFirst() != null) {
-            doLeftUpdates(notNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
-        }
-
-        if (srcLeftTuples.getInsertFirst() != null) {
-            doLeftInserts(notNode, sink, bm, wm, srcLeftTuples, trgLeftTuples);
-        }
-
-        srcRightTuples.resetAll();
-        srcLeftTuples.resetAll();
-
-        PerfLogUtils.logAndEndMetrics();
     }
 
     public void doLeftInserts(NotNode notNode,

@@ -38,46 +38,49 @@ public class PhreakJoinNode {
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
 
-        PerfLogUtils.startMetrics(joinNode);
+        try {
+            PerfLogUtils.startMetrics(joinNode);
 
-        TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
+            TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
 
-        if (srcRightTuples.getDeleteFirst() != null) {
-            doRightDeletes(bm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
+            if (srcRightTuples.getDeleteFirst() != null) {
+                doRightDeletes(bm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
+            }
+
+            if (srcLeftTuples.getDeleteFirst() != null) {
+                doLeftDeletes(bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            }
+
+            if (srcRightTuples.getUpdateFirst() != null) {
+                RuleNetworkEvaluator.doUpdatesReorderRightMemory(bm, srcRightTuples);
+            }
+
+            if (srcLeftTuples.getUpdateFirst() != null ) {
+                RuleNetworkEvaluator.doUpdatesReorderLeftMemory(bm, srcLeftTuples);
+            }
+
+            if (srcRightTuples.getUpdateFirst() != null) {
+                doRightUpdates(joinNode, sink, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
+            }
+
+            if (srcLeftTuples.getUpdateFirst() != null ) {
+                doLeftUpdates(joinNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            }
+
+            if (srcRightTuples.getInsertFirst() != null) {
+                doRightInserts(joinNode, sink, bm, wm, srcRightTuples, trgLeftTuples);
+            }
+
+            if (srcLeftTuples.getInsertFirst() != null) {
+                doLeftInserts(joinNode, sink, bm, wm, srcLeftTuples, trgLeftTuples);
+            }
+
+            srcRightTuples.resetAll();
+            srcLeftTuples.resetAll();
+
+        } finally {
+            PerfLogUtils.logAndEndMetrics();
         }
-
-        if (srcLeftTuples.getDeleteFirst() != null) {
-            doLeftDeletes(bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
-        }
-
-        if (srcRightTuples.getUpdateFirst() != null) {
-            RuleNetworkEvaluator.doUpdatesReorderRightMemory(bm, srcRightTuples);
-        }
-
-        if (srcLeftTuples.getUpdateFirst() != null ) {
-            RuleNetworkEvaluator.doUpdatesReorderLeftMemory(bm, srcLeftTuples);
-        }
-
-        if (srcRightTuples.getUpdateFirst() != null) {
-            doRightUpdates(joinNode, sink, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
-        }
-
-        if (srcLeftTuples.getUpdateFirst() != null ) {
-            doLeftUpdates(joinNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
-        }
-
-        if (srcRightTuples.getInsertFirst() != null) {
-            doRightInserts(joinNode, sink, bm, wm, srcRightTuples, trgLeftTuples);
-        }
-
-        if (srcLeftTuples.getInsertFirst() != null) {
-            doLeftInserts(joinNode, sink, bm, wm, srcLeftTuples, trgLeftTuples);
-        }
-
-        srcRightTuples.resetAll();
-        srcLeftTuples.resetAll();
-
-        PerfLogUtils.logAndEndMetrics();
     }
 
     public void doLeftInserts(JoinNode joinNode,

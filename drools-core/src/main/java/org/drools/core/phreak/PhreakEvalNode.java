@@ -22,6 +22,7 @@ import org.drools.core.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.rule.EvalCondition;
+import org.drools.core.util.PerfLogUtils;
 
 import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
 
@@ -44,19 +45,26 @@ public class PhreakEvalNode {
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
 
-        if (srcLeftTuples.getDeleteFirst() != null) {
-            doLeftDeletes(srcLeftTuples, trgLeftTuples, stagedLeftTuples);
-        }
+        try {
+            PerfLogUtils.startMetrics(evalNode);
 
-        if (srcLeftTuples.getUpdateFirst() != null) {
-            doLeftUpdates(evalNode, em, sink, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
-        }
+            if (srcLeftTuples.getDeleteFirst() != null) {
+                doLeftDeletes(srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            }
 
-        if (srcLeftTuples.getInsertFirst() != null) {
-            doLeftInserts(evalNode, em, sink, wm, srcLeftTuples, trgLeftTuples);
-        }
+            if (srcLeftTuples.getUpdateFirst() != null) {
+                doLeftUpdates(evalNode, em, sink, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            }
 
-        srcLeftTuples.resetAll();
+            if (srcLeftTuples.getInsertFirst() != null) {
+                doLeftInserts(evalNode, em, sink, wm, srcLeftTuples, trgLeftTuples);
+            }
+
+            srcLeftTuples.resetAll();
+
+        } finally {
+            PerfLogUtils.logAndEndMetrics();
+        }
     }
 
     public void doLeftInserts(EvalConditionNode evalNode,
@@ -69,6 +77,7 @@ public class PhreakEvalNode {
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
+            PerfLogUtils.incrementEvalCount();
             final boolean allowed = condition.isAllowed(leftTuple,
                                                         wm,
                                                         em.context);
@@ -99,6 +108,7 @@ public class PhreakEvalNode {
 
             boolean wasPropagated = leftTuple.getFirstChild() != null && leftTuple.getContextObject() != EVAL_LEFT_TUPLE_DELETED;
 
+            PerfLogUtils.incrementEvalCount();
             boolean allowed = condition.isAllowed(leftTuple,
                                                   wm,
                                                   em.context);

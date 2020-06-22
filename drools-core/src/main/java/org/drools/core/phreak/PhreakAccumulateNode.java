@@ -54,70 +54,72 @@ public class PhreakAccumulateNode {
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
 
-        PerfLogUtils.startMetrics(accNode);
+        try {
+            PerfLogUtils.startMetrics(accNode);
 
-        BetaMemory bm = am.getBetaMemory();
-        TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
+            BetaMemory bm = am.getBetaMemory();
+            TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
 
-        // order of left and right operations is to minimise wasted of innefficient joins.
+            // order of left and right operations is to minimise wasted of innefficient joins.
 
-        // We need to collect which leftTuple where updated, so that we can
-        // add their result tuple to the real target tuples later
-        TupleSets<LeftTuple> tempLeftTuples = new TupleSetsImpl<LeftTuple>();
+            // We need to collect which leftTuple where updated, so that we can
+            // add their result tuple to the real target tuples later
+            TupleSets<LeftTuple> tempLeftTuples = new TupleSetsImpl<LeftTuple>();
 
-        if (srcLeftTuples.getDeleteFirst() != null) {
-            // use the real target here, as dealing direct with left tuples
-            doLeftDeletes(accNode, am, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            if (srcLeftTuples.getDeleteFirst() != null) {
+                // use the real target here, as dealing direct with left tuples
+                doLeftDeletes(accNode, am, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            }
+
+            if (srcRightTuples.getDeleteFirst() != null) {
+                doRightDeletes(accNode, am, wm, srcRightTuples, tempLeftTuples);
+            }
+
+            if (srcRightTuples.getUpdateFirst() != null) {
+                RuleNetworkEvaluator.doUpdatesReorderRightMemory(bm, srcRightTuples);
+                doRightUpdates(accNode, am, wm, srcRightTuples, tempLeftTuples);
+            }
+
+            if (srcLeftTuples.getUpdateFirst() != null ) {
+                RuleNetworkEvaluator.doUpdatesReorderLeftMemory(bm, srcLeftTuples);
+                doLeftUpdates(accNode, am, wm, srcLeftTuples, tempLeftTuples);
+            }
+
+            if (srcRightTuples.getInsertFirst() != null) {
+                doRightInserts(accNode, am, wm, srcRightTuples, tempLeftTuples);
+            }
+
+            if (srcLeftTuples.getInsertFirst() != null) {
+                doLeftInserts(accNode, am, wm, srcLeftTuples, tempLeftTuples);
+            }
+
+            Accumulate accumulate = accNode.getAccumulate();
+            // we do not need collect retracts. RightTuple retracts end up as updates for lefttuples.
+            // LeftTuple retracts are already on the trgLeftTuples
+            for (LeftTuple leftTuple = tempLeftTuples.getInsertFirst(); leftTuple != null; ) {
+                LeftTuple next = leftTuple.getStagedNext();
+                evaluateResultConstraints(accNode, sink, accumulate, leftTuple, leftTuple.getPropagationContext(),
+                                          wm, am, (AccumulateContext) leftTuple.getContextObject(),
+                                          trgLeftTuples, stagedLeftTuples);
+                leftTuple.clearStaged();
+                leftTuple = next;
+            }
+
+            for (LeftTuple leftTuple = tempLeftTuples.getUpdateFirst(); leftTuple != null; ) {
+                LeftTuple next = leftTuple.getStagedNext();
+                evaluateResultConstraints( accNode, sink, accumulate, leftTuple, leftTuple.getPropagationContext(),
+                                           wm, am, (AccumulateContext) leftTuple.getContextObject(),
+                                           trgLeftTuples, stagedLeftTuples );
+                leftTuple.clearStaged();
+                leftTuple = next;
+            }
+
+            srcRightTuples.resetAll();
+            srcLeftTuples.resetAll();
+
+        } finally {
+            PerfLogUtils.logAndEndMetrics();
         }
-
-        if (srcRightTuples.getDeleteFirst() != null) {
-            doRightDeletes(accNode, am, wm, srcRightTuples, tempLeftTuples);
-        }
-
-        if (srcRightTuples.getUpdateFirst() != null) {
-            RuleNetworkEvaluator.doUpdatesReorderRightMemory(bm, srcRightTuples);
-            doRightUpdates(accNode, am, wm, srcRightTuples, tempLeftTuples);
-        }
-
-        if (srcLeftTuples.getUpdateFirst() != null ) {
-            RuleNetworkEvaluator.doUpdatesReorderLeftMemory(bm, srcLeftTuples);
-            doLeftUpdates(accNode, am, wm, srcLeftTuples, tempLeftTuples);
-        }
-
-        if (srcRightTuples.getInsertFirst() != null) {
-            doRightInserts(accNode, am, wm, srcRightTuples, tempLeftTuples);
-        }
-
-        if (srcLeftTuples.getInsertFirst() != null) {
-            doLeftInserts(accNode, am, wm, srcLeftTuples, tempLeftTuples);
-        }
-
-        Accumulate accumulate = accNode.getAccumulate();
-        // we do not need collect retracts. RightTuple retracts end up as updates for lefttuples.
-        // LeftTuple retracts are already on the trgLeftTuples
-        for (LeftTuple leftTuple = tempLeftTuples.getInsertFirst(); leftTuple != null; ) {
-            LeftTuple next = leftTuple.getStagedNext();
-            evaluateResultConstraints(accNode, sink, accumulate, leftTuple, leftTuple.getPropagationContext(),
-                                      wm, am, (AccumulateContext) leftTuple.getContextObject(),
-                                      trgLeftTuples, stagedLeftTuples);
-            leftTuple.clearStaged();
-            leftTuple = next;
-        }
-
-        for (LeftTuple leftTuple = tempLeftTuples.getUpdateFirst(); leftTuple != null; ) {
-            LeftTuple next = leftTuple.getStagedNext();
-            evaluateResultConstraints( accNode, sink, accumulate, leftTuple, leftTuple.getPropagationContext(),
-                                       wm, am, (AccumulateContext) leftTuple.getContextObject(),
-                                       trgLeftTuples, stagedLeftTuples );
-            leftTuple.clearStaged();
-            leftTuple = next;
-        }
-
-        srcRightTuples.resetAll();
-
-        srcLeftTuples.resetAll();
-
-        PerfLogUtils.logAndEndMetrics();
     }
 
     public void doLeftInserts(AccumulateNode accNode,

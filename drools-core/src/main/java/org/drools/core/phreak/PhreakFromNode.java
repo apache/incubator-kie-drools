@@ -57,23 +57,26 @@ public class PhreakFromNode {
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
 
-        PerfLogUtils.startMetrics(fromNode);
+        try {
+            PerfLogUtils.startMetrics(fromNode);
 
-        if (srcLeftTuples.getDeleteFirst() != null) {
-            doLeftDeletes(fm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            if (srcLeftTuples.getDeleteFirst() != null) {
+                doLeftDeletes(fm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            }
+
+            if (srcLeftTuples.getUpdateFirst() != null) {
+                doLeftUpdates(fromNode, fm, sink, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            }
+
+            if (srcLeftTuples.getInsertFirst() != null) {
+                doLeftInserts(fromNode, fm, sink, wm, srcLeftTuples, trgLeftTuples);
+            }
+
+            srcLeftTuples.resetAll();
+
+        } finally {
+            PerfLogUtils.logAndEndMetrics();
         }
-
-        if (srcLeftTuples.getUpdateFirst() != null) {
-            doLeftUpdates(fromNode, fm, sink, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
-        }
-
-        if (srcLeftTuples.getInsertFirst() != null) {
-            doLeftInserts(fromNode, fm, sink, wm, srcLeftTuples, trgLeftTuples);
-        }
-
-        srcLeftTuples.resetAll();
-
-        PerfLogUtils.logAndEndMetrics();
     }
 
     public void doLeftInserts(FromNode fromNode,
