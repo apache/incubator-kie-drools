@@ -2,7 +2,7 @@
 
 ## Contributing to Kogito
 
-All contributions are welcome! Before you start please read the [Developing Drools and jBPM](https://github.com/kiegroup/droolsjbpm-build-bootstrap/blob/master/README.md) guide.
+All contributions are welcome! Before you start please read the [contribution guide](https://github.com/kiegroup/kogito-runtimes/blob/master/CONTRIBUTING.md).
 
 ## Building from source
 
@@ -22,19 +22,19 @@ See detailed instructions [here](https://docs.npmjs.com/downloading-and-installi
 
 - Install [Yarn](https://classic.yarnpkg.com/)
 ```bash
-cd kogito-apps
+cd kogito-apps/ui-packages
 npm install -D yarn
 ```
 
 - Install projects dependencies using Yarn
 ```bash
-cd kogito-apps
+cd kogito-apps/ui-packages
 yarn install
 ```
 
 - Build with Yarn:
 ```bash
-cd kogito-apps
+cd kogito-apps/ui-packages
 yarn run init
 
 #prod
@@ -50,4 +50,4 @@ yarn run build:fast # skips lint and unit tests
 ## Management Console
 
 For detailed instructions on how to develop and run the Management Console, please check instructions on the specific 
-[README](./packages/management-console/README.md) file.
+[README](./ui-packages/packages/management-console/README.md) file.
