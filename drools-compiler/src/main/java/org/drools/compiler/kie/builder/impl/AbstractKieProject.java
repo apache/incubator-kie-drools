@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -257,7 +257,7 @@ public abstract class AbstractKieProject implements KieProject {
             kModule.cacheKnowledgeBuilderForKieBase( kBaseModel.getName(), kbuilder );
             kModule.cacheResultsForKieBase( kBaseModel.getName(), messages );
         }
-        
+
         if (assets.isEmpty()) {
             if (buildFilter == BUILD_ALL) {
                 log.warn( "No files found for KieBase " + kBaseModel.getName() +

@@ -16,23 +16,33 @@
 
 package org.kie.dmn.core.pmml;
 
+import java.util.function.Consumer;
+
 import org.assertj.core.api.Assertions;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.builder.ReleaseId;
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.api.pmml.PMMLConstants.KIE_PMML_IMPLEMENTATION;
 import static org.kie.api.pmml.PMMLConstants.LEGACY;
+import static org.kie.api.pmml.PMMLConstants.NEW;
+import static org.kie.dmn.core.util.DMNRuntimeUtil.resetServices;
 
-public class DMNTreePMMLTest extends AbstractDMNPMMLTest {
+public class DMNTreePMMLNewImplTest extends AbstractDMNPMMLTest{
 
-    public static final Logger LOG = LoggerFactory.getLogger(DMNTreePMMLTest.class);
+    public static final Logger LOG = LoggerFactory.getLogger(DMNTreePMMLNewImplTest.class);
     private static final String SUNGLASSES = "sunglasses";
     private static final String UMBRELLA = "umbrella";
     private static final String NOTHING = "nothing";
@@ -40,13 +50,13 @@ public class DMNTreePMMLTest extends AbstractDMNPMMLTest {
     @Before
     public void resetEnvironment() {
         LOG.debug("resetEnvironment");
-        resetEnvironment(LEGACY.getName());
+        resetEnvironment(NEW.getName());
     }
 
     @Test
     public void testTreeWithOutput() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLTree.dmn",
-                                                                                       DMNTreePMMLTest.class,
+                                                                                       DMNTreePMMLNewImplTest.class,
                                                                                        "test_tree.pmml");
         Assertions.assertThat(runtime).isNotNull();
         Assertions.assertThat(evaluateWeatherDecision(runtime, 30, 10)).isEqualTo(SUNGLASSES);
@@ -76,6 +86,14 @@ public class DMNTreePMMLTest extends AbstractDMNPMMLTest {
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, dmnContext);
         LOG.debug("{}", dmnResult);
+        if (dmnResult.hasErrors()) {
+            dmnResult.getMessages().forEach(new Consumer<DMNMessage>() {
+                @Override
+                public void accept(DMNMessage dmnMessage) {
+                    LOG.debug("{}", dmnMessage);
+                }
+            });
+        }
         Assertions.assertThat(dmnResult.hasErrors()).isFalse();
 
         final DMNContext resultContext = dmnResult.getContext();
@@ -86,4 +104,5 @@ public class DMNTreePMMLTest extends AbstractDMNPMMLTest {
 
         return weatherDecision;
     }
+
 }

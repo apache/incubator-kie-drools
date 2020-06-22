@@ -13,6 +13,9 @@
   <kbase name="ReturnLastPredictionStrategyTreeModel" packages="returnlastpredictionstrategytreemodel">
     <ksession name="ReturnLastPredictionStrategyTreeModelSession" type="stateless"/>
   </kbase>
+  <kbase name="SampleMineTreeModel" packages="sampleminetreemodel">
+    <ksession name="SampleMineTreeModelSession" type="stateless"/>
+  </kbase>
   <kbase name="SimpleClassificationTreeModel" packages="simpleclassificationtreemodel">
     <ksession name="SimpleClassificationTreeModelSession" type="stateless"/>
   </kbase>

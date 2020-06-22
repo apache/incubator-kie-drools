@@ -34,7 +34,7 @@ public enum ResultCode {
     }
 
     public static ResultCode byName(String name) {
-        return Arrays.stream(ResultCode.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find StatusCode with name: " + name));
+        return Arrays.stream(ResultCode.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find ResultCode with name: " + name));
     }
 
     public String getName() {

@@ -35,6 +35,9 @@ import org.kie.pmml.evaluator.assembler.container.PMMLPackageImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.api.pmml.PMMLConstants.KIE_PMML_IMPLEMENTATION;
+import static org.kie.api.pmml.PMMLConstants.LEGACY;
+import static org.kie.api.pmml.PMMLConstants.NEW;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.evaluator.assembler.service.PMMLCompilerService.getKiePMMLModelsCompiledFromResource;
@@ -50,8 +53,26 @@ public class PMMLAssemblerService implements KieAssemblerService {
     private static final Logger logger = LoggerFactory.getLogger(PMMLAssemblerService.class);
 
     private static boolean isBuildFromMaven() {
-        final String property = System.getProperty("kie-maven-plugin-launcher");
-        return property != null && property.equals("true");
+        final String property = System.getProperty("kie-maven-plugin-launcher", "false");
+        return property.equals("true");
+    }
+
+    private static boolean isOtherImplementationPresent() {
+        try {
+            Thread.currentThread().getContextClassLoader().loadClass("org.kie.pmml.assembler.PMMLAssemblerService");
+            return true;
+        } catch (NoClassDefFoundError | ClassNotFoundException e) {
+            return false;
+        }
+    }
+
+    private static boolean isToEnable() {
+        if (!isOtherImplementationPresent()) {
+            return true;
+        } else {
+            final String property = System.getProperty(KIE_PMML_IMPLEMENTATION.getName(), LEGACY.getName());
+            return property.equals(NEW.getName());
+        }
     }
 
     /**
@@ -71,7 +92,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
 
     @Override
     public ResourceType getResourceType() {
-        return ResourceType.PMML;
+        return isToEnable() ? ResourceType.PMML : ResourceType.NOOP;
     }
 
     @Override
