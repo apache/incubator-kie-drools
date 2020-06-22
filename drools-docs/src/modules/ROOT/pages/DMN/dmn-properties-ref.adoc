@@ -43,6 +43,7 @@ org.kie.dmn.profiles.$PROFILE_NAME::
 When valorized with a Java fully qualified name, this property loads a DMN profile onto the {DECISION_ENGINE} at start time. You can use this property to implement a predefined DMN profile with supported features different from or beyond the DMN standard. For example, if you are creating DMN models using the Signavio DMN modeller, use this property to implement features from the Signavio DMN profile into your DMN decision service.
 +
 --
+[source]
 ----
 -Dorg.kie.dmn.profiles.signavio=org.kie.dmn.signavio.KieDMNSignavioProfile
 ----
@@ -52,13 +53,26 @@ When valorized with a Java fully qualified name, this property loads a DMN profi
 org.kie.dmn.runtime.listeners.$LISTENER_NAME::
 When valorized with a Java fully qualified name, this property loads and registers a DMN Runtime Listener onto the {DECISION_ENGINE} at start time.
 You can use this property to register a DMN listener in order to be notified of several events during DMN model evaluations.
-You can also configure this property in the `kmodule.xml` file in your project.
 +
 --
+[source]
 ----
 -Dorg.kie.dmn.runtime.listeners.mylistener=org.acme.MyDMNListener
 ----
 //kept removed `[source]` for this last snippet because it rendered unlike all the others in community output otherwise for some reason. as per SJR comment above.
+--
++
+You can also configure this property in the `kmodule.xml` file in your project.
++
+--
+[source,xml]
+----
+<kmodule xmlns="http://www.drools.org/xsd/kmodule">
+  <configuration>
+    <property key="org.kie.dmn.runtime.listeners.mylistener" value="org.acme.MyDMNListener"/>
+  </configuration>
+</kmodule>
+----
 --
 
 org.kie.dmn.compiler.execmodel::
