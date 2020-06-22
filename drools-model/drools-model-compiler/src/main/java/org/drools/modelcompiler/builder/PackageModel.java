@@ -43,6 +43,7 @@ import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
@@ -147,6 +148,8 @@ public class PackageModel {
     private final String pkgUUID;
     private Map<String, CreatedClass> lambdaClasses = new HashMap<>();
     private Set<RuleUnitDescription> ruleUnits = new HashSet<>();
+
+    private Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes = new HashMap<>();
 
     private boolean oneClassPerRule;
 
@@ -863,5 +866,9 @@ public class PackageModel {
         sb.append( "}" );
 
         return sb.toString();
+    }
+
+    public Map<LambdaExpr, java.lang.reflect.Type> getLambdaReturnTypes() {
+        return lambdaReturnTypes;
     }
 }

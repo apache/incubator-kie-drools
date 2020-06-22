@@ -18,18 +18,20 @@ package org.drools.modelcompiler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
+import org.drools.modelcompiler.FunctionsTest.Pojo;
+import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Pet;
 import org.drools.modelcompiler.domain.PetPerson;
 import org.drools.modelcompiler.domain.Woman;
-import org.drools.modelcompiler.FunctionsTest.Pojo;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -330,5 +332,259 @@ public class FromTest extends BaseModelTest {
         ksession.insert( new Pojo( Arrays.asList(1,2,3) ) );
         int rulesFired = ksession.fireAllRules();
         assertEquals( 1, rulesFired );
+    }
+
+    @Test
+    public void testFromCollect() {
+        String str =
+                "package org.drools.compiler.test  \n" +
+                     "import " + Person.class.getCanonicalName() + "\n" +
+                     "import " + List.class.getCanonicalName() + "\n" +
+                     "rule R\n" +
+                     "when\n" +
+                     "    $l : List (size == 2) from collect (Person (age >= 30))\n" +
+                     "then\n" +
+                     "end \n";
+
+        KieSession ksession = getKieSession(str);
+
+        Person p1 = new Person("John", 32);
+        Person p2 = new Person("Paul", 30);
+        Person p3 = new Person("George", 29);
+
+        ksession.insert(p1);
+        ksession.insert(p2);
+        ksession.insert(p3);
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testThisArray() {
+        // This test verifies the behavior when ArrayType is used as "_this" (which $childrenA is converted to) in from clause.
+        String str =
+                "package org.drools.compiler.test  \n" +
+                     "import " + Adult.class.getCanonicalName() + "\n" +
+                     "global java.util.List list;\n" +
+                     "rule R\n" +
+                     "when\n" +
+                     "    Adult($childrenA : childrenA)\n" +
+                     "    $i : Integer() from $childrenA.length\n" +
+                     "then\n" +
+                     "    list.add($i);\n" +
+                     "end \n";
+
+        KieSession ksession = getKieSession(str);
+        List<Integer> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        Adult john = new Adult("John", 39);
+        john.setChildrenA(new Person[]{new Person("Julian"), new Person("Sean")});
+
+        ksession.insert(john);
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder(2);
+    }
+
+    @Test
+    public void testFromArray() {
+        // This test verifies the behavior when the return type is ArrayType
+        String str =
+                "package org.drools.compiler.test  \n" +
+                     "import " + Adult.class.getCanonicalName() + "\n" +
+                     "import " + Person.class.getCanonicalName() + "\n" +
+                     "global java.util.List list;\n" +
+                     "rule R\n" +
+                     "when\n" +
+                     "    $adult : Adult()\n" +
+                     "    $p : Person() from $adult.childrenA\n" +
+                     "then\n" +
+                     "    list.add($p.getName());\n" +
+                     "end \n";
+        
+        KieSession ksession = getKieSession(str);
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        Adult john = new Adult("John", 39);
+        john.setChildrenA(new Person[]{new Person("Julian"), new Person("Sean")});
+
+        ksession.insert(john);
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Julian", "Sean");
+    }
+
+    @Test
+    public void testInnerClassCollection() {
+        String str =
+                "package org.drools.compiler.test  \n" +
+                     "import " + MyPerson.class.getCanonicalName() + "\n" +
+                     "rule R\n" +
+                     "when\n" +
+                     "    $p : MyPerson()\n" +
+                     "    $kid : MyPerson() from $p.kids\n" +
+                     "then\n" +
+                     "end \n";
+
+        KieSession ksession = getKieSession(str);
+
+        MyPerson john = new MyPerson("John");
+        Collection<MyPerson> kids = new ArrayList<>();
+        kids.add(new MyPerson("Julian"));
+        kids.add(new MyPerson("Sean"));
+        john.setKids(kids);
+
+        ksession.insert(john);
+
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testInnerClassWithInstanceMethod() {
+        String str =
+                "package org.drools.compiler.test  \n" +
+                     "import " + MyPerson.class.getCanonicalName() + "\n" +
+                     "global java.util.List list;\n" +
+                     "rule R\n" +
+                     "when\n" +
+                     "    $p : MyPerson()\n" +
+                     "    $d : MyPerson() from $p.getDummyPerson()\n" +
+                     "then\n" +
+                     "    list.add($d.getName());" +
+                     "end \n";
+
+        KieSession ksession = getKieSession(str);
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        MyPerson john = new MyPerson("John");
+        ksession.insert(john);
+
+        assertEquals(1, ksession.fireAllRules());
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Dummy");
+    }
+
+    @Test
+    public void testInnerClassWithStaticMethod() {
+        String str =
+                "package org.drools.compiler.test  \n" +
+                     "import " + MyPerson.class.getCanonicalName() + "\n" +
+                     "global java.util.List list;\n" +
+                     "rule R\n" +
+                     "when\n" +
+                     "    $d : MyPerson() from MyPerson.getDummyPersonStatic()\n" +
+                     "then\n" +
+                     "    list.add($d.getName());" +
+                     "end \n";
+
+        KieSession ksession = getKieSession(str);
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        assertEquals(1, ksession.fireAllRules());
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Dummy");
+    }
+
+    @Test
+    public void testInnerClassWithStaticMethodWithArg() {
+        String str =
+                "package org.drools.compiler.test  \n" +
+                     "import " + MyPerson.class.getCanonicalName() + "\n" +
+                     "global java.util.List list;\n" +
+                     "rule R\n" +
+                     "when\n" +
+                     "    $s : String()\n" +
+                     "    $d : MyPerson() from MyPerson.getDummyPersonStatic($s)\n" +
+                     "then\n" +
+                     "    list.add($d.getName());" +
+                     "end \n";
+
+        KieSession ksession = getKieSession(str);
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert("John");
+
+        assertEquals(1, ksession.fireAllRules());
+        Assertions.assertThat(list).containsExactlyInAnyOrder("DummyJohn");
+    }
+
+    public static class MyPerson {
+
+        public MyPerson(final String name) {
+            this.name = name;
+        }
+
+        public MyPerson(final String name, final Integer age, final Collection<MyPerson> kids) {
+            this.name = name;
+            this.age = age;
+            this.kids = kids;
+        }
+
+        private String name;
+
+        private Integer age;
+
+        private Collection<MyPerson> kids;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(final String name) {
+            this.name = name;
+        }
+
+        public Integer getAge() {
+            return age;
+        }
+
+        public void setAge(final Integer age) {
+            this.age = age;
+        }
+
+        public Collection<MyPerson> getKids() {
+            return kids;
+        }
+
+        public void setKids(final Collection<MyPerson> kids) {
+            this.kids = kids;
+        }
+
+        public MyPerson getDummyPerson() {
+            return new MyPerson("Dummy");
+        }
+
+        public static MyPerson getDummyPersonStatic() {
+            return new MyPerson("Dummy");
+        }
+
+        public static MyPerson getDummyPersonStatic(String name) {
+            return new MyPerson("Dummy" + name);
+        }
+    }
+
+    @Test
+    public void testNew() {
+        String str =
+                "package org.drools.compiler.test  \n" +
+                     "import " + Person.class.getCanonicalName() + "\n" +
+                     "global java.util.List list;\n" +
+                     "rule R\n" +
+                     "when\n" +
+                     "    $p : Person() from new Person(\"John\", 30)\n" +
+                     "then\n" +
+                     "    list.add($p);\n" +
+                     "end \n";
+
+        KieSession ksession = getKieSession(str);
+        List<Integer> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
     }
 }
