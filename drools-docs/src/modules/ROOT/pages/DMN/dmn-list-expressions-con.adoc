@@ -1,0 +1,16 @@
+[id='dmn-list-expressions-con_{context}']
+= Boxed list expressions
+
+A boxed list expression in DMN represents a FEEL list of items. You use boxed lists to define lists of relevant items for a particular node in a decision. You can also use literal FEEL expressions for list items in cells to create more complex lists.
+
+For example, the following boxed list expression identifies approved credit score agencies in a loan application decision service:
+
+.Boxed list expression for approved credit score agencies
+image::dmn/dmn-list-expression-example.png[]
+
+The following boxed list expression also identifies approved credit score agencies but uses FEEL logic to define the agency status (Inc., LLC, SA, GA) based on a DMN input node:
+
+.Boxed list expression using FEEL logic for approved credit score agency status
+image::dmn/dmn-list-expression-example2.png[]
+
+image::dmn/dmn-list-expression-example2a.png[]
