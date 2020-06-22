@@ -50,14 +50,14 @@ public class DMNTreePMMLNewImplTest extends AbstractDMNPMMLTest{
     @Before
     public void resetEnvironment() {
         LOG.debug("resetEnvironment");
-        resetEnvironment(LEGACY.getName());
+        resetEnvironment(NEW.getName());
     }
 
     @Test
     public void testTreeWithOutput() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLNewTree.dmn",
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLTree.dmn",
                                                                                        DMNTreePMMLNewImplTest.class,
-                                                                                       "test_tree_new.pmml");
+                                                                                       "test_tree.pmml");
         Assertions.assertThat(runtime).isNotNull();
         Assertions.assertThat(evaluateWeatherDecision(runtime, 30, 10)).isEqualTo(SUNGLASSES);
         Assertions.assertThat(evaluateWeatherDecision(runtime, 5, 70)).isEqualTo(UMBRELLA);
@@ -66,9 +66,9 @@ public class DMNTreePMMLNewImplTest extends AbstractDMNPMMLTest{
 
     @Test
     public void testTreeWithoutOutput() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLNewTree_no_output.dmn",
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLTree_no_output.dmn",
                                                                                        DMNTreePMMLNewImplTest.class,
-                                                                                       "test_tree_new_no_output.pmml");
+                                                                                       "test_tree_no_output.pmml");
         Assertions.assertThat(runtime).isNotNull();
         Assertions.assertThat(evaluateWeatherDecision(runtime, 30, 10)).isEqualTo(SUNGLASSES);
         Assertions.assertThat(evaluateWeatherDecision(runtime, 5, 70)).isEqualTo(UMBRELLA);
@@ -76,7 +76,7 @@ public class DMNTreePMMLNewImplTest extends AbstractDMNPMMLTest{
     }
 
     private String evaluateWeatherDecision(final DMNRuntime runtime, final Integer temperature, final Integer humidity) {
-        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_FAA4232D-9D61-4089-BB05-5F5D7C1AECE2", "TestTreeDMNNew");
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_FAA4232D-9D61-4089-BB05-5F5D7C1AECE1", "TestTreeDMN");
         Assertions.assertThat(dmnModel).isNotNull();
         Assertions.assertThat(dmnModel.hasErrors()).isFalse();
 

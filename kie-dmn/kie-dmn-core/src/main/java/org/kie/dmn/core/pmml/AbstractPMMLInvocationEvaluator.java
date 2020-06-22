@@ -20,9 +20,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.kie.api.io.Resource;
+import org.kie.api.pmml.PMMLConstants;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNType;
@@ -42,6 +45,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.api.pmml.PMMLConstants.KIE_PMML_IMPLEMENTATION;
 import static org.kie.api.pmml.PMMLConstants.LEGACY;
+import static org.kie.api.pmml.PMMLConstants.NEW;
 
 public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEvaluator {
 
@@ -52,6 +56,7 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
     protected final List<FormalParameter> parameters = new ArrayList<>();
     protected final Resource documentResource;
     protected final String model;
+
 
     public AbstractPMMLInvocationEvaluator(String dmnNS, DMNElement node, Resource resource, String model) {
         this.dmnNS = dmnNS;
@@ -135,34 +140,67 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
             AbstractPMMLInvocationEvaluator toReturn = getAbstractDMNKiePMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlResource, pmmlModel, pmmlInfo);
             if (toReturn != null) {
                 return toReturn;
+            } else {
+                MsgUtil.reportMessage(LOG,
+                                      DMNMessage.Severity.WARN,
+                                      funcDef,
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.FUNC_DEF_PMML_NOT_SUPPORTED,
+                                      funcDef.getIdentifierString());
             }
-            MsgUtil.reportMessage(LOG,
-                                  DMNMessage.Severity.WARN,
-                                  funcDef,
-                                  model,
-                                  null,
-                                  null,
-                                  Msg.FUNC_DEF_PMML_NOT_SUPPORTED,
-                                  funcDef.getIdentifierString());
             return new AbstractPMMLInvocationEvaluator.DummyPMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlResource, pmmlModel);
         }
     }
 
+    /**
+     * Retrieve the required <code>AbstractDMNKiePMMLInvocationEvaluator</code>. It may return <code>null</code>
+     * because it is eventually expected by original code
+     * @see {@link DummyPMMLInvocationEvaluator}
+     *
+     * @param nameSpace
+     * @param funcDef
+     * @param pmmlResource
+     * @param pmmlModel
+     * @param pmmlInfo
+     * @return
+     */
     private static AbstractDMNKiePMMLInvocationEvaluator getAbstractDMNKiePMMLInvocationEvaluator(String nameSpace, DMNElement funcDef, Resource pmmlResource, String pmmlModel, PMMLInfo<?> pmmlInfo) {
+        Optional<PMMLConstants> requiredKiePMMLImplementation = getRequiredKiePMMLImplementation();
+        return requiredKiePMMLImplementation.map(pmmlConstants -> {
+            switch (pmmlConstants) {
+                case LEGACY:
+                    return getDMNKiePMMLInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
+                case NEW:
+                    return getDMNKiePMMLNewInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
+                default:
+                    return null;
+            }
+        }).orElse(null);
+    }
+
+    /**
+     * Retrieve the <code>Optional</code> with required <b>KiePMML</b> implementation. It may return <code>Optional.empty()</code>
+     * because it is eventually expected by original code
+     * @see {@link DummyPMMLInvocationEvaluator}
+     * @return
+     */
+    private static Optional<PMMLConstants> getRequiredKiePMMLImplementation() {
         final boolean legacyImplementationPresent = isLegacyImplementationPresent();
         final boolean newImplementationPresent = isNewImplementationPresent();
         if (legacyImplementationPresent && newImplementationPresent) {
             if (isLegacyPMMLRequired()) {
-                return getDMNKiePMMLInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
+                return Optional.of(LEGACY);
             } else {
-                return getDMNKiePMMLNewInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
+                return Optional.of(NEW);
             }
         } else if (legacyImplementationPresent) {
-            return getDMNKiePMMLInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
+            return Optional.of(LEGACY);
         } else if (newImplementationPresent) {
-            return getDMNKiePMMLNewInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
+            return Optional.of(NEW);
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -181,9 +219,9 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
         try {
             return new DMNKiePMMLNewInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
         } catch (NoClassDefFoundError e) {
-            LOG.warn("Tried binding org.drools:kie-pmml-new, failed.");
+            LOG.warn("Tried binding org.drools:kie-pmml-trusty, failed.");
         } catch (Throwable e) {
-            throw new RuntimeException("Binding org.drools:kie-pmml-new succeded but initialization failed, with:", e);
+            throw new RuntimeException("Binding org.drools:kie-pmml-trusty succeded but initialization failed, with:", e);
         }
         return null;
     }

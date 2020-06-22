@@ -327,6 +327,14 @@ public class ClassUtil {
         return cls;
     }
 
+    public static Type boxTypePrimitive(Type type) {
+        if (type instanceof Class<?>) {
+            return boxPrimitive((Class<?>)type);
+        } else {
+            return type;
+        }
+    }
+
     public static boolean isAssignableFrom(Class<?> from, Class<?> to) {
         return from.isAssignableFrom(to) || areBoxingCompatible(from, to);
     }

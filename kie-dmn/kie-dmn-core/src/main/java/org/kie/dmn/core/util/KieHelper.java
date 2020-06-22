@@ -37,7 +37,6 @@ public final class KieHelper {
     public static KieContainer getKieContainer(ReleaseId releaseId,
                                                Resource... resources) {
         KieServices ks = KieServices.Factory.get();
-//        createAndDeployJar( ks, releaseId, resources );
         createJar(ks, releaseId, resources);
         return ks.newKieContainer(releaseId);
     }
