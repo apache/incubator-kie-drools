@@ -219,9 +219,9 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
         try {
             return new DMNKiePMMLNewInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
         } catch (NoClassDefFoundError e) {
-            LOG.warn("Tried binding org.drools:kie-pmml-new, failed.");
+            LOG.warn("Tried binding org.drools:kie-pmml-trusty, failed.");
         } catch (Throwable e) {
-            throw new RuntimeException("Binding org.drools:kie-pmml-new succeded but initialization failed, with:", e);
+            throw new RuntimeException("Binding org.drools:kie-pmml-trusty succeded but initialization failed, with:", e);
         }
         return null;
     }
