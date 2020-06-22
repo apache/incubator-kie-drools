@@ -31,7 +31,7 @@ public final class QuarkusDecisionTracingListener extends DecisionTracingListene
     @Inject
     public QuarkusDecisionTracingListener(EventBus bus) {
         setEventConsumer(event ->
-                bus.send(String.format("kogito-tracing-decision_%s", event.getClass().getSimpleName()), event)
+                bus.send("kogito-tracing-decision_EvaluateEvent", event)
         );
     }
 

@@ -16,14 +16,18 @@
 
 package org.kie.kogito.tracing.decision;
 
+import java.util.function.BiFunction;
+
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.quarkus.vertx.ConsumeEvent;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.subjects.PublishSubject;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
-import org.kie.kogito.tracing.decision.event.AfterEvaluateAllEvent;
-import org.kie.kogito.tracing.decision.event.BeforeEvaluateAllEvent;
+import org.kie.kogito.Application;
+import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
+import org.kie.kogito.tracing.decision.modelsupplier.ApplicationModelSupplier;
 import org.reactivestreams.Publisher;
 
 @Singleton
@@ -32,9 +36,14 @@ public class QuarkusDecisionTracingCollector {
     private final PublishSubject<String> eventSubject;
     private final DecisionTracingCollector collector;
 
-    public QuarkusDecisionTracingCollector() {
+    public QuarkusDecisionTracingCollector(BiFunction<String, String, org.kie.dmn.api.core.DMNModel> modelSupplier) {
         eventSubject = PublishSubject.create();
-        collector = new DecisionTracingCollector(eventSubject::onNext);
+        collector = new DecisionTracingCollector(eventSubject::onNext, modelSupplier);
+    }
+
+    @Inject
+    public QuarkusDecisionTracingCollector(Application application) {
+        this(new ApplicationModelSupplier(application));
     }
 
     @Outgoing("kogito-tracing-decision")
@@ -42,14 +51,8 @@ public class QuarkusDecisionTracingCollector {
         return eventSubject.toFlowable(BackpressureStrategy.BUFFER);
     }
 
-    @ConsumeEvent("kogito-tracing-decision_BeforeEvaluateAllEvent")
-    public void onEvent(BeforeEvaluateAllEvent event) {
+    @ConsumeEvent("kogito-tracing-decision_EvaluateEvent")
+    public void onEvent(EvaluateEvent event) {
         collector.addEvent(event);
     }
-
-    @ConsumeEvent("kogito-tracing-decision_AfterEvaluateAllEvent")
-    public void onEvent(AfterEvaluateAllEvent event) {
-        collector.addEvent(event);
-    }
-
 }

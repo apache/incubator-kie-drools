@@ -1,0 +1,48 @@
+/*
+ *  Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+package org.kie.kogito.tracing.decision.event.evaluate;
+
+public enum EvaluateEventType {
+    BEFORE_EVALUATE_ALL(true),
+    AFTER_EVALUATE_ALL(false),
+    BEFORE_EVALUATE_BKM(true),
+    AFTER_EVALUATE_BKM(false),
+    BEFORE_EVALUATE_CONTEXT_ENTRY(true),
+    AFTER_EVALUATE_CONTEXT_ENTRY(false),
+    BEFORE_EVALUATE_DECISION(true),
+    AFTER_EVALUATE_DECISION(false),
+    BEFORE_EVALUATE_DECISION_SERVICE(true),
+    AFTER_EVALUATE_DECISION_SERVICE(false),
+    BEFORE_EVALUATE_DECISION_TABLE(true),
+    AFTER_EVALUATE_DECISION_TABLE(false),
+    BEFORE_INVOKE_BKM(true),
+    AFTER_INVOKE_BKM(false);
+
+    private final boolean before;
+
+    EvaluateEventType(boolean before) {
+        this.before = before;
+    }
+
+    public boolean isBefore() {
+        return before;
+    }
+
+    public boolean isAfter() {
+        return !before;
+    }
+}

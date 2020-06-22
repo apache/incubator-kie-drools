@@ -18,12 +18,10 @@ package org.kie.kogito.tracing.decision;
 
 import java.util.function.Consumer;
 
-import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.event.AfterEvaluateBKMEvent;
+import org.kie.dmn.api.core.event.BeforeEvaluateBKMEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
-import org.kie.kogito.decision.DecisionExecutionIdUtils;
-import org.kie.kogito.tracing.decision.event.AfterEvaluateAllEvent;
-import org.kie.kogito.tracing.decision.event.BeforeEvaluateAllEvent;
-import org.kie.kogito.tracing.decision.event.EvaluateEvent;
+import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 
 /**
  * This class must always have exact FQCN as <code>org.kie.kogito.tracing.decision.DecisionTracingListener</code>
@@ -46,26 +44,62 @@ public class DecisionTracingListener implements DMNRuntimeEventListener {
 
     @Override
     public void beforeEvaluateAll(org.kie.dmn.api.core.event.BeforeEvaluateAllEvent event) {
-        eventConsumer.accept(new BeforeEvaluateAllEvent(
-                extractExecutionId(event.getResult().getContext()),
-                event.getModelName(),
-                event.getModelNamespace(),
-                event.getResult().getContext()
-        ));
+        eventConsumer.accept(EvaluateEvent.from(event));
     }
 
     @Override
     public void afterEvaluateAll(org.kie.dmn.api.core.event.AfterEvaluateAllEvent event) {
-        eventConsumer.accept(new AfterEvaluateAllEvent(
-                extractExecutionId(event.getResult().getContext()),
-                event.getModelName(),
-                event.getModelNamespace(),
-                event.getResult()
-        ));
+        eventConsumer.accept(EvaluateEvent.from(event));
     }
 
-    private String extractExecutionId(DMNContext context) {
-        return DecisionExecutionIdUtils.get(context);
+    @Override
+    public void beforeEvaluateDecision(org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent event) {
+        eventConsumer.accept(EvaluateEvent.from(event));
+    }
+
+    @Override
+    public void afterEvaluateDecision(org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent event) {
+        eventConsumer.accept(EvaluateEvent.from(event));
+    }
+
+    @Override
+    public void beforeEvaluateContextEntry(org.kie.dmn.api.core.event.BeforeEvaluateContextEntryEvent event) {
+        eventConsumer.accept(EvaluateEvent.from(event));
+    }
+
+    @Override
+    public void afterEvaluateContextEntry(org.kie.dmn.api.core.event.AfterEvaluateContextEntryEvent event) {
+        eventConsumer.accept(EvaluateEvent.from(event));
+    }
+
+    @Override
+    public void beforeEvaluateDecisionTable(org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent event) {
+        eventConsumer.accept(EvaluateEvent.from(event));
+    }
+
+    @Override
+    public void afterEvaluateDecisionTable(org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent event) {
+        eventConsumer.accept(EvaluateEvent.from(event));
+    }
+
+    @Override
+    public void beforeEvaluateDecisionService(org.kie.dmn.api.core.event.BeforeEvaluateDecisionServiceEvent event) {
+        eventConsumer.accept(EvaluateEvent.from(event));
+    }
+
+    @Override
+    public void afterEvaluateDecisionService(org.kie.dmn.api.core.event.AfterEvaluateDecisionServiceEvent event) {
+        eventConsumer.accept(EvaluateEvent.from(event));
+    }
+
+    @Override
+    public void beforeEvaluateBKM(BeforeEvaluateBKMEvent event) {
+        eventConsumer.accept(EvaluateEvent.from(event));
+    }
+
+    @Override
+    public void afterEvaluateBKM(AfterEvaluateBKMEvent event) {
+        eventConsumer.accept(EvaluateEvent.from(event));
     }
 
 }

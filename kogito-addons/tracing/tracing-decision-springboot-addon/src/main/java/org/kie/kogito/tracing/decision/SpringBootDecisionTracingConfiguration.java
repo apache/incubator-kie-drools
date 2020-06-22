@@ -18,6 +18,8 @@ package org.kie.kogito.tracing.decision;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -91,4 +93,8 @@ public class SpringBootDecisionTracingConfiguration {
         return new KafkaTemplate<>(producerFactory());
     }
 
+    @Bean(name = "kogitoTracingDecisionAddonTaskExecutor")
+    public Executor threadPoolTaskExecutor() {
+        return Executors.newSingleThreadExecutor(r -> new Thread(r, "kogito-tracing"));
+    }
 }

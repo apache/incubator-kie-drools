@@ -25,21 +25,21 @@ import io.cloudevents.v1.CloudEventImpl;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.kogito.Application;
 import org.kie.kogito.decision.DecisionModel;
+import org.kie.kogito.decision.DecisionModels;
 import org.kie.kogito.dmn.DMNKogito;
 import org.kie.kogito.dmn.DmnDecisionModel;
-import org.kie.kogito.tracing.decision.event.AfterEvaluateAllEvent;
-import org.kie.kogito.tracing.decision.event.BeforeEvaluateAllEvent;
-import org.kie.kogito.tracing.decision.event.EvaluateEvent;
+import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 import org.mockito.ArgumentCaptor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class SpringBootDecisionTracingTest {
 
@@ -62,6 +62,7 @@ public class SpringBootDecisionTracingTest {
         runtime.addListener(listener);
 
         final Map<String, Object> driver = new HashMap<>();
+        driver.put("Age", 25);
         driver.put("Points", 10);
         final Map<String, Object> violation = new HashMap<>();
         violation.put("Type", "speed");
@@ -76,18 +77,17 @@ public class SpringBootDecisionTracingTest {
         model.evaluateAll(context);
 
         ArgumentCaptor<EvaluateEvent> eventCaptor = ArgumentCaptor.forClass(EvaluateEvent.class);
-        verify(eventPublisher, times(2)).publishEvent(eventCaptor.capture());
+        verify(eventPublisher, times(14)).publishEvent(eventCaptor.capture());
 
-        assertTrue(eventCaptor.getAllValues().get(0) instanceof BeforeEvaluateAllEvent);
-        assertTrue(eventCaptor.getAllValues().get(1) instanceof AfterEvaluateAllEvent);
-
-        BeforeEvaluateAllEvent beforeEvent = (BeforeEvaluateAllEvent) eventCaptor.getAllValues().get(0);
-        AfterEvaluateAllEvent afterEvent = (AfterEvaluateAllEvent) eventCaptor.getAllValues().get(1);
+        final DecisionModels mockedDecisionModels = mock(DecisionModels.class);
+        when(mockedDecisionModels.getDecisionModel(modelNamespace, modelName)).thenReturn(model);
+        final Application mockedApplication = mock(Application.class);
+        when(mockedApplication.decisionModels()).thenReturn(mockedDecisionModels);
 
         KafkaTemplate<String, String> template = mock(KafkaTemplate.class);
-        SpringBootDecisionTracingCollector collector = new SpringBootDecisionTracingCollector(template, TEST_TOPIC);
-        collector.onApplicationEvent(beforeEvent);
-        collector.onApplicationEvent(afterEvent);
+
+        SpringBootDecisionTracingCollector collector = new SpringBootDecisionTracingCollector(mockedApplication, template, TEST_TOPIC);
+        eventCaptor.getAllValues().forEach(collector::onApplicationEvent);
 
         ArgumentCaptor<String> topicCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> payloadCaptor = ArgumentCaptor.forClass(String.class);

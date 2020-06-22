@@ -1,0 +1,696 @@
+[
+  {
+    "type": "BEFORE_EVALUATE_ALL",
+    "timestamp": 1591883831168,
+    "nanoTime": 173914173657398,
+    "executionId": "4ac4c69f-4925-4221-b67e-4b14ce47bef8",
+    "modelNamespace": "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF",
+    "modelName": "Traffic Violation",
+    "nodeId": null,
+    "nodeName": null,
+    "context": {
+      "Violation": {
+        "Type": "speed",
+        "Actual Speed": 115,
+        "Speed Limit": 100
+      },
+      "Driver": {
+        "Points": 10,
+        "Age": 25
+      }
+    },
+    "result": {
+      "decisionResults": [
+        {
+          "decisionId": "_4055D956-1C47-479C-B3F4-BAEB61F1C929",
+          "decisionName": "Fine",
+          "evaluationStatus": "NOT_EVALUATED",
+          "result": null,
+          "messages": []
+        },
+        {
+          "decisionId": "_8A408366-D8E9-4626-ABF3-5F69AA01F880",
+          "decisionName": "Should the driver be suspended?",
+          "evaluationStatus": "NOT_EVALUATED",
+          "result": null,
+          "messages": []
+        }
+      ],
+      "messages": []
+    },
+    "contextEntryResult": null,
+    "decisionTableResult": null
+  },
+  {
+    "type": "BEFORE_EVALUATE_DECISION",
+    "timestamp": 1591883831208,
+    "nanoTime": 173914214116635,
+    "executionId": "4ac4c69f-4925-4221-b67e-4b14ce47bef8",
+    "modelNamespace": "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF",
+    "modelName": "Traffic Violation",
+    "nodeId": "_4055D956-1C47-479C-B3F4-BAEB61F1C929",
+    "nodeName": "Fine",
+    "context": {
+      "Violation": {
+        "Type": "speed",
+        "Actual Speed": 115,
+        "Speed Limit": 100
+      },
+      "Driver": {
+        "Points": 10,
+        "Age": 25
+      }
+    },
+    "result": {
+      "decisionResults": [
+        {
+          "decisionId": "_4055D956-1C47-479C-B3F4-BAEB61F1C929",
+          "decisionName": "Fine",
+          "evaluationStatus": "NOT_EVALUATED",
+          "result": null,
+          "messages": []
+        },
+        {
+          "decisionId": "_8A408366-D8E9-4626-ABF3-5F69AA01F880",
+          "decisionName": "Should the driver be suspended?",
+          "evaluationStatus": "NOT_EVALUATED",
+          "result": null,
+          "messages": []
+        }
+      ],
+      "messages": []
+    },
+    "contextEntryResult": null,
+    "decisionTableResult": null
+  },
+  {
+    "type": "BEFORE_EVALUATE_DECISION_TABLE",
+    "timestamp": 1591883831213,
+    "nanoTime": 173914219065788,
+    "executionId": "4ac4c69f-4925-4221-b67e-4b14ce47bef8",
+    "modelNamespace": null,
+    "modelName": null,
+    "nodeId": null,
+    "nodeName": "Fine",
+    "context": {
+      "Violation": {
+        "Type": "speed",
+        "Actual Speed": 115,
+        "Speed Limit": 100
+      },
+      "Driver": {
+        "Points": 10,
+        "Age": 25
+      }
+    },
+    "result": {
+      "decisionResults": [
+        {
+          "decisionId": "_4055D956-1C47-479C-B3F4-BAEB61F1C929",
+          "decisionName": "Fine",
+          "evaluationStatus": "EVALUATING",
+          "result": null,
+          "messages": []
+        },
+        {
+          "decisionId": "_8A408366-D8E9-4626-ABF3-5F69AA01F880",
+          "decisionName": "Should the driver be suspended?",
+          "evaluationStatus": "NOT_EVALUATED",
+          "result": null,
+          "messages": []
+        }
+      ],
+      "messages": []
+    },
+    "contextEntryResult": null,
+    "decisionTableResult": {
+      "decisionTableName": "Fine",
+      "matches": null,
+      "selected": null
+    }
+  },
+  {
+    "type": "AFTER_EVALUATE_DECISION_TABLE",
+    "timestamp": 1591883831245,
+    "nanoTime": 173914250428644,
+    "executionId": "4ac4c69f-4925-4221-b67e-4b14ce47bef8",
+    "modelNamespace": null,
+    "modelName": null,
+    "nodeId": null,
+    "nodeName": "Fine",
+    "context": {
+      "Violation": {
+        "Type": "speed",
+        "Actual Speed": 115,
+        "Speed Limit": 100
+      },
+      "Driver": {
+        "Points": 10,
+        "Age": 25
+      }
+    },
+    "result": {
+      "decisionResults": [
+        {
+          "decisionId": "_4055D956-1C47-479C-B3F4-BAEB61F1C929",
+          "decisionName": "Fine",
+          "evaluationStatus": "EVALUATING",
+          "result": null,
+          "messages": []
+        },
+        {
+          "decisionId": "_8A408366-D8E9-4626-ABF3-5F69AA01F880",
+          "decisionName": "Should the driver be suspended?",
+          "evaluationStatus": "NOT_EVALUATED",
+          "result": null,
+          "messages": []
+        }
+      ],
+      "messages": []
+    },
+    "contextEntryResult": null,
+    "decisionTableResult": {
+      "decisionTableName": "Fine",
+      "matches": [
+        1
+      ],
+      "selected": [
+        1
+      ]
+    }
+  },
+  {
+    "type": "AFTER_EVALUATE_DECISION",
+    "timestamp": 1591883831246,
+    "nanoTime": 173914251477652,
+    "executionId": "4ac4c69f-4925-4221-b67e-4b14ce47bef8",
+    "modelNamespace": "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF",
+    "modelName": "Traffic Violation",
+    "nodeId": "_4055D956-1C47-479C-B3F4-BAEB61F1C929",
+    "nodeName": "Fine",
+    "context": {
+      "Violation": {
+        "Type": "speed",
+        "Actual Speed": 115,
+        "Speed Limit": 100
+      },
+      "Driver": {
+        "Points": 10,
+        "Age": 25
+      },
+      "Fine": {
+        "Points": 3,
+        "Amount": 500
+      }
+    },
+    "result": {
+      "decisionResults": [
+        {
+          "decisionId": "_4055D956-1C47-479C-B3F4-BAEB61F1C929",
+          "decisionName": "Fine",
+          "evaluationStatus": "SUCCEEDED",
+          "result": {
+            "Points": 3,
+            "Amount": 500
+          },
+          "messages": []
+        },
+        {
+          "decisionId": "_8A408366-D8E9-4626-ABF3-5F69AA01F880",
+          "decisionName": "Should the driver be suspended?",
+          "evaluationStatus": "NOT_EVALUATED",
+          "result": null,
+          "messages": []
+        }
+      ],
+      "messages": []
+    },
+    "contextEntryResult": null,
+    "decisionTableResult": null
+  },
+  {
+    "type": "BEFORE_EVALUATE_DECISION",
+    "timestamp": 1591883831246,
+    "nanoTime": 173914251922122,
+    "executionId": "4ac4c69f-4925-4221-b67e-4b14ce47bef8",
+    "modelNamespace": "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF",
+    "modelName": "Traffic Violation",
+    "nodeId": "_8A408366-D8E9-4626-ABF3-5F69AA01F880",
+    "nodeName": "Should the driver be suspended?",
+    "context": {
+      "Violation": {
+        "Type": "speed",
+        "Actual Speed": 115,
+        "Speed Limit": 100
+      },
+      "Driver": {
+        "Points": 10,
+        "Age": 25
+      },
+      "Fine": {
+        "Points": 3,
+        "Amount": 500
+      }
+    },
+    "result": {
+      "decisionResults": [
+        {
+          "decisionId": "_4055D956-1C47-479C-B3F4-BAEB61F1C929",
+          "decisionName": "Fine",
+          "evaluationStatus": "SUCCEEDED",
+          "result": {
+            "Points": 3,
+            "Amount": 500
+          },
+          "messages": []
+        },
+        {
+          "decisionId": "_8A408366-D8E9-4626-ABF3-5F69AA01F880",
+          "decisionName": "Should the driver be suspended?",
+          "evaluationStatus": "NOT_EVALUATED",
+          "result": null,
+          "messages": []
+        }
+      ],
+      "messages": []
+    },
+    "contextEntryResult": null,
+    "decisionTableResult": null
+  },
+  {
+    "type": "BEFORE_EVALUATE_BKM",
+    "timestamp": 1591883831247,
+    "nanoTime": 173914253050380,
+    "executionId": "4ac4c69f-4925-4221-b67e-4b14ce47bef8",
+    "modelNamespace": "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF",
+    "modelName": "Traffic Violation",
+    "nodeId": "_AB2593EF-E85F-425B-B5F8-9A29397CA4E9",
+    "nodeName": "calculateTotalPoints",
+    "context": {
+      "Violation": {
+        "Type": "speed",
+        "Actual Speed": 115,
+        "Speed Limit": 100
+      },
+      "Driver": {
+        "Points": 10,
+        "Age": 25
+      },
+      "Fine": {
+        "Points": 3,
+        "Amount": 500
+      }
+    },
+    "result": {
+      "decisionResults": [
+        {
+          "decisionId": "_4055D956-1C47-479C-B3F4-BAEB61F1C929",
+          "decisionName": "Fine",
+          "evaluationStatus": "SUCCEEDED",
+          "result": {
+            "Points": 3,
+            "Amount": 500
+          },
+          "messages": []
+        },
+        {
+          "decisionId": "_8A408366-D8E9-4626-ABF3-5F69AA01F880",
+          "decisionName": "Should the driver be suspended?",
+          "evaluationStatus": "EVALUATING",
+          "result": null,
+          "messages": []
+        }
+      ],
+      "messages": []
+    },
+    "contextEntryResult": null,
+    "decisionTableResult": null
+  },
+  {
+    "type": "AFTER_EVALUATE_BKM",
+    "timestamp": 1591883831250,
+    "nanoTime": 173914256019311,
+    "executionId": "4ac4c69f-4925-4221-b67e-4b14ce47bef8",
+    "modelNamespace": "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF",
+    "modelName": "Traffic Violation",
+    "nodeId": "_AB2593EF-E85F-425B-B5F8-9A29397CA4E9",
+    "nodeName": "calculateTotalPoints",
+    "context": {
+      "Violation": {
+        "Type": "speed",
+        "Actual Speed": 115,
+        "Speed Limit": 100
+      },
+      "Driver": {
+        "Points": 10,
+        "Age": 25
+      },
+      "Fine": {
+        "Points": 3,
+        "Amount": 500
+      }
+    },
+    "result": {
+      "decisionResults": [
+        {
+          "decisionId": "_4055D956-1C47-479C-B3F4-BAEB61F1C929",
+          "decisionName": "Fine",
+          "evaluationStatus": "SUCCEEDED",
+          "result": {
+            "Points": 3,
+            "Amount": 500
+          },
+          "messages": []
+        },
+        {
+          "decisionId": "_8A408366-D8E9-4626-ABF3-5F69AA01F880",
+          "decisionName": "Should the driver be suspended?",
+          "evaluationStatus": "EVALUATING",
+          "result": null,
+          "messages": []
+        }
+      ],
+      "messages": []
+    },
+    "contextEntryResult": null,
+    "decisionTableResult": null
+  },
+  {
+    "type": "BEFORE_EVALUATE_CONTEXT_ENTRY",
+    "timestamp": 1591883831252,
+    "nanoTime": 173914257645232,
+    "executionId": "4ac4c69f-4925-4221-b67e-4b14ce47bef8",
+    "modelNamespace": null,
+    "modelName": null,
+    "nodeId": null,
+    "nodeName": "Should the driver be suspended?",
+    "context": {
+      "Violation": {
+        "Type": "speed",
+        "Actual Speed": 115,
+        "Speed Limit": 100
+      },
+      "Driver": {
+        "Points": 10,
+        "Age": 25
+      },
+      "Fine": {
+        "Points": 3,
+        "Amount": 500
+      }
+    },
+    "result": {
+      "decisionResults": [
+        {
+          "decisionId": "_4055D956-1C47-479C-B3F4-BAEB61F1C929",
+          "decisionName": "Fine",
+          "evaluationStatus": "SUCCEEDED",
+          "result": {
+            "Points": 3,
+            "Amount": 500
+          },
+          "messages": []
+        },
+        {
+          "decisionId": "_8A408366-D8E9-4626-ABF3-5F69AA01F880",
+          "decisionName": "Should the driver be suspended?",
+          "evaluationStatus": "EVALUATING",
+          "result": null,
+          "messages": []
+        }
+      ],
+      "messages": []
+    },
+    "contextEntryResult": {
+      "variableId": "_09385E8D-68E0-4DFD-AAD8-141C15C96B71",
+      "variableName": "Total Points",
+      "expressionId": "_F1BEBF16-033F-4A25-9523-CAC23ACC5DFC",
+      "expressionResult": null
+    },
+    "decisionTableResult": null
+  },
+  {
+    "type": "AFTER_EVALUATE_CONTEXT_ENTRY",
+    "timestamp": 1591883831263,
+    "nanoTime": 173914269200193,
+    "executionId": "4ac4c69f-4925-4221-b67e-4b14ce47bef8",
+    "modelNamespace": null,
+    "modelName": null,
+    "nodeId": null,
+    "nodeName": "Should the driver be suspended?",
+    "context": {
+      "Violation": {
+        "Type": "speed",
+        "Actual Speed": 115,
+        "Speed Limit": 100
+      },
+      "Driver": {
+        "Points": 10,
+        "Age": 25
+      },
+      "Fine": {
+        "Points": 3,
+        "Amount": 500
+      },
+      "Total Points": 13
+    },
+    "result": {
+      "decisionResults": [
+        {
+          "decisionId": "_4055D956-1C47-479C-B3F4-BAEB61F1C929",
+          "decisionName": "Fine",
+          "evaluationStatus": "SUCCEEDED",
+          "result": {
+            "Points": 3,
+            "Amount": 500
+          },
+          "messages": []
+        },
+        {
+          "decisionId": "_8A408366-D8E9-4626-ABF3-5F69AA01F880",
+          "decisionName": "Should the driver be suspended?",
+          "evaluationStatus": "EVALUATING",
+          "result": null,
+          "messages": []
+        }
+      ],
+      "messages": []
+    },
+    "contextEntryResult": {
+      "variableId": "_09385E8D-68E0-4DFD-AAD8-141C15C96B71",
+      "variableName": "Total Points",
+      "expressionId": "_F1BEBF16-033F-4A25-9523-CAC23ACC5DFC",
+      "expressionResult": 13
+    },
+    "decisionTableResult": null
+  },
+  {
+    "type": "BEFORE_EVALUATE_CONTEXT_ENTRY",
+    "timestamp": 1591883831266,
+    "nanoTime": 173914272062181,
+    "executionId": "4ac4c69f-4925-4221-b67e-4b14ce47bef8",
+    "modelNamespace": null,
+    "modelName": null,
+    "nodeId": null,
+    "nodeName": "Should the driver be suspended?",
+    "context": {
+      "Violation": {
+        "Type": "speed",
+        "Actual Speed": 115,
+        "Speed Limit": 100
+      },
+      "Driver": {
+        "Points": 10,
+        "Age": 25
+      },
+      "Fine": {
+        "Points": 3,
+        "Amount": 500
+      },
+      "Total Points": 13
+    },
+    "result": {
+      "decisionResults": [
+        {
+          "decisionId": "_4055D956-1C47-479C-B3F4-BAEB61F1C929",
+          "decisionName": "Fine",
+          "evaluationStatus": "SUCCEEDED",
+          "result": {
+            "Points": 3,
+            "Amount": 500
+          },
+          "messages": []
+        },
+        {
+          "decisionId": "_8A408366-D8E9-4626-ABF3-5F69AA01F880",
+          "decisionName": "Should the driver be suspended?",
+          "evaluationStatus": "EVALUATING",
+          "result": null,
+          "messages": []
+        }
+      ],
+      "messages": []
+    },
+    "contextEntryResult": {
+      "variableName": "__RESULT__",
+      "expressionId": "_1929D813-B1C9-43C5-9497-CE5D8B2B040C",
+      "expressionResult": null
+    },
+    "decisionTableResult": null
+  },
+  {
+    "type": "AFTER_EVALUATE_CONTEXT_ENTRY",
+    "timestamp": 1591883831268,
+    "nanoTime": 173914273633260,
+    "executionId": "4ac4c69f-4925-4221-b67e-4b14ce47bef8",
+    "modelNamespace": null,
+    "modelName": null,
+    "nodeId": null,
+    "nodeName": "Should the driver be suspended?",
+    "context": {
+      "Violation": {
+        "Type": "speed",
+        "Actual Speed": 115,
+        "Speed Limit": 100
+      },
+      "__RESULT__": "No",
+      "Driver": {
+        "Points": 10,
+        "Age": 25
+      },
+      "Fine": {
+        "Points": 3,
+        "Amount": 500
+      },
+      "Total Points": 13
+    },
+    "result": {
+      "decisionResults": [
+        {
+          "decisionId": "_4055D956-1C47-479C-B3F4-BAEB61F1C929",
+          "decisionName": "Fine",
+          "evaluationStatus": "SUCCEEDED",
+          "result": {
+            "Points": 3,
+            "Amount": 500
+          },
+          "messages": []
+        },
+        {
+          "decisionId": "_8A408366-D8E9-4626-ABF3-5F69AA01F880",
+          "decisionName": "Should the driver be suspended?",
+          "evaluationStatus": "EVALUATING",
+          "result": null,
+          "messages": []
+        }
+      ],
+      "messages": []
+    },
+    "contextEntryResult": {
+      "variableName": "__RESULT__",
+      "expressionId": "_1929D813-B1C9-43C5-9497-CE5D8B2B040C",
+      "expressionResult": "No"
+    },
+    "decisionTableResult": null
+  },
+  {
+    "type": "AFTER_EVALUATE_DECISION",
+    "timestamp": 1591883831269,
+    "nanoTime": 173914274425870,
+    "executionId": "4ac4c69f-4925-4221-b67e-4b14ce47bef8",
+    "modelNamespace": "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF",
+    "modelName": "Traffic Violation",
+    "nodeId": "_8A408366-D8E9-4626-ABF3-5F69AA01F880",
+    "nodeName": "Should the driver be suspended?",
+    "context": {
+      "Violation": {
+        "Type": "speed",
+        "Actual Speed": 115,
+        "Speed Limit": 100
+      },
+      "Driver": {
+        "Points": 10,
+        "Age": 25
+      },
+      "Fine": {
+        "Points": 3,
+        "Amount": 500
+      },
+      "Should the driver be suspended?": "No"
+    },
+    "result": {
+      "decisionResults": [
+        {
+          "decisionId": "_4055D956-1C47-479C-B3F4-BAEB61F1C929",
+          "decisionName": "Fine",
+          "evaluationStatus": "SUCCEEDED",
+          "result": {
+            "Points": 3,
+            "Amount": 500
+          },
+          "messages": []
+        },
+        {
+          "decisionId": "_8A408366-D8E9-4626-ABF3-5F69AA01F880",
+          "decisionName": "Should the driver be suspended?",
+          "evaluationStatus": "SUCCEEDED",
+          "result": "No",
+          "messages": []
+        }
+      ],
+      "messages": []
+    },
+    "contextEntryResult": null,
+    "decisionTableResult": null
+  },
+  {
+    "type": "AFTER_EVALUATE_ALL",
+    "timestamp": 1591883831270,
+    "nanoTime": 173914275474799,
+    "executionId": "4ac4c69f-4925-4221-b67e-4b14ce47bef8",
+    "modelNamespace": "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF",
+    "modelName": "Traffic Violation",
+    "nodeId": null,
+    "nodeName": null,
+    "context": {
+      "Violation": {
+        "Type": "speed",
+        "Actual Speed": 115,
+        "Speed Limit": 100
+      },
+      "Driver": {
+        "Points": 10,
+        "Age": 25
+      },
+      "Fine": {
+        "Points": 3,
+        "Amount": 500
+      },
+      "Should the driver be suspended?": "No"
+    },
+    "result": {
+      "decisionResults": [
+        {
+          "decisionId": "_4055D956-1C47-479C-B3F4-BAEB61F1C929",
+          "decisionName": "Fine",
+          "evaluationStatus": "SUCCEEDED",
+          "result": {
+            "Points": 3,
+            "Amount": 500
+          },
+          "messages": []
+        },
+        {
+          "decisionId": "_8A408366-D8E9-4626-ABF3-5F69AA01F880",
+          "decisionName": "Should the driver be suspended?",
+          "evaluationStatus": "SUCCEEDED",
+          "result": "No",
+          "messages": []
+        }
+      ],
+      "messages": []
+    },
+    "contextEntryResult": null,
+    "decisionTableResult": null
+  }
+]

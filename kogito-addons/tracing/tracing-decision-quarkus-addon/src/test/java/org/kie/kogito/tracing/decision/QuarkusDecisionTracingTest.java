@@ -27,22 +27,20 @@ import io.vertx.core.eventbus.EventBus;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.kogito.Application;
 import org.kie.kogito.decision.DecisionModel;
+import org.kie.kogito.decision.DecisionModels;
 import org.kie.kogito.dmn.DMNKogito;
 import org.kie.kogito.dmn.DmnDecisionModel;
-import org.kie.kogito.tracing.decision.event.AfterEvaluateAllEvent;
-import org.kie.kogito.tracing.decision.event.BeforeEvaluateAllEvent;
+import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InOrder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class QuarkusDecisionTracingTest {
 
@@ -64,6 +62,7 @@ public class QuarkusDecisionTracingTest {
         runtime.addListener(listener);
 
         final Map<String, Object> driver = new HashMap<>();
+        driver.put("Age", 25);
         driver.put("Points", 10);
         final Map<String, Object> violation = new HashMap<>();
         violation.put("Type", "speed");
@@ -77,24 +76,20 @@ public class QuarkusDecisionTracingTest {
         final DMNContext context = model.newContext(contextVariables);
         model.evaluateAll(context);
 
-        verify(eventBus, times(2)).send(anyString(), any());
+        ArgumentCaptor<EvaluateEvent> eventCaptor = ArgumentCaptor.forClass(EvaluateEvent.class);
 
-        ArgumentCaptor<BeforeEvaluateAllEvent> beforeCaptor = ArgumentCaptor.forClass(BeforeEvaluateAllEvent.class);
-        ArgumentCaptor<AfterEvaluateAllEvent> afterCaptor = ArgumentCaptor.forClass(AfterEvaluateAllEvent.class);
-
-        InOrder inOrder = inOrder(eventBus);
-        inOrder.verify(eventBus).send(eq("kogito-tracing-decision_BeforeEvaluateAllEvent"), beforeCaptor.capture());
-        inOrder.verify(eventBus).send(eq("kogito-tracing-decision_AfterEvaluateAllEvent"), afterCaptor.capture());
-
-        BeforeEvaluateAllEvent beforeEvent = beforeCaptor.getValue();
-        AfterEvaluateAllEvent afterEvent = afterCaptor.getValue();
+        verify(eventBus, times(14)).send(eq("kogito-tracing-decision_EvaluateEvent"), eventCaptor.capture());
 
         TestSubscriber<String> subscriber = new TestSubscriber<>();
 
-        QuarkusDecisionTracingCollector collector = new QuarkusDecisionTracingCollector();
+        final DecisionModels mockedDecisionModels = mock(DecisionModels.class);
+        when(mockedDecisionModels.getDecisionModel(modelNamespace, modelName)).thenReturn(model);
+        final Application mockedApplication = mock(Application.class);
+        when(mockedApplication.decisionModels()).thenReturn(mockedDecisionModels);
+
+        QuarkusDecisionTracingCollector collector = new QuarkusDecisionTracingCollector(mockedApplication);
         collector.getEventPublisher().subscribe(subscriber);
-        collector.onEvent(beforeEvent);
-        collector.onEvent(afterEvent);
+        eventCaptor.getAllValues().forEach(collector::onEvent);
 
         subscriber.assertValueCount(1);
 
