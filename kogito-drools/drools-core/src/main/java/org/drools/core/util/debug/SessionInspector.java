@@ -65,8 +65,6 @@ public class SessionInspector {
                            AlphaNodeVisitor.INSTANCE );
         this.visitors.put( NodeTypeEnums.RightInputAdaterNode,
                            RightInputAdapterNodeVisitor.INSTANCE );
-        this.visitors.put( NodeTypeEnums.PropagationQueueingNode,
-                           PropagationQueueingNodeVisitor.INSTANCE );
 
         // left tuple source nodes
         this.visitors.put( NodeTypeEnums.JoinNode,

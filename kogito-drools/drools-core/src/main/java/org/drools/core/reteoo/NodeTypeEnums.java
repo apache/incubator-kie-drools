@@ -36,7 +36,6 @@ public class NodeTypeEnums {
     public static final short AlphaNode               = 40;
     public static final short PropagationQueuingNode  = 50;
     public static final short WindowNode              = 60;
-    public static final short PropagationQueueingNode = 65;
 
     // ObjectSource, LeftTupleSink
     public static final short RightInputAdaterNode    = 71; // also ObjectSource %2 != 0

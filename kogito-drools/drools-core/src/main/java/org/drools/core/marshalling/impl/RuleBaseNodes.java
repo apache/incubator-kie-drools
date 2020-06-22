@@ -26,7 +26,6 @@ import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.PropagationQueuingNode;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.WindowNode;
@@ -53,9 +52,6 @@ public class RuleBaseNodes {
                                      ObjectSink sink,
                                      Map<Integer, BaseNode> nodes) {
         // we don't need to store alpha nodes, as they have no state to serialise
-        if ( sink instanceof PropagationQueuingNode ) {
-            nodes.put( sink.getId(), ((BaseNode)sink) );
-        }
         if ( sink instanceof LeftTupleSource ) {
             LeftTupleSource node = (LeftTupleSource) sink;
             for ( LeftTupleSink leftTupleSink : node.getSinkPropagator().getSinks() ) {

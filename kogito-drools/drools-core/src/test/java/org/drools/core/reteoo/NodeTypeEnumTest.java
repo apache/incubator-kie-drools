@@ -30,7 +30,6 @@ public class NodeTypeEnumTest {
     Rete                   reteNod    = new Rete();
     ObjectTypeNode         otNode     = new ObjectTypeNode();
     AlphaNode              alphaNode  = new AlphaNode();
-    PropagationQueuingNode pqNpode    = new PropagationQueuingNode();
     WindowNode             winNode    = new WindowNode();
 
     RightInputAdapterNode  riaNode    = new RightInputAdapterNode();
@@ -56,8 +55,7 @@ public class NodeTypeEnumTest {
         assertTrue( isObjectSource( reteNod ) );
         assertTrue( isObjectSource( otNode ) );
         assertTrue( isObjectSource( alphaNode ) );
-        assertTrue( isObjectSource( pqNpode ) );
-        
+
         assertTrue( isObjectSource( riaNode ) );
         
         assertFalse( isObjectSource( rtNode ) );
@@ -82,8 +80,7 @@ public class NodeTypeEnumTest {
         assertTrue( isObjectSink( reteNod ) );
         assertTrue( isObjectSink( otNode ) );
         assertTrue( isObjectSink( alphaNode ) );
-        assertTrue( isObjectSink( pqNpode ) );
-        
+
         assertFalse( isObjectSink( riaNode ) );
         
         assertFalse( isObjectSink( rtNode ) );
@@ -108,7 +105,6 @@ public class NodeTypeEnumTest {
         assertFalse( isLeftTupleSource( reteNod ) );
         assertFalse( isLeftTupleSource( otNode ) );
         assertFalse( isLeftTupleSource( alphaNode ) );
-        assertFalse( isLeftTupleSource( pqNpode ) );
         assertFalse( isLeftTupleSource( riaNode ) );
         
         assertFalse( isLeftTupleSource( rtNode ) );
@@ -133,8 +129,7 @@ public class NodeTypeEnumTest {
         assertFalse( isLeftTupleSink( reteNod ) );
         assertFalse( isLeftTupleSink( otNode ) );
         assertFalse( isLeftTupleSink( alphaNode ) );
-        assertFalse( isLeftTupleSink( pqNpode ) );
-        
+
         assertTrue( isLeftTupleSink( riaNode ) );
         
         assertTrue( isLeftTupleSink( rtNode ) );
@@ -159,8 +154,7 @@ public class NodeTypeEnumTest {
         assertFalse( isBetaNode( reteNod ) );
         assertFalse( isBetaNode( otNode ) );
         assertFalse( isBetaNode( alphaNode ) );
-        assertFalse( isBetaNode( pqNpode ) );
-        
+
         assertFalse( isBetaNode( riaNode ) );
         
         assertFalse( isBetaNode( rtNode ) );
