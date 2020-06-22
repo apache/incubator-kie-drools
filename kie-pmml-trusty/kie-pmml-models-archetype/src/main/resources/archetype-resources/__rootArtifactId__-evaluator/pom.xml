@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>${groupId}</groupId>
+    <artifactId>kie-pmml-models-${artifactModelName}</artifactId>
+    <version>${version}</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kie-pmml-models-${artifactModelName}-evaluator</artifactId>
+  <name>KIE :: PMML :: Models :: ${modelName} :: Evaluator</name>
+  <description>PMML ${modelName} Evaluator</description>
+
+  <dependencies>
+    <!-- PMML -->
+    <dependency>
+      <groupId>${groupId}</groupId>
+      <artifactId>kie-pmml-models-${artifactModelName}-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${groupId}</groupId>
+      <artifactId>kie-pmml-evaluator-core</artifactId>
+    </dependency>
+    <!-- EXTERNAL -->
+    <!-- TEST -->
+  </dependencies>
+
+  <dependencyManagement>
+    <!-- TODO MOVE TO kie-pmml-trusty/pom.xml -->
+    <dependencies>
+      <dependency>
+        <groupId>${groupId}</groupId>
+        <artifactId>kie-pmml-evaluator-core</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>${groupId}</groupId>
+        <artifactId>kie-pmml-models-${artifactModelName}-model</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+</project>
