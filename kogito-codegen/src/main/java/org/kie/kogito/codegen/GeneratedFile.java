@@ -31,7 +31,7 @@ public class GeneratedFile {
         DECLARED_TYPE( true ),
         DTO( true ),
         QUERY( true ),
-        MODEL( false ),
+        MODEL( true ),
         CLASS( false ),
         MESSAGE_CONSUMER( false ),
         MESSAGE_PRODUCER( false ),
