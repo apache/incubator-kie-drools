@@ -34,8 +34,8 @@ public class SumFunction
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName("list") List list) {
-        if ( list == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "the list cannot be null"));
+        if ( list == null || list.isEmpty() ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null or empty"));
         }
         BigDecimal sum = BigDecimal.ZERO;
         for ( Object element : list ) {
