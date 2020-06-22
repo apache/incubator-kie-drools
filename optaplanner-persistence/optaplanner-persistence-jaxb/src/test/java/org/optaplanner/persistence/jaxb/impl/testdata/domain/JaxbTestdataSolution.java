@@ -30,7 +30,7 @@ import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.persistence.jaxb.api.score.buildin.simple.SimpleScoreJaxbXmlAdapter;
+import org.optaplanner.persistence.jaxb.api.score.buildin.simple.SimpleScoreJaxbAdapter;
 
 @PlanningSolution
 @XmlRootElement
@@ -77,7 +77,7 @@ public class JaxbTestdataSolution extends JaxbTestdataObject {
     }
 
     @PlanningScore
-    @XmlJavaTypeAdapter(SimpleScoreJaxbXmlAdapter.class)
+    @XmlJavaTypeAdapter(SimpleScoreJaxbAdapter.class)
     public SimpleScore getScore() {
         return score;
     }

@@ -26,7 +26,7 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class OptaPlannerJacksonModuleTest extends AbstractJacksonJsonSerializerAndDeserializerTest {
+public class OptaPlannerJacksonModuleTest extends AbstractJacksonRoundTripTest {
 
     /**
      * According to official specification (see {@link Class#getDeclaredMethods()}),

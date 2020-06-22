@@ -266,7 +266,7 @@ Add a dependency to the `optaplanner-persistence-jaxb` jar to take advantage of 
 ==== JAXB: marshalling a `Score`
 
 When a `Score` is marshalled to XML or JSON by the default JAXB configuration, it's corrupted.
-To fix that, configure the appropriate ``ScoreJaxbXmlAdapter``:
+To fix that, configure the appropriate ``ScoreJaxbAdapter``:
 
 [source,java,options="nowrap"]
 ----
@@ -275,7 +275,7 @@ To fix that, configure the appropriate ``ScoreJaxbXmlAdapter``:
 public class CloudBalance {
 
     @PlanningScore
-    @XmlJavaTypeAdapter(HardSoftScoreJaxbXmlAdapter.class)
+    @XmlJavaTypeAdapter(HardSoftScoreJaxbAdapter.class)
     private HardSoftScore score;
 
     ...
@@ -301,7 +301,7 @@ The same applies for a bendable score:
 public class Schedule {
 
     @PlanningScore
-    @XmlJavaTypeAdapter(BendableScoreJaxbXmlAdapter.class)
+    @XmlJavaTypeAdapter(BendableScoreJaxbAdapter.class)
     private BendableScore score;
 
     ...
@@ -339,8 +339,8 @@ objectMapper.registerModule(OptaPlannerJacksonModule.createModule());
 ==== Jackson: marshalling a `Score`
 
 When a `Score` is marshalled to/from JSON by the default Jackson configuration, it fails.
-The `OptaPlannerJacksonModule` fixes that, by using `HardSoftScoreJacksonJsonSerializer`,
-`HardSoftScoreJacksonJsonDeserializer`, etc.
+The `OptaPlannerJacksonModule` fixes that, by using `HardSoftScoreJacksonSerializer`,
+`HardSoftScoreJacksonDeserializer`, etc.
 
 [source,java,options="nowrap"]
 ----
@@ -367,7 +367,7 @@ For example, this generates:
 [NOTE]
 ====
 When reading a `BendableScore`, the `hardLevelsSize` and `softLevelsSize` implied in the JSON element,
-must always be in sync with those defined in the `@PlanningScore` annotation in the solution class. For example:
+must always be in sync with those defined in the `@PlanningScore` annotation in the solution class.For example:
 
 [source,json]
 ----
@@ -393,8 +393,7 @@ public class Schedule {
 ----
 ====
 
-When a field is the `Score` supertype (instead of a specific type such as `HardSoftScore`),
-it uses `PolymorphicScoreJacksonJsonSerializer` and `PolymorphicScoreJacksonJsonDeserializer`
+When a field is the `Score` supertype (instead of a specific type such as `HardSoftScore`), it uses `PolymorphicScoreJacksonSerializer` and `PolymorphicScoreJacksonDeserializer`
 to record the score type in JSON too, otherwise it would be impossible to deserialize it:
 
 [source,java,options="nowrap"]

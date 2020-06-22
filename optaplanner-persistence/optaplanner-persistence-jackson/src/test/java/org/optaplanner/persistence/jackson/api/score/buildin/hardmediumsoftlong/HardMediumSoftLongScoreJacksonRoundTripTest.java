@@ -1,0 +1,59 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.optaplanner.persistence.jackson.api.score.buildin.hardmediumsoftlong;
+
+import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
+import org.optaplanner.persistence.jackson.api.score.AbstractScoreJacksonRoundTripTest;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+public class HardMediumSoftLongScoreJacksonRoundTripTest
+        extends AbstractScoreJacksonRoundTripTest {
+
+    @Test
+    public void serializeAndDeserialize() {
+        assertSerializeAndDeserialize(null, new TestHardMediumSoftLongScoreWrapper(null));
+        HardMediumSoftLongScore score = HardMediumSoftLongScore.of(1200L, 30L, 4L);
+        assertSerializeAndDeserialize(score, new TestHardMediumSoftLongScoreWrapper(score));
+        score = HardMediumSoftLongScore.ofUninitialized(-7, 1200L, 30L, 4L);
+        assertSerializeAndDeserialize(score, new TestHardMediumSoftLongScoreWrapper(score));
+    }
+
+    public static class TestHardMediumSoftLongScoreWrapper extends TestScoreWrapper<HardMediumSoftLongScore> {
+
+        @JsonSerialize(using = HardMediumSoftLongScoreJacksonSerializer.class)
+        @JsonDeserialize(using = HardMediumSoftLongScoreJacksonDeserializer.class)
+        private HardMediumSoftLongScore score;
+
+        @SuppressWarnings("unused")
+        private TestHardMediumSoftLongScoreWrapper() {
+        }
+
+        public TestHardMediumSoftLongScoreWrapper(HardMediumSoftLongScore score) {
+            this.score = score;
+        }
+
+        @Override
+        public HardMediumSoftLongScore getScore() {
+            return score;
+        }
+
+    }
+
+}
