@@ -1,3 +1,19 @@
+/*
+ *  Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package org.kie.kogito.maven.plugin;
 
 import java.io.ByteArrayInputStream;
@@ -38,7 +54,6 @@ import org.kie.kogito.maven.plugin.util.MojoUtil;
         requiresProject = true,
         defaultPhase = LifecyclePhase.COMPILE)
 public class GenerateModelMojo extends AbstractKieMojo {
-
 
     public static final List<String> DROOLS_EXTENSIONS = Arrays.asList(".drl", ".xls", ".xlsx", ".csv");
 
@@ -91,6 +106,9 @@ public class GenerateModelMojo extends AbstractKieMojo {
     @Parameter(property = "kogito.codegen.partial", defaultValue = "false")
     private boolean generatePartial;
 
+    @Parameter(property = "kogito.codegen.ondemand", defaultValue = "false")
+    private boolean onDemand;
+
     @Parameter(property = "kogito.sources.keep", defaultValue = "false")
     private boolean keepSources;
 
@@ -103,15 +121,31 @@ public class GenerateModelMojo extends AbstractKieMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
-            generateModel();
+            addCompileSourceRoots();
+            if (isOnDemand()) {
+                getLog().info("On-Demand Mode is On. Use mvn compile kogito:scaffold");
+            } else {
+                generateModel();
+            }
         } catch (IOException e) {
             throw new MojoExecutionException("An I/O error occurred", e);
         }
     }
 
-    private void generateModel() throws MojoExecutionException, IOException {
-        project.addCompileSourceRoot(customizableSources.getPath());
+    protected boolean isOnDemand() {
+        return onDemand;
+    }
+
+    protected File getCustomizableSources() {
+        return customizableSources;
+    }
+
+    protected void addCompileSourceRoots() {
+        project.addCompileSourceRoot(getCustomizableSources().getPath());
         project.addCompileSourceRoot(generatedSources.getPath());
+    }
+
+    protected void generateModel() throws MojoExecutionException, IOException {
 
         setSystemProperties(properties);
 
@@ -162,10 +196,10 @@ public class GenerateModelMojo extends AbstractKieMojo {
         try (final Stream<Path> paths = Files.walk(projectDir.toPath())) {
             return paths.map(p -> p.toString().toLowerCase())
                     .map(p -> {
-                        int dot = p.lastIndexOf( '.' );
-                        return dot > 0 ? p.substring( dot ) : "";
+                        int dot = p.lastIndexOf('.');
+                        return dot > 0 ? p.substring(dot) : "";
                     })
-                    .anyMatch( DROOLS_EXTENSIONS::contains );
+                    .anyMatch(DROOLS_EXTENSIONS::contains);
         }
     }
 
@@ -242,12 +276,21 @@ public class GenerateModelMojo extends AbstractKieMojo {
     }
 
     private void writeGeneratedFile(GeneratedFile f) throws IOException {
-        Files.write( pathOf(f), f.contents() );
+        Files.write(pathOf(f), f.contents());
     }
 
     private Path pathOf(GeneratedFile f) {
-        File sourceFolder = f.getType().isCustomizable() ? customizableSources : generatedSources;
-        Path path = Paths.get(sourceFolder.getPath(), f.relativePath());
+        File sourceFolder;
+        Path path;
+        if (f.getType().isCustomizable()) {
+            sourceFolder = getCustomizableSources();
+            path = Paths.get(sourceFolder.getPath(), f.relativePath());
+            getLog().info("Generating: "+ path);
+        } else {
+            sourceFolder = generatedSources;
+            path = Paths.get(sourceFolder.getPath(), f.relativePath());
+        }
+
         path.getParent().toFile().mkdirs();
         return path;
     }
@@ -266,7 +309,4 @@ public class GenerateModelMojo extends AbstractKieMojo {
             throw new MojoExecutionException("Unable to find .drl files");
         }
     }
-
-
-
 }

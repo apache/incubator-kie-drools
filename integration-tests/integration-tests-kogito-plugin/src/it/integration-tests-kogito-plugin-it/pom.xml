@@ -63,11 +63,9 @@
                 <groupId>org.kie.kogito</groupId>
                 <artifactId>kogito-maven-plugin</artifactId>
                 <version>${project.version}</version>
-                <executions>
-                    <execution>
-                        <phase>none</phase>
-                    </execution>
-                </executions>
+                <configuration>
+                    <onDemand>true</onDemand>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>io.quarkus</groupId>
