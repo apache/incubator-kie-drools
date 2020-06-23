@@ -46,7 +46,7 @@ public class RegressionModelImplementationProviderTest {
         assertNotNull(pmml);
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
-        final KiePMMLRegressionModel kiePMMLModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(), (RegressionModel) pmml.getModels().get(0), RELEASE_ID);
+        final KiePMMLRegressionModel kiePMMLModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(), pmml.getTransformationDictionary(), (RegressionModel) pmml.getModels().get(0), RELEASE_ID);
         assertNotNull(kiePMMLModel);
     }
 

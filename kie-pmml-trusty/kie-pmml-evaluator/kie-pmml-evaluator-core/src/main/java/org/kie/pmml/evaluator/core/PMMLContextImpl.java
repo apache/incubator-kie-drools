@@ -26,12 +26,13 @@ import org.kie.pmml.evaluator.api.executor.PMMLContext;
 public class PMMLContextImpl extends ContextImpl implements PMMLContext {
 
     private static final String PMML_REQUEST_DATA = "PMML_REQUEST_DATA";
-    final Map<String, Object> missingValueReplacedMap;
+    private final Map<String, Object> missingValueReplacedMap = new HashMap<>();
+    private final Map<String, Object> commonTransformationMap = new HashMap<>();
+    private final Map<String, Object> localTransformationMap = new HashMap<>();
 
     public PMMLContextImpl(PMMLRequestData pmmlRequestData) {
         super();
         set(PMML_REQUEST_DATA, pmmlRequestData);
-        missingValueReplacedMap = new HashMap<>();
     }
 
     @Override
@@ -45,7 +46,27 @@ public class PMMLContextImpl extends ContextImpl implements PMMLContext {
     }
 
     @Override
+    public void addCommonTranformation(String fieldName, Object commonTranformation) {
+        localTransformationMap.put(fieldName, commonTranformation);
+    }
+
+    @Override
+    public void addLocalTranformation(String fieldName, Object commonTranformation) {
+        commonTransformationMap.put(fieldName, commonTranformation);
+    }
+
+    @Override
     public Map<String, Object> getMissingValueReplacedMap() {
         return Collections.unmodifiableMap(missingValueReplacedMap);
+    }
+
+    @Override
+    public Map<String, Object> getCommonTransformationMap() {
+        return commonTransformationMap;
+    }
+
+    @Override
+    public Map<String, Object> getLocalTransformationMap() {
+        return localTransformationMap;
     }
 }

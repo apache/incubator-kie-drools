@@ -45,7 +45,7 @@ public class TreeModelImplementationProviderTest {
         assertNotNull(pmml);
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof TreeModel);
-        final KiePMMLTreeModel kiePMMLModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(), (TreeModel) pmml.getModels().get(0), KNOWLEDGE_BUILDER);
+        final KiePMMLTreeModel kiePMMLModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(), pmml.getTransformationDictionary(), (TreeModel) pmml.getModels().get(0), KNOWLEDGE_BUILDER);
         assertNotNull(kiePMMLModel);
     }
 }

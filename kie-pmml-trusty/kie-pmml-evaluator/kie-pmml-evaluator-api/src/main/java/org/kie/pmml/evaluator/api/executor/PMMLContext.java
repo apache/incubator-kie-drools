@@ -26,5 +26,13 @@ public interface PMMLContext extends Context {
 
     void addMissingValueReplaced(String fieldName, Object missingValueReplaced);
 
+    void addCommonTranformation(String fieldName, Object commonTranformation);
+
+    void addLocalTranformation(String fieldName, Object commonTranformation);
+
     Map<String, Object> getMissingValueReplacedMap();
+
+    Map<String, Object> getCommonTransformationMap();
+
+    Map<String, Object> getLocalTransformationMap();
 }
