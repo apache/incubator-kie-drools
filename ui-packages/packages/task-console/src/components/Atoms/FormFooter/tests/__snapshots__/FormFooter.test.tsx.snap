@@ -1,0 +1,241 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Form Footer test testing action click 1`] = `
+<FormFooter
+  actions={
+    Array [
+      Object {
+        "name": "action1",
+        "onActionClick": [MockFunction],
+        "primary": true,
+      },
+      Object {
+        "name": "action2",
+        "onActionClick": [MockFunction],
+        "primary": false,
+      },
+    ]
+  }
+>
+  <ActionGroup>
+    <div
+      className="pf-c-form__group pf-m-action"
+    >
+      <div
+        className="pf-c-form__actions"
+      >
+        <Component
+          key="submit-action1"
+          onClick={[MockFunction]}
+          type="submit"
+          variant="primary"
+        >
+          <ComponentWithOuia
+            component={[Function]}
+            componentProps={
+              Object {
+                "children": "action1",
+                "onClick": [MockFunction],
+                "type": "submit",
+                "variant": "primary",
+              }
+            }
+            consumerContext={null}
+          >
+            <Button
+              onClick={[MockFunction]}
+              ouiaContext={
+                Object {
+                  "isOuia": false,
+                  "ouiaId": null,
+                }
+              }
+              type="submit"
+              variant="primary"
+            >
+              <button
+                aria-disabled={null}
+                aria-label={null}
+                className="pf-c-button pf-m-primary"
+                disabled={false}
+                onClick={[MockFunction]}
+                tabIndex={null}
+                type="submit"
+              >
+                action1
+              </button>
+            </Button>
+          </ComponentWithOuia>
+        </Component>
+        <Component
+          key="submit-action2"
+          onClick={[MockFunction]}
+          type="submit"
+          variant="secondary"
+        >
+          <ComponentWithOuia
+            component={[Function]}
+            componentProps={
+              Object {
+                "children": "action2",
+                "onClick": [MockFunction],
+                "type": "submit",
+                "variant": "secondary",
+              }
+            }
+            consumerContext={null}
+          >
+            <Button
+              onClick={[MockFunction]}
+              ouiaContext={
+                Object {
+                  "isOuia": false,
+                  "ouiaId": null,
+                }
+              }
+              type="submit"
+              variant="secondary"
+            >
+              <button
+                aria-disabled={null}
+                aria-label={null}
+                className="pf-c-button pf-m-secondary"
+                disabled={false}
+                onClick={[MockFunction]}
+                tabIndex={null}
+                type="submit"
+              >
+                action2
+              </button>
+            </Button>
+          </ComponentWithOuia>
+        </Component>
+      </div>
+    </div>
+  </ActionGroup>
+</FormFooter>
+`;
+
+exports[`Form Footer test testing showing actions 1`] = `
+<FormFooter
+  actions={
+    Array [
+      Object {
+        "name": "action1",
+        "onActionClick": [MockFunction],
+        "primary": true,
+      },
+      Object {
+        "name": "action2",
+        "onActionClick": [MockFunction],
+        "primary": false,
+      },
+    ]
+  }
+>
+  <ActionGroup>
+    <div
+      className="pf-c-form__group pf-m-action"
+    >
+      <div
+        className="pf-c-form__actions"
+      >
+        <Component
+          key="submit-action1"
+          onClick={[MockFunction]}
+          type="submit"
+          variant="primary"
+        >
+          <ComponentWithOuia
+            component={[Function]}
+            componentProps={
+              Object {
+                "children": "action1",
+                "onClick": [MockFunction],
+                "type": "submit",
+                "variant": "primary",
+              }
+            }
+            consumerContext={null}
+          >
+            <Button
+              onClick={[MockFunction]}
+              ouiaContext={
+                Object {
+                  "isOuia": false,
+                  "ouiaId": null,
+                }
+              }
+              type="submit"
+              variant="primary"
+            >
+              <button
+                aria-disabled={null}
+                aria-label={null}
+                className="pf-c-button pf-m-primary"
+                disabled={false}
+                onClick={[MockFunction]}
+                tabIndex={null}
+                type="submit"
+              >
+                action1
+              </button>
+            </Button>
+          </ComponentWithOuia>
+        </Component>
+        <Component
+          key="submit-action2"
+          onClick={[MockFunction]}
+          type="submit"
+          variant="secondary"
+        >
+          <ComponentWithOuia
+            component={[Function]}
+            componentProps={
+              Object {
+                "children": "action2",
+                "onClick": [MockFunction],
+                "type": "submit",
+                "variant": "secondary",
+              }
+            }
+            consumerContext={null}
+          >
+            <Button
+              onClick={[MockFunction]}
+              ouiaContext={
+                Object {
+                  "isOuia": false,
+                  "ouiaId": null,
+                }
+              }
+              type="submit"
+              variant="secondary"
+            >
+              <button
+                aria-disabled={null}
+                aria-label={null}
+                className="pf-c-button pf-m-secondary"
+                disabled={false}
+                onClick={[MockFunction]}
+                tabIndex={null}
+                type="submit"
+              >
+                action2
+              </button>
+            </Button>
+          </ComponentWithOuia>
+        </Component>
+      </div>
+    </div>
+  </ActionGroup>
+</FormFooter>
+`;
+
+exports[`Form Footer test testing showing empty actions 1`] = `
+<FormFooter
+  actions={Array []}
+/>
+`;
+
+exports[`Form Footer test testing showing no actions 1`] = `<FormFooter />`;

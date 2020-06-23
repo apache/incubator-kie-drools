@@ -7,8 +7,11 @@ import {
   withOuiaContext
 } from '@patternfly/react-core';
 import { KogitoPageLayout, ouiaAttribute } from '@kogito-apps/common';
-import { Redirect, Route, Link, Switch } from 'react-router-dom';
+import { Redirect, Route, Link, Switch, BrowserRouter } from 'react-router-dom';
 import taskConsoleLogo from '../../../static/taskConsoleLogo.svg';
+
+import UserTaskInstanceDetailsPage from '../UserTaskInstanceDetailsPage/UserTaskInstanceDetailsPage';
+import TaskConsoleContextProvider from '../../../context/TaskConsoleContext/TaskConsoleContextProvider';
 import DataListContainerExpandable from '../DataListContainerExpandable/DataListContainerExpandable';
 import DataListContainer from '../DataListContainer/DataListContainer';
 import DataTableContainer from '../DataTableContainer/DataTableContainer';
@@ -66,16 +69,35 @@ const PageLayout: React.FC<IOwnProps & InjectedOuiaProps> = ({
       BrandAltText="Task Console Logo"
       BrandClick={BrandClick}
     >
-      <Switch>
-        <Route exact path="/" render={() => <Redirect to="/UserTasks" />} />
-        <Route
-          exact
-          path="/UserTasks"
-          component={DataListContainerExpandable}
-        />
-        <Route exact path="/UserTasksFilters" component={DataListContainer} />
-        <Route exact path="/UserTasksTable" component={DataTableContainer} />
-      </Switch>
+      <TaskConsoleContextProvider>
+        <BrowserRouter>
+          <Switch>
+            <Route exact path="/" render={() => <Redirect to="/UserTasks" />} />
+            <Route
+              exact
+              path="/UserTasks"
+              component={DataListContainerExpandable}
+            />
+            <Route
+              exact
+              path="/UserTasksFilters"
+              component={DataListContainer}
+            />
+            <Route
+              exact
+              path="/Task/:taskId"
+              render={routeProps => (
+                <UserTaskInstanceDetailsPage {...routeProps} />
+              )}
+            />
+            <Route
+              exact
+              path="/UserTasksTable"
+              component={DataTableContainer}
+            />
+          </Switch>
+        </BrowserRouter>
+      </TaskConsoleContextProvider>
     </KogitoPageLayout>
   );
 };

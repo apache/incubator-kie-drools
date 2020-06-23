@@ -31,7 +31,11 @@
     "cypress:open": "cypress open"
   },
   "dependencies": {
-    "@kogito-apps/common": "1.0.0"
+    "@kogito-apps/common": "1.0.0",
+    "ajv": "6.12.2",
+    "uniforms": "3.0.0-alpha.4",
+    "uniforms-bridge-json-schema": "3.0.0-alpha.4",
+    "uniforms-patternfly": "0.0.11"
   },
   "jest": {
     "preset": "ts-jest/presets/js-with-ts",

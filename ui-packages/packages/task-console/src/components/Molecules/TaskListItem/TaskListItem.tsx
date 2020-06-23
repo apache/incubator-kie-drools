@@ -1,54 +1,29 @@
 import Moment from 'react-moment';
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
-  Alert,
-  AlertActionCloseButton,
-  Button,
   DataListAction,
   DataListCell,
   DataListItem,
   DataListItemCells,
   DataListItemRow
 } from '@patternfly/react-core';
-import { useGetProcessInstanceByIdLazyQuery } from '../../../graphql/types';
-import axios from 'axios';
-
-/* tslint:disable:no-string-literal */
-
-interface IUserTaskInstance {
-  id: string;
-  description: string;
-  name: string;
-  priority: string;
-  processInstanceId: string;
-  processId: string;
-  rootProcessInstanceId;
-  rootProcessId;
-  state: string;
-  actualOwner: string;
-  adminGroups: string;
-  adminUsers: string;
-  completed: boolean;
-  started: string;
-  excludedUsers: string;
-  potentialGroups: string;
-  potentialUsers: string;
-  inputs: string;
-  outputs: string;
-  referenceName: string;
-}
+import {
+  useGetProcessInstanceByIdLazyQuery,
+  UserTaskInstance
+} from '../../../graphql/types';
+import { Link } from 'react-router-dom';
+import TaskConsoleContext, {
+  IContext
+} from '../../../context/TaskConsoleContext/TaskConsoleContext';
+import { TaskInfoImpl, TaskInfo } from '../../../model/TaskInfo';
 
 export interface IOwnProps {
   id: number;
-  userTaskInstanceData: IUserTaskInstance;
+  userTaskInstanceData: UserTaskInstance;
 }
 
 const TaskListItem: React.FC<IOwnProps> = ({ userTaskInstanceData }) => {
-  const [isPiLoaded, setPiLoaded] = useState(false);
-  const [alertVisible, setAlertVisible] = useState(false);
-  const [alertTitle, setAlertTitle] = useState('');
-  const [alertType, setAlertType] = useState(null);
-  const [alertMessage, setAlertMessage] = useState('');
+  const [isProcessInstanceLoaded, setProcessInstanceLoaded] = useState(false);
 
   const [
     getProcessInstance,
@@ -57,78 +32,25 @@ const TaskListItem: React.FC<IOwnProps> = ({ userTaskInstanceData }) => {
     fetchPolicy: 'network-only'
   });
 
-  const handleExecuteTask = useCallback(
-    async (_taskID, _taskReferenceName, _processID, _instanceID, _endpoint) => {
-      const taskId = userTaskInstanceData.id;
-      const taskReferenceName = userTaskInstanceData.referenceName;
-      const processId = userTaskInstanceData.processId;
-      const processInstanceId = userTaskInstanceData.processInstanceId;
+  const context: IContext<TaskInfo> = useContext(TaskConsoleContext);
 
-      try {
-        // @ts-ignore
-        const result = await axios.post(
-          `${_endpoint}/${processId}/${processInstanceId}/${taskReferenceName}/${taskId}`,
-          {},
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-              crossorigin: 'true',
-              'Access-Control-Allow-Origin': '*'
-            }
-          }
-        );
-        setAlertTitle('Executing task');
-        setAlertType('success');
-        setAlertMessage(
-          'Task has successfully executed.' +
-            `${_endpoint}/${processId}/${processInstanceId}/${taskReferenceName}/${taskId}`
-        );
-        setAlertVisible(true);
-      } catch (error) {
-        setAlertTitle('Executing task');
-        setAlertType('danger');
-        setAlertMessage(
-          'Task execution failed. Message: ' +
-            `${_endpoint}/${processId}/${processInstanceId}/${taskReferenceName}/${taskId}` +
-            JSON.stringify(error.message)
-        );
-        setAlertVisible(true);
-      }
-    },
-    []
-  );
-
-  const closeAlert = () => {
-    setAlertVisible(false);
-  };
-
-  if (!isPiLoaded && userTaskInstanceData.state === 'Ready') {
+  if (!isProcessInstanceLoaded && userTaskInstanceData.state === 'Ready') {
     getProcessInstance({
       variables: {
         id: userTaskInstanceData.processInstanceId
       }
     });
-    setPiLoaded(true);
+    setProcessInstanceLoaded(true);
   }
 
   useEffect(() => {
     if (!loading && data !== undefined) {
-      setPiLoaded(true);
+      setProcessInstanceLoaded(true);
     }
   }, [data]);
 
   return (
     <React.Fragment>
-      {alertVisible && (
-        <Alert
-          variant={alertType}
-          title={alertTitle}
-          action={<AlertActionCloseButton onClose={() => closeAlert()} />}
-        >
-          {alertMessage}
-        </Alert>
-      )}
       <DataListItem aria-labelledby="kie-datalist-item">
         <DataListItemRow>
           <DataListItemCells
@@ -158,22 +80,19 @@ const TaskListItem: React.FC<IOwnProps> = ({ userTaskInstanceData }) => {
             id="kie-datalist-action"
             aria-label="Actions"
           >
-            <Button
-              variant="secondary"
-              isDisabled={!isPiLoaded}
+            <Link
+              to={'/Task/' + userTaskInstanceData.id}
               onClick={() =>
-                handleExecuteTask(
-                  userTaskInstanceData.id,
-                  userTaskInstanceData.referenceName,
-                  userTaskInstanceData.processId,
-                  userTaskInstanceData.processInstanceId,
-                  data.ProcessInstances[0].endpoint
+                context.setActiveItem(
+                  new TaskInfoImpl(
+                    userTaskInstanceData,
+                    data.ProcessInstances[0].endpoint
+                  )
                 )
               }
             >
-              {' '}
-              Complete{' '}
-            </Button>
+              Open Task
+            </Link>
           </DataListAction>
         </DataListItemRow>
       </DataListItem>

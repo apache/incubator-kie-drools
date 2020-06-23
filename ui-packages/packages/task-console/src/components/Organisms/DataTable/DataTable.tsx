@@ -73,7 +73,8 @@ const DataTable: React.FC<IOwnProps> = ({
   networkStatus,
   error,
   LoadingComponent,
-  ErrorComponent,refetch
+  ErrorComponent,
+  refetch
 }) => {
   const [rows, setRows] = useState<IRow[]>([]);
   const [columnList, setColumnList] = useState<ICell[]>([]);

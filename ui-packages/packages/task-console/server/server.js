@@ -43,6 +43,10 @@ app.post(
   controller.callCompleteTask
 );
 
+app.get(
+  '/:processId/:processInstanceId/:taskReferenceName/:taskId/form',
+  controller.getTaskForm
+);
 
 function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));

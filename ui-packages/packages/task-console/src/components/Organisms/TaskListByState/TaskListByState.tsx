@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { DataList, Bullseye } from '@patternfly/react-core';
 import TaskListItem from '../../Molecules/TaskListItem/TaskListItem';
-import { KogitoEmptyState, KogitoEmptyStateType, KogitoSpinner } from '@kogito-apps/common';
+import {
+  KogitoEmptyState,
+  KogitoEmptyStateType,
+  KogitoSpinner
+} from '@kogito-apps/common';
 import '@patternfly/patternfly/patternfly-addons.css';
 import { useGetUserTasksByStatesQuery } from '../../../graphql/types';
 
@@ -10,12 +14,7 @@ interface IOwnProps {
 }
 
 const TaskListByState: React.FC<IOwnProps> = ({ currentState }) => {
-  const {
-    loading,
-    error,
-    data,
-    networkStatus
-  } = useGetUserTasksByStatesQuery({
+  const { loading, error, data, networkStatus } = useGetUserTasksByStatesQuery({
     variables: {
       state: [currentState]
     },

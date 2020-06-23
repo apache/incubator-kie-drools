@@ -19,7 +19,7 @@ module.exports = data = {
         excludedUsers: [],
         potentialGroups: [],
         potentialUsers: [],
-        inputs: '{"Skippable":"true","trip":{"city":"Boston","country":"US","begin":"2020-02-19T23:00:00.000+01:00","end":"2020-02-26T23:00:00.000+01:00","visaRequired":true},"TaskName":"VisaApplication","NodeName":"Apply for visa","traveller":{"firstName":"Rachel","lastName":"White","email":"rwhite@gorle.com","nationality":"Polish","address":{"street":"Cabalone","city":"Zerf","zipCode":"765756","country":"Poland"}},"Priority":"1"}"',
+        inputs: '{"Skippable":"true","trip":{"city":"Boston","country":"US","begin":"2020-02-19T23:00:00.000+01:00","end":"2020-02-26T23:00:00.000+01:00","visaRequired":true},"TaskName":"VisaApplication","NodeName":"Apply for visa","traveller":{"firstName":"Rachel","lastName":"White","email":"rwhite@gorle.com","nationality":"Polish","address":{"street":"Cabalone","city":"Zerf","zipCode":"765756","country":"Poland"}},"Priority":"1"}',
         outputs: '{}',
         referenceName: "VisaApplication",
         lastUpdate: "2020-02-19T11:11:56.282Z"
@@ -43,7 +43,7 @@ module.exports = data = {
         potentialGroups: [],
         potentialUsers: [],
         inputs: '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null}}',
-        outputs: '{"ActorId":""}',
+        outputs: '{}',
         referenceName: "ConfirmTravel",
         lastUpdate: "2020-02-19T13:22:40.909Z"
       },
@@ -66,7 +66,7 @@ module.exports = data = {
         potentialGroups: [],
         potentialUsers: [],
         inputs: '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null}}',
-        outputs: '{"ActorId":""}',
+        outputs: '',
         referenceName: "ConfirmTravel"
       },
       {
@@ -105,7 +105,7 @@ module.exports = data = {
       addons: ['infinispan-persistence', 'prometheus-monitoring'],
       start: '2020-02-19T11:11:56.244Z',
       end: null,
-      endpoint: 'http://localhost:4000'
+      endpoint: 'http://localhost:4000/travels'
     },
     {
       id: '9ae407dd-cdfa-4722-8a49-0a6d2e14550d',
@@ -119,7 +119,7 @@ module.exports = data = {
       addons: ['infinispan-persistence', 'prometheus-monitoring'],
       start: '2020-02-19T11:11:56.244Z',
       end: null,
-      endpoint: 'http://localhost:4000'
+      endpoint: 'http://localhost:4000/travels'
     },
     {
       id: '4bfdd404-c46a-4751-b401-b1428a30fa07',
@@ -133,7 +133,7 @@ module.exports = data = {
       addons: ['infinispan-persistence', 'prometheus-monitoring'],
       start: '2020-02-19T11:11:56.244Z',
       end: '2020-02-19T11:11:56.244Z',
-      endpoint: 'http://localhost:4000'
+      endpoint: 'http://localhost:4000/travels'
     },
     {
       id: '7e31993d-8c9a-45e8-997d-7156632a520f',
@@ -147,7 +147,7 @@ module.exports = data = {
       addons: ['infinispan-persistence', 'prometheus-monitoring'],
       start: '2020-02-19T11:11:56.244Z',
       end: '2020-02-19T11:11:56.244Z',
-      endpoint: 'http://localhost:4000'
+      endpoint: 'http://localhost:4000/travels'
     }
   ]
 };
