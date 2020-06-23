@@ -45,7 +45,7 @@ public class ScorecardModelImplementationProviderTest {
         assertNotNull(pmml);
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof Scorecard);
-        final KiePMMLScorecardModel kiePMMLModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(), (Scorecard) pmml.getModels().get(0), KNOWLEDGE_BUILDER);
+        final KiePMMLScorecardModel kiePMMLModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(), pmml.getTransformationDictionary(), (Scorecard) pmml.getModels().get(0), KNOWLEDGE_BUILDER);
         assertNotNull(kiePMMLModel);
     }
 }

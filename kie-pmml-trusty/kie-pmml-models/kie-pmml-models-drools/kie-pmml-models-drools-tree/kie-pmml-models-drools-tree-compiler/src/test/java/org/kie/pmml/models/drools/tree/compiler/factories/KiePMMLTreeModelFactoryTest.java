@@ -58,9 +58,8 @@ public class KiePMMLTreeModelFactoryTest {
 
     @Test
     public void getKiePMMLTreeModel() throws InstantiationException, IllegalAccessException {
-        final DataDictionary dataDictionary = pmml.getDataDictionary();
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        KiePMMLTreeModel retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary, treeModel, fieldTypeMap);
+        KiePMMLTreeModel retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(pmml.getDataDictionary(),pmml.getTransformationDictionary(), treeModel, fieldTypeMap);
         assertNotNull(retrieved);
         assertEquals(treeModel.getModelName(), retrieved.getName());
         assertEquals(TARGET_FIELD, retrieved.getTargetField());

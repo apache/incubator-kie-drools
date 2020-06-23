@@ -16,8 +16,11 @@
 package org.kie.pmml.compiler.commons.mocks;
 
 import java.util.Collections;
+import java.util.Map;
+import java.util.function.Function;
 
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.regression.RegressionModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
@@ -35,12 +38,12 @@ public class TestingModelImplementationProvider implements ModelImplementationPr
     }
 
     @Override
-    public KiePMMLTestingModel getKiePMMLModel(DataDictionary dataDictionary, RegressionModel model, Object kBuilder) {
+    public KiePMMLTestingModel getKiePMMLModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final RegressionModel model, Object kBuilder) {
         return new KiePMMLTestingModel("TEST_MODEL", Collections.emptyList());
     }
 
     @Override
-    public KiePMMLTestingModel getKiePMMLModelFromPlugin(String packageName, DataDictionary dataDictionary, RegressionModel model, Object kBuilder) {
-        return getKiePMMLModel(dataDictionary, model, kBuilder);
+    public KiePMMLTestingModel getKiePMMLModelFromPlugin(String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final RegressionModel model, Object kBuilder) {
+        return getKiePMMLModel(dataDictionary, transformationDictionary, model, kBuilder);
     }
 }

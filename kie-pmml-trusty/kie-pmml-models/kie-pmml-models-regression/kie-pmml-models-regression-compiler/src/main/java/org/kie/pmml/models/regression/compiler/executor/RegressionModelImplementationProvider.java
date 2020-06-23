@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.OpType;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.regression.RegressionModel;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
@@ -54,21 +55,21 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
     }
 
     @Override
-    public KiePMMLRegressionModel getKiePMMLModel(DataDictionary dataDictionary, RegressionModel model, Object kBuilder) {
+    public KiePMMLRegressionModel getKiePMMLModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final RegressionModel model, Object kBuilder) {
         logger.trace("getKiePMMLModel {} {} {}", dataDictionary, model, kBuilder);
         validate(dataDictionary, model);
         try {
-            return KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(dataDictionary, model);
+            return KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(dataDictionary, transformationDictionary, model);
         } catch (IOException | IllegalAccessException | InstantiationException e) {
             throw new KiePMMLException(e.getMessage(), e);
         }
     }
 
     @Override
-    public KiePMMLRegressionModel getKiePMMLModelFromPlugin(String packageName, DataDictionary dataDictionary, RegressionModel model, Object kBuilder) {
+    public KiePMMLRegressionModel getKiePMMLModelFromPlugin(String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final RegressionModel model, Object kBuilder) {
         logger.trace("getKiePMMLModelFromPlugin {} {} {}", dataDictionary, model, kBuilder);
         try {
-            final Map<String, String> sourcesMap = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(dataDictionary, model, packageName);
+            final Map<String, String> sourcesMap = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(dataDictionary, transformationDictionary, model, packageName);
             return new KiePMMLRegressionModelWithSources(model.getModelName(), packageName, sourcesMap);
         } catch (IOException e) {
             throw new RuntimeException(e);
