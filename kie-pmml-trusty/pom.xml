@@ -40,6 +40,7 @@
     <module>kie-pmml-models-drools-archetype</module>
     <module>kie-pmml-models</module>
     <module>kie-pmml-benchmarks</module>
+    <module>kie-pmml-dependencies</module>
   </modules>
 
   <dependencyManagement>
