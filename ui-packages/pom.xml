@@ -16,9 +16,12 @@
   <properties>
     <path.to.root>${project.basedir}</path.to.root> <!-- package.json in root dir-->
     <path.to.packages>${path.to.root}/packages</path.to.packages>
-    <sonar.sources>${path.to.packages}</sonar.sources>
+    <sonar.sources>
+      ${path.to.packages}/common/src,
+      ${path.to.packages}/management-console/src,
+      ${path.to.packages}/task-console/src
+    </sonar.sources>
     <sonar.exclusions>**/__mocks__/**</sonar.exclusions>
-    <sonar.inclusions>*/src/**</sonar.inclusions>
     <sonar.test.inclusions>**/*test.ts,**/*test.tsx</sonar.test.inclusions>
     <sonar.javascript.lcov.reportPaths>
       ${path.to.packages}/common/coverage/lcov.info,
