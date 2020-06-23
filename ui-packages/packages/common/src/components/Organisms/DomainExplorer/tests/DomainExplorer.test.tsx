@@ -1,15 +1,28 @@
 import React from 'react';
-import { mount } from 'enzyme';
 import { BrowserRouter } from 'react-router-dom';
 import DomainExplorer from '../DomainExplorer';
-import { MockedProvider, wait } from '@apollo/react-testing';
-import { getWrapper } from '../../../../utils/OuiaUtils';
+import { MockedProvider } from '@apollo/react-testing';
+import { getWrapperAsync } from '../../../../utils/OuiaUtils';
 import { GraphQL } from '../../../../graphql/types';
 import useGetQueryTypesQuery = GraphQL.useGetQueryTypesQuery;
 import useGetQueryFieldsQuery = GraphQL.useGetQueryFieldsQuery;
 import useGetColumnPickerAttributesQuery = GraphQL.useGetColumnPickerAttributesQuery;
 jest.mock('react-apollo');
 
+jest.mock(
+  '../../../Molecules/DomainExplorerColumnPicker/DomainExplorerColumnPicker'
+);
+jest.mock('../../../Molecules/DomainExplorerTable/DomainExplorerTable');
+jest.mock('../../../Atoms/LoadMore/LoadMore');
+
+const MockedDataToolbar = (): React.ReactElement => {
+  return <></>;
+};
+
+jest.mock('@patternfly/react-core', () => ({
+  ...jest.requireActual('@patternfly/react-core'),
+  DataToolbar: () => <MockedDataToolbar />
+}));
 const props = {
   domains: ['Travels', 'VisaApplications'],
   loadingState: false,
@@ -79,8 +92,8 @@ const props2 = {
 
 jest.mock('../../../../graphql/types');
 
-describe('Domain Explorer Container component', () => {
-  it('Snapshot test', async () => {
+describe('Domain Explorer component', () => {
+  it('Snapshot test with default prop', async () => {
     // @ts-ignore
     useGetColumnPickerAttributesQuery.mockReturnValue({
       loading: false,
@@ -139,16 +152,15 @@ describe('Domain Explorer Container component', () => {
       loading: false,
       data: {}
     });
-    const wrapper = mount(
+    const wrapper = await getWrapperAsync(
       <BrowserRouter>
         <MockedProvider mocks={[]} addTypename={false}>
           <DomainExplorer {...props} {...routeComponentPropsMock} />
         </MockedProvider>
-      </BrowserRouter>
+      </BrowserRouter>,
+      'DomainExplorer'
     );
-    await wait(0);
-    wrapper.update();
-    expect(wrapper.find(DomainExplorer)).toMatchSnapshot();
+    expect(wrapper).toMatchSnapshot();
   });
   it('Check error response for getQueryFields query', async () => {
     // @ts-ignore
@@ -157,16 +169,16 @@ describe('Domain Explorer Container component', () => {
       data: null,
       error: {}
     });
-    const wrapper = mount(
+    const wrapper = await getWrapperAsync(
       <BrowserRouter>
         <MockedProvider mocks={[]} addTypename={false}>
           <DomainExplorer {...props} {...routeComponentPropsMock} />
         </MockedProvider>
-      </BrowserRouter>
+      </BrowserRouter>,
+      'DomainExplorer'
     );
     wrapper.update();
-    wrapper.setProps({});
-    expect(wrapper.find(DomainExplorer)).toMatchSnapshot();
+    expect(wrapper).toMatchSnapshot();
   });
   it('Mock query testing', async () => {
     // @ts-ignore
@@ -227,7 +239,7 @@ describe('Domain Explorer Container component', () => {
       loading: false,
       data: {}
     });
-    const wrapper = getWrapper(
+    const wrapper = await getWrapperAsync(
       <BrowserRouter>
         <MockedProvider mocks={[]} addTypename={false}>
           <DomainExplorer {...props} {...routeComponentPropsMock} />
@@ -243,45 +255,51 @@ describe('Domain Explorer Container component', () => {
       variables: { columnPickerType: 'Travels' }
     });
   });
-  it('Check error response for getPicker query', () => {
+  it('Check error response for getPicker query', async () => {
     // @ts-ignore
     useGetColumnPickerAttributesQuery.mockReturnValue({
       loading: false,
       error: {}
     });
-    const wrapper = mount(
+    const wrapper = await getWrapperAsync(
       <BrowserRouter>
-        <DomainExplorer {...props} {...routeComponentPropsMock} />
-      </BrowserRouter>
+        <MockedProvider mocks={[]} addTypename={false}>
+          <DomainExplorer {...props} {...routeComponentPropsMock} />
+        </MockedProvider>
+      </BrowserRouter>,
+      'DomainExplorer'
     );
     wrapper.update();
-    wrapper.setProps({});
     expect(wrapper).toMatchSnapshot();
   });
-  it('Check error response for getQueryTypes', () => {
+  it('Check error response for getQueryTypes', async () => {
     // @ts-ignore
     useGetQueryTypesQuery.mockReturnValue({
       loading: false,
       data: null,
       error: {}
     });
-    const wrapper = mount(
+    const wrapper = await getWrapperAsync(
       <BrowserRouter>
-        <DomainExplorer {...props} {...routeComponentPropsMock} />
-      </BrowserRouter>
+        <MockedProvider mocks={[]} addTypename={false}>
+          <DomainExplorer {...props} {...routeComponentPropsMock} />
+        </MockedProvider>
+      </BrowserRouter>,
+      'DomainExplorer'
     );
     wrapper.update();
-    wrapper.setProps({});
     expect(wrapper).toMatchSnapshot();
   });
-  it('check assertions on rememberedParams', () => {
-    const wrapper = mount(
+  it('check assertions on rememberedParams', async () => {
+    const wrapper = await getWrapperAsync(
       <BrowserRouter>
-        <DomainExplorer {...props2} {...routeComponentPropsMock2} />
-      </BrowserRouter>
+        <MockedProvider mocks={[]} addTypename={false}>
+          <DomainExplorer {...props2} {...routeComponentPropsMock2} />
+        </MockedProvider>
+      </BrowserRouter>,
+      'DomainExplorer'
     );
     wrapper.update();
-    wrapper.setProps({});
     expect(wrapper.find(DomainExplorer)).toMatchSnapshot();
   });
 });

@@ -1,9 +1,12 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import { getWrapperAsync } from '../../../../utils/OuiaUtils';
 
 import DomainExplorerTable from '../DomainExplorerTable';
+import { MockedProvider } from '@apollo/react-testing';
 
 global.Math.random = () => 0.7218415351930461;
+
+jest.mock('../../ProcessDescriptor/ProcessDescriptor')
 
 describe('Domain Explorer Table Component', () => {
   let useEffect;
@@ -15,7 +18,7 @@ describe('Domain Explorer Table Component', () => {
     mockUseEffect();
     mockUseEffect();
   });
-  it('Snapshot test', () => {
+  it('Snapshot test with default props', async () => {
     const props = {
       columnFilters: [
         {
@@ -102,7 +105,7 @@ describe('Domain Explorer Table Component', () => {
           rowKey: '0.6632979792309541',
           cells: [
             {
-              title: {}
+              title: ''
             }
           ]
         }
@@ -110,12 +113,16 @@ describe('Domain Explorer Table Component', () => {
       setRows: jest.fn(),
       offset: 10
     };
-    const wrapper = shallow(<DomainExplorerTable {...props} />);
+    const wrapper = await getWrapperAsync(
+      <MockedProvider>
+        <DomainExplorerTable {...props} />
+      </MockedProvider>,
+      'DomainExplorerTable'
+    );
     wrapper.update();
-    wrapper.setProps({});
     expect(wrapper).toMatchSnapshot();
   });
-  it('Boolean assertions-false', () => {
+  it('Test process instance state', async () => {
     const props = {
       columnFilters: [
         {
@@ -135,30 +142,8 @@ describe('Domain Explorer Table Component', () => {
                 lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
                 processName: 'Hello World',
                 start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'ERROR'
+                state: 'ACTIVE'
               },
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'ERROR'
-              }
-            ]
-          }
-        },
-        {
-          flight: {
-            arrival: 'Hello World',
-            __typename: 'Flight',
-            departure: 'Hello World',
-            flightNumber: 'Hello World',
-            gate: 'Hello World',
-            seat: 'Hello World'
-          },
-          metadata: {
-            processInstances: [
               {
                 businessKey: 'Hello World',
                 id: 'Hello World',
@@ -166,61 +151,10 @@ describe('Domain Explorer Table Component', () => {
                 processName: 'Hello World',
                 start: 'Tue, 12 May 2020 12:33:58 GMT',
                 state: 'COMPLETED'
-              },
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'ERROR'
               }
             ]
           }
-        }
-      ],
-      tableLoading: false,
-      displayTable: true,
-      displayEmptyState: false,
-      parameters: [],
-      selected: [],
-      isLoadingMore: true,
-      rows: [
-        {
-          cells: [
-            'Hello World',
-            'Hello World',
-            'Hello World',
-            'Hello World',
-            'Hello World'
-          ],
-          isOpen: false,
-          rowKey: '0.008857835601127073'
         },
-        {
-          parent: 0,
-          rowKey: '0.6632979792309541',
-          cells: [
-            {
-              title: {}
-            }
-          ]
-        }
-      ],
-      setRows: jest.fn(),
-      offset: 10
-    };
-
-    const wrapper = shallow(<DomainExplorerTable {...props} />);
-
-    wrapper.update();
-    wrapper.setProps({});
-
-    expect(wrapper).toMatchSnapshot();
-  });
-  it('Boolean assertions-true', () => {
-    const props = {
-      columnFilters: [
         {
           flight: {
             arrival: 'Hello World',
@@ -238,7 +172,7 @@ describe('Domain Explorer Table Component', () => {
                 lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
                 processName: 'Hello World',
                 start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'ERROR'
+                state: 'ABORTED'
               },
               {
                 businessKey: 'Hello World',
@@ -246,7 +180,7 @@ describe('Domain Explorer Table Component', () => {
                 lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
                 processName: 'Hello World',
                 start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'ERROR'
+                state: 'SUSPENDED'
               }
             ]
           }
@@ -305,7 +239,7 @@ describe('Domain Explorer Table Component', () => {
           rowKey: '0.6632979792309541',
           cells: [
             {
-              title: {}
+              title: ''
             }
           ]
         }
@@ -313,11 +247,18 @@ describe('Domain Explorer Table Component', () => {
       setRows: jest.fn(),
       offset: 10
     };
-    const wrapper = shallow(<DomainExplorerTable {...props} />);
+
+    const wrapper = await getWrapperAsync(
+      <MockedProvider>
+        <DomainExplorerTable {...props} />
+      </MockedProvider>,
+      'DomainExplorerTable'
+    );
     wrapper.update();
-    expect(wrapper).toMatchSnapshot();
+
+    expect(wrapper.find('.kogito-management-console--domain-explorer__table')).toBeTruthy();
   });
-  it('check zero offset', () => {
+  it('check zero offset', async () => {
     const props = {
       columnFilters: [
         {
@@ -383,7 +324,7 @@ describe('Domain Explorer Table Component', () => {
       ],
       tableLoading: false,
       displayTable: true,
-      displayEmptyState: true,
+      displayEmptyState: false,
       parameters: [],
       selected: [],
       isLoadingMore: true,
@@ -404,7 +345,7 @@ describe('Domain Explorer Table Component', () => {
           rowKey: '0.6632979792309541',
           cells: [
             {
-              title: {}
+              title: ''
             }
           ]
         }
@@ -412,11 +353,17 @@ describe('Domain Explorer Table Component', () => {
       setRows: jest.fn(),
       offset: 0
     };
-    const wrapper = mount(<DomainExplorerTable {...props} />);
+    const wrapper = await getWrapperAsync(
+      <MockedProvider>
+        <DomainExplorerTable {...props} />
+      </MockedProvider>,
+      'DomainExplorerTable'
+    );
     wrapper.update();
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find('.kogito-management-console--domain-explorer__table')).toBeTruthy();
+    
   });
-  it('check false value of isLoadingMore', () => {
+  it('check false value of isLoadingMore', async () => {
     const props = {
       columnFilters: [
         {
@@ -503,7 +450,7 @@ describe('Domain Explorer Table Component', () => {
           rowKey: '0.6632979792309541',
           cells: [
             {
-              title: {}
+              title: ''
             }
           ]
         }
@@ -511,11 +458,16 @@ describe('Domain Explorer Table Component', () => {
       setRows: jest.fn(),
       offset: 0
     };
-    const wrapper = mount(<DomainExplorerTable {...props} />);
+    const wrapper = await getWrapperAsync(
+      <MockedProvider>
+        <DomainExplorerTable {...props} />
+      </MockedProvider>,
+      'DomainExplorerTable'
+    );
     wrapper.update();
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find('h5').text()).toEqual('No data available')
   });
-  it('check null value for process instance attributes', () => {
+  it('check null value for process instance attributes', async () => {
     const props = {
       columnFilters: [
         {
@@ -602,7 +554,7 @@ describe('Domain Explorer Table Component', () => {
           rowKey: '0.6632979792309541',
           cells: [
             {
-              title: {}
+              title: ''
             }
           ]
         }
@@ -610,7 +562,12 @@ describe('Domain Explorer Table Component', () => {
       setRows: jest.fn(),
       offset: 0
     };
-    const wrapper = mount(<DomainExplorerTable {...props} />);
+    const wrapper = await getWrapperAsync(
+      <MockedProvider>
+        <DomainExplorerTable {...props} />
+      </MockedProvider>,
+      'DomainExplorerTable'
+    );
     wrapper.update();
     expect(wrapper).toMatchSnapshot();
   });

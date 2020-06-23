@@ -1,8 +1,21 @@
 import React from 'react';
-import { mount } from 'enzyme';
 import DomainExplorerLandingPage from '../DomainExplorerLandingPage';
 import { MemoryRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/react-testing';
+import { getWrapper } from '@kogito-apps/common';
+
+jest.mock(
+  '@kogito-apps/common/src/components/Organisms/DomainExplorerListDomains/DomainExplorerListDomains'
+);
+
+const MockedBreadcrumb = (): React.ReactElement => {
+  return <></>;
+};
+
+jest.mock('@patternfly/react-core', () => ({
+  ...jest.requireActual('@patternfly/react-core'),
+  Breadcrumb: () => <MockedBreadcrumb />
+}));
 
 describe('Domain Explorer Landing Page Component', () => {
   const props = {
@@ -11,14 +24,15 @@ describe('Domain Explorer Landing Page Component', () => {
       ouiaId: null
     } as any
   };
-  it('Snapshot test', () => {
-    const wrapper = mount(
+  it('Snapshot test with default props', () => {
+    const wrapper = getWrapper(
       <MockedProvider mocks={[]} addTypename={false}>
         <Router keyLength={0}>
           <DomainExplorerLandingPage {...props} />
         </Router>
-      </MockedProvider>
+      </MockedProvider>,
+      'DomainExplorerLandingPage'
     );
-    expect(wrapper.find(DomainExplorerLandingPage)).toMatchSnapshot();
+    expect(wrapper).toMatchSnapshot();
   });
 });

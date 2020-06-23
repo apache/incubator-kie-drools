@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Domain Explorer Landing Page Component Snapshot test 1`] = `
-<Component
+exports[`Domain Explorer Landing Page Component Snapshot test with default props 1`] = `
+<DomainExplorerLandingPage
   ouiaContext={
     Object {
       "isOuia": false,
@@ -9,234 +9,51 @@ exports[`Domain Explorer Landing Page Component Snapshot test 1`] = `
     }
   }
 >
-  <ComponentWithOuia
-    component={[Function]}
-    componentProps={
-      Object {
-        "ouiaContext": Object {
-          "isOuia": false,
-          "ouiaId": null,
-        },
-      }
-    }
-    consumerContext={null}
+  <PageSection
+    variant="light"
   >
-    <DomainExplorerLandingPage
-      ouiaContext={
-        Object {
-          "isOuia": false,
-          "ouiaId": null,
-        }
-      }
+    <section
+      className="pf-c-page__main-section pf-m-light"
     >
-      <PageSection
-        variant="light"
+      <PageTitle
+        title="Domain Explorer"
       >
-        <section
-          className="pf-c-page__main-section pf-m-light"
+        <Title
+          headingLevel="h1"
+          size="4xl"
         >
-          <PageTitle
-            title="Domain Explorer"
+          <h1
+            className="pf-c-title pf-m-4xl"
           >
-            <Title
-              headingLevel="h1"
-              size="4xl"
-            >
-              <h1
-                className="pf-c-title pf-m-4xl"
-              >
-                Domain Explorer
-              </h1>
-            </Title>
-          </PageTitle>
-          <Component>
-            <ComponentWithOuia
-              component={[Function]}
-              componentProps={
-                Object {
-                  "children": Array [
-                    <BreadcrumbItem>
-                      <Link
-                        to="/"
-                      >
-                        Home
-                      </Link>
-                    </BreadcrumbItem>,
-                    <BreadcrumbItem
-                      isActive={true}
-                    >
-                      Domain Explorer
-                    </BreadcrumbItem>,
-                  ],
-                }
-              }
-              consumerContext={
-                Object {
-                  "isOuia": false,
-                  "ouiaId": null,
-                }
-              }
-            >
-              <Breadcrumb
-                ouiaContext={
-                  Object {
-                    "isOuia": false,
-                    "ouiaId": null,
-                  }
-                }
-              >
-                <nav
-                  aria-label="Breadcrumb"
-                  className="pf-c-breadcrumb"
-                >
-                  <ol
-                    className="pf-c-breadcrumb__list"
-                  >
-                    <BreadcrumbItem>
-                      <li
-                        className="pf-c-breadcrumb__item"
-                      >
-                        <Link
-                          to="/"
-                        >
-                          <LinkAnchor
-                            href="/"
-                            navigate={[Function]}
-                          >
-                            <a
-                              href="/"
-                              onClick={[Function]}
-                            >
-                              Home
-                            </a>
-                          </LinkAnchor>
-                        </Link>
-                        <span
-                          className="pf-c-breadcrumb__item-divider"
-                        >
-                          <AngleRightIcon
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
-                            title={null}
-                          >
-                            <svg
-                              aria-hidden={true}
-                              aria-labelledby={null}
-                              fill="currentColor"
-                              height="1em"
-                              role="img"
-                              style={
-                                Object {
-                                  "verticalAlign": "-0.125em",
-                                }
-                              }
-                              viewBox="0 0 256 512"
-                              width="1em"
-                            >
-                              <path
-                                d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-                                transform=""
-                              />
-                            </svg>
-                          </AngleRightIcon>
-                        </span>
-                      </li>
-                    </BreadcrumbItem>
-                    <BreadcrumbItem
-                      isActive={true}
-                    >
-                      <li
-                        className="pf-c-breadcrumb__item"
-                      >
-                        Domain Explorer
-                      </li>
-                    </BreadcrumbItem>
-                  </ol>
-                </nav>
-              </Breadcrumb>
-            </ComponentWithOuia>
-          </Component>
-        </section>
-      </PageSection>
-      <PageSection>
-        <section
-          className="pf-c-page__main-section"
+            Domain Explorer
+          </h1>
+        </Title>
+      </PageTitle>
+      <Breadcrumb>
+        <MockedBreadcrumb />
+      </Breadcrumb>
+    </section>
+  </PageSection>
+  <PageSection>
+    <section
+      className="pf-c-page__main-section"
+    >
+      <Card>
+        <article
+          className="pf-c-card"
         >
-          <Card>
-            <article
-              className="pf-c-card"
+          <CardBody>
+            <div
+              className="pf-c-card__body"
             >
-              <CardBody>
-                <div
-                  className="pf-c-card__body"
-                >
-                  <DomainExplorerListDomains>
-                    <EmptyState
-                      variant="full"
-                    >
-                      <div
-                        className="pf-c-empty-state"
-                      >
-                        <EmptyStateIcon
-                          icon={[Function]}
-                        >
-                          <CubesIcon
-                            aria-hidden="true"
-                            className="pf-c-empty-state__icon"
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
-                            title={null}
-                          >
-                            <svg
-                              aria-hidden="true"
-                              aria-labelledby={null}
-                              className="pf-c-empty-state__icon"
-                              fill="currentColor"
-                              height="1em"
-                              role="img"
-                              style={
-                                Object {
-                                  "verticalAlign": "-0.125em",
-                                }
-                              }
-                              viewBox="0 0 512 512"
-                              width="1em"
-                            >
-                              <path
-                                d="M488.6 250.2L392 214V105.5c0-15-9.3-28.4-23.4-33.7l-100-37.5c-8.1-3.1-17.1-3.1-25.3 0l-100 37.5c-14.1 5.3-23.4 18.7-23.4 33.7V214l-96.6 36.2C9.3 255.5 0 268.9 0 283.9V394c0 13.6 7.7 26.1 19.9 32.2l100 50c10.1 5.1 22.1 5.1 32.2 0l103.9-52 103.9 52c10.1 5.1 22.1 5.1 32.2 0l100-50c12.2-6.1 19.9-18.6 19.9-32.2V283.9c0-15-9.3-28.4-23.4-33.7zM358 214.8l-85 31.9v-68.2l85-37v73.3zM154 104.1l102-38.2 102 38.2v.6l-102 41.4-102-41.4v-.6zm84 291.1l-85 42.5v-79.1l85-38.8v75.4zm0-112l-102 41.4-102-41.4v-.6l102-38.2 102 38.2v.6zm240 112l-85 42.5v-79.1l85-38.8v75.4zm0-112l-102 41.4-102-41.4v-.6l102-38.2 102 38.2v.6z"
-                                transform=""
-                              />
-                            </svg>
-                          </CubesIcon>
-                        </EmptyStateIcon>
-                        <TextContent>
-                          <div
-                            className="pf-c-content"
-                          >
-                            <Text
-                              component="h2"
-                            >
-                              <h2
-                                className=""
-                                data-pf-content={true}
-                              >
-                                No domains available
-                              </h2>
-                            </Text>
-                          </div>
-                        </TextContent>
-                      </div>
-                    </EmptyState>
-                  </DomainExplorerListDomains>
-                </div>
-              </CardBody>
-            </article>
-          </Card>
-        </section>
-      </PageSection>
-    </DomainExplorerLandingPage>
-  </ComponentWithOuia>
-</Component>
+              <MockedDomainExplorerListDomains>
+                 
+              </MockedDomainExplorerListDomains>
+            </div>
+          </CardBody>
+        </article>
+      </Card>
+    </section>
+  </PageSection>
+</DomainExplorerLandingPage>
 `;
