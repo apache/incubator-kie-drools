@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.compiler.commons.factories;
+package org.kie.pmml.compiler.commons.utils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
+/**
+ * Class meant to provide <i>helper</i> methods to retrieve <code>Function</code> code-generators
+ * out of <code>DerivedField</code>s
+ */
+public class DerivedFieldFunctionUtils {
 
-import org.dmg.pmml.TransformationDictionary;
-
-public class TransformationsMapFactory {
-
-    private TransformationsMapFactory() {
+    private DerivedFieldFunctionUtils() {
+        // Avoid instantiation
     }
 
-    public static Map<String, Function> getTransformationsMap(TransformationDictionary transformationDictionary) {
-        // TODO IMPLEMENT {gcardosi}
-        return new HashMap<>();
-    }
 }
