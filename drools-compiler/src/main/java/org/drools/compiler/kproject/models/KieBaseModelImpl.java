@@ -59,7 +59,7 @@ public class KieBaseModelImpl
 
     private EqualityBehaviorOption       equalsBehavior = EqualityBehaviorOption.IDENTITY;
 
-    private AlphaNodeOrderingOption      alphaNodeOrdering = AlphaNodeOrderingOption.COUNT;
+    private AlphaNodeOrderingOption      alphaNodeOrdering = AlphaNodeOrderingOption.NONE;
 
     private EventProcessingOption        eventProcessingMode = EventProcessingOption.CLOUD;
 

@@ -25,6 +25,8 @@ import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.kie.api.definition.rule.Rule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -32,6 +34,8 @@ import org.kie.api.definition.rule.Rule;
  *
  */
 public class CountBasedOrderingStrategy implements AlphaNodeOrderingStrategy {
+
+    private static final Logger logger = LoggerFactory.getLogger(CountBasedOrderingStrategy.class);
 
     private Map<AlphaNodeFieldConstraint, Integer> analyzedAlphaConstraints = new HashMap<>();
 
@@ -65,19 +69,19 @@ public class CountBasedOrderingStrategy implements AlphaNodeOrderingStrategy {
 
         // TODO: Other cases
 
-        System.out.println("analyzedAlphaConstraints : " + analyzedAlphaConstraints);
+        logger.trace("analyzedAlphaConstraints : {}", analyzedAlphaConstraints);
     }
 
     @Override
     public void reorderAlphaConstraints(List<AlphaNodeFieldConstraint> alphaConstraints) {
         // greater usage count is earlier
-        System.out.println("** before alphaConstraints : " + alphaConstraints);
+        logger.trace("** before alphaConstraints : {}", alphaConstraints);
         alphaConstraints.sort((constraint1, constraint2) -> {
             Integer count1 = analyzedAlphaConstraints.getOrDefault(constraint1, 1);
             Integer count2 = analyzedAlphaConstraints.getOrDefault(constraint2, 1);
             return count2.compareTo(count1);
         });
-        System.out.println(" ** after alphaConstraints : " + alphaConstraints);
+        logger.trace(" ** after alphaConstraints : {}", alphaConstraints);
     }
 
 }

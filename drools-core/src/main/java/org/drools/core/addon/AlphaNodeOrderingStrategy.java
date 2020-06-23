@@ -37,8 +37,10 @@ public interface AlphaNodeOrderingStrategy {
     static AlphaNodeOrderingStrategy createAlphaNodeOrderingStrategy(AlphaNodeOrderingOption option) {
         if (AlphaNodeOrderingOption.COUNT.equals(option)) {
             return new CountBasedOrderingStrategy();
-        } else {
+        } else if (AlphaNodeOrderingOption.NONE.equals(option)) {
             return new NoopOrderingStrategy();
+        } else {
+            throw new IllegalArgumentException("No implementation found for AlphaNodeOrderingOption [" + option + "]");
         }
     }
 }

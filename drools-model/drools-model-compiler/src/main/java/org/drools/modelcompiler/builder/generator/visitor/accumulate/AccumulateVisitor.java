@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
@@ -251,7 +250,6 @@ public abstract class AccumulateVisitor {
 
         Optional<DeclarationSpec> decl = context.getDeclarationById(rootNodeName);
 
-/*
         Class<?> clazz = decl.map(DeclarationSpec::getDeclarationClass)
                 .orElseGet( () -> {
                     try {
@@ -260,18 +258,6 @@ public abstract class AccumulateVisitor {
                         throw new RuntimeException( e );
                     }
                 } );
-*/
-        Optional<?> optClass = decl.map(DeclarationSpec::getDeclarationClass);
-        Class<?> clazz;
-        if (optClass.isPresent()) {
-            clazz = (Class<?>) optClass.get();
-        } else {
-            try {
-                clazz =  context.getTypeResolver().resolveType(rootNodeName);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException( e );
-            }
-        }
 
         final TypedExpression typedExpression = new ToMethodCall(context).toMethodCallWithClassCheck(methodCallWithoutRootNode.getWithoutRootNode(), null, clazz);
         final Class<?> methodCallExprType = typedExpression.getRawClass();

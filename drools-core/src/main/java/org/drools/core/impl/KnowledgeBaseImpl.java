@@ -44,7 +44,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.addon.AlphaNodeOrderingStrategy;
-import org.drools.core.addon.CountBasedOrderingStrategy;
+import org.drools.core.addon.NoopOrderingStrategy;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
@@ -193,7 +193,7 @@ public class KnowledgeBaseImpl
 
     private KieSessionsPool sessionPool;
 
-    private transient AlphaNodeOrderingStrategy alphaNodeOrderingStrategy = new CountBasedOrderingStrategy();
+    private transient AlphaNodeOrderingStrategy alphaNodeOrderingStrategy = new NoopOrderingStrategy();
 
     public KnowledgeBaseImpl() { }
 
