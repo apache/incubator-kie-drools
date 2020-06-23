@@ -223,6 +223,7 @@
                 <checkstyleRules combine.self="override">
                   <module name="Checker">
                     <property name="severity" value="warning" default="warning"/>
+                    <property name="cacheFile" value="target/cachefile"/>
                     <!-- Checks whether files end with a new line. -->
                     <module name="NewlineAtEndOfFile">
                       <property name="lineSeparator" value="lf"/>
@@ -234,7 +235,6 @@
                     </module>
                     <module name="SuppressWarningsFilter"/>
                     <module name="TreeWalker">
-                      <property name="cacheFile" value="target/cachefile"/>
                       <property name="tabWidth" value="4"/>
                       <!-- Checks for Javadoc comments. -->
                       <module name="JavadocStyle"/>
