@@ -142,7 +142,7 @@
     <version.org.kie7>7.38.0.Final</version.org.kie7>
     <version.org.reflections>0.9.11</version.org.reflections>
     <version.org.slf4j>1.7.25</version.org.slf4j>
-    <version.testcontainers>1.12.4</version.testcontainers>
+    <version.testcontainers>1.14.1</version.testcontainers>
     <version.resteasy.springboot>4.5.0.Final</version.resteasy.springboot>
     <version.springboot>2.2.5.RELEASE</version.springboot>
     <version.spring.framework>5.2.4.RELEASE</version.spring.framework>
