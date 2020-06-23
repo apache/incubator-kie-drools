@@ -200,11 +200,17 @@ exports[`Domain Explorer Table Component check false value of isLoadingMore 1`] 
                                           "businessKey": "Hello World",
                                           "id": "Hello World",
                                           "processName": "Hello World",
+                                          "serviceUrl": undefined,
                                         }
                                       }
                                     />
                                   </strong>
                                 </Link>
+                                <div>
+                                  <EndpointLink
+                                    isLinkShown={false}
+                                  />
+                                </div>
                               </React.Fragment>,
                             },
                             Object {
@@ -297,11 +303,17 @@ exports[`Domain Explorer Table Component check false value of isLoadingMore 1`] 
                                           "businessKey": "Hello World",
                                           "id": "Hello World",
                                           "processName": "Hello World",
+                                          "serviceUrl": undefined,
                                         }
                                       }
                                     />
                                   </strong>
                                 </Link>
+                                <div>
+                                  <EndpointLink
+                                    isLinkShown={false}
+                                  />
+                                </div>
                               </React.Fragment>,
                             },
                             Object {
@@ -433,11 +445,17 @@ exports[`Domain Explorer Table Component check false value of isLoadingMore 1`] 
                                           "businessKey": "Hello World",
                                           "id": "Hello World",
                                           "processName": "Hello World",
+                                          "serviceUrl": undefined,
                                         }
                                       }
                                     />
                                   </strong>
                                 </Link>
+                                <div>
+                                  <EndpointLink
+                                    isLinkShown={false}
+                                  />
+                                </div>
                               </React.Fragment>,
                             },
                             Object {
@@ -530,11 +548,17 @@ exports[`Domain Explorer Table Component check false value of isLoadingMore 1`] 
                                           "businessKey": "Hello World",
                                           "id": "Hello World",
                                           "processName": "Hello World",
+                                          "serviceUrl": undefined,
                                         }
                                       }
                                     />
                                   </strong>
                                 </Link>
+                                <div>
+                                  <EndpointLink
+                                    isLinkShown={false}
+                                  />
+                                </div>
                               </React.Fragment>,
                             },
                             Object {
@@ -873,11 +897,17 @@ exports[`Domain Explorer Table Component check null value for process instance a
                                           "businessKey": "Hello World",
                                           "id": "Hello World",
                                           "processName": "Hello World",
+                                          "serviceUrl": undefined,
                                         }
                                       }
                                     />
                                   </strong>
                                 </Link>
+                                <div>
+                                  <EndpointLink
+                                    isLinkShown={false}
+                                  />
+                                </div>
                               </React.Fragment>,
                             },
                             Object {
@@ -970,11 +1000,17 @@ exports[`Domain Explorer Table Component check null value for process instance a
                                           "businessKey": "Hello World",
                                           "id": "Hello World",
                                           "processName": "Hello World",
+                                          "serviceUrl": undefined,
                                         }
                                       }
                                     />
                                   </strong>
                                 </Link>
+                                <div>
+                                  <EndpointLink
+                                    isLinkShown={false}
+                                  />
+                                </div>
                               </React.Fragment>,
                             },
                             Object {
@@ -1106,11 +1142,17 @@ exports[`Domain Explorer Table Component check null value for process instance a
                                           "businessKey": null,
                                           "id": "Hello World",
                                           "processName": "Hello World",
+                                          "serviceUrl": undefined,
                                         }
                                       }
                                     />
                                   </strong>
                                 </Link>
+                                <div>
+                                  <EndpointLink
+                                    isLinkShown={false}
+                                  />
+                                </div>
                               </React.Fragment>,
                             },
                             Object {
@@ -1203,11 +1245,17 @@ exports[`Domain Explorer Table Component check null value for process instance a
                                           "businessKey": "Hello World",
                                           "id": "Hello World",
                                           "processName": "Hello World",
+                                          "serviceUrl": undefined,
                                         }
                                       }
                                     />
                                   </strong>
                                 </Link>
+                                <div>
+                                  <EndpointLink
+                                    isLinkShown={false}
+                                  />
+                                </div>
                               </React.Fragment>,
                             },
                             Object {
@@ -1546,11 +1594,17 @@ exports[`Domain Explorer Table Component check zero offset 1`] = `
                                           "businessKey": "Hello World",
                                           "id": "Hello World",
                                           "processName": "Hello World",
+                                          "serviceUrl": undefined,
                                         }
                                       }
                                     />
                                   </strong>
                                 </Link>
+                                <div>
+                                  <EndpointLink
+                                    isLinkShown={false}
+                                  />
+                                </div>
                               </React.Fragment>,
                             },
                             Object {
@@ -1643,11 +1697,17 @@ exports[`Domain Explorer Table Component check zero offset 1`] = `
                                           "businessKey": "Hello World",
                                           "id": "Hello World",
                                           "processName": "Hello World",
+                                          "serviceUrl": undefined,
                                         }
                                       }
                                     />
                                   </strong>
                                 </Link>
+                                <div>
+                                  <EndpointLink
+                                    isLinkShown={false}
+                                  />
+                                </div>
                               </React.Fragment>,
                             },
                             Object {
@@ -1779,11 +1839,17 @@ exports[`Domain Explorer Table Component check zero offset 1`] = `
                                           "businessKey": "Hello World",
                                           "id": "Hello World",
                                           "processName": "Hello World",
+                                          "serviceUrl": undefined,
                                         }
                                       }
                                     />
                                   </strong>
                                 </Link>
+                                <div>
+                                  <EndpointLink
+                                    isLinkShown={false}
+                                  />
+                                </div>
                               </React.Fragment>,
                             },
                             Object {
@@ -1876,11 +1942,17 @@ exports[`Domain Explorer Table Component check zero offset 1`] = `
                                           "businessKey": "Hello World",
                                           "id": "Hello World",
                                           "processName": "Hello World",
+                                          "serviceUrl": undefined,
                                         }
                                       }
                                     />
                                   </strong>
                                 </Link>
+                                <div>
+                                  <EndpointLink
+                                    isLinkShown={false}
+                                  />
+                                </div>
                               </React.Fragment>,
                             },
                             Object {

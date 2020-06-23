@@ -28,6 +28,7 @@ import { Link } from 'react-router-dom';
 import './DomainExplorerTable.css';
 import ProcessDescriptor from '../ProcessDescriptor/ProcessDescriptor';
 import KogitoSpinner from '../../Atoms/KogitoSpinner/KogitoSpinner';
+import EndpointLink from '../../Atoms/EndpointLink/EndpointLink';
 import { GraphQL } from '../../../graphql/types';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
 
@@ -153,7 +154,8 @@ const DomainExplorerTable = ({
                 const tempObj = {
                   id: data.id,
                   processName: data.processName,
-                  businessKey: data.businessKey
+                  businessKey: data.businessKey,
+                  serviceUrl: data.serviceUrl
                 };
                 const ele = {
                   title: (
@@ -168,6 +170,12 @@ const DomainExplorerTable = ({
                           <ProcessDescriptor processInstanceData={tempObj} />
                         </strong>
                       </Link>
+                      <div>
+                        <EndpointLink
+                          serviceUrl={tempObj.serviceUrl}
+                          isLinkShown={false}
+                        />
+                      </div>
                     </>
                   )
                 };

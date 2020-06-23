@@ -83,6 +83,7 @@ module.exports = typeDefs = gql`
     end: DateTime
     lastUpdate: DateTime!
     businessKey: String
+    serviceUrl: String
   }
 
   type ProcessInstanceError {

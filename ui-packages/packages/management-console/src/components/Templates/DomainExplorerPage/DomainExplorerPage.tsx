@@ -53,7 +53,8 @@ const DomainExplorerPage: React.FC<
           'state',
           'start',
           'lastUpdate',
-          'businessKey'
+          'businessKey',
+          'serviceUrl'
         ]
       }
     ]

@@ -22,7 +22,8 @@ import {
   KogitoEmptyStateType,
   KogitoSpinner,
   ProcessDescriptor,
-  ServerErrors
+  ServerErrors,
+  EndpointLink
 } from '@kogito-apps/common';
 import { Link } from 'react-router-dom';
 import { HistoryIcon } from '@patternfly/react-icons';
@@ -38,7 +39,6 @@ import {
   setTitle,
   stateIconCreator
 } from '../../../utils/Utils';
-import EndpointLink from '../EndpointLink/EndpointLink';
 import ProcessInstance = GraphQL.ProcessInstance;
 
 interface IOwnProps {

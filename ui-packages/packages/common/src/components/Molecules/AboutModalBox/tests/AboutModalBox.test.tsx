@@ -8,7 +8,7 @@ const props = {
 };
 describe('AboutModal component tests', () => {
   it('snapshot testing', () => {
-    process.env.KOGITO_APP_VERSION='1.2.3-MOCKED-VERSION';
+    process.env.KOGITO_APP_VERSION = '1.2.3-MOCKED-VERSION';
     const wrapper = shallow(<AboutModal {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
