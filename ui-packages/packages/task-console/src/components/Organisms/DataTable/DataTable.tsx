@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Bullseye } from '@patternfly/react-core';
-import { Table, TableBody, TableHeader } from '@patternfly/react-table';
 import {
-  KogitoEmptyState,
-  KogitoEmptyStateType,
-  KogitoSpinner
-} from '@kogito-apps/common';
+  Table,
+  TableHeader,
+  TableBody,
+  ICell,
+  IRow
+} from '@patternfly/react-table';
+import { KogitoSpinner, KogitoEmptyState, KogitoEmptyStateType } from '@kogito-apps/common';
 import '@patternfly/patternfly/patternfly-addons.css';
 import _ from 'lodash';
 import uuidv4 from 'uuid';
@@ -13,7 +15,7 @@ import uuidv4 from 'uuid';
 interface IOwnProps {
   data: any[];
   isLoading: boolean;
-  columns?: any[];
+  columns?: ICell[];
   networkStatus: any;
   error: any;
   refetch: () => void;
@@ -21,26 +23,31 @@ interface IOwnProps {
   ErrorComponent?: React.ReactNode;
 }
 
-const getColumns = (data, columns) => {
-  let columnList = [];
+const getColumns = (data: any[], columns: ICell[]) => {
+  let columnList: ICell[] = [];
   if (data) {
     columnList = columns
-      ? columns
-      : _.filter(_.keys(_.sample(data)), key => key !== '__typename');
+      ? _.filter(columns, column => !_.isEmpty(column.data))
+      : _.filter(_.keys(_.sample(data)), key => key !== '__typename').map(
+          key => ({ title: key, data: key } as ICell)
+        );
   }
   return columnList;
 };
 
-const getRows = (data, columns) => {
-  let rowList = [];
+const getRows = (data: any[], columns: ICell[]) => {
+  let rowList: IRow[] = [];
   if (data) {
     rowList = data.map(rowData => {
       return {
         cells: _.reduce(
           columns,
-          (result, column) => {
+          (result, column: ICell) => {
             _.forEach(rowData, (value, key) => {
-              if (key.toLowerCase() === column.toLowerCase()) {
+              if (
+                column.data &&
+                key.toLowerCase() === column.data.toLowerCase()
+              ) {
                 if (_.isEmpty(value) || value === '{}') {
                   result.push('N/A');
                 } else {
@@ -68,8 +75,8 @@ const DataTable: React.FC<IOwnProps> = ({
   LoadingComponent,
   ErrorComponent,refetch
 }) => {
-  const [rows, setRows] = useState<any>([]);
-  const [columnList, setColumnList] = useState<any>([]);
+  const [rows, setRows] = useState<IRow[]>([]);
+  const [columnList, setColumnList] = useState<ICell[]>([]);
 
   useEffect(() => {
     if (!_.isEmpty(data)) {

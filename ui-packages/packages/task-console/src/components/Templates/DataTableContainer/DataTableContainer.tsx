@@ -7,7 +7,8 @@ import {
   PageSection,
   InjectedOuiaProps,
   withOuiaContext,
-  Bullseye
+  Bullseye,
+  Label
 } from '@patternfly/react-core';
 import _ from 'lodash';
 import React, { useEffect } from 'react';
@@ -17,12 +18,27 @@ import './DataTable.css';
 import DataTable from '../../Organisms/DataTable/DataTable';
 import { useGetUserTasksByStatesQuery } from '../../../graphql/types';
 import { ouiaPageTypeAndObjectId, KogitoSpinner } from '@kogito-apps/common';
+import {
+  ICell,
+  ITransform,
+  IFormatterValueType
+} from '@patternfly/react-table';
 
 const UserTaskLoadingComponent = (
   <Bullseye>
     <KogitoSpinner spinnerText="Loading user tasks..." />
   </Bullseye>
 );
+
+const stateColumnTransformer: ITransform = (value: IFormatterValueType) => {
+  if (!value) {
+    return null;
+  }
+  const { title } = value;
+  return {
+    children: <Label>{title}</Label>
+  };
+};
 
 const DataTableContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
   const {
@@ -39,12 +55,28 @@ const DataTableContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
     notifyOnNetworkStatusChange: true
   });
 
-  const columns = [
-    'ProcessId',
-    'Name',
-    'Priority',
-    'ProcessInstanceId',
-    'State'
+  const columns: ICell[] = [
+    {
+      title: 'ProcessId',
+      data: 'processId'
+    },
+    {
+      title: 'Name',
+      data: 'name'
+    },
+    {
+      title: 'Priority',
+      data: 'priority'
+    },
+    {
+      title: 'ProcessInstanceId',
+      data: 'processInstanceId'
+    },
+    {
+      title: 'State',
+      data: 'state',
+      cellTransforms: [stateColumnTransformer]
+    }
   ];
 
   useEffect(() => {
