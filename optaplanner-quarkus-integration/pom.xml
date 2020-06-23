@@ -57,6 +57,10 @@
 
     <!-- TODO Quarkus is riddled with duplicate classes, see https://github.com/quarkusio/quarkus/issues/9834 -->
     <enforcer.failOnDuplicatedClasses>false</enforcer.failOnDuplicatedClasses>
+
+    <!-- TODO Remove when we upgrade to jboss-parent 36 -->
+    <version.compiler.plugin>3.8.0-jboss-2</version.compiler.plugin>
+    
   </properties>
 
   <modules>
