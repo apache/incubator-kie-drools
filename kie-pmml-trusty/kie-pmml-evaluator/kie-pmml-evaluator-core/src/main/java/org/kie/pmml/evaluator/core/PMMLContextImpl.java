@@ -62,11 +62,11 @@ public class PMMLContextImpl extends ContextImpl implements PMMLContext {
 
     @Override
     public Map<String, Object> getCommonTransformationMap() {
-        return commonTransformationMap;
+        return Collections.unmodifiableMap(commonTransformationMap);
     }
 
     @Override
     public Map<String, Object> getLocalTransformationMap() {
-        return localTransformationMap;
+        return Collections.unmodifiableMap(localTransformationMap);
     }
 }
