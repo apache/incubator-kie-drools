@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.models.drools.scorecard.compiler.executor;
 
-import java.io.IOException;
 import java.util.Map;
 
 import org.dmg.pmml.DataDictionary;
@@ -42,7 +41,7 @@ public class ScorecardModelImplementationProvider extends DroolsModelProvider<Sc
     }
 
     @Override
-    public KiePMMLScorecardModel getKiePMMLDroolsModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final Scorecard model, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+    public KiePMMLScorecardModel getKiePMMLDroolsModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         try {
             return KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(dataDictionary, transformationDictionary, model, fieldTypeMap);
         } catch (IllegalAccessException | InstantiationException e) {
@@ -56,7 +55,7 @@ public class ScorecardModelImplementationProvider extends DroolsModelProvider<Sc
     }
 
     @Override
-    public Map<String, String> getKiePMMLDroolsModelSourcesMap(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final Scorecard model, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, String packageName) throws IOException {
+    public Map<String, String> getKiePMMLDroolsModelSourcesMap(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final String packageName) {
         return KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(dataDictionary, transformationDictionary, model, fieldTypeMap, packageName);
     }
 }

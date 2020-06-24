@@ -47,7 +47,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
     private static final Logger logger = LoggerFactory.getLogger(PMMLCompilerImpl.class.getName());
 
     @Override
-    public List<KiePMMLModel> getModels(InputStream inputStream, Object kbuilder) {
+    public List<KiePMMLModel> getModels(final InputStream inputStream, final Object kbuilder) {
         logger.trace("getModels {} {}", inputStream, kbuilder);
         try {
             PMML commonPMMLModel = KiePMMLUtil.load(inputStream);
@@ -62,7 +62,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
     }
 
     @Override
-    public List<KiePMMLModel> getModelsFromPlugin(String factoryClassName, String packageName, InputStream inputStream, Object kbuilder) {
+    public List<KiePMMLModel> getModelsFromPlugin(final String factoryClassName, final String packageName, final InputStream inputStream, final Object kbuilder) {
         logger.trace("getModels {} {}", inputStream, kbuilder);
         try {
             PMML commonPMMLModel = KiePMMLUtil.load(inputStream);
@@ -104,7 +104,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
      * @return
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
-    private List<KiePMMLModel> getModels(PMML pmml, Object kbuilder) {
+    private List<KiePMMLModel> getModels(final PMML pmml, final Object kbuilder) {
         logger.trace("getModels {}", pmml);
         return pmml
                 .getModels()
@@ -122,7 +122,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
      * @return
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
-    private List<KiePMMLModel> getModelsFromPlugin(String packageName, PMML pmml, Object kbuilder) {
+    private List<KiePMMLModel> getModelsFromPlugin(final String packageName, final PMML pmml, final Object kbuilder) {
         logger.trace("getModels {}", pmml);
         return pmml
                 .getModels()

@@ -94,7 +94,7 @@ public class KiePMMLTreeModelFactory {
      * @param fieldTypeMap
      * @return
      */
-    public static KiePMMLDroolsAST getKiePMMLDroolsAST(DataDictionary dataDictionary, TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+    public static KiePMMLDroolsAST getKiePMMLDroolsAST(final DataDictionary dataDictionary, final TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         logger.trace("getKiePMMLDroolsAST {}", model);
         return KiePMMLTreeModelASTFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
     }

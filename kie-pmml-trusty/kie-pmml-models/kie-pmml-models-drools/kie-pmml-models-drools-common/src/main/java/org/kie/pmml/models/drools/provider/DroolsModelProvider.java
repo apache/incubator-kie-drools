@@ -44,7 +44,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
     private static final Logger logger = LoggerFactory.getLogger(DroolsModelProvider.class.getName());
 
     @Override
-    public E getKiePMMLModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, Object kBuilder) {
+    public E getKiePMMLModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final Object kBuilder) {
         logger.trace("getKiePMMLModel {} {} {}", dataDictionary, transformationDictionary, model);
         if (!(kBuilder instanceof KnowledgeBuilder)) {
             throw new KiePMMLException(String.format("Expecting KnowledgeBuilder, received %s", kBuilder.getClass().getName()));
@@ -58,7 +58,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
     }
 
     @Override
-    public E getKiePMMLModelFromPlugin(String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, Object kBuilder) {
+    public E getKiePMMLModelFromPlugin(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final Object kBuilder) {
         logger.trace("getKiePMMLModelFromPlugin {} {} {}", dataDictionary, model, kBuilder);
         if (!(kBuilder instanceof KnowledgeBuilder)) {
             throw new KiePMMLException(String.format("Expecting KnowledgeBuilder, received %s", kBuilder.getClass().getName()));
@@ -76,7 +76,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
         }
     }
 
-    public abstract E getKiePMMLDroolsModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap);
+    public abstract E getKiePMMLDroolsModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap);
 
     public abstract KiePMMLDroolsAST getKiePMMLDroolsAST(final DataDictionary dataDictionary, final T model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap);
 
@@ -86,7 +86,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
                                                                         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
                                                                         final String packageName) throws IOException;
 
-    public PackageDescr getPackageDescr(KiePMMLDroolsAST kiePMMLDroolsAST, String packageName) {
+    public PackageDescr getPackageDescr(final KiePMMLDroolsAST kiePMMLDroolsAST, final String packageName) {
         return getBaseDescr(kiePMMLDroolsAST, packageName);
     }
 }

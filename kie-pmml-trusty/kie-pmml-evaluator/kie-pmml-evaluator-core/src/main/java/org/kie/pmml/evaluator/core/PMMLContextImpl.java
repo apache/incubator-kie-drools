@@ -30,7 +30,7 @@ public class PMMLContextImpl extends ContextImpl implements PMMLContext {
     private final Map<String, Object> commonTransformationMap = new HashMap<>();
     private final Map<String, Object> localTransformationMap = new HashMap<>();
 
-    public PMMLContextImpl(PMMLRequestData pmmlRequestData) {
+    public PMMLContextImpl(final PMMLRequestData pmmlRequestData) {
         super();
         set(PMML_REQUEST_DATA, pmmlRequestData);
     }
@@ -41,17 +41,17 @@ public class PMMLContextImpl extends ContextImpl implements PMMLContext {
     }
 
     @Override
-    public void addMissingValueReplaced(String fieldName, Object missingValueReplaced) {
+    public void addMissingValueReplaced(final String fieldName, final Object missingValueReplaced) {
         missingValueReplacedMap.put(fieldName, missingValueReplaced);
     }
 
     @Override
-    public void addCommonTranformation(String fieldName, Object commonTranformation) {
+    public void addCommonTranformation(final String fieldName, final Object commonTranformation) {
         localTransformationMap.put(fieldName, commonTranformation);
     }
 
     @Override
-    public void addLocalTranformation(String fieldName, Object commonTranformation) {
+    public void addLocalTranformation(final String fieldName, final Object commonTranformation) {
         commonTransformationMap.put(fieldName, commonTranformation);
     }
 
@@ -62,11 +62,11 @@ public class PMMLContextImpl extends ContextImpl implements PMMLContext {
 
     @Override
     public Map<String, Object> getCommonTransformationMap() {
-        return commonTransformationMap;
+        return Collections.unmodifiableMap(commonTransformationMap);
     }
 
     @Override
     public Map<String, Object> getLocalTransformationMap() {
-        return localTransformationMap;
+        return Collections.unmodifiableMap(localTransformationMap);
     }
 }
