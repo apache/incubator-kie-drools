@@ -55,7 +55,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
     }
 
     @Override
-    public KiePMMLRegressionModel getKiePMMLModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final RegressionModel model, Object kBuilder) {
+    public KiePMMLRegressionModel getKiePMMLModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final RegressionModel model, final Object kBuilder) {
         logger.trace("getKiePMMLModel {} {} {}", dataDictionary, model, kBuilder);
         validate(dataDictionary, model);
         try {
@@ -66,7 +66,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
     }
 
     @Override
-    public KiePMMLRegressionModel getKiePMMLModelFromPlugin(String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final RegressionModel model, Object kBuilder) {
+    public KiePMMLRegressionModel getKiePMMLModelFromPlugin(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final RegressionModel model, final Object kBuilder) {
         logger.trace("getKiePMMLModelFromPlugin {} {} {}", dataDictionary, model, kBuilder);
         try {
             final Map<String, String> sourcesMap = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(dataDictionary, transformationDictionary, model, packageName);
@@ -76,7 +76,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
         }
     }
 
-    protected void validate(DataDictionary dataDictionary, RegressionModel toValidate) {
+    protected void validate(final DataDictionary dataDictionary, final RegressionModel toValidate) {
         if (toValidate.getRegressionTables() == null || toValidate.getRegressionTables().isEmpty()) {
             throw new KiePMMLException("At least one RegressionTable required");
         }
@@ -88,7 +88,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
         }
     }
 
-    private void validateRegression(List<KiePMMLNameOpType> targetFields, RegressionModel toValidate) {
+    private void validateRegression(final List<KiePMMLNameOpType> targetFields, final RegressionModel toValidate) {
         validateRegressionTargetField(targetFields, toValidate);
         if (toValidate.getRegressionTables().size() != 1) {
             throw new KiePMMLException("Expected one RegressionTable, retrieved " + toValidate.getRegressionTables().size());
@@ -108,7 +108,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
         }
     }
 
-    private void validateClassification(DataDictionary dataDictionary, RegressionModel toValidate) {
+    private void validateClassification(final DataDictionary dataDictionary, final RegressionModel toValidate) {
         final String categoricalTargeName = getCategoricalTargetName(dataDictionary, toValidate);
         final OP_TYPE opType = getOpType(dataDictionary, toValidate, categoricalTargeName);
         switch (opType) {
@@ -123,7 +123,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
         }
     }
 
-    private void validateClassificationCategorical(DataDictionary dataDictionary, RegressionModel toValidate, String categoricalFieldName) {
+    private void validateClassificationCategorical(final DataDictionary dataDictionary, final RegressionModel toValidate, final String categoricalFieldName) {
         if (isBinary(dataDictionary, categoricalFieldName)) {
             validateClassificationCategoricalBinary(toValidate);
         } else {
@@ -131,7 +131,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
         }
     }
 
-    private void validateClassificationCategoricalBinary(RegressionModel toValidate) {
+    private void validateClassificationCategoricalBinary(final RegressionModel toValidate) {
         switch (toValidate.getNormalizationMethod()) {
             case LOGIT:
             case PROBIT:
@@ -148,7 +148,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
         }
     }
 
-    private void validateClassificationCategoricalNotBinary(RegressionModel toValidate) {
+    private void validateClassificationCategoricalNotBinary(final RegressionModel toValidate) {
         switch (toValidate.getNormalizationMethod()) {
             case SOFTMAX:
             case SIMPLEMAX:
@@ -166,7 +166,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
         }
     }
 
-    private void validateClassificationOrdinal(RegressionModel toValidate) {
+    private void validateClassificationOrdinal(final RegressionModel toValidate) {
         switch (toValidate.getNormalizationMethod()) {
             case LOGIT:
             case PROBIT:
@@ -183,7 +183,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
         }
     }
 
-    private void validateRegressionTargetField(List<KiePMMLNameOpType> targetFields, RegressionModel toValidate) {
+    private void validateRegressionTargetField(final List<KiePMMLNameOpType> targetFields, final RegressionModel toValidate) {
         if (targetFields.size() != 1) {
             throw new KiePMMLException("Expected one target field, retrieved " + targetFields.size());
         }
@@ -192,17 +192,17 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
         }
     }
 
-    private boolean isRegression(RegressionModel toValidate) {
+    private boolean isRegression(final RegressionModel toValidate) {
         return Objects.equals(MiningFunction.REGRESSION, toValidate.getMiningFunction());
     }
 
-    private boolean isBinary(DataDictionary dataDictionary, String categoricalFieldName) {
+    private boolean isBinary(final DataDictionary dataDictionary, final String categoricalFieldName) {
         return dataDictionary.getDataFields().stream()
                 .filter(dataField -> Objects.equals(dataField.getName().getValue(), categoricalFieldName)).mapToDouble(dataField -> dataField.getValues().size())
                 .findFirst().orElse(0) == 2;
     }
 
-    private String getCategoricalTargetName(DataDictionary dataDictionary, RegressionModel toValidate) {
+    private String getCategoricalTargetName(final DataDictionary dataDictionary, final RegressionModel toValidate) {
         List<KiePMMLNameOpType> targetFields = getTargetFields(dataDictionary, toValidate);
         final List<String> categoricalFields = dataDictionary.getDataFields().stream()
                 .filter(dataField -> OpType.CATEGORICAL.equals(dataField.getOpType()))

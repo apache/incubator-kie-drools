@@ -45,7 +45,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
     private final KieBase knowledgeBase;
     private final PMMLModelEvaluatorFinderImpl pmmlModelExecutorFinder;
 
-    public PMMLRuntimeImpl(KieBase knowledgeBase, PMMLModelEvaluatorFinderImpl pmmlModelExecutorFinder) {
+    public PMMLRuntimeImpl(final KieBase knowledgeBase, final PMMLModelEvaluatorFinderImpl pmmlModelExecutorFinder) {
         this.knowledgeBase = knowledgeBase;
         this.pmmlModelExecutorFinder = pmmlModelExecutorFinder;
     }
@@ -56,12 +56,12 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
     }
 
     @Override
-    public Optional<KiePMMLModel> getModel(String modelName) {
+    public Optional<KiePMMLModel> getModel(final String modelName) {
         return KnowledgeBaseUtils.getModel(knowledgeBase, modelName);
     }
 
     @Override
-    public PMML4Result evaluate(String modelName, PMMLContext context) {
+    public PMML4Result evaluate(final String modelName, final PMMLContext context) {
         if (logger.isDebugEnabled()) {
             logger.debug("evaluate {} {}", modelName, context);
         }
@@ -69,7 +69,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
         return evaluate(toEvaluate, context);
     }
 
-    protected PMML4Result evaluate(KiePMMLModel model, PMMLContext context) {
+    protected PMML4Result evaluate(final KiePMMLModel model, final PMMLContext context) {
         if (logger.isDebugEnabled()) {
             logger.debug("evaluate {} {}", model, context);
         }
@@ -89,7 +89,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
      * @param context
      * @see <a href="http://dmg.org/pmml/v4-4/MiningSchema.html#xsdType_MISSING-VALUE-TREATMENT-METHOD">MISSING-VALUE-TREATMENT-METHOD</a>
      */
-    protected void addMissingValuesReplacements(KiePMMLModel model, PMMLContext context) {
+    protected void addMissingValuesReplacements(final KiePMMLModel model, final PMMLContext context) {
         logger.debug("addMissingValuesReplacements {} {}", model, context);
         final PMMLRequestData requestData = context.getRequestData();
         final Map<String, ParameterInfo> mappedRequestParams = requestData.getMappedRequestParams();
@@ -105,20 +105,19 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
 
     /**
      * Execute <b>Transformations</b> on input data.
-     *
      * @param model
      * @param context
-     *
      * @see <a href="http://dmg.org/pmml/v4-4/Transformations.html">Transformations</a>
      * @see <a href="http://dmg.org/pmml/v4-4/Transformations.html#xsdElement_LocalTransformations">LocalTransformations</a>
      */
-    protected void executeTransformations(KiePMMLModel model, PMMLContext context) {
+    protected void executeTransformations(final KiePMMLModel model, final PMMLContext context) {
         logger.debug("executeTransformations {} {}", model, context);
         final PMMLRequestData requestData = context.getRequestData();
         final Map<String, ParameterInfo> mappedRequestParams = requestData.getMappedRequestParams();
         final List<KiePMMLNameValue> kiePMMLNameValues = getKiePMMLNameValuesFromParameterInfos(mappedRequestParams.values());
         final Map<String, Function<List<KiePMMLNameValue>, Object>> commonTransformationsMap = model.getCommonTransformationsMap();
         commonTransformationsMap.forEach((fieldName, transformationFunction) -> {
+            // Common Transformations need to be done only once
             if (!mappedRequestParams.containsKey(fieldName)) {
                 logger.debug("commonTransformation {} {}", fieldName, transformationFunction);
                 Object commonTranformation = transformationFunction.apply(kiePMMLNameValues);
@@ -129,14 +128,16 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
         });
         final Map<String, Function<List<KiePMMLNameValue>, Object>> localTransformationsMap = model.getLocalTransformationsMap();
         localTransformationsMap.forEach((fieldName, transformationFunction) -> {
-            if (!mappedRequestParams.containsKey(fieldName)) {
-                logger.debug("localTransformation {} {}", fieldName, transformationFunction);
-                Object localTransformation = transformationFunction.apply(kiePMMLNameValues);
-                requestData.addRequestParam(fieldName, localTransformation);
-                context.addLocalTranformation(fieldName, localTransformation);
+            logger.debug("localTransformation {} {}", fieldName, transformationFunction);
+            Object localTransformation = transformationFunction.apply(kiePMMLNameValues);
+            // Local Transformations need to be done for every model, eventually replacing previous ones
+            if (mappedRequestParams.containsKey(fieldName)) {
+                final ParameterInfo toRemove = mappedRequestParams.get(fieldName);
+                requestData.removeRequestParam(toRemove);
             }
+            requestData.addRequestParam(fieldName, localTransformation);
+            context.addLocalTranformation(fieldName, localTransformation);
         });
-
     }
 
     /**
@@ -145,7 +146,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
      * @param pmmlMODEL
      * @return
      */
-    private Optional<PMMLModelEvaluator> getFromPMMLModelType(PMML_MODEL pmmlMODEL) {
+    private Optional<PMMLModelEvaluator> getFromPMMLModelType(final PMML_MODEL pmmlMODEL) {
         logger.trace("getFromPMMLModelType {}", pmmlMODEL);
         return pmmlModelExecutorFinder.getImplementations(false)
                 .stream()
@@ -153,7 +154,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
                 .findFirst();
     }
 
-    private List<KiePMMLNameValue> getKiePMMLNameValuesFromParameterInfos(Collection<ParameterInfo> parameterInfos) {
+    private List<KiePMMLNameValue> getKiePMMLNameValuesFromParameterInfos(final Collection<ParameterInfo> parameterInfos) {
         return parameterInfos.stream()
                 .map(parameterInfo -> new KiePMMLNameValue(parameterInfo.getName(), parameterInfo.getValue()))
                 .collect(Collectors.toList());

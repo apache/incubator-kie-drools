@@ -41,7 +41,7 @@ public class TreeModelImplementationProvider extends DroolsModelProvider<TreeMod
     }
 
     @Override
-    public KiePMMLTreeModel getKiePMMLDroolsModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final TreeModel model, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+    public KiePMMLTreeModel getKiePMMLDroolsModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         try {
             return KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary, transformationDictionary, model, fieldTypeMap);
         } catch (IllegalAccessException | InstantiationException e) {
@@ -55,7 +55,7 @@ public class TreeModelImplementationProvider extends DroolsModelProvider<TreeMod
     }
 
     @Override
-    public Map<String, String> getKiePMMLDroolsModelSourcesMap(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final TreeModel model, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, String packageName) {
+    public Map<String, String> getKiePMMLDroolsModelSourcesMap(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final String packageName) {
         return KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(dataDictionary, transformationDictionary, model, fieldTypeMap, packageName);
     }
 }

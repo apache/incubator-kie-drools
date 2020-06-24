@@ -38,7 +38,7 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
      * @return
      * @throws KiePMMLInternalException
      */
-    E getKiePMMLModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, Object kBuilder);
+    E getKiePMMLModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final Object kBuilder);
 
     /**
      * Method to be called following a <b>kie-maven-plugin</b> invocation
@@ -51,5 +51,5 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
      * @return
      * @throws KiePMMLInternalException
      */
-    E getKiePMMLModelFromPlugin(String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, Object kBuilder);
+    E getKiePMMLModelFromPlugin(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final Object kBuilder);
 }

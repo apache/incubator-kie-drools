@@ -102,7 +102,11 @@ public class KiePMMLRegressionModelFactory {
         return toReturn;
     }
 
-    private static Map<String, KiePMMLTableSourceCategory> getRegressionTablesMap(DataDictionary dataDictionary, RegressionModel model, String targetFieldName, List<KiePMMLOutputField> outputFields, String packageName) throws IOException {
+    private static Map<String, KiePMMLTableSourceCategory> getRegressionTablesMap(final DataDictionary dataDictionary,
+                                                                                  final RegressionModel model,
+                                                                                  final String targetFieldName,
+                                                                                  final List<KiePMMLOutputField> outputFields,
+                                                                                  final String packageName) throws IOException {
         final DataField targetDataField = dataDictionary.getDataFields().stream()
                 .filter(field -> Objects.equals(targetFieldName, field.getName().getValue()))
                 .findFirst().orElse(null);
@@ -116,7 +120,12 @@ public class KiePMMLRegressionModelFactory {
         return toReturn;
     }
 
-    private static void populateConstructor(String generatedClassName, String nestedTable, final ConstructorDeclaration constructorDeclaration, String targetField, MINING_FUNCTION miningFunction, String modelName) {
+    private static void populateConstructor(final String generatedClassName,
+                                            final String nestedTable,
+                                            final ConstructorDeclaration constructorDeclaration,
+                                            final String targetField,
+                                            final MINING_FUNCTION miningFunction,
+                                            final String modelName) {
         ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
         objectCreationExpr.setType(nestedTable);
         constructorDeclaration.setName(generatedClassName);
@@ -142,7 +151,7 @@ public class KiePMMLRegressionModelFactory {
         });
     }
 
-    private static boolean isRegression(MiningFunction miningFunction, String targetField, OpType targetOpType) {
+    private static boolean isRegression(final MiningFunction miningFunction, final String targetField, final OpType targetOpType) {
         return Objects.equals(MiningFunction.REGRESSION, miningFunction) && (targetField == null || Objects.equals(OpType.CONTINUOUS, targetOpType));
     }
 }

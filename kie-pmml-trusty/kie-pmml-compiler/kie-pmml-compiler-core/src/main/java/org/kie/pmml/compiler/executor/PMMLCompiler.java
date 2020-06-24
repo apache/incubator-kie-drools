@@ -36,7 +36,7 @@ public interface PMMLCompiler {
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
      */
-    List<KiePMMLModel> getModels(InputStream inputStream, Object kbuilder);
+    List<KiePMMLModel> getModels(final InputStream inputStream, final Object kbuilder);
 
     /**
      * Read the given <code>InputStream</code> to return a <code>List&lt;KiePMMLModel&gt;</code> following a
@@ -49,5 +49,5 @@ public interface PMMLCompiler {
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
      */
-    List<KiePMMLModel> getModelsFromPlugin(String factoryClassName, String packageName, InputStream inputStream, Object kbuilder);
+    List<KiePMMLModel> getModelsFromPlugin(final String factoryClassName, final String packageName, final InputStream inputStream, final Object kbuilder);
 }

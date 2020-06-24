@@ -86,7 +86,7 @@ public class KiePMMLModelRetriever {
      * @param model
      * @return
      */
-    private static Stream<ModelImplementationProvider<Model, KiePMMLModel>> getModelImplementationProviderStream(Model model) {
+    private static Stream<ModelImplementationProvider<Model, KiePMMLModel>> getModelImplementationProviderStream(final Model model) {
         final PMML_MODEL pmmlMODEL = PMML_MODEL.byName(model.getClass().getSimpleName());
         return modelImplementationProviderFinder.getImplementations(false)
                 .stream()
