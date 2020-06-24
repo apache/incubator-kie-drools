@@ -379,7 +379,6 @@
         <type>test-jar</type>
       </dependency>
 
-
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>persistence-commons-protobuf</artifactId>
@@ -394,6 +393,61 @@
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>persistence-commons-protobuf</artifactId>
+        <version>${project.version}</version>
+        <classifier>javadoc</classifier>
+      </dependency>
+
+      <!-- Trusty Services -->
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>trusty-service</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>trusty-service</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>trusty-service</artifactId>
+        <version>${project.version}</version>
+        <classifier>javadoc</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>trusty-storage-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>trusty-storage-api</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>trusty-storage-api</artifactId>
+        <version>${project.version}</version>
+        <classifier>javadoc</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>trusty-storage-infinispan</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>trusty-storage-infinispan</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>trusty-storage-infinispan</artifactId>
         <version>${project.version}</version>
         <classifier>javadoc</classifier>
       </dependency>
