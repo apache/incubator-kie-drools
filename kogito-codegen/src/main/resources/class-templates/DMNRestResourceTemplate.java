@@ -21,6 +21,11 @@ import org.kie.kogito.dmn.rest.DMNResult;
 public class DMNRestResourceTemplate {
 
     Application application;
+    
+    private static final String KOGITO_DECISION_INFOWARN_HEADER = "X-Kogito-decision-messages";
+    
+    @javax.ws.rs.core.Context
+    private org.jboss.resteasy.spi.HttpResponse httpResponse;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -41,6 +46,7 @@ public class DMNRestResourceTemplate {
     private Object extractContextIfSucceded(DMNResult result){
         if (!result.hasErrors()) {
             try {
+                enrichResponseHeaders(result);
                 return objectMapper.writeValueAsString(result.getDmnContext());
             } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
                 throw new RuntimeException(e);
@@ -61,12 +67,20 @@ public class DMNRestResourceTemplate {
     private Object extractSingletonDSIfSucceded(DMNResult result) {
         if (!result.hasErrors()) {
             try {
+                enrichResponseHeaders(result);
                 return objectMapper.writeValueAsString(result.getDecisionResults().get(0).getResult());
             } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
         } else {
             throw new DMNEvaluationErrorException(result);
+        }
+    }
+    
+    private void enrichResponseHeaders(DMNResult result) {
+        if (!result.getMessages().isEmpty()) {
+            String infoWarns = result.getMessages().stream().map(m -> m.getLevel() + " " + m.getMessage()).collect(java.util.stream.Collectors.joining(", "));
+            httpResponse.getOutputHeaders().add(KOGITO_DECISION_INFOWARN_HEADER, infoWarns);
         }
     }
 }

@@ -41,6 +41,13 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <!-- resteasy-core-spi is used for testing, and cannot be listed in kogito-runtimes or it would impact either Quarkus or SB platform version  -->
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-core-spi</artifactId>
+        <version>${version.org.jboss.resteasy.spi.test}</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -135,6 +142,11 @@
     <dependency>
       <groupId>org.jboss.spec.javax.ws.rs</groupId>
       <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-core-spi</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
