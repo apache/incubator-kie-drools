@@ -26,6 +26,7 @@ import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.tree.TreeModel;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
@@ -55,17 +56,18 @@ public class KiePMMLTreeModelFactory {
         // Avoid instantiation
     }
 
-    public static KiePMMLTreeModel getKiePMMLTreeModel(DataDictionary dataDictionary, TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) throws IllegalAccessException, InstantiationException {
+    public static KiePMMLTreeModel getKiePMMLTreeModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) throws IllegalAccessException, InstantiationException {
         logger.trace("getKiePMMLTreeModel {}", model);
         String className = getSanitizedClassName(model.getModelName());
         String packageName = getSanitizedPackageName(className);
-        Map<String, String> sourcesMap = getKiePMMLTreeModelSourcesMap(dataDictionary, model, fieldTypeMap, packageName);
+        Map<String, String> sourcesMap = getKiePMMLTreeModelSourcesMap(dataDictionary, transformationDictionary, model, fieldTypeMap, packageName);
         String fullClassName = packageName + "." + className;
         final Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
         return (KiePMMLTreeModel) compiledClasses.get(fullClassName).newInstance();
     }
 
     public static Map<String, String> getKiePMMLTreeModelSourcesMap(final DataDictionary dataDictionary,
+                                                                    final TransformationDictionary transformationDictionary,
                                                                     final TreeModel model,
                                                                     final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
                                                                     final String packageName) {
@@ -90,7 +92,7 @@ public class KiePMMLTreeModelFactory {
      * @param fieldTypeMap
      * @return
      */
-    public static KiePMMLDroolsAST getKiePMMLDroolsAST(DataDictionary dataDictionary, TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+    public static KiePMMLDroolsAST getKiePMMLDroolsAST(final DataDictionary dataDictionary, final TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         logger.trace("getKiePMMLDroolsAST {}", model);
         return KiePMMLTreeModelASTFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
     }

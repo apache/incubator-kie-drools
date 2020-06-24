@@ -26,12 +26,13 @@ import org.kie.pmml.evaluator.api.executor.PMMLContext;
 public class PMMLContextImpl extends ContextImpl implements PMMLContext {
 
     private static final String PMML_REQUEST_DATA = "PMML_REQUEST_DATA";
-    final Map<String, Object> missingValueReplacedMap;
+    private final Map<String, Object> missingValueReplacedMap = new HashMap<>();
+    private final Map<String, Object> commonTransformationMap = new HashMap<>();
+    private final Map<String, Object> localTransformationMap = new HashMap<>();
 
-    public PMMLContextImpl(PMMLRequestData pmmlRequestData) {
+    public PMMLContextImpl(final PMMLRequestData pmmlRequestData) {
         super();
         set(PMML_REQUEST_DATA, pmmlRequestData);
-        missingValueReplacedMap = new HashMap<>();
     }
 
     @Override
@@ -40,12 +41,32 @@ public class PMMLContextImpl extends ContextImpl implements PMMLContext {
     }
 
     @Override
-    public void addMissingValueReplaced(String fieldName, Object missingValueReplaced) {
+    public void addMissingValueReplaced(final String fieldName, final Object missingValueReplaced) {
         missingValueReplacedMap.put(fieldName, missingValueReplaced);
+    }
+
+    @Override
+    public void addCommonTranformation(final String fieldName, final Object commonTranformation) {
+        localTransformationMap.put(fieldName, commonTranformation);
+    }
+
+    @Override
+    public void addLocalTranformation(final String fieldName, final Object commonTranformation) {
+        commonTransformationMap.put(fieldName, commonTranformation);
     }
 
     @Override
     public Map<String, Object> getMissingValueReplacedMap() {
         return Collections.unmodifiableMap(missingValueReplacedMap);
+    }
+
+    @Override
+    public Map<String, Object> getCommonTransformationMap() {
+        return Collections.unmodifiableMap(commonTransformationMap);
+    }
+
+    @Override
+    public Map<String, Object> getLocalTransformationMap() {
+        return Collections.unmodifiableMap(localTransformationMap);
     }
 }

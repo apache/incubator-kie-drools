@@ -15,10 +15,10 @@
  */
 package org.kie.pmml.models.drools.scorecard.compiler.executor;
 
-import java.io.IOException;
 import java.util.Map;
 
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
@@ -41,21 +41,21 @@ public class ScorecardModelImplementationProvider extends DroolsModelProvider<Sc
     }
 
     @Override
-    public KiePMMLScorecardModel getKiePMMLDroolsModel(DataDictionary dataDictionary, Scorecard model, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+    public KiePMMLScorecardModel getKiePMMLDroolsModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         try {
-            return KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(dataDictionary, model, fieldTypeMap);
+            return KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(dataDictionary, transformationDictionary, model, fieldTypeMap);
         } catch (IllegalAccessException | InstantiationException e) {
             throw new KiePMMLException(e.getMessage(), e);
         }
     }
 
     @Override
-    public KiePMMLDroolsAST getKiePMMLDroolsAST(DataDictionary dataDictionary, Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+    public KiePMMLDroolsAST getKiePMMLDroolsAST(final DataDictionary dataDictionary, final Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         return KiePMMLScorecardModelFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
     }
 
     @Override
-    public Map<String, String> getKiePMMLDroolsModelSourcesMap(DataDictionary dataDictionary, Scorecard model, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, String packageName) throws IOException {
-        return KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(dataDictionary, model, fieldTypeMap, packageName);
+    public Map<String, String> getKiePMMLDroolsModelSourcesMap(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final String packageName) {
+        return KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(dataDictionary, transformationDictionary, model, fieldTypeMap, packageName);
     }
 }

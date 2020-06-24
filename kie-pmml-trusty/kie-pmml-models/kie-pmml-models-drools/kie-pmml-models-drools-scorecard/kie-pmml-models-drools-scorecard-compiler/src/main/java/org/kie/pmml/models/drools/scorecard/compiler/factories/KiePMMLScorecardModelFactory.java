@@ -26,6 +26,7 @@ import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
@@ -55,17 +56,17 @@ public class KiePMMLScorecardModelFactory {
         // Avoid instantiation
     }
 
-    public static KiePMMLScorecardModel getKiePMMLScorecardModel(DataDictionary dataDictionary, Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) throws IllegalAccessException, InstantiationException {
+    public static KiePMMLScorecardModel getKiePMMLScorecardModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) throws IllegalAccessException, InstantiationException {
         logger.trace("getKiePMMLScorecardModel {}", model);
         String className = getSanitizedClassName(model.getModelName());
         String packageName = getSanitizedPackageName(className);
-        Map<String, String> sourcesMap = getKiePMMLScorecardModelSourcesMap(dataDictionary, model, fieldTypeMap, packageName);
+        Map<String, String> sourcesMap = getKiePMMLScorecardModelSourcesMap(dataDictionary, transformationDictionary, model, fieldTypeMap, packageName);
         String fullClassName = packageName + "." + className;
         final Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
         return (KiePMMLScorecardModel) compiledClasses.get(fullClassName).newInstance();
     }
 
-    public static Map<String, String> getKiePMMLScorecardModelSourcesMap(final DataDictionary dataDictionary, final Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final String packageName) {
+    public static Map<String, String> getKiePMMLScorecardModelSourcesMap(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final String packageName) {
         logger.trace("getKiePMMLScorecardModelSourcesMap {} {} {}", dataDictionary, model, packageName);
         CompilationUnit cloneCU = getKiePMMLModelCompilationUnit(dataDictionary, model, fieldTypeMap, packageName, KIE_PMML_SCORECARD_MODEL_TEMPLATE_JAVA, KIE_PMML_SCORECARD_MODEL_TEMPLATE);
         String className = getSanitizedClassName(model.getModelName());
@@ -87,7 +88,7 @@ public class KiePMMLScorecardModelFactory {
      * @param fieldTypeMap
      * @return
      */
-    public static KiePMMLDroolsAST getKiePMMLDroolsAST(DataDictionary dataDictionary, Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+    public static KiePMMLDroolsAST getKiePMMLDroolsAST(final DataDictionary dataDictionary, final Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         logger.trace("getKiePMMLDroolsAST {}", model);
         return KiePMMLScorecardModelASTFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
     }

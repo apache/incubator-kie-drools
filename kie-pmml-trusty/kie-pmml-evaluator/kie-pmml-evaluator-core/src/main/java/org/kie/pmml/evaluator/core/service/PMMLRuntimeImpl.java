@@ -15,9 +15,12 @@
  */
 package org.kie.pmml.evaluator.core.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
@@ -26,6 +29,7 @@ import org.kie.api.pmml.ParameterInfo;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
@@ -41,7 +45,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
     private final KieBase knowledgeBase;
     private final PMMLModelEvaluatorFinderImpl pmmlModelExecutorFinder;
 
-    public PMMLRuntimeImpl(KieBase knowledgeBase, PMMLModelEvaluatorFinderImpl pmmlModelExecutorFinder) {
+    public PMMLRuntimeImpl(final KieBase knowledgeBase, final PMMLModelEvaluatorFinderImpl pmmlModelExecutorFinder) {
         this.knowledgeBase = knowledgeBase;
         this.pmmlModelExecutorFinder = pmmlModelExecutorFinder;
     }
@@ -52,12 +56,12 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
     }
 
     @Override
-    public Optional<KiePMMLModel> getModel(String modelName) {
+    public Optional<KiePMMLModel> getModel(final String modelName) {
         return KnowledgeBaseUtils.getModel(knowledgeBase, modelName);
     }
 
     @Override
-    public PMML4Result evaluate(String modelName, PMMLContext context) {
+    public PMML4Result evaluate(final String modelName, final PMMLContext context) {
         if (logger.isDebugEnabled()) {
             logger.debug("evaluate {} {}", modelName, context);
         }
@@ -65,11 +69,12 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
         return evaluate(toEvaluate, context);
     }
 
-    protected PMML4Result evaluate(KiePMMLModel model, PMMLContext context) {
+    protected PMML4Result evaluate(final KiePMMLModel model, final PMMLContext context) {
         if (logger.isDebugEnabled()) {
             logger.debug("evaluate {} {}", model, context);
         }
         addMissingValuesReplacements(model, context);
+        executeTransformations(model, context);
         PMMLModelEvaluator executor = getFromPMMLModelType(model.getPmmlMODEL())
                 .orElseThrow(() -> new KiePMMLException(String.format("PMMLModelEvaluator not found for model %s", model.getPmmlMODEL())));
         return executor.evaluate(knowledgeBase, model, context);
@@ -84,7 +89,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
      * @param context
      * @see <a href="http://dmg.org/pmml/v4-4/MiningSchema.html#xsdType_MISSING-VALUE-TREATMENT-METHOD">MISSING-VALUE-TREATMENT-METHOD</a>
      */
-    protected void addMissingValuesReplacements(KiePMMLModel model, PMMLContext context) {
+    protected void addMissingValuesReplacements(final KiePMMLModel model, final PMMLContext context) {
         logger.debug("addMissingValuesReplacements {} {}", model, context);
         final PMMLRequestData requestData = context.getRequestData();
         final Map<String, ParameterInfo> mappedRequestParams = requestData.getMappedRequestParams();
@@ -99,16 +104,59 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
     }
 
     /**
+     * Execute <b>Transformations</b> on input data.
+     * @param model
+     * @param context
+     * @see <a href="http://dmg.org/pmml/v4-4/Transformations.html">Transformations</a>
+     * @see <a href="http://dmg.org/pmml/v4-4/Transformations.html#xsdElement_LocalTransformations">LocalTransformations</a>
+     */
+    protected void executeTransformations(final KiePMMLModel model, final PMMLContext context) {
+        logger.debug("executeTransformations {} {}", model, context);
+        final PMMLRequestData requestData = context.getRequestData();
+        final Map<String, ParameterInfo> mappedRequestParams = requestData.getMappedRequestParams();
+        final List<KiePMMLNameValue> kiePMMLNameValues = getKiePMMLNameValuesFromParameterInfos(mappedRequestParams.values());
+        final Map<String, Function<List<KiePMMLNameValue>, Object>> commonTransformationsMap = model.getCommonTransformationsMap();
+        commonTransformationsMap.forEach((fieldName, transformationFunction) -> {
+            // Common Transformations need to be done only once
+            if (!mappedRequestParams.containsKey(fieldName)) {
+                logger.debug("commonTransformation {} {}", fieldName, transformationFunction);
+                Object commonTranformation = transformationFunction.apply(kiePMMLNameValues);
+                requestData.addRequestParam(fieldName, commonTranformation);
+                context.addCommonTranformation(fieldName, commonTranformation);
+                kiePMMLNameValues.add(new KiePMMLNameValue(fieldName, commonTranformation));
+            }
+        });
+        final Map<String, Function<List<KiePMMLNameValue>, Object>> localTransformationsMap = model.getLocalTransformationsMap();
+        localTransformationsMap.forEach((fieldName, transformationFunction) -> {
+            logger.debug("localTransformation {} {}", fieldName, transformationFunction);
+            Object localTransformation = transformationFunction.apply(kiePMMLNameValues);
+            // Local Transformations need to be done for every model, eventually replacing previous ones
+            if (mappedRequestParams.containsKey(fieldName)) {
+                final ParameterInfo toRemove = mappedRequestParams.get(fieldName);
+                requestData.removeRequestParam(toRemove);
+            }
+            requestData.addRequestParam(fieldName, localTransformation);
+            context.addLocalTranformation(fieldName, localTransformation);
+        });
+    }
+
+    /**
      * Returns an <code>Optional&lt;PMMLModelExecutor&gt;</code> to allow
      * incremental development of different model-specific executors
      * @param pmmlMODEL
      * @return
      */
-    private Optional<PMMLModelEvaluator> getFromPMMLModelType(PMML_MODEL pmmlMODEL) {
+    private Optional<PMMLModelEvaluator> getFromPMMLModelType(final PMML_MODEL pmmlMODEL) {
         logger.trace("getFromPMMLModelType {}", pmmlMODEL);
         return pmmlModelExecutorFinder.getImplementations(false)
                 .stream()
                 .filter(implementation -> pmmlMODEL.equals(implementation.getPMMLModelType()))
                 .findFirst();
+    }
+
+    private List<KiePMMLNameValue> getKiePMMLNameValuesFromParameterInfos(final Collection<ParameterInfo> parameterInfos) {
+        return parameterInfos.stream()
+                .map(parameterInfo -> new KiePMMLNameValue(parameterInfo.getName(), parameterInfo.getValue()))
+                .collect(Collectors.toList());
     }
 }

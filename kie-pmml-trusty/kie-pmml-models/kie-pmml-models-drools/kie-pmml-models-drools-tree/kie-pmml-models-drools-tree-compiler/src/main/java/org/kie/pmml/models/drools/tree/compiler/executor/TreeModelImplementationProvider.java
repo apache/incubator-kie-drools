@@ -18,6 +18,7 @@ package org.kie.pmml.models.drools.tree.compiler.executor;
 import java.util.Map;
 
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.tree.TreeModel;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
@@ -40,21 +41,21 @@ public class TreeModelImplementationProvider extends DroolsModelProvider<TreeMod
     }
 
     @Override
-    public KiePMMLTreeModel getKiePMMLDroolsModel(DataDictionary dataDictionary, TreeModel model, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+    public KiePMMLTreeModel getKiePMMLDroolsModel(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         try {
-            return KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary, model, fieldTypeMap);
+            return KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary, transformationDictionary, model, fieldTypeMap);
         } catch (IllegalAccessException | InstantiationException e) {
             throw new KiePMMLException(e.getMessage(), e);
         }
     }
 
     @Override
-    public KiePMMLDroolsAST getKiePMMLDroolsAST(DataDictionary dataDictionary, TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+    public KiePMMLDroolsAST getKiePMMLDroolsAST(final DataDictionary dataDictionary, final TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         return KiePMMLTreeModelFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
     }
 
     @Override
-    public Map<String, String> getKiePMMLDroolsModelSourcesMap(DataDictionary dataDictionary, TreeModel model, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, String packageName) {
-        return KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(dataDictionary, model, fieldTypeMap, packageName);
+    public Map<String, String> getKiePMMLDroolsModelSourcesMap(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final String packageName) {
+        return KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(dataDictionary, transformationDictionary, model, fieldTypeMap, packageName);
     }
 }

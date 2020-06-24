@@ -19,11 +19,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLBase;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 /**
  * KIE representation of PMML model
@@ -35,6 +37,8 @@ public abstract class KiePMMLModel extends AbstractKiePMMLBase {
     protected String targetField;
     protected Map<String, Object> outputFieldsMap = new HashMap<>();
     protected Map<String, Object> missingValueReplacementMap = new HashMap<>();
+    protected Map<String, Function<List<KiePMMLNameValue>, Object>> commonTransformationsMap = new HashMap<>();
+    protected Map<String, Function<List<KiePMMLNameValue>, Object>> localTransformationsMap = new HashMap<>();
 
     protected KiePMMLModel(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
@@ -60,6 +64,14 @@ public abstract class KiePMMLModel extends AbstractKiePMMLBase {
         return Collections.unmodifiableMap(missingValueReplacementMap);
     }
 
+    public Map<String, Function<List<KiePMMLNameValue>, Object>> getCommonTransformationsMap() {
+        return Collections.unmodifiableMap(commonTransformationsMap);
+    }
+
+    public Map<String, Function<List<KiePMMLNameValue>, Object>> getLocalTransformationsMap() {
+        return Collections.unmodifiableMap(localTransformationsMap);
+    }
+
     /**
      * Method to retrieve the <b>package</b> name to be used inside kiebase/package attribute of
      * kmodule.xml and to use for package creation inside PMMLAssemblerService
@@ -79,6 +91,7 @@ public abstract class KiePMMLModel extends AbstractKiePMMLBase {
      * @return
      */
     public abstract Object evaluate(final Object knowledgeBase, Map<String, Object> requestData);
+
 
     public abstract static class Builder<T extends KiePMMLModel> extends AbstractKiePMMLBase.Builder<T> {
 

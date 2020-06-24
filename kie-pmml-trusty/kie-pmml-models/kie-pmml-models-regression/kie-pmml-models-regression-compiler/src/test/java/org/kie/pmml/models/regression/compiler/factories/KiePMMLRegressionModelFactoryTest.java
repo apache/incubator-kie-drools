@@ -35,6 +35,7 @@ import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.OpType;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.regression.CategoricalPredictor;
 import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
@@ -72,6 +73,7 @@ public class KiePMMLRegressionModelFactoryTest {
     private List<MiningField> miningFields;
     private MiningField targetMiningField;
     private DataDictionary dataDictionary;
+    private TransformationDictionary transformationDictionary;
     private MiningSchema miningSchema;
     private RegressionModel regressionModel;
 
@@ -103,6 +105,7 @@ public class KiePMMLRegressionModelFactoryTest {
         targetMiningField = miningFields.get(0);
         targetMiningField.setUsageType(MiningField.UsageType.TARGET);
         dataDictionary = getDataDictionary(dataFields);
+        transformationDictionary = new TransformationDictionary();
         miningSchema = getMiningSchema(miningFields);
         regressionModel = getRegressionModel(modelName, MiningFunction.REGRESSION, miningSchema, regressionTables);
     }
@@ -117,7 +120,7 @@ public class KiePMMLRegressionModelFactoryTest {
 
     @Test
     public void getKiePMMLRegressionModelTest() throws IOException, IllegalAccessException, InstantiationException {
-        KiePMMLRegressionModel retrieved = getKiePMMLRegressionModelClasses(dataDictionary, regressionModel);
+        KiePMMLRegressionModel retrieved = getKiePMMLRegressionModelClasses(dataDictionary, transformationDictionary, regressionModel);
         assertNotNull(retrieved);
         assertEquals(regressionModel.getModelName(), retrieved.getName());
         assertEquals(MINING_FUNCTION.byName(regressionModel.getMiningFunction().value()), retrieved.getMiningFunction());
@@ -148,7 +151,7 @@ public class KiePMMLRegressionModelFactoryTest {
         for (CategoricalPredictor categoricalPredictor : originalRegressionTable.getCategoricalPredictors()) {
             assertTrue(categoricalFunctionMap.containsKey(categoricalPredictor.getName().getValue()));
         }
-        final  Map<String, Function<Map<String, Object>, Double>>  predictorTermsFunctionMap = regressionTable.getPredictorTermsFunctionMap();
+        final Map<String, Function<Map<String, Object>, Double>> predictorTermsFunctionMap = regressionTable.getPredictorTermsFunctionMap();
         for (PredictorTerm predictorTerm : originalRegressionTable.getPredictorTerms()) {
             assertTrue(predictorTermsFunctionMap.containsKey(predictorTerm.getName().getValue()));
         }

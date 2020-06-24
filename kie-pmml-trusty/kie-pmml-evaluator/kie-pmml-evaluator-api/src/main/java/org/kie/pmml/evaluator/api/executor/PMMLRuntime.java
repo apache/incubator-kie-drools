@@ -38,7 +38,7 @@ public interface PMMLRuntime {
      * the <code>KiePMMLModel</code> retrieved, or an <b>empty</b> one if none
      * is registered with the given name.
      */
-    Optional<KiePMMLModel> getModel(String modelName);
+    Optional<KiePMMLModel> getModel(final String modelName);
 
     /**
      * Evaluate the model, given the context
@@ -46,5 +46,5 @@ public interface PMMLRuntime {
      * @param context the context with all the input variables
      * @return the result of the evaluation
      */
-    PMML4Result evaluate(String modelName, PMMLContext context);
+    PMML4Result evaluate(final String modelName, final PMMLContext context);
 }
