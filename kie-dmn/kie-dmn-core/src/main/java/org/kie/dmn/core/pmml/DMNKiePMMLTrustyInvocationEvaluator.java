@@ -46,11 +46,11 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 
-public class DMNKiePMMLNewInvocationEvaluator extends AbstractDMNKiePMMLInvocationEvaluator {
+public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvocationEvaluator {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DMNKiePMMLNewInvocationEvaluator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DMNKiePMMLTrustyInvocationEvaluator.class);
 
-    public DMNKiePMMLNewInvocationEvaluator(String dmnNS, DMNElement node, Resource pmmlResource, String model, PMMLInfo<?> pmmlInfo) {
+    public DMNKiePMMLTrustyInvocationEvaluator(String dmnNS, DMNElement node, Resource pmmlResource, String model, PMMLInfo<?> pmmlInfo) {
         super(dmnNS, node, pmmlResource, model, pmmlInfo);
     }
 

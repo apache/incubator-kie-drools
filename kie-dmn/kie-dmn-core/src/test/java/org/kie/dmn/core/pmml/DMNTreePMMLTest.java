@@ -57,7 +57,7 @@ public class DMNTreePMMLTest extends AbstractDMNPMMLTest {
     @Test
     public void testTreeWithoutOutput() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLTree_no_output.dmn",
-                                                                                       DMNTreePMMLNewImplTest.class,
+                                                                                       DMNTreePMMLTrustyImplTest.class,
                                                                                        "test_tree_no_output.pmml");
         Assertions.assertThat(runtime).isNotNull();
         Assertions.assertThat(evaluateWeatherDecision(runtime, 30, 10)).isEqualTo(SUNGLASSES);
