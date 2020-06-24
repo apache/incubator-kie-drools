@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.persistence.api.query;
+package org.kie.kogito.trusty.service;
 
-import java.util.List;
+import org.kie.kogito.persistence.infinispan.InfinispanServerTestResource;
 
-public interface Query<T> {
+public class TrustyInfinispanServerTestResource extends InfinispanServerTestResource {
 
-    Query<T> limit(Integer limit);
-
-    Query<T> offset(Integer offset);
-
-    Query<T> filter(List<AttributeFilter<?>> filters);
-
-    Query<T> sort(List<AttributeSort> sortBy);
-    
-    List<T> execute();
+    @Override
+    public boolean shouldCleanCache(String cacheName) {
+        return cacheName.equals("decisions");
+    }
 }

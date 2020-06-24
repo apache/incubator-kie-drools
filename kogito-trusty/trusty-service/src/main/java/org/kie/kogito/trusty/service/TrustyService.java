@@ -17,25 +17,63 @@
 package org.kie.kogito.trusty.service;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
-import org.jboss.resteasy.spi.NotImplementedYetException;
-import org.kie.kogito.trusty.service.models.Execution;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kie.kogito.persistence.api.Storage;
+import org.kie.kogito.persistence.api.query.AttributeFilter;
+import org.kie.kogito.persistence.api.query.QueryFilterFactory;
+import org.kie.kogito.trusty.storage.api.TrustyStorageService;
+import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.Execution;
 
 @ApplicationScoped
 public class TrustyService implements ITrustyService {
 
-    @Override
-    public List<Execution> getExecutionHeaders(OffsetDateTime from, OffsetDateTime to, int limit, int offset, String prefix) {
-        throw new NotImplementedYetException("Not implemented yet.");
+    private TrustyStorageService storageService;
+
+    TrustyService() {
+        // dummy constructor needed
+    }
+
+    @Inject
+    public TrustyService(TrustyStorageService storageService) {
+        this.storageService = storageService;
     }
 
     @Override
-    public void storeExecution(String executionId, Execution execution) {
-        throw new NotImplementedYetException("Not implemented yet.");
+    public List<Execution> getExecutionHeaders(OffsetDateTime from, OffsetDateTime to, int limit, int offset, String prefix) {
+        Storage<String, Decision> storage = storageService.getDecisionsStorage();
+        List<AttributeFilter<?>> filters = new ArrayList<>();
+        filters.add(QueryFilterFactory.like(Execution.EXECUTION_ID, prefix + "*"));
+        filters.add(QueryFilterFactory.greaterThanEqual(Execution.EXECUTION_TIMESTAMP, from.toInstant().toEpochMilli()));
+        filters.add(QueryFilterFactory.lessThanEqual(Execution.EXECUTION_TIMESTAMP, to.toInstant().toEpochMilli()));
+        return new ArrayList<>(storage.query().limit(limit).offset(offset).filter(filters).execute());
+    }
+
+    @Override
+    public Decision getDecisionById(String executionId) {
+        Storage<String, Decision> storage = storageService.getDecisionsStorage();
+        if (!storage.containsKey(executionId)) {
+            throw new IllegalArgumentException(String.format("A decision with ID %s does not exist in the storage.", executionId));
+        }
+        return storage.get(executionId);
+    }
+
+    @Override
+    public void storeDecision(String executionId, Decision decision) {
+        Storage<String, Decision> storage = storageService.getDecisionsStorage();
+        if (storage.containsKey(executionId)) {
+            throw new IllegalArgumentException(String.format("A decision with ID %s is already present in the storage.", executionId));
+        }
+        storage.put(executionId, decision);
+    }
+
+    @Override
+    public void updateDecision(String executionId, Decision decision) {
+        storageService.getDecisionsStorage().put(executionId, decision);
     }
 }

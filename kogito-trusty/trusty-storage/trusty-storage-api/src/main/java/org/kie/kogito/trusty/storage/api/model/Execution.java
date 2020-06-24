@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.trusty.service.models;
+package org.kie.kogito.trusty.storage.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,22 +25,29 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Execution {
 
-    @JsonProperty("executionId")
+    public final static String EXECUTION_ID = "executionId";
+    public final static String EXECUTION_TIMESTAMP = "executionTimestamp";
+    public final static String HAS_SUCCEEDED = "hasSucceeded";
+    public final static String EXECUTOR_NAME = "executorName";
+    public final static String EXECUTED_MODEL_NAME = "executedModelName";
+    public final static String EXECUTION_TYPE = "executionType";
+
+    @JsonProperty(EXECUTION_ID)
     private String executionId;
 
-    @JsonProperty("executionTimestamp")
+    @JsonProperty(EXECUTION_TIMESTAMP)
     private Long executionTimestamp;
 
-    @JsonProperty("hasSucceeded")
+    @JsonProperty(HAS_SUCCEEDED)
     private boolean hasSucceeded;
 
-    @JsonProperty("executorName")
+    @JsonProperty(EXECUTOR_NAME)
     private String executorName;
 
-    @JsonProperty("executedModelName")
+    @JsonProperty(EXECUTED_MODEL_NAME)
     private String executedModelName;
 
-    @JsonProperty("executionType")
+    @JsonProperty(EXECUTION_TYPE)
     private ExecutionTypeEnum executionType;
 
     public Execution() {
@@ -66,12 +73,30 @@ public class Execution {
     }
 
     /**
+     * Sets the execution id.
+     *
+     * @param executionId The execution Id.
+     */
+    public void setExecutionId(String executionId) {
+        this.executionId = executionId;
+    }
+
+    /**
      * Gets the execution date.
      *
      * @return The execution date.
      */
     public Long getExecutionTimestamp() {
         return executionTimestamp;
+    }
+
+    /**
+     * Sets the execution timestamp.
+     *
+     * @param executionTimestamp The execution timestamp.
+     */
+    public void setExecutionTimestamp(Long executionTimestamp) {
+        this.executionTimestamp = executionTimestamp;
     }
 
     /**
@@ -93,6 +118,15 @@ public class Execution {
     }
 
     /**
+     * Sets the executor name.
+     *
+     * @param executorName The executor name.
+     */
+    public void setExecutorName(String executorName) {
+        this.executorName = executorName;
+    }
+
+    /**
      * Gets the name of the executed model.
      *
      * @return The name of the executed model.
@@ -102,11 +136,38 @@ public class Execution {
     }
 
     /**
+     * Sets the executed model name.
+     *
+     * @param executedModelName The executed model name.
+     */
+    public void setExecutedModelName(String executedModelName) {
+        this.executedModelName = executedModelName;
+    }
+
+    /**
      * Gets the execution type.
      *
      * @return The execution type.
      */
     public ExecutionTypeEnum getExecutionType() {
         return executionType;
+    }
+
+    /**
+     * Sets the execution type.
+     *
+     * @param executionType The execution type.
+     */
+    public void setExecutionType(ExecutionTypeEnum executionType) {
+        this.executionType = executionType;
+    }
+
+    /**
+     * Sets the success information.
+     *
+     * @param hasSucceeded Success value.
+     */
+    public void setSuccess(boolean hasSucceeded) {
+        this.hasSucceeded = hasSucceeded;
     }
 }

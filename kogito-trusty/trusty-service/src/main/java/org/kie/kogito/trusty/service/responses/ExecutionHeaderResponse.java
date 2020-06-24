@@ -22,8 +22,8 @@ import java.time.ZoneOffset;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.kie.kogito.trusty.service.models.Execution;
-import org.kie.kogito.trusty.service.models.ExecutionTypeEnum;
+import org.kie.kogito.trusty.storage.api.model.Execution;
+import org.kie.kogito.trusty.storage.api.model.ExecutionTypeEnum;
 
 /**
  * An execution header.

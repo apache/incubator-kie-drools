@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<infinispan
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="urn:infinispan:config:10.0 https://infinispan.org/schemas/infinispan-config-10.0.xsd"
+    xmlns="urn:infinispan:config:10.0">
+  <cache-container statistics="true" shutdown-hook="DEFAULT">
+    <local-cache name="${cache_name}">
+      <indexing index="ALL">
+        <property name="default.directory_provider">local-heap</property>
+      </indexing>
+    </local-cache>
+  </cache-container>
+</infinispan>
+

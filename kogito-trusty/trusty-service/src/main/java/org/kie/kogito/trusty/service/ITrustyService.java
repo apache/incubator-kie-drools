@@ -19,7 +19,8 @@ package org.kie.kogito.trusty.service;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import org.kie.kogito.trusty.service.models.Execution;
+import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.Execution;
 
 /**
  * The trusty service interface.
@@ -41,11 +42,28 @@ public interface ITrustyService {
     List<Execution> getExecutionHeaders(OffsetDateTime from, OffsetDateTime to, int limit, int offset, String prefix);
 
     /**
-     * Stores an execution.
+     * Gets a decision by execution ID.
+     *
+     * @param executionId The execution ID.
+     * @return The decision.
+     * @throws IllegalArgumentException Throws IllegalArgumentException in case the executionId is not present in the system.
+     */
+    Decision getDecisionById(String executionId);
+
+    /**
+     * Stores a decision.
      *
      * @param executionId The unique execution ID
-     * @param execution   The execution object.
-     * @throws RuntimeException Throws RuntimeException in case the executionId is already present in the system.
+     * @param decision    The decision object.
+     * @throws IllegalArgumentException Throws IllegalArgumentException in case the executionId is already present in the system.
      */
-    void storeExecution(String executionId, Execution execution);
+    void storeDecision(String executionId, Decision decision);
+
+    /**
+     * Updates a decision. If the decision is not present in the storage, then it is created.
+     *
+     * @param executionId The execution ID
+     * @param decision    The decision object.
+     */
+    void updateDecision(String executionId, Decision decision);
 }

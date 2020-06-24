@@ -1,0 +1,25 @@
+package org.kie.kogito.trusty.storage.api.model;
+
+option indexed_by_default = true;
+
+/* @Indexed */
+message Decision {
+
+    /* @Field(store = Store.YES) */
+    optional string executionId = 1;
+
+    /* @Field(store = Store.YES) */
+    optional int64 executionTimestamp = 2;
+
+    /* @Field(store = Store.YES) */
+    optional bool hasSucceeded = 3;
+
+    /* @Field(store = Store.YES) */
+    optional string executorName = 4;
+
+    /* @Field(store = Store.YES) */
+    optional string executedModelName = 5;
+
+    /* @Field(store = Store.YES) */
+    optional string executionType = 6;
+}

@@ -16,9 +16,7 @@
 
 package org.kie.kogito.trusty.service.api;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -29,25 +27,23 @@ import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.kie.kogito.trusty.service.ITrustyService;
-import org.kie.kogito.trusty.service.models.Execution;
-import org.kie.kogito.trusty.service.models.ExecutionTypeEnum;
 import org.kie.kogito.trusty.service.responses.ExecutionsResponse;
+import org.kie.kogito.trusty.storage.api.model.Execution;
+import org.kie.kogito.trusty.storage.api.model.ExecutionTypeEnum;
 import org.mockito.Mockito;
 
 import static io.restassured.RestAssured.given;
 import static org.mockito.ArgumentMatchers.any;
 
 @QuarkusTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ExecutionsApiV1Test {
 
     @InjectMock
     ITrustyService executionService;
 
     @Test
-    void GivenRequestWithoutLimitAndOffsetParameters_WhenExecutionEndpointIsCalled_ThenTheDefaultValuesAreCorrect() {
+    void givenRequestWithoutLimitAndOffsetParametersWhenExecutionEndpointIsCalledThenTheDefaultValuesAreCorrect() {
         Mockito.when(executionService.getExecutionHeaders(any(OffsetDateTime.class), any(OffsetDateTime.class), any(Integer.class), any(Integer.class), any(String.class))).thenReturn(new ArrayList<>());
         ExecutionsResponse response = given().contentType(ContentType.JSON).when().get("/v1/executions?from=2000-01-01T00:00:00Z&to=2021-01-01T00:00:00Z").as(ExecutionsResponse.class);
 
@@ -57,25 +53,25 @@ class ExecutionsApiV1Test {
     }
 
     @Test
-    void GivenARequestWithoutTimeRangeParameters_WhenExecutionEndpointIsCalled_ThenTheDefaultValuesAreUsed() {
+    void givenARequestWithoutTimeRangeParametersWhenExecutionEndpointIsCalledThenTheDefaultValuesAreUsed() {
         given().when().get("/v1/executions").then().statusCode(200);
         given().when().get("/v1/executions?from=2000-01-01T00:00:00Z").then().statusCode(200);
         given().when().get("/v1/executions?to=2000-01-01T00:00:00Z").then().statusCode(200);
     }
 
     @Test
-    void GivenARequestWithoutTimeZoneInformation_WhenExecutionEndpointIsCalled_ThenBadRequestIsReturned() {
+    void givenARequestWithoutTimeZoneInformationWhenExecutionEndpointIsCalledThenBadRequestIsReturned() {
         given().when().get("/v1/executions?to=2000-01-01T00:00:00&from=2000-01-01T00:00:00Z").then().statusCode(400);
     }
 
     @Test
-    void GivenARequestWithInvalidPaginationParameters_WhenExecutionEndpointIsCalled_ThenBadRequestIsReturned() {
+    void givenARequestWithInvalidPaginationParametersWhenExecutionEndpointIsCalledThenBadRequestIsReturned() {
         given().when().get("/v1/executions?from=2000-01-01T00:00:00Z&to=2021-01-01T00:00:00Z&offset=-1").then().statusCode(400);
         given().when().get("/v1/executions?from=2000-01-01T00:00:00Z&to=2021-01-01T00:00:00Z&limit=-1").then().statusCode(400);
     }
 
     @Test
-    void GivenARequestWitMalformedTimeRange_WhenExecutionEndpointIsCalled_ThenBadRequestIsReturned() {
+    void givenARequestWitMalformedTimeRangeWhenExecutionEndpointIsCalledThenBadRequestIsReturned() {
         given().contentType(ContentType.JSON).when().get("/v1/executions?from=2000-01-01&to=2021-01-01T00:00:00Z").then().statusCode(400);
         given().contentType(ContentType.JSON).when().get("/v1/executions?from=2000-01-01T00:00:00Z&to=2021-01-01").then().statusCode(400);
         given().contentType(ContentType.JSON).when().get("/v1/executions?from=2000-01-01T00:00:00&to=2021-01-01T00:00:00Z").then().statusCode(400);
@@ -83,7 +79,7 @@ class ExecutionsApiV1Test {
     }
 
     @Test
-    void GivenARequest_WhenExecutionEndpointIsCalled_ThenTheExecutionHeaderIsReturned() throws ParseException {
+    void givenARequestWhenExecutionEndpointIsCalledThenTheExecutionHeaderIsReturned() throws ParseException {
         Execution execution = new Execution("test1",
                                             OffsetDateTime.parse("2020-01-01T00:00:00Z", DateTimeFormatter.ISO_OFFSET_DATE_TIME).toInstant().toEpochMilli(),
                                             true, "name", "model", ExecutionTypeEnum.DECISION);

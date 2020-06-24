@@ -3,18 +3,20 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>trusty</artifactId>
+    <artifactId>trusty-storage</artifactId>
     <groupId>org.kie.kogito</groupId>
     <version>8.0.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>trusty-storage</artifactId>
-  <name>Kogito :: Trusty Storage</name>
-  <packaging>pom</packaging>
+  <artifactId>trusty-storage-api</artifactId>
+  <name>Kogito :: Trusty Storage API</name>
 
-  <modules>
-    <module>trusty-storage-api</module>
-    <module>trusty-storage-infinispan</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>persistence-commons-api</artifactId>
+    </dependency>
+  </dependencies>
+
 </project>

@@ -14,26 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.trusty.service.models;
+package org.kie.kogito.trusty.storage.api.model;
 
 /**
- * The execution enum type.
+ * A decision.
  */
-public enum ExecutionTypeEnum {
+public class Decision extends Execution {
 
-    /**
-     * An execution of a decision.
-     */
-    DECISION("DECISION"),
-
-    /**
-     * An execution of a process.
-     */
-    PROCESS("PROCESS");
-
-    private String type;
-
-    ExecutionTypeEnum(String type) {
-        this.type = type;
-    }
 }
