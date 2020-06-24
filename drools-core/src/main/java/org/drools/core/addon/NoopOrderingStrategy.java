@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.ObjectType;
 import org.kie.api.definition.rule.Rule;
 
 public class NoopOrderingStrategy implements AlphaNodeOrderingStrategy {
@@ -29,8 +30,7 @@ public class NoopOrderingStrategy implements AlphaNodeOrderingStrategy {
     }
 
     @Override
-    public void reorderAlphaConstraints(List<AlphaNodeFieldConstraint> alphaConstraints) {
+    public void reorderAlphaConstraints(List<AlphaNodeFieldConstraint> alphaConstraints, ObjectType objectType) {
         // no op
     }
-
 }

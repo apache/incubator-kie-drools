@@ -145,7 +145,7 @@ public class AlphaNodeOrderingTest extends BaseModelTest {
 
         KieSession ksession = getKieSession(model, str);
 
-        ReteDumper.dumpRete(ksession);
+//        ReteDumper.dumpRete(ksession);
         List<AlphaNode> alphaNodes = ReteDumper.collectNodes(ksession)
                                                .stream()
                                                .filter(AlphaNode.class::isInstance)
@@ -178,15 +178,17 @@ public class AlphaNodeOrderingTest extends BaseModelTest {
                      "end\n";
 
         KieModuleModel model = KieServices.get().newKieModuleModel();
-        model.newKieBaseModel("kb")
+        model
+//             .setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.FALSE.toString())
+             .newKieBaseModel("kb")
              .setDefault(true)
-             .setAlphaNodeOrdering(AlphaNodeOrderingOption.COUNT)
+             .setAlphaNodeOrdering(AlphaNodeOrderingOption.COUNT) // Fails with COUNT
              .newKieSessionModel("ks")
              .setDefault(true);
 
         KieSession ksession = getKieSession(model, str);
 
-                ReteDumper.dumpRete(ksession);
+//                ReteDumper.dumpRete(ksession);
         List<AlphaNode> alphaNodes = ReteDumper.collectNodes(ksession)
                                                .stream()
                                                .filter(AlphaNode.class::isInstance)
@@ -201,9 +203,9 @@ public class AlphaNodeOrderingTest extends BaseModelTest {
     @Test
     public void testInstanceof() {
 
-        // address.street == "ABC street" has larger usage count.
-        // So reordering results in [address.street == "ABC street", address != null] for R1
-        //   -> NullPointerException
+        // name != "Paul" has larger usage count.
+        // So reordering results in [name != "Paul", this instanceof FactBSub] for R1
+        //   -> FactASuper.getName() throws UnsupportedOperationException 
 
         String str =
                 "import " + FactASuper.class.getCanonicalName() + "\n" +
@@ -219,15 +221,17 @@ public class AlphaNodeOrderingTest extends BaseModelTest {
                      "end\n";
 
         KieModuleModel model = KieServices.get().newKieModuleModel();
-        model.newKieBaseModel("kb")
+        model
+//             .setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.FALSE.toString())
+             .newKieBaseModel("kb")
              .setDefault(true)
-             .setAlphaNodeOrdering(AlphaNodeOrderingOption.COUNT)
+             .setAlphaNodeOrdering(AlphaNodeOrderingOption.COUNT) // Fails with COUNT
              .newKieSessionModel("ks")
              .setDefault(true);
 
         KieSession ksession = getKieSession(model, str);
 
-                ReteDumper.dumpRete(ksession);
+//                ReteDumper.dumpRete(ksession);
         List<AlphaNode> alphaNodes = ReteDumper.collectNodes(ksession)
                                                .stream()
                                                .filter(AlphaNode.class::isInstance)

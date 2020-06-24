@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.ObjectType;
 import org.kie.api.conf.AlphaNodeOrderingOption;
 import org.kie.api.definition.rule.Rule;
 
@@ -32,7 +33,7 @@ public interface AlphaNodeOrderingStrategy {
 
     void analyzeAlphaConstraints(Set<Rule> ruleSet);
 
-    void reorderAlphaConstraints(List<AlphaNodeFieldConstraint> alphaConstraints);
+    void reorderAlphaConstraints(List<AlphaNodeFieldConstraint> alphaConstraints, ObjectType objectType);
 
     static AlphaNodeOrderingStrategy createAlphaNodeOrderingStrategy(AlphaNodeOrderingOption option) {
         if (AlphaNodeOrderingOption.COUNT.equals(option)) {
