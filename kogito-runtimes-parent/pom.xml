@@ -945,6 +945,9 @@
         <plugin>
           <artifactId>maven-archetype-plugin</artifactId>
           <version>${version.archetype.plugin}</version>
+          <configuration>
+            <skip>${skipTests}</skip>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -1163,6 +1166,10 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-invoker-plugin</artifactId>
           <version>${version.invoker.plugin}</version>
+          <configuration>
+            <skipInstallation>${skipTests}</skipInstallation>
+            <skipInvocation>${skipTests}</skipInvocation>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>

@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.kogito</groupId>
@@ -7,25 +7,26 @@
   </parent>
   <artifactId>integration-tests-springboot</artifactId>
   <name>Kogito :: Integration Tests :: SpringBoot</name>
-  
+
   <dependencies>
-  <dependency> <!-- make this IT module to depend on the plugin for Maven reactor build intention -->
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-maven-plugin</artifactId>
-    <version>${project.version}</version>
-  </dependency>
-  <dependency>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-springboot-starter</artifactId>
-    <version>${project.version}</version>
-  </dependency>
+    <dependency> <!-- make this IT module to depend on the plugin for Maven reactor build intention -->
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-maven-plugin</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-springboot-starter</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
-  
+
   <build>
     <plugins>
       <plugin>
         <artifactId>maven-invoker-plugin</artifactId>
         <configuration>
+          <streamLogs>true</streamLogs>
           <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
           <settingsFile>src/it/settings.xml</settingsFile>
           <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
