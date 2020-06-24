@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
+import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.populateTransformationsInConstructor;
 import static org.kie.pmml.models.drools.utils.KiePMMLDroolsModelFactoryUtils.getKiePMMLModelCompilationUnit;
 
 /**
@@ -74,6 +75,7 @@ public class KiePMMLScorecardModelFactory {
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing default constructor in ClassOrInterfaceDeclaration %s ", modelTemplate.getName())));
         setSuperInvocation(model, constructorDeclaration, modelTemplate.getName());
+        populateTransformationsInConstructor(constructorDeclaration, transformationDictionary, model.getLocalTransformations());
         Map<String, String> toReturn = new HashMap<>();
         String fullClassName = packageName + "." + className;
         toReturn.put(fullClassName, cloneCU.toString());

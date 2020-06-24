@@ -27,7 +27,6 @@ import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.pmml.compiler.commons.factories.TransformationsMapFactory.getTransformationsMap;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndModel;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
