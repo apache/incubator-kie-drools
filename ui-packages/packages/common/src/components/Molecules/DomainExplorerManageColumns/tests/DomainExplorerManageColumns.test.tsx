@@ -1,7 +1,7 @@
 // tslint:disable:no-string-literal
 import React from 'react';
 import { shallow, configure, mount } from 'enzyme';
-import DomainExplorerColumnPicker from '../DomainExplorerColumnPicker';
+import DomainExplorerManageColumns from '../DomainExplorerManageColumns';
 import Adapter from 'enzyme-adapter-react-16';
 import reactApollo from 'react-apollo';
 
@@ -13,7 +13,7 @@ jest.mock('react-apollo', () => {
   return { useApolloClient: jest.fn(() => ApolloClient) };
 });
 global.Math.random = () => 0.7336705311965102;
-describe('Domain Explorer Column picker component', () => {
+describe('Domain Explorer manage columns component', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -169,7 +169,7 @@ describe('Domain Explorer Column picker component', () => {
       isLoadingMore: true
     };
 
-    const wrapper = mount(<DomainExplorerColumnPicker {...props} />);
+    const wrapper = mount(<DomainExplorerManageColumns {...props} />);
     wrapper.update();
     wrapper.setProps({});
     expect(wrapper).toMatchSnapshot();
@@ -282,7 +282,7 @@ describe('Domain Explorer Column picker component', () => {
     };
 
     client.query.mockReturnValueOnce(mGraphQLResponse);
-    const wrapper = shallow(<DomainExplorerColumnPicker {...props} />);
+    const wrapper = shallow(<DomainExplorerManageColumns {...props} />);
     wrapper.find('#refresh-button').simulate('click');
     wrapper.find('#apply-columns').simulate('click');
     await Promise.resolve();
@@ -329,7 +329,7 @@ describe('Domain Explorer Column picker component', () => {
     };
 
     client.query.mockReturnValueOnce(mGraphQLResponse);
-    const wrapper = shallow(<DomainExplorerColumnPicker {...props} />);
+    const wrapper = shallow(<DomainExplorerManageColumns {...props} />);
     wrapper.find('#refresh-button').simulate('click');
     wrapper.find('#apply-columns').simulate('click');
     await Promise.resolve();
@@ -439,7 +439,7 @@ describe('Domain Explorer Column picker component', () => {
     };
 
     client.query.mockReturnValueOnce(mGraphQLResponse);
-    const wrapper = shallow(<DomainExplorerColumnPicker {...props} />);
+    const wrapper = shallow(<DomainExplorerManageColumns {...props} />);
     wrapper.find('#refresh-button').simulate('click');
     wrapper.find('#apply-columns').simulate('click');
     await Promise.resolve();
@@ -553,7 +553,7 @@ describe('Domain Explorer Column picker component', () => {
     };
 
     client.query.mockReturnValueOnce(mGraphQLResponse);
-    const wrapper = shallow(<DomainExplorerColumnPicker {...props} />);
+    const wrapper = shallow(<DomainExplorerManageColumns {...props} />);
     wrapper.find('#refresh-button').simulate('click');
     wrapper.find('#apply-columns').simulate('click');
     await Promise.resolve();
@@ -679,7 +679,7 @@ describe('Domain Explorer Column picker component', () => {
       errors: []
     };
     client.query.mockReturnValueOnce(mGraphQLResponse);
-    const wrapper = shallow(<DomainExplorerColumnPicker {...props} />);
+    const wrapper = shallow(<DomainExplorerManageColumns {...props} />);
     wrapper.find('#refresh-button').simulate('click');
     wrapper.find('#apply-columns').simulate('click');
     await Promise.resolve();
@@ -738,7 +738,7 @@ describe('Domain Explorer Column picker component', () => {
         }
       }
     };
-    const wrapper = shallow(<DomainExplorerColumnPicker {...props} />);
+    const wrapper = shallow(<DomainExplorerManageColumns {...props} />);
     wrapper.update();
 
     wrapper.find('#columnPicker-dropdown').simulate('select', obj);
@@ -776,7 +776,7 @@ describe('Domain Explorer Column picker component', () => {
       isLoadingMore: true
     };
 
-    const wrapper = mount(<DomainExplorerColumnPicker {...props} />);
+    const wrapper = mount(<DomainExplorerManageColumns {...props} />);
     wrapper.update();
     wrapper.setProps({});
     expect(wrapper).toMatchSnapshot();

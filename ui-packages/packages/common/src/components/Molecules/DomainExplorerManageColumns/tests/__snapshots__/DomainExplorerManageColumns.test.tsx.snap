@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Domain Explorer Column picker component Snapshot testing 1`] = `
-<DomainExplorerColumnPicker
+exports[`Domain Explorer manage columns component Snapshot testing 1`] = `
+<DomainExplorerManageColumns
   columnPickerType="Travels"
   data={
     Array [
@@ -671,11 +671,11 @@ exports[`Domain Explorer Column picker component Snapshot testing 1`] = `
       </Button>
     </ComponentWithOuia>
   </Component>
-</DomainExplorerColumnPicker>
+</DomainExplorerManageColumns>
 `;
 
-exports[`Domain Explorer Column picker component check condition remembered params equal to zero 1`] = `
-<DomainExplorerColumnPicker
+exports[`Domain Explorer manage columns component check condition remembered params equal to zero 1`] = `
+<DomainExplorerManageColumns
   columnPickerType=" "
   data={Array []}
   enableCache={false}
@@ -1084,10 +1084,10 @@ exports[`Domain Explorer Column picker component check condition remembered para
       </Button>
     </ComponentWithOuia>
   </Component>
-</DomainExplorerColumnPicker>
+</DomainExplorerManageColumns>
 `;
 
-exports[`Domain Explorer Column picker component check invalid column picker 1`] = `
+exports[`Domain Explorer manage columns component check invalid column picker 1`] = `
 <Fragment>
   <Component
     aria-label="Select Input"

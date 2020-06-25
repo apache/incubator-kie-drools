@@ -10,7 +10,7 @@ import useGetColumnPickerAttributesQuery = GraphQL.useGetColumnPickerAttributesQ
 jest.mock('react-apollo');
 
 jest.mock(
-  '../../../Molecules/DomainExplorerColumnPicker/DomainExplorerColumnPicker'
+  '../../../Molecules/DomainExplorerManageColumns/DomainExplorerManageColumns'
 );
 jest.mock('../../../Molecules/DomainExplorerTable/DomainExplorerTable');
 jest.mock('../../../Atoms/LoadMore/LoadMore');

@@ -37,7 +37,7 @@ export interface IOwnProps {
   isLoadingMore: boolean;
 }
 
-const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
+const DomainExplorerManageColumns: React.FC<IOwnProps> = ({
   columnPickerType,
   setColumnFilters,
   setTableLoading,
@@ -437,4 +437,4 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
   );
 };
 
-export default DomainExplorerColumnPicker;
+export default DomainExplorerManageColumns;

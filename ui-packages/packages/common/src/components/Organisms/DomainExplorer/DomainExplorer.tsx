@@ -8,7 +8,7 @@ import {
   Bullseye
 } from '@patternfly/react-core';
 import { FilterIcon } from '@patternfly/react-icons';
-import DomainExplorerColumnPicker from '../../Molecules/DomainExplorerColumnPicker/DomainExplorerColumnPicker';
+import DomainExplorerManageColumns from '../../Molecules/DomainExplorerManageColumns/DomainExplorerManageColumns';
 import DomainExplorerTable from '../../Molecules/DomainExplorerTable/DomainExplorerTable';
 import KogitoSpinner from '../../Atoms/KogitoSpinner/KogitoSpinner';
 import LoadMore from '../../Atoms/LoadMore/LoadMore';
@@ -129,7 +129,7 @@ const DomainExplorer: React.FC<IOwnProps> = ({
           <DataToolbarToggleGroup toggleIcon={<FilterIcon />} breakpoint="md">
             <DataToolbarGroup>
               {!getPicker.loading && (
-                <DomainExplorerColumnPicker
+                <DomainExplorerManageColumns
                   columnPickerType={columnPickerType}
                   setColumnFilters={onAddColumnFilters}
                   setTableLoading={setTableLoading}
