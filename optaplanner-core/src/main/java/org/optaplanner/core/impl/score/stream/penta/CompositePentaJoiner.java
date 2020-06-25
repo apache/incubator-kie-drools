@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.score.stream.penta;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.IntStream;
 
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
@@ -27,6 +26,7 @@ import org.optaplanner.core.impl.score.stream.common.JoinerType;
 public final class CompositePentaJoiner<A, B, C, D, E> extends AbstractPentaJoiner<A, B, C, D, E> {
 
     private final List<SinglePentaJoiner<A, B, C, D, E>> joinerList;
+    private final JoinerType[] joinerTypes;
     private final QuadFunction<A, B, C, D, ?>[] leftMappings;
     private final Function<E, ?>[] rightMappings;
 
@@ -35,6 +35,9 @@ public final class CompositePentaJoiner<A, B, C, D, E> extends AbstractPentaJoin
             throw new IllegalArgumentException("The joinerList (" + joinerList + ") must not be empty.");
         }
         this.joinerList = joinerList;
+        this.joinerTypes = joinerList.stream()
+                .map(SinglePentaJoiner::getJoinerType)
+                .toArray(JoinerType[]::new);
         this.leftMappings = joinerList.stream()
                 .map(SinglePentaJoiner::getLeftMapping)
                 .toArray(QuadFunction[]::new);
@@ -53,39 +56,29 @@ public final class CompositePentaJoiner<A, B, C, D, E> extends AbstractPentaJoin
 
     @Override
     public QuadFunction<A, B, C, D, Object> getLeftMapping(int index) {
-        assertMappingIndex(index);
         return (QuadFunction<A, B, C, D, Object>) leftMappings[index];
     }
 
     @Override
     public QuadFunction<A, B, C, D, Object[]> getLeftCombinedMapping() {
-        QuadFunction<A, B, C, D, Object>[] mappings = IntStream.range(0, joinerList.size())
-                .mapToObj(this::getLeftMapping)
-                .toArray(QuadFunction[]::new);
-        return (A a, B b, C c, D d) -> Arrays.stream(mappings)
+        return (A a, B b, C c, D d) -> Arrays.stream(leftMappings)
                 .map(f -> f.apply(a, b, c, d))
                 .toArray();
     }
 
     @Override
     public JoinerType[] getJoinerTypes() {
-        return joinerList.stream()
-                .map(SinglePentaJoiner::getJoinerType)
-                .toArray(JoinerType[]::new);
+        return joinerTypes;
     }
 
     @Override
     public Function<E, Object> getRightMapping(int index) {
-        assertMappingIndex(index);
         return (Function<E, Object>) rightMappings[index];
     }
 
     @Override
     public Function<E, Object[]> getRightCombinedMapping() {
-        Function<E, Object>[] mappings = IntStream.range(0, joinerList.size())
-                .mapToObj(this::getRightMapping)
-                .toArray(Function[]::new);
-        return (E e) -> Arrays.stream(mappings)
+        return (E e) -> Arrays.stream(rightMappings)
                 .map(f -> f.apply(e))
                 .toArray();
     }

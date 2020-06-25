@@ -20,13 +20,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.IntStream;
 
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public final class CompositeTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> {
 
     private final List<SingleTriJoiner<A, B, C>> joinerList;
+    private final JoinerType[] joinerTypes;
     private final BiFunction<A, B, ?>[] leftMappings;
     private final Function<C, ?>[] rightMappings;
 
@@ -35,6 +35,9 @@ public final class CompositeTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C
             throw new IllegalArgumentException("The joinerList (" + joinerList + ") must not be empty.");
         }
         this.joinerList = joinerList;
+        this.joinerTypes = joinerList.stream()
+                .map(SingleTriJoiner::getJoinerType)
+                .toArray(JoinerType[]::new);
         this.leftMappings = joinerList.stream()
                 .map(SingleTriJoiner::getLeftMapping)
                 .toArray(BiFunction[]::new);
@@ -53,39 +56,29 @@ public final class CompositeTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C
 
     @Override
     public BiFunction<A, B, Object> getLeftMapping(int index) {
-        assertMappingIndex(index);
         return (BiFunction<A, B, Object>) leftMappings[index];
     }
 
     @Override
     public BiFunction<A, B, Object[]> getLeftCombinedMapping() {
-        BiFunction<A, B, Object>[] mappings = IntStream.range(0, joinerList.size())
-                .mapToObj(this::getLeftMapping)
-                .toArray(BiFunction[]::new);
-        return (A a, B b) -> Arrays.stream(mappings)
+        return (A a, B b) -> Arrays.stream(leftMappings)
                 .map(f -> f.apply(a, b))
                 .toArray();
     }
 
     @Override
     public JoinerType[] getJoinerTypes() {
-        return joinerList.stream()
-                .map(SingleTriJoiner::getJoinerType)
-                .toArray(JoinerType[]::new);
+        return joinerTypes;
     }
 
     @Override
     public Function<C, Object> getRightMapping(int index) {
-        assertMappingIndex(index);
         return (Function<C, Object>) rightMappings[index];
     }
 
     @Override
     public Function<C, Object[]> getRightCombinedMapping() {
-        Function<C, Object>[] mappings = IntStream.range(0, joinerList.size())
-                .mapToObj(this::getRightMapping)
-                .toArray(Function[]::new);
-        return (C c) -> Arrays.stream(mappings)
+        return (C c) -> Arrays.stream(rightMappings)
                 .map(f -> f.apply(c))
                 .toArray();
     }

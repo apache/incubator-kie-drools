@@ -166,7 +166,7 @@ rule "mixedDurations"
     when
         $leftExam : Exam($leftId : id, period != null, $period : period, room != null, $room : room,
             $leftTopicDuration : topicDuration)
-        // 4 mixed durations of 100, 150, 200 and 200 should only result in 2 penalty's (for 100&150 and 100&200)
+        // 4 mixed durations of 100, 150, 200 and 200 should only result in 2 penalties (for 100&150 and 100&200)
         // leftExam has lowest id of the period+room combo
         not Exam(period == $period, room == $room, id < $leftId)
         // rightExam has a different duration

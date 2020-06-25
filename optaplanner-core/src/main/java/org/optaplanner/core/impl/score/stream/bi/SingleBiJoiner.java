@@ -50,7 +50,6 @@ public final class SingleBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
 
     @Override
     public Function<A, Object> getLeftMapping(int index) {
-        assertMappingIndex(index);
         return (Function<A, Object>) getLeftMapping();
     }
 
@@ -66,7 +65,6 @@ public final class SingleBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
 
     @Override
     public Function<B, Object> getRightMapping(int index) {
-        assertMappingIndex(index);
         return (Function<B, Object>) getRightMapping();
     }
 

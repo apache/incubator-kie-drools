@@ -52,7 +52,6 @@ public final class SinglePentaJoiner<A, B, C, D, E> extends AbstractPentaJoiner<
 
     @Override
     public QuadFunction<A, B, C, D, Object> getLeftMapping(int index) {
-        assertMappingIndex(index);
         return getLeftMapping();
     }
 
@@ -68,7 +67,6 @@ public final class SinglePentaJoiner<A, B, C, D, E> extends AbstractPentaJoiner<
 
     @Override
     public Function<E, Object> getRightMapping(int index) {
-        assertMappingIndex(index);
         return getRightMapping();
     }
 

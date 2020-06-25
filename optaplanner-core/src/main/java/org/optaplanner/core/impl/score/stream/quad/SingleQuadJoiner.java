@@ -51,7 +51,6 @@ public final class SingleQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A, B,
 
     @Override
     public TriFunction<A, B, C, Object> getLeftMapping(int index) {
-        assertMappingIndex(index);
         return (TriFunction<A, B, C, Object>) getLeftMapping();
     }
 
@@ -67,7 +66,6 @@ public final class SingleQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A, B,
 
     @Override
     public Function<D, Object> getRightMapping(int index) {
-        assertMappingIndex(index);
         return (Function<D, Object>) getRightMapping();
     }
 
