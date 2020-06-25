@@ -39,7 +39,7 @@ public class EasyScoreDirectorTest {
         EasyScoreDirector<Object> director = new EasyScoreDirector<>(mockEasyScoreDirectorFactory(), false, true, null);
         assertThat(director.isConstraintMatchEnabled()).isFalse();
         assertThatIllegalStateException()
-                .isThrownBy(director::getConstraintMatchTotals)
+                .isThrownBy(director::getConstraintMatchTotalMap)
                 .withMessageContaining("not supported");
     }
 

@@ -37,6 +37,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
@@ -271,7 +272,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         final int INDICTMENT_LIMIT = 5;
         final int CONSTRAINT_MATCH_LIMIT = 2;
         Score workingScore = calculateScore();
-        Collection<ConstraintMatchTotal> constraintMatchTotals = getConstraintMatchTotals();
+        Collection<ConstraintMatchTotal> constraintMatchTotals = getConstraintMatchTotalMap().values();
         StringBuilder scoreExplanation = new StringBuilder((constraintMatchTotals.size() + 4 + 2 * INDICTMENT_LIMIT) * 80);
         scoreExplanation.append("Explanation of score (").append(workingScore).append("):\n");
         scoreExplanation.append("    Constraint match totals:\n");
@@ -702,7 +703,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
      * @param predicted true if the score was predicted and might have been calculated on another thread
      * @return never null
      */
-    protected String buildScoreCorruptionAnalysis(ScoreDirector<Solution_> uncorruptedScoreDirector, boolean predicted) {
+    protected String buildScoreCorruptionAnalysis(InnerScoreDirector<Solution_> uncorruptedScoreDirector,
+            boolean predicted) {
         if (!isConstraintMatchEnabled() || !uncorruptedScoreDirector.isConstraintMatchEnabled()) {
             return "Score corruption analysis could not be generated because"
                     + " either corrupted constraintMatchEnabled (" + isConstraintMatchEnabled()
@@ -711,10 +713,10 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                     + "  Check your score constraints manually.";
         }
 
-        Map<List<Object>, ConstraintMatch> corruptedMap = createConstraintMatchMap(getConstraintMatchTotals());
+        Map<List<Object>, ConstraintMatch> corruptedMap = createConstraintMatchMap(getConstraintMatchTotalMap().values());
         Map<List<Object>, ConstraintMatch> excessMap = new LinkedHashMap<>(corruptedMap);
-        Map<List<Object>, ConstraintMatch> missingMap = createConstraintMatchMap(
-                uncorruptedScoreDirector.getConstraintMatchTotals());
+        Map<List<Object>, ConstraintMatch> missingMap =
+                createConstraintMatchMap(uncorruptedScoreDirector.getConstraintMatchTotalMap().values());
         excessMap.keySet().removeAll(missingMap.keySet()); // missingMap == uncorruptedMap
         missingMap.keySet().removeAll(corruptedMap.keySet());
 

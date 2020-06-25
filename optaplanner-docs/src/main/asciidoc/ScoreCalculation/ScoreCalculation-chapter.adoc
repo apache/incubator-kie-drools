@@ -689,8 +689,8 @@ add the `incrementalScoreCalculatorCustomProperties` element and use <<customPro
 
 Optionally, also implement the `ConstraintMatchAwareIncrementalScoreCalculator` interface to:
 
-* Explain a score by splitting it up per score constraint with `ScoreDirector.getConstraintMatchTotals()`.
-* Visualize or sort planning entities by how many constraints each one breaks with `ScoreDirector.getIndictmentMap()`.
+* Explain a score by splitting it up per score constraint with `ScoreExplanation.getConstraintMatchTotalMap()`.
+* Visualize or sort planning entities by how many constraints each one breaks with `ScoreExplanation.getIndictmentMap()`.
 * Receive a detailed analysis if the `IncrementalScoreCalculator` is corrupted in `FAST_ASSERT` or `FULL_ASSERT` `environmentMode`,
 
 [source,java,options="nowrap"]
@@ -705,8 +705,7 @@ public interface ConstraintMatchAwareIncrementalScoreCalculator<Solution_> {
 }
 ----
 
-For example in machine reassignment, create one ConstraintMatchTotal per constraint type
-and call `addConstraintMatch()` for each constraint match:
+For example in machine reassignment, create one `ConstraintMatchTotal` per constraint type and call `addConstraintMatch()` for each constraint match:
 
 [source,java,options="nowrap"]
 ----
@@ -722,8 +721,8 @@ public class MachineReassignmentIncrementalScoreCalculator
 
     @Override
     public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
-        ConstraintMatchTotal maximumCapacityMatchTotal = new ConstraintMatchTotal(
-                CONSTRAINT_PACKAGE, "maximumCapacity", HardSoftLongScore.ZERO);
+        ConstraintMatchTotal maximumCapacityMatchTotal = new DefaultConstraintMatchTotal(CONSTRAINT_PACKAGE,
+            "maximumCapacity", HardSoftLongScore.ZERO);
         ...
         for (MrMachineScorePart machineScorePart : machineScorePartMap.values()) {
             for (MrMachineCapacityScorePart machineCapacityScorePart : machineScorePart.machineCapacityScorePartList) {
@@ -1219,44 +1218,33 @@ Instead use the ConstraintMatch API below and do it properly.
 [[usingScoreCalculationOutsideTheSolver]]
 === Using score calculation outside the `Solver`
 
-If other parts of your application, for example your webUI, need to calculate the score of a solution,
-reuse the `ScoreDirectorFactory` of the `SolverFactory` to build a separate `ScoreDirector` for that webUI:
+If other parts of your application, for example your webUI, need to calculate the score of a solution, use the `ScoreManager` API:
 
 [source,java,options="nowrap"]
 ----
-ScoreDirectorFactory<CloudBalance> scoreDirectorFactory = solverFactory.getScoreDirectorFactory();
-try (ScoreDirector<CloudBalance> guiScoreDirector = scoreDirectorFactory.buildScoreDirector()) {
-    ...
-}
+ScoreManager<CloudBalance> scoreManager = ScoreManager.create(solverFactory);
+ScoreExplanation scoreExplanation = scoreManager.explain(cloudBalance);
 ----
-
-[NOTE]
-====
-The `try` ARM will call `ScoreDirector.close()` when the `ScoreDirector` becomes useless,
-to avoid a memory leak, especially with <<droolsScoreCalculation,Drools score calculation>>.
-====
 
 Then use it when you need to calculate the `Score` of a solution:
 
 [source,java,options="nowrap"]
 ----
-guiScoreDirector.setWorkingSolution(cloudBalance);
-Score score = guiScoreDirector.calculateScore();
+Score score = scoreExplanation.getScore();
 ----
 
-Furthermore, the `ScoreDirector` can explain the score through constraint match totals and/or indictments:
+Furthermore, the `ScoreExplanation` can help explain the score through constraint match totals and/or indictments:
 
 image::ScoreCalculation/scoreVisualization.png[align="center"]
-
 
 [[constraintMatchTotal]]
 === Constraint match total: break down the score by constraint
 
-To break down the score per constraint, get the ``ConstraintMatchTotal``s from the ``ScoreDirector``:
+To break down the score per constraint, get the ``ConstraintMatchTotal``s from the ``ScoreExplanation``:
 
 [source,java,options="nowrap"]
 ----
-Collection<ConstraintMatchTotal> constraintMatchTotals = guiScoreDirector.getConstraintMatchTotals();
+Collection<ConstraintMatchTotal> constraintMatchTotals = scoreExplanation.getConstraintMatchTotalMap().values();
 for (ConstraintMatchTotal constraintMatchTotal : constraintMatchTotals) {
     String constraintName = constraintMatchTotal.getConstraintName();
     // The score impact of that constraint
@@ -1275,21 +1263,18 @@ The sum of all the `ConstraintMatchTotal.getScore()` equals the overall score.
 
 [NOTE]
 ====
-<<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically,
-but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires
+<<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically, but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires
 <<constraintMatchAwareIncrementalScoreCalculator,implementing an extra interface>>.
 ====
-
 
 [[indictmentHeatMap]]
 === Indictment heat map: visualize the hot planning entities
 
-To show a heat map in the UI that highlights the planning entities and problem facts have an impact on the ``Score``,
-get the `Indictment` map from the ``ScoreDirector``:
+To show a heat map in the UI that highlights the planning entities and problem facts have an impact on the ``Score``, get the `Indictment` map from the ``ScoreExplanation``:
 
 [source,java,options="nowrap"]
 ----
-Map<Object, Indictment> indictmentMap = guiScoreDirector.getIndictmentMap();
+Map<Object, Indictment> indictmentMap = scoreExplanation.getIndictmentMap();
 for (CloudProcess process : cloudBalance.getProcessList()) {
     Indictment indictment = indictmentMap.get(process);
     if (indictment == null) {
@@ -1307,13 +1292,11 @@ for (CloudProcess process : cloudBalance.getProcessList()) {
 ----
 
 Each `Indictment` is the sum of all constraints where that justification object is involved with.
-The sum of all the `Indictment.getScoreTotal()` differs from the overall score,
-because multiple ``Indictment``s can share the same `ConstraintMatch`.
+The sum of all the `Indictment.getScoreTotal()` differs from the overall score, because multiple ``Indictment``s can share the same `ConstraintMatch`.
 
 [NOTE]
 ====
-<<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically,
-but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires
+<<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically, but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires
 <<constraintMatchAwareIncrementalScoreCalculator,implementing an extra interface>>.
 ====
 

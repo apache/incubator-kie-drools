@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,11 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -104,16 +105,17 @@ public class SwapMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
+        InnerScoreDirector<Solution_> innerScoreDirector = (InnerScoreDirector<Solution_>) scoreDirector;
         for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
             Object oldLeftValue = variableDescriptor.getValue(leftEntity);
             Object oldRightValue = variableDescriptor.getValue(rightEntity);
             if (!Objects.equals(oldLeftValue, oldRightValue)) {
-                scoreDirector.beforeVariableChanged(variableDescriptor, leftEntity);
+                innerScoreDirector.beforeVariableChanged(variableDescriptor, leftEntity);
                 variableDescriptor.setValue(leftEntity, oldRightValue);
-                scoreDirector.afterVariableChanged(variableDescriptor, leftEntity);
-                scoreDirector.beforeVariableChanged(variableDescriptor, rightEntity);
+                innerScoreDirector.afterVariableChanged(variableDescriptor, leftEntity);
+                innerScoreDirector.beforeVariableChanged(variableDescriptor, rightEntity);
                 variableDescriptor.setValue(rightEntity, oldLeftValue);
-                scoreDirector.afterVariableChanged(variableDescriptor, rightEntity);
+                innerScoreDirector.afterVariableChanged(variableDescriptor, rightEntity);
             }
         }
     }

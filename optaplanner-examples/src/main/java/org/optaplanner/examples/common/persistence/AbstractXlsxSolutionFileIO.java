@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.optaplanner.examples.common.persistence;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -47,14 +46,17 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.ScoreExplanation;
+import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
+import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.swing.impl.TangoColorFactory;
 
@@ -100,8 +102,9 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
 
         public AbstractXlsxReader(XSSFWorkbook workbook, String solverConfigResource) {
             this.workbook = workbook;
-            ScoreDirectorFactory<Solution_> scoreDirectorFactory = SolverFactory
-                    .<Solution_> createFromXmlResource(solverConfigResource).getScoreDirectorFactory();
+            SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(solverConfigResource);
+            ScoreDirectorFactory<Solution_> scoreDirectorFactory =
+                    ((DefaultSolverFactory<Solution_>) solverFactory).getScoreDirectorFactory();
             scoreDefinition = ((InnerScoreDirectorFactory) scoreDirectorFactory).getScoreDefinition();
         }
 
@@ -344,7 +347,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
         protected final Solution_ solution;
         protected final Score score;
         protected final ScoreDefinition scoreDefinition;
-        protected final Collection<ConstraintMatchTotal> constraintMatchTotals;
+        protected final Map<String, ConstraintMatchTotal> constraintMatchTotalsMap;
         protected final Map<Object, Indictment> indictmentMap;
 
         protected XSSFWorkbook workbook;
@@ -372,15 +375,16 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
 
         public AbstractXlsxWriter(Solution_ solution, String solverConfigResource) {
             this.solution = solution;
-            ScoreDirectorFactory<Solution_> scoreDirectorFactory = SolverFactory
-                    .<Solution_> createFromXmlResource(solverConfigResource).getScoreDirectorFactory();
-            scoreDefinition = ((InnerScoreDirectorFactory) scoreDirectorFactory).getScoreDefinition();
-            try (ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
-                scoreDirector.setWorkingSolution(solution);
-                score = scoreDirector.calculateScore();
-                constraintMatchTotals = scoreDirector.getConstraintMatchTotals();
-                indictmentMap = scoreDirector.getIndictmentMap();
+            DefaultSolverFactory<Solution_> solverFactory =
+                    (DefaultSolverFactory<Solution_>) SolverFactory.createFromXmlResource(solverConfigResource);
+            try (InnerScoreDirector<Solution_> scoreDirector = solverFactory.getScoreDirectorFactory().buildScoreDirector()) {
+                scoreDefinition = scoreDirector.getScoreDefinition();
             }
+            ScoreExplanation scoreManager = ScoreManager.create(solverFactory)
+                    .explainScore(solution);
+            score = scoreManager.getScore();
+            constraintMatchTotalsMap = scoreManager.getConstraintMatchTotalMap();
+            indictmentMap = scoreManager.getIndictmentMap();
         }
 
         public abstract Workbook write();
@@ -493,7 +497,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             }
             Comparator<ConstraintMatchTotal> constraintWeightComparator = Comparator.comparing(
                     ConstraintMatchTotal::getConstraintWeight, Comparator.nullsLast(Comparator.reverseOrder()));
-            constraintMatchTotals.stream()
+            constraintMatchTotalsMap.values().stream()
                     .sorted(constraintWeightComparator
                             .thenComparing(ConstraintMatchTotal::getConstraintPackage)
                             .thenComparing(ConstraintMatchTotal::getConstraintName))
@@ -515,7 +519,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
                     .thenComparing(ConstraintMatchTotal::getConstraintName);
             Comparator<ConstraintMatch> constraintMatchComparator = Comparator
                     .comparing(ConstraintMatch::getScore);
-            constraintMatchTotals.stream()
+            constraintMatchTotalsMap.values().stream()
                     .sorted(constraintMatchTotalComparator)
                     .forEach(constraintMatchTotal -> {
                         nextRow();

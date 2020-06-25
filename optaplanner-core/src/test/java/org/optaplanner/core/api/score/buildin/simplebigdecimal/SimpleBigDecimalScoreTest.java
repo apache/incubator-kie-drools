@@ -156,13 +156,13 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void serializeAndDeserialize() {
-        PlannerTestUtils.serializeAndDeserializeWithAll(
+        PlannerTestUtils.serializeAndDeserializeWithXStream(
                 SimpleBigDecimalScore.of(new BigDecimal("123.4")),
                 output -> {
                     assertThat(output.getInitScore()).isEqualTo(0);
                     assertThat(output.getScore()).isEqualTo(new BigDecimal("123.4"));
                 });
-        PlannerTestUtils.serializeAndDeserializeWithAll(
+        PlannerTestUtils.serializeAndDeserializeWithXStream(
                 SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("123.4")),
                 output -> {
                     assertThat(output.getInitScore()).isEqualTo(-7);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import javax.swing.WindowConstants;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
@@ -123,9 +124,8 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
 
     public SolutionBusiness<Solution_> createSolutionBusiness() {
         SolutionBusiness<Solution_> solutionBusiness = new SolutionBusiness<>(this);
-        SolverFactory<Solution_> solverFactory = createSolverFactory();
-        solutionBusiness.setSolver(solverFactory.buildSolver());
-        solutionBusiness.setGuiScoreDirector(solverFactory.getScoreDirectorFactory().buildScoreDirector());
+        DefaultSolverFactory<Solution_> solverFactory = (DefaultSolverFactory<Solution_>) createSolverFactory();
+        solutionBusiness.setSolver(solverFactory);
         solutionBusiness.setDataDir(determineDataDir(dataDirName));
         solutionBusiness.setSolutionFileIO(createSolutionFileIO());
         solutionBusiness.setImporters(createSolutionImporters());

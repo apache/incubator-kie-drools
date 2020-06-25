@@ -26,12 +26,12 @@ import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Applies a new best solution from a partition child solver into the global working solution of the parent solver.
@@ -80,12 +80,13 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_
 
     @Override
     protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
+        InnerScoreDirector<Solution_> innerScoreDirector = (InnerScoreDirector<Solution_>) scoreDirector;
         for (Map.Entry<GenuineVariableDescriptor<Solution_>, List<Pair<Object, Object>>> entry : changeMap.entrySet()) {
             GenuineVariableDescriptor<Solution_> variableDescriptor = entry.getKey();
             for (Pair<Object, Object> pair : entry.getValue()) {
                 Object entity = pair.getKey();
                 Object value = pair.getValue();
-                scoreDirector.changeVariableFacade(variableDescriptor, entity, value);
+                innerScoreDirector.changeVariableFacade(variableDescriptor, entity, value);
             }
         }
     }

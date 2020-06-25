@@ -24,8 +24,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.phase.custom.AbstractCustomPhaseCommand;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Standstill;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
@@ -82,7 +83,7 @@ public class BuoyVehicleRoutingSolutionInitializer extends AbstractCustomPhaseCo
                     customer.setPreviousStandstill(buoy);
                     scoreDirector.afterVariableChanged(customer, "previousStandstill");
                     scoreDirector.triggerVariableListeners();
-                    Score score = scoreDirector.calculateScore();
+                    Score score = ((InnerScoreDirector<VehicleRoutingSolution>) scoreDirector).calculateScore();
                     scoreDirector.beforeVariableChanged(customer, "previousStandstill");
                     customer.setPreviousStandstill(null);
                     scoreDirector.afterVariableChanged(customer, "previousStandstill");

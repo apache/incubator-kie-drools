@@ -34,7 +34,7 @@ public class DroolsScoreDirectorTest {
         DroolsScoreDirector<Object> director = new DroolsScoreDirector<>(mockDroolsScoreDirectorFactory(), false, false);
         director.setWorkingSolution(new Object());
         assertThatIllegalStateException()
-                .isThrownBy(director::getConstraintMatchTotals)
+                .isThrownBy(director::getConstraintMatchTotalMap)
                 .withMessageContaining("constraintMatchEnabled");
     }
 
@@ -42,7 +42,7 @@ public class DroolsScoreDirectorTest {
     public void constraintMatchTotalsNeverNull() {
         DroolsScoreDirector<Object> director = new DroolsScoreDirector<>(mockDroolsScoreDirectorFactory(), false, true);
         director.setWorkingSolution(new Object());
-        assertThat(director.getConstraintMatchTotals()).isNotNull();
+        assertThat(director.getConstraintMatchTotalMap()).isNotNull();
         assertThat(director.getConstraintMatchTotalMap()).isNotNull();
     }
 

@@ -18,9 +18,9 @@ package org.optaplanner.core.config.solver;
 
 import java.util.Random;
 
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * The environment mode also allows you to detect common bugs in your implementation.

@@ -19,7 +19,6 @@ package org.optaplanner.persistence.jaxb.api.score;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -126,7 +125,7 @@ public abstract class AbstractScoreJaxbAdapterTest {
         }
     }
 
-    public static abstract class TestScoreWrapper<S extends Score> implements Serializable {
+    public static abstract class TestScoreWrapper<S extends Score> {
 
         public abstract S getScore();
 

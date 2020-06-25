@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,10 @@
 
 package org.optaplanner.examples.coachshuttlegathering.domain.location;
 
-import java.io.Serializable;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("CsgRoadLocationArc")
-public class RoadLocationArc implements Serializable {
+public class RoadLocationArc {
 
     private int coachDistance;
     private int coachDuration;

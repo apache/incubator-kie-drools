@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,11 @@
 
 package org.optaplanner.examples.taskassigning.domain.solver;
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 import org.optaplanner.examples.taskassigning.domain.Task;
 
-public class TaskDifficultyComparator implements Comparator<Task>,
-        Serializable {
+public class TaskDifficultyComparator implements Comparator<Task> {
 
     private static final Comparator<Task> COMPARATOR = Comparator.comparing(Task::getPriority)
             .thenComparingInt(task -> task.getTaskType().getRequiredSkillList().size())

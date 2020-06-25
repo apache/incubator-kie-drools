@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.domain.valuerange;
 
-import java.io.Serializable;
-
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
@@ -29,7 +27,7 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
  * @see ValueRange
  * @see ValueRangeFactory
  */
-public abstract class AbstractCountableValueRange<T> implements CountableValueRange<T>, Serializable {
+public abstract class AbstractCountableValueRange<T> implements CountableValueRange<T> {
 
     @Override
     public boolean isEmpty() {

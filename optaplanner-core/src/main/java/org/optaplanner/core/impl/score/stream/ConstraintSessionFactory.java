@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream;
 
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 
 public interface ConstraintSessionFactory<Solution_> {
 

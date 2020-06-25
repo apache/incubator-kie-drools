@@ -20,7 +20,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -42,8 +42,7 @@ public final class DefaultSolverFactory<Solution_> extends SolverFactory<Solutio
         return solverConfig.buildSolver();
     }
 
-    @Override
-    public ScoreDirectorFactory<Solution_> getScoreDirectorFactory() {
+    public InnerScoreDirectorFactory<Solution_> getScoreDirectorFactory() {
         return solverConfig.buildScoreDirectorFactory(solverConfig.determineEnvironmentMode());
     }
 

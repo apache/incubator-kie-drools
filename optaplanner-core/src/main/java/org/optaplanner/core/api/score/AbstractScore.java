@@ -31,7 +31,8 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
  * @see Score
  * @see HardSoftScore
  */
-public abstract class AbstractScore<S extends Score> implements Score<S>, Serializable {
+public abstract class AbstractScore<S extends Score> implements Score<S>,
+        Serializable {
 
     protected static final String INIT_LABEL = "init";
 

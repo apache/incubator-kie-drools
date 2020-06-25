@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.comparator;
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 import org.optaplanner.core.api.score.Score;
@@ -25,7 +24,7 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 /**
  * Compares 2 {@link HardSoftScore}s based on the calculation of the hard multiplied by a weight, summed with the soft.
  */
-public class FlatteningHardSoftScoreComparator implements Comparator<Score>, Serializable {
+public class FlatteningHardSoftScoreComparator implements Comparator<Score> {
 
     private int hardWeight;
 

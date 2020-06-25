@@ -24,10 +24,10 @@ import java.util.TreeMap;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.Selector;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Sorts a selection {@link List} based on a {@link SelectionSorterWeightFactory}.

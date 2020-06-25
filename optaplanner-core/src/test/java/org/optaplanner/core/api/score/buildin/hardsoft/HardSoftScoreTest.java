@@ -161,14 +161,14 @@ public class HardSoftScoreTest extends AbstractScoreTest {
 
     @Test
     public void serializeAndDeserialize() {
-        PlannerTestUtils.serializeAndDeserializeWithAll(
+        PlannerTestUtils.serializeAndDeserializeWithXStream(
                 HardSoftScore.of(-12, 3400),
                 output -> {
                     assertThat(output.getInitScore()).isEqualTo(0);
                     assertThat(output.getHardScore()).isEqualTo(-12);
                     assertThat(output.getSoftScore()).isEqualTo(3400);
                 });
-        PlannerTestUtils.serializeAndDeserializeWithAll(
+        PlannerTestUtils.serializeAndDeserializeWithXStream(
                 HardSoftScore.ofUninitialized(-7, -12, 3400),
                 output -> {
                     assertThat(output.getInitScore()).isEqualTo(-7);

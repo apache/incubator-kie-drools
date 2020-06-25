@@ -211,9 +211,13 @@ Most value types are supported (including `boolean`, `int`, `double`, `BigDecima
 Look at a dataset of your planning problem.
 You will recognize domain classes in there, each of which can be categorized as one of the following:
 
-* An unrelated class: not used by any of the score constraints. From a planning standpoint, this data is obsolete.
-* A *problem fact* class: used by the score constraints, but does NOT change during planning (as long as the problem stays the same). For example: ``Bed``, ``Room``, ``Shift``, ``Employee``, ``Topic``, ``Period``, ... All the properties of a problem fact class are problem properties.
-* A *planning entity* class: used by the score constraints and changes during planning. For example: ``BedDesignation``, ``ShiftAssignment``, ``Exam``, ... The properties that change during planning are planning variables. The other properties are problem properties.
+* An unrelated class: not used by any of the score constraints.
+From a planning standpoint, this data is obsolete.
+* A *problem fact* class: used by the score constraints, but does NOT change during planning (as long as the problem stays the same).
+For example: ``Bed``, ``Room``, ``Shift``, ``Employee``, ``Topic``, ``Period``, ... All the properties of a problem fact class are problem properties.
+* A *planning entity* class: used by the score constraints and changes during planning.
+For example: ``BedDesignation``, ``ShiftAssignment``, ``Exam``, ... The properties that change during planning are planning variables.
+The other properties are problem properties.
 
 Ask yourself: __What class changes during planning?__ __Which class has variables that I want the ``__Solver__`` to change for me?__ That class is a planning entity.
 Most use cases have only one planning entity class.
@@ -228,16 +232,15 @@ To create a good domain model, read the <<domainModelingGuide,domain modeling gu
 
 *In OptaPlanner, all problem facts and planning entities are plain old JavaBeans (POJOs).* Load them from a database, an XML file, a data repository, a REST service, a noSQL cloud, ... (see <<integration,integration>>): it doesn't matter.
 
-
 [[problemFact]]
 === Problem fact
 
 A problem fact is any JavaBean (POJO) with getters that does not change during planning.
-Implementing the interface `Serializable` is recommended (but not required). For example in n queens, the columns and rows are problem facts:
+For example in n queens, the columns and rows are problem facts:
 
 [source,java,options="nowrap"]
 ----
-public class Column implements Serializable {
+public class Column {
 
     private int index;
 
@@ -247,7 +250,7 @@ public class Column implements Serializable {
 
 [source,java,options="nowrap"]
 ----
-public class Row implements Serializable {
+public class Row {
 
     private int index;
 
@@ -259,7 +262,7 @@ A problem fact can reference other problem facts of course:
 
 [source,java,options="nowrap"]
 ----
-public class Course implements Serializable {
+public class Course {
 
     private String code;
 

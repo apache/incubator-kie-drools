@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,10 @@ package org.optaplanner.core.impl.domain.variable.inverserelation;
 
 import java.util.Collection;
 
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 public class CollectionInverseVariableListener implements VariableListener<Object>, CollectionInverseVariableSupply {
 
@@ -40,22 +41,22 @@ public class CollectionInverseVariableListener implements VariableListener<Objec
 
     @Override
     public void afterEntityAdded(ScoreDirector scoreDirector, Object entity) {
-        insert(scoreDirector, entity);
+        insert((InnerScoreDirector) scoreDirector, entity);
     }
 
     @Override
     public void beforeVariableChanged(ScoreDirector scoreDirector, Object entity) {
-        retract(scoreDirector, entity);
+        retract((InnerScoreDirector) scoreDirector, entity);
     }
 
     @Override
     public void afterVariableChanged(ScoreDirector scoreDirector, Object entity) {
-        insert(scoreDirector, entity);
+        insert((InnerScoreDirector) scoreDirector, entity);
     }
 
     @Override
     public void beforeEntityRemoved(ScoreDirector scoreDirector, Object entity) {
-        retract(scoreDirector, entity);
+        retract((InnerScoreDirector) scoreDirector, entity);
     }
 
     @Override
@@ -63,7 +64,7 @@ public class CollectionInverseVariableListener implements VariableListener<Objec
         // Do nothing
     }
 
-    protected void insert(ScoreDirector scoreDirector, Object entity) {
+    protected void insert(InnerScoreDirector scoreDirector, Object entity) {
         Object shadowEntity = sourceVariableDescriptor.getValue(entity);
         if (shadowEntity != null) {
             Collection shadowCollection = (Collection) shadowVariableDescriptor.getValue(shadowEntity);
@@ -92,7 +93,7 @@ public class CollectionInverseVariableListener implements VariableListener<Objec
         }
     }
 
-    protected void retract(ScoreDirector scoreDirector, Object entity) {
+    protected void retract(InnerScoreDirector scoreDirector, Object entity) {
         Object shadowEntity = sourceVariableDescriptor.getValue(entity);
         if (shadowEntity != null) {
             Collection shadowCollection = (Collection) shadowVariableDescriptor.getValue(shadowEntity);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,12 @@
 
 package org.optaplanner.examples.nurserostering.solver.drools;
 
-import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
 import org.optaplanner.examples.nurserostering.domain.Employee;
 
-public class EmployeeFreeSequence implements Comparable<EmployeeFreeSequence>, Serializable {
+public class EmployeeFreeSequence implements Comparable<EmployeeFreeSequence> {
 
     private static final Comparator<EmployeeFreeSequence> COMPARATOR = Comparator.comparing(EmployeeFreeSequence::getEmployee)
             .thenComparingInt(EmployeeFreeSequence::getFirstDayIndex)

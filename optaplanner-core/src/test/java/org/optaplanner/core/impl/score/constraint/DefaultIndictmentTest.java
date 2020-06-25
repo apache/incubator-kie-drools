@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.score.constraint;
+package org.optaplanner.core.impl.score.constraint;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 
-public class IndictmentTest {
+public class DefaultIndictmentTest {
 
     @Test
     public void getScoreTotal() {
         TestdataEntity e1 = new TestdataEntity("e1");
         TestdataEntity e2 = new TestdataEntity("e2");
         TestdataEntity e3 = new TestdataEntity("e3");
-        Indictment indictment = new Indictment(e1, SimpleScore.ZERO);
+        DefaultIndictment indictment = new DefaultIndictment(e1, SimpleScore.ZERO);
         assertThat(indictment.getScore()).isEqualTo(SimpleScore.ZERO);
 
         ConstraintMatch match1 = new ConstraintMatch("package1", "constraint1", asList(e1), SimpleScore.of(-1));
@@ -59,14 +60,14 @@ public class IndictmentTest {
     @Test
     public void equalsAndHashCode() {
         PlannerAssert.assertObjectsAreEqual(
-                new Indictment("e1", SimpleScore.ZERO),
-                new Indictment("e1", SimpleScore.ZERO),
-                new Indictment("e1", SimpleScore.of(-7)));
+                new DefaultIndictment("e1", SimpleScore.ZERO),
+                new DefaultIndictment("e1", SimpleScore.ZERO),
+                new DefaultIndictment("e1", SimpleScore.of(-7)));
         PlannerAssert.assertObjectsAreNotEqual(
-                new Indictment("a", SimpleScore.ZERO),
-                new Indictment("aa", SimpleScore.ZERO),
-                new Indictment("b", SimpleScore.ZERO),
-                new Indictment("c", SimpleScore.ZERO));
+                new DefaultIndictment("a", SimpleScore.ZERO),
+                new DefaultIndictment("aa", SimpleScore.ZERO),
+                new DefaultIndictment("b", SimpleScore.ZERO),
+                new DefaultIndictment("c", SimpleScore.ZERO));
     }
 
 }

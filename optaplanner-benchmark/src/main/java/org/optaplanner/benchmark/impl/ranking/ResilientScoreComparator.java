@@ -16,7 +16,6 @@
 
 package org.optaplanner.benchmark.impl.ranking;
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 import org.optaplanner.core.api.score.Score;
@@ -25,7 +24,7 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 /**
  * Able to compare {@link Score}s of different types or nulls.
  */
-final class ResilientScoreComparator implements Comparator<Score>, Serializable {
+final class ResilientScoreComparator implements Comparator<Score> {
 
     private final ScoreDefinition aScoreDefinition;
 

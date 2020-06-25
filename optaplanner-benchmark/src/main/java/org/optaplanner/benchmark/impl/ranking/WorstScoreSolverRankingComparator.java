@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.optaplanner.benchmark.impl.ranking;
 
-import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
@@ -28,7 +27,7 @@ import org.optaplanner.core.api.score.Score;
  * This ranking {@link Comparator} orders a {@link SolverBenchmarkResult} by its worst {@link Score}.
  * It minimizes the worst case scenario.
  */
-public class WorstScoreSolverRankingComparator implements Comparator<SolverBenchmarkResult>, Serializable {
+public class WorstScoreSolverRankingComparator implements Comparator<SolverBenchmarkResult> {
 
     private final Comparator<SingleBenchmarkResult> singleBenchmarkComparator =
             new TotalScoreSingleBenchmarkRankingComparator();

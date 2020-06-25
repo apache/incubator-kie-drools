@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -146,12 +146,6 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
             writer.print(minJournal, testFile);
             throw wrapOriginalException(e);
         }
-    }
-
-    @Override
-    public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
-        journal.fireAllRules();
-        return super.getConstraintMatchTotals();
     }
 
     @Override

@@ -16,7 +16,6 @@
 
 package org.optaplanner.benchmark.impl.ranking;
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
@@ -33,7 +32,7 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
  * In such cases, dataset B would marginalize dataset A.
  * To avoid that, use {@link TotalRankSolverRankingWeightFactory}.
  */
-public class TotalScoreSolverRankingComparator implements Comparator<SolverBenchmarkResult>, Serializable {
+public class TotalScoreSolverRankingComparator implements Comparator<SolverBenchmarkResult> {
 
     private final Comparator<SolverBenchmarkResult> worstScoreSolverRankingComparator = new WorstScoreSolverRankingComparator();
 

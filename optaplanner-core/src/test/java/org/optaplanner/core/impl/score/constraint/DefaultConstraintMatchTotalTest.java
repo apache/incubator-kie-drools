@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.score.constraint;
+package org.optaplanner.core.impl.score.constraint;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 
-public class ConstraintMatchTotalTest {
+public class DefaultConstraintMatchTotalTest {
 
     @Test
     public void getScoreTotal() {
         TestdataEntity e1 = new TestdataEntity("e1");
         TestdataEntity e2 = new TestdataEntity("e2");
         TestdataEntity e3 = new TestdataEntity("e3");
-        ConstraintMatchTotal constraintMatchTotal = new ConstraintMatchTotal("package1", "constraint1", SimpleScore.ZERO);
+        DefaultConstraintMatchTotal constraintMatchTotal =
+                new DefaultConstraintMatchTotal("package1", "constraint1", SimpleScore.ZERO);
         assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.ZERO);
 
         ConstraintMatch match1 = constraintMatchTotal.addConstraintMatch(asList(e1, e2), SimpleScore.of(-1));
@@ -53,26 +55,26 @@ public class ConstraintMatchTotalTest {
     @Test
     public void equalsAndHashCode() {
         PlannerAssert.assertObjectsAreEqual(
-                new ConstraintMatchTotal("a.b", "c", SimpleScore.ZERO),
-                new ConstraintMatchTotal("a.b", "c", SimpleScore.ZERO),
-                new ConstraintMatchTotal("a.b", "c", SimpleScore.of(-7)));
+                new DefaultConstraintMatchTotal("a.b", "c", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal("a.b", "c", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal("a.b", "c", SimpleScore.of(-7)));
         PlannerAssert.assertObjectsAreNotEqual(
-                new ConstraintMatchTotal("a.b", "c", SimpleScore.ZERO),
-                new ConstraintMatchTotal("a.b", "d", SimpleScore.ZERO),
-                new ConstraintMatchTotal("a.c", "d", SimpleScore.ZERO));
+                new DefaultConstraintMatchTotal("a.b", "c", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal("a.b", "d", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal("a.c", "d", SimpleScore.ZERO));
     }
 
     @Test
     public void compareTo() {
         PlannerAssert.assertCompareToOrder(
-                new ConstraintMatchTotal("a.b", "aa", SimpleScore.ZERO),
-                new ConstraintMatchTotal("a.b", "ab", SimpleScore.ZERO),
-                new ConstraintMatchTotal("a.b", "ca", SimpleScore.ZERO),
-                new ConstraintMatchTotal("a.b", "cb", SimpleScore.ZERO),
-                new ConstraintMatchTotal("a.b", "d", SimpleScore.ZERO),
-                new ConstraintMatchTotal("a.c", "a", SimpleScore.ZERO),
-                new ConstraintMatchTotal("a.c", "b", SimpleScore.ZERO),
-                new ConstraintMatchTotal("a.c", "c", SimpleScore.ZERO));
+                new DefaultConstraintMatchTotal("a.b", "aa", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal("a.b", "ab", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal("a.b", "ca", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal("a.b", "cb", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal("a.b", "d", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal("a.c", "a", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal("a.c", "b", SimpleScore.ZERO),
+                new DefaultConstraintMatchTotal("a.c", "c", SimpleScore.ZERO));
     }
 
 }

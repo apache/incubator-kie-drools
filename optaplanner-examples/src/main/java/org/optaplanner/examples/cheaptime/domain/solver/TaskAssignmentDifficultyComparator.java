@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,12 @@
 
 package org.optaplanner.examples.cheaptime.domain.solver;
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 
-public class TaskAssignmentDifficultyComparator implements Comparator<TaskAssignment>, Serializable {
+public class TaskAssignmentDifficultyComparator implements Comparator<TaskAssignment> {
 
     private static final Comparator<Task> TASK_COMPARATOR = Comparator.comparingInt(Task::getResourceUsageMultiplicand)
             .thenComparingLong(Task::getPowerConsumptionMicros)

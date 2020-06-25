@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,12 @@
 
 package org.optaplanner.examples.common.business;
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  * Sorts data like this: "data-1", "data-2", "data-3", "data-10", "data-20", "data-100", ...
  */
-public class AlphaNumericStringComparator implements Comparator<String>, Serializable {
+public class AlphaNumericStringComparator implements Comparator<String> {
 
     @Override
     public int compare(String a, String b) {

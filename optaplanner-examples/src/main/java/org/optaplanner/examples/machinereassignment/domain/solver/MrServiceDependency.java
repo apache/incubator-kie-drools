@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,9 @@
 
 package org.optaplanner.examples.machinereassignment.domain.solver;
 
-import java.io.Serializable;
-
 import org.optaplanner.examples.machinereassignment.domain.MrService;
 
-public class MrServiceDependency implements Serializable {
+public class MrServiceDependency {
 
     private MrService fromService;
     private MrService toService;

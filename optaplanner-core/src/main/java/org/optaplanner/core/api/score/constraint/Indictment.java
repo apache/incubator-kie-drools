@@ -16,52 +16,32 @@
 
 package org.optaplanner.core.api.score.constraint;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.api.score.ScoreExplanation;
 
 /**
  * Explains the {@link Score} of a {@link PlanningSolution}, from the opposite side than {@link ConstraintMatchTotal}.
- * Retrievable from {@link ScoreDirector#getIndictmentMap()}.
+ * Retrievable from {@link ScoreExplanation#getIndictmentMap()}.
  */
-public final class Indictment {
-
-    private final Object justification;
-
-    private final Set<ConstraintMatch> constraintMatchSet;
-    private Score score;
-
-    /**
-     * @param justification never null
-     * @param zeroScore never null
-     */
-    public Indictment(Object justification, Score zeroScore) {
-        this.justification = justification;
-        constraintMatchSet = new LinkedHashSet<>();
-        score = zeroScore;
-    }
+public interface Indictment {
 
     /**
      * @return never null
      */
-    public Object getJustification() {
-        return justification;
-    }
+    Object getJustification();
 
     /**
      * @return never null
      */
-    public Set<ConstraintMatch> getConstraintMatchSet() {
-        return constraintMatchSet;
-    }
+    Set<ConstraintMatch> getConstraintMatchSet();
 
     /**
      * @return {@code >= 0}
      */
-    public int getConstraintMatchCount() {
+    default int getConstraintMatchCount() {
         return getConstraintMatchSet().size();
     }
 
@@ -70,58 +50,6 @@ public final class Indictment {
      *
      * @return never null
      */
-    public Score getScore() {
-        return score;
-    }
-
-    // ************************************************************************
-    // Worker methods
-    // ************************************************************************
-
-    public void addConstraintMatch(ConstraintMatch constraintMatch) {
-        score = score.add(constraintMatch.getScore());
-        boolean added = constraintMatchSet.add(constraintMatch);
-        if (!added) {
-            throw new IllegalStateException("The indictment (" + this
-                    + ") could not add constraintMatch (" + constraintMatch
-                    + ") to its constraintMatchSet (" + constraintMatchSet + ").");
-        }
-    }
-
-    public void removeConstraintMatch(ConstraintMatch constraintMatch) {
-        score = score.subtract(constraintMatch.getScore());
-        boolean removed = constraintMatchSet.remove(constraintMatch);
-        if (!removed) {
-            throw new IllegalStateException("The indictment (" + this
-                    + ") could not remove constraintMatch (" + constraintMatch
-                    + ") from its constraintMatchSet (" + constraintMatchSet + ").");
-        }
-    }
-
-    // ************************************************************************
-    // Infrastructure methods
-    // ************************************************************************
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (o instanceof Indictment) {
-            Indictment other = (Indictment) o;
-            return justification.equals(other.justification);
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        return justification.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return justification + "=" + score;
-    }
+    Score getScore();
 
 }

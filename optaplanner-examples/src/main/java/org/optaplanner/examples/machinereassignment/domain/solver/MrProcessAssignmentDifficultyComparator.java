@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,11 @@
 
 package org.optaplanner.examples.machinereassignment.domain.solver;
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 
-public class MrProcessAssignmentDifficultyComparator implements Comparator<MrProcessAssignment>,
-        Serializable {
+public class MrProcessAssignmentDifficultyComparator implements Comparator<MrProcessAssignment> {
 
     private static final Comparator<MrProcessAssignment> COMPARATOR = Comparator
             .comparingInt((MrProcessAssignment assignment) -> assignment.getProcess().getUsageMultiplicand())

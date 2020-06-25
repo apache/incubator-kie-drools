@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,9 @@
 package org.optaplanner.examples.common.business;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.Comparator;
 
-public class ProblemFileComparator implements Comparator<File>, Serializable {
+public class ProblemFileComparator implements Comparator<File> {
 
     private static final AlphaNumericStringComparator ALPHA_NUMERIC_STRING_COMPARATOR = new AlphaNumericStringComparator();
     private static final Comparator<File> COMPARATOR = Comparator.comparing(File::getParent, ALPHA_NUMERIC_STRING_COMPARATOR)

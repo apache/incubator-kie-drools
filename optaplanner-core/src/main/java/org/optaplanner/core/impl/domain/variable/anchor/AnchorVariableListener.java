@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,11 @@
 package org.optaplanner.core.impl.domain.variable.anchor;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -46,7 +47,7 @@ public class AnchorVariableListener<Solution_> implements VariableListener<Objec
 
     @Override
     public void afterEntityAdded(ScoreDirector scoreDirector, Object entity) {
-        insert(scoreDirector, entity);
+        insert((InnerScoreDirector) scoreDirector, entity);
     }
 
     @Override
@@ -56,7 +57,7 @@ public class AnchorVariableListener<Solution_> implements VariableListener<Objec
 
     @Override
     public void afterVariableChanged(ScoreDirector scoreDirector, Object entity) {
-        insert(scoreDirector, entity);
+        insert((InnerScoreDirector) scoreDirector, entity);
     }
 
     @Override
@@ -69,7 +70,7 @@ public class AnchorVariableListener<Solution_> implements VariableListener<Objec
         // Do nothing
     }
 
-    protected void insert(ScoreDirector scoreDirector, Object entity) {
+    protected void insert(InnerScoreDirector scoreDirector, Object entity) {
         Object previousEntity = previousVariableDescriptor.getValue(entity);
         Object anchor;
         if (previousEntity == null) {

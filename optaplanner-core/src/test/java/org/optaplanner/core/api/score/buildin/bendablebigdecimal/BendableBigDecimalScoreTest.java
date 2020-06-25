@@ -357,7 +357,7 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void serializeAndDeserialize() {
-        PlannerTestUtils.serializeAndDeserializeWithAll(
+        PlannerTestUtils.serializeAndDeserializeWithXStream(
                 scoreDefinitionHSS.createScore(new BigDecimal("-12"), new BigDecimal("3400"), new BigDecimal("-56")),
                 output -> {
                     assertThat(output.getInitScore()).isEqualTo(0);
@@ -365,7 +365,7 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
                     assertThat(output.getSoftScore(0)).isEqualTo(new BigDecimal("3400"));
                     assertThat(output.getSoftScore(1)).isEqualTo(new BigDecimal("-56"));
                 });
-        PlannerTestUtils.serializeAndDeserializeWithAll(
+        PlannerTestUtils.serializeAndDeserializeWithXStream(
                 scoreDefinitionHSS.createScoreUninitialized(-7, new BigDecimal("-12"), new BigDecimal("3400"),
                         new BigDecimal("-56")),
                 output -> {

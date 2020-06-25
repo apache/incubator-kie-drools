@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingInt;
 import static java.util.Comparator.nullsFirst;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -28,8 +27,7 @@ import org.optaplanner.examples.pas.domain.Bed;
 import org.optaplanner.examples.pas.domain.Department;
 import org.optaplanner.examples.pas.domain.Room;
 
-public class BedStrengthComparator implements Comparator<Bed>,
-        Serializable {
+public class BedStrengthComparator implements Comparator<Bed> {
 
     private static final Comparator<Integer> NULLSAFE_INTEGER_COMPARATOR = nullsFirst(Integer::compareTo);
     private static final Comparator<Department> DEPARTMENT_COMPARATOR = comparing(

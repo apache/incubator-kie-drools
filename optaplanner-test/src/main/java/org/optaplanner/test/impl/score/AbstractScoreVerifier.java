@@ -27,8 +27,9 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.optaplanner.test.impl.score.buildin.hardsoft.HardSoftScoreVerifier;
 
 /**
@@ -52,14 +53,12 @@ public abstract class AbstractScoreVerifier<Solution_> {
      * @param expectedScoreClass never null, used to fail fast if a {@link SolverFactory} with another {@link Score} type is
      *        used.
      */
-    public AbstractScoreVerifier(SolverFactory<Solution_> solverFactory,
-            Class<? extends Score> expectedScoreClass) {
+    public AbstractScoreVerifier(SolverFactory<Solution_> solverFactory, Class<? extends Score> expectedScoreClass) {
         if (solverFactory == null) {
             throw new IllegalStateException("The solverFactory (" + solverFactory + ") cannot be null.");
         }
-        scoreDirectorFactory = (InnerScoreDirectorFactory<Solution_>) solverFactory.getScoreDirectorFactory();
-        SolutionDescriptor<Solution_> solutionDescriptor = ((InnerScoreDirectorFactory<Solution_>) scoreDirectorFactory)
-                .getSolutionDescriptor();
+        scoreDirectorFactory = ((DefaultSolverFactory<Solution_>) solverFactory).getScoreDirectorFactory();
+        SolutionDescriptor<Solution_> solutionDescriptor = scoreDirectorFactory.getSolutionDescriptor();
         Class<? extends Score> scoreClass = solutionDescriptor.getScoreDefinition().getScoreClass();
         if (expectedScoreClass != scoreClass) {
             throw new IllegalStateException("The solution's scoreClass (" + scoreClass
@@ -77,13 +76,14 @@ public abstract class AbstractScoreVerifier<Solution_> {
      * @param expectedWeight never null, the total weight for all matches of that 1 constraint
      * @param solution never null
      */
-    protected void assertWeight(
-            String constraintPackage, String constraintName, int scoreLevel, Number expectedWeight,
+    protected void assertWeight(String constraintPackage, String constraintName, int scoreLevel, Number expectedWeight,
             Solution_ solution) {
-        ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector();
-        scoreDirector.setWorkingSolution(solution);
-        scoreDirector.calculateScore();
-        ConstraintMatchTotal matchTotal = findConstraintMatchTotal(constraintPackage, constraintName, scoreDirector);
+        ConstraintMatchTotal matchTotal;
+        try (InnerScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
+            scoreDirector.setWorkingSolution(solution);
+            scoreDirector.calculateScore();
+            matchTotal = findConstraintMatchTotal(constraintPackage, constraintName, scoreDirector);
+        }
         // A matchTotal is null if the constraint did match now and never matched in a previous incremental calculation
         // (including those that are undone).
         // To avoid user pitfalls, the expectedWeight cannot be null and a matchTotal of null is treated as zero.
@@ -124,14 +124,14 @@ public abstract class AbstractScoreVerifier<Solution_> {
      * @param scoreDirector never null
      * @return null if there is no constraint matched or the constraint doesn't exist
      */
-    private ConstraintMatchTotal findConstraintMatchTotal(
-            String constraintPackage, String constraintName, ScoreDirector<Solution_> scoreDirector) {
+    private ConstraintMatchTotal findConstraintMatchTotal(String constraintPackage, String constraintName,
+            InnerScoreDirector<Solution_> scoreDirector) {
         if (constraintPackage != null) {
             String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
             return scoreDirector.getConstraintMatchTotalMap().get(constraintId);
         }
         ConstraintMatchTotal matchTotal = null;
-        for (ConstraintMatchTotal selectedMatchTotal : scoreDirector.getConstraintMatchTotals()) {
+        for (ConstraintMatchTotal selectedMatchTotal : scoreDirector.getConstraintMatchTotalMap().values()) {
             if (selectedMatchTotal.getConstraintName().equals(constraintName)) {
                 if (matchTotal != null) {
                     throw new IllegalArgumentException("The constraintName (" + constraintName

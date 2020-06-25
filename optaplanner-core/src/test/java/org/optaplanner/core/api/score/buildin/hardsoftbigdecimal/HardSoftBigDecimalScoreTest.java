@@ -196,14 +196,14 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void serializeAndDeserialize() {
-        PlannerTestUtils.serializeAndDeserializeWithAll(
+        PlannerTestUtils.serializeAndDeserializeWithXStream(
                 HardSoftBigDecimalScore.of(new BigDecimal("-12.3"), new BigDecimal("3400.5")),
                 output -> {
                     assertThat(output.getInitScore()).isEqualTo(0);
                     assertThat(output.getHardScore()).isEqualTo(new BigDecimal("-12.3"));
                     assertThat(output.getSoftScore()).isEqualTo(new BigDecimal("3400.5"));
                 });
-        PlannerTestUtils.serializeAndDeserializeWithAll(
+        PlannerTestUtils.serializeAndDeserializeWithXStream(
                 HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-12.3"), new BigDecimal("3400.5")),
                 output -> {
                     assertThat(output.getInitScore()).isEqualTo(-7);

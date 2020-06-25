@@ -21,8 +21,9 @@ import java.util.List;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.phase.custom.AbstractCustomPhaseCommand;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
 import org.optaplanner.examples.dinnerparty.domain.Seat;
 import org.optaplanner.examples.dinnerparty.domain.SeatDesignation;
@@ -55,7 +56,7 @@ public class DinnerPartySolutionInitializer extends AbstractCustomPhaseCommand<D
                     seatDesignation.setSeat(seat);
                     scoreDirector.afterVariableChanged(seatDesignation, "seat");
                     scoreDirector.triggerVariableListeners();
-                    Score score = scoreDirector.calculateScore();
+                    Score score = ((InnerScoreDirector<DinnerParty>) scoreDirector).calculateScore();
                     if (score.withInitScore(0).compareTo(bestScore.withInitScore(0)) > 0) {
                         bestScore = score;
                         bestSeat = seat;

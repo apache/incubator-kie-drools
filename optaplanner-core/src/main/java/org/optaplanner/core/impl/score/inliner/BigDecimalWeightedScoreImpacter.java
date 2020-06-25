@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import java.util.function.Consumer;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 
 @FunctionalInterface
 public interface BigDecimalWeightedScoreImpacter extends WeightedScoreImpacter {

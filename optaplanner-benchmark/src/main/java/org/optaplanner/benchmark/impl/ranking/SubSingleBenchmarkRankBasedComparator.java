@@ -21,12 +21,11 @@ import static java.util.Comparator.naturalOrder;
 import static java.util.Comparator.nullsLast;
 import static java.util.Comparator.reverseOrder;
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 
-public class SubSingleBenchmarkRankBasedComparator implements Comparator<SubSingleBenchmarkResult>, Serializable {
+public class SubSingleBenchmarkRankBasedComparator implements Comparator<SubSingleBenchmarkResult> {
 
     private static final Comparator<SubSingleBenchmarkResult> COMPARATOR =
             // Reverse, less is better (redundant: failed benchmarks don't get ranked at all)

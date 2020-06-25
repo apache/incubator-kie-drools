@@ -21,7 +21,7 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.test.api.score.stream.MultiConstraintVerification;
@@ -50,7 +50,7 @@ public final class DefaultMultiConstraintVerification<Solution_>
 
     @Override
     public final DefaultMultiConstraintAssertion givenSolution(Solution_ solution) {
-        try (ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector(true, true)) {
+        try (InnerScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector(true, true)) {
             scoreDirector.setWorkingSolution(Objects.requireNonNull(solution));
             Score<?> score = scoreDirector.calculateScore();
             return new DefaultMultiConstraintAssertion<>(constraintProvider, score);

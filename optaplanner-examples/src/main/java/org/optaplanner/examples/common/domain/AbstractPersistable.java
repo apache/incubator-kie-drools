@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,9 @@
 
 package org.optaplanner.examples.common.domain;
 
-import java.io.Serializable;
-
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 
-public abstract class AbstractPersistable implements Serializable {
+public abstract class AbstractPersistable {
 
     protected Long id;
 

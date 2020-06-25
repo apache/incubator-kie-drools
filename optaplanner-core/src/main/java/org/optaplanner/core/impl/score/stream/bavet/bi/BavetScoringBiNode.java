@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringNode;
@@ -98,9 +99,8 @@ public final class BavetScoringBiNode<A, B> extends BavetAbstractBiNode<A, B> im
 
     @Override
     public ConstraintMatchTotal buildConstraintMatchTotal(Score<?> zeroScore) {
-        ConstraintMatchTotal constraintMatchTotal = new ConstraintMatchTotal(
-                constraintPackage, constraintName,
-                constraintWeight, zeroScore);
+        DefaultConstraintMatchTotal constraintMatchTotal = new DefaultConstraintMatchTotal(constraintPackage,
+                constraintName, constraintWeight, zeroScore);
         for (BavetScoringBiTuple<A, B> tuple : tupleSet) {
             constraintMatchTotal.addConstraintMatch(
                     Arrays.asList(tuple.getFactA(), tuple.getFactB()), tuple.getMatchScore());

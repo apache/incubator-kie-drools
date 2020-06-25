@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.test.api.score.stream.SingleConstraintVerification;
@@ -46,7 +46,7 @@ public final class DefaultSingleConstraintVerification<Solution_>
 
     @Override
     public final DefaultSingleConstraintAssertion givenSolution(Solution_ solution) {
-        try (ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector(true, true)) {
+        try (InnerScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector(true, true)) {
             scoreDirector.setWorkingSolution(Objects.requireNonNull(solution));
             Map<String, ConstraintMatchTotal> constraintMatchTotalMap = scoreDirector.getConstraintMatchTotalMap();
             return new DefaultSingleConstraintAssertion<>(scoreDirectorFactory, constraintMatchTotalMap);

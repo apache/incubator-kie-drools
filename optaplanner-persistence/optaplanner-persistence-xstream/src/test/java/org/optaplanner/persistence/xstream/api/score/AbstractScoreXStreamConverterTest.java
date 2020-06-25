@@ -19,8 +19,6 @@ package org.optaplanner.persistence.xstream.api.score;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-import java.io.Serializable;
-
 import org.optaplanner.core.api.score.Score;
 
 import com.thoughtworks.xstream.XStream;
@@ -57,7 +55,7 @@ public abstract class AbstractScoreXStreamConverterTest {
         }
     }
 
-    public static abstract class TestScoreWrapper<S extends Score> implements Serializable {
+    public static abstract class TestScoreWrapper<S extends Score> {
 
         public abstract S getScore();
 

@@ -20,8 +20,8 @@ import java.util.EventObject;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 /**
  * Delivered when the {@link PlanningSolution best solution} changes during solving.

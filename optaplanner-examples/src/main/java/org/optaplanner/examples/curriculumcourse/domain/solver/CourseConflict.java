@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.optaplanner.examples.curriculumcourse.domain.solver;
 
-import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
@@ -25,8 +24,7 @@ import org.optaplanner.examples.curriculumcourse.domain.Course;
 /**
  * Calculated during initialization, not modified during score calculation.
  */
-public class CourseConflict implements Serializable,
-        Comparable<CourseConflict> {
+public class CourseConflict implements Comparable<CourseConflict> {
 
     private static final Comparator<Course> COURSE_COMPARATOR = Comparator.comparingLong(Course::getId);
     private static final Comparator<CourseConflict> COMPARATOR = Comparator

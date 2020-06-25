@@ -100,7 +100,7 @@ public class IncrementalScoreDirectorTest {
                 mockIncrementalScoreCalculator(false));
         director.setWorkingSolution(new Object());
         assertThatIllegalStateException()
-                .isThrownBy(director::getConstraintMatchTotals)
+                .isThrownBy(director::getConstraintMatchTotalMap)
                 .withMessageContaining("constraintMatchEnabled");
     }
 
@@ -110,7 +110,6 @@ public class IncrementalScoreDirectorTest {
                 true,
                 mockIncrementalScoreCalculator(true));
         director.setWorkingSolution(new Object());
-        assertThat(director.getConstraintMatchTotals()).isNotNull();
         assertThat(director.getConstraintMatchTotalMap()).isNotNull();
     }
 

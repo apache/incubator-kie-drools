@@ -137,13 +137,13 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void serializeAndDeserialize() {
-        PlannerTestUtils.serializeAndDeserializeWithAll(
+        PlannerTestUtils.serializeAndDeserializeWithXStream(
                 SimpleLongScore.of(123L),
                 output -> {
                     assertThat(output.getInitScore()).isEqualTo(0);
                     assertThat(output.getScore()).isEqualTo(123L);
                 });
-        PlannerTestUtils.serializeAndDeserializeWithAll(
+        PlannerTestUtils.serializeAndDeserializeWithXStream(
                 SimpleLongScore.ofUninitialized(-7, 123L),
                 output -> {
                     assertThat(output.getInitScore()).isEqualTo(-7);

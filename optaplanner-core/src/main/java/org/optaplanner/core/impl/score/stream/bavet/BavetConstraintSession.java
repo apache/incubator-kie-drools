@@ -29,6 +29,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.impl.score.constraint.DefaultIndictment;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
@@ -177,8 +178,8 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
                 constraintMatch.getJustificationList().stream()
                         .distinct() // One match might have the same justification twice
                         .forEach(justification -> {
-                            Indictment indictment = indictmentMap.computeIfAbsent(justification,
-                                    k -> new Indictment(justification, zeroScore));
+                            DefaultIndictment indictment = (DefaultIndictment) indictmentMap.computeIfAbsent(justification,
+                                    k -> new DefaultIndictment(justification, zeroScore));
                             indictment.addConstraintMatch(constraintMatch);
                         });
             }

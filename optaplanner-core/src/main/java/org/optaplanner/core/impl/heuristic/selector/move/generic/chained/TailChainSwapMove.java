@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,12 +23,13 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.anchor.AnchorVariableSupply;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  * Also known as a 2-opt move.
@@ -231,35 +232,36 @@ public class TailChainSwapMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
+        InnerScoreDirector<Solution_> innerScoreDirector = (InnerScoreDirector<Solution_>) scoreDirector;
         if (!sameAnchor) {
             // Change the left entity
-            scoreDirector.changeVariableFacade(variableDescriptor, leftEntity, rightValue);
+            innerScoreDirector.changeVariableFacade(variableDescriptor, leftEntity, rightValue);
             // Change the right entity
             if (rightEntity != null) {
-                scoreDirector.changeVariableFacade(variableDescriptor, rightEntity, leftValue);
+                innerScoreDirector.changeVariableFacade(variableDescriptor, rightEntity, leftValue);
             }
         } else {
             if (!reverseAnchorSide) {
                 // Reverses loop on the side that doesn't include the anchor, because rightValue is earlier than leftEntity
-                scoreDirector.changeVariableFacade(variableDescriptor, leftEntity, rightValue);
-                reverseChain(scoreDirector, leftValue, leftEntity, rightEntity);
+                innerScoreDirector.changeVariableFacade(variableDescriptor, leftEntity, rightValue);
+                reverseChain(innerScoreDirector, leftValue, leftEntity, rightEntity);
                 if (leftNextEntity != null) {
-                    scoreDirector.changeVariableFacade(variableDescriptor, leftNextEntity, rightEntity);
+                    innerScoreDirector.changeVariableFacade(variableDescriptor, leftNextEntity, rightEntity);
                 }
             } else {
                 // Reverses loop on the side that does include the anchor, because rightValue is later than leftEntity
                 // Change the head of the chain
-                reverseChain(scoreDirector, leftValue, leftEntity, entityAfterAnchor);
+                reverseChain(innerScoreDirector, leftValue, leftEntity, entityAfterAnchor);
                 // Change leftEntity
-                scoreDirector.changeVariableFacade(variableDescriptor, leftEntity, rightValue);
+                innerScoreDirector.changeVariableFacade(variableDescriptor, leftEntity, rightValue);
                 // Change the tail of the chain
-                reverseChain(scoreDirector, lastEntityInChain, leftAnchor, rightEntity);
-                scoreDirector.changeVariableFacade(variableDescriptor, leftNextEntity, rightEntity);
+                reverseChain(innerScoreDirector, lastEntityInChain, leftAnchor, rightEntity);
+                innerScoreDirector.changeVariableFacade(variableDescriptor, leftNextEntity, rightEntity);
             }
         }
     }
 
-    protected void reverseChain(ScoreDirector scoreDirector, Object fromValue, Object fromEntity, Object toEntity) {
+    protected void reverseChain(InnerScoreDirector scoreDirector, Object fromValue, Object fromEntity, Object toEntity) {
         Object entity = fromValue;
         Object newValue = fromEntity;
         while (newValue != toEntity) {

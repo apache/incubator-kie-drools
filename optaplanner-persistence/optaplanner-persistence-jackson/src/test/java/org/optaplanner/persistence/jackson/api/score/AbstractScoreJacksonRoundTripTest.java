@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 import java.io.IOException;
-import java.io.Serializable;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.persistence.jackson.api.AbstractJacksonRoundTripTest;
@@ -60,7 +59,7 @@ public abstract class AbstractScoreJacksonRoundTripTest
         }
     }
 
-    public static abstract class TestScoreWrapper<S extends Score> implements Serializable {
+    public static abstract class TestScoreWrapper<S extends Score> {
 
         public abstract S getScore();
 

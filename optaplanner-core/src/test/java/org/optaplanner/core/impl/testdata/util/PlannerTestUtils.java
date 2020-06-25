@@ -21,7 +21,6 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,7 +37,6 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.apache.commons.lang3.SerializationUtils;
 import org.mockito.AdditionalAnswers;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -166,17 +164,7 @@ public class PlannerTestUtils {
     // Serialization methods
     // ************************************************************************
 
-    public static <T> void serializeAndDeserializeWithAll(T input, Consumer<T> outputAsserter) {
-        outputAsserter.accept(serializeAndDeserializeWithJavaSerialization(input));
-        outputAsserter.accept(serializeAndDeserializeWithXStream(input));
-    }
-
-    public static <T> T serializeAndDeserializeWithJavaSerialization(T input) {
-        byte[] bytes = SerializationUtils.serialize((Serializable) input);
-        return (T) SerializationUtils.deserialize(bytes);
-    }
-
-    public static <T> T serializeAndDeserializeWithXStream(T input) {
+    public static <T> void serializeAndDeserializeWithXStream(T input, Consumer<T> outputAsserter) {
         XStream xStream = new XStream();
         xStream.setMode(XStream.ID_REFERENCES);
         if (input != null) {
@@ -185,7 +173,7 @@ public class PlannerTestUtils {
         XStream.setupDefaultSecurity(xStream);
         xStream.addPermission(new AnyTypePermission());
         String xmlString = xStream.toXML(input);
-        return (T) xStream.fromXML(xmlString);
+        outputAsserter.accept((T) xStream.fromXML(xmlString));
     }
 
     // ************************************************************************

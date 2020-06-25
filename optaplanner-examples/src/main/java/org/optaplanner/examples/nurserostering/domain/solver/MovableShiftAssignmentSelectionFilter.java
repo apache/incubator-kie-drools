@@ -17,8 +17,8 @@
 package org.optaplanner.examples.nurserostering.domain.solver;
 
 import org.optaplanner.core.api.domain.entity.PinningFilter;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 

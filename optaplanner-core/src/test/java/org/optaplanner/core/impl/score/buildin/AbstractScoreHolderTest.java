@@ -92,7 +92,7 @@ public abstract class AbstractScoreHolderTest {
     }
 
     protected ConstraintMatchTotal findConstraintMatchTotal(AbstractScoreHolder<?> scoreHolder, String ruleName) {
-        Collection<ConstraintMatchTotal> constraintMatchTotals = scoreHolder.getConstraintMatchTotals();
+        Collection<ConstraintMatchTotal> constraintMatchTotals = scoreHolder.getConstraintMatchTotalMap().values();
         Optional<ConstraintMatchTotal> first = constraintMatchTotals.stream()
                 .filter(constraintMatchTotal -> constraintMatchTotal.getConstraintName().equals(ruleName)).findFirst();
         return first.orElse(null);
@@ -102,13 +102,13 @@ public abstract class AbstractScoreHolderTest {
     public void illegalStateExceptionThrownWhenConstraintMatchNotEnabled() {
         AbstractScoreHolder scoreHolder = buildScoreHolder(false);
         assertThatIllegalStateException()
-                .isThrownBy(scoreHolder::getConstraintMatchTotals)
+                .isThrownBy(scoreHolder::getConstraintMatchTotalMap)
                 .withMessageContaining("constraintMatchEnabled");
     }
 
     @Test
     public void constraintMatchTotalsNeverNull() {
-        assertThat(buildScoreHolder(true).getConstraintMatchTotals()).isNotNull();
+        assertThat(buildScoreHolder(true).getConstraintMatchTotalMap()).isNotNull();
     }
 
     private AbstractScoreHolder<SimpleScore> buildScoreHolder(boolean constraintMatchEnabled) {

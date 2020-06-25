@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import java.util.Objects;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.optaplanner.core.impl.score.director.incremental.ConstraintMatchAwareIncrementalScoreCalculator;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
@@ -547,15 +548,15 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
     @Override
     public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
         List<Resource> resourceList = cheapTimeSolution.getResourceList();
-        ConstraintMatchTotal resourceCapacityMatchTotal = new ConstraintMatchTotal(
+        DefaultConstraintMatchTotal resourceCapacityMatchTotal = new DefaultConstraintMatchTotal(
                 CONSTRAINT_PACKAGE, "resourceCapacity", HardMediumSoftLongScore.ZERO);
-        ConstraintMatchTotal spinUpDownMatchTotal = new ConstraintMatchTotal(
+        DefaultConstraintMatchTotal spinUpDownMatchTotal = new DefaultConstraintMatchTotal(
                 CONSTRAINT_PACKAGE, "spinUpDown", HardMediumSoftLongScore.ZERO);
-        ConstraintMatchTotal machineConsumptionMatchTotal = new ConstraintMatchTotal(
+        DefaultConstraintMatchTotal machineConsumptionMatchTotal = new DefaultConstraintMatchTotal(
                 CONSTRAINT_PACKAGE, "machineConsumption", HardMediumSoftLongScore.ZERO);
-        ConstraintMatchTotal taskConsumptionMatchTotal = new ConstraintMatchTotal(
+        DefaultConstraintMatchTotal taskConsumptionMatchTotal = new DefaultConstraintMatchTotal(
                 CONSTRAINT_PACKAGE, "taskConsumption", HardMediumSoftLongScore.ZERO);
-        ConstraintMatchTotal minimizeTaskStartPeriodMatchTotal = new ConstraintMatchTotal(
+        DefaultConstraintMatchTotal minimizeTaskStartPeriodMatchTotal = new DefaultConstraintMatchTotal(
                 CONSTRAINT_PACKAGE, "minimizeTaskStartPeriod", HardMediumSoftLongScore.ZERO);
         long taskConsumptionWeight = mediumScore;
         for (Machine machine : cheapTimeSolution.getMachineList()) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.LayoutManager2;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class TimeTableLayout implements LayoutManager2, Serializable {
+public class TimeTableLayout implements LayoutManager2 {
 
     public static final int FILL_COLLISIONS_FLAG = -1;
 
@@ -308,7 +307,7 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         totalRowHeight = nextRowBoundY;
     }
 
-    private static class Column implements Serializable {
+    private static class Column {
 
         private final int index;
         private final boolean autoWidth;
@@ -326,7 +325,7 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
 
     }
 
-    private static class Row implements Serializable {
+    private static class Row {
 
         private final int index;
         private final boolean autoHeight;
@@ -345,7 +344,7 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
 
     }
 
-    private static class Cell implements Serializable {
+    private static class Cell {
 
         private Column column;
         private Row row;
@@ -360,7 +359,7 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
 
     }
 
-    private static class ComponentSpan implements Serializable {
+    private static class ComponentSpan {
 
         private Component component;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,12 @@ import java.util.Collections;
 import java.util.Objects;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -95,14 +96,15 @@ public class SubChainChangeMove<Solution_> extends AbstractMove<Solution_> {
         Object lastEntity = subChain.getLastEntity();
         Object oldFirstValue = variableDescriptor.getValue(firstEntity);
         // Close the old chain
+        InnerScoreDirector<Solution_> innerScoreDirector = (InnerScoreDirector<Solution_>) scoreDirector;
         if (oldTrailingLastEntity != null) {
-            scoreDirector.changeVariableFacade(variableDescriptor, oldTrailingLastEntity, oldFirstValue);
+            innerScoreDirector.changeVariableFacade(variableDescriptor, oldTrailingLastEntity, oldFirstValue);
         }
         // Change the entity
-        scoreDirector.changeVariableFacade(variableDescriptor, firstEntity, toPlanningValue);
+        innerScoreDirector.changeVariableFacade(variableDescriptor, firstEntity, toPlanningValue);
         // Reroute the new chain
         if (newTrailingEntity != null) {
-            scoreDirector.changeVariableFacade(variableDescriptor, newTrailingEntity, lastEntity);
+            innerScoreDirector.changeVariableFacade(variableDescriptor, newTrailingEntity, lastEntity);
         }
     }
 

@@ -16,21 +16,22 @@
 
 package org.optaplanner.core.impl.score.director.incremental;
 
-import java.util.Collection;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
+import org.optaplanner.core.impl.score.constraint.DefaultIndictment;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Incremental java implementation of {@link ScoreDirector}, which only recalculates the {@link Score}
@@ -98,20 +99,16 @@ public class IncrementalScoreDirector<Solution_>
     }
 
     @Override
-    public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
+    public Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap() {
         if (!isConstraintMatchEnabled()) {
             throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
                     + ") is disabled in the constructor, this method should not be called.");
         }
         // Notice that we don't trigger the variable listeners
         return ((ConstraintMatchAwareIncrementalScoreCalculator<Solution_>) incrementalScoreCalculator)
-                .getConstraintMatchTotals();
-    }
-
-    @Override
-    public Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap() {
-        return getConstraintMatchTotals().stream()
-                .collect(Collectors.toMap(ConstraintMatchTotal::getConstraintId, Function.identity()));
+                .getConstraintMatchTotals()
+                .stream()
+                .collect(toMap(ConstraintMatchTotal::getConstraintId, identity()));
     }
 
     @Override
@@ -127,13 +124,13 @@ public class IncrementalScoreDirector<Solution_>
         }
         Map<Object, Indictment> indictmentMap = new LinkedHashMap<>(); // TODO use entitySize
         Score zeroScore = getScoreDefinition().getZeroScore();
-        for (ConstraintMatchTotal constraintMatchTotal : getConstraintMatchTotals()) {
+        for (ConstraintMatchTotal constraintMatchTotal : getConstraintMatchTotalMap().values()) {
             for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
                 constraintMatch.getJustificationList().stream()
                         .distinct() // One match might have the same justification twice
                         .forEach(justification -> {
-                            Indictment indictment = indictmentMap.computeIfAbsent(justification,
-                                    k -> new Indictment(justification, zeroScore));
+                            DefaultIndictment indictment = (DefaultIndictment) indictmentMap.computeIfAbsent(justification,
+                                    k -> new DefaultIndictment(justification, zeroScore));
                             indictment.addConstraintMatch(constraintMatch);
                         });
             }

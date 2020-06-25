@@ -28,10 +28,10 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 
 /**
@@ -109,17 +109,6 @@ public class DroolsScoreDirector<Solution_>
     @Override
     public boolean isConstraintMatchEnabled() {
         return scoreHolder.isConstraintMatchEnabled();
-    }
-
-    @Override
-    public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
-        if (workingSolution == null) {
-            throw new IllegalStateException(
-                    "The method setWorkingSolution() must be called before the method getConstraintMatchTotals().");
-        }
-        // Notice that we don't trigger the variable listeners
-        kieSession.fireAllRules();
-        return scoreHolder.getConstraintMatchTotals();
     }
 
     @Override

@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.definition;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
@@ -30,7 +29,7 @@ import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
  * @see ScoreDefinition
  * @see HardSoftScoreDefinition
  */
-public abstract class AbstractScoreDefinition<S extends Score<S>> implements ScoreDefinition<S>, Serializable {
+public abstract class AbstractScoreDefinition<S extends Score<S>> implements ScoreDefinition<S> {
 
     private final String[] levelLabels;
 

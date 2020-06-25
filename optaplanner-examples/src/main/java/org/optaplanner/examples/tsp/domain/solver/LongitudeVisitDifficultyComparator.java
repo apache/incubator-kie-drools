@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,11 @@
 
 package org.optaplanner.examples.tsp.domain.solver;
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 import org.optaplanner.examples.tsp.domain.Visit;
 
-public class LongitudeVisitDifficultyComparator implements Comparator<Visit>, Serializable {
+public class LongitudeVisitDifficultyComparator implements Comparator<Visit> {
 
     // TODO experiment with (aLongitude - bLongitude) % 10
     private static final Comparator<Visit> COMPARATOR = Comparator

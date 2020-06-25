@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.exhaustivesearch.node.comparator;
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
@@ -24,7 +23,7 @@ import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 /**
  * Investigate deeper nodes first, in order.
  */
-public class OriginalOrderNodeComparator implements Comparator<ExhaustiveSearchNode>, Serializable {
+public class OriginalOrderNodeComparator implements Comparator<ExhaustiveSearchNode> {
 
     @Override
     public int compare(ExhaustiveSearchNode a, ExhaustiveSearchNode b) {

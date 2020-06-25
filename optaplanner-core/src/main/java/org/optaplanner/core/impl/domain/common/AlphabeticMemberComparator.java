@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,12 @@
 
 package org.optaplanner.core.impl.domain.common;
 
-import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.Comparator;
 
-public class AlphabeticMemberComparator implements Comparator<Member>, Serializable {
+public class AlphabeticMemberComparator implements Comparator<Member> {
 
     @Override
     public int compare(Member a, Member b) {

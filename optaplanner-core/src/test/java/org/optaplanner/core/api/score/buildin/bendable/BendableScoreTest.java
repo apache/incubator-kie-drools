@@ -301,7 +301,7 @@ public class BendableScoreTest extends AbstractScoreTest {
 
     @Test
     public void serializeAndDeserialize() {
-        PlannerTestUtils.serializeAndDeserializeWithAll(
+        PlannerTestUtils.serializeAndDeserializeWithXStream(
                 scoreDefinitionHSS.createScore(-12, 3400, -56),
                 output -> {
                     assertThat(output.getInitScore()).isEqualTo(0);
@@ -309,7 +309,7 @@ public class BendableScoreTest extends AbstractScoreTest {
                     assertThat(output.getSoftScore(0)).isEqualTo(3400);
                     assertThat(output.getSoftScore(1)).isEqualTo(-56);
                 });
-        PlannerTestUtils.serializeAndDeserializeWithAll(
+        PlannerTestUtils.serializeAndDeserializeWithXStream(
                 scoreDefinitionHSS.createScoreUninitialized(-7, -12, 3400, -56),
                 output -> {
                     assertThat(output.getInitScore()).isEqualTo(-7);

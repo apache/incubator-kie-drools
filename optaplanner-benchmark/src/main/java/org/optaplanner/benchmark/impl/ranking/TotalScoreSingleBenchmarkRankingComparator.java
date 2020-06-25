@@ -16,13 +16,12 @@
 
 package org.optaplanner.benchmark.impl.ranking;
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
-public class TotalScoreSingleBenchmarkRankingComparator implements Comparator<SingleBenchmarkResult>, Serializable {
+public class TotalScoreSingleBenchmarkRankingComparator implements Comparator<SingleBenchmarkResult> {
 
     @Override
     public int compare(SingleBenchmarkResult a, SingleBenchmarkResult b) {

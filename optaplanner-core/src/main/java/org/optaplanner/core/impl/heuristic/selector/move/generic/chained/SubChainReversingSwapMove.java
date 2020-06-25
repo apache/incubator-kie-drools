@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,13 @@ import java.util.List;
 import java.util.Objects;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  * This {@link Move} is not cacheable.
@@ -104,33 +105,35 @@ public class SubChainReversingSwapMove<Solution_> extends AbstractMove<Solution_
         Object leftLastEntityValue = variableDescriptor.getValue(leftLastEntity);
         Object rightLastEntityValue = variableDescriptor.getValue(rightLastEntity);
         // Change the entities
+        InnerScoreDirector<Solution_> innerScoreDirector = (InnerScoreDirector<Solution_>) scoreDirector;
         if (leftLastEntity != rightFirstValue) {
-            scoreDirector.changeVariableFacade(variableDescriptor, leftLastEntity, rightFirstValue);
+            innerScoreDirector.changeVariableFacade(variableDescriptor, leftLastEntity, rightFirstValue);
         }
         if (rightLastEntity != leftFirstValue) {
-            scoreDirector.changeVariableFacade(variableDescriptor, rightLastEntity, leftFirstValue);
+            innerScoreDirector.changeVariableFacade(variableDescriptor, rightLastEntity, leftFirstValue);
         }
         // Reverse the chains
-        reverseChain(scoreDirector, leftLastEntity, leftLastEntityValue, leftFirstEntity);
-        reverseChain(scoreDirector, rightLastEntity, rightLastEntityValue, rightFirstEntity);
+        reverseChain(innerScoreDirector, leftLastEntity, leftLastEntityValue, leftFirstEntity);
+        reverseChain(innerScoreDirector, rightLastEntity, rightLastEntityValue, rightFirstEntity);
         // Reroute the new chains
         if (leftTrailingLastEntity != null) {
             if (leftTrailingLastEntity != rightFirstEntity) {
-                scoreDirector.changeVariableFacade(variableDescriptor, leftTrailingLastEntity, rightFirstEntity);
+                innerScoreDirector.changeVariableFacade(variableDescriptor, leftTrailingLastEntity, rightFirstEntity);
             } else {
-                scoreDirector.changeVariableFacade(variableDescriptor, leftLastEntity, rightFirstEntity);
+                innerScoreDirector.changeVariableFacade(variableDescriptor, leftLastEntity, rightFirstEntity);
             }
         }
         if (rightTrailingLastEntity != null) {
             if (rightTrailingLastEntity != leftFirstEntity) {
-                scoreDirector.changeVariableFacade(variableDescriptor, rightTrailingLastEntity, leftFirstEntity);
+                innerScoreDirector.changeVariableFacade(variableDescriptor, rightTrailingLastEntity, leftFirstEntity);
             } else {
-                scoreDirector.changeVariableFacade(variableDescriptor, rightLastEntity, leftFirstEntity);
+                innerScoreDirector.changeVariableFacade(variableDescriptor, rightLastEntity, leftFirstEntity);
             }
         }
     }
 
-    private void reverseChain(ScoreDirector<Solution_> scoreDirector, Object entity, Object previous, Object toEntity) {
+    private void reverseChain(InnerScoreDirector<Solution_> scoreDirector, Object entity, Object previous,
+            Object toEntity) {
         while (entity != toEntity) {
             Object value = variableDescriptor.getValue(previous);
             scoreDirector.changeVariableFacade(variableDescriptor, previous, entity);

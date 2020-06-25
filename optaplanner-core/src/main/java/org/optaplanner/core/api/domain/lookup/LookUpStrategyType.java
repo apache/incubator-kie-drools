@@ -18,7 +18,7 @@ package org.optaplanner.core.api.domain.lookup;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 
 /**
  * Determines how {@link ScoreDirector#lookUpWorkingObject(Object)} maps

@@ -20,11 +20,7 @@ import java.io.File;
 import java.util.Objects;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 
 /**
@@ -136,14 +132,5 @@ public abstract class SolverFactory<Solution_> {
      * @return never null
      */
     public abstract Solver<Solution_> buildSolver();
-
-    /**
-     * Useful to reuse the {@link Score} calculation (for example in a UI)
-     * and to explain the {@link Score} to the user
-     * with the {@link ConstraintMatchTotal} and {@link Indictment} API.
-     *
-     * @return never null
-     */
-    public abstract ScoreDirectorFactory<Solution_> getScoreDirectorFactory();
 
 }

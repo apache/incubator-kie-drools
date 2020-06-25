@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,13 @@ import java.util.List;
 import java.util.Objects;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  * This {@link Move} is not cacheable.
@@ -106,25 +107,26 @@ public class SubChainSwapMove<Solution_> extends AbstractMove<Solution_> {
         Object rightFirstValue = variableDescriptor.getValue(rightFirstEntity);
         Object rightLastEntity = rightSubChain.getLastEntity();
         // Change the entities
+        InnerScoreDirector<Solution_> innerScoreDirector = (InnerScoreDirector<Solution_>) scoreDirector;
         if (leftLastEntity != rightFirstValue) {
-            scoreDirector.changeVariableFacade(variableDescriptor, leftFirstEntity, rightFirstValue);
+            innerScoreDirector.changeVariableFacade(variableDescriptor, leftFirstEntity, rightFirstValue);
         }
         if (rightLastEntity != leftFirstValue) {
-            scoreDirector.changeVariableFacade(variableDescriptor, rightFirstEntity, leftFirstValue);
+            innerScoreDirector.changeVariableFacade(variableDescriptor, rightFirstEntity, leftFirstValue);
         }
         // Reroute the new chains
         if (leftTrailingLastEntity != null) {
             if (leftTrailingLastEntity != rightFirstEntity) {
-                scoreDirector.changeVariableFacade(variableDescriptor, leftTrailingLastEntity, rightLastEntity);
+                innerScoreDirector.changeVariableFacade(variableDescriptor, leftTrailingLastEntity, rightLastEntity);
             } else {
-                scoreDirector.changeVariableFacade(variableDescriptor, leftFirstEntity, rightLastEntity);
+                innerScoreDirector.changeVariableFacade(variableDescriptor, leftFirstEntity, rightLastEntity);
             }
         }
         if (rightTrailingLastEntity != null) {
             if (rightTrailingLastEntity != leftFirstEntity) {
-                scoreDirector.changeVariableFacade(variableDescriptor, rightTrailingLastEntity, leftLastEntity);
+                innerScoreDirector.changeVariableFacade(variableDescriptor, rightTrailingLastEntity, leftLastEntity);
             } else {
-                scoreDirector.changeVariableFacade(variableDescriptor, rightFirstEntity, leftLastEntity);
+                innerScoreDirector.changeVariableFacade(variableDescriptor, rightFirstEntity, leftLastEntity);
             }
         }
     }

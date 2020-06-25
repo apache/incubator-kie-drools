@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,12 @@ package org.optaplanner.examples.machinereassignment.solver.drools;
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingLong;
 
-import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
 import org.optaplanner.examples.machinereassignment.domain.MrService;
 
-public class MrServiceMovedProcessesCount implements Serializable, Comparable<MrServiceMovedProcessesCount> {
+public class MrServiceMovedProcessesCount implements Comparable<MrServiceMovedProcessesCount> {
 
     private static final Comparator<MrServiceMovedProcessesCount> COMPARATOR = comparing(
             (MrServiceMovedProcessesCount count) -> count.service, comparingLong(MrService::getId))
