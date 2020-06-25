@@ -18,7 +18,7 @@
   <properties>
     <version.io.quarkus>1.4.1.Final</version.io.quarkus>
     <version.frontend.plugin>1.9.1</version.frontend.plugin>
-    <version.node>v11.6.0</version.node>
+    <version.node>v12.16.2</version.node>
     <version.npm>6.10.3</version.npm>
     <version.yarn>v1.19.1</version.yarn>
     <maven.compiler.release>11</maven.compiler.release>
