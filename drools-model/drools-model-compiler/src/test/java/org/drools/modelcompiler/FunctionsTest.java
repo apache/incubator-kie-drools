@@ -192,10 +192,6 @@ public class FunctionsTest extends BaseModelTest {
         assertEquals( 1, rulesFired );
     }
 
-    public interface OOPathObject {
-        List<OOPathReferencedObject> path();
-    }
-
     public interface OOPathReferencedObject {
         String getField();
     }
@@ -209,17 +205,17 @@ public class FunctionsTest extends BaseModelTest {
     }
 
     @Test
-    public void testExternalFunctionsWithOOPath() {
+    public void testExternalFunctionJoin() {
         // DROOLS-5288
         String str =
-                        "import " + OOPathObject.class.getCanonicalName() + ";" +
+                        "import " + OOPathReferencedObject.class.getCanonicalName() + ";" +
                         "import " + OtherObject.class.getCanonicalName() + ";" +
                         "\n" +
                         "import function org.drools.modelcompiler.FunctionsTest.rightOfHash;\n" +
                         "\n" +
                         "rule rule1\n" +
                         "when\n" +
-                        "    OOPathObject($p: /path)\n" +
+                        "    $p : OOPathReferencedObject() \n" +
                         "    $element: OtherObject(id == rightOfHash($p.field))\n" +
                         "then\n" +
                         "    System.out.println(\"Hello world\");\n" +
