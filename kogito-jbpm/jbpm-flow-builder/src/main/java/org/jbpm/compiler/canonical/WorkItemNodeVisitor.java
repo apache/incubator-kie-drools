@@ -22,8 +22,10 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -50,11 +52,37 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import static org.jbpm.ruleflow.core.factory.WorkItemNodeFactory.METHOD_WORK_NAME;
 import static org.jbpm.ruleflow.core.factory.WorkItemNodeFactory.METHOD_WORK_PARAMETER;
 
 public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVisitor<T> {
+
+    private enum ParamType {
+        BOOLEAN(Boolean.class.getSimpleName()),
+        INTEGER(Integer.class.getSimpleName()),
+        FLOAT(Float.class.getSimpleName());
+
+        final String name;
+
+        public String getName() {
+            return name;
+        }
+
+        ParamType(String name) {
+            this.name = name;
+        }
+
+        public static ParamType fromString(String name) {
+            for(ParamType p : ParamType.values()) {
+                if(Objects.equals(p.name, name)) {
+                    return p;
+                }
+            }
+            return null;
+        }
+    }
 
     private final ClassLoader contextClassLoader;
 
@@ -90,7 +118,31 @@ public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVis
             if (entry.getValue() == null) {
                 continue; // interfaceImplementationRef ?
             }
-            body.addStatement(getFactoryMethod(variableName, METHOD_WORK_PARAMETER, new StringLiteralExpr(entry.getKey()), new StringLiteralExpr(entry.getValue().toString())));
+            String paramType = null;
+            if(work.getParameterDefinition(entry.getKey()) != null) {
+                paramType = work.getParameterDefinition(entry.getKey()).getType().getStringType();
+            }
+            body.addStatement(getFactoryMethod(variableName, METHOD_WORK_PARAMETER, new StringLiteralExpr(entry.getKey()), getParameterExpr(paramType, entry.getValue().toString())));
+        }
+    }
+
+    private Expression getParameterExpr(String type, String value) {
+        ParamType pType = ParamType.fromString(type);
+        if (pType == null) {
+            return new StringLiteralExpr(value);
+        }
+        switch (pType) {
+            case BOOLEAN:
+                return new BooleanLiteralExpr(Boolean.parseBoolean(value));
+            case FLOAT:
+                return new MethodCallExpr()
+                        .setScope(new NameExpr(Float.class.getName()))
+                        .setName("parseFloat")
+                        .addArgument(new StringLiteralExpr(value));
+            case INTEGER:
+                return new IntegerLiteralExpr(Integer.parseInt(value));
+            default:
+                return new StringLiteralExpr(value);
         }
     }
 
