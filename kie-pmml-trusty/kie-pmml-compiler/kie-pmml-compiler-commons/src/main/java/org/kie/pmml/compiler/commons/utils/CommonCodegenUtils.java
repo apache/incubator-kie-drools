@@ -41,6 +41,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
+import org.jpmml.model.StringUtil;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -60,12 +61,13 @@ public class CommonCodegenUtils {
     }
 
     /**
-     * This method creates
-     *
-     * <i><p>Optional<KiePMMLNameValue> kiePMMLNameValue = (kiePMMLNameValueListParam)</p>
-     * <p>.stream()</p>
-     * <p>.filter((KiePMMLNameValue kpmmlnv) -> Objects.equals((fieldNameToRef), kpmmlnv.getName()))</p>
-     * <p>.findFirst();</i>
+     * Returns
+     * <pre>
+     *  Optional<KiePMMLNameValue> kiePMMLNameValue = (<i>kiePMMLNameValueListParam</i>)
+     *      .stream()
+     *      .filter((KiePMMLNameValue kpmmlnv) -> Objects.equals((<i>fieldNameToRef</i>), kpmmlnv.getName()))
+     *      .findFirst();
+     * </pre>
      *
      * expression, where <b>kiePMMLNameValueListParam</b> is the name of the
      * <code>List&lt;KiePMMLNameValue&gt;</code> parameter, and
@@ -114,7 +116,19 @@ public class CommonCodegenUtils {
     }
 
     /**
-     * Add entries <b>fieldName/function</b> inside the constructor to the specified map
+     * For every entry in the given map, add
+     * <pre>
+     *     (<i>mapName</i>).put(<i>entry_key<i/>, this::<i>entry_value_ref</i>>);
+     * </pre>
+     * e.g.
+     * <pre>
+     *     MAP_NAME.put("KEY_0", this::METHOD_015);
+     *     MAP_NAME.put("KEY_3", this::METHOD_33);
+     *     MAP_NAME.put("KEY_2", this::METHOD_219);
+     *     MAP_NAME.put("KEY_4", this::METHOD_46);
+     * </pre>
+     * inside the given <code>BlockStmt</code>
+     *
      * @param toAdd
      * @param body
      * @param mapName
@@ -130,7 +144,12 @@ public class CommonCodegenUtils {
     }
 
     /**
-     * Returns a <b>multi-parameters</b> <code>MethodDeclaration</code> whose name is derived from given <b>expression</b>
+     * Returns
+     * <pre>
+     *     empty (<i>expression.getClass().getSimpleName()</i>)(<i>methodArity</i>)((list of <i>parameterType</i> param<i>index</i>)) {
+     *  }
+     * </pre>
+     * a <b>multi-parameters</b> <code>MethodDeclaration</code> whose name is derived from given <b>expression</b>
      * and <b>methodArity</b>, and whose parameters types are defined by <b>parameterTypes</b>
      * @param expression
      * @param methodArity
@@ -142,7 +161,14 @@ public class CommonCodegenUtils {
     }
 
     /**
-     * Returns a <b>multi-parameters</b> <code>MethodDeclaration</code> whose name is derived from given <b>methodName</b>
+     * Returns
+     * <pre>
+     *     empty (<i>methodName</i>)(<i>methodArity</i>)((list of <i>parameterType</i> param<i>index</i>)) {
+     * }
+     * </pre>
+     *
+     *
+     * a <b>multi-parameters</b> <code>MethodDeclaration</code> whose name is derived from given <b>methodName</b>
      * and <b>methodArity</b>, and whose parameters types are defined by <b>parameterTypes</b>
      * @param methodName
      * @param methodArity
@@ -164,7 +190,13 @@ public class CommonCodegenUtils {
     }
 
     /**
-     * Returns a <b>no-parameter</b> <code>MethodDeclaration</code> whose name is derived from given <b>expression</b>
+     * Returns
+     * <pre>
+     *     empty (<i>expression.getClass().getSimpleName()</i>)(<i>methodArity</i>)() {
+     * }
+     * </pre>
+     *
+     * a <b>no-parameter</b> <code>MethodDeclaration</code> whose name is derived from given <b>expression</b>
      * and <b>methodArity</b>
      * @param expression
      * @param methodArity
@@ -175,7 +207,13 @@ public class CommonCodegenUtils {
     }
 
     /**
-     * Returns a <b>no-parameter</b> <code>MethodDeclaration</code> whose name is derived from given <b>methodName</b>
+     * Returns
+     * <pre>
+     *     empty (<i>methodName</i>)(<i>methodArity</i>)() {
+     *     }
+     * </pre>
+     *
+     * A <b>no-parameter</b> <code>MethodDeclaration</code> whose name is derived from given <b>methodName</b>
      * and <b>methodArity</b>
      * @param methodName
      * @param methodArity
@@ -183,12 +221,22 @@ public class CommonCodegenUtils {
      */
     public static MethodDeclaration getMethodDeclaration(final String methodName, final int methodArity) {
         MethodDeclaration toReturn = new MethodDeclaration();
-        toReturn.setName(String.format(METHOD_NAME_TEMPLATE, methodName, methodArity));
+        String lowerCasedMethodName = methodName.isEmpty() ?  methodName : methodName.substring(0, 1).toLowerCase() + methodName.substring(1);
+        toReturn.setName(String.format(METHOD_NAME_TEMPLATE, lowerCasedMethodName, methodArity));
         return toReturn;
     }
 
     /**
-     * Returns a <b>typed</b> <code>ClassOrInterfaceType</code>
+     * Returns
+     * <pre>
+     *     (<i>className</i>)<(<i>comma-separated list of types</i>)>
+     * </pre>
+     *
+     * e.g
+     * <pre>
+     *     CLASS_NAME<TypeA, TypeB>
+     * </pre>
+     * a <b>typed</b> <code>ClassOrInterfaceType</code>
      * @param className
      * @param typesName
      * @return

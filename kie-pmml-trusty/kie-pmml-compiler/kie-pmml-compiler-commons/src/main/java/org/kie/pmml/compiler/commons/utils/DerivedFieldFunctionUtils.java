@@ -121,10 +121,27 @@ public class DerivedFieldFunctionUtils {
         return toReturn;
     }
 
+    /**
+     * Return
+     * <pre>
+     *     (<i>constant_type</i>) constant(<i>methodArity</i>))(List<KiePMMLNameValue> param1) {
+     *     return (<i>constant_value</i>);
+     * }
+     * </pre>
+     * e.g.
+     * <pre>
+     *     double constant10(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1) {
+     *     return 34.6;
+     * }
+     * </pre>
+     * @param constant
+     * @param methodArity
+     * @return
+     */
     static MethodDeclaration getConstantMethodDeclaration(final Constant constant, final int methodArity) {
         MethodDeclaration toReturn = getDerivedFieldsMethodDeclaration(constant, methodArity);
         Class<?> returnedType = DATA_TYPE.byName(constant.getDataType().value()).getMappedClass();
-        ClassOrInterfaceType classOrInterfaceType = parseClassOrInterfaceType(returnedType.getName());
+        ClassOrInterfaceType classOrInterfaceType = new ClassOrInterfaceType(returnedType.getName()); // not using parseClassOrInterfaceType because it throws exception with primitive - to fix
         toReturn.setType(classOrInterfaceType);
         final BlockStmt body = new BlockStmt();
         ReturnStmt returnStmt = new ReturnStmt();
@@ -139,25 +156,43 @@ public class DerivedFieldFunctionUtils {
         return toReturn;
     }
 
+    /**
+     * Returns
+     * <pre>
+     * Object FieldRef(<i>methodArity</i>)(java.util.List<KiePMMLNameValue> param1) {
+     *      Optional<KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((KiePMMLNameValue lmbdParam) -> Objects.equals(<i>(FieldRef_name)</i>, lmbdParam.getName())).findFirst();
+     *      return kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse(<i>(FieldRef_mapMissingTo)</i>);
+     * }
+     * </pre>
+     *
+     * @param fieldRef
+     * @param methodArity
+     * @return
+     */
     static MethodDeclaration getFieldRefMethodDeclaration(final FieldRef fieldRef, final int methodArity) {
         final BlockStmt body = new BlockStmt();
         String fieldNameToRef = fieldRef.getField().getValue();
         ExpressionStmt filteredOptionalExpr = getFilteredKiePMMLNameValueExpression(KIEPMMLNAMEVALUE_LIST_PARAM, fieldNameToRef);
         body.addStatement(filteredOptionalExpr);
+
         //KiePMMLNameValue::getValue
         MethodReferenceExpr methodReferenceExpr = new MethodReferenceExpr();
         methodReferenceExpr.setScope(new TypeExpr(parseClassOrInterfaceType(KiePMMLNameValue.class.getName())));
         methodReferenceExpr.setIdentifier("getValue");
+
         // kiePMMLNameValue.map
         MethodCallExpr expressionScope = new MethodCallExpr("map");
         expressionScope.setScope(new NameExpr(OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME));
+
         // kiePMMLNameValue.map(KiePMMLNameValue::getValue)
         expressionScope.setArguments(NodeList.nodeList(methodReferenceExpr));
+
         // kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse( (fieldRef.getMapMissingTo() )
         MethodCallExpr expression = new MethodCallExpr("orElse");
         expression.setScope(expressionScope);
         com.github.javaparser.ast.expr.Expression orElseExpression =  fieldRef.getMapMissingTo() != null ? new StringLiteralExpr(fieldRef.getMapMissingTo()) : new NullLiteralExpr();
         expression.setArguments(NodeList.nodeList(orElseExpression));
+
         // return kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse( (fieldRef.getMapMissingTo() )
         ReturnStmt returnStmt = new ReturnStmt();
         returnStmt.setExpression(expression);
@@ -193,7 +228,17 @@ public class DerivedFieldFunctionUtils {
         MethodDeclaration toReturn = getDerivedFieldsMethodDeclaration(textIndex, methodArity);
         return toReturn;
     }
-    
+
+    /**
+     * Return
+     * <pre>
+     *     empty  (<i>expression.getClass().getSimpleName()</i>)(<i>methodArity</i>)(List<KiePMMLNameValue> param1) {
+     *     }
+     * </pre>
+     * @param expression
+     * @param methodArity
+     * @return
+     */
     static MethodDeclaration getDerivedFieldsMethodDeclaration(final Expression expression, final int methodArity) {
         ClassOrInterfaceType parameter = getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()));
         return getMethodDeclaration(expression, methodArity, Collections.singletonList(parameter));

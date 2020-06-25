@@ -176,9 +176,20 @@ public class CommonCodegenUtilsTest {
         commonValidateMethodDeclaration(retrieved, methodName, methodArity);
     }
 
+    @Test
+    public void getTypedClassOrInterfaceType() {
+        String className = "CLASS_NAME";
+        List<String> typesName = Arrays.asList("TypeA", "TypeB");
+        ClassOrInterfaceType retrieved = CommonCodegenUtils.getTypedClassOrInterfaceType(className, typesName);
+        assertNotNull(retrieved);
+        String expected = String.format("%1$s<%2$s,%3$s>", className, typesName.get(0), typesName.get(1));
+        assertEquals(expected, retrieved.asString());
+    }
+
     private void commonValidateMethodDeclaration(MethodDeclaration toValidate, String methodName, int methodArity) {
         assertNotNull(toValidate);
-        String expectedMethodName = String.format(METHOD_NAME_TEMPLATE, methodName, methodArity);
+        String lowerCasedMethodName = methodName.isEmpty() ?  methodName : methodName.substring(0, 1).toLowerCase() + methodName.substring(1);
+        String expectedMethodName = String.format(METHOD_NAME_TEMPLATE, lowerCasedMethodName, methodArity);
         assertEquals(toValidate.getName().asString(), expectedMethodName);
     }
 
