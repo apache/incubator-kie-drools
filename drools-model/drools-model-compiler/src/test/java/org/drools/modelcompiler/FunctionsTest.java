@@ -191,4 +191,44 @@ public class FunctionsTest extends BaseModelTest {
         int rulesFired = ksession.fireAllRules();
         assertEquals( 1, rulesFired );
     }
+
+    public interface OOPathObject {
+        List<OOPathReferencedObject> path();
+    }
+
+    public interface OOPathReferencedObject {
+        String getField();
+    }
+
+    public interface OtherObject {
+        String getId();
+    }
+
+    public static String rightOfHash(String input) {
+        return "whatever";
+    }
+
+    @Test
+    public void testExternalFunctionsWithOOPath() {
+        // DROOLS-5288
+        String str =
+                        "import " + OOPathObject.class.getCanonicalName() + ";" +
+                        "import " + OtherObject.class.getCanonicalName() + ";" +
+                        "\n" +
+                        "import function org.drools.modelcompiler.FunctionsTest.rightOfHash;\n" +
+                        "\n" +
+                        "rule rule1\n" +
+                        "when\n" +
+                        "    OOPathObject($p: /path)\n" +
+                        "    $element: OtherObject(id == rightOfHash($p.field))\n" +
+                        "then\n" +
+                        "    System.out.println(\"Hello world\");\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Pojo( Arrays.asList(1,3) ) );
+        int rulesFired = ksession.fireAllRules();
+        assertEquals( 0, rulesFired );
+    }
 }
