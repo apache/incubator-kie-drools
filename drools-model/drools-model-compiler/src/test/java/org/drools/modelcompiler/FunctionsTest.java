@@ -192,12 +192,36 @@ public class FunctionsTest extends BaseModelTest {
         assertEquals( 1, rulesFired );
     }
 
-    public interface OOPathReferencedObject {
-        String getField();
+    public class ClassA {
+        String field;
+
+        public ClassA(String field) {
+            this.field = field;
+        }
+
+        public String getField() {
+            return field;
+        }
+
+        public void setField(String field) {
+            this.field = field;
+        }
     }
 
-    public interface OtherObject {
-        String getId();
+    public class ClassB {
+        String id;
+
+        public ClassB(String id) {
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
     }
 
     public static String rightOfHash(String input) {
@@ -208,15 +232,15 @@ public class FunctionsTest extends BaseModelTest {
     public void testExternalFunctionJoin() {
         // DROOLS-5288
         String str =
-                        "import " + OOPathReferencedObject.class.getCanonicalName() + ";" +
-                        "import " + OtherObject.class.getCanonicalName() + ";" +
+                        "import " + ClassA.class.getCanonicalName() + ";" +
+                        "import " + ClassB.class.getCanonicalName() + ";" +
                         "\n" +
                         "import function org.drools.modelcompiler.FunctionsTest.rightOfHash;\n" +
                         "\n" +
                         "rule rule1\n" +
                         "when\n" +
-                        "    $p : OOPathReferencedObject() \n" +
-                        "    $element: OtherObject(id == rightOfHash($p.field))\n" +
+                        "    $a : ClassA() \n" +
+                        "    $b: ClassB(id == rightOfHash($a.field))\n" +
                         "then\n" +
                         "    System.out.println(\"Hello world\");\n" +
                         "end";
