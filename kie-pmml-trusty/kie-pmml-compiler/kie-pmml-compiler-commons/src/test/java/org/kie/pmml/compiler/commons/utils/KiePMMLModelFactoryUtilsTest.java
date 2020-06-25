@@ -16,6 +16,8 @@
 
 package org.kie.pmml.compiler.commons.utils;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import org.dmg.pmml.PMML;
@@ -64,6 +66,7 @@ public class KiePMMLModelFactoryUtilsTest {
 
     @Test
     public void populateLocalTransformationsInConstructor() {
-        KiePMMLModelFactoryUtils.populateLocalTransformationsInConstructor(constructorDeclaration, pmmlModel.getModels().get(0).getLocalTransformations());
+        AtomicInteger arityCounter = new AtomicInteger(0);
+        KiePMMLModelFactoryUtils.populateLocalTransformationsInConstructor(constructorDeclaration, pmmlModel.getModels().get(0).getLocalTransformations(), arityCounter);
     }
 }

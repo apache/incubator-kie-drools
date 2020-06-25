@@ -34,11 +34,9 @@ import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
@@ -53,6 +51,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.groupingBy;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulation;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 
 public class KiePMMLRegressionTableRegressionFactory {
@@ -109,22 +108,6 @@ public class KiePMMLRegressionTableRegressionFactory {
         populateGetTargetCategory(tableTemplate, regressionTable.getTargetCategory());
         populateUpdateResult(tableTemplate, normalizationMethod);
         return new AbstractMap.SimpleEntry<>(className, cloneCU.toString());
-    }
-
-    /**
-     * Add entries <b>fieldName/function</b> inside the constructor
-     * @param toAdd
-     * @param body
-     * @param mapName
-     */
-    private static void addMapPopulation(final Map<String, MethodDeclaration> toAdd, final BlockStmt body, final String mapName) {
-        toAdd.forEach((s, methodDeclaration) -> {
-            MethodReferenceExpr methodReferenceExpr = new MethodReferenceExpr();
-            methodReferenceExpr.setScope(new ThisExpr());
-            methodReferenceExpr.setIdentifier(methodDeclaration.getNameAsString());
-            NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(s), methodReferenceExpr);
-            body.addStatement(new MethodCallExpr(new NameExpr(mapName), "put", expressions));
-        });
     }
 
     /**
