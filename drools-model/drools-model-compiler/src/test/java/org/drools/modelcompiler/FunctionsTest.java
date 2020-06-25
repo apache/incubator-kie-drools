@@ -17,9 +17,11 @@
 package org.drools.modelcompiler;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -192,39 +194,7 @@ public class FunctionsTest extends BaseModelTest {
         assertEquals( 1, rulesFired );
     }
 
-    public class ClassA {
-        String field;
-
-        public ClassA(String field) {
-            this.field = field;
-        }
-
-        public String getField() {
-            return field;
-        }
-
-        public void setField(String field) {
-            this.field = field;
-        }
-    }
-
-    public class ClassB {
-        String id;
-
-        public ClassB(String id) {
-            this.id = id;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-    }
-
-    public static String rightOfHash(String input) {
+    public static String constantValue(String input) {
         return "whatever";
     }
 
@@ -232,22 +202,28 @@ public class FunctionsTest extends BaseModelTest {
     public void testExternalFunctionJoin() {
         // DROOLS-5288
         String str =
-                        "import " + ClassA.class.getCanonicalName() + ";" +
-                        "import " + ClassB.class.getCanonicalName() + ";" +
-                        "\n" +
-                        "import function org.drools.modelcompiler.FunctionsTest.rightOfHash;\n" +
-                        "\n" +
-                        "rule rule1\n" +
-                        "when\n" +
-                        "    $a : ClassA() \n" +
-                        "    $b: ClassB(id == rightOfHash($a.field))\n" +
-                        "then\n" +
-                        "    System.out.println(\"Hello world\");\n" +
-                        "end";
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "\n" +
+                "import function org.drools.modelcompiler.FunctionsTest.constantValue;\n" +
+                "\n" +
+                "rule rule1\n" +
+                "when\n" +
+                "    $p1 : Person() \n" +
+                "    $p2: Person(name == constantValue($p1.name))\n" +
+                "then\n" +
+                "  insert(new Result($p2.getName()));\n" +
+                "end";
 
         KieSession ksession = getKieSession( str );
 
-        int rulesFired = ksession.fireAllRules();
-        assertEquals( 0, rulesFired );
+        ksession.insert(new Person("Luca"));
+        ksession.insert(new Person("whatever"));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class );
+        assertEquals( 2, results.size() );
+        assertEquals( "whatever", results.iterator().next().getValue() );
     }
 }
