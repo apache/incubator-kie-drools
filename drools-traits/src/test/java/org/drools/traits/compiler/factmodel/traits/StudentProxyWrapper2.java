@@ -16,8 +16,8 @@
 
 package org.drools.traits.compiler.factmodel.traits;
 
-import org.drools.traits.core.factmodel.traits.MapWrapper;
-import org.drools.traits.core.factmodel.traits.TraitProxyImpl;
+import org.drools.traits.core.factmodel.MapWrapper;
+import org.drools.traits.core.factmodel.TraitProxyImpl;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.WriteAccessor;
 

@@ -16,8 +16,8 @@
 
 package org.drools.traits.compiler.factmodel.traits;
 
-import org.drools.traits.core.factmodel.traits.TraitProxyImpl;
-import org.drools.traits.core.factmodel.traits.TripleBasedStruct;
+import org.drools.traits.core.factmodel.TraitProxyImpl;
+import org.drools.traits.core.factmodel.TripleBasedStruct;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.WriteAccessor;
 import org.drools.core.util.TripleStore;

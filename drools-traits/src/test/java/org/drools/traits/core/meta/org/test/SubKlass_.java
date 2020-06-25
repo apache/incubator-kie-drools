@@ -15,7 +15,7 @@
 
 package org.drools.traits.core.meta.org.test;
 
-import org.drools.traits.core.factmodel.traits.AbstractTraitFactory;
+import org.drools.traits.core.factmodel.AbstractTraitFactory;
 import org.drools.traits.core.metadata.Lit;
 import org.drools.traits.core.metadata.ManyValuedMetaProperty;
 import org.drools.traits.core.metadata.MetaClass;

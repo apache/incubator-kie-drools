@@ -15,7 +15,7 @@
 
 package org.drools.traits.core.metadata;
 
-import org.drools.traits.core.factmodel.traits.AbstractTraitFactory;
+import org.drools.traits.core.factmodel.AbstractTraitFactory;
 
 public interface Don<K,T> extends WorkingMemoryTask<T> {
 

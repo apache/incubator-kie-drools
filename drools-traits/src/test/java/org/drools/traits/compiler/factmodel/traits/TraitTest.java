@@ -43,19 +43,19 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
-import org.drools.traits.core.factmodel.traits.Entity;
-import org.drools.traits.core.factmodel.traits.LogicalTypeInconsistencyException;
-import org.drools.traits.core.factmodel.traits.MapWrapper;
+import org.drools.traits.core.factmodel.Entity;
+import org.drools.traits.core.factmodel.LogicalTypeInconsistencyException;
+import org.drools.traits.core.factmodel.MapWrapper;
 import org.drools.core.factmodel.traits.Thing;
-import org.drools.traits.core.factmodel.traits.TraitFactoryImpl;
-import org.drools.traits.core.factmodel.traits.TraitProxyImpl;
-import org.drools.traits.core.factmodel.traits.TraitRegistryImpl;
-import org.drools.traits.core.factmodel.traits.TraitTypeMapImpl;
+import org.drools.traits.core.factmodel.TraitFactoryImpl;
+import org.drools.traits.core.factmodel.TraitProxyImpl;
+import org.drools.traits.core.factmodel.TraitRegistryImpl;
+import org.drools.traits.core.factmodel.TraitTypeMapImpl;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.traits.core.factmodel.traits.TripleBasedBean;
-import org.drools.traits.core.factmodel.traits.TripleBasedStruct;
-import org.drools.traits.core.factmodel.traits.VirtualPropertyMode;
+import org.drools.traits.core.factmodel.TripleBasedBean;
+import org.drools.traits.core.factmodel.TripleBasedStruct;
+import org.drools.traits.core.factmodel.VirtualPropertyMode;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -1081,7 +1081,7 @@ public class TraitTest extends CommonTraitTest {
         String source = "package org.drools.compiler.trait.test;\n" +
                         "\n" +
                         "import org.drools.core.factmodel.traits.Traitable;\n" +
-                        "import org.drools.traits.core.factmodel.traits.Entity;\n" +
+                        "import org.drools.traits.core.factmodel.Entity;\n" +
                         "import org.drools.core.factmodel.traits.Thing;\n" +
                         "\n" +
                         "global java.util.List list;\n" +
@@ -2483,7 +2483,7 @@ public class TraitTest extends CommonTraitTest {
     public void testTraitModifyCore2a() {
         String s1 = "package test;\n" +
                     "import org.drools.core.factmodel.traits.*;\n" +
-                    "import org.drools.traits.core.factmodel.traits.*;\n" +
+                    "import org.drools.traits.core.factmodel.*;\n" +
                     "global java.util.List list; \n" +
                     "" +
                     "declare trait Student @propertyReactive name : String end\n" +
@@ -2549,7 +2549,7 @@ public class TraitTest extends CommonTraitTest {
     public void testTraitModifyCore3() {
         String s1 = "package test;\n" +
                     "import org.drools.core.factmodel.traits.*;\n" +
-                    "import org.drools.traits.core.factmodel.traits.*;\n" +
+                    "import org.drools.traits.core.factmodel.*;\n" +
                     "global java.util.List list; \n" +
                     "" +
                     "declare trait A id : int end\n" +
@@ -2661,7 +2661,7 @@ public class TraitTest extends CommonTraitTest {
     public void testTraitModifyCoreWithPropertyReactivity() {
         String s1 = "package test;\n" +
                     "import org.drools.core.factmodel.traits.*;\n" +
-                    "import org.drools.traits.core.factmodel.traits.*;\n" +
+                    "import org.drools.traits.core.factmodel.*;\n" +
                     "global java.util.List list;\n" +
                     "" +
                     "declare trait Student @propertyReactive " +
@@ -2840,7 +2840,7 @@ public class TraitTest extends CommonTraitTest {
                         "\n" +
                         "global java.util.List list; \n" +
                         "import org.drools.core.factmodel.traits.Thing\n" +
-                        "import org.drools.traits.core.factmodel.traits.Entity\n" +
+                        "import org.drools.traits.core.factmodel.Entity\n" +
                         "\n" +
                         "declare trait t.x.D\n" +
                         "    @propertyReactive\n" +
@@ -2899,7 +2899,7 @@ public class TraitTest extends CommonTraitTest {
                         "\n" +
                         "global java.util.List list; \n" +
                         "import org.drools.core.factmodel.traits.Thing\n" +
-                        "import org.drools.traits.core.factmodel.traits.Entity\n" +
+                        "import org.drools.traits.core.factmodel.Entity\n" +
                         "\n" +
                         "declare trait t.x.D\n" +
                         "    @propertyReactive\n" +
@@ -3732,7 +3732,7 @@ public class TraitTest extends CommonTraitTest {
     public void testShedThing() {
         String s1 = "package test;\n" +
                     "import org.drools.core.factmodel.traits.*;\n" +
-                    "import org.drools.traits.core.factmodel.traits.*;\n" +
+                    "import org.drools.traits.core.factmodel.*;\n" +
                     "global java.util.List list; \n" +
                     "" +
                     "declare trait A id : int end\n" +
@@ -3803,7 +3803,7 @@ public class TraitTest extends CommonTraitTest {
     public void testdeleteThings() {
         String s1 = "package test;\n" +
                     "import org.drools.core.factmodel.traits.*;\n" +
-                    "import org.drools.traits.core.factmodel.traits.*;\n" +
+                    "import org.drools.traits.core.factmodel.*;\n" +
                     "global java.util.List list; \n" +
                     "" +
                     "declare trait A id : int end\n" +
@@ -4570,7 +4570,7 @@ public class TraitTest extends CommonTraitTest {
                      "package org.drools.core.factmodel.traits.test;\n" +
                      "\n" +
                      "import org.drools.core.factmodel.traits.*;\n" +
-                     "import org.drools.traits.core.factmodel.traits.*;\n" +
+                     "import org.drools.traits.core.factmodel.*;\n" +
                      "import java.util.*;\n" +
                      "\n" +
                      "declare trait A end \n" +
@@ -4621,7 +4621,7 @@ public class TraitTest extends CommonTraitTest {
                      "package org.drools.core.factmodel.traits.test;\n" +
                      "\n" +
                      "import org.drools.core.factmodel.traits.*;\n" +
-                     "import org.drools.traits.core.factmodel.traits.*;\n" +
+                     "import org.drools.traits.core.factmodel.*;\n" +
                      "import java.util.*;\n" +
                      "\n" +
                      "declare trait Tx \n";
@@ -4706,7 +4706,7 @@ public class TraitTest extends CommonTraitTest {
                      "package org.drools.core.factmodel.traits.test;\n" +
                      "\n" +
                      "import org.drools.core.factmodel.traits.*;\n" +
-                     "import org.drools.traits.core.factmodel.traits.*;\n" +
+                     "import org.drools.traits.core.factmodel.*;\n" +
                      "import java.util.*;\n" +
                      "\n" +
                      "global List list; \n" +
@@ -4831,7 +4831,7 @@ public class TraitTest extends CommonTraitTest {
                      "package org.drools.core.factmodel.traits.test;\n" +
                      "\n" +
                      "import org.drools.core.factmodel.traits.*;\n" +
-                     "import org.drools.traits.core.factmodel.traits.*;\n" +
+                     "import org.drools.traits.core.factmodel.*;\n" +
                      "import java.util.*;\n" +
                      "\n" +
                      "global List list; \n" +
@@ -5161,7 +5161,7 @@ public class TraitTest extends CommonTraitTest {
                           "import " + TraitTest.class.getName() + ".SomeTrait; \n" +
                           "import " + StudentImpl.class.getCanonicalName() + ";\n" +
                           "import org.drools.core.factmodel.traits.*; \n" +
-                          "import org.drools.traits.core.factmodel.traits.*; \n" +
+                          "import org.drools.traits.core.factmodel.*; \n" +
                           "global java.util.List list;\n" +
                           "" +
                           "rule \"Don ItemStyle\"\n" +
@@ -5507,7 +5507,7 @@ public class TraitTest extends CommonTraitTest {
     @Test
     public void testDonModify() {
         String drl =
-                "import org.drools.traits.core.factmodel.traits.Entity;\n" +
+                "import org.drools.traits.core.factmodel.Entity;\n" +
                 "import org.drools.traits.compiler.factmodel.traits.IPerson;\n" +
                 "import org.drools.compiler.factmodel.traits.IStudent;\n" +
 

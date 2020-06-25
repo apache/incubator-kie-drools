@@ -16,12 +16,12 @@
 
 package org.drools.traits.compiler.factmodel.traits;
 
-import org.drools.traits.core.factmodel.traits.TraitProxyImpl;
-import org.drools.traits.core.factmodel.traits.TraitTypeMapImpl;
+import org.drools.traits.core.factmodel.TraitProxyImpl;
+import org.drools.traits.core.factmodel.TraitTypeMapImpl;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.traits.core.factmodel.traits.TripleBasedBean;
-import org.drools.traits.core.factmodel.traits.TripleBasedStruct;
-import org.drools.traits.core.factmodel.traits.TripleBasedTypes;
+import org.drools.traits.core.factmodel.TripleBasedBean;
+import org.drools.traits.core.factmodel.TripleBasedStruct;
+import org.drools.traits.core.factmodel.TripleBasedTypes;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.WriteAccessor;
 import org.drools.core.util.Triple;

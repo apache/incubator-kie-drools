@@ -17,8 +17,8 @@ package org.drools.traits.core.metadata;
 
 import java.net.URI;
 
-import org.drools.traits.core.factmodel.traits.AbstractTraitFactory;
-import org.drools.traits.core.factmodel.traits.LogicalTypeInconsistencyException;
+import org.drools.traits.core.factmodel.AbstractTraitFactory;
+import org.drools.traits.core.factmodel.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.traits.core.util.StandaloneTraitFactory;

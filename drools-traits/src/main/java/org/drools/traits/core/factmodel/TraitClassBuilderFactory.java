@@ -19,10 +19,6 @@ package org.drools.traits.core.factmodel;
 import org.drools.core.factmodel.ClassBuilder;
 import org.drools.core.factmodel.DefaultClassBuilderFactory;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.traits.core.factmodel.traits.TraitClassBuilderImpl;
-import org.drools.traits.core.factmodel.traits.TraitMapPropertyWrapperClassBuilderImpl;
-import org.drools.traits.core.factmodel.traits.TraitMapProxyClassBuilderImpl;
-import org.drools.traits.core.factmodel.traits.TraitProxyClassBuilder;
 
 public class TraitClassBuilderFactory extends DefaultClassBuilderFactory {
 

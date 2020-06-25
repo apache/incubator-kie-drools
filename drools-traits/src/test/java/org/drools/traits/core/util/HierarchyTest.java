@@ -18,8 +18,7 @@ package org.drools.traits.core.util;
 
 import org.drools.core.util.CodedHierarchy;
 import org.drools.core.util.HierarchyEncoder;
-import org.drools.traits.core.factmodel.traits.IndexedTypeHierarchy;
-import org.drools.traits.core.util.HierarchyEncoderImpl;
+import org.drools.traits.core.factmodel.IndexedTypeHierarchy;
 import org.junit.Test;
 
 import java.util.ArrayList;

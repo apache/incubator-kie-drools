@@ -35,7 +35,7 @@ import org.drools.core.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.WindowDeclaration;
-import org.drools.traits.core.factmodel.traits.TraitRegistryImpl;
+import org.drools.traits.core.factmodel.TraitRegistryImpl;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
 public class TraitKnowledgePackageImpl extends KnowledgePackageImpl {

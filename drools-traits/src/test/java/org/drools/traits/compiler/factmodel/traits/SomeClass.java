@@ -16,7 +16,7 @@
 
 package org.drools.traits.compiler.factmodel.traits;
 
-import org.drools.traits.core.factmodel.traits.Entity;
+import org.drools.traits.core.factmodel.Entity;
 import org.drools.core.factmodel.traits.Traitable;
 
 @Traitable

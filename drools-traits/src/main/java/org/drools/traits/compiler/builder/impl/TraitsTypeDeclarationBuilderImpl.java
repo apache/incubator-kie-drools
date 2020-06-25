@@ -29,9 +29,9 @@ import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.traits.core.factmodel.traits.TraitClassBuilderImpl;
-import org.drools.traits.core.factmodel.traits.TraitFactoryImpl;
-import org.drools.traits.core.factmodel.traits.TraitRegistryImpl;
+import org.drools.traits.core.factmodel.TraitClassBuilderImpl;
+import org.drools.traits.core.factmodel.TraitFactoryImpl;
+import org.drools.traits.core.factmodel.TraitRegistryImpl;
 
 public class TraitsTypeDeclarationBuilderImpl extends TypeDeclarationBuilder {
 

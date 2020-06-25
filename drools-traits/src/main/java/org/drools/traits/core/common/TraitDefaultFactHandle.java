@@ -22,7 +22,7 @@ import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.traits.core.base.TraitHelperImpl;
-import org.drools.traits.core.factmodel.traits.TraitProxyImpl;
+import org.drools.traits.core.factmodel.TraitProxyImpl;
 
 public class TraitDefaultFactHandle extends DefaultFactHandle {
 

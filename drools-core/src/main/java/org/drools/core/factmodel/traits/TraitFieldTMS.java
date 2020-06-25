@@ -23,7 +23,7 @@ import java.io.Externalizable;
 public interface TraitFieldTMS extends Externalizable {
 
     // Most of the code generation for traits is still in drools-core DefaultBeanClassBuilder so this module needs to know the name of the impl class for traits
-    String TYPE_NAME = "org/drools/traits/core/factmodel/traits/TraitFieldTMSImpl";
+    String TYPE_NAME = "org/drools/traits/core/factmodel/TraitFieldTMSImpl";
 
     void init( WorkingMemory wm );
 

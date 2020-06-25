@@ -18,7 +18,7 @@ package org.drools.traits.compiler.factmodel.traits;
 
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
-import org.drools.traits.core.factmodel.traits.TraitTypeMapImpl;
+import org.drools.traits.core.factmodel.TraitTypeMapImpl;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
 

@@ -19,7 +19,6 @@ package org.drools.traits.core.factmodel;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
-import org.drools.traits.core.factmodel.traits.TraitFieldTMSImpl;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.rule.TypeDeclaration;
 

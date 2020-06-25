@@ -23,10 +23,10 @@ import java.util.Collection;
 
 import org.drools.core.factmodel.traits.Trait;
 import org.drools.traits.compiler.CommonTraitTest;
-import org.drools.traits.core.factmodel.traits.LogicalTypeInconsistencyException;
-import org.drools.traits.core.factmodel.traits.TraitFactoryImpl;
+import org.drools.traits.core.factmodel.LogicalTypeInconsistencyException;
+import org.drools.traits.core.factmodel.TraitFactoryImpl;
 import org.drools.core.factmodel.traits.Traitable;
-import org.drools.traits.core.factmodel.traits.VirtualPropertyMode;
+import org.drools.traits.core.factmodel.VirtualPropertyMode;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.traits.core.util.StandaloneTraitFactory;

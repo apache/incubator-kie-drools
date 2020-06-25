@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.traits.core.factmodel.traits.TraitProxyImpl;
+import org.drools.traits.core.factmodel.TraitProxyImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.util.ClassUtils;

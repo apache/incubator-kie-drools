@@ -31,13 +31,13 @@ import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleFactoryImpl;
 import org.drools.core.util.TripleStore;
-import org.drools.traits.core.factmodel.traits.AbstractTraitFactory;
-import org.drools.traits.core.factmodel.traits.LogicalTypeInconsistencyException;
+import org.drools.traits.core.factmodel.AbstractTraitFactory;
+import org.drools.traits.core.factmodel.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
-import org.drools.traits.core.factmodel.traits.TraitClassBuilderImpl;
-import org.drools.traits.core.factmodel.traits.TraitRegistryImpl;
+import org.drools.traits.core.factmodel.TraitClassBuilderImpl;
+import org.drools.traits.core.factmodel.TraitRegistryImpl;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.traits.core.factmodel.traits.VirtualPropertyMode;
+import org.drools.traits.core.factmodel.VirtualPropertyMode;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.drools.traits.core.reteoo.TraitKieComponentFactory;
 

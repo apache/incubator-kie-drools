@@ -19,7 +19,7 @@ You'll find many classes with only the package changed, such as
 
 became
 
-`org.drools.traits.core.factmodel.traits.LogicalTypeInconsistencyException.java` 
+`org.drools.traits.core.factmodel.LogicalTypeInconsistencyException.java` 
 
 Notice the double `.traits`, I'm open for suggestions here
    
@@ -32,7 +32,7 @@ I tried to keep them to the bare minimum but I couldn't remove most of them as t
 When I moved the classes between modules I tried to keep the source code identical except for changing the package (as described in the Packages section) and to rename the class with the `-Impl` suffix, keeping the interface in the original module, i.e.
 
 `org.drools.core.factmodel.traits.TraitFactory` was transformed into an interface with just one method, and it was created a 
-`org.drools.traits.core.factmodel.traits.TraitFactoryImpl` inside the `drools-traits` module.
+`org.drools.traits.core.factmodel.TraitFactoryImpl` inside the `drools-traits` module.
 https://github.com/kiegroup/drools/pull/2887/files#diff-08cd5643f232535394581edeab619a00
 
 Take a look at another example such as `TraitRegistry` https://github.com/kiegroup/drools/pull/2887/files#diff-6a70e4d76093ef8e591283577874b074R7

@@ -17,7 +17,7 @@
 package org.drools.traits.compiler.factmodel.traits;
 
 import org.drools.core.reteoo.KieComponentFactory;
-import org.drools.traits.core.factmodel.traits.TraitFactoryImpl;
+import org.drools.traits.core.factmodel.TraitFactoryImpl;
 import org.drools.traits.core.reteoo.TraitKieComponentFactory;
 import org.drools.traits.core.util.StandaloneTraitFactory;
 import org.drools.reflective.classloader.ProjectClassLoader;

@@ -28,7 +28,7 @@ import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.ByteArrayResource;
-import org.drools.traits.core.factmodel.traits.Entity;
+import org.drools.traits.core.factmodel.Entity;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;

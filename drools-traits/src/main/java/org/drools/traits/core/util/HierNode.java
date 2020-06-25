@@ -24,7 +24,7 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.traits.core.factmodel.traits.LatticeElement;
+import org.drools.traits.core.factmodel.LatticeElement;
 
 
 public class HierNode<T> implements LatticeElement<T>,Comparable<HierNode<T>>, Externalizable {

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.traits.compiler.Person;
-import org.drools.traits.core.factmodel.traits.Entity;
+import org.drools.traits.core.factmodel.Entity;
 import org.drools.traits.core.meta.org.test.AnotherKlass;
 import org.drools.traits.core.meta.org.test.AnotherKlassImpl;
 import org.drools.traits.core.meta.org.test.AnotherKlass_;
@@ -37,7 +37,6 @@ import org.drools.traits.core.metadata.Identifiable;
 import org.drools.traits.core.metadata.Lit;
 import org.drools.traits.core.metadata.MetadataContainer;
 import org.drools.traits.core.metadata.With;
-import org.drools.core.reteoo.KieComponentFactory;
 import org.junit.Test;
 
 import static org.drools.traits.compiler.factmodel.traits.TraitTestUtils.createStandaloneTraitFactory;
