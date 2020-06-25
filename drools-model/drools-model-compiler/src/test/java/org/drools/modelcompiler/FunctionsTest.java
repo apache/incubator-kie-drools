@@ -227,7 +227,6 @@ public class FunctionsTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
 
-        ksession.insert( new Pojo( Arrays.asList(1,3) ) );
         int rulesFired = ksession.fireAllRules();
         assertEquals( 0, rulesFired );
     }
