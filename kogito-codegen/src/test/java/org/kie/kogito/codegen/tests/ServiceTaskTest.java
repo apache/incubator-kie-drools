@@ -258,4 +258,17 @@ public class ServiceTaskTest extends AbstractCodegenTest {
         assertThat(result.toMap().get("result")).isNotNull().isEqualTo("Hello john 35!");
         
     }
+
+    @Test
+    public void testOverloadedService() throws Exception {
+
+        Application app = generateCodeProcessesOnly("servicetask/ServiceProcessOverloaded.bpmn2");
+        assertThat(app).isNotNull();
+
+        Process<? extends Model> p = app.processes().processById("ServiceProcessOverloaded");
+        ProcessInstance<?> processInstance = p.createInstance(p.createModel());
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+    }
 }

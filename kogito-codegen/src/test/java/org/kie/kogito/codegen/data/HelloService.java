@@ -56,4 +56,18 @@ public class HelloService {
         System.out.println("Service invoked with " + name + " " + age + " on service " + this.toString());
         return "Hello " + name.toString() + " " + age + "!";
     }
+
+    int count = 0;
+
+    public void doSomething(String str1) {
+        if (count > 0) {
+            throw new RuntimeException("You should not be here");
+        }
+        count++;
+    }
+
+    public void doSomething(String str1, String str2) {
+
+    }
+
 }

@@ -54,6 +54,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
+import static java.util.stream.Collectors.joining;
 import static org.jbpm.ruleflow.core.factory.WorkItemNodeFactory.METHOD_WORK_NAME;
 import static org.jbpm.ruleflow.core.factory.WorkItemNodeFactory.METHOD_WORK_PARAMETER;
 
@@ -98,10 +99,19 @@ public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVis
     @Override
     public void visitNode(String factoryField, T node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         Work work = node.getWork();
-        String workName = workItemName(node, metadata);
+        String workName = node.getWork().getName();
+
+        if (workName.equals("Service Task")) {
+            ServiceTaskDescriptor d = new ServiceTaskDescriptor(node, contextClassLoader);
+            String mangledName = d.mangledName();
+            CompilationUnit generatedHandler = d.generateHandlerClassForService();
+            metadata.getGeneratedHandlers().put(mangledName, generatedHandler);
+            workName = mangledName;
+        }
+
         body.addStatement(getAssignedFactoryMethod(factoryField, WorkItemNodeFactory.class, getNodeId(node), getNodeKey(), new LongLiteralExpr(node.getId())))
-        .addStatement(getNameMethod(node, work.getName()))
-        .addStatement(getFactoryMethod(getNodeId(node), METHOD_WORK_NAME, new StringLiteralExpr(workName)));
+                .addStatement(getNameMethod(node, work.getName()))
+                .addStatement(getFactoryMethod(getNodeId(node), METHOD_WORK_NAME, new StringLiteralExpr(workName)));
 
         addWorkItemParameters(work, body, getNodeId(node));
         addNodeMappings(node, body, getNodeId(node));
@@ -146,143 +156,6 @@ public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVis
         }
     }
 
-    protected String workItemName(WorkItemNode workItemNode, ProcessMetaData metadata) {
-        String workName = workItemNode.getWork().getName();
-
-        if (workName.equals("Service Task")) {
-            String interfaceName = (String) workItemNode.getWork().getParameter("Interface");
-            String operationName = (String) workItemNode.getWork().getParameter("Operation");
-            String type = (String) workItemNode.getWork().getParameter("ParameterType");
-
-            NodeValidator.of(getNodeKey(), workItemNode.getName())
-                    .notEmpty("interfaceName", interfaceName)
-                    .notEmpty("operationName", operationName)
-                    .validate();
-
-            workName = interfaceName + "." + operationName;
-
-            Map<String, String> parameters = null;
-            if (type != null) {
-                if (isDefaultParameterType(type)) {
-                    type = inferParameterType(workItemNode.getName(), interfaceName, operationName, type);
-                }
-
-                parameters = Collections.singletonMap("Parameter", type);
-            } else {
-                parameters = new LinkedHashMap<>();
-
-                for (ParameterDefinition def : workItemNode.getWork().getParameterDefinitions()) {
-                    parameters.put(def.getName(), def.getType().getStringType());
-                }
-            }
-
-            CompilationUnit handlerClass = generateHandlerClassForService(interfaceName, operationName, parameters, workItemNode.getOutAssociations());
-
-            metadata.getGeneratedHandlers().put(workName, handlerClass);
-        }
-
-        return workName;
-    }
-
-    // assume 1 single arg as above
-    private String inferParameterType(String nodeName, String interfaceName, String operationName, String defaultType) {
-        try {
-            Class<?> i = contextClassLoader.loadClass(interfaceName);
-            for (Method m : i.getMethods()) {
-                if (m.getName().equals(operationName) && m.getParameterCount() == 1) {
-                    return m.getParameterTypes()[0].getCanonicalName();
-                }
-            }
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException(MessageFormat.format("Invalid work item \"{0}\": class not found for interfaceName \"{1}\"", nodeName, interfaceName));
-        }
-        throw new IllegalArgumentException(MessageFormat.format("Invalid work item \"{0}\": could not find a method called \"{1}\" in class \"{2}\"", nodeName, operationName, interfaceName));
-    }
-
-    private boolean isDefaultParameterType(String type) {
-        return type.equals("java.lang.Object") || type.equals("Object");
-    }
-
-    protected CompilationUnit generateHandlerClassForService(String interfaceName, String operation, Map<String, String> parameters, List<DataAssociation> outAssociations) {
-        CompilationUnit compilationUnit = new CompilationUnit("org.kie.kogito.handlers");
-
-        compilationUnit.getTypes().add(classDeclaration(interfaceName, operation, parameters, outAssociations));
-
-        return compilationUnit;
-    }
-
-    public ClassOrInterfaceDeclaration classDeclaration(String interfaceName, String operation, Map<String, String> parameters, List<DataAssociation> outAssociations) {
-        ClassOrInterfaceDeclaration cls = new ClassOrInterfaceDeclaration()
-                .setName(interfaceName.substring(interfaceName.lastIndexOf(".") + 1) + "_" + operation + "Handler")
-                .setModifiers(Modifier.Keyword.PUBLIC)
-                .addImplementedType(WorkItemHandler.class.getCanonicalName());
-        ClassOrInterfaceType serviceType = new ClassOrInterfaceType(null, interfaceName);
-        FieldDeclaration serviceField = new FieldDeclaration()
-                .addVariable(new VariableDeclarator(serviceType, "service"));
-        cls.addMember(serviceField);
-
-        // executeWorkItem method
-        BlockStmt executeWorkItemBody = new BlockStmt();
-        MethodDeclaration executeWorkItem = new MethodDeclaration()
-                .setModifiers(Modifier.Keyword.PUBLIC)
-                .setType(void.class)
-                .setName("executeWorkItem")
-                .setBody(executeWorkItemBody)
-                .addParameter(WorkItem.class.getCanonicalName(), "workItem")
-                .addParameter(WorkItemManager.class.getCanonicalName(), "workItemManager");
 
 
-        MethodCallExpr callService = new MethodCallExpr(new NameExpr("service"), operation);
-
-
-        for (Entry<String, String> paramEntry : parameters.entrySet()) {
-            MethodCallExpr getParamMethod = new MethodCallExpr(new NameExpr("workItem"), "getParameter").addArgument(new StringLiteralExpr(paramEntry.getKey()));
-            callService.addArgument(new CastExpr(new ClassOrInterfaceType(null, paramEntry.getValue()), getParamMethod));
-        }
-        Expression results = null;
-        if (outAssociations.isEmpty()) {
-
-            executeWorkItemBody.addStatement(callService);
-            results = new NullLiteralExpr();
-
-        } else {
-            VariableDeclarationExpr resultField = new VariableDeclarationExpr()
-                    .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, Object.class.getCanonicalName()), "result", callService));
-
-            executeWorkItemBody.addStatement(resultField);
-
-            results = new MethodCallExpr(new NameExpr("java.util.Collections"), "singletonMap")
-                    .addArgument(new StringLiteralExpr(outAssociations.get(0).getSources().get(0)))
-                    .addArgument(new NameExpr("result"));
-        }
-
-        MethodCallExpr completeWorkItem = new MethodCallExpr(new NameExpr("workItemManager"), "completeWorkItem")
-                .addArgument(new MethodCallExpr(new NameExpr("workItem"), "getId"))
-                .addArgument(results);
-
-        executeWorkItemBody.addStatement(completeWorkItem);
-
-        // abortWorkItem method
-        BlockStmt abortWorkItemBody = new BlockStmt();
-        MethodDeclaration abortWorkItem = new MethodDeclaration()
-                .setModifiers(Modifier.Keyword.PUBLIC)
-                .setType(void.class)
-                .setName("abortWorkItem")
-                .setBody(abortWorkItemBody)
-                .addParameter(WorkItem.class.getCanonicalName(), "workItem")
-                .addParameter(WorkItemManager.class.getCanonicalName(), "workItemManager");
-
-
-        // getName method
-        MethodDeclaration getName = new MethodDeclaration()
-                .setModifiers(Modifier.Keyword.PUBLIC)
-                .setType(String.class)
-                .setName("getName")
-                .setBody(new BlockStmt().addStatement(new ReturnStmt(new StringLiteralExpr(interfaceName + "." + operation))));
-        cls.addMember(executeWorkItem)
-                .addMember(abortWorkItem)
-                .addMember(getName);
-
-        return cls;
-    }
 }
