@@ -153,7 +153,7 @@ public class EvalCondition extends ConditionalElement
             return true;
         }
 
-        if ( object == null || object.getClass() != EvalCondition.class ) {
+        if ( object == null || object.getClass() != this.getClass() ) {
             return false;
         }
 
