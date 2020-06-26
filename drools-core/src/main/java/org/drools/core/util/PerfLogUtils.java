@@ -46,16 +46,8 @@ public class PerfLogUtils {
         return threshold;
     }
 
-    void setThreshold(int threshold) {
-        this.threshold = threshold;
-    }
-
     public boolean isEnabled() {
         return enabled;
-    }
-
-    void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 
     public void startMetrics(BaseNode baseNode) {
