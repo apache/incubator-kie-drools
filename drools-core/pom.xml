@@ -12,6 +12,8 @@
   <artifactId>drools-core</artifactId>
   <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
+<version>7.40.0-SNAPSHOT-perf</version>
+
   <name>Drools :: Core</name>
 
   <properties>

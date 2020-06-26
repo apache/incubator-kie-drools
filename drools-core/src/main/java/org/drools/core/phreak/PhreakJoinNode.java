@@ -27,7 +27,6 @@ import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.FastIterator;
-import org.drools.core.util.PerfLogUtils;
 
 public class PhreakJoinNode {
     public void doNode(JoinNode joinNode,
@@ -38,49 +37,42 @@ public class PhreakJoinNode {
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
 
-        try {
-            PerfLogUtils.startMetrics(joinNode);
+        TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
 
-            TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
-
-            if (srcRightTuples.getDeleteFirst() != null) {
-                doRightDeletes(bm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
-            }
-
-            if (srcLeftTuples.getDeleteFirst() != null) {
-                doLeftDeletes(bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
-            }
-
-            if (srcRightTuples.getUpdateFirst() != null) {
-                RuleNetworkEvaluator.doUpdatesReorderRightMemory(bm, srcRightTuples);
-            }
-
-            if (srcLeftTuples.getUpdateFirst() != null ) {
-                RuleNetworkEvaluator.doUpdatesReorderLeftMemory(bm, srcLeftTuples);
-            }
-
-            if (srcRightTuples.getUpdateFirst() != null) {
-                doRightUpdates(joinNode, sink, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
-            }
-
-            if (srcLeftTuples.getUpdateFirst() != null ) {
-                doLeftUpdates(joinNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
-            }
-
-            if (srcRightTuples.getInsertFirst() != null) {
-                doRightInserts(joinNode, sink, bm, wm, srcRightTuples, trgLeftTuples);
-            }
-
-            if (srcLeftTuples.getInsertFirst() != null) {
-                doLeftInserts(joinNode, sink, bm, wm, srcLeftTuples, trgLeftTuples);
-            }
-
-            srcRightTuples.resetAll();
-            srcLeftTuples.resetAll();
-
-        } finally {
-            PerfLogUtils.logAndEndMetrics();
+        if (srcRightTuples.getDeleteFirst() != null) {
+            doRightDeletes(bm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
         }
+
+        if (srcLeftTuples.getDeleteFirst() != null) {
+            doLeftDeletes(bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+        }
+
+        if (srcRightTuples.getUpdateFirst() != null) {
+            RuleNetworkEvaluator.doUpdatesReorderRightMemory(bm, srcRightTuples);
+        }
+
+        if (srcLeftTuples.getUpdateFirst() != null ) {
+            RuleNetworkEvaluator.doUpdatesReorderLeftMemory(bm, srcLeftTuples);
+        }
+
+        if (srcRightTuples.getUpdateFirst() != null) {
+            doRightUpdates(joinNode, sink, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
+        }
+
+        if (srcLeftTuples.getUpdateFirst() != null ) {
+            doLeftUpdates(joinNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+        }
+
+        if (srcRightTuples.getInsertFirst() != null) {
+            doRightInserts(joinNode, sink, bm, wm, srcRightTuples, trgLeftTuples);
+        }
+
+        if (srcLeftTuples.getInsertFirst() != null) {
+            doLeftInserts(joinNode, sink, bm, wm, srcLeftTuples, trgLeftTuples);
+        }
+
+        srcRightTuples.resetAll();
+        srcLeftTuples.resetAll();
     }
 
     public void doLeftInserts(JoinNode joinNode,
@@ -113,7 +105,6 @@ public class PhreakJoinNode {
                                                                       rtm,
                                                                       null,
                                                                       it ); rightTuple != null; rightTuple = (RightTuple) it.next(rightTuple)) {
-                PerfLogUtils.incrementEvalCount();
                 if (constraints.isAllowedCachedLeft( contextEntry,
                                                      rightTuple.getFactHandle() )) {
                     insertChildLeftTuple(trgLeftTuples,
@@ -164,7 +155,6 @@ public class PhreakJoinNode {
                         continue;
                     }
 
-                    PerfLogUtils.incrementEvalCount();
                     if ( constraints.isAllowedCachedRight( contextEntry,
                                                            leftTuple ) ) {
                         insertChildLeftTuple( trgLeftTuples,
@@ -243,7 +233,6 @@ public class PhreakJoinNode {
             // either we are indexed and changed buckets or
             // we had no children before, but there is a bucket to potentially match, so try as normal assert
             for (; rightTuple != null; rightTuple = (RightTuple) it.next(rightTuple)) {
-                PerfLogUtils.incrementEvalCount();
                 if (constraints.isAllowedCachedLeft(contextEntry,
                                                     rightTuple.getFactHandle())) {
                     insertChildLeftTuple(trgLeftTuples,
@@ -258,7 +247,6 @@ public class PhreakJoinNode {
         } else {
             // in the same bucket, so iterate and compare
             for (; rightTuple != null; rightTuple = (RightTuple) it.next(rightTuple)) {
-                PerfLogUtils.incrementEvalCount();
                 if (constraints.isAllowedCachedLeft(contextEntry,
                                                     rightTuple.getFactHandle())) {
                     // insert, childLeftTuple is not updated
@@ -356,7 +344,6 @@ public class PhreakJoinNode {
                     continue;
                 }
 
-                PerfLogUtils.incrementEvalCount();
                 if (constraints.isAllowedCachedRight(contextEntry,
                                                      leftTuple)) {
                     insertChildLeftTuple(trgLeftTuples,
@@ -375,7 +362,6 @@ public class PhreakJoinNode {
                     // ignore, as it will get processed via left iteration. Children cannot be processed twice
                     continue;
                 }
-                PerfLogUtils.incrementEvalCount();
                 if (constraints.isAllowedCachedRight(contextEntry,
                                                      leftTuple)) {
                     // insert, childLeftTuple is not updated

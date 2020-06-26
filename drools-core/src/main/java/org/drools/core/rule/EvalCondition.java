@@ -38,13 +38,13 @@ public class EvalCondition extends ConditionalElement
     Wireable {
     private static final long          serialVersionUID   = 510l;
 
-    private EvalExpression             expression;
+    protected EvalExpression             expression;
 
-    private Declaration[]              requiredDeclarations;
+    protected Declaration[]              requiredDeclarations;
 
     private static final Declaration[] EMPTY_DECLARATIONS = new Declaration[0];
 
-    private List<EvalCondition>        cloned             = Collections.<EvalCondition> emptyList();
+    protected List<EvalCondition>        cloned             = Collections.<EvalCondition> emptyList();
 
     public EvalCondition() {
         this( null );

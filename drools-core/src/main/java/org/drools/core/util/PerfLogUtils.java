@@ -25,45 +25,59 @@ public class PerfLogUtils {
     private static final Logger logger = LoggerFactory.getLogger(PerfLogUtils.class);
 
     public static final String PERF_LOGGER_ENABLED = "drools.performance.logger.enabled";
-    private static boolean enabled = Boolean.parseBoolean(System.getProperty(PERF_LOGGER_ENABLED, "false"));
+    private boolean enabled = Boolean.parseBoolean(System.getProperty(PERF_LOGGER_ENABLED, "false"));
 
     public static final String PERF_LOGGER_THRESHOLD = "drools.performance.logger.threshold";
-    private static int threshold = Integer.parseInt(System.getProperty(PERF_LOGGER_THRESHOLD, "500")); // microseconds
+    private int threshold = Integer.parseInt(System.getProperty(PERF_LOGGER_THRESHOLD, "500")); // microseconds
 
-    private static final ThreadLocal<NodeStats> nodeStats = new ThreadLocal<>();
+    private final ThreadLocal<NodeStats> nodeStats = new ThreadLocal<>();
 
-    public static int getThreshold() {
+    private static final PerfLogUtils INSTANCE = new PerfLogUtils();
+
+    public static PerfLogUtils getInstance() {
+        return PerfLogUtils.INSTANCE;
+    }
+
+    private PerfLogUtils() {
+        // It is not allowed to create instances of util classes.
+    }
+
+    public int getThreshold() {
         return threshold;
     }
 
-    public static void setThreshold(int threshold) {
-        PerfLogUtils.threshold = threshold;
+    void setThreshold(int threshold) {
+        this.threshold = threshold;
     }
 
-    public static boolean isEnabled() {
+    public boolean isEnabled() {
         return enabled;
     }
 
-    public static void setEnabled(boolean enabled) {
-        PerfLogUtils.enabled = enabled;
+    void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
-    public static void startMetrics(BaseNode baseNode) {
+    public void startMetrics(BaseNode baseNode) {
         if (enabled) {
             nodeStats.set(new NodeStats(baseNode));
+        } else {
+            logger.warn("Metrics must not be started when disabled");
         }
     }
 
-    public static void incrementEvalCount() {
+    public void incrementEvalCount() {
         if (enabled) {
             NodeStats stats = nodeStats.get();
             if (stats != null && stats.isStarted()) {
                 stats.incrementEvalCount();
-            } // don't log warn for stats == null because an evaluation may be executed under metrics or not.
+            }
+        } else {
+            logger.warn("Metrics must not be excuted when disabled");
         }
     }
 
-    public static void logAndEndMetrics() {
+    public void logAndEndMetrics() {
         if (enabled) {
             NodeStats stats = nodeStats.get();
             if (stats != null && stats.isStarted()) {
@@ -76,9 +90,5 @@ public class PerfLogUtils {
             }
             nodeStats.remove();
         }
-    }
-
-    private PerfLogUtils() {
-        // It is not allowed to create instances of util classes.
     }
 }

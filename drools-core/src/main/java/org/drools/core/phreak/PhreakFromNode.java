@@ -37,7 +37,6 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
-import org.drools.core.util.PerfLogUtils;
 
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 
@@ -57,26 +56,19 @@ public class PhreakFromNode {
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
 
-        try {
-            PerfLogUtils.startMetrics(fromNode);
-
-            if (srcLeftTuples.getDeleteFirst() != null) {
-                doLeftDeletes(fm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
-            }
-
-            if (srcLeftTuples.getUpdateFirst() != null) {
-                doLeftUpdates(fromNode, fm, sink, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
-            }
-
-            if (srcLeftTuples.getInsertFirst() != null) {
-                doLeftInserts(fromNode, fm, sink, wm, srcLeftTuples, trgLeftTuples);
-            }
-
-            srcLeftTuples.resetAll();
-
-        } finally {
-            PerfLogUtils.logAndEndMetrics();
+        if (srcLeftTuples.getDeleteFirst() != null) {
+            doLeftDeletes(fm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
+
+        if (srcLeftTuples.getUpdateFirst() != null) {
+            doLeftUpdates(fromNode, fm, sink, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+        }
+
+        if (srcLeftTuples.getInsertFirst() != null) {
+            doLeftInserts(fromNode, fm, sink, wm, srcLeftTuples, trgLeftTuples);
+        }
+
+        srcLeftTuples.resetAll();
     }
 
     public void doLeftInserts(FromNode fromNode,
@@ -271,7 +263,6 @@ public class PhreakFromNode {
                                      FromMemory fm ) {
         if (alphaConstraints != null) {
             for (int i = 0, length = alphaConstraints.length; i < length; i++) {
-                PerfLogUtils.incrementEvalCount();
                 if (!alphaConstraints[i].isAllowed(factHandle, wm)) {
                     return false;
                 }
@@ -289,7 +280,6 @@ public class PhreakFromNode {
                                   boolean useLeftMemory,
                                   TupleSets<LeftTuple> trgLeftTuples,
                                   TupleSets<LeftTuple> stagedLeftTuples ) {
-        PerfLogUtils.incrementEvalCount();
         if (betaConstraints.isAllowedCachedLeft(context, rightTuple.getFactHandleForEvaluation())) {
 
             if (rightTuple.getFirstChild() == null) {

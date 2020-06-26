@@ -12,6 +12,8 @@
   <artifactId>drools-compiler</artifactId>
   <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
+<version>7.40.0-SNAPSHOT-perf</version>
+
   <name>Drools :: Compiler</name>
 
   <properties>
@@ -29,6 +31,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
+      <version>7.40.0-SNAPSHOT-perf</version>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>

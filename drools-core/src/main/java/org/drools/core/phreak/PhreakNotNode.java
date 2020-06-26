@@ -27,7 +27,6 @@ import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.FastIterator;
-import org.drools.core.util.PerfLogUtils;
 
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 
@@ -40,61 +39,54 @@ public class PhreakNotNode {
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
 
-        try {
-            PerfLogUtils.startMetrics(notNode);
+        TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
 
-            TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
-
-            if (srcLeftTuples.getDeleteFirst() != null) {
-                // left deletes must come before right deletes. Otherwise right deletes could
-                // stage an insertion, that is later deleted in the rightDelete, causing potential problems
-                doLeftDeletes(bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
-            }
-
-
-            if (srcLeftTuples.getUpdateFirst() != null) {
-                // must happen before right inserts, so it can find left tuples to block.
-                RuleNetworkEvaluator.doUpdatesExistentialReorderLeftMemory(bm,
-                                                                           srcLeftTuples);
-            }
-
-            if ( srcRightTuples.getUpdateFirst() != null) {
-                RuleNetworkEvaluator.doUpdatesExistentialReorderRightMemory(bm,
-                                                                            notNode,
-                                                                            srcRightTuples); // this also preserves the next rightTuple
-            }
-
-            if (srcRightTuples.getInsertFirst() != null) {
-                // must come before right updates and inserts, as they might cause insert propagation, while this causes delete propagations, resulting in staging clash.
-                doRightInserts(notNode, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
-            }
-
-
-
-            if (srcRightTuples.getUpdateFirst() != null) {
-                // must come after rightInserts and before rightDeletes, to avoid staging clash
-                doRightUpdates(notNode, sink, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
-            }
-
-            if (srcRightTuples.getDeleteFirst() != null) {
-                // must come after rightUpdates, to avoid staging clash
-                doRightDeletes(notNode, sink, bm, wm, srcRightTuples, trgLeftTuples);
-            }
-
-            if (srcLeftTuples.getUpdateFirst() != null) {
-                doLeftUpdates(notNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
-            }
-
-            if (srcLeftTuples.getInsertFirst() != null) {
-                doLeftInserts(notNode, sink, bm, wm, srcLeftTuples, trgLeftTuples);
-            }
-
-            srcRightTuples.resetAll();
-            srcLeftTuples.resetAll();
-
-        } finally {
-            PerfLogUtils.logAndEndMetrics();
+        if (srcLeftTuples.getDeleteFirst() != null) {
+            // left deletes must come before right deletes. Otherwise right deletes could
+            // stage an insertion, that is later deleted in the rightDelete, causing potential problems
+            doLeftDeletes(bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
+
+
+        if (srcLeftTuples.getUpdateFirst() != null) {
+            // must happen before right inserts, so it can find left tuples to block.
+            RuleNetworkEvaluator.doUpdatesExistentialReorderLeftMemory(bm,
+                                                                       srcLeftTuples);
+        }
+
+        if ( srcRightTuples.getUpdateFirst() != null) {
+            RuleNetworkEvaluator.doUpdatesExistentialReorderRightMemory(bm,
+                                                                        notNode,
+                                                                        srcRightTuples); // this also preserves the next rightTuple
+        }
+
+        if (srcRightTuples.getInsertFirst() != null) {
+            // must come before right updates and inserts, as they might cause insert propagation, while this causes delete propagations, resulting in staging clash.
+            doRightInserts(notNode, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
+        }
+
+
+
+        if (srcRightTuples.getUpdateFirst() != null) {
+            // must come after rightInserts and before rightDeletes, to avoid staging clash
+            doRightUpdates(notNode, sink, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
+        }
+
+        if (srcRightTuples.getDeleteFirst() != null) {
+            // must come after rightUpdates, to avoid staging clash
+            doRightDeletes(notNode, sink, bm, wm, srcRightTuples, trgLeftTuples);
+        }
+
+        if (srcLeftTuples.getUpdateFirst() != null) {
+            doLeftUpdates(notNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+        }
+
+        if (srcLeftTuples.getInsertFirst() != null) {
+            doLeftInserts(notNode, sink, bm, wm, srcLeftTuples, trgLeftTuples);
+        }
+
+        srcRightTuples.resetAll();
+        srcLeftTuples.resetAll();
     }
 
     public void doLeftInserts(NotNode notNode,
@@ -167,7 +159,6 @@ public class PhreakNotNode {
                     }
 
                     // we know that only unblocked LeftTuples are  still in the memory
-                    PerfLogUtils.incrementEvalCount();
                     if ( constraints.isAllowedCachedRight( contextEntry,
                                                            leftTuple ) ) {
                         leftTuple.setBlocker( rightTuple );
@@ -251,7 +242,6 @@ public class PhreakNotNode {
             }
 
             // if we where not blocked before (or changed buckets), or the previous blocker no longer blocks, then find the next blocker
-            PerfLogUtils.incrementEvalCount();
             if (blocker == null || !constraints.isAllowedCachedLeft(contextEntry,
                                                                     blocker.getFactHandleForEvaluation())) {
                 if (blocker != null) {
@@ -261,7 +251,6 @@ public class PhreakNotNode {
 
                 // find first blocker, because it's a modify, we need to start from the beginning again
                 for (RightTuple newBlocker = firstRightTuple; newBlocker != null; newBlocker = (RightTuple) rightIt.next(newBlocker)) {
-                    PerfLogUtils.incrementEvalCount();
                     if (constraints.isAllowedCachedLeft(contextEntry,
                                                         newBlocker.getFactHandleForEvaluation())) {
                         leftTuple.setBlocker(newBlocker);
@@ -338,7 +327,6 @@ public class PhreakNotNode {
                     }
 
                     // we know that only unblocked LeftTuples are  still in the memory
-                    PerfLogUtils.incrementEvalCount();
                     if ( constraints.isAllowedCachedRight( contextEntry,
                                                            leftTuple ) ) {
                         leftTuple.setBlocker( rightTuple );
@@ -395,7 +383,6 @@ public class PhreakNotNode {
                     for ( RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) rightIt.next( newBlocker ) ) {
                         // cannot select a RightTuple queued in the delete list
                         // There may be UPDATE RightTuples too, but that's ok. They've already been re-added to the correct bucket, safe to be reprocessed.
-                        PerfLogUtils.incrementEvalCount();
                         if ( leftTuple.getStagedType() != LeftTuple.DELETE && newBlocker.getStagedType() != LeftTuple.DELETE &&
                              constraints.isAllowedCachedLeft( contextEntry, newBlocker.getFactHandleForEvaluation() ) ) {
 
@@ -497,7 +484,6 @@ public class PhreakNotNode {
 
                     // we know that older tuples have been checked so continue next
                     for (RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) it.next(newBlocker)) {
-                        PerfLogUtils.incrementEvalCount();
                         if (!newBlocker.isDeleted() && constraints.isAllowedCachedLeft(contextEntry,
                                                                                        newBlocker.getFactHandleForEvaluation())) {
                             leftTuple.setBlocker(newBlocker);
