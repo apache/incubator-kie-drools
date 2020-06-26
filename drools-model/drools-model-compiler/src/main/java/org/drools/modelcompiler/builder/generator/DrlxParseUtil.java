@@ -70,6 +70,7 @@ import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
+import com.github.javaparser.ast.nodeTypes.NodeWithScope;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.ast.nodeTypes.NodeWithTraversableScope;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -92,10 +93,12 @@ import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.DrlxExpression;
 import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
+import org.drools.mvel.parser.ast.expr.InlineCastExpr;
 import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
 import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
 
+import static java.util.Optional.empty;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
@@ -398,7 +401,7 @@ public class DrlxParseUtil {
 
         }
 
-        return new RemoveRootNodeResult(Optional.empty(), expr, expr);
+        return new RemoveRootNodeResult(empty(), expr, expr);
     }
 
     public static class RemoveRootNodeResult {
@@ -462,12 +465,12 @@ public class DrlxParseUtil {
     }
 
     public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations, Expression expr) {
-        return generateLambdaWithoutParameters(usedDeclarations, expr, false, Optional.empty());
+        return generateLambdaWithoutParameters(usedDeclarations, expr, false, empty());
     }
 
     public static Expression generateLambdaWithoutParameters(Expression expr) {
         Collection<String> usedDeclarations = expr.findAll( NameExpr.class ).stream().map( NameExpr::getName ).map( SimpleName::getIdentifier ).collect( toList() );
-        return generateLambdaWithoutParameters(usedDeclarations, expr, true, Optional.empty());
+        return generateLambdaWithoutParameters(usedDeclarations, expr, true, empty());
     }
 
     public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations,
@@ -558,6 +561,13 @@ public class DrlxParseUtil {
                         previousScope = e.expression;
                     }
                 } else {
+                    if(e.expression instanceof NodeWithScope) {
+                        Optional<Class<?>> optInlineCastType = fieldAccessToInlineCast(typeResolver, e.expression);
+                        if(optInlineCastType.isPresent()) {
+                            previousClass = optInlineCastType.get();
+                        }
+                    }
+
                     TypedExpression te = nameExprToMethodCallExpr( e.fieldToResolve, previousClass, previousScope );
                     if (te == null) {
                         context.addCompilationError( new InvalidExpressionErrorResult( "Unknown field " + e.fieldToResolve + " on " + previousClass ) );
@@ -576,6 +586,19 @@ public class DrlxParseUtil {
         }
 
         return new TypedExpression(previousScope, previousClass);
+    }
+
+    public static Optional<Class<?>> fieldAccessToInlineCast(TypeResolver typeResolver, Expression expression) {
+        Expression scope = ((NodeWithScope<?>) expression).getScope();
+        if(scope instanceof InlineCastExpr) {
+            InlineCastExpr inlineScope = (InlineCastExpr) scope;
+            try {
+                return of(typeResolver.resolveType(inlineScope.getType().asString()));
+            } catch (ClassNotFoundException ex) {
+                return empty();
+            }
+        }
+        return empty();
     }
 
     private static Expression createExpressionCall(Expression expr, Deque<ParsedMethod> expressions) {
@@ -643,7 +666,7 @@ public class DrlxParseUtil {
     public static Optional<String> findBindingIdFromDotExpression(String expression) {
         int dot = expression.indexOf( '.' );
         if ( dot < 0 ) {
-            return Optional.empty();
+            return empty();
         }
         return of(expression.substring(0, dot));
     }
@@ -659,7 +682,7 @@ public class DrlxParseUtil {
             return exprWithScope.traverseScope().map((Expression expr1) -> findViaScopeWithPredicate(expr1, predicate)).orElse(of(expr));
         }
 
-        return Optional.empty();
+        return empty();
     }
 
     public static DrlxExpression parseExpression(String expression) {
@@ -778,7 +801,7 @@ public class DrlxParseUtil {
         });
         final List<MethodCallExpr> collect = patterns.collect(toList());
         if (collect.isEmpty()) {
-            return Optional.empty();
+            return empty();
         } else {
             return Optional.of(collect.get(collect.size() - 1));
         }
@@ -813,7 +836,7 @@ public class DrlxParseUtil {
                 return Optional.of(new InvalidExpressionErrorResult(String.format("Duplicate declaration for variable '%s' in the rule '%s'", b, ruleName)));
             }
         }
-        return Optional.empty();
+        return empty();
     }
 
     public static Method getAccessor( Class<?> clazz, String name ) {
