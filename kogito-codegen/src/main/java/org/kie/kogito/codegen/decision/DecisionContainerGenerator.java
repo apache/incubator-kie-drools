@@ -42,6 +42,7 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.drools.core.util.IoUtils;
 import org.kie.kogito.codegen.AbstractApplicationSection;
 import org.kie.kogito.decision.DecisionModels;
 import org.kie.kogito.dmn.DmnExecutionIdSupplier;
@@ -88,10 +89,7 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
         ClassOrInterfaceType applicationClass = StaticJavaParser.parseClassOrInterfaceType(applicationCanonicalName);
         ClassOrInterfaceType inputStreamReaderClass = StaticJavaParser.parseClassOrInterfaceType(java.io.InputStreamReader.class.getCanonicalName());
         for (DMNResource resource : resources) {
-            Path sourcePath = Paths.get(resource.getDmnModel().getResource().getSourcePath());
-            Path relativizedPath = resource.getPath().relativize(sourcePath);
-            String resourcePath = "/" + relativizedPath.toString().replace(File.separatorChar, '/');
-            MethodCallExpr getResAsStream = new MethodCallExpr(new FieldAccessExpr(applicationClass.getNameAsExpression(), "class"), "getResourceAsStream").addArgument(new StringLiteralExpr(resourcePath));
+            MethodCallExpr getResAsStream = getReadResourceMethod( applicationClass, resource );
             ObjectCreationExpr isr = new ObjectCreationExpr().setType(inputStreamReaderClass).addArgument(getResAsStream);
             Optional<FieldDeclaration> dmnRuntimeField = typeDeclaration.getFieldByName("dmnRuntime");
             Optional<Expression> initalizer = dmnRuntimeField.flatMap(x -> x.getVariable(0).getInitializer());
@@ -108,6 +106,20 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
             execIdSupplierVariable.setInitializer(newObject(DmnExecutionIdSupplier.class));
         }
         return typeDeclaration;
+    }
+
+    private MethodCallExpr getReadResourceMethod( ClassOrInterfaceType applicationClass, DMNResource resource ) {
+        String source = resource.getDmnModel().getResource().getSourcePath();
+        Path sourcePath = Paths.get(source);
+        if (resource.getPath().toString().endsWith( ".jar" )) {
+            return new MethodCallExpr( new NameExpr( IoUtils.class.getCanonicalName() ), "readFileInJar" )
+                    .addArgument(new StringLiteralExpr(resource.getPath().toString()))
+                    .addArgument(new StringLiteralExpr(source));
+        }
+        Path relativizedPath = resource.getPath().relativize(sourcePath);
+        String resourcePath = "/" + relativizedPath.toString().replace( File.separatorChar, '/');
+        return new MethodCallExpr(new FieldAccessExpr(applicationClass.getNameAsExpression(), "class"), "getResourceAsStream")
+                .addArgument(new StringLiteralExpr(resourcePath));
     }
 
     @Override

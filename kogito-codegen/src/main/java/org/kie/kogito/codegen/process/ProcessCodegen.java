@@ -104,23 +104,25 @@ public class ProcessCodegen extends AbstractGenerator {
     private ClassLoader contextClassLoader;
     private ResourceGeneratorFactory resourceGeneratorFactory;
 
-    public static ProcessCodegen ofJar(Path jarPath) {
+    public static ProcessCodegen ofJar(Path... jarPaths) {
         List<Process> processes = new ArrayList<>();
 
-        try (ZipFile zipFile = new ZipFile(jarPath.toFile())) {
-            Enumeration<? extends ZipEntry> entries = zipFile.entries();
-            while (entries.hasMoreElements()) {
-                ZipEntry entry = entries.nextElement();
-                ResourceType resourceType = determineResourceType(entry.getName());
-                if (SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch(entry.getName()::endsWith)) {
-                    InternalResource resource = new ByteArrayResource(readBytesFromInputStream(zipFile.getInputStream(entry)));
-                    resource.setResourceType(resourceType);
-                    resource.setSourcePath(entry.getName());
-                    processes.addAll(parseProcessFile(resource));
+        for (Path jarPath : jarPaths) {
+            try (ZipFile zipFile = new ZipFile( jarPath.toFile() )) {
+                Enumeration<? extends ZipEntry> entries = zipFile.entries();
+                while (entries.hasMoreElements()) {
+                    ZipEntry entry = entries.nextElement();
+                    ResourceType resourceType = determineResourceType( entry.getName() );
+                    if ( SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch( entry.getName()::endsWith ) ) {
+                        InternalResource resource = new ByteArrayResource( readBytesFromInputStream( zipFile.getInputStream( entry ) ) );
+                        resource.setResourceType( resourceType );
+                        resource.setSourcePath( entry.getName() );
+                        processes.addAll( parseProcessFile( resource ) );
+                    }
                 }
+            } catch (IOException e) {
+                throw new UncheckedIOException( e );
             }
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
         }
 
         return ofProcesses(processes);

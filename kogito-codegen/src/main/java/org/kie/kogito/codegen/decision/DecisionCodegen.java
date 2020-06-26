@@ -65,24 +65,28 @@ public class DecisionCodegen extends AbstractGenerator {
 
     public static String STRONGLY_TYPED_CONFIGURATION_KEY = "kogito.decisions.stronglytyped";
 
-    public static DecisionCodegen ofJar(Path jarPath) throws IOException {
-        List<Resource> resources = new ArrayList<>();
+    public static DecisionCodegen ofJar(Path... jarPaths) throws IOException {
+        List<DMNResource> dmnResources = new ArrayList<>();
 
-        try (ZipFile zipFile = new ZipFile(jarPath.toFile())) {
-            Enumeration<? extends ZipEntry> entries = zipFile.entries();
-            while (entries.hasMoreElements()) {
-                ZipEntry entry = entries.nextElement();
-                ResourceType resourceType = determineResourceType(entry.getName());
-                if (resourceType == ResourceType.DMN) {
-                    InternalResource resource = new ByteArrayResource(readBytesFromInputStream(zipFile.getInputStream(entry)));
-                    resource.setResourceType(resourceType);
-                    resource.setSourcePath(entry.getName());
-                    resources.add(resource);
+        for (Path jarPath : jarPaths) {
+            List<Resource> resources = new ArrayList<>();
+            try (ZipFile zipFile = new ZipFile( jarPath.toFile() )) {
+                Enumeration<? extends ZipEntry> entries = zipFile.entries();
+                while (entries.hasMoreElements()) {
+                    ZipEntry entry = entries.nextElement();
+                    ResourceType resourceType = determineResourceType( entry.getName() );
+                    if ( resourceType == ResourceType.DMN ) {
+                        InternalResource resource = new ByteArrayResource( readBytesFromInputStream( zipFile.getInputStream( entry ) ) );
+                        resource.setResourceType( resourceType );
+                        resource.setSourcePath( entry.getName() );
+                        resources.add( resource );
+                    }
                 }
             }
+            dmnResources.addAll( parseDecisions(jarPath, resources) );
         }
 
-        return ofDecisions(parseDecisions(jarPath, resources));
+        return ofDecisions(dmnResources);
     }
 
     public static DecisionCodegen ofPath(Path... paths) throws IOException {
@@ -174,7 +178,7 @@ public class DecisionCodegen extends AbstractGenerator {
                     .orElse(false);
 
             if(stronglyTypedEnabled) {
-                tryGenerateStronglyTypedInput(model);
+                generateStronglyTypedInput(model);
             }
             DMNRestResourceGenerator resourceGenerator = new DMNRestResourceGenerator(model, applicationCanonicalName)
                     .withDependencyInjection(annotator)
@@ -194,7 +198,7 @@ public class DecisionCodegen extends AbstractGenerator {
         return generatedFiles;
     }
 
-    private void tryGenerateStronglyTypedInput(DMNModel model) {
+    private void generateStronglyTypedInput(DMNModel model) {
         try {
             DMNTypeSafePackageName.Factory factory = m -> new DMNTypeSafePackageName("", m.getNamespace(), "");
             DMNAllTypesIndex index = new DMNAllTypesIndex(factory, model);
@@ -202,8 +206,10 @@ public class DecisionCodegen extends AbstractGenerator {
             Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(
                     model,
                     index, factory )
+                    .withJacksonAnnotation()
+                    .processTypes()
                     .generateSourceCodeOfAllTypes();
-            
+
             allTypesSourceCode.forEach((k,v) -> storeFile(GeneratedFile.Type.CLASS, k.replace(".", "/") + ".java", v));
             
         } catch(Exception e) {

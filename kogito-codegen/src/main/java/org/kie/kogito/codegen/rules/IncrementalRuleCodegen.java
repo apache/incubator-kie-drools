@@ -85,23 +85,25 @@ import static org.kie.kogito.codegen.ApplicationGenerator.logger;
 
 public class IncrementalRuleCodegen extends AbstractGenerator {
 
-    public static IncrementalRuleCodegen ofJar(Path jarPath) {
+    public static IncrementalRuleCodegen ofJar(Path... jarPaths) {
         Collection<Resource> resources = new ArrayList<>();
 
-        try (ZipFile zipFile = new ZipFile( jarPath.toFile() )) {
-            Enumeration< ? extends ZipEntry> entries = zipFile.entries();
-            while ( entries.hasMoreElements() ) {
-                ZipEntry entry = entries.nextElement();
-                ResourceType resourceType = determineResourceType(entry.getName());
-                if (resourceType != null) {
-                    InternalResource resource = new ByteArrayResource( readBytesFromInputStream( zipFile.getInputStream( entry ) ) );
-                    resource.setResourceType( resourceType );
-                    resource.setSourcePath( entry.getName() );
-                    resources.add( resource );
+        for (Path jarPath : jarPaths) {
+            try (ZipFile zipFile = new ZipFile( jarPath.toFile() )) {
+                Enumeration<? extends ZipEntry> entries = zipFile.entries();
+                while (entries.hasMoreElements()) {
+                    ZipEntry entry = entries.nextElement();
+                    ResourceType resourceType = determineResourceType( entry.getName() );
+                    if ( resourceType != null ) {
+                        InternalResource resource = new ByteArrayResource( readBytesFromInputStream( zipFile.getInputStream( entry ) ) );
+                        resource.setResourceType( resourceType );
+                        resource.setSourcePath( entry.getName() );
+                        resources.add( resource );
+                    }
                 }
+            } catch (IOException e) {
+                throw new UncheckedIOException( e );
             }
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
         }
 
         return new IncrementalRuleCodegen(resources);

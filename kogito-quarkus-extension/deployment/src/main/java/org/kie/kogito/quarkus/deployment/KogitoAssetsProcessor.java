@@ -532,12 +532,7 @@ public class KogitoAssetsProcessor {
                         break;
                     }
                     case JAR: {
-                        Path projectPath = path.getParent().getParent();
-                        isJar = !projectPath.toFile().isDirectory();
-                        if (isJar) {
-                            classesPaths.clear();
-                            projectPaths.clear();
-                        }
+                        isJar = true;
                         classesPaths.add( path );
                         projectPaths.add( path.getParent().getParent() );
                         break;
@@ -547,9 +542,6 @@ public class KogitoAssetsProcessor {
                         projectPaths.add( path );
                         break;
                     }
-                }
-                if ( isJar ) {
-                    break;
                 }
             }
         }
@@ -562,11 +554,11 @@ public class KogitoAssetsProcessor {
             return classesPaths.get( 0 );
         }
 
-        public Path getJarPath() {
+        public Path[] getJarPath() {
             if (!isJar) {
                 throw new IllegalStateException("Not a jar");
             }
-            return projectPaths.iterator().next();
+            return classesPaths.toArray( new Path[classesPaths.size()] );
         }
 
         public File[] getResourceFiles() {
@@ -597,7 +589,7 @@ public class KogitoAssetsProcessor {
             if (path.endsWith("target" + File.separator + "test-classes")) {
                 return PathType.TEST_CLASSES;
             }
-            if (path.endsWith(".jar") && archiveLocation.getParent().getFileName().toString().equals("target")) {
+            if (path.endsWith(".jar")) {
                 return PathType.JAR;
             }
             return PathType.UNKNOWN;
