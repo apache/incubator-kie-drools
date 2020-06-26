@@ -24,7 +24,6 @@ import java.time.Period;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -52,7 +51,7 @@ public class DSCoercionTest {
                .body("d", is("2020-05-18")) // as JSON is not schema aware, here we assert the RAW string
                .body("t", is("12:34:56"))
                .body("dt", is("2020-05-18T12:34:56"))
-               // DROOLS-5344 .body("ymd", is("P3Y"))
+               .body("ymd", is("P3Y"))
                .body("dtd", is("PT1H"));
     }
 
@@ -119,7 +118,6 @@ public class DSCoercionTest {
         assertThat(DSdtd, is(Duration.parse("PT1H")));
     }
 
-    @Disabled("DROOLS-5344")
     @Test
     public void testDSymd() {
         Period DSymd = given().contentType(ContentType.JSON)
