@@ -59,6 +59,30 @@ public class InlineCastTest extends BaseModelTest {
         assertEquals( "Found: Mark", result.getValue() );
     }
 
+    @Test
+    public void testInlineCastProjection() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $r : Result()\n" +
+                "  Object( $name : this#Person.name )\n" +
+                "then\n" +
+                "  $r.setValue(\"Found: \" + $name);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        ksession.insert( "Mark" );
+        ksession.insert( new Person( "Mark", 37 ) );
+        ksession.fireAllRules();
+
+        assertEquals( "Found: Mark", result.getValue() );
+    }
+
 
     @Test
     public void testInlineCastForAField() {
