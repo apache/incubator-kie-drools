@@ -66,9 +66,9 @@ public class InlineCastTest extends BaseModelTest {
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +
                 "  $r : Result()\n" +
-                "  Object( $name : this#Person.name )\n" +
+                "  $p : Object( $name : this#Person.name )\n" +
                 "then\n" +
-                "  $r.setValue(\"Found: \" + $name);\n" +
+                "  $r.setValue(\"Found: \" + $name + \" $p class: \" + $p.getClass().getCanonicalName());\n" +
                 "end";
 
         KieSession ksession = getKieSession( str );
@@ -80,7 +80,7 @@ public class InlineCastTest extends BaseModelTest {
         ksession.insert( new Person( "Mark", 37 ) );
         ksession.fireAllRules();
 
-        assertEquals( "Found: Mark", result.getValue() );
+        assertEquals( "Found: Mark $p class: org.drools.modelcompiler.domain.Person", result.getValue() );
     }
 
 
