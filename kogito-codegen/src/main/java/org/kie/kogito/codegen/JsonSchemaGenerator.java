@@ -44,12 +44,14 @@ public class JsonSchemaGenerator {
     private Stream<Class<?>> stream;
     private Function<? super Class<?>, String> getSchemaName;
     private Predicate<? super Class<?>> shouldGenSchema;
+    private SchemaVersion schemaVersion = SchemaVersion.DRAFT_7;
 
     public static class Builder {
 
         private Stream<Class<?>> stream;
         private Function<? super Class<?>, String> getSchemaName;
         private Predicate<? super Class<?>> shouldGenSchema;
+        private String schemaVersion;
 
         public Builder(Stream<Class<?>> stream) {
             this.stream = stream;
@@ -65,10 +67,18 @@ public class JsonSchemaGenerator {
             return this;
         }
 
+        public Builder withSchemaVersion(String schemaVersion) {
+            this.schemaVersion = schemaVersion;
+            return this;
+        }
+
         public JsonSchemaGenerator build() {
             JsonSchemaGenerator instance = new JsonSchemaGenerator(stream);
             instance.getSchemaName = getSchemaName != null ? getSchemaName : JsonSchemaGenerator::getKey;
             instance.shouldGenSchema = shouldGenSchema != null ? shouldGenSchema : JsonSchemaGenerator::isUserTaskClass;
+            if (schemaVersion != null) {
+                instance.schemaVersion = SchemaVersion.valueOf(schemaVersion.trim().toUpperCase());
+            }
             return instance;
         }
     }
@@ -78,7 +88,8 @@ public class JsonSchemaGenerator {
     }
 
     public Collection<GeneratedFile> generate() throws IOException {
-        SchemaGeneratorConfigBuilder builder = new SchemaGeneratorConfigBuilder(SchemaVersion.DRAFT_2019_09, OptionPreset.PLAIN_JSON);
+        SchemaGeneratorConfigBuilder builder = new SchemaGeneratorConfigBuilder(schemaVersion, OptionPreset.PLAIN_JSON);
+        builder.forTypesInGeneral().withStringFormatResolver(target -> target.getSimpleTypeDescription().equals("Date") ? "date-time" : null);
         builder.forFields().withIgnoreCheck(JsonSchemaGenerator::isNotUserTaskParam);
         SchemaGenerator generator = new SchemaGenerator(builder.build());
         ObjectWriter writer = new ObjectMapper().writer();

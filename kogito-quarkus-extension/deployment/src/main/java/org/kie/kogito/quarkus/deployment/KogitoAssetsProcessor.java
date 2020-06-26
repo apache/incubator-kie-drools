@@ -157,7 +157,7 @@ public class KogitoAssetsProcessor {
                 } catch (ClassNotFoundException e) {
                     throw new IllegalStateException(e);
                 }
-            })).withGenSchemaPredicate(x -> true).build().generate();
+        })).withGenSchemaPredicate(x -> true).withSchemaVersion(System.getProperty("kogito.jsonSchema.version")).build().generate();
 
     }
 

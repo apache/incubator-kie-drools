@@ -71,6 +71,9 @@ public class ProcessClassesMojo extends AbstractKieMojo {
     @Parameter(required = true, defaultValue = "${project.basedir}/src/main/resources")
     private File kieSourcesDirectory;
     
+    @Parameter(property = "kogito.jsonSchema.version", required=false)
+    private String schemaVersion;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {        
         try {
@@ -155,7 +158,8 @@ public class ProcessClassesMojo extends AbstractKieMojo {
     
     private void generateJsonSchema(Path path, Reflections reflections) throws MojoFailureException {
         try {
-            Collection<GeneratedFile> files = new JsonSchemaGenerator.Builder(reflections.getTypesAnnotatedWith(UserTask.class).stream()).withGenSchemaPredicate(x -> true).build().generate();
+            Collection<GeneratedFile> files = new JsonSchemaGenerator.Builder(reflections.getTypesAnnotatedWith(UserTask.class).stream()).withGenSchemaPredicate(x -> true).withSchemaVersion(schemaVersion).build()
+                                                                                                                                         .generate();
             if (!files.isEmpty()) {
                 Path parentPath = path.resolve("META-INF").resolve("jsonSchema");
                 Files.createDirectories(parentPath);
