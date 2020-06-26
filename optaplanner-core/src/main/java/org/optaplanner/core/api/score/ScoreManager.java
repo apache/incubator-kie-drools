@@ -23,6 +23,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.score.DefaultScoreManager;
+import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 
 /**
@@ -75,6 +76,8 @@ public interface ScoreManager<Solution_> {
      *
      * @param solution never null
      * @return null if {@link #updateScore(Object)} returns null with the same solution
+     * @throws IllegalStateException when constraint matching is disabled or not supported by the underlying score
+     *         calculator, such as {@link EasyScoreCalculator}.
      */
     String getSummary(Solution_ solution);
 
@@ -84,6 +87,8 @@ public interface ScoreManager<Solution_> {
      *
      * @param solution never null
      * @return never null
+     * @throws IllegalStateException when constraint matching is disabled or not supported by the underlying score
+     *         calculator, such as {@link EasyScoreCalculator}.
      */
     ScoreExplanation<Solution_> explainScore(Solution_ solution);
 

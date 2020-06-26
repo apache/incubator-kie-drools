@@ -224,7 +224,7 @@ public class SolutionBusiness<Solution_> {
     }
 
     public Score getScore() {
-        return scoreManager.explainScore(getSolution()).getScore();
+        return scoreManager.updateScore(getSolution());
     }
 
     public boolean isSolving() {

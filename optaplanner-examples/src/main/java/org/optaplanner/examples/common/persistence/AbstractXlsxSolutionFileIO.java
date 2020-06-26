@@ -46,8 +46,6 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.ScoreExplanation;
-import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
@@ -62,16 +60,14 @@ import org.optaplanner.swing.impl.TangoColorFactory;
 
 public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionFileIO<Solution_> {
 
-    protected static final Pattern VALID_TAG_PATTERN = Pattern
-            .compile("(?U)^[\\w&\\-\\.\\/\\(\\)\\'][\\w&\\-\\.\\/\\(\\)\\' ]*[\\w&\\-\\.\\/\\(\\)\\']?$");
-    protected static final Pattern VALID_NAME_PATTERN = AbstractXlsxSolutionFileIO.VALID_TAG_PATTERN;
-    protected static final Pattern VALID_CODE_PATTERN = Pattern.compile("(?U)^[\\w\\-\\.\\/\\(\\)]+$");
-
     public static final DateTimeFormatter DAY_FORMATTER = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
     public static final DateTimeFormatter MONTH_FORMATTER = DateTimeFormatter.ofPattern("MMM yyyy", Locale.ENGLISH);
     public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH);
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.ENGLISH);
-
+    protected static final Pattern VALID_TAG_PATTERN = Pattern
+            .compile("(?U)^[\\w&\\-\\.\\/\\(\\)\\'][\\w&\\-\\.\\/\\(\\)\\' ]*[\\w&\\-\\.\\/\\(\\)\\']?$");
+    protected static final Pattern VALID_NAME_PATTERN = AbstractXlsxSolutionFileIO.VALID_TAG_PATTERN;
+    protected static final Pattern VALID_CODE_PATTERN = Pattern.compile("(?U)^[\\w\\-\\.\\/\\(\\)]+$");
     protected static final XSSFColor VIEW_TAB_COLOR = new XSSFColor(TangoColorFactory.BUTTER_1);
     protected static final XSSFColor DISABLED_COLOR = new XSSFColor(TangoColorFactory.ALUMINIUM_3);
     protected static final XSSFColor UNAVAILABLE_COLOR = new XSSFColor(TangoColorFactory.ALUMINIUM_5);
@@ -375,16 +371,16 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
 
         public AbstractXlsxWriter(Solution_ solution, String solverConfigResource) {
             this.solution = solution;
-            DefaultSolverFactory<Solution_> solverFactory =
-                    (DefaultSolverFactory<Solution_>) SolverFactory.createFromXmlResource(solverConfigResource);
-            try (InnerScoreDirector<Solution_> scoreDirector = solverFactory.getScoreDirectorFactory().buildScoreDirector()) {
-                scoreDefinition = scoreDirector.getScoreDefinition();
+            InnerScoreDirectorFactory<Solution_> scoreDirectorFactory =
+                    ((DefaultSolverFactory<Solution_>) SolverFactory.<Solution_> createFromXmlResource(solverConfigResource))
+                            .getScoreDirectorFactory();
+            scoreDefinition = scoreDirectorFactory.getScoreDefinition();
+            try (InnerScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
+                scoreDirector.setWorkingSolution(solution);
+                score = scoreDirector.calculateScore();
+                constraintMatchTotalsMap = scoreDirector.getConstraintMatchTotalMap();
+                indictmentMap = scoreDirector.getIndictmentMap();
             }
-            ScoreExplanation scoreManager = ScoreManager.create(solverFactory)
-                    .explainScore(solution);
-            score = scoreManager.getScore();
-            constraintMatchTotalsMap = scoreManager.getConstraintMatchTotalMap();
-            indictmentMap = scoreManager.getIndictmentMap();
         }
 
         public abstract Workbook write();
