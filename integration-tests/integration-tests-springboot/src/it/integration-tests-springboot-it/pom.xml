@@ -1,12 +1,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>integration-tests</artifactId>
-        <version>@project.version@</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>@version.springboot@</version>
     </parent>
+    
+    <groupId>org.kie.kogito</groupId>
     <artifactId>integration-tests-springboot-it</artifactId>
+    <version>@project.version@</version>
+
+    <properties>
+        <java.version>@maven.compiler.release@</java.version>
+    </properties>
+    
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -19,7 +28,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>${version.springboot}</version>
+                <version>@version.springboot@</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -58,7 +67,7 @@
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>${version.io.restassured.springboot}
+            <version>@version.io.restassured.springboot@
             </version> <!-- Manually override to 3.3.0 because Spring boot uses rest-assured-common internally -->
             <scope>test</scope>
         </dependency>
@@ -77,6 +86,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>@version.springboot@</version>
                 <executions>
                     <execution>
                         <goals>

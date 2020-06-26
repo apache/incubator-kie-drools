@@ -874,6 +874,9 @@
                               <exclude name="**/target/classes/**/Application.class"/>
                               <exclude name="**/target/classes/**/ApplicationConfig.class"/>
                               <exclude name="**/target/classes/**/RuleUnits.class"/>
+                              <!-- To avoid a complaint about duplicate classes created by code generation in IT tests. -->
+                              <exclude name="**/it/integration-tests-springboot-it/target/classes/**/*.class"/>
+                              <exclude name="**/it/integration-tests-kogito-plugin-it/target/classes/**/*.class"/>
                             </fileset>
                           </classfiles>
                           <sourcefiles encoding="UTF-8">

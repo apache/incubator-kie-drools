@@ -30,10 +30,8 @@ public class $Type$Resource {
 
     Process<$Type$> process;
 
-    @PostMapping(value = "/{id}/$signalName$", produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    public $Type$ signal(@PathVariable("id") final String id,
-                         final @RequestBody $signalType$ data) {
+    @PostMapping(value = "/{id}/$signalName$", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public $Type$ signal(@PathVariable("id") final String id, final @RequestBody $signalType$ data) {
 
         ProcessInstance<$Type$> pi = process.instances().findById(id).orElse(null);
         if (pi == null) {

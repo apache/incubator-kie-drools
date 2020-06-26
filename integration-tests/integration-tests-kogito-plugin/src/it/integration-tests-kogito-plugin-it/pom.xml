@@ -1,18 +1,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>integration-tests</artifactId>
-        <version>@project.version@</version>
-    </parent>
-    <artifactId>integration-tests-kogito-plugin-it</artifactId>
 
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>integration-tests-kogito-plugin-it</artifactId>
+    <version>@project.version@</version>
+
+    <properties>
+        <quarkus.version>@version.io.quarkus@</quarkus.version>
+        <kogito.version>@project.version@</kogito.version>
+        <surefire.version>@version.surefire.plugin@</surefire.version>
+        <compiler.version>@version.compiler.plugin@</compiler.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>@maven.compiler.release@</maven.compiler.release>
+    </properties>
+    
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.kie.kogito</groupId>
                 <artifactId>kogito-quarkus-bom</artifactId>
-                <version>${project.version}</version>
+                <version>${kogito.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -52,7 +59,7 @@
                 <plugin>
                     <groupId>io.quarkus</groupId>
                     <artifactId>quarkus-maven-plugin</artifactId>
-                    <version>${version.io.quarkus}</version>
+                    <version>${quarkus.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -60,9 +67,17 @@
         <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${compiler.version}</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.kie.kogito</groupId>
                 <artifactId>kogito-maven-plugin</artifactId>
-                <version>${project.version}</version>
+                <version>${kogito.version}</version>
                 <configuration>
                     <onDemand>true</onDemand>
                 </configuration>

@@ -31,9 +31,11 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.core.util.StringUtils;
@@ -144,7 +146,6 @@ public abstract class AbstractResourceGenerator {
                     AtomicInteger index = new AtomicInteger(0);
                     signalsMap.entrySet()
                             .stream()
-                            .filter(e -> Objects.nonNull(e.getValue()))
                             .filter(e -> Objects.nonNull(e.getKey()))
                             .forEach(entry -> {
                                 String methodName = "signal_" + index.getAndIncrement();
@@ -155,22 +156,28 @@ public abstract class AbstractResourceGenerator {
                                 signalTemplate.findAll(MethodDeclaration.class)
                                         .forEach(md -> {
                                             MethodDeclaration cloned = md.clone();
+                                            BlockStmt body = cloned.getBody().get();
+                                            if (signalType == null) {
+                                                body.findAll(NameExpr.class, nameExpr -> "data".equals(nameExpr.getNameAsString())).forEach(name -> name.replace(new NullLiteralExpr()));
+                                            }
                                             template.addMethod(methodName, Keyword.PUBLIC)
                                                     .setType(outputType)
-                                                    .setParameters(cloned.getParameters())
-                                                    .setBody(cloned.getBody().get())
+                                                    // Remove data parameter ( payload ) if signalType is null 
+                                                    .setParameters(signalType == null ? NodeList.nodeList(cloned.getParameter(0)) : cloned.getParameters())
+                                                    .setBody(body)
                                                     .setAnnotations(cloned.getAnnotations());
                                         });
 
-                                template.findAll(ClassOrInterfaceType.class).forEach(name -> {
-                                    String identifier = name.getNameAsString();
-                                    name.setName(identifier.replace("$signalType$", signalType));
-                                });
+                                if (signalType != null) {
+                                    template.findAll(ClassOrInterfaceType.class).forEach(name -> {
+                                        String identifier = name.getNameAsString();
+                                        name.setName(identifier.replace("$signalType$", signalType));
+                                    });
+                                }
 
                                 template.findAll(StringLiteralExpr.class).forEach(vv -> {
                                     String s = vv.getValue();
-                                    String interpolated =
-                                            s.replace("$signalName$", signalName);
+                                    String interpolated = s.replace("$signalName$", signalName);
                                     vv.setString(interpolated);
                                 });
                             });

@@ -31,8 +31,7 @@ public class $Type$Resource {
     @Path("/{id}/$signalName$")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public $Type$ signal(@PathParam("id") final String id,
-                               final $signalType$ data) {
+    public $Type$ signal(@PathParam("id") final String id, final $signalType$ data) {
 
         ProcessInstance<$Type$> pi = process.instances().findById(id).orElse(null);
         if(pi == null){
