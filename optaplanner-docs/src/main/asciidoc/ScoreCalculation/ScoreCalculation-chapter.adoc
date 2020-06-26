@@ -510,7 +510,7 @@ add the `easyScoreCalculatorCustomProperties` element and use <<customProperties
   <scoreDirectorFactory>
     <easyScoreCalculatorClass>...MyEasyScoreCalculator</easyScoreCalculatorClass>
     <easyScoreCalculatorCustomProperties>
-      <myCacheSize>1000</myCacheSize>
+      <property name="myCacheSize" value="1000" />
     </easyScoreCalculatorCustomProperties>
   </scoreDirectorFactory>
 ----
@@ -678,7 +678,7 @@ add the `incrementalScoreCalculatorCustomProperties` element and use <<customPro
   <scoreDirectorFactory>
     <incrementalScoreCalculatorClass>...MyIncrementalScoreCalculator</incrementalScoreCalculatorClass>
     <incrementalScoreCalculatorCustomProperties>
-      <myCacheSize>1000</myCacheSize>
+      <property name="myCacheSize" value="1000"/>
     </incrementalScoreCalculatorCustomProperties>
   </scoreDirectorFactory>
 ----

@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.config.localsearch.decider.acceptor;
 
+import javax.xml.bind.annotation.XmlEnum;
+
+@XmlEnum
 public enum AcceptorType {
     HILL_CLIMBING,
     ENTITY_TABU,

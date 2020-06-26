@@ -16,9 +16,12 @@
 
 package org.optaplanner.core.config.exhaustivesearch;
 
+import javax.xml.bind.annotation.XmlEnum;
+
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 
+@XmlEnum
 public enum ExhaustiveSearchType {
     BRUTE_FORCE,
     BRANCH_AND_BOUND;

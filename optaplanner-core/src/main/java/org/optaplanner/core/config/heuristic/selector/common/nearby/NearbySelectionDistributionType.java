@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.config.heuristic.selector.common.nearby;
 
+import javax.xml.bind.annotation.XmlEnum;
+
+@XmlEnum
 public enum NearbySelectionDistributionType {
     /**
      * Only the n nearest are selected, with an equal probability.

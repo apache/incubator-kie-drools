@@ -21,6 +21,8 @@ import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.pillar.PillarSelectorConfig;
@@ -37,6 +39,9 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("pillarChangeMoveSelector")
 public class PillarChangeMoveSelectorConfig extends AbstractPillarMoveSelectorConfig<PillarChangeMoveSelectorConfig> {
 
+    public static final String XML_ELEMENT_NAME = "pillarChangeMoveSelector";
+
+    @XmlElement(name = "valueSelector")
     @XStreamAlias("valueSelector")
     private ValueSelectorConfig valueSelectorConfig = null;
 

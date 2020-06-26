@@ -18,6 +18,8 @@ package org.optaplanner.core.config.heuristic.selector.value.chained;
 
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
+import javax.xml.bind.annotation.XmlElement;
+
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -45,6 +47,7 @@ public class SubChainSelectorConfig extends SelectorConfig<SubChainSelectorConfi
     private static final int DEFAULT_MINIMUM_SUB_CHAIN_SIZE = 1;
     private static final int DEFAULT_MAXIMUM_SUB_CHAIN_SIZE = Integer.MAX_VALUE;
 
+    @XmlElement(name = "valueSelector")
     @XStreamAlias("valueSelector")
     protected ValueSelectorConfig valueSelectorConfig = null;
 

@@ -18,6 +18,8 @@ package org.optaplanner.core.config.exhaustivesearch;
 
 import java.util.Comparator;
 
+import javax.xml.bind.annotation.XmlEnum;
+
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 import org.optaplanner.core.impl.exhaustivesearch.node.comparator.BreadthFirstNodeComparator;
 import org.optaplanner.core.impl.exhaustivesearch.node.comparator.DepthFirstNodeComparator;
@@ -25,6 +27,7 @@ import org.optaplanner.core.impl.exhaustivesearch.node.comparator.OptimisticBoun
 import org.optaplanner.core.impl.exhaustivesearch.node.comparator.OriginalOrderNodeComparator;
 import org.optaplanner.core.impl.exhaustivesearch.node.comparator.ScoreFirstNodeComparator;
 
+@XmlEnum
 public enum NodeExplorationType {
     ORIGINAL_ORDER,
     DEPTH_FIRST,

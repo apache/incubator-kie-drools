@@ -20,6 +20,9 @@ import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.pillar.PillarSelectorConfig;
@@ -36,10 +39,14 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 @XStreamAlias("pillarSwapMoveSelector")
 public class PillarSwapMoveSelectorConfig extends AbstractPillarMoveSelectorConfig<PillarSwapMoveSelectorConfig> {
 
+    public static final String XML_ELEMENT_NAME = "pillarSwapMoveSelector";
+
+    @XmlElement(name = "secondaryPillarSelector")
     @XStreamAlias("secondaryPillarSelector")
     private PillarSelectorConfig secondaryPillarSelectorConfig = null;
 
-    // TODO Wrap in <variableNameIncludes> https://issues.redhat.com/browse/PLANNER-838
+    @XmlElementWrapper(name = "variableNameIncludes")
+    @XmlElement(name = "variableNameInclude")
     @XStreamImplicit(itemFieldName = "variableNameInclude")
     //    @XStreamAlias("variableNameIncludes")
     //    @XStreamConverter(value = NamedCollectionConverter.class,

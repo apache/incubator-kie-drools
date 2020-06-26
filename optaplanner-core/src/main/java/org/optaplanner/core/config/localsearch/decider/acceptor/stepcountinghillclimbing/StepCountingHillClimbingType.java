@@ -16,12 +16,15 @@
 
 package org.optaplanner.core.config.localsearch.decider.acceptor.stepcountinghillclimbing;
 
+import javax.xml.bind.annotation.XmlEnum;
+
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig;
 
 /**
  * Determines what increment the counter of Step Counting Hill Climbing.
  */
+@XmlEnum
 public enum StepCountingHillClimbingType {
     /**
      * Every selected move is counted.

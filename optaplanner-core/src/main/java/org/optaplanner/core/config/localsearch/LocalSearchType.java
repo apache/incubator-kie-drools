@@ -18,6 +18,9 @@ package org.optaplanner.core.config.localsearch;
 
 import java.util.Arrays;
 
+import javax.xml.bind.annotation.XmlEnum;
+
+@XmlEnum
 public enum LocalSearchType {
     HILL_CLIMBING,
     TABU_SEARCH,

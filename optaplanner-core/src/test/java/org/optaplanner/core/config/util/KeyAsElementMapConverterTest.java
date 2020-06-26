@@ -27,6 +27,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 
+// TODO: remove with XStream
 public class KeyAsElementMapConverterTest {
 
     @Test

@@ -21,6 +21,8 @@ import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.localsearch.decider.acceptor.stepcountinghillclimbing.StepCountingHillClimbingType;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -44,8 +46,9 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("acceptor")
-public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
+public class LocalSearchAcceptorConfig extends AbstractConfig<LocalSearchAcceptorConfig> {
 
+    @XmlElement(name = "acceptorType")
     @XStreamImplicit(itemFieldName = "acceptorType")
     private List<AcceptorType> acceptorTypeList = null;
 
@@ -237,87 +240,88 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
     // With methods
     // ************************************************************************
 
-    public AcceptorConfig withAcceptorTypeList(List<AcceptorType> acceptorTypeList) {
+    public LocalSearchAcceptorConfig withAcceptorTypeList(List<AcceptorType> acceptorTypeList) {
         this.acceptorTypeList = acceptorTypeList;
         return this;
     }
 
-    public AcceptorConfig withEntityTabuSize(Integer entityTabuSize) {
+    public LocalSearchAcceptorConfig withEntityTabuSize(Integer entityTabuSize) {
         this.entityTabuSize = entityTabuSize;
         return this;
     }
 
-    public AcceptorConfig withEntityTabuRatio(Double entityTabuRatio) {
+    public LocalSearchAcceptorConfig withEntityTabuRatio(Double entityTabuRatio) {
         this.entityTabuRatio = entityTabuRatio;
         return this;
     }
 
-    public AcceptorConfig withFadingEntityTabuSize(Integer fadingEntityTabuSize) {
+    public LocalSearchAcceptorConfig withFadingEntityTabuSize(Integer fadingEntityTabuSize) {
         this.fadingEntityTabuSize = fadingEntityTabuSize;
         return this;
     }
 
-    public AcceptorConfig withFadingEntityTabuRatio(Double fadingEntityTabuRatio) {
+    public LocalSearchAcceptorConfig withFadingEntityTabuRatio(Double fadingEntityTabuRatio) {
         this.fadingEntityTabuRatio = fadingEntityTabuRatio;
         return this;
     }
 
-    public AcceptorConfig withValueTabuSize(Integer valueTabuSize) {
+    public LocalSearchAcceptorConfig withValueTabuSize(Integer valueTabuSize) {
         this.valueTabuSize = valueTabuSize;
         return this;
     }
 
-    public AcceptorConfig withValueTabuRatio(Double valueTabuRatio) {
+    public LocalSearchAcceptorConfig withValueTabuRatio(Double valueTabuRatio) {
         this.valueTabuRatio = valueTabuRatio;
         return this;
     }
 
-    public AcceptorConfig withFadingValueTabuSize(Integer fadingValueTabuSize) {
+    public LocalSearchAcceptorConfig withFadingValueTabuSize(Integer fadingValueTabuSize) {
         this.fadingValueTabuSize = fadingValueTabuSize;
         return this;
     }
 
-    public AcceptorConfig withFadingValueTabuRatio(Double fadingValueTabuRatio) {
+    public LocalSearchAcceptorConfig withFadingValueTabuRatio(Double fadingValueTabuRatio) {
         this.fadingValueTabuRatio = fadingValueTabuRatio;
         return this;
     }
 
-    public AcceptorConfig withMoveTabuSize(Integer moveTabuSize) {
+    public LocalSearchAcceptorConfig withMoveTabuSize(Integer moveTabuSize) {
         this.moveTabuSize = moveTabuSize;
         return this;
     }
 
-    public AcceptorConfig withFadingMoveTabuSize(Integer fadingMoveTabuSize) {
+    public LocalSearchAcceptorConfig withFadingMoveTabuSize(Integer fadingMoveTabuSize) {
         this.fadingMoveTabuSize = fadingMoveTabuSize;
         return this;
     }
 
-    public AcceptorConfig withUndoMoveTabuSize(Integer undoMoveTabuSize) {
+    public LocalSearchAcceptorConfig withUndoMoveTabuSize(Integer undoMoveTabuSize) {
         this.undoMoveTabuSize = undoMoveTabuSize;
         return this;
     }
 
-    public AcceptorConfig withFadingUndoMoveTabuSize(Integer fadingUndoMoveTabuSize) {
+    public LocalSearchAcceptorConfig withFadingUndoMoveTabuSize(Integer fadingUndoMoveTabuSize) {
         this.fadingUndoMoveTabuSize = fadingUndoMoveTabuSize;
         return this;
     }
 
-    public AcceptorConfig withSimulatedAnnealingStartingTemperature(String simulatedAnnealingStartingTemperature) {
+    public LocalSearchAcceptorConfig withSimulatedAnnealingStartingTemperature(String simulatedAnnealingStartingTemperature) {
         this.simulatedAnnealingStartingTemperature = simulatedAnnealingStartingTemperature;
         return this;
     }
 
-    public AcceptorConfig withLateAcceptanceSize(Integer lateAcceptanceSize) {
+    public LocalSearchAcceptorConfig withLateAcceptanceSize(Integer lateAcceptanceSize) {
         this.lateAcceptanceSize = lateAcceptanceSize;
         return this;
     }
 
-    public AcceptorConfig withStepCountingHillClimbingSize(Integer stepCountingHillClimbingSize) {
+    public LocalSearchAcceptorConfig withStepCountingHillClimbingSize(Integer stepCountingHillClimbingSize) {
         this.stepCountingHillClimbingSize = stepCountingHillClimbingSize;
         return this;
     }
 
-    public AcceptorConfig withStepCountingHillClimbingType(StepCountingHillClimbingType stepCountingHillClimbingType) {
+    public LocalSearchAcceptorConfig
+            withStepCountingHillClimbingType(StepCountingHillClimbingType stepCountingHillClimbingType) {
         this.stepCountingHillClimbingType = stepCountingHillClimbingType;
         return this;
     }
@@ -500,7 +504,7 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
     }
 
     @Override
-    public AcceptorConfig inherit(AcceptorConfig inheritedConfig) {
+    public LocalSearchAcceptorConfig inherit(LocalSearchAcceptorConfig inheritedConfig) {
         if (acceptorTypeList == null) {
             acceptorTypeList = inheritedConfig.getAcceptorTypeList();
         } else {
@@ -550,8 +554,8 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
     }
 
     @Override
-    public AcceptorConfig copyConfig() {
-        return new AcceptorConfig().inherit(this);
+    public LocalSearchAcceptorConfig copyConfig() {
+        return new LocalSearchAcceptorConfig().inherit(this);
     }
 
 }

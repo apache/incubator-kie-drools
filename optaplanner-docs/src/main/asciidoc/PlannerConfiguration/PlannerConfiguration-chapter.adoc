@@ -176,7 +176,7 @@ and you want to increase the cache size in one benchmark:
   <scoreDirectorFactory>
     <easyScoreCalculatorClass>...MyEasyScoreCalculator</easyScoreCalculatorClass>
     <easyScoreCalculatorCustomProperties>
-      <myCacheSize>1000</myCacheSize><!-- Override value -->
+      <property name="myCacheSize" value="1000"/><!-- Override value -->
     </easyScoreCalculatorCustomProperties>
   </scoreDirectorFactory>
 ----

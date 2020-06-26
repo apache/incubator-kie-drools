@@ -18,6 +18,8 @@ package org.optaplanner.core.config.heuristic.selector.common.nearby;
 
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
+import javax.xml.bind.annotation.XmlElement;
+
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -40,6 +42,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("nearbySelection")
 public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig> {
 
+    @XmlElement(name = "originEntitySelector")
     @XStreamAlias("originEntitySelector")
     protected EntitySelectorConfig originEntitySelectorConfig = null;
     protected Class<? extends NearbyDistanceMeter> nearbyDistanceMeterClass = null;

@@ -966,8 +966,6 @@ Configure the `filterClass` on every targeted `moveSelector` (potentially both i
     </swapMoveSelector>
 ----
 
-You can configure multiple `filterClass` elements on a single move selector.
-
 
 [[filteredEntitySelection]]
 ==== Filtered entity selection
@@ -999,8 +997,6 @@ Configure the `filterClass` on every targeted `entitySelector` (potentially both
 
 If that filter should apply on all entities, configure it as a <<pinnedPlanningEntities,global pinningFilter>> instead.
 
-You can configure multiple `filterClass` elements on a single entity selector.
-
 [[filteredValueSelection]]
 ==== Filtered value selection
 
@@ -1028,8 +1024,6 @@ Configure the `filterClass` on every targeted `valueSelector` (potentially both 
       </valueSelector>
     </changeMoveSelector>
 ----
-
-You can configure multiple `filterClass` elements on a single value selector.
 
 
 [[sortedSelection]]

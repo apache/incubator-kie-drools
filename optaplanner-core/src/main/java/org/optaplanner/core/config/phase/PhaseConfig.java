@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.config.phase;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.optaplanner.core.config.AbstractConfig;
@@ -35,7 +36,14 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 
-@XmlSeeAlso({ ConstructionHeuristicPhaseConfig.class })
+@XmlSeeAlso({
+        ConstructionHeuristicPhaseConfig.class,
+        CustomPhaseConfig.class,
+        ExhaustiveSearchPhaseConfig.class,
+        LocalSearchPhaseConfig.class,
+        NoChangePhaseConfig.class,
+        PartitionedSearchPhaseConfig.class
+})
 @XStreamInclude({
         CustomPhaseConfig.class,
         NoChangePhaseConfig.class,
@@ -49,6 +57,7 @@ public abstract class PhaseConfig<C extends PhaseConfig> extends AbstractConfig<
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
 
+    @XmlElement(name = "termination")
     @XStreamAlias("termination")
     private TerminationConfig terminationConfig = null;
 

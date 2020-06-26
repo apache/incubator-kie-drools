@@ -18,6 +18,8 @@ package org.optaplanner.core.config.solver;
 
 import java.util.Random;
 
+import javax.xml.bind.annotation.XmlEnum;
+
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.heuristic.move.Move;
@@ -31,6 +33,7 @@ import org.optaplanner.core.impl.heuristic.move.Move;
  * while tabu search only depends on it to deal with score ties.
  * This environment mode influences the seed of that {@link Random} instance.
  */
+@XmlEnum
 public enum EnvironmentMode {
     /**
      * This mode turns on all assertions

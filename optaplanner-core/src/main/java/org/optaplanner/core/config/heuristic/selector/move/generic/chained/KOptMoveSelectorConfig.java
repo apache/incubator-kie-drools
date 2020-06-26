@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.generic.chained;
 
+import javax.xml.bind.annotation.XmlElement;
+
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
@@ -40,13 +42,17 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("kOptMoveSelector")
 public class KOptMoveSelectorConfig extends MoveSelectorConfig<KOptMoveSelectorConfig> {
 
+    public static final String XML_ELEMENT_NAME = "kOptMoveSelector";
+
     public static final int K = 3;
 
+    @XmlElement(name = "entitySelector")
     @XStreamAlias("entitySelector")
     private EntitySelectorConfig entitySelectorConfig = null;
     /**
      * Like {@link TailChainSwapMoveSelectorConfig#valueSelectorConfig} but used multiple times to create 1 move.
      */
+    @XmlElement(name = "valueSelector")
     @XStreamAlias("valueSelector")
     private ValueSelectorConfig valueSelectorConfig = null;
 

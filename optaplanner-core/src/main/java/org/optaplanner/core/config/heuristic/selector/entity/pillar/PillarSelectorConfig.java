@@ -21,6 +21,8 @@ import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -38,6 +40,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("pillarSelector")
 public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
 
+    @XmlElement(name = "entitySelector")
     @XStreamAlias("entitySelector")
     protected EntitySelectorConfig entitySelectorConfig = null;
 

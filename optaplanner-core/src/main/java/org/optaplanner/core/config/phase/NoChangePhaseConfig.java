@@ -26,6 +26,8 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("noChangePhase")
 public class NoChangePhaseConfig extends PhaseConfig<NoChangePhaseConfig> {
 
+    public static final String XML_ELEMENT_NAME = "noChangePhase";
+
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
 

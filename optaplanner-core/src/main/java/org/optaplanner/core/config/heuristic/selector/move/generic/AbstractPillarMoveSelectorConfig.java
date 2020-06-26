@@ -18,6 +18,8 @@ package org.optaplanner.core.config.heuristic.selector.move.generic;
 
 import java.util.Comparator;
 
+import javax.xml.bind.annotation.XmlElement;
+
 import org.optaplanner.core.config.heuristic.selector.entity.pillar.PillarSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -29,6 +31,7 @@ public abstract class AbstractPillarMoveSelectorConfig<C extends AbstractPillarM
 
     protected SubPillarType subPillarType = null;
     protected Class<? extends Comparator> subPillarSequenceComparatorClass = null;
+    @XmlElement(name = "pillarSelector")
     @XStreamAlias("pillarSelector")
     protected PillarSelectorConfig pillarSelectorConfig = null;
 

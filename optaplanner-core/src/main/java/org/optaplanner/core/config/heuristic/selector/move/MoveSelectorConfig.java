@@ -59,7 +59,13 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
  * General superclass for {@link ChangeMoveSelectorConfig}, etc.
  */
 
-@XmlSeeAlso({ ChangeMoveSelectorConfig.class, CartesianProductMoveSelectorConfig.class, UnionMoveSelectorConfig.class })
+@XmlSeeAlso({
+        UnionMoveSelectorConfig.class, CartesianProductMoveSelectorConfig.class,
+        ChangeMoveSelectorConfig.class, SwapMoveSelectorConfig.class,
+        PillarChangeMoveSelectorConfig.class, PillarSwapMoveSelectorConfig.class,
+        TailChainSwapMoveSelectorConfig.class, KOptMoveSelectorConfig.class,
+        SubChainChangeMoveSelectorConfig.class, SubChainSwapMoveSelectorConfig.class,
+        MoveListFactoryConfig.class, MoveIteratorFactoryConfig.class })
 @XStreamInclude({
         UnionMoveSelectorConfig.class, CartesianProductMoveSelectorConfig.class,
         ChangeMoveSelectorConfig.class, SwapMoveSelectorConfig.class,
@@ -185,7 +191,7 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
         return this;
     }
 
-    public MoveSelectorConfig withFilterClassList(Class<? extends SelectionFilter> filterClass) {
+    public MoveSelectorConfig withFilterClass(Class<? extends SelectionFilter> filterClass) {
         this.filterClass = filterClass;
         return this;
     }

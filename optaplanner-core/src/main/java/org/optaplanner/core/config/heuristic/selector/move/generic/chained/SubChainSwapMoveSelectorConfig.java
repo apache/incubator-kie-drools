@@ -18,6 +18,8 @@ package org.optaplanner.core.config.heuristic.selector.move.generic.chained;
 
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
+import javax.xml.bind.annotation.XmlElement;
+
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
@@ -34,9 +36,13 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("subChainSwapMoveSelector")
 public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig<SubChainSwapMoveSelectorConfig> {
 
+    public static final String XML_ELEMENT_NAME = "subChainSwapMoveSelector";
+
     private Class<?> entityClass = null;
+    @XmlElement(name = "subChainSelector")
     @XStreamAlias("subChainSelector")
     private SubChainSelectorConfig subChainSelectorConfig = null;
+    @XmlElement(name = "secondarySubChainSelector")
     @XStreamAlias("secondarySubChainSelector")
     private SubChainSelectorConfig secondarySubChainSelectorConfig = null;
 

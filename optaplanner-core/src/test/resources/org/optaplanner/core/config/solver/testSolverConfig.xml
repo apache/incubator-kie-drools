@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2020 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 <solver>
+  <environmentMode>FULL_ASSERT</environmentMode>
+  <solutionClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionClass>
+  <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>
+
+  <scoreDirectorFactory>
+    <scoreDrl>org/optaplanner/config/first-non-existing-constraints.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/config/second-non-existing-constraints.drl</scoreDrl>
+    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+  </scoreDirectorFactory>
+
   <constructionHeuristic>
     <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
     <forager>
@@ -32,14 +57,67 @@
         </changeMoveSelector>
       </cartesianProductMoveSelector>
     </queuedEntityPlacer>
-    <pooledEntityPlacer>
-      <changeMoveSelector/>
-    </pooledEntityPlacer>
-    <queuedValuePlacer>
-      <changeMoveSelector/>
-    </queuedValuePlacer>
-    <unionMoveSelector>
-      <changeMoveSelector/>
-    </unionMoveSelector>
+    <swapMoveSelector>
+      <variableNameIncludes>
+        <variableNameInclude>variableA</variableNameInclude>
+        <variableNameInclude>variableB</variableNameInclude>
+      </variableNameIncludes>
+    </swapMoveSelector>
   </constructionHeuristic>
+
+  <customPhase>
+    <customPhaseCommandClass>org.optaplanner.core.impl.phase.custom.AbstractCustomPhaseCommand</customPhaseCommandClass>
+  </customPhase>
+
+  <exhaustiveSearch>
+    <exhaustiveSearchType>BRANCH_AND_BOUND</exhaustiveSearchType>
+    <nodeExplorationType>BREADTH_FIRST</nodeExplorationType>
+    <changeMoveSelector/>
+  </exhaustiveSearch>
+
+  <localSearch>
+    <localSearchType>TABU_SEARCH</localSearchType>
+    <termination>
+      <terminationCompositionStyle>AND</terminationCompositionStyle>
+      <unimprovedSecondsSpentLimit>10</unimprovedSecondsSpentLimit>
+      <termination>
+        <terminationCompositionStyle>OR</terminationCompositionStyle>
+        <unimprovedStepCountLimit>1000</unimprovedStepCountLimit>
+        <secondsSpentLimit>20</secondsSpentLimit>
+      </termination>
+    </termination>
+    <unionMoveSelector>
+      <pillarChangeMoveSelector/>
+      <pillarSwapMoveSelector/>
+    </unionMoveSelector>
+    <acceptor>
+      <acceptorType>ENTITY_TABU</acceptorType>
+      <acceptorType>STEP_COUNTING_HILL_CLIMBING</acceptorType>
+      <entityTabuRatio>2.0</entityTabuRatio>
+      <stepCountingHillClimbingType>EQUAL_OR_IMPROVING_STEP</stepCountingHillClimbingType>
+      <stepCountingHillClimbingSize>10</stepCountingHillClimbingSize>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>1000</acceptedCountLimit>
+      <finalistPodiumType>STRATEGIC_OSCILLATION</finalistPodiumType>
+      <pickEarlyType>FIRST_LAST_STEP_SCORE_IMPROVING</pickEarlyType>
+      <breakTieRandomly>true</breakTieRandomly>
+    </forager>
+  </localSearch>
+
+  <noChangePhase/>
+
+  <partitionedSearch>
+    <solutionPartitionerClass>org.optaplanner.core.config.solver.SolverConfigTest$DummySolutionPartitioner</solutionPartitionerClass>
+    <solutionPartitionerCustomProperties>
+      <property name="partCount" value="4"/>
+      <property name="minimumProcessListSize" value="300"/>
+    </solutionPartitionerCustomProperties>
+    <constructionHeuristic>
+      <pooledEntityPlacer>
+        <changeMoveSelector/>
+      </pooledEntityPlacer>
+    </constructionHeuristic>
+    <localSearch/>
+  </partitionedSearch>
 </solver>

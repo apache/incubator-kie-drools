@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.config.score.definition;
 
+import javax.xml.bind.annotation.XmlEnum;
+
+@XmlEnum
 public enum ScoreDefinitionType {
     SIMPLE,
     SIMPLE_LONG,

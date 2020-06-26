@@ -208,8 +208,8 @@ add the `solutionPartitionerCustomProperties` element and use <<customProperties
   <partitionedSearch>
     <solutionPartitionerClass>...CloudBalancePartitioner</solutionPartitionerClass>
     <solutionPartitionerCustomProperties>
-      <myPartCount>8</myPartCount>
-      <myMinimumProcessListSize>100</myMinimumProcessListSize>
+      <property name="myPartCount" value="8"/>
+      <property name="myMinimumProcessListSize" value="100"/>
     </solutionPartitionerCustomProperties>
   </partitionedSearch>
 ----

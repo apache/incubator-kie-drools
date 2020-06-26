@@ -796,7 +796,7 @@ add the `customProperties` element and use <<customPropertiesConfiguration,custo
   <customPhase>
     <customPhaseCommandClass>...MyCustomPhase</customPhaseCommandClass>
     <customProperties>
-      <mySelectionSize>5</mySelectionSize>
+      <property name="mySelectionSize" value="5"/>
     </customProperties>
   </customPhase>
 ----

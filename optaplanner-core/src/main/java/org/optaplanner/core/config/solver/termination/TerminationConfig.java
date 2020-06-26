@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -72,6 +74,7 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
 
     private Long scoreCalculationCountLimit = null;
 
+    @XmlElement(name = "termination")
     @XStreamImplicit(itemFieldName = "termination")
     private List<TerminationConfig> terminationConfigList = null;
 

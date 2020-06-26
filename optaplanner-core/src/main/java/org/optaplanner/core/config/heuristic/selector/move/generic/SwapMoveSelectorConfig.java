@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
@@ -41,12 +44,17 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 @XStreamAlias("swapMoveSelector")
 public class SwapMoveSelectorConfig extends MoveSelectorConfig<SwapMoveSelectorConfig> {
 
+    public static final String XML_ELEMENT_NAME = "swapMoveSelector";
+
+    @XmlElement(name = "entitySelector")
     @XStreamAlias("entitySelector")
     private EntitySelectorConfig entitySelectorConfig = null;
+    @XmlElement(name = "secondaryEntitySelector")
     @XStreamAlias("secondaryEntitySelector")
     private EntitySelectorConfig secondaryEntitySelectorConfig = null;
 
-    // TODO Wrap in <variableNameIncludes> https://issues.redhat.com/browse/PLANNER-838
+    @XmlElementWrapper(name = "variableNameIncludes")
+    @XmlElement(name = "variableNameInclude")
     @XStreamImplicit(itemFieldName = "variableNameInclude")
     //    @XStreamAlias("variableNameIncludes")
     //    @XStreamConverter(value = NamedCollectionConverter.class,

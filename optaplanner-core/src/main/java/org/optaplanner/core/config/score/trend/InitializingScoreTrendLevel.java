@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.score.trend;
 
+import javax.xml.bind.annotation.XmlEnum;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
@@ -26,6 +28,7 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
  *
  * @see InitializingScoreTrend
  */
+@XmlEnum
 public enum InitializingScoreTrendLevel {
     /**
      * No predictions can be made.
