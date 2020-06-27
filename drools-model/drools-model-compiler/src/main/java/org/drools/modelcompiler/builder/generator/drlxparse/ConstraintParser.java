@@ -105,7 +105,10 @@ public class ConstraintParser {
             if (hasBind) {
                 SingleDrlxParseSuccess singleResult = (SingleDrlxParseSuccess) result;
                 String bindId = drlx.getBind().asString();
-                context.addDeclaration( bindId, singleResult.getExprRawClass() );
+                DeclarationSpec decl = context.addDeclaration( bindId, singleResult.getExprRawClass() );
+                if (drlx.getExpr() instanceof NameExpr) {
+                    decl.setBoundVariable( drlx.getExpr().toString() );
+                }
                 singleResult.setExprBinding( bindId );
             }
         });
