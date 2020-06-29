@@ -21,6 +21,7 @@ import org.drools.core.addon.TypeResolver;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil.RemoveRootNodeResult;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.util.ClassUtil;
+import org.drools.mvel.parser.ast.expr.DrlxExpression;
 import org.junit.Test;
 
 import static java.util.Optional.of;
@@ -65,6 +66,15 @@ public class DrlxParseUtilTest {
         assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(null, expr, null, Person.class, typeResolver).getExpression().toString());
         assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(null, expr1, null, Person.class, typeResolver).getExpression().toString());
         assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(null, expr2, null, Person.class, typeResolver).getExpression().toString());
+    }
+
+    @Test
+    public void transformMethodExpressionToMethodCallWithInlineCast() {
+
+        final DrlxExpression expr = DrlxParseUtil.parseExpression("address#InternationalAddress.state");
+        final MethodCallExpr expected = StaticJavaParser.parseExpression("((InternationalAddress)getAddress()).getState()");
+
+        assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(null, expr.getExpr(), null, Person.class, typeResolver).getExpression().toString());
     }
 
     @Test

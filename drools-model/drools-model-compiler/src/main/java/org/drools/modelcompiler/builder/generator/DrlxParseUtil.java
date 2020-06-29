@@ -561,13 +561,6 @@ public class DrlxParseUtil {
                         previousScope = e.expression;
                     }
                 } else {
-                    if(e.expression instanceof NodeWithScope) {
-                        Optional<Class<?>> optInlineCastType = fieldAccessToInlineCast(typeResolver, e.expression);
-                        if(optInlineCastType.isPresent()) {
-                            previousClass = optInlineCastType.get();
-                        }
-                    }
-
                     TypedExpression te = nameExprToMethodCallExpr( e.fieldToResolve, previousClass, previousScope );
                     if (te == null) {
                         context.addCompilationError( new InvalidExpressionErrorResult( "Unknown field " + e.fieldToResolve + " on " + previousClass ) );
@@ -586,19 +579,6 @@ public class DrlxParseUtil {
         }
 
         return new TypedExpression(previousScope, previousClass);
-    }
-
-    public static Optional<Class<?>> fieldAccessToInlineCast(TypeResolver typeResolver, Expression expression) {
-        Expression scope = ((NodeWithScope<?>) expression).getScope();
-        if(scope instanceof InlineCastExpr) {
-            InlineCastExpr inlineScope = (InlineCastExpr) scope;
-            try {
-                return of(typeResolver.resolveType(inlineScope.getType().asString()));
-            } catch (ClassNotFoundException ex) {
-                return empty();
-            }
-        }
-        return empty();
     }
 
     private static Expression createExpressionCall(Expression expr, Deque<ParsedMethod> expressions) {
