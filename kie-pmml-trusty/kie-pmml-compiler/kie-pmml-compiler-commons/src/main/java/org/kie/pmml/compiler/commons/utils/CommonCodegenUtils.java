@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.compiler.commons.utils;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
@@ -41,7 +43,6 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
-import org.jpmml.model.StringUtil;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -58,6 +59,15 @@ public class CommonCodegenUtils {
 
     private CommonCodegenUtils() {
         // Avoid instantiation
+    }
+
+    /**
+     * Populate the <code>ClassOrInterfaceDeclaration</code> with the provided <code>MethodDeclaration</code>s
+     * @param toPopulate
+     * @param methodDeclarations
+     */
+    public static void populateMethodDeclarations(final ClassOrInterfaceDeclaration toPopulate, final Collection<MethodDeclaration> methodDeclarations) {
+        methodDeclarations.forEach(toPopulate::addMember);
     }
 
     /**

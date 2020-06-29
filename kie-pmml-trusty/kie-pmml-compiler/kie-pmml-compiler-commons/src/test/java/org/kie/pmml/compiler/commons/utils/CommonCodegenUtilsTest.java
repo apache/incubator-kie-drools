@@ -23,10 +23,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -58,6 +62,21 @@ import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.PARAMETER_N
 public class CommonCodegenUtilsTest {
 
     @Test
+    public void populateMethodDeclarations() {
+        final List<MethodDeclaration> toAdd = IntStream.range(0, 5)
+                .boxed()
+                .map(index -> getMethodDeclaration("METHOD_" + index))
+                .collect(Collectors.toList());
+        final ClassOrInterfaceDeclaration toPopulate = new ClassOrInterfaceDeclaration();
+        assertTrue(toPopulate.getMembers().isEmpty());
+        CommonCodegenUtils.populateMethodDeclarations(toPopulate, toAdd);
+        final NodeList<BodyDeclaration<?>> retrieved = toPopulate.getMembers();
+        assertEquals(toAdd.size(), retrieved.size());
+        assertTrue(toAdd.stream().anyMatch(methodDeclaration -> retrieved.stream()
+                .anyMatch(bodyDeclaration -> bodyDeclaration.equals(methodDeclaration))));
+    }
+
+    @Test
     public void getFilteredKiePMMLNameValueExpression() {
         String kiePMMLNameValueListParam = "KIEPMMLNAMEVALUELISTPARAM";
         String fieldNameToRef= "FIELDNAMETOREF";
@@ -82,8 +101,7 @@ public class CommonCodegenUtilsTest {
 
     @Test
     public void addMapPopulation() {
-        final Map<String, MethodDeclaration> toAdd = IntStream.range(0, 5).boxed().collect(Collectors.toMap(index -> "KEY_" + index,
-                                                                                                            index -> getMethodDeclaration("METHOD_" + index)));
+        final Map<String, MethodDeclaration> toAdd = IntStream.range(0, 5).boxed().collect(Collectors.toMap(index -> "KEY_" + index, index -> getMethodDeclaration("METHOD_" + index)));
         BlockStmt body = new BlockStmt();
         String mapName = "MAP_NAME";
         CommonCodegenUtils.addMapPopulation(toAdd, body, mapName);
