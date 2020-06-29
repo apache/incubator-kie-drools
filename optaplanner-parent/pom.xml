@@ -35,8 +35,6 @@
     <!-- TODO https://issues.redhat.com/browse/PLANNER-2042 -->
     <spotbugs.failOnViolation>false</spotbugs.failOnViolation>
     <version.org.mockito>3.1.0</version.org.mockito>
-    <!-- TODO disable once the 8.x API stabilizes -->
-    <revapi.skip>true</revapi.skip>
   </properties>
 
   <repositories>

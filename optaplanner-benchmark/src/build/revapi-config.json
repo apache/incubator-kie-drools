@@ -26,7 +26,227 @@
   "ignores": {
     "revapi": {
       "_comment": "Changes between 7.33.0.Final and the current branch. These changes are desired and thus ignored.",
-      "ignore": []
+      "ignore": [
+        {
+          "code": "java.method.removed",
+          "old": "method org.optaplanner.benchmark.api.PlannerBenchmarkFactory org.optaplanner.benchmark.api.PlannerBenchmarkFactory::createFromFreemarkerXmlInputStream(java.io.InputStream)",
+          "package": "org.optaplanner.benchmark.api",
+          "classSimpleName": "PlannerBenchmarkFactory",
+          "methodName": "createFromFreemarkerXmlInputStream",
+          "elementKind": "method",
+          "justification": "Removed as previously deprecated."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method org.optaplanner.benchmark.api.PlannerBenchmarkFactory org.optaplanner.benchmark.api.PlannerBenchmarkFactory::createFromFreemarkerXmlInputStream(java.io.InputStream, java.lang.ClassLoader)",
+          "package": "org.optaplanner.benchmark.api",
+          "classSimpleName": "PlannerBenchmarkFactory",
+          "methodName": "createFromFreemarkerXmlInputStream",
+          "elementKind": "method",
+          "justification": "Removed as previously deprecated."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method org.optaplanner.benchmark.api.PlannerBenchmarkFactory org.optaplanner.benchmark.api.PlannerBenchmarkFactory::createFromFreemarkerXmlInputStream(java.io.InputStream, java.lang.Object)",
+          "package": "org.optaplanner.benchmark.api",
+          "classSimpleName": "PlannerBenchmarkFactory",
+          "methodName": "createFromFreemarkerXmlInputStream",
+          "elementKind": "method",
+          "justification": "Removed as previously deprecated."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method org.optaplanner.benchmark.api.PlannerBenchmarkFactory org.optaplanner.benchmark.api.PlannerBenchmarkFactory::createFromFreemarkerXmlInputStream(java.io.InputStream, java.lang.Object, java.lang.ClassLoader)",
+          "package": "org.optaplanner.benchmark.api",
+          "classSimpleName": "PlannerBenchmarkFactory",
+          "methodName": "createFromFreemarkerXmlInputStream",
+          "elementKind": "method",
+          "justification": "Removed as previously deprecated."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method org.optaplanner.benchmark.api.PlannerBenchmarkFactory org.optaplanner.benchmark.api.PlannerBenchmarkFactory::createFromFreemarkerXmlReader(java.io.Reader)",
+          "package": "org.optaplanner.benchmark.api",
+          "classSimpleName": "PlannerBenchmarkFactory",
+          "methodName": "createFromFreemarkerXmlReader",
+          "elementKind": "method",
+          "justification": "Removed as previously deprecated."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method org.optaplanner.benchmark.api.PlannerBenchmarkFactory org.optaplanner.benchmark.api.PlannerBenchmarkFactory::createFromFreemarkerXmlReader(java.io.Reader, java.lang.ClassLoader)",
+          "package": "org.optaplanner.benchmark.api",
+          "classSimpleName": "PlannerBenchmarkFactory",
+          "methodName": "createFromFreemarkerXmlReader",
+          "elementKind": "method",
+          "justification": "Removed as previously deprecated."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method org.optaplanner.benchmark.api.PlannerBenchmarkFactory org.optaplanner.benchmark.api.PlannerBenchmarkFactory::createFromFreemarkerXmlReader(java.io.Reader, java.lang.Object)",
+          "package": "org.optaplanner.benchmark.api",
+          "classSimpleName": "PlannerBenchmarkFactory",
+          "methodName": "createFromFreemarkerXmlReader",
+          "elementKind": "method",
+          "justification": "Removed as previously deprecated."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method org.optaplanner.benchmark.api.PlannerBenchmarkFactory org.optaplanner.benchmark.api.PlannerBenchmarkFactory::createFromFreemarkerXmlReader(java.io.Reader, java.lang.Object, java.lang.ClassLoader)",
+          "package": "org.optaplanner.benchmark.api",
+          "classSimpleName": "PlannerBenchmarkFactory",
+          "methodName": "createFromFreemarkerXmlReader",
+          "elementKind": "method",
+          "justification": "Removed as previously deprecated."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method org.optaplanner.benchmark.api.PlannerBenchmarkFactory org.optaplanner.benchmark.api.PlannerBenchmarkFactory::createFromKieContainerXmlResource(java.lang.String)",
+          "package": "org.optaplanner.benchmark.api",
+          "classSimpleName": "PlannerBenchmarkFactory",
+          "methodName": "createFromKieContainerXmlResource",
+          "elementKind": "method",
+          "justification": "Removed as not supported by Kogito."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method org.optaplanner.benchmark.api.PlannerBenchmarkFactory org.optaplanner.benchmark.api.PlannerBenchmarkFactory::createFromKieContainerXmlResource(org.kie.api.builder.ReleaseId, java.lang.String)",
+          "package": "org.optaplanner.benchmark.api",
+          "classSimpleName": "PlannerBenchmarkFactory",
+          "methodName": "createFromKieContainerXmlResource",
+          "elementKind": "method",
+          "justification": "Removed as not supported by Kogito."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method org.optaplanner.benchmark.api.PlannerBenchmarkFactory org.optaplanner.benchmark.api.PlannerBenchmarkFactory::createFromKieContainerXmlResource(org.kie.api.runtime.KieContainer, java.lang.String)",
+          "package": "org.optaplanner.benchmark.api",
+          "classSimpleName": "PlannerBenchmarkFactory",
+          "methodName": "createFromKieContainerXmlResource",
+          "elementKind": "method",
+          "justification": "Removed as not supported by Kogito."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method <Solution_> org.optaplanner.benchmark.api.PlannerBenchmarkFactory org.optaplanner.benchmark.api.PlannerBenchmarkFactory::createFromSolverFactory(org.optaplanner.core.api.solver.SolverFactory<Solution_>)",
+          "package": "org.optaplanner.benchmark.api",
+          "classSimpleName": "PlannerBenchmarkFactory",
+          "methodName": "createFromSolverFactory",
+          "elementKind": "method",
+          "justification": "Removed as not supported by Kogito."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method <Solution_> org.optaplanner.benchmark.api.PlannerBenchmarkFactory org.optaplanner.benchmark.api.PlannerBenchmarkFactory::createFromSolverFactory(org.optaplanner.core.api.solver.SolverFactory<Solution_>, java.io.File)",
+          "package": "org.optaplanner.benchmark.api",
+          "classSimpleName": "PlannerBenchmarkFactory",
+          "methodName": "createFromSolverFactory",
+          "elementKind": "method",
+          "justification": "Removed as previously deprecated."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method org.optaplanner.benchmark.api.PlannerBenchmarkFactory org.optaplanner.benchmark.api.PlannerBenchmarkFactory::createFromXmlInputStream(java.io.InputStream)",
+          "package": "org.optaplanner.benchmark.api",
+          "classSimpleName": "PlannerBenchmarkFactory",
+          "methodName": "createFromXmlInputStream",
+          "elementKind": "method",
+          "justification": "Removed as previously deprecated."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method org.optaplanner.benchmark.api.PlannerBenchmarkFactory org.optaplanner.benchmark.api.PlannerBenchmarkFactory::createFromXmlInputStream(java.io.InputStream, java.lang.ClassLoader)",
+          "package": "org.optaplanner.benchmark.api",
+          "classSimpleName": "PlannerBenchmarkFactory",
+          "methodName": "createFromXmlInputStream",
+          "elementKind": "method",
+          "justification": "Removed as previously deprecated."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method org.optaplanner.benchmark.api.PlannerBenchmarkFactory org.optaplanner.benchmark.api.PlannerBenchmarkFactory::createFromXmlReader(java.io.Reader)",
+          "package": "org.optaplanner.benchmark.api",
+          "classSimpleName": "PlannerBenchmarkFactory",
+          "methodName": "createFromXmlReader",
+          "elementKind": "method",
+          "justification": "Removed as previously deprecated."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method org.optaplanner.benchmark.api.PlannerBenchmarkFactory org.optaplanner.benchmark.api.PlannerBenchmarkFactory::createFromXmlReader(java.io.Reader, java.lang.ClassLoader)",
+          "package": "org.optaplanner.benchmark.api",
+          "classSimpleName": "PlannerBenchmarkFactory",
+          "methodName": "createFromXmlReader",
+          "elementKind": "method",
+          "justification": "Removed as previously deprecated."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method org.optaplanner.benchmark.config.PlannerBenchmarkConfig org.optaplanner.benchmark.api.PlannerBenchmarkFactory::getPlannerBenchmarkConfig()",
+          "package": "org.optaplanner.benchmark.api",
+          "classSimpleName": "PlannerBenchmarkFactory",
+          "methodName": "getPlannerBenchmarkConfig",
+          "elementKind": "method",
+          "justification": "Removed as previously deprecated."
+        },
+        {
+          "code": "java.field.enumConstantOrderChanged",
+          "old": "field org.optaplanner.benchmark.config.statistic.ProblemStatisticType.BEST_SOLUTION_MUTATION",
+          "new": "field org.optaplanner.benchmark.config.statistic.ProblemStatisticType.BEST_SOLUTION_MUTATION",
+          "oldOrdinal": "4",
+          "newOrdinal": "3",
+          "package": "org.optaplanner.benchmark.config.statistic",
+          "classSimpleName": "ProblemStatisticType",
+          "fieldName": "BEST_SOLUTION_MUTATION",
+          "elementKind": "enumConstant",
+          "justification": "CALCULATE_COUNT_PER_SECOND removed."
+        },
+        {
+          "code": "java.field.removed",
+          "old": "field org.optaplanner.benchmark.config.statistic.ProblemStatisticType.CALCULATE_COUNT_PER_SECOND",
+          "package": "org.optaplanner.benchmark.config.statistic",
+          "classSimpleName": "ProblemStatisticType",
+          "fieldName": "CALCULATE_COUNT_PER_SECOND",
+          "elementKind": "enumConstant",
+          "justification": "CALCULATE_COUNT_PER_SECOND removed."
+        },
+        {
+          "code": "java.field.enumConstantOrderChanged",
+          "old": "field org.optaplanner.benchmark.config.statistic.ProblemStatisticType.MEMORY_USE",
+          "new": "field org.optaplanner.benchmark.config.statistic.ProblemStatisticType.MEMORY_USE",
+          "oldOrdinal": "6",
+          "newOrdinal": "5",
+          "package": "org.optaplanner.benchmark.config.statistic",
+          "classSimpleName": "ProblemStatisticType",
+          "fieldName": "MEMORY_USE",
+          "elementKind": "enumConstant",
+          "justification": "CALCULATE_COUNT_PER_SECOND removed."
+        },
+        {
+          "code": "java.field.enumConstantOrderChanged",
+          "old": "field org.optaplanner.benchmark.config.statistic.ProblemStatisticType.MOVE_COUNT_PER_STEP",
+          "new": "field org.optaplanner.benchmark.config.statistic.ProblemStatisticType.MOVE_COUNT_PER_STEP",
+          "oldOrdinal": "5",
+          "newOrdinal": "4",
+          "package": "org.optaplanner.benchmark.config.statistic",
+          "classSimpleName": "ProblemStatisticType",
+          "fieldName": "MOVE_COUNT_PER_STEP",
+          "elementKind": "enumConstant",
+          "justification": "CALCULATE_COUNT_PER_SECOND removed."
+        },
+        {
+          "code": "java.field.enumConstantOrderChanged",
+          "old": "field org.optaplanner.benchmark.config.statistic.ProblemStatisticType.SCORE_CALCULATION_SPEED",
+          "new": "field org.optaplanner.benchmark.config.statistic.ProblemStatisticType.SCORE_CALCULATION_SPEED",
+          "oldOrdinal": "3",
+          "newOrdinal": "2",
+          "package": "org.optaplanner.benchmark.config.statistic",
+          "classSimpleName": "ProblemStatisticType",
+          "fieldName": "SCORE_CALCULATION_SPEED",
+          "elementKind": "enumConstant",
+          "justification": "CALCULATE_COUNT_PER_SECOND removed."
+        }
+      ]
     }
   }
 }
