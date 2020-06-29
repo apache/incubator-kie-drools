@@ -40,11 +40,11 @@ public class EvalConditionMetric extends EvalCondition {
         final EvalConditionMetric clone = new EvalConditionMetric(this.expression.clone(),
                                                                   this.requiredDeclarations.clone());
 
-        if (this.cloned == Collections.<EvalCondition> emptyList()) {
-            this.cloned = new ArrayList<EvalCondition>(1);
+        if (this.getCloned() == Collections.<EvalCondition> emptyList()) {
+            this.setCloned(new ArrayList<EvalCondition>(1));
         }
 
-        this.cloned.add(clone);
+        this.getCloned().add(clone);
 
         return clone;
     }

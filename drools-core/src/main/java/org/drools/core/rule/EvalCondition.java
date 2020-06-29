@@ -44,7 +44,7 @@ public class EvalCondition extends ConditionalElement
 
     private static final Declaration[] EMPTY_DECLARATIONS = new Declaration[0];
 
-    protected List<EvalCondition>        cloned             = Collections.<EvalCondition> emptyList();
+    private List<EvalCondition>        cloned             = Collections.<EvalCondition> emptyList();
 
     public EvalCondition() {
         this( null );
@@ -200,7 +200,6 @@ public class EvalCondition extends ConditionalElement
         return null;
     }
 
-
     public void replaceDeclaration(Declaration declaration,
                                    Declaration resolved) {
         for ( int i = 0; i < this.requiredDeclarations.length; i++ ) {
@@ -211,7 +210,16 @@ public class EvalCondition extends ConditionalElement
         this.expression.replaceDeclaration( declaration,
                                             resolved );
     }
+
+    public List<EvalCondition> getCloned() {
+        return cloned;
+    }
+
     
+    public void setCloned(List<EvalCondition> cloned) {
+        this.cloned = cloned;
+    }
+
     @Override
     public String toString() {
         return this.expression.toString();
