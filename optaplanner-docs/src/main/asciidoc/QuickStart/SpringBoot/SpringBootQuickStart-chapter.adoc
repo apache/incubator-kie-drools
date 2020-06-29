@@ -8,7 +8,7 @@
 :experimental:
 
 This guide walks you through the process of creating a Spring Boot
-application with OptaPlanner's constraint solving Artificial Intelligence (AI).
+application with OptaPlanner's constraint solving artificial intelligence (AI).
 
 == What you will build
 
@@ -17,18 +17,15 @@ You will build a REST application that optimizes a school timetable for students
 image::QuickStart/SpringBoot/timeTableAppScreenshot.png[]
 
 Your service will assign `Lesson` instances to `Timeslot` and `Room` instances automatically
-by using AI to adhere to hard and soft scheduling _constraints_, such as:
+by using AI to adhere to hard and soft scheduling _constraints_, such as the following examples:
 
 * A room can have at most one lesson at the same time.
 * A teacher can teach at most one lesson at the same time.
 * A student can attend at most one lesson at the same time.
-* A teacher prefers to teach in a single room.
+* A teacher prefers to teach every lesson in a single room.
 * A teacher prefers to teach sequential lessons and dislikes gaps between lessons.
 
-Mathematically speaking, school timetabling is an _NP-hard_ problem.
-That means it is difficult to scale.
-Simply brute force iterating through all possible combinations takes millions of years
-for a non-trivial dataset, even on a supercomputer.
+Mathematically speaking, school timetabling is an _NP-hard_ problem. This means it is difficult to scale. Simply using brute force to iterate through all possible combinations would take millions of years for a non-trivial data set, even on a supercomputer.
 Luckily, AI constraint solvers such as OptaPlanner have advanced algorithms
 that deliver a near-optimal solution in a reasonable amount of time.
 
@@ -396,10 +393,10 @@ to avoid common pitfalls.
 
 == Define the constraints and calculate the score
 
-A _score_ represents the quality of a given solution.
+A _score_ represents the quality of a specific solution.
 The higher the better.
 OptaPlanner looks for the best solution, which is the solution with the highest score found in the available time.
-It could be the _optimal_ solution.
+It might be the _optimal_ solution.
 
 Because this use case has hard and soft constraints,
 use the `HardSoftScore` class to represent the score:
@@ -630,10 +627,10 @@ However, this class is also the output of the solution:
 
 === The value range providers
 
-That `timeslotList` field is a value range provider.
+The `timeslotList` field is a value range provider.
 It holds the `Timeslot` instances which OptaPlanner can pick from to assign to the `timeslot` field of `Lesson` instances.
-The `timeslotList` field has an `@ValueRangeProvider` annotation to connect those two,
-by matching the `id` with the `valueRangeProviderRefs` of the `@PlanningVariable` in the `Lesson`.
+The `timeslotList` property has an `@ValueRangeProvider` annotation to connect the @PlanningVariable with the @ValueRangeProvider,
+by matching the value of the `id` property with the value of the `valueRangeProviderRefs` property of the `@PlanningVariable` annotation in the `Lesson` class.
 
 Following the same logic, the `roomList` field also has an `@ValueRangeProvider` annotation.
 
@@ -654,7 +651,7 @@ and your `TimeTableConstraintProvider` can select _from_ those too.
 
 Now you are ready to put everything together and create a REST service.
 But solving planning problems on REST threads causes HTTP timeout issues.
-Therefore, the Spring Boot starter injects a `SolverManager`,
+Therefore, the Spring Boot starter injects a `SolverManager` class,
 which runs solvers in a separate thread pool
 and can solve multiple datasets in parallel.
 
@@ -727,7 +724,7 @@ optaplanner.solver.termination.spent-limit=5s
 
 == Make the application executable
 
-Package everything into a single, executable JAR file driven by a standard Java `main()` method:
+Package everything into a single executable JAR file driven by a standard Java `main()` method:
 
 Replace the `DemoApplication.java` class created by Spring Initializr
 with the `src/main/java/com/example/TimeTableSpringBootApp.java` class:
@@ -875,7 +872,7 @@ This test verifies that after solving, all lessons are assigned to a time slot a
 It also verifies that it found a feasible solution (no hard constraints broken).
 
 Normally, the solver finds a feasible solution in less than 200 milliseconds.
-Notice how the `@SpringBootTest` annotation's `properties` overwrites the solver termination
+Notice how the `@SpringBootTest` annotation's properties overwrites the solver termination
 to terminate as soon as a feasible solution (`0hard/*soft`) is found.
 This avoids hard coding a solver time, because the unit test might run on arbitrary hardware.
 This approach ensures that the test runs long enough to find a feasible solution, even on slow machines.
@@ -926,7 +923,7 @@ Now try adding database and UI integration:
 
 . https://spring.io/guides/gs/accessing-data-rest/[Expose them through REST].
 
-. Build a `TimeTableRepository` facade to read and write a `TimeTable` in a single transaction.
+. Build a `TimeTableRepository` facade to read and write a `TimeTable` instance in a single transaction.
 
 . Adjust the `TimeTableController` accordingly:
 +
@@ -989,19 +986,19 @@ public class TimeTableController {
 ----
 ====
 +
-For simplicity's sake, this code handles only one `TimeTable`,
+For simplicity's sake, this code handles only one `TimeTable` instance,
 but it is straightforward to enable multi-tenancy and handle multiple `TimeTable` instances of different high schools in parallel.
 +
-The `getTimeTable()` method returns the latest time table from the database.
+The `getTimeTable()` method returns the latest timetable from the database.
 It uses the `ScoreManager` (which is automatically injected)
-to calculate the score of that time table, so the UI can show the score.
+to calculate the score of that timetable, so the UI can show the score.
 +
-The `solve()` method starts a job to solve the current time table and store the time slot and room assignments in the database.
+The `solve()` method starts a job to solve the current timetable and store the time slot and room assignments in the database.
 It uses the `SolverManager.solveAndListen()` method to listen to intermediate best solutions
 and update the database accordingly.
 This enables the UI to show progress while the backend is still solving.
 
-. Adjust the `TimeTableControllerTest` accordingly, now that the `solve()` method returns immediately.
+. Adjust the `TimeTableControllerTest` instance accordingly, now that the `solve()` method returns immediately.
 Poll for the latest solution until the solver finishes solving:
 +
 ====
