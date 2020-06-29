@@ -1,0 +1,291 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PageLayout tests test TaskDetails route 1`] = `
+<PageLayout
+  history={Array []}
+  location={
+    Object {
+      "pathname": "/Task/taskID",
+    }
+  }
+  ouiaContext={
+    Object {
+      "isOuia": false,
+      "ouiaId": null,
+    }
+  }
+>
+  <KogitoPageLayout
+    BrandAltText="Task Console Logo"
+    BrandClick={[Function]}
+    BrandSrc="taskConsoleLogo.svg"
+    PageNav={
+      <Unknown
+        aria-label="Nav"
+        css=""
+        theme="dark"
+      >
+        <NavList
+          ariaLeftScroll="Scroll left"
+          ariaRightScroll="Scroll right"
+          className=""
+          variant="default"
+        >
+          <NavItem
+            isActive={false}
+          >
+            <Link
+              to="/UserTasks"
+            >
+              User Tasks
+            </Link>
+          </NavItem>
+          <NavItem
+            isActive={false}
+          >
+            <Link
+              to="/UserTasksFilters"
+            >
+              User tasks with filters
+            </Link>
+          </NavItem>
+        </NavList>
+      </Unknown>
+    }
+  >
+    <MockedComponent />
+  </KogitoPageLayout>
+</PageLayout>
+`;
+
+exports[`PageLayout tests test UserTasks route 1`] = `
+<PageLayout
+  history={Array []}
+  location={
+    Object {
+      "pathname": "/UserTasks",
+    }
+  }
+  ouiaContext={
+    Object {
+      "isOuia": false,
+      "ouiaId": null,
+    }
+  }
+>
+  <KogitoPageLayout
+    BrandAltText="Task Console Logo"
+    BrandClick={[Function]}
+    BrandSrc="taskConsoleLogo.svg"
+    PageNav={
+      <Unknown
+        aria-label="Nav"
+        css=""
+        theme="dark"
+      >
+        <NavList
+          ariaLeftScroll="Scroll left"
+          ariaRightScroll="Scroll right"
+          className=""
+          variant="default"
+        >
+          <NavItem
+            isActive={true}
+          >
+            <Link
+              to="/UserTasks"
+            >
+              User Tasks
+            </Link>
+          </NavItem>
+          <NavItem
+            isActive={false}
+          >
+            <Link
+              to="/UserTasksFilters"
+            >
+              User tasks with filters
+            </Link>
+          </NavItem>
+        </NavList>
+      </Unknown>
+    }
+  >
+    <MockedComponent />
+  </KogitoPageLayout>
+</PageLayout>
+`;
+
+exports[`PageLayout tests test UserTasksFilters route 1`] = `
+<PageLayout
+  history={Array []}
+  location={
+    Object {
+      "pathname": "/UserTasksFilters",
+    }
+  }
+  ouiaContext={
+    Object {
+      "isOuia": false,
+      "ouiaId": null,
+    }
+  }
+>
+  <KogitoPageLayout
+    BrandAltText="Task Console Logo"
+    BrandClick={[Function]}
+    BrandSrc="taskConsoleLogo.svg"
+    PageNav={
+      <Unknown
+        aria-label="Nav"
+        css=""
+        theme="dark"
+      >
+        <NavList
+          ariaLeftScroll="Scroll left"
+          ariaRightScroll="Scroll right"
+          className=""
+          variant="default"
+        >
+          <NavItem
+            isActive={false}
+          >
+            <Link
+              to="/UserTasks"
+            >
+              User Tasks
+            </Link>
+          </NavItem>
+          <NavItem
+            isActive={true}
+          >
+            <Link
+              to="/UserTasksFilters"
+            >
+              User tasks with filters
+            </Link>
+          </NavItem>
+        </NavList>
+      </Unknown>
+    }
+  >
+    <MockedComponent />
+  </KogitoPageLayout>
+</PageLayout>
+`;
+
+exports[`PageLayout tests test UserTasksTable route 1`] = `
+<PageLayout
+  history={Array []}
+  location={
+    Object {
+      "pathname": "/UserTasksTable",
+    }
+  }
+  ouiaContext={
+    Object {
+      "isOuia": false,
+      "ouiaId": null,
+    }
+  }
+>
+  <KogitoPageLayout
+    BrandAltText="Task Console Logo"
+    BrandClick={[Function]}
+    BrandSrc="taskConsoleLogo.svg"
+    PageNav={
+      <Unknown
+        aria-label="Nav"
+        css=""
+        theme="dark"
+      >
+        <NavList
+          ariaLeftScroll="Scroll left"
+          ariaRightScroll="Scroll right"
+          className=""
+          variant="default"
+        >
+          <NavItem
+            isActive={false}
+          >
+            <Link
+              to="/UserTasks"
+            >
+              User Tasks
+            </Link>
+          </NavItem>
+          <NavItem
+            isActive={false}
+          >
+            <Link
+              to="/UserTasksFilters"
+            >
+              User tasks with filters
+            </Link>
+          </NavItem>
+        </NavList>
+      </Unknown>
+    }
+  >
+    <MockedComponent />
+  </KogitoPageLayout>
+</PageLayout>
+`;
+
+exports[`PageLayout tests test default route 1`] = `
+<PageLayout
+  history={Array []}
+  location={
+    Object {
+      "pathname": "/",
+    }
+  }
+  ouiaContext={
+    Object {
+      "isOuia": false,
+      "ouiaId": null,
+    }
+  }
+>
+  <KogitoPageLayout
+    BrandAltText="Task Console Logo"
+    BrandClick={[Function]}
+    BrandSrc="taskConsoleLogo.svg"
+    PageNav={
+      <Unknown
+        aria-label="Nav"
+        css=""
+        theme="dark"
+      >
+        <NavList
+          ariaLeftScroll="Scroll left"
+          ariaRightScroll="Scroll right"
+          className=""
+          variant="default"
+        >
+          <NavItem
+            isActive={false}
+          >
+            <Link
+              to="/UserTasks"
+            >
+              User Tasks
+            </Link>
+          </NavItem>
+          <NavItem
+            isActive={false}
+          >
+            <Link
+              to="/UserTasksFilters"
+            >
+              User tasks with filters
+            </Link>
+          </NavItem>
+        </NavList>
+      </Unknown>
+    }
+  >
+    <MockedComponent />
+  </KogitoPageLayout>
+</PageLayout>
+`;

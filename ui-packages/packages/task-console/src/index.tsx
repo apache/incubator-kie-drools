@@ -7,6 +7,7 @@ import Keycloak from 'keycloak-js';
 import axios from 'axios';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import PageLayout from './components/Templates/PageLayout/PageLayout';
+import TaskConsoleContextProvider from './context/TaskConsoleContext/TaskConsoleContextProvider';
 
 const client = new ApolloClient({
   uri: process.env.KOGITO_DATAINDEX_HTTP_URL + '/graphql',
@@ -26,11 +27,13 @@ const client = new ApolloClient({
 const appRender = () => {
   ReactDOM.render(
     <ApolloProvider client={client}>
-      <BrowserRouter>
-        <Switch>
-          <Route path="/" component={PageLayout} />
-        </Switch>
-      </BrowserRouter>
+      <TaskConsoleContextProvider>
+        <BrowserRouter>
+          <Switch>
+            <Route path="/" component={PageLayout} />
+          </Switch>
+        </BrowserRouter>
+      </TaskConsoleContextProvider>
     </ApolloProvider>,
     document.getElementById('root')
   );
