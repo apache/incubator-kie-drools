@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,7 @@ public class DefaultBetaConstraintsMetric extends DefaultBetaConstraints {
 
     private static final long serialVersionUID = 510l;
 
-    public DefaultBetaConstraintsMetric() {
-        super();
-    }
+    public DefaultBetaConstraintsMetric() {}
 
     public DefaultBetaConstraintsMetric(final BetaNodeFieldConstraint[] constraints,
                                         final RuleBaseConfiguration conf) {
@@ -47,7 +45,7 @@ public class DefaultBetaConstraintsMetric extends DefaultBetaConstraints {
 
     @Override
     public DefaultBetaConstraintsMetric cloneIfInUse() {
-        if (constraints[0] instanceof MutableTypeConstraint && ((MutableTypeConstraint)constraints[0]).setInUse()) {
+        if (constraints[0] instanceof MutableTypeConstraint && ((MutableTypeConstraint) constraints[0]).setInUse()) {
             BetaNodeFieldConstraint[] clonedConstraints = new BetaNodeFieldConstraint[constraints.length];
             for (int i = 0; i < constraints.length; i++) {
                 clonedConstraints[i] = constraints[i].cloneIfInUse();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,30 +28,30 @@ import org.kie.internal.conf.IndexPrecedenceOption;
 
 public class QuadroupleBetaConstraintsMetric extends QuadroupleBetaConstraints {
 
-    private static final long             serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
-    public QuadroupleBetaConstraintsMetric() { }
+    public QuadroupleBetaConstraintsMetric() {}
 
     public QuadroupleBetaConstraintsMetric(final BetaNodeFieldConstraint[] constraints,
-                                     final RuleBaseConfiguration conf) {
+                                           final RuleBaseConfiguration conf) {
         super(constraints, conf);
     }
 
     public QuadroupleBetaConstraintsMetric(final BetaNodeFieldConstraint[] constraints,
-                                     final RuleBaseConfiguration conf,
-                                     final boolean disableIndexing) {
+                                           final RuleBaseConfiguration conf,
+                                           final boolean disableIndexing) {
         super(constraints, conf, disableIndexing);
     }
 
-    protected QuadroupleBetaConstraintsMetric( BetaNodeFieldConstraint[] constraints,
-                                   IndexPrecedenceOption indexPrecedenceOption,
-                                   boolean disableIndexing) {
+    protected QuadroupleBetaConstraintsMetric(BetaNodeFieldConstraint[] constraints,
+                                              IndexPrecedenceOption indexPrecedenceOption,
+                                              boolean disableIndexing) {
         super(constraints, indexPrecedenceOption, disableIndexing);
     }
 
     @Override
     public QuadroupleBetaConstraintsMetric cloneIfInUse() {
-        if (constraints[0] instanceof MutableTypeConstraint && ((MutableTypeConstraint)constraints[0]).setInUse()) {
+        if (constraints[0] instanceof MutableTypeConstraint && ((MutableTypeConstraint) constraints[0]).setInUse()) {
             BetaNodeFieldConstraint[] clonedConstraints = new BetaNodeFieldConstraint[constraints.length];
             for (int i = 0; i < constraints.length; i++) {
                 clonedConstraints[i] = constraints[i].cloneIfInUse();

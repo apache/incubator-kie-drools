@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,7 @@ public class SingleBetaConstraintsMetric extends SingleBetaConstraints {
 
     private static final long serialVersionUID = 510l;
 
-    public SingleBetaConstraintsMetric() {
-        super();
-    }
+    public SingleBetaConstraintsMetric() {}
 
     public SingleBetaConstraintsMetric(final BetaNodeFieldConstraint[] constraint,
                                        final RuleBaseConfiguration conf) {
