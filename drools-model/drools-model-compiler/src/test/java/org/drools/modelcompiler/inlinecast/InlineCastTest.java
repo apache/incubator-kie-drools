@@ -83,6 +83,29 @@ public class InlineCastTest extends BaseModelTest {
         assertEquals( "Found: Mark $p class: org.drools.modelcompiler.domain.Person", result.getValue() );
     }
 
+    @Test
+    public void testInlineCastProjection2() {
+        String str = "import " + Person.class.getCanonicalName() + ";" +
+                "import " + InternationalAddress.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  Person( $a : address#InternationalAddress.state )\n" +
+                "then\n" +
+                "  insert($a);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person john = new Person("John", 47);
+        InternationalAddress a = new InternationalAddress("address", "Italy");
+        john.setAddress(a);
+
+        ksession.insert(john);
+        ksession.fireAllRules();
+
+        Collection<String> results = getObjectsIntoList(ksession, String.class);
+        assertEquals("Italy", results.iterator().next());
+    }
+
 
     @Test
     public void testInlineCastForAField() {
