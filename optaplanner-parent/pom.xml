@@ -31,7 +31,8 @@
     <formatter.goal>format</formatter.goal>
     <impsort.goal>sort</impsort.goal>
     <jacoco.agent.argLine/>
-    <spotbugs.failOnViolation>true</spotbugs.failOnViolation>
+    <!-- TODO https://issues.redhat.com/browse/PLANNER-2042 -->
+    <spotbugs.failOnViolation>false</spotbugs.failOnViolation>
     <version.org.mockito>3.1.0</version.org.mockito>
   </properties>
 
