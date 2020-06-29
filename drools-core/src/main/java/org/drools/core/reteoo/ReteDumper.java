@@ -74,7 +74,6 @@ public class ReteDumper {
         return nodeInfoOnly;
     }
 
-
     /**
      * If true, dump without partition/mask information. Default value is false
      * @param nodeInfoOnly
@@ -265,6 +264,10 @@ public class ReteDumper {
         }
 
         return node.toString();
+    }
+
+    public static void dumpAssociatedRulesRete(KieBase kieBase) {
+        new ReteDumper().dumpAssociatedRules(((InternalKnowledgeBase) kieBase).getRete());
     }
 
     /**

@@ -38,9 +38,9 @@ public class EvalConditionMetric extends EvalCondition {
     public EvalCondition clone() {
         // cannot rely on super.clone() because it enlists an EvalCondition instance to "cloned"
         final EvalConditionMetric clone = new EvalConditionMetric(this.expression.clone(),
-                                                                  (Declaration[]) this.requiredDeclarations.clone());
+                                                                  this.requiredDeclarations.clone());
 
-        if (this.cloned == Collections.EMPTY_LIST) {
+        if (this.cloned == Collections.<EvalCondition> emptyList()) {
             this.cloned = new ArrayList<EvalCondition>(1);
         }
 

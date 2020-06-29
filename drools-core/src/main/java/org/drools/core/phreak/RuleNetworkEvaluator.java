@@ -68,7 +68,6 @@ import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
-import org.drools.core.util.PerfLogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
