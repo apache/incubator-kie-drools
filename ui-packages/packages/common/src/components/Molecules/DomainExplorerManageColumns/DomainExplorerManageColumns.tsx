@@ -194,7 +194,7 @@ const DomainExplorerManageColumns: React.FC<IOwnProps> = ({
           }
         });
         let valueObj = {};
-        arr.filter(ele => {
+        arr.forEach(ele => {
           valueObj = checkFunc(ele, valueObj);
         });
         parentObj[prop] = valueObj;

@@ -1,8 +1,8 @@
 import React from 'react';
 
-const MockedDomainExplorerColumnPicker = ({ setTableLoading }) => {
+const MockedDomainExplorerManageColumns = ({ setTableLoading }) => {
   setTableLoading(false);
   return <></>;
 };
 
-export default MockedDomainExplorerColumnPicker;
+export default MockedDomainExplorerManageColumns;
