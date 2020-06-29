@@ -25,7 +25,9 @@ by using AI to adhere to hard and soft scheduling _constraints_, such as the fol
 * A teacher prefers to teach every lesson in a single room.
 * A teacher prefers to teach sequential lessons and dislikes gaps between lessons.
 
-Mathematically speaking, school timetabling is an _NP-hard_ problem. This means it is difficult to scale. Simply using brute force to iterate through all possible combinations would take millions of years for a non-trivial data set, even on a supercomputer.
+Mathematically speaking, school timetabling is an _NP-hard_ problem.
+This means it is difficult to scale.
+Simply using brute force to iterate through all possible combinations would take millions of years for a non-trivial data set, even on a supercomputer.
 Luckily, AI constraint solvers such as OptaPlanner have advanced algorithms
 that deliver a near-optimal solution in a reasonable amount of time.
 
@@ -629,7 +631,7 @@ However, this class is also the output of the solution:
 
 The `timeslotList` field is a value range provider.
 It holds the `Timeslot` instances which OptaPlanner can pick from to assign to the `timeslot` field of `Lesson` instances.
-The `timeslotList` property has an `@ValueRangeProvider` annotation to connect the @PlanningVariable with the @ValueRangeProvider,
+The `timeslotList` field has an `@ValueRangeProvider` annotation to connect the `@PlanningVariable` with the `@ValueRangeProvider`,
 by matching the value of the `id` property with the value of the `valueRangeProviderRefs` property of the `@PlanningVariable` annotation in the `Lesson` class.
 
 Following the same logic, the `roomList` field also has an `@ValueRangeProvider` annotation.
@@ -651,7 +653,7 @@ and your `TimeTableConstraintProvider` can select _from_ those too.
 
 Now you are ready to put everything together and create a REST service.
 But solving planning problems on REST threads causes HTTP timeout issues.
-Therefore, the Spring Boot starter injects a `SolverManager` class,
+Therefore, the Spring Boot starter injects a `SolverManager` instance,
 which runs solvers in a separate thread pool
 and can solve multiple datasets in parallel.
 
@@ -872,7 +874,7 @@ This test verifies that after solving, all lessons are assigned to a time slot a
 It also verifies that it found a feasible solution (no hard constraints broken).
 
 Normally, the solver finds a feasible solution in less than 200 milliseconds.
-Notice how the `@SpringBootTest` annotation's properties overwrites the solver termination
+Notice how the `@SpringBootTest` annotation's `properties` property overwrites the solver termination
 to terminate as soon as a feasible solution (`0hard/*soft`) is found.
 This avoids hard coding a solver time, because the unit test might run on arbitrary hardware.
 This approach ensures that the test runs long enough to find a feasible solution, even on slow machines.
