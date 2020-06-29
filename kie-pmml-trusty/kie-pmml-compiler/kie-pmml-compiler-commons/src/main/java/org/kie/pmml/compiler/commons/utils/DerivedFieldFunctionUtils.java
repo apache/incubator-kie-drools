@@ -140,12 +140,12 @@ public class DerivedFieldFunctionUtils {
      */
     static MethodDeclaration getConstantMethodDeclaration(final Constant constant, final int methodArity) {
         MethodDeclaration toReturn = getDerivedFieldsMethodDeclaration(constant, methodArity);
-        Class<?> returnedType = DATA_TYPE.byName(constant.getDataType().value()).getMappedClass();
+        Class<?> returnedType = constant.getDataType() != null ? DATA_TYPE.byName(constant.getDataType().value()).getMappedClass() : constant.getValue().getClass();
         ClassOrInterfaceType classOrInterfaceType = new ClassOrInterfaceType(returnedType.getName()); // not using parseClassOrInterfaceType because it throws exception with primitive - to fix
         toReturn.setType(classOrInterfaceType);
         final BlockStmt body = new BlockStmt();
         ReturnStmt returnStmt = new ReturnStmt();
-        returnStmt.setExpression(new NameExpr(constant.getValue().toString()));
+        returnStmt.setExpression(new StringLiteralExpr(constant.getValue().toString()));
         body.addStatement(returnStmt);
         toReturn.setBody(body);
         return toReturn;
