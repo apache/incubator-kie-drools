@@ -32,6 +32,8 @@ import org.kie.api.KieBase;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -39,6 +41,8 @@ import org.kie.api.runtime.KieSession;
  *
  */
 public class ReteDumper {
+
+    private static Logger logger = LoggerFactory.getLogger(ReteDumper.class);
 
     private PrintWriter writer;
     private StringBuilder sb;
@@ -213,21 +217,21 @@ public class ReteDumper {
                 Object inferreddMask = node.getClass().getMethod("getInferredMask").invoke(node);
                 sb.append(" d "+declaredMask + " i " + inferreddMask);
             } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                // do nothing.
+                logger.trace("failed to log mask values", e);
             }
             try {
                 Object declaredMask = node.getClass().getMethod("getLeftDeclaredMask").invoke(node);
                 Object inferreddMask = node.getClass().getMethod("getLeftInferredMask").invoke(node);
                 sb.append(" Ld "+declaredMask + " Li " + inferreddMask);
             } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                // do nothing.
+                logger.trace("failed to log left mask values", e);
             }
             try {
                 Object declaredMask = node.getClass().getMethod("getRightDeclaredMask").invoke(node);
                 Object inferreddMask = node.getClass().getMethod("getRightInferredMask").invoke(node);
                 sb.append(" Rd "+declaredMask + " Ri " + inferreddMask);
             } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                // do nothing.
+                logger.trace("failed to log right mask values", e);
             }
         }
         sb.append("\n");
