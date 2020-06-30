@@ -229,7 +229,7 @@ public class ConstraintParser {
     }
 
     private DrlxParseResult parseNameExpr(DrlNameExpr nameExpr, Class<?> patternType, String bindingId, Expression drlxExpr, boolean hasBind, String expression) {
-        TypedExpression converted = ToMethodCall.toMethodCallWithClassCheck(context, nameExpr, bindingId, patternType, context.getTypeResolver());
+        TypedExpression converted = new ToMethodCall(context).toMethodCallWithClassCheck(nameExpr, bindingId, patternType);
         if (converted == null) {
             return new DrlxParseFail();
         }
@@ -253,7 +253,7 @@ public class ConstraintParser {
     }
 
     private DrlxParseResult parseFieldAccessExpr( FieldAccessExpr fieldCallExpr, Class<?> patternType, String bindingId ) {
-        TypedExpression converted = ToMethodCall.toMethodCallWithClassCheck(context, fieldCallExpr, bindingId, patternType, context.getTypeResolver());
+        TypedExpression converted = new ToMethodCall(context).toMethodCallWithClassCheck(fieldCallExpr, bindingId, patternType);
         Expression withThis = DrlxParseUtil.prepend(new NameExpr(THIS_PLACEHOLDER), converted.getExpression());
         return new SingleDrlxParseSuccess(patternType, bindingId, withThis, converted.getType()).setLeft(converted );
     }

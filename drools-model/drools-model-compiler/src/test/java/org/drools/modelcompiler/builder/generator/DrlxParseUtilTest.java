@@ -12,20 +12,16 @@ import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.core.addon.ClassTypeResolver;
 import org.drools.core.addon.TypeResolver;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil.RemoveRootNodeResult;
-import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.util.ClassUtil;
-import org.drools.mvel.parser.ast.expr.DrlxExpression;
 import org.junit.Test;
 
 import static java.util.Optional.of;
-
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRemoveRootNodeViaScope;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getExpressionType;
@@ -53,30 +49,6 @@ public class DrlxParseUtilTest {
     }
 
     final TypeResolver typeResolver = new ClassTypeResolver(new HashSet<>(), getClass().getClassLoader());
-
-    @Test
-    public void transformMethodExpressionToMethodCallExpressionTypeSafe() {
-
-        final Expression expr = StaticJavaParser.parseExpression("address.city.startsWith(\"M\")");
-        final Expression expr1 = StaticJavaParser.parseExpression("getAddress().city.startsWith(\"M\")");
-        final Expression expr2 = StaticJavaParser.parseExpression("address.getCity().startsWith(\"M\")");
-
-        final MethodCallExpr expected = StaticJavaParser.parseExpression("getAddress().getCity().startsWith(\"M\")");
-
-        assertEquals(expected.toString(), ToMethodCall.toMethodCallWithClassCheck(null, expr, null, Person.class, typeResolver).getExpression().toString());
-        assertEquals(expected.toString(), ToMethodCall.toMethodCallWithClassCheck(null, expr1, null, Person.class, typeResolver).getExpression().toString());
-        assertEquals(expected.toString(), ToMethodCall.toMethodCallWithClassCheck(null, expr2, null, Person.class, typeResolver).getExpression().toString());
-    }
-
-    @Test
-    public void transformMethodExpressionToMethodCallWithInlineCast() {
-        typeResolver.addImport("org.drools.modelcompiler.domain.InternationalAddress");
-
-        final DrlxExpression expr = DrlxParseUtil.parseExpression("address#InternationalAddress.state");
-        final MethodCallExpr expected = StaticJavaParser.parseExpression("((InternationalAddress)getAddress()).getState()");
-
-        assertEquals(expected.toString(), ToMethodCall.toMethodCallWithClassCheck(null, expr.getExpr(), null, Person.class, typeResolver).getExpression().toString());
-    }
 
     @Test
     public void getExpressionTypeTest() {

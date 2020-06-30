@@ -38,8 +38,20 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.nameExprT
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.returnTypeOfMethodCallExpr;
 
 public class ToMethodCall {
+    private final RuleContext context;
+    private TypeResolver typeResolver;
 
-    public static TypedExpression toMethodCallWithClassCheck(RuleContext context, Expression expr, String bindingId, Class<?> clazz, TypeResolver typeResolver) {
+    public ToMethodCall(RuleContext context) {
+        this.context = context;
+        this.typeResolver = context.getTypeResolver();
+    }
+
+    public ToMethodCall(TypeResolver typeResolver) {
+        this.context = null;
+        this.typeResolver = typeResolver;
+    }
+
+    public TypedExpression toMethodCallWithClassCheck(Expression expr, String bindingId, Class<?> clazz) {
 
         final Deque<ParsedMethod> callStackLeftToRight = new LinkedList<>();
 
