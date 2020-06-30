@@ -62,14 +62,6 @@ public class DrlxParseUtilTest {
         assertEquals("((Person) _this).getName()", concatenated.toString());
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void throwExceptionWhenMissingNode() {
-
-        final Expression expr = StaticJavaParser.parseExpression("this");
-
-        DrlxParseUtil.prepend(null, expr);
-    }
-
     final TypeResolver typeResolver = new ClassTypeResolver(new HashSet<>(), getClass().getClassLoader());
 
     @Test
