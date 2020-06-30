@@ -176,7 +176,7 @@
               <systemProperties>
                 <quarkus.test.profile>keycloak</quarkus.test.profile>
                 <quarkus.http.auth.policy.role-policy1.roles-allowed>confidential</quarkus.http.auth.policy.role-policy1.roles-allowed>
-                <quarkus.http.auth.permission.roles1.paths>/graphql</quarkus.http.auth.permission.roles1.paths>
+                <quarkus.http.auth.permission.roles1.paths>/*</quarkus.http.auth.permission.roles1.paths>
                 <quarkus.http.auth.permission.roles1.policy>role-policy1</quarkus.http.auth.permission.roles1.policy>
               </systemProperties>
             </configuration>
