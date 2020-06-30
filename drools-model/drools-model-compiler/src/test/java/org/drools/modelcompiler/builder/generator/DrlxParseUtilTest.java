@@ -63,18 +63,19 @@ public class DrlxParseUtilTest {
 
         final MethodCallExpr expected = StaticJavaParser.parseExpression("getAddress().getCity().startsWith(\"M\")");
 
-        assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(null, expr, null, Person.class, typeResolver).getExpression().toString());
-        assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(null, expr1, null, Person.class, typeResolver).getExpression().toString());
-        assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(null, expr2, null, Person.class, typeResolver).getExpression().toString());
+        assertEquals(expected.toString(), ToMethodCall.toMethodCallWithClassCheck(null, expr, null, Person.class, typeResolver).getExpression().toString());
+        assertEquals(expected.toString(), ToMethodCall.toMethodCallWithClassCheck(null, expr1, null, Person.class, typeResolver).getExpression().toString());
+        assertEquals(expected.toString(), ToMethodCall.toMethodCallWithClassCheck(null, expr2, null, Person.class, typeResolver).getExpression().toString());
     }
 
     @Test
     public void transformMethodExpressionToMethodCallWithInlineCast() {
+        typeResolver.addImport("org.drools.modelcompiler.domain.InternationalAddress");
 
         final DrlxExpression expr = DrlxParseUtil.parseExpression("address#InternationalAddress.state");
         final MethodCallExpr expected = StaticJavaParser.parseExpression("((InternationalAddress)getAddress()).getState()");
 
-        assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(null, expr.getExpr(), null, Person.class, typeResolver).getExpression().toString());
+        assertEquals(expected.toString(), ToMethodCall.toMethodCallWithClassCheck(null, expr.getExpr(), null, Person.class, typeResolver).getExpression().toString());
     }
 
     @Test
