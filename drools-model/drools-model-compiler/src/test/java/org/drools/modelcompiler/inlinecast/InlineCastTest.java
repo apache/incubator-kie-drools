@@ -60,7 +60,32 @@ public class InlineCastTest extends BaseModelTest {
     }
 
     @Test
-    public void testInlineCastProjection() {
+    @Ignore("this is supported in Legacy Drools but not in the Executable Model")
+    public void testInlineCastProjectionThis() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $r : Result()\n" +
+                "  $p : Object( $name : this#Person.name )\n" +
+                "then\n" +
+                "  $r.setValue(\"Found: \" + $name + \" $p class: \" + $p.getClass().getCanonicalName());\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        ksession.insert( "Mark" );
+        ksession.insert( new Person( "Mark", 37 ) );
+        ksession.fireAllRules();
+
+        assertEquals( "Found: Mark $p class: org.drools.modelcompiler.domain.Person", result.getValue() );
+    }
+
+    @Test
+    public void testInlineCastProjectionThisExplicit() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -84,7 +109,7 @@ public class InlineCastTest extends BaseModelTest {
     }
 
     @Test
-    public void testInlineCastProjection2() {
+    public void testInlineCastProjection() {
         String str = "import " + Person.class.getCanonicalName() + ";" +
                 "import " + InternationalAddress.class.getCanonicalName() + ";" +
                 "rule R when\n" +
