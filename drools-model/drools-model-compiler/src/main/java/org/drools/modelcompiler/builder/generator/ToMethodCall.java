@@ -35,6 +35,7 @@ import org.drools.mvel.parser.ast.expr.InlineCastExpr;
 import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.nameExprToMethodCallExpr;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.nameExprToMethodCallExprWithCast;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.returnTypeOfMethodCallExpr;
 
 public class ToMethodCall {
@@ -61,24 +62,53 @@ public class ToMethodCall {
         previousClass = clazz; // Start from input class
 
         for (ParsedMethod e : createExpressionCallLeftToRight) {
-            if (e.expression instanceof NameExpr || e.expression instanceof FieldAccessExpr || e.expression instanceof NullSafeFieldAccessExpr) {
-                convertNameToMethod(bindingId, e);
+            if (e.expression instanceof EnclosedExpr) { // inline cast
+                setCursorForEnclosedExpr(e);
             } else if (e.expression instanceof MethodCallExpr) {
                 setCursorForMethodCall(e);
-            } else if (e.expression instanceof EnclosedExpr) { // inline cast
-                setCursorForEnclosedExpr(e);
+            } else {
+                convertNameToMethod(bindingId, e);
             }
         }
 
         return new TypedExpression(previousScope, previousClass);
     }
 
+    // do not use this, use needConversion
+    private boolean needConversionRec(Expression expression) {
+        if(expression.isCastExpr()) {
+            return needConversionRec(expression.asCastExpr().getExpression());
+        } else if (expression.isEnclosedExpr()) {
+            return needConversionRec(expression.asEnclosedExpr().getInner());
+        } else {
+            return expression instanceof NameExpr || expression instanceof FieldAccessExpr || expression instanceof NullSafeFieldAccessExpr;
+        }
+    }
+
+    private boolean needConversion(Expression expression) {
+        return needConversionRec(expression);
+    }
+
+
     private void setCursorForEnclosedExpr(ParsedMethod e) {
         java.lang.reflect.Type returnType = e.castType
                 .flatMap(t -> safeResolveType(typeResolver, t.asString()))
                 .orElseThrow(() -> new CannotResolveTypeException(e));
 
-        previousScope = e.expression;
+        EnclosedExpr enclosedExpr = (EnclosedExpr) e.expression;
+
+        if(enclosedExpr.getInner().isCastExpr()) {
+            CastExpr castExpr = enclosedExpr.getInner().asCastExpr();
+            Type castType = castExpr.getType();
+
+            if(needConversion(e.expression)) {
+                TypedExpression te = nameExprToMethodCallExprWithCast(e.fieldToResolve, previousClass, previousScope, castType);
+                previousScope = te.getExpression();
+            } else {
+                previousScope = e.expression;
+            }
+        }
+
         previousClass = returnType;
     }
 
