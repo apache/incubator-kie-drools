@@ -40,6 +40,28 @@ public class DrlxParseUtilTest {
         assertEquals(THIS_PLACEHOLDER + ".getAddressName().startsWith(\"M\")", concatenated.toString());
     }
 
+    @Test
+    public void prependTestWithCast() {
+
+        final Expression expr = StaticJavaParser.parseExpression("((InternationalAddress) getAddress()).getState()");
+        final NameExpr nameExpr = new NameExpr(THIS_PLACEHOLDER);
+
+        final Expression concatenated = DrlxParseUtil.prepend(nameExpr, expr);
+
+        assertEquals("((InternationalAddress) _this.getAddress()).getState()", concatenated.toString());
+    }
+
+    @Test
+    public void prependTestWithThis() {
+
+        final Expression expr = StaticJavaParser.parseExpression("((Person) this).getName()");
+        final NameExpr nameExpr = new NameExpr(THIS_PLACEHOLDER);
+
+        final Expression concatenated = DrlxParseUtil.prepend(nameExpr, expr);
+
+        assertEquals("((Person) _this).getName()", concatenated.toString());
+    }
+
     @Test(expected = IllegalStateException.class)
     public void throwExceptionWhenMissingNode() {
 

@@ -322,7 +322,9 @@ public class DrlxParseUtil {
     public static Expression prepend(Expression scope, Expression expr) {
         final Optional<Expression> rootNode = findRootNodeViaScope(expr);
         if (rootNode.isPresent()) {
-            if (rootNode.get() instanceof NodeWithOptionalScope<?>) {
+            if(rootNode.get() instanceof ThisExpr) {
+                rootNode.get().replace(scope);
+            } else if (rootNode.get() instanceof NodeWithOptionalScope<?>) {
                 ((NodeWithOptionalScope) rootNode.get()).setScope(scope);
             }
             return expr;
@@ -383,6 +385,10 @@ public class DrlxParseUtil {
 
         if (expr instanceof EnclosedExpr) {
             return findRootNodeViaScopeRec(expr.asEnclosedExpr().getInner(), acc);
+        } else if (expr instanceof CastExpr) {
+            return findRootNodeViaScopeRec(expr.asCastExpr().getExpression(), acc);
+        } else if (expr instanceof ThisExpr) {
+            return new RemoveRootNodeResult(Optional.of(expr), expr, expr);
         } else if (expr instanceof NodeWithTraversableScope) {
             final NodeWithTraversableScope exprWithScope = (NodeWithTraversableScope) expr;
 
