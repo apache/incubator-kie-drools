@@ -15,15 +15,19 @@
  */
 package org.kie.pmml.compiler.commons.utils;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.TransformationDictionary;
+import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulation;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.populateMethodDeclarations;
 import static org.kie.pmml.compiler.commons.utils.DerivedFieldFunctionUtils.getDerivedFieldsMethodMap;
 
 /**
@@ -37,42 +41,29 @@ public class KiePMMLModelFactoryUtils {
     }
 
     /**
-     * Method to generate the code populating the <b>commonTransformationsMap</b> and <b>localTransformationsMap</b> <code>Map&lt;String, Function&lt;List&lt;KiePMMLNameValue&gt;, Object&gt;&gt;</code>>s inside the constructor
-     * @param constructorDeclaration
+     * Add <b>common</b> and <b>local</b> local transformations management inside the given <code>ClassOrInterfaceDeclaration</code>
+     * @param toPopulate
      * @param transformationDictionary
      * @param localTransformations
      */
-    public static void populateTransformationsInConstructor(final ConstructorDeclaration constructorDeclaration, final TransformationDictionary transformationDictionary, final LocalTransformations localTransformations) {
+    public static void addTransformationsInClassOrInterfaceDeclaration(final ClassOrInterfaceDeclaration toPopulate, final TransformationDictionary transformationDictionary, final LocalTransformations localTransformations) {
         final AtomicInteger arityCounter = new AtomicInteger(0);
-        populateCommonTransformationsInConstructor(constructorDeclaration, transformationDictionary, arityCounter);
-        populateLocalTransformationsInConstructor(constructorDeclaration, localTransformations, arityCounter);
+        final Map<String, MethodDeclaration> commonDerivedFieldsMethodMap = (transformationDictionary != null && transformationDictionary.getDerivedFields() != null) ? getDerivedFieldsMethodMap(transformationDictionary.getDerivedFields(), arityCounter) : Collections.emptyMap();
+        final Map<String, MethodDeclaration> localDerivedFieldsMethodMap = (localTransformations != null && localTransformations.getDerivedFields() != null) ? getDerivedFieldsMethodMap(localTransformations.getDerivedFields(), arityCounter) : Collections.emptyMap();
+        populateMethodDeclarations(toPopulate, commonDerivedFieldsMethodMap.values());
+        populateMethodDeclarations(toPopulate, localDerivedFieldsMethodMap.values());
+        final ConstructorDeclaration constructorDeclaration = toPopulate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing default constructor in ClassOrInterfaceDeclaration %s ", toPopulate.getName())));
+        populateTransformationsInConstructor(constructorDeclaration, commonDerivedFieldsMethodMap, localDerivedFieldsMethodMap);
     }
 
     /**
-     * Method to generate the code populating the <b>commonTransformationsMap</b> <code>Map&lt;String, Function&lt;List&lt;KiePMMLNameValue&gt;, Object&gt;&gt;</code>> inside the constructor
+     * Populating the <b>commonTransformationsMap</b> and <b>localTransformationsMap</b> <code>Map&lt;String, Function&lt;List&lt;KiePMMLNameValue&gt;, Object&gt;&gt;</code>>s inside the constructor
      * @param constructorDeclaration
-     * @param transformationDictionary
-     * @param arityCounter
+     * @param commonDerivedFieldsMethodMap
+     * @param localDerivedFieldsMethodMap
      */
-    static void populateCommonTransformationsInConstructor(final ConstructorDeclaration constructorDeclaration, final TransformationDictionary transformationDictionary, AtomicInteger arityCounter) {
-        if (transformationDictionary != null) {
-            final Map<String, MethodDeclaration> derivedFieldsMethodMap = getDerivedFieldsMethodMap(transformationDictionary.getDerivedFields(), arityCounter);
-            addMapPopulation(derivedFieldsMethodMap, constructorDeclaration.getBody(), "commonTransformationsMap");
-        }
+    static void populateTransformationsInConstructor(final ConstructorDeclaration constructorDeclaration, final Map<String, MethodDeclaration> commonDerivedFieldsMethodMap, final Map<String, MethodDeclaration> localDerivedFieldsMethodMap) {
+        addMapPopulation(commonDerivedFieldsMethodMap, constructorDeclaration.getBody(), "commonTransformationsMap");
+        addMapPopulation(localDerivedFieldsMethodMap, constructorDeclaration.getBody(), "localTransformationsMap");
     }
-
-    /**
-     * Method to generate the code populating the <b>localTransformationsMap</b> <code>Map&lt;String, Function&lt;List&lt;KiePMMLNameValue&gt;, Object&gt;&gt;</code>> inside the constructor
-     * @param constructorDeclaration
-     * @param localTransformations
-     * @param arityCounter
-     */
-    static void populateLocalTransformationsInConstructor(final ConstructorDeclaration constructorDeclaration, final LocalTransformations localTransformations, AtomicInteger arityCounter) {
-        if (localTransformations != null) {
-            final Map<String, MethodDeclaration> derivedFieldsMethodMap = getDerivedFieldsMethodMap(localTransformations.getDerivedFields(), arityCounter);
-            addMapPopulation(derivedFieldsMethodMap, constructorDeclaration.getBody(), "localTransformationsMap");
-        }
-    }
-
-
 }
