@@ -15,20 +15,26 @@
  */
 package org.kie.pmml.models.drools.utils;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.dmg.pmml.Array;
 import org.dmg.pmml.CompoundPredicate;
+import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
+import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
+import org.kie.pmml.models.drools.ast.factories.KiePMMLDataDictionaryASTFactory;
+import org.kie.pmml.models.drools.ast.factories.KiePMMLDerivedFieldASTFactory;
 import org.kie.pmml.models.drools.ast.factories.PredicateASTFactoryData;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
@@ -46,6 +52,19 @@ public class KiePMMLASTTestUtils {
                                                                      String currentRule,
                                                                      Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         return new PredicateASTFactoryData(predicate, outputFields, rules, parentPath, currentRule, fieldTypeMap);
+    }
+
+    public static Map<String, KiePMMLOriginalTypeGeneratedType> getFieldTypeMap(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final LocalTransformations localTransformations) {
+        final Map<String, KiePMMLOriginalTypeGeneratedType> toReturn = new HashMap<>();
+        KiePMMLDerivedFieldASTFactory kiePMMLDerivedFieldASTFactory = KiePMMLDerivedFieldASTFactory.factory(toReturn);
+        if (transformationDictionary != null && transformationDictionary.getDerivedFields() != null) {
+            kiePMMLDerivedFieldASTFactory.declareTypes(transformationDictionary.getDerivedFields());
+        }
+        if (localTransformations != null && localTransformations.getDerivedFields() != null) {
+            kiePMMLDerivedFieldASTFactory.declareTypes(localTransformations.getDerivedFields());
+        }
+        KiePMMLDataDictionaryASTFactory.factory(toReturn).declareTypes(dataDictionary);
+        return toReturn;
     }
 
     public static DataField getTypeDataField() {
