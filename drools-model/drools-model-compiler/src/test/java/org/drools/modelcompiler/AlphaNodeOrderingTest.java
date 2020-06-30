@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2020 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -73,7 +74,6 @@ public class AlphaNodeOrderingTest extends BaseModelTest {
 
         KieSession ksession = getKieSession(model, str);
 
-        //        ReteDumper.dumpRete(ksession);
         List<AlphaNode> alphaNodes = ReteDumper.collectNodes(ksession)
                                                .stream()
                                                .filter(AlphaNode.class::isInstance)
@@ -145,7 +145,6 @@ public class AlphaNodeOrderingTest extends BaseModelTest {
 
         KieSession ksession = getKieSession(model, str);
 
-//        ReteDumper.dumpRete(ksession);
         List<AlphaNode> alphaNodes = ReteDumper.collectNodes(ksession)
                                                .stream()
                                                .filter(AlphaNode.class::isInstance)
@@ -179,7 +178,7 @@ public class AlphaNodeOrderingTest extends BaseModelTest {
 
         KieModuleModel model = KieServices.get().newKieModuleModel();
         model
-//             .setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.FALSE.toString())
+             //.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.FALSE.toString())
              .newKieBaseModel("kb")
              .setDefault(true)
              .setAlphaNodeOrdering(AlphaNodeOrderingOption.COUNT) // Fails with COUNT
@@ -188,7 +187,6 @@ public class AlphaNodeOrderingTest extends BaseModelTest {
 
         KieSession ksession = getKieSession(model, str);
 
-//                ReteDumper.dumpRete(ksession);
         List<AlphaNode> alphaNodes = ReteDumper.collectNodes(ksession)
                                                .stream()
                                                .filter(AlphaNode.class::isInstance)
@@ -222,7 +220,7 @@ public class AlphaNodeOrderingTest extends BaseModelTest {
 
         KieModuleModel model = KieServices.get().newKieModuleModel();
         model
-//             .setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.FALSE.toString())
+             //.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.FALSE.toString())
              .newKieBaseModel("kb")
              .setDefault(true)
              .setAlphaNodeOrdering(AlphaNodeOrderingOption.COUNT) // Fails with COUNT
@@ -231,7 +229,6 @@ public class AlphaNodeOrderingTest extends BaseModelTest {
 
         KieSession ksession = getKieSession(model, str);
 
-//                ReteDumper.dumpRete(ksession);
         List<AlphaNode> alphaNodes = ReteDumper.collectNodes(ksession)
                                                .stream()
                                                .filter(AlphaNode.class::isInstance)
@@ -241,5 +238,198 @@ public class AlphaNodeOrderingTest extends BaseModelTest {
 
         ksession.insert(new FactASuper());
         assertEquals(0, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testAccumulate() {
+        String str =
+                "import " + Address.class.getCanonicalName() + "\n" +
+                     "import " + Person.class.getCanonicalName() + "\n" +
+                     "rule R1\n" +
+                     "when\n" +
+                     "  accumulate ( $p1: Person ( name == \"John\", age > 10);\n" +
+                     "                $averageAge : average($p1.getAge())\n" +
+                     "             )\n" +
+                     "  accumulate ( $p2: Person ( age > 10, name == \"John\");\n" +
+                     "                $averageMoney : average($p2.getMoney())\n" +
+                     "             )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R2\n" +
+                     "when\n" +
+                     "  Person ( name == \"John\");\n" +
+                     "then\n" +
+                     "end\n";
+
+        KieModuleModel model = KieServices.get().newKieModuleModel();
+        model.newKieBaseModel("kb")
+             .setDefault(true)
+             .setAlphaNodeOrdering(AlphaNodeOrderingOption.COUNT)
+             .newKieSessionModel("ks")
+             .setDefault(true);
+
+        KieSession ksession = getKieSession(model, str);
+
+        List<AlphaNode> alphaNodes = ReteDumper.collectNodes(ksession)
+                                               .stream()
+                                               .filter(AlphaNode.class::isInstance)
+                                               .map(node -> (AlphaNode) node)
+                                               .collect(Collectors.toList());
+        assertEquals(2, alphaNodes.size()); // 4 in case of AlphaNodeOrderingOption.NONE
+
+        Person p1 = new Person("John", 42);
+        p1.setMoney(new BigDecimal("1000"));
+        Person p2 = new Person("John", 40);
+        p2.setMoney(new BigDecimal("1600"));
+        Person p3 = new Person("John", 38);
+        p3.setMoney(new BigDecimal("1000"));
+
+        ksession.insert(p1);
+        ksession.insert(p2);
+        ksession.insert(p3);
+
+        assertEquals(4, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testFromAccumulate() {
+        String str =
+                "import " + Address.class.getCanonicalName() + "\n" +
+                     "import " + Person.class.getCanonicalName() + "\n" +
+                     "import " + BigDecimal.class.getCanonicalName() + "\n" +
+                     "rule R1\n" +
+                     "when\n" +
+                     "  $averageAge : Double() from accumulate ( $p1: Person ( name == \"John\", age > 10);\n" +
+                     "                average($p1.getAge())\n" +
+                     "             )\n" +
+                     "  $averageMoney : BigDecimal() from accumulate ( $p2: Person ( age > 10, name == \"John\");\n" +
+                     "                average($p2.getMoney())\n" +
+                     "             )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R2\n" +
+                     "when\n" +
+                     "  Person ( name == \"John\");\n" +
+                     "then\n" +
+                     "end\n";
+
+        KieModuleModel model = KieServices.get().newKieModuleModel();
+        model.newKieBaseModel("kb")
+             .setDefault(true)
+             .setAlphaNodeOrdering(AlphaNodeOrderingOption.COUNT)
+             .newKieSessionModel("ks")
+             .setDefault(true);
+
+        KieSession ksession = getKieSession(model, str);
+
+        List<AlphaNode> alphaNodes = ReteDumper.collectNodes(ksession)
+                                               .stream()
+                                               .filter(AlphaNode.class::isInstance)
+                                               .map(node -> (AlphaNode) node)
+                                               .collect(Collectors.toList());
+        assertEquals(2, alphaNodes.size()); // 4 in case of AlphaNodeOrderingOption.NONE
+
+        Person p1 = new Person("John", 42);
+        p1.setMoney(new BigDecimal("1000"));
+        Person p2 = new Person("John", 40);
+        p2.setMoney(new BigDecimal("1600"));
+        Person p3 = new Person("John", 38);
+        p3.setMoney(new BigDecimal("1000"));
+
+        ksession.insert(p1);
+        ksession.insert(p2);
+        ksession.insert(p3);
+
+        assertEquals(4, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testNot() {
+        String str =
+                "import " + Address.class.getCanonicalName() + "\n" +
+                     "import " + Person.class.getCanonicalName() + "\n" +
+                     "rule R1\n" +
+                     "when\n" +
+                     "  not Person(name == \"John\", age > 10)\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R2\n" +
+                     "when\n" +
+                     "  not Person(age > 10, employed == true, name == \"John\")\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R3\n" +
+                     "when\n" +
+                     "  Person(name == \"John\")\n" +
+                     "then\n" +
+                     "end\n";
+
+        KieModuleModel model = KieServices.get().newKieModuleModel();
+        model.newKieBaseModel("kb")
+             .setDefault(true)
+             .setAlphaNodeOrdering(AlphaNodeOrderingOption.COUNT)
+             .newKieSessionModel("ks")
+             .setDefault(true);
+
+        KieSession ksession = getKieSession(model, str);
+
+        List<AlphaNode> alphaNodes = ReteDumper.collectNodes(ksession)
+                                               .stream()
+                                               .filter(AlphaNode.class::isInstance)
+                                               .map(node -> (AlphaNode) node)
+                                               .collect(Collectors.toList());
+        assertEquals(3, alphaNodes.size()); // 5 in case of AlphaNodeOrderingOption.NONE
+
+        Person p1 = new Person("John", 42);
+        p1.setEmployed(false);
+
+        ksession.insert(p1);
+
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testExists() {
+        String str =
+                "import " + Address.class.getCanonicalName() + "\n" +
+                     "import " + Person.class.getCanonicalName() + "\n" +
+                     "rule R1\n" +
+                     "when\n" +
+                     "  exists Person(name == \"John\", age > 10)\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R2\n" +
+                     "when\n" +
+                     "  exists Person(age > 10, employed == true, name == \"John\")\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R3\n" +
+                     "when\n" +
+                     "  Person(name == \"John\")\n" +
+                     "then\n" +
+                     "end\n";
+
+        KieModuleModel model = KieServices.get().newKieModuleModel();
+        model.newKieBaseModel("kb")
+             .setDefault(true)
+             .setAlphaNodeOrdering(AlphaNodeOrderingOption.COUNT)
+             .newKieSessionModel("ks")
+             .setDefault(true);
+
+        KieSession ksession = getKieSession(model, str);
+
+        List<AlphaNode> alphaNodes = ReteDumper.collectNodes(ksession)
+                                               .stream()
+                                               .filter(AlphaNode.class::isInstance)
+                                               .map(node -> (AlphaNode) node)
+                                               .collect(Collectors.toList());
+        assertEquals(3, alphaNodes.size()); // 5 in case of AlphaNodeOrderingOption.NONE
+
+        Person p1 = new Person("John", 42);
+        p1.setEmployed(false);
+
+        ksession.insert(p1);
+
+        assertEquals(2, ksession.fireAllRules());
     }
 }

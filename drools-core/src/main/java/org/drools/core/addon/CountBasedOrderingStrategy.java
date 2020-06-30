@@ -15,15 +15,21 @@
 
 package org.drools.core.addon;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Accumulate;
+import org.drools.core.rule.Collect;
+import org.drools.core.rule.Forall;
+import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
+import org.drools.core.rule.PatternSource;
+import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.ObjectType;
 import org.kie.api.definition.rule.Rule;
@@ -43,27 +49,11 @@ public class CountBasedOrderingStrategy implements AlphaNodeOrderingStrategy {
 
     @Override
     public void analyzeAlphaConstraints(Set<Rule> ruleSet) {
-        // Direct Pattern
-        List<Pattern> patternList = ruleSet.stream()
-                                           .flatMap(rule -> ((RuleImpl) rule).getLhs().getChildren().stream())
-                                           .filter(Pattern.class::isInstance)
-                                           .map(Pattern.class::cast)
-                                           .collect(Collectors.toList());
 
-        // Accumulate
-        patternList.addAll(ruleSet.stream()
-                                  .flatMap(rule -> ((RuleImpl) rule).getLhs().getChildren().stream())
-                                  .filter(Pattern.class::isInstance)
-                                  .map(Pattern.class::cast)
-                                  .map(Pattern::getSource)
-                                  .filter(Accumulate.class::isInstance)
-                                  .map(Accumulate.class::cast)
-                                  .map(Accumulate::getSource)
-                                  .filter(Pattern.class::isInstance)
-                                  .map(Pattern.class::cast)
-                                  .collect(Collectors.toList()));
-
-        // TODO: Other cases
+        List<Pattern> patternList = new ArrayList<>();
+        ruleSet.stream()
+               .forEach(rule -> collectPatterns(((RuleImpl) rule).getLhs(), patternList));
+        patternList.removeIf(Objects::isNull);
 
         for (Pattern pattern : patternList) {
             ObjectType objectType = pattern.getObjectType();
@@ -76,6 +66,35 @@ public class CountBasedOrderingStrategy implements AlphaNodeOrderingStrategy {
         }
 
         logger.trace("analyzedAlphaConstraints : {}", analyzedAlphaConstraints);
+    }
+
+    private void collectPatterns(GroupElement ge, List<Pattern> patternList) {
+        List<RuleConditionElement> children = ge.getChildren();
+        for (RuleConditionElement child : children) {
+            if (child instanceof Pattern) {
+                Pattern pattern = (Pattern) child;
+                patternList.add(pattern);
+                PatternSource source = pattern.getSource();
+                if (source instanceof Accumulate) {
+                    RuleConditionElement accSource = ((Accumulate) source).getSource();
+                    if (accSource instanceof Pattern) {
+                        patternList.add((Pattern) accSource);
+                    }
+                } else if (source instanceof Collect) {
+                    patternList.add(((Collect) source).getSourcePattern());
+                } else {
+                    // do nothing for null, From, EntryPointId, WindowReference
+                }
+            } else if (child instanceof GroupElement) {
+                collectPatterns((GroupElement) child, patternList);
+            } else if (child instanceof Forall) {
+                Forall forall = (Forall) child;
+                patternList.add(forall.getBasePattern());
+                patternList.addAll(forall.getRemainingPatterns());
+            } else {
+                // do nothing for null, EvalCondition, ConditionalBranch, QueryElement, NamedConsequence
+            }
+        }
     }
 
     @Override
