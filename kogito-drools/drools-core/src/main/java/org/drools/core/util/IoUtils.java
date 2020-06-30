@@ -33,7 +33,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.zip.ZipFile;
 
 public final class IoUtils {
 
@@ -126,15 +125,6 @@ public final class IoUtils {
             } catch (Exception e) {
                 // ignore
             }
-        }
-    }
-
-    public static InputStream readFileInJar( String jarName, String fileName) {
-        try (ZipFile zipFile = new ZipFile( jarName )) {
-            byte[] bytes = readBytesFromInputStream( zipFile.getInputStream(zipFile.getEntry( fileName ) ), true);
-            return new ByteArrayInputStream( bytes );
-        } catch (IOException e) {
-            throw new RuntimeException( e );
         }
     }
 

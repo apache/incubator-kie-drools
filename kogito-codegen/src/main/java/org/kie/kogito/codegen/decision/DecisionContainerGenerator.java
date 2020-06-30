@@ -110,13 +110,13 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
 
     private MethodCallExpr getReadResourceMethod( ClassOrInterfaceType applicationClass, DMNResource resource ) {
         String source = resource.getDmnModel().getResource().getSourcePath();
-        Path sourcePath = Paths.get(source);
         if (resource.getPath().toString().endsWith( ".jar" )) {
-            return new MethodCallExpr( new NameExpr( IoUtils.class.getCanonicalName() ), "readFileInJar" )
-                    .addArgument(new StringLiteralExpr(resource.getPath().toString()))
-                    .addArgument(new StringLiteralExpr(source));
+            return new MethodCallExpr(
+                      new MethodCallExpr( new NameExpr( IoUtils.class.getCanonicalName() + ".class" ), "getClassLoader" ),
+                    "getResourceAsStream").addArgument(new StringLiteralExpr(source));
         }
-        Path relativizedPath = resource.getPath().relativize(sourcePath);
+        
+        Path relativizedPath = resource.getPath().relativize(Paths.get(source));
         String resourcePath = "/" + relativizedPath.toString().replace( File.separatorChar, '/');
         return new MethodCallExpr(new FieldAccessExpr(applicationClass.getNameAsExpression(), "class"), "getResourceAsStream")
                 .addArgument(new StringLiteralExpr(resourcePath));
