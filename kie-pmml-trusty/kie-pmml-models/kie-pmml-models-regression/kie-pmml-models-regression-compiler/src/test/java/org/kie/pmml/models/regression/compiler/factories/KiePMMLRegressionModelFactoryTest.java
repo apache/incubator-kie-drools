@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningField;
@@ -41,17 +44,18 @@ import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionClassificationTable;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
 import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
+import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getCategoricalPredictor;
@@ -63,21 +67,28 @@ import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getNume
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getPredictorTerm;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRegressionModel;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRegressionTable;
-import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses;
+import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
+import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory.KIE_PMML_REGRESSION_MODEL_TEMPLATE;
+import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory.KIE_PMML_REGRESSION_MODEL_TEMPLATE_JAVA;
 
-@RunWith(Parameterized.class)
 public class KiePMMLRegressionModelFactoryTest {
 
-    private List<RegressionTable> regressionTables;
-    private List<DataField> dataFields;
-    private List<MiningField> miningFields;
-    private MiningField targetMiningField;
-    private DataDictionary dataDictionary;
-    private TransformationDictionary transformationDictionary;
-    private MiningSchema miningSchema;
-    private RegressionModel regressionModel;
+    private static final String PACKAGE_NAME = "packagename";
 
-    public KiePMMLRegressionModelFactoryTest(String modelName, double tableIntercept, Object tableTargetCategory) {
+    private static final String modelName = "firstModel";
+    private static final double tableIntercept =  3.5;
+    private static final Object tableTargetCategory = "professional";
+    private static List<RegressionTable> regressionTables;
+    private static List<DataField> dataFields;
+    private static List<MiningField> miningFields;
+    private static MiningField targetMiningField;
+    private static DataDictionary dataDictionary;
+    private static TransformationDictionary transformationDictionary;
+    private static MiningSchema miningSchema;
+    private static RegressionModel regressionModel;
+
+    @BeforeClass
+    public static void setup() {
         Random random = new Random();
         Set<String> fieldNames = new HashSet<>();
         regressionTables = IntStream.range(0, 3).mapToObj(i -> {
@@ -110,17 +121,9 @@ public class KiePMMLRegressionModelFactoryTest {
         regressionModel = getRegressionModel(modelName, MiningFunction.REGRESSION, miningSchema, regressionTables);
     }
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][]{
-                {"firstModel", 3.5, "professional"},
-                {"secondModel", 27.4, "clerical"}
-        });
-    }
-
     @Test
-    public void getKiePMMLRegressionModelTest() throws IOException, IllegalAccessException, InstantiationException {
-        KiePMMLRegressionModel retrieved = getKiePMMLRegressionModelClasses(dataDictionary, transformationDictionary, regressionModel);
+    public void getKiePMMLRegressionModelClasses() throws IOException, IllegalAccessException, InstantiationException {
+        KiePMMLRegressionModel retrieved = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(dataDictionary, transformationDictionary, regressionModel);
         assertNotNull(retrieved);
         assertEquals(regressionModel.getModelName(), retrieved.getName());
         assertEquals(MINING_FUNCTION.byName(regressionModel.getMiningFunction().value()), retrieved.getMiningFunction());
@@ -129,6 +132,73 @@ public class KiePMMLRegressionModelFactoryTest {
         assertNotNull(regressionTable);
         assertTrue(regressionTable instanceof KiePMMLRegressionClassificationTable);
         evaluateCategoricalRegressionTable((KiePMMLRegressionClassificationTable) regressionTable);
+    }
+
+    @Test
+    public void getKiePMMLRegressionModelSourcesMap() throws IOException {
+        Map<String, String> retrieved = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(dataDictionary, transformationDictionary, regressionModel, PACKAGE_NAME);
+        assertNotNull(retrieved);
+        int expectedSize = regressionTables.size() + 2; // One for classification and one for the whole model
+        assertEquals(expectedSize, retrieved.size());
+    }
+
+    @Test
+    public void getRegressionTablesMap() throws IOException {
+        String targetFieldName = "targetFieldName";
+        Map<String, KiePMMLTableSourceCategory> retrieved = KiePMMLRegressionModelFactory
+                .getRegressionTablesMap(dataDictionary,
+                                        regressionModel,
+                                        targetFieldName,
+                                        Collections.emptyList(),
+                                        PACKAGE_NAME);
+        int expectedSize = regressionTables.size() + 1; // One for classification
+        assertEquals(expectedSize, retrieved.size());
+        final Collection<KiePMMLTableSourceCategory> values = retrieved.values();
+        regressionTables.forEach(regressionTable ->
+                                         assertTrue(values.stream().anyMatch(kiePMMLTableSourceCategory -> kiePMMLTableSourceCategory.getCategory().equals(regressionTable.getTargetCategory()))));
+
+    }
+
+    @Test
+    public void populateConstructor() {
+        CompilationUnit templateCU = getFromFileName(KIE_PMML_REGRESSION_MODEL_TEMPLATE_JAVA);
+        ConstructorDeclaration constructorDeclaration = templateCU
+                .getClassByName(KIE_PMML_REGRESSION_MODEL_TEMPLATE)
+                .get()
+                .getDefaultConstructor()
+                .get();
+        String generatedClassName = "GeneratedClassName";
+        String nestedTable = "NestedTable";
+        String targetField = "targetField";
+        MINING_FUNCTION miningFunction = MINING_FUNCTION.CLASSIFICATION;
+        String modelName = "modelName";
+        KiePMMLRegressionModelFactory.populateConstructor(generatedClassName,
+                                                          nestedTable,
+                                                          constructorDeclaration,
+                                                          targetField,
+                                                          miningFunction,
+                                                          modelName);
+        String expected = String.format("public %s() {\n" +
+                                                "    super(\"%s\");\n" +
+                                                "    regressionTable = new %s();\n" +
+                                                "    targetField = \"%s\";\n" +
+                                                "    miningFunction = %s;\n" +
+                                                "    pmmlMODEL = org.kie.pmml.commons.model.enums.PMML_MODEL.REGRESSION_MODEL;\n" +
+                                                "}",
+                                        generatedClassName,
+                                        modelName,
+                                        nestedTable,
+                                        targetField,
+                                        miningFunction.getClass().getName() + "." + miningFunction.name());
+        assertEquals(expected, constructorDeclaration.toString());
+    }
+
+    @Test
+    public void isRegression() {
+        assertTrue(KiePMMLRegressionModelFactory.isRegression(MiningFunction.REGRESSION, null, null));
+        assertTrue(KiePMMLRegressionModelFactory.isRegression(MiningFunction.REGRESSION, "TARGET", OpType.CONTINUOUS));
+        assertFalse(KiePMMLRegressionModelFactory.isRegression(MiningFunction.REGRESSION, "TARGET", OpType.CATEGORICAL));
+        assertFalse(KiePMMLRegressionModelFactory.isRegression(MiningFunction.CLASSIFICATION, null, null));
     }
 
     private void evaluateCategoricalRegressionTable(KiePMMLRegressionClassificationTable regressionTable) {
