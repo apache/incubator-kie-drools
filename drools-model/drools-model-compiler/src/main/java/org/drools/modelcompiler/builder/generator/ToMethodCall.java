@@ -38,8 +38,9 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.nameExprT
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.returnTypeOfMethodCallExpr;
 
 public class ToMethodCall {
+
     private final RuleContext context;
-    private TypeResolver typeResolver;
+    private final TypeResolver typeResolver;
 
     public ToMethodCall(RuleContext context) {
         this.context = context;
@@ -51,62 +52,84 @@ public class ToMethodCall {
         this.typeResolver = typeResolver;
     }
 
+    java.lang.reflect.Type previousClass;
+    Expression previousScope;
+
     public TypedExpression toMethodCallWithClassCheck(Expression expr, String bindingId, Class<?> clazz) {
+        Deque<ParsedMethod> createExpressionCallLeftToRight = createExpressionCallLeftToRight(expr);
 
-        final Deque<ParsedMethod> callStackLeftToRight = new LinkedList<>();
+        previousClass = clazz; // Start from input class
 
-        createExpressionCall(expr, callStackLeftToRight);
-
-        java.lang.reflect.Type previousClass = clazz;
-        Expression previousScope = null;
-
-        for (ParsedMethod e : callStackLeftToRight) {
+        for (ParsedMethod e : createExpressionCallLeftToRight) {
             if (e.expression instanceof NameExpr || e.expression instanceof FieldAccessExpr || e.expression instanceof NullSafeFieldAccessExpr) {
-                if (e.fieldToResolve.equals( bindingId )) {
-                    continue;
-                }
-                if (previousClass == null) {
-                    try {
-                        previousClass = typeResolver.resolveType( e.fieldToResolve );
-                        previousScope = new NameExpr( e.fieldToResolve );
-                    } catch (ClassNotFoundException e1) {
-                        // ignore
-                    }
-                    if (previousClass == null) {
-                        previousClass = context.getDeclarationById( e.fieldToResolve )
-                                .map( DeclarationSpec::getDeclarationClass )
-                                .orElseThrow( () -> new RuntimeException( "Unknown field: " + e.fieldToResolve ) );
-                        previousScope = e.expression;
-                    }
-                } else {
-                    TypedExpression te = nameExprToMethodCallExpr( e.fieldToResolve, previousClass, previousScope );
-                    if (te == null) {
-                        context.addCompilationError( new InvalidExpressionErrorResult("Unknown field " + e.fieldToResolve + " on " + previousClass ) );
-                        return null;
-                    }
-                    java.lang.reflect.Type returnType = e.castType.flatMap(t -> safeResolveType(typeResolver, t.asString())).orElse(te.getType());
-                    previousScope = te.getExpression();
-                    previousClass = returnType;
-                }
+                convertNameToMethod(bindingId, e);
             } else if (e.expression instanceof MethodCallExpr) {
-                java.lang.reflect.Type returnType = returnTypeOfMethodCallExpr(context, typeResolver, (MethodCallExpr) e.expression, previousClass, null);
-                MethodCallExpr cloned = ((MethodCallExpr) e.expression.clone()).setScope(previousScope);
-                previousScope = cloned;
-                previousClass = returnType;
+                setCursorForMethodCall(e);
             } else if (e.expression instanceof EnclosedExpr) { // inline cast
-                java.lang.reflect.Type returnType = e.castType.flatMap(t -> safeResolveType(typeResolver, t.asString())).orElseThrow(() -> new RuntimeException());
-                previousScope = e.expression;
-                previousClass = returnType;
+                setCursorForEnclosedExpr(e);
             }
         }
 
         return new TypedExpression(previousScope, previousClass);
     }
 
-    private static Expression createExpressionCall(Expression expr, Deque<ParsedMethod> expressions) {
+    private void setCursorForEnclosedExpr(ParsedMethod e) {
+        java.lang.reflect.Type returnType = e.castType
+                .flatMap(t -> safeResolveType(typeResolver, t.asString()))
+                .orElseThrow(() -> new CannotResolveTypeException(e));
+
+        previousScope = e.expression;
+        previousClass = returnType;
+    }
+
+    private void setCursorForMethodCall(ParsedMethod e) {
+        java.lang.reflect.Type returnType = returnTypeOfMethodCallExpr(context, typeResolver, (MethodCallExpr) e.expression, previousClass, null);
+        previousScope = ((MethodCallExpr) e.expression.clone()).setScope(previousScope);
+        previousClass = returnType;
+    }
+
+    private void convertNameToMethod(String bindingId, ParsedMethod e) {
+        if (e.fieldToResolve.equals(bindingId)) {
+            return;
+        }
+        if (previousClass == null) {
+            setCursorForMissingClass(e);
+        } else {
+            TypedExpression te = nameExprToMethodCallExpr(e.fieldToResolve, previousClass, previousScope);
+            if (te == null) {
+                throw new CannotConvertException(new InvalidExpressionErrorResult("Unknown field " + e.fieldToResolve + " on " + previousClass));
+            }
+
+            previousScope = te.getExpression();
+            previousClass = te.getType();
+        }
+    }
+
+    private void setCursorForMissingClass(ParsedMethod e) {
+        try {
+            previousClass = typeResolver.resolveType(e.fieldToResolve);
+            previousScope = new NameExpr(e.fieldToResolve);
+        } catch (ClassNotFoundException e1) {
+            // ignore
+        }
+        if (previousClass == null) {
+            previousClass = context.getDeclarationById(e.fieldToResolve)
+                    .map(DeclarationSpec::getDeclarationClass)
+                    .orElseThrow(() -> new RuntimeException("Unknown field: " + e.fieldToResolve));
+            previousScope = e.expression;
+        }
+    }
+
+    private Deque<ParsedMethod> createExpressionCallLeftToRight(Expression expr) {
+        final Deque<ParsedMethod> callStackLeftToRight = new LinkedList<>();
+        createExpressionCallRec(expr, callStackLeftToRight);
+        return callStackLeftToRight;
+    }
+
+    private static void createExpressionCallRec(Expression expr, Deque<ParsedMethod> expressions) {
 
         if (expr instanceof NodeWithSimpleName) {
-            NodeWithSimpleName fae = (NodeWithSimpleName)expr;
+            NodeWithSimpleName<?> fae = (NodeWithSimpleName<?>) expr;
             expressions.push(new ParsedMethod(expr, fae.getName().asString()));
         } else if (expr instanceof InlineCastExpr) {
             InlineCastExpr inlineCastExpr = (InlineCastExpr) expr;
@@ -117,19 +140,18 @@ public class ToMethodCall {
         }
 
         if (expr instanceof NodeWithOptionalScope) {
-            final NodeWithOptionalScope<?> exprWithScope = (NodeWithOptionalScope) expr;
-            exprWithScope.getScope().ifPresent(expression -> createExpressionCall(expression, expressions));
+            final NodeWithOptionalScope<?> exprWithScope = (NodeWithOptionalScope<?>) expr;
+            exprWithScope.getScope().ifPresent(expression -> createExpressionCallRec(expression, expressions));
         } else if (expr instanceof FieldAccessExpr) {
             // Cannot recurse over getScope() as FieldAccessExpr doesn't support the NodeWithOptionalScope,
             // it will support a new interface to traverse among scopes called NodeWithTraversableScope so
             // we can merge this and the previous branch
-            createExpressionCall(((FieldAccessExpr) expr).getScope(), expressions);
+            createExpressionCallRec(((FieldAccessExpr) expr).getScope(), expressions);
         }
-
-        return expr;
     }
 
     static class ParsedMethod {
+
         final Expression expression;
 
         final String fieldToResolve;
@@ -164,5 +186,26 @@ public class ToMethodCall {
         }
     }
 
+    private class CannotConvertException extends RuntimeException {
 
+        private InvalidExpressionErrorResult invalidExpressionErrorResult;
+
+        public CannotConvertException(InvalidExpressionErrorResult invalidExpressionErrorResult) {
+            this.invalidExpressionErrorResult = invalidExpressionErrorResult;
+        }
+
+        // TODO use this
+        public InvalidExpressionErrorResult getInvalidExpressionErrorResult() {
+            return invalidExpressionErrorResult;
+        }
+    }
+
+    private class CannotResolveTypeException extends RuntimeException {
+
+        private ParsedMethod parsedMethod;
+
+        public CannotResolveTypeException(ParsedMethod parsedMethod) {
+            this.parsedMethod = parsedMethod;
+        }
+    }
 }
