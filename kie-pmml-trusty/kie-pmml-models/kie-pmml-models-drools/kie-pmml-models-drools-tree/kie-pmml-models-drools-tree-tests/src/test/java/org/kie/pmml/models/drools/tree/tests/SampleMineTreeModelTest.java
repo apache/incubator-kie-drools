@@ -29,7 +29,7 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
 @RunWith(Parameterized.class)
-public class TreeTest extends AbstractPMMLTreeTest {
+public class SampleMineTreeModelTest extends AbstractPMMLTreeTest {
 
     private static final String MODEL_NAME = "SampleMineTreeModel";
     private static final String TARGET_FIELD = "decision";
@@ -39,7 +39,7 @@ public class TreeTest extends AbstractPMMLTreeTest {
     private double humidity;
     private String expectedResult;
 
-    public TreeTest(double temperature, double humidity, String expectedResult) {
+    public SampleMineTreeModelTest(double temperature, double humidity, String expectedResult) {
         this.temperature = temperature;
         this.humidity = humidity;
         this.expectedResult = expectedResult;
