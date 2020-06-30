@@ -51,13 +51,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.groupingBy;
+import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulation;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 
 public class KiePMMLRegressionTableRegressionFactory {
 
     public static final String KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE_JAVA = "KiePMMLRegressionTableRegressionTemplate.tmpl";
-    public static final String MISSING_BODY_TEMPLATE = "Missing body in %s";
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLRegressionTableRegressionFactory.class.getName());
     private static final String MAIN_CLASS_NOT_FOUND = "Main class not found";
     private static final String KIE_PMML_EVALUATE_METHOD_TEMPLATE_JAVA = "KiePMMLEvaluateMethodTemplate.tmpl";
