@@ -87,7 +87,7 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLR
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat((double) pmml4Result.getResultVariables().get(TARGET_FIELD)).isCloseTo(expectedResult, TOLERANCE_PERCENTAGE);
 
-        // TODO RENABLE WHEN OUTPUTFIELD FIXED ON REGRESSION
+        // TODO {gcardosi} TO BE FIXED WITH DROOLS-5453
 //        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_AGE)).isNotNull();
 //        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_AGE)).isEqualTo(age);
 //        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_SALARY)).isNotNull();
