@@ -66,7 +66,7 @@ public class InlineCastTest extends BaseModelTest {
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +
                 "  $r : Result()\n" +
-                "  $p : Object( $name : this#Person.name )\n" +
+                "  $p : Object( this instanceof Person, $name : this#Person.name )\n" +
                 "then\n" +
                 "  $r.setValue(\"Found: \" + $name + \" $p class: \" + $p.getClass().getCanonicalName());\n" +
                 "end";
