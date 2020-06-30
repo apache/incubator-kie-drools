@@ -26,6 +26,11 @@ pipeline {
                     maven.runMavenWithSubmarineSettings('clean install', false)
                 }
             }
+            post {
+                always {
+                    saveReports()
+                }
+            }
         }
         stage('Build kogito-apps') {
             steps {
@@ -34,6 +39,11 @@ pipeline {
                     script {
                       maven.runMavenWithSubmarineSettings('clean install', false)
                     }
+                }
+            }
+            post {
+                always {
+                    saveReports()
                 }
             }
         }
@@ -46,6 +56,11 @@ pipeline {
                     }
                 }
             }
+            post {
+                always {
+                    saveReports()
+                }
+            }
         }
         stage('Build kogito-examples with persistence') {
             steps {
@@ -56,6 +71,11 @@ pipeline {
                         // Don't run with tests so far, see: https://github.com/quarkusio/quarkus/issues/6885
                         maven.runMavenWithSubmarineSettings('clean install -Ppersistence', true)
                     }
+                }
+            }
+            post {
+                always {
+                    saveReports(true)
                 }
             }
         }
@@ -99,8 +119,11 @@ pipeline {
                      to: env.KOGITO_CI_EMAIL_TO
         }
         always {
-            junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
             cleanWs()
         }
     }
+}
+
+void saveReports(boolean allowEmpty=false){
+    junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: allowEmpty
 }
