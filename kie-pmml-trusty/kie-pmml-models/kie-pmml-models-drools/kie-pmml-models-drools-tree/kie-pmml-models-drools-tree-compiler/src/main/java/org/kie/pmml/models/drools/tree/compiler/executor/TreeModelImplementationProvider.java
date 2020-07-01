@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.models.drools.tree.compiler.executor;
 
+import java.util.List;
 import java.util.Map;
 
 import org.dmg.pmml.DataDictionary;
@@ -23,6 +24,7 @@ import org.dmg.pmml.tree.TreeModel;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.provider.DroolsModelProvider;
 import org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelFactory;
 import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
@@ -50,8 +52,11 @@ public class TreeModelImplementationProvider extends DroolsModelProvider<TreeMod
     }
 
     @Override
-    public KiePMMLDroolsAST getKiePMMLDroolsAST(final DataDictionary dataDictionary, final TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-        return KiePMMLTreeModelFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
+    public KiePMMLDroolsAST getKiePMMLDroolsAST(final DataDictionary dataDictionary,
+                                                final TreeModel model,
+                                                final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
+                                                final List<KiePMMLDroolsType> types){
+        return KiePMMLTreeModelFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap, types);
     }
 
     @Override
