@@ -112,6 +112,8 @@ public class PMMLCompilerService {
         String toReturn = fullPath;
         if (fullPath.contains(File.separator)) {
             toReturn = fullPath.substring(fullPath.lastIndexOf(File.separator) + 1);
+        } else   if (fullPath.contains("/")) {
+            toReturn = fullPath.substring(fullPath.lastIndexOf('/') + 1);
         }
         return toReturn;
     }
