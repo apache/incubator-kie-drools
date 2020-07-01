@@ -16,6 +16,8 @@
 
 package org.optaplanner.benchmark.config.statistic;
 
+import javax.xml.bind.annotation.XmlEnum;
+
 import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
@@ -26,6 +28,7 @@ import org.optaplanner.benchmark.impl.statistic.subsingle.constraintmatchtotalst
 import org.optaplanner.benchmark.impl.statistic.subsingle.pickedmovetypebestscore.PickedMoveTypeBestScoreDiffSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.subsingle.pickedmovetypestepscore.PickedMoveTypeStepScoreDiffSubSingleStatistic;
 
+@XmlEnum
 public enum SingleStatisticType implements StatisticType {
     CONSTRAINT_MATCH_TOTAL_BEST_SCORE,
     CONSTRAINT_MATCH_TOTAL_STEP_SCORE,

@@ -19,6 +19,8 @@ package org.optaplanner.benchmark.config.blueprint;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlEnum;
+
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
@@ -27,6 +29,7 @@ import org.optaplanner.core.config.localsearch.LocalSearchType;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 
+@XmlEnum
 public enum SolverBenchmarkBluePrintType {
     /*
      * Run the default {@link ConstructionHeuristicType} with and without the default {@link LocalSearchType}.

@@ -115,7 +115,7 @@ public class SolverConfigTest {
     }
 
     private SolverConfig unmarshallSolverConfigFromResource(String solverConfigResource) {
-        try (InputStream testSolverConfigStream = SolverConfigTest.class.getResourceAsStream(TEST_SOLVER_CONFIG)) {
+        try (InputStream testSolverConfigStream = SolverConfigTest.class.getResourceAsStream(solverConfigResource)) {
             return (SolverConfig) unmarshaller.unmarshal(testSolverConfigStream);
         } catch (IOException | JAXBException exception) {
             throw new RuntimeException("Failed to read solver configuration resource " + solverConfigResource, exception);

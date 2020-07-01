@@ -21,11 +21,26 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
@@ -37,6 +52,19 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import com.thoughtworks.xstream.XStream;
 
 public class PlannerBenchmarkConfigTest {
+
+    private static final String TEST_PLANNER_BENCHMARK_CONFIG = "testBenchmarkConfig.xml";
+
+    private final Unmarshaller unmarshaller;
+    private final Marshaller marshaller;
+
+    public PlannerBenchmarkConfigTest() throws JAXBException {
+        JAXBContext jaxbContext = JAXBContext.newInstance(PlannerBenchmarkConfig.class);
+        unmarshaller = jaxbContext.createUnmarshaller();
+        marshaller = jaxbContext.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.setProperty(Marshaller.JAXB_ENCODING, StandardCharsets.UTF_8.toString());
+    }
 
     @Test
     public void validNameWithUnderscoreAndSpace() {
@@ -176,4 +204,46 @@ public class PlannerBenchmarkConfigTest {
         assertThat(savedXml.trim()).isEqualTo(originalXml.trim());
     }
 
+    @Test
+    public void jaxbXmlConfigFileRemainsSameAfterReadWrite() throws IOException {
+        PlannerBenchmarkConfig jaxbBenchmarkConfig = unmarshallBenchmarkConfigFromResource(TEST_PLANNER_BENCHMARK_CONFIG);
+
+        Writer stringWriter = new StringWriter();
+        marshall(jaxbBenchmarkConfig, stringWriter);
+        String jaxbString = stringWriter.toString();
+
+        String originalXml = IOUtils.toString(
+                PlannerBenchmarkConfigTest.class.getResourceAsStream(TEST_PLANNER_BENCHMARK_CONFIG), StandardCharsets.UTF_8);
+
+        assertThat(jaxbString.trim()).isEqualToNormalizingNewlines(originalXml.trim());
+    }
+
+    private PlannerBenchmarkConfig unmarshallBenchmarkConfigFromResource(String bechmarkConfigResource) {
+        try (InputStream testBenchmarkConfigStream =
+                PlannerBenchmarkConfigTest.class.getResourceAsStream(bechmarkConfigResource)) {
+            return (PlannerBenchmarkConfig) unmarshaller.unmarshal(testBenchmarkConfigStream);
+        } catch (IOException | JAXBException exception) {
+            throw new RuntimeException("Failed to read solver configuration resource " + bechmarkConfigResource, exception);
+        }
+    }
+
+    private void marshall(PlannerBenchmarkConfig plannerBenchmarkConfig, Writer writer) {
+        DOMResult domResult = new DOMResult();
+        try {
+            marshaller.marshal(plannerBenchmarkConfig, domResult);
+        } catch (JAXBException jaxbException) {
+            throw new RuntimeException("Unable to marshall PlannerBenchmarkConfig to XML.", jaxbException);
+        }
+
+        // see https://stackoverflow.com/questions/46708498/jaxb-marshaller-indentation
+        Transformer transformer;
+        try {
+            transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+            transformer.transform(new DOMSource(domResult.getNode()), new StreamResult(writer));
+        } catch (TransformerException e) {
+            throw new RuntimeException("Unable to format PlannerBenchmarkConfig XML.", e);
+        }
+    }
 }

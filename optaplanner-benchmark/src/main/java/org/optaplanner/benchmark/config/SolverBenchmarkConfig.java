@@ -18,6 +18,8 @@ package org.optaplanner.benchmark.config;
 
 import java.util.ArrayList;
 
+import javax.xml.bind.annotation.XmlElement;
+
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.config.AbstractConfig;
@@ -32,9 +34,11 @@ public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBench
 
     private String name = null;
 
+    @XmlElement(name = "solver")
     @XStreamAlias("solver")
     private SolverConfig solverConfig = null;
 
+    @XmlElement(name = "problemBenchmarks")
     @XStreamAlias("problemBenchmarks")
     private ProblemBenchmarksConfig problemBenchmarksConfig = null;
 

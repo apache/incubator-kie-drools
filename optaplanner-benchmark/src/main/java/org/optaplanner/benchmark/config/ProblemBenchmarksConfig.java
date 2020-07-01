@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
@@ -47,17 +49,24 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksConfig> {
 
     private Class<SolutionFileIO> solutionFileIOClass = null;
+
+    // TODO: we can switch all examples to JAXB too, but we should not bind Benchmark to any specific serialization technology used in examples
+    @XmlElement(name = "xStreamAnnotatedClass")
     @XStreamImplicit(itemFieldName = "xStreamAnnotatedClass")
     private List<Class> xStreamAnnotatedClassList = null;
     private Boolean writeOutputSolutionEnabled = null;
 
+    @XmlElement(name = "inputSolutionFile")
     @XStreamImplicit(itemFieldName = "inputSolutionFile")
     private List<File> inputSolutionFileList = null;
 
     private Boolean problemStatisticEnabled = null;
+
+    @XmlElement(name = "problemStatisticType")
     @XStreamImplicit(itemFieldName = "problemStatisticType")
     private List<ProblemStatisticType> problemStatisticTypeList = null;
 
+    @XmlElement(name = "singleStatisticType")
     @XStreamImplicit(itemFieldName = "singleStatisticType")
     private List<SingleStatisticType> singleStatisticTypeList = null;
 

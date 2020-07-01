@@ -245,6 +245,72 @@
           "fieldName": "SCORE_CALCULATION_SPEED",
           "elementKind": "enumConstant",
           "justification": "CALCULATE_COUNT_PER_SECOND removed."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "new": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlAccessorType",
+          "annotation": "@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)",
+          "package": "org.optaplanner.benchmark.config",
+          "classSimpleName": "PlannerBenchmarkConfig",
+          "elementKind": "class",
+          "justification": "PlannerBenchmarkConfig is serializable via JAXB."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "new": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlRootElement",
+          "annotation": "@javax.xml.bind.annotation.XmlRootElement(name = \"plannerBenchmark\")",
+          "package": "org.optaplanner.benchmark.config",
+          "classSimpleName": "PlannerBenchmarkConfig",
+          "elementKind": "class",
+          "justification": "PlannerBenchmarkConfig is serializable via JAXB."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintType",
+          "new": "enum org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintType",
+          "annotationType": "javax.xml.bind.annotation.XmlEnum",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "package": "org.optaplanner.benchmark.config.blueprint",
+          "classSimpleName": "SolverBenchmarkBluePrintType",
+          "elementKind": "enum",
+          "justification": "PlannerBenchmarkConfig is serializable via JAXB."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.benchmark.config.ranking.SolverRankingType",
+          "new": "enum org.optaplanner.benchmark.config.ranking.SolverRankingType",
+          "annotationType": "javax.xml.bind.annotation.XmlEnum",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "package": "org.optaplanner.benchmark.config.ranking",
+          "classSimpleName": "SolverRankingType",
+          "elementKind": "enum",
+          "justification": "PlannerBenchmarkConfig is serializable via JAXB."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.benchmark.config.statistic.ProblemStatisticType",
+          "new": "enum org.optaplanner.benchmark.config.statistic.ProblemStatisticType",
+          "annotationType": "javax.xml.bind.annotation.XmlEnum",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "package": "org.optaplanner.benchmark.config.statistic",
+          "classSimpleName": "ProblemStatisticType",
+          "elementKind": "enum",
+          "justification": "PlannerBenchmarkConfig is serializable via JAXB."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.benchmark.config.statistic.SingleStatisticType",
+          "new": "enum org.optaplanner.benchmark.config.statistic.SingleStatisticType",
+          "annotationType": "javax.xml.bind.annotation.XmlEnum",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "package": "org.optaplanner.benchmark.config.statistic",
+          "classSimpleName": "SingleStatisticType",
+          "elementKind": "enum",
+          "justification": "PlannerBenchmarkConfig is serializable via JAXB."
         }
       ]
     }

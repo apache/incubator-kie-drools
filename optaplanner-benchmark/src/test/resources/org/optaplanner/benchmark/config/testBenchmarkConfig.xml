@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<plannerBenchmark>
+  <benchmarkDirectory>data</benchmarkDirectory>
+  <warmUpSecondsSpentLimit>0</warmUpSecondsSpentLimit>
+  <inheritedSolverBenchmark>
+    <solver>
+      <termination>
+        <minutesSpentLimit>5</minutesSpentLimit>
+      </termination>
+    </solver>
+  </inheritedSolverBenchmark>
+  <solverBenchmark>
+    <name>Entity Tabu Search</name>
+    <solver>
+      <solutionClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionClass>
+      <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>
+      <scoreDirectorFactory>
+        <scoreDrl>org/optaplanner/core/api/solver/testdataConstraints.drl</scoreDrl>
+      </scoreDirectorFactory>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <changeMoveSelector>
+          <selectionOrder>ORIGINAL</selectionOrder>
+        </changeMoveSelector>
+        <acceptor>
+          <entityTabuSize>5</entityTabuSize>
+        </acceptor>
+        <forager/>
+      </localSearch>
+    </solver>
+    <problemBenchmarks>
+      <xStreamAnnotatedClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</xStreamAnnotatedClass>
+      <inputSolutionFile>nonExistingDataset.xml</inputSolutionFile>
+    </problemBenchmarks>
+    <subSingleCount>2</subSingleCount>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Late Acceptance</name>
+    <solver>
+      <solutionClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionClass>
+      <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>
+      <scoreDirectorFactory>
+        <scoreDrl>org/optaplanner/core/api/solver/testdataConstraints.drl</scoreDrl>
+      </scoreDirectorFactory>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <acceptor>
+          <lateAcceptanceSize>5</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>1000</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+    <problemBenchmarks>
+      <xStreamAnnotatedClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</xStreamAnnotatedClass>
+      <inputSolutionFile>nonExistingDataset.xml</inputSolutionFile>
+    </problemBenchmarks>
+    <subSingleCount>2</subSingleCount>
+  </solverBenchmark>
+</plannerBenchmark>

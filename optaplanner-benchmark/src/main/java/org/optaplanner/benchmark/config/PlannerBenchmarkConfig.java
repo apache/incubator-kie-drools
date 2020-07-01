@@ -41,6 +41,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.regex.Pattern;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig;
@@ -69,6 +75,8 @@ import freemarker.template.TemplateException;
  * To read it from XML, use {@link #createFromXmlResource(String)}.
  * To build a {@link PlannerBenchmarkFactory} with it, use {@link PlannerBenchmarkFactory#create(PlannerBenchmarkConfig)}.
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "plannerBenchmark")
 @XStreamAlias("plannerBenchmark")
 public class PlannerBenchmarkConfig {
 
@@ -490,6 +498,7 @@ public class PlannerBenchmarkConfig {
 
     private static final Logger logger = LoggerFactory.getLogger(PlannerBenchmarkConfig.class);
 
+    @XmlTransient
     @XStreamOmitField
     private ClassLoader classLoader = null;
 
@@ -504,14 +513,19 @@ public class PlannerBenchmarkConfig {
     private Long warmUpHoursSpentLimit = null;
     private Long warmUpDaysSpentLimit = null;
 
+    @XmlElement(name = "benchmarkReport")
     @XStreamAlias("benchmarkReport")
     private BenchmarkReportConfig benchmarkReportConfig = null;
 
+    @XmlElement(name = "inheritedSolverBenchmark")
     @XStreamAlias("inheritedSolverBenchmark")
     private SolverBenchmarkConfig inheritedSolverBenchmarkConfig = null;
 
+    @XmlElement(name = "solverBenchmarkBluePrint")
     @XStreamImplicit(itemFieldName = "solverBenchmarkBluePrint")
     private List<SolverBenchmarkBluePrintConfig> solverBenchmarkBluePrintConfigList = null;
+
+    @XmlElement(name = "solverBenchmark")
     @XStreamImplicit(itemFieldName = "solverBenchmark")
     private List<SolverBenchmarkConfig> solverBenchmarkConfigList = null;
 
