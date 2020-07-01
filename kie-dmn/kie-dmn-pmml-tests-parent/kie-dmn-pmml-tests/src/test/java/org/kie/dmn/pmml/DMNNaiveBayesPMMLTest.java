@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.pmml;
-
-import java.util.Map;
+package org.kie.dmn.pmml;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Assume;
-import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
@@ -31,26 +27,16 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.api.pmml.PMMLConstants.KIE_PMML_IMPLEMENTATION;
-import static org.kie.api.pmml.PMMLConstants.LEGACY;
-import static org.kie.dmn.core.util.DMNRuntimeUtil.resetServices;
+import java.util.Map;
 
-public class DMNNaiveBayesPMMLTest extends AbstractDMNPMMLTest {
+public abstract class DMNNaiveBayesPMMLTest {
     private static final Logger LOG = LoggerFactory.getLogger(DMNNaiveBayesPMMLTest.class);
 
     private DMNRuntime runtime;
     private DMNModel dmnModel;
 
-    @Before
-    public void resetEnvironment() {
-        LOG.debug("resetEnvironment");
-        resetEnvironment(LEGACY.getName());
-    }
-
     @Test
     public void testKMeans() {
-        Assume.assumeTrue(DMNPMMLTestUtils.jpmmlEnabled());
-
         runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("NaiveBayes.dmn",
                                                                       DMNNaiveBayesPMMLTest.class,
                                                                       "test_naive_bayes.pmml");

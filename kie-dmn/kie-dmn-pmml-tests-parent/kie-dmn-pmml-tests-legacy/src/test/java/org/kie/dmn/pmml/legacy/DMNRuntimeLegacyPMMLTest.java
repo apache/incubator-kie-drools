@@ -13,21 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.dmn.core.pmml;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package org.kie.dmn.pmml.legacy;
 
-import static org.kie.api.pmml.PMMLConstants.KIE_PMML_IMPLEMENTATION;
-import static org.kie.dmn.core.util.DMNRuntimeUtil.resetServices;
+import org.kie.dmn.pmml.DMNRuntimePMMLTest;
 
-public abstract class AbstractDMNPMMLTest {
-
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractDMNPMMLTest.class);
-
-    protected void resetEnvironment(String pmmlVersion) {
-        LOG.debug("resetEnvironment {}", pmmlVersion);
-        System.setProperty(KIE_PMML_IMPLEMENTATION.getName(), pmmlVersion);
-        resetServices();
-    }
+public class DMNRuntimeLegacyPMMLTest extends DMNRuntimePMMLTest {
 }
