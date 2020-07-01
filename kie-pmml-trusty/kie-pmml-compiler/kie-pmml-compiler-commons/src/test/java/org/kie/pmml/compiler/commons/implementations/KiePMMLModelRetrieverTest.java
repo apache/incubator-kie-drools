@@ -38,7 +38,7 @@ public class KiePMMLModelRetrieverTest {
 
     @Test
     public void getFromDataDictionaryAndModelWithProvider() throws Exception {
-        pmmlModel = KiePMMLUtil.load(getFileInputStream(MULTIPLE_TARGETS_SOURCE));
+        pmmlModel = KiePMMLUtil.load(getFileInputStream(MULTIPLE_TARGETS_SOURCE), MULTIPLE_TARGETS_SOURCE);
         final Optional<KiePMMLModel> retrieved = getFromCommonDataAndModel(pmmlModel.getDataDictionary(), pmmlModel.getTransformationDictionary(), pmmlModel.getModels().get(0), null);
         assertNotNull(retrieved);
         assertTrue(retrieved.isPresent());
@@ -47,7 +47,7 @@ public class KiePMMLModelRetrieverTest {
 
     @Test
     public void getFromDataDictionaryAndModelWithoutProvider() throws Exception {
-        pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE));
+        pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE), ONE_MINING_TARGET_SOURCE);
         final Optional<KiePMMLModel> retrieved = getFromCommonDataAndModel(pmmlModel.getDataDictionary(), pmmlModel.getTransformationDictionary(), pmmlModel.getModels().get(0), null);
         assertNotNull(retrieved);
         assertFalse(retrieved.isPresent());
