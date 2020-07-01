@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.pmml;
+package org.kie.dmn.pmml;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
@@ -28,26 +28,18 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.api.pmml.PMMLConstants.LEGACY;
-
-public class DMNTreePMMLTest extends AbstractDMNPMMLTest {
+public abstract class DMNTreePMMLTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNTreePMMLTest.class);
     private static final String SUNGLASSES = "sunglasses";
     private static final String UMBRELLA = "umbrella";
     private static final String NOTHING = "nothing";
 
-    @Before
-    public void resetEnvironment() {
-        LOG.debug("resetEnvironment");
-        resetEnvironment(LEGACY.getName());
-    }
-
     @Test
     public void testTreeWithOutput() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLTree.dmn",
-                                                                                       DMNTreePMMLTest.class,
-                                                                                       "test_tree.pmml");
+                DMNTreePMMLTest.class,
+                "test_tree.pmml");
         Assertions.assertThat(runtime).isNotNull();
         Assertions.assertThat(evaluateWeatherDecision(runtime, 30, 10)).isEqualTo(SUNGLASSES);
         Assertions.assertThat(evaluateWeatherDecision(runtime, 5, 70)).isEqualTo(UMBRELLA);
@@ -57,8 +49,8 @@ public class DMNTreePMMLTest extends AbstractDMNPMMLTest {
     @Test
     public void testTreeWithoutOutput() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLTree_no_output.dmn",
-                                                                                       DMNTreePMMLNewImplTest.class,
-                                                                                       "test_tree_no_output.pmml");
+                DMNTreePMMLTest.class,
+                "test_tree_no_output.pmml");
         Assertions.assertThat(runtime).isNotNull();
         Assertions.assertThat(evaluateWeatherDecision(runtime, 30, 10)).isEqualTo(SUNGLASSES);
         Assertions.assertThat(evaluateWeatherDecision(runtime, 5, 70)).isEqualTo(UMBRELLA);

@@ -26,6 +26,7 @@
     <module>kie-dmn-tck</module>
     <module>kie-dmn-signavio</module>
     <module>kie-dmn-core-osgi</module>
+    <module>kie-dmn-pmml-tests-parent</module>
   </modules>
 
   <dependencyManagement>
