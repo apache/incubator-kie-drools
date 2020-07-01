@@ -2334,4 +2334,22 @@ public class CompilerTest extends BaseModelTest {
 
         assertTrue(true);
     }
+
+    @Test
+    public void testParentInlineCast() {
+        String str =
+                "import " + OutputClause.class.getCanonicalName() + "\n;" +
+                        "import " + DecisionTable.class.getCanonicalName() + "\n;" +
+                        "rule r\n" +
+                        "when\n" +
+                        "  $oc : OutputClause( parent#DecisionTable.output.size > 1 )\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.fireAllRules();
+
+        assertTrue(true);
+    }
 }
