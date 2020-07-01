@@ -14,15 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.pmml;
-
-import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Map;
+package org.kie.dmn.pmml;
 
 import org.drools.compiler.kie.builder.impl.DrlProject;
-import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -32,17 +26,15 @@ import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieRuntimeFactory;
-import org.kie.dmn.api.core.DMNContext;
-import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.core.DMNResult;
-import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.*;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
+import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
+import org.kie.dmn.core.pmml.DMNPMMLModelInfo;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.internal.builder.IncrementalResults;
@@ -52,19 +44,18 @@ import org.kie.internal.services.KieAssemblersImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Map;
+
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.anything;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.kie.api.pmml.PMMLConstants.KIE_PMML_IMPLEMENTATION;
-import static org.kie.api.pmml.PMMLConstants.LEGACY;
-import static org.kie.dmn.core.util.DMNRuntimeUtil.resetServices;
 
-public class DMNRuntimePMMLTest extends AbstractDMNPMMLTest {
+public abstract class DMNRuntimePMMLTest {
 
     public DMNRuntimePMMLTest() {
         super();
@@ -73,12 +64,6 @@ public class DMNRuntimePMMLTest extends AbstractDMNPMMLTest {
     public static final Logger LOG = LoggerFactory.getLogger(DMNRuntimePMMLTest.class);
 
     private static final double COMPARISON_DELTA = 0.000001;
-
-    @Before
-    public void resetEnvironment() {
-        LOG.debug("resetEnvironment");
-        resetEnvironment(LEGACY.getName());
-    }
 
     @Test
     public void testBasic() {
