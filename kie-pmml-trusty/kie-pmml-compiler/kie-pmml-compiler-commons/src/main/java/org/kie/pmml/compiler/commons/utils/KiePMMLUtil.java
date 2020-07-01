@@ -43,7 +43,7 @@ public class KiePMMLUtil {
      * @throws JAXBException
      */
     public static PMML load(String source) throws SAXException, JAXBException {
-        return load(new ByteArrayInputStream(source.getBytes()), "ANONYMOUS");
+        return load(new ByteArrayInputStream(source.getBytes()), "");
     }
 
     /**
