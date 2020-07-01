@@ -903,7 +903,7 @@ public class UserTaskTest extends AbstractCodegenTest {
         assertThat(processInstance.businessKey()).isEqualTo("custom id");
 
         // start another process instance with assigned duplicated business key of already active instance
-        assertThrows(ProcessInstanceDuplicatedException.class, () -> p.createInstance("custom id", m));
+        assertThrows(ProcessInstanceDuplicatedException.class, () -> p.createInstance("custom id", m).start());
 
         // abort first one
         processInstance.abort();

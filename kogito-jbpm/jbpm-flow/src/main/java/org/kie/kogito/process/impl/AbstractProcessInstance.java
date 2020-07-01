@@ -52,17 +52,8 @@ import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationProperty;
 import org.kie.kogito.Model;
-import org.kie.kogito.process.EventDescription;
-import org.kie.kogito.process.MutableProcessInstances;
-import org.kie.kogito.process.NodeInstanceNotFoundException;
-import org.kie.kogito.process.NodeNotFoundException;
 import org.kie.kogito.process.Process;
-import org.kie.kogito.process.ProcessError;
-import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.ProcessInstanceDuplicatedException;
-import org.kie.kogito.process.ProcessInstanceNotFoundException;
-import org.kie.kogito.process.Signal;
-import org.kie.kogito.process.WorkItem;
+import org.kie.kogito.process.*;
 import org.kie.kogito.process.flexible.AdHocFragment;
 import org.kie.kogito.process.flexible.ItemDescription.Status;
 import org.kie.kogito.process.flexible.Milestone;
@@ -84,7 +75,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     protected Integer status;
     protected String id;
-    protected String businessKey;
+    protected CorrelationKey correlationKey;
     protected String description;
 
     protected ProcessError processError;
@@ -102,22 +93,13 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         this.rt = rt;
         this.variables = variables;
 
-        CorrelationKey correlationKey = null;
-        if (businessKey != null && !businessKey.trim().isEmpty()) {
-            correlationKey = new StringCorrelationKey(businessKey);
-        }
+        setCorrelationKey(businessKey);
 
         Map<String, Object> map = bind(variables);
         String processId = process.legacyProcess().getId();
         this.legacyProcessInstance = ((CorrelationAwareProcessRuntime) rt).createProcessInstance(processId, correlationKey, map);
-        this.id = legacyProcessInstance.getId();
-        this.businessKey = ((WorkflowProcessInstance) legacyProcessInstance).getCorrelationKey();
         this.description = ((WorkflowProcessInstanceImpl) legacyProcessInstance).getDescription();
         this.status = ProcessInstance.STATE_PENDING;
-        // this applies to business keys only as non business keys process instances id are always unique
-        if (correlationKey != null && process.instances.exists(id)) {
-            throw new ProcessInstanceDuplicatedException(businessKey);
-        }
     }
 
     // for marshaller/persistence only
@@ -128,7 +110,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         this.legacyProcessInstance = legacyProcessInstance;
         this.status = legacyProcessInstance.getState();
         this.id = legacyProcessInstance.getId();
-        this.businessKey = ((WorkflowProcessInstance) legacyProcessInstance).getCorrelationKey();
+        setCorrelationKey(((WorkflowProcessInstance) legacyProcessInstance).getCorrelationKey());
         this.description = ((WorkflowProcessInstanceImpl) legacyProcessInstance).getDescription();
         ((WorkflowProcessInstanceImpl) this.legacyProcessInstance).setKnowledgeRuntime(((InternalProcessRuntime) rt).getInternalKieRuntime());
         ((WorkflowProcessInstanceImpl) this.legacyProcessInstance).reconnect();
@@ -145,6 +127,12 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         unbind(variables, legacyProcessInstance.getVariables());
     }
 
+    private void setCorrelationKey(String businessKey){
+        if (businessKey != null && !businessKey.trim().isEmpty()) {
+            correlationKey = new StringCorrelationKey(businessKey);
+        }
+    }
+    
     public org.kie.api.runtime.process.ProcessInstance internalGetProcessInstance() {
         return legacyProcessInstance;
     }
@@ -167,12 +155,18 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             throw new IllegalStateException("Impossible to start process instance that already was started");
         }
         this.status = ProcessInstance.STATE_ACTIVE;
-        ((WorkflowProcessInstance) legacyProcessInstance).addEventListener("processInstanceCompleted:" + this.id, completionEventListener, false);
 
         if (referenceId != null) {
             ((WorkflowProcessInstance) legacyProcessInstance).setReferenceId(referenceId);
         }
 
+        ((InternalProcessRuntime) rt).getProcessInstanceManager().addProcessInstance(this.legacyProcessInstance, this.correlationKey);
+        this.id = legacyProcessInstance.getId();
+        // this applies to business keys only as non business keys process instances id are always unique
+        if (correlationKey != null && process.instances.exists(id)) {
+            throw new ProcessInstanceDuplicatedException(correlationKey.getName());
+        }
+        ((WorkflowProcessInstance) legacyProcessInstance).addEventListener("processInstanceCompleted:" + this.id, completionEventListener, false);
         org.kie.api.runtime.process.ProcessInstance processInstance = this.rt.startProcessInstance(this.id, trigger);
         addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).create(pi.id(), pi));
         unbind(variables, processInstance.getVariables());
@@ -225,7 +219,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public String businessKey() {
-        return this.businessKey;
+        return this.correlationKey == null ? null : this.correlationKey.getName();
     }
 
     @Override
@@ -266,6 +260,8 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     public void startFrom(String nodeId, String referenceId) {
         ((WorkflowProcessInstance) legacyProcessInstance).setStartDate(new Date());
         ((WorkflowProcessInstance) legacyProcessInstance).setState(STATE_ACTIVE);
+        ((InternalProcessRuntime) rt).getProcessInstanceManager().addProcessInstance(this.legacyProcessInstance, this.correlationKey);
+        this.id = legacyProcessInstance.getId();
         ((WorkflowProcessInstance) legacyProcessInstance).addEventListener("processInstanceCompleted:" + this.id, completionEventListener, false);
         if (referenceId != null) {
             ((WorkflowProcessInstance) legacyProcessInstance).setReferenceId(referenceId);
@@ -457,7 +453,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
             this.status = legacyProcessInstance.getState();
             this.id = legacyProcessInstance.getId();
-            this.businessKey = ((WorkflowProcessInstance) legacyProcessInstance).getCorrelationKey();
+            setCorrelationKey(((WorkflowProcessInstance) legacyProcessInstance).getCorrelationKey());
             this.description = ((WorkflowProcessInstanceImpl) legacyProcessInstance).getDescription();
 
             addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).remove(pi.id()));

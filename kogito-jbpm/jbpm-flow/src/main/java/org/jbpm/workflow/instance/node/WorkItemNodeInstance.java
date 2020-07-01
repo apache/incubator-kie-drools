@@ -123,7 +123,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     public void internalSetWorkItem(WorkItem workItem) {
         this.workItem = workItem;
         this.workItem.setProcessInstance(getProcessInstance());
-        this.workItem.setNodeInsstance(this);
+        this.workItem.setNodeInstance(this);
     }
 
     @Override
@@ -157,7 +157,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         workItem.setDeploymentId(deploymentId);
         workItem.setNodeInstanceId(this.getId());
         workItem.setNodeId(getNodeId());
-        workItem.setNodeInsstance(this);
+        workItem.setNodeInstance(this);
         workItem.setProcessInstance(getProcessInstance());
         if (isInversionOfControl()) {
             getProcessInstance().getKnowledgeRuntime().update(getProcessInstance().getKnowledgeRuntime().getFactHandle(this), this);

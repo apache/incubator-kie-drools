@@ -209,7 +209,7 @@ public class WorkItemImpl implements WorkItem, Serializable {
     }
 
     @Override
-    public void setNodeInsstance(NodeInstance nodeInstance) {
+    public void setNodeInstance(NodeInstance nodeInstance) {
         this.nodeInstance = nodeInstance;
     }
 
