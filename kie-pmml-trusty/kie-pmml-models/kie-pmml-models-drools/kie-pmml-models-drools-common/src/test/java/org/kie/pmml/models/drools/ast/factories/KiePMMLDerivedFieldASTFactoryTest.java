@@ -83,10 +83,10 @@ public class KiePMMLDerivedFieldASTFactoryTest {
     private DerivedField getDerivedField(String fieldName) {
         DerivedField toReturn = new DerivedField();
         toReturn.setName(FieldName.create(fieldName));
-        final DataType[] values = DataType.values();
+        final DATA_TYPE[] values = DATA_TYPE.values();
         int rndInt = new Random().nextInt(values.length - 1);
-        DataType dataType = values[rndInt];
-        toReturn.setDataType(dataType);
+        DATA_TYPE dataType = values[rndInt];
+        toReturn.setDataType(DataType.fromValue(dataType.getName()));
         return toReturn;
     }
 }

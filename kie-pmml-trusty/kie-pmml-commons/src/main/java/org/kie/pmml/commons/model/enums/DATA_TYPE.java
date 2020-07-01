@@ -44,19 +44,11 @@ public enum DATA_TYPE {
     DATE_DAYS_SINCE_1960("dateDaysSince[1960]", Long.class),
     DATE_DAYS_SINCE_1970("dateDaysSince[1970]", Long.class),
     DATE_DAYS_SINCE_1980("dateDaysSince[1980]", Long.class),
-    DATE_DAYS_SINCE_1990("x-dateDaysSince[1990]", Long.class),
-    DATE_DAYS_SINCE_2000("x-dateDaysSince[2000]", Long.class),
-    DATE_DAYS_SINCE_2010("x-dateDaysSince[2010]", Long.class),
-    DATE_DAYS_SINCE_2020("x-dateDaysSince[2020]", Long.class),
     TIME_SECONDS("timeSeconds", Long.class),
     DATE_TIME_SECONDS_SINCE_0("dateTimeSecondsSince[0]", Long.class),
     DATE_TIME_SECONDS_SINCE_1960("dateTimeSecondsSince[1960]", Long.class),
     DATE_TIME_SECONDS_SINCE_1970("dateTimeSecondsSince[1970]", Long.class),
-    DATE_TIME_SECONDS_SINCE_1980("dateTimeSecondsSince[1980]", Long.class),
-    DATE_TIME_SECONDS_SINCE_1990("x-dateTimeSecondsSince[1990]", Long.class),
-    DATE_TIME_SECONDS_SINCE_2000("x-dateTimeSecondsSince[2000]", Long.class),
-    DATE_TIME_SECONDS_SINCE_2010("x-dateTimeSecondsSince[2010]", Long.class),
-    DATE_TIME_SECONDS_SINCE_2020("x-dateTimeSecondsSince[2020]", Long.class);
+    DATE_TIME_SECONDS_SINCE_1980("dateTimeSecondsSince[1980]", Long.class);
 
     private final String name;
     private final Class<?> mappedClass;
