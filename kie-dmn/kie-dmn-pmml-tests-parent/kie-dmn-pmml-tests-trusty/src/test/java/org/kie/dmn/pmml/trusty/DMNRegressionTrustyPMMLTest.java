@@ -14,20 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.pmml;
+package org.kie.dmn.pmml.trusty;
 
-public class DMNPMMLTestUtils {
+import org.kie.dmn.pmml.DMNRegressionPMMLTest;
 
-    private static final String DETECT_JPMML_CLASS = "org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator";
-
-    public static final boolean jpmmlEnabled() {
-        try {
-            ClassLoader classLoader = DMNKMeansModelPMMLTest.class.getClassLoader();
-            classLoader.loadClass(DETECT_JPMML_CLASS);
-
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
-    }
+public class DMNRegressionTrustyPMMLTest extends DMNRegressionPMMLTest {
 }

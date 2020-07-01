@@ -14,34 +14,28 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.pmml;
+package org.kie.dmn.pmml;
 
-import java.io.InputStream;
-
-import org.junit.Before;
 import org.junit.Test;
+import org.kie.dmn.core.pmml.PMMLInfo;
+import org.kie.dmn.core.pmml.PMMLModelInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.InputStream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
-import static org.kie.api.pmml.PMMLConstants.LEGACY;
 
-public class PMMLInfoTest extends AbstractDMNPMMLTest {
+public abstract class PMMLInfoTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(PMMLInfoTest.class);
 
-    @Before
-    public void resetEnvironment() {
-        LOG.debug("resetEnvironment");
-        resetEnvironment(LEGACY.getName());
-    }
-
     @Test
     public void testPMMLInfo() throws Exception {
-        InputStream inputStream = this.getClass().getResourceAsStream("test_scorecard.pmml");
+        InputStream inputStream = PMMLInfoTest.class.getResourceAsStream("test_scorecard.pmml");
         PMMLInfo<PMMLModelInfo> p0 = PMMLInfo.from(inputStream);
         assertThat(p0.getModels(), hasSize(1));
         assertThat(p0.getHeader().getPmmlNSURI(), is("http://www.dmg.org/PMML-4_2"));

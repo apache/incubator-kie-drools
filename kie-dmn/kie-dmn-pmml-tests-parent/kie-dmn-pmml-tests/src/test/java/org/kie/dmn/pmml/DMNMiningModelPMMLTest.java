@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.pmml;
-
-import java.math.BigDecimal;
+package org.kie.dmn.pmml;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
@@ -30,19 +27,11 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.api.pmml.PMMLConstants.KIE_PMML_IMPLEMENTATION;
-import static org.kie.api.pmml.PMMLConstants.LEGACY;
-import static org.kie.dmn.core.util.DMNRuntimeUtil.resetServices;
+import java.math.BigDecimal;
 
-public class DMNMiningModelPMMLTest extends AbstractDMNPMMLTest {
+public abstract class DMNMiningModelPMMLTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNMiningModelPMMLTest.class);
-
-    @Before
-    public void resetEnvironment() {
-        LOG.debug("resetEnvironment");
-        resetEnvironment(LEGACY.getName());
-    }
 
     @Test
     public void testMiningModelSum() {

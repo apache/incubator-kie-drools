@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.pmml;
-
-import java.util.Map;
+package org.kie.dmn.pmml;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Assume;
-import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
@@ -31,25 +27,17 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.api.pmml.PMMLConstants.LEGACY;
+import java.util.Map;
 
-public class DMNNeuralNetworkPMMLTest extends AbstractDMNPMMLTest {
+public abstract class DMNNeuralNetworkPMMLTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(DMNNeuralNetworkPMMLTest.class);
 
     private DMNRuntime runtime;
     private DMNModel dmnModel;
 
-    @Before
-    public void resetEnvironment() {
-        LOG.debug("resetEnvironment");
-        resetEnvironment(LEGACY.getName());
-    }
-
     @Test
     public void testNeuralNetworks() {
-        Assume.assumeTrue(DMNPMMLTestUtils.jpmmlEnabled());
-
         runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("NeuralNetwork.dmn",
                                                                       DMNKMeansModelPMMLTest.class,
                                                                       "test_nn.pmml");
