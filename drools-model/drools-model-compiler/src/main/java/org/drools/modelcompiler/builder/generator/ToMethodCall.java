@@ -216,7 +216,7 @@ public class ToMethodCall {
         }
     }
 
-    private class CannotConvertException extends RuntimeException {
+    public class CannotConvertException extends RuntimeException {
 
         private InvalidExpressionErrorResult invalidExpressionErrorResult;
 
@@ -224,13 +224,12 @@ public class ToMethodCall {
             this.invalidExpressionErrorResult = invalidExpressionErrorResult;
         }
 
-        // TODO use this
         public InvalidExpressionErrorResult getInvalidExpressionErrorResult() {
             return invalidExpressionErrorResult;
         }
     }
 
-    private class CannotResolveTypeException extends RuntimeException {
+    public class CannotResolveTypeException extends RuntimeException {
 
         private ParsedMethod parsedMethod;
 

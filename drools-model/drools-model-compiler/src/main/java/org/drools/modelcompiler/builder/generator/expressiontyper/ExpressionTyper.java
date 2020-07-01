@@ -420,10 +420,7 @@ public class ExpressionTyper {
 
         List<Node> childrenWithoutFirst = childrenNodes.subList(1, childrenNodes.size());
         for (Node part : childrenWithoutFirst) {
-            if (toRawClass(typeCursor).isEnum()) {
-                previous = drlxExpr;
-
-            } else if (part instanceof SimpleName) {
+            if (part instanceof SimpleName) {
                 String field = part.toString();
                 TypedExpression expression = nameExprToMethodCallExpr(field, typeCursor, previous);
                 if (expression == null) {
