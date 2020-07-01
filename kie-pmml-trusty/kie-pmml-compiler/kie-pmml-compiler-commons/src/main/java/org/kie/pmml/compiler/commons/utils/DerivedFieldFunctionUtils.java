@@ -45,6 +45,7 @@ import org.dmg.pmml.MapValues;
 import org.dmg.pmml.NormContinuous;
 import org.dmg.pmml.NormDiscrete;
 import org.dmg.pmml.TextIndex;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
@@ -79,8 +80,7 @@ public class DerivedFieldFunctionUtils {
         if (expression != null) {
             return getExpressionMethodDeclaration(expression, arityCounter);
         } else {
-            // TODO {gcardosi}
-            return new MethodDeclaration();
+            throw new KiePMMLException("Derived field without Expression are not supported, yet");
         }
     }
 

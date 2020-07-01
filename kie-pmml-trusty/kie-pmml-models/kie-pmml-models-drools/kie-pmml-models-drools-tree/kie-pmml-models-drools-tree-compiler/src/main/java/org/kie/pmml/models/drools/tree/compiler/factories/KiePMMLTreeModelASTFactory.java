@@ -62,13 +62,6 @@ public class KiePMMLTreeModelASTFactory extends KiePMMLAbstractModelASTFactory {
                                                        final List<KiePMMLDroolsType> types) {
         logger.trace("getKiePMMLDroolsAST {} {}", dataDictionary, model);
         DATA_TYPE targetType = getTargetFieldType(dataDictionary, model);
-//        List<KiePMMLDroolsType> types = fieldTypeMap.values()
-//                .stream().map(kiePMMLOriginalTypeGeneratedType -> {
-//                    String type = DATA_TYPE.byName(kiePMMLOriginalTypeGeneratedType.getOriginalType()).getMappedClass().getSimpleName();
-//                    return new KiePMMLDroolsType(kiePMMLOriginalTypeGeneratedType.getGeneratedType(), type);
-//                })
-//                .collect(Collectors.toList());
-//        types.addAll(KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(dataDictionary));
         final List<KiePMMLOutputField> outputFields = getOutputFields(model);
         List<KiePMMLDroolsRule> rules = KiePMMLTreeModelNodeASTFactory.factory(fieldTypeMap, outputFields, model.getNoTrueChildStrategy(), targetType).declareRulesFromRootNode(model.getNode(), "");
         return new KiePMMLDroolsAST(types, rules);
