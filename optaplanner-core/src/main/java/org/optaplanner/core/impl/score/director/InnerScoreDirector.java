@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -299,6 +300,12 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_>,
      * @param beforeMoveScore never null
      */
     void assertExpectedUndoMoveScore(Move move, Score beforeMoveScore);
+
+    /**
+     * Asserts that none of the planning facts from {@link SolutionDescriptor#getAllFacts(Object)} for
+     * {@link #getWorkingSolution()} have {@link PlanningId}s with a null value.
+     */
+    void assertNonNullPlanningIds();
 
     /**
      * Needs to be called after use because some implementations need to clean up their resources.

@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
@@ -39,6 +40,8 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
 import org.optaplanner.core.impl.domain.lookup.LookUpManager;
@@ -70,6 +73,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
+    private final Map<Class, MemberAccessor> planningIdAccessorCacheMap = new HashMap<>(0);
     protected final Factory_ scoreDirectorFactory;
     protected final boolean lookUpEnabled;
     protected final LookUpManager lookUpManager;
@@ -167,11 +171,40 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         this.workingSolution = Objects.requireNonNull(workingSolution);
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
         workingInitScore = -solutionDescriptor.countUninitializedVariables(workingSolution);
+        Collection<Object> allFacts = solutionDescriptor.getAllFacts(workingSolution);
         if (lookUpEnabled) {
-            lookUpManager.resetWorkingObjects(solutionDescriptor.getAllFacts(workingSolution));
+            lookUpManager.resetWorkingObjects(allFacts);
         }
+        assertNonNullPlanningIds(allFacts);
         variableListenerSupport.resetWorkingSolution();
         setWorkingEntityListDirty();
+    }
+
+    @Override
+    public void assertNonNullPlanningIds() {
+        assertNonNullPlanningIds(getSolutionDescriptor().getAllFacts(workingSolution));
+    }
+
+    private void assertNonNullPlanningIds(Collection<Object> allFacts) {
+        for (Object fact : allFacts) {
+            Class factClass = fact.getClass();
+            // Cannot use Map.computeIfAbsent(), as we also want to cache null values.
+            if (!planningIdAccessorCacheMap.containsKey(factClass)) {
+                planningIdAccessorCacheMap.put(factClass, ConfigUtils.findPlanningIdMemberAccessor(factClass));
+            }
+            MemberAccessor planningIdAccessor = planningIdAccessorCacheMap.get(factClass);
+            if (planningIdAccessor == null) { // There is no planning ID annotation.
+                continue;
+            }
+            Object id = planningIdAccessor.executeGetter(fact);
+            if (id == null) { // Fail fast as planning ID is null.
+                throw new IllegalStateException("The planningId (" + id + ") of the member (" + planningIdAccessor
+                        + ") of the class (" + factClass + ") on object (" + fact + ") must not be null.\n"
+                        + "Maybe initialize the planningId of the class (" + planningIdAccessor.getDeclaringClass()
+                        + ") instance (" + fact + ") before solving.\n" +
+                        "Maybe remove the " + PlanningId.class.getSimpleName() + " annotation.");
+            }
+        }
     }
 
     @Override

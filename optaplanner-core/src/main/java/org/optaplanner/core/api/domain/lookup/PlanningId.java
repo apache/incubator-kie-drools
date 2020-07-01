@@ -39,8 +39,9 @@ import org.optaplanner.core.impl.heuristic.move.Move;
  * It is specified on a getter of a java bean property (or directly on a field) of a {@link PlanningEntity} class,
  * {@link ValueRangeProvider planning value} class or any {@link ProblemFactCollectionProperty problem fact} class.
  * <p>
- * The return type can be any type which overrides {@link Object#equals(Object)} and {@link Object#hashCode()},
- * but is usually {@link Long} or {@link String}. It must never return a null instance.
+ * The return type can be any {@link Comparable} type which overrides {@link Object#equals(Object)} and
+ * {@link Object#hashCode()}, and is usually {@link Long} or {@link String}.
+ * It must never return a null instance.
  */
 @Target({ METHOD, FIELD })
 @Retention(RUNTIME)

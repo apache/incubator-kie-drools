@@ -26,6 +26,7 @@ import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.phase.Phase;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
@@ -222,6 +223,10 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
                 stepIndex++;
                 problemFactChange = problemFactChangeQueue.poll();
             }
+            // All PFCs are processed, fail fast if any of the new facts have null planning IDs.
+            InnerScoreDirector<Solution_> scoreDirector = solverScope.getScoreDirector();
+            scoreDirector.assertNonNullPlanningIds();
+            // Everything is fine, proceed.
             basicPlumbingTermination.endProblemFactChangesProcessing();
             bestSolutionRecaller.updateBestSolution(solverScope);
             logger.info("Real-time problem fact changes done: step total ({}), new best score ({}).",
