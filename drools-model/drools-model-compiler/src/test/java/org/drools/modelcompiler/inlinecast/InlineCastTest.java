@@ -17,6 +17,7 @@
 package org.drools.modelcompiler.inlinecast;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.drools.modelcompiler.BaseModelTest;
 import org.drools.modelcompiler.domain.InternationalAddress;
@@ -106,6 +107,63 @@ public class InlineCastTest extends BaseModelTest {
         ksession.fireAllRules();
 
         assertEquals( "Found: Mark $p class: org.drools.modelcompiler.domain.Person", result.getValue() );
+    }
+
+
+    public interface DecisionTable extends Expression {
+        List<OutputClause> getOutput();
+    }
+
+    public interface OutputClause extends DMNElement {
+
+    }
+
+    public interface Expression extends DMNElement {
+
+    }
+
+    public interface DMNElement extends DMNModelInstrumentedBase {
+
+    }
+
+    public interface DMNModelInstrumentedBase {
+        DMNModelInstrumentedBase getParent();
+    }
+
+    @Test
+    public void testExplicitCast() {
+        String str =
+                "import " + OutputClause.class.getCanonicalName() + "\n;" +
+                        "import " + DecisionTable.class.getCanonicalName() + "\n;" +
+                        "rule r\n" +
+                        "when\n" +
+                        "  $oc : OutputClause( parent instanceof DecisionTable, parent.output.size > 1 )\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.fireAllRules();
+
+        assertTrue(true);
+    }
+
+    @Test
+    public void testInlineCastParent() {
+        String str =
+                "import " + OutputClause.class.getCanonicalName() + "\n;" +
+                        "import " + DecisionTable.class.getCanonicalName() + "\n;" +
+                        "rule r\n" +
+                        "when\n" +
+                        "  $oc : OutputClause( parent#DecisionTable.output.size > 1 )\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.fireAllRules();
+
+        assertTrue(true);
     }
 
     @Test
