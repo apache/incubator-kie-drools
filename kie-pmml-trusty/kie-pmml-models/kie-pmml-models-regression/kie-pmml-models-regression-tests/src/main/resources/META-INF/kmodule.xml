@@ -4,6 +4,12 @@
   <kbase name="CategoricalVariablesRegression" packages="categoricalvariablesregression">
     <ksession name="CategoricalVariablesRegressionSession" type="stateless"/>
   </kbase>
+  <kbase name="LinearRegressionSampleWithTransformations" packages="linearregressionsamplewithtransformations">
+    <ksession name="LinearRegressionSampleWithTransformationsSession" type="stateless"/>
+  </kbase>
+  <kbase name="LogisticRegression" packages="logisticregression">
+    <ksession name="LogisticRegressionSession" type="stateless"/>
+  </kbase>
   <kbase name="LogisticRegressionIrisData" packages="logisticregressionirisdata">
     <ksession name="LogisticRegressionIrisDataSession" type="stateless"/>
   </kbase>

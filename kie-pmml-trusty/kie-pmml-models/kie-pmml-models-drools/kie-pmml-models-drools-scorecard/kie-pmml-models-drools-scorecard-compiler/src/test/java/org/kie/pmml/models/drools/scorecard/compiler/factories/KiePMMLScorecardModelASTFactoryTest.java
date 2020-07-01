@@ -16,7 +16,8 @@
 
 package org.kie.pmml.models.drools.scorecard.compiler.factories;
 
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.dmg.pmml.PMML;
@@ -25,13 +26,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
-import org.kie.pmml.models.drools.scorecard.compiler.factories.KiePMMLScorecardModelASTFactory;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getFieldTypeMap;
 
 public class KiePMMLScorecardModelASTFactoryTest {
 
@@ -50,10 +52,12 @@ public class KiePMMLScorecardModelASTFactoryTest {
 
     @Test
     public void getKiePMMLDroolsSampleAST() {
-        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        KiePMMLDroolsAST retrieved = KiePMMLScorecardModelASTFactory.getKiePMMLDroolsAST(samplePmml.getDataDictionary(), scorecardModel, fieldTypeMap);
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(samplePmml.getDataDictionary(), samplePmml.getTransformationDictionary(),  scorecardModel.getLocalTransformations());
+        List<KiePMMLDroolsType> types = Collections.emptyList();
+        KiePMMLDroolsAST retrieved = KiePMMLScorecardModelASTFactory.getKiePMMLDroolsAST(samplePmml.getDataDictionary(), scorecardModel, fieldTypeMap, types);
         assertNotNull(retrieved);
-        assertFalse(retrieved.getTypes().isEmpty());
+        assertEquals(types, retrieved.getTypes());
         assertFalse(retrieved.getRules().isEmpty());
     }
+
 }

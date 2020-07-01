@@ -36,8 +36,8 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLFactoryFactory.getFactorySourceCode;
-import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndModel;
-import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndModelFromPlugin;
+import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModel;
+import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelFromPlugin;
 
 /**
  * <code>PMMLCompiler</code> default implementation
@@ -113,7 +113,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
         return pmml
                 .getModels()
                 .stream()
-                .map(model -> getFromCommonDataAndModel(pmml.getDataDictionary(), pmml.getTransformationDictionary(), model, kbuilder))
+                .map(model -> getFromCommonDataAndTransformationDictionaryAndModel(pmml.getDataDictionary(), pmml.getTransformationDictionary(), model, kbuilder))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
@@ -131,7 +131,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
         return pmml
                 .getModels()
                 .stream()
-                .map(model -> getFromCommonDataAndModelFromPlugin(packageName, pmml.getDataDictionary(), pmml.getTransformationDictionary(), model, kbuilder))
+                .map(model -> getFromCommonDataAndTransformationDictionaryAndModelFromPlugin(packageName, pmml.getDataDictionary(), pmml.getTransformationDictionary(), model, kbuilder))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());

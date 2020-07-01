@@ -48,10 +48,10 @@ import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableRegressionFactory.MISSING_BODY_TEMPLATE;
+import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
+import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableRegressionFactory.addMethod;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableRegressionFactory.populateGetTargetCategory;
-import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 
 public class KiePMMLRegressionTableClassificationFactory {
 
@@ -83,7 +83,7 @@ public class KiePMMLRegressionTableClassificationFactory {
         CompilationUnit cloneCU = templateCU.clone();
         cloneCU.setPackageDeclaration(packageName);
         final REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod = REGRESSION_NORMALIZATION_METHOD.byName(normalizationMethod.value());
-        final OP_TYPE op_type = OP_TYPE.byName(opType.value());
+        final OP_TYPE op_type = opType != null ? OP_TYPE.byName(opType.value()) : null;
         ClassOrInterfaceDeclaration tableTemplate = cloneCU.getClassByName(KIE_PMML_REGRESSION_TABLE_CLASSIFICATION_TEMPLATE)
                 .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
         String className = "KiePMMLRegressionTableClassification" + classArity.addAndGet(1);
@@ -118,7 +118,9 @@ public class KiePMMLRegressionTableClassificationFactory {
                     assignExpr.setValue(new NameExpr(regressionNormalizationMethod.getClass().getSimpleName() + "." + regressionNormalizationMethod.name()));
                     break;
                 case "opType":
-                    assignExpr.setValue(new NameExpr(opType.getClass().getSimpleName() + "." + opType.name()));
+                    if (opType != null) {
+                        assignExpr.setValue(new NameExpr(opType.getClass().getSimpleName() + "." + opType.name()));
+                    }
                     break;
                 default:
                     logger.warn("Unexpected property inside the constructor: {}", propertyName);

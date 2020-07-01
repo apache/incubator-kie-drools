@@ -16,6 +16,9 @@
   <kbase name="SampleMineTreeModel" packages="sampleminetreemodel">
     <ksession name="SampleMineTreeModelSession" type="stateless"/>
   </kbase>
+  <kbase name="SampleMineTreeModelWithTransformations" packages="sampleminetreemodelwithtransformations">
+    <ksession name="SampleMineTreeModelWithTransformationsSession" type="stateless"/>
+  </kbase>
   <kbase name="SimpleClassificationTreeModel" packages="simpleclassificationtreemodel">
     <ksession name="SimpleClassificationTreeModelSession" type="stateless"/>
   </kbase>

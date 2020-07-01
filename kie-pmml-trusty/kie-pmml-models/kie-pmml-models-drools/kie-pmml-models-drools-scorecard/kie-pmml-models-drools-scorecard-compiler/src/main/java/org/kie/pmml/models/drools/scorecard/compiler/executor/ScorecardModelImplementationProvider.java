@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.models.drools.scorecard.compiler.executor;
 
+import java.util.List;
 import java.util.Map;
 
 import org.dmg.pmml.DataDictionary;
@@ -23,6 +24,7 @@ import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.provider.DroolsModelProvider;
 import org.kie.pmml.models.drools.scorecard.compiler.factories.KiePMMLScorecardModelFactory;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
@@ -50,8 +52,11 @@ public class ScorecardModelImplementationProvider extends DroolsModelProvider<Sc
     }
 
     @Override
-    public KiePMMLDroolsAST getKiePMMLDroolsAST(final DataDictionary dataDictionary, final Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-        return KiePMMLScorecardModelFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
+    public KiePMMLDroolsAST getKiePMMLDroolsAST(final DataDictionary dataDictionary,
+                                                final Scorecard model,
+                                                final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
+                                                final List<KiePMMLDroolsType> types) {
+        return KiePMMLScorecardModelFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap, types);
     }
 
     @Override

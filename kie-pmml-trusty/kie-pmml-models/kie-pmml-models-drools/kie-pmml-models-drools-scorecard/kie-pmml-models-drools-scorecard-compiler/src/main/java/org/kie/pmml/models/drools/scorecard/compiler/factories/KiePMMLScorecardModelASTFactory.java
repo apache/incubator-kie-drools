@@ -22,12 +22,11 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
-import org.kie.pmml.models.drools.scorecard.model.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory;
-import org.kie.pmml.models.drools.ast.factories.KiePMMLDataDictionaryASTFactory;
+import org.kie.pmml.models.drools.scorecard.model.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,12 +54,15 @@ public class KiePMMLScorecardModelASTFactory extends KiePMMLAbstractModelASTFact
      * @param dataDictionary
      * @param model
      * @param fieldTypeMap
+     * @param types
      * @return
      */
-    public static KiePMMLDroolsAST getKiePMMLDroolsAST(DataDictionary dataDictionary, Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+    public static KiePMMLDroolsAST getKiePMMLDroolsAST(final DataDictionary dataDictionary,
+                                                       final Scorecard model,
+                                                       final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
+                                                       final List<KiePMMLDroolsType> types) {
         logger.trace("getKiePMMLDroolsAST {} {} {}", dataDictionary, model, fieldTypeMap);
         DATA_TYPE targetType = getTargetFieldType(dataDictionary, model);
-        List<KiePMMLDroolsType> types = KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(dataDictionary);
         final List<KiePMMLOutputField> outputFields = getOutputFields(model);
         KiePMMLScorecardModelCharacteristicASTFactory factory = KiePMMLScorecardModelCharacteristicASTFactory.factory(fieldTypeMap, outputFields, targetType);
         if (model.isUseReasonCodes()) {

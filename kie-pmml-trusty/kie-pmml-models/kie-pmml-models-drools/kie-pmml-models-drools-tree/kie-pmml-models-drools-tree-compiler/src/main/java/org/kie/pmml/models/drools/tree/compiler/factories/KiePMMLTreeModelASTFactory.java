@@ -17,6 +17,7 @@ package org.kie.pmml.models.drools.tree.compiler.factories;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.tree.TreeModel;
@@ -48,15 +49,19 @@ public class KiePMMLTreeModelASTFactory extends KiePMMLAbstractModelASTFactory {
     /**
      * Returns the <code>KiePMMLDroolsAST</code> built out of the given parameters.
      * It also <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tupla
+     *
      * @param dataDictionary
      * @param model
      * @param fieldTypeMap
+     * @param types
      * @return
      */
-    public static KiePMMLDroolsAST getKiePMMLDroolsAST(DataDictionary dataDictionary, TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+    public static KiePMMLDroolsAST getKiePMMLDroolsAST(final DataDictionary dataDictionary,
+                                                       final TreeModel model,
+                                                       final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
+                                                       final List<KiePMMLDroolsType> types) {
         logger.trace("getKiePMMLDroolsAST {} {}", dataDictionary, model);
         DATA_TYPE targetType = getTargetFieldType(dataDictionary, model);
-        List<KiePMMLDroolsType> types = KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(dataDictionary);
         final List<KiePMMLOutputField> outputFields = getOutputFields(model);
         List<KiePMMLDroolsRule> rules = KiePMMLTreeModelNodeASTFactory.factory(fieldTypeMap, outputFields, model.getNoTrueChildStrategy(), targetType).declareRulesFromRootNode(model.getNode(), "");
         return new KiePMMLDroolsAST(types, rules);

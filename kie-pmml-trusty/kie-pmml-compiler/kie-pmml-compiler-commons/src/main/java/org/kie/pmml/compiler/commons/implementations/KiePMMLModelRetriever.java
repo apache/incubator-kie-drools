@@ -46,11 +46,11 @@ public class KiePMMLModelRetriever {
      * @return
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
-    public static Optional<KiePMMLModel> getFromCommonDataAndModel(final DataDictionary dataDictionary,
-                                                                   final TransformationDictionary transformationDictionary,
-                                                                   final Model model,
-                                                                   final Object kBuilder) {
-        logger.trace("getFromDataDictionaryAndModel {}", model);
+    public static Optional<KiePMMLModel> getFromCommonDataAndTransformationDictionaryAndModel(final DataDictionary dataDictionary,
+                                                                                              final TransformationDictionary transformationDictionary,
+                                                                                              final Model model,
+                                                                                              final Object kBuilder) {
+        logger.trace("getFromCommonDataAndTransformationDictionaryAndModel {}", model);
         final PMML_MODEL pmmlMODEL = PMML_MODEL.byName(model.getClass().getSimpleName());
         logger.debug("pmmlModelType {}", pmmlMODEL);
         return getModelImplementationProviderStream(model)
@@ -68,11 +68,11 @@ public class KiePMMLModelRetriever {
      * @return
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
-    public static Optional<KiePMMLModel> getFromCommonDataAndModelFromPlugin(final String packageName,
-                                                                             final DataDictionary dataDictionary,
-                                                                             final TransformationDictionary transformationDictionary,
-                                                                             final Model model,
-                                                                             final Object kBuilder) {
+    public static Optional<KiePMMLModel> getFromCommonDataAndTransformationDictionaryAndModelFromPlugin(final String packageName,
+                                                                                                        final DataDictionary dataDictionary,
+                                                                                                        final TransformationDictionary transformationDictionary,
+                                                                                                        final Model model,
+                                                                                                        final Object kBuilder) {
         logger.trace("getFromDataDictionaryAndModel {}", model);
         final PMML_MODEL pmmlMODEL = PMML_MODEL.byName(model.getClass().getSimpleName());
         logger.debug("pmmlModelType {}", pmmlMODEL);

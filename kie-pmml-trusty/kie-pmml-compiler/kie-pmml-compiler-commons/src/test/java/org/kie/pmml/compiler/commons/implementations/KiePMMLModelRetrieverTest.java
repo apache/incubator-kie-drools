@@ -27,19 +27,38 @@ import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndModel;
+import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModel;
+import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelFromPlugin;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
 public class KiePMMLModelRetrieverTest {
 
     private static final String MULTIPLE_TARGETS_SOURCE = "MultipleTargetsFieldSample.pmml";
     private static final String ONE_MINING_TARGET_SOURCE = "OneMiningTargetFieldSample.pmml";
+    private static final String PACKAGE_NAME = "packagename";
     private PMML pmmlModel;
 
     @Test
-    public void getFromDataDictionaryAndModelWithProvider() throws Exception {
+    public void getFromCommonDataAndTransformationDictionaryAndModelWithProvider() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(MULTIPLE_TARGETS_SOURCE), MULTIPLE_TARGETS_SOURCE);
-        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndModel(pmmlModel.getDataDictionary(), pmmlModel.getTransformationDictionary(), pmmlModel.getModels().get(0), null);
+        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModel(pmmlModel.getDataDictionary(), pmmlModel.getTransformationDictionary(), pmmlModel.getModels().get(0), null);
+        assertNotNull(retrieved);
+        assertTrue(retrieved.isPresent());
+        assertTrue(retrieved.get() instanceof KiePMMLTestingModel);
+    }
+
+    @Test
+    public void getFromCommonDataAndTransformationDictionaryAndModelWithoutProvider() throws Exception {
+        pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE), ONE_MINING_TARGET_SOURCE);
+        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModel(pmmlModel.getDataDictionary(), pmmlModel.getTransformationDictionary(), pmmlModel.getModels().get(0), null);
+        assertNotNull(retrieved);
+        assertFalse(retrieved.isPresent());
+    }
+
+    @Test
+    public void getFromCommonDataAndTransformationDictionaryAndModelFromPluginlWithProvider() throws Exception {
+        pmmlModel = KiePMMLUtil.load(getFileInputStream(MULTIPLE_TARGETS_SOURCE), MULTIPLE_TARGETS_SOURCE);
+        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModelFromPlugin(PACKAGE_NAME, pmmlModel.getDataDictionary(), pmmlModel.getTransformationDictionary(), pmmlModel.getModels().get(0), null);
         assertNotNull(retrieved);
         assertTrue(retrieved.isPresent());
         assertTrue(retrieved.get() instanceof KiePMMLTestingModel);
@@ -48,7 +67,7 @@ public class KiePMMLModelRetrieverTest {
     @Test
     public void getFromDataDictionaryAndModelWithoutProvider() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE), ONE_MINING_TARGET_SOURCE);
-        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndModel(pmmlModel.getDataDictionary(), pmmlModel.getTransformationDictionary(), pmmlModel.getModels().get(0), null);
+        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModelFromPlugin(PACKAGE_NAME, pmmlModel.getDataDictionary(), pmmlModel.getTransformationDictionary(), pmmlModel.getModels().get(0), null);
         assertNotNull(retrieved);
         assertFalse(retrieved.isPresent());
     }

@@ -16,7 +16,8 @@
 
 package org.kie.pmml.models.drools.tree.compiler.factories;
 
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.dmg.pmml.PMML;
@@ -25,12 +26,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getFieldTypeMap;
 
 public class KiePMMLTreeModelASTFactoryTest {
 
@@ -67,28 +70,31 @@ public class KiePMMLTreeModelASTFactoryTest {
 
     @Test
     public void getKiePMMLDroolsGolfingAST() {
-        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        KiePMMLDroolsAST retrieved = KiePMMLTreeModelASTFactory.getKiePMMLDroolsAST(golfingPmml.getDataDictionary(), golfingModel, fieldTypeMap);
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(golfingPmml.getDataDictionary(), golfingPmml.getTransformationDictionary(),  golfingModel.getLocalTransformations());
+        List<KiePMMLDroolsType> types = Collections.emptyList();
+        KiePMMLDroolsAST retrieved = KiePMMLTreeModelASTFactory.getKiePMMLDroolsAST(golfingPmml.getDataDictionary(), golfingModel, fieldTypeMap, types);
         assertNotNull(retrieved);
-        assertFalse(retrieved.getTypes().isEmpty());
+        assertEquals(types, retrieved.getTypes());
         assertFalse(retrieved.getRules().isEmpty());
     }
 
     @Test
     public void getKiePMMLDroolsIrisAST() {
-        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        KiePMMLDroolsAST retrieved = KiePMMLTreeModelASTFactory.getKiePMMLDroolsAST(irisPmml.getDataDictionary(), irisModel, fieldTypeMap);
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(irisPmml.getDataDictionary(), irisPmml.getTransformationDictionary(),  irisModel.getLocalTransformations());
+        List<KiePMMLDroolsType> types = Collections.emptyList();
+        KiePMMLDroolsAST retrieved = KiePMMLTreeModelASTFactory.getKiePMMLDroolsAST(irisPmml.getDataDictionary(), irisModel, fieldTypeMap, types);
         assertNotNull(retrieved);
-        assertFalse(retrieved.getTypes().isEmpty());
+        assertEquals(types, retrieved.getTypes());
         assertFalse(retrieved.getRules().isEmpty());
     }
 
     @Test
     public void getKiePMMLDroolsSimpleSetAST() {
-        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        KiePMMLDroolsAST retrieved = KiePMMLTreeModelASTFactory.getKiePMMLDroolsAST(simpleSetPmml.getDataDictionary(), simpleSetModel, fieldTypeMap);
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(simpleSetPmml.getDataDictionary(), simpleSetPmml.getTransformationDictionary(),  simpleSetModel.getLocalTransformations());
+        List<KiePMMLDroolsType> types = Collections.emptyList();
+        KiePMMLDroolsAST retrieved = KiePMMLTreeModelASTFactory.getKiePMMLDroolsAST(simpleSetPmml.getDataDictionary(), simpleSetModel, fieldTypeMap, types);
         assertNotNull(retrieved);
-        assertFalse(retrieved.getTypes().isEmpty());
+        assertEquals(types, retrieved.getTypes());
         assertFalse(retrieved.getRules().isEmpty());
     }
 }

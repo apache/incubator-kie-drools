@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.compiler.kie.builder.impl;
 
@@ -261,7 +261,7 @@ public abstract class AbstractKieProject implements KieProject {
         if (assets.isEmpty()) {
             if (buildFilter == BUILD_ALL) {
                 log.warn( "No files found for KieBase " + kBaseModel.getName() +
-                        (kModule instanceof FileKieModule ? ", searching folder " + kModule.getFile() : ""));
+                                  (kModule instanceof FileKieModule ? ", searching folder " + kModule.getFile() : ""));
             }
             return kbuilder;
         }

@@ -52,13 +52,14 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageNa
 import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.getOutputFields;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
+import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.addTransformationsInClassOrInterfaceDeclaration;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 
 public class KiePMMLRegressionModelFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLRegressionModelFactory.class.getName());
-    private static final String KIE_PMML_REGRESSION_MODEL_TEMPLATE_JAVA = "KiePMMLRegressionModelTemplate.tmpl";
-    private static final String KIE_PMML_REGRESSION_MODEL_TEMPLATE = "KiePMMLRegressionModelTemplate";
+    static final String KIE_PMML_REGRESSION_MODEL_TEMPLATE_JAVA = "KiePMMLRegressionModelTemplate.tmpl";
+    static final String KIE_PMML_REGRESSION_MODEL_TEMPLATE = "KiePMMLRegressionModelTemplate";
 
     private KiePMMLRegressionModelFactory() {
     }
@@ -96,13 +97,14 @@ public class KiePMMLRegressionModelFactory {
                         .findFirst().orElseThrow(() -> new RuntimeException("Failed to find expected KiePMMLRegressionTableClassification"));
         final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing default constructor in ClassOrInterfaceDeclaration %s ", modelTemplate.getName())));
         populateConstructor(className, nestedTable, constructorDeclaration, targetFieldName, MINING_FUNCTION.byName(model.getMiningFunction().value()), modelName);
+        addTransformationsInClassOrInterfaceDeclaration(modelTemplate, transformationDictionary, model.getLocalTransformations());
         Map<String, String> toReturn = tablesSourceMap.entrySet().stream().collect(Collectors.toMap(entry -> packageName + "." + entry.getKey(), entry -> entry.getValue().getSource()));
         String fullClassName = packageName + "." + className;
         toReturn.put(fullClassName, cloneCU.toString());
         return toReturn;
     }
 
-    private static Map<String, KiePMMLTableSourceCategory> getRegressionTablesMap(final DataDictionary dataDictionary,
+    static Map<String, KiePMMLTableSourceCategory> getRegressionTablesMap(final DataDictionary dataDictionary,
                                                                                   final RegressionModel model,
                                                                                   final String targetFieldName,
                                                                                   final List<KiePMMLOutputField> outputFields,
@@ -120,7 +122,7 @@ public class KiePMMLRegressionModelFactory {
         return toReturn;
     }
 
-    private static void populateConstructor(final String generatedClassName,
+    static void populateConstructor(final String generatedClassName,
                                             final String nestedTable,
                                             final ConstructorDeclaration constructorDeclaration,
                                             final String targetField,
@@ -151,7 +153,7 @@ public class KiePMMLRegressionModelFactory {
         });
     }
 
-    private static boolean isRegression(final MiningFunction miningFunction, final String targetField, final OpType targetOpType) {
+    static boolean isRegression(final MiningFunction miningFunction, final String targetField, final OpType targetOpType) {
         return Objects.equals(MiningFunction.REGRESSION, miningFunction) && (targetField == null || Objects.equals(OpType.CONTINUOUS, targetOpType));
     }
 }
