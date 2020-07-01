@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
@@ -88,7 +89,11 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
 
         MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
         bindAsDSL.addArgument(context.getVarExpr(drlxParseResult.getPatternBinding() != null ? drlxParseResult.getPatternBinding() : drlxParseResult.getAccumulateBinding()));
-        bindAsDSL.addArgument("x -> x");
+        LambdaExpr lambdaExpr = new LambdaExpr();
+        lambdaExpr.setEnclosingParameters(true);
+        lambdaExpr.addParameter(new Parameter(drlxParseResult.getPatternJPType(), DrlxParseUtil.THIS_PLACEHOLDER));
+        lambdaExpr.setBody(new ExpressionStmt(new NameExpr(DrlxParseUtil.THIS_PLACEHOLDER)));
+        bindAsDSL.addArgument(lambdaExpr);
         return bindAsDSL;
     }
 
