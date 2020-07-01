@@ -59,7 +59,7 @@ public class KiePMMLModelFactoryUtilsTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        pmmlModel = KiePMMLUtil.load(getFileInputStream(SOURCE));
+        pmmlModel = KiePMMLUtil.load(getFileInputStream(SOURCE), "");
         assertNotNull(pmmlModel);
         model = (TreeModel) pmmlModel.getModels().get(0);
         assertNotNull(model);

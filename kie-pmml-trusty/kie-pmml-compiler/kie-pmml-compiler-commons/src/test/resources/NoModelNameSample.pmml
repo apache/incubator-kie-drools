@@ -1,0 +1,101 @@
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
+  <Header copyright="DMG.org"/>
+  <DataDictionary numberOfFields="4">
+    <DataField name="age" optype="continuous" dataType="double"/>
+    <DataField name="salary" optype="continuous" dataType="double"/>
+    <DataField name="car_location" optype="categorical" dataType="string">
+      <Value value="carpark"/>
+      <Value value="street"/>
+    </DataField>
+    <DataField name="number_of_claims" optype="continuous" dataType="integer"/>
+  </DataDictionary>
+  <RegressionModel functionName="regression" algorithmName="linearRegression" targetFieldName="number_of_claims">
+    <MiningSchema>
+      <MiningField name="age"/>
+      <MiningField name="salary"/>
+      <MiningField name="car_location" usageType="target"/> <!-- <- wrong - used for test - should be overrided by Target -->
+      <MiningField name="number_of_claims"/>
+    </MiningSchema>
+<!--    <Targets>-->
+<!--      <Target field="number_of_claims"/>-->
+<!--      <Target field="salary"/> &lt;!&ndash; <- wrong - used just for test &ndash;&gt;-->
+<!--    </Targets>-->
+    <RegressionTable intercept="132.37">
+<!--      <NumericPredictor name="age" exponent="1" coefficient="7.1"/>-->
+<!--      <NumericPredictor name="salary" exponent="1" coefficient="0.01"/>-->
+<!--      <CategoricalPredictor name="car_location" value="carpark" coefficient="41.1"/>-->
+<!--      <CategoricalPredictor name="car_location" value="street" coefficient="325.03"/>-->
+    </RegressionTable>
+  </RegressionModel>
+  <TreeModel functionName="classification">
+    <MiningSchema>
+      <MiningField name="age"/>
+      <MiningField name="salary"/>
+      <MiningField name="car_location" usageType="target"/> <!-- <- wrong - used for test - should be overrided by Target -->
+      <MiningField name="number_of_claims"/>
+    </MiningSchema>
+    <Node score="will play">
+      <True/>
+<!--      <Node score="will play">-->
+<!--        <SimplePredicate field="outlook" operator="equal" value="sunny"/>-->
+<!--        <Node score="will play">-->
+<!--          <CompoundPredicate booleanOperator="and">-->
+<!--            <SimplePredicate field="temperature" operator="lessThan" value="90"/>-->
+<!--            <SimplePredicate field="temperature" operator="greaterThan" value="50"/>-->
+<!--          </CompoundPredicate>-->
+<!--          <Node score="will play">-->
+<!--            <SimplePredicate field="humidity" operator="lessThan" value="80"/>-->
+<!--          </Node>-->
+<!--          <Node score="no play">-->
+<!--            <SimplePredicate field="humidity" operator="greaterOrEqual" value="80"/>-->
+<!--          </Node>-->
+<!--        </Node>-->
+<!--        <Node score="no play">-->
+<!--          <CompoundPredicate booleanOperator="or">-->
+<!--            <SimplePredicate field="temperature" operator="greaterOrEqual" value="90"/>-->
+<!--            <SimplePredicate field="temperature" operator="lessOrEqual" value="50"/>-->
+<!--          </CompoundPredicate>-->
+<!--        </Node>-->
+<!--      </Node>-->
+<!--      <Node score="may play">-->
+<!--        <CompoundPredicate booleanOperator="or">-->
+<!--          <SimplePredicate field="outlook" operator="equal" value="overcast"/>-->
+<!--          <SimplePredicate field="outlook" operator="equal" value="rain"/>-->
+<!--        </CompoundPredicate>-->
+<!--        <Node score="may play">-->
+<!--          <CompoundPredicate booleanOperator="and">-->
+<!--            <SimplePredicate field="temperature" operator="greaterThan" value="60"/>-->
+<!--            <SimplePredicate field="temperature" operator="lessThan" value="100"/>-->
+<!--            <SimplePredicate field="outlook" operator="equal" value="overcast"/>-->
+<!--            <SimplePredicate field="humidity" operator="lessThan" value="70"/>-->
+<!--            <SimplePredicate field="windy" operator="equal" value="false"/>-->
+<!--          </CompoundPredicate>-->
+<!--        </Node>-->
+<!--        <Node score="no play">-->
+<!--          <CompoundPredicate booleanOperator="and">-->
+<!--            <SimplePredicate field="outlook" operator="equal" value="rain"/>-->
+<!--            <SimplePredicate field="humidity" operator="lessThan" value="70"/>-->
+<!--          </CompoundPredicate>-->
+<!--        </Node>-->
+<!--      </Node>-->
+    </Node>
+  </TreeModel>
+  <RegressionModel functionName="regression" algorithmName="linearRegression" targetFieldName="number_of_claims">
+    <MiningSchema>
+      <MiningField name="age"/>
+      <MiningField name="salary"/>
+      <MiningField name="car_location" usageType="target"/> <!-- <- wrong - used for test - should be overrided by Target -->
+      <MiningField name="number_of_claims"/>
+    </MiningSchema>
+    <!--    <Targets>-->
+    <!--      <Target field="number_of_claims"/>-->
+    <!--      <Target field="salary"/> &lt;!&ndash; <- wrong - used just for test &ndash;&gt;-->
+    <!--    </Targets>-->
+    <RegressionTable intercept="766.37">
+      <!--      <NumericPredictor name="age" exponent="1" coefficient="7.1"/>-->
+      <!--      <NumericPredictor name="salary" exponent="1" coefficient="0.01"/>-->
+      <!--      <CategoricalPredictor name="car_location" value="carpark" coefficient="41.1"/>-->
+      <!--      <CategoricalPredictor name="car_location" value="street" coefficient="325.03"/>-->
+    </RegressionTable>
+  </RegressionModel>
+</PMML>
