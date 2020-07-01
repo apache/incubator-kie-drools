@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.evaluator.assembler.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -36,6 +37,10 @@ import static org.kie.pmml.evaluator.assembler.service.PMMLAssemblerService.getF
  * Class meant to <b>compile</b> resources
  */
 public class PMMLCompilerService {
+
+    private PMMLCompilerService() {
+        // Avoid instantiation
+    }
 
     /**
      * @param kbuilderImpl
@@ -75,7 +80,7 @@ public class PMMLCompilerService {
     public static List<KiePMMLModel> getKiePMMLModelsCompiledFromResource(KnowledgeBuilderImpl kbuilderImpl, Resource resource) {
         PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
         try {
-            return pmmlCompiler.getModels(resource.getInputStream(), kbuilderImpl);
+            return pmmlCompiler.getModels(resource.getInputStream(), getFileName(resource.getSourcePath()), kbuilderImpl);
         } catch (IOException e) {
             throw new ExternalException("ExternalException", e);
         }
@@ -92,7 +97,7 @@ public class PMMLCompilerService {
         String factoryClassName = classNamePackageName[0];
         String packageName = classNamePackageName[1];
         try {
-            return pmmlCompiler.getModelsFromPlugin(factoryClassName, packageName, resource.getInputStream(), kbuilderImpl);
+            return pmmlCompiler.getModelsFromPlugin(factoryClassName, packageName, resource.getInputStream(), getFileName(resource.getSourcePath()), kbuilderImpl);
         } catch (IOException e) {
             throw new ExternalException("ExternalException", e);
         }
@@ -101,5 +106,15 @@ public class PMMLCompilerService {
     static PMMLCompiler getCompiler(KnowledgeBuilderImpl kbuilderImpl) {
         // to retrieve model implementations
         return new PMMLCompilerImpl();
+    }
+
+    static String getFileName(final String fullPath) {
+        String toReturn = fullPath;
+        if (fullPath.contains(File.separator)) {
+            toReturn = fullPath.substring(fullPath.lastIndexOf(File.separator) + 1);
+        } else   if (fullPath.contains("/")) {
+            toReturn = fullPath.substring(fullPath.lastIndexOf('/') + 1);
+        }
+        return toReturn;
     }
 }
