@@ -210,7 +210,7 @@ public class KnowledgeBaseImpl
         kieComponentFactory = getConfiguration().getComponentFactory();
 
         this.factHandleFactory = kieComponentFactory.getFactHandleFactoryService();
-        kieComponentFactory.getTraitFactory().setRuleBase(this);
+        kieComponentFactory.initTraitFactory(this);
         kieComponentFactory.getTripleStore().setId(id);
 
         setupRete();
@@ -499,7 +499,7 @@ public class KnowledgeBaseImpl
             droolsStream.close();
         }
 
-        this.getConfiguration().getComponentFactory().getTraitFactory().setRuleBase(this);
+        this.getConfiguration().getComponentFactory().initTraitFactory(this);
 
         rewireReteAfterDeserialization();
     }
@@ -853,7 +853,7 @@ public class KnowledgeBaseImpl
 
             InternalKnowledgePackage pkg = this.pkgs.get( newPkg.getName() );
             if ( pkg == null ) {
-                pkg = new KnowledgePackageImpl( newPkg.getName() );
+                pkg = kieComponentFactory.createKnowledgePackage(newPkg.getName());
 
                 // @TODO we really should have a single root cache
                 pkg.setClassFieldAccessorCache( this.classFieldAccessorCache );

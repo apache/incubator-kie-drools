@@ -142,6 +142,7 @@ public class ModifyInterceptor
                 }
             }
 
+
             List<String> modifiedProps = typeDeclaration.getTypeClassDef().getModifiedPropsByMethod(method);
             if (modifiedProps != null) {
                 for (String modifiedProp : modifiedProps) {

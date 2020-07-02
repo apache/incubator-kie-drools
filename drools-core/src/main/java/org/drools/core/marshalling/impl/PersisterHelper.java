@@ -23,9 +23,6 @@ import java.security.InvalidKeyException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map.Entry;
 
 import com.google.protobuf.ByteString;
@@ -37,6 +34,7 @@ import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.factmodel.traits.TraitFactory;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteAssertAction;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction;
 import org.drools.core.marshalling.impl.ProtobufMessages.Header;
@@ -202,38 +200,19 @@ public class PersisterHelper {
         
         writeStrategiesIndex( context, _header );
 
-        writeRuntimeDefinedClasses( context, _header );
+        InternalKnowledgeBase kBase = context.kBase;
+        if(kBase != null) {
+            TraitFactory traitFactory = kBase.getConfiguration().getComponentFactory().getTraitFactory();
+            if (traitFactory != null) {
+                traitFactory.writeRuntimeDefinedClasses(context, _header);
+            }
+        }
 
         byte[] buff = payload.toByteArray();
         sign( _header, buff );
         _header.setPayload( ByteString.copyFrom( buff ) );
 
         context.stream.write( _header.build().toByteArray() );
-    }
-
-    public static void writeRuntimeDefinedClasses( MarshallerWriteContext context,
-                                                  ProtobufMessages.Header.Builder _header ) {
-        if (context.kBase == null) {
-            return;
-        }
-
-        ProjectClassLoader pcl = (ProjectClassLoader) ( context.kBase ).getRootClassLoader();
-        if ( pcl.getStore() == null || pcl.getStore().isEmpty() ) {
-            return;
-        }
-
-        TraitFactory traitFactory = TraitFactory.getTraitBuilderForKnowledgeBase( context.kBase );
-        List<String> runtimeClassNames = new ArrayList( pcl.getStore().keySet() );
-        Collections.sort( runtimeClassNames );
-        ProtobufMessages.RuntimeClassDef.Builder _classDef = ProtobufMessages.RuntimeClassDef.newBuilder();
-        for ( String resourceName : runtimeClassNames ) {
-            if ( traitFactory.isRuntimeClass( resourceName ) ) {
-                _classDef.clear();
-                _classDef.setClassFqName( resourceName );
-                _classDef.setClassDef( ByteString.copyFrom( pcl.getStore().get( resourceName ) ) );
-                _header.addRuntimeClassDefinitions( _classDef.build() );
-            }
-        }
     }
 
     private static void writeStrategiesIndex(MarshallerWriteContext context,
