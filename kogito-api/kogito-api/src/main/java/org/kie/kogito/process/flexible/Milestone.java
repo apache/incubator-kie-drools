@@ -26,6 +26,10 @@ public class Milestone extends ItemDescription {
     public String toString() {
         return "Milestone{" + super.toString() + "}";
     }
+    
+    public static Builder builder(){
+        return new Builder();
+    }
 
     public static class Builder {
 
@@ -33,8 +37,12 @@ public class Milestone extends ItemDescription {
         private String name;
         private Status status;
 
-        public Builder(String id) {
+        public Builder() {
+        }
+
+        public Builder withId(String id) {
             this.id = id;
+            return this;
         }
 
         public Builder withName(String name) {

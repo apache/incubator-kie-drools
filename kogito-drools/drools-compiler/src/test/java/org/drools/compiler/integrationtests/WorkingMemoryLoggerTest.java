@@ -18,11 +18,10 @@ package org.drools.compiler.integrationtests;
 import static org.assertj.core.api.Fail.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
@@ -34,13 +33,9 @@ import org.drools.core.audit.event.LogEvent;
 import org.drools.core.event.ProcessNodeLeftEventImpl;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
-import org.kie.api.definition.process.Node;
-import org.kie.api.definition.process.Process;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
-import org.kie.api.runtime.process.NodeInstanceContainer;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.utils.KieHelper;
 
@@ -158,183 +153,19 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testLogEvents() throws Exception {
+    public void testLogEvents() {
 
         final KieSession ksession = new KieHelper().build()
                                                    .newKieSession();
 
         final WorkingMemoryInMemoryLogger logger = new WorkingMemoryInMemoryLogger((WorkingMemory) ksession);
 
-        logger.afterNodeLeft(new ProcessNodeLeftEventImpl(new EmtpyNodeInstance(), ksession));
+        NodeInstance ni = mock(NodeInstance.class);
+        when(ni.getProcessInstance()).thenReturn(mock(WorkflowProcessInstance.class));
+        logger.afterNodeLeft(new ProcessNodeLeftEventImpl(ni, ksession));
         List<LogEvent> logEvents = logger.getLogEvents();
         assertEquals(logEvents.size(), 1);
         assertTrue(logEvents.get(0).toString().startsWith("AFTER PROCESS NODE EXITED"));
-
     }
 
-    static public class EmtpyNodeInstance implements NodeInstance {
-
-        @Override
-        public String getId() {
-            return "0";
-        }
-
-        @Override
-        public long getNodeId() {
-            return 0;
-        }
-
-        @Override
-        public Node getNode() {
-            return null;
-        }
-
-        @Override
-        public String getNodeName() {
-            return "empty.node";
-        }
-
-        @Override
-        public WorkflowProcessInstance getProcessInstance() {
-            return new EmtpyWorkflowProcessInstance();
-        }
-
-        @Override
-        public NodeInstanceContainer getNodeInstanceContainer() {
-            return null;
-        }
-
-        @Override
-        public Object getVariable(String variableName) {
-            return null;
-        }
-
-        @Override
-        public void setVariable(String variableName, Object value) {
-        }
-
-        @Override
-        public Date getTriggerTime() {
-            return null;
-        }
-
-        @Override
-        public Date getLeaveTime() {
-            return null;
-        }
-
-        @Override
-        public String getNodeDefinitionId() {
-            return null;
-        }
-    }
-
-    static class EmtpyWorkflowProcessInstance implements WorkflowProcessInstance {
-
-        @Override
-        public String getProcessId() {
-            return "emtpy.process";
-        }
-
-        @Override
-        public Process getProcess() {
-            return null;
-        }
-
-        @Override
-        public String getId() {
-            return "1";
-        }
-
-
-        @Override
-        public String getProcessName() {
-            return null;
-        }
-
-
-        @Override
-        public int getState() {
-            return ProcessInstance.STATE_ACTIVE;
-        }
-
-        @Override
-        public String getParentProcessInstanceId() {
-            return "0";
-        }
-        
-        @Override
-        public String getRootProcessInstanceId() {
-            return "0";
-        }
-
-        @Override
-        public void signalEvent(String type, Object event) {
-        }
-
-        @Override
-        public String[] getEventTypes() {
-            return null;
-        }
-
-        @Override
-        public Collection<NodeInstance> getNodeInstances() {
-            return null;
-        }
-
-        @Override
-        public NodeInstance getNodeInstance(String nodeInstanceId) {
-            return null;
-        }
-
-        @Override
-        public Object getVariable(String name) {
-            return null;
-        }
-
-        @Override
-        public void setVariable(String name, Object value) {
-        }
-
-        @Override
-        public Map<String, Object> getVariables() {
-            return null;
-        }
-
-        @Override
-        public Date getStartDate() {
-            return null;
-        }
-
-        @Override
-        public Date getEndDate() {
-            return null;
-        }
-
-        @Override
-        public String getRootProcessId() {
-            return null;
-        }
-
-        @Override
-        public String getNodeIdInError() {
-            return null;
-        }
-
-        @Override
-        public String getErrorMessage() {
-            return null;
-        }
-
-        @Override
-        public String getReferenceId() {
-            return null;
-        }
-
-        @Override
-        public String getCorrelationKey() {
-            return null;
-        }
-
-    }
 }

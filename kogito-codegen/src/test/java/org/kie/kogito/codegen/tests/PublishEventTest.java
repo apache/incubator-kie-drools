@@ -15,15 +15,13 @@
 
 package org.kie.kogito.codegen.tests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
@@ -40,15 +38,61 @@ import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.services.event.ProcessInstanceDataEvent;
 import org.kie.kogito.services.event.UserTaskInstanceDataEvent;
 import org.kie.kogito.services.event.VariableInstanceDataEvent;
+import org.kie.kogito.services.event.impl.MilestoneEventBody;
 import org.kie.kogito.services.event.impl.ProcessInstanceEventBody;
 import org.kie.kogito.services.event.impl.UserTaskInstanceEventBody;
 import org.kie.kogito.services.event.impl.VariableInstanceEventBody;
 import org.kie.kogito.services.identity.StaticIdentityProvider;
 import org.kie.kogito.uow.UnitOfWork;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.kie.kogito.process.flexible.ItemDescription.Status;
 
 public class PublishEventTest extends AbstractCodegenTest {
 
+    @Test
+    public void testProcessWithMilestoneEvents() throws Exception {
+        Application app = generateCodeProcessesOnly("cases/milestones/SimpleMilestone.bpmn");
+
+        assertThat(app).isNotNull();
+        TestEventPublisher publisher = new TestEventPublisher();
+        app.unitOfWorkManager().eventManager().setService("http://myhost");
+        app.unitOfWorkManager().eventManager().addPublisher(publisher);
+
+        UnitOfWork uow = app.unitOfWorkManager().newUnitOfWork();
+        uow.start();
+
+        Process<? extends Model> p = app.processes().processById("TestCase.SimpleMilestone");
+
+        ProcessInstance<?> processInstance = p.createInstance(p.createModel());
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+
+        uow.end();
+
+        List<DataEvent<?>> events = publisher.extract();
+        assertThat(events).isNotNull().hasSize(1);
+
+        DataEvent<?> event = events.get(0);
+        assertThat(event).isInstanceOf(ProcessInstanceDataEvent.class);
+        ProcessInstanceDataEvent processDataEvent = (ProcessInstanceDataEvent) event;
+        assertThat(processDataEvent.getKogitoProcessinstanceId()).isNotNull();
+        assertThat(processDataEvent.getKogitoParentProcessinstanceId()).isNull();
+        assertThat(processDataEvent.getKogitoRootProcessinstanceId()).isNull();
+        assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("TestCase.SimpleMilestone");
+        assertThat(processDataEvent.getKogitoProcessinstanceState()).isEqualTo("2");
+        assertThat(processDataEvent.getSource()).isEqualTo("http://myhost/SimpleMilestone");
+
+        Set<MilestoneEventBody> milestones = ((ProcessInstanceDataEvent) event).getData().getMilestones();
+        assertThat(milestones)
+                .hasSize(2)
+                .extracting(e -> e.getName(), e -> e.getStatus())
+                .containsExactlyInAnyOrder(tuple("AutoStartMilestone", Status.COMPLETED.name()),
+                                           tuple("SimpleMilestone", Status.COMPLETED.name()));
+    }
    
     @Test
     public void testBusinessRuleProcessStartToEnd() throws Exception {

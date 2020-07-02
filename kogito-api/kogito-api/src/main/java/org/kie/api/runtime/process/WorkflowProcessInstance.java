@@ -16,7 +16,11 @@
 
 package org.kie.api.runtime.process;
 
+import java.util.Collection;
 import java.util.Date;
+
+import org.kie.kogito.process.flexible.AdHocFragment;
+import org.kie.kogito.process.flexible.Milestone;
 
 /**
  * A workflow process instance represents one specific instance of a
@@ -86,5 +90,16 @@ public interface WorkflowProcessInstance
      * @return correlation key if present otherwise null
      */
     String getCorrelationKey();
+
+    /**
+     * Returns the list of Milestones and their status in the current process instances
+     * @return Milestones defined in the process
+     */
+    Collection<Milestone> milestones();
+
+    /**
+     * @return AdHocFragments from the process instances 
+     */
+    Collection<AdHocFragment> adHocFragments();
 
 }

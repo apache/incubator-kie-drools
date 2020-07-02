@@ -22,6 +22,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEvent;
@@ -72,19 +73,14 @@ public class ProcessInstanceEventBatch implements EventBatch {
             ProcessInstanceEventBody body = processInstances.computeIfAbsent(event.getProcessInstance().getId(), key -> create(event));
 
             if (event instanceof ProcessNodeTriggeredEvent) {
-
                 handleProcessNodeTriggeredEvent((ProcessNodeTriggeredEvent) event, body);
             } else if (event instanceof ProcessNodeLeftEvent) {
-
                 handleProcessNodeLeftEvent((ProcessNodeLeftEvent) event, body);
             } else if (event instanceof ProcessCompletedEvent) {
-
                 handleProcessCompletedEvent((ProcessCompletedEvent) event, body);
             } else if (event instanceof ProcessWorkItemTransitionEvent) {
-
                 handleProcessWorkItemTransitionEvent((ProcessWorkItemTransitionEvent) event, userTaskInstances);
             } else if (event instanceof ProcessVariableChangedEvent) {
-
                 handleProcessVariableChangedEvent((ProcessVariableChangedEvent) event, variables);
             }
         }
@@ -163,6 +159,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
 
     protected ProcessInstanceEventBody create(ProcessEvent event) {
         WorkflowProcessInstance pi = (WorkflowProcessInstance) event.getProcessInstance();
+
         ProcessInstanceEventBody.Builder eventBuilder = ProcessInstanceEventBody.create()
                 .id(pi.getId())
                 .parentInstanceId(pi.getParentProcessInstanceId())
@@ -174,7 +171,8 @@ public class ProcessInstanceEventBatch implements EventBatch {
                 .endDate(pi.getEndDate())
                 .state(pi.getState())
                 .businessKey(pi.getCorrelationKey())
-                .variables(pi.getVariables());
+                .variables(pi.getVariables())
+                .milestones(createMilestones(pi));
 
         if (pi.getState() == ProcessInstance.STATE_ERROR) {
             eventBuilder.error(ProcessErrorEventBody.create()
@@ -189,6 +187,16 @@ public class ProcessInstanceEventBatch implements EventBatch {
         }
 
         return eventBuilder.build();
+    }
+
+    protected Set<MilestoneEventBody> createMilestones(WorkflowProcessInstance pi) {
+        if (pi.milestones() == null) {
+            return null;
+        }
+
+        return pi.milestones().stream()
+                .map(m -> MilestoneEventBody.create().id(m.getId()).name(m.getName()).status(m.getStatus().name()).build())
+                .collect(Collectors.toSet());
     }
 
     protected NodeInstanceEventBody create(ProcessNodeEvent event) {

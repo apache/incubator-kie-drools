@@ -98,8 +98,6 @@ public interface WorkflowProcess extends org.kie.api.definition.process.Workflow
 
     Integer getProcessType();
     
-    List<Node> getNodesRecursively();
-    
     void setExpressionEvaluator(BiFunction<String, ProcessInstance, String> expressionEvaluator);
 
     String evaluateExpression(String metaData, ProcessInstance processInstance);

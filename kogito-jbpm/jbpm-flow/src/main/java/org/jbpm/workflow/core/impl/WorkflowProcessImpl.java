@@ -137,6 +137,7 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
         return PROCESS_TYPE;
     }
 
+    @Override
     public List<Node> getNodesRecursively() {
         List<Node> nodes = new ArrayList<>();
 

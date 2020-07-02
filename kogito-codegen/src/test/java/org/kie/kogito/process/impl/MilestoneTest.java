@@ -56,17 +56,17 @@ class MilestoneTest extends AbstractCodegenTest {
         assertState(processInstance, ProcessInstance.STATE_PENDING);
 
         Collection<Milestone> expected = new ArrayList<>();
-        expected.add(new Milestone.Builder("").withName("AutoStartMilestone").withStatus(AVAILABLE).build());
-        expected.add(new Milestone.Builder("").withName("SimpleMilestone").withStatus(AVAILABLE).build());
+        expected.add(Milestone.builder().withName("AutoStartMilestone").withStatus(AVAILABLE).build());
+        expected.add(Milestone.builder().withName("SimpleMilestone").withStatus(AVAILABLE).build());
         assertMilestones(expected, processInstance.milestones());
 
         processInstance.start();
         assertState(processInstance, ProcessInstance.STATE_COMPLETED);
 
-        expected = expected.stream().map(m -> new Milestone.Builder(m.getId()).withName(m.getName()).withStatus(COMPLETED).build()).collect(Collectors.toList());
+        expected = expected.stream().map(m -> Milestone.builder().withId(m.getId()).withName(m.getName()).withStatus(COMPLETED).build()).collect(Collectors.toList());
         assertMilestones(expected, processInstance.milestones());
 
-        RuleFlowProcessInstance legacyProcessInstance = (RuleFlowProcessInstance) ((AbstractProcessInstance<?>) processInstance).legacyProcessInstance;
+        RuleFlowProcessInstance legacyProcessInstance = (RuleFlowProcessInstance) ((AbstractProcessInstance<?>) processInstance).processInstance;
         assertThat(legacyProcessInstance.getNodeInstances()).isEmpty();
         assertThat(legacyProcessInstance.getNodeIdInError()).isNullOrEmpty();
         Optional<String> milestoneId = Stream.of(legacyProcessInstance.getNodeContainer().getNodes())
@@ -91,20 +91,20 @@ class MilestoneTest extends AbstractCodegenTest {
         assertState(processInstance, ProcessInstance.STATE_PENDING);
 
         Collection<Milestone> expected = new ArrayList<>();
-        expected.add(new Milestone.Builder("").withName("Milestone").withStatus(AVAILABLE).build());
+        expected.add(Milestone.builder().withName("Milestone").withStatus(AVAILABLE).build());
         assertMilestones(expected, processInstance.milestones());
 
         processInstance.start();
         assertState(processInstance, ProcessInstance.STATE_ACTIVE);
 
-        expected = expected.stream().map(m -> new Milestone.Builder(m.getId()).withName(m.getName()).withStatus(AVAILABLE).build()).collect(Collectors.toList());
+        expected = expected.stream().map(m -> Milestone.builder().withId(m.getId()).withName(m.getName()).withStatus(AVAILABLE).build()).collect(Collectors.toList());
         assertMilestones(expected, processInstance.milestones());
 
         List<WorkItem> workItems = processInstance.workItems();
         params.put("favouriteColour", "blue");
         processInstance.completeWorkItem(workItems.get(0).getId(), params);
 
-        expected = expected.stream().map(m -> new Milestone.Builder(m.getId()).withName(m.getName()).withStatus(COMPLETED).build()).collect(Collectors.toList());
+        expected = expected.stream().map(m -> Milestone.builder().withId(m.getId()).withName(m.getName()).withStatus(COMPLETED).build()).collect(Collectors.toList());
         assertMilestones(expected, processInstance.milestones());
     }
 

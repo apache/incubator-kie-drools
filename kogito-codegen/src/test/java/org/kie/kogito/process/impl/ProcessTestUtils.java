@@ -27,10 +27,10 @@ class ProcessTestUtils {
         assertThat(abstractProcessInstance.status)
                 .withFailMessage("ProcessInstance [%s] Status - Expected: %s - Got: %s", processInstance.id(), state, processInstance.status())
                 .isEqualTo(state);
-        assertThat(abstractProcessInstance.legacyProcessInstance.getState())
+        assertThat(abstractProcessInstance.processInstance.getState())
                 .withFailMessage(
                         "LegacyProcessInstance [%s] Status - Expected: %s - Got: %s",
-                        processInstance.id(), state, ((AbstractProcessInstance<?>) processInstance).legacyProcessInstance.getState())
+                        processInstance.id(), state, ((AbstractProcessInstance<?>) processInstance).processInstance.getState())
                 .isEqualTo(state);
     }
 

@@ -31,6 +31,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.util.MVELSafeHelper;
@@ -44,6 +45,7 @@ import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.NodeImpl;
@@ -54,6 +56,8 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventNodeInterface;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
+import org.jbpm.workflow.core.node.MilestoneNode;
+import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.StateBasedNode;
 import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.instance.NodeInstance;
@@ -78,6 +82,9 @@ import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.process.BaseEventDescription;
 import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.process.NamedDataType;
+import org.kie.kogito.process.flexible.AdHocFragment;
+import org.kie.kogito.process.flexible.ItemDescription;
+import org.kie.kogito.process.flexible.Milestone;
 import org.kie.services.time.TimerInstance;
 import org.mvel2.integration.VariableResolverFactory;
 import org.slf4j.Logger;
@@ -93,6 +100,9 @@ import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_SIGNAL;
 import static org.jbpm.ruleflow.core.Metadata.IS_FOR_COMPENSATION;
 import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
+import static org.kie.kogito.process.flexible.ItemDescription.Status.ACTIVE;
+import static org.kie.kogito.process.flexible.ItemDescription.Status.AVAILABLE;
+import static org.kie.kogito.process.flexible.ItemDescription.Status.COMPLETED;
 
 /**
  * Default implementation of a RuleFlow process instance.
@@ -1087,6 +1097,46 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
     public void internalSetErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    @Override
+    public Collection<AdHocFragment> adHocFragments() {
+        return Stream.of(getNodeContainer().getNodes())
+                .filter(n -> !(n instanceof StartNode) && !(n instanceof BoundaryEventNode))
+                .filter(n -> n.getIncomingConnections().isEmpty())
+                .map(node -> new AdHocFragment.Builder(node.getClass())
+                        .withName(node.getName())
+                        .withAutoStart(Boolean.parseBoolean((String) node.getMetaData().get(Metadata.CUSTOM_AUTO_START)))
+                        .build())
+                .collect(Collectors.toSet());
+    }
+    
+    @Override
+    public Collection<Milestone> milestones() {
+        return getNodesByType(MilestoneNode.class)
+                .map(n -> {
+                    String uid = (String) n.getMetaData().get(UNIQUE_ID);
+                    return Milestone.builder()
+                            .withId(uid)
+                            .withName(n.getName())
+                            .withStatus(getMilestoneStatus(uid))
+                            .build();
+                })
+                .collect(Collectors.toSet());
+    }
+
+    private <N extends Node> Stream<N> getNodesByType(Class<N> nodeClass) {
+        return getWorkflowProcess().getNodesRecursively().stream().filter(nodeClass::isInstance).map(nodeClass::cast);
+    }
+
+    private ItemDescription.Status getMilestoneStatus(String uid) {
+        if (getCompletedNodeIds().contains(uid)) {
+            return COMPLETED;
+        }
+        if (getActiveNodeIds().contains(uid)) {
+            return ACTIVE;
+        }
+        return AVAILABLE;
     }
 
     protected Throwable getRootException(Throwable exception) {
