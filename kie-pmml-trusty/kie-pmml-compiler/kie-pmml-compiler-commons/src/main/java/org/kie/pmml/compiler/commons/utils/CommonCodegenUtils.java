@@ -41,6 +41,7 @@ import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
@@ -63,6 +64,7 @@ public class CommonCodegenUtils {
 
     /**
      * Populate the <code>ClassOrInterfaceDeclaration</code> with the provided <code>MethodDeclaration</code>s
+     *
      * @param toPopulate
      * @param methodDeclarations
      */
@@ -202,6 +204,25 @@ public class CommonCodegenUtils {
     /**
      * Returns
      * <pre>
+     *     return (<i>returnedVariableName</i>);
+     * </pre>
+     *
+     * e.g
+     * <pre>
+     *     return varOne;
+     * </pre>
+     * @param returnedVariableName
+     * @return
+     */
+    public static ReturnStmt getReturnStmt(final String returnedVariableName) {
+        ReturnStmt toReturn = new ReturnStmt();
+        toReturn.setExpression(new NameExpr(returnedVariableName));
+        return toReturn;
+    }
+
+    /**
+     * Returns
+     * <pre>
      *     (<i>className</i>)<(<i>comma-separated list of types</i>)>
      * </pre>
      *
@@ -214,7 +235,7 @@ public class CommonCodegenUtils {
      * @param typesName
      * @return
      */
-    public static ClassOrInterfaceType getTypedClassOrInterfaceType(String className, List<String> typesName ) {
+    public static ClassOrInterfaceType getTypedClassOrInterfaceType(final String className, final List<String> typesName ) {
         ClassOrInterfaceType toReturn = parseClassOrInterfaceType(className);
         List<Type> types = typesName.stream()
                 .map(StaticJavaParser::parseClassOrInterfaceType).collect(Collectors.toList());
