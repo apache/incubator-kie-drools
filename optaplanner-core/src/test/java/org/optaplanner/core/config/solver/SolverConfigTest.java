@@ -25,8 +25,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -42,14 +40,22 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
+import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactory;
+import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
+import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
+import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
 import org.optaplanner.core.impl.solver.io.XStreamConfigReader;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -165,12 +171,32 @@ public class SolverConfigTest {
         assertThat(savedXml.trim()).isEqualTo(originalXml.trim());
     }
 
-    private static class DummySolutionPartitioner implements SolutionPartitioner<TestdataSolution> {
+    /* Dummy classes below are referenced from the testSolverConfig.xml used in this test case. */
 
-        @Override
-        public List<TestdataSolution> splitWorkingSolution(ScoreDirector<TestdataSolution> scoreDirector,
-                Integer runnablePartThreadLimit) {
-            return Collections.emptyList(); // noop
-        }
+    private static abstract class DummySolutionPartitioner implements SolutionPartitioner<TestdataSolution> {
+    }
+
+    private static abstract class DummyEasyScoreCalculator implements EasyScoreCalculator<TestdataSolution> {
+    }
+
+    private static abstract class DummyIncrementalScoreCalculator implements IncrementalScoreCalculator<TestdataSolution> {
+    }
+
+    private static abstract class DummyConstraintProvider implements ConstraintProvider {
+    }
+
+    private abstract class DummyValueFilter implements SelectionFilter<TestdataSolution, TestdataValue> {
+    }
+
+    private abstract class DummyEntityFilter implements SelectionFilter<TestdataSolution, TestdataEntity> {
+    }
+
+    private abstract class DummyChangeMoveFilter implements SelectionFilter<TestdataSolution, ChangeMove> {
+    }
+
+    private abstract class DummyMoveIteratorFactory implements MoveIteratorFactory<TestdataSolution> {
+    }
+
+    private abstract class DummyMoveListFactory implements MoveListFactory<TestdataSolution> {
     }
 }

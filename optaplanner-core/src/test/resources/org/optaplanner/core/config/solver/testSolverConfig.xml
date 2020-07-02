@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <solver>
   <environmentMode>FULL_ASSERT</environmentMode>
+  <moveThreadCount>AUTO</moveThreadCount>
   <solutionClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionClass>
   <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>
+  <entityClass>org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedEntity</entityClass>
   <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/config/first-non-existing-constraints.drl</scoreDrl>
-    <scoreDrl>org/optaplanner/config/second-non-existing-constraints.drl</scoreDrl>
+    <easyScoreCalculatorClass>org.optaplanner.core.config.solver.SolverConfigTest$DummyEasyScoreCalculator</easyScoreCalculatorClass>
+    <constraintProviderClass>org.optaplanner.core.config.solver.SolverConfigTest$DummyConstraintProvider</constraintProviderClass>
+    <incrementalScoreCalculatorClass>org.optaplanner.core.config.solver.SolverConfigTest$DummyIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+    <scoreDrl>org/optaplanner/config/firstNonExistingConstraints.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/config/secondNonExistingConstraints.drl</scoreDrl>
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>
   <constructionHeuristic>
@@ -15,6 +20,7 @@
         <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>
         <cacheType>PHASE</cacheType>
         <selectionOrder>SORTED</selectionOrder>
+        <filterClass>org.optaplanner.core.config.solver.SolverConfigTest$DummyEntityFilter</filterClass>
         <sorterManner>DECREASING_DIFFICULTY</sorterManner>
       </entitySelector>
       <cartesianProductMoveSelector>
@@ -28,10 +34,12 @@
           </valueSelector>
         </changeMoveSelector>
         <changeMoveSelector>
+          <filterClass>org.optaplanner.core.config.solver.SolverConfigTest$DummyChangeMoveFilter</filterClass>
           <entitySelector mimicSelectorRef="placerEntitySelector"/>
           <valueSelector variableName="value">
             <cacheType>PHASE</cacheType>
             <selectionOrder>SORTED</selectionOrder>
+            <filterClass>org.optaplanner.core.config.solver.SolverConfigTest$DummyValueFilter</filterClass>
             <sorterManner>INCREASING_STRENGTH</sorterManner>
           </valueSelector>
         </changeMoveSelector>
@@ -67,12 +75,37 @@
     </termination>
     <localSearchType>TABU_SEARCH</localSearchType>
     <unionMoveSelector>
-      <pillarChangeMoveSelector/>
-      <pillarSwapMoveSelector/>
+      <pillarChangeMoveSelector>
+        <subPillarType>SEQUENCE</subPillarType>
+      </pillarChangeMoveSelector>
+      <pillarSwapMoveSelector>
+        <pillarSelector>
+          <entitySelector>
+            <filterClass>org.optaplanner.core.config.solver.SolverConfigTest$DummyEntityFilter</filterClass>
+          </entitySelector>
+          <minimumSubPillarSize>5</minimumSubPillarSize>
+          <maximumSubPillarSize>10</maximumSubPillarSize>
+        </pillarSelector>
+      </pillarSwapMoveSelector>
+      <moveIteratorFactory>
+        <fixedProbabilityWeight>30.0</fixedProbabilityWeight>
+        <moveIteratorFactoryClass>org.optaplanner.core.config.solver.SolverConfigTest$DummyMoveIteratorFactory</moveIteratorFactoryClass>
+        <moveIteratorFactoryCustomProperties>
+          <property name="moveIteratorProperty" value="moveIteratorPropertyValue"/>
+        </moveIteratorFactoryCustomProperties>
+      </moveIteratorFactory>
+      <moveListFactory>
+        <selectedCountLimit>500</selectedCountLimit>
+        <moveListFactoryClass>org.optaplanner.core.config.solver.SolverConfigTest$DummyMoveListFactory</moveListFactoryClass>
+        <moveListFactoryCustomProperties>
+          <property name="moveListProperty" value="moveListPropertyValue"/>
+        </moveListFactoryCustomProperties>
+      </moveListFactory>
     </unionMoveSelector>
     <acceptor>
       <acceptorType>ENTITY_TABU</acceptorType>
       <acceptorType>STEP_COUNTING_HILL_CLIMBING</acceptorType>
+      <entityTabuSize>5</entityTabuSize>
       <entityTabuRatio>2.0</entityTabuRatio>
       <stepCountingHillClimbingSize>10</stepCountingHillClimbingSize>
       <stepCountingHillClimbingType>EQUAL_OR_IMPROVING_STEP</stepCountingHillClimbingType>
@@ -96,6 +129,26 @@
         <changeMoveSelector/>
       </pooledEntityPlacer>
     </constructionHeuristic>
-    <localSearch/>
+    <localSearch>
+      <termination>
+        <minutesSpentLimit>5</minutesSpentLimit>
+        <bestScoreLimit>0hard/0soft</bestScoreLimit>
+      </termination>
+      <unionMoveSelector>
+        <subChainChangeMoveSelector>
+          <subChainSelector>
+            <maximumSubChainSize>50</maximumSubChainSize>
+          </subChainSelector>
+          <selectReversingMoveToo>true</selectReversingMoveToo>
+        </subChainChangeMoveSelector>
+        <subChainSwapMoveSelector>
+          <selectReversingMoveToo>false</selectReversingMoveToo>
+        </subChainSwapMoveSelector>
+        <tailChainSwapMoveSelector/>
+      </unionMoveSelector>
+      <acceptor>
+        <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
+      </acceptor>
+    </localSearch>
   </partitionedSearch>
 </solver>
