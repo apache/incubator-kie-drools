@@ -1,9 +1,7 @@
 import React from 'react';
 
 const MockedProcessDescriptor = () => {
-    return (
-        <></>
-    )
-}
+  return <></>;
+};
 
 export default MockedProcessDescriptor;

@@ -3,12 +3,12 @@ import {
   PageSidebar,
   PageHeader,
   Avatar,
+  Brand,
   InjectedOuiaProps,
   withOuiaContext
 } from '@patternfly/react-core';
 import React, { useState, useEffect } from 'react';
 import PageToolbar from '../../Molecules/PageToolbar/PageToolbar';
-import BrandLogo from '../../Atoms/BrandLogo/BrandLogo';
 import { aboutLogoContext } from '../../contexts';
 import './KogitoPageLayout.css';
 
@@ -42,10 +42,10 @@ const KogitoPageLayout: React.FC<IOwnProps & InjectedOuiaProps> = ({
   const Header = (
     <PageHeader
       logo={
-        <BrandLogo
+        <Brand
           src={props.BrandSrc}
           alt={props.BrandAltText}
-          brandClick={props.BrandClick}
+          onClick={props.BrandClick}
         />
       }
       toolbar={

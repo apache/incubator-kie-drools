@@ -194,9 +194,9 @@ exports[`PageLayout tests snapshot testing 1`] = `
               }
               isNavOpen={true}
               logo={
-                <BrandLogo
+                <Brand
                   alt="Management Console Logo"
-                  brandClick={[Function]}
+                  onClick={[Function]}
                   src="managementConsoleLogo.svg"
                 />
               }
@@ -266,9 +266,9 @@ exports[`PageLayout tests snapshot testing 1`] = `
               }
               isNavOpen={true}
               logo={
-                <BrandLogo
+                <Brand
                   alt="Management Console Logo"
-                  brandClick={[Function]}
+                  onClick={[Function]}
                   src="managementConsoleLogo.svg"
                 />
               }
@@ -384,24 +384,18 @@ exports[`PageLayout tests snapshot testing 1`] = `
                   <a
                     className="pf-c-page__header-brand-link"
                   >
-                    <BrandLogo
+                    <Brand
                       alt="Management Console Logo"
-                      brandClick={[Function]}
+                      onClick={[Function]}
                       src="managementConsoleLogo.svg"
                     >
-                      <Brand
+                      <img
                         alt="Management Console Logo"
+                        className="pf-c-brand"
                         onClick={[Function]}
                         src="managementConsoleLogo.svg"
-                      >
-                        <img
-                          alt="Management Console Logo"
-                          className="pf-c-brand"
-                          onClick={[Function]}
-                          src="managementConsoleLogo.svg"
-                        />
-                      </Brand>
-                    </BrandLogo>
+                      />
+                    </Brand>
                   </a>
                 </div>
                 <div

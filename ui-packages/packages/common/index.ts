@@ -11,9 +11,6 @@ export {
   default as AboutModalBox
 } from './src/components/Molecules/AboutModalBox/AboutModalBox';
 export {
-  default as BrandLogo
-} from './src/components/Atoms/BrandLogo/BrandLogo';
-export {
   default as EndpointLink
 } from './src/components/Atoms/EndpointLink/EndpointLink';
 export {

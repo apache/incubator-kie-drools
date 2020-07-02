@@ -31,9 +31,9 @@ exports[`KogitoPageLayout component tests snapshot tests 1`] = `
         }
         isNavOpen={true}
         logo={
-          <BrandLogo
+          <Brand
             alt="Kogito logo"
-            brandClick={[MockFunction]}
+            onClick={[MockFunction]}
             src="../../../../static/kogito.png"
           />
         }
@@ -76,9 +76,9 @@ exports[`KogitoPageLayout component tests snapshot tests 1`] = `
         }
         isNavOpen={true}
         logo={
-          <BrandLogo
+          <Brand
             alt="Kogito logo"
-            brandClick={[MockFunction]}
+            onClick={[MockFunction]}
             src="../../../../static/kogito.png"
           />
         }
@@ -194,24 +194,18 @@ exports[`KogitoPageLayout component tests snapshot tests 1`] = `
             <a
               className="pf-c-page__header-brand-link"
             >
-              <BrandLogo
+              <Brand
                 alt="Kogito logo"
-                brandClick={[MockFunction]}
+                onClick={[MockFunction]}
                 src="../../../../static/kogito.png"
               >
-                <Brand
+                <img
                   alt="Kogito logo"
+                  className="pf-c-brand"
                   onClick={[MockFunction]}
                   src="../../../../static/kogito.png"
-                >
-                  <img
-                    alt="Kogito logo"
-                    className="pf-c-brand"
-                    onClick={[MockFunction]}
-                    src="../../../../static/kogito.png"
-                  />
-                </Brand>
-              </BrandLogo>
+                />
+              </Brand>
             </a>
           </div>
           <div

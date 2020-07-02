@@ -6,7 +6,7 @@ import { MockedProvider } from '@apollo/react-testing';
 
 global.Math.random = () => 0.7218415351930461;
 
-jest.mock('../../ProcessDescriptor/ProcessDescriptor')
+jest.mock('../../ProcessDescriptor/ProcessDescriptor');
 
 describe('Domain Explorer Table Component', () => {
   let useEffect;
@@ -256,7 +256,9 @@ describe('Domain Explorer Table Component', () => {
     );
     wrapper.update();
 
-    expect(wrapper.find('.kogito-management-console--domain-explorer__table')).toBeTruthy();
+    expect(
+      wrapper.find('.kogito-management-console--domain-explorer__table')
+    ).toBeTruthy();
   });
   it('check zero offset', async () => {
     const props = {
@@ -360,8 +362,9 @@ describe('Domain Explorer Table Component', () => {
       'DomainExplorerTable'
     );
     wrapper.update();
-    expect(wrapper.find('.kogito-management-console--domain-explorer__table')).toBeTruthy();
-    
+    expect(
+      wrapper.find('.kogito-management-console--domain-explorer__table')
+    ).toBeTruthy();
   });
   it('check false value of isLoadingMore', async () => {
     const props = {
@@ -465,7 +468,7 @@ describe('Domain Explorer Table Component', () => {
       'DomainExplorerTable'
     );
     wrapper.update();
-    expect(wrapper.find('h5').text()).toEqual('No data available')
+    expect(wrapper.find('h5').text()).toEqual('No data available');
   });
   it('check null value for process instance attributes', async () => {
     const props = {

@@ -1,9 +1,7 @@
 import React from 'react';
 
 const MockedLoadMore = () => {
-    return(
-        <></>
-    )
-}
+  return <></>;
+};
 
 export default MockedLoadMore;
