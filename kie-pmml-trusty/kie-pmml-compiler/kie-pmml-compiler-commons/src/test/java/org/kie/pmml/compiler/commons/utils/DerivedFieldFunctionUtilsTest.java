@@ -93,18 +93,6 @@ public class DerivedFieldFunctionUtilsTest {
     }
 
     @Test
-    public void getExpressionMethodDeclaration() {
-    }
-
-    @Test
-    public void getAggregatefMethodDeclaration() {
-    }
-
-    @Test
-    public void getApplyMethodDeclaration() {
-    }
-
-    @Test
     public void getConstantMethodDeclaration() {
         Constant constant = new Constant();
         constant.setDataType(DataType.DOUBLE);
@@ -119,10 +107,6 @@ public class DerivedFieldFunctionUtilsTest {
         methodArity = new Random().nextInt(20);
         retrieved = DerivedFieldFunctionUtils.getConstantMethodDeclaration(constant, methodArity);
         commonValidateConstant(retrieved, constant, methodArity, String.class.getName());
-    }
-
-    @Test
-    public void getDiscretizeMethodDeclaration() {
     }
 
     @Test
@@ -142,26 +126,6 @@ public class DerivedFieldFunctionUtilsTest {
                                  KiePMMLNameValue.class.getName(),
                                  fieldRef.getMapMissingTo());
         commonValidateFieldRef(retrieved, fieldRef, methodArity, expected);
-    }
-
-    @Test
-    public void getLagMethodDeclaration() {
-    }
-
-    @Test
-    public void getMapValuesMethodDeclaration() {
-    }
-
-    @Test
-    public void getNormContinuousMethodDeclaration() {
-    }
-
-    @Test
-    public void getNormDiscreteMethodDeclaration() {
-    }
-
-    @Test
-    public void getTextIndexMethodDeclaration() {
     }
 
     @Test
