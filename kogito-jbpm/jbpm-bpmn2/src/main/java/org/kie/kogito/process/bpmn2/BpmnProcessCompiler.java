@@ -71,7 +71,7 @@ public class BpmnProcessCompiler {
 
             bpmnProcesses.forEach(p -> {
 
-                for (Node node : ((WorkflowProcess) p.legacyProcess()).getNodesRecursively()) {
+                for (Node node : ((WorkflowProcess) p.process()).getNodesRecursively()) {
 
                     processNode(node, bpmnProcesses);
                 }

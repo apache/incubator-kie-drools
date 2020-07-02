@@ -74,7 +74,7 @@ public class ProcessGenerator {
 
     private final String packageName;
     private final WorkflowProcess process;
-    private final ProcessExecutableModelGenerator legacyProcessGenerator;
+    private final ProcessExecutableModelGenerator processGenerator;
     private final String typeName;
     private final String modelTypeName;
     private final String generatedFilePath;
@@ -89,7 +89,7 @@ public class ProcessGenerator {
 
     public ProcessGenerator(
             WorkflowProcess process,
-            ProcessExecutableModelGenerator legacyProcessGenerator,
+            ProcessExecutableModelGenerator processGenerator,
             String typeName,
             String modelTypeName,
             String appCanonicalName) {
@@ -98,7 +98,7 @@ public class ProcessGenerator {
 
         this.packageName = process.getPackageName();
         this.process = process;
-        this.legacyProcessGenerator = legacyProcessGenerator;
+        this.processGenerator = processGenerator;
         this.typeName = typeName;
         this.modelTypeName = modelTypeName;        
         this.targetTypeName = typeName + "Process";
@@ -213,19 +213,19 @@ public class ProcessGenerator {
     }
 
 
-    private MethodDeclaration legacyProcess(ProcessMetaData processMetaData) {
+    private MethodDeclaration process(ProcessMetaData processMetaData) {
         return processMetaData.getGeneratedClassModel()
                 .findFirst(MethodDeclaration.class)
                 .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a method declaration!"))
                 .setModifiers(Modifier.Keyword.PUBLIC)
                 .setType(Process.class.getCanonicalName())
-                .setName("legacyProcess");
+                .setName("process");
     }
 
     private MethodCallExpr createProcessRuntime() {
         return new MethodCallExpr(
                 new ThisExpr(),
-                "createLegacyProcessRuntime");
+                "createProcessRuntime");
     }
     
     private MethodDeclaration internalConfigure(ProcessMetaData processMetaData) {
@@ -396,7 +396,7 @@ public class ProcessGenerator {
                                                                              new ClassOrInterfaceType(null, modelTypeName), 
                                                                              NodeList.nodeList()))));               
         
-        ProcessMetaData processMetaData = legacyProcessGenerator.generate();
+        ProcessMetaData processMetaData = processGenerator.generate();
 
         cls.addExtendedType(abstractProcessType(modelTypeName))
                 .addMember(fieldDeclaration)
@@ -409,7 +409,7 @@ public class ProcessGenerator {
                 .addMember(createInstanceGenericWithBusinessKeyMethod(processInstanceFQCN))
                 .addMember(internalConfigure(processMetaData))
                 .addMember(internalRegisterListeners(processMetaData))
-                .addMember(legacyProcess(processMetaData));
+                .addMember(process(processMetaData));
         
         if (persistence) {
         

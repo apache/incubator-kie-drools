@@ -69,11 +69,11 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
 
     @Override
     public String id() {
-        return legacyProcess().getId();
+        return process().getId();
     }
 
     public String name() {
-        return legacyProcess().getName();
+        return process().getName();
     }
 
     @Override
@@ -119,10 +119,10 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
         }
 
         configure();
-        WorkflowProcessImpl p = (WorkflowProcessImpl) legacyProcess();
+        WorkflowProcessImpl p = (WorkflowProcessImpl) process();
         List<StartNode> startNodes = p.getTimerStart();
         if (startNodes != null && !startNodes.isEmpty()) {
-            this.processRuntime = createLegacyProcessRuntime();
+            this.processRuntime = createProcessRuntime();
             for (StartNode startNode : startNodes) {
                 if (startNode != null && startNode.getTimer() != null) {
                     String timerId = processRuntime.getJobsService().scheduleProcessJob(ProcessJobDescription.of(configureTimerInstance(startNode.getTimer()), this));
@@ -171,12 +171,10 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
         }
     }
 
-    public abstract org.kie.api.definition.process.Process legacyProcess();
+    public abstract org.kie.api.definition.process.Process process();
 
-    protected ProcessRuntime createLegacyProcessRuntime() {
-        return new LightProcessRuntime(
-                new LightProcessRuntimeContext(Collections.singletonList(legacyProcess())),
-                services);
+    protected ProcessRuntime createProcessRuntime() {
+        return new LightProcessRuntime(new LightProcessRuntimeContext(Collections.singletonList(process())), services);
     }
 
     protected boolean isProcessFactorySet() {

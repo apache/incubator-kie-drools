@@ -92,7 +92,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         setCorrelationKey(businessKey);
 
         Map<String, Object> map = bind(variables);
-        String processId = process.legacyProcess().getId();
+        String processId = process.process().getId();
         this.processInstance = ((CorrelationAwareProcessRuntime) rt).createProcessInstance(processId, correlationKey, map);
         this.description = ((WorkflowProcessInstanceImpl) processInstance).getDescription();
         this.status = ProcessInstance.STATE_PENDING;

@@ -109,7 +109,7 @@ public class ProcessInstanceMarshaller {
         org.kie.api.runtime.process.ProcessInstance legacyProcessInstance = null;
         try (ByteArrayInputStream bais = new ByteArrayInputStream( data )) {
             MarshallerReaderContext context = new MarshallerReaderContext( bais,
-                                                                           Collections.singletonMap(process.id(), ((AbstractProcess<?>)process).legacyProcess()),
+                                                                           Collections.singletonMap(process.id(), ((AbstractProcess<?>)process).process()),
                                                                            null,
                                                                            null,
                                                                            null,

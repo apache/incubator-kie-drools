@@ -39,7 +39,7 @@ public class AbstractProcessInstanceTest {
     @Test
     public void testCreteProcessInstance() {
         AbstractProcess process = mock(AbstractProcess.class);
-        when(process.legacyProcess()).thenReturn(mock(Process.class));
+        when(process.process()).thenReturn(mock(Process.class));
         InternalProcessRuntime pr = mock(InternalProcessRuntime.class);
         WorkflowProcessInstanceImpl wpi = mock(WorkflowProcessInstanceImpl.class);
         when(pr.createProcessInstance(any(), any(), any())).thenReturn(wpi);

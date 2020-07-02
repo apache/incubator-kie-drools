@@ -122,7 +122,7 @@ public class ProcessGenerationTest extends AbstractCodegenTest {
 
         Application app = generateCodeProcessesOnly(processFile);
         AbstractProcess<? extends Model> process = (AbstractProcess<? extends Model>) app.processes().processById(expected.getId());
-        RuleFlowProcess current = (RuleFlowProcess) process.legacyProcess();
+        RuleFlowProcess current = (RuleFlowProcess) process.process();
 
         assertNotNull(current);
         assertEquals(expected.getId(), current.getId(), "Id");
