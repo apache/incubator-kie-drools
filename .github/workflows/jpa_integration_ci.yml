@@ -6,9 +6,11 @@ on:
   push:
     branches:
       - master
+      - 7.x
   pull_request:
     branches:
       - master
+      - 7.x
 
 env:
   # To prevent build failures due to "Connection reset" during artifact download.
