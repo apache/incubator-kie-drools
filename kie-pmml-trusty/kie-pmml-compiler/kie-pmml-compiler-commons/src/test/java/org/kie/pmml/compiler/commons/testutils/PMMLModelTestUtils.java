@@ -19,12 +19,14 @@ import java.util.List;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.OpType;
+import org.dmg.pmml.ParameterField;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.regression.CategoricalPredictor;
 import org.dmg.pmml.regression.NumericPredictor;
@@ -108,6 +110,13 @@ public class PMMLModelTestUtils {
         MiningField toReturn = new MiningField();
         toReturn.setName(getFieldName(fieldName));
         toReturn.setUsageType(usageType);
+        return toReturn;
+    }
+
+    public static ParameterField getParameterField(String fieldName, DataType dataType) {
+        ParameterField toReturn = new ParameterField();
+        toReturn.setDataType(dataType);
+        toReturn.setName(getFieldName(fieldName));
         return toReturn;
     }
 
