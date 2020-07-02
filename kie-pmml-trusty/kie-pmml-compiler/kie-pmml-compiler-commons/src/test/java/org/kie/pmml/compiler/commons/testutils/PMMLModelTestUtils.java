@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.compiler.commons.testutils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dmg.pmml.DataDictionary;
@@ -33,6 +34,7 @@ import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
+import org.kie.pmml.commons.model.enums.DATA_TYPE;
 
 /**
  * Helper methods related to <b>PMML</b> original model
@@ -117,6 +119,26 @@ public class PMMLModelTestUtils {
         ParameterField toReturn = new ParameterField();
         toReturn.setDataType(dataType);
         toReturn.setName(getFieldName(fieldName));
+        return toReturn;
+    }
+
+    public static  List<ParameterField> getParameterFields() {
+        DATA_TYPE[] dataTypes = DATA_TYPE.values();
+        List<ParameterField> toReturn = new ArrayList<>();
+        for (int i = 0; i < dataTypes.length; i++) {
+            DataType dataType = DataType.fromValue(dataTypes[i].getName());
+            ParameterField toAdd = getParameterField(dataType.value().toUpperCase(), dataType);
+            toReturn.add(toAdd);
+        }
+        return toReturn;
+    }
+
+    public static  List<DataType> getDataTypes() {
+        DATA_TYPE[] dataTypes = DATA_TYPE.values();
+        List<DataType> toReturn = new ArrayList<>();
+        for (int i = 0; i < dataTypes.length; i++) {
+            toReturn.add(DataType.fromValue(dataTypes[i].getName()));
+        }
         return toReturn;
     }
 

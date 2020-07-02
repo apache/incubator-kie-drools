@@ -47,6 +47,7 @@ import static org.kie.pmml.commons.utils.PrimitiveBoxedUtils.getKiePMMLPrimitive
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceType;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getConstantExpressionMethodDeclaration;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getFieldRefExpressionMethodDeclaration;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getEventuallyBoxedClassName;
 
 /**
  * Class meant to provide <i>helper</i> methods to retrieve <code>Function</code> code-generators
@@ -236,26 +237,9 @@ public class DefineFunctionUtils {
     static List<ClassOrInterfaceType> getClassOrInterfaceTypes(List<ParameterField> parameterFields) {
         List<ClassOrInterfaceType> toReturn = new ArrayList<>();
         if (parameterFields != null) {
-            parameterFields.forEach(parameterField -> {
-                Class<?> c = DATA_TYPE.byName(parameterField.getDataType().value()).getMappedClass();
-                Optional<PrimitiveBoxedUtils.PrimitiveBoxed> primitiveBoxed = getKiePMMLPrimitiveBoxed(c);
-                String className = c.getName();
-                if (primitiveBoxed.isPresent()) {
-                    className = primitiveBoxed.get().getBoxed().getName();
-                }
-                toReturn.add(parseClassOrInterfaceType(className));
-            });
+            parameterFields.forEach(parameterField -> toReturn.add(parseClassOrInterfaceType(getEventuallyBoxedClassName(parameterField))));
         }
         return toReturn;
     }
 
-    /**
-     * Retrieve the <b>mapped</b> class name of the given <code>ParameterField</code>, <b>eventually</b> boxed (for primitive ones)
-     * @param parameterField
-     * @return
-     */
-    static String getEventuallyBoxedClassName(ParameterField parameterField) {
-        Class<?> c = DATA_TYPE.byName(parameterField.getDataType().value()).getMappedClass();
-        return getKiePMMLPrimitiveBoxed(c).map(primitiveBoxed -> primitiveBoxed.getBoxed().getName()).orElse(c.getName());
-    }
 }

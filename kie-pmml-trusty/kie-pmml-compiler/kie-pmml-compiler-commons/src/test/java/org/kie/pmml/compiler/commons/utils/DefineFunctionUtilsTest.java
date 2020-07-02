@@ -16,10 +16,7 @@
 
 package org.kie.pmml.compiler.commons.utils;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -30,7 +27,6 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.Aggregate;
 import org.dmg.pmml.Apply;
-import org.dmg.pmml.DataType;
 import org.dmg.pmml.DefineFunction;
 import org.dmg.pmml.Discretize;
 import org.dmg.pmml.Expression;
@@ -44,19 +40,17 @@ import org.dmg.pmml.Visitor;
 import org.dmg.pmml.VisitorAction;
 import org.junit.Test;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.enums.DATA_TYPE;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getParameterField;
+import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getParameterFields;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.supportedExpressionSupplier;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.unsupportedExpressionSupplier;
 
 
 public class DefineFunctionUtilsTest {
 
-    private static Map<String, String> expectedEventuallyBoxedClassName;
     private static final Function<Supplier<Expression>, DefineFunction> defineFunctionCreator = supplier -> {
         Expression expression = supplier.get();
         DefineFunction defineFunction = new DefineFunction();
@@ -64,27 +58,6 @@ public class DefineFunctionUtilsTest {
         defineFunction.setExpression(expression);
         return defineFunction;
     };
-
-    static {
-        expectedEventuallyBoxedClassName = new HashMap<>();
-        expectedEventuallyBoxedClassName.put("string", String.class.getName());
-        expectedEventuallyBoxedClassName.put("integer", Integer.class.getName());
-        expectedEventuallyBoxedClassName.put("float", Float.class.getName());
-        expectedEventuallyBoxedClassName.put("double", Double.class.getName());
-        expectedEventuallyBoxedClassName.put("boolean", Boolean.class.getName());
-        expectedEventuallyBoxedClassName.put("date", Date.class.getName());
-        expectedEventuallyBoxedClassName.put("time", Date.class.getName());
-        expectedEventuallyBoxedClassName.put("dateTime", Date.class.getName());
-        expectedEventuallyBoxedClassName.put("dateDaysSince[0]", Long.class.getName());
-        expectedEventuallyBoxedClassName.put("dateDaysSince[1960]", Long.class.getName());
-        expectedEventuallyBoxedClassName.put("dateDaysSince[1970]", Long.class.getName());
-        expectedEventuallyBoxedClassName.put("dateDaysSince[1980]", Long.class.getName());
-        expectedEventuallyBoxedClassName.put("timeSeconds", Long.class.getName());
-        expectedEventuallyBoxedClassName.put("dateTimeSecondsSince[0]", Long.class.getName());
-        expectedEventuallyBoxedClassName.put("dateTimeSecondsSince[1960]", Long.class.getName());
-        expectedEventuallyBoxedClassName.put("dateTimeSecondsSince[1970]", Long.class.getName());
-        expectedEventuallyBoxedClassName.put("dateTimeSecondsSince[1980]", Long.class.getName());
-    }
 
     @Test(expected = KiePMMLException.class)
     public void getDefineFunctionsMethodMapUnsupportedExpression() {
@@ -223,31 +196,9 @@ public class DefineFunctionUtilsTest {
         }
     }
 
-    @Test
-    public void getEventuallyBoxedClassName() {
-        List<ParameterField> parameterFields = getParameterFields();
-        parameterFields.forEach(parameterField -> {
-            String retrieved = DefineFunctionUtils.getEventuallyBoxedClassName(parameterField);
-            commonVerifyEventuallyBoxedClassName(retrieved, parameterField);
-        });
-    }
 
     private void commonVerifyParameterClassOrInterfaceType(ClassOrInterfaceType toVerify, ParameterField parameterField) {
-        commonVerifyEventuallyBoxedClassName(toVerify.toString(), parameterField);
+        // TODO
     }
 
-    private void commonVerifyEventuallyBoxedClassName(String toVerify, ParameterField parameterField) {
-        assertEquals(expectedEventuallyBoxedClassName.get(parameterField.getDataType().value()), toVerify);
-    }
-
-    private List<ParameterField> getParameterFields() {
-        DATA_TYPE[] dataTypes = DATA_TYPE.values();
-        List<ParameterField> toReturn = new ArrayList<>();
-        for (int i = 0; i < dataTypes.length; i++) {
-            DataType dataType = DataType.fromValue(dataTypes[i].getName());
-            ParameterField toAdd = getParameterField(dataType.value().toUpperCase(), dataType);
-            toReturn.add(toAdd);
-        }
-        return toReturn;
-    }
 }

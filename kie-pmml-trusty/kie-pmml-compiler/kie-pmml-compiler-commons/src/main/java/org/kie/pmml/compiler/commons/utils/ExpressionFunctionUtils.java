@@ -19,12 +19,14 @@ import java.util.List;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.TypeExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
@@ -44,9 +46,11 @@ import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.kie.pmml.commons.utils.PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getFilteredKiePMMLNameValueExpression;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getMethodDeclaration;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getReturnStmt;
 
 /**
  * Class meant to provide <i>helper</i> methods to retrieve <code>Function</code> code-generators
@@ -83,14 +87,16 @@ public class ExpressionFunctionUtils {
     /**
      * Return
      * <pre>
-     *     (<i>constant_type</i>) methodName(List<KiePMMLNameValue> param1) {
-     *     return (<i>constant_value</i>);
+     *     (<i>constant_type</i>) (<i>methodName</i>)(List<KiePMMLNameValue> param1) {
+     *          (<i>constant_type</i>) constantVariable = (<i>constant_value</i>);
+     *          return constantVariable;
      * }
      * </pre>
      * e.g.
      * <pre>
      *     double constant10(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1) {
-     *     return 34.6;
+     *          double constantVariable = 34.6;
+     *          return constantVariable;
      * }
      * </pre>
      * @param methodName
@@ -99,14 +105,15 @@ public class ExpressionFunctionUtils {
      * @return
      */
     static MethodDeclaration getConstantExpressionMethodDeclaration(final String methodName, final Constant constant, final List<ClassOrInterfaceType> parameterTypes) {
-        MethodDeclaration toReturn = getExpressionMethodDeclaration(methodName, parameterTypes);
+        String variableName = "constantVariable";
         Class<?> returnedType = constant.getDataType() != null ? DATA_TYPE.byName(constant.getDataType().value()).getMappedClass() : constant.getValue().getClass();
-        ClassOrInterfaceType classOrInterfaceType = new ClassOrInterfaceType(returnedType.getName()); // not using parseClassOrInterfaceType because it throws exception with primitive - to fix
-        toReturn.setType(classOrInterfaceType);
-        final BlockStmt body = new BlockStmt();
-        ReturnStmt returnStmt = new ReturnStmt();
-        returnStmt.setExpression(new StringLiteralExpr(constant.getValue().toString()));
+        String eventuallyBoxedClass = getKiePMMLPrimitiveBoxed(returnedType).map(primitiveBoxed -> primitiveBoxed.getBoxed().getName()).orElse(returnedType.getName());
+        ClassOrInterfaceType classOrInterfaceType = parseClassOrInterfaceType(eventuallyBoxedClass);
+        final BlockStmt body = getConstantExpressionBlockStmt(variableName, constant, classOrInterfaceType, parameterTypes);
+        final ReturnStmt returnStmt = getReturnStmt(variableName);
         body.addStatement(returnStmt);
+        MethodDeclaration toReturn = getExpressionMethodDeclaration(methodName, parameterTypes);
+        toReturn.setType(classOrInterfaceType);
         toReturn.setBody(body);
         return toReturn;
     }
@@ -126,7 +133,8 @@ public class ExpressionFunctionUtils {
      * <pre>
      * Object FieldRef(<i>methodArity</i>)(java.util.List<KiePMMLNameValue> param1) {
      *      Optional<KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((KiePMMLNameValue lmbdParam) -> Objects.equals(<i>(FieldRef_name)</i>, lmbdParam.getName())).findFirst();
-     *      return kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse(<i>(FieldRef_mapMissingTo)</i>);
+     *      Object fieldRefVariable = kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse(<i>(FieldRef_mapMissingTo)</i>);
+     *      return fieldRefVariable;
      * }
      * </pre>
      * @param methodName
@@ -135,32 +143,9 @@ public class ExpressionFunctionUtils {
      * @return
      */
     static MethodDeclaration getFieldRefExpressionMethodDeclaration(final String methodName, final FieldRef fieldRef, final List<ClassOrInterfaceType> parameterTypes) {
-        final BlockStmt body = new BlockStmt();
-        String fieldNameToRef = fieldRef.getField().getValue();
-        ExpressionStmt filteredOptionalExpr = getFilteredKiePMMLNameValueExpression(KIEPMMLNAMEVALUE_LIST_PARAM, fieldNameToRef);
-        body.addStatement(filteredOptionalExpr);
-
-        //KiePMMLNameValue::getValue
-        MethodReferenceExpr methodReferenceExpr = new MethodReferenceExpr();
-        methodReferenceExpr.setScope(new TypeExpr(parseClassOrInterfaceType(KiePMMLNameValue.class.getName())));
-        methodReferenceExpr.setIdentifier("getValue");
-
-        // kiePMMLNameValue.map
-        MethodCallExpr expressionScope = new MethodCallExpr("map");
-        expressionScope.setScope(new NameExpr(OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME));
-
-        // kiePMMLNameValue.map(KiePMMLNameValue::getValue)
-        expressionScope.setArguments(NodeList.nodeList(methodReferenceExpr));
-
-        // kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse( (fieldRef.getMapMissingTo() )
-        MethodCallExpr expression = new MethodCallExpr("orElse");
-        expression.setScope(expressionScope);
-        com.github.javaparser.ast.expr.Expression orElseExpression = fieldRef.getMapMissingTo() != null ? new StringLiteralExpr(fieldRef.getMapMissingTo()) : new NullLiteralExpr();
-        expression.setArguments(NodeList.nodeList(orElseExpression));
-
-        // return kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse( (fieldRef.getMapMissingTo() )
-        ReturnStmt returnStmt = new ReturnStmt();
-        returnStmt.setExpression(expression);
+        String variableName = "fieldRefVariable";
+        final BlockStmt body = getFieldRefExpressionBlockStmt(variableName, fieldRef, parameterTypes);
+        final ReturnStmt returnStmt = getReturnStmt(variableName);
         body.addStatement(returnStmt);
         MethodDeclaration toReturn = getExpressionMethodDeclaration(methodName, parameterTypes);
         ClassOrInterfaceType classOrInterfaceType = parseClassOrInterfaceType(Object.class.getName());
@@ -216,6 +201,157 @@ public class ExpressionFunctionUtils {
      * @return
      */
     static MethodDeclaration getTextIndexExpressionMethodDeclaration(final String methodName, final TextIndex textIndex, final List<ClassOrInterfaceType> parameterTypes) {
+        throw new KiePMMLException("TextIndex not managed, yet");
+    }
+
+    /**
+     * @param aggregate
+     * @param parameterTypes
+     * @return
+     */
+    static BlockStmt getAggregatedExpressionBlockStmt(final Aggregate aggregate, final List<ClassOrInterfaceType> parameterTypes) {
+        throw new KiePMMLException("Aggregate not managed, yet");
+    }
+
+    /**
+     * @param apply
+     * @param parameterTypes
+     * @return
+     */
+    static BlockStmt getApplyExpressionBlockStmt(final Apply apply, final List<ClassOrInterfaceType> parameterTypes) {
+        throw new KiePMMLException("Apply not managed, yet");
+    }
+
+    /**
+     * Return
+     * <pre>
+     *     (<i>constant_type</i>) (<i>variableName</i>) = (<i>constant_value</i>);
+     * </pre>
+     * e.g.
+     * <pre>
+     *     double doubleVar = 34.6;
+     * </pre>
+     * @param variableName
+     * @param constant
+     * @param parameterTypes
+     * @return
+     */
+    static BlockStmt getConstantExpressionBlockStmt(final String variableName, final Constant constant, final ClassOrInterfaceType returnedType, final List<ClassOrInterfaceType> parameterTypes) {
+        final BlockStmt toReturn = new BlockStmt();
+        // Object variableName = kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse( (fieldRef.getMapMissingTo() )
+        VariableDeclarator variableDeclarator = new VariableDeclarator();
+        variableDeclarator.setType(returnedType);
+        variableDeclarator.setName(variableName);
+        final Object constantValue = constant.getValue();
+        if (constantValue instanceof String) {
+            variableDeclarator.setInitializer(new StringLiteralExpr((String) constantValue));
+        } else {
+            variableDeclarator.setInitializer(new NameExpr(constantValue.toString()));
+        }
+        VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr();
+        variableDeclarationExpr.setVariables(NodeList.nodeList(variableDeclarator));
+        toReturn.addStatement(variableDeclarationExpr);
+        return toReturn;
+    }
+
+    /**
+     * @param discretize
+     * @param parameterTypes
+     * @return
+     */
+    static BlockStmt getDiscretizeExpressionBlockStmt(final Discretize discretize, final List<ClassOrInterfaceType> parameterTypes) {
+        throw new KiePMMLException("Discretize not managed, yet");
+    }
+
+    /**
+     * Returns
+     * <pre>
+     *      Optional<KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((KiePMMLNameValue lmbdParam) -> Objects.equals(<i>(FieldRef_name)</i>, lmbdParam.getName())).findFirst();
+     *      Object (<i>variableName</i>) = kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse(<i>(FieldRef_mapMissingTo)</i>);
+     * </pre>
+     * @param fieldRef
+     * @param parameterTypes
+     * @return
+     */
+    static BlockStmt getFieldRefExpressionBlockStmt(final String variableName, final FieldRef fieldRef, final List<ClassOrInterfaceType> parameterTypes) {
+        final BlockStmt toReturn = new BlockStmt();
+        String fieldNameToRef = fieldRef.getField().getValue();
+        ExpressionStmt filteredOptionalExpr = getFilteredKiePMMLNameValueExpression(KIEPMMLNAMEVALUE_LIST_PARAM, fieldNameToRef);
+        toReturn.addStatement(filteredOptionalExpr);
+
+        //KiePMMLNameValue::getValue
+        MethodReferenceExpr methodReferenceExpr = new MethodReferenceExpr();
+        methodReferenceExpr.setScope(new TypeExpr(parseClassOrInterfaceType(KiePMMLNameValue.class.getName())));
+        methodReferenceExpr.setIdentifier("getValue");
+
+        // kiePMMLNameValue.map
+        MethodCallExpr expressionScope = new MethodCallExpr("map");
+        expressionScope.setScope(new NameExpr(OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME));
+
+        // kiePMMLNameValue.map(KiePMMLNameValue::getValue)
+        expressionScope.setArguments(NodeList.nodeList(methodReferenceExpr));
+
+        // kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse( (fieldRef.getMapMissingTo() )
+        MethodCallExpr expression = new MethodCallExpr("orElse");
+        expression.setScope(expressionScope);
+        com.github.javaparser.ast.expr.Expression orElseExpression = fieldRef.getMapMissingTo() != null ? new StringLiteralExpr(fieldRef.getMapMissingTo()) : new NullLiteralExpr();
+        expression.setArguments(NodeList.nodeList(orElseExpression));
+
+        // Object variableName = kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse( (fieldRef.getMapMissingTo() )
+        VariableDeclarator variableDeclarator = new VariableDeclarator();
+        ClassOrInterfaceType classOrInterfaceType = parseClassOrInterfaceType(Object.class.getName());
+        variableDeclarator.setType(classOrInterfaceType);
+        variableDeclarator.setName(variableName);
+        variableDeclarator.setInitializer(expression);
+        VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr();
+        variableDeclarationExpr.setVariables(NodeList.nodeList(variableDeclarator));
+        toReturn.addStatement(variableDeclarationExpr);
+
+        return toReturn;
+    }
+
+    /**
+     * @param lag
+     * @param parameterTypes
+     * @return
+     */
+    static BlockStmt getLagExpressionBlockStmt(final Lag lag, final List<ClassOrInterfaceType> parameterTypes) {
+        throw new KiePMMLException("Lag not managed, yet");
+    }
+
+    /**
+     * @param mapValues
+     * @param parameterTypes
+     * @return
+     */
+    static BlockStmt getMapValuesExpressionBlockStmt(final MapValues mapValues, final List<ClassOrInterfaceType> parameterTypes) {
+        throw new KiePMMLException("Lag not managed, yet");
+    }
+
+    /**
+     * @param normContinuous
+     * @param parameterTypes
+     * @return
+     */
+    static BlockStmt getNormContinuousExpressionBlockStmtn(final NormContinuous normContinuous, final List<ClassOrInterfaceType> parameterTypes) {
+        throw new KiePMMLException("NormContinuous not managed, yet");
+    }
+
+    /**
+     * @param normDiscrete
+     * @param parameterTypes
+     * @return
+     */
+    static BlockStmt getNormDiscreteExpressionBlockStmt(final NormDiscrete normDiscrete, final List<ClassOrInterfaceType> parameterTypes) {
+        throw new KiePMMLException("NormDiscrete not managed, yet");
+    }
+
+    /**
+     * @param textIndex
+     * @param parameterTypes
+     * @return
+     */
+    static BlockStmt getTextIndexExpressionBlockStmt(final TextIndex textIndex, final List<ClassOrInterfaceType> parameterTypes) {
         throw new KiePMMLException("TextIndex not managed, yet");
     }
 
