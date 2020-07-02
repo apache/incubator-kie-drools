@@ -39,6 +39,7 @@ import org.dmg.pmml.MapValues;
 import org.dmg.pmml.NormContinuous;
 import org.dmg.pmml.NormDiscrete;
 import org.dmg.pmml.TextIndex;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
@@ -52,7 +53,7 @@ import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getMethodDe
  * out of <code>Expression</code>s
  */
 public class ExpressionFunctionUtils {
-    
+
     static final String KIEPMMLNAMEVALUE_LIST_PARAM = "param1"; // it is the first parameter
 
     private ExpressionFunctionUtils() {
@@ -60,27 +61,23 @@ public class ExpressionFunctionUtils {
     }
 
     /**
-     * 
      * @param methodName
      * @param aggregate
      * @param parameterTypes
      * @return
      */
     static MethodDeclaration getAggregatedExpressionMethodDeclaration(final String methodName, final Aggregate aggregate, final List<ClassOrInterfaceType> parameterTypes) {
-        MethodDeclaration toReturn = getExpressionMethodDeclaration(methodName, parameterTypes);
-        return toReturn;
+        throw new KiePMMLException("Aggregate not managed, yet");
     }
 
     /**
-     * 
      * @param methodName
      * @param apply
      * @param parameterTypes
      * @return
      */
     static MethodDeclaration getApplyExpressionMethodDeclaration(final String methodName, final Apply apply, final List<ClassOrInterfaceType> parameterTypes) {
-        MethodDeclaration toReturn =  getExpressionMethodDeclaration(methodName, parameterTypes);
-        return toReturn;
+        throw new KiePMMLException("Apply not managed, yet");
     }
 
     /**
@@ -96,7 +93,6 @@ public class ExpressionFunctionUtils {
      *     return 34.6;
      * }
      * </pre>
-     * 
      * @param methodName
      * @param constant
      * @param parameterTypes
@@ -116,15 +112,13 @@ public class ExpressionFunctionUtils {
     }
 
     /**
-     * 
      * @param methodName
      * @param discretize
      * @param parameterTypes
      * @return
      */
     static MethodDeclaration getDiscretizeExpressionMethodDeclaration(final String methodName, final Discretize discretize, final List<ClassOrInterfaceType> parameterTypes) {
-        MethodDeclaration toReturn = getExpressionMethodDeclaration(methodName, parameterTypes);
-        return toReturn;
+        throw new KiePMMLException("Discretize not managed, yet");
     }
 
     /**
@@ -135,7 +129,6 @@ public class ExpressionFunctionUtils {
      *      return kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse(<i>(FieldRef_mapMissingTo)</i>);
      * }
      * </pre>
-     *
      * @param methodName
      * @param fieldRef
      * @param parameterTypes
@@ -162,7 +155,7 @@ public class ExpressionFunctionUtils {
         // kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse( (fieldRef.getMapMissingTo() )
         MethodCallExpr expression = new MethodCallExpr("orElse");
         expression.setScope(expressionScope);
-        com.github.javaparser.ast.expr.Expression orElseExpression =  fieldRef.getMapMissingTo() != null ? new StringLiteralExpr(fieldRef.getMapMissingTo()) : new NullLiteralExpr();
+        com.github.javaparser.ast.expr.Expression orElseExpression = fieldRef.getMapMissingTo() != null ? new StringLiteralExpr(fieldRef.getMapMissingTo()) : new NullLiteralExpr();
         expression.setArguments(NodeList.nodeList(orElseExpression));
 
         // return kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse( (fieldRef.getMapMissingTo() )
@@ -177,65 +170,54 @@ public class ExpressionFunctionUtils {
     }
 
     /**
-     * 
      * @param methodName
      * @param lag
      * @param parameterTypes
      * @return
      */
     static MethodDeclaration getLagExpressionMethodDeclaration(final String methodName, final Lag lag, final List<ClassOrInterfaceType> parameterTypes) {
-        MethodDeclaration toReturn = getExpressionMethodDeclaration(methodName, parameterTypes);
-        return toReturn;
+        throw new KiePMMLException("Lag not managed, yet");
     }
 
     /**
-     * 
      * @param methodName
      * @param mapValues
      * @param parameterTypes
      * @return
      */
     static MethodDeclaration getMapValuesExpressionMethodDeclaration(final String methodName, final MapValues mapValues, final List<ClassOrInterfaceType> parameterTypes) {
-        MethodDeclaration toReturn = getExpressionMethodDeclaration(methodName, parameterTypes);
-        return toReturn;
+        throw new KiePMMLException("Lag not managed, yet");
     }
 
     /**
-     * 
      * @param methodName
      * @param normContinuous
      * @param parameterTypes
      * @return
      */
     static MethodDeclaration getNormContinuousExpressionMethodDeclaration(final String methodName, final NormContinuous normContinuous, final List<ClassOrInterfaceType> parameterTypes) {
-        MethodDeclaration toReturn = getExpressionMethodDeclaration(methodName, parameterTypes);
-        return toReturn;
+        throw new KiePMMLException("NormContinuous not managed, yet");
     }
 
     /**
-     * 
      * @param methodName
      * @param normDiscrete
      * @param parameterTypes
      * @return
      */
     static MethodDeclaration getNormDiscreteExpressionMethodDeclaration(final String methodName, final NormDiscrete normDiscrete, final List<ClassOrInterfaceType> parameterTypes) {
-        MethodDeclaration toReturn = getExpressionMethodDeclaration(methodName, parameterTypes);
-        return toReturn;
+        throw new KiePMMLException("NormDiscrete not managed, yet");
     }
 
     /**
-     * 
      * @param methodName
      * @param textIndex
      * @param parameterTypes
      * @return
      */
     static MethodDeclaration getTextIndexExpressionMethodDeclaration(final String methodName, final TextIndex textIndex, final List<ClassOrInterfaceType> parameterTypes) {
-        MethodDeclaration toReturn = getExpressionMethodDeclaration(methodName, parameterTypes);
-        return toReturn;
+        throw new KiePMMLException("TextIndex not managed, yet");
     }
-
 
     /**
      * Return
@@ -243,7 +225,6 @@ public class ExpressionFunctionUtils {
      *     empty  methodName(List<KiePMMLNameValue> param1) {
      *     }
      * </pre>
-     * 
      * @param methodName
      * @param parameterTypes
      * @return
@@ -251,6 +232,4 @@ public class ExpressionFunctionUtils {
     static MethodDeclaration getExpressionMethodDeclaration(final String methodName, final List<ClassOrInterfaceType> parameterTypes) {
         return getMethodDeclaration(methodName, parameterTypes);
     }
-
-
 }

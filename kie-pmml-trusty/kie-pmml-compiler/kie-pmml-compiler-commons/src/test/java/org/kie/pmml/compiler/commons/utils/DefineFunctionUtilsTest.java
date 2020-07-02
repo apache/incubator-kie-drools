@@ -30,13 +30,10 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.Aggregate;
 import org.dmg.pmml.Apply;
-import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DefineFunction;
 import org.dmg.pmml.Discretize;
 import org.dmg.pmml.Expression;
-import org.dmg.pmml.FieldName;
-import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.Lag;
 import org.dmg.pmml.MapValues;
 import org.dmg.pmml.NormContinuous;
@@ -53,12 +50,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getParameterField;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.supportedExpressionSupplier;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.unsupportedExpressionSupplier;
+
 
 public class DefineFunctionUtilsTest {
 
     private static Map<String, String> expectedEventuallyBoxedClassName;
-    private static List<Supplier<Expression>> supportedExpressionSupplier;
-    private static List<Supplier<Expression>> unsupportedExpressionSupplier;
     private static final Function<Supplier<Expression>, DefineFunction> defineFunctionCreator = supplier -> {
         Expression expression = supplier.get();
         DefineFunction defineFunction = new DefineFunction();
@@ -86,22 +84,6 @@ public class DefineFunctionUtilsTest {
         expectedEventuallyBoxedClassName.put("dateTimeSecondsSince[1960]", Long.class.getName());
         expectedEventuallyBoxedClassName.put("dateTimeSecondsSince[1970]", Long.class.getName());
         expectedEventuallyBoxedClassName.put("dateTimeSecondsSince[1980]", Long.class.getName());
-        supportedExpressionSupplier = new ArrayList<>();
-        supportedExpressionSupplier.add(() -> {
-            Constant toReturn = new Constant("VALUE");
-            toReturn.setDataType(DataType.STRING);
-            return toReturn;
-        });
-        supportedExpressionSupplier.add(() -> new FieldRef(FieldName.create("FIELD_REF")));
-        unsupportedExpressionSupplier = new ArrayList<>();
-        unsupportedExpressionSupplier.add(Aggregate::new);
-        unsupportedExpressionSupplier.add(Apply::new);
-        unsupportedExpressionSupplier.add(Discretize::new);
-        unsupportedExpressionSupplier.add(Lag::new);
-        unsupportedExpressionSupplier.add(MapValues::new);
-        unsupportedExpressionSupplier.add(NormContinuous::new);
-        unsupportedExpressionSupplier.add(NormDiscrete::new);
-        unsupportedExpressionSupplier.add(TextIndex::new);
     }
 
     @Test(expected = KiePMMLException.class)

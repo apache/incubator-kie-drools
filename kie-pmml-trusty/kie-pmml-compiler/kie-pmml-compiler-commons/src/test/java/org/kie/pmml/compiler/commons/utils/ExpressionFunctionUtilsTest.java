@@ -16,9 +16,11 @@
 
 package org.kie.pmml.compiler.commons.utils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Supplier;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -26,12 +28,21 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import org.dmg.pmml.Aggregate;
+import org.dmg.pmml.Apply;
 import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.Discretize;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
+import org.dmg.pmml.Lag;
+import org.dmg.pmml.MapValues;
+import org.dmg.pmml.NormContinuous;
+import org.dmg.pmml.NormDiscrete;
+import org.dmg.pmml.TextIndex;
 import org.junit.Test;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static org.junit.Assert.assertEquals;
@@ -42,6 +53,38 @@ import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.METHOD_NAME
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceType;
 
 public class ExpressionFunctionUtilsTest {
+
+    static List<Supplier<Expression>> supportedExpressionSupplier;
+    static List<Supplier<Expression>> unsupportedExpressionSupplier;
+
+    static {
+        supportedExpressionSupplier = new ArrayList<>();
+        supportedExpressionSupplier.add(() -> {
+            Constant toReturn = new Constant("VALUE");
+            toReturn.setDataType(DataType.STRING);
+            return toReturn;
+        });
+        supportedExpressionSupplier.add(() -> new FieldRef(FieldName.create("FIELD_REF")));
+        unsupportedExpressionSupplier = new ArrayList<>();
+        unsupportedExpressionSupplier.add(Aggregate::new);
+        unsupportedExpressionSupplier.add(Apply::new);
+        unsupportedExpressionSupplier.add(Discretize::new);
+        unsupportedExpressionSupplier.add(Lag::new);
+        unsupportedExpressionSupplier.add(MapValues::new);
+        unsupportedExpressionSupplier.add(NormContinuous::new);
+        unsupportedExpressionSupplier.add(NormDiscrete::new);
+        unsupportedExpressionSupplier.add(TextIndex::new);
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void getAggregatedExpressionMethodDeclaration() {
+        ExpressionFunctionUtils.getAggregatedExpressionMethodDeclaration("", new Aggregate(), Collections.emptyList());
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void getApplyExpressionMethodDeclaration() {
+        ExpressionFunctionUtils.getApplyExpressionMethodDeclaration("", new Apply(), Collections.emptyList());
+    }
 
     @Test
     public void getConstantExpressionMethodDeclaration() {
@@ -60,6 +103,11 @@ public class ExpressionFunctionUtilsTest {
         methodName = String.format(METHOD_NAME_TEMPLATE, constant.getClass().getSimpleName(), methodArity);
         retrieved = DerivedFieldFunctionUtils.getConstantMethodDeclaration(constant, methodArity);
         commonValidateConstant(retrieved, constant, methodName, String.class.getName());
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void getDiscretizeExpressionMethodDeclaration() {
+        ExpressionFunctionUtils.getDiscretizeExpressionMethodDeclaration("", new Discretize(), Collections.emptyList());
     }
 
     @Test
@@ -81,6 +129,31 @@ public class ExpressionFunctionUtilsTest {
                                  KiePMMLNameValue.class.getName(),
                                  fieldRef.getMapMissingTo());
         commonValidateFieldRef(retrieved, fieldRef, methodName, expected);
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void getLagExpressionMethodDeclaration() {
+        ExpressionFunctionUtils.getLagExpressionMethodDeclaration("", new Lag(), Collections.emptyList());
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void getMapValuesExpressionMethodDeclaration() {
+        ExpressionFunctionUtils.getMapValuesExpressionMethodDeclaration("", new MapValues(), Collections.emptyList());
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void getNormContinuousExpressionMethodDeclaration() {
+        ExpressionFunctionUtils.getNormContinuousExpressionMethodDeclaration("", new NormContinuous(), Collections.emptyList());
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void getNormDiscreteExpressionMethodDeclaration() {
+        ExpressionFunctionUtils.getNormDiscreteExpressionMethodDeclaration("", new NormDiscrete(), Collections.emptyList());
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void getTextIndexExpressionMethodDeclaration() {
+        ExpressionFunctionUtils.getTextIndexExpressionMethodDeclaration("", new TextIndex(), Collections.emptyList());
     }
 
     @Test
