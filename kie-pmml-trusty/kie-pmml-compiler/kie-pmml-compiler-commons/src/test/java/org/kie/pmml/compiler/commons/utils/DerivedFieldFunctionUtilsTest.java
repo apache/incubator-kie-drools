@@ -34,9 +34,6 @@ import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
-import org.dmg.pmml.Visitor;
-import org.dmg.pmml.VisitorAction;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
@@ -129,22 +126,6 @@ public class DerivedFieldFunctionUtilsTest {
         commonValidateFieldRef(retrieved, fieldRef, methodArity, expected);
     }
 
-    @Test
-    public void getDerivedFieldsMethodDeclaration() {
-        Expression expression = new Expression() {
-            @Override
-            public VisitorAction accept(Visitor visitor) {
-                return null;
-            }
-        };
-        int methodArity = new Random().nextInt(20);
-        MethodDeclaration retrieved = DerivedFieldFunctionUtils.getDerivedFieldsMethodDeclaration(expression, methodArity);
-        assertNotNull(retrieved);
-        String expected = String.format("empty %1$s%2$s(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1) {\n" +
-                                                "}", expression.getClass().getSimpleName(), methodArity);
-        assertEquals(expected, retrieved.toString());
-    }
-
     private void commonValidateConstant(MethodDeclaration retrieved, Constant constant, int methodArity, String expectedClass) {
         commonValidateMethodDeclaration(retrieved, constant, methodArity);
         assertEquals(expectedClass, retrieved.getType().asString());
@@ -173,9 +154,7 @@ public class DerivedFieldFunctionUtilsTest {
 
     private void commonValidateMethodDeclaration(MethodDeclaration toValidate, Expression expression, int methodArity) {
         assertNotNull(toValidate);
-        String expressionName = expression.getClass().getSimpleName();
-        String lowerCaseExpression = expressionName.isEmpty() ? expressionName : expressionName.substring(0, 1).toLowerCase() + expressionName.substring(1);
-        String expectedMethodName = String.format(METHOD_NAME_TEMPLATE, lowerCaseExpression, methodArity);
+        String expectedMethodName = String.format(METHOD_NAME_TEMPLATE, expression.getClass().getSimpleName(), methodArity);
         assertEquals(toValidate.getName().asString(), expectedMethodName);
     }
 }

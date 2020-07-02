@@ -22,9 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Random;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -43,9 +40,6 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.dmg.pmml.Expression;
-import org.dmg.pmml.Visitor;
-import org.dmg.pmml.VisitorAction;
 import org.junit.Test;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
@@ -55,7 +49,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.LAMBDA_PARAMETER_NAME;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.METHOD_NAME_TEMPLATE;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.PARAMETER_NAME_TEMPLATE;
 
@@ -79,8 +72,8 @@ public class CommonCodegenUtilsTest {
     @Test
     public void getFilteredKiePMMLNameValueExpression() {
         String kiePMMLNameValueListParam = "KIEPMMLNAMEVALUELISTPARAM";
-        String fieldNameToRef= "FIELDNAMETOREF";
-        ExpressionStmt retrieved =  CommonCodegenUtils.getFilteredKiePMMLNameValueExpression(kiePMMLNameValueListParam, fieldNameToRef);
+        String fieldNameToRef = "FIELDNAMETOREF";
+        ExpressionStmt retrieved = CommonCodegenUtils.getFilteredKiePMMLNameValueExpression(kiePMMLNameValueListParam, fieldNameToRef);
         assertNotNull(retrieved);
         String expected = String.format("%1$s<%2$s> %3$s = %4$s.stream().filter((%2$s %5$s) -> %6$s.equals(\"%7$s\", %5$s.getName())).findFirst();",
                                         Optional.class.getName(),
@@ -95,9 +88,9 @@ public class CommonCodegenUtilsTest {
         final BlockStmt body = new BlockStmt();
         body.addStatement(retrieved);
         Parameter listParameter = new Parameter(CommonCodegenUtils.getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName())), kiePMMLNameValueListParam);
-        Parameter fieldRefParameter  = new Parameter(parseClassOrInterfaceType(String.class.getName()), fieldNameToRef);
+        Parameter fieldRefParameter = new Parameter(parseClassOrInterfaceType(String.class.getName()), fieldNameToRef);
         commonValidateCompilation(body, Arrays.asList(listParameter, fieldRefParameter));
-     }
+    }
 
     @Test
     public void addMapPopulation() {
@@ -141,57 +134,23 @@ public class CommonCodegenUtilsTest {
     }
 
     @Test
-    public void getParamMethodDeclarationByExpression() {
-        Expression expression = new Expression() {
-            @Override
-            public VisitorAction accept(Visitor visitor) {
-                return null;
-            }
-        };
-        int methodArity = new Random().nextInt(20);
-        final List<ClassOrInterfaceType> parameterTypes = Arrays.asList(
-                parseClassOrInterfaceType(String.class.getName()),
-                parseClassOrInterfaceType(KiePMMLNameValue.class.getName()),
-                new ClassOrInterfaceType(null, new SimpleName(List.class.getName()), NodeList.nodeList(parseClassOrInterfaceType(KiePMMLNameValue.class.getName())))
-        );
-        MethodDeclaration retrieved = CommonCodegenUtils.getMethodDeclaration(expression, methodArity, parameterTypes);
-        commonValidateMethodDeclaration(retrieved, expression.getClass().getSimpleName(), methodArity);
-        commonValidateMethodDeclarationParams(retrieved, parameterTypes);
-    }
-
-    @Test
-    public void getParamMethodDeclarationByString() {
+    public void getParamMethodDeclaration() {
         String methodName = "METHOD_NAME";
-        int methodArity = new Random().nextInt(20);
         final List<ClassOrInterfaceType> parameterTypes = Arrays.asList(
                 parseClassOrInterfaceType(String.class.getName()),
                 parseClassOrInterfaceType(KiePMMLNameValue.class.getName()),
                 new ClassOrInterfaceType(null, new SimpleName(List.class.getName()), NodeList.nodeList(parseClassOrInterfaceType(KiePMMLNameValue.class.getName())))
         );
-        MethodDeclaration retrieved = CommonCodegenUtils.getMethodDeclaration(methodName, methodArity, parameterTypes);
-        commonValidateMethodDeclaration(retrieved, methodName, methodArity);
+        MethodDeclaration retrieved = CommonCodegenUtils.getMethodDeclaration(methodName, parameterTypes);
+        commonValidateMethodDeclaration(retrieved, methodName);
         commonValidateMethodDeclarationParams(retrieved, parameterTypes);
-    }
-
-    @Test
-    public void getNoParamMethodDeclarationByExpression() {
-        Expression expression = new Expression() {
-            @Override
-            public VisitorAction accept(Visitor visitor) {
-                return null;
-            }
-        };
-        int methodArity = new Random().nextInt(20);
-        MethodDeclaration retrieved = CommonCodegenUtils.getMethodDeclaration(expression, methodArity);
-        commonValidateMethodDeclaration(retrieved, expression.getClass().getSimpleName(), methodArity);
     }
 
     @Test
     public void getNoParamMethodDeclarationByString() {
         String methodName = "METHOD_NAME";
-        int methodArity = new Random().nextInt(20);
-        MethodDeclaration retrieved = CommonCodegenUtils.getMethodDeclaration(methodName, methodArity);
-        commonValidateMethodDeclaration(retrieved, methodName, methodArity);
+        MethodDeclaration retrieved = CommonCodegenUtils.getMethodDeclaration(methodName);
+        commonValidateMethodDeclaration(retrieved, methodName);
     }
 
     @Test
@@ -204,11 +163,9 @@ public class CommonCodegenUtilsTest {
         assertEquals(expected, retrieved.asString());
     }
 
-    private void commonValidateMethodDeclaration(MethodDeclaration toValidate, String methodName, int methodArity) {
+    private void commonValidateMethodDeclaration(MethodDeclaration toValidate, String methodName) {
         assertNotNull(toValidate);
-        String lowerCasedMethodName = methodName.isEmpty() ?  methodName : methodName.substring(0, 1).toLowerCase() + methodName.substring(1);
-        String expectedMethodName = String.format(METHOD_NAME_TEMPLATE, lowerCasedMethodName, methodArity);
-        assertEquals(toValidate.getName().asString(), expectedMethodName);
+        assertEquals(methodName, toValidate.getName().asString());
     }
 
     private void commonValidateMethodDeclarationParams(MethodDeclaration toValidate, List<ClassOrInterfaceType> parameterTypes) {
@@ -224,6 +181,6 @@ public class CommonCodegenUtilsTest {
     }
 
     private MethodDeclaration getMethodDeclaration(String methodName) {
-        return CommonCodegenUtils.getMethodDeclaration(methodName, new Random().nextInt(20));
+        return CommonCodegenUtils.getMethodDeclaration(methodName);
     }
 }

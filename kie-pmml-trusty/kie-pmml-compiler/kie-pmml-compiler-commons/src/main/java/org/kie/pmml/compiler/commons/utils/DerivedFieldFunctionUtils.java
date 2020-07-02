@@ -21,18 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.MethodReferenceExpr;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.NullLiteralExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.expr.TypeExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ExpressionStmt;
-import com.github.javaparser.ast.stmt.ReturnStmt;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.Aggregate;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Constant;
@@ -46,14 +35,20 @@ import org.dmg.pmml.NormContinuous;
 import org.dmg.pmml.NormDiscrete;
 import org.dmg.pmml.TextIndex;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getFilteredKiePMMLNameValueExpression;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getMethodDeclaration;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.METHOD_NAME_TEMPLATE;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceType;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getAggregatedExpressionMethodDeclaration;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getApplyExpressionMethodDeclaration;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getConstantExpressionMethodDeclaration;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getDiscretizeExpressionMethodDeclaration;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getFieldRefExpressionMethodDeclaration;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getLagExpressionMethodDeclaration;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getMapValuesExpressionMethodDeclaration;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getNormContinuousExpressionMethodDeclaration;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getNormDiscreteExpressionMethodDeclaration;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getTextIndexExpressionMethodDeclaration;
 
 /**
  * Class meant to provide <i>helper</i> methods to retrieve <code>Function</code> code-generators
@@ -61,7 +56,6 @@ import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedCla
  */
 public class DerivedFieldFunctionUtils {
 
-    static final String KIEPMMLNAMEVALUE_LIST_PARAM = "param1"; // it is the first parameter
 
     private DerivedFieldFunctionUtils() {
         // Avoid instantiation
@@ -87,7 +81,7 @@ public class DerivedFieldFunctionUtils {
     static MethodDeclaration getExpressionMethodDeclaration(final Expression expression, final AtomicInteger arityCounter) {
         int methodArity = arityCounter.addAndGet(1);
         if (expression instanceof Aggregate) {
-            return getAggregatefMethodDeclaration((Aggregate) expression, methodArity);
+            return getAggregatedMethodDeclaration((Aggregate) expression, methodArity);
         } else if (expression instanceof Apply) {
             return getApplyMethodDeclaration((Apply)expression, methodArity);
         } else if (expression instanceof Constant) {
@@ -111,14 +105,26 @@ public class DerivedFieldFunctionUtils {
         }
     }
 
-    static MethodDeclaration getAggregatefMethodDeclaration(final Aggregate aggregate, final int methodArity) {
-        MethodDeclaration toReturn = getDerivedFieldsMethodDeclaration(aggregate, methodArity);
-        return toReturn;
+    /**
+     *
+     * @param aggregate
+     * @param methodArity
+     * @return
+     */
+    static MethodDeclaration getAggregatedMethodDeclaration(final Aggregate aggregate, final int methodArity) {
+        String methodName = String.format(METHOD_NAME_TEMPLATE, aggregate.getClass().getSimpleName(), methodArity);
+        return getAggregatedExpressionMethodDeclaration(methodName, aggregate, Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
     }
 
+    /**
+     *
+     * @param apply
+     * @param methodArity
+     * @return
+     */
     static MethodDeclaration getApplyMethodDeclaration(final Apply apply, final int methodArity) {
-        MethodDeclaration toReturn = getDerivedFieldsMethodDeclaration(apply, methodArity);
-        return toReturn;
+        String methodName = String.format(METHOD_NAME_TEMPLATE, apply.getClass().getSimpleName(), methodArity);
+        return getApplyExpressionMethodDeclaration(methodName, apply, Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
     }
 
     /**
@@ -139,21 +145,19 @@ public class DerivedFieldFunctionUtils {
      * @return
      */
     static MethodDeclaration getConstantMethodDeclaration(final Constant constant, final int methodArity) {
-        MethodDeclaration toReturn = getDerivedFieldsMethodDeclaration(constant, methodArity);
-        Class<?> returnedType = constant.getDataType() != null ? DATA_TYPE.byName(constant.getDataType().value()).getMappedClass() : constant.getValue().getClass();
-        ClassOrInterfaceType classOrInterfaceType = new ClassOrInterfaceType(returnedType.getName()); // not using parseClassOrInterfaceType because it throws exception with primitive - to fix
-        toReturn.setType(classOrInterfaceType);
-        final BlockStmt body = new BlockStmt();
-        ReturnStmt returnStmt = new ReturnStmt();
-        returnStmt.setExpression(new StringLiteralExpr(constant.getValue().toString()));
-        body.addStatement(returnStmt);
-        toReturn.setBody(body);
-        return toReturn;
+        String methodName = String.format(METHOD_NAME_TEMPLATE, constant.getClass().getSimpleName(), methodArity);
+        return getConstantExpressionMethodDeclaration(methodName, constant, Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
     }
 
+    /**
+     *
+     * @param discretize
+     * @param methodArity
+     * @return
+     */
     static MethodDeclaration getDiscretizeMethodDeclaration(final Discretize discretize, final int methodArity) {
-        MethodDeclaration toReturn = getDerivedFieldsMethodDeclaration(discretize, methodArity);
-        return toReturn;
+        String methodName = String.format(METHOD_NAME_TEMPLATE, discretize.getClass().getSimpleName(), methodArity);
+        return getDiscretizeExpressionMethodDeclaration(methodName, discretize, Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
     }
 
     /**
@@ -170,78 +174,63 @@ public class DerivedFieldFunctionUtils {
      * @return
      */
     static MethodDeclaration getFieldRefMethodDeclaration(final FieldRef fieldRef, final int methodArity) {
-        final BlockStmt body = new BlockStmt();
-        String fieldNameToRef = fieldRef.getField().getValue();
-        ExpressionStmt filteredOptionalExpr = getFilteredKiePMMLNameValueExpression(KIEPMMLNAMEVALUE_LIST_PARAM, fieldNameToRef);
-        body.addStatement(filteredOptionalExpr);
-
-        //KiePMMLNameValue::getValue
-        MethodReferenceExpr methodReferenceExpr = new MethodReferenceExpr();
-        methodReferenceExpr.setScope(new TypeExpr(parseClassOrInterfaceType(KiePMMLNameValue.class.getName())));
-        methodReferenceExpr.setIdentifier("getValue");
-
-        // kiePMMLNameValue.map
-        MethodCallExpr expressionScope = new MethodCallExpr("map");
-        expressionScope.setScope(new NameExpr(OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME));
-
-        // kiePMMLNameValue.map(KiePMMLNameValue::getValue)
-        expressionScope.setArguments(NodeList.nodeList(methodReferenceExpr));
-
-        // kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse( (fieldRef.getMapMissingTo() )
-        MethodCallExpr expression = new MethodCallExpr("orElse");
-        expression.setScope(expressionScope);
-        com.github.javaparser.ast.expr.Expression orElseExpression =  fieldRef.getMapMissingTo() != null ? new StringLiteralExpr(fieldRef.getMapMissingTo()) : new NullLiteralExpr();
-        expression.setArguments(NodeList.nodeList(orElseExpression));
-
-        // return kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse( (fieldRef.getMapMissingTo() )
-        ReturnStmt returnStmt = new ReturnStmt();
-        returnStmt.setExpression(expression);
-        body.addStatement(returnStmt);
-        MethodDeclaration toReturn = getDerivedFieldsMethodDeclaration(fieldRef, methodArity);
-        ClassOrInterfaceType classOrInterfaceType = parseClassOrInterfaceType(Object.class.getName());
-        toReturn.setType(classOrInterfaceType);
-        toReturn.setBody(body);
-        return toReturn;
-    }
-
-    static MethodDeclaration getLagMethodDeclaration(final Lag lag, final int methodArity) {
-        MethodDeclaration toReturn = getDerivedFieldsMethodDeclaration(lag, methodArity);
-        return toReturn;
-    }
-
-    static MethodDeclaration getMapValuesMethodDeclaration(final MapValues mapValues, final int methodArity) {
-        MethodDeclaration toReturn = getDerivedFieldsMethodDeclaration(mapValues, methodArity);
-        return toReturn;
-    }
-
-    static MethodDeclaration getNormContinuousMethodDeclaration(final NormContinuous normContinuous, final int methodArity) {
-        MethodDeclaration toReturn = getDerivedFieldsMethodDeclaration(normContinuous, methodArity);
-        return toReturn;
-    }
-
-    static MethodDeclaration getNormDiscreteMethodDeclaration(final NormDiscrete normDiscrete, final int methodArity) {
-        MethodDeclaration toReturn = getDerivedFieldsMethodDeclaration(normDiscrete, methodArity);
-        return toReturn;
-    }
-
-    static MethodDeclaration getTextIndexMethodDeclaration(final TextIndex textIndex, final  int methodArity) {
-        MethodDeclaration toReturn = getDerivedFieldsMethodDeclaration(textIndex, methodArity);
-        return toReturn;
+        String methodName = String.format(METHOD_NAME_TEMPLATE, fieldRef.getClass().getSimpleName(), methodArity);
+        return getFieldRefExpressionMethodDeclaration(methodName, fieldRef, Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
     }
 
     /**
-     * Return
-     * <pre>
-     *     empty  (<i>expression.getClass().getSimpleName()</i>)(<i>methodArity</i>)(List<KiePMMLNameValue> param1) {
-     *     }
-     * </pre>
-     * @param expression
+     *
+     * @param lag
      * @param methodArity
      * @return
      */
-    static MethodDeclaration getDerivedFieldsMethodDeclaration(final Expression expression, final int methodArity) {
-        ClassOrInterfaceType parameter = getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()));
-        return getMethodDeclaration(expression, methodArity, Collections.singletonList(parameter));
+    static MethodDeclaration getLagMethodDeclaration(final Lag lag, final int methodArity) {
+        String methodName = String.format(METHOD_NAME_TEMPLATE, lag.getClass().getSimpleName(), methodArity);
+        return getLagExpressionMethodDeclaration(methodName, lag, Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
+    }
+
+    /**
+     *
+     * @param mapValues
+     * @param methodArity
+     * @return
+     */
+    static MethodDeclaration getMapValuesMethodDeclaration(final MapValues mapValues, final int methodArity) {
+        String methodName = String.format(METHOD_NAME_TEMPLATE, mapValues.getClass().getSimpleName(), methodArity);
+        return getMapValuesExpressionMethodDeclaration(methodName, mapValues, Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
+    }
+
+    /**
+     *
+     * @param normContinuous
+     * @param methodArity
+     * @return
+     */
+    static MethodDeclaration getNormContinuousMethodDeclaration(final NormContinuous normContinuous, final int methodArity) {
+        String methodName = String.format(METHOD_NAME_TEMPLATE, normContinuous.getClass().getSimpleName(), methodArity);
+        return getNormContinuousExpressionMethodDeclaration(methodName, normContinuous, Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
+    }
+
+    /**
+     *
+     * @param normDiscrete
+     * @param methodArity
+     * @return
+     */
+    static MethodDeclaration getNormDiscreteMethodDeclaration(final NormDiscrete normDiscrete, final int methodArity) {
+        String methodName = String.format(METHOD_NAME_TEMPLATE, normDiscrete.getClass().getSimpleName(), methodArity);
+        return getNormDiscreteExpressionMethodDeclaration(methodName, normDiscrete, Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
+    }
+
+    /**
+     *
+     * @param textIndex
+     * @param methodArity
+     * @return
+     */
+    static MethodDeclaration getTextIndexMethodDeclaration(final TextIndex textIndex, final  int methodArity) {
+        String methodName = String.format(METHOD_NAME_TEMPLATE, textIndex.getClass().getSimpleName(), methodArity);
+        return getTextIndexExpressionMethodDeclaration(methodName, textIndex, Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
     }
 
 }

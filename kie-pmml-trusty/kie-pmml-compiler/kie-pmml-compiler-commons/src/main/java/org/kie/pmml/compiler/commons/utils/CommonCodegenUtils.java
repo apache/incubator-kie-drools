@@ -156,24 +156,7 @@ public class CommonCodegenUtils {
     /**
      * Returns
      * <pre>
-     *     empty (<i>expression.getClass().getSimpleName()</i>)(<i>methodArity</i>)((list of <i>parameterType</i> param<i>index</i>)) {
-     *  }
-     * </pre>
-     * a <b>multi-parameters</b> <code>MethodDeclaration</code> whose name is derived from given <b>expression</b>
-     * and <b>methodArity</b>, and whose parameters types are defined by <b>parameterTypes</b>
-     * @param expression
-     * @param methodArity
-     * @param parameterTypes
-     * @return
-     */
-    public static MethodDeclaration getMethodDeclaration(final org.dmg.pmml.Expression expression, final int methodArity, final List<ClassOrInterfaceType> parameterTypes) {
-        return getMethodDeclaration(expression.getClass().getSimpleName(), methodArity, parameterTypes);
-    }
-
-    /**
-     * Returns
-     * <pre>
-     *     empty (<i>methodName</i>)(<i>methodArity</i>)((list of <i>parameterType</i> param<i>index</i>)) {
+     *     empty (<i>methodName</i>)((list of <i>parameterType</i> param<i>index</i>)) {
      * }
      * </pre>
      *
@@ -181,12 +164,11 @@ public class CommonCodegenUtils {
      * a <b>multi-parameters</b> <code>MethodDeclaration</code> whose name is derived from given <b>methodName</b>
      * and <b>methodArity</b>, and whose parameters types are defined by <b>parameterTypes</b>
      * @param methodName
-     * @param methodArity
      * @param parameterTypes
      * @return
      */
-    public static MethodDeclaration getMethodDeclaration(final String methodName, final int methodArity, final List<ClassOrInterfaceType> parameterTypes) {
-        MethodDeclaration toReturn = getMethodDeclaration(methodName, methodArity);
+    public static MethodDeclaration getMethodDeclaration(final String methodName, final List<ClassOrInterfaceType> parameterTypes) {
+        MethodDeclaration toReturn = getMethodDeclaration(methodName);
         NodeList<Parameter> typeParameters = new NodeList<>();
         AtomicInteger counter = new AtomicInteger(0);
         parameterTypes.forEach(classOrInterfaceType -> {
@@ -202,37 +184,18 @@ public class CommonCodegenUtils {
     /**
      * Returns
      * <pre>
-     *     empty (<i>expression.getClass().getSimpleName()</i>)(<i>methodArity</i>)() {
-     * }
-     * </pre>
-     *
-     * a <b>no-parameter</b> <code>MethodDeclaration</code> whose name is derived from given <b>expression</b>
-     * and <b>methodArity</b>
-     * @param expression
-     * @param methodArity
-     * @return
-     */
-    public static MethodDeclaration getMethodDeclaration(final org.dmg.pmml.Expression expression, final int methodArity) {
-        return getMethodDeclaration(expression.getClass().getSimpleName(), methodArity);
-    }
-
-    /**
-     * Returns
-     * <pre>
-     *     empty (<i>methodName</i>)(<i>methodArity</i>)() {
+     *     empty (<i>methodName</i>)() {
      *     }
      * </pre>
      *
      * A <b>no-parameter</b> <code>MethodDeclaration</code> whose name is derived from given <b>methodName</b>
      * and <b>methodArity</b>
      * @param methodName
-     * @param methodArity
      * @return
      */
-    public static MethodDeclaration getMethodDeclaration(final String methodName, final int methodArity) {
+    public static MethodDeclaration getMethodDeclaration(final String methodName) {
         MethodDeclaration toReturn = new MethodDeclaration();
-        String lowerCasedMethodName = methodName.isEmpty() ?  methodName : methodName.substring(0, 1).toLowerCase() + methodName.substring(1);
-        toReturn.setName(String.format(METHOD_NAME_TEMPLATE, lowerCasedMethodName, methodArity));
+        toReturn.setName(methodName);
         return toReturn;
     }
 
