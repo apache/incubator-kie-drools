@@ -27,6 +27,7 @@ public class ProcessInstance extends ProcessInstanceMeta {
     private JsonNode variables;
     @JsonProperty("nodeInstances")
     private List<NodeInstance> nodes;
+    private List<Milestone> milestones;
     private Set<String> addons;
 
     private ProcessInstanceError error;
@@ -63,11 +64,20 @@ public class ProcessInstance extends ProcessInstanceMeta {
         this.addons = addons;
     }
 
+    public List<Milestone> getMilestones() {
+        return milestones;
+    }
+
+    public void setMilestones(List<Milestone> milestones) {
+        this.milestones = milestones;
+    }
+
     @Override
     public String toString() {
         return "ProcessInstance{" +
                 "variables=" + variables +
                 ", nodes=" + nodes +
+                ", milestones=" + milestones +
                 ", addons=" + addons +
                 ", error=" + error +
                 "} " + super.toString();

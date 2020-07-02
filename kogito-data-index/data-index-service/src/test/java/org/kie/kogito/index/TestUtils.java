@@ -36,6 +36,8 @@ import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.model.Job;
+import org.kie.kogito.index.model.Milestone;
+import org.kie.kogito.index.model.MilestoneStatus;
 import org.kie.kogito.index.model.NodeInstance;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceError;
@@ -105,6 +107,7 @@ public final class TestUtils {
         if (ProcessInstanceState.ERROR.ordinal() == status) {
             pi.setError(new ProcessInstanceError("StartEvent_1", "Something went wrong"));
         }
+        pi.setMilestones(getMilestones());
         return pi;
     }
 
@@ -117,6 +120,16 @@ public final class TestUtils {
         ni.setNodeId("1");
         ni.setDefinitionId("StartEvent_1");
         return newArrayList(ni);
+    }
+
+    private static List<Milestone> getMilestones() {
+        return newArrayList(
+                Milestone.builder()
+                        .id(UUID.randomUUID().toString())
+                        .name("SimpleMilestone")
+                        .status(MilestoneStatus.AVAILABLE.name())
+                        .build()
+        );
     }
 
     private static JsonNode getProcessInstanceVariables() {

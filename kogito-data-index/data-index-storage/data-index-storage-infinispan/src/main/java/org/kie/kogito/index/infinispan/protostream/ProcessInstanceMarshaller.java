@@ -22,12 +22,32 @@ import java.util.HashSet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.infinispan.protostream.MessageMarshaller;
+import org.kie.kogito.index.model.Milestone;
 import org.kie.kogito.index.model.NodeInstance;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceError;
 import org.kie.kogito.persistence.infinispan.protostream.AbstractMarshaller;
 
 public class ProcessInstanceMarshaller extends AbstractMarshaller implements MessageMarshaller<ProcessInstance> {
+
+    protected static final String ID = "id";
+    protected static final String PROCESS_ID = "processId";
+    protected static final String ROLES = "roles";
+    protected static final String VARIABLES = "variables";
+    protected static final String ENDPOINT = "endpoint";
+    protected static final String NODES = "nodes";
+    protected static final String STATE = "state";
+    protected static final String START = "start";
+    protected static final String END = "end";
+    protected static final String ROOT_PROCESS_INSTANCE_ID = "rootProcessInstanceId";
+    protected static final String ROOT_PROCESS_ID = "rootProcessId";
+    protected static final String PARENT_PROCESS_INSTANCE_ID = "parentProcessInstanceId";
+    protected static final String PROCESS_NAME = "processName";
+    protected static final String ERROR = "error";
+    protected static final String ADDONS = "addons";
+    protected static final String LAST_UPDATE = "lastUpdate";
+    protected static final String BUSINESS_KEY = "businessKey";
+    protected static final String MILESTONES = "milestones";
 
     public ProcessInstanceMarshaller(ObjectMapper mapper) {
         super(mapper);
@@ -36,45 +56,47 @@ public class ProcessInstanceMarshaller extends AbstractMarshaller implements Mes
     @Override
     public ProcessInstance readFrom(ProtoStreamReader reader) throws IOException {
         ProcessInstance pi = new ProcessInstance();
-        pi.setId(reader.readString("id"));
-        pi.setProcessId(reader.readString("processId"));
-        pi.setRoles(reader.readCollection("roles", new HashSet<>(), String.class));
-        pi.setVariables(jsonFromString(reader.readString("variables")));
-        pi.setEndpoint(reader.readString("endpoint"));
-        pi.setNodes(reader.readCollection("nodes", new ArrayList<>(), NodeInstance.class));
-        pi.setState(reader.readInt("state"));
-        pi.setStart(dateToZonedDateTime(reader.readDate("start")));
-        pi.setEnd(dateToZonedDateTime(reader.readDate("end")));
-        pi.setRootProcessInstanceId(reader.readString("rootProcessInstanceId"));
-        pi.setRootProcessId(reader.readString("rootProcessId"));
-        pi.setParentProcessInstanceId(reader.readString("parentProcessInstanceId"));
-        pi.setProcessName(reader.readString("processName"));
-        pi.setError(reader.readObject("error", ProcessInstanceError.class));
-        pi.setAddons(reader.readCollection("addons", new HashSet<>(), String.class));
-        pi.setLastUpdate(dateToZonedDateTime(reader.readDate("lastUpdate")));
-        pi.setBusinessKey(reader.readString("businessKey"));
+        pi.setId(reader.readString(ID));
+        pi.setProcessId(reader.readString(PROCESS_ID));
+        pi.setRoles(reader.readCollection(ROLES, new HashSet<>(), String.class));
+        pi.setVariables(jsonFromString(reader.readString(VARIABLES)));
+        pi.setEndpoint(reader.readString(ENDPOINT));
+        pi.setNodes(reader.readCollection(NODES, new ArrayList<>(), NodeInstance.class));
+        pi.setState(reader.readInt(STATE));
+        pi.setStart(dateToZonedDateTime(reader.readDate(START)));
+        pi.setEnd(dateToZonedDateTime(reader.readDate(END)));
+        pi.setRootProcessInstanceId(reader.readString(ROOT_PROCESS_INSTANCE_ID));
+        pi.setRootProcessId(reader.readString(ROOT_PROCESS_ID));
+        pi.setParentProcessInstanceId(reader.readString(PARENT_PROCESS_INSTANCE_ID));
+        pi.setProcessName(reader.readString(PROCESS_NAME));
+        pi.setError(reader.readObject(ERROR, ProcessInstanceError.class));
+        pi.setAddons(reader.readCollection(ADDONS, new HashSet<>(), String.class));
+        pi.setLastUpdate(dateToZonedDateTime(reader.readDate(LAST_UPDATE)));
+        pi.setBusinessKey(reader.readString(BUSINESS_KEY));
+        pi.setMilestones(reader.readCollection(MILESTONES, new ArrayList<>(), Milestone.class));
         return pi;
     }
 
     @Override
     public void writeTo(ProtoStreamWriter writer, ProcessInstance pi) throws IOException {
-        writer.writeString("id", pi.getId());
-        writer.writeString("processId", pi.getProcessId());
-        writer.writeCollection("roles", pi.getRoles(), String.class);
-        writer.writeString("variables", pi.getVariables() == null ? null : pi.getVariables().toString());
-        writer.writeString("endpoint", pi.getEndpoint());
-        writer.writeCollection("nodes", pi.getNodes(), NodeInstance.class);
-        writer.writeInt("state", pi.getState());
-        writer.writeDate("start", zonedDateTimeToDate(pi.getStart()));
-        writer.writeDate("end", zonedDateTimeToDate(pi.getEnd()));
-        writer.writeString("rootProcessInstanceId", pi.getRootProcessInstanceId());
-        writer.writeString("rootProcessId", pi.getRootProcessId());
-        writer.writeString("parentProcessInstanceId", pi.getParentProcessInstanceId());
-        writer.writeString("processName", pi.getProcessName());
-        writer.writeObject("error", pi.getError(), ProcessInstanceError.class);
-        writer.writeCollection("addons", pi.getAddons(), String.class);
-        writer.writeDate("lastUpdate", zonedDateTimeToDate(pi.getLastUpdate()));
-        writer.writeString("businessKey", pi.getBusinessKey());
+        writer.writeString(ID, pi.getId());
+        writer.writeString(PROCESS_ID, pi.getProcessId());
+        writer.writeCollection(ROLES, pi.getRoles(), String.class);
+        writer.writeString(VARIABLES, pi.getVariables() == null ? null : pi.getVariables().toString());
+        writer.writeString(ENDPOINT, pi.getEndpoint());
+        writer.writeCollection(NODES, pi.getNodes(), NodeInstance.class);
+        writer.writeInt(STATE, pi.getState());
+        writer.writeDate(START, zonedDateTimeToDate(pi.getStart()));
+        writer.writeDate(END, zonedDateTimeToDate(pi.getEnd()));
+        writer.writeString(ROOT_PROCESS_INSTANCE_ID, pi.getRootProcessInstanceId());
+        writer.writeString(ROOT_PROCESS_ID, pi.getRootProcessId());
+        writer.writeString(PARENT_PROCESS_INSTANCE_ID, pi.getParentProcessInstanceId());
+        writer.writeString(PROCESS_NAME, pi.getProcessName());
+        writer.writeObject(ERROR, pi.getError(), ProcessInstanceError.class);
+        writer.writeCollection(ADDONS, pi.getAddons(), String.class);
+        writer.writeDate(LAST_UPDATE, zonedDateTimeToDate(pi.getLastUpdate()));
+        writer.writeString(BUSINESS_KEY, pi.getBusinessKey());
+        writer.writeCollection(MILESTONES, pi.getMilestones(), Milestone.class);
     }
 
     @Override

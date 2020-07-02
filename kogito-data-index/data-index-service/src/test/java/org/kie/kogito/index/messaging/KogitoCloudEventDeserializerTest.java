@@ -69,7 +69,11 @@ public class KogitoCloudEventDeserializerTest {
                 .hasFieldOrPropertyWithValue("name", "End Event 1")
                 .hasFieldOrPropertyWithValue("type", "EndNode")
                 .hasFieldOrPropertyWithValue("enter", ZonedDateTime.parse("2019-08-20T19:26:02.092Z[UTC]", DateTimeFormatter.ISO_DATE_TIME));
-
+        softly.assertThat(event.getData().getMilestones().get(0))
+                .hasFieldOrPropertyWithValue("id", "_18950AC4-664B-465E-B99E-766D38D362BF")
+                .hasFieldOrPropertyWithValue("name", "AutoStartMilestone")
+                .hasFieldOrPropertyWithValue("status", "AVAILABLE");
+        
         softly.assertAll();
     }
 

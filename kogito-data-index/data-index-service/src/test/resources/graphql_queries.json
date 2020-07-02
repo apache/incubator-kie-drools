@@ -19,6 +19,20 @@
       "addon": "%s"
     }
   },
+  "ProcessInstanceByIdAndMilestoneName": {
+    "query": "query ($id: String, $milestone: String) { ProcessInstances( where: {  id: {  equal : $id }, milestones: { name : { equal : $milestone } } }, pagination : { limit: 10, offset: 0 } ){ %s } }",
+    "variables": {
+      "id": "%s",
+      "milestone": "%s"
+    }
+  },
+  "ProcessInstanceByIdAndMilestoneStatus": {
+    "query": "query ($id: String, $status: MilestoneStatus) { ProcessInstances( where: {  id: {  equal : $id }, milestones: { status : { equal : $status } } }, pagination : { limit: 10, offset: 0 } ){ %s } }",
+    "variables": {
+      "id": "%s",
+      "status": "%s"
+    }
+  },
   "ProcessInstanceByIdAndStart": {
     "query": "query ($id: String, $start: DateTime) { ProcessInstances( where: {  id: {  equal : $id }, start: { equal : $start } }, pagination : { limit: 10, offset: 0 } ){ %s } }",
     "variables": {

@@ -23,6 +23,7 @@ type ProcessInstance {
     endpoint: String!
     serviceUrl: String
     nodes: [NodeInstance!]!
+    milestones: [Milestone!]
     variables: String
     start: DateTime!
     end: DateTime
@@ -91,6 +92,18 @@ type NodeInstance {
     nodeId: String!
 }
 
+enum MilestoneStatus {
+    AVAILABLE,
+    ACTIVE,
+    COMPLETED
+}
+
+type Milestone {
+    id: String!
+    name: String!
+    status: MilestoneStatus!
+}
+
 input ProcessInstanceOrderBy {
     processId: OrderBy
     processName: OrderBy
@@ -120,6 +133,7 @@ input ProcessInstanceArgument {
     state: ProcessInstanceStateArgument
     error: ProcessInstanceErrorArgument
     nodes: NodeInstanceArgument
+    milestones: MilestoneArgument
     endpoint: StringArgument
     roles: StringArrayArgument
     start: DateArgument
@@ -157,6 +171,17 @@ input NodeInstanceArgument {
     type: StringArgument
     enter: DateArgument
     exit: DateArgument
+}
+
+input MilestoneStatusArgument {
+    equal: MilestoneStatus
+    in: [MilestoneStatus]
+}
+
+input MilestoneArgument {
+    id: IdArgument
+    name: StringArgument
+    status: MilestoneStatusArgument
 }
 
 input StringArrayArgument {

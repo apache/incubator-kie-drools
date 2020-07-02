@@ -39,6 +39,7 @@ import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.messaging.ReactiveMessagingEventConsumer;
+import org.kie.kogito.index.model.MilestoneStatus;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,9 +52,34 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.isA;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.hasItems;
-import static org.kie.kogito.index.GraphQLUtils.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.kie.kogito.index.GraphQLUtils.getDealsByTaskId;
+import static org.kie.kogito.index.GraphQLUtils.getJobById;
+import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceById;
+import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceByIdAndAddon;
+import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceByIdAndErrorNode;
+import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceByIdAndMilestoneName;
+import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceByIdAndMilestoneStatus;
+import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceByIdAndNullParentProcessInstanceId;
+import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceByIdAndNullRootProcessInstanceId;
+import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceByIdAndParentProcessInstanceId;
+import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceByIdAndProcessId;
+import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceByIdAndStart;
+import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceByIdAndState;
+import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceByParentProcessInstanceId;
+import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceByRootProcessInstanceId;
+import static org.kie.kogito.index.GraphQLUtils.getTravelsByProcessInstanceId;
+import static org.kie.kogito.index.GraphQLUtils.getTravelsByUserTaskId;
+import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceById;
+import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceByIdAndActualOwner;
+import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceByIdAndCompleted;
+import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceByIdAndPotentialGroups;
+import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceByIdAndPotentialUsers;
+import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceByIdAndStarted;
+import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceByIdAndState;
 import static org.kie.kogito.index.TestUtils.getDealsProtoBufferFile;
 import static org.kie.kogito.index.TestUtils.getJobCloudEvent;
 import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
@@ -379,7 +405,12 @@ public class IndexingServiceIT {
                 .body("data.ProcessInstances[0].addons", hasItems(event.getData().getAddons().toArray()))
                 .body("data.ProcessInstances[0].error.message", event.getData().getError() == null ? is(nullValue()) : is(event.getData().getError().getMessage()))
                 .body("data.ProcessInstances[0].error.nodeDefinitionId", event.getData().getError() == null ? is(nullValue()) : is(event.getData().getError().getNodeDefinitionId()))
-                .body("data.ProcessInstances[0].lastUpdate", is(formatZonedDateTime(event.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))));
+                .body("data.ProcessInstances[0].lastUpdate", is(formatZonedDateTime(event.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.ProcessInstances[0].nodes", event.getData().getNodes() == null ? empty() : hasSize(event.getData().getNodes().size()))
+                .body("data.ProcessInstances[0].milestones", hasSize(event.getData().getMilestones().size()))
+                .body("data.ProcessInstances[0].milestones[0].id", is(event.getData().getMilestones().get(0).getId()))
+                .body("data.ProcessInstances[0].milestones[0].name", is(event.getData().getMilestones().get(0).getName()))
+                .body("data.ProcessInstances[0].milestones[0].status", is(event.getData().getMilestones().get(0).getStatus()));
     }
 
     private void validateProcessInstance(String query, KogitoProcessCloudEvent event) {
@@ -609,6 +640,8 @@ public class IndexingServiceIT {
         validateProcessInstance(getProcessInstanceByIdAndProcessId(processInstanceId, processId), startEvent);
         validateProcessInstance(getProcessInstanceByIdAndStart(processInstanceId, formatZonedDateTime(startEvent.getData().getStart())), startEvent);
         validateProcessInstance(getProcessInstanceByIdAndAddon(processInstanceId, "process-management"), startEvent);
+        validateProcessInstance(getProcessInstanceByIdAndMilestoneName(processInstanceId, "SimpleMilestone"), startEvent);
+        validateProcessInstance(getProcessInstanceByIdAndMilestoneStatus(processInstanceId, MilestoneStatus.AVAILABLE.name()), startEvent);
 
         given().contentType(ContentType.JSON)
                 .body(getTravelsByProcessInstanceId(processInstanceId))

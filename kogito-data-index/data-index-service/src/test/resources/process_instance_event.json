@@ -69,7 +69,14 @@
         "lastName": "Swiderski",
         "nationality": "Polish"
       }
-    }
+    },
+    "milestones" : [
+      {
+        "id": "_18950AC4-664B-465E-B99E-766D38D362BF",
+        "name": "AutoStartMilestone",
+        "status": "AVAILABLE"
+      }
+    ]
   },
   "id": "b50a3dd4-a955-49c4-a055-f30a4d768f87",
   "kogitoParentProcessinstanceId": "f8868a2e-1bbb-47eb-93cf-fa46ff9dbfee",

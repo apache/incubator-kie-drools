@@ -72,6 +72,7 @@ message ProcessInstance {
     optional int64 lastUpdate = 16;
     /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
     optional string businessKey = 17;
+    repeated Milestone milestones = 18;
 }
 
 /* @Indexed */
@@ -96,6 +97,16 @@ message NodeInstance {
     optional string definitionId = 6;
     /* @Field(store = Store.YES) */
     optional string nodeId = 7;
+}
+
+/* @Indexed */
+message Milestone {
+    /* @Field(store = Store.YES) */
+    optional string id = 1;
+    /* @Field(store = Store.YES) */
+    optional string name = 2;
+    /* @Field(store = Store.YES) */
+    optional string status = 3;
 }
 
 /* @Indexed */
