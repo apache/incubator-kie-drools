@@ -13,7 +13,7 @@
   <artifactId>optaplanner-quarkus-integration</artifactId>
   <packaging>pom</packaging>
 
-  <name>OptaPlanner integration</name>
+  <name>OptaPlanner Quarkus integration</name>
   <description>
     OptaPlanner solves planning problems.
     This lightweight, embeddable planning engine implements powerful and scalable algorithms
