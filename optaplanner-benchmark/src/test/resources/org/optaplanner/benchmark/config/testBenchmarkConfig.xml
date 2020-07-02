@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <plannerBenchmark>
   <benchmarkDirectory>data</benchmarkDirectory>
+  <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
   <warmUpSecondsSpentLimit>0</warmUpSecondsSpentLimit>
   <inheritedSolverBenchmark>
     <solver>
@@ -8,6 +9,18 @@
         <minutesSpentLimit>5</minutesSpentLimit>
       </termination>
     </solver>
+    <problemBenchmarks>
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
+      <problemStatisticType>STEP_SCORE</problemStatisticType>
+      <problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>
+      <problemStatisticType>BEST_SOLUTION_MUTATION</problemStatisticType>
+      <problemStatisticType>MOVE_COUNT_PER_STEP</problemStatisticType>
+      <problemStatisticType>MEMORY_USE</problemStatisticType>
+      <singleStatisticType>CONSTRAINT_MATCH_TOTAL_BEST_SCORE</singleStatisticType>
+      <singleStatisticType>CONSTRAINT_MATCH_TOTAL_STEP_SCORE</singleStatisticType>
+      <singleStatisticType>PICKED_MOVE_TYPE_BEST_SCORE_DIFF</singleStatisticType>
+      <singleStatisticType>PICKED_MOVE_TYPE_STEP_SCORE_DIFF</singleStatisticType>
+    </problemBenchmarks>
   </inheritedSolverBenchmark>
   <solverBenchmark>
     <name>Entity Tabu Search</name>
@@ -32,7 +45,10 @@
     </solver>
     <problemBenchmarks>
       <xStreamAnnotatedClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</xStreamAnnotatedClass>
-      <inputSolutionFile>nonExistingDataset.xml</inputSolutionFile>
+      <writeOutputSolutionEnabled>true</writeOutputSolutionEnabled>
+      <inputSolutionFile>nonExistingDataset1.xml</inputSolutionFile>
+      <inputSolutionFile>nonExistingDataset2.xml</inputSolutionFile>
+      <inputSolutionFile>nonExistingDataset3.xml</inputSolutionFile>
     </problemBenchmarks>
     <subSingleCount>2</subSingleCount>
   </solverBenchmark>
@@ -58,7 +74,7 @@
     </solver>
     <problemBenchmarks>
       <xStreamAnnotatedClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</xStreamAnnotatedClass>
-      <inputSolutionFile>nonExistingDataset.xml</inputSolutionFile>
+      <inputSolutionFile>nonExistingDataset4.xml</inputSolutionFile>
     </problemBenchmarks>
     <subSingleCount>2</subSingleCount>
   </solverBenchmark>
