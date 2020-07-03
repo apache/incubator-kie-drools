@@ -1549,12 +1549,15 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
               "ACTIVE",
             ]
           }
+          handleModalToggle={[Function]}
+          isModalOpen={false}
           modalContent=""
         >
           <Modal
             actions={
               Array [
                 <Unknown
+                  onClick={[Function]}
                   variant="primary"
                 >
                   OK
@@ -1591,6 +1594,7 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
                 actions={
                   Array [
                     <Unknown
+                      onClick={[Function]}
                       variant="primary"
                     >
                       OK

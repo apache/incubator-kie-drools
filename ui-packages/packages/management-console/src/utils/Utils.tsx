@@ -87,68 +87,36 @@ export const setTitle = (
 };
 
 export const handleSkip = (
-  processInstanceData: Pick<
-    ProcessInstance,
-    'id' | 'processId' | 'serviceUrl' | 'state'
-  >,
-  setModalTitle: (modalTitle: string) => void,
-  setTitleType: (titleType: string) => void,
-  setModalContent: (modalContent: string) => void,
-  handleSkipModalToggle: () => void
+  processInstance: Pick<ProcessInstance, 'id' | 'processId' | 'serviceUrl'>,
+  onSkipSuccess: () => void,
+  onSkipFailure: (errorMessage: string) => void
 ): void => {
-  setModalTitle('Skip operation');
   axios
     .post(
-      `${processInstanceData.serviceUrl}/management/processes/${processInstanceData.processId}/instances/${processInstanceData.id}/skip`
+      `${processInstance.serviceUrl}/management/processes/${processInstance.processId}/instances/${processInstance.id}/skip`
     )
     .then(() => {
-      setTitleType('success');
-      setModalContent(
-        'Process execution has successfully skipped node which was in error state.'
-      );
-      handleSkipModalToggle();
+      onSkipSuccess();
     })
     .catch(error => {
-      setTitleType('failure');
-      setModalContent(
-        `Process execution failed to skip node which is in error state. Message: ${JSON.stringify(
-          error.message
-        )}`
-      );
-      handleSkipModalToggle();
+      onSkipFailure(JSON.stringify(error.message));
     });
 };
 
 export const handleRetry = (
-  processInstanceData: Pick<
-    ProcessInstance,
-    'id' | 'processId' | 'serviceUrl' | 'state'
-  >,
-  setModalTitle: (modalTitle: string) => void,
-  setTitleType: (titleType: string) => void,
-  setModalContent: (modalContent: string) => void,
-  handleRetryModalToggle: () => void
+  processInstance: Pick<ProcessInstance, 'id' | 'processId' | 'serviceUrl'>,
+  onRetrySuccess: () => void,
+  onRetryFailure: (errorMessage: string) => void
 ): void => {
-  setModalTitle('Retry operation');
   axios
     .post(
-      `${processInstanceData.serviceUrl}/management/processes/${processInstanceData.processId}/instances/${processInstanceData.id}/retrigger`
+      `${processInstance.serviceUrl}/management/processes/${processInstance.processId}/instances/${processInstance.id}/retrigger`
     )
     .then(() => {
-      setTitleType('success');
-      setModalContent(
-        'Process execution has successfully re-executed node which was in error state.'
-      );
-      handleRetryModalToggle();
+      onRetrySuccess();
     })
     .catch(error => {
-      setTitleType('failure');
-      setModalContent(
-        `Process execution failed to re-execute node which is in error state. Message: ${JSON.stringify(
-          error.message
-        )}`
-      );
-      handleRetryModalToggle();
+      onRetryFailure(JSON.stringify(error.message));
     });
 };
 
@@ -159,7 +127,6 @@ export const handleAbort = (
   >,
   setModalTitle: (modalTitle: string) => void,
   setTitleType: (titleType: string) => void,
-  setModalContent: (modalContent: string) => void,
   handleAbortModalToggle: () => void
 ) => {
   setModalTitle('Abort operation');
@@ -168,10 +135,6 @@ export const handleAbort = (
       `${processInstanceData.serviceUrl}/management/processes/${processInstanceData.processId}/instances/${processInstanceData.id}`
     )
     .then(() => {
-      setModalTitle('Process aborted');
-      setModalContent(
-        `${processInstanceData.processId} - process execution has been aborted.`
-      );
       setTitleType('success');
       processInstanceData.state = ProcessInstanceState.Aborted;
       handleAbortModalToggle();
@@ -182,25 +145,20 @@ export const handleAbort = (
     });
 };
 
-export const isModalOpen = (
-  modalTitle,
-  isSkipModalOpen,
-  isRetryModalOpen
-): boolean => {
-  if (modalTitle === 'Skip operation') {
-    return isSkipModalOpen;
-  } else if (modalTitle === 'Retry operation') {
-    return isRetryModalOpen;
-  }
-};
-export const modalToggle = (
-  modalTitle,
-  handleSkipModalToggle,
-  handleRetryModalToggle
-): (() => void) => {
-  if (modalTitle === 'Skip operation') {
-    return handleSkipModalToggle;
-  } else if (modalTitle === 'Retry operation') {
-    return handleRetryModalToggle;
-  }
+export const handleNodeInstanceRetrigger = (
+  processInstance: Pick<ProcessInstance, 'id' | 'serviceUrl' | 'processId'>,
+  node: Pick<GraphQL.NodeInstance, 'id'>,
+  onRetriggerSuccess: () => void,
+  onRetriggerFailure: (errorMessage: string) => void
+) => {
+  axios
+    .post(
+      `${processInstance.serviceUrl}/management/processes/${processInstance.processId}/instances/${processInstance.id}/nodeInstances/${node.id}`
+    )
+    .then(() => {
+      onRetriggerSuccess();
+    })
+    .catch(error => {
+      onRetriggerFailure(JSON.stringify(error.message));
+    });
 };

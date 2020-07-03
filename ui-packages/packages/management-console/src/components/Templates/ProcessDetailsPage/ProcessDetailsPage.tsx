@@ -31,12 +31,7 @@ import ProcessDetailsTimeline from '../../Organisms/ProcessDetailsTimeline/Proce
 import './ProcessDetailsPage.css';
 import PageTitle from '../../Molecules/PageTitle/PageTitle';
 import ProcessListModal from '../../Atoms/ProcessListModal/ProcessListModal';
-import {
-  handleAbort,
-  setTitle,
-  isModalOpen,
-  modalToggle
-} from '../../../utils/Utils';
+import { handleAbort, setTitle } from '../../../utils/Utils';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
 
 interface MatchProps {
@@ -47,12 +42,9 @@ const ProcessDetailsPage: React.FC<
   RouteComponentProps<MatchProps, {}, {}> & InjectedOuiaProps
 > = ({ ouiaContext, ...props }) => {
   const id = props.match.params.instanceID;
-  const [isSkipModalOpen, setIsSkipModalOpen] = useState<boolean>(false);
-  const [isRetryModalOpen, setIsRetryModalOpen] = useState<boolean>(false);
+  const [isAbortModalOpen, setIsAbortModalOpen] = useState<boolean>(false);
   const [modalTitle, setModalTitle] = useState<string>('');
   const [titleType, setTitleType] = useState<string>('');
-  const [modalContent, setModalContent] = useState<string>('');
-  const [isAbortModalOpen, setIsAbortModalOpen] = useState<boolean>(false);
   const currentPage = JSON.parse(window.localStorage.getItem('state'));
 
   const { loading, error, data } = GraphQL.useGetProcessInstanceByIdQuery({
@@ -61,14 +53,6 @@ const ProcessDetailsPage: React.FC<
 
   const handleAbortModalToggle = () => {
     setIsAbortModalOpen(!isAbortModalOpen);
-  };
-
-  const handleSkipModalToggle = () => {
-    setIsSkipModalOpen(!isSkipModalOpen);
-  };
-
-  const handleRetryModalToggle = () => {
-    setIsRetryModalOpen(!isRetryModalOpen);
   };
 
   useEffect(() => {
@@ -92,12 +76,12 @@ const ProcessDetailsPage: React.FC<
       return (
         <Button
           variant="secondary"
+          id="abort-button"
           onClick={() =>
             handleAbort(
               data.ProcessInstances[0],
               setModalTitle,
               setTitleType,
-              setModalContent,
               handleAbortModalToggle
             )
           }
@@ -118,6 +102,7 @@ const ProcessDetailsPage: React.FC<
   let BreadCrumbRoute = [];
   if (data) {
     const result = data.ProcessInstances;
+    /* istanbul ignore else */
     if (currentPage) {
       const tempPath = currentPage.prev.split('/');
       prevPath = tempPath.filter(item => item);
@@ -157,7 +142,7 @@ const ProcessDetailsPage: React.FC<
               isModalOpen={isAbortModalOpen}
               handleModalToggle={handleAbortModalToggle}
               checkedArray={data && [data.ProcessInstances[0].state]}
-              modalTitle={setTitle('success', 'Abort operation')}
+              modalTitle={setTitle(titleType, modalTitle)}
               isSingleAbort={true}
               abortedMessageObj={
                 data && {
@@ -166,21 +151,6 @@ const ProcessDetailsPage: React.FC<
               }
               completedMessageObj={{}}
               isAbortModalOpen={isAbortModalOpen}
-            />
-            <ProcessListModal
-              isModalOpen={isModalOpen(
-                modalTitle,
-                isSkipModalOpen,
-                isRetryModalOpen
-              )}
-              handleModalToggle={modalToggle(
-                modalTitle,
-                handleSkipModalToggle,
-                handleRetryModalToggle
-              )}
-              checkedArray={data && [data.ProcessInstances[0].state]}
-              modalTitle={setTitle(titleType, modalTitle)}
-              modalContent={modalContent}
             />
             <PageTitle title="Process Details" />
             {!loading ? (
@@ -266,14 +236,7 @@ const ProcessDetailsPage: React.FC<
                   <ProcessDetailsProcessVariables data={data} />
                 </GridItem>
                 <GridItem>
-                  <ProcessDetailsTimeline
-                    data={data.ProcessInstances[0]}
-                    setModalContent={setModalContent}
-                    setModalTitle={setModalTitle}
-                    setTitleType={setTitleType}
-                    handleSkipModalToggle={handleSkipModalToggle}
-                    handleRetryModalToggle={handleRetryModalToggle}
-                  />
+                  <ProcessDetailsTimeline data={data.ProcessInstances[0]} />
                 </GridItem>
               </Grid>
             ) : (

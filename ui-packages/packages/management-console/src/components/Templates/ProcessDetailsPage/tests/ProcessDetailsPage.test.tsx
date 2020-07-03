@@ -6,6 +6,58 @@ import { BrowserRouter } from 'react-router-dom';
 import { getWrapperAsync, GraphQL } from '@kogito-apps/common';
 import GetProcessInstanceByIdDocument = GraphQL.GetProcessInstanceByIdDocument;
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
+import { setTitle } from '../../../../utils/Utils';
+
+jest.mock('../../../../utils/Utils');
+jest.mock('../../../Atoms/ProcessListModal/ProcessListModal');
+jest.mock('../../../Atoms/ProcessListBulkInstances/ProcessListBulkInstances');
+jest.mock('../../../Organisms/ProcessDetails/ProcessDetails');
+jest.mock(
+  '../../../Organisms/ProcessDetailsProcessDiagram/ProcessDetailsProcessDiagram'
+);
+jest.mock(
+  '../../../Organisms/ProcessDetailsProcessVariables/ProcessDetailsProcessVariables'
+);
+jest.mock('../../../Organisms/ProcessDetailsTimeline/ProcessDetailsTimeline');
+
+const MockedComponent = (): React.ReactElement => {
+  return <></>;
+};
+
+jest.mock('@patternfly/react-icons', () => ({
+  ...jest.requireActual('@patternfly/react-icons'),
+  OnRunningIcon: () => {
+    return <MockedComponent />;
+  },
+  CheckCircleIcon: () => {
+    return <MockedComponent />;
+  },
+  BanIcon: () => {
+    return <MockedComponent />;
+  },
+  PausedIcon: () => {
+    return <MockedComponent />;
+  },
+  ErrorCircleOIcon: () => {
+    return <MockedComponent />;
+  },
+  AngleRightIcon: () => {
+    return <MockedComponent />;
+  }
+}));
+
+jest.mock('@kogito-apps/common', () => ({
+  ...jest.requireActual('@kogito-apps/common'),
+  ProcessDescriptor: () => {
+    return <MockedComponent />;
+  },
+  KogitoSpinner: () => {
+    return <MockedComponent />;
+  },
+  ServerErrors: () => {
+    return <MockedComponent />;
+  }
+}));
 
 const props = {
   match: {
@@ -18,6 +70,12 @@ const props = {
   },
   location: H.createLocation(''),
   history: H.createBrowserHistory()
+};
+props.location.state = {
+  filters: {
+    status: [ProcessInstanceState.Active],
+    businessKey: []
+  }
 };
 const props1 = {
   match: {
@@ -196,7 +254,9 @@ describe('Process Details Page component tests', () => {
   });
   Date.now = jest.fn(() => 1487076708000);
   Storage.prototype.getItem = jest.fn(() =>
-    JSON.stringify({ prev: '/ProcessInstances' })
+    JSON.stringify({
+      prev: '/ProcessInstances/8035b580-6ae4-4aa8-9ec0-e18e19809e0b'
+    })
   );
   it('snapshot testing in Active state', async () => {
     const wrapper = await getWrapperAsync(
@@ -209,7 +269,22 @@ describe('Process Details Page component tests', () => {
     );
     expect(wrapper).toMatchSnapshot();
   });
-
+  it('abort button click', async () => {
+    const wrapper = await getWrapperAsync(
+      <MockedProvider mocks={mocks1} addTypename={false}>
+        <BrowserRouter>
+          <ProcessDetailsPage {...props} />
+        </BrowserRouter>
+      </MockedProvider>,
+      'ProcessDetailsPage'
+    );
+    wrapper
+      .find('#abort-button')
+      .first()
+      .simulate('click');
+    wrapper.update();
+    expect(setTitle).toHaveBeenCalled();
+  });
   it('snapshot testing in Error state', async () => {
     const wrapper = await getWrapperAsync(
       <MockedProvider mocks={mocks2} addTypename={false}>

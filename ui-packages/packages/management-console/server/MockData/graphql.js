@@ -655,9 +655,9 @@ module.exports = data = [
     roles: [],
     state: 'ACTIVE',
     rootProcessInstanceId: null,
-    serviceUrl: null,
+    serviceUrl: 'http://localhost:4000',
     endpoint: 'http://localhost:4000',
-    addons: [],
+    addons: ['process-management'],
     error: {
       nodeDefinitionId: 'a1e139d5-4e77-48c9-84ae-3459188e90433n',
       message: 'Something went wrong'
@@ -678,7 +678,7 @@ module.exports = data = [
       },
       {
         nodeId: '2',
-        name: 'Confirm travel',
+        name: 'Confirm travel not found',
         definitionId: 'UserTask_2',
         id: '843bd287-fb6e-4ee7-a304-ba9b430e52d8',
         enter: '2019-10-22T04:43:01.148Z',

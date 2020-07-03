@@ -73,9 +73,11 @@ exports[`ProcessListTableItems component tests snapshot tests for no child insta
   <ProcessListModal
     checkedArray={
       Array [
-        "ACTIVE",
+        "COMPLETED",
       ]
     }
+    handleModalToggle={[Function]}
+    isModalOpen={false}
     modalContent=""
   />
   <DataListItem
@@ -461,6 +463,8 @@ exports[`ProcessListTableItems component tests snapshot tests with child instanc
         "ACTIVE",
       ]
     }
+    handleModalToggle={[Function]}
+    isModalOpen={false}
     modalContent=""
   />
   <DataListItem

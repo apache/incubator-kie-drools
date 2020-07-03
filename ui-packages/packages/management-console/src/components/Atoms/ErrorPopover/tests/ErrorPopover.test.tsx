@@ -120,11 +120,8 @@ const props1 = {
     ],
     childProcessInstances: []
   },
-  setModalTitle: jest.fn(),
-  setTitleType: jest.fn(),
-  setModalContent: jest.fn(),
-  handleRetryModalToggle: jest.fn(),
-  handleSkipModalToggle: jest.fn()
+  onSkipClick: jest.fn(),
+  onRetryClick: jest.fn()
 };
 
 const props2 = {
@@ -241,15 +238,8 @@ const props2 = {
     ],
     childProcessInstances: []
   },
-  setModalTitle: jest.fn(),
-  setTitleType: jest.fn(),
-  setModalContent: jest.fn(),
-  handleRetryModalToggle: jest.fn(() => {
-    return;
-  }),
-  handleSkipModalToggle: jest.fn(() => {
-    return;
-  })
+  onSkipClick: jest.fn(),
+  onRetryClick: jest.fn()
 };
 
 describe('Errorpopover component tests', () => {
@@ -262,22 +252,21 @@ describe('Errorpopover component tests', () => {
     const wrapper = getWrapper(<ErrorPopover {...props2} />, 'ErrorPopover');
     expect(wrapper).toMatchSnapshot();
   });
-  it('handle skip test', () => {
+  it('handle skip test', async () => {
     const wrapper = mount(<ErrorPopover {...props2} />);
     wrapper
       .find('Popover')
       .prop('footerContent')[0]
       .props.onClick();
-    wrapper
-      .find('Popover')
-      .prop('footerContent')[1]
-      .props.onClick();
+
+    expect(props2.onSkipClick).toHaveBeenCalled();
   });
-  it('handle retry test', () => {
+  it('handle Retry test', async () => {
     const wrapper = mount(<ErrorPopover {...props2} />);
     wrapper
       .find('Popover')
       .prop('footerContent')[1]
       .props.onClick();
+    expect(props2.onRetryClick).toHaveBeenCalled();
   });
 });

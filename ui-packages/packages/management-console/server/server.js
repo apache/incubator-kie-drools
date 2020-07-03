@@ -53,7 +53,9 @@ app.delete(
   '/management/processes/:processId/instances/:processInstanceId',
   controller.callAbort
 );
-
+app.post('/management/processes/:processId/instances/:processInstanceId/nodeInstances/:nodeInstanceId',
+  controller.callNodeRetrigger
+)
 function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }

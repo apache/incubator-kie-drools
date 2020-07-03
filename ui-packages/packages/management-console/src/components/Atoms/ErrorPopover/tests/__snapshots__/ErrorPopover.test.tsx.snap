@@ -2,8 +2,8 @@
 
 exports[`Errorpopover component tests snapshot testing with error object 1`] = `
 <ErrorPopover
-  handleRetryModalToggle={[MockFunction]}
-  handleSkipModalToggle={[MockFunction]}
+  onRetryClick={[MockFunction]}
+  onSkipClick={[MockFunction]}
   processInstanceData={
     Object {
       "addons": Array [
@@ -125,9 +125,6 @@ exports[`Errorpopover component tests snapshot testing with error object 1`] = `
       "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
     }
   }
-  setModalContent={[MockFunction]}
-  setModalTitle={[MockFunction]}
-  setTitleType={[MockFunction]}
 >
   <Popover
     appendTo={[Function]}
@@ -158,7 +155,7 @@ exports[`Errorpopover component tests snapshot testing with error object 1`] = `
         <Unknown
           className="pf-u-mr-sm"
           id="skip-button"
-          onClick={[Function]}
+          onClick={[MockFunction]}
           variant="secondary"
         >
           Skip
@@ -166,7 +163,7 @@ exports[`Errorpopover component tests snapshot testing with error object 1`] = `
         <Unknown
           className="pf-u-mr-sm"
           id="retry-button"
-          onClick={[Function]}
+          onClick={[MockFunction]}
           variant="secondary"
         >
           Retry
@@ -327,8 +324,8 @@ exports[`Errorpopover component tests snapshot testing with error object 1`] = `
 
 exports[`Errorpopover component tests snapshot testing without error object 1`] = `
 <ErrorPopover
-  handleRetryModalToggle={[MockFunction]}
-  handleSkipModalToggle={[MockFunction]}
+  onRetryClick={[MockFunction]}
+  onSkipClick={[MockFunction]}
   processInstanceData={
     Object {
       "addons": Array [
@@ -447,9 +444,6 @@ exports[`Errorpopover component tests snapshot testing without error object 1`] 
       "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
     }
   }
-  setModalContent={[MockFunction]}
-  setModalTitle={[MockFunction]}
-  setTitleType={[MockFunction]}
 >
   <Popover
     appendTo={[Function]}
@@ -480,7 +474,7 @@ exports[`Errorpopover component tests snapshot testing without error object 1`] 
         <Unknown
           className="pf-u-mr-sm"
           id="skip-button"
-          onClick={[Function]}
+          onClick={[MockFunction]}
           variant="secondary"
         >
           Skip
@@ -488,7 +482,7 @@ exports[`Errorpopover component tests snapshot testing without error object 1`] 
         <Unknown
           className="pf-u-mr-sm"
           id="retry-button"
-          onClick={[Function]}
+          onClick={[MockFunction]}
           variant="secondary"
         >
           Retry

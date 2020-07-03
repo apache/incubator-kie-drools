@@ -24,72 +24,182 @@ import {
 import React, { useState } from 'react';
 import './ProcessDetailsTimeline.css';
 import { GraphQL } from '@kogito-apps/common';
-import { handleRetry, handleSkip } from '../../../utils/Utils';
+import {
+  handleRetry,
+  handleSkip,
+  handleNodeInstanceRetrigger,
+  setTitle
+} from '../../../utils/Utils';
 import ProcessInstance = GraphQL.ProcessInstance;
+import ProcessListModal from '../../Atoms/ProcessListModal/ProcessListModal';
 
 export interface IOwnProps {
   data: Pick<
     ProcessInstance,
     'id' | 'nodes' | 'addons' | 'error' | 'serviceUrl' | 'processId' | 'state'
   >;
-  setModalTitle: (modalTitle: string) => void;
-  setTitleType: (titleType: string) => void;
-  setModalContent: (modalContent: string) => void;
-  handleSkipModalToggle: () => void;
-  handleRetryModalToggle: () => void;
 }
+enum TitleType {
+  SUCCESS = 'success',
+  FAILURE = 'failure'
+}
+const ProcessDetailsTimeline: React.FC<IOwnProps> = ({ data }) => {
+  const [kebabOpenArray, setKebabOpenArray] = useState([]);
+  const [modalTitle, setModalTitle] = useState<string>('');
+  const [titleType, setTitleType] = useState<string>('');
+  const [modalContent, setModalContent] = useState<string>('');
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const ignoredNodeTypes = ['Join', 'Split', 'EndNode'];
 
-const ProcessDetailsTimeline: React.FC<IOwnProps> = ({
-  data,
-  setModalTitle,
-  setModalContent,
-  setTitleType,
-  handleRetryModalToggle,
-  handleSkipModalToggle
-}) => {
-  const [isKebabOpen, setIsKebabOpen] = useState(false);
-  const dropdownItems = [
-    <DropdownItem
-      key="retry"
-      component="button"
-      onClick={() =>
-        handleRetry(
-          data,
-          setModalTitle,
-          setTitleType,
-          setModalContent,
-          handleRetryModalToggle
-        )
-      }
-    >
-      Retry
-    </DropdownItem>,
-    <DropdownItem
-      key="skip"
-      component="button"
-      onClick={() =>
-        handleSkip(
-          data,
-          setModalTitle,
-          setTitleType,
-          setModalContent,
-          handleSkipModalToggle
-        )
-      }
-    >
-      Skip
-    </DropdownItem>
-  ];
-
-  const onKebabToggle = isOpen => {
-    setIsKebabOpen(isOpen);
+  const onKebabToggle = (isOpen: boolean, id) => {
+    if (isOpen) {
+      setKebabOpenArray([...kebabOpenArray, id]);
+    } else {
+      onDropdownSelect(id);
+    }
   };
 
-  const onDropdownSelect = event => {
-    setIsKebabOpen(!isKebabOpen);
+  const onDropdownSelect = id => {
+    const tempKebabArray = [...kebabOpenArray];
+    const index = tempKebabArray.indexOf(id);
+    tempKebabArray.splice(index, 1);
+    setKebabOpenArray(tempKebabArray);
   };
+
+  const handleModalToggle = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  const onShowMessage = (
+    title: string,
+    content: string,
+    type: TitleType
+  ): void => {
+    setTitleType(type);
+    setModalTitle(title);
+    setModalContent(content);
+    handleModalToggle();
+  };
+  const dropdownItems = (processInstanceData, node) => {
+    if (
+      processInstanceData.error &&
+      node.definitionId === processInstanceData.error.nodeDefinitionId
+    ) {
+      return [
+        <DropdownItem
+          key="retry"
+          component="button"
+          onClick={() =>
+            handleRetry(
+              processInstanceData,
+              () =>
+                onShowMessage(
+                  'Retry operation',
+                  `The node ${node.name} was successfully re-executed.`,
+                  TitleType.SUCCESS
+                ),
+              (errorMessage: string) =>
+                onShowMessage(
+                  'Retry operation',
+                  `The node ${node.name} failed to re-execute. Message: ${errorMessage}`,
+                  TitleType.FAILURE
+                )
+            )
+          }
+        >
+          Retry
+        </DropdownItem>,
+        <DropdownItem
+          key="skip"
+          component="button"
+          onClick={() =>
+            handleSkip(
+              processInstanceData,
+              () =>
+                onShowMessage(
+                  'Skip operation',
+                  `The node ${node.name} was successfully skipped.`,
+                  TitleType.SUCCESS
+                ),
+              (errorMessage: string) =>
+                onShowMessage(
+                  'Skip operation',
+                  `The node ${node.name} failed to skip. Message: ${errorMessage}`,
+                  TitleType.FAILURE
+                )
+            )
+          }
+        >
+          Skip
+        </DropdownItem>
+      ];
+    } else if (node.exit === null && !ignoredNodeTypes.includes(node.type)) {
+      return [
+        <DropdownItem
+          key="retrigger"
+          component="button"
+          onClick={() =>
+            handleNodeInstanceRetrigger(
+              processInstanceData,
+              node,
+              () =>
+                onShowMessage(
+                  'Node retrigger operation',
+                  `The node ${node.name} was successfully retriggered.`,
+                  TitleType.SUCCESS
+                ),
+              (errorMessage: string) =>
+                onShowMessage(
+                  'Node retrigger operation',
+                  `The node ${node.name} failed to retrigger. Message: ${errorMessage}`,
+                  TitleType.FAILURE
+                )
+            )
+          }
+        >
+          Retrigger node
+        </DropdownItem>
+      ];
+    } else {
+      return [];
+    }
+  };
+  const processManagementKebabButtons = (node, index) => {
+    const dropdownItemsValue = dropdownItems(data, node);
+    if (
+      data.addons.includes('process-management') &&
+      data.serviceUrl !== null &&
+      dropdownItemsValue.length !== 0
+    ) {
+      return (
+        <Dropdown
+          onSelect={() => onDropdownSelect('timeline-kebab-toggle-' + index)}
+          toggle={
+            <KebabToggle
+              onToggle={isOpen =>
+                onKebabToggle(isOpen, 'timeline-kebab-toggle-' + index)
+              }
+              id={'timeline-kebab-toggle-' + index}
+            />
+          }
+          position="right"
+          isOpen={kebabOpenArray.includes('timeline-kebab-toggle-' + index)}
+          isPlain
+          dropdownItems={dropdownItemsValue}
+        />
+      );
+    }
+  };
+
   return (
     <Card>
+      <ProcessListModal
+        isModalOpen={isModalOpen}
+        handleModalToggle={handleModalToggle}
+        checkedArray={data && [data.state]}
+        modalTitle={setTitle(titleType, modalTitle)}
+        modalContent={modalContent}
+      />
       <CardHeader>
         <Title headingLevel="h3" size="xl">
           Timeline
@@ -158,39 +268,8 @@ const ProcessDetailsTimeline: React.FC<IOwnProps> = ({
                     </TextContent>
                   </SplitItem>
                   <SplitItem>
-                    {
-                      <>
-                        {data.addons.includes('process-management') &&
-                        data.serviceUrl !== null &&
-                        data.error &&
-                        content.definitionId === data.error.nodeDefinitionId ? (
-                          <Dropdown
-                            id="dropdown-kebab"
-                            onSelect={onDropdownSelect}
-                            toggle={
-                              <KebabToggle
-                                onToggle={onKebabToggle}
-                                id={'timeline-kebab-toggle-' + idx}
-                              />
-                            }
-                            isOpen={isKebabOpen}
-                            isPlain
-                            dropdownItems={dropdownItems}
-                          />
-                        ) : (
-                          <Dropdown
-                            toggle={
-                              <KebabToggle
-                                isDisabled
-                                id={'timeline-kebab-toggle-disabled-' + idx}
-                              />
-                            }
-                            isPlain
-                          />
-                        )}
-                      </>
-                    }
-                  </SplitItem>{' '}
+                    {processManagementKebabButtons(content, idx)}
+                  </SplitItem>
                 </Split>
               );
             })}

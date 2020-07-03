@@ -34,8 +34,6 @@ import {
   handleAbort,
   handleRetry,
   handleSkip,
-  isModalOpen,
-  modalToggle,
   setTitle,
   stateIconCreator
 } from '../../../utils/Utils';
@@ -55,6 +53,11 @@ interface IOwnProps {
   selectedNumber: number;
 }
 
+enum TitleType {
+  SUCCESS = 'success',
+  FAILURE = 'failure'
+}
+
 const ProcessListTableItems: React.FC<IOwnProps> = ({
   processInstanceData,
   checkedArray,
@@ -72,8 +75,7 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
   const [isLoaded, setisLoaded] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
   const [modalContent, setModalContent] = useState('');
-  const [isSkipModalOpen, setIsSkipModalOpen] = useState(false);
-  const [isRetryModalOpen, setIsRetryModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAbortModalOpen, setIsAbortModalOpen] = useState(false);
   const [titleType, setTitleType] = useState('');
   const isChecked = 'isChecked';
@@ -85,12 +87,9 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
   });
   const currentPage = { prev: location.pathname };
   window.localStorage.setItem('state', JSON.stringify(currentPage));
-  const handleSkipModalToggle = () => {
-    setIsSkipModalOpen(!isSkipModalOpen);
-  };
 
-  const handleRetryModalToggle = () => {
-    setIsRetryModalOpen(!isRetryModalOpen);
+  const handleModalToggle = () => {
+    setIsModalOpen(!isModalOpen);
   };
 
   const handleAbortModalToggle = () => {
@@ -104,6 +103,50 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
     setisOpen(_isOpen);
   };
 
+  const onShowMessage = (
+    title: string,
+    content: string,
+    type: TitleType
+  ): void => {
+    setTitleType(type);
+    setModalTitle(title);
+    setModalContent(content);
+    handleModalToggle();
+  };
+  const onSkipClick = () => {
+    handleSkip(
+      processInstanceData,
+      () =>
+        onShowMessage(
+          'Skip operation',
+          `The process ${processInstanceData.processName} was successfully skipped.`,
+          TitleType.SUCCESS
+        ),
+      (errorMessage: string) =>
+        onShowMessage(
+          'Skip operation',
+          `The process ${processInstanceData.processName} failed to skip. Message: ${errorMessage}`,
+          TitleType.FAILURE
+        )
+    );
+  };
+  const onRetryClick = () => {
+    handleRetry(
+      processInstanceData,
+      () =>
+        onShowMessage(
+          'Retry operation',
+          `The process ${processInstanceData.processName} was successfully re-executed.`,
+          TitleType.SUCCESS
+        ),
+      (errorMessage: string) =>
+        onShowMessage(
+          'Retry operation',
+          `The process ${processInstanceData.processName} failed to re-execute. Message: ${errorMessage}`,
+          TitleType.FAILURE
+        )
+    );
+  };
   const toggle = async _id => {
     const copyOfInitData = { ...initData };
     copyOfInitData.ProcessInstances.map(instance => {
@@ -234,32 +277,10 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
     ) {
       if (processInstanceData.state === 'ERROR') {
         return [
-          <DropdownItem
-            key={1}
-            onClick={() =>
-              handleRetry(
-                processInstanceData,
-                setModalTitle,
-                setTitleType,
-                setModalContent,
-                handleRetryModalToggle
-              )
-            }
-          >
+          <DropdownItem key={1} onClick={onRetryClick}>
             Retry
           </DropdownItem>,
-          <DropdownItem
-            key={2}
-            onClick={() =>
-              handleSkip(
-                processInstanceData,
-                setModalTitle,
-                setTitleType,
-                setModalContent,
-                handleSkipModalToggle
-              )
-            }
-          >
+          <DropdownItem key={2} onClick={onSkipClick}>
             Skip
           </DropdownItem>,
           <DropdownItem
@@ -269,7 +290,6 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
                 processInstanceData,
                 setModalTitle,
                 setTitleType,
-                setModalContent,
                 handleAbortModalToggle
               )
             }
@@ -286,7 +306,6 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
                 processInstanceData,
                 setModalTitle,
                 setTitleType,
-                setModalContent,
                 handleAbortModalToggle
               )
             }
@@ -314,13 +333,9 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
         isAbortModalOpen={isAbortModalOpen}
       />
       <ProcessListModal
-        isModalOpen={isModalOpen(modalTitle, isSkipModalOpen, isRetryModalOpen)}
-        handleModalToggle={modalToggle(
-          modalTitle,
-          handleSkipModalToggle,
-          handleRetryModalToggle
-        )}
-        checkedArray={checkedArray}
+        isModalOpen={isModalOpen}
+        handleModalToggle={handleModalToggle}
+        checkedArray={processInstanceData && [processInstanceData.state]}
         modalTitle={setTitle(titleType, modalTitle)}
         modalContent={modalContent}
       />
@@ -384,11 +399,8 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
                 {processInstanceData.state === 'ERROR' ? (
                   <ErrorPopover
                     processInstanceData={processInstanceData}
-                    setModalTitle={setModalTitle}
-                    setTitleType={setTitleType}
-                    setModalContent={setModalContent}
-                    handleRetryModalToggle={handleRetryModalToggle}
-                    handleSkipModalToggle={handleSkipModalToggle}
+                    onSkipClick={onSkipClick}
+                    onRetryClick={onRetryClick}
                   />
                 ) : (
                   stateIconCreator(processInstanceData.state)

@@ -1,27 +1,18 @@
 import React from 'react';
 import { Popover, Button } from '@patternfly/react-core';
-import {
-  handleSkip,
-  handleRetry,
-  stateIconCreator
-} from '../../../utils/Utils';
+import { stateIconCreator } from '../../../utils/Utils';
 import { GraphQL } from '@kogito-apps/common';
 import ProcessInstance = GraphQL.ProcessInstance;
+
 interface IOwnProps {
   processInstanceData: ProcessInstance;
-  setModalTitle: (modalTitle: string) => void;
-  setTitleType: (titleType: string) => void;
-  setModalContent: (modalContent: string) => void;
-  handleRetryModalToggle: () => void;
-  handleSkipModalToggle: () => void;
+  onSkipClick: () => void;
+  onRetryClick: () => void;
 }
 const ErrorPopover: React.FC<IOwnProps> = ({
   processInstanceData,
-  setModalTitle,
-  setTitleType,
-  setModalContent,
-  handleRetryModalToggle,
-  handleSkipModalToggle
+  onSkipClick,
+  onRetryClick
 }) => {
   return (
     <Popover
@@ -41,15 +32,7 @@ const ErrorPopover: React.FC<IOwnProps> = ({
             key="confirm1"
             id="skip-button"
             variant="secondary"
-            onClick={() =>
-              handleSkip(
-                processInstanceData,
-                setModalTitle,
-                setTitleType,
-                setModalContent,
-                handleSkipModalToggle
-              )
-            }
+            onClick={onSkipClick}
             className="pf-u-mr-sm"
           >
             Skip
@@ -58,15 +41,7 @@ const ErrorPopover: React.FC<IOwnProps> = ({
             key="confirm2"
             variant="secondary"
             id="retry-button"
-            onClick={() =>
-              handleRetry(
-                processInstanceData,
-                setModalTitle,
-                setTitleType,
-                setModalContent,
-                handleRetryModalToggle
-              )
-            }
+            onClick={onRetryClick}
             className="pf-u-mr-sm"
           >
             Retry
