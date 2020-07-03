@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.Aggregate;
@@ -54,7 +54,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.METHOD_NAME_TEMPLATE;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.supportedExpressionSupplier;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.unsupportedExpressionSupplier;
@@ -167,14 +166,16 @@ public class DerivedFieldFunctionUtilsTest {
         constant.setValue(34.6);
         int methodArity = new Random().nextInt(20);
         MethodDeclaration retrieved = DerivedFieldFunctionUtils.getConstantMethodDeclaration(constant, methodArity);
-        commonValidateConstant(retrieved, constant, methodArity, double.class.getName());
+        String expectedVariable = String.format("%s constantVariable = %s;", Double.class.getName(), constant.getValue());
+        commonValidateConstant(retrieved, constant, methodArity, Double.class.getName(), expectedVariable);
         //
         constant = new Constant();
         constant.setDataType(DataType.STRING);
         constant.setValue("EXPECTED");
         methodArity = new Random().nextInt(20);
+        expectedVariable = String.format("%s constantVariable = \"%s\";", String.class.getName(), constant.getValue());
         retrieved = DerivedFieldFunctionUtils.getConstantMethodDeclaration(constant, methodArity);
-        commonValidateConstant(retrieved, constant, methodArity, String.class.getName());
+        commonValidateConstant(retrieved, constant, methodArity, String.class.getName(), expectedVariable);
     }
 
     @Test(expected = KiePMMLException.class)
@@ -188,17 +189,19 @@ public class DerivedFieldFunctionUtilsTest {
         String fieldName = "FIELD_NAME";
         FieldRef fieldRef = new FieldRef(FieldName.create(fieldName));
         MethodDeclaration retrieved = DerivedFieldFunctionUtils.getFieldRefMethodDeclaration(fieldRef, methodArity);
-        String expected = String.format("return kiePMMLNameValue.map(%1$s::getValue).orElse(%2$s);",
-                                        KiePMMLNameValue.class.getName(),
-                                        fieldRef.getMapMissingTo());
-        commonValidateFieldRef(retrieved, fieldRef, methodArity, expected);
+        String expectedVariable = String.format("%1$s fieldRefVariable = kiePMMLNameValue.map(%2$s::getValue).orElse(%3$s);",
+                                                Object.class.getName(),
+                                                KiePMMLNameValue.class.getName(),
+                                                fieldRef.getMapMissingTo());
+        commonValidateFieldRef(retrieved, fieldRef, methodArity, expectedVariable);
         //
         fieldRef.setMapMissingTo("MAP_MISSING_TO");
         retrieved = DerivedFieldFunctionUtils.getFieldRefMethodDeclaration(fieldRef, methodArity);
-        expected = String.format("return kiePMMLNameValue.map(%1$s::getValue).orElse(\"%2$s\");",
-                                 KiePMMLNameValue.class.getName(),
-                                 fieldRef.getMapMissingTo());
-        commonValidateFieldRef(retrieved, fieldRef, methodArity, expected);
+        expectedVariable = String.format("%1$s fieldRefVariable = kiePMMLNameValue.map(%2$s::getValue).orElse(\"%3$s\");",
+                                         Object.class.getName(),
+                                         KiePMMLNameValue.class.getName(),
+                                         fieldRef.getMapMissingTo());
+        commonValidateFieldRef(retrieved, fieldRef, methodArity, expectedVariable);
     }
 
     @Test(expected = KiePMMLException.class)
@@ -218,7 +221,7 @@ public class DerivedFieldFunctionUtilsTest {
 
     @Test(expected = KiePMMLException.class)
     public void getNormDiscreteMethodDeclaration() {
-        DerivedFieldFunctionUtils.getNormDiscreteMethodDeclaration( new NormDiscrete(), 3);
+        DerivedFieldFunctionUtils.getNormDiscreteMethodDeclaration(new NormDiscrete(), 3);
     }
 
     @Test(expected = KiePMMLException.class)
@@ -226,30 +229,30 @@ public class DerivedFieldFunctionUtilsTest {
         DerivedFieldFunctionUtils.getTextIndexMethodDeclaration(new TextIndex(), 3);
     }
 
-    private void commonValidateConstant(MethodDeclaration retrieved, Constant constant, int methodArity, String expectedClass) {
+    private void commonValidateConstant(MethodDeclaration retrieved, Constant constant, int methodArity, String expectedClass, String expectedVariableDeclaration) {
         commonValidateMethodDeclaration(retrieved, constant, methodArity);
         assertEquals(expectedClass, retrieved.getType().asString());
         BlockStmt body = retrieved.getBody().orElseThrow(() -> new RuntimeException("Expecting BlockBody"));
         NodeList<Statement> statements = body.getStatements();
-        assertEquals(1, statements.size());
-        assertTrue(statements.get(0) instanceof ReturnStmt);
-        ReturnStmt returnStmt = (ReturnStmt) statements.get(0);
-        com.github.javaparser.ast.expr.Expression expression = returnStmt.getExpression().orElseThrow(() -> new RuntimeException("Expecting Expression"));
-        assertTrue(expression instanceof StringLiteralExpr);
-        assertEquals(constant.getValue().toString(), ((StringLiteralExpr) expression).asString());
+        assertEquals(2, statements.size());
+        assertTrue(statements.get(0) instanceof ExpressionStmt);
+        assertEquals(expectedVariableDeclaration, statements.get(0).toString());
+        assertTrue(statements.get(1) instanceof ReturnStmt);
+        ReturnStmt returnStmt = (ReturnStmt) statements.get(1);
+        assertEquals("return constantVariable;", returnStmt.toString());
     }
 
-    private void commonValidateFieldRef(MethodDeclaration retrieved, FieldRef fieldRef, int methodArity, String expected) {
+    private void commonValidateFieldRef(MethodDeclaration retrieved, FieldRef fieldRef, int methodArity, String expectedVariableDeclaration) {
         commonValidateMethodDeclaration(retrieved, fieldRef, methodArity);
         assertEquals(Object.class.getName(), retrieved.getType().asString());
         BlockStmt body = retrieved.getBody().orElseThrow(() -> new RuntimeException("Expecting BlockBody"));
         NodeList<Statement> statements = body.getStatements();
-        assertEquals(2, statements.size());
-        assertTrue(statements.get(1) instanceof ReturnStmt);
-        ReturnStmt returnStmt = (ReturnStmt) statements.get(1);
-        String retrievedString = returnStmt.toString();
-        assertEquals(expected, retrievedString);
-        commonValidateCompilation(retrieved);
+        assertEquals(3, statements.size());
+        assertTrue(statements.get(1) instanceof ExpressionStmt);
+        assertEquals(expectedVariableDeclaration, statements.get(1).toString());
+        assertTrue(statements.get(2) instanceof ReturnStmt);
+        ReturnStmt returnStmt = (ReturnStmt) statements.get(2);
+        assertEquals("return fieldRefVariable;", returnStmt.toString());
     }
 
     private void commonValidateMethodDeclaration(MethodDeclaration toValidate, Expression expression, int methodArity) {
