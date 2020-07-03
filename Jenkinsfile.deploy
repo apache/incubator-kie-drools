@@ -68,14 +68,29 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:kiegroup/kogito-examples.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kogito-examples-persistence']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:kiegroup/kogito-examples.git']]])
                 dir("kogito-examples-persistence") {
                     script {
-                        // Don't run with tests so far, see: https://github.com/quarkusio/quarkus/issues/6885
-                        maven.runMavenWithSubmarineSettings('clean install -Ppersistence', true)
+                        maven.runMavenWithSubmarineSettings('clean install -Ppersistence', false)
                     }
                 }
             }
             post {
                 always {
-                    saveReports(true)
+                    saveReports()
+                }
+            }
+        }
+        stage('Build kogito-examples with events') {
+            steps {
+                // Use a separate dir for events to not overwrite the test results
+                checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:kiegroup/kogito-examples.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kogito-examples-events']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:kiegroup/kogito-examples.git']]])
+                dir("kogito-examples-events") {
+                    script {
+                        maven.runMavenWithSubmarineSettings('clean install -Pevents', false)
+                    }
+                }
+            }
+            post {
+                always {
+                    saveReports()
                 }
             }
         }
