@@ -85,7 +85,7 @@ public class DefineFunctionUtilsTest {
                 DefineFunctionUtils.getDefineFunctionMethodDeclaration(defineFunction);
                 fail(String.format("Expecting KiePMMLException for %s", defineFunction));
             } catch (Exception e) {
-                assertTrue(e instanceof KiePMMLException);
+                assertEquals(KiePMMLException.class, e.getClass());
             }
         }
     }
@@ -126,7 +126,7 @@ public class DefineFunctionUtilsTest {
                 DefineFunctionUtils.getExpressionMethodDeclaration("", expression, DataType.STRING, Collections.emptyList());
                 fail(String.format("Expecting KiePMMLException for %s", expression.getClass()));
             } catch (Exception e) {
-                assertTrue(e instanceof KiePMMLException);
+                assertEquals(KiePMMLException.class, e.getClass());
             }
         }
     }

@@ -226,7 +226,7 @@ public class ExpressionFunctionUtilsTest {
                                                                Collections.emptyList());
                 fail(String.format("Expecting KiePMMLException for %s", expression.getClass()));
             } catch (Exception e) {
-                assertTrue(e instanceof KiePMMLException);
+                assertEquals(KiePMMLException.class, e.getClass());
             }
         }
     }
