@@ -22,5 +22,8 @@
   <kbase name="SimpleScorecardMixedVariables" packages="simplescorecardmixedvariables">
     <ksession name="SimpleScorecardMixedVariablesSession" type="stateless"/>
   </kbase>
+  <kbase name="SimpleScorecardWithTransformations" packages="simplescorecardwithtransformations">
+    <ksession name="SimpleScorecardWithTransformationsSession" type="stateless"/>
+  </kbase>
 
 </kmodule>

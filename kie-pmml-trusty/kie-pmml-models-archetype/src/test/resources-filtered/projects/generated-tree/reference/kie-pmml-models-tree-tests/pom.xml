@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-pmml-models-drools-tree</artifactId>
-    <version>${version.org.kie}/version>
+    <version>${version.org.kie}</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 

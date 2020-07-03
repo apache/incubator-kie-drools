@@ -1,0 +1,54 @@
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
+  <Header copyright="DMG.org"/>
+  <DataDictionary numberOfFields="4">
+    <DataField name="age" optype="continuous" dataType="double"/>
+    <DataField name="salary" optype="continuous" dataType="double"/>
+    <DataField name="car_location" optype="categorical" dataType="string">
+      <Value value="carpark"/>
+      <Value value="street"/>
+    </DataField>
+    <DataField name="number_of_claims" optype="continuous" dataType="double"/>
+  </DataDictionary>
+  <TransformationDictionary>
+    <DerivedField name="der_age" optype="continuous" dataType="double">
+      <FieldRef field="age"/>
+    </DerivedField>
+    <DerivedField name="der_salary" optype="continuous" dataType="double">
+      <FieldRef field="salary"/>
+    </DerivedField>
+    <DerivedField name="der_car_location" optype="categorical" dataType="string">
+      <FieldRef field="car_location"/>
+    </DerivedField>
+    <DerivedField name="der_constant" optype="categorical" dataType="string">
+      <Constant>constant</Constant>
+    </DerivedField>
+  </TransformationDictionary>
+  <RegressionModel modelName="LinearRegressionSampleWithTransformations" functionName="regression" algorithmName="linearRegression" targetFieldName="number_of_claims">
+    <MiningSchema>
+      <MiningField name="age"/>
+      <MiningField name="salary"/>
+      <MiningField name="car_location"/>
+      <MiningField name="number_of_claims" usageType="target"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="out_der_age" dataType="double" feature="transformedValue">
+        <FieldRef field="der_age"/>
+      </OutputField>
+      <OutputField name="out_der_salary" dataType="double" feature="transformedValue">
+        <FieldRef field="der_salary"/>
+      </OutputField>
+      <OutputField name="out_der_car_location" dataType="string" feature="transformedValue">
+        <FieldRef field="der_car_location"/>
+      </OutputField>
+      <OutputField name="out_der_constant" dataType="string" feature="transformedValue">
+        <FieldRef field="der_constant"/>
+      </OutputField>
+    </Output>
+    <RegressionTable intercept="132.37">
+      <NumericPredictor name="der_age" exponent="1" coefficient="7.1"/>
+      <NumericPredictor name="der_salary" exponent="1" coefficient="0.01"/>
+      <CategoricalPredictor name="der_car_location" value="carpark" coefficient="41.1"/>
+      <CategoricalPredictor name="der_car_location" value="street" coefficient="325.03"/>
+    </RegressionTable>
+  </RegressionModel>
+</PMML>

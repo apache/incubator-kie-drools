@@ -1,0 +1,361 @@
+<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2"
+      xsi:schemaLocation="http://www.dmg.org/PMML-4_2
+      http://www.dmg.org/v4-2-1/pmml-4-2.xsd"
+      xmlns="http://www.dmg.org/PMML-4_2">
+  <Header/>
+  <DataDictionary numberOfFields="5">
+    <DataField name="Species" optype="categorical" dataType="string">
+      <Value value="setosa"/>
+      <Value value="versicolor"/>
+      <Value value="virginica"/>
+    </DataField>
+    <DataField name="class" optype="categorical" dataType="string">
+      <Value value="setosa"/>
+      <Value value="versicolor"/>
+      <Value value="virginica"/>
+    </DataField>
+    <DataField name="Modifier" optype="categorical" dataType="boolean"/>
+    <DataField name="Sepal.Length" optype="continuous" dataType="double"/>
+    <DataField name="Sepal.Width" optype="continuous" dataType="double"/>
+    <DataField name="Petal.Length" optype="continuous" dataType="double"/>
+    <DataField name="Petal.Width" optype="continuous" dataType="double"/>
+  </DataDictionary>
+  <TransformationDictionary>
+    <DefineFunction name="SEPAL_LENGTH" optype="categorical" dataType="string">
+      <ParameterField name="Sepal.Length" optype="continuous" dataType="double"/>
+      <Discretize field="Sepal.Length">
+        <DiscretizeBin binValue="SLLOW">
+          <Interval closure="closedClosed" leftMargin="0.0" rightMargin="5.5"/>
+        </DiscretizeBin>
+        <DiscretizeBin binValue="SLHIGH">
+          <Interval closure="closedOpen" leftMargin="5.6" rightMargin="10.0"/>
+        </DiscretizeBin>
+      </Discretize>
+    </DefineFunction>
+    <DefineFunction name="CLASS_GROUP" optype="categorical" dataType="string">
+      <ParameterField name="class" optype="categorical" dataType="string"/>
+      <MapValues outputColumn="Region">
+        <FieldColumnPair field="class" column="State"/>
+        <InlineTable>
+          <row>
+            <State>setosa</State>
+            <Region>West</Region>
+          </row>
+          <row>
+            <State>virginica</State>
+            <Region>West</Region>
+          </row>
+          <row>
+            <State>versicolor</State>
+            <Region>East</Region>
+          </row>
+        </InlineTable>
+      </MapValues>
+    </DefineFunction>
+    <DefineFunction name="SW_TO_PL" optype="continuous" dataType="double">
+      <ParameterField name="Sepal.Width" dataType="double"/>
+      <ParameterField name="Petal.Length" dataType="double"/>
+      <Apply function="if">
+        <Apply function="greaterThan">
+          <FieldRef field="Petal.Length"/>
+          <Constant dataType="integer">1</Constant>
+        </Apply>
+        <Apply function="*">
+          <Apply function="SW_TO_PL">
+            <FieldRef field="Sepal.Width"/>
+            <Apply function="-">
+              <FieldRef field="Petal.Length"/>
+              <Constant dataType="integer">1</Constant>
+            </Apply>
+          </Apply>
+          <FieldRef field="Sepal.Width"/>
+        </Apply>
+        <FieldRef field="Sepal.Width"/>
+      </Apply>
+    </DefineFunction>
+    <DerivedField name="Shift" optype="categorical" dataType="string">
+      <Apply function="SEPAL_LENGTH">
+        <FieldRef field="Sepal.Length"/>
+      </Apply>
+    </DerivedField>
+    <DerivedField name="Group" optype="categorical" dataType="string">
+      <Apply function="CLASS_GROUP">
+        <FieldRef field="class"/>
+      </Apply>
+    </DerivedField>
+    <DerivedField name="SW_TO_PLer" optype="continuous" dataType="double">
+      <Apply function="SW_TO_PL">
+        <FieldRef field="Sepal.Width"/>
+        <FieldRef field="Petal.Length"/>
+      </Apply>
+    </DerivedField>
+    <DerivedField name="SelfRef" optype="continuous" dataType="double">
+      <Apply function="if">
+        <FieldRef field="Modifier"/>
+        <Apply function="+">
+          <FieldRef field="Sepal.Width"/>
+          <FieldRef field="Sepal.Length"/>
+        </Apply>
+        <FieldRef field="Sepal.Width"/>
+      </Apply>
+    </DerivedField>
+    <DerivedField name="Ref" optype="continuous" dataType="double">
+      <Apply function="+">
+        <FieldRef field="Sepal.Width"/>
+        <FieldRef field="Petal.Width"/>
+      </Apply>
+    </DerivedField>
+    <DerivedField name="BackRef" optype="continuous" dataType="double">
+      <FieldRef field="Ref"/>
+    </DerivedField>
+    <DerivedField name="StageOne" optype="continuous" dataType="double">
+      <FieldRef field="Petal.Width"/>
+    </DerivedField>
+    <DerivedField name="StageTwo" optype="continuous" dataType="double">
+      <FieldRef field="StageOne"/>
+    </DerivedField>
+    <DerivedField name="StageThree" optype="continuous" dataType="double">
+      <FieldRef field="StageTwo"/>
+    </DerivedField>
+  </TransformationDictionary>
+  <TreeModel modelName="IrisTreeModel" functionName="classification" algorithmName="rpart" splitCharacteristic="binarySplit" missingValueStrategy="defaultChild" noTrueChildStrategy="returnLastPrediction">
+    <MiningSchema>
+      <MiningField name="Species" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="Sepal.Length" usageType="active" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="Sepal.Width" usageType="active" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="Petal.Length" usageType="active" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="Petal.Width" usageType="active" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="class" usageType="active" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="Modifier" usageType="active" invalidValueTreatment="returnInvalid"/>
+    </MiningSchema>
+    <Output>
+      <!-- TRANSFORMATIONS DICTIONARY-->
+      <OutputField name="Output_Shift" feature="transformedValue">
+        <FieldRef field="Shift"/>
+      </OutputField>
+      <OutputField name="Output_Group" feature="transformedValue">
+        <FieldRef field="Group"/>
+      </OutputField>
+      <OutputField name="Output_SW_TO_PLer" feature="transformedValue">
+        <FieldRef field="SW_TO_PLer"/>
+      </OutputField>
+      <OutputField name="Output_SelfRef" feature="transformedValue">
+        <FieldRef field="SelfRef"/>
+      </OutputField>
+      <OutputField name="Output_Ref" feature="transformedValue">
+        <FieldRef field="Ref"/>
+      </OutputField>
+      <OutputField name="Output_BackRef" feature="transformedValue">
+        <FieldRef field="BackRef"/>
+      </OutputField>
+      <OutputField name="Output_StageOne" feature="transformedValue">
+        <FieldRef field="StageOne"/>
+      </OutputField>
+      <OutputField name="Output_StageTwo" feature="transformedValue">
+        <FieldRef field="StageTwo"/>
+      </OutputField>
+      <OutputField name="Output_StageThree" feature="transformedValue">
+        <FieldRef field="StageThree"/>
+      </OutputField>
+      <!-- LOCAL TRANSFORMATIONS -->
+      <OutputField name="Output_dis_pl" feature="transformedValue">
+        <FieldRef field="dis_pl"/>
+      </OutputField>
+      <OutputField name="Output_dis_pw" feature="transformedValue">
+        <FieldRef field="dis_pw"/>
+      </OutputField>
+      <OutputField name="Output_dis_sl" feature="transformedValue">
+        <FieldRef field="dis_sl"/>
+      </OutputField>
+      <OutputField name="Output_dis_sw" feature="transformedValue">
+        <FieldRef field="dis_sw"/>
+      </OutputField>
+      <OutputField name="Output_d_class" feature="transformedValue">
+        <FieldRef field="d_class"/>
+      </OutputField>
+      <OutputField name="Output_class_Iris_setosa" feature="transformedValue">
+        <FieldRef field="class_Iris_setosa"/>
+      </OutputField>
+      <OutputField name="Output_class_Iris_versicolor" feature="transformedValue">
+        <FieldRef field="class_Iris_versicolor"/>
+      </OutputField>
+      <OutputField name="Output_class_Iris_virginica" feature="transformedValue">
+        <FieldRef field="class_Iris_virginica"/>
+      </OutputField>
+      <!-- EVALUATED -->
+      <OutputField name="Predicted_Species" optype="categorical" dataType="string" feature="predictedValue"/>
+      <OutputField name="Probability_setosa" optype="continuous" dataType="double" feature="probability" value="setosa"/>
+      <OutputField name="Probability_versicolor" optype="continuous" dataType="double" feature="probability" value="versicolor"/>
+      <OutputField name="Probability_virginica" optype="continuous" dataType="double" feature="probability" value="virginica"/>
+
+    </Output>
+    <LocalTransformations>
+      <DerivedField name="dis_pl" dataType="string" optype="categorical">
+        <Discretize field="Petal.Length" mapMissingTo="0" defaultValue="1">
+          <DiscretizeBin binValue="0">
+            <Interval closure="openClosed" rightMargin="0"/>
+          </DiscretizeBin>
+          <DiscretizeBin binValue="1">
+            <Interval closure="openClosed" leftMargin="0" rightMargin="1"/>
+          </DiscretizeBin>
+          <DiscretizeBin binValue="2">
+            <Interval closure="openClosed" leftMargin="1" rightMargin="2"/>
+          </DiscretizeBin>
+          <DiscretizeBin binValue="3">
+            <Interval closure="openClosed" leftMargin="2" rightMargin="3"/>
+          </DiscretizeBin>
+          <DiscretizeBin binValue="4">
+            <Interval closure="openClosed" leftMargin="3" rightMargin="4"/>
+          </DiscretizeBin>
+          <DiscretizeBin binValue="5">
+            <Interval closure="openOpen" leftMargin="4"/>
+          </DiscretizeBin>
+        </Discretize>
+      </DerivedField>
+      <DerivedField name="dis_pw" dataType="string" optype="categorical">
+        <Discretize field="Petal.Width" mapMissingTo="0" defaultValue="1">
+          <DiscretizeBin binValue="0">
+            <Interval closure="openClosed" rightMargin="0"/>
+          </DiscretizeBin>
+          <DiscretizeBin binValue="1">
+            <Interval closure="openClosed" leftMargin="0" rightMargin="1"/>
+          </DiscretizeBin>
+          <DiscretizeBin binValue="2">
+            <Interval closure="openClosed" leftMargin="1" rightMargin="2"/>
+          </DiscretizeBin>
+          <DiscretizeBin binValue="3">
+            <Interval closure="openClosed" leftMargin="2" rightMargin="3"/>
+          </DiscretizeBin>
+          <DiscretizeBin binValue="4">
+            <Interval closure="openClosed" leftMargin="3" rightMargin="4"/>
+          </DiscretizeBin>
+          <DiscretizeBin binValue="5">
+            <Interval closure="openOpen" leftMargin="4"/>
+          </DiscretizeBin>
+        </Discretize>
+      </DerivedField>
+      <DerivedField name="dis_sl" dataType="string" optype="categorical">
+        <Discretize field="Sepal.Length" mapMissingTo="0" defaultValue="1">
+          <DiscretizeBin binValue="0">
+            <Interval closure="openClosed" rightMargin="0"/>
+          </DiscretizeBin>
+          <DiscretizeBin binValue="1">
+            <Interval closure="openClosed" leftMargin="0" rightMargin="1"/>
+          </DiscretizeBin>
+          <DiscretizeBin binValue="2">
+            <Interval closure="openClosed" leftMargin="1" rightMargin="2"/>
+          </DiscretizeBin>
+          <DiscretizeBin binValue="3">
+            <Interval closure="openClosed" leftMargin="2" rightMargin="3"/>
+          </DiscretizeBin>
+          <DiscretizeBin binValue="4">
+            <Interval closure="openClosed" leftMargin="3" rightMargin="4"/>
+          </DiscretizeBin>
+          <DiscretizeBin binValue="5">
+            <Interval closure="openOpen" leftMargin="4"/>
+          </DiscretizeBin>
+        </Discretize>
+      </DerivedField>
+      <DerivedField name="dis_sw" dataType="string" optype="categorical">
+        <Discretize field="Sepal.Width" mapMissingTo="0" defaultValue="1">
+          <DiscretizeBin binValue="0">
+            <Interval closure="openClosed" rightMargin="0"/>
+          </DiscretizeBin>
+          <DiscretizeBin binValue="1">
+            <Interval closure="openClosed" leftMargin="0" rightMargin="1"/>
+          </DiscretizeBin>
+          <DiscretizeBin binValue="2">
+            <Interval closure="openClosed" leftMargin="1" rightMargin="2"/>
+          </DiscretizeBin>
+          <DiscretizeBin binValue="3">
+            <Interval closure="openClosed" leftMargin="2" rightMargin="3"/>
+          </DiscretizeBin>
+          <DiscretizeBin binValue="4">
+            <Interval closure="openClosed" leftMargin="3" rightMargin="4"/>
+          </DiscretizeBin>
+          <DiscretizeBin binValue="5">
+            <Interval closure="openOpen" leftMargin="4"/>
+          </DiscretizeBin>
+        </Discretize>
+      </DerivedField>
+      <DerivedField name="d_class" dataType="double" optype="continuous">
+        <MapValues mapMissingTo="1" defaultValue="-1" outputColumn="output">
+          <FieldColumnPair field="Species" column="input1"/>
+          <InlineTable>
+            <row>
+              <input1>Iris-setosa</input1>
+              <output>1</output>
+            </row>
+            <row>
+              <input1>Iris-versic</input1>
+              <output>2</output>
+            </row>
+            <row>
+              <input1>Iris-virgin</input1>
+              <output>3</output>
+            </row>
+          </InlineTable>
+        </MapValues>
+      </DerivedField>
+      <DerivedField name="class_Iris_setosa" dataType="double" optype="continuous">
+        <NormDiscrete field="class" value="setosa"/>
+      </DerivedField>
+      <DerivedField name="class_Iris_versicolor" dataType="double" optype="continuous">
+        <NormDiscrete field="class" value="versicolor"/>
+      </DerivedField>
+      <DerivedField name="class_Iris_virginica" dataType="double" optype="continuous">
+        <NormDiscrete field="class" value="virginica"/>
+      </DerivedField>
+    </LocalTransformations>
+    <Node id="1" score="setosa" recordCount="150" defaultChild="3">
+      <True/>
+      <ScoreDistribution value="setosa" recordCount="50" confidence="0.333333333333333"/>
+      <ScoreDistribution value="versicolor" recordCount="50" confidence="0.333333333333333"/>
+      <ScoreDistribution value="virginica" recordCount="50" confidence="0.333333333333333"/>
+      <Node id="2" score="setosa" recordCount="50">
+        <CompoundPredicate booleanOperator="surrogate">
+          <SimplePredicate field="Petal.Length" operator="lessThan" value="2.45"/>
+          <SimplePredicate field="Petal.Width" operator="lessThan" value="0.8"/>
+          <SimplePredicate field="Sepal.Length" operator="lessThan" value="5.45"/>
+          <SimplePredicate field="Sepal.Width" operator="greaterOrEqual" value="3.35"/>
+        </CompoundPredicate>
+        <ScoreDistribution value="setosa" recordCount="50" confidence="1"/>
+        <ScoreDistribution value="versicolor" recordCount="0" confidence="0"/>
+        <ScoreDistribution value="virginica" recordCount="0" confidence="0"/>
+      </Node>
+      <Node id="3" score="versicolor" recordCount="100" defaultChild="7">
+        <CompoundPredicate booleanOperator="surrogate">
+          <SimplePredicate field="Petal.Length" operator="greaterOrEqual" value="2.45"/>
+          <SimplePredicate field="Petal.Width" operator="greaterOrEqual" value="0.8"/>
+          <SimplePredicate field="Sepal.Length" operator="greaterOrEqual" value="5.45"/>
+          <SimplePredicate field="Sepal.Width" operator="lessThan" value="3.35"/>
+        </CompoundPredicate>
+        <ScoreDistribution value="setosa" recordCount="0" confidence="0"/>
+        <ScoreDistribution value="versicolor" recordCount="50" confidence="0.5"/>
+        <ScoreDistribution value="virginica" recordCount="50" confidence="0.5"/>
+        <Node id="6" score="versicolor" recordCount="54">
+          <CompoundPredicate booleanOperator="surrogate">
+            <SimplePredicate field="Petal.Width" operator="lessThan" value="1.75"/>
+            <SimplePredicate field="Petal.Length" operator="lessThan" value="4.75"/>
+            <SimplePredicate field="Sepal.Length" operator="lessThan" value="6.15"/>
+            <SimplePredicate field="Sepal.Width" operator="lessThan" value="2.95"/>
+          </CompoundPredicate>
+          <ScoreDistribution value="setosa" recordCount="0" confidence="0"/>
+          <ScoreDistribution value="versicolor" recordCount="49" confidence="0.907407407407407"/>
+          <ScoreDistribution value="virginica" recordCount="5" confidence="0.0925925925925926"/>
+        </Node>
+        <Node id="7" score="virginica" recordCount="46">
+          <CompoundPredicate booleanOperator="surrogate">
+            <SimplePredicate field="Petal.Width" operator="greaterOrEqual" value="1.75"/>
+            <SimplePredicate field="Petal.Length" operator="greaterOrEqual" value="4.75"/>
+            <SimplePredicate field="Sepal.Length" operator="greaterOrEqual" value="6.15"/>
+            <SimplePredicate field="Sepal.Width" operator="greaterOrEqual" value="2.95"/>
+          </CompoundPredicate>
+          <ScoreDistribution value="setosa" recordCount="0" confidence="0"/>
+          <ScoreDistribution value="versicolor" recordCount="1" confidence="0.0217391304347826"/>
+          <ScoreDistribution value="virginica" recordCount="45" confidence="0.978260869565217"/>
+        </Node>
+      </Node>
+    </Node>
+  </TreeModel>
+</PMML>

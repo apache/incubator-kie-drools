@@ -22,6 +22,7 @@ public class Constants {
     public static final String UNEXPECTED_OPERATION_TYPE = "Unexpected Operation Type %s";
     public static final String UNEXPECTED_NORMALIZATION_METHOD = "Unexpected Normalization Method %s";
     public static final String DONE = "DONE";
+    public static final String MISSING_BODY_TEMPLATE = "Missing body in %s";
 
     private Constants() {
         // Avoid instantiation

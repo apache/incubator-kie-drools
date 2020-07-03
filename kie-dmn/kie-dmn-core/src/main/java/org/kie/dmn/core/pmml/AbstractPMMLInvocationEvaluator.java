@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.kie.api.io.Resource;
@@ -173,7 +172,7 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
                 case LEGACY:
                     return getDMNKiePMMLInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
                 case NEW:
-                    return getDMNKiePMMLNewInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
+                    return getDMNKiePMMLTrustyInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
                 default:
                     return null;
             }
@@ -215,13 +214,13 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
         return null;
     }
 
-    private static DMNKiePMMLNewInvocationEvaluator getDMNKiePMMLNewInvocationEvaluator(String nameSpace, DMNElement funcDef, Resource pmmlResource, String pmmlModel, PMMLInfo<?> pmmlInfo) {
+    private static DMNKiePMMLTrustyInvocationEvaluator getDMNKiePMMLTrustyInvocationEvaluator(String nameSpace, DMNElement funcDef, Resource pmmlResource, String pmmlModel, PMMLInfo<?> pmmlInfo) {
         try {
-            return new DMNKiePMMLNewInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
+            return new DMNKiePMMLTrustyInvocationEvaluator(nameSpace, funcDef, pmmlResource, pmmlModel, pmmlInfo);
         } catch (NoClassDefFoundError e) {
             LOG.warn("Tried binding org.drools:kie-pmml-trusty, failed.");
         } catch (Throwable e) {
-            throw new RuntimeException("Binding org.drools:kie-pmml-trusty succeded but initialization failed, with:", e);
+            throw new RuntimeException("Binding org.drools:kie-pmml-trusty succeeded but initialization failed, with:", e);
         }
         return null;
     }

@@ -16,67 +16,106 @@
 
 package org.kie.pmml.models.drools.scorecard.compiler.factories;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collections;
 import java.util.Map;
-import java.util.stream.IntStream;
 
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.expr.SimpleName;
 import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.DataField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.scorecard.Scorecard;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
+import static org.kie.pmml.models.drools.scorecard.compiler.factories.KiePMMLScorecardModelFactory.KIE_PMML_SCORECARD_MODEL_TEMPLATE;
+import static org.kie.pmml.models.drools.scorecard.compiler.factories.KiePMMLScorecardModelFactory.KIE_PMML_SCORECARD_MODEL_TEMPLATE_JAVA;
+import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getFieldTypeMap;
 
 public class KiePMMLScorecardModelFactoryTest {
 
     private static final String SOURCE_1 = "ScorecardSample.pmml";
-    private static final Logger logger = LoggerFactory.getLogger(KiePMMLScorecardModelFactoryTest.class);
     private static final String TARGET_FIELD = "overallScore";
-    private static final MINING_FUNCTION _MINING_FUNCTION = MINING_FUNCTION.CLASSIFICATION;
-    private PMML pmml;
-    private Scorecard scorecardModel;
+    private static final String PACKAGE_NAME = "packagename";
+    private static PMML pmml;
+    private static Scorecard scorecardModel;
+    private static ClassOrInterfaceDeclaration classOrInterfaceDeclaration;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         pmml = TestUtils.loadFromFile(SOURCE_1);
         assertNotNull(pmml);
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof Scorecard);
         scorecardModel = (Scorecard) pmml.getModels().get(0);
+        assertNotNull(scorecardModel);
+        CompilationUnit templateCU = getFromFileName(KIE_PMML_SCORECARD_MODEL_TEMPLATE_JAVA);
+        classOrInterfaceDeclaration = templateCU
+                .getClassByName(KIE_PMML_SCORECARD_MODEL_TEMPLATE).get();
     }
 
     @Test
     public void getKiePMMLScorecardModel() throws Exception {
-        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        IntStream.range(0, 3).forEach(index -> {
-            fieldTypeMap.put("TYPE-" + index, new KiePMMLOriginalTypeGeneratedType("Original-" + index, "Generated-" + index));
-        });
-        KiePMMLScorecardModel retrieved = KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(pmml.getDataDictionary(), pmml.getTransformationDictionary(), scorecardModel, fieldTypeMap);
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(pmml.getDataDictionary(),
+                                                                                           pmml.getTransformationDictionary(),
+                                                                                           scorecardModel.getLocalTransformations());
+        KiePMMLScorecardModel retrieved = KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(pmml.getDataDictionary(),
+                                                                                                pmml.getTransformationDictionary(),
+                                                                                                scorecardModel,
+                                                                                                fieldTypeMap);
         assertNotNull(retrieved);
         assertEquals(scorecardModel.getModelName(), retrieved.getName());
         assertEquals(TARGET_FIELD, retrieved.getTargetField());
     }
 
     @Test
+    public void getKiePMMLScorecardModelSourcesMap()  {
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(pmml.getDataDictionary(),
+                                                                                           pmml.getTransformationDictionary(),
+                                                                                           scorecardModel.getLocalTransformations());
+        Map<String, String> retrieved = KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(pmml.getDataDictionary(),
+                                                                                                        pmml.getTransformationDictionary(),
+                                                                                                        scorecardModel,
+                                                                                                        fieldTypeMap,
+                                                                                                        PACKAGE_NAME);
+        assertNotNull(retrieved);
+        assertEquals(1, retrieved.size());
+    }
+
+
+    @Test
     public void getKiePMMLDroolsAST() {
         final DataDictionary dataDictionary = pmml.getDataDictionary();
-        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        KiePMMLDroolsAST retrieved = KiePMMLScorecardModelFactory.getKiePMMLDroolsAST(dataDictionary, scorecardModel, fieldTypeMap);
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(pmml.getDataDictionary(),
+                                                                                           pmml.getTransformationDictionary(),
+                                                                                           scorecardModel.getLocalTransformations());
+        KiePMMLDroolsAST retrieved = KiePMMLScorecardModelFactory.getKiePMMLDroolsAST(dataDictionary, scorecardModel, fieldTypeMap, Collections.emptyList());
         assertNotNull(retrieved);
-        List<DataField> dataFields = dataDictionary.getDataFields();
-        assertEquals(dataFields.size(), fieldTypeMap.size());
-        dataFields.forEach(dataField -> assertTrue(fieldTypeMap.containsKey(dataField.getName().getValue())));
+    }
+
+    @Test
+    public void setSuperInvocation() {
+        ConstructorDeclaration constructorDeclaration = classOrInterfaceDeclaration.getDefaultConstructor().get();
+        SimpleName simpleName = new SimpleName("SIMPLENAME");
+        KiePMMLScorecardModelFactory.setSuperInvocation(scorecardModel,
+                                                        constructorDeclaration,
+                                                        simpleName);
+        String expected = String.format("public %s() {\n" +
+                                                "    super(\"%s\", Collections.emptyList());\n" +
+                                                "    targetField = targetField;\n" +
+                                                "    pmmlMODEL = null;\n" +
+                                                "}",
+                                        simpleName.asString(),
+                                        scorecardModel.getModelName());
+        assertEquals(expected, constructorDeclaration.toString());
     }
 }

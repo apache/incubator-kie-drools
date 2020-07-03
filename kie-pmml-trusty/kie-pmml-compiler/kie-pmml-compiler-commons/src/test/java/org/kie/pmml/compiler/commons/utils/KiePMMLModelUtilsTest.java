@@ -19,6 +19,7 @@ package org.kie.pmml.compiler.commons.utils;
 import java.util.List;
 import java.util.Optional;
 
+import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
 import org.junit.Test;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
@@ -31,6 +32,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.model.enums.OP_TYPE.CATEGORICAL;
 import static org.kie.pmml.commons.model.enums.OP_TYPE.CONTINUOUS;
+import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.MODELNAME_TEMPLATE;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getOpType;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFields;
@@ -41,6 +43,8 @@ public class KiePMMLModelUtilsTest {
     private static final String NO_TARGET_SOURCE = "NoTargetFieldSample.pmml";
     private static final String ONE_MINING_TARGET_SOURCE = "OneMiningTargetFieldSample.pmml";
     private static final String MULTIPLE_TARGETS_SOURCE = "MultipleTargetsFieldSample.pmml";
+    private static final String NO_MODELNAME_SAMPLE_NAME = "NoModelNameSample";
+    private static final String NO_MODELNAME_SAMPLE = NO_MODELNAME_SAMPLE_NAME + ".pmml";
     private static final String WHAT_I_DO_TARGET_FIELD = "whatIdo";
     private static final String NUMBER_OF_CLAIMS_FIELD = "number_of_claims";
     private static final String SALARY_FIELD = "salary";
@@ -51,14 +55,14 @@ public class KiePMMLModelUtilsTest {
 
     @Test
     public void getTargetFieldNoTarget() throws Exception {
-        pmmlModel = KiePMMLUtil.load(getFileInputStream(NO_TARGET_SOURCE));
+        pmmlModel = KiePMMLUtil.load(getFileInputStream(NO_TARGET_SOURCE), NO_TARGET_SOURCE);
         assertFalse(getTargetFieldName(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0)).isPresent());
         assertTrue(getTargetFields(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0)).isEmpty());
     }
 
     @Test
     public void getTargetFieldOneMiningTarget() throws Exception {
-        pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE));
+        pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE), ONE_MINING_TARGET_SOURCE);
         final Optional<String> retrieved = getTargetFieldName(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0));
         assertTrue(retrieved.isPresent());
         assertEquals(WHAT_I_DO_TARGET_FIELD, retrieved.get());
@@ -69,7 +73,7 @@ public class KiePMMLModelUtilsTest {
 
     @Test
     public void getTargetFieldMultipleTargets() throws Exception {
-        pmmlModel = KiePMMLUtil.load(getFileInputStream(MULTIPLE_TARGETS_SOURCE));
+        pmmlModel = KiePMMLUtil.load(getFileInputStream(MULTIPLE_TARGETS_SOURCE), MULTIPLE_TARGETS_SOURCE);
         final Optional<String> retrieved = getTargetFieldName(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0));
         assertTrue(retrieved.isPresent());
         assertEquals(NUMBER_OF_CLAIMS_FIELD, retrieved.get());
@@ -81,7 +85,7 @@ public class KiePMMLModelUtilsTest {
 
     @Test
     public void getOpTypeFromDataFieldExisting() throws Exception {
-        pmmlModel = KiePMMLUtil.load(getFileInputStream(NO_TARGET_SOURCE));
+        pmmlModel = KiePMMLUtil.load(getFileInputStream(NO_TARGET_SOURCE), NO_TARGET_SOURCE);
         final OP_TYPE retrieved = getOpType(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0), TEMPERATURE_FIELD);
         assertNotNull(retrieved);
         assertEquals(CONTINUOUS, retrieved);
@@ -89,7 +93,7 @@ public class KiePMMLModelUtilsTest {
 
     @Test
     public void getOpTypeFromMiningFieldExisting() throws Exception {
-        pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE));
+        pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE), ONE_MINING_TARGET_SOURCE);
         final OP_TYPE retrieved = getOpType(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0), OUTLOOK_FIELD);
         assertNotNull(retrieved);
         assertEquals(CATEGORICAL, retrieved);
@@ -97,7 +101,24 @@ public class KiePMMLModelUtilsTest {
 
     @Test(expected = KiePMMLInternalException.class)
     public void getOpTypeNotExistingField() throws Exception {
-        pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE));
+        pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE), ONE_MINING_TARGET_SOURCE);
         getOpType(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0), NOT_EXISTING_FIELD);
+    }
+
+    @Test
+    public void populateMissingModelNames() throws Exception {
+        pmmlModel = KiePMMLUtil.load(getFileInputStream(NO_MODELNAME_SAMPLE), NO_MODELNAME_SAMPLE);
+        final List<Model> models = pmmlModel.getModels();
+        for (int i = 0; i < models.size(); i ++) {
+            Model model = models.get(i);
+            assertNotNull(model.getModelName());
+            assertFalse(model.getModelName().isEmpty());
+            String expected = String.format(MODELNAME_TEMPLATE,
+                                            NO_MODELNAME_SAMPLE_NAME,
+                                            model.getClass().getSimpleName(),
+                                            i);
+            assertEquals(expected, model.getModelName());
+        }
+
     }
 }

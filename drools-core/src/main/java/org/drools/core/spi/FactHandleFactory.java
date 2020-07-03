@@ -19,6 +19,7 @@ package org.drools.core.spi;
 import java.util.Collection;
 
 import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -43,6 +44,11 @@ public interface FactHandleFactory {
                                      ObjectTypeConf conf,
                                      InternalWorkingMemory workingMemory,
                                      WorkingMemoryEntryPoint wmEntryPoint );
+
+    DefaultFactHandle createDefaultFactHandle(final long id,
+                                              final Object object,
+                                              final long recency,
+                                              final WorkingMemoryEntryPoint wmEntryPoint);
     
     /**
      * Increases the recency of the FactHandle

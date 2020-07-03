@@ -32,12 +32,8 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.QualifiedName;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.factmodel.ClassBuilder;
 import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.FieldDefinition;
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.Trait;
-import org.drools.core.factmodel.traits.TraitFactory;
-import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.rule.TypeDeclaration;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.ResourceChange;
@@ -55,7 +51,7 @@ public class TypeDeclarationBuilder {
     protected TypeDeclarationConfigurator typeDeclarationConfigurator;
     protected DeclaredClassBuilder declaredClassBuilder;
 
-    TypeDeclarationBuilder(KnowledgeBuilderImpl kbuilder) {
+    public TypeDeclarationBuilder(KnowledgeBuilderImpl kbuilder) {
         this.kbuilder = kbuilder;
         this.classDeclarationExtractor = new TypeDeclarationCache( kbuilder );
         this.typeDeclarationNameResolver = new TypeDeclarationNameResolver( kbuilder );
@@ -265,16 +261,17 @@ public class TypeDeclarationBuilder {
             }
             success = ( def != null ) && ( ! kbuilder.hasErrors() );
 
-            if ( success ) {
-                updateTraitInformation( typeDescr, type, def, pkgRegistry );
+            if(success) {
+                this.postGenerateDeclaredBean(typeDescr, type, def, pkgRegistry);
             }
             success = ! kbuilder.hasErrors();
 
             if ( success ) {
-                declaredClassBuilder.generateBeanFromDefinition( typeDescr,
-                                                                 type,
-                                                                 pkgRegistry,
-                                                                 def );
+                ClassBuilder classBuilder = kbuilder.getBuilderConfiguration().getClassBuilderFactory().getClassBuilder(type);
+                declaredClassBuilder.generateBeanFromDefinition(typeDescr,
+                                                                type,
+                                                                pkgRegistry,
+                                                                def, classBuilder);
             }
             success = ! kbuilder.hasErrors();
 
@@ -304,7 +301,9 @@ public class TypeDeclarationBuilder {
         }
     }
 
-
+    protected void postGenerateDeclaredBean(AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, ClassDefinition def, PackageRegistry pkgRegistry) {
+        // currently used only in drools-traits module
+    }
 
     protected void normalizeForeignPackages( PackageDescr packageDescr ) {
         Map<String, PackageDescr> foreignPackages = null;
@@ -343,118 +342,4 @@ public class TypeDeclarationBuilder {
             }
         }
     }
-
-
-    protected void updateTraitInformation( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, ClassDefinition def, PackageRegistry pkgRegistry ) {
-        if ( typeDescr.hasAnnotation( Traitable.class )
-             || ( ! type.getKind().equals( TypeDeclaration.Kind.TRAIT ) &&
-                  kbuilder.getPackageRegistry().containsKey( def.getSuperClass() ) &&
-                  kbuilder.getPackageRegistry( def.getSuperClass() ).getTraitRegistry().getTraitables().containsKey( def.getSuperClass() )
-        )) {
-            // traitable
-            if ( type.isNovel() ) {
-                try {
-                    PackageRegistry reg = kbuilder.getPackageRegistry( typeDescr.getNamespace() );
-                    String availableName = typeDescr.getType().getFullName();
-                    Class<?> resolvedType = reg.getTypeResolver().resolveType( availableName );
-                    updateTraitDefinition( type,
-                                           resolvedType,
-                                           false );
-                } catch ( ClassNotFoundException cnfe ) {
-                    // we already know the class exists
-                }
-            }
-            pkgRegistry.getTraitRegistry().addTraitable( def );
-        } else if (type.getKind().equals(TypeDeclaration.Kind.TRAIT)
-                   || typeDescr.hasAnnotation(Trait.class) ) {
-            // trait
-            if ( ! type.isNovel() ) {
-                try {
-                    PackageRegistry reg = kbuilder.getPackageRegistry(typeDescr.getNamespace());
-                    String availableName = typeDescr.getType().getFullName();
-                    Class<?> resolvedType = reg.getTypeResolver().resolveType(availableName);
-                    if (!Thing.class.isAssignableFrom(resolvedType)) {
-                        if ( ! resolvedType.isInterface() ) {
-                            kbuilder.addBuilderResult( new TypeDeclarationError( typeDescr, "Unable to redeclare concrete class " + resolvedType.getName() + " as a trait." ) );
-                            return;
-                        }
-                        updateTraitDefinition( type,
-                                               resolvedType,
-                                               false );
-
-                        String target = typeDescr.getTypeName() + TraitFactory.SUFFIX;
-                        TypeDeclarationDescr tempDescr = new TypeDeclarationDescr();
-                        tempDescr.setNamespace(typeDescr.getNamespace());
-                        tempDescr.setFields(typeDescr.getFields());
-                        tempDescr.setType(target,
-                                          typeDescr.getNamespace());
-                        tempDescr.setTrait( true );
-                        tempDescr.addSuperType(typeDescr.getType());
-                        tempDescr.setResource(type.getResource());
-                        TypeDeclaration tempDeclr = new TypeDeclaration(target);
-                        tempDeclr.setKind(TypeDeclaration.Kind.TRAIT);
-                        tempDeclr.setTypesafe(type.isTypesafe());
-                        tempDeclr.setNovel(true);
-                        tempDeclr.setTypeClassName(tempDescr.getType().getFullName());
-                        tempDeclr.setResource(type.getResource());
-
-                        ClassDefinition tempDef = new ClassDefinition(target);
-                        tempDef.setClassName(tempDescr.getType().getFullName());
-                        tempDef.setTraitable(false);
-                        for ( FieldDefinition fld : def.getFieldsDefinitions() ) {
-                            tempDef.addField(fld);
-                        }
-                        tempDef.setInterfaces(def.getInterfaces());
-                        tempDef.setSuperClass(def.getClassName());
-                        tempDef.setDefinedClass(resolvedType);
-                        tempDef.setAbstrakt(true);
-                        tempDeclr.setTypeClassDef(tempDef);
-
-                        declaredClassBuilder.generateBeanFromDefinition( tempDescr,
-                                                                         tempDeclr,
-                                                                         pkgRegistry,
-                                                                         tempDef );
-                        try {
-                            Class<?> clazz = pkgRegistry.getTypeResolver().resolveType(tempDescr.getType().getFullName());
-                            tempDeclr.setTypeClass(clazz);
-
-                            pkgRegistry.getTraitRegistry().addTrait( tempDef.getClassName().replace( TraitFactory.SUFFIX,
-                                                                                                     ""),
-                                                                     tempDef );
-
-                        } catch (ClassNotFoundException cnfe) {
-                            kbuilder.addBuilderResult(new TypeDeclarationError( typeDescr,
-                                                                                "Internal Trait extension Class '" + target +
-                                                                                "' could not be generated correctly'" ) );
-                        } finally {
-                            pkgRegistry.getPackage().addTypeDeclaration(tempDeclr);
-                        }
-
-                    } else {
-                        updateTraitDefinition( type,
-                                               resolvedType,
-                                               true );
-                        pkgRegistry.getTraitRegistry().addTrait( def );
-                    }
-                } catch (ClassNotFoundException cnfe) {
-                    // we already know the class exists
-                }
-            } else {
-                if ( def.getClassName().endsWith( TraitFactory.SUFFIX ) ) {
-                    pkgRegistry.getTraitRegistry().addTrait( def.getClassName().replace( TraitFactory.SUFFIX,
-                                                                                         ""),
-                                                             def );
-                } else {
-                    pkgRegistry.getTraitRegistry().addTrait( def );
-                }
-            }
-        }
-    }
-
-    protected void updateTraitDefinition( TypeDeclaration type,
-                                          Class concrete,
-                                          boolean asTrait ) {
-        ClassDefinitionFactory.populateDefinitionFromClass( type.getTypeClassDef(), type.getResource(), concrete, asTrait );
-    }
-
 }

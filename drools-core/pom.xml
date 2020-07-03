@@ -294,13 +294,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <!-- Hack/workaround for https://bugs.openjdk.java.net/browse/JDK-8061305. The Javadoc generation fails for
-               this class, so needs to be excluded. It seems the issue is fixed only in JDK 9+. -->
-          <sourceFileExcludes>
-            <sourceFileExclude>**/MetaProperty.java</sourceFileExclude>
-          </sourceFileExcludes>
-        </configuration>
       </plugin>
 
       <plugin>
