@@ -35,6 +35,8 @@ import java.util.function.Predicate;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.lang.descr.AnnotationDescr;
@@ -545,6 +547,11 @@ public class RuleContext {
 
     public void increaseLegacyAccumulateCounter() {
         legacyAccumulateCounter++;
+    }
+
+    public Type getDelarationType(String variableName) {
+        return getDeclarationById(variableName).map(DeclarationSpec::getBoxedType)
+                                               .orElseGet(UnknownType::new);
     }
 
     @Override

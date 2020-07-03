@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2020 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ public class ExternalisedLambdaTest extends BaseModelTest {
                      "rule R when\n" +
                      "  $p : Person(name == \"Mario\")\n" +
                      "then\n" +
-                     "  System.out.println(\"Hello\");\n" +
+                     "  System.out.println(\"Hello\");\n" + // don't remove this line
                      "end";
 
         KieSession ksession = null;
@@ -175,13 +175,13 @@ public class ExternalisedLambdaTest extends BaseModelTest {
     public void testEval() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
-                "import " + Person.class.getCanonicalName() + ";" +
-                "rule R when\n" +
-                "  $p : Person()\n" +
-                "  eval( $p.getAge() == 40 )\n" +
-                "then\n" +
-                "  insert(new Result($p.getName()));\n" +
-                "end";
+                     "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "  $p : Person()\n" +
+                     "  eval( $p.getAge() == 40 )\n" +
+                     "then\n" +
+                     "  insert(new Result($p.getName()));\n" +
+                     "end";
 
         KieSession ksession = null;
         try {
@@ -190,14 +190,14 @@ public class ExternalisedLambdaTest extends BaseModelTest {
             fail(e.getMessage());
         }
 
-        ksession.insert( new Person( "Mario", 40 ) );
-        ksession.insert( new Person( "Mark", 37 ) );
-        ksession.insert( new Person( "Edson", 35 ) );
+        ksession.insert(new Person("Mario", 40));
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
-        assertEquals( 1, results.size() );
-        assertEquals( "Mario", results.iterator().next().getValue() );
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals("Mario", results.iterator().next().getValue());
     }
 
     @Test
@@ -235,5 +235,77 @@ public class ExternalisedLambdaTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Assertions.assertThat(list).containsExactlyInAnyOrder("Charles");
+    }
+
+    @Test
+    public void testAccumulateWithBinaryExpr() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "import " + Result.class.getCanonicalName() + ";" +
+                     "rule X when\n" +
+                     "  String( $l : length )" +
+                     "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
+                     "                $sum : sum($p.getAge() * $l)  \n" +
+                     "              )                          \n" +
+                     "then\n" +
+                     "  insert(new Result($sum));\n" +
+                     "end";
+
+        KieSession ksession = null;
+        try {
+            ksession = getKieSession(str);
+        } catch (NonExternalisedLambdaFoundException e) {
+            fail(e.getMessage());
+        }
+
+        ksession.insert("x");
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(77, ((Number) results.iterator().next().getValue()).intValue());
+    }
+  
+    @Test
+    public void testOOPath() {
+        final String str =
+                "import org.drools.modelcompiler.domain.*;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                " $man: Man( /wife/children[age > 10] )\n" +
+                "then\n" +
+                "  list.add( $man.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = null;
+        try {
+            ksession = getKieSession(str);
+        } catch (NonExternalisedLambdaFoundException e) {
+            fail(e.getMessage());
+        }
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        final Woman alice = new Woman( "Alice", 38 );
+        final Man bob = new Man( "Bob", 40 );
+        final Man carl = new Man( "Carl", 40 );
+        bob.setWife( alice );
+
+        final Child charlie = new Child( "Charles", 12 );
+        final Child debbie = new Child( "Debbie", 10 );
+        alice.addChild( charlie );
+        alice.addChild( debbie );
+
+        ksession.insert( bob );
+        ksession.insert( carl );
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Bob");
     }
 }

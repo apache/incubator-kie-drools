@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>drools</artifactId>
+    <version>7.40.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>drools-traits</artifactId>
+  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
+
+  <name>Drools :: Traits</name>
+
+  <properties>
+    <java.module.name>org.drools.core.traits</java.module.name>
+    <surefire.forkCount>2</surefire.forkCount>
+
+    <!-- These are properties used in the database profiles. Some of them must be initialized
+     to be empty so that Maven applies their values via filtering to the resources. -->
+    <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
+    <maven.datasource.classname>org.h2.jdbcx.JdbcDataSource</maven.datasource.classname>
+    <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
+    <maven.jdbc.db.name/>
+    <maven.jdbc.db.port/>
+    <maven.jdbc.db.server/>
+    <maven.jdbc.driver.jar/>
+    <maven.jdbc.username/>
+    <maven.jdbc.password/>
+    <maven.jdbc.url>jdbc:h2:mem:test</maven.jdbc.url>
+    <maven.jdbc.schema>public</maven.jdbc.schema>
+  </properties>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+    </dependency>
+
+ <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-persistence-jpa</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.mvel</groupId>
+      <artifactId>mvel2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-internal</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core-reflective</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-project-datamodel-commons</artifactId>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency><!-- For unit test logging: configure in src/test/resources/logback-test.xml -->
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-test-util</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+
+    <!-- persistence -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.narayana.jta</groupId>
+      <artifactId>narayana-jta</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Hibernate -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.glassfish.jaxb</groupId>
+          <artifactId>jaxb-runtime</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-xjc</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.xml.bind</groupId>
+      <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <filtering>true</filtering>
+        <directory>src/main/filtered-resources</directory>
+      </resource>
+    </resources>
+
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>false</filtering>
+      </testResource>
+      <testResource>
+        <directory>src/test/filtered-resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+    </testResources>
+
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Export-Package>
+              org.drools.core.*
+            </Export-Package>
+            <Import-Package>
+              com.sun.tools.xjc.*;resolution:=optional,
+              org.drools.dynamic;resolution:=optional,
+              org.drools.persistence.api;resolution:=optional,
+              org.drools.template.parser;resolution:=optional,
+              org.drools.persistence.jpa;resolution:=optional,
+              org.drools.persistence.jpa.processinstance;resolution:=optional,
+              org.drools.reflective;resolution:=optional,
+              org.drools.reflective.classloader;resolution:=optional,
+              org.jbpm.persistence.api;resolution:=optional,
+              org.jbpm.marshalling.impl;resolution:=optional,
+              org.jbpm.process.instance.impl;resolution:=optional,
+              org.jbpm.process.instance.event;resolution:=optional,
+              *
+            </Import-Package>
+            <Bundle-Activator>org.drools.core.osgi.Activator</Bundle-Activator>
+            <_removeheaders>Private-Package</_removeheaders>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <!-- Hack/workaround for https://bugs.openjdk.java.net/browse/JDK-8061305. The Javadoc generation fails for
+               this class, so needs to be excluded. It seems the issue is fixed only in JDK 9+. -->
+          <sourceFileExcludes>
+            <sourceFileExclude>**/MetaProperty.java</sourceFileExclude>
+          </sourceFileExcludes>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+</project>

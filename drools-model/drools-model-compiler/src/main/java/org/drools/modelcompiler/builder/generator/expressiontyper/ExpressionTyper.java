@@ -363,7 +363,7 @@ public class ExpressionTyper {
     }
 
     private TypedExpressionResult toTypedExpressionFromMethodCallOrField(Expression drlxExpr) {
-        if (patternType == null && drlxExpr instanceof FieldAccessExpr) {
+        if (drlxExpr instanceof FieldAccessExpr) {
             // try to see if it's a constant
             final Optional<TypedExpression> typedExpression = tryParseAsConstantField(ruleContext.getTypeResolver(), ((FieldAccessExpr) drlxExpr).getScope(), ((FieldAccessExpr) drlxExpr).getNameAsString());
             if(typedExpression.isPresent()) {
@@ -420,10 +420,7 @@ public class ExpressionTyper {
 
         List<Node> childrenWithoutFirst = childrenNodes.subList(1, childrenNodes.size());
         for (Node part : childrenWithoutFirst) {
-            if (toRawClass(typeCursor).isEnum()) {
-                previous = drlxExpr;
-
-            } else if (part instanceof SimpleName) {
+            if (part instanceof SimpleName) {
                 String field = part.toString();
                 TypedExpression expression = nameExprToMethodCallExpr(field, typeCursor, previous);
                 if (expression == null) {
@@ -507,7 +504,8 @@ public class ExpressionTyper {
 
         if(staticValue != null) {
             final Expression sanitizedScope = transformDrlNameExprToNameExpr(scope);
-            return of(new TypedExpression(new FieldAccessExpr(sanitizedScope, name), clazz));
+            return of(new TypedExpression(new FieldAccessExpr(sanitizedScope, name), clazz)
+                    .setType(staticValue.getClass()));
         } else {
             return empty();
         }

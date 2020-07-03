@@ -183,7 +183,7 @@ public abstract class AbstractExpressionBuilder {
         Expression scope;
         if (expr instanceof MethodCallExpr) {
             Optional<Expression> scopeExpression = (( MethodCallExpr ) expr).getScope();
-            scope = scopeExpression.orElseThrow(() -> new IllegalArgumentException("Scope expression for " + ((MethodCallExpr) expr).getNameAsString() + " is not present!"));
+            scope = scopeExpression.orElse(expr);
         } else if (expr instanceof FieldAccessExpr ) {
             scope = (( FieldAccessExpr ) expr).getScope();
         } else {

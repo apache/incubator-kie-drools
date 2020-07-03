@@ -74,6 +74,10 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-traits</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-decisiontables</artifactId>
     </dependency>
     <dependency>

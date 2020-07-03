@@ -65,6 +65,7 @@ import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.core.reteoo.KieComponentFactory.createKieComponentFactory;
 import static org.drools.core.util.Drools.isJmxAvailable;
 import static org.drools.core.util.MemoryUtil.hasPermGen;
 
@@ -419,7 +420,7 @@ public class RuleBaseConfiguration
     }
     
     private void init(Properties properties) {
-        this.componentFactory = new KieComponentFactory();
+        this.componentFactory = createKieComponentFactory();
 
         this.immutable = false;
 
