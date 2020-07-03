@@ -68,6 +68,7 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
   }
   displayEmptyState={false}
   displayTable={true}
+  handleRetry={[MockFunction]}
   isLoadingMore={true}
   offset={10}
   parameters={Array []}
@@ -3582,6 +3583,7 @@ exports[`Domain Explorer Table Component check null value for process instance a
   }
   displayEmptyState={true}
   displayTable={true}
+  handleRetry={[MockFunction]}
   isLoadingMore={false}
   offset={0}
   parameters={Array []}

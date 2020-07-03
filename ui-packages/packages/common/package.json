@@ -52,7 +52,7 @@
       "js"
     ],
     "coveragePathIgnorePatterns": [
-      "./src/utils",
+      "./src/utils/OuiaUtils",
       "./src/static",
       "./src/graphql"
     ],

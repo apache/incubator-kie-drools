@@ -48,6 +48,7 @@ const DomainExplorer: React.FC<IOwnProps> = ({
   const [error, setError] = useState();
   const [enableCache, setEnableCache] = useState(false);
   const [parameters, setParameters] = useState([metaData]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     /* istanbul ignore else */
@@ -97,7 +98,7 @@ const DomainExplorer: React.FC<IOwnProps> = ({
       /* istanbul ignore else */
       if (item.type.kind !== 'OBJECT') {
         const tempObj = {};
-        selections.push(item.name + key);
+        selections.push(key + '/' + item.name);
         tempObj[`${key}`] = [item.name];
         defaultParams.push(tempObj);
       }
@@ -152,6 +153,9 @@ const DomainExplorer: React.FC<IOwnProps> = ({
                   setPageSize={setPageSize}
                   setIsLoadingMore={setIsLoadingMore}
                   isLoadingMore={isLoadingMore}
+                  metaData={metaData}
+                  setIsModalOpen={setIsModalOpen}
+                  isModalOpen={isModalOpen}
                 />
               )}
             </DataToolbarGroup>
@@ -178,7 +182,9 @@ const DomainExplorer: React.FC<IOwnProps> = ({
     setPageSize(_pageSize);
     setIsLoadingMore(true);
   };
-
+  const handleRetry = () => {
+    setIsModalOpen(true);
+  };
   return (
     <>
       {!error ? (
@@ -198,6 +204,7 @@ const DomainExplorer: React.FC<IOwnProps> = ({
                 setRows={setRows}
                 rows={rows}
                 isLoadingMore={isLoadingMore}
+                handleRetry={handleRetry}
               />
               {!displayEmptyState && (limit === pageSize || isLoadingMore) && (
                 <LoadMore

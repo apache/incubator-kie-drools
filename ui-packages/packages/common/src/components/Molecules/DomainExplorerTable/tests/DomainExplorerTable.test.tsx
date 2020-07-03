@@ -111,7 +111,8 @@ describe('Domain Explorer Table Component', () => {
         }
       ],
       setRows: jest.fn(),
-      offset: 10
+      offset: 10,
+      handleRetry: jest.fn()
     };
     const wrapper = await getWrapperAsync(
       <MockedProvider>
@@ -245,7 +246,8 @@ describe('Domain Explorer Table Component', () => {
         }
       ],
       setRows: jest.fn(),
-      offset: 10
+      offset: 10,
+      handleRetry: jest.fn()
     };
 
     const wrapper = await getWrapperAsync(
@@ -353,7 +355,8 @@ describe('Domain Explorer Table Component', () => {
         }
       ],
       setRows: jest.fn(),
-      offset: 0
+      offset: 0,
+      handleRetry: jest.fn()
     };
     const wrapper = await getWrapperAsync(
       <MockedProvider>
@@ -459,7 +462,8 @@ describe('Domain Explorer Table Component', () => {
         }
       ],
       setRows: jest.fn(),
-      offset: 0
+      offset: 0,
+      handleRetry: jest.fn()
     };
     const wrapper = await getWrapperAsync(
       <MockedProvider>
@@ -563,7 +567,8 @@ describe('Domain Explorer Table Component', () => {
         }
       ],
       setRows: jest.fn(),
-      offset: 0
+      offset: 0,
+      handleRetry: jest.fn()
     };
     const wrapper = await getWrapperAsync(
       <MockedProvider>

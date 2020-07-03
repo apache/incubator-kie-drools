@@ -1,16 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Select,
-  SelectOption,
-  SelectVariant,
-  SelectGroup,
-  Button
+  Button,
+  DataList,
+  DataListCheck,
+  DataListItem,
+  DataListItemRow,
+  DataListCell,
+  DataListItemCells,
+  DataListToggle,
+  DataListContent,
+  Dropdown,
+  DropdownItem,
+  DropdownPosition,
+  DropdownToggle,
+  DropdownToggleCheckbox,
+  Modal,
+  Text,
+  TextContent,
+  TextVariants
 } from '@patternfly/react-core';
 import { SyncIcon } from '@patternfly/react-icons';
-import { query } from 'gql-query-builder';
+import './DomainExplorerManageColumns.css';
 import _ from 'lodash';
 import gql from 'graphql-tag';
+import { query } from 'gql-query-builder';
 import { useApolloClient } from 'react-apollo';
+import { validateResponse, filterColumnSelection } from '../../../utils/Utils';
 
 export interface IOwnProps {
   columnPickerType: any;
@@ -35,6 +50,9 @@ export interface IOwnProps {
   setPageSize: (pageSize: number) => void;
   setIsLoadingMore: (isLoadingMoreVal: boolean) => void;
   isLoadingMore: boolean;
+  metaData: any;
+  setIsModalOpen: any;
+  isModalOpen: boolean;
 }
 
 const DomainExplorerManageColumns: React.FC<IOwnProps> = ({
@@ -59,23 +77,36 @@ const DomainExplorerManageColumns: React.FC<IOwnProps> = ({
   setOffsetVal,
   setPageSize,
   setIsLoadingMore,
-  isLoadingMore
+  isLoadingMore,
+  metaData,
+  setIsModalOpen,
+  isModalOpen
 }) => {
   // tslint:disable: forin
   // tslint:disable: no-floating-promises
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [expanded, setExpanded] = useState([]);
   const [enableRefresh, setEnableRefresh] = useState(true);
+  const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+  const allSelections = [];
 
   const nullTypes = [null, 'String', 'Boolean', 'Int', 'DateTime'];
   const client = useApolloClient();
 
-  const onSelect = event => {
-    const selection = event.target.id;
+  const handleModalToggle = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  const handleChange = (checked, event) => {
+    const target = event.target;
+    const selection = target.name;
+    const selectionArray = target.name
+      .split('/')
+      .map(item => item.charAt(0).toLowerCase() + item.slice(1));
     setEnableRefresh(false);
     if (selected.includes(selection)) {
       setSelected(prevState => prevState.filter(item => item !== selection));
-      const innerText = event.nativeEvent.target.nextSibling.innerText;
-      const rest = filterColumnSelection(event, innerText);
+      const objValue = selectionArray.pop();
+      const rest = filterColumnSelection(selectionArray, objValue);
       setParameters(prevState =>
         prevState.filter(obj => {
           if (!_.isEqual(obj, rest)) {
@@ -85,36 +116,255 @@ const DomainExplorerManageColumns: React.FC<IOwnProps> = ({
       );
     } else {
       setSelected(prevState => [...prevState, selection]);
-      const innerText = event.nativeEvent.target.nextSibling.innerText;
-      const rest = filterColumnSelection(event, innerText);
+      const objValue = selectionArray.pop();
+      const rest = filterColumnSelection(selectionArray, objValue);
       setParameters(prevState => [...prevState, rest]);
     }
   };
 
-  const filterColumnSelection = (event, selection) => {
-    const parent = event.nativeEvent.target.parentElement.parentElement.getAttribute(
-      'aria-labelledby'
-    );
-    let res = {};
-    const tempParents = parent.split('---');
-    for (let i = tempParents.length - 1; i >= 0; i--) {
-      if (i === tempParents.length - 1) {
-        if (tempParents[i] === '-') {
-          res = selection;
-        } else {
-          res = { [tempParents[i]]: [selection] }; // assign the value
-        }
-      } else {
-        res = { [tempParents[i]]: [res] }; // put the prev object
-      }
-    }
-    return res;
-  };
-  const onToggle = _isExpanded => {
-    setIsExpanded(_isExpanded);
+  const tempExpanded = [];
+  const toggle = id => {
+    const index = expanded.indexOf(id);
+    const newExpanded =
+      index >= 0
+        ? [
+            ...expanded.slice(0, index),
+            ...expanded.slice(index + 1, expanded.length)
+          ]
+        : [...expanded, id];
+    tempExpanded.push(newExpanded);
+    setExpanded(newExpanded);
   };
 
+  const fetchSchema = option => {
+    return (
+      !getQueryTypes.loading &&
+      getQueryTypes.data.__schema &&
+      getQueryTypes.data.__schema.queryType.find(item => {
+        if (item.name === option.type.name) {
+          return item;
+        }
+      })
+    );
+  };
+  const rootElements = [];
+  let finalResult: any = [];
+  let childItems;
+
+  const childSelectionItems = (_data, title, ...attr) => {
+    let nestedTitles = '';
+    childItems =
+      !getQueryTypes.loading &&
+      _data.map((group, index) => {
+        const label = title + '/' + attr.join();
+        const childEle = (
+          <DataListItem
+            aria-labelledby={'kie-datalist-item-' + label.replace(/\,/g, '')}
+            isExpanded={expanded.includes(label.replace(/\,/g, ''))}
+            key={'kie-datalist-item-' + label.replace(/\,/g, '')}
+          >
+            <DataListItemRow>
+              <DataListToggle
+                onClick={() => toggle(label.replace(/\,/g, ''))}
+                isExpanded={expanded.includes(label.replace(/\,/g, ''))}
+                id={'kie-datalist-toggle-' + label.replace(/\,/g, '')}
+                aria-controls={
+                  'kie-datalist-toggle-' + label.replace(/\,/g, '')
+                }
+              />
+              <DataListItemCells
+                dataListCells={[
+                  <DataListCell
+                    id={'kie-datalist-item-' + label.replace(/\,/g, '')}
+                    key={index}
+                  >
+                    {(title + ' / ' + attr.join()).replace(/\,/g, '')}
+                  </DataListCell>
+                ]}
+              />
+            </DataListItemRow>
+            {group.fields
+              .filter((item, _index) => {
+                if (!nullTypes.includes(item.type.name)) {
+                  const tempData = [];
+                  const n = fetchSchema(item);
+                  tempData.push(n);
+                  nestedTitles = nestedTitles + ' / ' + item.name;
+                  childSelectionItems(tempData, title, attr, nestedTitles);
+                } else {
+                  return item;
+                }
+              })
+              .map((item, _index) => {
+                const itemName = title + '/' + group.name + '/' + item.name;
+                allSelections.push(itemName);
+                return (
+                  <DataListContent
+                    aria-label={itemName}
+                    id={'kie-datalist-content-' + itemName}
+                    isHidden={!expanded.includes(label.replace(/\,/g, ''))}
+                    className="kogito-common--manage-columns__data-list-content"
+                    key={Math.random()}
+                  >
+                    <DataListItemRow>
+                      <DataListCheck
+                        aria-labelledby={'kie-datalist-item-' + itemName}
+                        name={itemName}
+                        checked={selected.includes(itemName)}
+                        onChange={handleChange}
+                      />
+                      <DataListItemCells
+                        dataListCells={[
+                          <DataListCell
+                            id={'kie-datalist-item-' + itemName}
+                            key={_index}
+                          >
+                            {item.name}
+                          </DataListCell>
+                        ]}
+                      />
+                    </DataListItemRow>
+                  </DataListContent>
+                );
+              })}
+          </DataListItem>
+        );
+        return childEle;
+      });
+    finalResult.push(childItems);
+  };
+
+  const selectionItems = _data => {
+    !getPicker.loading &&
+      _data
+        .filter((group, index) => {
+          if (group.type.kind !== 'SCALAR') {
+            return group;
+          } else {
+            allSelections.push(group.name);
+            const rootEle = (
+              <DataListItem
+                aria-labelledby=""
+                key={'kie-datalist-item-' + group.name}
+              >
+                <DataListItemRow>
+                  <DataListCheck
+                    aria-labelledby={'kie-datalist-item-' + group.name}
+                    name={group.name}
+                    checked={selected.includes(group.name)}
+                    onChange={handleChange}
+                  />
+                  <DataListItemCells
+                    dataListCells={[
+                      <DataListCell
+                        id={'kie-datalist-item-' + group.name}
+                        key={index}
+                      >
+                        {group.name}
+                      </DataListCell>
+                    ]}
+                  />
+                </DataListItemRow>
+              </DataListItem>
+            );
+            rootElements.push(rootEle);
+          }
+        })
+        .map((group, index) => {
+          const nestedEle = (
+            <DataListItem
+              aria-labelledby={'kie-datalist-item-' + group.name}
+              isExpanded={expanded.includes(group.name)}
+              id={'kie-datalist-item-' + group.name}
+              key={'kie-datalist-item-' + group.name}
+            >
+              <DataListItemRow>
+                <DataListToggle
+                  onClick={() => toggle(group.name)}
+                  isExpanded={expanded.includes(group.name)}
+                  id={'kie-datalist-toggle-' + group.name}
+                  aria-controls={'kie-datalist-toggle-' + group.name}
+                />
+                <DataListItemCells
+                  dataListCells={[
+                    <DataListCell
+                      id={'kie-datalist-item-cell-' + group.name}
+                      key={index}
+                    >
+                      {group.name}
+                    </DataListCell>
+                  ]}
+                />
+              </DataListItemRow>
+              {group.type.fields &&
+                group.type.fields
+                  .filter((item, _index) => {
+                    if (!nullTypes.includes(item.type.name)) {
+                      const tempData = [];
+                      const _v = fetchSchema(item);
+                      tempData.push(_v);
+                      childSelectionItems(tempData, group.name, item.name);
+                    } else {
+                      /* istanbul ignore else */
+                      if (item.type.kind !== 'LIST') {
+                        return item;
+                      }
+                    }
+                  })
+                  .map((item, _index) => {
+                    const itemName = group.name + '/' + item.name;
+                    allSelections.push(itemName);
+                    return (
+                      <DataListContent
+                        aria-label={itemName}
+                        id={'kie-datalist-content-' + itemName}
+                        isHidden={!expanded.includes(group.name)}
+                        key={_index}
+                        className="kogito-common--manage-columns__data-list-content"
+                      >
+                        <DataListItemRow>
+                          <DataListCheck
+                            aria-labelledby={'kie-datalist-item-' + itemName}
+                            name={itemName}
+                            checked={selected.includes(itemName)}
+                            onChange={handleChange}
+                          />
+                          <DataListItemCells
+                            dataListCells={[
+                              <DataListCell
+                                id={'kie-datalist-item-' + itemName}
+                                key={_index}
+                              >
+                                {item.name}
+                              </DataListCell>
+                            ]}
+                          />
+                        </DataListItemRow>
+                      </DataListContent>
+                    );
+                  })}
+            </DataListItem>
+          );
+          !finalResult.includes(nestedEle) && finalResult.push(nestedEle);
+        });
+  };
+  columnPickerType && selectionItems(data);
+
+  finalResult = finalResult.flat();
+  finalResult.unshift(rootElements);
+
+  function getAllChilds(arr, comp) {
+    const unique = arr
+      .map(e => e[comp])
+      .map((e, i, final) => final.indexOf(e) === i && i)
+      .filter(e => arr[e])
+      .map(e => arr[e]);
+
+    return unique;
+  }
+
   useEffect(() => {
+    /* istanbul ignore else */
     if (isLoadingMore) {
       generateQuery(parameters);
     }
@@ -129,84 +379,6 @@ const DomainExplorerManageColumns: React.FC<IOwnProps> = ({
       generateQuery(parameters);
     }
   }, [parameters.length > 1]);
-
-  const nestedCheck = (ele, valueObj) => {
-    for (const key in ele) {
-      const temp = ele[key];
-      if (typeof temp[0] === 'object') {
-        for (const nestedProp in temp[0]) {
-          const nestedObj = {};
-          const result = nestedCheck(temp[0], valueObj);
-          if (valueObj.hasOwnProperty(nestedProp)) {
-            valueObj[nestedProp] = result;
-          } else {
-            nestedObj[nestedProp] = result;
-            valueObj = { ...valueObj, ...nestedObj };
-          }
-          return valueObj;
-        }
-      } else {
-        const val = ele[key];
-        const tempObj = {};
-        tempObj[val[0]] = null;
-        const firstKey = Object.keys(valueObj)[0];
-        valueObj = { ...valueObj[firstKey], ...tempObj };
-        return valueObj;
-      }
-    }
-  };
-
-  const checkFunc = (ele, valueObj) => {
-    for (const key in ele) {
-      const temp = ele[key];
-      if (typeof temp[0] === 'object') {
-        for (const nestedProp in temp[0]) {
-          const nestedObj = {};
-          if (valueObj.hasOwnProperty(nestedProp)) {
-            const result = nestedCheck(temp[0], valueObj);
-            valueObj[nestedProp] = result;
-          } else {
-            const result = checkFunc(temp[0], valueObj);
-            nestedObj[nestedProp] = result;
-            valueObj = { ...valueObj, ...nestedObj };
-          }
-          return valueObj;
-        }
-      } else {
-        const val = ele[key];
-        const tempObj = {};
-        tempObj[val[0]] = null;
-        valueObj = { ...valueObj, ...tempObj };
-        return valueObj;
-      }
-    }
-  };
-
-  const validateResponse = (obj, paramFields) => {
-    let contentObj = {};
-    for (const prop in obj) {
-      const arr = [];
-      if (obj[prop] === null) {
-        const parentObj = {};
-        paramFields.map(params => {
-          if (params.hasOwnProperty(prop)) {
-            arr.push(params);
-          }
-        });
-        let valueObj = {};
-        arr.forEach(ele => {
-          valueObj = checkFunc(ele, valueObj);
-        });
-        parentObj[prop] = valueObj;
-        contentObj = { ...contentObj, ...parentObj };
-      } else {
-        const elseObj = {};
-        elseObj[prop] = obj[prop];
-        contentObj = { ...contentObj, ...elseObj };
-      }
-    }
-    return contentObj;
-  };
 
   async function generateQuery(paramFields) {
     setTableLoading(true);
@@ -260,124 +432,123 @@ const DomainExplorerManageColumns: React.FC<IOwnProps> = ({
     }
   }
 
-  const fetchSchema = option => {
-    return (
-      !getQueryTypes.loading &&
-      getQueryTypes.data.__schema &&
-      getQueryTypes.data.__schema.queryType.find(item => {
-        if (item.name === option.type.name) {
-          return item;
+  const renderModal = () => {
+    const numSelected = selected.length;
+    const allSelected = numSelected === allSelections.length;
+    const anySelected = numSelected > 0;
+    const someChecked = anySelected ? null : false;
+    const isChecked = allSelected ? true : someChecked;
+
+    const onDropDownToggle = isOpen => {
+      setIsDropDownOpen(isOpen);
+    };
+
+    const onDropDownSelect = event => {
+      setIsDropDownOpen(!isDropDownOpen);
+    };
+
+    const handleSelectClickNone = () => {
+      setSelected([]);
+      setParameters([metaData]);
+    };
+
+    const handleSelectClickAll = () => {
+      setSelected(allSelections);
+      const selectionArray = allSelections.map(ele =>
+        ele.split('/').map(item => item.charAt(0).toLowerCase() + item.slice(1))
+      );
+      const finalObj = [];
+      selectionArray.forEach(arr => {
+        const objValue = arr.pop();
+        const rest = filterColumnSelection(arr, objValue);
+        finalObj.push(rest);
+      });
+      finalObj.push(metaData);
+      setParameters(finalObj);
+    };
+
+    const items = [
+      <DropdownItem key={0} onClick={() => handleSelectClickNone()}>
+        Select none
+      </DropdownItem>,
+      <DropdownItem key={1} onClick={() => handleSelectClickAll()}>
+        Select all
+      </DropdownItem>
+    ];
+    const bulkSelection = (
+      <Dropdown
+        onSelect={onDropDownSelect}
+        position={DropdownPosition.left}
+        id="selectAll-dropdown"
+        toggle={
+          <DropdownToggle
+            splitButtonItems={[
+              <DropdownToggleCheckbox
+                id="selectAll-dropdown-checkbox"
+                key={1}
+                aria-label={anySelected ? 'Deselect all' : 'Select all'}
+                isChecked={isChecked}
+                onClick={() => {
+                  anySelected
+                    ? handleSelectClickNone()
+                    : handleSelectClickAll();
+                }}
+              />
+            ]}
+            onToggle={onDropDownToggle}
+          >
+            {numSelected !== 0 && (
+              <React.Fragment>{numSelected} selected</React.Fragment>
+            )}
+          </DropdownToggle>
         }
-      })
+        isOpen={isDropDownOpen}
+        dropdownItems={items}
+      />
+    );
+    return (
+      <Modal
+        title="Manage columns"
+        isOpen={isModalOpen}
+        isSmall
+        description={
+          <TextContent>
+            <Text component={TextVariants.p}>
+              Selected categories will be displayed in the table.
+            </Text>
+          </TextContent>
+        }
+        onClose={handleModalToggle}
+        className="kogito-common--manage-columns__modal"
+        actions={[
+          <Button
+            key="save"
+            variant="primary"
+            onClick={() => {
+              onResetQuery(parameters);
+            }}
+            id="save-columns"
+          >
+            Save
+          </Button>,
+          <Button key="cancel" variant="secondary" onClick={handleModalToggle}>
+            Cancel
+          </Button>
+        ]}
+      >
+        {bulkSelection}
+        <DataList
+          aria-label="Table column management"
+          id="table-column-management"
+          key={1}
+          className="kogito-common--manage-columns__data-list"
+          isCompact
+        >
+          {getAllChilds(finalResult, 'props')}
+        </DataList>
+      </Modal>
     );
   };
-
-  let childItems;
-  let finalResult: any = [];
-
-  const childSelectionItems = (_data, title, ...attr) => {
-    let nestedTitles = '';
-    childItems =
-      !getQueryTypes.loading &&
-      _data.map(group => {
-        const label = title + ' / ' + attr.join();
-        const childEle = (
-          <SelectGroup
-            label={label.replace(/\,/g, '')}
-            key={Math.random()}
-            id={group.name}
-            value={title + group.name}
-          >
-            {group.fields
-              .filter((item, _index) => {
-                if (!nullTypes.includes(item.type.name)) {
-                  const tempData = [];
-                  const n = fetchSchema(item);
-                  tempData.push(n);
-                  nestedTitles = nestedTitles + ' / ' + item.name;
-                  childSelectionItems(tempData, title, attr, nestedTitles);
-                } else {
-                  return item;
-                }
-              })
-              .map(item => (
-                <SelectOption
-                  key={Math.random()}
-                  value={item.name + title + group.name}
-                >
-                  {item.name}
-                </SelectOption>
-              ))}
-          </SelectGroup>
-        );
-        return childEle;
-      });
-    finalResult.push(childItems);
-  };
-  const child = [];
-  const selectionItems = _data => {
-    !getPicker.loading &&
-      _data
-        .filter((group, index) => {
-          if (group.type.kind !== 'SCALAR') {
-            return group;
-          } else {
-            child.push(<SelectOption key={group.name} value={group.name} />);
-          }
-        })
-        .map((group, index) => {
-          let ele;
-          ele = (
-            <SelectGroup
-              label={group.name}
-              key={index}
-              id={group.name}
-              value={group.name}
-            >
-              {group.type.fields &&
-                group.type.fields
-                  .filter((item, _index) => {
-                    if (!nullTypes.includes(item.type.name)) {
-                      const tempData = [];
-                      const _v = fetchSchema(item);
-                      tempData.push(_v);
-                      childSelectionItems(tempData, group.name, item.name);
-                    } else {
-                      if (item.type.kind !== 'LIST') {
-                        return item;
-                      }
-                    }
-                  })
-                  .map((item, _index) => (
-                    <SelectOption key={_index} value={item.name + group.name}>
-                      {item.name}
-                    </SelectOption>
-                  ))}
-            </SelectGroup>
-          );
-
-          !finalResult.includes(ele) && finalResult.push(ele);
-        });
-  };
-
-  columnPickerType && selectionItems(data);
-  const rootElement: any = (
-    <SelectGroup label=" " key={Math.random()} id="" value=" ">
-      {child}
-    </SelectGroup>
-  );
-  finalResult = finalResult.flat();
-  finalResult.unshift(rootElement);
-
-  function getAllChilds(arr, comp) {
-    const unique = arr
-      .map(e => e[comp])
-      .map((e, i, final) => final.indexOf(e) === i && i)
-      .filter(e => arr[e])
-      .map(e => arr[e]);
-
-    return unique;
-  }
 
   const onResetQuery = _parameters => {
     setOffsetVal(0);
@@ -386,54 +557,43 @@ const DomainExplorerManageColumns: React.FC<IOwnProps> = ({
     pageSize = 10;
     generateQuery(_parameters);
     setIsLoadingMore(false);
+    setIsModalOpen(!isModalOpen);
   };
 
-  const onRefresh = () => {
+  const onRefresh = _parameters => {
+    /* istanbul ignore else */
     if (enableRefresh && parameters.length > 1) {
-      onResetQuery(parameters);
+      setOffsetVal(0);
+      offsetVal = 0;
+      setPageSize(10);
+      pageSize = 10;
+      generateQuery(_parameters);
+      setIsLoadingMore(false);
     }
   };
 
   return (
-    <React.Fragment>
-      {!getPicker.loading && columnPickerType && (
-        <>
-          <Select
-            variant={SelectVariant.checkbox}
-            aria-label="Select Input"
-            onToggle={onToggle}
-            onSelect={onSelect}
-            selections={selected}
-            isExpanded={isExpanded}
-            placeholderText="Select Columns"
-            ariaLabelledBy="Column Picker dropdown"
-            id="columnPicker-dropdown"
-            isGrouped
-            maxHeight="60vh"
-          >
-            {getAllChilds(finalResult, 'props')}
-          </Select>
-          <Button
-            variant="primary"
-            onClick={() => {
-              onResetQuery(parameters);
-            }}
-            id="apply-columns"
-          >
-            Apply columns
-          </Button>
-          <Button
-            variant="plain"
-            onClick={onRefresh}
-            className="pf-u-m-md"
-            id="refresh-button"
-            aria-label={'Refresh list'}
-          >
-            <SyncIcon />
-          </Button>
-        </>
-      )}
-    </React.Fragment>
+    <>
+      <Button
+        variant="link"
+        onClick={handleModalToggle}
+        id="manage-columns-button"
+      >
+        Manage columns
+      </Button>
+      {renderModal()}
+      <Button
+        variant="plain"
+        onClick={() => {
+          onRefresh(parameters);
+        }}
+        className="pf-u-m-md"
+        id="refresh-button"
+        aria-label={'Refresh list'}
+      >
+        <SyncIcon />
+      </Button>
+    </>
   );
 };
 

@@ -12,7 +12,8 @@ import {
   EmptyStateBody,
   Bullseye,
   Card,
-  CardBody
+  CardBody,
+  Button
 } from '@patternfly/react-core';
 import {
   CheckCircleIcon,
@@ -42,7 +43,8 @@ const DomainExplorerTable = ({
   offset,
   setRows,
   rows,
-  isLoadingMore
+  isLoadingMore,
+  handleRetry
 }) => {
   // tslint:disable: forin
   const [columns, setColumns] = useState([]);
@@ -224,8 +226,9 @@ const DomainExplorerTable = ({
         let metaArray = [];
         const metaKeys = [];
         const metaValues = [];
-        const firstKey = Object.keys(item.metadata)[0];
-        metaArray = item.metadata[firstKey];
+        if (item.metadata.hasOwnProperty('processInstances')) {
+          metaArray = item.metadata.processInstances;
+        }
         const tempParents = getKeys(item);
         parentkeys.push(tempParents.tempKeys);
         values.push({
@@ -330,7 +333,15 @@ const DomainExplorerTable = ({
                   No columns selected
                 </Title>
                 <EmptyStateBody>
-                  Select columns from the dropdown to see content
+                  <Button
+                    variant="link"
+                    id="retry-columns-button"
+                    onClick={handleRetry}
+                    isInline
+                  >
+                    Manage columns
+                  </Button>{' '}
+                  to see content
                 </EmptyStateBody>
               </EmptyState>
             </Bullseye>

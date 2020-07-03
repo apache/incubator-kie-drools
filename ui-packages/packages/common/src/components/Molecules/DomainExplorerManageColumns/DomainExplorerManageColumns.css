@@ -1,0 +1,23 @@
+.kogito-common--manage-columns__data-list .pf-c-data-list__toggle {
+    margin-left: calc(-1 * var(--pf-global--spacer--md));
+}
+
+.kogito-common--manage-columns__data-list-content:not(:last-of-type) {
+    box-shadow: none;   
+}
+
+.kogito-common--manage-columns__data-list-content .pf-c-data-list__expandable-content-body{
+    padding: 0px;   
+}
+
+.kogito-common--manage-columns__data-list-content .pf-c-data-list__expandable-content-body .pf-c-data-list__item-row {
+    padding-left: calc( var(--pf-global--spacer--2xl) + var(--pf-global--spacer--lg));
+}
+
+.kogito-common--manage-columns__data-list-content .pf-c-data-list__cell {
+    padding-left: var(--pf-global--spacer--md);
+}
+
+.kogito-common--manage-columns__modal .pf-c-dropdown {
+    margin-bottom: var(--pf-global--spacer--md);
+} 
