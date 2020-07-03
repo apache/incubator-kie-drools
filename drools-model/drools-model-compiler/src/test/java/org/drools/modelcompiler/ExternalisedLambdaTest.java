@@ -175,13 +175,13 @@ public class ExternalisedLambdaTest extends BaseModelTest {
     public void testEval() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
-                "import " + Person.class.getCanonicalName() + ";" +
-                "rule R when\n" +
-                "  $p : Person()\n" +
-                "  eval( $p.getAge() == 40 )\n" +
-                "then\n" +
-                "  insert(new Result($p.getName()));\n" +
-                "end";
+                     "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "  $p : Person()\n" +
+                     "  eval( $p.getAge() == 40 )\n" +
+                     "then\n" +
+                     "  insert(new Result($p.getName()));\n" +
+                     "end";
 
         KieSession ksession = null;
         try {
@@ -190,14 +190,14 @@ public class ExternalisedLambdaTest extends BaseModelTest {
             fail(e.getMessage());
         }
 
-        ksession.insert( new Person( "Mario", 40 ) );
-        ksession.insert( new Person( "Mark", 37 ) );
-        ksession.insert( new Person( "Edson", 35 ) );
+        ksession.insert(new Person("Mario", 40));
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
         ksession.fireAllRules();
 
-        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
-        assertEquals( 1, results.size() );
-        assertEquals( "Mario", results.iterator().next().getValue() );
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals("Mario", results.iterator().next().getValue());
     }
 
     @Test
@@ -237,6 +237,39 @@ public class ExternalisedLambdaTest extends BaseModelTest {
         Assertions.assertThat(list).containsExactlyInAnyOrder("Charles");
     }
 
+    @Test
+    public void testAccumulateWithBinaryExpr() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "import " + Result.class.getCanonicalName() + ";" +
+                     "rule X when\n" +
+                     "  String( $l : length )" +
+                     "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
+                     "                $sum : sum($p.getAge() * $l)  \n" +
+                     "              )                          \n" +
+                     "then\n" +
+                     "  insert(new Result($sum));\n" +
+                     "end";
+
+        KieSession ksession = null;
+        try {
+            ksession = getKieSession(str);
+        } catch (NonExternalisedLambdaFoundException e) {
+            fail(e.getMessage());
+        }
+
+        ksession.insert("x");
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(77, ((Number) results.iterator().next().getValue()).intValue());
+    }
+  
     @Test
     public void testOOPath() {
         final String str =
