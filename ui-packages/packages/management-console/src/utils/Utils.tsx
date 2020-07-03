@@ -162,3 +162,21 @@ export const handleNodeInstanceRetrigger = (
       onRetriggerFailure(JSON.stringify(error.message));
     });
 };
+
+export const handleNodeInstanceCancel = (
+  processInstance: Pick<ProcessInstance, 'id' | 'serviceUrl' | 'processId'>,
+  node: Pick<GraphQL.NodeInstance, 'id'>,
+  onCancelSuccess: () => void,
+  onCancelFailure: (errorMessage: string) => void
+) => {
+  axios
+    .delete(
+      `${processInstance.serviceUrl}/management/processes/${processInstance.processId}/instances/${processInstance.id}/nodeInstances/${node.id}`
+    )
+    .then(() => {
+      onCancelSuccess();
+    })
+    .catch(error => {
+      onCancelFailure(JSON.stringify(error.message));
+    });
+};

@@ -4,7 +4,8 @@ import {
   handleSkip,
   handleRetry,
   handleAbort,
-  handleNodeInstanceRetrigger
+  handleNodeInstanceRetrigger,
+  handleNodeInstanceCancel
 } from '../Utils';
 import { GraphQL } from '@kogito-apps/common';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
@@ -185,6 +186,62 @@ describe('uitility function testing', () => {
       await wait(0);
       expect(onRetriggerFailure.mock.calls[0][0]).toEqual('"403 error"');
       expect(onRetriggerFailure).toHaveBeenCalled();
+    });
+  });
+
+  describe('Cancel click tests', () => {
+    const processInstanceData = {
+      id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+      processId: 'trav',
+      serviceUrl: 'http://localhost:4000',
+      state: ProcessInstanceState.Error,
+      nodes: [
+        {
+          nodeId: '2',
+          name: 'Confirm travel',
+          definitionId: 'UserTask_2',
+          id: '843bd287-fb6e-4ee7-a304-ba9b430e52d8',
+          enter: '2019-10-22T04:43:01.148Z',
+          exit: null,
+          type: 'HumanTaskNode'
+        }
+      ]
+    };
+    const nodeObject = {
+      nodeId: '2',
+      name: 'Confirm travel',
+      definitionId: 'UserTask_2',
+      id: '843bd287-fb6e-4ee7-a304-ba9b430e52d8',
+      enter: '2019-10-22T04:43:01.148Z',
+      exit: null,
+      type: 'HumanTaskNode'
+    };
+    it('executes cancel node process successfully', async () => {
+      const onCancelSuccess = jest.fn();
+      const onCancelFailure = jest.fn();
+      mockedAxios.delete.mockResolvedValue({});
+      handleNodeInstanceCancel(
+        processInstanceData,
+        nodeObject,
+        onCancelSuccess,
+        onCancelFailure
+      );
+      await wait(0);
+      expect(onCancelSuccess).toHaveBeenCalled();
+    });
+    it('fails executing cancel node process', async () => {
+      mockedAxios.delete.mockRejectedValue({ message: '403 error' });
+      const onCancelSuccess = jest.fn();
+      const onCancelFailure = jest.fn();
+      handleNodeInstanceCancel(
+        processInstanceData,
+        nodeObject,
+        onCancelSuccess,
+        onCancelFailure
+      );
+      await wait(0);
+      expect(onCancelFailure.mock.calls[0][0]).toEqual('"403 error"');
+      expect(onCancelFailure).toHaveBeenCalled();
     });
   });
 });

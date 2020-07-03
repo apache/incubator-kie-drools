@@ -882,6 +882,12 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for service url
                 >
                   Retrigger node
                 </DropdownItem>,
+                <DropdownItem
+                  component="button"
+                  onClick={[Function]}
+                >
+                  Cancel node
+                </DropdownItem>,
               ]
             }
             isOpen={false}

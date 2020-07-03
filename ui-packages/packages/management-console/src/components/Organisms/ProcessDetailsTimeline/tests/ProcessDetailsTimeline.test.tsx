@@ -313,7 +313,10 @@ describe('ProcessDetailsTimeline component tests', () => {
           .simulate('click');
         await wait(0);
         wrapper = wrapper.update();
-        wrapper.find(DropdownItem).simulate('click');
+        wrapper
+          .find(DropdownItem)
+          .at(0)
+          .simulate('click');
         await wait(0);
         wrapper = wrapper.update();
       });
@@ -334,7 +337,10 @@ describe('ProcessDetailsTimeline component tests', () => {
           .simulate('click');
         await wait(0);
         wrapper = wrapper.update();
-        wrapper.find(DropdownItem).simulate('click');
+        wrapper
+          .find(DropdownItem)
+          .at(0)
+          .simulate('click');
         await wait(0);
         wrapper = wrapper.update();
       });
@@ -344,6 +350,63 @@ describe('ProcessDetailsTimeline component tests', () => {
         'The node Confirm travel failed to retrigger. Message: "403 error"'
       );
       expect(handleNodeInstanceRetriggerSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('nodeInstanceCancel tests', () => {
+    const handleNodeInstanceCancelSpy = jest.spyOn(
+      Utils,
+      'handleNodeInstanceCancel'
+    );
+    it('success test', async () => {
+      mockedAxios.delete.mockResolvedValue({});
+      let wrapper = mount(<ProcessDetailsTimeline {...props1} />);
+      await act(async () => {
+        wrapper
+          .find(Dropdown)
+          .at(1)
+          .find(KebabToggle)
+          .find('button')
+          .simulate('click');
+        await wait(0);
+        wrapper = wrapper.update();
+        wrapper
+          .find(DropdownItem)
+          .at(1)
+          .simulate('click');
+        await wait(0);
+        wrapper = wrapper.update();
+      });
+      expect(
+        wrapper.find('MockedProcessListModal').props()['modalContent']
+      ).toEqual('The node Confirm travel was successfully canceled.');
+      expect(handleNodeInstanceCancelSpy).toHaveBeenCalled();
+    });
+    it('failure', async () => {
+      mockedAxios.delete.mockRejectedValue({ message: '403 error' });
+      let wrapper = mount(<ProcessDetailsTimeline {...props1} />);
+      await act(async () => {
+        wrapper
+          .find(Dropdown)
+          .at(1)
+          .find(KebabToggle)
+          .find('button')
+          .simulate('click');
+        await wait(0);
+        wrapper = wrapper.update();
+        wrapper
+          .find(DropdownItem)
+          .at(1)
+          .simulate('click');
+        await wait(0);
+        wrapper = wrapper.update();
+      });
+      expect(
+        wrapper.find('MockedProcessListModal').props()['modalContent']
+      ).toEqual(
+        'The node Confirm travel failed to cancel. Message: "403 error"'
+      );
+      expect(handleNodeInstanceCancelSpy).toHaveBeenCalled();
     });
   });
 

@@ -28,7 +28,8 @@ import {
   handleRetry,
   handleSkip,
   handleNodeInstanceRetrigger,
-  setTitle
+  setTitle,
+  handleNodeInstanceCancel
 } from '../../../utils/Utils';
 import ProcessInstance = GraphQL.ProcessInstance;
 import ProcessListModal from '../../Atoms/ProcessListModal/ProcessListModal';
@@ -158,6 +159,30 @@ const ProcessDetailsTimeline: React.FC<IOwnProps> = ({ data }) => {
           }
         >
           Retrigger node
+        </DropdownItem>,
+        <DropdownItem
+          key="cancel"
+          component="button"
+          onClick={() =>
+            handleNodeInstanceCancel(
+              processInstanceData,
+              node,
+              () =>
+                onShowMessage(
+                  'Node cancel operation',
+                  `The node ${node.name} was successfully canceled.`,
+                  TitleType.SUCCESS
+                ),
+              (errorMessage: string) =>
+                onShowMessage(
+                  'Node cancel operation',
+                  `The node ${node.name} failed to cancel. Message: ${errorMessage}`,
+                  TitleType.FAILURE
+                )
+            )
+          }
+        >
+          Cancel node
         </DropdownItem>
       ];
     } else {
