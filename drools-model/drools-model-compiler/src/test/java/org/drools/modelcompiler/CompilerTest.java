@@ -1880,6 +1880,38 @@ public class CompilerTest extends BaseModelTest {
         assertEquals( 1, ksession.fireAllRules() );
     }
 
+    public static final int CONSTANT = 1;
+
+    @Test
+    public void testMapCheckForExistence() {
+        final String drl1 =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "    $p : Person(getItems().get( org.drools.modelcompiler.CompilerTest.CONSTANT) == null )\n" +
+                "then\n" +
+                "  insert(new Result($p.getName()));\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        final Map<Integer, Integer> items = new HashMap<>();
+        items.put(CONSTANT, 2000);
+
+        final Person luca = new Person("Luca");
+        luca.setItems(items);
+
+        final Person mario = new Person("Mario");
+
+        ksession.insert( luca );
+        ksession.insert( mario );
+        assertEquals( 1, ksession.fireAllRules() );
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class );
+        assertEquals( 1, results.size() );
+        assertEquals( "Mario", results.iterator().next().getValue() );
+    }
+
     @Test
     public void testBigDecimalIntCoercion() {
         String str = "import " + Result.class.getCanonicalName() + ";\n" +

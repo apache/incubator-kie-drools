@@ -52,6 +52,7 @@ import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
+import org.drools.modelcompiler.builder.generator.ToMethodCall;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseFail;
@@ -258,7 +259,7 @@ public abstract class AccumulateVisitor {
                     }
                 } );
 
-        final TypedExpression typedExpression = DrlxParseUtil.toMethodCallWithClassCheck(context, methodCallWithoutRootNode.getWithoutRootNode(), null, clazz, context.getTypeResolver());
+        final TypedExpression typedExpression = new ToMethodCall(context).toMethodCallWithClassCheck(methodCallWithoutRootNode.getWithoutRootNode(), null, clazz);
         final Class<?> methodCallExprType = typedExpression.getRawClass();
 
         final AccumulateFunction accumulateFunction = getAccumulateFunction(function, methodCallExprType);

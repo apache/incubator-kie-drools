@@ -481,7 +481,7 @@ public class PackageModel {
 
         BodyDeclaration<?> getEntryPointsMethod = parseBodyDeclaration(
                 "    @Override\n" +
-                "    public List<org.drools.model.EntryPoint> getEntryPoints() {\n" +
+                "    public java.util.List<org.drools.model.EntryPoint> getEntryPoints() {\n" +
                 "        return " + entryPointsBuilder + ";\n" +
                 "    }\n"
                 );
@@ -489,14 +489,14 @@ public class PackageModel {
 
         BodyDeclaration<?> getGlobalsMethod = parseBodyDeclaration(
                 "    @Override\n" +
-                "    public List<org.drools.model.Global> getGlobals() {\n" +
+                "    public java.util.List<org.drools.model.Global> getGlobals() {\n" +
                 "        return globals;\n" +
                 "    }\n");
         rulesClass.addMember(getGlobalsMethod);
 
         BodyDeclaration<?> getTypeMetaDataMethod = parseBodyDeclaration(
                 "    @Override\n" +
-                "    public List<org.drools.model.TypeMetaData> getTypeMetaDatas() {\n" +
+                "    public java.util.List<org.drools.model.TypeMetaData> getTypeMetaDatas() {\n" +
                 "        return typeMetaDatas;\n" +
                 "    }\n");
         rulesClass.addMember(getTypeMetaDataMethod);
@@ -527,13 +527,13 @@ public class PackageModel {
         buildArtifactsDeclaration( getGlobals().keySet(), rulesClass, rulesListInitializerBody, "org.drools.model.Global", "globals", true );
 
         if ( !typeMetaDataExpressions.isEmpty() ) {
-            BodyDeclaration<?> typeMetaDatasList = parseBodyDeclaration("List<org.drools.model.TypeMetaData> typeMetaDatas = new ArrayList<>();");
+            BodyDeclaration<?> typeMetaDatasList = parseBodyDeclaration("java.util.List<org.drools.model.TypeMetaData> typeMetaDatas = new ArrayList<>();");
             rulesClass.addMember(typeMetaDatasList);
             for (Expression expr : typeMetaDataExpressions) {
                 addInitStatement( rulesListInitializerBody, expr, "typeMetaDatas" );
             }
         } else {
-            BodyDeclaration<?> typeMetaDatasList = parseBodyDeclaration("List<org.drools.model.TypeMetaData> typeMetaDatas = Collections.emptyList();");
+            BodyDeclaration<?> typeMetaDatasList = parseBodyDeclaration("java.util.List<org.drools.model.TypeMetaData> typeMetaDatas = Collections.emptyList();");
             rulesClass.addMember(typeMetaDatasList);
         }
 
@@ -582,7 +582,7 @@ public class PackageModel {
         if (queryNames == null || queryNames.isEmpty()) {
             BodyDeclaration<?> getQueriesMethod = parseBodyDeclaration(
                     "    @Override\n" +
-                    "    public List<org.drools.model.Query> getQueries() {\n" +
+                    "    public java.util.List<org.drools.model.Query> getQueries() {\n" +
                     "        return java.util.Collections.emptyList();\n" +
                     "    }\n");
             rulesClass.addMember(getQueriesMethod);
@@ -596,7 +596,7 @@ public class PackageModel {
 
         BodyDeclaration<?> getQueriesMethod = parseBodyDeclaration(
                 "    @Override\n" +
-                "    public List<org.drools.model.Query> getQueries() {\n" +
+                "    public java.util.List<org.drools.model.Query> getQueries() {\n" +
                 "        return queries;\n" +
                 "    }\n");
         rulesClass.addMember(getQueriesMethod);
@@ -614,7 +614,7 @@ public class PackageModel {
         if (ruleMethodsInUnit == null || ruleMethodsInUnit.isEmpty()) {
             BodyDeclaration<?> getQueriesMethod = parseBodyDeclaration(
                     "    @Override\n" +
-                    "    public List<org.drools.model.Rule> getRules() {\n" +
+                    "    public java.util.List<org.drools.model.Rule> getRules() {\n" +
                     "        return java.util.Collections.emptyList();\n" +
                     "    }\n");
             rulesClass.addMember(getQueriesMethod);
@@ -697,15 +697,15 @@ public class PackageModel {
         }
 
         BodyDeclaration<?> rulesList = requiresMultipleRulesLists ?
-                parseBodyDeclaration("List<org.drools.model.Rule> rules = new ArrayList<>(" + ruleCount + ");") :
-                parseBodyDeclaration("List<org.drools.model.Rule> rules = getRulesList();");
+                parseBodyDeclaration("java.util.List<org.drools.model.Rule> rules = new ArrayList<>(" + ruleCount + ");") :
+                parseBodyDeclaration("java.util.List<org.drools.model.Rule> rules = getRulesList();");
         rulesClass.addMember(rulesList);
     }
 
     private void createAndAddGetRulesMethod( ClassOrInterfaceDeclaration rulesClass ) {
         BodyDeclaration<?> getRulesMethod = parseBodyDeclaration(
                 "    @Override\n" +
-                        "    public List<org.drools.model.Rule> getRules() {\n" +
+                        "    public java.util.List<org.drools.model.Rule> getRules() {\n" +
                         "        return rules;\n" +
                         "    }\n"
         );
@@ -731,13 +731,13 @@ public class PackageModel {
     private void buildArtifactsDeclaration( Collection<String> artifacts, ClassOrInterfaceDeclaration rulesClass,
                                             BlockStmt rulesListInitializerBody, String type, String fieldName, boolean needsToVar ) {
         if (!artifacts.isEmpty()) {
-            BodyDeclaration<?> queriesList = parseBodyDeclaration("List<" + type + "> " + fieldName + " = new ArrayList<>();");
+            BodyDeclaration<?> queriesList = parseBodyDeclaration("java.util.List<" + type + "> " + fieldName + " = new ArrayList<>();");
             rulesClass.addMember(queriesList);
             for (String name : artifacts) {
                 addInitStatement( rulesListInitializerBody, new NameExpr( needsToVar ? toVar(name) : name ), fieldName );
             }
         } else {
-            BodyDeclaration<?> queriesList = parseBodyDeclaration("List<" + type + "> " + fieldName + " = Collections.emptyList();");
+            BodyDeclaration<?> queriesList = parseBodyDeclaration("java.util.List<" + type + "> " + fieldName + " = Collections.emptyList();");
             rulesClass.addMember(queriesList);
         }
     }
@@ -764,7 +764,7 @@ public class PackageModel {
 
     private MethodCallExpr buildRulesField( ClassOrInterfaceDeclaration rulesClass ) {
         MethodCallExpr rulesInit = new MethodCallExpr( null, "Arrays.asList" );
-        ClassOrInterfaceType rulesType = new ClassOrInterfaceType(null, new SimpleName("List"), new NodeList<Type>(new ClassOrInterfaceType(null, "Rule")));
+        ClassOrInterfaceType rulesType = new ClassOrInterfaceType(null, new SimpleName("java.util.List"), new NodeList<Type>(new ClassOrInterfaceType(null, "Rule")));
         MethodDeclaration rulesGetter = new MethodDeclaration( NodeList.nodeList( publicModifier()), rulesType, "getRulesList" );
         rulesGetter.createBody().addStatement( new ReturnStmt(rulesInit ) );
         rulesClass.addMember( rulesGetter );

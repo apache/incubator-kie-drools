@@ -70,6 +70,7 @@ import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
+import com.github.javaparser.ast.nodeTypes.NodeWithScope;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.ast.nodeTypes.NodeWithTraversableScope;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -92,10 +93,12 @@ import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.DrlxExpression;
 import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
+import org.drools.mvel.parser.ast.expr.InlineCastExpr;
 import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
 import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
 
+import static java.util.Optional.empty;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
@@ -135,6 +138,15 @@ public class DrlxParseUtil {
 
     private static Operator toBinaryExprOperator(HalfBinaryExpr.Operator operator) {
         return Operator.valueOf(operator.name());
+    }
+
+    public static TypedExpression nameExprToMethodCallExprWithCast(String name, java.lang.reflect.Type type, Expression scope, Type castType) {
+        TypedExpression typedExpression = nameExprToMethodCallExpr(name, type, scope);
+        if(typedExpression != null) {
+            return typedExpression.cloneWithNewExpression(new EnclosedExpr(new CastExpr(castType, typedExpression.getExpression())));
+        } else {
+            return null;
+        }
     }
 
     public static TypedExpression nameExprToMethodCallExpr(String name, java.lang.reflect.Type type, Expression scope) {
@@ -310,7 +322,9 @@ public class DrlxParseUtil {
     public static Expression prepend(Expression scope, Expression expr) {
         final Optional<Expression> rootNode = findRootNodeViaScope(expr);
         if (rootNode.isPresent()) {
-            if (rootNode.get() instanceof NodeWithOptionalScope<?>) {
+            if(rootNode.get() instanceof ThisExpr) {
+                rootNode.get().replace(scope);
+            } else if (rootNode.get() instanceof NodeWithOptionalScope<?>) {
                 ((NodeWithOptionalScope) rootNode.get()).setScope(scope);
             }
             return expr;
@@ -371,6 +385,10 @@ public class DrlxParseUtil {
 
         if (expr instanceof EnclosedExpr) {
             return findRootNodeViaScopeRec(expr.asEnclosedExpr().getInner(), acc);
+        } else if (expr instanceof CastExpr) {
+            return findRootNodeViaScopeRec(expr.asCastExpr().getExpression(), acc);
+        } else if (expr instanceof ThisExpr) {
+            return new RemoveRootNodeResult(Optional.of(expr), expr, expr);
         } else if (expr instanceof NodeWithTraversableScope) {
             final NodeWithTraversableScope exprWithScope = (NodeWithTraversableScope) expr;
 
@@ -398,7 +416,7 @@ public class DrlxParseUtil {
 
         }
 
-        return new RemoveRootNodeResult(Optional.empty(), expr, expr);
+        return new RemoveRootNodeResult(empty(), expr, expr);
     }
 
     public static class RemoveRootNodeResult {
@@ -462,12 +480,12 @@ public class DrlxParseUtil {
     }
 
     public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations, Expression expr) {
-        return generateLambdaWithoutParameters(usedDeclarations, expr, false, Optional.empty());
+        return generateLambdaWithoutParameters(usedDeclarations, expr, false, empty());
     }
 
     public static Expression generateLambdaWithoutParameters(Expression expr) {
         Collection<String> usedDeclarations = expr.findAll( NameExpr.class ).stream().map( NameExpr::getName ).map( SimpleName::getIdentifier ).collect( toList() );
-        return generateLambdaWithoutParameters(usedDeclarations, expr, true, Optional.empty());
+        return generateLambdaWithoutParameters(usedDeclarations, expr, true, empty());
     }
 
     public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations,
@@ -530,92 +548,6 @@ public class DrlxParseUtil {
         return ruleContext.getDelarationType(variableName);
     }
 
-    public static TypedExpression toMethodCallWithClassCheck(RuleContext context, Expression expr, String bindingId, Class<?> clazz, TypeResolver typeResolver) {
-
-        final Deque<ParsedMethod> callStackLeftToRight = new LinkedList<>();
-
-        createExpressionCall(expr, callStackLeftToRight);
-
-        java.lang.reflect.Type previousClass = clazz;
-        Expression previousScope = null;
-
-        for (ParsedMethod e : callStackLeftToRight) {
-            if (e.expression instanceof NameExpr || e.expression instanceof FieldAccessExpr || e.expression instanceof NullSafeFieldAccessExpr) {
-                if (e.fieldToResolve.equals( bindingId )) {
-                    continue;
-                }
-                if (previousClass == null) {
-                    try {
-                        previousClass = typeResolver.resolveType( e.fieldToResolve );
-                        previousScope = new NameExpr( e.fieldToResolve );
-                    } catch (ClassNotFoundException e1) {
-                        // ignore
-                    }
-                    if (previousClass == null) {
-                        previousClass = context.getDeclarationById( e.fieldToResolve )
-                                .map( DeclarationSpec::getDeclarationClass )
-                                .orElseThrow( () -> new RuntimeException( "Unknown field: " + e.fieldToResolve ) );
-                        previousScope = e.expression;
-                    }
-                } else {
-                    TypedExpression te = nameExprToMethodCallExpr( e.fieldToResolve, previousClass, previousScope );
-                    if (te == null) {
-                        context.addCompilationError( new InvalidExpressionErrorResult( "Unknown field " + e.fieldToResolve + " on " + previousClass ) );
-                        return null;
-                    }
-                    java.lang.reflect.Type returnType = te.getType();
-                    previousScope = te.getExpression();
-                    previousClass = returnType;
-                }
-            } else if (e.expression instanceof MethodCallExpr) {
-                java.lang.reflect.Type returnType = returnTypeOfMethodCallExpr(context, typeResolver, (MethodCallExpr) e.expression, previousClass, null);
-                MethodCallExpr cloned = ((MethodCallExpr) e.expression.clone()).setScope(previousScope);
-                previousScope = cloned;
-                previousClass = returnType;
-            }
-        }
-
-        return new TypedExpression(previousScope, previousClass);
-    }
-
-    private static Expression createExpressionCall(Expression expr, Deque<ParsedMethod> expressions) {
-
-        if (expr instanceof NodeWithSimpleName) {
-            NodeWithSimpleName fae = (NodeWithSimpleName)expr;
-            expressions.push(new ParsedMethod(expr, fae.getName().asString()));
-        }
-
-        if (expr instanceof NodeWithOptionalScope) {
-            final NodeWithOptionalScope<?> exprWithScope = (NodeWithOptionalScope) expr;
-            exprWithScope.getScope().ifPresent(expression -> createExpressionCall(expression, expressions));
-        } else if (expr instanceof FieldAccessExpr) {
-            // Cannot recurse over getScope() as FieldAccessExpr doesn't support the NodeWithOptionalScope,
-            // it will support a new interface to traverse among scopes called NodeWithTraversableScope so
-            // we can merge this and the previous branch
-            createExpressionCall(((FieldAccessExpr) expr).getScope(), expressions);
-        }
-
-        return expr;
-    }
-
-    static class ParsedMethod {
-        final Expression expression;
-
-        final String fieldToResolve;
-
-        public ParsedMethod(Expression expression, String fieldToResolve) {
-            this.expression = expression;
-            this.fieldToResolve = fieldToResolve;
-        }
-        @Override
-        public String toString() {
-            return "{" +
-                    "expression=" + expression +
-                    ", fieldToResolve='" + fieldToResolve + '\'' +
-                    '}';
-        }
-    }
-
     public static Type classToReferenceType(Class<?> declClass) {
         String className = declClass.getCanonicalName();
         return classNameToReferenceType(className);
@@ -643,7 +575,7 @@ public class DrlxParseUtil {
     public static Optional<String> findBindingIdFromDotExpression(String expression) {
         int dot = expression.indexOf( '.' );
         if ( dot < 0 ) {
-            return Optional.empty();
+            return empty();
         }
         return of(expression.substring(0, dot));
     }
@@ -659,7 +591,7 @@ public class DrlxParseUtil {
             return exprWithScope.traverseScope().map((Expression expr1) -> findViaScopeWithPredicate(expr1, predicate)).orElse(of(expr));
         }
 
-        return Optional.empty();
+        return empty();
     }
 
     public static DrlxExpression parseExpression(String expression) {
@@ -778,7 +710,7 @@ public class DrlxParseUtil {
         });
         final List<MethodCallExpr> collect = patterns.collect(toList());
         if (collect.isEmpty()) {
-            return Optional.empty();
+            return empty();
         } else {
             return Optional.of(collect.get(collect.size() - 1));
         }
@@ -813,7 +745,7 @@ public class DrlxParseUtil {
                 return Optional.of(new InvalidExpressionErrorResult(String.format("Duplicate declaration for variable '%s' in the rule '%s'", b, ruleName)));
             }
         }
-        return Optional.empty();
+        return empty();
     }
 
     public static Method getAccessor( Class<?> clazz, String name ) {
