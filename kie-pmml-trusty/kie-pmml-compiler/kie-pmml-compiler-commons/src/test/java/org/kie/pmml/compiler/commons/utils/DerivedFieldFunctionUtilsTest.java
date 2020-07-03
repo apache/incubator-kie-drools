@@ -93,7 +93,7 @@ public class DerivedFieldFunctionUtilsTest {
                 DerivedFieldFunctionUtils.getDerivedFieldMethodDeclaration(derivedField, new AtomicInteger());
                 fail(String.format("Expecting KiePMMLException for %s", derivedField));
             } catch (Exception e) {
-                assertTrue(e instanceof KiePMMLException);
+                assertEquals(KiePMMLException.class, e.getClass());
             }
         }
     }
@@ -134,7 +134,7 @@ public class DerivedFieldFunctionUtilsTest {
                 DerivedFieldFunctionUtils.getExpressionMethodDeclaration(expression, new AtomicInteger());
                 fail(String.format("Expecting KiePMMLException for %s", expression.getClass()));
             } catch (Exception e) {
-                assertTrue(e instanceof KiePMMLException);
+                assertEquals(KiePMMLException.class, e.getClass());
             }
         }
     }

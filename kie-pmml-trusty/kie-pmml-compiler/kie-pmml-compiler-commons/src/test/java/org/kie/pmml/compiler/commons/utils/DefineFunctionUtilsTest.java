@@ -41,7 +41,6 @@ import org.junit.Test;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getParameterFields;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.applySupplier;
@@ -81,7 +80,7 @@ public class DefineFunctionUtilsTest {
                 DefineFunctionUtils.getDefineFunctionMethodDeclaration(defineFunction);
                 fail(String.format("Expecting KiePMMLException for %s", defineFunction));
             } catch (Exception e) {
-                assertTrue(e instanceof KiePMMLException);
+                assertEquals(KiePMMLException.class, e.getClass());
             }
         }
     }
@@ -122,7 +121,7 @@ public class DefineFunctionUtilsTest {
                 DefineFunctionUtils.getExpressionMethodDeclaration("", expression, Collections.emptyList());
                 fail(String.format("Expecting KiePMMLException for %s", expression.getClass()));
             } catch (Exception e) {
-                assertTrue(e instanceof KiePMMLException);
+                assertEquals(KiePMMLException.class, e.getClass());
             }
         }
     }
@@ -221,10 +220,8 @@ public class DefineFunctionUtilsTest {
         }
     }
 
-
     private void commonVerifyParameterClassOrInterfaceType(ClassOrInterfaceType toVerify, ParameterField parameterField) {
         String expectedClass = ModelUtils.getBoxedClassName(parameterField);
         assertEquals(expectedClass, toVerify.toString());
     }
-
 }

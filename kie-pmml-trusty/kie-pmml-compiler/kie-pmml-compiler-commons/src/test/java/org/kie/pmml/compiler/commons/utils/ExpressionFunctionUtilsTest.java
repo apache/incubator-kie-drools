@@ -193,7 +193,7 @@ public class ExpressionFunctionUtilsTest {
                 ExpressionFunctionUtils.getExpressionBlockStmt("variableName", expression, parseClassOrInterfaceType(Object.class.getName()), Collections.emptyList());
                 fail(String.format("Expecting KiePMMLException for %s", expression.getClass()));
             } catch (Exception e) {
-                assertTrue(e instanceof KiePMMLException);
+                assertEquals(KiePMMLException.class, e.getClass());
             }
         }
     }
@@ -290,17 +290,17 @@ public class ExpressionFunctionUtilsTest {
         FieldRef fieldRef = fieldRefSupplier.get();
         BlockStmt retrieved = ExpressionFunctionUtils.getFieldRefExpressionBlockStmt(variableName, fieldRef, parseClassOrInterfaceType(Object.class.getName()), Collections.emptyList());
         String expected = "{\n" +
-                                                "    java.util.Optional<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((org.kie.pmml.commons.model.tuples.KiePMMLNameValue lmbdParam) -> java.util.Objects.equals(\"FIELD_REF\", lmbdParam.getName())).findFirst();\n" +
-                                                "    java.lang.Object VARIABLE_NAME = kiePMMLNameValue.map(org.kie.pmml.commons.model.tuples.KiePMMLNameValue::getValue).orElse(null);\n" +
-                                                "}";
+                "    java.util.Optional<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((org.kie.pmml.commons.model.tuples.KiePMMLNameValue lmbdParam) -> java.util.Objects.equals(\"FIELD_REF\", lmbdParam.getName())).findFirst();\n" +
+                "    java.lang.Object VARIABLE_NAME = kiePMMLNameValue.map(org.kie.pmml.commons.model.tuples.KiePMMLNameValue::getValue).orElse(null);\n" +
+                "}";
         assertEquals(expected, retrieved.toString());
         String mapMissingTo = "MAP_MISSING_TO";
         fieldRef.setMapMissingTo(mapMissingTo);
         retrieved = ExpressionFunctionUtils.getFieldRefExpressionBlockStmt(variableName, fieldRef, parseClassOrInterfaceType(Object.class.getName()), Collections.emptyList());
         expected = "{\n" +
-                                         "    java.util.Optional<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((org.kie.pmml.commons.model.tuples.KiePMMLNameValue lmbdParam) -> java.util.Objects.equals(\"FIELD_REF\", lmbdParam.getName())).findFirst();\n" +
-                                         "    java.lang.Object VARIABLE_NAME = kiePMMLNameValue.map(org.kie.pmml.commons.model.tuples.KiePMMLNameValue::getValue).orElse(\"MAP_MISSING_TO\");\n" +
-                                         "}";
+                "    java.util.Optional<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((org.kie.pmml.commons.model.tuples.KiePMMLNameValue lmbdParam) -> java.util.Objects.equals(\"FIELD_REF\", lmbdParam.getName())).findFirst();\n" +
+                "    java.lang.Object VARIABLE_NAME = kiePMMLNameValue.map(org.kie.pmml.commons.model.tuples.KiePMMLNameValue::getValue).orElse(\"MAP_MISSING_TO\");\n" +
+                "}";
         assertEquals(expected, retrieved.toString());
     }
 
