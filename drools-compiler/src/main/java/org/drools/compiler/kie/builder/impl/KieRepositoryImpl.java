@@ -260,7 +260,7 @@ public class KieRepositoryImpl
             for (Resource depRes : dependencies) {
                 InternalKieModule depKModule = (InternalKieModule) getKieModule(depRes);
                 ((InternalKieModule) kModule).addKieDependency(depKModule);
-                log.info("Adding KieModule dependency from resource: " + resource);
+                log.debug("Adding KieModule dependency from resource: " + resource);
             }
         }
 
