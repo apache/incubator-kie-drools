@@ -117,14 +117,14 @@
     <version.io.cloudevents>1.3.0</version.io.cloudevents>
     <version.io.fabric8.kubernetes-client>4.8.0</version.io.fabric8.kubernetes-client>
     <version.io.prometheus>0.5.0</version.io.prometheus>
-    <version.io.quarkus>1.5.0.Final</version.io.quarkus>
-    <version.io.restassured>4.2.0</version.io.restassured>
+    <version.io.quarkus>1.6.0.Final</version.io.quarkus>
+    <version.io.restassured>4.3.0</version.io.restassured>
     <version.io.restassured.springboot>3.3.0</version.io.restassured.springboot>    <!-- Manually override to 3.3.0 because Spring boot uses rest-assured-common@3.3.0, otherwise error: The type io.restassured.common.mapper.TypeRef cannot be resolved. It is indirectly referenced from required .class files -->
-    <version.io.smallrye.reactive>2.0.2</version.io.smallrye.reactive>
+    <version.io.smallrye.reactive>2.1.1</version.io.smallrye.reactive>
 
     <version.org.antlr>3.5.2</version.org.antlr>
-    <version.org.antlr4>4.7.2</version.org.antlr4>
-    <version.org.assertj>3.13.2</version.org.assertj>
+    <version.org.antlr4>4.8</version.org.antlr4>
+    <version.org.assertj>3.16.1</version.org.assertj>
     <version.org.eclipse.jdt>3.19.0</version.org.eclipse.jdt>
     <version.org.hamcrest>1.3</version.org.hamcrest> <!-- else old version coming from Mockito wins and breaks tests -->
     <version.org.infinispan>10.1.5.Final</version.org.infinispan>
@@ -132,21 +132,21 @@
     <version.org.infinispan.protostream>4.3.2.Final</version.org.infinispan.protostream>
     <version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.1_spec>1.0.1.Final</version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.1_spec>
     <version.org.jboss.resteasy.spi.test>4.5.1.Final</version.org.jboss.resteasy.spi.test> <!-- align codegen test to target platforms, which use Resteasy -->
-    <version.org.junit.minor>6.0</version.org.junit.minor> <!-- so that org.junit.platform and org.junit can share the same minor version -->
+    <version.org.junit.minor>6.2</version.org.junit.minor> <!-- so that org.junit.platform and org.junit can share the same minor version -->
     <version.org.junit>5.${version.org.junit.minor}</version.org.junit>
     <version.org.junit.jupiter>${version.org.junit}</version.org.junit.jupiter>
     <version.org.junit.vintage>${version.org.junit}</version.org.junit.vintage>
     <version.org.junit.platform>1.${version.org.junit.minor}</version.org.junit.platform> <!-- otherwise Quarkus brings its own, silently disabling some tests -->
     <version.org.keycloak.image>8.0.1</version.org.keycloak.image>
-    <version.org.mockito>3.0.0</version.org.mockito>
+    <version.org.mockito>3.3.3</version.org.mockito>
     <version.org.mvel>2.4.7.Final</version.org.mvel>
     <version.org.kie7>7.39.0.Final</version.org.kie7>
     <version.org.reflections>0.9.11</version.org.reflections>
-    <version.org.slf4j>1.7.25</version.org.slf4j>
+    <version.org.slf4j>1.7.30</version.org.slf4j>
     <version.testcontainers>1.14.3</version.testcontainers>
-    <version.resteasy.springboot>4.5.0.Final</version.resteasy.springboot>
-    <version.springboot>2.2.5.RELEASE</version.springboot>
-    <version.spring.framework>5.2.4.RELEASE</version.spring.framework>
+    <version.resteasy.springboot>4.6.0.Final</version.resteasy.springboot>
+    <version.springboot>2.3.1.RELEASE</version.springboot>
+    <version.spring.framework>5.2.7.RELEASE</version.spring.framework>
     <version.xmlunit>2.2.1</version.xmlunit>
     <version.jsonschema2pojo-maven-plugin>1.0.1</version.jsonschema2pojo-maven-plugin>
     
