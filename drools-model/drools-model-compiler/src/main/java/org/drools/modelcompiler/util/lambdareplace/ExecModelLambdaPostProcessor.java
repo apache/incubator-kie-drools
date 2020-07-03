@@ -55,6 +55,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INDEXED_BY_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACTIVE_FROM_CALL;
 import static org.drools.modelcompiler.util.StreamUtils.optionalToStream;
 
 public class ExecModelLambdaPostProcessor {
@@ -105,6 +106,7 @@ public class ExecModelLambdaPostProcessor {
     }
 
     public void convertLambdas() {
+
         clone.findAll(MethodCallExpr.class, mc -> PatternExpressionBuilder.EXPR_CALL.equals(mc.getNameAsString()) ||
                                                   FlowExpressionBuilder.EXPR_CALL.equals(mc.getNameAsString()))
              .forEach(methodCallExpr1 -> extractLambdaFromMethodCall(methodCallExpr1, () -> new MaterializedLambdaPredicate(packageName, ruleClassName)));
@@ -124,7 +126,8 @@ public class ExecModelLambdaPostProcessor {
         clone.findAll(MethodCallExpr.class, mc -> FlowExpressionBuilder.BIND_CALL.equals(mc.getNameAsString()))
              .forEach(this::convertBindCallForFlowDSL);
 
-        clone.findAll(MethodCallExpr.class, mc -> FROM_CALL.equals(mc.getNameAsString()))
+        clone.findAll(MethodCallExpr.class, mc -> FROM_CALL.equals(mc.getNameAsString()) ||
+                                                  REACTIVE_FROM_CALL.equals(mc.getNameAsString()))
              .forEach(this::convertFromCall);
 
         clone.findAll(MethodCallExpr.class, this::isExecuteNonNestedCall)

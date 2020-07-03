@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2020 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ public class ExternalisedLambdaTest extends BaseModelTest {
                      "rule R when\n" +
                      "  $p : Person(name == \"Mario\")\n" +
                      "then\n" +
-                     "  System.out.println(\"Hello\");\n" +
+                     "  System.out.println(\"Hello\");\n" + // don't remove this line
                      "end";
 
         KieSession ksession = null;
@@ -235,5 +235,44 @@ public class ExternalisedLambdaTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Assertions.assertThat(list).containsExactlyInAnyOrder("Charles");
+    }
+
+    @Test
+    public void testOOPath() {
+        final String str =
+                "import org.drools.modelcompiler.domain.*;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                " $man: Man( /wife/children[age > 10] )\n" +
+                "then\n" +
+                "  list.add( $man.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = null;
+        try {
+            ksession = getKieSession(str);
+        } catch (NonExternalisedLambdaFoundException e) {
+            fail(e.getMessage());
+        }
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        final Woman alice = new Woman( "Alice", 38 );
+        final Man bob = new Man( "Bob", 40 );
+        final Man carl = new Man( "Carl", 40 );
+        bob.setWife( alice );
+
+        final Child charlie = new Child( "Charles", 12 );
+        final Child debbie = new Child( "Debbie", 10 );
+        alice.addChild( charlie );
+        alice.addChild( debbie );
+
+        ksession.insert( bob );
+        ksession.insert( carl );
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Bob");
     }
 }
