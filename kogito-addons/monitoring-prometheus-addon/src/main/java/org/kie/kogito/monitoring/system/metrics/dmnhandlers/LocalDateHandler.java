@@ -15,29 +15,30 @@
 
 package org.kie.kogito.monitoring.system.metrics.dmnhandlers;
 
-import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Summary;
 
-public class BigDecimalHandler implements TypeHandlerWithSummary<BigDecimal> {
+public class LocalDateHandler implements TypeHandlerWithSummary<LocalDate> {
 
     private final Summary summary;
 
     private String dmnType;
 
-    public BigDecimalHandler(String dmnType, CollectorRegistry registry) {
+    public LocalDateHandler(String dmnType, CollectorRegistry registry) {
         this.dmnType = dmnType;
         this.summary = initializeDefaultSummary(dmnType, registry);
     }
 
-    public BigDecimalHandler(String dmnType) {
+    public LocalDateHandler(String dmnType) {
         this(dmnType, null);
     }
 
     @Override
-    public void record(String decision, String endpointName, BigDecimal sample) {
-        summary.labels(decision, endpointName).observe(sample.doubleValue());
+    public void record(String type, String endpointName, LocalDate sample) {
+        summary.labels(type, endpointName).observe(sample.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli());
     }
 
     @Override

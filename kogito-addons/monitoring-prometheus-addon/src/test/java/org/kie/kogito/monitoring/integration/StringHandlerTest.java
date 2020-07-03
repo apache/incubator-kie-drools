@@ -45,7 +45,7 @@ public class StringHandlerTest {
     }
 
     @Test
-    public void GivenSomeStringMetrics_WhenMetricsAreStored_ThenTheCountIsCorrect() {
+    public void givenSomeStringMetricsWhenMetricsAreStoredThenTheCountIsCorrect() {
         // Arrange
         Double expectedCountStringA = 3.0;
         Double expectedCountStringB = 2.0;

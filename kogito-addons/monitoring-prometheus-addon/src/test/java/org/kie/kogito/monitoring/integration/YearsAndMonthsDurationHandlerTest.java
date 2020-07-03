@@ -15,28 +15,23 @@
 
 package org.kie.kogito.monitoring.integration;
 
-import java.util.stream.IntStream;
+import java.time.Period;
 
 import io.prometheus.client.CollectorRegistry;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.monitoring.system.metrics.dmnhandlers.BooleanHandler;
 import org.kie.kogito.monitoring.system.metrics.dmnhandlers.DecisionConstants;
+import org.kie.kogito.monitoring.system.metrics.dmnhandlers.YearsAndMonthsDurationHandler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BooleanHandlerTest {
-
-    private static final String ENDPOINT_NAME = "hello";
-
-    CollectorRegistry registry;
-    BooleanHandler handler;
+public class YearsAndMonthsDurationHandlerTest extends AbstractQuantilesTest<YearsAndMonthsDurationHandler> {
 
     @BeforeEach
     public void setUp() {
         registry = new CollectorRegistry();
-        handler = new BooleanHandler("hello", registry);
+        handler = new YearsAndMonthsDurationHandler("hello", registry);
     }
 
     @AfterEach
@@ -45,21 +40,19 @@ public class BooleanHandlerTest {
     }
 
     @Test
-    public void givenSomeBooleanMetricsWhenMetricsAreStoredThenTheCountIsCorrect() {
+    public void givenYearsAndMonthsMetricsWhenMetricsAreStoredThenTheQuantilesAreCorrect() {
         // Arrange
-        Double expectedTrue = 3.0;
-        Double expectedFalse = 2.0;
+        Integer expectedValue = 12;
+        Period period = Period.ofMonths(expectedValue);
+        Double[] quantiles = new Double[]{0.1, 0.25, 0.5, 0.75, 0.9, 0.99};
 
         // Act
-        IntStream.rangeClosed(1, 3).forEach(x -> handler.record("decision", ENDPOINT_NAME, true));
-        IntStream.rangeClosed(1, 2).forEach(x -> handler.record("decision", ENDPOINT_NAME, false));
+        handler.record("decision", ENDPOINT_NAME, period);
 
         // Assert
-        assertEquals(expectedTrue, getLabelsValue("decision", ENDPOINT_NAME, "true"));
-        assertEquals(expectedFalse, getLabelsValue("decision", ENDPOINT_NAME, "false"));
-    }
-
-    private Double getLabelsValue(String decision, String name, String labelValue) {
-        return registry.getSampleValue(name + DecisionConstants.DECISIONS_NAME_SUFFIX, DecisionConstants.DECISION_ENDPOINT_IDENTIFIER_LABELS, new String[]{decision, name, labelValue});
+        for (Double key : quantiles) {
+            assertEquals(expectedValue, getQuantile("decision", ENDPOINT_NAME + DecisionConstants.DECISIONS_NAME_SUFFIX, ENDPOINT_NAME, key), 5);
+        }
     }
 }
+

@@ -37,7 +37,7 @@ public class SystemMetricsCollectorTest {
     }
 
     @Test
-    public void GivenAStatusCode_WhenRegisterStatusCodeRequestIsCalled_ThenTheStatusCodeIsExportedToPrometheus(){
+    public void givenAStatusCodeWhenRegisterStatusCodeRequestIsCalledThenTheStatusCodeIsExportedToPrometheus() {
         // Arrange
         HashMap<String, Integer> mapCodeRepetition = new HashMap<>();
         mapCodeRepetition.put("400", 100);
@@ -53,7 +53,7 @@ public class SystemMetricsCollectorTest {
     }
 
     @Test
-    public void GivenAnException_WhenRegisterExceptionIsCalled_ThenTheStatusCodeIsExportedToPrometheus(){
+    public void givenAnExceptionWhenRegisterExceptionIsCalledThenTheStatusCodeIsExportedToPrometheus() {
         // Arrange
         HashMap<String, Integer> mapExceptionRepetition = new HashMap<>();
         mapExceptionRepetition.put("NoSuchElement", 10);
@@ -69,13 +69,13 @@ public class SystemMetricsCollectorTest {
     }
 
     @Test
-    public void GivenAnElapsedTimeSample_WhenRegisterElapsedTimeSampleMetrics_ThenTheStatusCodeIsExportedToPrometheus(){
+    public void givenAnElapsedTimeSampleWhenRegisterElapsedTimeSampleMetricsThenTheStatusCodeIsExportedToPrometheus() {
         // Arrange
         HashMap<Double, Double> expectedQuantiles = new HashMap<>();
         expectedQuantiles.put(0.1, 999.0);
-        expectedQuantiles.put(0.25, 2525.0 );
+        expectedQuantiles.put(0.25, 2525.0);
         expectedQuantiles.put(0.5, 5042.0);
-        expectedQuantiles.put(0.75,7551.0);
+        expectedQuantiles.put(0.75, 7551.0);
         expectedQuantiles.put(0.9, 9062.0);
         expectedQuantiles.put(0.99, 10000.0);
 
@@ -83,7 +83,7 @@ public class SystemMetricsCollectorTest {
         IntStream.range(1, 10001).forEach(x -> SystemMetricsCollector.registerElapsedTimeSampleMetrics(handler, x));
 
         // Assert
-        for(Double key : expectedQuantiles.keySet()){
+        for (Double key : expectedQuantiles.keySet()) {
             assertEquals(expectedQuantiles.get(key), getQuantile("api_execution_elapsed_nanosecond", handler, key), 5);
         }
     }

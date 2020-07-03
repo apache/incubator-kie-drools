@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ExprBuilderTest {
 
     @Test
-    public void GivenATarget_WhenNullGrafanaFunctionsAreApplied_ThenTheOriginalTargetIsReturned() {
+    public void givenATargetWhenNullGrafanaFunctionsAreAppliedThenTheOriginalTargetIsReturned() {
         // Arrange
         String target = "api_test{hanlder=\"hello\"}";
 
@@ -41,7 +41,7 @@ public class ExprBuilderTest {
     }
 
     @Test
-    public void GivenATarget_WhenNoGrafanaFunctionsAreApplied_ThenTheOriginalTargetIsReturned() {
+    public void givenATargetWhenNoGrafanaFunctionsAreAppliedThenTheOriginalTargetIsReturned() {
         // Arrange
         String target = "api_test{hanlder=\"hello\"}";
 
@@ -53,7 +53,7 @@ public class ExprBuilderTest {
     }
 
     @Test
-    public void GivenATarget_WhenGrafanaFunctionsAreApplied_ThenTheOriginalTargetIsReturned() {
+    public void givenATargetWhenGrafanaFunctionsAreAppliedThenTheOriginalTargetIsReturned() {
         // Arrange
         String target = "api_test{hanlder=\"hello\"}";
         SortedMap<Integer, GrafanaFunction> map = new TreeMap<>();

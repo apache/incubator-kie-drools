@@ -15,9 +15,11 @@
 
 package org.kie.kogito.grafana.dmn;
 
+import java.util.List;
 import java.util.SortedMap;
 
 import org.kie.kogito.grafana.model.functions.GrafanaFunction;
+import org.kie.kogito.grafana.model.panel.common.YAxis;
 
 public class AbstractDmnType {
 
@@ -26,6 +28,8 @@ public class AbstractDmnType {
     private String dmnType;
 
     private SortedMap<Integer, GrafanaFunction> grafanaFunctionsToApply;
+
+    private List<YAxis> yaxes;
 
     public AbstractDmnType(Class internalRepresentationClass, String dmnType) {
         this.internalRepresentationClass = internalRepresentationClass;
@@ -36,12 +40,20 @@ public class AbstractDmnType {
         this.grafanaFunctionsToApply = grafanaFunctionsToApply;
     }
 
+    protected void setYAxes(List<YAxis> yaxes) {
+        this.yaxes = yaxes;
+    }
+
     public Class getInternalClass() {
         return internalRepresentationClass;
     }
 
     public SortedMap<Integer, GrafanaFunction> getGrafanaFunctions() {
         return grafanaFunctionsToApply;
+    }
+
+    public List<YAxis> getYaxes() {
+        return yaxes;
     }
 
     public String getDmnType() {

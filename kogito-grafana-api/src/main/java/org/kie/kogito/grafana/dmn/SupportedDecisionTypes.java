@@ -15,9 +15,11 @@
 
 package org.kie.kogito.grafana.dmn;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -25,6 +27,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.kie.kogito.grafana.model.functions.GrafanaFunction;
+import org.kie.kogito.grafana.model.panel.common.YAxis;
 
 public class SupportedDecisionTypes {
 
@@ -36,6 +39,11 @@ public class SupportedDecisionTypes {
         supportedDmnTypes.add(new BooleanType());
         supportedDmnTypes.add(new NumberType());
         supportedDmnTypes.add(new StringType());
+        supportedDmnTypes.add(new TimeAndDateType());
+        supportedDmnTypes.add(new DaysAndTimeDurationType());
+        supportedDmnTypes.add(new YearsAndMonthsDurationType());
+        supportedDmnTypes.add(new LocalDateType());
+        supportedDmnTypes.add(new LocalTimeType());
         supportedDmnTypes.stream().forEach(x -> dmnInternalClassToDmnStandardMap.put(x.getInternalClass(), x.getDmnType()));
     }
 
@@ -62,6 +70,16 @@ public class SupportedDecisionTypes {
             }
         }
         return new TreeMap<>();
+    }
+
+    public static List<YAxis> getYAxis(String dmnType) {
+        if (isSupported(dmnType)) {
+            Optional<AbstractDmnType> type = supportedDmnTypes.stream().filter(x -> x.getDmnType().equalsIgnoreCase(dmnType)).findFirst();
+            if (type.isPresent()) {
+                return type.get().getYaxes();
+            }
+        }
+        return new ArrayList<>();
     }
 
     public static Collection<String> getSupportedDMNTypes() {

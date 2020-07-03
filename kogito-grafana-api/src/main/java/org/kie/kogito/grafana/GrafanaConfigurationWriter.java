@@ -95,10 +95,11 @@ public class GrafanaConfigurationWriter {
                     jgrafana.addPanel(PanelType.GRAPH,
                                       "Decision " + decision.getName(),
                                       String.format("%s_dmn_result{endpoint = \"%s\", decision = \"%s\"}",
-                                                    type,
+                                                    type.toString().replace(" ", "_"),
                                                     endpoint,
                                                     decision.getName()),
-                                      SupportedDecisionTypes.getGrafanaFunction(type.getLocalPart()));
+                                      SupportedDecisionTypes.getGrafanaFunction(type.getLocalPart()),
+                                      SupportedDecisionTypes.getYAxis(type.getLocalPart()));
                 }
             }
         }

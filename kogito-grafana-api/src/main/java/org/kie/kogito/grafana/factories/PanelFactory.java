@@ -15,9 +15,12 @@
 
 package org.kie.kogito.grafana.factories;
 
+import java.util.List;
+
 import org.kie.kogito.grafana.model.panel.GaugePanel;
 import org.kie.kogito.grafana.model.panel.GrafanaPanel;
 import org.kie.kogito.grafana.model.panel.PanelType;
+import org.kie.kogito.grafana.model.panel.common.YAxis;
 import org.kie.kogito.grafana.model.panel.graph.GraphPanel;
 import org.kie.kogito.grafana.model.panel.heatmap.HeatMapPanel;
 import org.kie.kogito.grafana.model.panel.stat.SingleStatPanel;
@@ -29,10 +32,10 @@ public class PanelFactory {
     private PanelFactory() {
     }
 
-    public static GrafanaPanel createPanel(PanelType type, int id, String title, String expr) {
+    public static GrafanaPanel createPanel(PanelType type, int id, String title, String expr, List<YAxis> yaxes) {
         switch (type) {
             case GRAPH:
-                return createGraph(id, title, expr);
+                return createGraph(id, title, expr, yaxes);
             case STAT:
                 return createStat(id, title, expr);
             case HEATMAP:
@@ -48,10 +51,11 @@ public class PanelFactory {
         }
     }
 
-    static GrafanaPanel createGraph(int id, String title, String expr) {
+    static GrafanaPanel createGraph(int id, String title, String expr, List<YAxis> yaxes) {
         return new GraphPanel(id, title,
                               GridPosFactory.calculateGridPosById(id),
-                              TargetFactory.createTargets(expr));
+                              TargetFactory.createTargets(expr),
+                              yaxes);
     }
 
     static GrafanaPanel createStat(int id, String title, String expr) {

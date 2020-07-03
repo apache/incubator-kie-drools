@@ -44,4 +44,11 @@ public class YAxis {
 
     @JsonProperty("label")
     public String label;
+
+    public YAxis(){}
+
+    public YAxis(String format, boolean show){
+        this.format = format;
+        this.show = show;
+    }
 }

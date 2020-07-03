@@ -18,6 +18,8 @@ package org.kie.kogito.grafana;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -27,6 +29,8 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.grafana.model.functions.GrafanaFunction;
 import org.kie.kogito.grafana.model.functions.SumFunction;
 import org.kie.kogito.grafana.model.panel.PanelType;
+import org.kie.kogito.grafana.model.panel.common.YAxis;
+import org.kie.kogito.grafana.model.panel.graph.GraphPanel;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class JGrafanaTest {
 
     @Test
-    public void GivenANewContext_WhenANewJGrafanaObjectIsCreated_ThenTheDefaultObjectIsCreated() {
+    public void givenANewContextWhenANewJGrafanaObjectIsCreatedThenTheDefaultObjectIsCreated() {
         // Arrange
         JGrafana grafanaObj = new JGrafana("My Dashboard");
 
@@ -44,7 +48,7 @@ public class JGrafanaTest {
     }
 
     @Test
-    public void GivenANewContext_WhenANewGraphPanelsAreAdded_ThenThePanelsAreInTheCorrectPositions() {
+    public void givenANewContextWhenANewGraphPanelsAreAddedThenThePanelsAreInTheCorrectPositions() {
         // Arrange
         JGrafana grafanaObj = new JGrafana("My Dashboard");
 
@@ -73,7 +77,7 @@ public class JGrafanaTest {
     }
 
     @Test
-    public void GivenADashboard_WhenAPanelIsDeleted_ThenTheDashboardIsCorrect() {
+    public void givenADashboardWhenAPanelIsDeletedThenTheDashboardIsCorrect() {
         // Arrange
         JGrafana grafanaObj = new JGrafana("My Dashboard");
 
@@ -86,7 +90,7 @@ public class JGrafanaTest {
     }
 
     @Test
-    public void GivenADashboardWithManyPanels_WhenAPanelIsDeleted_ThenTheDashboardIsCorrect() {
+    public void givenADashboardWithManyPanelsWhenAPanelIsDeletedThenTheDashboardIsCorrect() {
         // Arrange
         JGrafana grafanaObj = new JGrafana("My Dashboard");
 
@@ -108,7 +112,7 @@ public class JGrafanaTest {
     }
 
     @Test
-    public void GivenADashboardWithManyPanelsWithSameTitle_WhenAPanelIsDeleted_ThenAllThePanelsWithThatNameAreRemoved() {
+    public void givenADashboardWithManyPanelsWithSameTitleWhenAPanelIsDeletedThenAllThePanelsWithThatNameAreRemoved() {
         JGrafana grafanaObj = new JGrafana("My Dashboard");
 
         // Act
@@ -118,7 +122,7 @@ public class JGrafanaTest {
         grafanaObj.addPanel(PanelType.TABLE, "My Graph 2", "api_http_stacktrace_exceptions");
         SortedMap<Integer, GrafanaFunction> map = new TreeMap();
         map.put(1, new SumFunction());
-        grafanaObj.addPanel(PanelType.GRAPH, "My Graph 3", "api_http_response_code{handler=\"world\"}", map);
+        grafanaObj.addPanel(PanelType.GRAPH, "My Graph 3", "api_http_response_code{handler=\"world\"}", map, null);
         grafanaObj.removePanelByTitle("My Graph 2");
 
         // Assert
@@ -128,7 +132,7 @@ public class JGrafanaTest {
     }
 
     @Test
-    public void GivenADashboardWithSomePanels_WhenAnUnexistingPanelIsLookedUp_ThenAnExceptionIsRaised() {
+    public void givenADashboardWithSomePanelsWhenAnUnexistingPanelIsLookedUpThenAnExceptionIsRaised() {
         JGrafana grafanaObj = new JGrafana("My Dashboard");
 
         // Act
@@ -142,7 +146,21 @@ public class JGrafanaTest {
     }
 
     @Test
-    public void GivenAnExistingDashboard_WhenParseMethodIsCalled_ThenTheDashboardIsImported() {
+    public void givenAYAxesObjectWhenAPanelIsAddedThenTheYAxesIsSet() {
+        JGrafana grafanaObj = new JGrafana("My Dashboard");
+        List<YAxis> yaxes = new ArrayList<>();
+        yaxes.add(new YAxis("ms", true));
+        yaxes.add(new YAxis("sc", false));
+
+        // Act
+        grafanaObj.addPanel(PanelType.GRAPH, "My Graph 1", "api_http_response_code{handler=\"world\"}", new TreeMap<>(), yaxes);
+
+        // Assert
+        assertEquals(2, ((GraphPanel) grafanaObj.getPanelByTitle("My Graph 1")).yaxes.size());
+    }
+
+    @Test
+    public void givenAnExistingDashboardWhenParseMethodIsCalledThenTheDashboardIsImported() {
         assertDoesNotThrow(() -> {
             JGrafana dash = JGrafana.parse(readStandardDashboard());
         });

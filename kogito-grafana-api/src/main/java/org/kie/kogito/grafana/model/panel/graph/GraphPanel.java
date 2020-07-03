@@ -113,7 +113,8 @@ public class GraphPanel extends GrafanaPanel {
         super();
     }
 
-    public GraphPanel(int id, String title, GrafanaGridPos gridPos, List<GrafanaTarget> targets) {
+    public GraphPanel(int id, String title, GrafanaGridPos gridPos, List<GrafanaTarget> targets, List<YAxis> yaxes) {
         super(id, title, "graph", gridPos, targets);
+        this.yaxes = yaxes;
     }
 }
