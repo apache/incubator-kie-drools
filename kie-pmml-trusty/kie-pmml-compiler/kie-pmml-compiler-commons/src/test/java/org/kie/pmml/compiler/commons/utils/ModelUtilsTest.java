@@ -31,49 +31,49 @@ import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getPara
 
 public class ModelUtilsTest {
 
-    private static Map<String, String> expectedEventuallyBoxedClassName;
+    private static Map<String, String> expectedBoxedClassName;
 
     static {
-        expectedEventuallyBoxedClassName = new HashMap<>();
-        expectedEventuallyBoxedClassName.put("string", String.class.getName());
-        expectedEventuallyBoxedClassName.put("integer", Integer.class.getName());
-        expectedEventuallyBoxedClassName.put("float", Float.class.getName());
-        expectedEventuallyBoxedClassName.put("double", Double.class.getName());
-        expectedEventuallyBoxedClassName.put("boolean", Boolean.class.getName());
-        expectedEventuallyBoxedClassName.put("date", Date.class.getName());
-        expectedEventuallyBoxedClassName.put("time", Date.class.getName());
-        expectedEventuallyBoxedClassName.put("dateTime", Date.class.getName());
-        expectedEventuallyBoxedClassName.put("dateDaysSince[0]", Long.class.getName());
-        expectedEventuallyBoxedClassName.put("dateDaysSince[1960]", Long.class.getName());
-        expectedEventuallyBoxedClassName.put("dateDaysSince[1970]", Long.class.getName());
-        expectedEventuallyBoxedClassName.put("dateDaysSince[1980]", Long.class.getName());
-        expectedEventuallyBoxedClassName.put("timeSeconds", Long.class.getName());
-        expectedEventuallyBoxedClassName.put("dateTimeSecondsSince[0]", Long.class.getName());
-        expectedEventuallyBoxedClassName.put("dateTimeSecondsSince[1960]", Long.class.getName());
-        expectedEventuallyBoxedClassName.put("dateTimeSecondsSince[1970]", Long.class.getName());
-        expectedEventuallyBoxedClassName.put("dateTimeSecondsSince[1980]", Long.class.getName());
+        expectedBoxedClassName = new HashMap<>();
+        expectedBoxedClassName.put("string", String.class.getName());
+        expectedBoxedClassName.put("integer", Integer.class.getName());
+        expectedBoxedClassName.put("float", Float.class.getName());
+        expectedBoxedClassName.put("double", Double.class.getName());
+        expectedBoxedClassName.put("boolean", Boolean.class.getName());
+        expectedBoxedClassName.put("date", Date.class.getName());
+        expectedBoxedClassName.put("time", Date.class.getName());
+        expectedBoxedClassName.put("dateTime", Date.class.getName());
+        expectedBoxedClassName.put("dateDaysSince[0]", Long.class.getName());
+        expectedBoxedClassName.put("dateDaysSince[1960]", Long.class.getName());
+        expectedBoxedClassName.put("dateDaysSince[1970]", Long.class.getName());
+        expectedBoxedClassName.put("dateDaysSince[1980]", Long.class.getName());
+        expectedBoxedClassName.put("timeSeconds", Long.class.getName());
+        expectedBoxedClassName.put("dateTimeSecondsSince[0]", Long.class.getName());
+        expectedBoxedClassName.put("dateTimeSecondsSince[1960]", Long.class.getName());
+        expectedBoxedClassName.put("dateTimeSecondsSince[1970]", Long.class.getName());
+        expectedBoxedClassName.put("dateTimeSecondsSince[1980]", Long.class.getName());
     }
 
     @Test
-    public void getEventuallyBoxedClassNameByParameterFields() {
+    public void getBoxedClassNameByParameterFields() {
         List<ParameterField> parameterFields = getParameterFields();
         parameterFields.forEach(parameterField -> {
-            String retrieved = ModelUtils.getEventuallyBoxedClassName(parameterField);
+            String retrieved = ModelUtils.getBoxedClassName(parameterField);
             commonVerifyEventuallyBoxedClassName(retrieved, parameterField.getDataType());
         });
     }
 
     @Test
-    public void getEventuallyBoxedClassNameByDataTypes() {
+    public void getBoxedClassNameByDataTypes() {
         List<DataType> dataTypes = getDataTypes();
         dataTypes.forEach(dataType -> {
-            String retrieved = ModelUtils.getEventuallyBoxedClassName(dataType);
+            String retrieved = ModelUtils.getBoxedClassName(dataType);
             commonVerifyEventuallyBoxedClassName(retrieved, dataType);
         });
     }
 
 
     private void commonVerifyEventuallyBoxedClassName(String toVerify, DataType dataType) {
-        assertEquals(expectedEventuallyBoxedClassName.get(dataType.value()), toVerify);
+        assertEquals(expectedBoxedClassName.get(dataType.value()), toVerify);
     }
 }

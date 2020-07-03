@@ -44,7 +44,6 @@ import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedCla
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getApplyExpressionMethodDeclaration;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getConstantExpressionMethodDeclaration;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getFieldRefExpressionMethodDeclaration;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getEventuallyBoxedClassName;
 
 /**
  * Class meant to provide <i>helper</i> methods to retrieve <code>Function</code> code-generators
@@ -234,7 +233,7 @@ public class DefineFunctionUtils {
     static List<ClassOrInterfaceType> getClassOrInterfaceTypes(List<ParameterField> parameterFields) {
         List<ClassOrInterfaceType> toReturn = new ArrayList<>();
         if (parameterFields != null) {
-            parameterFields.forEach(parameterField -> toReturn.add(parseClassOrInterfaceType(getEventuallyBoxedClassName(parameterField))));
+            parameterFields.forEach(parameterField -> toReturn.add(parseClassOrInterfaceType(ModelUtils.getBoxedClassName(parameterField))));
         }
         return toReturn;
     }

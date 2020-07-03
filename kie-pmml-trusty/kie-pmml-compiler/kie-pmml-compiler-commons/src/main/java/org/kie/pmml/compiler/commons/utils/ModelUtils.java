@@ -160,8 +160,8 @@ public class ModelUtils {
      * @param parameterField
      * @return
      */
-    public static String getEventuallyBoxedClassName(ParameterField parameterField) {
-        return  parameterField.getDataType() == null ? Object.class.getName() : getEventuallyBoxedClassName(parameterField.getDataType());
+    public static String getBoxedClassName(ParameterField parameterField) {
+        return  parameterField.getDataType() == null ? Object.class.getName() : getBoxedClassName(parameterField.getDataType());
     }
 
     /**
@@ -169,7 +169,7 @@ public class ModelUtils {
      * @param dataType
      * @return
      */
-    public static String getEventuallyBoxedClassName(DataType dataType) {
+    public static String getBoxedClassName(DataType dataType) {
         Class<?> c = DATA_TYPE.byName(dataType.value()).getMappedClass();
         return getKiePMMLPrimitiveBoxed(c).map(primitiveBoxed -> primitiveBoxed.getBoxed().getName()).orElse(c.getName());
     }

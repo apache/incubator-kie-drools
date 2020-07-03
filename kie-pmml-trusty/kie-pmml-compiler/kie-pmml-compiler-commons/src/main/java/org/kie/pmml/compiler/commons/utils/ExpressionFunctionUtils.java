@@ -492,8 +492,6 @@ public class ExpressionFunctionUtils {
      * @return
      */
     static MethodDeclaration getExpressionMethodDeclaration(final String methodName, final String variableName, final BlockStmt body, final ClassOrInterfaceType returnedType, final List<ClassOrInterfaceType> parameterTypes) {
-//        return getMethodDeclaration(methodName, parameterTypes);
-
         final ReturnStmt returnStmt = getReturnStmt(variableName);
         body.addStatement(returnStmt);
         MethodDeclaration toReturn = getMethodDeclaration(methodName, parameterTypes);

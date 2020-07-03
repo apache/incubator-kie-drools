@@ -49,7 +49,6 @@ import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.co
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.fieldRefSupplier;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.supportedExpressionSupplier;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.unsupportedExpressionSupplier;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getEventuallyBoxedClassName;
 
 public class DefineFunctionUtilsTest {
 
@@ -224,7 +223,7 @@ public class DefineFunctionUtilsTest {
 
 
     private void commonVerifyParameterClassOrInterfaceType(ClassOrInterfaceType toVerify, ParameterField parameterField) {
-        String expectedClass = getEventuallyBoxedClassName(parameterField);
+        String expectedClass = ModelUtils.getBoxedClassName(parameterField);
         assertEquals(expectedClass, toVerify.toString());
     }
 
