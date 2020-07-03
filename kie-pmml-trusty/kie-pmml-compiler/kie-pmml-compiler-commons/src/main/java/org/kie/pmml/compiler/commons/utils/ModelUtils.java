@@ -157,6 +157,7 @@ public class ModelUtils {
 
     /**
      * Retrieve the <b>mapped</b> class name of the given <code>ParameterField</code>, <b>eventually</b> boxed (for primitive ones)
+     * It returns <b>Object</b> <code>ParameterField.getDataType()</code> is null
      * @param parameterField
      * @return
      */
@@ -165,12 +166,13 @@ public class ModelUtils {
     }
 
     /**
-     * Retrieve the <b>mapped</b> class name of the given <code>DataType</code>, <b>eventually</b> boxed (for primitive ones)
+     * Retrieve the <b>mapped</b> class name of the given <code>DataType</code>, <b>eventually</b> boxed (for primitive ones).
+     * It returns <b>Object</b> if null
      * @param dataType
      * @return
      */
     public static String getBoxedClassName(DataType dataType) {
-        Class<?> c = DATA_TYPE.byName(dataType.value()).getMappedClass();
+        Class<?> c = dataType == null ? Object.class : DATA_TYPE.byName(dataType.value()).getMappedClass();
         return getKiePMMLPrimitiveBoxed(c).map(primitiveBoxed -> primitiveBoxed.getBoxed().getName()).orElse(c.getName());
     }
 }
