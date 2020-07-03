@@ -25,11 +25,11 @@
       <ParameterField name="empty"/>
       <Constant>CONSTANT_FUNCTION_VALUE</Constant>
     </DefineFunction>
-    <DefineFunction name="FIELDREF_FUNCTION" optype="categorical" dataType="string">
+    <DefineFunction name="FIELDREF_FUNCTION" optype="continuous" dataType="double">
       <ParameterField name="fieldRed"/>
       <FieldRef field="Petal.Length"/>
     </DefineFunction>
-    <DefineFunction name="APPLY_FUNCTION" optype="categorical" dataType="string">
+    <DefineFunction name="APPLY_FUNCTION" optype="continuous" dataType="double">
       <ParameterField name="fieldRed"/>
       <Apply function="FIELDREF_FUNCTION">
         <FieldRef field="Petal.Length" />
@@ -38,7 +38,7 @@
     <DerivedField name="CONSTANT_DERIVEDFIELD" optype="categorical" dataType="string">
       <Constant>CONSTANT_DERIVEDFIELD_VALUE</Constant>
     </DerivedField>
-    <DerivedField name="APPLY_DERIVEDFIELD" optype="categorical" dataType="string">
+    <DerivedField name="APPLY_DERIVEDFIELD" optype="continuous" dataType="double">
       <Apply function="APPLY_FUNCTION">
         <FieldRef field="Petal.Length" />
       </Apply>
