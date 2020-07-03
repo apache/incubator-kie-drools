@@ -55,6 +55,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.METHOD_NAME_TEMPLATE;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.applySupplier;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.constantSupplier;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.fieldRefSupplier;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.supportedExpressionSupplier;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.unsupportedExpressionSupplier;
 
@@ -154,16 +157,22 @@ public class DerivedFieldFunctionUtilsTest {
         DerivedFieldFunctionUtils.getAggregatedMethodDeclaration(new Aggregate(), 3);
     }
 
-    @Test(expected = KiePMMLException.class)
+    @Test
     public void getApplyMethodDeclaration() {
-        DerivedFieldFunctionUtils.getApplyMethodDeclaration(new Apply(), 3);
+        MethodDeclaration retrieved = DerivedFieldFunctionUtils.getApplyMethodDeclaration(applySupplier.get(), 3);
+        String expected = "java.lang.Object Apply3(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1) {\n" +
+                "    java.lang.Object variableapplyVariableConstant1 = 34.6;\n" +
+                "    java.util.Optional<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((org.kie.pmml.commons.model.tuples.KiePMMLNameValue lmbdParam) -> java.util.Objects.equals(\"FIELD_REF\", lmbdParam.getName())).findFirst();\n" +
+                "    java.lang.Object variableapplyVariableFieldRef2 = kiePMMLNameValue.map(org.kie.pmml.commons.model.tuples.KiePMMLNameValue::getValue).orElse(null);\n" +
+                "    java.lang.Object applyVariable = this.FUNCTION_NAME(variableapplyVariableConstant1, variableapplyVariableFieldRef2);\n" +
+                "    return applyVariable;\n" +
+                "}";
+        assertEquals(expected, retrieved.toString());
     }
 
     @Test
     public void getConstantMethodDeclaration() {
-        Constant constant = new Constant();
-        constant.setDataType(DataType.DOUBLE);
-        constant.setValue(34.6);
+        Constant constant = constantSupplier.get();
         int methodArity = new Random().nextInt(20);
         MethodDeclaration retrieved = DerivedFieldFunctionUtils.getConstantMethodDeclaration(constant, methodArity);
         String expectedVariable = String.format("%s constantVariable = %s;", Double.class.getName(), constant.getValue());
@@ -186,8 +195,7 @@ public class DerivedFieldFunctionUtilsTest {
     @Test
     public void getFieldRefMethodDeclaration() {
         int methodArity = new Random().nextInt(20);
-        String fieldName = "FIELD_NAME";
-        FieldRef fieldRef = new FieldRef(FieldName.create(fieldName));
+        FieldRef fieldRef = fieldRefSupplier.get();
         MethodDeclaration retrieved = DerivedFieldFunctionUtils.getFieldRefMethodDeclaration(fieldRef, methodArity);
         String expectedVariable = String.format("%1$s fieldRefVariable = kiePMMLNameValue.map(%2$s::getValue).orElse(%3$s);",
                                                 Object.class.getName(),

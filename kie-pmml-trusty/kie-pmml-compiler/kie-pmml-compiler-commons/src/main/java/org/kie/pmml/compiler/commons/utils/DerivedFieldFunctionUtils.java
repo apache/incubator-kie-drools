@@ -39,16 +39,9 @@ import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.METHOD_NAME_TEMPLATE;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceType;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getAggregatedExpressionMethodDeclaration;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getApplyExpressionMethodDeclaration;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getConstantExpressionMethodDeclaration;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getDiscretizeExpressionMethodDeclaration;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getFieldRefExpressionMethodDeclaration;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getLagExpressionMethodDeclaration;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getMapValuesExpressionMethodDeclaration;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getNormContinuousExpressionMethodDeclaration;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getNormDiscreteExpressionMethodDeclaration;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getTextIndexExpressionMethodDeclaration;
 
 /**
  * Class meant to provide <i>helper</i> methods to retrieve <code>Function</code> code-generators
@@ -122,7 +115,9 @@ public class DerivedFieldFunctionUtils {
      * @return
      */
     static MethodDeclaration getApplyMethodDeclaration(final Apply apply, final int methodArity) {
-        throw new KiePMMLException("Apply not managed, yet");
+        String methodName = String.format(METHOD_NAME_TEMPLATE, apply.getClass().getSimpleName(), methodArity);
+        return getApplyExpressionMethodDeclaration(methodName, apply, Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
+
     }
 
     /**

@@ -45,6 +45,7 @@ import org.kie.pmml.commons.utils.PrimitiveBoxedUtils;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.kie.pmml.commons.utils.PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceType;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getApplyExpressionMethodDeclaration;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getConstantExpressionMethodDeclaration;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getFieldRefExpressionMethodDeclaration;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getEventuallyBoxedClassName;
@@ -127,7 +128,7 @@ public class DefineFunctionUtils {
      * @return
      */
     static MethodDeclaration getApplyMethodDeclaration(final String methodName, final Apply apply, List<ClassOrInterfaceType> parameterFields) {
-        throw new KiePMMLException("Apply not managed, yet");
+        return getApplyExpressionMethodDeclaration(methodName, apply, parameterFields);
     }
 
     /**
