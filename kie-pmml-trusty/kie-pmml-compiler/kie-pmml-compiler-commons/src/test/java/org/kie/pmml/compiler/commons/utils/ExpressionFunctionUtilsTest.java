@@ -106,7 +106,7 @@ public class ExpressionFunctionUtilsTest {
                                                 "    java.lang.Object variableapplyVariableConstant1 = 34.6;\n" +
                                                 "    java.util.Optional<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((org.kie.pmml.commons.model.tuples.KiePMMLNameValue lmbdParam) -> java.util.Objects.equals(\"FIELD_REF\", lmbdParam.getName())).findFirst();\n" +
                                                 "    java.lang.Object variableapplyVariableFieldRef2 = kiePMMLNameValue.map(org.kie.pmml.commons.model.tuples.KiePMMLNameValue::getValue).orElse(null);\n" +
-                                                "    java.lang.Object applyVariable = this.FUNCTION_NAME(variableapplyVariableConstant1, variableapplyVariableFieldRef2);\n" +
+                                                "    java.lang.Object applyVariable = this.FUNCTION_NAME(param1, variableapplyVariableConstant1, variableapplyVariableFieldRef2);\n" +
                                                 "    return applyVariable;\n" +
                                                 "}", methodName);
         assertEquals(expected, retrieved.toString());
@@ -224,7 +224,7 @@ public class ExpressionFunctionUtilsTest {
                 "    java.lang.Object variableVARIABLE_NAMEConstant1 = 34.6;\n" +
                 "    java.util.Optional<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((org.kie.pmml.commons.model.tuples.KiePMMLNameValue lmbdParam) -> java.util.Objects.equals(\"FIELD_REF\", lmbdParam.getName())).findFirst();\n" +
                 "    java.lang.Object variableVARIABLE_NAMEFieldRef2 = kiePMMLNameValue.map(org.kie.pmml.commons.model.tuples.KiePMMLNameValue::getValue).orElse(null);\n" +
-                "    java.lang.Object VARIABLE_NAME = this.FUNCTION_NAME(variableVARIABLE_NAMEConstant1, variableVARIABLE_NAMEFieldRef2);\n" +
+                "    java.lang.Object VARIABLE_NAME = this.FUNCTION_NAME(param1, variableVARIABLE_NAMEConstant1, variableVARIABLE_NAMEFieldRef2);\n" +
                 "}";
         assertEquals(expected, retrieved.toString());
     }
@@ -247,8 +247,8 @@ public class ExpressionFunctionUtilsTest {
                 "    java.lang.Object variablevariableVARIABLE_NAMEApply2Constant1 = 34.6;\n" +
                 "    java.util.Optional<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((org.kie.pmml.commons.model.tuples.KiePMMLNameValue lmbdParam) -> java.util.Objects.equals(\"FIELD_REF\", lmbdParam.getName())).findFirst();\n" +
                 "    java.lang.Object variablevariableVARIABLE_NAMEApply2FieldRef2 = kiePMMLNameValue.map(org.kie.pmml.commons.model.tuples.KiePMMLNameValue::getValue).orElse(null);\n" +
-                "    java.lang.Object variableVARIABLE_NAMEApply2 = this.FUNCTION_NAME(variablevariableVARIABLE_NAMEApply2Constant1, variablevariableVARIABLE_NAMEApply2FieldRef2);\n" +
-                "    java.lang.Object VARIABLE_NAME = this.EXTERNAL_FUNCTION_NAME(variableVARIABLE_NAMEConstant1, variableVARIABLE_NAMEApply2);\n" +
+                "    java.lang.Object variableVARIABLE_NAMEApply2 = this.FUNCTION_NAME(param1, variablevariableVARIABLE_NAMEApply2Constant1, variablevariableVARIABLE_NAMEApply2FieldRef2);\n" +
+                "    java.lang.Object VARIABLE_NAME = this.EXTERNAL_FUNCTION_NAME(param1, variableVARIABLE_NAMEConstant1, variableVARIABLE_NAMEApply2);\n" +
                 "}";
         assertEquals(expected, retrieved.toString());
     }

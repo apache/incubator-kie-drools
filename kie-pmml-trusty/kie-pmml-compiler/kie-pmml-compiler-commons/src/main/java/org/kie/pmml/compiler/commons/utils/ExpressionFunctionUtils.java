@@ -283,6 +283,7 @@ public class ExpressionFunctionUtils {
     static BlockStmt getApplyExpressionBlockStmt(final String variableName, final Apply apply,  final ClassOrInterfaceType returnedType, final List<ClassOrInterfaceType> parameterTypes) {
         final BlockStmt toReturn = new BlockStmt();
         List<String> innerVariables = new ArrayList<>();
+        innerVariables.add(KIEPMMLNAMEVALUE_LIST_PARAM);
         final ClassOrInterfaceType objectReturnedType = parseClassOrInterfaceType(Object.class.getName());
         if (apply.getExpressions() != null) {
             int counter = 1;

@@ -161,7 +161,7 @@ public class ModelUtils {
      * @return
      */
     public static String getEventuallyBoxedClassName(ParameterField parameterField) {
-        return getEventuallyBoxedClassName(parameterField.getDataType());
+        return  parameterField.getDataType() == null ? Object.class.getName() : getEventuallyBoxedClassName(parameterField.getDataType());
     }
 
     /**

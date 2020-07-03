@@ -29,8 +29,19 @@
       <ParameterField name="fieldRed"/>
       <FieldRef field="Petal.Length"/>
     </DefineFunction>
+    <DefineFunction name="APPLY_FUNCTION" optype="categorical" dataType="string">
+      <ParameterField name="fieldRed"/>
+      <Apply function="FIELDREF_FUNCTION">
+        <FieldRef field="Petal.Length" />
+      </Apply>
+    </DefineFunction>
     <DerivedField name="CONSTANT_DERIVEDFIELD" optype="categorical" dataType="string">
       <Constant>CONSTANT_DERIVEDFIELD_VALUE</Constant>
+    </DerivedField>
+    <DerivedField name="APPLY_DERIVEDFIELD" optype="categorical" dataType="string">
+      <Apply function="APPLY_FUNCTION">
+        <FieldRef field="Petal.Length" />
+      </Apply>
     </DerivedField>
     <DerivedField name="BackRef" optype="continuous" dataType="double">
       <FieldRef field="Ref"/>
@@ -83,6 +94,12 @@
       </OutputField>
       <OutputField name="Output_StageThree" feature="transformedValue">
         <FieldRef field="StageThree"/>
+      </OutputField>
+      <OutputField name="Output_CONSTANT_DERIVEDFIELD" feature="transformedValue">
+        <FieldRef field="CONSTANT_DERIVEDFIELD"/>
+      </OutputField>
+      <OutputField name="Output_APPLY_DERIVEDFIELD" feature="transformedValue">
+        <FieldRef field="APPLY_DERIVEDFIELD"/>
       </OutputField>
       <!-- LOCAL TRANSFORMATIONS -->
       <OutputField name="Output_dis_pl" feature="transformedValue">

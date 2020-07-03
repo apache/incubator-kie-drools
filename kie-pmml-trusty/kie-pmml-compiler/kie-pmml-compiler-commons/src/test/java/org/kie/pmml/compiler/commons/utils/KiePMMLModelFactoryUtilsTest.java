@@ -86,6 +86,7 @@ public class KiePMMLModelFactoryUtilsTest {
         model.getLocalTransformations().getDerivedFields().forEach(derivedField -> commonVerifyDerivedFieldTransformation(derivedField, null, "localTransformationsMap"));
         commonVerifyConstructorClass("commonTransformationsMap");
         commonVerifyConstructorClass("localTransformationsMap");
+        System.out.println(classOrInterfaceDeclaration.toString());
     }
 
     @Test
