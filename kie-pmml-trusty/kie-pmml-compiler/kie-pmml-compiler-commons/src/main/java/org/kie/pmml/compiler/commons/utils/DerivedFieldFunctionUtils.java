@@ -39,16 +39,9 @@ import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.METHOD_NAME_TEMPLATE;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceType;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getAggregatedExpressionMethodDeclaration;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getApplyExpressionMethodDeclaration;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getConstantExpressionMethodDeclaration;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getDiscretizeExpressionMethodDeclaration;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getFieldRefExpressionMethodDeclaration;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getLagExpressionMethodDeclaration;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getMapValuesExpressionMethodDeclaration;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getNormContinuousExpressionMethodDeclaration;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getNormDiscreteExpressionMethodDeclaration;
-import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getTextIndexExpressionMethodDeclaration;
 
 /**
  * Class meant to provide <i>helper</i> methods to retrieve <code>Function</code> code-generators
@@ -112,8 +105,7 @@ public class DerivedFieldFunctionUtils {
      * @return
      */
     static MethodDeclaration getAggregatedMethodDeclaration(final Aggregate aggregate, final int methodArity) {
-        String methodName = String.format(METHOD_NAME_TEMPLATE, aggregate.getClass().getSimpleName(), methodArity);
-        return getAggregatedExpressionMethodDeclaration(methodName, aggregate, Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
+        throw new KiePMMLException("Aggregate not managed, yet");
     }
 
     /**
@@ -125,6 +117,7 @@ public class DerivedFieldFunctionUtils {
     static MethodDeclaration getApplyMethodDeclaration(final Apply apply, final int methodArity) {
         String methodName = String.format(METHOD_NAME_TEMPLATE, apply.getClass().getSimpleName(), methodArity);
         return getApplyExpressionMethodDeclaration(methodName, apply, Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
+
     }
 
     /**
@@ -156,8 +149,7 @@ public class DerivedFieldFunctionUtils {
      * @return
      */
     static MethodDeclaration getDiscretizeMethodDeclaration(final Discretize discretize, final int methodArity) {
-        String methodName = String.format(METHOD_NAME_TEMPLATE, discretize.getClass().getSimpleName(), methodArity);
-        return getDiscretizeExpressionMethodDeclaration(methodName, discretize, Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
+        throw new KiePMMLException("Discretize not managed, yet");
     }
 
     /**
@@ -185,8 +177,7 @@ public class DerivedFieldFunctionUtils {
      * @return
      */
     static MethodDeclaration getLagMethodDeclaration(final Lag lag, final int methodArity) {
-        String methodName = String.format(METHOD_NAME_TEMPLATE, lag.getClass().getSimpleName(), methodArity);
-        return getLagExpressionMethodDeclaration(methodName, lag, Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
+        throw new KiePMMLException("Lag not managed, yet");
     }
 
     /**
@@ -196,8 +187,7 @@ public class DerivedFieldFunctionUtils {
      * @return
      */
     static MethodDeclaration getMapValuesMethodDeclaration(final MapValues mapValues, final int methodArity) {
-        String methodName = String.format(METHOD_NAME_TEMPLATE, mapValues.getClass().getSimpleName(), methodArity);
-        return getMapValuesExpressionMethodDeclaration(methodName, mapValues, Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
+        throw new KiePMMLException("MapValues not managed, yet");
     }
 
     /**
@@ -207,8 +197,7 @@ public class DerivedFieldFunctionUtils {
      * @return
      */
     static MethodDeclaration getNormContinuousMethodDeclaration(final NormContinuous normContinuous, final int methodArity) {
-        String methodName = String.format(METHOD_NAME_TEMPLATE, normContinuous.getClass().getSimpleName(), methodArity);
-        return getNormContinuousExpressionMethodDeclaration(methodName, normContinuous, Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
+        throw new KiePMMLException("NormContinuous not managed, yet");
     }
 
     /**
@@ -218,8 +207,7 @@ public class DerivedFieldFunctionUtils {
      * @return
      */
     static MethodDeclaration getNormDiscreteMethodDeclaration(final NormDiscrete normDiscrete, final int methodArity) {
-        String methodName = String.format(METHOD_NAME_TEMPLATE, normDiscrete.getClass().getSimpleName(), methodArity);
-        return getNormDiscreteExpressionMethodDeclaration(methodName, normDiscrete, Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
+        throw new KiePMMLException("NormDiscrete not managed, yet");
     }
 
     /**
@@ -229,8 +217,8 @@ public class DerivedFieldFunctionUtils {
      * @return
      */
     static MethodDeclaration getTextIndexMethodDeclaration(final TextIndex textIndex, final  int methodArity) {
-        String methodName = String.format(METHOD_NAME_TEMPLATE, textIndex.getClass().getSimpleName(), methodArity);
-        return getTextIndexExpressionMethodDeclaration(methodName, textIndex, Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
+        throw new KiePMMLException("TextIndex not managed, yet");
     }
+
 
 }

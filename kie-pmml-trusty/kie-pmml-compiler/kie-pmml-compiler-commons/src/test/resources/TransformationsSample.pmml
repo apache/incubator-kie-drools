@@ -21,88 +21,26 @@
     <DataField name="Petal.Width" optype="continuous" dataType="double"/>
   </DataDictionary>
   <TransformationDictionary>
-    <DefineFunction name="SEPAL_LENGTH" optype="categorical" dataType="string">
-      <ParameterField name="Sepal.Length" optype="continuous" dataType="double"/>
-      <Discretize field="Sepal.Length">
-        <DiscretizeBin binValue="SLLOW">
-          <Interval closure="closedClosed" leftMargin="0.0" rightMargin="5.5"/>
-        </DiscretizeBin>
-        <DiscretizeBin binValue="SLHIGH">
-          <Interval closure="closedOpen" leftMargin="5.6" rightMargin="10.0"/>
-        </DiscretizeBin>
-      </Discretize>
+    <DefineFunction name="CONSTANT_FUNCTION" optype="categorical" dataType="string">
+      <ParameterField name="empty"/>
+      <Constant>CONSTANT_FUNCTION_VALUE</Constant>
     </DefineFunction>
-    <DefineFunction name="CLASS_GROUP" optype="categorical" dataType="string">
-      <ParameterField name="class" optype="categorical" dataType="string"/>
-      <MapValues outputColumn="Region">
-        <FieldColumnPair field="class" column="State"/>
-        <InlineTable>
-          <row>
-            <State>setosa</State>
-            <Region>West</Region>
-          </row>
-          <row>
-            <State>virginica</State>
-            <Region>West</Region>
-          </row>
-          <row>
-            <State>versicolor</State>
-            <Region>East</Region>
-          </row>
-        </InlineTable>
-      </MapValues>
+    <DefineFunction name="FIELDREF_FUNCTION" optype="categorical" dataType="string">
+      <ParameterField name="fieldRed"/>
+      <FieldRef field="Petal.Length"/>
     </DefineFunction>
-    <DefineFunction name="SW_TO_PL" optype="continuous" dataType="double">
-      <ParameterField name="Sepal.Width" dataType="double"/>
-      <ParameterField name="Petal.Length" dataType="double"/>
-      <Apply function="if">
-        <Apply function="greaterThan">
-          <FieldRef field="Petal.Length"/>
-          <Constant dataType="integer">1</Constant>
-        </Apply>
-        <Apply function="*">
-          <Apply function="SW_TO_PL">
-            <FieldRef field="Sepal.Width"/>
-            <Apply function="-">
-              <FieldRef field="Petal.Length"/>
-              <Constant dataType="integer">1</Constant>
-            </Apply>
-          </Apply>
-          <FieldRef field="Sepal.Width"/>
-        </Apply>
-        <FieldRef field="Sepal.Width"/>
+    <DefineFunction name="APPLY_FUNCTION" optype="categorical" dataType="string">
+      <ParameterField name="fieldRed"/>
+      <Apply function="FIELDREF_FUNCTION">
+        <FieldRef field="Petal.Length" />
       </Apply>
     </DefineFunction>
-    <DerivedField name="Shift" optype="categorical" dataType="string">
-      <Apply function="SEPAL_LENGTH">
-        <FieldRef field="Sepal.Length"/>
-      </Apply>
+    <DerivedField name="CONSTANT_DERIVEDFIELD" optype="categorical" dataType="string">
+      <Constant>CONSTANT_DERIVEDFIELD_VALUE</Constant>
     </DerivedField>
-    <DerivedField name="Group" optype="categorical" dataType="string">
-      <Apply function="CLASS_GROUP">
-        <FieldRef field="class"/>
-      </Apply>
-    </DerivedField>
-    <DerivedField name="SW_TO_PLer" optype="continuous" dataType="double">
-      <Apply function="SW_TO_PL">
-        <FieldRef field="Sepal.Width"/>
-        <FieldRef field="Petal.Length"/>
-      </Apply>
-    </DerivedField>
-    <DerivedField name="SelfRef" optype="continuous" dataType="double">
-      <Apply function="if">
-        <FieldRef field="Modifier"/>
-        <Apply function="+">
-          <FieldRef field="Sepal.Width"/>
-          <FieldRef field="Sepal.Length"/>
-        </Apply>
-        <FieldRef field="Sepal.Width"/>
-      </Apply>
-    </DerivedField>
-    <DerivedField name="Ref" optype="continuous" dataType="double">
-      <Apply function="+">
-        <FieldRef field="Sepal.Width"/>
-        <FieldRef field="Petal.Width"/>
+    <DerivedField name="APPLY_DERIVEDFIELD" optype="categorical" dataType="string">
+      <Apply function="APPLY_FUNCTION">
+        <FieldRef field="Petal.Length" />
       </Apply>
     </DerivedField>
     <DerivedField name="BackRef" optype="continuous" dataType="double">
@@ -157,6 +95,12 @@
       <OutputField name="Output_StageThree" feature="transformedValue">
         <FieldRef field="StageThree"/>
       </OutputField>
+      <OutputField name="Output_CONSTANT_DERIVEDFIELD" feature="transformedValue">
+        <FieldRef field="CONSTANT_DERIVEDFIELD"/>
+      </OutputField>
+      <OutputField name="Output_APPLY_DERIVEDFIELD" feature="transformedValue">
+        <FieldRef field="APPLY_DERIVEDFIELD"/>
+      </OutputField>
       <!-- LOCAL TRANSFORMATIONS -->
       <OutputField name="Output_dis_pl" feature="transformedValue">
         <FieldRef field="dis_pl"/>
@@ -187,124 +131,16 @@
       <OutputField name="Probability_setosa" optype="continuous" dataType="double" feature="probability" value="setosa"/>
       <OutputField name="Probability_versicolor" optype="continuous" dataType="double" feature="probability" value="versicolor"/>
       <OutputField name="Probability_virginica" optype="continuous" dataType="double" feature="probability" value="virginica"/>
-
     </Output>
     <LocalTransformations>
-      <DerivedField name="dis_pl" dataType="string" optype="categorical">
-        <Discretize field="Petal.Length" mapMissingTo="0" defaultValue="1">
-          <DiscretizeBin binValue="0">
-            <Interval closure="openClosed" rightMargin="0"/>
-          </DiscretizeBin>
-          <DiscretizeBin binValue="1">
-            <Interval closure="openClosed" leftMargin="0" rightMargin="1"/>
-          </DiscretizeBin>
-          <DiscretizeBin binValue="2">
-            <Interval closure="openClosed" leftMargin="1" rightMargin="2"/>
-          </DiscretizeBin>
-          <DiscretizeBin binValue="3">
-            <Interval closure="openClosed" leftMargin="2" rightMargin="3"/>
-          </DiscretizeBin>
-          <DiscretizeBin binValue="4">
-            <Interval closure="openClosed" leftMargin="3" rightMargin="4"/>
-          </DiscretizeBin>
-          <DiscretizeBin binValue="5">
-            <Interval closure="openOpen" leftMargin="4"/>
-          </DiscretizeBin>
-        </Discretize>
+      <DerivedField name="LOCAL_CONSTANT_DERIVEDFIELD" optype="categorical" dataType="string">
+        <Constant>LOCAL_CONSTANT_DERIVEDFIELD_VALUE</Constant>
       </DerivedField>
-      <DerivedField name="dis_pw" dataType="string" optype="categorical">
-        <Discretize field="Petal.Width" mapMissingTo="0" defaultValue="1">
-          <DiscretizeBin binValue="0">
-            <Interval closure="openClosed" rightMargin="0"/>
-          </DiscretizeBin>
-          <DiscretizeBin binValue="1">
-            <Interval closure="openClosed" leftMargin="0" rightMargin="1"/>
-          </DiscretizeBin>
-          <DiscretizeBin binValue="2">
-            <Interval closure="openClosed" leftMargin="1" rightMargin="2"/>
-          </DiscretizeBin>
-          <DiscretizeBin binValue="3">
-            <Interval closure="openClosed" leftMargin="2" rightMargin="3"/>
-          </DiscretizeBin>
-          <DiscretizeBin binValue="4">
-            <Interval closure="openClosed" leftMargin="3" rightMargin="4"/>
-          </DiscretizeBin>
-          <DiscretizeBin binValue="5">
-            <Interval closure="openOpen" leftMargin="4"/>
-          </DiscretizeBin>
-        </Discretize>
+      <DerivedField name="LOCAL_Ref" optype="continuous" dataType="double">
+        <FieldRef field="Ref"/>
       </DerivedField>
-      <DerivedField name="dis_sl" dataType="string" optype="categorical">
-        <Discretize field="Sepal.Length" mapMissingTo="0" defaultValue="1">
-          <DiscretizeBin binValue="0">
-            <Interval closure="openClosed" rightMargin="0"/>
-          </DiscretizeBin>
-          <DiscretizeBin binValue="1">
-            <Interval closure="openClosed" leftMargin="0" rightMargin="1"/>
-          </DiscretizeBin>
-          <DiscretizeBin binValue="2">
-            <Interval closure="openClosed" leftMargin="1" rightMargin="2"/>
-          </DiscretizeBin>
-          <DiscretizeBin binValue="3">
-            <Interval closure="openClosed" leftMargin="2" rightMargin="3"/>
-          </DiscretizeBin>
-          <DiscretizeBin binValue="4">
-            <Interval closure="openClosed" leftMargin="3" rightMargin="4"/>
-          </DiscretizeBin>
-          <DiscretizeBin binValue="5">
-            <Interval closure="openOpen" leftMargin="4"/>
-          </DiscretizeBin>
-        </Discretize>
-      </DerivedField>
-      <DerivedField name="dis_sw" dataType="string" optype="categorical">
-        <Discretize field="Sepal.Width" mapMissingTo="0" defaultValue="1">
-          <DiscretizeBin binValue="0">
-            <Interval closure="openClosed" rightMargin="0"/>
-          </DiscretizeBin>
-          <DiscretizeBin binValue="1">
-            <Interval closure="openClosed" leftMargin="0" rightMargin="1"/>
-          </DiscretizeBin>
-          <DiscretizeBin binValue="2">
-            <Interval closure="openClosed" leftMargin="1" rightMargin="2"/>
-          </DiscretizeBin>
-          <DiscretizeBin binValue="3">
-            <Interval closure="openClosed" leftMargin="2" rightMargin="3"/>
-          </DiscretizeBin>
-          <DiscretizeBin binValue="4">
-            <Interval closure="openClosed" leftMargin="3" rightMargin="4"/>
-          </DiscretizeBin>
-          <DiscretizeBin binValue="5">
-            <Interval closure="openOpen" leftMargin="4"/>
-          </DiscretizeBin>
-        </Discretize>
-      </DerivedField>
-      <DerivedField name="d_class" dataType="double" optype="continuous">
-        <MapValues mapMissingTo="1" defaultValue="-1" outputColumn="output">
-          <FieldColumnPair field="Species" column="input1"/>
-          <InlineTable>
-            <row>
-              <input1>Iris-setosa</input1>
-              <output>1</output>
-            </row>
-            <row>
-              <input1>Iris-versic</input1>
-              <output>2</output>
-            </row>
-            <row>
-              <input1>Iris-virgin</input1>
-              <output>3</output>
-            </row>
-          </InlineTable>
-        </MapValues>
-      </DerivedField>
-      <DerivedField name="class_Iris_setosa" dataType="double" optype="continuous">
-        <NormDiscrete field="class" value="setosa"/>
-      </DerivedField>
-      <DerivedField name="class_Iris_versicolor" dataType="double" optype="continuous">
-        <NormDiscrete field="class" value="versicolor"/>
-      </DerivedField>
-      <DerivedField name="class_Iris_virginica" dataType="double" optype="continuous">
-        <NormDiscrete field="class" value="virginica"/>
+      <DerivedField name="LOCAL_BackRef" optype="continuous" dataType="double">
+        <FieldRef field="BackRef"/>
       </DerivedField>
     </LocalTransformations>
     <Node id="1" score="setosa" recordCount="150" defaultChild="3">

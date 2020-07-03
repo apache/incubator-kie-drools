@@ -38,6 +38,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.junit.Test;
@@ -151,6 +152,14 @@ public class CommonCodegenUtilsTest {
         String methodName = "METHOD_NAME";
         MethodDeclaration retrieved = CommonCodegenUtils.getMethodDeclaration(methodName);
         commonValidateMethodDeclaration(retrieved, methodName);
+    }
+
+    @Test
+    public void getReturnStmt() {
+        String returnedVariable = "RETURNED_VARIABLE";
+        ReturnStmt retrieved = CommonCodegenUtils.getReturnStmt(returnedVariable);
+        String expected = String.format("return %s;", returnedVariable);
+        assertEquals(expected, retrieved.toString());
     }
 
     @Test

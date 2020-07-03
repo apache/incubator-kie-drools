@@ -28,6 +28,7 @@ import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.populateMethodDeclarations;
+import static org.kie.pmml.compiler.commons.utils.DefineFunctionUtils.getDefineFunctionsMethodMap;
 import static org.kie.pmml.compiler.commons.utils.DerivedFieldFunctionUtils.getDerivedFieldsMethodMap;
 
 /**
@@ -50,10 +51,13 @@ public class KiePMMLModelFactoryUtils {
         final AtomicInteger arityCounter = new AtomicInteger(0);
         final Map<String, MethodDeclaration> commonDerivedFieldsMethodMap = (transformationDictionary != null && transformationDictionary.getDerivedFields() != null) ? getDerivedFieldsMethodMap(transformationDictionary.getDerivedFields(), arityCounter) : Collections.emptyMap();
         final Map<String, MethodDeclaration> localDerivedFieldsMethodMap = (localTransformations != null && localTransformations.getDerivedFields() != null) ? getDerivedFieldsMethodMap(localTransformations.getDerivedFields(), arityCounter) : Collections.emptyMap();
+        final Map<String, MethodDeclaration> defineFunctionsMethodMap = (transformationDictionary != null && transformationDictionary.getDefineFunctions() != null) ? getDefineFunctionsMethodMap(transformationDictionary.getDefineFunctions()) : Collections.emptyMap();
         populateMethodDeclarations(toPopulate, commonDerivedFieldsMethodMap.values());
         populateMethodDeclarations(toPopulate, localDerivedFieldsMethodMap.values());
+        populateMethodDeclarations(toPopulate, defineFunctionsMethodMap.values());
         final ConstructorDeclaration constructorDeclaration = toPopulate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing default constructor in ClassOrInterfaceDeclaration %s ", toPopulate.getName())));
         populateTransformationsInConstructor(constructorDeclaration, commonDerivedFieldsMethodMap, localDerivedFieldsMethodMap);
+        //
     }
 
     /**

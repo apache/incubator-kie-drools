@@ -23,13 +23,17 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.Model;
+import org.dmg.pmml.ParameterField;
 import org.dmg.pmml.Target;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
+
+import static org.kie.pmml.commons.utils.PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed;
 
 /**
  * Class to provide common methods to interact with <code>Model</code>
@@ -149,5 +153,24 @@ public class ModelUtils {
                 .findFirst()
                 .map(dataField -> DATA_TYPE.byName(dataField.getDataType().value()));
         return toReturn.orElseThrow(() -> new KiePMMLInternalException(String.format("Failed to find DataType for field %s", targetFieldName)));
+    }
+
+    /**
+     * Retrieve the <b>mapped</b> class name of the given <code>ParameterField</code>, <b>eventually</b> boxed (for primitive ones)
+     * @param parameterField
+     * @return
+     */
+    public static String getBoxedClassName(ParameterField parameterField) {
+        return  parameterField.getDataType() == null ? Object.class.getName() : getBoxedClassName(parameterField.getDataType());
+    }
+
+    /**
+     * Retrieve the <b>mapped</b> class name of the given <code>DataType</code>, <b>eventually</b> boxed (for primitive ones)
+     * @param dataType
+     * @return
+     */
+    public static String getBoxedClassName(DataType dataType) {
+        Class<?> c = DATA_TYPE.byName(dataType.value()).getMappedClass();
+        return getKiePMMLPrimitiveBoxed(c).map(primitiveBoxed -> primitiveBoxed.getBoxed().getName()).orElse(c.getName());
     }
 }
