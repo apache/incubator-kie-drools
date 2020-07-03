@@ -36,7 +36,7 @@
     <spotbugs.failOnViolation>false</spotbugs.failOnViolation>
     <!-- override the default GroupId:ArtifactId to map both master branch and 7.x branches to the same SonarCloud project -->
     <sonar.projectKey>org.optaplanner:optaplanner</sonar.projectKey>
-    <sonar.moduleKey>${groupId}:${artifactId}</sonar.moduleKey>
+    <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
     <version.org.mockito>3.1.0</version.org.mockito>
   </properties>
 
