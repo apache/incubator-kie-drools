@@ -20,11 +20,15 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.kie.kogito.tracing.decision.event.common.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 public class TraceHeader {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TraceHeader.class);
 
     private final TraceEventType type;
     private final String executionId;
@@ -39,11 +43,14 @@ public class TraceHeader {
     private final List<Message> messages;
 
     public TraceHeader(TraceEventType type, String executionId, Long startTs, Long endTs, Long duration, TraceResourceId resourceId, List<Message> messages) {
+        checkAndLogInvalidTimestamp(startTs, "startTimestamp", executionId);
+        checkAndLogInvalidTimestamp(endTs, "endTimestamp", executionId);
+        checkAndLogInvalidTimestamp(duration, "duration", executionId);
         this.type = type;
         this.executionId = executionId;
-        this.startTimestamp = startTs == null || startTs <= 0 ? null : startTs;
-        this.endTimestamp = endTs == null || endTs <= 0 ? null : endTs;
-        this.duration = duration == null || duration < 0 ? null : duration;
+        this.startTimestamp = startTs;
+        this.endTimestamp = endTs;
+        this.duration = duration;
         this.resourceId = resourceId;
         this.messages = messages;
     }
@@ -74,5 +81,11 @@ public class TraceHeader {
 
     public List<Message> getMessages() {
         return messages;
+    }
+
+    private void checkAndLogInvalidTimestamp(Long timestamp, String property, String executionId){
+        if (timestamp == null || timestamp < 0){
+            LOGGER.warn(String.format("The TraceHeader timestamp property %s of the execution %s is null or negative: %d", property, executionId, timestamp));
+        }
     }
 }
