@@ -30,13 +30,18 @@ import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 
+/**
+ * @deprecated Since DMNv1.2 it shall be possible to use the DMN standard's Import functionality
+ * to import Business Knowledge Model (BKM) nodes and Decision Service in order to be invoked from another model
+ */
+@Deprecated
 public class InvokeFunction extends BaseFEELFunction {
 
     public InvokeFunction() {
         super("invoke");
     }
 
-
+    @Deprecated
     public FEELFnResult<Object> invoke(@ParameterName("ctx") EvaluationContext ctx, @ParameterName("namespace") String namespace, @ParameterName("model name") String modelName,
                                           @ParameterName("decision name") String decisionName, @ParameterName("parameters") Map<String, Object> parameters) {
 
