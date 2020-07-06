@@ -20,7 +20,7 @@ import java.util.Optional;
 
 public interface ProcessInstances<T> {
 
-    Optional<? extends ProcessInstance<T>> findById(String i);
+    Optional<? extends ProcessInstance<T>> findById(String id);
 
     Collection<? extends ProcessInstance<T>> values();
 

@@ -102,8 +102,6 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
         if (isProcessFactorySet()) {
             this.instances = (MutableProcessInstances<T>) processInstancesFactory.createProcessInstances(this);
         }
-        //services.getWorkItemManager().registerWorkItemHandler(name, handlerConfig.forName(name)
-        //services.getEventSupport().addEventListener(listener)
 
         return this;
     }

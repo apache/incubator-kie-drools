@@ -99,28 +99,27 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     // for marshaller/persistence only
-    public void internalSetProcessInstance(org.kie.api.runtime.process.ProcessInstance legacyProcessInstance) {
+    public void internalSetProcessInstance(org.kie.api.runtime.process.ProcessInstance processInstance) {
         if (this.processInstance != null && this.status != ProcessInstance.STATE_PENDING) {
             throw new IllegalStateException("Impossible to override process instance that already exists");
         }
-        this.processInstance = legacyProcessInstance;
-        this.status = legacyProcessInstance.getState();
-        this.id = legacyProcessInstance.getId();
-        setCorrelationKey(((WorkflowProcessInstance) legacyProcessInstance).getCorrelationKey());
-        this.description = ((WorkflowProcessInstanceImpl) legacyProcessInstance).getDescription();
+        this.processInstance = processInstance;
+        this.status = processInstance.getState();
+        this.id = processInstance.getId();
+        setCorrelationKey(((WorkflowProcessInstance) processInstance).getCorrelationKey());
+        this.description = ((WorkflowProcessInstanceImpl) processInstance).getDescription();
         ((WorkflowProcessInstanceImpl) this.processInstance).setKnowledgeRuntime(((InternalProcessRuntime) rt).getInternalKieRuntime());
         ((WorkflowProcessInstanceImpl) this.processInstance).reconnect();
-
         ((WorkflowProcessInstanceImpl) this.processInstance).setMetaData("KogitoProcessInstance", this);
-        ((WorkflowProcessInstance) legacyProcessInstance).addEventListener("processInstanceCompleted:" + this.id, completionEventListener, false);
+        ((WorkflowProcessInstance) processInstance).addEventListener("processInstanceCompleted:" + this.id, completionEventListener, false);
 
-        for (org.kie.api.runtime.process.NodeInstance nodeInstance : ((WorkflowProcessInstance) legacyProcessInstance).getNodeInstances()) {
+        for (org.kie.api.runtime.process.NodeInstance nodeInstance : ((WorkflowProcessInstance) processInstance).getNodeInstances()) {
             if (nodeInstance instanceof WorkItemNodeInstance) {
                 ((WorkItemNodeInstance) nodeInstance).internalRegisterWorkItem();
             }
         }
 
-        unbind(variables, legacyProcessInstance.getVariables());
+        unbind(variables, processInstance.getVariables());
     }
 
     private void setCorrelationKey(String businessKey){
@@ -295,7 +294,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
                 .findFirst()
                 .orElseThrow(() -> new NodeInstanceNotFoundException(this.id, nodeInstanceId));
 
-        ((NodeInstanceImpl) nodeInstance).cancel();
+        nodeInstance.cancel();
         removeOnFinish();
     }
 
@@ -392,7 +391,6 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     protected void removeOnFinish() {
-
         if (processInstance.getState() != ProcessInstance.STATE_ACTIVE && processInstance.getState() != ProcessInstance.STATE_ERROR) {
             ((WorkflowProcessInstance) processInstance).removeEventListener("processInstanceCompleted:" + processInstance.getId(), completionEventListener, false);
 

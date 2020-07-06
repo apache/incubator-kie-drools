@@ -22,15 +22,14 @@ import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.uow.UnitOfWorkManager;
 
 public interface InternalProcessRuntime extends org.drools.core.runtime.process.InternalProcessRuntime {
-	
-	ProcessInstanceManager getProcessInstanceManager();
-	
-	SignalManager getSignalManager();
-	
-	ProcessEventSupport getProcessEventSupport();
-	
-	UnitOfWorkManager getUnitOfWorkManager();
-	
-	InternalKnowledgeRuntime getInternalKieRuntime();
 
+    ProcessInstanceManager getProcessInstanceManager();
+
+    SignalManager getSignalManager();
+
+    ProcessEventSupport getProcessEventSupport();
+
+    UnitOfWorkManager getUnitOfWorkManager();
+
+    InternalKnowledgeRuntime getInternalKieRuntime();
 }

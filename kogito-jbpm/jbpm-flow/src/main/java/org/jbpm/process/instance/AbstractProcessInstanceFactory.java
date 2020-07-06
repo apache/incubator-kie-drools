@@ -30,7 +30,7 @@ public abstract class AbstractProcessInstanceFactory implements ProcessInstanceF
 	public ProcessInstance createProcessInstance(Process process, CorrelationKey correlationKey, 
 			                                     InternalKnowledgeRuntime kruntime,
 			                                     Map<String, Object> parameters) {
-		ProcessInstance processInstance = (ProcessInstance) createProcessInstance();
+		ProcessInstance processInstance = createProcessInstance();
 		processInstance.setKnowledgeRuntime( kruntime );
         processInstance.setProcess( process );
         

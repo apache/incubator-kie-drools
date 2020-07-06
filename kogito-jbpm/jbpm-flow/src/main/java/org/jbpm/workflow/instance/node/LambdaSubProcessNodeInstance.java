@@ -62,7 +62,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
     private static final long serialVersionUID = 510l;
     private static final Logger logger = LoggerFactory.getLogger(LambdaSubProcessNodeInstance.class);
 
-    private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
+    private Map<String, List<ContextInstance>> subContextInstances = new HashMap<>();
 
     private String processInstanceId;
 
@@ -89,14 +89,14 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
         Object o = subProcessFactory.bind(context);
         org.kie.kogito.process.ProcessInstance<?> processInstance = subProcessFactory.createInstance(o);
  
-        org.kie.api.runtime.process.ProcessInstance legacyProcessInstance = ((AbstractProcessInstance<?>)processInstance).internalGetProcessInstance();
-        ((ProcessInstanceImpl) legacyProcessInstance).setMetaData("ParentProcessInstanceId", getProcessInstance().getId());
-        ((ProcessInstanceImpl) legacyProcessInstance).setMetaData("ParentNodeInstanceId", getUniqueId());
-        ((ProcessInstanceImpl) legacyProcessInstance).setMetaData("ParentNodeId", getSubProcessNode().getUniqueId());
-        ((ProcessInstanceImpl) legacyProcessInstance).setParentProcessInstanceId(getProcessInstance().getId());
-        ((ProcessInstanceImpl) legacyProcessInstance).setRootProcessInstanceId(StringUtils.isEmpty(getProcessInstance().getRootProcessInstanceId()) ? getProcessInstance().getId() : getProcessInstance().getRootProcessInstanceId());
-        ((ProcessInstanceImpl) legacyProcessInstance).setRootProcessId(StringUtils.isEmpty(getProcessInstance().getRootProcessId()) ? getProcessInstance().getProcessId() : getProcessInstance().getRootProcessId());
-        ((ProcessInstanceImpl) legacyProcessInstance).setSignalCompletion(getSubProcessNode().isWaitForCompletion());
+        org.kie.api.runtime.process.ProcessInstance pi = ((AbstractProcessInstance<?>)processInstance).internalGetProcessInstance();
+        ((ProcessInstanceImpl) pi).setMetaData("ParentProcessInstanceId", getProcessInstance().getId());
+        ((ProcessInstanceImpl) pi).setMetaData("ParentNodeInstanceId", getUniqueId());
+        ((ProcessInstanceImpl) pi).setMetaData("ParentNodeId", getSubProcessNode().getUniqueId());
+        ((ProcessInstanceImpl) pi).setParentProcessInstanceId(getProcessInstance().getId());
+        ((ProcessInstanceImpl) pi).setRootProcessInstanceId(StringUtils.isEmpty(getProcessInstance().getRootProcessInstanceId()) ? getProcessInstance().getId() : getProcessInstance().getRootProcessInstanceId());
+        ((ProcessInstanceImpl) pi).setRootProcessId(StringUtils.isEmpty(getProcessInstance().getRootProcessId()) ? getProcessInstance().getProcessId() : getProcessInstance().getRootProcessId());
+        ((ProcessInstanceImpl) pi).setSignalCompletion(getSubProcessNode().isWaitForCompletion());
         
         processInstance.start();
         this.processInstanceId = processInstance.id();
@@ -180,7 +180,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
                 }
                 return;
             } else if (getSubProcessNode() != null && !getSubProcessNode().isIndependent() && getSubProcessNode().isAbortParent()){
-                ((ProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED, faultName);
+                getProcessInstance().setState(ProcessInstance.STATE_ABORTED, faultName);
                 return;
             }
 

@@ -177,7 +177,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     public void addContextInstance(String contextId, ContextInstance contextInstance) {
         List<ContextInstance> list = this.subContextInstances.get(contextId);
         if (list == null) {
-            list = new ArrayList<ContextInstance>();
+            list = new ArrayList<>();
             this.subContextInstances.put(contextId, list);
         }
         list.add(contextInstance);

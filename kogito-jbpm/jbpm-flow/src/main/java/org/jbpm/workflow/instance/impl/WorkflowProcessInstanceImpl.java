@@ -107,9 +107,8 @@ import static org.kie.kogito.process.flexible.ItemDescription.Status.COMPLETED;
 /**
  * Default implementation of a RuleFlow process instance.
  */
-public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
-        implements WorkflowProcessInstance,
-                   org.jbpm.workflow.instance.NodeInstanceContainer {
+public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl implements WorkflowProcessInstance,
+                                                                                         org.jbpm.workflow.instance.NodeInstanceContainer {
 
     private static final long serialVersionUID = 510l;
     private static final Logger logger = LoggerFactory.getLogger(WorkflowProcessInstanceImpl.class);
@@ -327,8 +326,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
             return null;
         }
         // else retrieve the variable scope
-        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                getContextInstance(VariableScope.VARIABLE_SCOPE);
+        VariableScopeInstance variableScopeInstance = (VariableScopeInstance) getContextInstance(VariableScope.VARIABLE_SCOPE);
         if (variableScopeInstance == null) {
             return null;
         }
@@ -341,22 +339,19 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         // (as the default variable scope cannot be retrieved as the link to the process could
         // be null and the associated working memory is no longer accessible)
         if (getKnowledgeRuntime() == null) {
-            List<ContextInstance> variableScopeInstances =
-                    getContextInstances(VariableScope.VARIABLE_SCOPE);
+            List<ContextInstance> variableScopeInstances = getContextInstances(VariableScope.VARIABLE_SCOPE);
             if (variableScopeInstances == null) {
                 return null;
             }
             Map<String, Object> result = new HashMap<>();
             for (ContextInstance contextInstance : variableScopeInstances) {
-                Map<String, Object> variables =
-                        ((VariableScopeInstance) contextInstance).getVariables();
+                Map<String, Object> variables = ((VariableScopeInstance) contextInstance).getVariables();
                 result.putAll(variables);
             }
             return result;
         }
         // else retrieve the variable scope
-        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                getContextInstance(VariableScope.VARIABLE_SCOPE);
+        VariableScopeInstance variableScopeInstance = (VariableScopeInstance) getContextInstance(VariableScope.VARIABLE_SCOPE);
         if (variableScopeInstance == null) {
             return null;
         }
@@ -366,8 +361,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     @Override
     public void setVariable(String name, Object value) {
         VariableScope variableScope = (VariableScope) ((ContextContainer) getProcess()).getDefaultContext(VariableScope.VARIABLE_SCOPE);
-        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                getContextInstance(VariableScope.VARIABLE_SCOPE);
+        VariableScopeInstance variableScopeInstance = (VariableScopeInstance) getContextInstance(VariableScope.VARIABLE_SCOPE);
         if (variableScopeInstance == null) {
             throw new IllegalArgumentException("No variable scope found.");
         }
@@ -405,8 +399,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
             // deactivate all node instances of this process instance
             while (!nodeInstances.isEmpty()) {
                 NodeInstance nodeInstance = nodeInstances.get(0);
-                nodeInstance
-                        .cancel();
+                nodeInstance.cancel();
             }
             if (this.slaTimerId != null && !slaTimerId.trim().isEmpty()) {
                 processRuntime.getJobsService().cancelJob(this.slaTimerId);
@@ -466,8 +459,9 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     @Override
     public String toString() {
         return new StringBuilder("WorkflowProcessInstance")
+                .append(" [Id=")
                 .append(getId())
-                .append(" [processId=")
+                .append(",processId=")
                 .append(getProcessId())
                 .append(",state=")
                 .append(getState())
@@ -491,8 +485,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
                 if (node instanceof EventSubProcessNode) {
                     Map<Timer, DroolsAction> timers = ((EventSubProcessNode) node).getTimers();
                     if (timers != null && !timers.isEmpty()) {
-                        EventSubProcessNodeInstance eventSubprocess = (EventSubProcessNodeInstance) getNodeInstance(node);
-                        eventSubprocess.trigger(null, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+                        EventSubProcessNodeInstance eventSubProcess = (EventSubProcessNodeInstance) getNodeInstance(node);
+                        eventSubProcess.trigger(null, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
                     }
                 }
             }

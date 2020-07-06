@@ -52,13 +52,13 @@ public class CacheProcessInstances implements MutableProcessInstances {
             return Optional.empty();
         }
         
-        return (Optional<? extends ProcessInstance>) Optional.of(marshaller.unmarshallProcessInstance(data, process));
+        return Optional.of(marshaller.unmarshallProcessInstance(data, process));
     }
 
     
     @Override
     public Collection<? extends ProcessInstance> values() {
-        return (Collection<? extends ProcessInstance>) cache.values()
+        return cache.values()
                 .parallelStream()
                 .map(data -> marshaller.unmarshallProcessInstance(data, process))
                 .collect(Collectors.toList());
@@ -107,7 +107,7 @@ public class CacheProcessInstances implements MutableProcessInstances {
             ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(() -> {
                 byte[] reloaded = cache.get(resolvedId);
                 if (reloaded != null) {
-                    return ((AbstractProcessInstance<?>)marshaller.unmarshallProcessInstance(reloaded, process, (AbstractProcessInstance<?>) instance)).internalGetProcessInstance();                    
+                    return ((AbstractProcessInstance<?>) marshaller.unmarshallProcessInstance(reloaded, process, (AbstractProcessInstance<?>) instance)).internalGetProcessInstance();                    
                 }
                 
                 return null;

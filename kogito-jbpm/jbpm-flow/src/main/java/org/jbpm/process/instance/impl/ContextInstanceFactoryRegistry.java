@@ -33,7 +33,6 @@ import org.jbpm.process.instance.context.exception.CompensationScopeInstance;
 import org.jbpm.process.instance.context.exception.DefaultExceptionScopeInstance;
 import org.jbpm.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
-import org.jbpm.process.instance.impl.factory.ReuseContextInstanceFactory;
 
 public class ContextInstanceFactoryRegistry {
     
@@ -43,7 +42,7 @@ public class ContextInstanceFactoryRegistry {
     private Map<Class<? extends Context>, ContextInstanceFactory> registry;
 
     public ContextInstanceFactoryRegistry() {
-        this.registry = new HashMap<Class<? extends Context>, ContextInstanceFactory>();
+        this.registry = new HashMap<>();
     }
 
     public void register(Class<? extends Context> cls,
@@ -70,12 +69,11 @@ public class ContextInstanceFactoryRegistry {
                                    processInstance);
     }
 
-    private static ContextInstance getContextInstance(
-            Supplier<? extends ContextInstance> supplier,
-            Context context,
-            ContextInstanceContainer contextInstanceContainer,
-            ProcessInstance processInstance) {
-        ContextInstance result = contextInstanceContainer.getContextInstance( context.getType(), context.getId() );
+    private static ContextInstance getContextInstance(Supplier<? extends ContextInstance> supplier,
+                                                      Context context,
+                                                      ContextInstanceContainer contextInstanceContainer,
+                                                      ProcessInstance processInstance) {
+        ContextInstance result = contextInstanceContainer.getContextInstance(context.getType(), context.getId());
         if (result != null) {
             return result;
         }
