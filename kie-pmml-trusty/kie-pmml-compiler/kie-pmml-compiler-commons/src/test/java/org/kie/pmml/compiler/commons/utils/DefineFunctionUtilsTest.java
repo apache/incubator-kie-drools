@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.Aggregate;
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.DefineFunction;
 import org.dmg.pmml.Discretize;
 import org.dmg.pmml.Expression;
@@ -41,8 +42,12 @@ import org.junit.Test;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getParameterFields;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.DOUBLE_CLASS;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.OBJECT_CLASS;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.STRING_CLASS;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.applySupplier;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.constantSupplier;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.fieldRefSupplier;
@@ -110,7 +115,7 @@ public class DefineFunctionUtilsTest {
                 return null;
             }
         };
-        DefineFunctionUtils.getExpressionMethodDeclaration("", expression, Collections.emptyList());
+        DefineFunctionUtils.getExpressionMethodDeclaration("", expression, DataType.STRING, Collections.emptyList());
     }
 
     @Test
@@ -118,7 +123,7 @@ public class DefineFunctionUtilsTest {
         for (Supplier<Expression> supplier : unsupportedExpressionSupplier) {
             Expression expression = supplier.get();
             try {
-                DefineFunctionUtils.getExpressionMethodDeclaration("", expression, Collections.emptyList());
+                DefineFunctionUtils.getExpressionMethodDeclaration("", expression, DataType.STRING, Collections.emptyList());
                 fail(String.format("Expecting KiePMMLException for %s", expression.getClass()));
             } catch (Exception e) {
                 assertEquals(KiePMMLException.class, e.getClass());
@@ -131,7 +136,7 @@ public class DefineFunctionUtilsTest {
         for (Supplier<Expression> supplier : supportedExpressionSupplier) {
             Expression expression = supplier.get();
             try {
-                DefineFunctionUtils.getExpressionMethodDeclaration("METHOD_NAME", expression, Collections.emptyList());
+                DefineFunctionUtils.getExpressionMethodDeclaration("METHOD_NAME", expression, DataType.STRING, Collections.emptyList());
             } catch (Exception e) {
                 fail(String.format("Unexpected %s for %s", e, expression.getClass()));
             }
@@ -140,17 +145,17 @@ public class DefineFunctionUtilsTest {
 
     @Test(expected = KiePMMLException.class)
     public void getAggregatedMethodDeclaration() {
-        DefineFunctionUtils.getAggregatedMethodDeclaration("", new Aggregate(), Collections.emptyList());
+        DefineFunctionUtils.getAggregatedMethodDeclaration("", new Aggregate(), OBJECT_CLASS, Collections.emptyList());
     }
 
     @Test
     public void getApplyMethodDeclaration() {
         String methodName = "METHOD_NAME";
-        MethodDeclaration retrieved = DefineFunctionUtils.getApplyMethodDeclaration(methodName, applySupplier.get(), Collections.emptyList());
+        MethodDeclaration retrieved = DefineFunctionUtils.getApplyMethodDeclaration(methodName, applySupplier.get(), OBJECT_CLASS, Collections.emptyList());
         String expected = String.format("java.lang.Object %s() {\n" +
                                                 "    java.lang.Object variableapplyVariableConstant1 = 34.6;\n" +
                                                 "    java.util.Optional<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((org.kie.pmml.commons.model.tuples.KiePMMLNameValue lmbdParam) -> java.util.Objects.equals(\"FIELD_REF\", lmbdParam.getName())).findFirst();\n" +
-                                                "    java.lang.Object variableapplyVariableFieldRef2 = kiePMMLNameValue.map(org.kie.pmml.commons.model.tuples.KiePMMLNameValue::getValue).orElse(null);\n" +
+                                                "    java.lang.Object variableapplyVariableFieldRef2 = (java.lang.Object) kiePMMLNameValue.map(org.kie.pmml.commons.model.tuples.KiePMMLNameValue::getValue).orElse(null);\n" +
                                                 "    java.lang.Object applyVariable = this.FUNCTION_NAME(param1, variableapplyVariableConstant1, variableapplyVariableFieldRef2);\n" +
                                                 "    return applyVariable;\n" +
                                                 "}", methodName);
@@ -160,7 +165,7 @@ public class DefineFunctionUtilsTest {
     @Test
     public void getConstantMethodDeclaration() {
         String methodName = "METHOD_NAME";
-        MethodDeclaration retrieved = DefineFunctionUtils.getConstantMethodDeclaration(methodName, constantSupplier.get(), Collections.emptyList());
+        MethodDeclaration retrieved = DefineFunctionUtils.getConstantMethodDeclaration(methodName, constantSupplier.get(), DOUBLE_CLASS, Collections.emptyList());
         String expected = String.format("java.lang.Double %s() {\n" +
                                                 "    java.lang.Double constantVariable = 34.6;\n" +
                                                 "    return constantVariable;\n" +
@@ -170,16 +175,16 @@ public class DefineFunctionUtilsTest {
 
     @Test(expected = KiePMMLException.class)
     public void getDiscretizeMethodDeclaration() {
-        DefineFunctionUtils.getDiscretizeMethodDeclaration("", new Discretize(), Collections.emptyList());
+        DefineFunctionUtils.getDiscretizeMethodDeclaration("", new Discretize(), OBJECT_CLASS, Collections.emptyList());
     }
 
     @Test
     public void getFieldRefMethodDeclaration() {
         String methodName = "METHOD_NAME";
-        MethodDeclaration retrieved = DefineFunctionUtils.getFieldRefMethodDeclaration(methodName, fieldRefSupplier.get(), Collections.emptyList());
-        String expected = String.format("java.lang.Object %s() {\n" +
+        MethodDeclaration retrieved = DefineFunctionUtils.getFieldRefMethodDeclaration(methodName, fieldRefSupplier.get(), STRING_CLASS, Collections.emptyList());
+        String expected = String.format("java.lang.String %s() {\n" +
                                                 "    java.util.Optional<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((org.kie.pmml.commons.model.tuples.KiePMMLNameValue lmbdParam) -> java.util.Objects.equals(\"FIELD_REF\", lmbdParam.getName())).findFirst();\n" +
-                                                "    java.lang.Object fieldRefVariable = kiePMMLNameValue.map(org.kie.pmml.commons.model.tuples.KiePMMLNameValue::getValue).orElse(null);\n" +
+                                                "    java.lang.String fieldRefVariable = (java.lang.String) kiePMMLNameValue.map(org.kie.pmml.commons.model.tuples.KiePMMLNameValue::getValue).orElse(null);\n" +
                                                 "    return fieldRefVariable;\n" +
                                                 "}", methodName);
         assertEquals(expected, retrieved.toString());
@@ -187,27 +192,27 @@ public class DefineFunctionUtilsTest {
 
     @Test(expected = KiePMMLException.class)
     public void getLagMethodDeclaration() {
-        DefineFunctionUtils.getLagMethodDeclaration("", new Lag(), Collections.emptyList());
+        DefineFunctionUtils.getLagMethodDeclaration("", new Lag(), OBJECT_CLASS, Collections.emptyList());
     }
 
     @Test(expected = KiePMMLException.class)
     public void getMapValuesMethodDeclaration() {
-        DefineFunctionUtils.getMapValuesMethodDeclaration("", new MapValues(), Collections.emptyList());
+        DefineFunctionUtils.getMapValuesMethodDeclaration("", new MapValues(), OBJECT_CLASS, Collections.emptyList());
     }
 
     @Test(expected = KiePMMLException.class)
     public void getNormContinuousMethodDeclaration() {
-        DefineFunctionUtils.getNormContinuousMethodDeclaration("", new NormContinuous(), Collections.emptyList());
+        DefineFunctionUtils.getNormContinuousMethodDeclaration("", new NormContinuous(), OBJECT_CLASS, Collections.emptyList());
     }
 
     @Test(expected = KiePMMLException.class)
     public void getNormDiscreteMethodDeclaration() {
-        DefineFunctionUtils.getNormDiscreteMethodDeclaration("", new NormDiscrete(), Collections.emptyList());
+        DefineFunctionUtils.getNormDiscreteMethodDeclaration("", new NormDiscrete(), OBJECT_CLASS, Collections.emptyList());
     }
 
     @Test(expected = KiePMMLException.class)
     public void getTextIndexMethodDeclaration() {
-        DefineFunctionUtils.getTextIndexMethodDeclaration("", new TextIndex(), Collections.emptyList());
+        DefineFunctionUtils.getTextIndexMethodDeclaration("", new TextIndex(), OBJECT_CLASS, Collections.emptyList());
     }
 
     @Test
@@ -220,8 +225,10 @@ public class DefineFunctionUtilsTest {
         }
     }
 
+
     private void commonVerifyParameterClassOrInterfaceType(ClassOrInterfaceType toVerify, ParameterField parameterField) {
         String expectedClass = ModelUtils.getBoxedClassName(parameterField);
         assertEquals(expectedClass, toVerify.toString());
     }
+
 }
