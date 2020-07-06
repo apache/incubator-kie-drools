@@ -6,6 +6,15 @@
     <DataField name="score" optype="continuous" dataType="double"/>
   </DataDictionary>
   <TransformationDictionary>
+    <DefineFunction name="fun_input1_fieldref" optype="continuous" dataType="double">
+      <ParameterField name="input1_fake"/>
+      <FieldRef field="input1_fake"/>
+    </DefineFunction>
+    <DerivedField name="der_fun_input1_fieldref" optype="continuous" dataType="double">
+      <Apply function="fun_input1_fieldref">
+        <FieldRef field="input1"/>
+      </Apply>
+    </DerivedField>
     <DerivedField name="der_input1" optype="continuous" dataType="double">
       <FieldRef field="input1"/>
     </DerivedField>
@@ -18,7 +27,7 @@
   </TransformationDictionary>
   <Scorecard modelName="SimpleScorecardWithTransformations" functionName="regression" useReasonCodes="true" reasonCodeAlgorithm="pointsBelow" initialScore="5" baselineMethod="other">
     <MiningSchema>
-      <MiningField name="der_input1" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="input1" usageType="active" invalidValueTreatment="asMissing"/>
       <MiningField name="input2" usageType="active" invalidValueTreatment="asMissing"/>
       <MiningField name="score" usageType="target"/>
     </MiningSchema>
@@ -39,18 +48,18 @@
     <Characteristics>
       <Characteristic name="input1Score" baselineScore="4" reasonCode="Input1ReasonCode">
         <Attribute partialScore="-12">
-          <SimplePredicate field="der_input1" operator="lessOrEqual" value="10"/>
+          <SimplePredicate field="der_fun_input1_fieldref" operator="lessOrEqual" value="10"/>
         </Attribute>
         <Attribute partialScore="50">
-          <SimplePredicate field="der_input1" operator="greaterThan" value="10"/>
+          <SimplePredicate field="der_fun_input1_fieldref" operator="greaterThan" value="10"/>
         </Attribute>
       </Characteristic>
       <Characteristic name="input2Score" baselineScore="8" reasonCode="Input2ReasonCode">
         <Attribute partialScore="-8">
-          <SimplePredicate field="input2" operator="lessOrEqual" value="-5"/>
+          <SimplePredicate field="der_input2" operator="lessOrEqual" value="-5"/>
         </Attribute>
         <Attribute partialScore="32">
-          <SimplePredicate field="input2" operator="greaterThan" value="-5"/>
+          <SimplePredicate field="der_input2" operator="greaterThan" value="-5"/>
         </Attribute>
       </Characteristic>
     </Characteristics>
