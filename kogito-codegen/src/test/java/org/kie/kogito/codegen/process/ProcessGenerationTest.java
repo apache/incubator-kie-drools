@@ -15,6 +15,23 @@
 
 package org.kie.kogito.codegen.process;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Constraint;
@@ -32,6 +49,7 @@ import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.Join;
 import org.jbpm.workflow.core.node.MilestoneNode;
+import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.StateBasedNode;
@@ -46,23 +64,6 @@ import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.process.impl.AbstractProcess;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.jbpm.ruleflow.core.Metadata.ACTION;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
@@ -316,6 +317,19 @@ public class ProcessGenerationTest extends AbstractCodegenTest {
         assertNodes(expected.getNodes(), current.getNodes());
     };
 
+    private static final BiConsumer<Node, Node> ruleSetNodeAsserter = (eNode, cNode) -> {
+        assertEquals(RuleSetNode.class, eNode.getClass());
+        assertEquals(RuleSetNode.class, cNode.getClass());
+        RuleSetNode expected = (RuleSetNode) eNode;
+        RuleSetNode current = (RuleSetNode) cNode;
+        expected.getInMappings()
+                .forEach((k, eMapping) -> assertEquals(eMapping, current.getInMapping(k), "inMapping: " + k));
+        expected.getOutMappings()
+                .forEach((k, eMapping) -> assertEquals(eMapping, current.getOutMapping(k), "outMapping: " + k));
+        expected.getParameters()
+                .forEach((k, eParam) -> assertEquals(eParam, current.getParameter(k), "parameter: " + k));
+    };
+
     private static final Map<Class<? extends Node>, BiConsumer<Node, Node>> nodeAsserters = new HashMap<>();
 
     static {
@@ -333,6 +347,7 @@ public class ProcessGenerationTest extends AbstractCodegenTest {
         nodeAsserters.put(ActionNode.class, actionNodeAsserter);
         nodeAsserters.put(MilestoneNode.class, milestoneNodeAsserter);
         nodeAsserters.put(CompositeNode.class, compositeNodeAsserter);
+        nodeAsserters.put(RuleSetNode.class, ruleSetNodeAsserter);
     }
 
     private static void assertNode(Node expected, Node current) {

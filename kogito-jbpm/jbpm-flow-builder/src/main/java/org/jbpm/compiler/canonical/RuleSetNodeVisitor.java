@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
 
+import static org.jbpm.ruleflow.core.factory.RuleSetNodeFactory.METHOD_PARAMETER;
 import static org.jbpm.ruleflow.core.factory.RuleSetNodeFactory.METHOD_DECISION;
 
 public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
@@ -79,6 +80,7 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
         }
 
         addNodeMappings(node, body, getNodeId(node));
+        addParams(node, body, getNodeId(node));
 
         NameExpr methodScope = new NameExpr(getNodeId(node));
         MethodCallExpr m;
@@ -96,6 +98,11 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
 
         visitMetaData(node.getMetaData(), body, getNodeId(node));
         body.addStatement(getDoneMethod(getNodeId(node)));
+    }
+
+    private void addParams(RuleSetNode node, BlockStmt body, String nodeId) {
+        node.getParameters()
+                .forEach((k, v) -> body.addStatement(getFactoryMethod(nodeId, METHOD_PARAMETER, new StringLiteralExpr(k), new StringLiteralExpr(v.toString()))));
     }
 
     private MethodCallExpr handleDecision(RuleSetNode.RuleType.Decision ruleType) {

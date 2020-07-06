@@ -30,6 +30,7 @@ import java.util.function.Supplier;
 public class RuleSetNodeFactory extends StateBasedNodeFactory implements MappableNodeFactory {
 
     public static final String METHOD_DECISION = "decision";
+    public static final String METHOD_PARAMETER = "parameter";
 
     public RuleSetNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
         super(nodeContainerFactory, nodeContainer, id);
@@ -90,6 +91,11 @@ public class RuleSetNodeFactory extends StateBasedNodeFactory implements Mappabl
         getRuleSetNode().setRuleType(RuleSetNode.RuleType.decision(namespace, model, decision));
         getRuleSetNode().setLanguage(RuleSetNode.DMN_LANG);
         getRuleSetNode().setDecisionModel(supplier);
+        return this;
+    }
+
+    public RuleSetNodeFactory parameter(String name, Object value) {
+        getRuleSetNode().setParameter(name, value);
         return this;
     }
 }

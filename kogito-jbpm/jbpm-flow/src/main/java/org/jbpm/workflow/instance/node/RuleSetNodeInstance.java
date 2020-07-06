@@ -116,7 +116,6 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                 RuleSetNode.RuleType.Decision decisionModel = (RuleSetNode.RuleType.Decision) ruleType;
                 String namespace = resolveVariable(decisionModel.getNamespace());
                 String model = resolveVariable(decisionModel.getModel());
-                String decision = resolveVariable(decisionModel.getDecision());
 
                 DecisionModel modelInstance =
                         Optional.ofNullable(getRuleSetNode().getDecisionModel())
