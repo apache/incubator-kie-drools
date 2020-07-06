@@ -60,8 +60,14 @@ pipeline {
                 dir("kogito-examples-persistence") {
                     script {
                         githubscm.checkoutIfExists('kogito-examples', changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
-                        // Don't run with tests so far, see: https://github.com/quarkusio/quarkus/issues/6885
-                        maven.runMavenWithSubmarineSettings('clean install -Ppersistence', true)
+                        maven.runMavenWithSubmarineSettings('clean install -Ppersistence', false)
+                    }
+                }
+                // Use a separate dir for events to not overwrite the test results
+                dir("kogito-examples-events") {
+                    script {
+                        githubscm.checkoutIfExists('kogito-examples', changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
+                        maven.runMavenWithSubmarineSettings('clean install -Pevents', false)
                     }
                 }
             }
