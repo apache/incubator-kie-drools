@@ -55,6 +55,8 @@ import org.kie.kogito.UserTaskParam.ParamType;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.jbpm.ruleflow.core.Metadata.CUSTOM_AUTO_START;
+import static org.jbpm.ruleflow.core.Metadata.DATA_OUTPUTS;
 
 public class UserTaskModelMetaData {
 
@@ -102,48 +104,52 @@ public class UserTaskModelMetaData {
         return modelClass.toString();
     }
 
-    
+
     public String getInputModelClassName() {
         return inputModelClassName;
     }
 
-    
+
     public void setInputModelClassName(String inputModelClassName) {
         this.inputModelClassName = inputModelClassName;
     }
 
-    
-    public String getInputMoodelClassSimpleName() {
+
+    public String getInputModelClassSimpleName() {
         return inputModelClassSimpleName;
     }
 
-    
-    public void setInputMoodelClassSimpleName(String inputMoodelClassSimpleName) {
-        this.inputModelClassSimpleName = inputMoodelClassSimpleName;
+
+    public void setInputModelClassSimpleName(String inputModelClassSimpleName) {
+        this.inputModelClassSimpleName = inputModelClassSimpleName;
     }
 
-    
+
     public String getOutputModelClassName() {
         return outputModelClassName;
     }
 
-    
+
     public void setOutputModelClassName(String outputModelClassName) {
         this.outputModelClassName = outputModelClassName;
     }
 
-    
-    public String getOutputMoodelClassSimpleName() {
+
+    public String getOutputModelClassSimpleName() {
         return outputModelClassSimpleName;
     }
 
-    
-    public void setOutputMoodelClassSimpleName(String outputMoodelClassSimpleName) {
-        this.outputModelClassSimpleName = outputMoodelClassSimpleName;
+
+    public void setOutputModelClassSimpleName(String outputModelClassSimpleName) {
+        this.outputModelClassSimpleName = outputModelClassSimpleName;
     }
-    
+
     public String getName() {
         return (String) humanTaskNode.getWork().getParameters().getOrDefault(TASK_NAME, humanTaskNode.getName());
+    }
+
+    public String getNodeName() {
+        return humanTaskNode.getName();
     }
     
     public long getId() {
@@ -299,7 +305,7 @@ public class UserTaskModelMetaData {
                 // check if given mapping is an expression
                 Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(entry.getValue());
                 if (matcher.find()) {
-                    Map<String, String> dataOutputs = (Map<String, String>) humanTaskNode.getMetaData("DataOutputs");
+                    Map<String, String> dataOutputs = (Map<String, String>) humanTaskNode.getMetaData(DATA_OUTPUTS);
                     variable = new Variable();
                     variable.setName(entry.getKey());
                     variable.setType(new ObjectDataType(dataOutputs.get(entry.getKey())));
@@ -331,5 +337,10 @@ public class UserTaskModelMetaData {
         toMapBody.addStatement(new ReturnStmt(new NameExpr("params")));
         toMapMethod.ifPresent(methodDeclaration -> methodDeclaration.setBody(toMapBody));
         return compilationUnit;
+    }
+
+    public boolean isAdHoc() {
+        return !Boolean.parseBoolean((String) humanTaskNode.getMetaData(CUSTOM_AUTO_START))
+                && (humanTaskNode.getIncomingConnections() == null || humanTaskNode.getIncomingConnections().isEmpty());
     }
 }

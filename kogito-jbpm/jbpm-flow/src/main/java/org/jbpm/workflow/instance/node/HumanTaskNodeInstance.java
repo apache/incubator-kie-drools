@@ -16,8 +16,6 @@
 
 package org.jbpm.workflow.instance.node;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
 import org.drools.core.process.instance.WorkItem;
@@ -38,10 +36,7 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
     private static final String BUSINESSADMINISTRATOR_ID = "BusinessAdministratorId";
     private static final String BUSINESSADMINISTRATOR_GROUP_ID = "BusinessAdministratorGroupId";
     private static final String EXCLUDED_OWNER_ID = "ExcludedOwnerId";
-    
-    protected static final List<String> INTERNAL_FIELDS = Arrays.asList("TaskName", "NodeName", "ActorId", "GroupId", "Priority", "Comment", "Skippable", "Content", "Locale");
 
-    
     private transient SwimlaneContextInstance swimlaneContextInstance;
     
     public HumanTaskNode getHumanTaskNode() {
@@ -57,7 +52,7 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
         HumanTaskWorkItemImpl workItem = (HumanTaskWorkItemImpl)super.createWorkItem(workItemNode);
         String actorId = assignWorkItem(workItem);
         if (actorId != null) {
-            ((org.drools.core.process.instance.WorkItem) workItem).setParameter("ActorId", actorId);
+            workItem.setParameter(ACTOR_ID, actorId);
         }
         
         workItem.setTaskName((String) workItem.getParameter("NodeName"));
@@ -81,7 +76,7 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
         // if no actor can be assigned based on the swimlane, check whether an
         // actor is specified for this human task
         if (actorId == null) {
-        	actorId = (String) workItem.getParameter("ActorId");
+        	actorId = (String) workItem.getParameter(ACTOR_ID);
         	if (actorId != null && swimlaneContextInstance != null && actorId.split(separator).length == 1) {
         		swimlaneContextInstance.setActorId(swimlaneName, actorId);
         		workItem.setParameter("SwimlaneActorId", actorId);
@@ -95,7 +90,7 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
         processAssigment(BUSINESSADMINISTRATOR_GROUP_ID, workItem, ((HumanTaskWorkItemImpl) workItem).getAdminGroups());
         
         // always return ActorId from workitem as SwimlaneActorId is kept as separate parameter
-        return (String) workItem.getParameter("ActorId");
+        return (String) workItem.getParameter(ACTOR_ID);
     }
     
     private SwimlaneContextInstance getSwimlaneContextInstance(String swimlaneName) {
@@ -120,7 +115,7 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
         String swimlaneName = getHumanTaskNode().getSwimlane();
         SwimlaneContextInstance swimlaneContextInstance = getSwimlaneContextInstance(swimlaneName);
         if (swimlaneContextInstance != null) {
-            String newActorId = (workItem instanceof HumanTaskWorkItem) ? ((HumanTaskWorkItem) workItem).getActualOwner() : (String)workItem.getParameter("ActorId");
+            String newActorId = (workItem instanceof HumanTaskWorkItem) ? ((HumanTaskWorkItem) workItem).getActualOwner() : (String)workItem.getParameter(ACTOR_ID);
             if (newActorId != null) {
                 swimlaneContextInstance.setActorId(swimlaneName, newActorId);
             }

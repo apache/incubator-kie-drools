@@ -50,6 +50,7 @@ public class Metadata {
     public static final String OUTGOING_CONNECTION = "OutgoingConnection";
     public static final String CUSTOM_ACTIVATION_CONDITION = "customActivationCondition";
     public static final String COMPLETION_CONDITION = "completionCondition";
+    public static final String DATA_OUTPUTS = "DataOutputs";
 
     private Metadata() {
     }

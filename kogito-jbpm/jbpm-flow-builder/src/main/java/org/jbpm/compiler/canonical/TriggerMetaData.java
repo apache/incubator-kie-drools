@@ -131,7 +131,7 @@ public class TriggerMetaData {
                 (String) nodeMetaData.get(MAPPING_VARIABLE),
                 String.valueOf(node.getId()))
                 .validate();
-        metadata.getTriggers().add(triggerMetaData);
+        metadata.addTrigger(triggerMetaData);
 
         // and add trigger action
         BlockStmt actionBody = new BlockStmt();

@@ -16,6 +16,10 @@
 
 package org.jbpm.compiler.canonical;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
+
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.CastExpr;
@@ -38,14 +42,13 @@ import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
+import org.jbpm.workflow.core.node.HumanTaskNode;
+import org.jbpm.workflow.core.node.StartNode;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
-
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.jbpm.ruleflow.core.Metadata.CUSTOM_AUTO_START;
 import static org.jbpm.ruleflow.core.Metadata.HIDDEN;
 import static org.jbpm.ruleflow.core.factory.MappableNodeFactory.METHOD_IN_MAPPING;
 import static org.jbpm.ruleflow.core.factory.MappableNodeFactory.METHOD_OUT_MAPPING;
@@ -58,6 +61,15 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
 
     public void visitNode(T node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         visitNode(FACTORY_FIELD_NAME, node, body, variableScope, metadata);
+        if (isAdHocNode(node) && !(node instanceof HumanTaskNode)) {
+            metadata.addSignal(node.getName(), null);
+        }
+    }
+
+    private boolean isAdHocNode(Node node) {
+        return (node.getIncomingConnections() == null || node.getIncomingConnections().isEmpty())
+                && !(node instanceof StartNode)
+                && !Boolean.parseBoolean((String) node.getMetaData().get(CUSTOM_AUTO_START));
     }
 
     protected String getNodeId(T node) {
@@ -184,4 +196,5 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
                 conditionBody
         );
     }
+
 }

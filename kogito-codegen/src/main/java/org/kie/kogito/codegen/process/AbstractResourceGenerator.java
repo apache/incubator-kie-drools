@@ -22,6 +22,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier.Keyword;
@@ -59,7 +60,6 @@ public abstract class AbstractResourceGenerator {
 
     private final GeneratorContext context;
     private WorkflowProcess process;
-    private final String packageName;
     private final String resourceClazzName;
     private final String processClazzName;
     private String processId;
@@ -70,6 +70,7 @@ public abstract class AbstractResourceGenerator {
     private DependencyInjectionAnnotator annotator;
 
     private boolean startable;
+    private boolean dynamic;
     private List<UserTaskModelMetaData> userTasks;
     private Map<String, String> signals;
 
@@ -81,14 +82,13 @@ public abstract class AbstractResourceGenerator {
             String appCanonicalName) {
         this.context = context;
         this.process = process;
-        this.packageName = process.getPackageName();
         this.processId = process.getId();
         this.processName = processId.substring(processId.lastIndexOf('.') + 1);
         this.appCanonicalName = appCanonicalName;
         String classPrefix = StringUtils.capitalize(processName);
         this.resourceClazzName = classPrefix + "Resource";
-        this.relativePath = packageName.replace(".", "/") + "/" + resourceClazzName + ".java";
-        this.modelfqcn = modelfqcn;
+        this.relativePath = process.getPackageName().replace(".", "/") + "/" + resourceClazzName + ".java";
+        this.modelfqcn = modelfqcn + "Output";
         this.dataClazzName = modelfqcn.substring(modelfqcn.lastIndexOf('.') + 1);
         this.processClazzName = processfqcn;
     }
@@ -108,8 +108,9 @@ public abstract class AbstractResourceGenerator {
         return this;
     }
 
-    public AbstractResourceGenerator withTriggers(boolean startable) {
+    public AbstractResourceGenerator withTriggers(boolean startable, boolean dynamic) {
         this.startable = startable;
+        this.dynamic = dynamic;
         return this;
     }
 
@@ -124,14 +125,13 @@ public abstract class AbstractResourceGenerator {
                 this.getClass().getResourceAsStream(getResourceTemplate()));
         clazz.setPackageDeclaration(process.getPackageName());
         clazz.addImport(modelfqcn);
-        clazz.addImport(modelfqcn + "Output");
 
         ClassOrInterfaceDeclaration template = clazz
                 .findFirst(ClassOrInterfaceDeclaration.class)
                 .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
 
         template.setName(resourceClazzName);
-
+        AtomicInteger index = new AtomicInteger(0);
         //Generate signals endpoints
         Optional.ofNullable(signals)
                 .ifPresent(signalsMap -> {
@@ -143,7 +143,6 @@ public abstract class AbstractResourceGenerator {
                             .findFirst(ClassOrInterfaceDeclaration.class)
                             .orElseThrow(() -> new NoSuchElementException("SignalResourceTemplate class not found!"));
 
-                    AtomicInteger index = new AtomicInteger(0);
                     signalsMap.entrySet()
                             .stream()
                             .filter(e -> Objects.nonNull(e.getKey()))
@@ -178,6 +177,7 @@ public abstract class AbstractResourceGenerator {
                                 template.findAll(StringLiteralExpr.class).forEach(vv -> {
                                     String s = vv.getValue();
                                     String interpolated = s.replace("$signalName$", signalName);
+                                    interpolated = interpolated.replace("$signalPath$", sanitizeName(signalName));
                                     vv.setString(interpolated);
                                 });
                             });
@@ -196,11 +196,11 @@ public abstract class AbstractResourceGenerator {
                     .findFirst(ClassOrInterfaceDeclaration.class)
                     .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
             for (UserTaskModelMetaData userTask : userTasks) {
-
+                String methodSuffix = sanitizeName(userTask.getName()) + "_" + index.getAndIncrement();
                 userTaskTemplate.findAll(MethodDeclaration.class).forEach(md -> {
 
                     MethodDeclaration cloned = md.clone();
-                    template.addMethod(cloned.getName() + "_" + userTask.getId(), Keyword.PUBLIC)
+                    template.addMethod(cloned.getName() + "_" + methodSuffix, Keyword.PUBLIC)
                             .setType(cloned.getType())
                             .setParameters(cloned.getParameters())
                             .setBody(cloned.getBody().get())
@@ -208,9 +208,14 @@ public abstract class AbstractResourceGenerator {
                 });
 
                 template.findAll(StringLiteralExpr.class).forEach(s -> interpolateUserTaskStrings(s, userTask));
-
-                template.findAll(ClassOrInterfaceType.class).forEach(c -> interpolateUserTaskTypes(c, userTask.getInputMoodelClassSimpleName(), userTask.getOutputMoodelClassSimpleName()));
+                template.findAll(ClassOrInterfaceType.class).forEach(c -> interpolateUserTaskTypes(c, userTask.getInputModelClassSimpleName(), userTask.getOutputModelClassSimpleName()));
                 template.findAll(NameExpr.class).forEach(c -> interpolateUserTaskNameExp(c, userTask));
+                if(!userTask.isAdHoc()) {
+                    template.findAll(MethodDeclaration.class)
+                            .stream()
+                            .filter(md -> md.getNameAsString().equals("signal_" + methodSuffix))
+                            .collect(Collectors.toList()).forEach(template::remove);
+                }
             }
         }
 
@@ -236,11 +241,9 @@ public abstract class AbstractResourceGenerator {
         }
 
         // if triggers are not empty remove createResource method as there is another trigger to start process instances
-        if (!startable || !isPublic()) {
+        if ((!startable && !dynamic) || !isPublic()) {
             Optional<MethodDeclaration> createResourceMethod = template.findFirst(MethodDeclaration.class).filter(md -> md.getNameAsString().equals("createResource_" + processName));
-            if (createResourceMethod.isPresent()) {
-                template.remove(createResourceMethod.get());
-            }
+            createResourceMethod.ifPresent(template::remove);
         }
 
         if (useInjection()) {
@@ -311,19 +314,18 @@ public abstract class AbstractResourceGenerator {
 
     private void interpolateUserTaskStrings(StringLiteralExpr vv, UserTaskModelMetaData userTask) {
         String s = vv.getValue();
-
-        String interpolated =
-                s.replace("$taskname$", userTask.getName().replaceAll("\\s", "_"));
+        String interpolated = s.replace("$taskName$", sanitizeName(userTask.getName()));
+        interpolated = interpolated.replace("$taskNodeName$", userTask.getNodeName());
         vv.setString(interpolated);
     }
 
     private void interpolateUserTaskNameExp(NameExpr name, UserTaskModelMetaData userTask) {
         String identifier = name.getNameAsString();
 
-        name.setName(identifier.replace("$TaskInput$", userTask.getInputMoodelClassSimpleName()));
+        name.setName(identifier.replace("$TaskInput$", userTask.getInputModelClassSimpleName()));
 
         identifier = name.getNameAsString();
-        name.setName(identifier.replace("$TaskOutput$", userTask.getOutputMoodelClassSimpleName()));
+        name.setName(identifier.replace("$TaskOutput$", userTask.getOutputModelClassSimpleName()));
     }
 
     private void interpolateMethods(MethodDeclaration m) {
@@ -351,6 +353,10 @@ public abstract class AbstractResourceGenerator {
     private void interpolateUserTaskTypeArguments(NodeList<Type> ta, String inputClazzName, String outputClazzName) {
         ta.stream().map(Type::asClassOrInterfaceType)
                 .forEach(t -> interpolateUserTaskTypes(t, inputClazzName, outputClazzName));
+    }
+
+    private String sanitizeName(String name) {
+        return name.replaceAll("\\s", "_");
     }
 
     public String generatedFilePath() {

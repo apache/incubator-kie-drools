@@ -196,7 +196,6 @@ public class ProcessCodegen extends AbstractGenerator {
         }
     }
 
-    private String packageName;
     private String applicationCanonicalName;
     private DependencyInjectionAnnotator annotator;
 
@@ -231,7 +230,6 @@ public class ProcessCodegen extends AbstractGenerator {
     }
 
     public void setPackageName(String packageName) {
-        this.packageName = packageName;
         this.moduleGenerator = new ProcessesContainerGenerator(packageName);
         this.applicationCanonicalName = packageName + ".Application";
     }
@@ -356,7 +354,7 @@ public class ProcessCodegen extends AbstractGenerator {
                             .withDependencyInjection(annotator)
                             .withUserTasks(processIdToUserTaskModel.get(workFlowProcess.getId()))
                             .withSignals(metaData.getSignals())
-                            .withTriggers(metaData.isStartable()))
+                            .withTriggers(metaData.isStartable(), metaData.isDynamic()))
                     .ifPresent(rgs::add);
 
             if (metaData.getTriggers() != null) {

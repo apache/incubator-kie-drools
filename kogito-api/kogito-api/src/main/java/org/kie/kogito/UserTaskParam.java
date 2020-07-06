@@ -25,9 +25,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(FIELD)
 public @interface UserTaskParam {
 
+    String VALUE_PARAM = "value";
+
     ParamType value();
 
-    public enum ParamType {
+    enum ParamType {
         INPUT,
         OUTPUT
     }

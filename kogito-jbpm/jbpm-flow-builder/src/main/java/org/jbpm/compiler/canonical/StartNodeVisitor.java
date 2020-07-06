@@ -63,7 +63,7 @@ public class StartNodeVisitor extends AbstractNodeVisitor<StartNode> {
 
         } else if (node.getTriggers() != null && !node.getTriggers().isEmpty()) {
             Map<String, Object> nodeMetaData = node.getMetaData();
-            metadata.getTriggers().add(new TriggerMetaData((String) nodeMetaData.get(TRIGGER_REF),
+            metadata.addTrigger(new TriggerMetaData((String) nodeMetaData.get(TRIGGER_REF),
                     (String) nodeMetaData.get(TRIGGER_TYPE),
                     (String) nodeMetaData.get(MESSAGE_TYPE),
                     (String) nodeMetaData.get(TRIGGER_MAPPING),
@@ -100,7 +100,7 @@ public class StartNodeVisitor extends AbstractNodeVisitor<StartNode> {
                         new StringLiteralExpr((String) nodeMetaData.get(MESSAGE_TYPE)),
                         new StringLiteralExpr(getOrDefault((String) nodeMetaData.get(TRIGGER_MAPPING), ""))));
             }
-            metadata.getSignals().put((String) nodeMetaData.get(MESSAGE_TYPE), variable != null ? variable.getType().getStringType() : null);
+            metadata.addSignal((String) nodeMetaData.get(MESSAGE_TYPE), variable != null ? variable.getType().getStringType() : null);
         } else {
             String triggerMapping = (String) nodeMetaData.get(TRIGGER_MAPPING);
             body.addStatement(getFactoryMethod(getNodeId(startNode), METHOD_TRIGGER,

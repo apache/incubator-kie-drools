@@ -56,7 +56,6 @@ public class $Type$ReactiveResource {
                 if (startFromNode != null) {
                     pi.startFrom(startFromNode);
                 } else {
-                
                     pi.start();
                 }
                 return getModel(pi);

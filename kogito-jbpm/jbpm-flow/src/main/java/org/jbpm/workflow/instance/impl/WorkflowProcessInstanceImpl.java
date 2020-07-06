@@ -25,6 +25,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -51,6 +52,7 @@ import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
+import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
@@ -641,7 +643,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                         if (type.equals(node.getName()) && node.getIncomingConnections().isEmpty()) {
                             NodeInstance nodeInstance = getNodeInstance(node);
                             if (event != null) {
-                                Map<String, Object> dynamicParams = new HashMap<>();
+                                Map<String, Object> dynamicParams = new HashMap<>(getVariables());
                                 if (event instanceof Map) {
                                     dynamicParams.putAll((Map<String, Object>) event);
                                 } else {
@@ -649,8 +651,10 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                                 }
                                 nodeInstance.setDynamicParameters(dynamicParams);
                             }
-
                             nodeInstance.trigger(null, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+                        } else if (node instanceof CompositeNode) {
+                            Optional<NodeInstance> instance = this.nodeInstances.stream().filter(ni -> ni.getNodeId() == node.getId()).findFirst();
+                            instance.ifPresent(n -> ((CompositeNodeInstance) n).signalEvent(type, event));
                         }
                     }
                 }

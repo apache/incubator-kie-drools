@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,60 +14,58 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.codegen.data;
+package org.kie.kogito.integrationtests;
+
+import javax.enterprise.context.ApplicationScoped;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+@ApplicationScoped
 public class HelloService {
-	
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(HelloService.class);
+
     public String hello(String name) {
-        System.out.println("Service invoked with " + name.toString() + " on service " + this.toString());
+        logMethodCall("hello", name);
         return "Hello " + name + "!";
     }
+
     public JsonNode jsonHello(JsonNode person) {
-        System.out.println("Service invoked with " + person + " on service " + this.toString());
+        logMethodCall("jsonHello", person);
 
         String retJsonStr = "{\"result\":\"Hello " + person.get("name").textValue() + "\"}";
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.readTree(retJsonStr);
-        } catch(Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }
-    
+
     public String goodbye(String name) {
-        System.out.println("Service invoked with " + name.toString() + " on service " + this.toString());
+        logMethodCall("goodbye", name);
         return "Goodbye " + name + "!";
     }
-    
+
     public String helloMulti(String name, String lastName) {
-        System.out.println("Service invoked with " + name + " and " + lastName + " on service " + this.toString());
-        return "Hello (first and lastname) " + name.toString() + " " + lastName + "!";
+        logMethodCall("helloMulti", name, lastName);
+        return "Hello (first and lastname) " + name.concat(" ").concat(lastName).concat("!");
     }
-    
+
     public void helloNoOutput(String name, Integer age) {
-        System.out.println("Service invoked with " + name.toString() + " " + age + " on service " + this.toString());
-        
+        logMethodCall("helloNoOutput", name, age);
     }
-    
+
     public String helloOutput(String name, Integer age) {
-        System.out.println("Service invoked with " + name.toString() + " " + age + " on service " + this.toString());
-        return "Hello " + name + " " + age + "!";
+        logMethodCall("helloOutput", name, age);
+        return "Hello " + name.concat(" ").concat(String.valueOf(age)).concat("!");
     }
 
-    int count = 0;
-
-    public void doSomething(String str1) {
-        if (count > 0) {
-            throw new RuntimeException("You should not be here");
-        }
-        count++;
-    }
-
-    public void doSomething(String str1, String str2) {
-
+    private static void logMethodCall(String method, Object... arguments) {
+        LOGGER.info("HelloService.{} invoked with params: {}", method, arguments);
     }
 
 }

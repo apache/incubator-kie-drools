@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.EndNode;
@@ -48,6 +47,7 @@ import static org.jbpm.ruleflow.core.Metadata.CUSTOM_ASYNC;
 import static org.jbpm.ruleflow.core.Metadata.IS_FOR_COMPENSATION;
 import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
 import static org.kie.api.runtime.process.ProcessInstance.STATE_ABORTED;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
 
 /**
  * Runtime counterpart of a composite node.
@@ -59,7 +59,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 
     private final List<NodeInstance> nodeInstances = new ArrayList<>();
     
-    private int state = ProcessInstance.STATE_ACTIVE;
+    private int state = STATE_ACTIVE;
     private Map<String, Integer> iterationLevels = new HashMap<>();
     private int currentLevel;
 
@@ -268,28 +268,40 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
     }
 
     @Override
-	public void signalEvent(String type, Object event) {
-		List<NodeInstance> currentView = new ArrayList<>(this.nodeInstances);
-		super.signalEvent(type, event);
-		for (Node node: getCompositeNode().internalGetNodes()) {
-			if (node instanceof EventNodeInterface) {
-				if (((EventNodeInterface) node).acceptsEvent(type, event)) {
-					if (node instanceof EventNode && ((EventNode) node).getFrom() == null || node instanceof EventSubProcessNode) {
-						EventNodeInstanceInterface eventNodeInstance = (EventNodeInstanceInterface) getNodeInstance(node);
-						eventNodeInstance.signalEvent(type, event);
-					} else {
-						List<NodeInstance> nodeInstances = getNodeInstances(node.getId(), currentView);
-						if (nodeInstances != null && !nodeInstances.isEmpty()) {
-							for (NodeInstance nodeInstance : nodeInstances) {
-								((EventNodeInstanceInterface) nodeInstance)
-										.signalEvent(type, event);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+    public void signalEvent(String type, Object event) {
+        List<NodeInstance> currentView = new ArrayList<>(this.nodeInstances);
+        super.signalEvent(type, event);
+        for (Node node : getCompositeNode().internalGetNodes()) {
+            if (node instanceof EventNodeInterface
+                    && ((EventNodeInterface) node).acceptsEvent(type, event)) {
+                if (node instanceof EventNode && ((EventNode) node).getFrom() == null || node instanceof EventSubProcessNode) {
+                    EventNodeInstanceInterface eventNodeInstance = (EventNodeInstanceInterface) getNodeInstance(node);
+                    eventNodeInstance.signalEvent(type, event);
+                } else {
+                    List<NodeInstance> nodeInstances = getNodeInstances(node.getId(), currentView);
+                    if (nodeInstances != null && !nodeInstances.isEmpty()) {
+                        for (NodeInstance nodeInstance : nodeInstances) {
+                            ((EventNodeInstanceInterface) nodeInstance)
+                                    .signalEvent(type, event);
+                        }
+                    }
+                }
+            }
+            if (type.equals(node.getName()) && node.getIncomingConnections().isEmpty()) {
+                NodeInstance nodeInstance = getNodeInstance(node);
+                if (event != null) {
+                    Map<String, Object> dynamicParams = new HashMap<>(getProcessInstance().getVariables());
+                    if (event instanceof Map) {
+                        dynamicParams.putAll((Map<String, Object>) event);
+                    } else {
+                        dynamicParams.put("Data", event);
+                    }
+                    nodeInstance.setDynamicParameters(dynamicParams);
+                }
+                nodeInstance.trigger(null, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+            }
+        }
+    }
 
 	public List<NodeInstance> getNodeInstances(final long nodeId) {
 		List<NodeInstance> result = new ArrayList<>();

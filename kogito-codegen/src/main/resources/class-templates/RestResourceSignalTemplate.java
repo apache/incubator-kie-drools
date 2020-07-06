@@ -28,18 +28,18 @@ public class $Type$Resource {
     Process<$Type$> process;
 
     @POST
-    @Path("/{id}/$signalName$")
+    @Path("/{id}/$signalPath$")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public $Type$ signal(@PathParam("id") final String id, final $signalType$ data) {
-
-        ProcessInstance<$Type$> pi = process.instances().findById(id).orElse(null);
-        if(pi == null){
-            return null;
-        }
-
-        pi.send(Sig.of("$signalName$", data));
-
-        return pi.variables();
+    public $Type$Output signal(@PathParam("id") final String id, final $signalType$ data) {
+        return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
+            ProcessInstance<$Type$> pi = process.instances().findById(id).orElse(null);
+            if (pi == null) {
+                return null;
+            }
+            pi.send(Sig.of("$signalName$", data));
+            return getModel(pi);
+        });
     }
+
 }

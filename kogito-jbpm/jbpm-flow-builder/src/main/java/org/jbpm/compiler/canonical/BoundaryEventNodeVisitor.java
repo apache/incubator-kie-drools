@@ -59,10 +59,10 @@ public class BoundaryEventNodeVisitor extends AbstractNodeVisitor<BoundaryEventN
         }
 
         if (EVENT_TYPE_SIGNAL.equals(node.getMetaData(EVENT_TYPE))) {
-            metadata.getSignals().put(node.getType(), variable != null ? variable.getType().getStringType() : null);
+            metadata.addSignal(node.getType(), variable != null ? variable.getType().getStringType() : null);
         } else if (EVENT_TYPE_MESSAGE.equals(node.getMetaData(EVENT_TYPE))) {
             Map<String, Object> nodeMetaData = node.getMetaData();
-            metadata.getTriggers().add(new TriggerMetaData((String) nodeMetaData.get(TRIGGER_REF),
+            metadata.addTrigger(new TriggerMetaData((String) nodeMetaData.get(TRIGGER_REF),
                     (String) nodeMetaData.get(TRIGGER_TYPE),
                     (String) nodeMetaData.get(MESSAGE_TYPE),
                     node.getVariableName(),

@@ -49,6 +49,7 @@ public class ProcessMetaData {
     private List<TriggerMetaData> triggers = new ArrayList<>();
     
     private boolean startable;
+    private boolean dynamic;
  
     private Map<String, CompilationUnit> generatedHandlers = new HashMap<>();
     private Set<CompilationUnit> generatedListeners = new HashSet<>();
@@ -133,17 +134,19 @@ public class ProcessMetaData {
     public Map<String, String> getSubProcesses() {
         return subProcesses;
     }
-    
-    public void setSubProcesses(Map<String, String> subProcesses) {
-        this.subProcesses = subProcesses;
+
+    public ProcessMetaData addSubProcess(String processId, String subProcessId) {
+        subProcesses.put(processId, subProcessId);
+        return this;
     }
 
     public Map<String, CompilationUnit> getGeneratedHandlers() {
         return generatedHandlers;
     }
     
-    public void setGeneratedHandlers(Map<String, CompilationUnit> generatedHandlers) {
-        this.generatedHandlers = generatedHandlers;
+    public ProcessMetaData addGeneratedHandler(String workName, CompilationUnit handlerClass) {
+        generatedHandlers.put(workName, handlerClass);
+        return this;
     }
     
     public Set<CompilationUnit> getGeneratedListeners() {
@@ -158,24 +161,34 @@ public class ProcessMetaData {
         return signals;
     }
 
-    public void setSignals(Map<String, String> signals) {
-        this.signals = signals;
-    }    
-    
+    public ProcessMetaData addSignal(String name, String value) {
+        signals.put(name, value);
+        return this;
+    }
+
     public List<TriggerMetaData> getTriggers() {
         return triggers;
     }
     
-    public void setTriggers(List<TriggerMetaData> triggers) {
-        this.triggers = triggers;
+    public ProcessMetaData addTrigger(TriggerMetaData trigger) {
+        triggers.add(trigger);
+        return this;
     }
     
     public boolean isStartable() {
         return startable;
     }
-    
+
     public void setStartable(boolean startable) {
         this.startable = startable;
+    }
+
+    public boolean isDynamic() {
+        return dynamic;
+    }
+
+    public void setDynamic(boolean dynamic) {
+        this.dynamic = dynamic;
     }
 
     @Override

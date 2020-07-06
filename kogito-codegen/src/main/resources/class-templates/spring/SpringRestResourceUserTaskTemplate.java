@@ -3,6 +3,9 @@ package com.myspace.demo;
 import java.util.List;
 
 import org.kie.api.runtime.process.WorkItemNotFoundException;
+import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.WorkItem;
+import org.kie.kogito.process.impl.Sig;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +16,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 public class $Type$Resource {
 
-    @PostMapping(value = "/{id}/$taskname$/{workItemId}", produces = MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/{id}/$taskName$", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public org.springframework.http.ResponseEntity<$Type$Output> signal(@PathVariable("id") final String id) {
+        return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
+            ProcessInstance<$Type$> pi = process.instances().findById(id).orElse(null);
+            if (pi == null) {
+                return null;
+            }
+            pi.send(Sig.of("$taskNodeName$", java.util.Collections.emptyMap()));
+            java.util.Optional<WorkItem> task = pi.workItems().stream().filter(wi -> wi.getName().equals("$taskName$")).findFirst();
+            if(task.isPresent()) {
+                return org.springframework.http.ResponseEntity.ok()
+                        .header("Link", "</" + id + "/$taskName$/" + task.get().getId() + ">; rel='instance'")
+                        .body(getModel(pi));
+            }
+            return org.springframework.http.ResponseEntity.notFound().build();
+        });
+    }
+
+    @PostMapping(value = "/{id}/$taskName$/{workItemId}", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public $Type$Output completeTask(@PathVariable("id") final String id,
                                      @PathVariable("workItemId") final String workItemId,
@@ -33,7 +55,6 @@ public class $Type$Resource {
                     }
                     org.jbpm.process.instance.impl.humantask.HumanTaskTransition transition = new org.jbpm.process.instance.impl.humantask.HumanTaskTransition(phase, model.toMap(), identity);
                     pi.transitionWorkItem(workItemId, transition);
-
                     return getModel(pi);
                 }
             });
@@ -42,7 +63,7 @@ public class $Type$Resource {
         }
     }
 
-    @GetMapping(value = "/{id}/$taskname$/{workItemId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}/$taskName$/{workItemId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public $TaskInput$ getTask(@PathVariable("id") String id, @PathVariable("workItemId") String workItemId,
                                @RequestParam(value = "user", required = false) final String user,
                                @RequestParam(value = "group", required = false) final List<String> groups) {
@@ -63,7 +84,7 @@ public class $Type$Resource {
         }
     }
 
-    @DeleteMapping(value = "/{id}/$taskname$/{workItemId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{id}/$taskName$/{workItemId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public $Type$Output abortTask(@PathVariable("id") final String id,
                                   @PathVariable("workItemId") final String workItemId,
                                   @RequestParam(value = "phase", defaultValue = "abort") final String phase,

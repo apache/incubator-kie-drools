@@ -16,6 +16,9 @@
 
 package org.jbpm.compiler.canonical;
 
+import java.text.MessageFormat;
+import java.util.Map;
+
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -23,9 +26,6 @@ import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.EventNodeFactory;
 import org.jbpm.workflow.core.node.EventNode;
-
-import java.text.MessageFormat;
-import java.util.Map;
 
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_MESSAGE;
@@ -54,9 +54,8 @@ public class EventNodeVisitor extends AbstractNodeVisitor<EventNode> {
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_VARIABLE_NAME, new StringLiteralExpr(node.getVariableName())));
             variable = variableScope.findVariable(node.getVariableName());
         }
-
         if (EVENT_TYPE_SIGNAL.equals(node.getMetaData(EVENT_TYPE))) {
-            metadata.getSignals().put(node.getType(), variable != null ? variable.getType().getStringType() : null);
+            metadata.addSignal(node.getType(), variable != null ? variable.getType().getStringType() : null);
         } else if (EVENT_TYPE_MESSAGE.equals(node.getMetaData(EVENT_TYPE))) {
             Map<String, Object> nodeMetaData = node.getMetaData();
             try {
@@ -65,7 +64,7 @@ public class EventNodeVisitor extends AbstractNodeVisitor<EventNode> {
                         (String) nodeMetaData.get(MESSAGE_TYPE),
                         node.getVariableName(),
                         String.valueOf(node.getId())).validate();
-                metadata.getTriggers().add(triggerMetaData);
+                metadata.addTrigger(triggerMetaData);
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException(
                         MessageFormat.format(
@@ -77,4 +76,5 @@ public class EventNodeVisitor extends AbstractNodeVisitor<EventNode> {
         visitMetaData(node.getMetaData(), body, getNodeId(node));
         body.addStatement(getDoneMethod(getNodeId(node)));
     }
+
 }
