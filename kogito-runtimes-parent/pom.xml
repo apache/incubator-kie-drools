@@ -95,7 +95,7 @@
     <version.com.github.javaparser>3.13.10</version.com.github.javaparser>
     <version.com.github.victools>4.12.1</version.com.github.victools>
     <version.com.google.protobuf>3.6.1</version.com.google.protobuf>
-    <version.com.oracle.substratevm>19.2.1</version.com.oracle.substratevm>
+    <version.org.graalvm.nativeimage>20.1.0</version.org.graalvm.nativeimage>
     <version.com.squareup.okhttp3>3.14.6</version.com.squareup.okhttp3>
     <version.com.sun.xml.bind>2.3.0</version.com.sun.xml.bind>
     <version.com.thoughtworks.xstream>1.4.11.1</version.com.thoughtworks.xstream>
@@ -648,9 +648,9 @@
       </dependency>
 
       <dependency>
-        <groupId>com.oracle.substratevm</groupId>
+        <groupId>org.graalvm.nativeimage</groupId>
         <artifactId>svm</artifactId>
-        <version>${version.com.oracle.substratevm}</version>
+        <version>${version.org.graalvm.nativeimage}</version>
       </dependency>
 
       <dependency>
