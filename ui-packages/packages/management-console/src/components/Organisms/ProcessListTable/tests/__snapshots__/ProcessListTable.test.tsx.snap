@@ -246,6 +246,21 @@ exports[`ProcessListTable component tests Snapshot testing initial empty data 1`
     }
   }
   setIsLoading={[MockFunction]}
+  setLimit={
+    [MockFunction] {
+      "calls": Array [
+        Array [
+          1,
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    }
+  }
   setSelectedNumber={[MockFunction]}
 >
   <DataList
@@ -555,6 +570,21 @@ exports[`ProcessListTable component tests Snapshot testing with no data 1`] = `
     }
   }
   setIsLoading={[MockFunction]}
+  setLimit={
+    [MockFunction] {
+      "calls": Array [
+        Array [
+          0,
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    }
+  }
   setSelectedNumber={[MockFunction]}
 >
   <DataList
@@ -1004,6 +1034,21 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
     }
   }
   setIsLoading={[MockFunction]}
+  setLimit={
+    [MockFunction] {
+      "calls": Array [
+        Array [
+          1,
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    }
+  }
   setSelectedNumber={[MockFunction]}
 >
   <DataList
@@ -3073,6 +3118,21 @@ exports[`ProcessListTable component tests Snapshot testing with wrong query para
     }
   }
   setIsLoading={[MockFunction]}
+  setLimit={
+    [MockFunction] {
+      "calls": Array [
+        Array [
+          0,
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    }
+  }
   setSelectedNumber={[MockFunction]}
 >
   <withRouter(ServerErrors)

@@ -15,6 +15,7 @@ import ProcessInstanceState = GraphQL.ProcessInstanceState;
 
 interface IOwnProps {
   setInitData: any;
+  setLimit: (limit: number) => void;
   initData: any;
   isLoading: boolean;
   setIsError: any;
@@ -32,6 +33,7 @@ interface IOwnProps {
 const ProcessListTable: React.FC<IOwnProps> = ({
   initData,
   setInitData,
+  setLimit,
   isLoading,
   setIsError,
   checkedArray,
@@ -67,6 +69,7 @@ const ProcessListTable: React.FC<IOwnProps> = ({
         instance.isChecked = false;
         instance.isOpen = false;
       });
+      setLimit(data.ProcessInstances.length);
     }
     setInitData(data);
   }, [data]);

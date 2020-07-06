@@ -42,7 +42,7 @@ const ProcessListPage: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
   const [titleType, setTitleType] = useState('');
   const [modalTitle, setModalTitle] = useState('');
   const [limit, setLimit] = useState(defaultPageSize);
-  const [offset, setOffset] = useState(10);
+  const [offset, setOffset] = useState(0);
   const [pageSize, setPageSize] = useState(defaultPageSize);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [filters, setFilters] = useState({
@@ -322,6 +322,7 @@ const ProcessListPage: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
                 <ProcessListTable
                   initData={initData}
                   setInitData={setInitData}
+                  setLimit={setLimit}
                   isLoading={isLoading}
                   setIsError={setIsError}
                   checkedArray={checkedArray}

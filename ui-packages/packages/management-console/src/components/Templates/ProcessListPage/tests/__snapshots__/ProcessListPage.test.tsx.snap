@@ -298,12 +298,13 @@ exports[`ProcessListPage component tests Snapshot tests 1`] = `
                     setInitData={[Function]}
                     setIsAllChecked={[Function]}
                     setIsError={[Function]}
+                    setLimit={[Function]}
                     setSelectedNumber={[Function]}
                   />
                   <LoadMore
                     getMoreItems={[Function]}
                     isLoadingMore={false}
-                    offset={10}
+                    offset={0}
                     pageSize={10}
                     setOffset={[Function]}
                   >

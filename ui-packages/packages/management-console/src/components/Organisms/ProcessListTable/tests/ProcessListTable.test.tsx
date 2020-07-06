@@ -314,6 +314,7 @@ const mocks3 = [
 
 const props1 = {
   setInitData: jest.fn(),
+  setLimit: jest.fn(),
   isLoading: false,
   setIsError: jest.fn(),
   setIsLoading: jest.fn(),
@@ -337,6 +338,7 @@ const props1 = {
 
 const props2 = {
   setInitData: jest.fn(),
+  setLimit: jest.fn(),
   isLoading: false,
   setIsError: jest.fn(),
   setIsLoading: jest.fn(),
@@ -360,6 +362,7 @@ const props2 = {
 
 const props3 = {
   setInitData: jest.fn(),
+  setLimit: jest.fn(),
   isLoading: false,
   setIsError: jest.fn(),
   setIsLoading: jest.fn(),
