@@ -21,17 +21,24 @@ import java.util.Collection;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.drools.core.ClockType;
 import org.drools.modelcompiler.builder.RuleWriter;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
+import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.Woman;
 import org.drools.modelcompiler.util.lambdareplace.NonExternalisedLambdaFoundException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.time.SessionPseudoClock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -307,5 +314,40 @@ public class ExternalisedLambdaTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Assertions.assertThat(list).containsExactlyInAnyOrder("Bob");
+    }
+
+    @Test
+    public void testCep() throws Exception {
+        String str =
+                "import " + StockTick.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "    $a : StockTick( company == \"DROO\" )\n" +
+                "    $b : StockTick( company == \"ACME\", timeFieldAsLong after[5,8] $a.timeFieldAsLong )\n" +
+                "then\n" +
+                "  System.out.println(\"fired\");\n" +
+                "end\n";
+
+        KieModuleModel kmodel = KieServices.get().newKieModuleModel();
+        kmodel.newKieBaseModel( "kb" )
+                .setDefault( true )
+                .setEventProcessingMode( EventProcessingOption.STREAM )
+                .newKieSessionModel( "ks" )
+                .setDefault( true ).setClockType( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        KieSession ksession = null;
+        try {
+            ksession = getKieSession(kmodel, str);
+        } catch (NonExternalisedLambdaFoundException e) {
+            fail(e.getMessage());
+        }
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        ksession.insert( new StockTick( "DROO" ).setTimeField( 0 ) );
+        ksession.insert( new StockTick( "ACME" ).setTimeField( 6 ) );
+
+        assertEquals( 1, ksession.fireAllRules() );
+
+        ksession.insert( new StockTick( "ACME" ).setTimeField( 10 ) );
+
+        assertEquals( 0, ksession.fireAllRules() );
     }
 }
