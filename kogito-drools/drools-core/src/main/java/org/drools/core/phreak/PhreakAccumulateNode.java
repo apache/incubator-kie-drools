@@ -15,8 +15,6 @@
 
 package org.drools.core.phreak;
 
-import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
-
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -36,6 +34,8 @@ import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.FastIterator;
+
+import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
 
 /**
 * Created with IntelliJ IDEA.
@@ -443,10 +443,6 @@ public class PhreakAccumulateNode {
 
                 // if LeftTupleMemory is empty, there are no matches to modify
                 if ( leftTuple != null ) {
-                    if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
-                        trgLeftTuples.addUpdate( leftTuple );
-                    }
-
                     doRightUpdatesProcessChildren( accNode,
                                                    am,
                                                    wm,
@@ -509,7 +505,7 @@ public class PhreakAccumulateNode {
                         trgLeftTuples.addUpdate(leftTuple);
                     }
                     final AccumulateContext accctx = (AccumulateContext) leftTuple.getContextObject();
-                    LeftTuple temp = null;
+                    LeftTuple temp;
                     if (childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple) {
                         temp = childLeftTuple.getRightParentNext();
                         // we must re-add this to ensure deterministic iteration
@@ -535,9 +531,6 @@ public class PhreakAccumulateNode {
                              am,
                              accctx,
                              true);
-                    if (temp != null) {
-                        childLeftTuple = temp;
-                    }
                 } else if (childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple) {
                     if (leftTuple.getStagedType() == LeftTuple.NONE) {
                         trgLeftTuples.addUpdate(leftTuple);
