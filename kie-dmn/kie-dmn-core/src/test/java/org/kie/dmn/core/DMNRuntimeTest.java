@@ -2937,5 +2937,20 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult(), is("a x, 2020"));
     }
+
+    @Test
+    public void testExceptionInContextEntry() {
+        // the scope of this test: if an exception occurs while evaluating a ContextEntry, report a DMN message. Before was only SLF4j logged so user no DMN Message at all just null.
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("exceptionInContextEntry.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_001031e1-9f0e-4156-afad-3ee970139021", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
+        assertThat(dmnResult.getDecisionResultByName("hardcoded").getEvaluationStatus(), is(DecisionEvaluationStatus.FAILED));
+    }
 }
 

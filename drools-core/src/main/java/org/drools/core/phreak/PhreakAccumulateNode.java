@@ -415,10 +415,6 @@ public class PhreakAccumulateNode {
 
                 // if LeftTupleMemory is empty, there are no matches to modify
                 if ( leftTuple != null ) {
-                    if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
-                        trgLeftTuples.addUpdate( leftTuple );
-                    }
-
                     doRightUpdatesProcessChildren( accNode,
                                                    am,
                                                    wm,
@@ -474,7 +470,7 @@ public class PhreakAccumulateNode {
                         trgLeftTuples.addUpdate(leftTuple);
                     }
                     final AccumulateContext accctx = (AccumulateContext) leftTuple.getContextObject();
-                    LeftTuple temp = null;
+                    LeftTuple temp;
                     if (childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple) {
                         temp = childLeftTuple.getRightParentNext();
                         // we must re-add this to ensure deterministic iteration
@@ -493,9 +489,6 @@ public class PhreakAccumulateNode {
                     addMatch(accNode, accumulate, leftTuple, rightTuple,
                              null, childLeftTuple, wm, am,
                              accctx, true, false);
-                    if (temp != null) {
-                        childLeftTuple = temp;
-                    }
                 } else if (childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple) {
                     if (leftTuple.getStagedType() == LeftTuple.NONE) {
                         trgLeftTuples.addUpdate(leftTuple);

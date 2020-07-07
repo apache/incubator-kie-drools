@@ -26,7 +26,6 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
@@ -129,7 +128,17 @@ public class DMNContextEvaluator
                         return new EvaluatorResultImpl( results, ResultType.FAILURE );
                     }
                 } catch ( Exception e ) {
-                    logger.error( "Error invoking expression for node '" + name + "'.", e );
+                    logger.error("Error invoking expression for node '" + name + "'.", e);
+                    MsgUtil.reportMessage(logger,
+                                          DMNMessage.Severity.ERROR,
+                                          contextDef,
+                                          result,
+                                          e,
+                                          null,
+                                          Msg.ERR_EVAL_CTX_ENTRY_ON_CTX_MSG,
+                                          ed.getName(),
+                                          name,
+                                          e.getLocalizedMessage());
                     String entryVarId = getEntryVarId(ed);
                     String entryExprId = getEntryExprId(ed);
                     DMNRuntimeEventManagerUtils.fireAfterEvaluateContextEntry( eventManager, name, ed.getName(), entryVarId, entryExprId, null, result );
