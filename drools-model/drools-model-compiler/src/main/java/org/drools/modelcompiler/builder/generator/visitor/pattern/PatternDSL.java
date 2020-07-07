@@ -35,6 +35,7 @@ import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.core.util.ClassUtils;
 import org.drools.modelcompiler.builder.generator.AggregateKey;
 import org.drools.modelcompiler.builder.generator.ConstraintUtil;
+import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.drools.mvel.parser.ast.expr.OOPathExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -55,6 +56,7 @@ import org.drools.modelcompiler.builder.generator.visitor.FromVisitor;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getPatternListenedProperties;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.validateDuplicateBindings;
+import static org.drools.modelcompiler.util.StreamUtils.optionalToStream;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public abstract class PatternDSL implements DSLNode {
@@ -150,7 +152,27 @@ public abstract class PatternDSL implements DSLNode {
             }
         }
 
+        addImplicitCastExpr(constraintParser, pattern.getIdentifier(), patternConstraintParseResults);
+
         return patternConstraintParseResults;
+    }
+
+    private void addImplicitCastExpr(ConstraintParser constraintParser, String patternIdentifier, List<PatternConstraintParseResult> patternConstraintParseResults) {
+        final boolean hasInstanceOfExpr = patternConstraintParseResults.stream()
+                .anyMatch(r -> r.getDrlxParseResult().acceptWithReturnValue( t -> t.getExpr().isInstanceOfExpr()));
+
+        final Optional<Expression> implicitCastExpression =
+                patternConstraintParseResults.stream()
+                .flatMap(r -> optionalToStream(r.getDrlxParseResult().acceptWithReturnValue(DrlxParseSuccess::getImplicitCastExpression)))
+                .findFirst();
+
+        implicitCastExpression.ifPresent(ce -> {
+            if(!hasInstanceOfExpr) {
+                String instanceOfExpression = printConstraint(ce);
+                DrlxParseResult instanceOfExpressionParsed = constraintParser.drlxParse(patternType, patternIdentifier, instanceOfExpression, false);
+                patternConstraintParseResults.add(0, new PatternConstraintParseResult(instanceOfExpression, patternIdentifier, instanceOfExpressionParsed));
+            }
+        });
     }
 
     void buildConstraint(PatternDescr pattern, Class<?> patternType, PatternConstraintParseResult patternConstraintParseResult) {

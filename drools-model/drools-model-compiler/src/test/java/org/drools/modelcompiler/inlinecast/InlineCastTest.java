@@ -61,7 +61,6 @@ public class InlineCastTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("this is supported in Legacy Drools but not in the Executable Model")
     public void testInlineCastProjectionThis() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +

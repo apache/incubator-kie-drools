@@ -24,16 +24,20 @@ import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.InstanceOfExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
+import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.core.addon.TypeResolver;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.mvel.parser.ast.expr.InlineCastExpr;
 import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.nameExprToMethodCallExpr;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.nameExprToMethodCallExprWithCast;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.returnTypeOfMethodCallExpr;
@@ -74,6 +78,12 @@ public class ToMethodCall {
         return new TypedExpression(previousScope, previousClass);
     }
 
+    private Expression inlineCastExpression;
+
+    public Optional<Expression> getImplicitCastExpression() {
+        return Optional.ofNullable(inlineCastExpression);
+    }
+
     // do not use this, use needConversion
     private boolean needConversionRec(Expression expression) {
         if(expression.isCastExpr()) {
@@ -107,6 +117,8 @@ public class ToMethodCall {
             } else {
                 previousScope = e.expression;
             }
+
+            this.inlineCastExpression = new InstanceOfExpr(new NameExpr(THIS_PLACEHOLDER), (ReferenceType) castType);
         }
 
         previousClass = returnType;

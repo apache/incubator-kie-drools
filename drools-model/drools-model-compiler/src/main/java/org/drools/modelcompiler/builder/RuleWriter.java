@@ -78,7 +78,7 @@ public class RuleWriter {
 
                 if(pkgModel.getConfiguration().isExternaliseCanonicalModelLambda()) {
                     CompilationUnit postProcessedCU = cu.clone();
-                    if (pkgModel.getRuleUnits().isEmpty()) {
+                    if (false) {
                         new ExecModelLambdaPostProcessor(pkgModel, postProcessedCU).convertLambdas();
                         if (checkNonExternalisedLambda) {
                             checkNonExternalisedLambda(postProcessedCU);

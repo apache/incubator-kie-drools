@@ -81,6 +81,8 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     private boolean unification;
     private boolean temporal;
 
+    private Optional<Expression> implicitCastExpression = Optional.empty();
+
     public SingleDrlxParseSuccess(Class<?> patternType, String patternBinding, Expression expr, Type exprType) {
         this.patternType = patternType;
         this.patternBinding = patternBinding;
@@ -109,6 +111,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         this.requiresSplit = drlx.isRequiresSplit();
         this.unification = drlx.isUnification();
         this.temporal = drlx.isTemporal();
+        this.implicitCastExpression = drlx.getImplicitCastExpression();
 
         this.watchedProperties = drlx.getWatchedProperties();
     }
@@ -418,6 +421,16 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
     public String getOriginalDrlConstraint() {
         return originalDrlConstraint;
+    }
+
+    public SingleDrlxParseSuccess setImplicitCastExpression(Optional<Expression> implicitCastExpression) {
+        this.implicitCastExpression = implicitCastExpression;
+        return this;
+    }
+
+    @Override
+    public Optional<Expression> getImplicitCastExpression() {
+        return implicitCastExpression;
     }
 
     @Override
