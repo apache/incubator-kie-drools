@@ -4,9 +4,10 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie</groupId>
-    <artifactId>kie-parent</artifactId>
-    <version>7.40.0-SNAPSHOT</version>
+    <groupId>org.jboss</groupId>
+    <artifactId>jboss-parent</artifactId>
+    <version>36</version>
+    <relativePath/>
   </parent>
 
   <groupId>org.optaplanner</groupId>
@@ -24,6 +25,13 @@
   </description>
   <url>https://www.optaplanner.org</url>
   <inceptionYear>2006</inceptionYear>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
   <properties>
     <!-- override in each parent module in the hierarchy -->
@@ -38,18 +46,47 @@
     <sonar.projectKey>org.optaplanner:optaplanner</sonar.projectKey>
     <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
     <version.org.mockito>3.1.0</version.org.mockito>
+
+
+<!-- TODO do we really need these? -->
+    <victims.updates>weekly</victims.updates>
+    <illegaltransitivereportonly>false</illegaltransitivereportonly>
+    <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+    <!-- This property needs to be defined in all modules that use the packaging 'jar'.
+         It is used by different plugins to make sure the module/bundle names are consistent. -->
+    <java.module.name/>
+    <!-- Jacoco plugin configurations -->
+    <jacoco.haltOnFailure>false</jacoco.haltOnFailure>
+    <jacoco.line.coveredratio.minimum>0.9</jacoco.line.coveredratio.minimum>
+    <version.jacoco.plugin>0.8.5</version.jacoco.plugin>
+    <!-- TODO: remove this once all repositories comply to the defined checkstyle rules -->
+    <checkstyle.failOnViolation>false</checkstyle.failOnViolation>
+    <checkstyle.logViolationsToConsole>false</checkstyle.logViolationsToConsole>
+    <checkstyle.header.template>.*</checkstyle.header.template>
+    <checkstyle.header.extensions>java</checkstyle.header.extensions>
+    <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
+    <!-- Set to "true" on every project that has no violations. -->
+    <spotbugs.failOnViolation>false</spotbugs.failOnViolation>
+    <maven.min.version>3.6.2</maven.min.version>
+    <!-- Latest release to be used by api-compatibility-check to check backwards compatibility of the API. -->
+    <revapi.oldKieVersion>7.33.0.Final</revapi.oldKieVersion>
+    <revapi.newKieVersion>${project.version}</revapi.newKieVersion>
+    <!-- JaCoCo coverage data file location -->
+    <!--suppress UnresolvedMavenProperty -->
+    <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
+    <jacoco.exec.file>${project.root.dir}/target/jacoco.exec</jacoco.exec.file>
   </properties>
 
   <repositories>
-    <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
     <repository>
       <id>jboss-public-repository-group</id>
       <name>JBoss Public Repository Group</name>
       <url>https://repository.jboss.org/nexus/content/groups/public/</url>
       <layout>default</layout>
       <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
+        <!-- Only get SNAPSHOTS from JBoss repository,
+             so it tries to get releases first (and only) from Maven Central. -->
+        <enabled>false</enabled>
       </releases>
       <snapshots>
         <enabled>true</enabled>
@@ -67,6 +104,25 @@
     <system>jira</system>
     <url>https://issues.redhat.com/browse/PLANNER</url>
   </issueManagement>
+  <developers>
+    <developer>
+      <name>All developers are listed on the team website</name>
+      <url>http://www.optaplanner.org/community/team.html</url>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>All contributors are listed on the team website</name>
+      <url>http://www.optaplanner.org/community/team.html</url>
+    </contributor>
+  </contributors>
+  <mailingLists>
+    <mailingList>
+      <name>setup</name>
+      <subscribe>https://groups.google.com/forum/#!forum/optaplanner-dev</subscribe>
+      <unsubscribe>https://groups.google.com/forum/#!forum/optaplanner-dev</unsubscribe>
+    </mailingList>
+  </mailingLists>
 
   <modules>
     <module>optaplanner-bom</module>
@@ -80,114 +136,562 @@
     <module>optaplanner-examples</module>
   </modules>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.soup</groupId>
-        <artifactId>kie-soup-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.glassfish</groupId>
-        <artifactId>javax.json</artifactId>
-        <!-- Old version until this issue is resolved: https://github.com/ImmobilienScout24/illegal-transitive-dependency-check/issues/30 -->
-        <version>1.0.4</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
-  <profiles>
-    <profile>
-      <id>fullProfile</id>
-      <activation>
-        <property>
-          <name>full</name>
-        </property>
-      </activation>
-      <modules>
-        <module>optaplanner-docs</module>
-        <module>optaplanner-distribution</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>quickstartsProfile</id>
-      <activation>
-        <property>
-          <!-- TODO Temporarily(?) exclude quickstarts from nightly/release community/product builds -->
-          <!-- Don't release the quickstart artifacts in a Maven repo such as Maven Central -->
-          <name>quickstarts</name>
-        </property>
-      </activation>
-      <modules>
-        <module>optaplanner-quickstarts</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>run-code-coverage</id>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <configuration>
-                <!-- Append jacoco.agent.argLine property populated by JaCoCo's prepare-agent goal. -->
-                <argLine>@{jacoco.agent.argLine}</argLine>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-        <plugins>
-          <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <!-- Fail the build in CI if code does not follow the standards. -->
-      <id>validate-formatting-ci</id>
-      <activation>
-        <property>
-          <name>env.CI</name>
-        </property>
-      </activation>
-      <properties>
-        <formatter.goal>validate</formatter.goal>
-        <impsort.goal>check</impsort.goal>
-      </properties>
-    </profile>
-  </profiles>
-
   <build>
     <pluginManagement>
       <plugins>
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <dependencies>
+            <dependency>
+              <groupId>org.ow2.asm</groupId>
+              <artifactId>asm-analysis</artifactId>
+              <version>6.2.1</version>
+            </dependency>
+            <dependency>
+              <groupId>de.is24.maven.enforcer.rules</groupId>
+              <artifactId>illegal-transitive-dependency-check</artifactId>
+              <version>1.7.4</version>
+            </dependency>
+            <dependency>
+              <groupId>com.redhat.victims</groupId>
+              <artifactId>enforce-victims-rule</artifactId>
+              <version>1.3.4</version>
+            </dependency>
+            <dependency>
+              <groupId>org.commonjava.maven.enforcer</groupId>
+              <artifactId>enforce-managed-deps-rule</artifactId>
+              <version>1.3</version>
+            </dependency>
+            <dependency>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>extra-enforcer-rules</artifactId>
+              <version>1.0</version>
+            </dependency>
+          </dependencies>
+          <executions>
+            <execution>
+              <id>enforce-plugin-versions</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <!-- TODO Disabled during kie-parent 7 removal due to false negatives -->
+<!--                  <requirePluginVersions>-->
+<!--                    <message>One or more plugins do not have valid version! The version needs to be-->
+<!--                      explicitly specified, can not be a -SNAPSHOT version and can not be one of-->
+<!--                      the special (and buggy) Maven versions (LATEST, RELEASE).-->
+<!--                    </message>-->
+<!--                  </requirePluginVersions>-->
+                  <requireFilesDontExist>
+                    <files>
+                      <file>${project.basedir}/src/main/resources/logback-test.xml</file>
+                      <file>${project.basedir}/src/main/filtered-resources/logback-test.xml</file>
+                    </files>
+                  </requireFilesDontExist>
+                </rules>
+              </configuration>
+            </execution>
+            <execution>
+              <id>no-managed-deps</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <phase>initialize</phase>
+              <configuration>
+                <rules>
+                  <requireManagedDeps
+                      implementation="org.commonjava.maven.enforcer.rule.EnforceManagedDepsRule">
+                    <checkProfiles>true</checkProfiles>
+                    <failOnViolation>true</failOnViolation>
+                  </requireManagedDeps>
+                </rules>
+              </configuration>
+            </execution>
+            <execution>
+              <id>enforce-direct-dependencies</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <phase>none</phase>
+              <configuration>
+                <rules>
+                  <illegalTransitiveDependencyCheck
+                      implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
+                    <reportOnly>${illegaltransitivereportonly}</reportOnly>
+                    <regexIgnoredClasses combine.children="append">
+                      <!-- The maven-shade-plugin needs these classes to be compile-scope in guvnor-ala-openshift-client to be picked up, and
+                           then referenced in guvnor-ala-openshift-provider. When we don't need to shade anymore, we can remove these lines. -->
+                      <regexIgnoredClass>io\.fabric8\.kubernetes.*</regexIgnoredClass>
+                      <regexIgnoredClass>io\.fabric8\.openshift.*</regexIgnoredClass>
+                      <regexIgnoredClass>com\.sun\.net\.httpserver\..+</regexIgnoredClass>
+                      <regexIgnoredClass>javax\..+</regexIgnoredClass>
+                      <regexIgnoredClass>org\.w3c\.dom\..+</regexIgnoredClass>
+                      <regexIgnoredClass>org\.xml\.sax\..+</regexIgnoredClass>
+                    </regexIgnoredClasses>
+                  </illegalTransitiveDependencyCheck>
+                </rules>
+              </configuration>
+            </execution>
+            <execution>
+              <id>ban-blacklisted-dependencies</id>
+              <phase>validate</phase>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <bannedDependencies>
+                    <excludes combine.children="append">
+                      <!-- Ban blacklisted logging deps (we only use SLF4J + Logback) -->
+                      <!-- In case of transitive dependency, exclude it and use 'org.slf4j:jcl-over-slf4j' instead -->
+                      <exclude>commons-logging:commons-log*</exclude>
+                      <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j' instead -->
+                      <exclude>log4j:log4j</exclude>
+                      <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist' instead -->
+                      <exclude>javassist:javassist</exclude>
+                      <exclude>org.apache.cxf:cxf-bundle-jaxrs</exclude>
+                      <exclude>org.jboss.weld.se:weld-se
+                      </exclude><!-- Use weld-se-core instead -->
+                      <exclude>org.jboss.weld.servlet:weld-servlet
+                      </exclude><!-- Use weld-servlet-core instead -->
+                      <exclude>org.mockito:mockito-all</exclude><!-- Use mockito-core instead -->
+                    </excludes>
+                  </bannedDependencies>
+                </rules>
+                <fail>true</fail>
+              </configuration>
+            </execution>
+            <execution>
+              <id>ban-duplicated-classes</id>
+              <!-- Using phase=none as we don't want this execution as part of the default build. The phase
+                   is specified in the "full" profile and thus the execution will only be activated when using that profile. -->
+              <phase>none</phase>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <banDuplicateClasses>
+                    <ignoreClasses>
+                      <!-- Duplicated by XStream's transitive deps, with very little chance to get properly fixed -->
+                      <ignoreClass>org.xmlpull.v1.XmlPullParserException</ignoreClass>
+                      <ignoreClass>org.xmlpull.v1.XmlPullParser</ignoreClass>
+                      <!-- Bundled by both com.sun:tools and com.sun.xml.bind:jaxb-xjc. No easy way to exclude one of them. -->
+                      <ignoreClass>org.relaxng.datatype.*</ignoreClass>
+                      <!-- Classes duplicated by the jar itself (bug), see https://issues.apache.org.jira/browse/XMLBEANS-499 -->
+                      <ignoreClass>org.apache.xmlbeans.xml.stream.XMLName</ignoreClass>
+                      <ignoreClass>org.apache.xmlbeans.xml.stream.XMLInputStream</ignoreClass>
+                      <ignoreClass>org.apache.xmlbeans.xml.stream.utils.NestedThrowable
+                      </ignoreClass>
+                      <ignoreClass>org.apache.xmlbeans.xml.stream.utils.NestedThrowable$Util
+                      </ignoreClass>
+                      <ignoreClass>org.apache.xmlbeans.xml.stream.XMLStreamException</ignoreClass>
+                      <ignoreClass>org.apache.xmlbeans.xml.stream.ReferenceResolver</ignoreClass>
+                      <ignoreClass>org.apache.xmlbeans.xml.stream.XMLEvent</ignoreClass>
+                      <ignoreClass>org.apache.xmlbeans.xml.stream.Location</ignoreClass>
+                      <!-- Duplicated in xml-apis:xml-apis:jar:1.4.01 and xerces:xercesImpl:jar:2.11.0.SP4. The class is identical
+                           and there is very little chance this will get ever fixed. -->
+                      <ignoreClass>org.w3c.dom.ElementTraversal</ignoreClass>
+                      <ignoreClass>org.w3c.dom.UserDataHandler</ignoreClass>
+                      <!-- Packaged both in hornetq-commons and hornetq-client. Remove this once we move the testing
+                           from HornetQ to ActiveMQ (https://issues.jboss.org/browse/JBPM-5503) -->
+                      <ignoreClass>org.hornetq.utils.HornetQUtilBundle_$bundle</ignoreClass>
+                      <ignoreClass>org.hornetq.utils.HornetQUtilLogger_$logger</ignoreClass>
+                      <!-- Classes bundled in errai-javax-enterprise which are GWT friendly.
+                           See https://github.com/errai/errai/blob/master/errai-javax-enterprise/README -->
+                      <ignoreClass>javax.interceptor.InvocationContext</ignoreClass>
+                      <ignoreClass>javax.inject.Provider</ignoreClass>
+                      <ignoreClass>javax.inject.Named</ignoreClass>
+                      <ignoreClass>javax.inject.Scope</ignoreClass>
+                      <ignoreClass>javax.inject.Qualifier</ignoreClass>
+                      <ignoreClass>javax.inject.Singleton</ignoreClass>
+                      <ignoreClass>javax.enterprise.*</ignoreClass>
+                      <!-- Servlet API is bundled in way too many different dependencies, causing nightmares trying to
+                           properly exclude everything. There were no real issues with this so far as mostly the APIs
+                           are just duplicates of the exactly same sources. In ideal world, this get eventually fixed,
+                           but it may very well not be worth the effort. -->
+                      <ignoreClass>javax.servlet.*</ignoreClass>
+                      <!-- Classes in javax.annotation package are just marker annotations used to aid the programmers.
+                           These annotations do not influence the actual behavior of the code, so it's reasonable to
+                           ignore them. Following dependencies contain these classes: 'com.google.code.findbugs:jsr305'
+                           and 'com.google.code.findbugs:annotations'. -->
+                      <ignoreClass>javax.annotation.*</ignoreClass>
+                      <!-- Exactly the same case as for above 'javax.annotation.*' classes. Following dependencies contain
+                           these classes: 'net.jcip:jcip-annotations' and 'com.google.code.findbugs:annotations'. -->
+                      <ignoreClass>net.jcip.annotations.*</ignoreClass>
+                      <!-- ignoring java 9 compatible class for modules -->
+                      <ignoreClass>module-info</ignoreClass>
+                      <!-- ignoring multirelease jar classes -->
+                      <ignoreClass>META-INF/versions/*</ignoreClass>
+                      <!-- Classes repackaged in the maven world-->
+                      <ignoreClass>org.eclipse.aether.*</ignoreClass>
+                      <ignoreClass>org.apache.maven.*</ignoreClass>
+                      <ignoreClass>org.codehaus.plexus.*</ignoreClass>
+                      <!-- Infinispan core includes commons and they have duplicated classes. We can't remove commons because
+                       core needs them. Infinispan team has been informed about this packaging problem -->
+                      <ignoreClass>org.infinispan.util.AbstractDelegatingConcurrentMap
+                      </ignoreClass>
+                      <ignoreClass>org.infinispan.util.AbstractDelegatingMap</ignoreClass>
+                      <ignoreClass>org.infinispan.util.AbstractDelegatingSet</ignoreClass>
+                      <ignoreClass>org.infinispan.util.AbstractDelegatingCollection</ignoreClass>
+                      <!-- This package contains auto generated code and is available both in kafka-clients
+                      and in kafka-clients-test -->
+                      <ignoreClass>org.apache.kafka.common.message.*</ignoreClass>
+                    </ignoreClasses>
+                    <dependencies>
+                      <dependency>
+                        <!-- quarkus-ide-launcher is a dependency of quarkus-core that they auto exclude during the build -->
+                        <groupId>io.quarkus</groupId>
+                        <artifactId>quarkus-ide-launcher</artifactId>
+                        <ignoreClasses>
+                          <ignoreClass>*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <dependency>
+                        <groupId>org.elasticsearch</groupId>
+                        <artifactId>elasticsearch</artifactId>
+                        <ignoreClasses>
+                          <!-- Elasticsearch team claims they fixed performance issues in the class and re-bundled it.
+                               See https://discuss.elastic.co/t/an-unshaded-joda-time-classes-in-elasticsearch-2-1-1-jar/38943
+                               Nothing we can do here. -->
+                          <ignoreClass>org.joda.time.base.BaseDateTime</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <!-- ignore jboss-logging included in kie server router as it is required by undertow and uberjar usage-->
+                      <dependency>
+                        <groupId>org.kie.server</groupId>
+                        <artifactId>kie-server-router-proxy</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>org.jboss.logging.*</ignoreClass>
+                          <ignoreClass>io.undertow.*</ignoreClass>
+                          <ignoreClass>org.json.*</ignoreClass>
+                          <ignoreClass>org.jboss.threads.*</ignoreClass>
+                          <ignoreClass>org.xnio.*</ignoreClass>
+                          <ignoreClass>org.wildfly.*</ignoreClass>
+                          <ignoreClass>org.apache.commons.*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <dependency>
+                        <groupId>org.wildfly.security</groupId>
+                        <artifactId>wildfly-elytron</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <dependency>
+                        <!-- The openshift-client duplicates these classes from the kubernetes-client.
+                             It is an upstream io.fabric8 issue that needs to be fixed there:
+                             https://github.com/fabric8io/kubernetes-client/issues/828 -->
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>openshift-client</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>io.fabric8.kubernetes.client.ConfigFluent</ignoreClass>
+                          <ignoreClass>io.fabric8.kubernetes.client.ConfigBuilder
+                          </ignoreClass>
+                          <ignoreClass>io.fabric8.kubernetes.client.ConfigFluentImpl
+                          </ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                    </dependencies>
+                    <findAllDuplicates>true</findAllDuplicates>
+                  </banDuplicateClasses>
+                </rules>
+                <fail>${enforcer.failOnDuplicatedClasses}</fail>
+              </configuration>
+            </execution>
+            <execution>
+              <id>no-duplicate-declared-dependencies</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <banDuplicatePomDependencyVersions/>
+                </rules>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.revapi</groupId>
+          <artifactId>revapi-maven-plugin</artifactId>
+          <version>0.9.5</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.revapi</groupId>
+              <artifactId>revapi-java</artifactId>
+              <version>0.14.3</version>
+            </dependency>
+          </dependencies>
+          <configuration>
+            <oldArtifacts>
+              <artifact>${project.groupId}:${project.artifactId}:${revapi.oldKieVersion}</artifact>
+            </oldArtifacts>
+            <newArtifacts>
+              <artifact>${project.groupId}:${project.artifactId}:${revapi.newKieVersion}</artifact>
+            </newArtifacts>
+            <!-- By default revapi will check the oldArtifact against the currently executed build -->
+            <analysisConfigurationFiles>
+              <configurationFile>
+                <path>src/build/revapi-config.json</path>
+                <roots>
+                  <root>filters</root>
+                  <root>ignores</root>
+                </roots>
+              </configurationFile>
+            </analysisConfigurationFiles>
+            <!-- By default, revapi will only fail the build if there are potentially breaking or breaking changes. However, in the report
+                 we want even non breaking changes to be present. -->
+            <reportSeverity>nonBreaking</reportSeverity>
+            <failSeverity>potentiallyBreaking</failSeverity>
+          </configuration>
+          <!-- Running two executions is a workaround to make sure we get a HTML report in case revapi finds
+               some incompatible changes. The "check" goal will simply fail the whole build before it could get
+               to the report. To make sure we always get a HTML report, the "report" goal needs to be executed
+               before the "check" goal.
+               Once https://github.com/revapi/revapi/issues/11 is fixed it should be possible to use single execution. -->
+          <executions>
+            <execution>
+              <id>check</id>
+              <goals>
+                <goal>check</goal>
+              </goals>
+              <phase>verify</phase>
+            </execution>
+            <execution>
+              <!-- report can be found in ${build.directory}/site/revapi-report.html -->
+              <id>report</id>
+              <goals>
+                <goal>report</goal>
+              </goals>
+              <phase>package</phase>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <configuration>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+        <!--            <plugin>-->
+        <!--              <groupId>org.apache.maven.plugins</groupId>-->
+        <!--              <artifactId>maven-surefire-plugin</artifactId>-->
+        <!--              <configuration>-->
+        <!--                <includes>-->
+        <!--                  <include>**/*Test.java</include>-->
+        <!--                </includes>-->
+        <!--                <excludes>-->
+        <!--                  <exclude>**/*IntegrationTest.java</exclude>-->
+        <!--                </excludes>-->
+        <!--                <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>-->
+        <!--                <systemPropertyVariables>-->
+        <!--                  <apple.awt.UIElement>true</apple.awt.UIElement>-->
+        <!--                </systemPropertyVariables>-->
+        <!--              </configuration>-->
+        <!--            </plugin>-->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${version.failsafe.plugin}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <includes>
+              <include>**/*IntegrationTest.java</include>
+              <include>**/*IT.java</include>
+            </includes>
+            <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
+          </configuration>
+        </plugin>
+        <!-- Packaging -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-jar</id>
+              <configuration>
+                <archive>
+                  <manifestEntries combine.children="append">
+                    <Automatic-Module-Name>${java.module.name}</Automatic-Module-Name>
+                  </manifestEntries>
+                </archive>
+              </configuration>
+            </execution>
+            <!--                <execution>-->
+            <!--                  <id>test-jar</id>-->
+            <!--                  <goals>-->
+            <!--                    <goal>test-jar</goal>-->
+            <!--                  </goals>-->
+            <!--                  <configuration>-->
+            <!--                    <skipIfEmpty>true</skipIfEmpty>-->
+            <!--                    <excludes>-->
+            <!--                      <exclude>**/logback-test.xml</exclude>-->
+            <!--                    </excludes>-->
+            <!--                  </configuration>-->
+            <!--                </execution>-->
+          </executions>
+          <configuration>
+            <archive>
+              <manifest>
+                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              </manifest>
+            </archive>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.asciidoctor</groupId>
+          <artifactId>asciidoctor-maven-plugin</artifactId>
+          <version>2.0.0</version>
+          <dependencies>
+            <dependency>
+              <!-- Required to generate the PDF file -->
+              <groupId>org.asciidoctor</groupId>
+              <artifactId>asciidoctorj-pdf</artifactId>
+              <version>1.5.0</version>
+            </dependency>
+          </dependencies>
+          <configuration>
+            <attributes>
+              <imagesdir>.</imagesdir>
+              <project-version>${project.version}</project-version>
+              <version-org-spring-framework-boot>${version.org.springframework.boot}</version-org-spring-framework-boot>
+              <html-googleAnalyticsId>UA-39485370-1</html-googleAnalyticsId>
+            </attributes>
+          </configuration>
+          <executions>
+            <execution>
+              <id>generate-single-html</id>
+              <phase>generate-resources</phase>
+              <goals>
+                <goal>process-asciidoc</goal>
+              </goals>
+              <configuration>
+                <!-- Needs to be duplicated to avoid rendering each adoc separately -->
+                <sourceDocumentName>${source.document.name}</sourceDocumentName>
+                <backend>html5</backend>
+                <outputDirectory>${project.build.directory}/generated-docs/html_single</outputDirectory>
+                <attributes>
+                  <source-highlighter>highlightjs</source-highlighter>
+                </attributes>
+              </configuration>
+            </execution>
+            <execution>
+              <id>generate-pdf</id>
+              <phase>generate-resources</phase>
+              <goals>
+                <goal>process-asciidoc</goal>
+              </goals>
+              <configuration>
+                <!-- Needs to be duplicated to avoid rendering each adoc separately -->
+                <sourceDocumentName>${source.document.name}</sourceDocumentName>
+                <backend>pdf</backend>
+                <outputDirectory>${project.build.directory}/generated-docs/pdf</outputDirectory>
+                <attributes>
+                  <source-highlighter>coderay</source-highlighter><!-- highlightjs does not work in PDF -->
+                </attributes>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-invoker-plugin</artifactId>
+          <version>2.0.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${version.deploy.plugin}</version>
+          <configuration>
+            <retryFailedDeploymentCount>10</retryFailedDeploymentCount>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>versions-maven-plugin</artifactId>
+          <version>2.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <!-- Manually push changes (including git tags) after nexus staged repo is successfully closed -->
+            <pushChanges>false</pushChanges>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <links>
+              <link>http://docs.oracle.com/javase/8/docs/api</link>
+            </links>
+            <source>${maven.compiler.source}</source>
+            <minmemory>128m</minmemory>
+            <maxmemory>512m</maxmemory>
+            <author>false</author>
+            <breakiterator>true</breakiterator>
+            <quiet>true</quiet>
+            <additionalparam>${javadoc.additional.params}</additionalparam>
+          </configuration>
+        </plugin>
+        <plugin>
           <groupId>com.github.spotbugs</groupId>
           <artifactId>spotbugs-maven-plugin</artifactId>
+          <version>${version.com.github.spotbugs-maven-plugin}</version>
+          <!--              <dependencies>-->
+          <!--                <dependency>-->
+          <!--                  <groupId>org.kie</groupId>-->
+          <!--                  <artifactId>kie-build-tools</artifactId>-->
+          <!--                  <version>${version.org.kie}</version>-->
+          <!--                </dependency>-->
+          <!--              </dependencies>-->
           <configuration>
             <maxRank>14</maxRank>
             <includeTests>true</includeTests>
+            <effort>Max</effort>
+            <xmlOutput>true</xmlOutput>
+            <failOnError>${spotbugs.failOnViolation}</failOnError>
+            <excludeFilterFile>spotbugs-excludes.xml</excludeFilterFile>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.pitest</groupId>
+          <artifactId>pitest-maven</artifactId>
+          <version>1.2.0</version>
+        </plugin>
+        <!-- Incremental compiler-->
+        <plugin>
+          <groupId>io.takari.maven.plugins</groupId>
+          <artifactId>takari-lifecycle-plugin</artifactId>
+          <version>${version.io.takari.maven.plugins.compiler}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>1.5.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>3.6.0.1398</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -205,6 +709,65 @@
             </compilerArgs>
           </configuration>
         </plugin>
+        <!-- TODO merge the 2 checkstyle definitions. The commented out one comes from kie-parent 7. -->
+<!--        <plugin>-->
+<!--          <groupId>org.apache.maven.plugins</groupId>-->
+<!--          <artifactId>maven-checkstyle-plugin</artifactId>-->
+<!--          <version>${version.checkstyle.plugin}</version>-->
+<!--          <executions>-->
+<!--            <execution>-->
+<!--              <id>validate</id>-->
+<!--              <phase>validate</phase>-->
+<!--              <goals>-->
+<!--                <goal>check</goal>-->
+<!--              </goals>-->
+<!--              <configuration>-->
+<!--                <checkstyleRules>-->
+<!--                  <module name="Checker">-->
+<!--                    &lt;!&ndash; Checks for whitespace. &ndash;&gt;-->
+<!--                    <module name="FileTabCharacter">-->
+<!--                      <property name="severity" value="error"/>-->
+<!--                      <property name="eachLine" value="true"/>-->
+<!--                    </module>-->
+<!--                    <module name="TreeWalker">-->
+<!--                      &lt;!&ndash; Import settings: getting rid of redundant import, forbid star notation, defined order of imports. &ndash;&gt;-->
+<!--                      <module name="RedundantImport"/>-->
+<!--                      <module name="AvoidStarImport">-->
+<!--                        <property name="allowClassImports" value="false"/>-->
+<!--                        <property name="allowStaticMemberImports" value="false"/>-->
+<!--                      </module>-->
+<!--                      <module name="CustomImportOrder">-->
+<!--                        <property name="customImportOrderRules"-->
+<!--                                  value="STANDARD_JAVA_PACKAGE###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE###STATIC"/>-->
+<!--                        <property name="specialImportsRegExp" value="^javax\."/>-->
+<!--                        <property name="standardPackageRegExp" value="^java\."/>-->
+<!--                        <property name="sortImportsInGroupAlphabetically" value="true"/>-->
+<!--                        <property name="separateLineBetweenGroups" value="true"/>-->
+<!--                      </module>-->
+<!--                      <module name="UnusedImports"/>-->
+<!--                      <module name="NeedBraces">-->
+<!--                        <property name="tokens"-->
+<!--                                  value="LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO"/>-->
+<!--                      </module>-->
+<!--                      <module name="EqualsHashCode"/>-->
+<!--                    </module>-->
+<!--                    <module name="RegexpHeader">-->
+<!--                      <property name="header" value="${checkstyle.header.template}"/>-->
+<!--                      <property name="fileExtensions" value="${checkstyle.header.extensions}"/>-->
+<!--                    </module>-->
+<!--                  </module>-->
+<!--                </checkstyleRules>-->
+<!--                <outputFile>${project.build.directory}/checkstyle.log</outputFile>-->
+<!--                <includeTestSourceDirectory>true</includeTestSourceDirectory>-->
+<!--                <includeResources>true</includeResources>-->
+<!--                <includeTestResources>true</includeTestResources>-->
+<!--                <consoleOutput>false</consoleOutput>-->
+<!--                <logViolationsToConsole>${checkstyle.logViolationsToConsole}</logViolationsToConsole>-->
+<!--                <failsOnError>false</failsOnError>-->
+<!--              </configuration>-->
+<!--            </execution>-->
+<!--          </executions>-->
+<!--        </plugin>-->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
@@ -289,6 +852,7 @@
         <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${version.jacoco.plugin}</version>
           <executions>
             <execution>
               <id>jacoco-prepare-agent</id>
@@ -359,7 +923,238 @@
         <groupId>net.revelc.code</groupId>
         <artifactId>impsort-maven-plugin</artifactId>
       </plugin>
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <id>ban-duplicated-classes</id>-->
+<!--            <goals>-->
+<!--              <goal>enforce</goal>-->
+<!--            </goals>-->
+<!--            <configuration>-->
+<!--              <rules>-->
+<!--                <banDuplicateClasses>-->
+<!--                  <dependencies combine.children="append">-->
+<!--                    &lt;!&ndash; sundr-codegen is required to compile test classes. &ndash;&gt;-->
+<!--                    <dependency>-->
+<!--                      <groupId>io.sundr</groupId>-->
+<!--                      <artifactId>sundr-codegen</artifactId>-->
+<!--                      <ignoreClasses>-->
+<!--                        <ignoreClass>*</ignoreClass>-->
+<!--                      </ignoreClasses>-->
+<!--                    </dependency>-->
+<!--                  </dependencies>-->
+<!--                </banDuplicateClasses>-->
+<!--              </rules>-->
+<!--            </configuration>-->
+<!--          </execution>-->
+<!--        </executions>-->
+      </plugin>
+      <plugin>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <!-- Entry needed to provide parsed version properties -->
+        <!-- also adds generated sources to -source artifact -->
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+              <goal>parse-version</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>target/generated-sources/annotations/</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+      </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>fullProfile</id>
+      <activation>
+        <property>
+          <name>full</name>
+        </property>
+      </activation>
+      <modules>
+        <module>optaplanner-docs</module>
+        <module>optaplanner-distribution</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>quickstartsProfile</id>
+      <activation>
+        <property>
+          <!-- TODO Temporarily(?) exclude quickstarts from nightly/release community/product builds -->
+          <!-- Don't release the quickstart artifacts in a Maven repo such as Maven Central -->
+          <name>quickstarts</name>
+        </property>
+      </activation>
+      <modules>
+        <module>optaplanner-quickstarts</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>run-code-coverage</id>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                <!-- Append jacoco.agent.argLine property populated by JaCoCo's prepare-agent goal. -->
+                <argLine>@{jacoco.agent.argLine}</argLine>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <!-- Fail the build in CI if code does not follow the standards. -->
+      <id>validate-formatting-ci</id>
+      <activation>
+        <property>
+          <name>env.CI</name>
+        </property>
+      </activation>
+      <properties>
+        <formatter.goal>validate</formatter.goal>
+        <impsort.goal>check</impsort.goal>
+      </properties>
+    </profile>
+    <profile>
+      <!-- Mutation coverage disabled by default (use -Dmutation-coverage to activate it) -->
+      <id>mutation-coverage</id>
+      <activation>
+        <property>
+          <name>mutation-coverage</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-maven</artifactId>
+            <executions>
+              <execution>
+                <id>default-pitest</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>mutationCoverage</goal>
+                </goals>
+                <configuration>
+                  <reportsDirectory>local/pit-reports</reportsDirectory>
+                  <timestampedReports>true</timestampedReports>
+                  <timeoutConstant>1000</timeoutConstant>
+                  <mutators>
+                    <!--
+                    <mutator>CONDITIONALS_BOUNDARY</mutator>
+                    <mutator>NEGATE_CONDITIONALS</mutator>
+                    <mutator>MATH</mutator>
+                    <mutator>INCREMENTS</mutator>
+                    <mutator>INVERT_NEGS</mutator>
+                    <mutator>RETURN_VALS</mutator>
+                    <mutator>VOID_METHOD_CALLS</mutator>
+                    -->
+                    <mutator>DEFAULTS</mutator>
+                    <mutator>NON_VOID_METHOD_CALLS</mutator>
+                    <mutator>REMOVE_CONDITIONALS</mutator>
+                  </mutators>
+                  <avoidCallsTo>java.lang.StringBuilder</avoidCallsTo>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>generate-revapi-report</id>
+      <!-- There is no need to run tests when generating the report -->
+      <properties>
+        <skipTests>true</skipTests>
+      </properties>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.revapi</groupId>
+              <artifactId>revapi-maven-plugin</artifactId>
+              <configuration>
+                <analysisConfigurationFiles>
+                  <configurationFile>
+                    <!-- Only filters should be taken into account, not ignores -->
+                    <roots>
+                      <root>filters</root>
+                    </roots>
+                  </configurationFile>
+                </analysisConfigurationFiles>
+              </configuration>
+              <!-- Run only report generation goal -->
+              <executions>
+                <execution>
+                  <!-- Disable check goal -->
+                  <id>check</id>
+                  <phase>none</phase>
+                </execution>
+                <execution>
+                  <!-- Report can be found in ${build.directory}/site/revapi-report.html -->
+                  <id>report</id>
+                  <goals>
+                    <goal>report</goal>
+                  </goals>
+                  <phase>package</phase>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+    <profile>
+      <id>java11-specific-config</id>
+      <activation>
+        <jdk>[11,)</jdk>
+      </activation>
+      <properties>
+        <javadoc.additional.params>-Xdoclint:none</javadoc.additional.params>
+      </properties>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <configuration>
+                <source>${maven.compiler.source}</source>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+  </profiles>
 
 </project>

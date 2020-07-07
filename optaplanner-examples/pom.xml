@@ -198,17 +198,6 @@
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi-ooxml</artifactId>
-      <exclusions>
-        <exclusion>
-          <!-- Collides with 'javax.xml.stream:stax-api' brought in by 'org.drools:drools-decisiontables'. -->
-          <groupId>stax</groupId>
-          <artifactId>stax-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.glassfish</groupId>
-          <artifactId>javax.json</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
   </dependencies>
 

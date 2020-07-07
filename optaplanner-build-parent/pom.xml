@@ -14,14 +14,267 @@
 
   <name>OptaPlanner build parent</name>
 
+  <properties>
+    <!-- SNAPSHOT dependency versions -->
+    <version.org.kie>7.40.0-SNAPSHOT</version.org.kie>
+
+    <!-- Normal dependency versions-->
+    <version.ch.qos.logback>1.2.3</version.ch.qos.logback>
+    <version.commons-io>2.6</version.commons-io>
+    <version.com.fasterxml.jackson.core>2.10.4</version.com.fasterxml.jackson.core>
+    <version.com.h2database>1.3.173</version.com.h2database>
+    <version.com.thoughtworks.xstream>1.4.11.1</version.com.thoughtworks.xstream>
+    <version.jakarta.json.bind>1.0.2</version.jakarta.json.bind>
+    <version.org.apache.commons.lang3>3.9</version.org.apache.commons.lang3>
+    <version.org.apache.commons.math3>3.4.1</version.org.apache.commons.math3>
+    <version.org.apache.poi>4.1.2</version.org.apache.poi>
+    <version.org.assertj>3.14.0</version.org.assertj>
+    <version.org.freemarker>2.3.28</version.org.freemarker>
+    <version.org.hibernate>5.3.16.Final</version.org.hibernate>
+    <version.org.jdom>1.1.3</version.org.jdom>
+    <version.org.jfree.jfreechart>1.5.0</version.org.jfree.jfreechart>
+    <version.org.junit>5.5.2</version.org.junit>
+    <version.org.mockito>1.10.19</version.org.mockito>
+    <version.org.slf4j>1.7.26</version.org.slf4j>
+    <version.org.springframework>5.2.6.RELEASE</version.org.springframework>
+    <version.org.springframework.boot>2.2.6.RELEASE</version.org.springframework.boot>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
+      <!-- SNAPSHOT dependencies -->
       <dependency>
         <groupId>org.optaplanner</groupId>
         <artifactId>optaplanner-bom</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-bom</artifactId>
+        <version>${version.org.kie}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-bom</artifactId>
+        <version>${version.org.kie}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.soup</groupId>
+        <artifactId>kie-soup-bom</artifactId>
+        <version>${version.org.kie}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- Normal dependencies versions-->
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>${version.ch.qos.logback}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${version.ch.qos.logback}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${version.commons-io}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${version.com.fasterxml.jackson.core}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${version.com.fasterxml.jackson.core}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <version>${version.com.h2database}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.thoughtworks.xstream</groupId>
+        <artifactId>xstream</artifactId>
+        <version>${version.com.thoughtworks.xstream}</version>
+      </dependency>
+      <dependency>
+        <groupId>jakarta.json.bind</groupId>
+        <artifactId>jakarta.json.bind-api</artifactId>
+        <version>${version.jakarta.json.bind}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${version.org.apache.commons.lang3}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-math3</artifactId>
+        <version>${version.org.apache.commons.math3}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi</artifactId>
+        <version>${version.org.apache.poi}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi-ooxml</artifactId>
+        <version>${version.org.apache.poi}</version>
+        <exclusions>
+          <exclusion>
+            <!-- Collides with 'javax.xml.stream:stax-api' brought in by 'org.drools:drools-decisiontables'. -->
+            <groupId>stax</groupId>
+            <artifactId>stax-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${version.org.assertj}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.freemarker</groupId>
+        <artifactId>freemarker</artifactId>
+        <version>${version.org.freemarker}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>${version.org.hibernate}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-entitymanager</artifactId>
+        <version>${version.org.hibernate}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jdom</groupId>
+        <artifactId>jdom</artifactId>
+        <version>${version.org.jdom}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jfree</groupId>
+        <artifactId>jfreechart</artifactId>
+        <version>${version.org.jfree.jfreechart}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${version.org.junit}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${version.org.mockito}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${version.org.slf4j}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-web</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-autoconfigure</artifactId>
+        <version>${version.org.springframework.boot}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-autoconfigure-processor</artifactId>
+        <version>${version.org.springframework.boot}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-configuration-processor</artifactId>
+        <version>${version.org.springframework.boot}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-test</artifactId>
+        <version>${version.org.springframework.boot}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-test-autoconfigure</artifactId>
+        <version>${version.org.springframework.boot}</version>
+      </dependency>
+
+      <!-- TODO Dependencies that must use a jakarta.* groupId instead in 8 -->
+      <dependency>
+        <groupId>javax.persistence</groupId>
+        <artifactId>javax.persistence-api</artifactId>
+        <version>2.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish</groupId>
+        <artifactId>jakarta.json</artifactId>
+        <version>1.1.6</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish</groupId>
+        <artifactId>javax.json</artifactId>
+        <!-- Old version until this issue is resolved: https://github.com/ImmobilienScout24/illegal-transitive-dependency-check/issues/30 -->
+        <version>1.0.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.spec.javax.xml.bind</groupId>
+        <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
+        <version>1.0.1.Final</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.spec.javax.transaction</groupId>
+        <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+        <version>1.1.1.Final</version>
+      </dependency>
+
+      <!-- TODO Dependencies that should probably be removed/replaced in 8 -->
+      <dependency>
+        <groupId>org.glassfish.jaxb</groupId>
+        <artifactId>jaxb-runtime</artifactId>
+        <version>2.3.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.persistence</groupId>
+        <artifactId>org.eclipse.persistence.moxy</artifactId>
+        <version>2.7.6</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.narayana.jta</groupId>
+        <artifactId>narayana-jta</artifactId>
+        <version>5.9.0.Final</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse</groupId>
+        <artifactId>yasson</artifactId>
+        <version>1.0.6</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

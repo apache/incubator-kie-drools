@@ -2,7 +2,7 @@ package org.optaplanner.examples.examination.solver.score;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.examples.examination.domain.Exam;
 import org.optaplanner.examples.examination.domain.Examination;
 import org.optaplanner.examples.examination.domain.ExaminationConstraintConfiguration;

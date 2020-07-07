@@ -43,52 +43,6 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.asciidoctor</groupId>
-          <artifactId>asciidoctor-maven-plugin</artifactId>
-          <configuration>
-            <imagesDir>.</imagesDir>
-            <attributes>
-              <project-version>${project.version}</project-version>
-              <version-org-spring-framework-boot>${version.org.springframework.boot}</version-org-spring-framework-boot>
-              <!-- Custom attributes -->
-              <codeDir>${project.build.directory}/code</codeDir>
-              <COMMUNITY-ONLY/>
-              <shared-dir>${project.basedir}/../shared/</shared-dir>
-              <html-googleAnalyticsId>UA-39485370-1</html-googleAnalyticsId>
-            </attributes>
-          </configuration>
-          <executions>
-            <execution>
-              <id>generate-single-html</id>
-              <phase>generate-resources</phase>
-              <goals>
-                <goal>process-asciidoc</goal>
-              </goals>
-              <configuration>
-                <!-- Needs to be duplicated to avoid rendering each adoc separately -->
-                <sourceDocumentName>${source.document.name}</sourceDocumentName>
-                <backend>html5</backend>
-                <sourceHighlighter>highlightjs</sourceHighlighter>
-                <outputDirectory>${project.build.directory}/generated-docs/html_single</outputDirectory>
-              </configuration>
-            </execution>
-            <execution>
-              <id>generate-pdf</id>
-              <phase>generate-resources</phase>
-              <goals>
-                <goal>process-asciidoc</goal>
-              </goals>
-              <configuration>
-                <!-- Needs to be duplicated to avoid rendering each adoc separately -->
-                <sourceDocumentName>${source.document.name}</sourceDocumentName>
-                <backend>pdf</backend>
-                <sourceHighlighter>coderay</sourceHighlighter><!-- highlightjs does not work in PDF -->
-                <outputDirectory>${project.build.directory}/generated-docs/pdf</outputDirectory>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
           <executions>
@@ -114,63 +68,5 @@
       </plugins>
     </pluginManagement>
   </build>
-
-  <profiles>
-    <profile>
-      <id>community</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.jboss.maven.plugins</groupId>
-              <artifactId>maven-jdocbook-plugin</artifactId>
-              <configuration>
-                <profiling>
-                  <enabled>true</enabled>
-                  <attributeName>condition</attributeName>
-                  <attributeValue>COMMUNITY-ONLY</attributeValue>
-                </profiling>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-
-    <profile>
-      <id>productizationDocsProfile</id>
-      <activation>
-        <property>
-          <name>productizationDocs</name>
-        </property>
-      </activation>
-
-      <properties>
-        <!-- This file does not exist in the community repository, but it does exist in the product-docs repo -->
-        <source.document.name>product-index.adoc</source.document.name>
-      </properties>
-
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.jboss.maven.plugins</groupId>
-              <artifactId>maven-jdocbook-plugin</artifactId>
-              <configuration>
-                <profiling>
-                  <enabled>true</enabled>
-                  <attributeName>condition</attributeName>
-                  <attributeValue>PRODUCT-ONLY</attributeValue>
-                </profiling>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-  </profiles>
 
 </project>
