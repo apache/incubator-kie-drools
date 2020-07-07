@@ -281,8 +281,8 @@ public class ExpressionFunctionUtilsTest {
     public void getApplyExpressionBlockStmt() {
         Apply apply = applySupplier.get();
         String variableName = "VARIABLE_NAME";
-        BlockStmt retrieved = ExpressionFunctionUtils.getApplyExpressionFromCommonDataBlockStmt(variableName, apply,
-                                                                                                parseClassOrInterfaceType(Object.class.getName()), DEFAULT_PARAMETERTYPE_MAP);
+        BlockStmt retrieved = ExpressionFunctionUtils.getApplyExpressionBlockStmt(variableName, apply,
+                                                                                  parseClassOrInterfaceType(Object.class.getName()), DEFAULT_PARAMETERTYPE_MAP);
         String expected = "{\n" +
                 "    java.lang.Object variableVARIABLE_NAMEConstant1 = 34.6;\n" +
                 "    java.util.Optional<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> kiePMMLNameValue = param1" +
@@ -308,8 +308,8 @@ public class ExpressionFunctionUtilsTest {
         apply.addExpressions(constant, nestedApply);
         apply.setFunction(functionName);
         String variableName = "VARIABLE_NAME";
-        BlockStmt retrieved = ExpressionFunctionUtils.getApplyExpressionFromCommonDataBlockStmt(variableName, apply,
-                                                                                                parseClassOrInterfaceType(Object.class.getName()), DEFAULT_PARAMETERTYPE_MAP);
+        BlockStmt retrieved = ExpressionFunctionUtils.getApplyExpressionBlockStmt(variableName, apply,
+                                                                                  parseClassOrInterfaceType(Object.class.getName()), DEFAULT_PARAMETERTYPE_MAP);
         String expected = "{\n" +
                 "    java.lang.Object variableVARIABLE_NAMEConstant1 = \"STRING_VALUE\";\n" +
                 "    java.lang.Object variablevariableVARIABLE_NAMEApply2Constant1 = 34.6;\n" +

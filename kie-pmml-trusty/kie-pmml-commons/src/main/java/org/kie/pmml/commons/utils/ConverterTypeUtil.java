@@ -15,6 +15,8 @@
  */
 package org.kie.pmml.commons.utils;
 
+import java.util.function.Predicate;
+
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 
 /**
@@ -23,6 +25,22 @@ import org.kie.pmml.commons.exceptions.KiePMMLException;
 public class ConverterTypeUtil {
 
     static final String FAILED_CONVERSION = "Failed to convert %s to %s";
+    private static Predicate<Class<?>> IS_BOOLEAN =
+            expectedClass -> expectedClass.isAssignableFrom(Boolean.class) || expectedClass.isAssignableFrom(boolean.class);
+    private static Predicate<Class<?>> IS_INTEGER =
+            expectedClass -> expectedClass.isAssignableFrom(Integer.class) || expectedClass.isAssignableFrom(int.class);
+    private static Predicate<Class<?>> IS_LONG =
+            expectedClass -> expectedClass.isAssignableFrom(Long.class) || expectedClass.isAssignableFrom(long.class);
+    private static Predicate<Class<?>> IS_DOUBLE =
+            expectedClass -> expectedClass.isAssignableFrom(Double.class) || expectedClass.isAssignableFrom(double.class);
+    private static Predicate<Class<?>> IS_FLOAT =
+            expectedClass -> expectedClass.isAssignableFrom(Float.class) || expectedClass.isAssignableFrom(float.class);
+    private static Predicate<Class<?>> IS_CHARACTER =
+            expectedClass -> expectedClass.isAssignableFrom(Character.class) || expectedClass.isAssignableFrom(char.class);
+    private static Predicate<Class<?>> IS_BYTE =
+            expectedClass -> expectedClass.isAssignableFrom(Byte.class) || expectedClass.isAssignableFrom(byte.class);
+    private static Predicate<Class<?>> IS_SHORT =
+            expectedClass -> expectedClass.isAssignableFrom(Short.class) || expectedClass.isAssignableFrom(short.class);
 
     private ConverterTypeUtil() {
         // Avoid instantiation
@@ -31,7 +49,6 @@ public class ConverterTypeUtil {
     /**
      * Convert the given <code>Object</code> to expected <code>Class</code>.
      * It throws <code>KiePMMLInternalException</code> if conversion has failed
-     *
      * @param expectedClass
      * @param originalObject
      * @return
@@ -47,36 +64,36 @@ public class ConverterTypeUtil {
         Object toReturn;
         if (currentClass.equals(String.class)) {
             try {
-                toReturn =convertFromString(expectedClass, (String) originalObject);
+                toReturn = convertFromString(expectedClass, (String) originalObject);
             } catch (Exception e) {
                 throw new KiePMMLException(String.format(FAILED_CONVERSION, originalObject,
-                                                                 expectedClass.getName()), e);
+                                                         expectedClass.getName()), e);
             }
         } else if (expectedClass == String.class) {
             toReturn = originalObject.toString();
         } else {
             throw new KiePMMLException(String.format(FAILED_CONVERSION, originalObject,
-                                                             expectedClass.getName()));
+                                                     expectedClass.getName()));
         }
         return toReturn;
     }
 
     static Object convertFromString(Class<?> expectedClass, String originalObject) {
-        if (expectedClass.isAssignableFrom(Boolean.class) || expectedClass.isAssignableFrom(boolean.class)) {
+        if (IS_BOOLEAN.test(expectedClass)) {
             return parseBoolean(originalObject);
-        } else if (expectedClass.isAssignableFrom(Integer.class) || expectedClass.isAssignableFrom(int.class)) {
+        } else if (IS_INTEGER.test(expectedClass)) {
             return Integer.parseInt(originalObject);
-        } else if (expectedClass.isAssignableFrom(Long.class) || expectedClass.isAssignableFrom(long.class)) {
+        } else if (IS_LONG.test(expectedClass)) {
             return Long.parseLong(originalObject);
-        } else if (expectedClass.isAssignableFrom(Double.class) || expectedClass.isAssignableFrom(double.class)) {
+        } else if (IS_DOUBLE.test(expectedClass)) {
             return Double.parseDouble(originalObject);
-        } else if (expectedClass.isAssignableFrom(Float.class) || expectedClass.isAssignableFrom(float.class)) {
+        } else if (IS_FLOAT.test(expectedClass)) {
             return Float.parseFloat(originalObject);
-        } else if (expectedClass.isAssignableFrom(Character.class) || expectedClass.isAssignableFrom(char.class)) {
+        } else if (IS_CHARACTER.test(expectedClass)) {
             return parseChar(originalObject);
-        } else if (expectedClass.isAssignableFrom(Byte.class) || expectedClass.isAssignableFrom(byte.class)) {
+        } else if (IS_BYTE.test(expectedClass)) {
             return Byte.parseByte(originalObject);
-        } else if (expectedClass.isAssignableFrom(Short.class) || expectedClass.isAssignableFrom(short.class)) {
+        } else if (IS_SHORT.test(expectedClass)) {
             return Short.parseShort(originalObject);
         } else {
             throw new KiePMMLException(String.format(FAILED_CONVERSION, originalObject,

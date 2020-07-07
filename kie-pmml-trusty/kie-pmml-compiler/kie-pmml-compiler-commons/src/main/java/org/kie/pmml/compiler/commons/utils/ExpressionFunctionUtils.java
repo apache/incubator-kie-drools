@@ -67,10 +67,10 @@ import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedCla
  */
 public class ExpressionFunctionUtils {
 
-    final static String KIEPMMLNAMEVALUE_LIST_PARAM = "param1"; // it is the first parameter
-    final static String INNER_VARIABLE_NAME = "variable%s%s%s"; // it is the first parameter
-    final static LinkedHashMap<String, ClassOrInterfaceType> DEFAULT_PARAMETERTYPE_MAP;
-    final static FieldAccessExpr CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR;
+    static final String KIEPMMLNAMEVALUE_LIST_PARAM = "param1"; // it is the first parameter
+    static final String INNER_VARIABLE_NAME = "variable%s%s%s"; // it is the first parameter
+    static final LinkedHashMap<String, ClassOrInterfaceType> DEFAULT_PARAMETERTYPE_MAP;
+    static final FieldAccessExpr CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR;
 
     static {
         DEFAULT_PARAMETERTYPE_MAP = new LinkedHashMap<>();
@@ -124,16 +124,8 @@ public class ExpressionFunctionUtils {
                                                                  final ClassOrInterfaceType returnedType,
                                                                  final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         String variableName = "applyVariable";
-        BlockStmt body = getApplyExpressionFromCommonDataBlockStmt(variableName, apply, returnedType, parameterNameTypeMap);
-        if (parameterNameTypeMap.size() == 1) {
-            body = getApplyExpressionFromCommonDataBlockStmt(variableName, apply, returnedType,
-                                                                parameterNameTypeMap);
-        } else {
-            body = getApplyExpressionFromDefineFunctionBlockStmt(variableName, apply, returnedType,
-                                                                    parameterNameTypeMap);
-        }
-
-
+        BlockStmt body = getApplyExpressionBlockStmt(variableName, apply, returnedType,
+                                                     parameterNameTypeMap);
         return getExpressionMethodDeclaration(methodName, variableName, body, returnedType, parameterNameTypeMap);
     }
 
@@ -303,11 +295,7 @@ public class ExpressionFunctionUtils {
             return getAggregatedExpressionBlockStmt(variableName, (Aggregate) expression, returnedType,
                                                     parameterNameTypeMap);
         } else if (expression instanceof Apply) {
-            if (parameterNameTypeMap.size() == 1) {
-                return getApplyExpressionFromCommonDataBlockStmt(variableName, (Apply) expression, returnedType, parameterNameTypeMap);
-            } else {
-                return getApplyExpressionFromDefineFunctionBlockStmt(variableName, (Apply) expression, returnedType, parameterNameTypeMap);
-            }
+            return getApplyExpressionBlockStmt(variableName, (Apply) expression, returnedType, parameterNameTypeMap);
         } else if (expression instanceof Constant) {
             return getConstantExpressionBlockStmt(variableName, (Constant) expression, returnedType,
                                                   parameterNameTypeMap);
@@ -375,68 +363,10 @@ public class ExpressionFunctionUtils {
      * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
-    static BlockStmt getApplyExpressionFromCommonDataBlockStmt(final String variableName,
-                                                               final Apply apply,
-                                                               final ClassOrInterfaceType returnedType,
-                                                               final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
-        final BlockStmt toReturn = new BlockStmt();
-        List<String> innerVariables = new ArrayList<>();
-        innerVariables.add(KIEPMMLNAMEVALUE_LIST_PARAM);
-        final ClassOrInterfaceType objectReturnedType = parseClassOrInterfaceType(Object.class.getName());
-        if (apply.getExpressions() != null) {
-            int counter = 1;
-            for (Expression expression : apply.getExpressions()) {
-                String innerVariable = String.format(INNER_VARIABLE_NAME, variableName,
-                                                     expression.getClass().getSimpleName(), counter);
-                BlockStmt innerBlockStmt = getExpressionBlockStmt(innerVariable, expression, objectReturnedType,
-                                                                  parameterNameTypeMap);
-                toReturn.getStatements().addAll(innerBlockStmt.getStatements());
-                innerVariables.add(innerVariable);
-                counter++;
-            }
-        }
-
-        MethodCallExpr functionMethodCall = new MethodCallExpr();
-        functionMethodCall.setScope(new ThisExpr());
-        functionMethodCall.setName(apply.getFunction());
-        NodeList<com.github.javaparser.ast.expr.Expression> functionCallArguments =
-                NodeList.nodeList(innerVariables.stream().map(NameExpr::new).collect(Collectors.toList()));
-        functionMethodCall.setArguments(functionCallArguments);
-        VariableDeclarator variableDeclarator = new VariableDeclarator();
-        variableDeclarator.setType(returnedType);
-        variableDeclarator.setName(variableName);
-        variableDeclarator.setInitializer(functionMethodCall);
-        VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr();
-        variableDeclarationExpr.setVariables(NodeList.nodeList(variableDeclarator));
-        toReturn.addStatement(variableDeclarationExpr);
-
-        return toReturn;
-    }
-
-    /**
-     * For each <code>Expression</code> generates the code to retrieve the value, and then invoke the specified
-     * <b>function</b>
-     * with the retrieved values.
-     * e.g.
-     * <pre>
-     *    {
-     *      Object variableVARIABLE_NAMEConstant1 = 34.6;
-     *      Object variableVARIABLE_NAMEFieldRef2 = variableVARIABLE_NAMEConstant1 != null ?
-     *      (java.lang.Double) org.kie.pmml.commons.utils.ConverterTypeUtil.convert(Double.class, variableVARIABLE_NAMEConstant1) : (java.lang.Double) null;
-     *      Object VARIABLE_NAME = this.FUNCTION_NAME(variableVARIABLE_NAMEConstant1, variableVARIABLE_NAMEFieldRef2);
-     *    }
-     * </pre>
-     * @param variableName
-     * @param apply
-     * @param returnedType
-     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
-     * @return
-     */
-    static BlockStmt getApplyExpressionFromDefineFunctionBlockStmt(final String variableName,
-                                                                      final Apply apply,
-                                                                      final ClassOrInterfaceType returnedType,
-                                                                      final LinkedHashMap<String,
-                                                                              ClassOrInterfaceType> parameterNameTypeMap) {
+    static BlockStmt getApplyExpressionBlockStmt(final String variableName,
+                                                 final Apply apply,
+                                                 final ClassOrInterfaceType returnedType,
+                                                 final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         final BlockStmt toReturn = new BlockStmt();
         List<String> innerVariables = new ArrayList<>();
         innerVariables.add(KIEPMMLNAMEVALUE_LIST_PARAM);
