@@ -99,7 +99,6 @@ public class ToMethodCall {
         return needConversionRec(expression);
     }
 
-
     private void setCursorForEnclosedExpr(ParsedMethod e) {
         java.lang.reflect.Type returnType = e.castType
                 .flatMap(t -> safeResolveType(typeResolver, t.asString()))
@@ -118,7 +117,9 @@ public class ToMethodCall {
                 previousScope = e.expression;
             }
 
-            this.inlineCastExpression = new InstanceOfExpr(new NameExpr(THIS_PLACEHOLDER), (ReferenceType) castType);
+            if(castExpr.getExpression().isThisExpr()) {
+                this.inlineCastExpression = new InstanceOfExpr(new NameExpr(THIS_PLACEHOLDER), (ReferenceType) castType);
+            }
         }
 
         previousClass = returnType;
