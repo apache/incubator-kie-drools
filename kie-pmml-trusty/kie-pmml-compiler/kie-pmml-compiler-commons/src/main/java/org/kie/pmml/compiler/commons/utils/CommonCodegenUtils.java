@@ -177,8 +177,10 @@ public class CommonCodegenUtils {
      *
      * a <b>multi-parameters</b> <code>MethodDeclaration</code> whose names are the <b>key</b>s of the given <code>Map</code>
      * and <b>methodArity</b>, and whose parameters types are the <b>value</b>s
+     *
+     * <b>The </b>
      * @param methodName
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap expecting an <b>ordered</b> map here, since parameters order matter for <i>caller</i> code
      * @return
      */
     public static MethodDeclaration getMethodDeclaration(final String methodName,

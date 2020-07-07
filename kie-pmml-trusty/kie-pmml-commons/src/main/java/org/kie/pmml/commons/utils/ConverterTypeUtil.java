@@ -41,7 +41,7 @@ public class ConverterTypeUtil {
             return null;
         }
         Class<?> currentClass = originalObject.getClass();
-        if (currentClass.isAssignableFrom(expectedClass)) {
+        if (expectedClass.isAssignableFrom(currentClass)) {
             return originalObject;
         }
         Object toReturn;

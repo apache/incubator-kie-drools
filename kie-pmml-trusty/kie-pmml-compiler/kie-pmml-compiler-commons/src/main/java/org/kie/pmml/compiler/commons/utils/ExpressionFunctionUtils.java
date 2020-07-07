@@ -16,14 +16,19 @@
 package org.kie.pmml.compiler.commons.utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.ClassExpr;
+import com.github.javaparser.ast.expr.ConditionalExpr;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -33,7 +38,6 @@ import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.Aggregate;
@@ -55,6 +59,7 @@ import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.OPTIONAL_FI
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getFilteredKiePMMLNameValueExpression;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getMethodDeclaration;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getReturnStmt;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceType;
 
 /**
  * Class meant to provide <i>helper</i> methods to retrieve <code>Function</code> code-generators
@@ -62,8 +67,19 @@ import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getReturnSt
  */
 public class ExpressionFunctionUtils {
 
-    static final String KIEPMMLNAMEVALUE_LIST_PARAM = "param1"; // it is the first parameter
-    static final String INNER_VARIABLE_NAME = "variable%s%s%s"; // it is the first parameter
+    final static String KIEPMMLNAMEVALUE_LIST_PARAM = "param1"; // it is the first parameter
+    final static String INNER_VARIABLE_NAME = "variable%s%s%s"; // it is the first parameter
+    final static LinkedHashMap<String, ClassOrInterfaceType> DEFAULT_PARAMETERTYPE_MAP;
+    final static FieldAccessExpr CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR;
+
+    static {
+        DEFAULT_PARAMETERTYPE_MAP = new LinkedHashMap<>();
+        DEFAULT_PARAMETERTYPE_MAP.put(KIEPMMLNAMEVALUE_LIST_PARAM, getTypedClassOrInterfaceType(List.class.getName(),
+                                                                                                Collections.singletonList(KiePMMLNameValue.class.getName())));
+        CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR = new FieldAccessExpr();
+        CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR.setName("ConverterTypeUtil");
+        CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR.setScope(new NameExpr("org.kie.pmml.commons.utils"));
+    }
 
     private ExpressionFunctionUtils() {
         // Avoid instantiation
@@ -73,13 +89,14 @@ public class ExpressionFunctionUtils {
      * @param methodName
      * @param aggregate
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static MethodDeclaration getAggregatedExpressionMethodDeclaration(final String methodName,
                                                                       final Aggregate aggregate,
                                                                       final ClassOrInterfaceType returnedType,
-                                                                      final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+                                                                      final LinkedHashMap<String,
+                                                                              ClassOrInterfaceType> parameterNameTypeMap) {
         throw new KiePMMLException("Aggregate not managed, yet");
     }
 
@@ -99,15 +116,24 @@ public class ExpressionFunctionUtils {
      * @param methodName
      * @param apply
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static MethodDeclaration getApplyExpressionMethodDeclaration(final String methodName,
                                                                  final Apply apply,
                                                                  final ClassOrInterfaceType returnedType,
-                                                                 final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+                                                                 final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         String variableName = "applyVariable";
-        final BlockStmt body = getApplyExpressionBlockStmt(variableName, apply, returnedType, parameterNameTypeMap);
+        BlockStmt body = getApplyExpressionFromCommonDataBlockStmt(variableName, apply, returnedType, parameterNameTypeMap);
+        if (parameterNameTypeMap.size() == 1) {
+            body = getApplyExpressionFromCommonDataBlockStmt(variableName, apply, returnedType,
+                                                                parameterNameTypeMap);
+        } else {
+            body = getApplyExpressionFromDefineFunctionBlockStmt(variableName, apply, returnedType,
+                                                                    parameterNameTypeMap);
+        }
+
+
         return getExpressionMethodDeclaration(methodName, variableName, body, returnedType, parameterNameTypeMap);
     }
 
@@ -129,15 +155,16 @@ public class ExpressionFunctionUtils {
      * @param methodName
      * @param constant
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static MethodDeclaration getConstantExpressionMethodDeclaration(final String methodName,
                                                                     final Constant constant,
                                                                     final ClassOrInterfaceType returnedType,
-                                                                    final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+                                                                    final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         String variableName = "constantVariable";
-        final BlockStmt body = getConstantExpressionBlockStmt(variableName, constant, returnedType, parameterNameTypeMap);
+        final BlockStmt body = getConstantExpressionBlockStmt(variableName, constant, returnedType,
+                                                              parameterNameTypeMap);
         return getExpressionMethodDeclaration(methodName, variableName, body, returnedType, parameterNameTypeMap);
     }
 
@@ -145,13 +172,14 @@ public class ExpressionFunctionUtils {
      * @param methodName
      * @param discretize
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static MethodDeclaration getDiscretizeExpressionMethodDeclaration(final String methodName,
                                                                       final Discretize discretize,
                                                                       final ClassOrInterfaceType returnedType,
-                                                                      final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+                                                                      final LinkedHashMap<String,
+                                                                              ClassOrInterfaceType> parameterNameTypeMap) {
         throw new KiePMMLException("Discretize not managed, yet");
     }
 
@@ -167,15 +195,22 @@ public class ExpressionFunctionUtils {
      * @param methodName
      * @param fieldRef
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static MethodDeclaration getFieldRefExpressionMethodDeclaration(final String methodName,
                                                                     final FieldRef fieldRef,
                                                                     final ClassOrInterfaceType returnedType,
-                                                                    final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+                                                                    final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         String variableName = "fieldRefVariable";
-        final BlockStmt body = getFieldRefExpressionBlockStmt(variableName, fieldRef, returnedType, parameterNameTypeMap);
+        final BlockStmt body;
+        if (parameterNameTypeMap.size() == 1) {
+            body = getFieldRefExpressionFromCommonDataBlockStmt(variableName, fieldRef, returnedType,
+                                                                parameterNameTypeMap);
+        } else {
+            body = getFieldRefExpressionFromDefineFunctionBlockStmt(variableName, fieldRef, returnedType,
+                                                                    parameterNameTypeMap);
+        }
         return getExpressionMethodDeclaration(methodName, variableName, body, returnedType, parameterNameTypeMap);
     }
 
@@ -183,13 +218,13 @@ public class ExpressionFunctionUtils {
      * @param methodName
      * @param lag
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static MethodDeclaration getLagExpressionMethodDeclaration(final String methodName,
                                                                final Lag lag,
                                                                final ClassOrInterfaceType returnedType,
-                                                               final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+                                                               final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         throw new KiePMMLException("Lag not managed, yet");
     }
 
@@ -197,13 +232,14 @@ public class ExpressionFunctionUtils {
      * @param methodName
      * @param mapValues
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static MethodDeclaration getMapValuesExpressionMethodDeclaration(final String methodName,
                                                                      final MapValues mapValues,
                                                                      final ClassOrInterfaceType returnedType,
-                                                                     final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+                                                                     final LinkedHashMap<String,
+                                                                             ClassOrInterfaceType> parameterNameTypeMap) {
         throw new KiePMMLException("MapValues not managed, yet");
     }
 
@@ -211,13 +247,14 @@ public class ExpressionFunctionUtils {
      * @param methodName
      * @param normContinuous
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static MethodDeclaration getNormContinuousExpressionMethodDeclaration(final String methodName,
                                                                           final NormContinuous normContinuous,
                                                                           final ClassOrInterfaceType returnedType,
-                                                                          final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+                                                                          final LinkedHashMap<String,
+                                                                                  ClassOrInterfaceType> parameterNameTypeMap) {
         throw new KiePMMLException("NormContinuous not managed, yet");
     }
 
@@ -225,13 +262,14 @@ public class ExpressionFunctionUtils {
      * @param methodName
      * @param normDiscrete
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static MethodDeclaration getNormDiscreteExpressionMethodDeclaration(final String methodName,
                                                                         final NormDiscrete normDiscrete,
                                                                         final ClassOrInterfaceType returnedType,
-                                                                        final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+                                                                        final LinkedHashMap<String,
+                                                                                ClassOrInterfaceType> parameterNameTypeMap) {
         throw new KiePMMLException("NormDiscrete not managed, yet");
     }
 
@@ -239,13 +277,14 @@ public class ExpressionFunctionUtils {
      * @param methodName
      * @param textIndex
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static MethodDeclaration getTextIndexExpressionMethodDeclaration(final String methodName,
                                                                      final TextIndex textIndex,
                                                                      final ClassOrInterfaceType returnedType,
-                                                                     final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+                                                                     final LinkedHashMap<String,
+                                                                             ClassOrInterfaceType> parameterNameTypeMap) {
         throw new KiePMMLException("TextIndex not managed, yet");
     }
 
@@ -253,28 +292,41 @@ public class ExpressionFunctionUtils {
      * @param variableName
      * @param expression
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static BlockStmt getExpressionBlockStmt(final String variableName,
                                             final Expression expression,
                                             final ClassOrInterfaceType returnedType,
-                                            final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+                                            final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         if (expression instanceof Aggregate) {
-            return getAggregatedExpressionBlockStmt(variableName, (Aggregate) expression, returnedType, parameterNameTypeMap);
+            return getAggregatedExpressionBlockStmt(variableName, (Aggregate) expression, returnedType,
+                                                    parameterNameTypeMap);
         } else if (expression instanceof Apply) {
-            return getApplyExpressionBlockStmt(variableName, (Apply) expression, returnedType, parameterNameTypeMap);
+            if (parameterNameTypeMap.size() == 1) {
+                return getApplyExpressionFromCommonDataBlockStmt(variableName, (Apply) expression, returnedType, parameterNameTypeMap);
+            } else {
+                return getApplyExpressionFromDefineFunctionBlockStmt(variableName, (Apply) expression, returnedType, parameterNameTypeMap);
+            }
         } else if (expression instanceof Constant) {
-            return getConstantExpressionBlockStmt(variableName, (Constant) expression, returnedType, parameterNameTypeMap);
+            return getConstantExpressionBlockStmt(variableName, (Constant) expression, returnedType,
+                                                  parameterNameTypeMap);
         } else if (expression instanceof Discretize) {
             return getDiscretizeExpressionBlockStmt(variableName, (Discretize) expression, returnedType,
                                                     parameterNameTypeMap);
         } else if (expression instanceof FieldRef) {
-            return getFieldRefExpressionBlockStmt(variableName, (FieldRef) expression, returnedType, parameterNameTypeMap);
+            if (parameterNameTypeMap.size() == 1) {
+                return getFieldRefExpressionFromCommonDataBlockStmt(variableName, (FieldRef) expression, returnedType,
+                                                                    parameterNameTypeMap);
+            } else {
+                return getFieldRefExpressionFromDefineFunctionBlockStmt(variableName, (FieldRef) expression, returnedType,
+                                                                    parameterNameTypeMap);
+            }
         } else if (expression instanceof Lag) {
             return getLagExpressionBlockStmt(variableName, (Lag) expression, returnedType, parameterNameTypeMap);
         } else if (expression instanceof MapValues) {
-            return getMapValuesExpressionBlockStmt(variableName, (MapValues) expression, returnedType, parameterNameTypeMap);
+            return getMapValuesExpressionBlockStmt(variableName, (MapValues) expression, returnedType,
+                                                   parameterNameTypeMap);
         } else if (expression instanceof NormContinuous) {
             return getNormContinuousExpressionBlockStmt(variableName, (NormContinuous) expression, returnedType,
                                                         parameterNameTypeMap);
@@ -282,7 +334,8 @@ public class ExpressionFunctionUtils {
             return getNormDiscreteExpressionBlockStmt(variableName, (NormDiscrete) expression, returnedType,
                                                       parameterNameTypeMap);
         } else if (expression instanceof TextIndex) {
-            return getTextIndexExpressionBlockStmt(variableName, (TextIndex) expression, returnedType, parameterNameTypeMap);
+            return getTextIndexExpressionBlockStmt(variableName, (TextIndex) expression, returnedType,
+                                                   parameterNameTypeMap);
         } else {
             throw new IllegalArgumentException(String.format("Expression %s not managed", expression.getClass()));
         }
@@ -292,13 +345,13 @@ public class ExpressionFunctionUtils {
      * @param variableName
      * @param aggregate
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static BlockStmt getAggregatedExpressionBlockStmt(final String variableName,
                                                       final Aggregate aggregate,
                                                       final ClassOrInterfaceType returnedType,
-                                                      final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+                                                      final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         throw new KiePMMLException("Aggregate not managed, yet");
     }
 
@@ -319,13 +372,71 @@ public class ExpressionFunctionUtils {
      * @param variableName
      * @param apply
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
-    static BlockStmt getApplyExpressionBlockStmt(final String variableName,
-                                                 final Apply apply,
-                                                 final ClassOrInterfaceType returnedType,
-                                                 final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+    static BlockStmt getApplyExpressionFromCommonDataBlockStmt(final String variableName,
+                                                               final Apply apply,
+                                                               final ClassOrInterfaceType returnedType,
+                                                               final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
+        final BlockStmt toReturn = new BlockStmt();
+        List<String> innerVariables = new ArrayList<>();
+        innerVariables.add(KIEPMMLNAMEVALUE_LIST_PARAM);
+        final ClassOrInterfaceType objectReturnedType = parseClassOrInterfaceType(Object.class.getName());
+        if (apply.getExpressions() != null) {
+            int counter = 1;
+            for (Expression expression : apply.getExpressions()) {
+                String innerVariable = String.format(INNER_VARIABLE_NAME, variableName,
+                                                     expression.getClass().getSimpleName(), counter);
+                BlockStmt innerBlockStmt = getExpressionBlockStmt(innerVariable, expression, objectReturnedType,
+                                                                  parameterNameTypeMap);
+                toReturn.getStatements().addAll(innerBlockStmt.getStatements());
+                innerVariables.add(innerVariable);
+                counter++;
+            }
+        }
+
+        MethodCallExpr functionMethodCall = new MethodCallExpr();
+        functionMethodCall.setScope(new ThisExpr());
+        functionMethodCall.setName(apply.getFunction());
+        NodeList<com.github.javaparser.ast.expr.Expression> functionCallArguments =
+                NodeList.nodeList(innerVariables.stream().map(NameExpr::new).collect(Collectors.toList()));
+        functionMethodCall.setArguments(functionCallArguments);
+        VariableDeclarator variableDeclarator = new VariableDeclarator();
+        variableDeclarator.setType(returnedType);
+        variableDeclarator.setName(variableName);
+        variableDeclarator.setInitializer(functionMethodCall);
+        VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr();
+        variableDeclarationExpr.setVariables(NodeList.nodeList(variableDeclarator));
+        toReturn.addStatement(variableDeclarationExpr);
+
+        return toReturn;
+    }
+
+    /**
+     * For each <code>Expression</code> generates the code to retrieve the value, and then invoke the specified
+     * <b>function</b>
+     * with the retrieved values.
+     * e.g.
+     * <pre>
+     *    {
+     *      Object variableVARIABLE_NAMEConstant1 = 34.6;
+     *      Object variableVARIABLE_NAMEFieldRef2 = variableVARIABLE_NAMEConstant1 != null ?
+     *      (java.lang.Double) org.kie.pmml.commons.utils.ConverterTypeUtil.convert(Double.class, variableVARIABLE_NAMEConstant1) : (java.lang.Double) null;
+     *      Object VARIABLE_NAME = this.FUNCTION_NAME(variableVARIABLE_NAMEConstant1, variableVARIABLE_NAMEFieldRef2);
+     *    }
+     * </pre>
+     * @param variableName
+     * @param apply
+     * @param returnedType
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
+     * @return
+     */
+    static BlockStmt getApplyExpressionFromDefineFunctionBlockStmt(final String variableName,
+                                                                      final Apply apply,
+                                                                      final ClassOrInterfaceType returnedType,
+                                                                      final LinkedHashMap<String,
+                                                                              ClassOrInterfaceType> parameterNameTypeMap) {
         final BlockStmt toReturn = new BlockStmt();
         List<String> innerVariables = new ArrayList<>();
         innerVariables.add(KIEPMMLNAMEVALUE_LIST_PARAM);
@@ -372,13 +483,13 @@ public class ExpressionFunctionUtils {
      * @param variableName
      * @param constant
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static BlockStmt getConstantExpressionBlockStmt(final String variableName,
                                                     final Constant constant,
                                                     final ClassOrInterfaceType returnedType,
-                                                    final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+                                                    final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         final BlockStmt toReturn = new BlockStmt();
         // Object variableName = kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse( (fieldRef.getMapMissingTo() )
         VariableDeclarator variableDeclarator = new VariableDeclarator();
@@ -400,13 +511,13 @@ public class ExpressionFunctionUtils {
      * @param variableName
      * @param discretize
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static BlockStmt getDiscretizeExpressionBlockStmt(final String variableName,
                                                       final Discretize discretize,
                                                       final ClassOrInterfaceType returnedType,
-                                                      final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+                                                      final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         throw new KiePMMLException("Discretize not managed, yet");
     }
 
@@ -420,26 +531,18 @@ public class ExpressionFunctionUtils {
      * @param variableName
      * @param fieldRef
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
-    static BlockStmt getFieldRefExpressionBlockStmt(final String variableName,
-                                                    final FieldRef fieldRef,
-                                                    final ClassOrInterfaceType returnedType,
-                                                    final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+    static BlockStmt getFieldRefExpressionFromCommonDataBlockStmt(final String variableName,
+                                                                  final FieldRef fieldRef,
+                                                                  final ClassOrInterfaceType returnedType,
+                                                                  final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         final BlockStmt toReturn = new BlockStmt();
         String fieldNameToRef = fieldRef.getField().getValue();
-        ExpressionStmt filteredOptionalExpr;
-        if (parameterNameTypeMap.size() == 1) {
-            filteredOptionalExpr = getFilteredKiePMMLNameValueExpression(KIEPMMLNAMEVALUE_LIST_PARAM,
-                                                                         fieldNameToRef,
-                                                                         true);
-        } else {
-            filteredOptionalExpr = getFilteredKiePMMLNameValueExpression(KIEPMMLNAMEVALUE_LIST_PARAM,
-                                                                         fieldNameToRef,
-                                                                         false);
-        }
-        toReturn.addStatement(filteredOptionalExpr);
+        toReturn.addStatement(getFilteredKiePMMLNameValueExpression(KIEPMMLNAMEVALUE_LIST_PARAM,
+                                                                    fieldNameToRef,
+                                                                    true));
 
         //KiePMMLNameValue::getValue
         MethodReferenceExpr methodReferenceExpr = new MethodReferenceExpr();
@@ -480,16 +583,79 @@ public class ExpressionFunctionUtils {
     }
 
     /**
+     * Returns
+     * <pre>
+     *      Object (<i>variableName</i>) = (<i>fieldRef_name</i>) != null ? (<i>fieldRef_name</i>) : (<i>fieldRef_missingvalue</i>);
+     * </pre>
+     * @param variableName
+     * @param fieldRef
+     * @param returnedType
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
+     * @return
+     */
+    static BlockStmt getFieldRefExpressionFromDefineFunctionBlockStmt(final String variableName,
+                                                                      final FieldRef fieldRef,
+                                                                      final ClassOrInterfaceType returnedType,
+                                                                      final LinkedHashMap<String,
+                                                                              ClassOrInterfaceType> parameterNameTypeMap) {
+        final BlockStmt toReturn = new BlockStmt();
+        String fieldNameToRef = fieldRef.getField().getValue();
+
+        // field_ref
+        NameExpr nameExpression = new NameExpr(fieldNameToRef);
+
+        // condition
+        BinaryExpr condition = new BinaryExpr();
+        condition.setLeft(nameExpression);
+        condition.setRight(new NullLiteralExpr());
+        condition.setOperator(BinaryExpr.Operator.NOT_EQUALS);
+        // then
+        CastExpr thenExpr = new CastExpr();
+        thenExpr.setType(returnedType);
+        // ((returnedType)) org.kie.pmml.commons.utils.ConverterTypeUtil.convert((returnedType).class, (variable_name))
+        MethodCallExpr converterCallExpression = new MethodCallExpr();
+        converterCallExpression.setName("convert");
+        converterCallExpression.setScope(CONVERTER_TYPE_UTIL_FIELD_ACCESSOR_EXPR);
+        ClassExpr expectedClassExpression = new ClassExpr();
+        expectedClassExpression.setType(returnedType);
+        converterCallExpression.setArguments(NodeList.nodeList(expectedClassExpression, nameExpression));
+        thenExpr.setExpression(converterCallExpression);
+        // else
+        com.github.javaparser.ast.expr.Expression elseExpression = fieldRef.getMapMissingTo() != null ?
+                new StringLiteralExpr(fieldRef.getMapMissingTo()) : new NullLiteralExpr();
+        CastExpr elseExpr = new CastExpr();
+        elseExpr.setType(returnedType);
+        elseExpr.setExpression(elseExpression);
+
+        ConditionalExpr initializer = new ConditionalExpr();
+        initializer.setCondition(condition);
+        initializer.setThenExpr(thenExpr);
+        initializer.setElseExpr(elseExpr);
+
+        // (returnedType) (variableName) = (returnedType) field_ref;
+        VariableDeclarator variableDeclarator = new VariableDeclarator();
+        variableDeclarator.setType(returnedType);
+        variableDeclarator.setName(variableName);
+        variableDeclarator.setInitializer(initializer);
+
+        VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr();
+        variableDeclarationExpr.setVariables(NodeList.nodeList(variableDeclarator));
+        toReturn.addStatement(variableDeclarationExpr);
+
+        return toReturn;
+    }
+
+    /**
      * @param variableName
      * @param lag
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static BlockStmt getLagExpressionBlockStmt(final String variableName,
                                                final Lag lag,
                                                final ClassOrInterfaceType returnedType,
-                                               final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+                                               final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         throw new KiePMMLException("Lag not managed, yet");
     }
 
@@ -497,13 +663,13 @@ public class ExpressionFunctionUtils {
      * @param variableName
      * @param mapValues
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static BlockStmt getMapValuesExpressionBlockStmt(final String variableName,
                                                      final MapValues mapValues,
                                                      final ClassOrInterfaceType returnedType,
-                                                     final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+                                                     final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         throw new KiePMMLException("MapValues not managed, yet");
     }
 
@@ -511,13 +677,13 @@ public class ExpressionFunctionUtils {
      * @param variableName
      * @param normContinuous
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static BlockStmt getNormContinuousExpressionBlockStmt(final String variableName,
                                                           final NormContinuous normContinuous,
                                                           final ClassOrInterfaceType returnedType,
-                                                          final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+                                                          final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         throw new KiePMMLException("NormContinuous not managed, yet");
     }
 
@@ -525,13 +691,13 @@ public class ExpressionFunctionUtils {
      * @param variableName
      * @param normDiscrete
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static BlockStmt getNormDiscreteExpressionBlockStmt(final String variableName,
                                                         final NormDiscrete normDiscrete,
                                                         final ClassOrInterfaceType returnedType,
-                                                        final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+                                                        final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         throw new KiePMMLException("NormDiscrete not managed, yet");
     }
 
@@ -539,13 +705,13 @@ public class ExpressionFunctionUtils {
      * @param variableName
      * @param textIndex
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static BlockStmt getTextIndexExpressionBlockStmt(final String variableName,
                                                      final TextIndex textIndex,
                                                      final ClassOrInterfaceType returnedType,
-                                                     final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+                                                     final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         throw new KiePMMLException("TextIndex not managed, yet");
     }
 
@@ -556,23 +722,18 @@ public class ExpressionFunctionUtils {
      *              <i>body</i>
      *              return <i>variableName</i>;
      *     }
-     * </pre>
-     * @param methodName
-     * @param parameterNameTypeMap
-     * @return
-     */
-    /**
+     *
      * @param methodName
      * @param variableName
      * @param body
      * @param returnedType
-     * @param parameterNameTypeMap
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static MethodDeclaration getExpressionMethodDeclaration(final String methodName, final String variableName,
                                                             final BlockStmt body,
                                                             final ClassOrInterfaceType returnedType,
-                                                            final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
+                                                            final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         final ReturnStmt returnStmt = getReturnStmt(variableName);
         body.addStatement(returnStmt);
         MethodDeclaration toReturn = getMethodDeclaration(methodName, parameterNameTypeMap);
