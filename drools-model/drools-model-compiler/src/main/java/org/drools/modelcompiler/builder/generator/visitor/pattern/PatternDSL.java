@@ -35,7 +35,7 @@ import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.core.util.ClassUtils;
 import org.drools.modelcompiler.builder.generator.AggregateKey;
 import org.drools.modelcompiler.builder.generator.ConstraintUtil;
-import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
+import org.drools.modelcompiler.builder.generator.drlxparse.ParseResultVisitor;
 import org.drools.mvel.parser.ast.expr.OOPathExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -159,11 +159,31 @@ public abstract class PatternDSL implements DSLNode {
 
     private void addImplicitCastExpr(ConstraintParser constraintParser, String patternIdentifier, List<PatternConstraintParseResult> patternConstraintParseResults) {
         final boolean hasInstanceOfExpr = patternConstraintParseResults.stream()
-                .anyMatch(r -> r.getDrlxParseResult().acceptWithReturnValue( t -> t.getExpr().isInstanceOfExpr()));
+                .anyMatch(r -> r.getDrlxParseResult().acceptWithReturnValue(new ParseResultVisitor<Boolean>() {
+                    @Override
+                    public Boolean onSuccess(DrlxParseSuccess t) {
+                        return t.getExpr() != null && t.getExpr().isInstanceOfExpr();
+                    }
+
+                    @Override
+                    public Boolean onFail(DrlxParseFail failure) {
+                        return false;
+                    }
+                }));
 
         final Optional<Expression> implicitCastExpression =
                 patternConstraintParseResults.stream()
-                .flatMap(r -> optionalToStream(r.getDrlxParseResult().acceptWithReturnValue(DrlxParseSuccess::getImplicitCastExpression)))
+                .flatMap(r -> optionalToStream(r.getDrlxParseResult().acceptWithReturnValue(new ParseResultVisitor<Optional<Expression>>() {
+                    @Override
+                    public Optional<Expression> onSuccess(DrlxParseSuccess t) {
+                        return t.getImplicitCastExpression();
+                    }
+
+                    @Override
+                    public Optional<Expression> onFail(DrlxParseFail failure) {
+                        return Optional.empty();
+                    }
+                })))
                 .findFirst();
 
         implicitCastExpression.ifPresent(ce -> {

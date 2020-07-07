@@ -564,7 +564,8 @@ public class DrlxParseUtil {
     }
 
     public static ClassOrInterfaceType toClassOrInterfaceType( String className ) {
-        return StaticJavaParser.parseClassOrInterfaceType(className);
+        String withoutDollars = className.replace("$", "."); // nested class in Java cannot be used in casts
+        return StaticJavaParser.parseClassOrInterfaceType(withoutDollars);
     }
 
     public static Optional<String> findBindingIdFromDotExpression(String expression) {
