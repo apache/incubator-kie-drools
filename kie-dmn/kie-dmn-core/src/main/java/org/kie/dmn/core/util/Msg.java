@@ -99,6 +99,7 @@ public final class Msg {
     public static final Message2 ERR_COMPILING_ALLOWED_VALUES_LIST_ON_ITEM_DEF       = new Message2( DMNMessageType.ERR_COMPILING_FEEL, "Error compiling allowed values list '%s' on item definition '%s'" );
     public static final Message4 ERR_COMPILING_FEEL_EXPR_FOR_NAME_ON_NODE            = new Message4( DMNMessageType.ERR_COMPILING_FEEL, "Error compiling FEEL expression '%s' for name '%s' on node '%s': %s" );
     public static final Message2 ERR_EVAL_CTX_ENTRY_ON_CTX                           = new Message2( DMNMessageType.ERR_EVAL_CTX, "Error evaluating context extry '%s' on context '%s'" );
+    public static final Message3 ERR_EVAL_CTX_ENTRY_ON_CTX_MSG                       = new Message3( DMNMessageType.ERR_EVAL_CTX, "Unrecoverable error evaluating context extry '%s' on context '%s': %s" );
     public static final Message1 DECISION_NOT_FOUND_FOR_NAME                         = new Message1( DMNMessageType.DECISION_NOT_FOUND, "Decision not found for name '%s'" );
     public static final Message1 DECISION_NOT_FOUND_FOR_ID                           = new Message1( DMNMessageType.DECISION_NOT_FOUND, "Decision not found for type '%s'" );
     public static final Message1 DECISION_SERVICE_NOT_FOUND_FOR_NAME                 = new Message1( DMNMessageType.DECISION_NOT_FOUND, "Decision Service not found for name '%s'");
