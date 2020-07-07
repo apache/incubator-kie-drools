@@ -55,7 +55,6 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.KieBaseEventSupport;
 import org.drools.core.factmodel.ClassDefinition;
@@ -850,7 +849,7 @@ public class KnowledgeBaseImpl
             wm.flushPropagations();
         }
 
-        alphaNodeOrderingStrategy.analyzeAlphaConstraints(collectRules(pkgs, clonedPkgs));
+        alphaNodeOrderingStrategy.analyzeAlphaConstraints(pkgs, clonedPkgs);
 
         // we need to merge all byte[] first, so that the root classloader can resolve classes
         for (InternalKnowledgePackage newPkg : clonedPkgs) {
@@ -959,13 +958,6 @@ public class KnowledgeBaseImpl
         if (config.isMultithreadEvaluation() && !hasMultiplePartitions()) {
             disableMultithreadEvaluation("The rete network cannot be partitioned: disabling multithread evaluation");
         }
-    }
-
-    private Set<Rule> collectRules(Map<String, InternalKnowledgePackage> pkgs, Collection<InternalKnowledgePackage> newPkgs) {
-        Set<Rule> ruleSet = new HashSet<>();
-        pkgs.forEach((pkgName, pkg) -> ruleSet.addAll(pkg.getRules()));
-        newPkgs.forEach(pkg -> ruleSet.addAll(pkg.getRules())); // okay to overwrite
-        return ruleSet;
     }
 
     public void processAllTypesDeclaration( Collection<InternalKnowledgePackage> pkgs ) {

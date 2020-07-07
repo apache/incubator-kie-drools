@@ -15,13 +15,14 @@
 
 package org.drools.core.addon;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.ObjectType;
 import org.kie.api.conf.AlphaNodeOrderingOption;
-import org.kie.api.definition.rule.Rule;
 
 /**
  * 
@@ -31,7 +32,7 @@ import org.kie.api.definition.rule.Rule;
  */
 public interface AlphaNodeOrderingStrategy {
 
-    void analyzeAlphaConstraints(Set<Rule> ruleSet);
+    void analyzeAlphaConstraints(Map<String, InternalKnowledgePackage> pkgs, Collection<InternalKnowledgePackage> newPkgs);
 
     void reorderAlphaConstraints(List<AlphaNodeFieldConstraint> alphaConstraints, ObjectType objectType);
 

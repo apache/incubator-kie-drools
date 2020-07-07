@@ -16,12 +16,15 @@
 package org.drools.core.addon;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Collect;
@@ -48,7 +51,9 @@ public class CountBasedOrderingStrategy implements AlphaNodeOrderingStrategy {
     private Map<ObjectType, Map<AlphaNodeFieldConstraint, Integer>> analyzedAlphaConstraints = new HashMap<>();
 
     @Override
-    public void analyzeAlphaConstraints(Set<Rule> ruleSet) {
+    public void analyzeAlphaConstraints(Map<String, InternalKnowledgePackage> pkgs, Collection<InternalKnowledgePackage> newPkgs) {
+
+        Set<Rule> ruleSet = collectRules(pkgs, newPkgs);
 
         List<Pattern> patternList = new ArrayList<>();
         ruleSet.stream()
@@ -66,6 +71,13 @@ public class CountBasedOrderingStrategy implements AlphaNodeOrderingStrategy {
         }
 
         logger.trace("analyzedAlphaConstraints : {}", analyzedAlphaConstraints);
+    }
+
+    private Set<Rule> collectRules(Map<String, InternalKnowledgePackage> pkgs, Collection<InternalKnowledgePackage> newPkgs) {
+        Set<Rule> ruleSet = new HashSet<>();
+        pkgs.forEach((pkgName, pkg) -> ruleSet.addAll(pkg.getRules()));
+        newPkgs.forEach(pkg -> ruleSet.addAll(pkg.getRules())); // okay to overwrite
+        return ruleSet;
     }
 
     private void collectPatterns(GroupElement ge, List<Pattern> patternList) {
