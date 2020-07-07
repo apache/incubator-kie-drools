@@ -37,8 +37,6 @@ public class DeclarationSpec {
     private final Optional<String> variableName;
     private final Boolean isGlobal;
 
-    private String boundVariable;
-
     public DeclarationSpec(String bindingId, Class<?> declarationClass) {
         this(bindingId, declarationClass, Optional.empty(), Optional.empty(), Optional.empty(), false);
     }
@@ -101,14 +99,6 @@ public class DeclarationSpec {
 
     public Boolean isGlobal() {
         return isGlobal;
-    }
-
-    public Optional<String> getBoundVariable() {
-        return Optional.ofNullable( boundVariable );
-    }
-
-    public void setBoundVariable( String boundVariable ) {
-        this.boundVariable = boundVariable;
     }
 
     @Override

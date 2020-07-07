@@ -324,7 +324,6 @@ public class ExpressionTyper {
         if (decl.isPresent()) {
             // then drlxExpr is a single NameExpr referring to a binding, e.g.: "$p1".
             context.addUsedDeclarations(name);
-            decl.get().getBoundVariable().ifPresent( context::addReactOnProperties );
             return of(new TypedExpression(new NameExpr(name), decl.get().getDeclarationClass()));
         }
 
