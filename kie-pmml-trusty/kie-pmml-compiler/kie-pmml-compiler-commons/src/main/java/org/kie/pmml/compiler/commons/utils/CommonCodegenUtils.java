@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.StaticJavaParser;
@@ -35,7 +34,6 @@ import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
@@ -68,7 +66,8 @@ public class CommonCodegenUtils {
      * @param toPopulate
      * @param methodDeclarations
      */
-    public static void populateMethodDeclarations(final ClassOrInterfaceDeclaration toPopulate, final Collection<MethodDeclaration> methodDeclarations) {
+    public static void populateMethodDeclarations(final ClassOrInterfaceDeclaration toPopulate,
+                                                  final Collection<MethodDeclaration> methodDeclarations) {
         methodDeclarations.forEach(toPopulate::addMember);
     }
 
@@ -77,7 +76,7 @@ public class CommonCodegenUtils {
      * <pre>
      *  Optional<KiePMMLNameValue> kiePMMLNameValue = (<i>kiePMMLNameValueListParam</i>)
      *      .stream()
-     *      .filter((KiePMMLNameValue kpmmlnv) -> Objects.equals((<i>fieldNameToRef</i>), kpmmlnv.getName()))
+     *      .filter((KiePMMLNameValue kpmmlnv) -> Objects.equals("(<i>fieldNameToRef</i>)", kpmmlnv.getName()))
      *      .findFirst();
      * </pre>
      *
@@ -87,16 +86,27 @@ public class CommonCodegenUtils {
      *
      * @param kiePMMLNameValueListParam
      * @param fieldNameToRef
+     * @param stringLiteralComparison if <code>true</code>, equals comparison is made on the String, e.g Objects.equals("(<i>fieldNameToRef</i>)", kpmmlnv.getName())),
+     * otherwise, is done on object reference,  e.g Objects.equals((<i>fieldNameToRef</i>), kpmmlnv.getName())). In this latter case, a <i>fieldNameToRef</i> variable is
+     * expected to exists
      *
      * @return
      */
-    public static ExpressionStmt getFilteredKiePMMLNameValueExpression(String kiePMMLNameValueListParam, String fieldNameToRef) {
+    public static ExpressionStmt getFilteredKiePMMLNameValueExpression(final String kiePMMLNameValueListParam,
+                                                                       final String fieldNameToRef,
+                                                                       boolean stringLiteralComparison) {
         // kpmmlnv.getName()
         MethodCallExpr argumentBodyExpressionArgument2 = new MethodCallExpr("getName");
         argumentBodyExpressionArgument2.setScope(new NameExpr(LAMBDA_PARAMETER_NAME));
         // Objects.equals(fieldNameToRef, kpmmlnv.getName())
         MethodCallExpr argumentBodyExpression = new MethodCallExpr("equals");
-        argumentBodyExpression.setArguments(NodeList.nodeList(new StringLiteralExpr(fieldNameToRef), argumentBodyExpressionArgument2));
+        Expression equalsComparisonExpression;
+        if (stringLiteralComparison) {
+            equalsComparisonExpression = new StringLiteralExpr(fieldNameToRef);
+        } else {
+            equalsComparisonExpression = new NameExpr(fieldNameToRef);
+        }
+        argumentBodyExpression.setArguments(NodeList.nodeList(equalsComparisonExpression, argumentBodyExpressionArgument2));
         argumentBodyExpression.setScope(new NameExpr(Objects.class.getName()));
         ExpressionStmt argumentBody = new ExpressionStmt(argumentBodyExpression);
         // (KiePMMLNameValue kpmmlnv) -> Objects.equals(fieldNameToRef, kpmmlnv.getName())
@@ -145,7 +155,9 @@ public class CommonCodegenUtils {
      * @param body
      * @param mapName
      */
-    public static void addMapPopulation(final Map<String, MethodDeclaration> toAdd, final BlockStmt body, final String mapName) {
+    public static void addMapPopulation(final Map<String, MethodDeclaration> toAdd,
+                                        final BlockStmt body,
+                                        final String mapName) {
         toAdd.forEach((s, methodDeclaration) -> {
             MethodReferenceExpr methodReferenceExpr = new MethodReferenceExpr();
             methodReferenceExpr.setScope(new ThisExpr());
@@ -158,24 +170,26 @@ public class CommonCodegenUtils {
     /**
      * Returns
      * <pre>
-     *     empty (<i>methodName</i>)((list of <i>parameterType</i> param<i>index</i>)) {
+     *     empty (<i>methodName</i>)((list of <i>parameterType</i> <i>parameter name</i>)) {
      * }
      * </pre>
      *
      *
-     * a <b>multi-parameters</b> <code>MethodDeclaration</code> whose name is derived from given <b>methodName</b>
-     * and <b>methodArity</b>, and whose parameters types are defined by <b>parameterTypes</b>
+     * a <b>multi-parameters</b> <code>MethodDeclaration</code> whose names are the <b>key</b>s of the given <code>Map</code>
+     * and <b>methodArity</b>, and whose parameters types are the <b>value</b>s
+     *
+     * <b>The </b>
      * @param methodName
-     * @param parameterTypes
+     * @param parameterNameTypeMap expecting an <b>ordered</b> map here, since parameters order matter for <i>caller</i> code
      * @return
      */
-    public static MethodDeclaration getMethodDeclaration(final String methodName, final List<ClassOrInterfaceType> parameterTypes) {
+    public static MethodDeclaration getMethodDeclaration(final String methodName,
+                                                         final Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
         MethodDeclaration toReturn = getMethodDeclaration(methodName);
         NodeList<Parameter> typeParameters = new NodeList<>();
-        AtomicInteger counter = new AtomicInteger(0);
-        parameterTypes.forEach(classOrInterfaceType -> {
+        parameterNameTypeMap.forEach((parameterName, classOrInterfaceType) -> {
             Parameter toAdd = new Parameter();
-            toAdd.setName(new SimpleName(String.format(PARAMETER_NAME_TEMPLATE, counter.addAndGet(1))));
+            toAdd.setName(parameterName);
             toAdd.setType(classOrInterfaceType);
             typeParameters.add(toAdd);
         });
@@ -235,7 +249,8 @@ public class CommonCodegenUtils {
      * @param typesName
      * @return
      */
-    public static ClassOrInterfaceType getTypedClassOrInterfaceType(final String className, final List<String> typesName ) {
+    public static ClassOrInterfaceType getTypedClassOrInterfaceType(final String className,
+                                                                    final List<String> typesName ) {
         ClassOrInterfaceType toReturn = parseClassOrInterfaceType(className);
         List<Type> types = typesName.stream()
                 .map(StaticJavaParser::parseClassOrInterfaceType).collect(Collectors.toList());

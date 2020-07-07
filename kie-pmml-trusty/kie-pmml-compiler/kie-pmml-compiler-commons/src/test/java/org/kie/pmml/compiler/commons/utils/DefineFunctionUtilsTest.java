@@ -17,6 +17,7 @@
 package org.kie.pmml.compiler.commons.utils;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -30,6 +31,8 @@ import org.dmg.pmml.DataType;
 import org.dmg.pmml.DefineFunction;
 import org.dmg.pmml.Discretize;
 import org.dmg.pmml.Expression;
+import org.dmg.pmml.FieldName;
+import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.Lag;
 import org.dmg.pmml.MapValues;
 import org.dmg.pmml.NormContinuous;
@@ -41,10 +44,12 @@ import org.dmg.pmml.VisitorAction;
 import org.junit.Test;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getParameterFields;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.DEFAULT_PARAMETERTYPE_MAP;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.DOUBLE_CLASS;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.OBJECT_CLASS;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.STRING_CLASS;
@@ -53,6 +58,7 @@ import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.co
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.fieldRefSupplier;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.supportedExpressionSupplier;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtilsTest.unsupportedExpressionSupplier;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getBoxedClassName;
 
 public class DefineFunctionUtilsTest {
 
@@ -145,14 +151,14 @@ public class DefineFunctionUtilsTest {
 
     @Test(expected = KiePMMLException.class)
     public void getAggregatedMethodDeclaration() {
-        DefineFunctionUtils.getAggregatedMethodDeclaration("", new Aggregate(), OBJECT_CLASS, Collections.emptyList());
+        DefineFunctionUtils.getAggregatedMethodDeclaration("", new Aggregate(), OBJECT_CLASS, DEFAULT_PARAMETERTYPE_MAP);
     }
 
     @Test
     public void getApplyMethodDeclaration() {
         String methodName = "METHOD_NAME";
-        MethodDeclaration retrieved = DefineFunctionUtils.getApplyMethodDeclaration(methodName, applySupplier.get(), OBJECT_CLASS, Collections.emptyList());
-        String expected = String.format("java.lang.Object %s() {\n" +
+        MethodDeclaration retrieved = DefineFunctionUtils.getApplyMethodDeclaration(methodName, applySupplier.get(), OBJECT_CLASS, DEFAULT_PARAMETERTYPE_MAP);
+        String expected = String.format("java.lang.Object %s(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1) {\n" +
                                                 "    java.lang.Object variableapplyVariableConstant1 = 34.6;\n" +
                                                 "    java.util.Optional<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((org.kie.pmml.commons.model.tuples.KiePMMLNameValue lmbdParam) -> java.util.Objects.equals(\"FIELD_REF\", lmbdParam.getName())).findFirst();\n" +
                                                 "    java.lang.Object variableapplyVariableFieldRef2 = (java.lang.Object) kiePMMLNameValue.map(org.kie.pmml.commons.model.tuples.KiePMMLNameValue::getValue).orElse(null);\n" +
@@ -165,8 +171,8 @@ public class DefineFunctionUtilsTest {
     @Test
     public void getConstantMethodDeclaration() {
         String methodName = "METHOD_NAME";
-        MethodDeclaration retrieved = DefineFunctionUtils.getConstantMethodDeclaration(methodName, constantSupplier.get(), DOUBLE_CLASS, Collections.emptyList());
-        String expected = String.format("java.lang.Double %s() {\n" +
+        MethodDeclaration retrieved = DefineFunctionUtils.getConstantMethodDeclaration(methodName, constantSupplier.get(), DOUBLE_CLASS, DEFAULT_PARAMETERTYPE_MAP);
+        String expected = String.format("java.lang.Double %s(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1) {\n" +
                                                 "    java.lang.Double constantVariable = 34.6;\n" +
                                                 "    return constantVariable;\n" +
                                                 "}", methodName);
@@ -175,16 +181,29 @@ public class DefineFunctionUtilsTest {
 
     @Test(expected = KiePMMLException.class)
     public void getDiscretizeMethodDeclaration() {
-        DefineFunctionUtils.getDiscretizeMethodDeclaration("", new Discretize(), OBJECT_CLASS, Collections.emptyList());
+        DefineFunctionUtils.getDiscretizeMethodDeclaration("", new Discretize(), OBJECT_CLASS, DEFAULT_PARAMETERTYPE_MAP);
     }
 
     @Test
     public void getFieldRefMethodDeclaration() {
         String methodName = "METHOD_NAME";
-        MethodDeclaration retrieved = DefineFunctionUtils.getFieldRefMethodDeclaration(methodName, fieldRefSupplier.get(), STRING_CLASS, Collections.emptyList());
-        String expected = String.format("java.lang.String %s() {\n" +
-                                                "    java.util.Optional<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((org.kie.pmml.commons.model.tuples.KiePMMLNameValue lmbdParam) -> java.util.Objects.equals(\"FIELD_REF\", lmbdParam.getName())).findFirst();\n" +
-                                                "    java.lang.String fieldRefVariable = (java.lang.String) kiePMMLNameValue.map(org.kie.pmml.commons.model.tuples.KiePMMLNameValue::getValue).orElse(null);\n" +
+        FieldRef fieldRef = fieldRefSupplier.get();
+        ParameterField parameterField = new ParameterField(FieldName.create("FIELD_REF"));
+        LinkedHashMap<String, ClassOrInterfaceType> modifiedParametersMap = new LinkedHashMap<>(DEFAULT_PARAMETERTYPE_MAP);
+        modifiedParametersMap.put(parameterField.getName().toString(), parseClassOrInterfaceType(getBoxedClassName(parameterField)));
+        MethodDeclaration retrieved = DefineFunctionUtils.getFieldRefMethodDeclaration(methodName, fieldRef, STRING_CLASS, modifiedParametersMap);
+        String expected = String.format("java.lang.String %s(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1, java.lang.Object FIELD_REF) {\n" +
+                                                "    java.lang.String fieldRefVariable = FIELD_REF != null ? (java.lang.String) org.kie.pmml.commons.utils.ConverterTypeUtil.convert(java.lang.String.class, FIELD_REF) " +
+                                                ": (java.lang.String) null;\n" +
+                                                "    return fieldRefVariable;\n" +
+                                                "}", methodName);
+        assertEquals(expected, retrieved.toString());
+        String mapMissingTo = "MAP_MISSING_TO";
+        fieldRef.setMapMissingTo(mapMissingTo);
+        retrieved = DefineFunctionUtils.getFieldRefMethodDeclaration(methodName, fieldRef, STRING_CLASS, modifiedParametersMap);
+        expected = String.format("java.lang.String %s(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1, java.lang.Object FIELD_REF) {\n" +
+                                                "    java.lang.String fieldRefVariable = FIELD_REF != null ? (java.lang.String) org.kie.pmml.commons.utils.ConverterTypeUtil.convert(java.lang.String.class, FIELD_REF) " +
+                                         ": (java.lang.String) \"MAP_MISSING_TO\";\n" +
                                                 "    return fieldRefVariable;\n" +
                                                 "}", methodName);
         assertEquals(expected, retrieved.toString());
@@ -192,36 +211,37 @@ public class DefineFunctionUtilsTest {
 
     @Test(expected = KiePMMLException.class)
     public void getLagMethodDeclaration() {
-        DefineFunctionUtils.getLagMethodDeclaration("", new Lag(), OBJECT_CLASS, Collections.emptyList());
+        DefineFunctionUtils.getLagMethodDeclaration("", new Lag(), OBJECT_CLASS, DEFAULT_PARAMETERTYPE_MAP);
     }
 
     @Test(expected = KiePMMLException.class)
     public void getMapValuesMethodDeclaration() {
-        DefineFunctionUtils.getMapValuesMethodDeclaration("", new MapValues(), OBJECT_CLASS, Collections.emptyList());
+        DefineFunctionUtils.getMapValuesMethodDeclaration("", new MapValues(), OBJECT_CLASS, DEFAULT_PARAMETERTYPE_MAP);
     }
 
     @Test(expected = KiePMMLException.class)
     public void getNormContinuousMethodDeclaration() {
-        DefineFunctionUtils.getNormContinuousMethodDeclaration("", new NormContinuous(), OBJECT_CLASS, Collections.emptyList());
+        DefineFunctionUtils.getNormContinuousMethodDeclaration("", new NormContinuous(), OBJECT_CLASS, DEFAULT_PARAMETERTYPE_MAP);
     }
 
     @Test(expected = KiePMMLException.class)
     public void getNormDiscreteMethodDeclaration() {
-        DefineFunctionUtils.getNormDiscreteMethodDeclaration("", new NormDiscrete(), OBJECT_CLASS, Collections.emptyList());
+        DefineFunctionUtils.getNormDiscreteMethodDeclaration("", new NormDiscrete(), OBJECT_CLASS, DEFAULT_PARAMETERTYPE_MAP);
     }
 
     @Test(expected = KiePMMLException.class)
     public void getTextIndexMethodDeclaration() {
-        DefineFunctionUtils.getTextIndexMethodDeclaration("", new TextIndex(), OBJECT_CLASS, Collections.emptyList());
+        DefineFunctionUtils.getTextIndexMethodDeclaration("", new TextIndex(), OBJECT_CLASS, DEFAULT_PARAMETERTYPE_MAP);
     }
 
     @Test
     public void getClassOrInterfaceTypes() {
         List<ParameterField> parameterFields = getParameterFields();
-        List<ClassOrInterfaceType> retrieved = DefineFunctionUtils.getClassOrInterfaceTypes(parameterFields);
+        Map<String, ClassOrInterfaceType> retrieved = DefineFunctionUtils.getNameClassOrInterfaceTypeMap(parameterFields);
         assertEquals(parameterFields.size(), retrieved.size());
-        for (int i = 0; i < parameterFields.size(); i++) {
-            commonVerifyParameterClassOrInterfaceType(retrieved.get(i), parameterFields.get(i));
+        for (ParameterField parameter : parameterFields) {
+            assertTrue(retrieved.containsKey(parameter.getName().toString()));
+            commonVerifyParameterClassOrInterfaceType(retrieved.get(parameter.getName().toString()), parameter);
         }
     }
 

@@ -15,8 +15,8 @@
  */
 package org.kie.pmml.compiler.commons.utils;
 
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,11 +37,10 @@ import org.dmg.pmml.NormContinuous;
 import org.dmg.pmml.NormDiscrete;
 import org.dmg.pmml.TextIndex;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.METHOD_NAME_TEMPLATE;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceType;
+import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.DEFAULT_PARAMETERTYPE_MAP;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getApplyExpressionMethodDeclaration;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getConstantExpressionMethodDeclaration;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getFieldRefExpressionMethodDeclaration;
@@ -81,25 +80,27 @@ public class DerivedFieldFunctionUtils {
         final ClassOrInterfaceType returnedType = parseClassOrInterfaceType(getBoxedClassName(dataType));
         int methodArity = arityCounter.addAndGet(1);
         if (expression instanceof Aggregate) {
-            return getAggregatedMethodDeclaration((Aggregate) expression, returnedType, methodArity);
+            return getAggregatedMethodDeclaration((Aggregate) expression, returnedType, methodArity,
+                                                  DEFAULT_PARAMETERTYPE_MAP);
         } else if (expression instanceof Apply) {
-            return getApplyMethodDeclaration((Apply) expression, returnedType, methodArity);
+            return getApplyMethodDeclaration((Apply) expression, returnedType, methodArity, DEFAULT_PARAMETERTYPE_MAP);
         } else if (expression instanceof Constant) {
-            return getConstantMethodDeclaration((Constant) expression, returnedType, methodArity);
+            return getConstantMethodDeclaration((Constant) expression, returnedType, methodArity, DEFAULT_PARAMETERTYPE_MAP);
         } else if (expression instanceof Discretize) {
-            return getDiscretizeMethodDeclaration((Discretize) expression, returnedType, methodArity);
+            return getDiscretizeMethodDeclaration((Discretize) expression, returnedType, methodArity,
+                                                  DEFAULT_PARAMETERTYPE_MAP);
         } else if (expression instanceof FieldRef) {
-            return getFieldRefMethodDeclaration((FieldRef) expression, returnedType, methodArity);
+            return getFieldRefMethodDeclaration((FieldRef) expression, returnedType, methodArity, DEFAULT_PARAMETERTYPE_MAP);
         } else if (expression instanceof Lag) {
-            return getLagMethodDeclaration((Lag) expression, returnedType, methodArity);
+            return getLagMethodDeclaration((Lag) expression, returnedType, methodArity, DEFAULT_PARAMETERTYPE_MAP);
         } else if (expression instanceof MapValues) {
-            return getMapValuesMethodDeclaration((MapValues) expression, returnedType, methodArity);
+            return getMapValuesMethodDeclaration((MapValues) expression, returnedType, methodArity, DEFAULT_PARAMETERTYPE_MAP);
         } else if (expression instanceof NormContinuous) {
-            return getNormContinuousMethodDeclaration((NormContinuous) expression, returnedType, methodArity);
+            return getNormContinuousMethodDeclaration((NormContinuous) expression, returnedType, methodArity, DEFAULT_PARAMETERTYPE_MAP);
         } else if (expression instanceof NormDiscrete) {
-            return getNormDiscreteMethodDeclaration((NormDiscrete) expression, returnedType, methodArity);
+            return getNormDiscreteMethodDeclaration((NormDiscrete) expression, returnedType, methodArity, DEFAULT_PARAMETERTYPE_MAP);
         } else if (expression instanceof TextIndex) {
-            return getTextIndexMethodDeclaration((TextIndex) expression, returnedType, methodArity);
+            return getTextIndexMethodDeclaration((TextIndex) expression, returnedType, methodArity, DEFAULT_PARAMETERTYPE_MAP);
         } else {
             throw new IllegalArgumentException(String.format("Expression %s not managed", expression.getClass()));
         }
@@ -109,10 +110,13 @@ public class DerivedFieldFunctionUtils {
      * @param aggregate
      * @param returnedType
      * @param methodArity
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static MethodDeclaration getAggregatedMethodDeclaration(final Aggregate aggregate,
-                                                            ClassOrInterfaceType returnedType, final int methodArity) {
+                                                            final ClassOrInterfaceType returnedType,
+                                                            final int methodArity,
+                                                            final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         throw new KiePMMLException("Aggregate not managed, yet");
     }
 
@@ -120,13 +124,15 @@ public class DerivedFieldFunctionUtils {
      * @param apply
      * @param returnedType
      * @param methodArity
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
-    static MethodDeclaration getApplyMethodDeclaration(final Apply apply, ClassOrInterfaceType returnedType,
-                                                       final int methodArity) {
+    static MethodDeclaration getApplyMethodDeclaration(final Apply apply,
+                                                       final ClassOrInterfaceType returnedType,
+                                                       final int methodArity,
+                                                       final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         String methodName = String.format(METHOD_NAME_TEMPLATE, apply.getClass().getSimpleName(), methodArity);
-        return getApplyExpressionMethodDeclaration(methodName, apply, returnedType,
-                                                   Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
+        return getApplyExpressionMethodDeclaration(methodName, apply, returnedType, parameterNameTypeMap);
     }
 
     /**
@@ -145,23 +151,28 @@ public class DerivedFieldFunctionUtils {
      * @param constant
      * @param returnedType
      * @param methodArity
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
-    static MethodDeclaration getConstantMethodDeclaration(final Constant constant, ClassOrInterfaceType returnedType,
-                                                          final int methodArity) {
+    static MethodDeclaration getConstantMethodDeclaration(final Constant constant,
+                                                          final ClassOrInterfaceType returnedType,
+                                                          final int methodArity,
+                                                          final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         String methodName = String.format(METHOD_NAME_TEMPLATE, constant.getClass().getSimpleName(), methodArity);
-        return getConstantExpressionMethodDeclaration(methodName, constant, returnedType,
-                                                      Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
+        return getConstantExpressionMethodDeclaration(methodName, constant, returnedType, parameterNameTypeMap);
     }
 
     /**
      * @param discretize
      * @param returnedType
      * @param methodArity
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static MethodDeclaration getDiscretizeMethodDeclaration(final Discretize discretize,
-                                                            ClassOrInterfaceType returnedType, final int methodArity) {
+                                                            final ClassOrInterfaceType returnedType,
+                                                            final int methodArity,
+                                                            final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         throw new KiePMMLException("Discretize not managed, yet");
     }
 
@@ -176,23 +187,28 @@ public class DerivedFieldFunctionUtils {
      * @param fieldRef
      * @param returnedType
      * @param methodArity
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
-    static MethodDeclaration getFieldRefMethodDeclaration(final FieldRef fieldRef, ClassOrInterfaceType returnedType,
-                                                          final int methodArity) {
+    static MethodDeclaration getFieldRefMethodDeclaration(final FieldRef fieldRef,
+                                                          final ClassOrInterfaceType returnedType,
+                                                          final int methodArity,
+                                                          final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         String methodName = String.format(METHOD_NAME_TEMPLATE, fieldRef.getClass().getSimpleName(), methodArity);
-        return getFieldRefExpressionMethodDeclaration(methodName, fieldRef, returnedType,
-                                                      Collections.singletonList(getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName()))));
+        return getFieldRefExpressionMethodDeclaration(methodName, fieldRef, returnedType, parameterNameTypeMap);
     }
 
     /**
      * @param lag
      * @param returnedType
      * @param methodArity
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
-    static MethodDeclaration getLagMethodDeclaration(final Lag lag, ClassOrInterfaceType returnedType,
-                                                     final int methodArity) {
+    static MethodDeclaration getLagMethodDeclaration(final Lag lag,
+                                                     final ClassOrInterfaceType returnedType,
+                                                     final int methodArity,
+                                                     final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         throw new KiePMMLException("Lag not managed, yet");
     }
 
@@ -200,10 +216,13 @@ public class DerivedFieldFunctionUtils {
      * @param mapValues
      * @param returnedType
      * @param methodArity
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static MethodDeclaration getMapValuesMethodDeclaration(final MapValues mapValues,
-                                                           ClassOrInterfaceType returnedType, final int methodArity) {
+                                                           final ClassOrInterfaceType returnedType,
+                                                           final int methodArity,
+                                                           final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         throw new KiePMMLException("MapValues not managed, yet");
     }
 
@@ -211,11 +230,13 @@ public class DerivedFieldFunctionUtils {
      * @param normContinuous
      * @param returnedType
      * @param methodArity
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static MethodDeclaration getNormContinuousMethodDeclaration(final NormContinuous normContinuous,
-                                                                ClassOrInterfaceType returnedType,
-                                                                final int methodArity) {
+                                                                final ClassOrInterfaceType returnedType,
+                                                                final int methodArity, Map<String,
+            ClassOrInterfaceType> parameterNameTypeMap) {
         throw new KiePMMLException("NormContinuous not managed, yet");
     }
 
@@ -223,11 +244,13 @@ public class DerivedFieldFunctionUtils {
      * @param normDiscrete
      * @param returnedType
      * @param methodArity
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static MethodDeclaration getNormDiscreteMethodDeclaration(final NormDiscrete normDiscrete,
-                                                              ClassOrInterfaceType returnedType,
-                                                              final int methodArity) {
+                                                              final ClassOrInterfaceType returnedType,
+                                                              final int methodArity,
+                                                              final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         throw new KiePMMLException("NormDiscrete not managed, yet");
     }
 
@@ -235,10 +258,13 @@ public class DerivedFieldFunctionUtils {
      * @param textIndex
      * @param returnedType
      * @param methodArity
+     * @param parameterNameTypeMap enforcing <code>LinkedHashMap</code> since insertion order matter
      * @return
      */
     static MethodDeclaration getTextIndexMethodDeclaration(final TextIndex textIndex,
-                                                           ClassOrInterfaceType returnedType, final int methodArity) {
+                                                           final ClassOrInterfaceType returnedType,
+                                                           final int methodArity,
+                                                           final LinkedHashMap<String, ClassOrInterfaceType> parameterNameTypeMap) {
         throw new KiePMMLException("TextIndex not managed, yet");
     }
 }
