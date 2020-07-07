@@ -110,6 +110,7 @@ import static org.drools.core.util.MemoryUtil.hasPermGen;
  * drools.declarativeAgendaEnabled =  &lt;true|false&gt; 
  * drools.permgenThreshold = &lt;1...n&gt;
  * drools.jittingThreshold = &lt;1...n&gt;
+ * drools.alphaNodeOrdering = &lt;count|custom|none&gt; (custom is experimental)
  * </pre>
  */
 public class RuleBaseConfiguration

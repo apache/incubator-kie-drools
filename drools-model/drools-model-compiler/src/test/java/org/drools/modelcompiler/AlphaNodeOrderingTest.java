@@ -18,12 +18,18 @@ package org.drools.modelcompiler;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.drools.core.addon.AlphaNodeOrderingStrategy;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.rule.constraint.MvelConstraint;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.ObjectType;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.FactASuper;
 import org.drools.modelcompiler.domain.FactBSub;
@@ -431,5 +437,71 @@ public class AlphaNodeOrderingTest extends BaseModelTest {
         ksession.insert(p1);
 
         assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testCustomAlphaNodeOrdering() {
+
+        System.setProperty(AlphaNodeOrderingOption.CUSTOM_CLASS_PROPERTY_NAME, "org.drools.modelcompiler.AlphaNodeOrderingTest$MyCustomStrategy");
+
+        try {
+            String str =
+                    "import " + Person.class.getCanonicalName() + "\n" +
+                         "rule R1 when\n" +
+                         "  $p : Person(age != 0, age != 1, age != 2, age != 3)\n" +
+                         "then\n" +
+                         "end\n" +
+                         "rule R2 when\n" +
+                         "  $p : Person(age != 1, age != 2, age != 3)\n" +
+                         "then\n" +
+                         "end\n" +
+                         "rule R3 when\n" +
+                         "  $p : Person(age != 2, age != 3)\n" +
+                         "then\n" +
+                         "end\n" +
+                         "rule R4 when\n" +
+                         "  $p : Person(age != 3)\n" +
+                         "then\n" +
+                         "end\n";
+
+            KieModuleModel model = KieServices.get().newKieModuleModel();
+            model.newKieBaseModel("kb")
+                 .setDefault(true)
+                 .setAlphaNodeOrdering(AlphaNodeOrderingOption.CUSTOM)
+                 .newKieSessionModel("ks")
+                 .setDefault(true);
+
+            KieSession ksession = getKieSession(model, str);
+
+            List<AlphaNode> alphaNodes = ReteDumper.collectNodes(ksession)
+                                                   .stream()
+                                                   .filter(AlphaNode.class::isInstance)
+                                                   .map(node -> (AlphaNode) node)
+                                                   .collect(Collectors.toList());
+            assertEquals(10, alphaNodes.size());
+
+            ksession.insert(new Person("Mario", 1));
+            assertEquals(2, ksession.fireAllRules());
+
+            assertTrue(MyCustomStrategy.counter > 0);
+        } finally {
+            System.clearProperty(AlphaNodeOrderingOption.CUSTOM_CLASS_PROPERTY_NAME);
+        }
+    }
+
+    public static class MyCustomStrategy implements AlphaNodeOrderingStrategy {
+
+        public static int counter = 0;
+
+        @Override
+        public void analyzeAlphaConstraints(Map<String, InternalKnowledgePackage> pkgs, Collection<InternalKnowledgePackage> newPkgs) {
+            counter++;
+        }
+
+        @Override
+        public void reorderAlphaConstraints(List<AlphaNodeFieldConstraint> alphaConstraints, ObjectType objectType) {
+            counter++;
+        }
+
     }
 }
