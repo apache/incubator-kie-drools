@@ -451,7 +451,7 @@ public class PackageModel {
         manageImportForCompilationUnit(cu);
 
         ClassOrInterfaceDeclaration rulesClass = cu.addClass(rulesFileName);
-        rulesClass.addImplementedType(Model.class);
+        rulesClass.addImplementedType(Model.class.getCanonicalName());
         if (hasRuleUnit) {
             rulesClass.addModifier( Modifier.Keyword.ABSTRACT );
         }
@@ -764,7 +764,7 @@ public class PackageModel {
 
     private MethodCallExpr buildRulesField( ClassOrInterfaceDeclaration rulesClass ) {
         MethodCallExpr rulesInit = new MethodCallExpr( null, "Arrays.asList" );
-        ClassOrInterfaceType rulesType = new ClassOrInterfaceType(null, new SimpleName("java.util.List"), new NodeList<Type>(new ClassOrInterfaceType(null, "Rule")));
+        ClassOrInterfaceType rulesType = new ClassOrInterfaceType(null, new SimpleName("java.util.List"), new NodeList<Type>(parseClassOrInterfaceType(Rule.class.getCanonicalName())));
         MethodDeclaration rulesGetter = new MethodDeclaration( NodeList.nodeList( publicModifier()), rulesType, "getRulesList" );
         rulesGetter.createBody().addStatement( new ReturnStmt(rulesInit ) );
         rulesClass.addMember( rulesGetter );
@@ -774,7 +774,6 @@ public class PackageModel {
     private void manageImportForCompilationUnit(CompilationUnit cu) {
         // fixed part
         cu.addImport("java.util.*");
-        cu.addImport("org.drools.model.*");
         if(isPattern) {
             cu.addImport("org.drools.modelcompiler.dsl.pattern.D");
         } else {
