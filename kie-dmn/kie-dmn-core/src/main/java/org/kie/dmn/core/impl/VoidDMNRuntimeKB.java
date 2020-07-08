@@ -23,6 +23,7 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.compiler.DMNProfile;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
 public class VoidDMNRuntimeKB implements DMNRuntimeKB {
 
@@ -61,4 +62,7 @@ public class VoidDMNRuntimeKB implements DMNRuntimeKB {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public PMMLRuntime getPMMLRuntime(String sanitizedKieBase) { throw new UnsupportedOperationException();
+    }
 }

@@ -22,6 +22,7 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.compiler.DMNProfile;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
 public interface DMNRuntimeKB {
 
@@ -44,6 +45,14 @@ public interface DMNRuntimeKB {
      * @throws UnsupportedOperationException if not supported on this platform.
      */
     InternalKnowledgeBase getInternalKnowledgeBase();
+
+    /**
+     *
+     * @param sanitizedKieBase
+     * @return
+     * @throws UnsupportedOperationException if not supported on this platform.
+     */
+    PMMLRuntime getPMMLRuntime(String sanitizedKieBase);
 
 
 }

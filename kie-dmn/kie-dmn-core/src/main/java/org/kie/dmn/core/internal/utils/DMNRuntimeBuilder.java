@@ -50,6 +50,7 @@ import org.kie.dmn.core.impl.DMNRuntimeKB;
 import org.kie.dmn.feel.util.Either;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.internal.io.ResourceWithConfigurationImpl;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,6 +70,7 @@ public class DMNRuntimeBuilder {
         public final DMNCompilerConfigurationImpl cc;
         public final List<DMNProfile> dmnProfiles = new ArrayList<>();
         private RelativeImportResolver relativeResolver;
+        private PMMLRuntime pmmlRuntime;
 
         public DMNRuntimeBuilderCtx() {
             this.cc = new DMNCompilerConfigurationImpl();
@@ -78,6 +80,9 @@ public class DMNRuntimeBuilder {
             this.relativeResolver = relativeResolver;
         }
 
+        public void setPMMLRuntime(PMMLRuntime pmmlRuntime) {
+            this.pmmlRuntime = pmmlRuntime;
+        }
     }
 
     @FunctionalInterface
@@ -115,6 +120,11 @@ public class DMNRuntimeBuilder {
 
     public DMNRuntimeBuilder setRelativeImportResolver(RelativeImportResolver relativeResolver) {
         ctx.setRelativeResolver(relativeResolver);
+        return this;
+    }
+
+    public DMNRuntimeBuilder setPMMLRuntime(PMMLRuntime pmmlRuntime) {
+        ctx.setPMMLRuntime(pmmlRuntime);
         return this;
     }
 
@@ -204,7 +214,7 @@ public class DMNRuntimeBuilder {
                     return Either.ofLeft(new IllegalStateException("Unable to compile DMN model for the resource " + dmnRes.getResAndConfig().getResource()));
                 }
             }
-            return Either.ofRight(new DMNRuntimeImpl(new DMNRuntimeKBStatic(dmnModels, ctx.dmnProfiles)));
+            return Either.ofRight(new DMNRuntimeImpl(new DMNRuntimeKBStatic(dmnModels, ctx.dmnProfiles, ctx.pmmlRuntime)));
         }
 
         private DMNMarshaller getMarshaller() {
@@ -221,10 +231,12 @@ public class DMNRuntimeBuilder {
 
         private final List<DMNProfile> dmnProfiles;
         private final List<DMNModel> models;
+        private final PMMLRuntime pmmlRuntime;
 
-        private DMNRuntimeKBStatic(Collection<DMNModel> models, Collection<DMNProfile> dmnProfiles) {
+        private DMNRuntimeKBStatic(Collection<DMNModel> models, Collection<DMNProfile> dmnProfiles, PMMLRuntime pmmlRuntime) {
             this.models = Collections.unmodifiableList(new ArrayList<>(models));
             this.dmnProfiles = Collections.unmodifiableList(new ArrayList<>(dmnProfiles));
+            this.pmmlRuntime = pmmlRuntime;
         }
 
         @Override
@@ -262,5 +274,9 @@ public class DMNRuntimeBuilder {
             throw new UnsupportedOperationException();
         }
 
+        @Override
+        public PMMLRuntime getPMMLRuntime(String sanitizedKieBase) {
+            return pmmlRuntime;
+        }
     }
 }
