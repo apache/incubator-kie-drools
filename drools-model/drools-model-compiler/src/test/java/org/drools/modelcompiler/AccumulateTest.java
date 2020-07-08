@@ -2067,4 +2067,57 @@ public class AccumulateTest extends BaseModelTest {
             return a + b;
         }
     }
+
+    @Test
+    public void testModifyAccumulatedFactWithNonIndexableConstraint() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "   $s : String()" +
+                "   accumulate (\n" +
+                "       Person(name.equals( $s )), $result : count() " +
+                "         )" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( "a" );
+        ksession.insert( "b" );
+        ksession.insert( "c" );
+        ksession.insert( "d" );
+
+        Person a1 = new Person( "a", 1 );
+        Person a2 = new Person( "a", 2 );
+        Person a3 = new Person( "a", 3 );
+        Person b1 = new Person( "b", 1 );
+        Person b2 = new Person( "b", 2 );
+        Person b3 = new Person( "b", 3 );
+        Person c1 = new Person( "c", 1 );
+        Person c2 = new Person( "c", 2 );
+        Person c3 = new Person( "c", 3 );
+        Person d1 = new Person( "d", 1 );
+        Person d2 = new Person( "d", 2 );
+        Person d3 = new Person( "d", 3 );
+
+        ksession.insert( a1 );
+        ksession.insert( a2 );
+        ksession.insert( a3 );
+        ksession.insert( b1 );
+        ksession.insert( b2 );
+        ksession.insert( b3 );
+        ksession.insert( c1 );
+        FactHandle c2fh = ksession.insert( c2 );
+        ksession.insert( c3 );
+        ksession.insert( d1 );
+        ksession.insert( d2 );
+        ksession.insert( d3 );
+
+        assertEquals( 4, ksession.fireAllRules() );
+
+        c2.setName( "b" );
+        ksession.update( c2fh, c2 );
+
+        assertEquals( 2, ksession.fireAllRules() );
+    }
 }

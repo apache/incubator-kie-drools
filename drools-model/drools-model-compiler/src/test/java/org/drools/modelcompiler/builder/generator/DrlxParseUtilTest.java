@@ -12,19 +12,16 @@ import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.core.addon.ClassTypeResolver;
 import org.drools.core.addon.TypeResolver;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil.RemoveRootNodeResult;
-import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.util.ClassUtil;
 import org.junit.Test;
 
 import static java.util.Optional.of;
-
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRemoveRootNodeViaScope;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getExpressionType;
@@ -43,29 +40,29 @@ public class DrlxParseUtilTest {
         assertEquals(THIS_PLACEHOLDER + ".getAddressName().startsWith(\"M\")", concatenated.toString());
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void throwExceptionWhenMissingNode() {
+    @Test
+    public void prependTestWithCast() {
 
-        final Expression expr = StaticJavaParser.parseExpression("this");
+        final Expression expr = StaticJavaParser.parseExpression("((InternationalAddress) getAddress()).getState()");
+        final NameExpr nameExpr = new NameExpr(THIS_PLACEHOLDER);
 
-        DrlxParseUtil.prepend(null, expr);
+        final Expression concatenated = DrlxParseUtil.prepend(nameExpr, expr);
+
+        assertEquals("((InternationalAddress) _this.getAddress()).getState()", concatenated.toString());
+    }
+
+    @Test
+    public void prependTestWithThis() {
+
+        final Expression expr = StaticJavaParser.parseExpression("((Person) this).getName()");
+        final NameExpr nameExpr = new NameExpr(THIS_PLACEHOLDER);
+
+        final Expression concatenated = DrlxParseUtil.prepend(nameExpr, expr);
+
+        assertEquals("((Person) _this).getName()", concatenated.toString());
     }
 
     final TypeResolver typeResolver = new ClassTypeResolver(new HashSet<>(), getClass().getClassLoader());
-
-    @Test
-    public void transformMethodExpressionToMethodCallExpressionTypeSafe() {
-
-        final Expression expr = StaticJavaParser.parseExpression("address.city.startsWith(\"M\")");
-        final Expression expr1 = StaticJavaParser.parseExpression("getAddress().city.startsWith(\"M\")");
-        final Expression expr2 = StaticJavaParser.parseExpression("address.getCity().startsWith(\"M\")");
-
-        final MethodCallExpr expected = StaticJavaParser.parseExpression("getAddress().getCity().startsWith(\"M\")");
-
-        assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(null, expr, null, Person.class, typeResolver).getExpression().toString());
-        assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(null, expr1, null, Person.class, typeResolver).getExpression().toString());
-        assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(null, expr2, null, Person.class, typeResolver).getExpression().toString());
-    }
 
     @Test
     public void getExpressionTypeTest() {

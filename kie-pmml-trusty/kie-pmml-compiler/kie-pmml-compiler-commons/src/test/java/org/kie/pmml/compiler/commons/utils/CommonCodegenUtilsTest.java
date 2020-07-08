@@ -18,6 +18,7 @@ package org.kie.pmml.compiler.commons.utils;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -38,6 +39,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.junit.Test;
@@ -73,7 +75,7 @@ public class CommonCodegenUtilsTest {
     public void getFilteredKiePMMLNameValueExpression() {
         String kiePMMLNameValueListParam = "KIEPMMLNAMEVALUELISTPARAM";
         String fieldNameToRef = "FIELDNAMETOREF";
-        ExpressionStmt retrieved = CommonCodegenUtils.getFilteredKiePMMLNameValueExpression(kiePMMLNameValueListParam, fieldNameToRef);
+        ExpressionStmt retrieved = CommonCodegenUtils.getFilteredKiePMMLNameValueExpression(kiePMMLNameValueListParam, fieldNameToRef, true);
         assertNotNull(retrieved);
         String expected = String.format("%1$s<%2$s> %3$s = %4$s.stream().filter((%2$s %5$s) -> %6$s.equals(\"%7$s\", %5$s.getName())).findFirst();",
                                         Optional.class.getName(),
@@ -85,10 +87,28 @@ public class CommonCodegenUtilsTest {
                                         fieldNameToRef);
         String retrievedString = retrieved.toString();
         assertEquals(expected, retrievedString);
-        final BlockStmt body = new BlockStmt();
+        BlockStmt body = new BlockStmt();
         body.addStatement(retrieved);
         Parameter listParameter = new Parameter(CommonCodegenUtils.getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName())), kiePMMLNameValueListParam);
         Parameter fieldRefParameter = new Parameter(parseClassOrInterfaceType(String.class.getName()), fieldNameToRef);
+        commonValidateCompilation(body, Arrays.asList(listParameter, fieldRefParameter));
+        //
+        retrieved = CommonCodegenUtils.getFilteredKiePMMLNameValueExpression(kiePMMLNameValueListParam, fieldNameToRef, false);
+        assertNotNull(retrieved);
+        expected = String.format("%1$s<%2$s> %3$s = %4$s.stream().filter((%2$s %5$s) -> %6$s.equals(%7$s, %5$s.getName())).findFirst();",
+                                        Optional.class.getName(),
+                                        KiePMMLNameValue.class.getName(),
+                                        OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME,
+                                        kiePMMLNameValueListParam,
+                                        LAMBDA_PARAMETER_NAME,
+                                        Objects.class.getName(),
+                                        fieldNameToRef);
+        retrievedString = retrieved.toString();
+        assertEquals(expected, retrievedString);
+        body = new BlockStmt();
+        body.addStatement(retrieved);
+        listParameter = new Parameter(CommonCodegenUtils.getTypedClassOrInterfaceType(List.class.getName(), Collections.singletonList(KiePMMLNameValue.class.getName())), kiePMMLNameValueListParam);
+        fieldRefParameter = new Parameter(parseClassOrInterfaceType(String.class.getName()), fieldNameToRef);
         commonValidateCompilation(body, Arrays.asList(listParameter, fieldRefParameter));
     }
 
@@ -136,14 +156,13 @@ public class CommonCodegenUtilsTest {
     @Test
     public void getParamMethodDeclaration() {
         String methodName = "METHOD_NAME";
-        final List<ClassOrInterfaceType> parameterTypes = Arrays.asList(
-                parseClassOrInterfaceType(String.class.getName()),
-                parseClassOrInterfaceType(KiePMMLNameValue.class.getName()),
-                new ClassOrInterfaceType(null, new SimpleName(List.class.getName()), NodeList.nodeList(parseClassOrInterfaceType(KiePMMLNameValue.class.getName())))
-        );
-        MethodDeclaration retrieved = CommonCodegenUtils.getMethodDeclaration(methodName, parameterTypes);
+        final Map<String, ClassOrInterfaceType> parameterNameTypeMap = new HashMap<>();
+        parameterNameTypeMap.put("stringParam", parseClassOrInterfaceType(String.class.getName()));
+        parameterNameTypeMap.put("kiePMMLNameValueParam", parseClassOrInterfaceType(KiePMMLNameValue.class.getName()));
+        parameterNameTypeMap.put("listParam", new ClassOrInterfaceType(null, new SimpleName(List.class.getName()), NodeList.nodeList(parseClassOrInterfaceType(KiePMMLNameValue.class.getName()))));
+        MethodDeclaration retrieved = CommonCodegenUtils.getMethodDeclaration(methodName, parameterNameTypeMap);
         commonValidateMethodDeclaration(retrieved, methodName);
-        commonValidateMethodDeclarationParams(retrieved, parameterTypes);
+        commonValidateMethodDeclarationParams(retrieved, parameterNameTypeMap);
     }
 
     @Test
@@ -151,6 +170,14 @@ public class CommonCodegenUtilsTest {
         String methodName = "METHOD_NAME";
         MethodDeclaration retrieved = CommonCodegenUtils.getMethodDeclaration(methodName);
         commonValidateMethodDeclaration(retrieved, methodName);
+    }
+
+    @Test
+    public void getReturnStmt() {
+        String returnedVariable = "RETURNED_VARIABLE";
+        ReturnStmt retrieved = CommonCodegenUtils.getReturnStmt(returnedVariable);
+        String expected = String.format("return %s;", returnedVariable);
+        assertEquals(expected, retrieved.toString());
     }
 
     @Test
@@ -168,15 +195,13 @@ public class CommonCodegenUtilsTest {
         assertEquals(methodName, toValidate.getName().asString());
     }
 
-    private void commonValidateMethodDeclarationParams(MethodDeclaration toValidate, List<ClassOrInterfaceType> parameterTypes) {
+    private void commonValidateMethodDeclarationParams(MethodDeclaration toValidate, Map<String, ClassOrInterfaceType> parameterNameTypeMap) {
         final NodeList<Parameter> retrieved = toValidate.getParameters();
         assertNotNull(retrieved);
-        assertEquals(parameterTypes.size(), retrieved.size());
-        for (int i = 0; i < parameterTypes.size(); i++) {
-            String parameterName = String.format(PARAMETER_NAME_TEMPLATE, i + 1);
-            Parameter parameter = retrieved.get(i);
-            assertEquals(parameterName, parameter.getNameAsString());
-            assertEquals(parameterTypes.get(i), parameter.getType());
+        assertEquals(parameterNameTypeMap.size(), retrieved.size());
+        for (Parameter parameter : retrieved) {
+            assertTrue(parameterNameTypeMap.containsKey(parameter.getNameAsString()));
+            assertEquals(parameterNameTypeMap.get(parameter.getNameAsString()), parameter.getType());
         }
     }
 

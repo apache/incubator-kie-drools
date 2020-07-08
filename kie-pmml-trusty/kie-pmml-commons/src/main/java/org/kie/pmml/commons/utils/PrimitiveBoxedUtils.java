@@ -36,6 +36,10 @@ public class PrimitiveBoxedUtils {
                           new PrimitiveBoxed(Short.TYPE, Short.class),
                           new PrimitiveBoxed(Double.TYPE, Double.class)));
 
+    private PrimitiveBoxedUtils() {
+        // Avoid instantiation
+    }
+
     public static Optional<PrimitiveBoxed> getKiePMMLPrimitiveBoxed(Class<?> c) {
         return KIE_PMML_PRIMITIVE_BOXEDS.stream().filter(pBoxed -> c.equals(pBoxed.getPrimitive()) || c.equals(pBoxed.getBoxed())).findFirst();
     }

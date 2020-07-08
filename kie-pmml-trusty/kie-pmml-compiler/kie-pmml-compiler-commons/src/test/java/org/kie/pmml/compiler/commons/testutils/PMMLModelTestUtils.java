@@ -15,22 +15,26 @@
  */
 package org.kie.pmml.compiler.commons.testutils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.OpType;
+import org.dmg.pmml.ParameterField;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.regression.CategoricalPredictor;
 import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
+import org.kie.pmml.commons.model.enums.DATA_TYPE;
 
 /**
  * Helper methods related to <b>PMML</b> original model
@@ -108,6 +112,33 @@ public class PMMLModelTestUtils {
         MiningField toReturn = new MiningField();
         toReturn.setName(getFieldName(fieldName));
         toReturn.setUsageType(usageType);
+        return toReturn;
+    }
+
+    public static ParameterField getParameterField(String fieldName, DataType dataType) {
+        ParameterField toReturn = new ParameterField();
+        toReturn.setDataType(dataType);
+        toReturn.setName(getFieldName(fieldName));
+        return toReturn;
+    }
+
+    public static  List<ParameterField> getParameterFields() {
+        DATA_TYPE[] dataTypes = DATA_TYPE.values();
+        List<ParameterField> toReturn = new ArrayList<>();
+        for (int i = 0; i < dataTypes.length; i++) {
+            DataType dataType = DataType.fromValue(dataTypes[i].getName());
+            ParameterField toAdd = getParameterField(dataType.value().toUpperCase(), dataType);
+            toReturn.add(toAdd);
+        }
+        return toReturn;
+    }
+
+    public static  List<DataType> getDataTypes() {
+        DATA_TYPE[] dataTypes = DATA_TYPE.values();
+        List<DataType> toReturn = new ArrayList<>();
+        for (int i = 0; i < dataTypes.length; i++) {
+            toReturn.add(DataType.fromValue(dataTypes[i].getName()));
+        }
         return toReturn;
     }
 

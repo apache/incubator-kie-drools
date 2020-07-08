@@ -78,6 +78,7 @@ public class PropertySpecificUtil {
         }
 
         BitMask mask = getEmptyPropertyReactiveMask(accessibleProperties.size());
+
         if (listenedProperties.contains( TraitableBean.TRAITSET_FIELD_NAME )) {
             if (isPositive && listenedProperties.contains( TraitableBean.TRAITSET_FIELD_NAME ) ) {
                 mask = mask.set(TRAITABLE_BIT);

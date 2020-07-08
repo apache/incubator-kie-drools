@@ -37,7 +37,7 @@ import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
-import com.github.javaparser.ast.type.UnknownType;
+import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -52,6 +52,7 @@ import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
+import org.drools.modelcompiler.builder.generator.ToMethodCall;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseFail;
@@ -258,7 +259,7 @@ public abstract class AccumulateVisitor {
                     }
                 } );
 
-        final TypedExpression typedExpression = DrlxParseUtil.toMethodCallWithClassCheck(context, methodCallWithoutRootNode.getWithoutRootNode(), null, clazz, context.getTypeResolver());
+        final TypedExpression typedExpression = new ToMethodCall(context).toMethodCallWithClassCheck(methodCallWithoutRootNode.getWithoutRootNode(), null, clazz);
         final Class<?> methodCallExprType = typedExpression.getRawClass();
 
         final AccumulateFunction accumulateFunction = getAccumulateFunction(function, methodCallExprType);
@@ -475,7 +476,7 @@ public abstract class AccumulateVisitor {
     Expression buildConstraintExpression(Expression expr, Collection<String> usedDeclarations) {
         LambdaExpr lambdaExpr = new LambdaExpr();
         lambdaExpr.setEnclosingParameters(true);
-        usedDeclarations.stream().map(s -> new Parameter(new UnknownType(), s)).forEach(lambdaExpr::addParameter);
+        usedDeclarations.stream().map(s -> new Parameter(context.getDelarationType(s), s)).forEach(lambdaExpr::addParameter);
         lambdaExpr.setBody(new ExpressionStmt(expr));
         return lambdaExpr;
     }

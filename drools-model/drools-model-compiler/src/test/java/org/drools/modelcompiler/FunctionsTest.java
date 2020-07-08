@@ -17,9 +17,11 @@
 package org.drools.modelcompiler;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -60,6 +62,38 @@ public class FunctionsTest extends BaseModelTest {
         int rulesFired = ksession.fireAllRules();
         assertEquals( 1, rulesFired ); // only R1 should fire
     }
+
+    @Test
+    public void testConstraintCallingStaticFunctionInsideEnum() {
+        String str =
+                "import " + Person.class.getName() + ";\n" +
+                "import " + FunctionEnum.class.getCanonicalName() + ";\n" +
+                "rule R1\n" +
+                "    when\n" +
+                "        $p: Person(FunctionEnum.constantEnumValue(parentP.name) == FunctionEnum.YES)\n" +
+                "    then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+
+        Person john = new Person("John", 10);
+        Person johnFather = new Person("father", 80);
+        john.setParentP(johnFather);
+
+        ksession.insert(john);
+        int rulesFired = ksession.fireAllRules();
+        assertEquals(1, rulesFired);
+    }
+
+    public enum FunctionEnum {
+        YES, NO;
+
+        public static FunctionEnum constantEnumValue(String input) {
+            return FunctionEnum.YES;
+        }
+    }
+
 
     @Test
     public void testStaticMethodCall1() {
@@ -190,5 +224,38 @@ public class FunctionsTest extends BaseModelTest {
         ksession.insert( new Pojo( Arrays.asList(1,3) ) );
         int rulesFired = ksession.fireAllRules();
         assertEquals( 1, rulesFired );
+    }
+
+    public static String constantValue(String input) {
+        return "whatever";
+    }
+
+    @Test
+    public void testExternalFunctionJoin() {
+        // DROOLS-5288
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "\n" +
+                "import function org.drools.modelcompiler.FunctionsTest.constantValue;\n" +
+                "\n" +
+                "rule rule1\n" +
+                "when\n" +
+                "    $p1 : Person() \n" +
+                "    $p2: Person(name == constantValue($p1.name))\n" +
+                "then\n" +
+                "  insert(new Result($p2.getName()));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("Luca"));
+        ksession.insert(new Person("whatever"));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class );
+        assertEquals( 2, results.size() );
+        assertEquals( "whatever", results.iterator().next().getValue() );
     }
 }

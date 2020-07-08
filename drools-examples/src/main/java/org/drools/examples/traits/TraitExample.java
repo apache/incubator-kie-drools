@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,17 @@
 
 package org.drools.examples.traits;
 
+import java.util.Collection;
 
 import org.drools.core.io.impl.ClassPathResource;
+import org.drools.traits.core.base.evaluators.IsAEvaluatorDefinition;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.builder.conf.EvaluatorOption;
 import org.kie.internal.utils.KieHelper;
-
-import java.util.Collection;
 
 
 public class TraitExample {
+
 
     private static KieSession getSession( String drl ) {
         KieHelper kieHelper = new KieHelper();
@@ -33,6 +35,7 @@ public class TraitExample {
     }
 
     public static void run( String demo ) {
+        System.setProperty(EvaluatorOption.PROPERTY_NAME + "isA", IsAEvaluatorDefinition.class.getName());
         KieSession kSession = getSession( demo );
         kSession.fireAllRules();
 

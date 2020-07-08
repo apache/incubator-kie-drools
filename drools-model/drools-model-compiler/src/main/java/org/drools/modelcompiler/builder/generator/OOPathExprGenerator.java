@@ -22,10 +22,12 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -97,7 +99,10 @@ public class OOPathExprGenerator {
                 bindingId = context.getOOPathId(fieldType, chunkKey);
             }
             final Expression accessorLambda = generateLambdaWithoutParameters(Collections.emptySortedSet(),
-                                                                              prepend(new NameExpr(THIS_PLACEHOLDER), callExpr.getExpression()));
+                                                                              prepend(new NameExpr(THIS_PLACEHOLDER), callExpr.getExpression()), false, Optional.ofNullable(previousClass), context);
+            if (accessorLambda instanceof LambdaExpr) {
+                context.getPackageModel().getLambdaReturnTypes().put((LambdaExpr)accessorLambda, callExpr.getType());
+            }
 
             final MethodCallExpr reactiveFrom = new MethodCallExpr(null, REACTIVE_FROM_CALL);
             reactiveFrom.addArgument(context.getVarExpr(previousBind));
