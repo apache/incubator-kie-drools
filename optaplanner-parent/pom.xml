@@ -38,6 +38,7 @@
     <format.directory>${project.basedir}/../ide-configuration</format.directory>
     <formatter.skip>false</formatter.skip>
     <formatter.goal>format</formatter.goal>
+    <!-- TODO name impsort should indicate it's related to formatting -->
     <impsort.goal>sort</impsort.goal>
     <jacoco.agent.argLine/>
     <!-- TODO https://issues.redhat.com/browse/PLANNER-2042 -->
@@ -45,28 +46,20 @@
     <!-- override the default GroupId:ArtifactId to map both master branch and 7.x branches to the same SonarCloud project -->
     <sonar.projectKey>org.optaplanner:optaplanner</sonar.projectKey>
     <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
-    <version.org.mockito>3.1.0</version.org.mockito>
 
 
 <!-- TODO do we really need these? -->
-    <victims.updates>weekly</victims.updates>
-    <illegaltransitivereportonly>false</illegaltransitivereportonly>
-    <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
     <!-- This property needs to be defined in all modules that use the packaging 'jar'.
          It is used by different plugins to make sure the module/bundle names are consistent. -->
     <java.module.name/>
     <!-- Jacoco plugin configurations -->
-    <jacoco.haltOnFailure>false</jacoco.haltOnFailure>
-    <jacoco.line.coveredratio.minimum>0.9</jacoco.line.coveredratio.minimum>
     <version.jacoco.plugin>0.8.5</version.jacoco.plugin>
-    <!-- TODO: remove this once all repositories comply to the defined checkstyle rules -->
+    <!-- TODO remove this once all repositories comply to the defined checkstyle rules -->
     <checkstyle.failOnViolation>false</checkstyle.failOnViolation>
     <checkstyle.logViolationsToConsole>false</checkstyle.logViolationsToConsole>
     <checkstyle.header.template>.*</checkstyle.header.template>
     <checkstyle.header.extensions>java</checkstyle.header.extensions>
     <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
-    <!-- Set to "true" on every project that has no violations. -->
-    <spotbugs.failOnViolation>false</spotbugs.failOnViolation>
     <maven.min.version>3.6.2</maven.min.version>
     <!-- Latest release to be used by api-compatibility-check to check backwards compatibility of the API. -->
     <revapi.oldKieVersion>7.33.0.Final</revapi.oldKieVersion>
@@ -219,7 +212,7 @@
                 <rules>
                   <illegalTransitiveDependencyCheck
                       implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
-                    <reportOnly>${illegaltransitivereportonly}</reportOnly>
+                    <reportOnly>false</reportOnly>
                     <regexIgnoredClasses combine.children="append">
                       <!-- The maven-shade-plugin needs these classes to be compile-scope in guvnor-ala-openshift-client to be picked up, and
                            then referenced in guvnor-ala-openshift-provider. When we don't need to shade anymore, we can remove these lines. -->
@@ -1154,6 +1147,138 @@
           </plugins>
         </pluginManagement>
       </build>
+    </profile>
+    <!--
+      Creates JaCoCo XML reports and invokes the Sonar scanner, which uploads code quality data into the SonarCloud.
+    -->
+    <profile>
+      <id>sonarcloud-analysis</id>
+      <properties>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.reporting.outputDirectory}/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.organization>kiegroup</sonar.organization>
+        <!--suppress UnresolvedMavenProperty -->
+        <sonar.login>${env.SONARCLOUD_TOKEN}</sonar.login>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-aggregated-jacoco-report</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <!--
+                    Jacoco ant "report" task provides control over scope of the generated report. The report task
+                    requires access to sources, classes and .exec file containing coverage data. The configuration
+                    below uses sources and classes of the entire project (each of its modules) and a single jacoco.exec
+                    file placed in project root directory.
+                    Jacoco maven plugin does not provide such a level of control and requires an artificial module that
+                    depends on all modules in the project to generate an aggregated report for all the modules.
+                    This necessity of creating a reporting module in every project is rather intrusive.
+                    See:
+                    https://www.jacoco.org/jacoco/trunk/doc/report-aggregate-mojo.html and
+                    https://groups.google.com/forum/#!topic/jacoco/oMxNZs_DNII
+                  -->
+                  <target>
+                    <echo message="Generating JaCoCo Reports"/>
+                    <taskdef name="report" classname="org.jacoco.ant.ReportTask"/>
+                    <mkdir dir="${project.reporting.outputDirectory}/jacoco"/>
+                    <report>
+                      <executiondata>
+                        <fileset dir="${project.root.dir}/target">
+                          <!--
+                            Include a single jacoco.exec file, which should be used in append mode by every module.
+                          -->
+                          <include name="jacoco.exec"/>
+                        </fileset>
+                      </executiondata>
+                      <structure name="Coverage Report">
+                        <group name="${project.artifactId}">
+                          <classfiles>
+                            <fileset dir="${project.root.dir}">
+                              <!--
+                                Include class files from every module.
+                              -->
+                              <include name="**/target/classes/**/*.class"/>
+                              <!--
+                                Following classes are excluded as they are present in multiple modules. Usually they
+                                are a product of tests or 3rd party dependencies that got unwrapped in target/classes
+                                folder during the build. These are not a subject of test coverage measurement.
+                              -->
+                              <exclude name="**/target/**/target/classes/**/*.class"/>
+                              <exclude name="**/.errai/**/*.class"/>
+                              <exclude name="**/target/classes/org/jboss/errai/**/*.class"/>
+                              <!--
+                                TODO: there are multiple classes of the same fully qualified name in kie-server modules.
+                                They need to be renamed to enable coverage reporting for them.
+                                -->
+                              <exclude name="**/target/classes/**/org/kie/server/gateway/KieServerGateway.class"/>
+                              <exclude name="**/target/classes/**/org/kie/server/springboot/samples/KieServerApplication.class"/>
+                            </fileset>
+                          </classfiles>
+                          <sourcefiles encoding="UTF-8">
+                            <fileset dir="${project.root.dir}">
+                              <!--
+                                Include source files from every module.
+                              -->
+                              <include name="**/src/main/**/*.java"/>
+                            </fileset>
+                          </sourcefiles>
+                        </group>
+                      </structure>
+                      <!-- The same report is generated in each module -->
+                      <xml destfile="${project.reporting.outputDirectory}/jacoco/jacoco.xml"/>
+                    </report>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.jacoco</groupId>
+                <artifactId>org.jacoco.ant</artifactId>
+                <!-- Keep the version in sync with jacoco-maven-plugin -->
+                <version>${version.jacoco.plugin}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+          <plugin>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>sonar</goal>
+                </goals>
+                <phase>validate</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>sonarcloud-analysis-pull-request</id>
+      <activation>
+        <property>
+          <name>env.ghprbPullId</name>
+        </property>
+      </activation>
+      <properties>
+        <sonar.pullrequest.provider>GitHub</sonar.pullrequest.provider>
+        <!--suppress UnresolvedMavenProperty -->
+        <sonar.pullrequest.branch>${env.ghprbSourceBranch}</sonar.pullrequest.branch>
+        <!--suppress UnresolvedMavenProperty -->
+        <sonar.pullrequest.key>${env.ghprbPullId}</sonar.pullrequest.key>
+        <!--suppress UnresolvedMavenProperty -->
+        <sonar.pullrequest.base>${env.ghprbTargetBranch}</sonar.pullrequest.base>
+      </properties>
     </profile>
   </profiles>
 
