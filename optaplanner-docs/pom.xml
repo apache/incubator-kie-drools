@@ -33,6 +33,48 @@
       <plugin>
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
+        <configuration>
+          <attributes>
+            <imagesdir>.</imagesdir>
+            <project-version>${project.version}</project-version>
+            <version-org-spring-framework-boot>${version.org.springframework.boot}</version-org-spring-framework-boot>
+            <html-googleAnalyticsId>UA-39485370-1</html-googleAnalyticsId>
+          </attributes>
+        </configuration>
+        <executions>
+          <execution>
+            <id>generate-single-html</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+              <!-- Needs to be duplicated to avoid rendering each adoc separately -->
+              <sourceDocumentName>${source.document.name}</sourceDocumentName>
+              <backend>html5</backend>
+              <outputDirectory>${project.build.directory}/generated-docs/html_single</outputDirectory>
+              <attributes>
+                <source-highlighter>highlightjs</source-highlighter>
+              </attributes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-pdf</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+              <!-- Needs to be duplicated to avoid rendering each adoc separately -->
+              <sourceDocumentName>${source.document.name}</sourceDocumentName>
+              <backend>pdf</backend>
+              <outputDirectory>${project.build.directory}/generated-docs/pdf</outputDirectory>
+              <attributes>
+                <source-highlighter>coderay</source-highlighter><!-- highlightjs does not work in PDF -->
+              </attributes>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
