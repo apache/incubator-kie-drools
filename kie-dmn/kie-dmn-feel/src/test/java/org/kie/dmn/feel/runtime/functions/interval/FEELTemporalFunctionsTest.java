@@ -252,7 +252,7 @@ public class FEELTemporalFunctionsTest extends BaseFEELTest {
                 { "coincides( (1..5), [1..5] )", false, null },
                 { "coincides( [1..5], [2..6] )", false, null },
         };
-        return addAdditionalParameters(cases, true);
+        return addAdditionalParameters(cases, false);
     }
 }
 
