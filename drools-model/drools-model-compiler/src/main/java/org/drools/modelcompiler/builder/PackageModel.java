@@ -457,7 +457,7 @@ public class PackageModel {
         }
 
         BodyDeclaration<?> dateFormatter = parseBodyDeclaration(
-                "public final static DateTimeFormatter " + DATE_TIME_FORMATTER_FIELD + " = DateTimeFormatter.ofPattern(DateUtils.getDateFormatMask(), Locale.ENGLISH);\n");
+                "public final static DateTimeFormatter " + DATE_TIME_FORMATTER_FIELD + " = DateTimeFormatter.ofPattern(org.drools.core.util.DateUtils.getDateFormatMask(), Locale.ENGLISH);\n");
         rulesClass.addMember(dateFormatter);
 
         BodyDeclaration<?> string2dateMethodMethod = parseBodyDeclaration(
@@ -783,7 +783,6 @@ public class PackageModel {
         cu.addImport("java.time.*");
         cu.addImport("java.time.format.*");
         cu.addImport("java.text.*");
-        cu.addImport("org.drools.core.util.*");
 
         // imports from DRL:
         for ( String i : imports ) {
