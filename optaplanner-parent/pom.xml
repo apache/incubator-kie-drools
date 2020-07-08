@@ -603,46 +603,16 @@
           </executions>
         </plugin>
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-invoker-plugin</artifactId>
-          <version>2.0.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>${version.deploy.plugin}</version>
-          <configuration>
-            <retryFailedDeploymentCount>10</retryFailedDeploymentCount>
-          </configuration>
-        </plugin>
-        <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>versions-maven-plugin</artifactId>
           <version>2.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-release-plugin</artifactId>
-          <configuration>
-            <!-- Manually push changes (including git tags) after nexus staged repo is successfully closed -->
-            <pushChanges>false</pushChanges>
-            <autoVersionSubmodules>true</autoVersionSubmodules>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
           <configuration>
-            <links>
-              <link>http://docs.oracle.com/javase/8/docs/api</link>
-            </links>
-            <source>${maven.compiler.source}</source>
-            <minmemory>128m</minmemory>
-            <maxmemory>512m</maxmemory>
             <author>false</author>
-            <breakiterator>true</breakiterator>
             <quiet>true</quiet>
-            <additionalparam>${javadoc.additional.params}</additionalparam>
           </configuration>
         </plugin>
         <plugin>
@@ -664,17 +634,6 @@
             <failOnError>${spotbugs.failOnViolation}</failOnError>
             <excludeFilterFile>spotbugs-excludes.xml</excludeFilterFile>
           </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.pitest</groupId>
-          <artifactId>pitest-maven</artifactId>
-          <version>1.2.0</version>
-        </plugin>
-        <!-- Incremental compiler-->
-        <plugin>
-          <groupId>io.takari.maven.plugins</groupId>
-          <artifactId>takari-lifecycle-plugin</artifactId>
-          <version>${version.io.takari.maven.plugins.compiler}</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -1046,6 +1005,15 @@
         </property>
       </activation>
       <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.pitest</groupId>
+              <artifactId>pitest-maven</artifactId>
+              <version>1.2.0</version>
+            </plugin>
+          </plugins>
+        </pluginManagement>
         <plugins>
           <plugin>
             <groupId>org.pitest</groupId>
