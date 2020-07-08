@@ -794,6 +794,14 @@ public class DrlxParseUtil {
                    .collect(toList());
     }
 
+    public static Optional<java.lang.reflect.Type> safeResolveType(TypeResolver typeResolver, String typeName) {
+        try {
+            return Optional.of(typeResolver.resolveType(typeName));
+        } catch (ClassNotFoundException e) {
+            return Optional.empty();
+        }
+    }
+
     private DrlxParseUtil() {
         // It is not allowed to create instances of util classes.
     }

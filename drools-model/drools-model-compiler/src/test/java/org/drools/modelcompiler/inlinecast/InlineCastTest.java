@@ -130,7 +130,6 @@ public class InlineCastTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("https://issues.redhat.com/browse/DROOLS-5477")
     public void testExplicitCast() {
         String str =
                 "import " + OutputClause.class.getCanonicalName() + "\n;" +

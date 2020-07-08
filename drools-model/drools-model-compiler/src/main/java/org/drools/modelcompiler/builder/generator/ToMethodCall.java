@@ -101,7 +101,7 @@ public class ToMethodCall {
 
     private void setCursorForEnclosedExpr(ParsedMethod e) {
         java.lang.reflect.Type returnType = e.castType
-                .flatMap(t -> safeResolveType(typeResolver, t.asString()))
+                .flatMap(t -> DrlxParseUtil.safeResolveType(typeResolver, t.asString()))
                 .orElseThrow(() -> new CannotResolveTypeException(e));
 
         EnclosedExpr enclosedExpr = (EnclosedExpr) e.expression;
@@ -218,14 +218,6 @@ public class ToMethodCall {
                     ", fieldToResolve='" + fieldToResolve + '\'' +
                     ", castType='" + castType + '\'' +
                     '}';
-        }
-    }
-
-    private static Optional<java.lang.reflect.Type> safeResolveType(TypeResolver typeResolver, String typeName) {
-        try {
-            return Optional.of(typeResolver.resolveType(typeName));
-        } catch (ClassNotFoundException e) {
-            return Optional.empty();
         }
     }
 

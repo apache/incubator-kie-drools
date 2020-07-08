@@ -99,6 +99,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExp
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.nameExprToMethodCallExpr;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.replaceAllHalfBinaryChildren;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.safeResolveType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.transformDrlNameExprToNameExpr;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.trasformHalfBinaryToBinary;
@@ -274,6 +275,7 @@ public class ExpressionTyper {
 
         } else if (drlxExpr instanceof InstanceOfExpr) {
             InstanceOfExpr instanceOfExpr = (InstanceOfExpr)drlxExpr;
+            ruleContext.addInlineCastType(printConstraint(instanceOfExpr.getExpression()), instanceOfExpr.getType());
             return toTypedExpressionRec(instanceOfExpr.getExpression())
                     .map( e -> new TypedExpression(new InstanceOfExpr(e.getExpression(), instanceOfExpr.getType()), boolean.class) );
 
@@ -863,10 +865,28 @@ public class ExpressionTyper {
                     context.addReactOnProperties( firstName );
                 }
 
-                java.lang.reflect.Type typeOfFirstAccessor = isInLineCast ? typeCursor : firstAccessor.getGenericReturnType();
+                Optional<java.lang.reflect.Type> castType = ruleContext.explicitCastType(firstName)
+                        .flatMap(t -> safeResolveType(ruleContext.getTypeResolver(), t.asString()));
+
+                java.lang.reflect.Type typeOfFirstAccessor;
+
                 NameExpr thisAccessor = new NameExpr( THIS_PLACEHOLDER );
                 NameExpr scope = backReference.map( d -> new NameExpr( d.getBindingId() ) ).orElse( thisAccessor );
-                return of( new TypedExpressionCursor( new MethodCallExpr( scope, firstAccessor.getName() ), typeOfFirstAccessor ) );
+
+                Expression fieldAccessor;
+                if(castType.isPresent()) {
+                    typeOfFirstAccessor = castType.get();
+                    ClassOrInterfaceType typeWithoutDollar = toClassOrInterfaceType(typeOfFirstAccessor.getTypeName());
+                    fieldAccessor = addCastToExpression(typeWithoutDollar, new MethodCallExpr(scope, firstAccessor.getName()), false);
+                } else if (isInLineCast) {
+                    typeOfFirstAccessor = typeCursor;
+                    fieldAccessor = new MethodCallExpr(scope, firstAccessor.getName());
+                } else {
+                    typeOfFirstAccessor = firstAccessor.getGenericReturnType();
+                    fieldAccessor = new MethodCallExpr(scope, firstAccessor.getName());
+                }
+
+                return of(new TypedExpressionCursor(fieldAccessor, typeOfFirstAccessor ) );
             }
 
             Field field = DrlxParseUtil.getField( classCursor, firstName );

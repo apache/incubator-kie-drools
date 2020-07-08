@@ -101,6 +101,8 @@ public class RuleContext {
     private Deque<Scope> scopesStack = new LinkedList<>();
     private Map<String, String> definedVars = new HashMap<>();
 
+    private Map<String, Type> explicitCastType = new HashMap<>();
+
     private int legacyAccumulateCounter = 0;
 
     public enum RuleDialect {
@@ -192,6 +194,15 @@ public class RuleContext {
 
     public boolean hasErrors() {
         return kbuilder.hasResults( ResultSeverity.ERROR );
+    }
+
+    public RuleContext addInlineCastType(String field, Type type) {
+        explicitCastType.put(field, type);
+        return this;
+    }
+
+    public Optional<Type> explicitCastType(String field) {
+        return Optional.ofNullable(explicitCastType.get(field));
     }
 
     public Optional<DeclarationSpec> getDeclarationById(String id) {
