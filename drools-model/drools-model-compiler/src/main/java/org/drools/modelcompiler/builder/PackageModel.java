@@ -779,7 +779,6 @@ public class PackageModel {
             cu.addImport("org.drools.modelcompiler.dsl.flow.D");
         }
         cu.addImport("org.drools.model.Index.ConstraintType");
-        cu.addImport("java.text.*");
 
         // imports from DRL:
         for ( String i : imports ) {
