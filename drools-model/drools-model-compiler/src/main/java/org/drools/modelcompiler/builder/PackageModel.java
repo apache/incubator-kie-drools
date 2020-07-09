@@ -451,13 +451,13 @@ public class PackageModel {
         manageImportForCompilationUnit(cu);
 
         ClassOrInterfaceDeclaration rulesClass = cu.addClass(rulesFileName);
-        rulesClass.addImplementedType(Model.class);
+        rulesClass.addImplementedType(Model.class.getCanonicalName());
         if (hasRuleUnit) {
             rulesClass.addModifier( Modifier.Keyword.ABSTRACT );
         }
 
         BodyDeclaration<?> dateFormatter = parseBodyDeclaration(
-                "public final static DateTimeFormatter " + DATE_TIME_FORMATTER_FIELD + " = DateTimeFormatter.ofPattern(DateUtils.getDateFormatMask(), Locale.ENGLISH);\n");
+                "public final static java.time.format.DateTimeFormatter " + DATE_TIME_FORMATTER_FIELD + " = java.time.format.DateTimeFormatter.ofPattern(org.drools.core.util.DateUtils.getDateFormatMask(), java.util.Locale.ENGLISH);\n");
         rulesClass.addMember(dateFormatter);
 
         BodyDeclaration<?> string2dateMethodMethod = parseBodyDeclaration(
@@ -469,15 +469,15 @@ public class PackageModel {
         rulesClass.addMember(string2dateMethodMethod);
 
         BodyDeclaration<?> getNameMethod = parseBodyDeclaration(
-                "    public static Date " + STRING_TO_DATE_METHOD + "(String s) {\n" +
-                "        return GregorianCalendar.from(LocalDate.parse(s, DATE_TIME_FORMATTER).atStartOfDay(ZoneId.systemDefault())).getTime();\n" +
+                "    public static java.util.Date " + STRING_TO_DATE_METHOD + "(String s) {\n" +
+                "        return java.util.GregorianCalendar.from(java.time.LocalDate.parse(s, DATE_TIME_FORMATTER).atStartOfDay(java.time.ZoneId.systemDefault())).getTime();\n" +
                 "    }\n"
                 );
         rulesClass.addMember(getNameMethod);
 
         String entryPointsBuilder = entryPoints.isEmpty() ?
-                "Collections.emptyList()" :
-                "Arrays.asList(D.entryPoint(\"" + entryPoints.stream().collect( joining("\"), D.entryPoint(\"") ) + "\"))";
+                "java.util.Collections.emptyList()" :
+                "java.util.Arrays.asList(D.entryPoint(\"" + entryPoints.stream().collect( joining("\"), D.entryPoint(\"") ) + "\"))";
 
         BodyDeclaration<?> getEntryPointsMethod = parseBodyDeclaration(
                 "    @Override\n" +
@@ -527,13 +527,13 @@ public class PackageModel {
         buildArtifactsDeclaration( getGlobals().keySet(), rulesClass, rulesListInitializerBody, "org.drools.model.Global", "globals", true );
 
         if ( !typeMetaDataExpressions.isEmpty() ) {
-            BodyDeclaration<?> typeMetaDatasList = parseBodyDeclaration("java.util.List<org.drools.model.TypeMetaData> typeMetaDatas = new ArrayList<>();");
+            BodyDeclaration<?> typeMetaDatasList = parseBodyDeclaration("java.util.List<org.drools.model.TypeMetaData> typeMetaDatas = new java.util.ArrayList<>();");
             rulesClass.addMember(typeMetaDatasList);
             for (Expression expr : typeMetaDataExpressions) {
                 addInitStatement( rulesListInitializerBody, expr, "typeMetaDatas" );
             }
         } else {
-            BodyDeclaration<?> typeMetaDatasList = parseBodyDeclaration("java.util.List<org.drools.model.TypeMetaData> typeMetaDatas = Collections.emptyList();");
+            BodyDeclaration<?> typeMetaDatasList = parseBodyDeclaration("java.util.List<org.drools.model.TypeMetaData> typeMetaDatas = java.util.Collections.emptyList();");
             rulesClass.addMember(typeMetaDatasList);
         }
 
@@ -731,13 +731,13 @@ public class PackageModel {
     private void buildArtifactsDeclaration( Collection<String> artifacts, ClassOrInterfaceDeclaration rulesClass,
                                             BlockStmt rulesListInitializerBody, String type, String fieldName, boolean needsToVar ) {
         if (!artifacts.isEmpty()) {
-            BodyDeclaration<?> queriesList = parseBodyDeclaration("java.util.List<" + type + "> " + fieldName + " = new ArrayList<>();");
+            BodyDeclaration<?> queriesList = parseBodyDeclaration("java.util.List<" + type + "> " + fieldName + " = new java.util.ArrayList<>();");
             rulesClass.addMember(queriesList);
             for (String name : artifacts) {
                 addInitStatement( rulesListInitializerBody, new NameExpr( needsToVar ? toVar(name) : name ), fieldName );
             }
         } else {
-            BodyDeclaration<?> queriesList = parseBodyDeclaration("java.util.List<" + type + "> " + fieldName + " = Collections.emptyList();");
+            BodyDeclaration<?> queriesList = parseBodyDeclaration("java.util.List<" + type + "> " + fieldName + " = java.util.Collections.emptyList();");
             rulesClass.addMember(queriesList);
         }
     }
@@ -763,8 +763,8 @@ public class PackageModel {
     }
 
     private MethodCallExpr buildRulesField( ClassOrInterfaceDeclaration rulesClass ) {
-        MethodCallExpr rulesInit = new MethodCallExpr( null, "Arrays.asList" );
-        ClassOrInterfaceType rulesType = new ClassOrInterfaceType(null, new SimpleName("java.util.List"), new NodeList<Type>(new ClassOrInterfaceType(null, "Rule")));
+        MethodCallExpr rulesInit = new MethodCallExpr( null, "java.util.Arrays.asList" );
+        ClassOrInterfaceType rulesType = new ClassOrInterfaceType(null, new SimpleName("java.util.List"), new NodeList<Type>(parseClassOrInterfaceType(Rule.class.getCanonicalName())));
         MethodDeclaration rulesGetter = new MethodDeclaration( NodeList.nodeList( publicModifier()), rulesType, "getRulesList" );
         rulesGetter.createBody().addStatement( new ReturnStmt(rulesInit ) );
         rulesClass.addMember( rulesGetter );
@@ -773,18 +773,12 @@ public class PackageModel {
 
     private void manageImportForCompilationUnit(CompilationUnit cu) {
         // fixed part
-        cu.addImport("java.util.*");
-        cu.addImport("org.drools.model.*");
         if(isPattern) {
             cu.addImport("org.drools.modelcompiler.dsl.pattern.D");
         } else {
             cu.addImport("org.drools.modelcompiler.dsl.flow.D");
         }
         cu.addImport("org.drools.model.Index.ConstraintType");
-        cu.addImport("java.time.*");
-        cu.addImport("java.time.format.*");
-        cu.addImport("java.text.*");
-        cu.addImport("org.drools.core.util.*");
 
         // imports from DRL:
         for ( String i : imports ) {
