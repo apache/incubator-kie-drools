@@ -215,27 +215,27 @@ public class BuildUtils {
                 constraints = EmptyBetaConstraints.getInstance();
                 break;
             case 1 :
-                constraints = BetaNodeConstraintFactory.getInstance().createSingleBetaConstraints( list.get( 0 ),
+                constraints = BetaNodeConstraintFactory.Factory.get().createSingleBetaConstraints( list.get( 0 ),
                                                          context.getKnowledgeBase().getConfiguration(),
                                                          disableIndexing );
                 break;
             case 2 :
-                constraints = BetaNodeConstraintFactory.getInstance().createDoubleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
+                constraints = BetaNodeConstraintFactory.Factory.get().createDoubleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
                                                          context.getKnowledgeBase().getConfiguration(),
                                                          disableIndexing );
                 break;
             case 3 :
-                constraints = BetaNodeConstraintFactory.getInstance().createTripleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
+                constraints = BetaNodeConstraintFactory.Factory.get().createTripleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
                                                          context.getKnowledgeBase().getConfiguration(),
                                                          disableIndexing );
                 break;
             case 4 :
-                constraints = BetaNodeConstraintFactory.getInstance().createQuadroupleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
+                constraints = BetaNodeConstraintFactory.Factory.get().createQuadroupleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
                                                              context.getKnowledgeBase().getConfiguration(),
                                                              disableIndexing );
                 break;
             default :
-                constraints = BetaNodeConstraintFactory.getInstance().createDefaultBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
+                constraints = BetaNodeConstraintFactory.Factory.get().createDefaultBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
                                                           context.getKnowledgeBase().getConfiguration(),
                                                           disableIndexing );
         }

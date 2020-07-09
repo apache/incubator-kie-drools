@@ -86,7 +86,7 @@ public abstract class AbstractASMEvalBuilder implements RuleConditionBuilder {
 
         Arrays.sort(declarations, RuleTerminalNode.SortDeclarations.instance);
 
-        EvalCondition eval = EvalConditionFactory.getInstance().createEvalCondition(declarations);
+        EvalCondition eval = EvalConditionFactory.Factory.get().createEvalCondition(declarations);
 
         Map<String, Object> vars = createVariableContext( className,
                                                           (String)evalDescr.getContent(),

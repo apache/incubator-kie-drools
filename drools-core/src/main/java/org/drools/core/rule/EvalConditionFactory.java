@@ -16,24 +16,28 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.rule.metric.EvalConditionMetric;
-import org.drools.core.util.PerfLogUtils;
+import org.kie.api.internal.utils.ServiceRegistry;
 
-public class EvalConditionFactory {
+public interface EvalConditionFactory {
 
-    private static final EvalConditionFactory INSTANCE = new EvalConditionFactory();
+    public EvalCondition createEvalCondition(final Declaration[] requiredDeclarations);
 
-    public static EvalConditionFactory getInstance() {
-        return INSTANCE;
-    }
+    class Factory {
 
-    private EvalConditionFactory() {}
+        private static class LazyHolder {
 
-    public EvalCondition createEvalCondition(final Declaration[] requiredDeclarations) {
-        if (PerfLogUtils.getInstance().isEnabled()) {
-            return new EvalConditionMetric(requiredDeclarations);
-        } else {
-            return new EvalCondition(requiredDeclarations);
+            private static final EvalConditionFactory INSTANCE = createInstance();
+
+            private static EvalConditionFactory createInstance() {
+                EvalConditionFactory factory = ServiceRegistry.getInstance().get(EvalConditionFactory.class);
+                return factory != null ? factory : new EvalConditionFactoryImpl();
+            }
         }
+
+        public static EvalConditionFactory get() {
+            return LazyHolder.INSTANCE;
+        }
+
+        private Factory() {}
     }
 }

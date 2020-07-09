@@ -98,7 +98,7 @@ public class MVELEvalBuilder
                                                                        KnowledgeHelper.class,
                                                                        false,
                                                                        MVELCompilationUnit.Scope.EXPRESSION );
-            final EvalCondition eval = EvalConditionFactory.getInstance().createEvalCondition( previousDeclarations );
+            final EvalCondition eval = EvalConditionFactory.Factory.get().createEvalCondition( previousDeclarations );
 
             MVELEvalExpression expr = new MVELEvalExpression( unit,
                                                               dialect.getId() );
