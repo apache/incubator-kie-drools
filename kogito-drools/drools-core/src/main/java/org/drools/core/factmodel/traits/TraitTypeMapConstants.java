@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,11 +16,7 @@
 
 package org.drools.core.factmodel.traits;
 
-import org.drools.core.util.HierarchyEncoder;
+public interface TraitTypeMapConstants {
 
-public interface TraitRegistry {
-
-    HierarchyEncoder<String> getHierarchy();
-
-    void merge(TraitRegistry other);
+    String TYPE_NAME = "org/drools/traits/core/factmodel/TraitTypeMapImpl";
 }

@@ -21,18 +21,15 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
 
-import org.drools.core.base.evaluators.IsAEvaluatorDefinition;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.constraint.EvaluatorConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
-import org.kie.api.runtime.rule.Operator;
 
 /**
  * <code>AlphaNodes</code> are nodes in the <code>Rete</code> network used
@@ -50,7 +47,7 @@ public class AlphaNode extends ObjectSource
     /**
      * The <code>FieldConstraint</code>
      */
-    private AlphaNodeFieldConstraint constraint;
+    protected AlphaNodeFieldConstraint constraint;
 
     private ObjectSinkNode previousRightTupleSinkNode;
     private ObjectSinkNode nextRightTupleSinkNode;
@@ -326,15 +323,7 @@ public class AlphaNode extends ObjectSource
     }
 
     public BitMask calculateDeclaredMask(Class modifiedClass, List<String> settableProperties) {
-        boolean typeBit = false;
-        if (constraint instanceof EvaluatorConstraint && ((EvaluatorConstraint) constraint).isSelf()) {
-            Operator op = ((EvaluatorConstraint) constraint).getEvaluator().getOperator();
-            if (op == IsAEvaluatorDefinition.ISA || op == IsAEvaluatorDefinition.NOT_ISA) {
-                typeBit = true;
-            }
-        }
-        BitMask mask = constraint.getListenedPropertyMask(modifiedClass, settableProperties);
-        return typeBit ? mask.set(PropertySpecificUtil.TRAITABLE_BIT) : mask;
+        return constraint.getListenedPropertyMask(modifiedClass, settableProperties);
     }
 
     @Override

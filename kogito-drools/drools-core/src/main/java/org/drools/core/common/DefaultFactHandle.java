@@ -26,8 +26,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.base.TraitHelper;
-import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.LeftTuple;
@@ -181,11 +179,6 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     public <K> K as( Class<K> klass ) throws ClassCastException {
         if ( klass.isAssignableFrom( object.getClass() ) ) {
             return (K) object;
-        } else if ( this.isTraitOrTraitable() ) {
-            K k = TraitHelper.extractTrait( this, klass );
-            if ( k != null ) {
-                return  k;
-            }
         }
         throw new ClassCastException( "The Handle's Object can't be cast to " + klass );
     }
@@ -227,7 +220,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     /**
      * format_version:id:identity:hashcode:recency
-     * 
+     *
      * @see FactHandle
      */
     public final String toExternalForm() {
@@ -445,12 +438,8 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         handle.objectClassName = elements.length > 7 ? elements[7] : null;
     }
 
-    private TraitTypeEnum determineTraitType() {
-        if ( isTraitOrTraitable() ) {
-            return TraitFactory.determineTraitType( object );
-        } else {
-            return TraitTypeEnum.NON_TRAIT;
-        }
+    protected TraitTypeEnum determineTraitType() {
+        return TraitTypeEnum.NON_TRAIT;
     }
 
     public boolean isTraitable() {

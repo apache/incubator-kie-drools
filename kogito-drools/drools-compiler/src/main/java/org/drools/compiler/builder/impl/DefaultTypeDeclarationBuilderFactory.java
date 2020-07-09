@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.core.factmodel.traits;
+package org.drools.compiler.builder.impl;
 
-import org.drools.core.util.HierarchyEncoder;
+public class DefaultTypeDeclarationBuilderFactory implements TypeDeclarationBuilderFactory {
 
-public interface TraitRegistry {
-
-    HierarchyEncoder<String> getHierarchy();
-
-    void merge(TraitRegistry other);
+    @Override
+    public TypeDeclarationBuilder createTypeDeclarationBuilder(KnowledgeBuilderImpl kbuilder) {
+        return new TypeDeclarationBuilder(kbuilder);
+    }
 }

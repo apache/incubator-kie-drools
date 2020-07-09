@@ -19,6 +19,6 @@ import java.util.Map;
 
 public interface PropertyMap {
 
-    public Map<String,Object> getValues();
+    Map<String,Object> getValues();
 
 }

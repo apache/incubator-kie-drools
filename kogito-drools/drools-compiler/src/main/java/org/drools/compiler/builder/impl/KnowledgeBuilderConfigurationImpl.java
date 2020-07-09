@@ -40,6 +40,7 @@ import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.ClassBuilderFactory;
+import org.drools.core.reteoo.KieComponentFactory;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
@@ -73,6 +74,8 @@ import org.kie.internal.builder.conf.TrimCellsInDTableOption;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.core.reteoo.KieComponentFactory.createKieComponentFactory;
 
 /**
  * This class configures the package compiler.
@@ -144,6 +147,8 @@ public class KnowledgeBuilderConfigurationImpl
     private DroolsCompilerComponentFactory    componentFactory;
 
     private ClassBuilderFactory               classBuilderFactory;
+
+    private KieComponentFactory               kieComponentFactory;
 
     private LanguageLevelOption               languageLevel           = DrlParser.DEFAULT_LANGUAGE_LEVEL;
 
@@ -257,7 +262,8 @@ public class KnowledgeBuilderConfigurationImpl
 
         this.componentFactory = new DroolsCompilerComponentFactory();
 
-        this.classBuilderFactory = new ClassBuilderFactory();
+        this.kieComponentFactory = createKieComponentFactory();
+        this.classBuilderFactory = kieComponentFactory.getClassBuilderFactory();
     }
 
     private void buildSeverityMap() {
@@ -696,6 +702,10 @@ public class KnowledgeBuilderConfigurationImpl
 
     public void setClassBuilderFactory(ClassBuilderFactory classBuilderFactory) {
         this.classBuilderFactory = classBuilderFactory;
+    }
+
+    public KieComponentFactory getKieComponentFactory() {
+        return kieComponentFactory;
     }
 
     public LanguageLevelOption getLanguageLevel() {

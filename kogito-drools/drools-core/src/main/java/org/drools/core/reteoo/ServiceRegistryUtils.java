@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
-package org.drools.core.factmodel.traits;
+package org.drools.core.reteoo;
 
-import org.drools.core.util.HierarchyEncoder;
+import java.util.Optional;
 
-public interface TraitRegistry {
+import org.kie.api.internal.utils.ServiceRegistry;
 
-    HierarchyEncoder<String> getHierarchy();
+// TODO LM move to service registry?
+public class ServiceRegistryUtils {
 
-    void merge(TraitRegistry other);
+    public static <T> Optional<T> optionalService(Class<T> clazz) {
+        try {
+            return Optional.ofNullable(ServiceRegistry.getInstance().get(clazz));
+        } catch (RuntimeException e) {
+            return Optional.empty();
+        }
+    }
 }

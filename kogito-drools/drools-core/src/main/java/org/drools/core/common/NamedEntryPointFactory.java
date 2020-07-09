@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.core.factmodel.traits;
+package org.drools.core.common;
 
-import org.drools.core.util.HierarchyEncoder;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.rule.EntryPointId;
 
-public interface TraitRegistry {
+public interface NamedEntryPointFactory {
 
-    HierarchyEncoder<String> getHierarchy();
+    public NamedEntryPoint createNamedEntryPoint(EntryPointNode addedNode, EntryPointId id, StatefulKnowledgeSessionImpl wm);
 
-    void merge(TraitRegistry other);
 }

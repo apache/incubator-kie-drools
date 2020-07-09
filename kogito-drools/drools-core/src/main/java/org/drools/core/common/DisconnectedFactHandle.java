@@ -34,7 +34,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ArrayElements;
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
@@ -102,7 +101,7 @@ public class DisconnectedFactHandle
         } else {
             this.object = object;
         }
-        this.traitType = isTraitOrTraitable ? determineTraitType() : TraitTypeEnum.NON_TRAIT;
+        this.traitType = TraitTypeEnum.NON_TRAIT; // Traits are not tested with DisconnectedFactHandle
     }
 
     public DisconnectedFactHandle(long id,
@@ -414,14 +413,6 @@ public class DisconnectedFactHandle
                                             ClassNotFoundException {
         String externalForm = (String) in.readObject();
         parseExternalForm( externalForm );
-    }
-
-    private TraitTypeEnum determineTraitType() {
-        if ( isTraitOrTraitable() ) {
-            return TraitFactory.determineTraitType( object );
-        } else {
-            return TraitTypeEnum.NON_TRAIT;
-        }
     }
 
     @Override
