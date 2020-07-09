@@ -30,6 +30,8 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.runtime.events.HitPolicyViolationEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -42,6 +44,8 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest {
+
+    public static final Logger LOG = LoggerFactory.getLogger(DMNDecisionTableHitPolicyTest.class);
 
     public DMNDecisionTableHitPolicyTest(final boolean useExecModelCompiler ) {
         super( useExecModelCompiler );
@@ -78,6 +82,10 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-U-noinputvalues");
         assertThat(dmnModel, notNullValue());
 
+        check_testSimpleDecisionTableHitPolicyUniqueNullWarn(runtime, dmnModel);
+    }
+
+    private void check_testSimpleDecisionTableHitPolicyUniqueNullWarn(DMNRuntime runtime, DMNModel dmnModel) {
         final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(18), "ASD", false);
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         final DMNContext result = dmnResult.getContext();
@@ -85,6 +93,24 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
         assertThat(result.get("Approval Status"), nullValue());
         assertTrue(dmnResult.getMessages().size() > 0);
         assertTrue(dmnResult.getMessages().stream().anyMatch(dm -> dm.getSeverity().equals(DMNMessage.Severity.WARN) && dm.getFeelEvent() instanceof HitPolicyViolationEvent && dm.getFeelEvent().getSeverity().equals(FEELEvent.Severity.WARN)));
+    }
+
+    @Test
+    public void testSimpleDecisionTableHitPolicyUniqueNullWarn_ctxe() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-simpletable-U-noinputvalues-ctxe.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-U-noinputvalues");
+        assertThat(dmnModel, notNullValue());
+
+        check_testSimpleDecisionTableHitPolicyUniqueNullWarn(runtime, dmnModel);
+    }
+
+    @Test
+    public void testSimpleDecisionTableHitPolicyUniqueNullWarn_ctxr() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-simpletable-U-noinputvalues-ctxr.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-U-noinputvalues");
+        assertThat(dmnModel, notNullValue());
+
+        check_testSimpleDecisionTableHitPolicyUniqueNullWarn(runtime, dmnModel);
     }
 
     @Test
