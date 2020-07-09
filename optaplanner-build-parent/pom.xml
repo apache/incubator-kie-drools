@@ -40,6 +40,7 @@
     <version.org.jfree.jfreechart>1.5.0</version.org.jfree.jfreechart>
     <version.org.junit>5.5.2</version.org.junit>
     <version.org.mockito>3.1.0</version.org.mockito>
+    <version.org.postgresql>42.2.12</version.org.postgresql>
     <version.org.slf4j>1.7.26</version.org.slf4j>
     <version.org.springframework>5.2.6.RELEASE</version.org.springframework>
     <version.org.springframework.boot>2.2.6.RELEASE</version.org.springframework.boot>
@@ -227,6 +228,11 @@
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
         <version>${version.org.mockito}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>${version.org.postgresql}</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -666,42 +672,6 @@
             <encoding>UTF-8</encoding>
           </configuration>
         </plugin>
-        <!--            <plugin>-->
-        <!--              <groupId>org.apache.maven.plugins</groupId>-->
-        <!--              <artifactId>maven-surefire-plugin</artifactId>-->
-        <!--              <configuration>-->
-        <!--                <includes>-->
-        <!--                  <include>**/*Test.java</include>-->
-        <!--                </includes>-->
-        <!--                <excludes>-->
-        <!--                  <exclude>**/*IntegrationTest.java</exclude>-->
-        <!--                </excludes>-->
-        <!--                <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>-->
-        <!--                <systemPropertyVariables>-->
-        <!--                  <apple.awt.UIElement>true</apple.awt.UIElement>-->
-        <!--                </systemPropertyVariables>-->
-        <!--              </configuration>-->
-        <!--            </plugin>-->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-failsafe-plugin</artifactId>
-          <version>${version.failsafe.plugin}</version>
-          <executions>
-            <execution>
-              <goals>
-                <goal>integration-test</goal>
-                <goal>verify</goal>
-              </goals>
-            </execution>
-          </executions>
-          <configuration>
-            <includes>
-              <include>**/*IntegrationTest.java</include>
-              <include>**/*IT.java</include>
-            </includes>
-            <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
-          </configuration>
-        </plugin>
         <!-- Packaging -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -784,16 +754,6 @@
             <failOnError>${spotbugs.failOnViolation}</failOnError>
             <excludeFilterFile>spotbugs-excludes.xml</excludeFilterFile>
           </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>exec-maven-plugin</artifactId>
-          <version>1.5.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.sonarsource.scanner.maven</groupId>
-          <artifactId>sonar-maven-plugin</artifactId>
-          <version>3.6.0.1398</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
