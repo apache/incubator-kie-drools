@@ -220,6 +220,31 @@ public class MvelOperatorsTest extends BaseModelTest {
     }
 
     @Test
+    public void testStartsWithWithChar() {
+        String str =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "rule R\n" +
+                "when\n" +
+                "  $p : Person(name.startsWith('L'))\n" +
+                "then\n" +
+                "    list.add($p.getName());" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert(new Person("Luca", 35));
+        ksession.insert(new Person("Mario", 45));
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals("Luca", list.get(0));
+    }
+
+    @Test
     public void testNotIn() {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
