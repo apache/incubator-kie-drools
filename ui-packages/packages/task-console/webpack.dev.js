@@ -6,22 +6,23 @@ const HOST = process.env.HOST || 'localhost';
 const PORT = process.env.PORT || '9000';
 
 module.exports = merge(common, {
-  devServer: {
-    compress: true,
-    contentBase: './dist',
-    historyApiFallback: true,
-    host: HOST,
-    hot: true,
-    inline: true,
-    open: true,
-    overlay: true,
-    port: PORT
-  },
-  devtool: 'source-map',
   mode: 'development',
+  devtool: 'source-map',
+  devServer: {
+    contentBase: './dist',
+    host: HOST,
+    port: PORT,
+    compress: true,
+    inline: true,
+    historyApiFallback: true,
+    hot: true,
+    overlay: true,
+    open: true
+  },
   module: {
     rules: [
       {
+        test: /\.css$/,
         include: [
           path.resolve(__dirname, 'src'),
           path.resolve('../../node_modules/patternfly'),
@@ -39,11 +40,10 @@ module.exports = merge(common, {
           path.resolve(
             '../../node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css'
           ),
-          path.resolve(__dirname,
+          path.resolve (
             '../../node_modules/@kogito-apps/common/src/components'
           )
         ],
-        test: /\.css$/,
         use: ['style-loader', 'css-loader']
       }
     ]

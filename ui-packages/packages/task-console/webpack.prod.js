@@ -5,11 +5,21 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = merge(common, {
-  devtool: 'source-map',
   mode: 'production',
+  devtool: 'source-map',
+  optimization: {
+    minimizer: [new OptimizeCSSAssetsPlugin({})]
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[name].bundle.css'
+    })
+  ],
   module: {
     rules: [
       {
+        test: /\.css$/,
         include: [
           path.resolve(__dirname, 'src'),
           path.resolve('../../node_modules/patternfly'),
@@ -27,22 +37,12 @@ module.exports = merge(common, {
           path.resolve(
             '../../node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css'
           ),
-          path.resolve(__dirname,
+          path.resolve (
             '../../node_modules/@kogito-apps/common/src/components'
           )
         ],
-        loaders: ['style-loader', 'css-loader'],
-        test: /\.css$/
+        loaders: ['style-loader', 'css-loader']
       }
     ]
-  },
-  optimization: {
-    minimizer: [new OptimizeCSSAssetsPlugin({})]
-  },
-  plugins: [
-    new MiniCssExtractPlugin({
-      chunkFilename: '[name].bundle.css',
-      filename: '[name].css'
-    })
-  ],
+  }
 });

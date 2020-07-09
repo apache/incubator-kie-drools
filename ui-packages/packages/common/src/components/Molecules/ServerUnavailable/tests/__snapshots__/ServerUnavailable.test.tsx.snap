@@ -18,7 +18,7 @@ exports[`ServerUnavailable component tests snapshot testing  1`] = `
           isNavOpen={true}
           logo={
             <Brand
-              alt="Management Console Logo"
+              alt="Logo alt text"
               src=".../../../../static/logo.png"
             />
           }

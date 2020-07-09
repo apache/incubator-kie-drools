@@ -5,6 +5,7 @@ import { Button } from '@patternfly/react-core';
 
 const props = {
   src: '.../../../../static/logo.png',
+  alt: 'Logo alt text',
   pageNav: (
     <React.Component>
       <Button>something</Button>

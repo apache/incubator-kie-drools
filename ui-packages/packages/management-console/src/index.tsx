@@ -32,7 +32,11 @@ const fallbackUI = onError(({ networkError }: any) => {
   if (networkError && networkError.stack === 'TypeError: Failed to fetch') {
     return ReactDOM.render(
       <ApolloProvider client={client}>
-        <ServerUnavailable PageNav={PageNav} src={managementConsoleLogo} />
+        <ServerUnavailable
+          PageNav={PageNav}
+          src={managementConsoleLogo}
+          alt={'Management Console Logo'}
+        />
       </ApolloProvider>,
       document.getElementById('root')
     );

@@ -71,6 +71,7 @@
     <module>data-index</module>
     <module>ui-packages</module>
     <module>management-console</module>
+    <module>task-console</module>
     <module>explainability-service</module>
     <module>trusty</module>
   </modules>

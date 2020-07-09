@@ -29,7 +29,7 @@ const ServerUnavailable = props => {
 
   const Header = (
     <PageHeader
-      logo={<Brand src={props.src} alt="Management Console Logo" />}
+      logo={<Brand src={props.src} alt={props.alt} />}
       toolbar={
         <aboutLogoContext.Provider value={props.src}>
           <PageToolbar />
