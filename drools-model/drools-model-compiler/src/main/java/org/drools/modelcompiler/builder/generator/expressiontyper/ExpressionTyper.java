@@ -38,6 +38,7 @@ import com.github.javaparser.ast.expr.ArrayInitializerExpr;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.CharLiteralExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -690,6 +691,12 @@ public class ExpressionTyper {
         Class<?> rawClassCursor = toRawClass(originalTypeCursor);
         String methodName = methodCallExpr.getNameAsString();
         Class[] argsType = parseNodeArguments(methodCallExpr);
+
+        Optional<TypedExpressionCursor> startsWithMvel = checkStartsWithMVEL(methodCallExpr, originalTypeCursor, argsType);
+        if(startsWithMvel.isPresent()) {
+            return startsWithMvel.get();
+        }
+
         Method m = rawClassCursor != null ? ClassUtil.findMethod(rawClassCursor, methodName, argsType) : null;
         if (m == null) {
             Optional<Class<?>> functionType = ruleContext.getFunctionType(methodName);
@@ -715,6 +722,20 @@ public class ExpressionTyper {
             }
         } else {
             return new TypedExpressionCursor(methodCallExpr, genericReturnType);
+        }
+    }
+
+    // MVEL allows startsWith with a single char instead of a String
+    private Optional<TypedExpressionCursor> checkStartsWithMVEL(MethodCallExpr methodCallExpr, java.lang.reflect.Type originalTypeCursor, Class<?>[] argsType) {
+        if ("startsWith".equals(methodCallExpr.getNameAsString())
+                && originalTypeCursor.equals(java.lang.String.class)
+                && Arrays.equals(argsType, new Class[]{char.class})) {
+
+            MethodCallExpr methodCallExprWithString = methodCallExpr.clone();
+            methodCallExprWithString.findAll(CharLiteralExpr.class).forEach(c ->  c.replace(new StringLiteralExpr(c.getValue())));
+            return Optional.of(new TypedExpressionCursor(methodCallExprWithString, boolean.class));
+        } else {
+            return Optional.empty();
         }
     }
 
