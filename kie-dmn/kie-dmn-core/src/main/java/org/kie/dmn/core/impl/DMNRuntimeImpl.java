@@ -57,6 +57,7 @@ import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -147,6 +148,10 @@ public class DMNRuntimeImpl
             evaluateByNameInternal( model, context, result, name );
         }
         return result;
+    }
+
+    public PMMLRuntime getPMMLRuntime(String sanitizedKieBase) {
+        return runtimeKB.getPMMLRuntime(sanitizedKieBase);
     }
 
     private void evaluateByNameInternal( DMNModel model, DMNContext context, DMNResultImpl result, String name ) {
