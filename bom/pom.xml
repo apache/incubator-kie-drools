@@ -459,6 +459,13 @@
         <version>${project.version}</version>
       </dependency>
 
+      <!-- Task Console -->
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>task-console</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <!-- drools -->
       <dependency>
         <groupId>org.kie.kogito</groupId>
