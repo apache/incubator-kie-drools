@@ -2,6 +2,7 @@ package org.kie.kogito.quarkus.deployment;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
@@ -35,19 +36,24 @@ public abstract class KogitoCompilationProvider extends JavaCompilationProvider 
 
     @Override
     public final void compile(Set<File> filesToCompile, Context context) {
+        // This classloader reads from the file system all the project dependencies, plus the quarkus output directory
+        // containing all the latest class definitions of user's pojos, eventually recompiled also during the latest
+        // hot reload round. It is also necessary to use a null as a parent classloader otherwise this classloader
+        // could load the old definition of a class from the parent instead of getting the latest one from the output directory
+        final URLClassLoader cl = new URLClassLoader( getClasspathUrls( context ), null );
 
         File outputDirectory = context.getOutputDirectory();
         try {
             GeneratorContext generationContext = GeneratorContext
                     .ofResourcePath(context.getProjectDirectory().toPath().resolve("src/main/resources").toFile());
             generationContext
-                    .withBuildContext(new QuarkusKogitoBuildContext(className -> hasClassOnClasspath(context, className)));
+                    .withBuildContext(new QuarkusKogitoBuildContext(className -> hasClassOnClasspath(cl, className)));
 
             ApplicationGenerator appGen = new ApplicationGenerator(appPackageName, outputDirectory)
                     .withDependencyInjection(new CDIDependencyInjectionAnnotator())
                     .withGeneratorContext(generationContext);
 
-            addGenerator(appGen, filesToCompile, context);
+            addGenerator(appGen, filesToCompile, context, cl);
 
             Collection<GeneratedFile> generatedFiles = appGen.generate();
 
@@ -62,6 +68,12 @@ public abstract class KogitoCompilationProvider extends JavaCompilationProvider 
             super.compile(generatedSourceFiles, context);
         } catch (IOException e) {
             throw new KogitoCompilerException(e);
+        } finally {
+            try {
+                cl.close();
+            } catch (IOException e) {
+                throw new RuntimeException( e );
+            }
         }
     }
 
@@ -74,7 +86,7 @@ public abstract class KogitoCompilationProvider extends JavaCompilationProvider 
         return null;
     }
 
-    protected abstract Generator addGenerator(ApplicationGenerator appGen, Set<File> filesToCompile, Context context)
+    protected abstract Generator addGenerator(ApplicationGenerator appGen, Set<File> filesToCompile, Context context, ClassLoader cl)
             throws IOException;
 
     static Path pathOf(String path, String relativePath) {
@@ -83,24 +95,29 @@ public abstract class KogitoCompilationProvider extends JavaCompilationProvider 
         return p;
     }
     
-    protected boolean hasClassOnClasspath(Context context, String className) {
+    private boolean hasClassOnClasspath(ClassLoader cl, String className) {
         try {
-            Set<File> elements = context.getClasspath();
-            URL[] urls = new URL[elements.size()];
-
-            int i = 0;
-
-            for (File artifact : elements) {
-
-                urls[i] = artifact.toURI().toURL();
-                i++;
-            }
-            try (URLClassLoader cl = new URLClassLoader(urls)) {
-                cl.loadClass(className);
-            }
+            cl.loadClass(className);
             return true;
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private URL[] getClasspathUrls( Context context ) {
+        Set<File> elements = context.getClasspath();
+        URL[] urls = new URL[elements.size()+1];
+
+        try {
+            urls[0] = context.getOutputDirectory().toURI().toURL();
+            int i = 1;
+            for (File artifact : elements) {
+                urls[i++] = artifact.toURI().toURL();
+            }
+        } catch (MalformedURLException e) {
+            throw new RuntimeException( e );
+        }
+
+        return urls;
     }
 }
