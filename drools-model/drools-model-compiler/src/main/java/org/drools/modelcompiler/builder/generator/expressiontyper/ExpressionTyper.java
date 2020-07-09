@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -688,14 +689,16 @@ public class ExpressionTyper {
     private TypedExpressionCursor parseMethodCallExpr(MethodCallExpr methodCallExpr, java.lang.reflect.Type originalTypeCursor) {
         Class<?> rawClassCursor = toRawClass(originalTypeCursor);
         String methodName = methodCallExpr.getNameAsString();
-        Method m = rawClassCursor != null ? ClassUtil.findMethod(rawClassCursor, methodName, parseNodeArguments(methodCallExpr)) : null;
+        Class[] argsType = parseNodeArguments(methodCallExpr);
+        Method m = rawClassCursor != null ? ClassUtil.findMethod(rawClassCursor, methodName, argsType) : null;
         if (m == null) {
             Optional<Class<?>> functionType = ruleContext.getFunctionType(methodName);
             if (functionType.isPresent()) {
                 methodCallExpr.setScope(null);
                 return new TypedExpressionCursor(methodCallExpr, functionType.get());
             }
-            ruleContext.addCompilationError(new InvalidExpressionErrorResult("Method " + methodName + " on " + originalTypeCursor + " is missing"));
+            ruleContext.addCompilationError(new InvalidExpressionErrorResult(
+                    String.format("Method %s on %s with arguments %s is missing", methodName, originalTypeCursor, Arrays.toString(argsType))));
             return new TypedExpressionCursor(methodCallExpr, Object.class);
         }
 
