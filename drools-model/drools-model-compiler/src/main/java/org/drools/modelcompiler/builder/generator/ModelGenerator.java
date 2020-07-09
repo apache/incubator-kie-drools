@@ -290,7 +290,7 @@ public class ModelGenerator {
                     break;
                 case "date-effective":
                 case "date-expires":
-                    attributeCall.addArgument( parseExpression(String.format("GregorianCalendar.from(LocalDate.parse(\"%s\", " + DATE_TIME_FORMATTER_FIELD + ").atStartOfDay(ZoneId.systemDefault()))", as.getValue().getValue())));
+                    attributeCall.addArgument( parseExpression(String.format("java.util.GregorianCalendar.from(java.time.LocalDate.parse(\"%s\", " + DATE_TIME_FORMATTER_FIELD + ").atStartOfDay(java.time.ZoneId.systemDefault()))", as.getValue().getValue())));
                     break;
                 default:
                     throw new UnsupportedOperationException("Unhandled case for rule attribute: " + as.getKey());
