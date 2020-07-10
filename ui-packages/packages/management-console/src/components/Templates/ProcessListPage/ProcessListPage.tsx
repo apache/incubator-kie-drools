@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -18,41 +17,59 @@ import {
   LoadMore
 } from '@kogito-apps/common';
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import PageTitle from '../../Molecules/PageTitle/PageTitle';
 import ProcessListToolbar from '../../Molecules/ProcessListToolbar/ProcessListToolbar';
 import './ProcessListPage.css';
 import ProcessListTable from '../../Organisms/ProcessListTable/ProcessListTable';
 import ProcessListModal from '../../Atoms/ProcessListModal/ProcessListModal';
-import axios from 'axios';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
 import { setTitle } from '../../../utils/Utils';
 
-const ProcessListPage: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
-  const [defaultPageSize] = useState(10);
+type filterType = {
+  status: ProcessInstanceState[];
+  businessKey: string[];
+};
+interface MatchProps {
+  domainName: string;
+}
+
+interface LocationProps {
+  filters?: filterType;
+}
+
+const ProcessListPage: React.FC<
+  InjectedOuiaProps & RouteComponentProps<MatchProps, {}, LocationProps>
+> = ({ ouiaContext, ...props }) => {
+  const [defaultPageSize] = useState<number>(10);
   const [initData, setInitData] = useState<any>({});
-  const [checkedArray, setCheckedArray] = useState<any>(['ACTIVE']);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [isStatusSelected, setIsStatusSelected] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
   const [abortedObj, setAbortedObj] = useState({});
-  const [isAbortModalOpen, setIsAbortModalOpen] = useState(false);
+  const [isAbortModalOpen, setIsAbortModalOpen] = useState<boolean>(false);
   const [abortedMessageObj, setAbortedMessageObj] = useState({});
   const [completedMessageObj, setCompletedMessageObj] = useState({});
-  const [titleType, setTitleType] = useState('');
-  const [modalTitle, setModalTitle] = useState('');
-  const [limit, setLimit] = useState(defaultPageSize);
-  const [offset, setOffset] = useState(0);
-  const [pageSize, setPageSize] = useState(defaultPageSize);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [filters, setFilters] = useState({
-    status: ['ACTIVE'],
-    businessKey: []
-  });
+  const [titleType, setTitleType] = useState<string>('');
+  const [modalTitle, setModalTitle] = useState<string>('');
+  const [limit, setLimit] = useState<number>(defaultPageSize);
+  const [offset, setOffset] = useState<number>(0);
+  const [pageSize, setPageSize] = useState<number>(defaultPageSize);
+  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+  const [filters, setFilters] = useState<filterType>(
+    props.location.state
+      ? { ...props.location.state.filters }
+      : {
+          status: [ProcessInstanceState.Active],
+          businessKey: []
+        }
+  );
+  const [statusArray, setStatusArray] = useState<ProcessInstanceState[]>(
+    filters.status
+  );
   const [searchWord, setSearchWord] = useState<string>('');
-  const [isFilterClicked, setIsFilterClicked] = useState<boolean>(false);
   const [selectedNumber, setSelectedNumber] = useState<number>(0);
-  const [isAllChecked, setIsAllChecked] = useState(false);
+  const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
+
   const [
     getProcessInstances,
     { loading, data, error }
@@ -69,6 +86,19 @@ const ProcessListPage: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
     notifyOnNetworkStatusChange: true
   });
 
+  useEffect(() => {
+    window.history.pushState(null, '');
+  }, []);
+
+  useEffect(() => {
+    if (props.location.state) {
+      if (props.location.state.filters) {
+        setFilters(props.location.state.filters);
+        setStatusArray(props.location.state.filters.status);
+      }
+    }
+  }, [props.location.state]);
+
   const resetPagination = () => {
     setOffset(0);
     setLimit(defaultPageSize);
@@ -83,32 +113,27 @@ const ProcessListPage: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
     return ouiaPageTypeAndObjectId(ouiaContext, 'process-instances');
   });
 
-  const onFilterClick = (arr = checkedArray) => {
+  const onFilterClick = (arr = filters.status) => {
     resetPagination();
     const searchWordsArray = [];
     const copyOfBusinessKeysArray = [...filters.businessKey];
+    /* istanbul ignore if */
+
     if (searchWord.length !== 0) {
       if (!copyOfBusinessKeysArray.includes(searchWord)) {
         copyOfBusinessKeysArray.push(searchWord);
-        setFilters({
-          ...filters,
-          status: checkedArray,
-          businessKey: [...filters.businessKey, searchWord]
-        });
       }
     }
-    copyOfBusinessKeysArray.map(word => {
+    copyOfBusinessKeysArray.forEach(word => {
       const tempBusinessKeys = { businessKey: { like: word } };
       searchWordsArray.push(tempBusinessKeys);
     });
-    setIsFilterClicked(true);
     setIsLoading(true);
     setIsLoadingMore(false);
     setIsError(false);
     setAbortedObj({});
     setAbortedMessageObj({});
     setCompletedMessageObj({});
-    setIsStatusSelected(true);
     setIsAllChecked(false);
     setSelectedNumber(0);
     setInitData({});
@@ -132,7 +157,7 @@ const ProcessListPage: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
     setIsLoadingMore(true);
     setPageSize(_pageSize);
     getProcessInstances({
-      variables: { state: checkedArray, offset: initVal, limit: _pageSize }
+      variables: { state: filters.status, offset: initVal, limit: _pageSize }
     });
   };
 
@@ -145,7 +170,7 @@ const ProcessListPage: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
     }
     setSearchWord('');
     if (!loading && data !== undefined) {
-      data.ProcessInstances.map((instance: any) => {
+      data.ProcessInstances.forEach((instance: any) => {
         instance.isChecked = false;
         instance.isOpen = false;
       });
@@ -165,6 +190,7 @@ const ProcessListPage: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
     setAbortedObj({});
     setAbortedMessageObj({});
     setCompletedMessageObj({});
+    /* istanbul ignore else */
     if (isLoadingMore === undefined || !isLoadingMore) {
       setIsLoading(getProcessInstancesWithBK.loading);
     }
@@ -173,10 +199,12 @@ const ProcessListPage: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
       !getProcessInstancesWithBK.loading &&
       getProcessInstancesWithBK.data !== undefined
     ) {
-      getProcessInstancesWithBK.data.ProcessInstances.map((instance: any) => {
-        instance.isChecked = false;
-        instance.isOpen = false;
-      });
+      getProcessInstancesWithBK.data.ProcessInstances.forEach(
+        (instance: any) => {
+          instance.isChecked = false;
+          instance.isOpen = false;
+        }
+      );
       setLimit(getProcessInstancesWithBK.data.ProcessInstances.length);
       if (offset > 0 && initData.ProcessInstances.length > 0) {
         setIsLoadingMore(false);
@@ -191,76 +219,13 @@ const ProcessListPage: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
 
   const resetClick = () => {
     setSearchWord('');
-    setCheckedArray(['ACTIVE']);
-    setFilters({ ...filters, status: ['ACTIVE'] });
-    onFilterClick(['ACTIVE']);
-  };
-
-  const handleAbortAll = () => {
-    const tempAbortedObj = { ...abortedObj };
-    const completedAndAborted = {};
-    for (const [id, processInstance] of Object.entries(tempAbortedObj)) {
-      initData.ProcessInstances.map(instance => {
-        if (instance.id === id) {
-          if (
-            instance.addons.includes('process-management') &&
-            instance.serviceUrl !== null
-          ) {
-            if (
-              instance.state === ProcessInstanceState.Completed ||
-              instance.state === ProcessInstanceState.Aborted
-            ) {
-              completedAndAborted[id] = processInstance;
-              delete tempAbortedObj[id];
-            } else {
-              instance.state = ProcessInstanceState.Aborted;
-            }
-          }
-        }
-        if (instance.childDataList !== undefined) {
-          instance.childDataList.map(child => {
-            if (child.id === id) {
-              if (
-                instance.addons.includes('process-management') &&
-                instance.serviceUrl !== null
-              ) {
-                if (
-                  child.state === ProcessInstanceState.Completed ||
-                  child.state === ProcessInstanceState.Aborted
-                ) {
-                  completedAndAborted[id] = processInstance;
-                  delete tempAbortedObj[id];
-                } else {
-                  child.state = ProcessInstanceState.Aborted;
-                }
-              }
-            }
-          });
-        }
-      });
-    }
-    const promiseArray = [];
-    Object.keys(tempAbortedObj).forEach((id: string) => {
-      promiseArray.push(
-        axios.delete(
-          `${tempAbortedObj[id].serviceUrl}/management/processes/${tempAbortedObj[id].processId}/instances/${tempAbortedObj[id].id}`
-        )
-      );
+    setStatusArray([ProcessInstanceState.Active]);
+    setFilters({
+      ...filters,
+      status: [ProcessInstanceState.Active],
+      businessKey: []
     });
-    setModalTitle('Abort operation');
-    Promise.all(promiseArray)
-      .then(() => {
-        setTitleType('success');
-        setAbortedMessageObj(tempAbortedObj);
-        setCompletedMessageObj(completedAndAborted);
-        handleAbortModalToggle();
-      })
-      .catch(() => {
-        setTitleType('failure');
-        setAbortedMessageObj(tempAbortedObj);
-        setCompletedMessageObj(completedAndAborted);
-        handleAbortModalToggle();
-      });
+    onFilterClick([ProcessInstanceState.Active]);
   };
 
   if (error || getProcessInstancesWithBK.error) {
@@ -276,7 +241,7 @@ const ProcessListPage: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
         abortedMessageObj={abortedMessageObj}
         completedMessageObj={completedMessageObj}
         isAbortModalOpen={isAbortModalOpen}
-        checkedArray={checkedArray}
+        checkedArray={filters.status}
         handleModalToggle={handleAbortModalToggle}
         isSingleAbort={false}
       />
@@ -297,17 +262,13 @@ const ProcessListPage: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
                 <>
                   {' '}
                   <ProcessListToolbar
-                    checkedArray={checkedArray}
                     filterClick={onFilterClick}
-                    setCheckedArray={setCheckedArray}
-                    setIsStatusSelected={setIsStatusSelected}
                     filters={filters}
                     setFilters={setFilters}
                     initData={initData}
                     setInitData={setInitData}
                     abortedObj={abortedObj}
                     setAbortedObj={setAbortedObj}
-                    handleAbortAll={handleAbortAll}
                     getProcessInstances={getProcessInstances}
                     setSearchWord={setSearchWord}
                     searchWord={searchWord}
@@ -315,21 +276,26 @@ const ProcessListPage: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
                     setIsAllChecked={setIsAllChecked}
                     selectedNumber={selectedNumber}
                     setSelectedNumber={setSelectedNumber}
+                    statusArray={statusArray}
+                    setStatusArray={setStatusArray}
+                    setModalTitle={setModalTitle}
+                    setTitleType={setTitleType}
+                    setAbortedMessageObj={setAbortedMessageObj}
+                    setCompletedMessageObj={setCompletedMessageObj}
+                    handleAbortModalToggle={handleAbortModalToggle}
                   />
                 </>
               )}
-              {isStatusSelected ? (
+              {filters.status.length > 0 ? (
                 <ProcessListTable
                   initData={initData}
                   setInitData={setInitData}
                   setLimit={setLimit}
                   isLoading={isLoading}
                   setIsError={setIsError}
-                  checkedArray={checkedArray}
                   pageSize={defaultPageSize}
                   abortedObj={abortedObj}
                   setAbortedObj={setAbortedObj}
-                  isFilterClicked={isFilterClicked}
                   filters={filters}
                   setIsAllChecked={setIsAllChecked}
                   setSelectedNumber={setSelectedNumber}
@@ -346,7 +312,8 @@ const ProcessListPage: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
               {(!loading || isLoadingMore) &&
                 !isLoading &&
                 initData !== undefined &&
-                (limit === pageSize || isLoadingMore) && (
+                (limit === pageSize || isLoadingMore) &&
+                filters.status.length > 0 && (
                   <LoadMore
                     offset={offset}
                     setOffset={setOffset}

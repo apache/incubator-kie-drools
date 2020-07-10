@@ -1,8 +1,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import ProcessListToolbar from '../ProcessListToolbar';
-import { GraphQL } from '@kogito-apps/common';
+import { GraphQL, getWrapper } from '@kogito-apps/common';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
+import { DataToolbarItem } from '@patternfly/react-core';
 
 const initData = {
   ProcessInstances: [
@@ -177,9 +178,9 @@ const initData = {
 };
 
 const props = {
-  checkedArray: ['ACTIVE', 'COMPLETED', 'ERROR', 'ABORTED', 'SUSPENDED'],
+  statusArray: ['ACTIVE', 'COMPLETED', 'ERROR', 'ABORTED', 'SUSPENDED'],
   filterClick: jest.fn(),
-  setCheckedArray: jest.fn(),
+  setStatusArray: jest.fn(),
   setIsStatusSelected: jest.fn(),
   filters: {
     status: ['ACTIVE', 'COMPLETED', 'ERROR', 'ABORTED', 'SUSPENDED'],
@@ -197,19 +198,24 @@ const props = {
   pageSize: 10,
   setFilteredData: jest.fn(),
   setSearchWord: jest.fn(),
-  searchWord: '',
+  searchWord: 'Tra',
   setIsClearAllClicked: jest.fn(),
   handleCheckAll: jest.fn(),
   isAllChecked: true,
   setIsAllChecked: jest.fn(),
   setSelectedNumber: jest.fn(),
-  selectedNumber: 0
+  selectedNumber: 0,
+  setModalTitle: jest.fn(),
+  setTitleType: jest.fn(),
+  setAbortedMessageObj: jest.fn(),
+  setCompletedMessageObj: jest.fn(),
+  handleAbortModalToggle: jest.fn()
 };
 
 const props1 = {
-  checkedArray: ['ACTIVE', 'COMPLETED', 'ERROR'],
+  statusArray: ['ACTIVE', 'COMPLETED', 'ERROR'],
   filterClick: jest.fn(),
-  setCheckedArray: jest.fn(),
+  setStatusArray: jest.fn(),
   setIsStatusSelected: jest.fn(),
   filters: {
     status: ['ACTIVE', 'COMPLETED', 'ERROR'],
@@ -219,7 +225,7 @@ const props1 = {
   setInitData: jest.fn(),
   handleAbortAll: jest.fn(),
   setAbortedObj: jest.fn(),
-  abortedObj: { '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': 'travels' },
+  abortedObj: {},
   initData,
   setOffset: jest.fn(),
   getProcessInstances: jest.fn(),
@@ -233,13 +239,18 @@ const props1 = {
   isAllChecked: false,
   setIsAllChecked: jest.fn(),
   setSelectedNumber: jest.fn(),
-  selectedNumber: 0
+  selectedNumber: 0,
+  setModalTitle: jest.fn(),
+  setTitleType: jest.fn(),
+  setAbortedMessageObj: jest.fn(),
+  setCompletedMessageObj: jest.fn(),
+  handleAbortModalToggle: jest.fn()
 };
 
 const props2 = {
-  checkedArray: [],
+  statusArray: [],
   filterClick: jest.fn(),
-  setCheckedArray: jest.fn(),
+  setStatusArray: jest.fn(),
   setIsStatusSelected: jest.fn(),
   filters: { status: [], businessKey: [] },
   setFilters: jest.fn(),
@@ -260,74 +271,31 @@ const props2 = {
   isAllChecked: false,
   setIsAllChecked: jest.fn(),
   setSelectedNumber: jest.fn(),
-  selectedNumber: 0
-};
-
-const props3 = {
-  checkedArray: ['COMPLETED'],
-  filterClick: jest.fn(),
-  setCheckedArray: jest.fn(),
-  setIsStatusSelected: jest.fn(),
-  filters: {
-    status: ['COMPLETED'],
-    businessKey: ['tra']
-  },
-  setFilters: jest.fn(),
-  setInitData: jest.fn(),
-  handleAbortAll: jest.fn(),
-  setAbortedObj: jest.fn(),
-  abortedObj: { '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': 'travels' },
-  initData,
-  setOffset: jest.fn(),
-  getProcessInstances: jest.fn(),
-  setLimit: jest.fn(),
-  pageSize: 10,
-  setFilteredData: jest.fn(),
-  setSearchWord: jest.fn(),
-  searchWord: '',
-  setIsClearAllClicked: jest.fn(),
-  handleCheckAll: jest.fn(),
-  isAllChecked: false,
-  setIsAllChecked: jest.fn(),
-  setSelectedNumber: jest.fn(),
-  selectedNumber: 0
-};
-
-const props4 = {
-  checkedArray: ['ACTIVE', 'COMPLETED'],
-  filterClick: jest.fn(),
-  setCheckedArray: jest.fn(),
-  setIsStatusSelected: jest.fn(),
-  filters: {
-    status: ['COMPLETED'],
-    businessKey: ['tra']
-  },
-  setFilters: jest.fn(),
-  setInitData: jest.fn(),
-  handleAbortAll: jest.fn(),
-  setAbortedObj: jest.fn(),
-  abortedObj: { '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': 'travels' },
-  initData,
-  setOffset: jest.fn(),
-  getProcessInstances: jest.fn(),
-  setLimit: jest.fn(),
-  pageSize: 10,
-  setFilteredData: jest.fn(),
-  setSearchWord: jest.fn(),
-  searchWord: '',
-  setIsClearAllClicked: jest.fn(),
-  handleCheckAll: jest.fn(),
-  isAllChecked: false,
-  setIsAllChecked: jest.fn(),
-  setSelectedNumber: jest.fn(),
-  selectedNumber: 0
+  selectedNumber: 0,
+  setModalTitle: jest.fn(),
+  setTitleType: jest.fn(),
+  setAbortedMessageObj: jest.fn(),
+  setCompletedMessageObj: jest.fn(),
+  handleAbortModalToggle: jest.fn()
 };
 
 /* tslint:disable */
 
 describe('ProcessListToolbar component tests', () => {
   it('Snapshot tests', () => {
-    const wrapper = shallow(<ProcessListToolbar {...props} />);
+    const wrapper = getWrapper(
+      <ProcessListToolbar {...props} />,
+      'ProcessListToolbar'
+    );
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it('Snapshot tests for disabled filter button', () => {
+    let wrapper = getWrapper(
+      <ProcessListToolbar {...props2} />,
+      'ProcessListToolbar'
+    );
+    wrapper = wrapper.find(DataToolbarItem);
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -338,41 +306,23 @@ describe('ProcessListToolbar component tests', () => {
       .props()
       ['clearAllFilters']();
     expect(props.setSearchWord).toHaveBeenCalledTimes(1);
-    expect(props.setCheckedArray.mock.calls).toEqual([[['ACTIVE']]]);
+    expect(props.setStatusArray.mock.calls).toEqual([[['ACTIVE']]]);
     expect(props.setFilters.mock.calls).toEqual([
       [{ status: ['ACTIVE'], businessKey: [] }]
     ]);
     expect(props.setSearchWord.mock.calls).toEqual([['']]);
   });
 
-  describe('filter click test', () => {
-    it('filter click if condition', () => {
-      const wrapper = shallow(<ProcessListToolbar {...props1} />);
-      wrapper.find('#Apply-filter-button').simulate('click');
-      expect(props1.setFilters).toHaveBeenCalled();
-      expect(props1.setFilters.mock.calls).toEqual([
-        [
-          {
-            status: props1.filters.status,
-            businessKey: props1.filters.businessKey
-          }
-        ]
-      ]);
-    });
-    it('filter click else condition', () => {
-      const wrapper = shallow(<ProcessListToolbar {...props2} />);
-      wrapper.find('#Apply-filter-button').simulate('click');
-
-      expect(props2.setFilters).toHaveBeenCalled();
-      expect(props2.setFilters.mock.calls).toEqual([
-        [
-          {
-            status: props2.filters.status,
-            businessKey: props2.filters.businessKey
-          }
-        ]
-      ]);
-    });
+  it('filter click test', () => {
+    const wrapper = shallow(<ProcessListToolbar {...props} />);
+    wrapper.find('#apply-filter-button').simulate('click');
+    expect(props.setFilters).toHaveBeenCalled();
+    expect(props.setFilters.mock.calls[1]).toEqual([
+      {
+        status: ['ACTIVE', 'COMPLETED', 'ERROR', 'ABORTED', 'SUSPENDED'],
+        businessKey: ['Tra']
+      }
+    ]);
   });
 
   it('onSelect tests', () => {
@@ -384,70 +334,36 @@ describe('ProcessListToolbar component tests', () => {
     wrapper
       .find('#status-select')
       .simulate('select', { target: { id: 'SUSPENDED' } });
-    expect(props1.setCheckedArray.mock.calls).toEqual([
+    expect(props1.setStatusArray.mock.calls).toEqual([
       [['ACTIVE', 'ERROR']],
       [['ACTIVE', 'COMPLETED', 'ERROR', 'SUSPENDED']]
     ]);
   });
 
-  describe('onDelete tests', () => {
-    it('should pass businesskey type', () => {
-      const wrapper = shallow(<ProcessListToolbar {...props} />);
-      wrapper
-        .find('#datatoolbar-filter-businesskey')
-        .props()
-        ['deleteChip']('Business key', 'tra');
-      expect(props.filters.businessKey.length).toEqual(0);
-    });
-    it('should pass status type - checkedarray length 1', () => {
-      const wrapper = shallow(<ProcessListToolbar {...props3} />);
-      wrapper
-        .find('#datatoolbar-filter-status')
-        .props()
-        ['deleteChip']('Status', 'Completed');
-      expect(props3.setCheckedArray.mock.calls).toEqual([[[]]]);
-      expect(props3.setFilters.mock.calls).toEqual([
-        [{ status: [], businessKey: [] }]
-      ]);
-    });
-    it('should pass status type - checkedarray.lenght>1 & filters,status.lenght>1', () => {
-      const wrapper = shallow(<ProcessListToolbar {...props1} />);
-      wrapper
-        .find('#datatoolbar-filter-status')
-        .props()
-        ['deleteChip']('Status', 'Completed');
-      expect(props1.setFilters.mock.calls).toEqual([
-        [{ status: ['ACTIVE', 'COMPLETED'], businessKey: ['tra'] }]
-      ]);
-    });
-
-    it('should pass status type - checkedarray has length & filter.status length =1', () => {
-      const wrapper = shallow(<ProcessListToolbar {...props4} />);
-      wrapper
-        .find('#datatoolbar-filter-status')
-        .props()
-        ['deleteChip']('Status', 'Completed');
-      expect(props4.setCheckedArray.mock.calls).toEqual([[[]]]);
-      expect(props4.setFilters.mock.calls).toEqual([
-        [{ status: [], businessKey: [] }]
-      ]);
-    });
-    it('apply filter should be clicked', () => {
-      const wrapper = shallow(<ProcessListToolbar {...props1} />);
-      wrapper.find('#Apply-filter-button').simulate('click');
-      wrapper
-        .find('#datatoolbar-filter-status')
-        .props()
-        ['deleteChip']('Status', 'Completed');
-      expect(props1.filterClick).toHaveBeenCalled();
-    });
+  it('onDelete tests - for status', () => {
+    const wrapper = shallow(<ProcessListToolbar {...props} />);
+    wrapper
+      .find('#datatoolbar-filter-status')
+      .props()
+      ['deleteChip']('Status', 'ACTIVE');
+    expect(props.filterClick).toHaveBeenCalled();
+    expect(props.setStatusArray).toHaveBeenCalled();
+    expect(props.setFilters).toHaveBeenCalled();
+  });
+  it('onDelete tests - for businessKey', () => {
+    const wrapper = shallow(<ProcessListToolbar {...props} />);
+    wrapper
+      .find('#datatoolbar-filter-businesskey')
+      .props()
+      ['deleteChip']('Business key', 'Tra');
+    expect(props.filters.businessKey.length).toEqual(0);
+    expect(props.filterClick).toHaveBeenCalled();
   });
 
   it('onRefresh click', () => {
-    const wrapper = shallow(<ProcessListToolbar {...props1} />);
+    const wrapper = shallow(<ProcessListToolbar {...props} />);
     wrapper.find('#refresh-button').simulate('click');
-    expect(props1.filterClick).toHaveBeenCalled();
-    expect(props1.filterClick).toHaveBeenCalledWith(props1.checkedArray);
+    expect(props.filterClick).toHaveBeenCalledWith(props.statusArray);
   });
 
   it('onStatusToggle click', () => {
@@ -474,13 +390,9 @@ describe('ProcessListToolbar component tests', () => {
   });
 
   it('handleEnterClick test', () => {
-    const wrapper = shallow(<ProcessListToolbar {...props1} />);
+    const wrapper = shallow(<ProcessListToolbar {...props} />);
     wrapper.find('#businessKey').simulate('keypress', { key: 'Enter' });
-    expect(props1.setFilters.mock.calls).toEqual([
-      [{ status: ['ACTIVE'], businessKey: ['tra'] }],
-      [{ status: ['ACTIVE'], businessKey: ['tra'] }]
-    ]);
-    expect(props1.filterClick).toHaveBeenCalled();
+    expect(props.filterClick).toHaveBeenCalled();
   });
 
   describe('select multiple checkbox tests', () => {

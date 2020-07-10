@@ -7,11 +7,6 @@ exports[`ProcessListTable component tests Snapshot testing initial empty data 1`
       "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels",
     }
   }
-  checkedArray={
-    Array [
-      "ACTIVE",
-    ]
-  }
   filteredData={
     Object {
       "ProcessInstances": Array [
@@ -183,6 +178,9 @@ exports[`ProcessListTable component tests Snapshot testing initial empty data 1`
           undefined,
         ],
         Array [
+          undefined,
+        ],
+        Array [
           Object {
             "ProcessInstances": Array [
               Object {
@@ -211,6 +209,10 @@ exports[`ProcessListTable component tests Snapshot testing initial empty data 1`
         ],
       ],
       "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
         Object {
           "type": "return",
           "value": undefined,
@@ -352,11 +354,6 @@ exports[`ProcessListTable component tests Snapshot testing with no data 1`] = `
     Object {
       "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels",
     }
-  }
-  checkedArray={
-    Array [
-      "ACTIVE",
-    ]
   }
   filteredData={
     Object {
@@ -529,12 +526,19 @@ exports[`ProcessListTable component tests Snapshot testing with no data 1`] = `
           undefined,
         ],
         Array [
+          undefined,
+        ],
+        Array [
           Object {
             "ProcessInstances": Array [],
           },
         ],
       ],
       "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
         Object {
           "type": "return",
           "value": undefined,
@@ -676,11 +680,6 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
     Object {
       "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels",
     }
-  }
-  checkedArray={
-    Array [
-      "ACTIVE",
-    ]
   }
   filteredData={
     Object {
@@ -971,6 +970,9 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
           undefined,
         ],
         Array [
+          undefined,
+        ],
+        Array [
           Object {
             "ProcessInstances": Array [
               Object {
@@ -999,6 +1001,10 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
         ],
       ],
       "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
         Object {
           "type": "return",
           "value": undefined,
@@ -1058,16 +1064,19 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
       aria-label="Process instance list"
       className="pf-c-data-list"
     >
-      <ProcessListTableItems
+      <MockedProcessListTableItems
         abortedObj={
           Object {
             "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels",
           }
         }
-        checkedArray={
-          Array [
-            "ACTIVE",
-          ]
+        filters={
+          Object {
+            "businessKey": Array [],
+            "status": Array [
+              "ACTIVE",
+            ],
+          }
         }
         id={0}
         initData={
@@ -1344,6 +1353,9 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
                 undefined,
               ],
               Array [
+                undefined,
+              ],
+              Array [
                 Object {
                   "ProcessInstances": Array [
                     Object {
@@ -1380,16 +1392,406 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
                 "type": "return",
                 "value": undefined,
               },
+              Object {
+                "type": "return",
+                "value": undefined,
+              },
             ],
           }
         }
         setIsAllChecked={[MockFunction]}
         setSelectedNumber={[MockFunction]}
-      >
-        <ProcessListModal
-          abortedMessageObj={
+      />
+    </ul>
+  </DataList>
+</ProcessListTable>
+`;
+
+exports[`ProcessListTable component tests Snapshot testing with success data(with businessKey) 1`] = `
+<ProcessListTable
+  abortedObj={
+    Object {
+      "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels",
+    }
+  }
+  filteredData={
+    Object {
+      "ProcessInstances": Array [
+        Object {
+          "addons": Array [
+            "process-management",
+            "infinispan-persistence",
+            "prometheus-monitoring",
+          ],
+          "businessKey": "MQQ640",
+          "childProcessInstances": Array [
             Object {
-              "201a8a42-043e-375a-9f52-57c804b24db4": Object {
+              "businessKey": null,
+              "id": "bfde98ed-0cdd-4700-ae87-377f7ec430cd",
+              "processName": "HotelBooking",
+            },
+            Object {
+              "businessKey": null,
+              "id": "e607b2a9-0aca-4788-9623-dd2e156ce9c4",
+              "processName": "FlightBooking",
+            },
+          ],
+          "end": null,
+          "endpoint": "http://localhost:8080/travels",
+          "error": null,
+          "id": "201a8a42-043e-375a-9f52-57c804b24db4",
+          "lastUpdate": "2020-05-07T06:50:18.502Z",
+          "nodes": Array [
+            Object {
+              "definitionId": "_1A708F87-11C0-42A0-A464-0B7E259C426F",
+              "enter": "2020-05-07T06:50:18.429Z",
+              "exit": "2020-05-07T06:50:18.439Z",
+              "id": "39d5fe7c-4e37-44ce-8d25-05a4a29ec6ea",
+              "name": "Book Hotel",
+              "nodeId": "17",
+              "type": "SubProcessNode",
+            },
+            Object {
+              "definitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
+              "enter": "2020-05-07T06:50:18.443Z",
+              "exit": null,
+              "id": "1d3d7ebe-79ec-4848-b1d6-d7c5a371b4dd",
+              "name": "Confirm travel",
+              "nodeId": "8",
+              "type": "HumanTaskNode",
+            },
+            Object {
+              "definitionId": "_5D0733B5-53FE-40E9-9900-4CC13419C67A",
+              "enter": "2020-05-07T06:50:18.442Z",
+              "exit": "2020-05-07T06:50:18.443Z",
+              "id": "4fc774f5-c429-4b97-8981-bd60d1f59954",
+              "name": "Join",
+              "nodeId": "7",
+              "type": "Join",
+            },
+            Object {
+              "definitionId": "_F543B3F0-AB44-4A5B-BF17-8D9DEB505815",
+              "enter": "2020-05-07T06:50:18.439Z",
+              "exit": "2020-05-07T06:50:18.442Z",
+              "id": "60309b28-1dbe-49c3-b0d8-8cefb86be8b4",
+              "name": "Book Flight",
+              "nodeId": "10",
+              "type": "SubProcessNode",
+            },
+            Object {
+              "definitionId": "_175DC79D-C2F1-4B28-BE2D-B583DFABF70D",
+              "enter": "2020-05-07T06:50:18.428Z",
+              "exit": "2020-05-07T06:50:18.439Z",
+              "id": "efa5a6c0-9470-4405-8609-620bdbfbb6d9",
+              "name": "Book",
+              "nodeId": "2",
+              "type": "Split",
+            },
+            Object {
+              "definitionId": "_B34ADDEE-DEA5-47C5-A913-F8B85ED5641F",
+              "enter": "2020-05-07T06:50:18.428Z",
+              "exit": "2020-05-07T06:50:18.428Z",
+              "id": "acc87f1f-e436-4364-b4d3-9069ddb359c9",
+              "name": "Join",
+              "nodeId": "14",
+              "type": "Join",
+            },
+            Object {
+              "definitionId": "_5EA95D17-59A6-4567-92DF-74D36CE7F35A",
+              "enter": "2020-05-07T06:50:18.427Z",
+              "exit": "2020-05-07T06:50:18.428Z",
+              "id": "6c20729a-3e2b-44c5-af5c-8554f21a7ebf",
+              "name": "is visa required",
+              "nodeId": "15",
+              "type": "Split",
+            },
+            Object {
+              "definitionId": "_54ABE1ED-61BE-45F9-812C-795A5D4ED35E",
+              "enter": "2020-05-07T06:50:18.278Z",
+              "exit": "2020-05-07T06:50:18.427Z",
+              "id": "3fb92a0a-e88b-45a4-a48b-65f11a679b96",
+              "name": "Visa check",
+              "nodeId": "5",
+              "type": "RuleSetNode",
+            },
+            Object {
+              "definitionId": "_1B11BEC9-402A-4E73-959A-296BD334CAB0",
+              "enter": "2020-05-07T06:50:18.276Z",
+              "exit": "2020-05-07T06:50:18.278Z",
+              "id": "2860e474-dffc-498c-8731-e6b6f0b5d4d4",
+              "name": "StartProcess",
+              "nodeId": "16",
+              "type": "StartNode",
+            },
+          ],
+          "parentProcessInstance": null,
+          "parentProcessInstanceId": null,
+          "processId": "travels",
+          "processName": "travels",
+          "roles": Array [],
+          "serviceUrl": "http://localhost:8080",
+          "start": "2020-05-07T06:50:18.274Z",
+          "state": "ACTIVE",
+          "variables": "{\\"flight\\":{\\"flightNumber\\":\\"MX555\\",\\"seat\\":null,\\"gate\\":null,\\"departure\\":\\"2020-05-08T03:30:00.000+05:30\\",\\"arrival\\":\\"2020-05-09T03:30:00.000+05:30\\"},\\"hotel\\":{\\"name\\":\\"Perfect hotel\\",\\"address\\":{\\"street\\":\\"street\\",\\"city\\":\\"Bengaluru\\",\\"zipCode\\":\\"12345\\",\\"country\\":\\"India\\"},\\"phone\\":\\"09876543\\",\\"bookingNumber\\":\\"XX-012345\\",\\"room\\":null},\\"trip\\":{\\"city\\":\\"Bengaluru\\",\\"country\\":\\"India\\",\\"begin\\":\\"2020-05-08T03:30:00.000+05:30\\",\\"end\\":\\"2020-05-09T03:30:00.000+05:30\\",\\"visaRequired\\":false},\\"traveller\\":{\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"email\\":\\"ajaganat@redhat.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Bangalore\\",\\"city\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\",\\"country\\":\\"Poland\\"}}}",
+        },
+      ],
+    }
+  }
+  filters={
+    Object {
+      "businessKey": Array [
+        "MQQ640",
+      ],
+      "status": Array [
+        "ACTIVE",
+      ],
+    }
+  }
+  initData={
+    Object {
+      "ProcessInstances": Array [
+        Object {
+          "addons": Array [
+            "process-management",
+            "infinispan-persistence",
+            "prometheus-monitoring",
+          ],
+          "businessKey": "MQQ640",
+          "childProcessInstances": Array [
+            Object {
+              "businessKey": null,
+              "id": "bfde98ed-0cdd-4700-ae87-377f7ec430cd",
+              "processName": "HotelBooking",
+            },
+            Object {
+              "businessKey": null,
+              "id": "e607b2a9-0aca-4788-9623-dd2e156ce9c4",
+              "processName": "FlightBooking",
+            },
+          ],
+          "end": null,
+          "endpoint": "http://localhost:8080/travels",
+          "error": null,
+          "id": "201a8a42-043e-375a-9f52-57c804b24db4",
+          "lastUpdate": "2020-05-07T06:50:18.502Z",
+          "nodes": Array [
+            Object {
+              "definitionId": "_1A708F87-11C0-42A0-A464-0B7E259C426F",
+              "enter": "2020-05-07T06:50:18.429Z",
+              "exit": "2020-05-07T06:50:18.439Z",
+              "id": "39d5fe7c-4e37-44ce-8d25-05a4a29ec6ea",
+              "name": "Book Hotel",
+              "nodeId": "17",
+              "type": "SubProcessNode",
+            },
+            Object {
+              "definitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
+              "enter": "2020-05-07T06:50:18.443Z",
+              "exit": null,
+              "id": "1d3d7ebe-79ec-4848-b1d6-d7c5a371b4dd",
+              "name": "Confirm travel",
+              "nodeId": "8",
+              "type": "HumanTaskNode",
+            },
+            Object {
+              "definitionId": "_5D0733B5-53FE-40E9-9900-4CC13419C67A",
+              "enter": "2020-05-07T06:50:18.442Z",
+              "exit": "2020-05-07T06:50:18.443Z",
+              "id": "4fc774f5-c429-4b97-8981-bd60d1f59954",
+              "name": "Join",
+              "nodeId": "7",
+              "type": "Join",
+            },
+            Object {
+              "definitionId": "_F543B3F0-AB44-4A5B-BF17-8D9DEB505815",
+              "enter": "2020-05-07T06:50:18.439Z",
+              "exit": "2020-05-07T06:50:18.442Z",
+              "id": "60309b28-1dbe-49c3-b0d8-8cefb86be8b4",
+              "name": "Book Flight",
+              "nodeId": "10",
+              "type": "SubProcessNode",
+            },
+            Object {
+              "definitionId": "_175DC79D-C2F1-4B28-BE2D-B583DFABF70D",
+              "enter": "2020-05-07T06:50:18.428Z",
+              "exit": "2020-05-07T06:50:18.439Z",
+              "id": "efa5a6c0-9470-4405-8609-620bdbfbb6d9",
+              "name": "Book",
+              "nodeId": "2",
+              "type": "Split",
+            },
+            Object {
+              "definitionId": "_B34ADDEE-DEA5-47C5-A913-F8B85ED5641F",
+              "enter": "2020-05-07T06:50:18.428Z",
+              "exit": "2020-05-07T06:50:18.428Z",
+              "id": "acc87f1f-e436-4364-b4d3-9069ddb359c9",
+              "name": "Join",
+              "nodeId": "14",
+              "type": "Join",
+            },
+            Object {
+              "definitionId": "_5EA95D17-59A6-4567-92DF-74D36CE7F35A",
+              "enter": "2020-05-07T06:50:18.427Z",
+              "exit": "2020-05-07T06:50:18.428Z",
+              "id": "6c20729a-3e2b-44c5-af5c-8554f21a7ebf",
+              "name": "is visa required",
+              "nodeId": "15",
+              "type": "Split",
+            },
+            Object {
+              "definitionId": "_54ABE1ED-61BE-45F9-812C-795A5D4ED35E",
+              "enter": "2020-05-07T06:50:18.278Z",
+              "exit": "2020-05-07T06:50:18.427Z",
+              "id": "3fb92a0a-e88b-45a4-a48b-65f11a679b96",
+              "name": "Visa check",
+              "nodeId": "5",
+              "type": "RuleSetNode",
+            },
+            Object {
+              "definitionId": "_1B11BEC9-402A-4E73-959A-296BD334CAB0",
+              "enter": "2020-05-07T06:50:18.276Z",
+              "exit": "2020-05-07T06:50:18.278Z",
+              "id": "2860e474-dffc-498c-8731-e6b6f0b5d4d4",
+              "name": "StartProcess",
+              "nodeId": "16",
+              "type": "StartNode",
+            },
+          ],
+          "parentProcessInstance": null,
+          "parentProcessInstanceId": null,
+          "processId": "travels",
+          "processName": "travels",
+          "roles": Array [],
+          "serviceUrl": "http://localhost:8080",
+          "start": "2020-05-07T06:50:18.274Z",
+          "state": "ACTIVE",
+          "variables": "{\\"flight\\":{\\"flightNumber\\":\\"MX555\\",\\"seat\\":null,\\"gate\\":null,\\"departure\\":\\"2020-05-08T03:30:00.000+05:30\\",\\"arrival\\":\\"2020-05-09T03:30:00.000+05:30\\"},\\"hotel\\":{\\"name\\":\\"Perfect hotel\\",\\"address\\":{\\"street\\":\\"street\\",\\"city\\":\\"Bengaluru\\",\\"zipCode\\":\\"12345\\",\\"country\\":\\"India\\"},\\"phone\\":\\"09876543\\",\\"bookingNumber\\":\\"XX-012345\\",\\"room\\":null},\\"trip\\":{\\"city\\":\\"Bengaluru\\",\\"country\\":\\"India\\",\\"begin\\":\\"2020-05-08T03:30:00.000+05:30\\",\\"end\\":\\"2020-05-09T03:30:00.000+05:30\\",\\"visaRequired\\":false},\\"traveller\\":{\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"email\\":\\"ajaganat@redhat.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Bangalore\\",\\"city\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\",\\"country\\":\\"Poland\\"}}}",
+        },
+      ],
+    }
+  }
+  isFilterClicked={false}
+  isLoading={false}
+  isLoadingMore={false}
+  pageSize={10}
+  selectedNumber={0}
+  setAbortedObj={
+    [MockFunction] {
+      "calls": Array [
+        Array [
+          Object {},
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    }
+  }
+  setFilteredData={[MockFunction]}
+  setInitData={
+    [MockFunction] {
+      "calls": Array [
+        Array [
+          undefined,
+        ],
+        Array [
+          undefined,
+        ],
+        Array [
+          Object {
+            "ProcessInstances": Array [
+              Object {
+                "addons": Array [
+                  "process-management",
+                  "infinispan-persistence",
+                  "prometheus-monitoring",
+                ],
+                "businessKey": "MQQ640",
+                "error": null,
+                "id": "201a8a42-043e-375a-9f52-57c804b24db4",
+                "isChecked": false,
+                "isOpen": false,
+                "lastUpdate": "2020-05-07T06:50:18.502Z",
+                "parentProcessInstanceId": null,
+                "processId": "travels",
+                "processName": "travels",
+                "roles": Array [],
+                "rootProcessInstanceId": null,
+                "serviceUrl": "http://localhost:8080",
+                "start": "2020-05-07T06:50:18.274Z",
+                "state": "ACTIVE",
+              },
+            ],
+          },
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    }
+  }
+  setIsAllChecked={[MockFunction]}
+  setIsError={
+    [MockFunction] {
+      "calls": Array [
+        Array [
+          false,
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    }
+  }
+  setIsLoading={[MockFunction]}
+  setLimit={[MockFunction]}
+  setSelectedNumber={[MockFunction]}
+>
+  <DataList
+    aria-label="Process instance list"
+  >
+    <ul
+      aria-label="Process instance list"
+      className="pf-c-data-list"
+    >
+      <MockedProcessListTableItems
+        abortedObj={
+          Object {
+            "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels",
+          }
+        }
+        filters={
+          Object {
+            "businessKey": Array [
+              "MQQ640",
+            ],
+            "status": Array [
+              "ACTIVE",
+            ],
+          }
+        }
+        id={0}
+        initData={
+          Object {
+            "ProcessInstances": Array [
+              Object {
                 "addons": Array [
                   "process-management",
                   "infinispan-persistence",
@@ -1506,1361 +1908,202 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
                 "state": "ACTIVE",
                 "variables": "{\\"flight\\":{\\"flightNumber\\":\\"MX555\\",\\"seat\\":null,\\"gate\\":null,\\"departure\\":\\"2020-05-08T03:30:00.000+05:30\\",\\"arrival\\":\\"2020-05-09T03:30:00.000+05:30\\"},\\"hotel\\":{\\"name\\":\\"Perfect hotel\\",\\"address\\":{\\"street\\":\\"street\\",\\"city\\":\\"Bengaluru\\",\\"zipCode\\":\\"12345\\",\\"country\\":\\"India\\"},\\"phone\\":\\"09876543\\",\\"bookingNumber\\":\\"XX-012345\\",\\"room\\":null},\\"trip\\":{\\"city\\":\\"Bengaluru\\",\\"country\\":\\"India\\",\\"begin\\":\\"2020-05-08T03:30:00.000+05:30\\",\\"end\\":\\"2020-05-09T03:30:00.000+05:30\\",\\"visaRequired\\":false},\\"traveller\\":{\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"email\\":\\"ajaganat@redhat.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Bangalore\\",\\"city\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\",\\"country\\":\\"Poland\\"}}}",
               },
-            }
+            ],
           }
-          checkedArray={
-            Array [
-              "ACTIVE",
-            ]
+        }
+        key="201a8a42-043e-375a-9f52-57c804b24db4"
+        loadingInitData={false}
+        processInstanceData={
+          Object {
+            "addons": Array [
+              "process-management",
+              "infinispan-persistence",
+              "prometheus-monitoring",
+            ],
+            "businessKey": "MQQ640",
+            "childProcessInstances": Array [
+              Object {
+                "businessKey": null,
+                "id": "bfde98ed-0cdd-4700-ae87-377f7ec430cd",
+                "processName": "HotelBooking",
+              },
+              Object {
+                "businessKey": null,
+                "id": "e607b2a9-0aca-4788-9623-dd2e156ce9c4",
+                "processName": "FlightBooking",
+              },
+            ],
+            "end": null,
+            "endpoint": "http://localhost:8080/travels",
+            "error": null,
+            "id": "201a8a42-043e-375a-9f52-57c804b24db4",
+            "lastUpdate": "2020-05-07T06:50:18.502Z",
+            "nodes": Array [
+              Object {
+                "definitionId": "_1A708F87-11C0-42A0-A464-0B7E259C426F",
+                "enter": "2020-05-07T06:50:18.429Z",
+                "exit": "2020-05-07T06:50:18.439Z",
+                "id": "39d5fe7c-4e37-44ce-8d25-05a4a29ec6ea",
+                "name": "Book Hotel",
+                "nodeId": "17",
+                "type": "SubProcessNode",
+              },
+              Object {
+                "definitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
+                "enter": "2020-05-07T06:50:18.443Z",
+                "exit": null,
+                "id": "1d3d7ebe-79ec-4848-b1d6-d7c5a371b4dd",
+                "name": "Confirm travel",
+                "nodeId": "8",
+                "type": "HumanTaskNode",
+              },
+              Object {
+                "definitionId": "_5D0733B5-53FE-40E9-9900-4CC13419C67A",
+                "enter": "2020-05-07T06:50:18.442Z",
+                "exit": "2020-05-07T06:50:18.443Z",
+                "id": "4fc774f5-c429-4b97-8981-bd60d1f59954",
+                "name": "Join",
+                "nodeId": "7",
+                "type": "Join",
+              },
+              Object {
+                "definitionId": "_F543B3F0-AB44-4A5B-BF17-8D9DEB505815",
+                "enter": "2020-05-07T06:50:18.439Z",
+                "exit": "2020-05-07T06:50:18.442Z",
+                "id": "60309b28-1dbe-49c3-b0d8-8cefb86be8b4",
+                "name": "Book Flight",
+                "nodeId": "10",
+                "type": "SubProcessNode",
+              },
+              Object {
+                "definitionId": "_175DC79D-C2F1-4B28-BE2D-B583DFABF70D",
+                "enter": "2020-05-07T06:50:18.428Z",
+                "exit": "2020-05-07T06:50:18.439Z",
+                "id": "efa5a6c0-9470-4405-8609-620bdbfbb6d9",
+                "name": "Book",
+                "nodeId": "2",
+                "type": "Split",
+              },
+              Object {
+                "definitionId": "_B34ADDEE-DEA5-47C5-A913-F8B85ED5641F",
+                "enter": "2020-05-07T06:50:18.428Z",
+                "exit": "2020-05-07T06:50:18.428Z",
+                "id": "acc87f1f-e436-4364-b4d3-9069ddb359c9",
+                "name": "Join",
+                "nodeId": "14",
+                "type": "Join",
+              },
+              Object {
+                "definitionId": "_5EA95D17-59A6-4567-92DF-74D36CE7F35A",
+                "enter": "2020-05-07T06:50:18.427Z",
+                "exit": "2020-05-07T06:50:18.428Z",
+                "id": "6c20729a-3e2b-44c5-af5c-8554f21a7ebf",
+                "name": "is visa required",
+                "nodeId": "15",
+                "type": "Split",
+              },
+              Object {
+                "definitionId": "_54ABE1ED-61BE-45F9-812C-795A5D4ED35E",
+                "enter": "2020-05-07T06:50:18.278Z",
+                "exit": "2020-05-07T06:50:18.427Z",
+                "id": "3fb92a0a-e88b-45a4-a48b-65f11a679b96",
+                "name": "Visa check",
+                "nodeId": "5",
+                "type": "RuleSetNode",
+              },
+              Object {
+                "definitionId": "_1B11BEC9-402A-4E73-959A-296BD334CAB0",
+                "enter": "2020-05-07T06:50:18.276Z",
+                "exit": "2020-05-07T06:50:18.278Z",
+                "id": "2860e474-dffc-498c-8731-e6b6f0b5d4d4",
+                "name": "StartProcess",
+                "nodeId": "16",
+                "type": "StartNode",
+              },
+            ],
+            "parentProcessInstance": null,
+            "parentProcessInstanceId": null,
+            "processId": "travels",
+            "processName": "travels",
+            "roles": Array [],
+            "serviceUrl": "http://localhost:8080",
+            "start": "2020-05-07T06:50:18.274Z",
+            "state": "ACTIVE",
+            "variables": "{\\"flight\\":{\\"flightNumber\\":\\"MX555\\",\\"seat\\":null,\\"gate\\":null,\\"departure\\":\\"2020-05-08T03:30:00.000+05:30\\",\\"arrival\\":\\"2020-05-09T03:30:00.000+05:30\\"},\\"hotel\\":{\\"name\\":\\"Perfect hotel\\",\\"address\\":{\\"street\\":\\"street\\",\\"city\\":\\"Bengaluru\\",\\"zipCode\\":\\"12345\\",\\"country\\":\\"India\\"},\\"phone\\":\\"09876543\\",\\"bookingNumber\\":\\"XX-012345\\",\\"room\\":null},\\"trip\\":{\\"city\\":\\"Bengaluru\\",\\"country\\":\\"India\\",\\"begin\\":\\"2020-05-08T03:30:00.000+05:30\\",\\"end\\":\\"2020-05-09T03:30:00.000+05:30\\",\\"visaRequired\\":false},\\"traveller\\":{\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"email\\":\\"ajaganat@redhat.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Bangalore\\",\\"city\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\",\\"country\\":\\"Poland\\"}}}",
           }
-          completedMessageObj={Object {}}
-          handleModalToggle={[Function]}
-          isAbortModalOpen={false}
-          isModalOpen={false}
-          isSingleAbort={true}
-        >
-          <Modal
-            actions={
+        }
+        selectedNumber={0}
+        setAbortedObj={
+          [MockFunction] {
+            "calls": Array [
               Array [
-                <Unknown
-                  onClick={[Function]}
-                  variant="primary"
-                >
-                  OK
-                </Unknown>,
-              ]
-            }
-            appendTo={
-              <body>
-                <div />
-                <div />
-              </body>
-            }
-            ariaDescribedById=""
-            className=""
-            header={
-              <Title
-                headingLevel="h1"
-                size="2xl"
-              />
-            }
-            hideTitle={false}
-            isFooterLeftAligned={false}
-            isLarge={false}
-            isOpen={false}
-            isSmall={true}
-            onClose={[Function]}
-            showClose={true}
-            title=""
-          >
-            <Portal
-              containerInfo={<div />}
-            >
-              <ModalContent
-                actions={
-                  Array [
-                    <Unknown
-                      onClick={[Function]}
-                      variant="primary"
-                    >
-                      OK
-                    </Unknown>,
-                  ]
-                }
-                ariaDescribedById=""
-                className=""
-                header={
-                  <Title
-                    headingLevel="h1"
-                    size="2xl"
-                  />
-                }
-                hideTitle={false}
-                id="pf-modal-0"
-                isFooterLeftAligned={false}
-                isLarge={false}
-                isOpen={false}
-                isSmall={true}
-                onClose={[Function]}
-                showClose={true}
-                title=""
-              />
-            </Portal>
-          </Modal>
-        </ProcessListModal>
-        <ProcessListModal
-          checkedArray={
-            Array [
-              "ACTIVE",
-            ]
+                Object {},
+              ],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": undefined,
+              },
+            ],
           }
-          handleModalToggle={[Function]}
-          isModalOpen={false}
-          modalContent=""
-        >
-          <Modal
-            actions={
+        }
+        setInitData={
+          [MockFunction] {
+            "calls": Array [
               Array [
-                <Unknown
-                  onClick={[Function]}
-                  variant="primary"
-                >
-                  OK
-                </Unknown>,
-              ]
-            }
-            appendTo={
-              <body>
-                <div />
-                <div />
-              </body>
-            }
-            ariaDescribedById=""
-            className=""
-            header={
-              <Title
-                headingLevel="h1"
-                size="2xl"
-              />
-            }
-            hideTitle={false}
-            isFooterLeftAligned={false}
-            isLarge={false}
-            isOpen={false}
-            isSmall={true}
-            onClose={[Function]}
-            showClose={true}
-            title=""
-          >
-            <Portal
-              containerInfo={<div />}
-            >
-              <ModalContent
-                actions={
-                  Array [
-                    <Unknown
-                      onClick={[Function]}
-                      variant="primary"
-                    >
-                      OK
-                    </Unknown>,
-                  ]
-                }
-                ariaDescribedById=""
-                className=""
-                header={
-                  <Title
-                    headingLevel="h1"
-                    size="2xl"
-                  />
-                }
-                hideTitle={false}
-                id="pf-modal-1"
-                isFooterLeftAligned={false}
-                isLarge={false}
-                isOpen={false}
-                isSmall={true}
-                onClose={[Function]}
-                showClose={true}
-                title=""
-              />
-            </Portal>
-          </Modal>
-        </ProcessListModal>
-        <DataListItem
-          aria-labelledby="kie-datalist-item-201a8a42-043e-375a-9f52-57c804b24db4"
-          isExpanded={false}
-        >
-          <li
-            aria-labelledby="kie-datalist-item-201a8a42-043e-375a-9f52-57c804b24db4"
-            className="pf-c-data-list__item"
-            id=""
-          >
-            <DataListItemRow
-              key=".0"
-              rowid="kie-datalist-item-201a8a42-043e-375a-9f52-57c804b24db4"
-            >
-              <div
-                className="pf-c-data-list__item-row"
-              >
-                <DataListToggle
-                  aria-controls="kie-datalist-expand"
-                  id="kie-datalist-toggle-201a8a42-043e-375a-9f52-57c804b24db4"
-                  isExpanded={false}
-                  key=".0"
-                  onClick={[Function]}
-                  rowid="kie-datalist-item-201a8a42-043e-375a-9f52-57c804b24db4"
-                >
-                  <div
-                    className="pf-c-data-list__item-control"
-                    onClick={[Function]}
-                  >
-                    <div
-                      className="pf-c-data-list__toggle"
-                    >
-                      <Component
-                        aria-controls="kie-datalist-expand"
-                        aria-expanded={false}
-                        aria-label="Details"
-                        aria-labelledby="kie-datalist-item-201a8a42-043e-375a-9f52-57c804b24db4 kie-datalist-toggle-201a8a42-043e-375a-9f52-57c804b24db4"
-                        id="kie-datalist-toggle-201a8a42-043e-375a-9f52-57c804b24db4"
-                        variant="plain"
-                      >
-                        <ComponentWithOuia
-                          component={[Function]}
-                          componentProps={
-                            Object {
-                              "aria-controls": "kie-datalist-expand",
-                              "aria-expanded": false,
-                              "aria-label": "Details",
-                              "aria-labelledby": "kie-datalist-item-201a8a42-043e-375a-9f52-57c804b24db4 kie-datalist-toggle-201a8a42-043e-375a-9f52-57c804b24db4",
-                              "children": <AngleRightIcon
-                                color="currentColor"
-                                noVerticalAlign={false}
-                                size="sm"
-                                title={null}
-                              />,
-                              "id": "kie-datalist-toggle-201a8a42-043e-375a-9f52-57c804b24db4",
-                              "variant": "plain",
-                            }
-                          }
-                          consumerContext={null}
-                        >
-                          <Button
-                            aria-controls="kie-datalist-expand"
-                            aria-expanded={false}
-                            aria-label="Details"
-                            aria-labelledby="kie-datalist-item-201a8a42-043e-375a-9f52-57c804b24db4 kie-datalist-toggle-201a8a42-043e-375a-9f52-57c804b24db4"
-                            id="kie-datalist-toggle-201a8a42-043e-375a-9f52-57c804b24db4"
-                            ouiaContext={
-                              Object {
-                                "isOuia": false,
-                                "ouiaId": null,
-                              }
-                            }
-                            variant="plain"
-                          >
-                            <button
-                              aria-controls="kie-datalist-expand"
-                              aria-disabled={null}
-                              aria-expanded={false}
-                              aria-label="Details"
-                              aria-labelledby="kie-datalist-item-201a8a42-043e-375a-9f52-57c804b24db4 kie-datalist-toggle-201a8a42-043e-375a-9f52-57c804b24db4"
-                              className="pf-c-button pf-m-plain"
-                              disabled={false}
-                              id="kie-datalist-toggle-201a8a42-043e-375a-9f52-57c804b24db4"
-                              tabIndex={null}
-                              type="button"
-                            >
-                              <AngleRightIcon
-                                color="currentColor"
-                                noVerticalAlign={false}
-                                size="sm"
-                                title={null}
-                              >
-                                <svg
-                                  aria-hidden={true}
-                                  aria-labelledby={null}
-                                  fill="currentColor"
-                                  height="1em"
-                                  role="img"
-                                  style={
-                                    Object {
-                                      "verticalAlign": "-0.125em",
-                                    }
-                                  }
-                                  viewBox="0 0 256 512"
-                                  width="1em"
-                                >
-                                  <path
-                                    d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-                                    transform=""
-                                  />
-                                </svg>
-                              </AngleRightIcon>
-                            </button>
-                          </Button>
-                        </ComponentWithOuia>
-                      </Component>
-                    </div>
-                  </div>
-                </DataListToggle>
-                <DataListCheck
-                  aria-labelledby="kie-datalist-item-201a8a42-043e-375a-9f52-57c804b24db4"
-                  key=".1"
-                  name="width-kie-datalist-item"
-                  onChange={[Function]}
-                  rowid="kie-datalist-item-201a8a42-043e-375a-9f52-57c804b24db4"
-                >
-                  <div
-                    className="pf-c-data-list__item-control"
-                  >
-                    <div
-                      className="pf-c-data-list__check"
-                    >
-                      <input
-                        aria-invalid={false}
-                        aria-labelledby="kie-datalist-item-201a8a42-043e-375a-9f52-57c804b24db4"
-                        checked={null}
-                        disabled={false}
-                        name="width-kie-datalist-item"
-                        onChange={[Function]}
-                        rowid="kie-datalist-item-201a8a42-043e-375a-9f52-57c804b24db4"
-                        type="checkbox"
-                      />
-                    </div>
-                  </div>
-                </DataListCheck>
-                <DataListItemCells
-                  dataListCells={
-                    Array [
-                      <DataListCell
-                        id="kie-datalist-item-201a8a42-043e-375a-9f52-57c804b24db4"
-                      >
-                        <Link
-                          to="/Process/201a8a42-043e-375a-9f52-57c804b24db4"
-                        >
-                          <div>
-                            <strong>
-                              <ProcessDescriptor
-                                processInstanceData={
-                                  Object {
-                                    "addons": Array [
-                                      "process-management",
-                                      "infinispan-persistence",
-                                      "prometheus-monitoring",
-                                    ],
-                                    "businessKey": "MQQ640",
-                                    "childProcessInstances": Array [
-                                      Object {
-                                        "businessKey": null,
-                                        "id": "bfde98ed-0cdd-4700-ae87-377f7ec430cd",
-                                        "processName": "HotelBooking",
-                                      },
-                                      Object {
-                                        "businessKey": null,
-                                        "id": "e607b2a9-0aca-4788-9623-dd2e156ce9c4",
-                                        "processName": "FlightBooking",
-                                      },
-                                    ],
-                                    "end": null,
-                                    "endpoint": "http://localhost:8080/travels",
-                                    "error": null,
-                                    "id": "201a8a42-043e-375a-9f52-57c804b24db4",
-                                    "lastUpdate": "2020-05-07T06:50:18.502Z",
-                                    "nodes": Array [
-                                      Object {
-                                        "definitionId": "_1A708F87-11C0-42A0-A464-0B7E259C426F",
-                                        "enter": "2020-05-07T06:50:18.429Z",
-                                        "exit": "2020-05-07T06:50:18.439Z",
-                                        "id": "39d5fe7c-4e37-44ce-8d25-05a4a29ec6ea",
-                                        "name": "Book Hotel",
-                                        "nodeId": "17",
-                                        "type": "SubProcessNode",
-                                      },
-                                      Object {
-                                        "definitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
-                                        "enter": "2020-05-07T06:50:18.443Z",
-                                        "exit": null,
-                                        "id": "1d3d7ebe-79ec-4848-b1d6-d7c5a371b4dd",
-                                        "name": "Confirm travel",
-                                        "nodeId": "8",
-                                        "type": "HumanTaskNode",
-                                      },
-                                      Object {
-                                        "definitionId": "_5D0733B5-53FE-40E9-9900-4CC13419C67A",
-                                        "enter": "2020-05-07T06:50:18.442Z",
-                                        "exit": "2020-05-07T06:50:18.443Z",
-                                        "id": "4fc774f5-c429-4b97-8981-bd60d1f59954",
-                                        "name": "Join",
-                                        "nodeId": "7",
-                                        "type": "Join",
-                                      },
-                                      Object {
-                                        "definitionId": "_F543B3F0-AB44-4A5B-BF17-8D9DEB505815",
-                                        "enter": "2020-05-07T06:50:18.439Z",
-                                        "exit": "2020-05-07T06:50:18.442Z",
-                                        "id": "60309b28-1dbe-49c3-b0d8-8cefb86be8b4",
-                                        "name": "Book Flight",
-                                        "nodeId": "10",
-                                        "type": "SubProcessNode",
-                                      },
-                                      Object {
-                                        "definitionId": "_175DC79D-C2F1-4B28-BE2D-B583DFABF70D",
-                                        "enter": "2020-05-07T06:50:18.428Z",
-                                        "exit": "2020-05-07T06:50:18.439Z",
-                                        "id": "efa5a6c0-9470-4405-8609-620bdbfbb6d9",
-                                        "name": "Book",
-                                        "nodeId": "2",
-                                        "type": "Split",
-                                      },
-                                      Object {
-                                        "definitionId": "_B34ADDEE-DEA5-47C5-A913-F8B85ED5641F",
-                                        "enter": "2020-05-07T06:50:18.428Z",
-                                        "exit": "2020-05-07T06:50:18.428Z",
-                                        "id": "acc87f1f-e436-4364-b4d3-9069ddb359c9",
-                                        "name": "Join",
-                                        "nodeId": "14",
-                                        "type": "Join",
-                                      },
-                                      Object {
-                                        "definitionId": "_5EA95D17-59A6-4567-92DF-74D36CE7F35A",
-                                        "enter": "2020-05-07T06:50:18.427Z",
-                                        "exit": "2020-05-07T06:50:18.428Z",
-                                        "id": "6c20729a-3e2b-44c5-af5c-8554f21a7ebf",
-                                        "name": "is visa required",
-                                        "nodeId": "15",
-                                        "type": "Split",
-                                      },
-                                      Object {
-                                        "definitionId": "_54ABE1ED-61BE-45F9-812C-795A5D4ED35E",
-                                        "enter": "2020-05-07T06:50:18.278Z",
-                                        "exit": "2020-05-07T06:50:18.427Z",
-                                        "id": "3fb92a0a-e88b-45a4-a48b-65f11a679b96",
-                                        "name": "Visa check",
-                                        "nodeId": "5",
-                                        "type": "RuleSetNode",
-                                      },
-                                      Object {
-                                        "definitionId": "_1B11BEC9-402A-4E73-959A-296BD334CAB0",
-                                        "enter": "2020-05-07T06:50:18.276Z",
-                                        "exit": "2020-05-07T06:50:18.278Z",
-                                        "id": "2860e474-dffc-498c-8731-e6b6f0b5d4d4",
-                                        "name": "StartProcess",
-                                        "nodeId": "16",
-                                        "type": "StartNode",
-                                      },
-                                    ],
-                                    "parentProcessInstance": null,
-                                    "parentProcessInstanceId": null,
-                                    "processId": "travels",
-                                    "processName": "travels",
-                                    "roles": Array [],
-                                    "serviceUrl": "http://localhost:8080",
-                                    "start": "2020-05-07T06:50:18.274Z",
-                                    "state": "ACTIVE",
-                                    "variables": "{\\"flight\\":{\\"flightNumber\\":\\"MX555\\",\\"seat\\":null,\\"gate\\":null,\\"departure\\":\\"2020-05-08T03:30:00.000+05:30\\",\\"arrival\\":\\"2020-05-09T03:30:00.000+05:30\\"},\\"hotel\\":{\\"name\\":\\"Perfect hotel\\",\\"address\\":{\\"street\\":\\"street\\",\\"city\\":\\"Bengaluru\\",\\"zipCode\\":\\"12345\\",\\"country\\":\\"India\\"},\\"phone\\":\\"09876543\\",\\"bookingNumber\\":\\"XX-012345\\",\\"room\\":null},\\"trip\\":{\\"city\\":\\"Bengaluru\\",\\"country\\":\\"India\\",\\"begin\\":\\"2020-05-08T03:30:00.000+05:30\\",\\"end\\":\\"2020-05-09T03:30:00.000+05:30\\",\\"visaRequired\\":false},\\"traveller\\":{\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"email\\":\\"ajaganat@redhat.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Bangalore\\",\\"city\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\",\\"country\\":\\"Poland\\"}}}",
-                                  }
-                                }
-                              />
-                            </strong>
-                          </div>
-                        </Link>
-                        <EndpointLink
-                          isLinkShown={false}
-                          serviceUrl="http://localhost:8080"
-                        />
-                      </DataListCell>,
-                      <DataListCell>
-                        <React.Fragment>
-                          <OnRunningIcon
-                            className="pf-u-mr-sm"
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
-                            title={null}
-                          />
-                          Active
-                        </React.Fragment>
-                      </DataListCell>,
-                      <DataListCell>
-                        <t
-                          ago={false}
-                          calendar={false}
-                          decimal={false}
-                          element={null}
-                          filter={[Function]}
-                          fromNow={true}
-                          interval={60000}
-                          local={false}
-                          onChange={[Function]}
-                          titleFormat=""
-                          toNow={false}
-                          unit={null}
-                          unix={false}
-                          utc={false}
-                          withTitle={false}
-                        >
-                          2020-05-07T06:50:18.274Z
-                        </t>
-                      </DataListCell>,
-                      <DataListCell>
-                        <span>
-                           
-                          <HistoryIcon
-                            className="pf-u-mr-sm"
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
-                            title={null}
-                          />
-                           Updated
-                           
-                          <t
-                            ago={false}
-                            calendar={false}
-                            decimal={false}
-                            element={null}
-                            filter={[Function]}
-                            fromNow={true}
-                            interval={60000}
-                            local={false}
-                            onChange={[Function]}
-                            titleFormat=""
-                            toNow={false}
-                            unit={null}
-                            unix={false}
-                            utc={false}
-                            withTitle={false}
-                          >
-                            2020-05-07T06:50:18.502Z
-                          </t>
-                        </span>
-                      </DataListCell>,
-                    ]
-                  }
-                  key=".2"
-                  rowid="kie-datalist-item-201a8a42-043e-375a-9f52-57c804b24db4"
-                >
-                  <div
-                    className="pf-c-data-list__item-content"
-                  >
-                    <DataListCell
-                      id="kie-datalist-item-201a8a42-043e-375a-9f52-57c804b24db4"
-                      key="1"
-                    >
-                      <div
-                        className="pf-c-data-list__cell"
-                        id="kie-datalist-item-201a8a42-043e-375a-9f52-57c804b24db4"
-                      >
-                        <Link
-                          to="/Process/201a8a42-043e-375a-9f52-57c804b24db4"
-                        >
-                          <LinkAnchor
-                            href="/Process/201a8a42-043e-375a-9f52-57c804b24db4"
-                            navigate={[Function]}
-                          >
-                            <a
-                              href="/Process/201a8a42-043e-375a-9f52-57c804b24db4"
-                              onClick={[Function]}
-                            >
-                              <div>
-                                <strong>
-                                  <ProcessDescriptor
-                                    processInstanceData={
-                                      Object {
-                                        "addons": Array [
-                                          "process-management",
-                                          "infinispan-persistence",
-                                          "prometheus-monitoring",
-                                        ],
-                                        "businessKey": "MQQ640",
-                                        "childProcessInstances": Array [
-                                          Object {
-                                            "businessKey": null,
-                                            "id": "bfde98ed-0cdd-4700-ae87-377f7ec430cd",
-                                            "processName": "HotelBooking",
-                                          },
-                                          Object {
-                                            "businessKey": null,
-                                            "id": "e607b2a9-0aca-4788-9623-dd2e156ce9c4",
-                                            "processName": "FlightBooking",
-                                          },
-                                        ],
-                                        "end": null,
-                                        "endpoint": "http://localhost:8080/travels",
-                                        "error": null,
-                                        "id": "201a8a42-043e-375a-9f52-57c804b24db4",
-                                        "lastUpdate": "2020-05-07T06:50:18.502Z",
-                                        "nodes": Array [
-                                          Object {
-                                            "definitionId": "_1A708F87-11C0-42A0-A464-0B7E259C426F",
-                                            "enter": "2020-05-07T06:50:18.429Z",
-                                            "exit": "2020-05-07T06:50:18.439Z",
-                                            "id": "39d5fe7c-4e37-44ce-8d25-05a4a29ec6ea",
-                                            "name": "Book Hotel",
-                                            "nodeId": "17",
-                                            "type": "SubProcessNode",
-                                          },
-                                          Object {
-                                            "definitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
-                                            "enter": "2020-05-07T06:50:18.443Z",
-                                            "exit": null,
-                                            "id": "1d3d7ebe-79ec-4848-b1d6-d7c5a371b4dd",
-                                            "name": "Confirm travel",
-                                            "nodeId": "8",
-                                            "type": "HumanTaskNode",
-                                          },
-                                          Object {
-                                            "definitionId": "_5D0733B5-53FE-40E9-9900-4CC13419C67A",
-                                            "enter": "2020-05-07T06:50:18.442Z",
-                                            "exit": "2020-05-07T06:50:18.443Z",
-                                            "id": "4fc774f5-c429-4b97-8981-bd60d1f59954",
-                                            "name": "Join",
-                                            "nodeId": "7",
-                                            "type": "Join",
-                                          },
-                                          Object {
-                                            "definitionId": "_F543B3F0-AB44-4A5B-BF17-8D9DEB505815",
-                                            "enter": "2020-05-07T06:50:18.439Z",
-                                            "exit": "2020-05-07T06:50:18.442Z",
-                                            "id": "60309b28-1dbe-49c3-b0d8-8cefb86be8b4",
-                                            "name": "Book Flight",
-                                            "nodeId": "10",
-                                            "type": "SubProcessNode",
-                                          },
-                                          Object {
-                                            "definitionId": "_175DC79D-C2F1-4B28-BE2D-B583DFABF70D",
-                                            "enter": "2020-05-07T06:50:18.428Z",
-                                            "exit": "2020-05-07T06:50:18.439Z",
-                                            "id": "efa5a6c0-9470-4405-8609-620bdbfbb6d9",
-                                            "name": "Book",
-                                            "nodeId": "2",
-                                            "type": "Split",
-                                          },
-                                          Object {
-                                            "definitionId": "_B34ADDEE-DEA5-47C5-A913-F8B85ED5641F",
-                                            "enter": "2020-05-07T06:50:18.428Z",
-                                            "exit": "2020-05-07T06:50:18.428Z",
-                                            "id": "acc87f1f-e436-4364-b4d3-9069ddb359c9",
-                                            "name": "Join",
-                                            "nodeId": "14",
-                                            "type": "Join",
-                                          },
-                                          Object {
-                                            "definitionId": "_5EA95D17-59A6-4567-92DF-74D36CE7F35A",
-                                            "enter": "2020-05-07T06:50:18.427Z",
-                                            "exit": "2020-05-07T06:50:18.428Z",
-                                            "id": "6c20729a-3e2b-44c5-af5c-8554f21a7ebf",
-                                            "name": "is visa required",
-                                            "nodeId": "15",
-                                            "type": "Split",
-                                          },
-                                          Object {
-                                            "definitionId": "_54ABE1ED-61BE-45F9-812C-795A5D4ED35E",
-                                            "enter": "2020-05-07T06:50:18.278Z",
-                                            "exit": "2020-05-07T06:50:18.427Z",
-                                            "id": "3fb92a0a-e88b-45a4-a48b-65f11a679b96",
-                                            "name": "Visa check",
-                                            "nodeId": "5",
-                                            "type": "RuleSetNode",
-                                          },
-                                          Object {
-                                            "definitionId": "_1B11BEC9-402A-4E73-959A-296BD334CAB0",
-                                            "enter": "2020-05-07T06:50:18.276Z",
-                                            "exit": "2020-05-07T06:50:18.278Z",
-                                            "id": "2860e474-dffc-498c-8731-e6b6f0b5d4d4",
-                                            "name": "StartProcess",
-                                            "nodeId": "16",
-                                            "type": "StartNode",
-                                          },
-                                        ],
-                                        "parentProcessInstance": null,
-                                        "parentProcessInstanceId": null,
-                                        "processId": "travels",
-                                        "processName": "travels",
-                                        "roles": Array [],
-                                        "serviceUrl": "http://localhost:8080",
-                                        "start": "2020-05-07T06:50:18.274Z",
-                                        "state": "ACTIVE",
-                                        "variables": "{\\"flight\\":{\\"flightNumber\\":\\"MX555\\",\\"seat\\":null,\\"gate\\":null,\\"departure\\":\\"2020-05-08T03:30:00.000+05:30\\",\\"arrival\\":\\"2020-05-09T03:30:00.000+05:30\\"},\\"hotel\\":{\\"name\\":\\"Perfect hotel\\",\\"address\\":{\\"street\\":\\"street\\",\\"city\\":\\"Bengaluru\\",\\"zipCode\\":\\"12345\\",\\"country\\":\\"India\\"},\\"phone\\":\\"09876543\\",\\"bookingNumber\\":\\"XX-012345\\",\\"room\\":null},\\"trip\\":{\\"city\\":\\"Bengaluru\\",\\"country\\":\\"India\\",\\"begin\\":\\"2020-05-08T03:30:00.000+05:30\\",\\"end\\":\\"2020-05-09T03:30:00.000+05:30\\",\\"visaRequired\\":false},\\"traveller\\":{\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"email\\":\\"ajaganat@redhat.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Bangalore\\",\\"city\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\",\\"country\\":\\"Poland\\"}}}",
-                                      }
-                                    }
-                                  >
-                                    <Tooltip
-                                      appendTo={[Function]}
-                                      aria="describedby"
-                                      boundary="window"
-                                      className=""
-                                      content="201a8a42-043e-375a-9f52-57c804b24db4"
-                                      distance={15}
-                                      enableFlip={true}
-                                      entryDelay={500}
-                                      exitDelay={500}
-                                      flipBehavior={
-                                        Array [
-                                          "top",
-                                          "right",
-                                          "bottom",
-                                          "left",
-                                          "top",
-                                          "right",
-                                          "bottom",
-                                        ]
-                                      }
-                                      id=""
-                                      isAppLauncher={false}
-                                      isContentLeftAligned={false}
-                                      isVisible={false}
-                                      maxWidth="18.75rem"
-                                      position="top"
-                                      tippyProps={Object {}}
-                                      trigger="mouseenter focus"
-                                      zIndex={9999}
-                                    >
-                                      <PopoverBase
-                                        appendTo={[Function]}
-                                        aria="describedby"
-                                        arrow={true}
-                                        boundary="window"
-                                        content={
-                                          <div
-                                            className=""
-                                            id=""
-                                            role="tooltip"
-                                          >
-                                            <TooltipContent
-                                              isLeftAligned={false}
-                                            >
-                                              201a8a42-043e-375a-9f52-57c804b24db4
-                                            </TooltipContent>
-                                          </div>
-                                        }
-                                        delay={
-                                          Array [
-                                            500,
-                                            500,
-                                          ]
-                                        }
-                                        distance={15}
-                                        flip={true}
-                                        flipBehavior={
-                                          Array [
-                                            "top",
-                                            "right",
-                                            "bottom",
-                                            "left",
-                                            "top",
-                                            "right",
-                                            "bottom",
-                                          ]
-                                        }
-                                        isVisible={false}
-                                        lazy={true}
-                                        maxWidth="18.75rem"
-                                        onCreate={[Function]}
-                                        placement="top"
-                                        popperOptions={
-                                          Object {
-                                            "modifiers": Object {
-                                              "hide": Object {
-                                                "enabled": true,
-                                              },
-                                              "preventOverflow": Object {
-                                                "enabled": true,
-                                              },
-                                            },
-                                          }
-                                        }
-                                        theme="pf-tooltip"
-                                        trigger="mouseenter focus"
-                                        zIndex={9999}
-                                      >
-                                        <span>
-                                          travels
-                                           
-                                          <Badge>
-                                            <span
-                                              className="pf-c-badge pf-m-unread"
-                                            >
-                                              MQQ640
-                                            </span>
-                                          </Badge>
-                                        </span>
-                                        <Portal
-                                          containerInfo={
-                                            <div>
-                                              <div
-                                                class=""
-                                                id=""
-                                                role="tooltip"
-                                              >
-                                                <div
-                                                  class="pf-c-tooltip__content"
-                                                >
-                                                  201a8a42-043e-375a-9f52-57c804b24db4
-                                                </div>
-                                              </div>
-                                            </div>
-                                          }
-                                        >
-                                          <div
-                                            className=""
-                                            id=""
-                                            role="tooltip"
-                                          >
-                                            <TooltipContent
-                                              isLeftAligned={false}
-                                            >
-                                              <div
-                                                className="pf-c-tooltip__content"
-                                              >
-                                                201a8a42-043e-375a-9f52-57c804b24db4
-                                              </div>
-                                            </TooltipContent>
-                                          </div>
-                                        </Portal>
-                                      </PopoverBase>
-                                    </Tooltip>
-                                  </ProcessDescriptor>
-                                </strong>
-                              </div>
-                            </a>
-                          </LinkAnchor>
-                        </Link>
-                        <EndpointLink
-                          isLinkShown={false}
-                          serviceUrl="http://localhost:8080"
-                        >
-                          <Component
-                            component="a"
-                            href="http://localhost:8080"
-                            isInline={true}
-                            target="_blank"
-                            variant="link"
-                          >
-                            <ComponentWithOuia
-                              component={[Function]}
-                              componentProps={
-                                Object {
-                                  "children": Array [
-                                    "Endpoint",
-                                    <ExternalLinkAltIcon
-                                      className="pf-u-ml-xs"
-                                      color="currentColor"
-                                      noVerticalAlign={false}
-                                      size="sm"
-                                      title={null}
-                                    />,
-                                  ],
-                                  "component": "a",
-                                  "href": "http://localhost:8080",
-                                  "isInline": true,
-                                  "target": "_blank",
-                                  "variant": "link",
-                                }
-                              }
-                              consumerContext={null}
-                            >
-                              <Button
-                                component="a"
-                                href="http://localhost:8080"
-                                isInline={true}
-                                ouiaContext={
-                                  Object {
-                                    "isOuia": false,
-                                    "ouiaId": null,
-                                  }
-                                }
-                                target="_blank"
-                                variant="link"
-                              >
-                                <a
-                                  aria-disabled={false}
-                                  aria-label={null}
-                                  className="pf-c-button pf-m-link pf-m-inline"
-                                  disabled={null}
-                                  href="http://localhost:8080"
-                                  tabIndex={null}
-                                  target="_blank"
-                                  type={null}
-                                >
-                                  <span
-                                    className="pf-c-button__text"
-                                  >
-                                    Endpoint
-                                    <ExternalLinkAltIcon
-                                      className="pf-u-ml-xs"
-                                      color="currentColor"
-                                      noVerticalAlign={false}
-                                      size="sm"
-                                      title={null}
-                                    >
-                                      <svg
-                                        aria-hidden={true}
-                                        aria-labelledby={null}
-                                        className="pf-u-ml-xs"
-                                        fill="currentColor"
-                                        height="1em"
-                                        role="img"
-                                        style={
-                                          Object {
-                                            "verticalAlign": "-0.125em",
-                                          }
-                                        }
-                                        viewBox="0 0 512 512"
-                                        width="1em"
-                                      >
-                                        <path
-                                          d="M432,320H400a16,16,0,0,0-16,16V448H64V128H208a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0h-128c-21.37,0-32.05,25.91-17,41l35.73,35.73L135,320.37a24,24,0,0,0,0,34L157.67,377a24,24,0,0,0,34,0L435.28,133.32,471,169c15,15,41,4.5,41-17V24A24,24,0,0,0,488,0Z"
-                                          transform=""
-                                        />
-                                      </svg>
-                                    </ExternalLinkAltIcon>
-                                  </span>
-                                </a>
-                              </Button>
-                            </ComponentWithOuia>
-                          </Component>
-                        </EndpointLink>
-                      </div>
-                    </DataListCell>
-                    <DataListCell
-                      key="4"
-                    >
-                      <div
-                        className="pf-c-data-list__cell"
-                      >
-                        <OnRunningIcon
-                          className="pf-u-mr-sm"
-                          color="currentColor"
-                          noVerticalAlign={false}
-                          size="sm"
-                          title={null}
-                        >
-                          <svg
-                            aria-hidden={true}
-                            aria-labelledby={null}
-                            className="pf-u-mr-sm"
-                            fill="currentColor"
-                            height="1em"
-                            role="img"
-                            style={
-                              Object {
-                                "verticalAlign": "-0.125em",
-                              }
-                            }
-                            viewBox="0 64 1024 1024"
-                            width="1em"
-                          >
-                            <path
-                              d="M511.781-73.143c-70.656 0-136.923 13.312-198.875 40.009s-116.078 63.269-162.45 109.934c-46.299 46.665-82.944 100.937-109.934 162.962s-40.448 128.293-40.448 198.875 13.458 136.923 40.448 198.875 63.634 116.078 109.934 162.45c46.299 46.299 100.425 82.944 162.45 109.934s128.293 40.448 198.875 40.448 136.923-13.458 198.875-40.448 116.078-63.634 162.45-109.934c46.299-46.299 82.944-100.425 109.934-162.45s40.448-128.293 40.448-198.875-13.458-136.923-40.448-198.875-63.634-116.297-109.934-162.962-100.425-83.31-162.45-109.934-128.293-40.009-198.875-40.009v0zM361.326 795.94c-46.958-20.334-88.137-48.128-123.465-83.456s-63.122-76.434-83.456-123.465-30.501-97.134-30.501-150.455 10.167-103.643 30.501-150.894c20.334-47.323 48.128-88.43 83.456-123.465s76.434-62.61 123.465-82.944 97.134-30.501 150.455-30.501 103.424 10.167 150.455 30.501c46.958 20.334 88.137 47.982 123.465 82.944s63.122 76.142 83.456 123.465 30.501 97.646 30.501 150.894-10.167 103.424-30.501 150.455c-20.334 46.958-48.128 88.137-83.456 123.465s-76.434 63.122-123.465 83.456-97.134 30.501-150.455 30.501c-53.321 0-103.424-10.167-150.455-30.501v0zM730.697 498.395c1.975-8.119 2.414-19.383-1.17-26.331-7.387-14.263-16.457-26.99-26.185-40.96-83.017-119.296-158.135-200.485-249.71-305.371-17.993-20.626-34.889-13.751-42.057-9.070-15.579 10.24-15.799 29.769-7.314 52.297 9.801 25.966 20.48 57.783 29.842 79.799 22.455 52.736 20.187 58.075 41.911 114.907-52.297-0.1024-127.781-0.951-180.078-1.463-15.067-0.146-33.499 1.902-39.497 16.311-5.778 13.751-0.146 26.039 8.558 38.107 64.146 89.381 172.617 212.626 248.174 294.546 6.51 7.022 30.062 23.333 43.739 21.358 10.825-1.536 21.87 1.243 26.843-9.289 5.851-12.434 2.706-25.746-2.56-37.23-22.016-48.347-45.714-118.638-71.095-174.519 50.615-0.073 144.53-0.073 195.145-0.146 8.558 0 18.432-0.731 23.406-8.046 1.024-1.536 1.755-3.145 2.121-4.901v0z"
-                              transform="rotate(180 0 512) scale(-1 1)"
-                            />
-                          </svg>
-                        </OnRunningIcon>
-                        Active
-                      </div>
-                    </DataListCell>
-                    <DataListCell
-                      key="2"
-                    >
-                      <div
-                        className="pf-c-data-list__cell"
-                      >
-                        <t
-                          ago={false}
-                          calendar={false}
-                          decimal={false}
-                          element={null}
-                          filter={[Function]}
-                          fromNow={true}
-                          interval={60000}
-                          local={false}
-                          onChange={[Function]}
-                          titleFormat=""
-                          toNow={false}
-                          unit={null}
-                          unix={false}
-                          utc={false}
-                          withTitle={false}
-                        >
-                          <time
-                            dateTime={"2020-05-07T06:50:18.274Z"}
-                          >
-                            a month ago
-                          </time>
-                        </t>
-                      </div>
-                    </DataListCell>
-                    <DataListCell
-                      key="3"
-                    >
-                      <div
-                        className="pf-c-data-list__cell"
-                      >
-                        <span>
-                           
-                          <HistoryIcon
-                            className="pf-u-mr-sm"
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
-                            title={null}
-                          >
-                            <svg
-                              aria-hidden={true}
-                              aria-labelledby={null}
-                              className="pf-u-mr-sm"
-                              fill="currentColor"
-                              height="1em"
-                              role="img"
-                              style={
-                                Object {
-                                  "verticalAlign": "-0.125em",
-                                }
-                              }
-                              viewBox="0 0 512 512"
-                              width="1em"
-                            >
-                              <path
-                                d="M504 255.531c.253 136.64-111.18 248.372-247.82 248.468-59.015.042-113.223-20.53-155.822-54.911-11.077-8.94-11.905-25.541-1.839-35.607l11.267-11.267c8.609-8.609 22.353-9.551 31.891-1.984C173.062 425.135 212.781 440 256 440c101.705 0 184-82.311 184-184 0-101.705-82.311-184-184-184-48.814 0-93.149 18.969-126.068 49.932l50.754 50.754c10.08 10.08 2.941 27.314-11.313 27.314H24c-8.837 0-16-7.163-16-16V38.627c0-14.254 17.234-21.393 27.314-11.314l49.372 49.372C129.209 34.136 189.552 8 256 8c136.81 0 247.747 110.78 248 247.531zm-180.912 78.784l9.823-12.63c8.138-10.463 6.253-25.542-4.21-33.679L288 256.349V152c0-13.255-10.745-24-24-24h-16c-13.255 0-24 10.745-24 24v135.651l65.409 50.874c10.463 8.137 25.541 6.253 33.679-4.21z"
-                                transform=""
-                              />
-                            </svg>
-                          </HistoryIcon>
-                           Updated
-                           
-                          <t
-                            ago={false}
-                            calendar={false}
-                            decimal={false}
-                            element={null}
-                            filter={[Function]}
-                            fromNow={true}
-                            interval={60000}
-                            local={false}
-                            onChange={[Function]}
-                            titleFormat=""
-                            toNow={false}
-                            unit={null}
-                            unix={false}
-                            utc={false}
-                            withTitle={false}
-                          >
-                            <time
-                              dateTime={"2020-05-07T06:50:18.502Z"}
-                            >
-                              a month ago
-                            </time>
-                          </t>
-                        </span>
-                      </div>
-                    </DataListCell>
-                  </div>
-                </DataListItemCells>
-                <DataListAction
-                  aria-label="Actions"
-                  aria-labelledby="kie-datalist-item kie-datalist-action"
-                  className=""
-                  id="kie-datalist-action"
-                  key=".3"
-                  rowid="kie-datalist-item-201a8a42-043e-375a-9f52-57c804b24db4"
-                >
-                  <div
-                    className="pf-c-data-list__item-action"
-                    rowid="kie-datalist-item-201a8a42-043e-375a-9f52-57c804b24db4"
-                  >
-                    <Dropdown
-                      dropdownItems={
-                        Array [
-                          <DropdownItem
-                            onClick={[Function]}
-                          >
-                            Abort
-                          </DropdownItem>,
-                        ]
-                      }
-                      isOpen={false}
-                      isPlain={true}
-                      onSelect={[Function]}
-                      position="right"
-                      toggle={
-                        <KebabToggle
-                          isDisabled={false}
-                          onToggle={[Function]}
-                        />
-                      }
-                    >
-                      <Component
-                        dropdownItems={
-                          Array [
-                            <DropdownItem
-                              onClick={[Function]}
-                            >
-                              Abort
-                            </DropdownItem>,
-                          ]
-                        }
-                        isOpen={false}
-                        isPlain={true}
-                        position="right"
-                        toggle={
-                          <KebabToggle
-                            isDisabled={false}
-                            onToggle={[Function]}
-                          />
-                        }
-                      >
-                        <ComponentWithOuia
-                          component={[Function]}
-                          componentProps={
-                            Object {
-                              "dropdownItems": Array [
-                                <DropdownItem
-                                  onClick={[Function]}
-                                >
-                                  Abort
-                                </DropdownItem>,
-                              ],
-                              "isOpen": false,
-                              "isPlain": true,
-                              "position": "right",
-                              "toggle": <KebabToggle
-                                isDisabled={false}
-                                onToggle={[Function]}
-                              />,
-                            }
-                          }
-                          consumerContext={null}
-                        >
-                          <DropdownWithContext
-                            autoFocus={true}
-                            className=""
-                            direction="down"
-                            dropdownItems={
-                              Array [
-                                <DropdownItem
-                                  onClick={[Function]}
-                                >
-                                  Abort
-                                </DropdownItem>,
-                              ]
-                            }
-                            isGrouped={false}
-                            isOpen={false}
-                            isPlain={true}
-                            onSelect={[Function]}
-                            ouiaComponentType="Dropdown"
-                            ouiaContext={
-                              Object {
-                                "isOuia": false,
-                                "ouiaId": null,
-                              }
-                            }
-                            position="right"
-                            toggle={
-                              <KebabToggle
-                                isDisabled={false}
-                                onToggle={[Function]}
-                              />
-                            }
-                          >
-                            <div
-                              className="pf-c-dropdown pf-m-align-right"
-                            >
-                              <KebabToggle
-                                ariaHasPopup={true}
-                                id="pf-toggle-id-0"
-                                isDisabled={false}
-                                isOpen={false}
-                                isPlain={true}
-                                key=".0"
-                                onEnter={[Function]}
-                                onToggle={[Function]}
-                                parentRef={
-                                  Object {
-                                    "current": <div
-                                      class="pf-c-dropdown pf-m-align-right"
-                                    >
-                                      <button
-                                        aria-expanded="false"
-                                        aria-haspopup="true"
-                                        aria-label="Actions"
-                                        class="pf-c-dropdown__toggle pf-m-plain"
-                                        id="pf-toggle-id-0"
-                                        type="button"
-                                      >
-                                        <svg
-                                          aria-hidden="true"
-                                          fill="currentColor"
-                                          height="1em"
-                                          role="img"
-                                          style="vertical-align: -0.125em;"
-                                          viewBox="0 0 192 512"
-                                          width="1em"
-                                        >
-                                          <path
-                                            d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
-                                            transform=""
-                                          />
-                                        </svg>
-                                      </button>
-                                    </div>,
-                                  }
-                                }
-                              >
-                                <Toggle
-                                  aria-label="Actions"
-                                  ariaHasPopup={true}
-                                  bubbleEvent={false}
-                                  className=""
-                                  id="pf-toggle-id-0"
-                                  isActive={false}
-                                  isDisabled={false}
-                                  isFocused={false}
-                                  isHovered={false}
-                                  isOpen={false}
-                                  isPlain={true}
-                                  isPrimary={false}
-                                  isSplitButton={false}
-                                  onEnter={[Function]}
-                                  onToggle={[Function]}
-                                  parentRef={
-                                    Object {
-                                      "current": <div
-                                        class="pf-c-dropdown pf-m-align-right"
-                                      >
-                                        <button
-                                          aria-expanded="false"
-                                          aria-haspopup="true"
-                                          aria-label="Actions"
-                                          class="pf-c-dropdown__toggle pf-m-plain"
-                                          id="pf-toggle-id-0"
-                                          type="button"
-                                        >
-                                          <svg
-                                            aria-hidden="true"
-                                            fill="currentColor"
-                                            height="1em"
-                                            role="img"
-                                            style="vertical-align: -0.125em;"
-                                            viewBox="0 0 192 512"
-                                            width="1em"
-                                          >
-                                            <path
-                                              d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
-                                              transform=""
-                                            />
-                                          </svg>
-                                        </button>
-                                      </div>,
-                                    }
-                                  }
-                                >
-                                  <button
-                                    aria-expanded={false}
-                                    aria-haspopup={true}
-                                    aria-label="Actions"
-                                    className="pf-c-dropdown__toggle pf-m-plain"
-                                    disabled={false}
-                                    id="pf-toggle-id-0"
-                                    onClick={[Function]}
-                                    onKeyDown={[Function]}
-                                    type="button"
-                                  >
-                                    <EllipsisVIcon
-                                      color="currentColor"
-                                      noVerticalAlign={false}
-                                      size="sm"
-                                      title={null}
-                                    >
-                                      <svg
-                                        aria-hidden={true}
-                                        aria-labelledby={null}
-                                        fill="currentColor"
-                                        height="1em"
-                                        role="img"
-                                        style={
-                                          Object {
-                                            "verticalAlign": "-0.125em",
-                                          }
-                                        }
-                                        viewBox="0 0 192 512"
-                                        width="1em"
-                                      >
-                                        <path
-                                          d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
-                                          transform=""
-                                        />
-                                      </svg>
-                                    </EllipsisVIcon>
-                                  </button>
-                                </Toggle>
-                              </KebabToggle>
-                            </div>
-                          </DropdownWithContext>
-                        </ComponentWithOuia>
-                      </Component>
-                    </Dropdown>
-                  </div>
-                </DataListAction>
-              </div>
-            </DataListItemRow>
-            <DataListContent
-              aria-label="Primary Content Details"
-              className="kogito-management-console__embedded-list pf-m-compact"
-              id="kie-datalist-expand-201a8a42-043e-375a-9f52-57c804b24db4"
-              isHidden={true}
-              key=".1"
-              rowid="kie-datalist-item-201a8a42-043e-375a-9f52-57c804b24db4"
-            >
-              <section
-                aria-label="Primary Content Details"
-                className="pf-c-data-list__expandable-content kogito-management-console__embedded-list pf-m-compact"
-                hidden={true}
-                id="kie-datalist-expand-201a8a42-043e-375a-9f52-57c804b24db4"
-              >
-                <div
-                  className="pf-c-data-list__expandable-content-body"
-                >
-                  <Bullseye>
-                    <div
-                      className="pf-l-bullseye"
-                    >
-                      <KogitoSpinner
-                        spinnerText="Loading process instances..."
-                      >
-                        <EmptyState>
-                          <div
-                            className="pf-c-empty-state pf-m-lg"
-                          >
-                            <EmptyStateIcon
-                              component={[Function]}
-                              variant="container"
-                            >
-                              <div
-                                className="pf-c-empty-state__icon"
-                              >
-                                <Spinner>
-                                  <span
-                                    aria-valuetext="Loading..."
-                                    className="pf-c-spinner pf-m-xl"
-                                    role="progressbar"
-                                  >
-                                    <span
-                                      className="pf-c-spinner__clipper"
-                                    />
-                                    <span
-                                      className="pf-c-spinner__lead-ball"
-                                    />
-                                    <span
-                                      className="pf-c-spinner__tail-ball"
-                                    />
-                                  </span>
-                                </Spinner>
-                              </div>
-                            </EmptyStateIcon>
-                            <Title
-                              size="lg"
-                            >
-                              <h1
-                                className="pf-c-title pf-m-lg"
-                              >
-                                Loading process instances...
-                              </h1>
-                            </Title>
-                          </div>
-                        </EmptyState>
-                      </KogitoSpinner>
-                    </div>
-                  </Bullseye>
-                </div>
-              </section>
-            </DataListContent>
-          </li>
-        </DataListItem>
-      </ProcessListTableItems>
+                undefined,
+              ],
+              Array [
+                undefined,
+              ],
+              Array [
+                Object {
+                  "ProcessInstances": Array [
+                    Object {
+                      "addons": Array [
+                        "process-management",
+                        "infinispan-persistence",
+                        "prometheus-monitoring",
+                      ],
+                      "businessKey": "MQQ640",
+                      "error": null,
+                      "id": "201a8a42-043e-375a-9f52-57c804b24db4",
+                      "isChecked": false,
+                      "isOpen": false,
+                      "lastUpdate": "2020-05-07T06:50:18.502Z",
+                      "parentProcessInstanceId": null,
+                      "processId": "travels",
+                      "processName": "travels",
+                      "roles": Array [],
+                      "rootProcessInstanceId": null,
+                      "serviceUrl": "http://localhost:8080",
+                      "start": "2020-05-07T06:50:18.274Z",
+                      "state": "ACTIVE",
+                    },
+                  ],
+                },
+              ],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": undefined,
+              },
+              Object {
+                "type": "return",
+                "value": undefined,
+              },
+              Object {
+                "type": "return",
+                "value": undefined,
+              },
+            ],
+          }
+        }
+        setIsAllChecked={[MockFunction]}
+        setSelectedNumber={[MockFunction]}
+      />
     </ul>
   </DataList>
 </ProcessListTable>
@@ -2872,11 +2115,6 @@ exports[`ProcessListTable component tests Snapshot testing with wrong query para
     Object {
       "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels",
     }
-  }
-  checkedArray={
-    Array [
-      "ACTIVE",
-    ]
   }
   filteredData={
     Object {
@@ -3056,6 +2294,9 @@ exports[`ProcessListTable component tests Snapshot testing with wrong query para
           undefined,
         ],
         Array [
+          undefined,
+        ],
+        Array [
           Object {
             "ProcessInstances": Array [],
           },
@@ -3063,8 +2304,19 @@ exports[`ProcessListTable component tests Snapshot testing with wrong query para
         Array [
           undefined,
         ],
+        Array [
+          undefined,
+        ],
       ],
       "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
         Object {
           "type": "return",
           "value": undefined,

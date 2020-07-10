@@ -6,9 +6,12 @@ import { BrowserRouter } from 'react-router-dom';
 import { getWrapperAsync, GraphQL } from '@kogito-apps/common';
 import GetProcessInstanceByIdDocument = GraphQL.GetProcessInstanceByIdDocument;
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
-import { setTitle } from '../../../../utils/Utils';
-
-jest.mock('../../../../utils/Utils');
+import { Button } from '@patternfly/react-core';
+import axios from 'axios';
+jest.mock('axios');
+import * as Utils from '../../../../utils/Utils';
+import { act } from 'react-dom/test-utils';
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 jest.mock('../../../Atoms/ProcessListModal/ProcessListModal');
 jest.mock('../../../Atoms/ProcessListBulkInstances/ProcessListBulkInstances');
 jest.mock('../../../Organisms/ProcessDetails/ProcessDetails');
@@ -89,7 +92,12 @@ const props1 = {
   location: H.createLocation(''),
   history: H.createBrowserHistory()
 };
-
+props.location.state = {
+  filters: {
+    status: [ProcessInstanceState.Active],
+    businessKey: ['tra']
+  }
+};
 const mocks1 = [
   {
     request: {
@@ -242,7 +250,7 @@ const mocks3 = [
     }
   }
 ];
-
+/* tslint:disable */
 describe('Process Details Page component tests', () => {
   let originalLocalStorage;
   beforeEach(() => {
@@ -269,21 +277,47 @@ describe('Process Details Page component tests', () => {
     );
     expect(wrapper).toMatchSnapshot();
   });
-  it('abort button click', async () => {
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks1} addTypename={false}>
-        <BrowserRouter>
-          <ProcessDetailsPage {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'ProcessDetailsPage'
-    );
-    wrapper
-      .find('#abort-button')
-      .first()
-      .simulate('click');
-    wrapper.update();
-    expect(setTitle).toHaveBeenCalled();
+  describe('abort button click', () => {
+    it('on successfull abort', async () => {
+      mockedAxios.delete.mockResolvedValue({});
+      const wrapper = await getWrapperAsync(
+        <MockedProvider mocks={mocks1} addTypename={false}>
+          <BrowserRouter>
+            <ProcessDetailsPage {...props} />
+          </BrowserRouter>
+        </MockedProvider>,
+        'ProcessDetailsPage'
+      );
+      const handleAbortSpy = jest.spyOn(Utils, 'handleAbort');
+      await act(async () => {
+        wrapper
+          .find(Button)
+          .find('button')
+          .simulate('click');
+      });
+      wrapper.update();
+      expect(handleAbortSpy).toHaveBeenCalled();
+    });
+    it('on failed abort', async () => {
+      mockedAxios.delete.mockRejectedValue({ message: '404 error' });
+      const wrapper = await getWrapperAsync(
+        <MockedProvider mocks={mocks1} addTypename={false}>
+          <BrowserRouter>
+            <ProcessDetailsPage {...props} />
+          </BrowserRouter>
+        </MockedProvider>,
+        'ProcessDetailsPage'
+      );
+      const handleAbortSpy = jest.spyOn(Utils, 'handleAbort');
+      await act(async () => {
+        wrapper
+          .find(Button)
+          .find('button')
+          .simulate('click');
+      });
+      wrapper.update();
+      expect(handleAbortSpy).toHaveBeenCalled();
+    });
   });
   it('snapshot testing in Error state', async () => {
     const wrapper = await getWrapperAsync(

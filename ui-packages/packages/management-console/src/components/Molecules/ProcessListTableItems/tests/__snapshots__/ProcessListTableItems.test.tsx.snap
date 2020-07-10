@@ -1,828 +1,485 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ProcessListTableItems component tests snapshot tests for no child instances 1`] = `
-<Fragment>
-  <ProcessListModal
-    abortedMessageObj={
-      Object {
-        "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e": Object {
-          "addons": Array [],
-          "childProcessInstances": Array [],
-          "end": "2019-10-22T05:40:44.089Z",
-          "endpoint": "http://localhost:4000",
-          "error": Object {
-            "message": "Something went wrong",
-            "nodeDefinitionId": "a1e139d5-81c77-48c9-84ae-34578e90433n",
-          },
-          "id": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e",
-          "isChecked": false,
-          "lastUpdate": "2019-10-22T03:40:44.089Z",
-          "nodes": Array [
-            Object {
-              "definitionId": "EndEvent_1",
-              "enter": "2019-10-22T04:43:01.144Z",
-              "exit": "2019-10-22T04:43:01.144Z",
-              "id": "7244ba1b-75ec-4789-8c65-499a0c5b1a6f",
-              "name": "End Event 1",
-              "nodeId": "1",
-              "type": "EndNode",
-            },
-            Object {
-              "definitionId": "ServiceTask_1",
-              "enter": "2019-10-22T04:43:01.144Z",
-              "exit": "2019-10-22T04:43:01.144Z",
-              "id": "2f588da5-a323-4111-9017-3093ef9319d1",
-              "name": "Book flight",
-              "nodeId": "2",
-              "type": "WorkItemNode",
-            },
-            Object {
-              "definitionId": "StartEvent_1",
-              "enter": "2019-10-22T04:43:01.144Z",
-              "exit": "2019-10-22T04:43:01.144Z",
-              "id": "6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2",
-              "name": "StartProcess",
-              "nodeId": "3",
-              "type": "StartNode",
-            },
-          ],
-          "parentProcessInstance": null,
-          "parentProcessInstanceId": null,
-          "processId": "flightBooking",
-          "processName": "FlightBooking",
-          "roles": Array [],
-          "rootProcessInstanceId": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
-          "serviceUrl": "2019-10-22T03:40:44.089Z",
-          "start": "2019-10-22T03:40:44.089Z",
-          "state": "COMPLETED",
-          "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
-        },
-      }
-    }
-    checkedArray={
-      Array [
-        "ACTIVE",
-      ]
-    }
-    completedMessageObj={Object {}}
-    handleModalToggle={[Function]}
-    isAbortModalOpen={false}
-    isModalOpen={false}
-    isSingleAbort={true}
-  />
-  <ProcessListModal
-    checkedArray={
-      Array [
-        "COMPLETED",
-      ]
-    }
-    handleModalToggle={[Function]}
-    isModalOpen={false}
-    modalContent=""
-  />
-  <DataListItem
-    aria-labelledby="kie-datalist-item-c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
-    isExpanded={false}
+<DataListContent
+  aria-label="Primary Content Details"
+  className="kogito-management-console__embedded-list pf-m-compact"
+  id="kie-datalist-expand-8035b580-6ae4-4aa8-9ec0-e18e19809e0b1"
+  isHidden={false}
+  key=".1"
+  rowid="kie-datalist-item-8035b580-6ae4-4aa8-9ec0-e18e19809e0b1"
+>
+  <section
+    aria-label="Primary Content Details"
+    className="pf-c-data-list__expandable-content kogito-management-console__embedded-list pf-m-compact"
+    hidden={false}
+    id="kie-datalist-expand-8035b580-6ae4-4aa8-9ec0-e18e19809e0b1"
   >
-    <DataListItemRow>
-      <DataListToggle
-        aria-controls="kie-datalist-expand"
-        id="kie-datalist-toggle-c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
-        isExpanded={false}
-        onClick={[Function]}
-      />
-      <DisablePopup
-        component={
-          <DataListCheck
-            aria-labelledby="kie-datalist-item-c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
-            isDisabled={true}
-          />
-        }
-        processInstanceData={
-          Object {
-            "addons": Array [],
-            "childProcessInstances": Array [],
-            "end": "2019-10-22T05:40:44.089Z",
-            "endpoint": "http://localhost:4000",
-            "error": Object {
-              "message": "Something went wrong",
-              "nodeDefinitionId": "a1e139d5-81c77-48c9-84ae-34578e90433n",
-            },
-            "id": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e",
-            "isChecked": false,
-            "lastUpdate": "2019-10-22T03:40:44.089Z",
-            "nodes": Array [
-              Object {
-                "definitionId": "EndEvent_1",
-                "enter": "2019-10-22T04:43:01.144Z",
-                "exit": "2019-10-22T04:43:01.144Z",
-                "id": "7244ba1b-75ec-4789-8c65-499a0c5b1a6f",
-                "name": "End Event 1",
-                "nodeId": "1",
-                "type": "EndNode",
-              },
-              Object {
-                "definitionId": "ServiceTask_1",
-                "enter": "2019-10-22T04:43:01.144Z",
-                "exit": "2019-10-22T04:43:01.144Z",
-                "id": "2f588da5-a323-4111-9017-3093ef9319d1",
-                "name": "Book flight",
-                "nodeId": "2",
-                "type": "WorkItemNode",
-              },
-              Object {
-                "definitionId": "StartEvent_1",
-                "enter": "2019-10-22T04:43:01.144Z",
-                "exit": "2019-10-22T04:43:01.144Z",
-                "id": "6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2",
-                "name": "StartProcess",
-                "nodeId": "3",
-                "type": "StartNode",
-              },
-            ],
-            "parentProcessInstance": null,
-            "parentProcessInstanceId": null,
-            "processId": "flightBooking",
-            "processName": "FlightBooking",
-            "roles": Array [],
-            "rootProcessInstanceId": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
-            "serviceUrl": "2019-10-22T03:40:44.089Z",
-            "start": "2019-10-22T03:40:44.089Z",
-            "state": "COMPLETED",
-            "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
-          }
-        }
-      />
-      <DataListItemCells
-        dataListCells={
-          Array [
-            <DataListCell
-              id="kie-datalist-item-c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
-            >
-              <Link
-                to="/Process/c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
-              >
-                <div>
-                  <strong>
-                    <ProcessDescriptor
-                      processInstanceData={
-                        Object {
-                          "addons": Array [],
-                          "childProcessInstances": Array [],
-                          "end": "2019-10-22T05:40:44.089Z",
-                          "endpoint": "http://localhost:4000",
-                          "error": Object {
-                            "message": "Something went wrong",
-                            "nodeDefinitionId": "a1e139d5-81c77-48c9-84ae-34578e90433n",
-                          },
-                          "id": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e",
-                          "isChecked": false,
-                          "lastUpdate": "2019-10-22T03:40:44.089Z",
-                          "nodes": Array [
-                            Object {
-                              "definitionId": "EndEvent_1",
-                              "enter": "2019-10-22T04:43:01.144Z",
-                              "exit": "2019-10-22T04:43:01.144Z",
-                              "id": "7244ba1b-75ec-4789-8c65-499a0c5b1a6f",
-                              "name": "End Event 1",
-                              "nodeId": "1",
-                              "type": "EndNode",
-                            },
-                            Object {
-                              "definitionId": "ServiceTask_1",
-                              "enter": "2019-10-22T04:43:01.144Z",
-                              "exit": "2019-10-22T04:43:01.144Z",
-                              "id": "2f588da5-a323-4111-9017-3093ef9319d1",
-                              "name": "Book flight",
-                              "nodeId": "2",
-                              "type": "WorkItemNode",
-                            },
-                            Object {
-                              "definitionId": "StartEvent_1",
-                              "enter": "2019-10-22T04:43:01.144Z",
-                              "exit": "2019-10-22T04:43:01.144Z",
-                              "id": "6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2",
-                              "name": "StartProcess",
-                              "nodeId": "3",
-                              "type": "StartNode",
-                            },
-                          ],
-                          "parentProcessInstance": null,
-                          "parentProcessInstanceId": null,
-                          "processId": "flightBooking",
-                          "processName": "FlightBooking",
-                          "roles": Array [],
-                          "rootProcessInstanceId": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
-                          "serviceUrl": "2019-10-22T03:40:44.089Z",
-                          "start": "2019-10-22T03:40:44.089Z",
-                          "state": "COMPLETED",
-                          "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
-                        }
-                      }
-                    />
-                  </strong>
-                </div>
-              </Link>
-              <EndpointLink
-                isLinkShown={false}
-                serviceUrl="2019-10-22T03:40:44.089Z"
-              />
-            </DataListCell>,
-            <DataListCell>
-              <React.Fragment>
-                <CheckCircleIcon
-                  className="pf-u-mr-sm"
-                  color="var(--pf-global--success-color--100)"
-                  noVerticalAlign={false}
-                  size="sm"
-                  title={null}
-                />
-                Completed
-              </React.Fragment>
-            </DataListCell>,
-            <DataListCell>
-              <t
-                ago={false}
-                calendar={false}
-                decimal={false}
-                element={null}
-                filter={[Function]}
-                fromNow={true}
-                interval={60000}
-                local={false}
-                onChange={[Function]}
-                titleFormat=""
-                toNow={false}
-                unit={null}
-                unix={false}
-                utc={false}
-                withTitle={false}
-              >
-                2019-10-22T03:40:44.089Z
-              </t>
-            </DataListCell>,
-            <DataListCell>
-              <span>
-                 
-                <HistoryIcon
-                  className="pf-u-mr-sm"
-                  color="currentColor"
-                  noVerticalAlign={false}
-                  size="sm"
-                  title={null}
-                />
-                 Updated
-                 
-                <t
-                  ago={false}
-                  calendar={false}
-                  decimal={false}
-                  element={null}
-                  filter={[Function]}
-                  fromNow={true}
-                  interval={60000}
-                  local={false}
-                  onChange={[Function]}
-                  titleFormat=""
-                  toNow={false}
-                  unit={null}
-                  unix={false}
-                  utc={false}
-                  withTitle={false}
-                >
-                  2019-10-22T03:40:44.089Z
-                </t>
-              </span>
-            </DataListCell>,
-          ]
-        }
-      />
-      <DataListAction
-        aria-label="Actions"
-        aria-labelledby="kie-datalist-item kie-datalist-action"
-        className=""
-        id="kie-datalist-action"
-      >
-        <Dropdown
-          dropdownItems={Array []}
-          isOpen={false}
-          isPlain={true}
-          onSelect={[Function]}
-          position="right"
-          toggle={
-            <KebabToggle
-              isDisabled={true}
-              onToggle={[Function]}
-            />
-          }
-        />
-      </DataListAction>
-    </DataListItemRow>
-    <DataListContent
-      aria-label="Primary Content Details"
-      className="kogito-management-console__embedded-list pf-m-compact"
-      id="kie-datalist-expand-c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
-      isHidden={true}
+    <div
+      className="pf-c-data-list__expandable-content-body"
     >
-      <Bullseye>
-        <KogitoSpinner
-          spinnerText="Loading process instances..."
-        />
-      </Bullseye>
-    </DataListContent>
-  </DataListItem>
-</Fragment>
+      <Component
+        body="This process has no related sub processes"
+        key="0"
+        title="No child process instances"
+        type={3}
+      >
+        <Bullseye>
+          <div
+            className="pf-l-bullseye"
+          >
+            <EmptyState
+              variant="full"
+            >
+              <div
+                className="pf-c-empty-state"
+              >
+                <EmptyStateIcon
+                  color="var(--pf-global--info-color--100)"
+                  icon={[Function]}
+                  size="sm"
+                >
+                  <InfoCircleIcon
+                    aria-hidden="true"
+                    className="pf-c-empty-state__icon"
+                    color="var(--pf-global--info-color--100)"
+                    size="sm"
+                  >
+                    <MockedComponent />
+                  </InfoCircleIcon>
+                </EmptyStateIcon>
+                <Title
+                  headingLevel="h5"
+                  size="lg"
+                >
+                  <h5
+                    className="pf-c-title pf-m-lg"
+                  >
+                    No child process instances
+                  </h5>
+                </Title>
+                <EmptyStateBody>
+                  <div
+                    className="pf-c-empty-state__body"
+                  >
+                    This process has no related sub processes
+                  </div>
+                </EmptyStateBody>
+              </div>
+            </EmptyState>
+          </div>
+        </Bullseye>
+      </Component>
+    </div>
+  </section>
+</DataListContent>
 `;
 
-exports[`ProcessListTableItems component tests snapshot tests with child instances 1`] = `
-<Fragment>
-  <ProcessListModal
-    abortedMessageObj={
-      Object {
-        "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e": Object {
-          "addons": Array [],
-          "childProcessInstances": Array [
-            Object {
-              "addons": Array [],
-              "childProcessInstances": Array [],
-              "end": "2019-10-22T05:40:44.089Z",
-              "endpoint": "http://localhost:4000",
-              "error": Object {
-                "message": "Something went wrong",
-                "nodeDefinitionId": "a1e139d5-81c77-48c9-84ae-34578e90433n",
-              },
-              "id": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eabc",
-              "isChecked": false,
-              "lastUpdate": "2019-10-22T03:40:44.089Z",
-              "nodes": Array [
-                Object {
-                  "definitionId": "EndEvent_1",
-                  "enter": "2019-10-22T04:43:01.144Z",
-                  "exit": "2019-10-22T04:43:01.144Z",
-                  "id": "7244ba1b-75ec-4789-8c65-499a0c5b1a6f",
-                  "name": "End Event 1",
-                  "nodeId": "1",
-                  "type": "EndNode",
-                },
-                Object {
-                  "definitionId": "ServiceTask_1",
-                  "enter": "2019-10-22T04:43:01.144Z",
-                  "exit": "2019-10-22T04:43:01.144Z",
-                  "id": "2f588da5-a323-4111-9017-3093ef9319d1",
-                  "name": "Book flight",
-                  "nodeId": "2",
-                  "type": "WorkItemNode",
-                },
-                Object {
-                  "definitionId": "StartEvent_1",
-                  "enter": "2019-10-22T04:43:01.144Z",
-                  "exit": "2019-10-22T04:43:01.144Z",
-                  "id": "6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2",
-                  "name": "StartProcess",
-                  "nodeId": "3",
-                  "type": "StartNode",
-                },
-              ],
-              "parentProcessInstance": null,
-              "parentProcessInstanceId": null,
-              "processId": "hotelbooking-child",
-              "processName": "Hotelbooking-child",
-              "roles": Array [],
-              "rootProcessInstanceId": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e",
-              "serviceUrl": "2019-10-22T03:40:44.089Z",
-              "start": "2019-10-22T03:40:44.089Z",
-              "state": "COMPLETED",
-              "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
-            },
-          ],
-          "end": "2019-10-22T05:40:44.089Z",
-          "endpoint": "http://localhost:4000",
-          "error": Object {
-            "message": "Something went wrong",
-            "nodeDefinitionId": "a1e139d5-81c77-48c9-84ae-34578e90433n",
-          },
-          "id": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e",
-          "isChecked": false,
-          "lastUpdate": "2019-10-22T03:40:44.089Z",
-          "nodes": Array [
-            Object {
-              "definitionId": "EndEvent_1",
-              "enter": "2019-10-22T04:43:01.144Z",
-              "exit": "2019-10-22T04:43:01.144Z",
-              "id": "7244ba1b-75ec-4789-8c65-499a0c5b1a6f",
-              "name": "End Event 1",
-              "nodeId": "1",
-              "type": "EndNode",
-            },
-            Object {
-              "definitionId": "ServiceTask_1",
-              "enter": "2019-10-22T04:43:01.144Z",
-              "exit": "2019-10-22T04:43:01.144Z",
-              "id": "2f588da5-a323-4111-9017-3093ef9319d1",
-              "name": "Book flight",
-              "nodeId": "2",
-              "type": "WorkItemNode",
-            },
-            Object {
-              "definitionId": "StartEvent_1",
-              "enter": "2019-10-22T04:43:01.144Z",
-              "exit": "2019-10-22T04:43:01.144Z",
-              "id": "6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2",
-              "name": "StartProcess",
-              "nodeId": "3",
-              "type": "StartNode",
-            },
-          ],
-          "parentProcessInstance": null,
-          "parentProcessInstanceId": null,
-          "processId": "flightBooking",
-          "processName": "FlightBooking",
-          "roles": Array [],
-          "rootProcessInstanceId": null,
-          "serviceUrl": "2019-10-22T03:40:44.089Z",
-          "start": "2019-10-22T03:40:44.089Z",
-          "state": "ACTIVE",
-          "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
+exports[`ProcessListTableItems component tests snapshot tests with an error(status) process instance 1`] = `
+<ErrorPopover
+  onRetryClick={[Function]}
+  onSkipClick={[Function]}
+  processInstanceData={
+    Object {
+      "addons": Array [
+        "process-management",
+      ],
+      "businessKey": null,
+      "childProcessInstances": Array [],
+      "end": null,
+      "endpoint": "http://localhost:4000/",
+      "error": Object {
+        "message": "Something went wrong",
+        "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-3459188e90433n",
+      },
+      "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b1",
+      "lastUpdate": null,
+      "nodes": Array [
+        Object {
+          "definitionId": "CallActivity_2",
+          "enter": "2019-10-22T04:43:01.143Z",
+          "exit": "2019-10-22T04:43:01.146Z",
+          "id": "7cdeba99-cd36-4425-980d-e59d44769a3e",
+          "name": "Book Flight",
+          "nodeId": "1",
+          "type": "SubProcessNode",
         },
-      }
+      ],
+      "parentProcessInstance": null,
+      "parentProcessInstanceId": null,
+      "processId": "travels",
+      "processName": "travels1",
+      "roles": Array [],
+      "rootProcessInstanceId": null,
+      "serviceUrl": "http://localhost:4000",
+      "start": null,
+      "state": "ERROR",
+      "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
     }
-    checkedArray={
+  }
+>
+  <Popover
+    appendTo={[Function]}
+    aria-label=""
+    bodyContent={
+      <div>
+        Something went wrong
+      </div>
+    }
+    boundary="window"
+    className=""
+    closeBtnAriaLabel="Close"
+    distance={25}
+    enableFlip={true}
+    flipBehavior={
       Array [
-        "ACTIVE",
+        "top",
+        "right",
+        "bottom",
+        "left",
+        "top",
+        "right",
+        "bottom",
       ]
     }
-    completedMessageObj={Object {}}
-    handleModalToggle={[Function]}
-    isAbortModalOpen={false}
-    isModalOpen={false}
-    isSingleAbort={true}
-  />
-  <ProcessListModal
-    checkedArray={
+    footerContent={
       Array [
-        "ACTIVE",
+        <Unknown
+          className="pf-u-mr-sm"
+          id="skip-button"
+          onClick={[Function]}
+          variant="secondary"
+        >
+          Skip
+        </Unknown>,
+        <Unknown
+          className="pf-u-mr-sm"
+          id="retry-button"
+          onClick={[Function]}
+          variant="secondary"
+        >
+          Retry
+        </Unknown>,
       ]
     }
-    handleModalToggle={[Function]}
-    isModalOpen={false}
-    modalContent=""
-  />
-  <DataListItem
-    aria-labelledby="kie-datalist-item-c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
-    isExpanded={false}
+    headerContent={
+      <div>
+        Process error
+      </div>
+    }
+    hideOnOutsideClick={true}
+    isVisible={null}
+    maxWidth="calc(2rem + 18.75rem)"
+    onHidden={[Function]}
+    onHide={[Function]}
+    onMount={[Function]}
+    onShow={[Function]}
+    onShown={[Function]}
+    position="auto"
+    shouldClose={[Function]}
+    tippyProps={Object {}}
+    zIndex={300}
   >
-    <DataListItemRow>
-      <DataListToggle
-        aria-controls="kie-datalist-expand"
-        id="kie-datalist-toggle-c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
-        isExpanded={false}
-        onClick={[Function]}
-      />
-      <DisablePopup
-        component={
-          <DataListCheck
-            aria-labelledby="kie-datalist-item-c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
-            isDisabled={true}
-          />
-        }
-        processInstanceData={
-          Object {
-            "addons": Array [],
-            "childProcessInstances": Array [
-              Object {
-                "addons": Array [],
-                "childProcessInstances": Array [],
-                "end": "2019-10-22T05:40:44.089Z",
-                "endpoint": "http://localhost:4000",
-                "error": Object {
-                  "message": "Something went wrong",
-                  "nodeDefinitionId": "a1e139d5-81c77-48c9-84ae-34578e90433n",
-                },
-                "id": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eabc",
-                "isChecked": false,
-                "lastUpdate": "2019-10-22T03:40:44.089Z",
-                "nodes": Array [
-                  Object {
-                    "definitionId": "EndEvent_1",
-                    "enter": "2019-10-22T04:43:01.144Z",
-                    "exit": "2019-10-22T04:43:01.144Z",
-                    "id": "7244ba1b-75ec-4789-8c65-499a0c5b1a6f",
-                    "name": "End Event 1",
-                    "nodeId": "1",
-                    "type": "EndNode",
-                  },
-                  Object {
-                    "definitionId": "ServiceTask_1",
-                    "enter": "2019-10-22T04:43:01.144Z",
-                    "exit": "2019-10-22T04:43:01.144Z",
-                    "id": "2f588da5-a323-4111-9017-3093ef9319d1",
-                    "name": "Book flight",
-                    "nodeId": "2",
-                    "type": "WorkItemNode",
-                  },
-                  Object {
-                    "definitionId": "StartEvent_1",
-                    "enter": "2019-10-22T04:43:01.144Z",
-                    "exit": "2019-10-22T04:43:01.144Z",
-                    "id": "6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2",
-                    "name": "StartProcess",
-                    "nodeId": "3",
-                    "type": "StartNode",
-                  },
-                ],
-                "parentProcessInstance": null,
-                "parentProcessInstanceId": null,
-                "processId": "hotelbooking-child",
-                "processName": "Hotelbooking-child",
-                "roles": Array [],
-                "rootProcessInstanceId": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e",
-                "serviceUrl": "2019-10-22T03:40:44.089Z",
-                "start": "2019-10-22T03:40:44.089Z",
-                "state": "COMPLETED",
-                "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
-              },
-            ],
-            "end": "2019-10-22T05:40:44.089Z",
-            "endpoint": "http://localhost:4000",
-            "error": Object {
-              "message": "Something went wrong",
-              "nodeDefinitionId": "a1e139d5-81c77-48c9-84ae-34578e90433n",
+    <PopoverBase
+      appendTo={[Function]}
+      arrow={true}
+      boundary="window"
+      content={<React.Fragment />}
+      distance={25}
+      flip={true}
+      flipBehavior={
+        Array [
+          "top",
+          "right",
+          "bottom",
+          "left",
+          "top",
+          "right",
+          "bottom",
+        ]
+      }
+      hideOnClick={true}
+      interactive={true}
+      interactiveBorder={0}
+      isVisible={null}
+      lazy={true}
+      maxWidth="calc(2rem + 18.75rem)"
+      onCreate={[Function]}
+      onHidden={[Function]}
+      onHide={[Function]}
+      onMount={[Function]}
+      onShow={[Function]}
+      onShown={[Function]}
+      placement="auto"
+      popperOptions={
+        Object {
+          "modifiers": Object {
+            "hide": Object {
+              "enabled": true,
             },
-            "id": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e",
-            "isChecked": false,
-            "lastUpdate": "2019-10-22T03:40:44.089Z",
-            "nodes": Array [
-              Object {
-                "definitionId": "EndEvent_1",
-                "enter": "2019-10-22T04:43:01.144Z",
-                "exit": "2019-10-22T04:43:01.144Z",
-                "id": "7244ba1b-75ec-4789-8c65-499a0c5b1a6f",
-                "name": "End Event 1",
-                "nodeId": "1",
-                "type": "EndNode",
-              },
-              Object {
-                "definitionId": "ServiceTask_1",
-                "enter": "2019-10-22T04:43:01.144Z",
-                "exit": "2019-10-22T04:43:01.144Z",
-                "id": "2f588da5-a323-4111-9017-3093ef9319d1",
-                "name": "Book flight",
-                "nodeId": "2",
-                "type": "WorkItemNode",
-              },
-              Object {
-                "definitionId": "StartEvent_1",
-                "enter": "2019-10-22T04:43:01.144Z",
-                "exit": "2019-10-22T04:43:01.144Z",
-                "id": "6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2",
-                "name": "StartProcess",
-                "nodeId": "3",
-                "type": "StartNode",
-              },
-            ],
-            "parentProcessInstance": null,
-            "parentProcessInstanceId": null,
-            "processId": "flightBooking",
-            "processName": "FlightBooking",
-            "roles": Array [],
-            "rootProcessInstanceId": null,
-            "serviceUrl": "2019-10-22T03:40:44.089Z",
-            "start": "2019-10-22T03:40:44.089Z",
-            "state": "ACTIVE",
-            "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
-          }
+            "preventOverflow": Object {
+              "enabled": true,
+            },
+          },
         }
-      />
-      <DataListItemCells
-        dataListCells={
-          Array [
-            <DataListCell
-              id="kie-datalist-item-c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
-            >
-              <Link
-                to="/Process/c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
-              >
-                <div>
-                  <strong>
-                    <ProcessDescriptor
-                      processInstanceData={
-                        Object {
-                          "addons": Array [],
-                          "childProcessInstances": Array [
-                            Object {
-                              "addons": Array [],
-                              "childProcessInstances": Array [],
-                              "end": "2019-10-22T05:40:44.089Z",
-                              "endpoint": "http://localhost:4000",
-                              "error": Object {
-                                "message": "Something went wrong",
-                                "nodeDefinitionId": "a1e139d5-81c77-48c9-84ae-34578e90433n",
-                              },
-                              "id": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eabc",
-                              "isChecked": false,
-                              "lastUpdate": "2019-10-22T03:40:44.089Z",
-                              "nodes": Array [
-                                Object {
-                                  "definitionId": "EndEvent_1",
-                                  "enter": "2019-10-22T04:43:01.144Z",
-                                  "exit": "2019-10-22T04:43:01.144Z",
-                                  "id": "7244ba1b-75ec-4789-8c65-499a0c5b1a6f",
-                                  "name": "End Event 1",
-                                  "nodeId": "1",
-                                  "type": "EndNode",
-                                },
-                                Object {
-                                  "definitionId": "ServiceTask_1",
-                                  "enter": "2019-10-22T04:43:01.144Z",
-                                  "exit": "2019-10-22T04:43:01.144Z",
-                                  "id": "2f588da5-a323-4111-9017-3093ef9319d1",
-                                  "name": "Book flight",
-                                  "nodeId": "2",
-                                  "type": "WorkItemNode",
-                                },
-                                Object {
-                                  "definitionId": "StartEvent_1",
-                                  "enter": "2019-10-22T04:43:01.144Z",
-                                  "exit": "2019-10-22T04:43:01.144Z",
-                                  "id": "6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2",
-                                  "name": "StartProcess",
-                                  "nodeId": "3",
-                                  "type": "StartNode",
-                                },
-                              ],
-                              "parentProcessInstance": null,
-                              "parentProcessInstanceId": null,
-                              "processId": "hotelbooking-child",
-                              "processName": "Hotelbooking-child",
-                              "roles": Array [],
-                              "rootProcessInstanceId": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e",
-                              "serviceUrl": "2019-10-22T03:40:44.089Z",
-                              "start": "2019-10-22T03:40:44.089Z",
-                              "state": "COMPLETED",
-                              "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
-                            },
-                          ],
-                          "end": "2019-10-22T05:40:44.089Z",
-                          "endpoint": "http://localhost:4000",
-                          "error": Object {
-                            "message": "Something went wrong",
-                            "nodeDefinitionId": "a1e139d5-81c77-48c9-84ae-34578e90433n",
-                          },
-                          "id": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e",
-                          "isChecked": false,
-                          "lastUpdate": "2019-10-22T03:40:44.089Z",
-                          "nodes": Array [
-                            Object {
-                              "definitionId": "EndEvent_1",
-                              "enter": "2019-10-22T04:43:01.144Z",
-                              "exit": "2019-10-22T04:43:01.144Z",
-                              "id": "7244ba1b-75ec-4789-8c65-499a0c5b1a6f",
-                              "name": "End Event 1",
-                              "nodeId": "1",
-                              "type": "EndNode",
-                            },
-                            Object {
-                              "definitionId": "ServiceTask_1",
-                              "enter": "2019-10-22T04:43:01.144Z",
-                              "exit": "2019-10-22T04:43:01.144Z",
-                              "id": "2f588da5-a323-4111-9017-3093ef9319d1",
-                              "name": "Book flight",
-                              "nodeId": "2",
-                              "type": "WorkItemNode",
-                            },
-                            Object {
-                              "definitionId": "StartEvent_1",
-                              "enter": "2019-10-22T04:43:01.144Z",
-                              "exit": "2019-10-22T04:43:01.144Z",
-                              "id": "6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2",
-                              "name": "StartProcess",
-                              "nodeId": "3",
-                              "type": "StartNode",
-                            },
-                          ],
-                          "parentProcessInstance": null,
-                          "parentProcessInstanceId": null,
-                          "processId": "flightBooking",
-                          "processName": "FlightBooking",
-                          "roles": Array [],
-                          "rootProcessInstanceId": null,
-                          "serviceUrl": "2019-10-22T03:40:44.089Z",
-                          "start": "2019-10-22T03:40:44.089Z",
-                          "state": "ACTIVE",
-                          "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
-                        }
-                      }
-                    />
-                  </strong>
-                </div>
-              </Link>
-              <EndpointLink
-                isLinkShown={false}
-                serviceUrl="2019-10-22T03:40:44.089Z"
-              />
-            </DataListCell>,
-            <DataListCell>
-              <React.Fragment>
-                <OnRunningIcon
-                  className="pf-u-mr-sm"
-                  color="currentColor"
-                  noVerticalAlign={false}
-                  size="sm"
-                  title={null}
-                />
-                Active
-              </React.Fragment>
-            </DataListCell>,
-            <DataListCell>
-              <t
-                ago={false}
-                calendar={false}
-                decimal={false}
-                element={null}
-                filter={[Function]}
-                fromNow={true}
-                interval={60000}
-                local={false}
-                onChange={[Function]}
-                titleFormat=""
-                toNow={false}
-                unit={null}
-                unix={false}
-                utc={false}
-                withTitle={false}
-              >
-                2019-10-22T03:40:44.089Z
-              </t>
-            </DataListCell>,
-            <DataListCell>
-              <span>
-                 
-                <HistoryIcon
-                  className="pf-u-mr-sm"
-                  color="currentColor"
-                  noVerticalAlign={false}
-                  size="sm"
-                  title={null}
-                />
-                 Updated
-                 
-                <t
-                  ago={false}
-                  calendar={false}
-                  decimal={false}
-                  element={null}
-                  filter={[Function]}
-                  fromNow={true}
-                  interval={60000}
-                  local={false}
-                  onChange={[Function]}
-                  titleFormat=""
-                  toNow={false}
-                  unit={null}
-                  unix={false}
-                  utc={false}
-                  withTitle={false}
-                >
-                  2019-10-22T03:40:44.089Z
-                </t>
-              </span>
-            </DataListCell>,
-          ]
-        }
-      />
-      <DataListAction
-        aria-label="Actions"
-        aria-labelledby="kie-datalist-item kie-datalist-action"
-        className=""
-        id="kie-datalist-action"
-      >
-        <Dropdown
-          dropdownItems={Array []}
-          isOpen={false}
-          isPlain={true}
-          onSelect={[Function]}
-          position="right"
-          toggle={
-            <KebabToggle
-              isDisabled={true}
-              onToggle={[Function]}
-            />
-          }
-        />
-      </DataListAction>
-    </DataListItemRow>
-    <DataListContent
-      aria-label="Primary Content Details"
-      className="kogito-management-console__embedded-list pf-m-compact"
-      id="kie-datalist-expand-c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
-      isHidden={true}
+      }
+      theme="pf-popover"
+      trigger="click"
+      zIndex={300}
     >
-      <Bullseye>
-        <KogitoSpinner
-          spinnerText="Loading process instances..."
-        />
-      </Bullseye>
-    </DataListContent>
-  </DataListItem>
-</Fragment>
+      <Component
+        isInline={true}
+        variant="link"
+      >
+        <ComponentWithOuia
+          component={[Function]}
+          componentProps={
+            Object {
+              "children": <React.Fragment>
+                <ErrorCircleOIcon
+                  className="pf-u-mr-sm"
+                  color="var(--pf-global--danger-color--100)"
+                />
+                Error
+              </React.Fragment>,
+              "isInline": true,
+              "variant": "link",
+            }
+          }
+          consumerContext={null}
+        >
+          <Button
+            isInline={true}
+            ouiaContext={
+              Object {
+                "isOuia": false,
+                "ouiaId": null,
+              }
+            }
+            variant="link"
+          >
+            <button
+              aria-disabled={null}
+              aria-label={null}
+              className="pf-c-button pf-m-link pf-m-inline"
+              disabled={false}
+              tabIndex={null}
+              type="button"
+            >
+              <span
+                className="pf-c-button__text"
+              >
+                <ErrorCircleOIcon
+                  className="pf-u-mr-sm"
+                  color="var(--pf-global--danger-color--100)"
+                >
+                  <MockedComponent />
+                </ErrorCircleOIcon>
+                Error
+              </span>
+            </button>
+          </Button>
+        </ComponentWithOuia>
+      </Component>
+      <Portal
+        containerInfo={<div />}
+      />
+    </PopoverBase>
+  </Popover>
+</ErrorPopover>
+`;
+
+exports[`ProcessListTableItems component tests snapshot tests with disabled popup 1`] = `
+<DisablePopup
+  component={
+    <DataListCheck
+      aria-labelledby="kie-datalist-item-8035b580-6ae4-4aa8-9ec0-e18e19809e0b1"
+      isDisabled={true}
+    />
+  }
+  key=".1"
+  processInstanceData={
+    Object {
+      "addons": Array [],
+      "businessKey": null,
+      "childProcessInstances": Array [],
+      "end": null,
+      "endpoint": null,
+      "error": Object {
+        "message": "Something went wrong",
+        "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-3459188e90433n",
+      },
+      "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b1",
+      "lastUpdate": null,
+      "nodes": Array [
+        Object {
+          "definitionId": "CallActivity_2",
+          "enter": "2019-10-22T04:43:01.143Z",
+          "exit": "2019-10-22T04:43:01.146Z",
+          "id": "7cdeba99-cd36-4425-980d-e59d44769a3e",
+          "name": "Book Flight",
+          "nodeId": "1",
+          "type": "SubProcessNode",
+        },
+      ],
+      "parentProcessInstance": null,
+      "parentProcessInstanceId": null,
+      "processId": "travels",
+      "processName": "travels1",
+      "roles": Array [],
+      "rootProcessInstanceId": null,
+      "serviceUrl": null,
+      "start": null,
+      "state": "ERROR",
+      "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
+    }
+  }
+  rowid="kie-datalist-item-8035b580-6ae4-4aa8-9ec0-e18e19809e0b1"
+>
+  <Tooltip
+    appendTo={[Function]}
+    aria="describedby"
+    boundary="window"
+    className=""
+    content="Management add-on capability not enabled & missing the kogito.service.url property. Contact your administrator to set up."
+    distance={-15}
+    enableFlip={true}
+    entryDelay={500}
+    exitDelay={500}
+    flipBehavior={
+      Array [
+        "top",
+        "right",
+        "bottom",
+        "left",
+        "top",
+        "right",
+        "bottom",
+      ]
+    }
+    id=""
+    isAppLauncher={false}
+    isContentLeftAligned={false}
+    isVisible={false}
+    maxWidth="18.75rem"
+    position="top"
+    tippyProps={Object {}}
+    trigger="mouseenter focus"
+    zIndex={9999}
+  >
+    <PopoverBase
+      appendTo={[Function]}
+      aria="describedby"
+      arrow={true}
+      boundary="window"
+      content={
+        <div
+          className=""
+          id=""
+          role="tooltip"
+        >
+          <TooltipContent
+            isLeftAligned={false}
+          >
+            Management add-on capability not enabled & missing the kogito.service.url property. Contact your administrator to set up.
+          </TooltipContent>
+        </div>
+      }
+      delay={
+        Array [
+          500,
+          500,
+        ]
+      }
+      distance={-15}
+      flip={true}
+      flipBehavior={
+        Array [
+          "top",
+          "right",
+          "bottom",
+          "left",
+          "top",
+          "right",
+          "bottom",
+        ]
+      }
+      isVisible={false}
+      lazy={true}
+      maxWidth="18.75rem"
+      onCreate={[Function]}
+      placement="top"
+      popperOptions={
+        Object {
+          "modifiers": Object {
+            "hide": Object {
+              "enabled": true,
+            },
+            "preventOverflow": Object {
+              "enabled": true,
+            },
+          },
+        }
+      }
+      theme="pf-tooltip"
+      trigger="mouseenter focus"
+      zIndex={9999}
+    >
+      <DataListCheck
+        aria-labelledby="kie-datalist-item-8035b580-6ae4-4aa8-9ec0-e18e19809e0b1"
+        isDisabled={true}
+      >
+        <div
+          className="pf-c-data-list__item-control"
+        >
+          <div
+            className="pf-c-data-list__check"
+          >
+            <input
+              aria-invalid={false}
+              aria-labelledby="kie-datalist-item-8035b580-6ae4-4aa8-9ec0-e18e19809e0b1"
+              checked={null}
+              disabled={true}
+              onChange={[Function]}
+              type="checkbox"
+            />
+          </div>
+        </div>
+      </DataListCheck>
+      <Portal
+        containerInfo={
+          <div>
+            <div
+              class=""
+              id=""
+              role="tooltip"
+            >
+              <div
+                class="pf-c-tooltip__content"
+              >
+                Management add-on capability not enabled & missing the kogito.service.url property. Contact your administrator to set up.
+              </div>
+            </div>
+          </div>
+        }
+      >
+        <div
+          className=""
+          id=""
+          role="tooltip"
+        >
+          <TooltipContent
+            isLeftAligned={false}
+          >
+            <div
+              className="pf-c-tooltip__content"
+            >
+              Management add-on capability not enabled & missing the kogito.service.url property. Contact your administrator to set up.
+            </div>
+          </TooltipContent>
+        </div>
+      </Portal>
+    </PopoverBase>
+  </Tooltip>
+</DisablePopup>
 `;

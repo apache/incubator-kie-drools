@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 import Moment from 'react-moment';
 import React, { useEffect, useState } from 'react';
 import {
@@ -39,18 +38,23 @@ import {
 } from '../../../utils/Utils';
 import ProcessInstance = GraphQL.ProcessInstance;
 
+type filterType = {
+  status: GraphQL.ProcessInstanceState[];
+  businessKey: string[];
+};
+
 interface IOwnProps {
   id: number;
   processInstanceData: ProcessInstance;
-  checkedArray: string[];
   initData: any;
   setInitData: any;
   loadingInitData: boolean;
   abortedObj: any;
   setAbortedObj: any;
-  setIsAllChecked: any;
+  setIsAllChecked: (isAllChecked: boolean) => void;
   setSelectedNumber: (selectedNumber: number) => void;
   selectedNumber: number;
+  filters: filterType;
 }
 
 enum TitleType {
@@ -60,7 +64,6 @@ enum TitleType {
 
 const ProcessListTableItems: React.FC<IOwnProps> = ({
   processInstanceData,
-  checkedArray,
   initData,
   setInitData,
   loadingInitData,
@@ -68,7 +71,8 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
   setAbortedObj,
   setIsAllChecked,
   selectedNumber,
-  setSelectedNumber
+  setSelectedNumber,
+  filters
 }) => {
   const [expanded, setexpanded] = useState([]);
   const [isOpen, setisOpen] = useState(false);
@@ -76,7 +80,6 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
   const [modalTitle, setModalTitle] = useState('');
   const [modalContent, setModalContent] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAbortModalOpen, setIsAbortModalOpen] = useState(false);
   const [titleType, setTitleType] = useState('');
   const isChecked = 'isChecked';
   const [
@@ -90,10 +93,6 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
 
   const handleModalToggle = () => {
     setIsModalOpen(!isModalOpen);
-  };
-
-  const handleAbortModalToggle = () => {
-    setIsAbortModalOpen(!isAbortModalOpen);
   };
 
   const onSelect = event => {
@@ -147,6 +146,25 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
         )
     );
   };
+
+  const onAbortClick = () => {
+    handleAbort(
+      processInstanceData,
+      () =>
+        onShowMessage(
+          'Abort operation',
+          `The process ${processInstanceData.processName} was successfully aborted.`,
+          TitleType.SUCCESS
+        ),
+      (errorMessage: string) =>
+        onShowMessage(
+          'Abort operation',
+          `Failed to abort process ${processInstanceData.processName}. Message: ${errorMessage}`,
+          TitleType.FAILURE
+        )
+    );
+  };
+
   const toggle = async _id => {
     const copyOfInitData = { ...initData };
     copyOfInitData.ProcessInstances.map(instance => {
@@ -167,7 +185,6 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
           ]
         : [...expanded, _id];
     setexpanded(newExpanded);
-
     if (!isLoaded) {
       getChildInstances({
         variables: {
@@ -256,7 +273,7 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
   };
   useEffect(() => {
     if (!loading && !loadingInitData && data !== undefined) {
-      data.ProcessInstances.map((instance: any) => {
+      data.ProcessInstances.forEach((instance: any) => {
         instance.isChecked = false;
       });
       const copyOfInitData = { ...initData };
@@ -283,33 +300,13 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
           <DropdownItem key={2} onClick={onSkipClick}>
             Skip
           </DropdownItem>,
-          <DropdownItem
-            key={4}
-            onClick={() =>
-              handleAbort(
-                processInstanceData,
-                setModalTitle,
-                setTitleType,
-                handleAbortModalToggle
-              )
-            }
-          >
+          <DropdownItem key={4} onClick={onAbortClick}>
             Abort
           </DropdownItem>
         ];
       } else {
         return [
-          <DropdownItem
-            key={4}
-            onClick={() =>
-              handleAbort(
-                processInstanceData,
-                setModalTitle,
-                setTitleType,
-                handleAbortModalToggle
-              )
-            }
-          >
+          <DropdownItem key={4} onClick={onAbortClick}>
             Abort
           </DropdownItem>
         ];
@@ -320,18 +317,6 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
   };
   return (
     <React.Fragment>
-      <ProcessListModal
-        isModalOpen={isAbortModalOpen}
-        handleModalToggle={handleAbortModalToggle}
-        checkedArray={checkedArray}
-        modalTitle={setTitle(titleType, modalTitle)}
-        isSingleAbort={true}
-        abortedMessageObj={{
-          [processInstanceData.id]: processInstanceData
-        }}
-        completedMessageObj={{}}
-        isAbortModalOpen={isAbortModalOpen}
-      />
       <ProcessListModal
         isModalOpen={isModalOpen}
         handleModalToggle={handleModalToggle}
@@ -381,7 +366,12 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
                 key={1}
                 id={'kie-datalist-item-' + processInstanceData.id}
               >
-                <Link to={'/Process/' + processInstanceData.id}>
+                <Link
+                  to={{
+                    pathname: '/Process/' + processInstanceData.id,
+                    state: { filters }
+                  }}
+                >
                   <div>
                     <strong>
                       <ProcessDescriptor
@@ -491,7 +481,7 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
                         id={index}
                         key={child.id}
                         processInstanceData={child}
-                        checkedArray={checkedArray}
+                        filters={filters}
                         initData={initData}
                         setInitData={setInitData}
                         loadingInitData={loading}

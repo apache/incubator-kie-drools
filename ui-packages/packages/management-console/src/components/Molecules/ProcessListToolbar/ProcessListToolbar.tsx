@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   DataToolbar,
   DataToolbarItem,
@@ -23,19 +23,22 @@ import _ from 'lodash';
 import './ProcessListToolbar.css';
 import { GraphQL } from '@kogito-apps/common';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
+import { handleAbortAll } from '../../../utils/Utils';
 
+type filterType = {
+  status: ProcessInstanceState[] | string[];
+  businessKey: string[];
+};
 interface IOwnProps {
-  checkedArray: any;
-  filterClick: any;
-  setCheckedArray: any;
-  setIsStatusSelected: any;
-  filters: any;
-  setFilters: any;
+  filterClick: (statusArray: ProcessInstanceState[] | string[]) => void;
+  filters: filterType;
+  setFilters: (filters) => void;
   initData: any;
-  setInitData: any;
+  setInitData: (initData) => void;
   abortedObj: any;
   setAbortedObj: any;
-  handleAbortAll: any;
+  setCompletedMessageObj: any;
+  setAbortedMessageObj: any;
   getProcessInstances: (options: any) => void;
   setSearchWord: (searchWord: string) => void;
   searchWord: string;
@@ -43,16 +46,17 @@ interface IOwnProps {
   setIsAllChecked: (isAllChecked: boolean) => void;
   setSelectedNumber: (selectedNumber: number) => void;
   selectedNumber: number;
+  statusArray: string[];
+  setStatusArray: (stautsArray) => void;
+  setModalTitle: (modalTitle: string) => void;
+  setTitleType: (titleType: string) => void;
+  handleAbortModalToggle: () => void;
 }
 const ProcessListToolbar: React.FC<IOwnProps> = ({
-  checkedArray,
   filterClick,
-  setCheckedArray,
   filters,
   setFilters,
-  setIsStatusSelected,
   abortedObj,
-  handleAbortAll,
   getProcessInstances,
   setSearchWord,
   searchWord,
@@ -62,100 +66,78 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
   setIsAllChecked,
   setAbortedObj,
   selectedNumber,
-  setSelectedNumber
+  setSelectedNumber,
+  statusArray,
+  setStatusArray,
+  setModalTitle,
+  setTitleType,
+  setAbortedMessageObj,
+  setCompletedMessageObj,
+  handleAbortModalToggle
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [isFilterClicked, setIsFilterClicked] = useState<boolean>(false);
+  const [isCheckboxDropdownOpen, setisCheckboxDropdownOpen] = useState<boolean>(
+    false
+  );
   const [shouldRefresh, setShouldRefresh] = useState<boolean>(true);
-  const [isCheckboxDropdownOpen, setisCheckboxDropdownOpen] = useState(false);
 
-  const onFilterClick = () => {
-    if (checkedArray.length === 0) {
-      setFilters({ ...filters, status: checkedArray });
-      setIsFilterClicked(true);
-      setIsStatusSelected(false);
-    } else {
-      setFilters({ ...filters, status: checkedArray });
-      filterClick();
-      setIsFilterClicked(true);
-      setIsStatusSelected(true);
-    }
+  const onFilterClick = (): void => {
     setShouldRefresh(true);
+    filters.status = statusArray;
+    searchWord.length > 0 &&
+      !filters.businessKey.includes(searchWord) &&
+      setFilters({
+        ...filters,
+        businessKey: [...filters.businessKey, searchWord]
+      });
+    filterClick(statusArray);
   };
 
-  const onSelect = event => {
+  const onSelect = (event): void => {
     const selection = event.target.id;
-    setIsFilterClicked(false);
     setShouldRefresh(false);
     if (selection) {
-      const index = checkedArray.indexOf(selection);
+      const index = statusArray.indexOf(selection);
       if (index === -1) {
-        setCheckedArray([...checkedArray, selection]);
+        setStatusArray([...statusArray, selection]);
       } else {
-        const tempArr = checkedArray.slice();
-        _.remove(tempArr, _temp => {
-          return _temp === selection;
+        const copyOfStatusArray = statusArray.slice();
+        _.remove(copyOfStatusArray, (status: string) => {
+          return status === selection;
         });
-        setCheckedArray(tempArr);
+        setStatusArray(copyOfStatusArray);
       }
     }
   };
 
-  const onDelete = (type = '', id = '') => {
+  const onDelete = (type: string = '', id: string = ''): void => {
+    setShouldRefresh(true);
     if (type === 'Status') {
-      if (checkedArray.length === 1 && filters.status.length === 1) {
-        const index = checkedArray.indexOf(id);
-        checkedArray.splice(index, 1);
-        setCheckedArray([]);
-        setFilters({ ...filters, status: [], businessKey: [] });
-        setIsStatusSelected(false);
-        setShouldRefresh(false);
-      } else if (!isFilterClicked) {
-        if (filters.status.length === 1) {
-          setCheckedArray([]);
-          setFilters({ ...filters, status: [], businessKey: [] });
-          setIsStatusSelected(false);
-          setIsFilterClicked(false);
-        } else {
-          const index = filters.status.indexOf(id);
-          checkedArray.splice(index, 1);
-          checkedArray = [...filters.status];
-          setCheckedArray(checkedArray);
-          filterClick(checkedArray);
-          setIsFilterClicked(true);
-          setShouldRefresh(true);
-        }
-      } else {
-        const index = checkedArray.indexOf(id);
-        checkedArray.splice(index, 1);
-        filterClick();
-        setShouldRefresh(true);
-      }
+      const copyOfStatusArray = statusArray.slice();
+      _.remove(copyOfStatusArray, (status: string) => {
+        return status === id;
+      });
+      setFilters({ ...filters, status: copyOfStatusArray });
+      setStatusArray(copyOfStatusArray);
+      filterClick(copyOfStatusArray);
     }
     if (type === 'Business key') {
       filters.businessKey.splice(filters.businessKey.indexOf(id), 1);
-      filterClick();
+      filterClick(statusArray);
     }
   };
 
-  useEffect(() => {
-    if (!checkedArray.length && isFilterClicked) {
-      setSearchWord('');
-      setCheckedArray(checkedArray);
-      setFilters({
-        ...filters,
-        status: checkedArray,
-        businessKey: [...filters.businessKey]
-      });
-    }
-  }, [checkedArray]);
-
-  const clearAll = () => {
+  const clearAll = (): void => {
+    setShouldRefresh(true);
     setSearchWord('');
-    setCheckedArray(['ACTIVE']);
-    setFilters({ ...filters, status: ['ACTIVE'], businessKey: [] });
+    setFilters({
+      ...filters,
+      status: [ProcessInstanceState.Active],
+      businessKey: []
+    });
+    setStatusArray([ProcessInstanceState.Active]);
     filters.businessKey = [];
-    filterClick(['ACTIVE']);
+    filterClick([ProcessInstanceState.Active]);
     getProcessInstances({
       variables: {
         state: ProcessInstanceState.Active,
@@ -163,19 +145,16 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
         limit: 10
       }
     });
-    setShouldRefresh(true);
   };
 
-  const onRefreshClick = () => {
-    if (shouldRefresh && checkedArray.length !== 0) {
-      filterClick(checkedArray);
-    }
+  const onRefreshClick = (): void => {
+    shouldRefresh && filterClick(statusArray);
   };
   const onStatusToggle = isExpandedItem => {
     setIsExpanded(isExpandedItem);
   };
 
-  const handleTextBoxChange = event => {
+  const handleTextBoxChange = (event): void => {
     const word = event;
     setSearchWord(word);
     if (word === '') {
@@ -183,17 +162,20 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
       return;
     }
   };
-  const handleEnterClick = e => {
+  const handleEnterClick = (e): void => {
     if (e.key === 'Enter') {
       setShouldRefresh(true);
-      filterClick(checkedArray);
+      searchWord.length > 0 && onFilterClick();
     }
   };
-  const checkboxDropdownToggle = () => {
+  const checkboxDropdownToggle = (): void => {
     setisCheckboxDropdownOpen(!isCheckboxDropdownOpen);
   };
 
-  const handleCheckboxSelectClick = (selection, isCheckboxClicked) => {
+  const handleCheckboxSelectClick = (
+    selection: string,
+    isCheckboxClicked: boolean
+  ): void => {
     if (selection === 'none') {
       setIsAllChecked(false);
       setSelectedNumber(0);
@@ -399,7 +381,7 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
             aria-label="Status"
             onToggle={onStatusToggle}
             onSelect={onSelect}
-            selections={checkedArray}
+            selections={statusArray}
             isExpanded={isExpanded}
             placeholderText="Status"
             id="status-select"
@@ -423,7 +405,7 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
               onKeyPress={handleEnterClick}
               placeholder="Filter by business key"
               value={searchWord}
-              isDisabled={checkedArray.length === 0}
+              isDisabled={statusArray.length === 0}
             />
           </InputGroup>
         </DataToolbarFilter>
@@ -431,7 +413,8 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
           <Button
             variant="primary"
             onClick={onFilterClick}
-            id="Apply-filter-button"
+            id="apply-filter-button"
+            isDisabled={statusArray.length === 0}
           >
             Apply filter
           </Button>
@@ -444,7 +427,20 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
     <React.Fragment>
       <DataToolbarItem>
         {Object.keys(abortedObj).length !== 0 ? (
-          <Button variant="secondary" onClick={handleAbortAll}>
+          <Button
+            variant="secondary"
+            onClick={() =>
+              handleAbortAll(
+                abortedObj,
+                initData,
+                setModalTitle,
+                setTitleType,
+                setAbortedMessageObj,
+                setCompletedMessageObj,
+                handleAbortModalToggle
+              )
+            }
+          >
             Abort selected
           </Button>
         ) : (
@@ -468,6 +464,7 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
             onClick={onRefreshClick}
             aria-label="Refresh list"
             id="refresh-button"
+            isDisabled={statusArray.length === 0}
           >
             <SyncIcon />
           </Button>

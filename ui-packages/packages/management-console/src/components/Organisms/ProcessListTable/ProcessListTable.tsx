@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DataList, Bullseye } from '@patternfly/react-core';
 import {
   ServerErrors,
@@ -13,19 +13,21 @@ import '@patternfly/patternfly/patternfly-addons.css';
 import './ProcessListTable.css';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
 
+type filterType = {
+  status: GraphQL.ProcessInstanceState[];
+  businessKey: string[];
+};
 interface IOwnProps {
   setInitData: any;
   setLimit: (limit: number) => void;
   initData: any;
   isLoading: boolean;
-  setIsError: any;
-  checkedArray: any;
+  setIsError: (isError: boolean) => void;
   abortedObj: any;
   setAbortedObj: any;
   pageSize: number;
-  isFilterClicked: boolean;
-  filters: any;
-  setIsAllChecked: any;
+  filters: filterType;
+  setIsAllChecked: (isAllChecked: boolean) => void;
   selectedNumber: number;
   setSelectedNumber: (selectedNumber: number) => void;
 }
@@ -36,36 +38,68 @@ const ProcessListTable: React.FC<IOwnProps> = ({
   setLimit,
   isLoading,
   setIsError,
-  checkedArray,
   abortedObj,
   setAbortedObj,
   pageSize,
-  isFilterClicked,
   filters,
   setIsAllChecked,
   selectedNumber,
   setSelectedNumber
 }) => {
+  const [checkedArray, setCheckedArray] = useState<ProcessInstanceState[]>(
+    filters.status
+  );
+  useEffect(() => {
+    setCheckedArray(filters.status);
+  }, [filters]);
+
+  const searchWordsArray = [];
+  if (filters.businessKey.length > 0) {
+    filters.businessKey.forEach((word: string) =>
+      searchWordsArray.push({ businessKey: { like: word } })
+    );
+  }
+
   const { loading, error, data } = GraphQL.useGetProcessInstancesQuery({
     variables: {
-      state: [ProcessInstanceState.Active],
+      state: checkedArray,
       offset: 0,
       limit: pageSize
     },
-    fetchPolicy: 'network-only',
-    notifyOnNetworkStatusChange: true
+    skip: filters.businessKey.length > 0,
+    fetchPolicy: 'network-only'
   });
+
+  const {
+    loading: loading1,
+    data: data1,
+    error: error1
+  } = GraphQL.useGetProcessInstancesWithBusinessKeyQuery({
+    variables: {
+      state: checkedArray,
+      offset: 0,
+      limit: pageSize,
+      businessKeys: searchWordsArray
+    },
+    skip: filters.businessKey.length === 0,
+    fetchPolicy: 'network-only'
+  });
+
+  useEffect(() => {
+    if (!loading1 && data1 !== undefined) {
+      data1.ProcessInstances.forEach((instance: any) => {
+        instance.isChecked = false;
+        instance.isOpen = false;
+      });
+    }
+    setInitData(data1);
+  }, [data1]);
+
   useEffect(() => {
     setIsError(false);
     setAbortedObj({});
-    if (
-      !loading &&
-      data !== undefined &&
-      filters.status.length === 1 &&
-      filters.status.includes('ACTIVE') &&
-      !isFilterClicked
-    ) {
-      data.ProcessInstances.map((instance: any) => {
+    if (!loading && data !== undefined) {
+      data.ProcessInstances.forEach((instance: any) => {
         instance.isChecked = false;
         instance.isOpen = false;
       });
@@ -74,7 +108,7 @@ const ProcessListTable: React.FC<IOwnProps> = ({
     setInitData(data);
   }, [data]);
 
-  if (loading || isLoading) {
+  if (loading || isLoading || loading1) {
     return (
       <Bullseye>
         <KogitoSpinner spinnerText="Loading process instances..." />
@@ -82,14 +116,19 @@ const ProcessListTable: React.FC<IOwnProps> = ({
     );
   }
 
-  if (error) {
+  if (error || error1) {
     setIsError(true);
-    return <ServerErrors error={error} />;
+    if (error1) {
+      return <ServerErrors error={error1} />;
+    }
+    if (error) {
+      return <ServerErrors error={error} />;
+    }
   }
 
   return (
     <DataList aria-label="Process instance list">
-      {!loading &&
+      {(!loading || !loading1) &&
         initData !== undefined &&
         initData.ProcessInstances.map((item, index) => {
           return (
@@ -97,7 +136,6 @@ const ProcessListTable: React.FC<IOwnProps> = ({
               id={index}
               key={item.id}
               processInstanceData={item}
-              checkedArray={checkedArray}
               initData={initData}
               setInitData={setInitData}
               loadingInitData={loading}
@@ -106,6 +144,7 @@ const ProcessListTable: React.FC<IOwnProps> = ({
               setIsAllChecked={setIsAllChecked}
               selectedNumber={selectedNumber}
               setSelectedNumber={setSelectedNumber}
+              filters={filters}
             />
           );
         })}

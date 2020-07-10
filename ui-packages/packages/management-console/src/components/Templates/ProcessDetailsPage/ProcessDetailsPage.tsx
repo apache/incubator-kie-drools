@@ -19,9 +19,9 @@ import {
 import {
   ServerErrors,
   ouiaPageTypeAndObjectId,
-  GraphQL,
   ProcessDescriptor,
-  KogitoSpinner
+  KogitoSpinner,
+  GraphQL
 } from '@kogito-apps/common';
 import React, { useState, useEffect } from 'react';
 import { Link, Redirect, RouteComponentProps } from 'react-router-dom';
@@ -38,21 +38,26 @@ interface MatchProps {
   instanceID: string;
 }
 
+enum TitleType {
+  SUCCESS = 'success',
+  FAILURE = 'failure'
+}
+
 const ProcessDetailsPage: React.FC<
   RouteComponentProps<MatchProps, {}, {}> & InjectedOuiaProps
 > = ({ ouiaContext, ...props }) => {
   const id = props.match.params.instanceID;
-  const [isAbortModalOpen, setIsAbortModalOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalTitle, setModalTitle] = useState<string>('');
   const [titleType, setTitleType] = useState<string>('');
+  const [modalContent, setModalContent] = useState<string>('');
   const currentPage = JSON.parse(window.localStorage.getItem('state'));
 
   const { loading, error, data } = GraphQL.useGetProcessInstanceByIdQuery({
     variables: { id }
   });
-
-  const handleAbortModalToggle = () => {
-    setIsAbortModalOpen(!isAbortModalOpen);
+  const handleModalToggle = () => {
+    setIsModalOpen(!isModalOpen);
   };
 
   useEffect(() => {
@@ -65,6 +70,33 @@ const ProcessDetailsPage: React.FC<
     return ouiaPageTypeAndObjectId(ouiaContext, 'process-instances', id);
   });
 
+  const onShowMessage = (
+    title: string,
+    content: string,
+    type: TitleType
+  ): void => {
+    setTitleType(type);
+    setModalTitle(title);
+    setModalContent(content);
+    handleModalToggle();
+  };
+  const onAbortClick = () => {
+    handleAbort(
+      data.ProcessInstances[0],
+      () =>
+        onShowMessage(
+          'Abort operation',
+          `The process ${data.ProcessInstances[0].processName} was successfully aborted.`,
+          TitleType.SUCCESS
+        ),
+      (errorMessage: string) =>
+        onShowMessage(
+          'Abort operation',
+          `Failed to abort process ${data.ProcessInstances[0].processName}. Message: ${errorMessage}`,
+          TitleType.FAILURE
+        )
+    );
+  };
   const abortButton = () => {
     if (
       (data.ProcessInstances[0].state === ProcessInstanceState.Active ||
@@ -74,18 +106,7 @@ const ProcessDetailsPage: React.FC<
       data.ProcessInstances[0].serviceUrl !== null
     ) {
       return (
-        <Button
-          variant="secondary"
-          id="abort-button"
-          onClick={() =>
-            handleAbort(
-              data.ProcessInstances[0],
-              setModalTitle,
-              setTitleType,
-              handleAbortModalToggle
-            )
-          }
-        >
+        <Button variant="secondary" id="abort-button" onClick={onAbortClick}>
           Abort
         </Button>
       );
@@ -139,18 +160,15 @@ const ProcessDetailsPage: React.FC<
         <>
           <PageSection variant="light">
             <ProcessListModal
-              isModalOpen={isAbortModalOpen}
-              handleModalToggle={handleAbortModalToggle}
-              checkedArray={data && [data.ProcessInstances[0].state]}
-              modalTitle={setTitle(titleType, modalTitle)}
-              isSingleAbort={true}
-              abortedMessageObj={
-                data && {
-                  [data.ProcessInstances[0].id]: data.ProcessInstances[0]
-                }
+              isModalOpen={isModalOpen}
+              handleModalToggle={handleModalToggle}
+              checkedArray={
+                data &&
+                data.ProcessInstances &&
+                data.ProcessInstances[0] && [data.ProcessInstances[0].state]
               }
-              completedMessageObj={{}}
-              isAbortModalOpen={isAbortModalOpen}
+              modalTitle={setTitle(titleType, modalTitle)}
+              modalContent={modalContent}
             />
             <PageTitle title="Process Details" />
             {!loading ? (
@@ -161,7 +179,11 @@ const ProcessDetailsPage: React.FC<
                       <Link to={'/'}>Home</Link>
                     </BreadcrumbItem>
                     {BreadCrumb.map((item, index) => {
-                      if (index === 1) {
+                      // checking the url if it contains /ProcessInstances to return the state back
+                      if (
+                        index === 1 ||
+                        (index === 0 && item === 'ProcessInstances')
+                      ) {
                         return (
                           <BreadcrumbItem key={index}>
                             <Link

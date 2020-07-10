@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MockedLoadMore = () => {
+const MockedLoadMore = (): React.ReactElement => {
   return <></>;
 };
 
