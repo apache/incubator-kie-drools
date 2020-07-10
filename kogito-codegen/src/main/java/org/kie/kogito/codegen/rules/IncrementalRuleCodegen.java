@@ -23,11 +23,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -355,30 +357,29 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
             this.addLabel(ruleUnit.label(), "rules");
             ruleUnit.setApplicationPackageName(packageName);
 
+            List<String> queryClasses = useRestServices ? generateQueriesEndpoint( errors, generatedFiles, ruleUnitHelper, ruleUnit ) : Collections.emptyList();
+
             generatedFiles.add( ruleUnit.generateFile( org.kie.kogito.codegen.GeneratedFile.Type.RULE) );
 
-            RuleUnitInstanceGenerator ruleUnitInstance = ruleUnit.instance(ruleUnitHelper);
+            RuleUnitInstanceGenerator ruleUnitInstance = ruleUnit.instance(ruleUnitHelper, queryClasses);
             generatedFiles.add( ruleUnitInstance.generateFile( org.kie.kogito.codegen.GeneratedFile.Type.RULE) );
 
             ruleUnit.pojo(ruleUnitHelper).ifPresent(p -> generatedFiles.add(p.generateFile( org.kie.kogito.codegen.GeneratedFile.Type.RULE)));
-
-            if ( useRestServices ) {
-                generateQueriesEndpoint( errors, generatedFiles, ruleUnitHelper, ruleUnit );
-            }
         }
     }
 
-    private void generateQueriesEndpoint( List<DroolsError> errors, List<org.kie.kogito.codegen.GeneratedFile> generatedFiles, RuleUnitHelper ruleUnitHelper, RuleUnitGenerator ruleUnit ) {
+    private List<String> generateQueriesEndpoint( List<DroolsError> errors, List<org.kie.kogito.codegen.GeneratedFile> generatedFiles, RuleUnitHelper ruleUnitHelper, RuleUnitGenerator ruleUnit ) {
         List<QueryEndpointGenerator> queries = ruleUnit.queries();
-        if (!queries.isEmpty()) {
-            if (annotator == null) {
-                generatedFiles.add( new RuleUnitDTOSourceClass( ruleUnit.getRuleUnitDescription(), ruleUnitHelper ).generateFile( org.kie.kogito.codegen.GeneratedFile.Type.DTO) );
-            }
-
-            for (QueryEndpointGenerator query : queries) {
-                generateQueryEndpoint( errors, generatedFiles, query );
-            }
+        if (queries.isEmpty()) {
+            return Collections.emptyList();
         }
+
+        if (annotator == null) {
+            generatedFiles.add( new RuleUnitDTOSourceClass( ruleUnit.getRuleUnitDescription(), ruleUnitHelper ).generateFile( org.kie.kogito.codegen.GeneratedFile.Type.DTO) );
+        }
+
+        return queries.stream().map( q -> generateQueryEndpoint( errors, generatedFiles, q ) )
+                .flatMap( o -> o.isPresent() ? Stream.of(o.get()) : Stream.empty() ).collect( toList() );
     }
 
     private void initRuleUnitHelper( RuleUnitHelper ruleUnitHelper, RuleUnitDescription ruleUnitDesc ) {
@@ -391,7 +392,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         }
     }
 
-    private void generateQueryEndpoint( List<DroolsError> errors, List<org.kie.kogito.codegen.GeneratedFile> generatedFiles, QueryEndpointGenerator query ) {
+    private Optional<String> generateQueryEndpoint( List<DroolsError> errors, List<org.kie.kogito.codegen.GeneratedFile> generatedFiles, QueryEndpointGenerator query ) {
         if (useMonitoring){
             String dashboard = GrafanaConfigurationWriter.generateOperationalDashboard(operationalDashboardDmnTemplate, query.getEndpointName());
 
@@ -402,9 +403,13 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
         if (query.validate()) {
             generatedFiles.add( query.generateFile( org.kie.kogito.codegen.GeneratedFile.Type.QUERY ) );
-        } else {
-            errors.add( query.getError() );
+            QueryGenerator queryGenerator = query.getQueryGenerator();
+            generatedFiles.add( query.getQueryGenerator().generateFile( org.kie.kogito.codegen.GeneratedFile.Type.QUERY ) );
+            return Optional.of( queryGenerator.getQueryClassName() );
         }
+
+        errors.add( query.getError() );
+        return Optional.empty();
     }
 
     private void generateSessionUnits( List<org.kie.kogito.codegen.GeneratedFile> generatedFiles ) {

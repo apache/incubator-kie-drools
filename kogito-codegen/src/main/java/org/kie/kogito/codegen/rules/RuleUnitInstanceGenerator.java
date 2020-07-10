@@ -16,6 +16,7 @@
 package org.kie.kogito.codegen.rules;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -51,17 +52,19 @@ public class RuleUnitInstanceGenerator implements FileGenerator {
     private final String generatedFilePath;
     private final RuleUnitDescription ruleUnitDescription;
     private final RuleUnitHelper ruleUnitHelper;
+    private final List<String> queryClasses;
 
     public static String qualifiedName(String packageName, String typeName) {
         return packageName + "." + typeName + "RuleUnitInstance";
     }
 
-    public RuleUnitInstanceGenerator(RuleUnitDescription ruleUnitDescription, RuleUnitHelper ruleUnitHelper) {
+    public RuleUnitInstanceGenerator( RuleUnitDescription ruleUnitDescription, RuleUnitHelper ruleUnitHelper, List<String> queryClasses ) {
         this.ruleUnitDescription = ruleUnitDescription;
         this.targetTypeName = ruleUnitDescription.getSimpleName() + "RuleUnitInstance";
         this.targetCanonicalName = ruleUnitDescription.getPackageName() + "." + targetTypeName;
         this.generatedFilePath = targetCanonicalName.replace('.', '/') + ".java";
         this.ruleUnitHelper = ruleUnitHelper;
+        this.queryClasses = queryClasses;
     }
 
     @Override
@@ -137,6 +140,27 @@ public class RuleUnitInstanceGenerator implements FileGenerator {
         return methodDeclaration;
     }
 
+    private MethodDeclaration createQueryMethod() {
+        MethodDeclaration methodDeclaration = new MethodDeclaration();
+
+        BlockStmt methodBlock = new BlockStmt();
+        methodDeclaration.setName("createRuleUnitQuery")
+                .addAnnotation( "Override" )
+                .addModifier(Modifier.Keyword.PROTECTED)
+                .addTypeParameter( "Q" )
+                .addParameter("Class<? extends org.kie.kogito.rules.RuleUnitQuery<Q>>", "query")
+                .setType("org.kie.kogito.rules.RuleUnitQuery<Q>")
+                .setBody(methodBlock);
+
+        String statement = "if (@@@.class.equals( query )) return (org.kie.kogito.rules.RuleUnitQuery<Q>) new @@@(this);";
+        for (String queryClass : queryClasses) {
+            methodBlock.addStatement( statement.replaceAll( "@@@", queryClass ) );
+        }
+        methodBlock.addStatement( "throw new IllegalArgumentException(\"Unknown query: \" + query.getCanonicalName());" );
+
+        return methodDeclaration;
+    }
+
     private String getEntryPointName( RuleUnitDescription ruleUnitDescription, String propertyName ) {
         Class<?> ruleUnitClass = ruleUnitDescription.getRuleUnitClass();
         if (ruleUnitClass == null) {
@@ -176,6 +200,9 @@ public class RuleUnitInstanceGenerator implements FileGenerator {
                         new NameExpr("session")
                 )));
         classDecl.addMember(bindMethod());
+        if (!queryClasses.isEmpty()) {
+            classDecl.addMember(createQueryMethod());
+        }
         classDecl.getMembers().sort(new BodyDeclarationComparator());
         return classDecl;
     }

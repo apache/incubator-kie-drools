@@ -30,8 +30,7 @@ public class $unit$Query$name$Endpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     public List<$ReturnType$> executeQuery($UnitTypeDTO$ unitDTO) {
         RuleUnitInstance<$UnitType$> instance = ruleUnit.createInstance();
-        List<$ReturnType$> response = instance.executeQuery( "$queryName$" ).stream().map( this::toResult ).collect( toList() );
-        return response;
+        return instance.executeQuery($unit$Query$name$.class);
     }
 
     @POST()
@@ -42,9 +41,5 @@ public class $unit$Query$name$Endpoint {
         List<$ReturnType$> results = executeQuery(unitDTO);
         $ReturnType$ response = results.isEmpty() ? null : results.get(0);
         return response;
-    }
-
-    private $ReturnType$ toResult(Map<String, Object> tuple) {
-        return ($ReturnType$) tuple.get("");
     }
 }

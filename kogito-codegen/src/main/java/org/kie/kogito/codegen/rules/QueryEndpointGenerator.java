@@ -23,7 +23,6 @@ import java.util.stream.Stream;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
-import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
@@ -31,12 +30,10 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.expr.AssignExpr;
-import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.CatchClause;
@@ -55,9 +52,7 @@ import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseStatement;
-import static org.drools.core.util.StringUtils.ucFirst;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classNameToReferenceType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 
 public class QueryEndpointGenerator implements FileGenerator {
 
@@ -67,6 +62,7 @@ public class QueryEndpointGenerator implements FileGenerator {
 
     private final String name;
     private final String endpointName;
+    private final String queryClassName;
     private final String targetCanonicalName;
     private final String generatedFilePath;
     private final boolean useMonitoring;
@@ -78,9 +74,14 @@ public class QueryEndpointGenerator implements FileGenerator {
         this.endpointName = toKebabCase(name);
         this.annotator = annotator;
 
-        this.targetCanonicalName = ruleUnit.getSimpleName() + "Query" + name + "Endpoint";
+        this.queryClassName = ruleUnit.getSimpleName() + "Query" + name;
+        this.targetCanonicalName = queryClassName + "Endpoint";
         this.generatedFilePath = (query.getNamespace() + "." + targetCanonicalName).replace('.', '/') + ".java";
         this.useMonitoring = useMonitoring;
+    }
+
+    public QueryGenerator getQueryGenerator() {
+        return new QueryGenerator(ruleUnit, query, name);
     }
 
     @Override
@@ -179,7 +180,7 @@ public class QueryEndpointGenerator implements FileGenerator {
                 .getBody()
                 .orElseThrow(() -> new NoSuchElementException("A method declaration doesn't contain a body!"))
                 .getStatement(1);
-        returnStatement.findAll(VariableDeclarator.class).forEach(decl -> setGeneric(decl.getType(), returnType));
+        returnStatement.findAll(ClassExpr.class).forEach( expr -> expr.setType( queryClassName ) );
 
         MethodDeclaration queryMethodSingle = clazz.getMethodsByName("executeQueryFirst").get(0);
         queryMethodSingle.getParameter(0).setType(ruleUnit.getCanonicalName() + (hasDI ? "" : "DTO"));
@@ -236,71 +237,31 @@ public class QueryEndpointGenerator implements FileGenerator {
     }
 
     private String getReturnType(ClassOrInterfaceDeclaration clazz) {
-        MethodDeclaration toResultMethod = clazz.getMethodsByName("toResult").get(0);
-        String returnType;
         if (query.getBindings().size() == 1) {
             Map.Entry<String, Class<?>> binding = query.getBindings().entrySet().iterator().next();
-            String name = binding.getKey();
-            returnType = binding.getValue().getCanonicalName();
-
-            Statement statement = toResultMethod
-                    .getBody()
-                    .orElseThrow(() -> new NoSuchElementException("A method declaration doesn't contain a body!"))
-                    .getStatement(0);
-
-            statement.findFirst(CastExpr.class).orElseThrow(() -> new NoSuchElementException("CastExpr not found in template.")).setType(returnType);
-            statement.findFirst(StringLiteralExpr.class).orElseThrow(() -> new NoSuchElementException("StringLiteralExpr not found in template.")).setString(name);
-        } else {
-            returnType = "Result";
-            generateResultClass(clazz, toResultMethod);
+            return binding.getValue().getCanonicalName();
         }
-
-        toResultMethod.setType(returnType);
-        return returnType;
+        return queryClassName + ".Result";
     }
 
-    private void generateResultClass(ClassOrInterfaceDeclaration clazz, MethodDeclaration toResultMethod) {
-        ClassOrInterfaceDeclaration resultClass = new ClassOrInterfaceDeclaration(new NodeList<Modifier>(Modifier.publicModifier(), Modifier.staticModifier()), false, "Result");
-        clazz.addMember(resultClass);
-
-        ConstructorDeclaration constructor = resultClass.addConstructor(Modifier.Keyword.PUBLIC);
-        BlockStmt constructorBody = constructor.createBody();
-
-        ObjectCreationExpr resultCreation = new ObjectCreationExpr();
-        resultCreation.setType("Result");
-        BlockStmt resultMethodBody = toResultMethod.createBody();
-        resultMethodBody.addStatement(new ReturnStmt(resultCreation));
-
-        query.getBindings().forEach((name, type) -> {
-            resultClass.addField(type, name, Modifier.Keyword.PRIVATE, Modifier.Keyword.FINAL);
-
-            MethodDeclaration getterMethod = resultClass.addMethod("get" + ucFirst(name), Modifier.Keyword.PUBLIC);
-            getterMethod.setType(type);
-            BlockStmt body = getterMethod.createBody();
-            body.addStatement(new ReturnStmt(new NameExpr(name)));
-
-            constructor.addAndGetParameter(type, name);
-            constructorBody.addStatement(new AssignExpr(new NameExpr("this." + name), new NameExpr(name), AssignExpr.Operator.ASSIGN));
-
-            MethodCallExpr callExpr = new MethodCallExpr(new NameExpr("tuple"), "get");
-            callExpr.addArgument(new StringLiteralExpr(name));
-            resultCreation.addArgument(new CastExpr(classToReferenceType(type), callExpr));
-        });
+    private void interpolateStrings(StringLiteralExpr vv) {
+        String interpolated = vv.getValue()
+                .replace("$name$", name)
+                .replace("$endpointName$", endpointName)
+                .replace("$queryName$", query.getName())
+                .replace("$prometheusName$", endpointName);
+        vv.setString(interpolated);
     }
 
     private void setUnitGeneric(Type type) {
         setGeneric(type, ruleUnit);
     }
 
-    private void setGeneric(Type type, RuleUnitDescription ruleUnit) {
+    static void setGeneric(Type type, RuleUnitDescription ruleUnit) {
         type.asClassOrInterfaceType().setTypeArguments(classNameToReferenceType(ruleUnit.getCanonicalName()));
     }
 
-    private void setGeneric(Type type, Class<?> typeArgument) {
-        type.asClassOrInterfaceType().setTypeArguments(classToReferenceType(typeArgument));
-    }
-
-    private void setGeneric(Type type, String typeArgument) {
+    static void setGeneric(Type type, String typeArgument) {
         type.asClassOrInterfaceType().setTypeArguments(parseClassOrInterfaceType(toNonPrimitiveType(typeArgument)));
     }
 
@@ -324,15 +285,6 @@ public class QueryEndpointGenerator implements FileGenerator {
                 return "Boolean";
         }
         return type;
-    }
-
-    private void interpolateStrings(StringLiteralExpr vv) {
-        String interpolated = vv.getValue()
-                .replace("$name$", name)
-                .replace("$endpointName$", endpointName)
-                .replace("$queryName$", query.getName())
-                .replace("$prometheusName$", endpointName);
-        vv.setString(interpolated);
     }
 
     private static String toCamelCase(String inputString) {

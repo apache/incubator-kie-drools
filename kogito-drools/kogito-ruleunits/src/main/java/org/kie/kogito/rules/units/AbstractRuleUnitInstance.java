@@ -24,8 +24,9 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.time.SessionClock;
 import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.RuleUnitInstance;
 import org.kie.kogito.rules.RuleUnitData;
+import org.kie.kogito.rules.RuleUnitInstance;
+import org.kie.kogito.rules.RuleUnitQuery;
 
 public class AbstractRuleUnitInstance<T extends RuleUnitData> implements RuleUnitInstance<T> {
 
@@ -40,13 +41,28 @@ public class AbstractRuleUnitInstance<T extends RuleUnitData> implements RuleUni
         bind( runtime, unitMemory );
     }
 
+    @Override
     public int fire() {
         return runtime.fireAllRules();
     }
 
-    public List<Map<String, Object>> executeQuery( String query, Object... arguments) {
+    @Override
+    public List<Map<String, Object>> executeQuery(String query) {
         fire();
-        return runtime.getQueryResults(query, arguments).toList();
+        return runtime.getQueryResults(query).toList();
+    }
+
+    @Override
+    public <Q> Q executeQuery(Class<? extends RuleUnitQuery<Q>> query) {
+        return createRuleUnitQuery( query ).execute();
+    }
+
+    protected <Q> RuleUnitQuery<Q> createRuleUnitQuery( Class<? extends RuleUnitQuery<Q>> query ) {
+        try {
+            return query.getConstructor( RuleUnitInstance.class ).newInstance( this );
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException( e );
+        }
     }
 
     @Override

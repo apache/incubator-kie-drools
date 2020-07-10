@@ -69,8 +69,8 @@ public class RuleUnitGenerator implements FileGenerator {
         this.applicationPackageName = ApplicationGenerator.DEFAULT_PACKAGE_NAME;
     }
 
-    public RuleUnitInstanceGenerator instance(RuleUnitHelper ruleUnitHelper) {
-        return new RuleUnitInstanceGenerator(ruleUnit, ruleUnitHelper);
+    public RuleUnitInstanceGenerator instance(RuleUnitHelper ruleUnitHelper, List<String> queryClasses) {
+        return new RuleUnitInstanceGenerator(ruleUnit, ruleUnitHelper, queryClasses);
     }
 
     public List<QueryEndpointGenerator> queries() {
