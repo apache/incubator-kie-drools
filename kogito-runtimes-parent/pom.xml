@@ -258,6 +258,16 @@
         <version>${version.org.kie7}</version>
       </dependency>
       <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-validation</artifactId>
+        <version>${version.org.kie7}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-jpmml</artifactId>
+        <version>${version.org.kie7}</version>
+      </dependency>
+      <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-decisiontables</artifactId>
         <version>${version.org.kie7}</version>
