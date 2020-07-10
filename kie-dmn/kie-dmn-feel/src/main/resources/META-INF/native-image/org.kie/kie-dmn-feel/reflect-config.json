@@ -747,33 +747,6 @@
         "allPublicClasses": true
     },
     {
-        "name": "org.kie.dmn.feel.runtime.functions.interval.OverlappedAfterByFunction",
-        "allDeclaredConstructors": true,
-        "allPublicConstructors": true,
-        "allDeclaredMethods": true,
-        "allPublicMethods": true,
-        "allDeclaredClasses": true,
-        "allPublicClasses": true
-    },
-    {
-        "name": "org.kie.dmn.feel.runtime.functions.interval.OverlappedBeforeByFunction",
-        "allDeclaredConstructors": true,
-        "allPublicConstructors": true,
-        "allDeclaredMethods": true,
-        "allPublicMethods": true,
-        "allDeclaredClasses": true,
-        "allPublicClasses": true
-    },
-    {
-        "name": "org.kie.dmn.feel.runtime.functions.interval.OverlappedByFunction",
-        "allDeclaredConstructors": true,
-        "allPublicConstructors": true,
-        "allDeclaredMethods": true,
-        "allPublicMethods": true,
-        "allDeclaredClasses": true,
-        "allPublicClasses": true
-    },
-    {
         "name": "org.kie.dmn.feel.runtime.functions.interval.OverlapsAfterFunction",
         "allDeclaredConstructors": true,
         "allPublicConstructors": true,
