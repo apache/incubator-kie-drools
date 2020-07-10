@@ -41,7 +41,6 @@ import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSucce
 
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
@@ -133,7 +132,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         }
 
         if (drlxParseResult.isTemporal() && drlxParseResult.getLeft() != null && !(drlxParseResult.getLeft().getExpression() instanceof NameExpr)) {
-            exprDSL.addArgument( generateLambdaWithoutParameters(drlxParseResult.getLeft().getExpression()) );
+            exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getLeft(), drlxParseResult.getPatternType()));
         }
 
         usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
@@ -145,7 +144,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         if (drlxParseResult.getRightLiteral() != null) {
             exprDSL.addArgument( "" + drlxParseResult.getRightLiteral() );
         } else if (drlxParseResult.isTemporal() && drlxParseResult.getRight() != null && !(drlxParseResult.getRight().getExpression() instanceof NameExpr)) {
-            exprDSL.addArgument( generateLambdaWithoutParameters(drlxParseResult.getRight().getExpression()) );
+            exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getRight(), drlxParseResult.getPatternType()));
         }
 
         exprDSL.addArgument(buildConstraintExpression( drlxParseResult, drlxParseResult.getExpr() ));

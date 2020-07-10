@@ -43,6 +43,7 @@ import com.github.javaparser.ast.type.Type;
 import org.drools.model.Index;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
@@ -55,6 +56,7 @@ import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import static java.util.Optional.ofNullable;
 
 import static org.drools.model.bitmask.BitMaskUtil.isAccessibleProperties;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
@@ -293,5 +295,19 @@ public abstract class AbstractExpressionBuilder {
 
     boolean shouldBuildReactOn(SingleDrlxParseSuccess drlxParseResult) {
         return !drlxParseResult.isTemporal() && !drlxParseResult.getReactOnProperties().isEmpty() && context.isPropertyReactive( drlxParseResult.getPatternType() );
+    }
+
+    protected Expression generateLambdaForTemporalConstraint(TypedExpression typedExpression, Class<?> patternType) {
+        Expression expr = typedExpression.getExpression();
+        Collection<String> usedDeclarations = DrlxParseUtil.collectUsedDeclarationsInExpression(expr);
+        boolean containsThis = usedDeclarations.contains(THIS_PLACEHOLDER);
+        if (containsThis) {
+            usedDeclarations.remove(THIS_PLACEHOLDER);
+        }
+        Expression generatedExpr = generateLambdaWithoutParameters(usedDeclarations, expr, !containsThis, Optional.ofNullable(patternType), context);
+        if (generatedExpr instanceof LambdaExpr) {
+            context.getPackageModel().getLambdaReturnTypes().put((LambdaExpr) generatedExpr, typedExpression.getType());
+        }
+        return generatedExpr;
     }
 }
