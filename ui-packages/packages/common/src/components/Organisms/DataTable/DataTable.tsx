@@ -7,7 +7,11 @@ import {
   ICell,
   IRow
 } from '@patternfly/react-table';
-import { KogitoSpinner, KogitoEmptyState, KogitoEmptyStateType } from '@kogito-apps/common';
+import KogitoSpinner from '../../Atoms/KogitoSpinner/KogitoSpinner';
+import {
+  KogitoEmptyState,
+  KogitoEmptyStateType
+} from '../../Atoms/KogitoEmptyState/KogitoEmptyState';
 import '@patternfly/patternfly/patternfly-addons.css';
 import _ from 'lodash';
 import uuidv4 from 'uuid';

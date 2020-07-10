@@ -1,6 +1,4 @@
 import {
-  Breadcrumb,
-  BreadcrumbItem,
   Card,
   Grid,
   GridItem,
@@ -10,14 +8,15 @@ import {
   Bullseye,
   Label
 } from '@patternfly/react-core';
-import _ from 'lodash';
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import PageTitle from '../../Molecules/PageTitle/PageTitle';
-import './DataTable.css';
-import DataTable from '../../Organisms/DataTable/DataTable';
+import UserTaskPageHeader from '../../Molecules/UserTaskPageHeader/UserTaskPageHeader';
+import './UserTaskDataTable.css';
 import { useGetUserTasksByStatesQuery } from '../../../graphql/types';
-import { ouiaPageTypeAndObjectId, KogitoSpinner } from '@kogito-apps/common';
+import {
+  ouiaPageTypeAndObjectId,
+  KogitoSpinner,
+  DataTable
+} from '@kogito-apps/common';
 import {
   ICell,
   ITransform,
@@ -40,7 +39,9 @@ const stateColumnTransformer: ITransform = (value: IFormatterValueType) => {
   };
 };
 
-const DataTableContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
+const UserTaskDataTableContainer: React.FC<InjectedOuiaProps> = ({
+  ouiaContext
+}) => {
   const {
     loading,
     error,
@@ -85,19 +86,11 @@ const DataTableContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
 
   return (
     <React.Fragment>
-      <PageSection variant="light">
-        <PageTitle title="User Tasks" />
-        <Breadcrumb>
-          <BreadcrumbItem>
-            <Link to={'/'}>Home</Link>
-          </BreadcrumbItem>
-          <BreadcrumbItem isActive>User Tasks</BreadcrumbItem>
-        </Breadcrumb>
-      </PageSection>
+      <UserTaskPageHeader />
       <PageSection>
         <Grid gutter="md">
           <GridItem span={12}>
-            <Card className="data-table">
+            <Card className="kogito-task-console--user-task_table-OverFlow">
               <DataTable
                 data={data ? data.UserTaskInstances : undefined}
                 isLoading={loading}
@@ -115,4 +108,4 @@ const DataTableContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
   );
 };
 
-export default withOuiaContext(DataTableContainer);
+export default withOuiaContext(UserTaskDataTableContainer);

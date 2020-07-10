@@ -1,0 +1,219 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UserTaskDataTableContainer component tests Should render UserTaskDataTableContainer correctly 1`] = `
+<UserTaskDataTableContainer
+  ouiaContext={
+    Object {
+      "isOuia": false,
+      "ouiaId": null,
+    }
+  }
+>
+  <MockUserTaskPageHeader />
+  <PageSection>
+    <section
+      className="pf-c-page__main-section"
+    >
+      <Grid
+        gutter="md"
+      >
+        <div
+          className="pf-l-grid pf-m-gutter"
+        >
+          <GridItem
+            span={12}
+          >
+            <div
+              className="pf-l-grid__item pf-m-12-col"
+            >
+              <Card
+                className="kogito-task-console--user-task_table-OverFlow"
+              >
+                <article
+                  className="pf-c-card kogito-task-console--user-task_table-OverFlow"
+                >
+                  <DataTable
+                    LoadingComponent={
+                      <Bullseye>
+                        <KogitoSpinner
+                          spinnerText="Loading user tasks..."
+                        />
+                      </Bullseye>
+                    }
+                    columns={
+                      Array [
+                        Object {
+                          "data": "processId",
+                          "title": "ProcessId",
+                        },
+                        Object {
+                          "data": "name",
+                          "title": "Name",
+                        },
+                        Object {
+                          "data": "priority",
+                          "title": "Priority",
+                        },
+                        Object {
+                          "data": "processInstanceId",
+                          "title": "ProcessInstanceId",
+                        },
+                        Object {
+                          "cellTransforms": Array [
+                            [Function],
+                          ],
+                          "data": "state",
+                          "title": "State",
+                        },
+                      ]
+                    }
+                    data={
+                      Array [
+                        Object {
+                          "__typename": "UserTaskInstance",
+                          "actualOwner": null,
+                          "adminGroups": Array [],
+                          "adminUsers": Array [],
+                          "completed": null,
+                          "description": "",
+                          "excludedUsers": Array [],
+                          "id": "047ec38d-5d57-4330-8c8d-9bd67b53a529",
+                          "inputs": "{\\"flight\\":{\\"flightNumber\\":\\"MX555\\",\\"seat\\":null,\\"gate\\":null,\\"departure\\":\\"2019-12-09T23:00:00.000+01:00\\",\\"arrival\\":\\"2019-12-14T23:00:00.000+01:00\\"},\\"TaskName\\":\\"ConfirmTravel\\",\\"NodeName\\":\\"Confirm travel\\",\\"Priority\\":\\"1\\",\\"Skippable\\":\\"true\\",\\"hotel\\":{\\"name\\":\\"Perfect hotel\\",\\"address\\":{\\"street\\":\\"street\\",\\"city\\":\\"New York\\",\\"zipCode\\":\\"12345\\",\\"country\\":\\"US\\"},\\"phone\\":\\"09876543\\",\\"bookingNumber\\":\\"XX-012345\\",\\"room\\":null}}",
+                          "name": "Confirm travel",
+                          "outputs": "{\\"ActorId\\":\\"\\"}",
+                          "potentialGroups": Array [],
+                          "potentialUsers": Array [],
+                          "priority": "1",
+                          "processId": "travels",
+                          "processInstanceId": "9ae407dd-cdfa-4722-8a49-0a6d2e14550d",
+                          "referenceName": "ConfirmTravel",
+                          "rootProcessId": null,
+                          "rootProcessInstanceId": null,
+                          "started": "2020-02-19T10:59:34.185Z",
+                          "state": "Ready",
+                        },
+                        Object {
+                          "__typename": "UserTaskInstance",
+                          "actualOwner": null,
+                          "adminGroups": Array [],
+                          "adminUsers": Array [],
+                          "completed": null,
+                          "description": null,
+                          "excludedUsers": Array [],
+                          "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                          "inputs": "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}\\"",
+                          "name": "Apply for visa",
+                          "outputs": "{}",
+                          "potentialGroups": Array [],
+                          "potentialUsers": Array [],
+                          "priority": "1",
+                          "processId": "travels",
+                          "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
+                          "referenceName": "VisaApplication",
+                          "rootProcessId": null,
+                          "rootProcessInstanceId": null,
+                          "started": "2020-02-19T11:11:56.282Z",
+                          "state": null,
+                        },
+                      ]
+                    }
+                    isLoading={false}
+                    networkStatus={1}
+                    refetch={[MockFunction]}
+                  >
+                    <MockedComponent />
+                  </DataTable>
+                </article>
+              </Card>
+            </div>
+          </GridItem>
+        </div>
+      </Grid>
+    </section>
+  </PageSection>
+</UserTaskDataTableContainer>
+`;
+
+exports[`UserTaskDataTableContainer component tests Should render UserTaskDataTableContainer with no data 1`] = `
+<UserTaskDataTableContainer
+  ouiaContext={
+    Object {
+      "isOuia": false,
+      "ouiaId": null,
+    }
+  }
+>
+  <MockUserTaskPageHeader />
+  <PageSection>
+    <section
+      className="pf-c-page__main-section"
+    >
+      <Grid
+        gutter="md"
+      >
+        <div
+          className="pf-l-grid pf-m-gutter"
+        >
+          <GridItem
+            span={12}
+          >
+            <div
+              className="pf-l-grid__item pf-m-12-col"
+            >
+              <Card
+                className="kogito-task-console--user-task_table-OverFlow"
+              >
+                <article
+                  className="pf-c-card kogito-task-console--user-task_table-OverFlow"
+                >
+                  <DataTable
+                    LoadingComponent={
+                      <Bullseye>
+                        <KogitoSpinner
+                          spinnerText="Loading user tasks..."
+                        />
+                      </Bullseye>
+                    }
+                    columns={
+                      Array [
+                        Object {
+                          "data": "processId",
+                          "title": "ProcessId",
+                        },
+                        Object {
+                          "data": "name",
+                          "title": "Name",
+                        },
+                        Object {
+                          "data": "priority",
+                          "title": "Priority",
+                        },
+                        Object {
+                          "data": "processInstanceId",
+                          "title": "ProcessInstanceId",
+                        },
+                        Object {
+                          "cellTransforms": Array [
+                            [Function],
+                          ],
+                          "data": "state",
+                          "title": "State",
+                        },
+                      ]
+                    }
+                    isLoading={false}
+                    networkStatus={1}
+                    refetch={[MockFunction]}
+                  >
+                    <MockedComponent />
+                  </DataTable>
+                </article>
+              </Card>
+            </div>
+          </GridItem>
+        </div>
+      </Grid>
+    </section>
+  </PageSection>
+</UserTaskDataTableContainer>
+`;

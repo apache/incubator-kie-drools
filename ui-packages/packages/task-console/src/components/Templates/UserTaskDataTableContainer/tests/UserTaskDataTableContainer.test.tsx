@@ -1,14 +1,23 @@
 import React from 'react';
-import DataTableContainer from '../DataTableContainer';
+import UserTaskDataTableContainer from '../UserTaskDataTableContainer';
 import { getWrapperAsync } from '@kogito-apps/common';
 import { MemoryRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/react-testing';
 
-jest.mock('../../../Organisms/DataTable/DataTable');
-jest.unmock('../../../../graphql/types');
-
+const MockedComponent = (): React.ReactElement => {
+  return <></>;
+};
 // tslint:disable-next-line: no-var-requires
 const mockGraphqlTypes = require('../../../../graphql/types');
+
+jest.mock('../../../Molecules/UserTaskPageHeader/UserTaskPageHeader');
+jest.mock('@kogito-apps/common', () => ({
+  ...jest.requireActual('@kogito-apps/common'),
+  DataTable: () => {
+    return <MockedComponent />;
+  }
+}));
+jest.unmock('../../../../graphql/types');
 
 const mockUserTaskInstancesData = {
   UserTaskInstances: [
@@ -63,8 +72,8 @@ const mockUserTaskInstancesData = {
   ]
 };
 
-describe('DataTableContainer component tests', () => {
-  it('Should render DataTableContainer correctly', async () => {
+describe('UserTaskDataTableContainer component tests', () => {
+  it('Should render UserTaskDataTableContainer correctly', async () => {
     mockGraphqlTypes.useGetUserTasksByStatesQuery = jest.fn().mockReturnValue({
       loading: false,
       error: undefined,
@@ -76,15 +85,15 @@ describe('DataTableContainer component tests', () => {
     const wrapper = await getWrapperAsync(
       <Router>
         <MockedProvider>
-          <DataTableContainer />
+          <UserTaskDataTableContainer />
         </MockedProvider>
       </Router>,
-      'DataTableContainer'
+      'UserTaskDataTableContainer'
     );
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('Should render DataTableContainer with no data', async () => {
+  it('Should render UserTaskDataTableContainer with no data', async () => {
     mockGraphqlTypes.useGetUserTasksByStatesQuery = jest.fn().mockReturnValue({
       loading: false,
       error: undefined,
@@ -95,10 +104,10 @@ describe('DataTableContainer component tests', () => {
     const wrapper = await getWrapperAsync(
       <Router>
         <MockedProvider>
-          <DataTableContainer />
+          <UserTaskDataTableContainer />
         </MockedProvider>
       </Router>,
-      'DataTableContainer'
+      'UserTaskDataTableContainer'
     );
     expect(wrapper).toMatchSnapshot();
     expect(mockGraphqlTypes.useGetUserTasksByStatesQuery).toBeCalled();

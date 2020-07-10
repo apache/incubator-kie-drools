@@ -1,4 +1,7 @@
 export {
+  default as DataTable
+} from './src/components/Organisms/DataTable/DataTable';
+export {
   default as KogitoSpinner
 } from './src/components/Atoms/KogitoSpinner/KogitoSpinner';
 export {

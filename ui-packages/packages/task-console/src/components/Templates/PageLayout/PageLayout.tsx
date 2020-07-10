@@ -13,7 +13,7 @@ import taskConsoleLogo from '../../../static/taskConsoleLogo.svg';
 import UserTaskInstanceDetailsPage from '../UserTaskInstanceDetailsPage/UserTaskInstanceDetailsPage';
 import DataListContainerExpandable from '../DataListContainerExpandable/DataListContainerExpandable';
 import DataListContainer from '../DataListContainer/DataListContainer';
-import DataTableContainer from '../DataTableContainer/DataTableContainer';
+import UserTaskDataTableContainer from '../UserTaskDataTableContainer/UserTaskDataTableContainer';
 import { Location, History } from 'history';
 
 interface IOwnProps {
@@ -81,7 +81,11 @@ const PageLayout: React.FC<IOwnProps & InjectedOuiaProps> = ({
           path="/Task/:taskId"
           render={routeProps => <UserTaskInstanceDetailsPage {...routeProps} />}
         />
-        <Route exact path="/UserTasksTable" component={DataTableContainer} />
+        <Route
+          exact
+          path="/UserTasksTable"
+          component={UserTaskDataTableContainer}
+        />
       </Switch>
     </KogitoPageLayout>
   );

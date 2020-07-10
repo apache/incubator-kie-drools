@@ -1,0 +1,131 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UserTaskPageHeader component tests Should render UserTaskPageHeader correctly 1`] = `
+<UserTaskPageHeader>
+  <PageSection
+    variant="light"
+  >
+    <section
+      className="pf-c-page__main-section pf-m-light"
+    >
+      <PageTitle
+        title="User Tasks"
+      >
+        <Title
+          headingLevel="h1"
+          size="4xl"
+        >
+          <h1
+            className="pf-c-title pf-m-4xl"
+          >
+            User Tasks
+          </h1>
+        </Title>
+      </PageTitle>
+      <Component>
+        <ComponentWithOuia
+          component={[Function]}
+          componentProps={
+            Object {
+              "children": Array [
+                <BreadcrumbItem>
+                  <Link
+                    to="/"
+                  >
+                    Home
+                  </Link>
+                </BreadcrumbItem>,
+                <BreadcrumbItem
+                  isActive={true}
+                >
+                  User Tasks
+                </BreadcrumbItem>,
+              ],
+            }
+          }
+          consumerContext={null}
+        >
+          <Breadcrumb
+            ouiaContext={
+              Object {
+                "isOuia": false,
+                "ouiaId": null,
+              }
+            }
+          >
+            <nav
+              aria-label="Breadcrumb"
+              className="pf-c-breadcrumb"
+            >
+              <ol
+                className="pf-c-breadcrumb__list"
+              >
+                <BreadcrumbItem>
+                  <li
+                    className="pf-c-breadcrumb__item"
+                  >
+                    <Link
+                      to="/"
+                    >
+                      <LinkAnchor
+                        href="/"
+                        navigate={[Function]}
+                      >
+                        <a
+                          href="/"
+                          onClick={[Function]}
+                        >
+                          Home
+                        </a>
+                      </LinkAnchor>
+                    </Link>
+                    <span
+                      className="pf-c-breadcrumb__item-divider"
+                    >
+                      <AngleRightIcon
+                        color="currentColor"
+                        noVerticalAlign={false}
+                        size="sm"
+                        title={null}
+                      >
+                        <svg
+                          aria-hidden={true}
+                          aria-labelledby={null}
+                          fill="currentColor"
+                          height="1em"
+                          role="img"
+                          style={
+                            Object {
+                              "verticalAlign": "-0.125em",
+                            }
+                          }
+                          viewBox="0 0 256 512"
+                          width="1em"
+                        >
+                          <path
+                            d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                            transform=""
+                          />
+                        </svg>
+                      </AngleRightIcon>
+                    </span>
+                  </li>
+                </BreadcrumbItem>
+                <BreadcrumbItem
+                  isActive={true}
+                >
+                  <li
+                    className="pf-c-breadcrumb__item"
+                  >
+                    User Tasks
+                  </li>
+                </BreadcrumbItem>
+              </ol>
+            </nav>
+          </Breadcrumb>
+        </ComponentWithOuia>
+      </Component>
+    </section>
+  </PageSection>
+</UserTaskPageHeader>
+`;
