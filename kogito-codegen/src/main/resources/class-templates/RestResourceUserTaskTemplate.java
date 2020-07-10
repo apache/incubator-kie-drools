@@ -75,7 +75,23 @@ public class $Type$Resource {
             return null;
         }
     }
+
+    @GET()
+    @Path("$taskName$/schema")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String,Object> getSchema() {
+        return JsonSchemaUtil.load(this.getClass().getClassLoader(),process.id(),"$taskName$");
+    }
     
+    @GET()
+    @Path("/{id}/$taskName$/{workItemId}/schema")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String,Object> getSchemaAndPhases(@PathParam("id") final String id, @PathParam("workItemId") final String workItemId) {
+        Map<String,Object> jsonSchema = JsonSchemaUtil.load(this.getClass().getClassLoader(),process.id(),"$taskName$");
+        process.instances().findById(id).ifPresent(pi ->jsonSchema.put("phases",pi.allowedPhases(workItemId)));
+        return jsonSchema;
+    }
+
     @DELETE()
     @Path("/{id}/$taskName$/{workItemId}")
     @Produces(MediaType.APPLICATION_JSON)

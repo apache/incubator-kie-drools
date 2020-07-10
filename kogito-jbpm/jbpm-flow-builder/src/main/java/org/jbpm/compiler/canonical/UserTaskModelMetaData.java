@@ -160,8 +160,7 @@ public class UserTaskModelMetaData {
         String taskName = (String) humanTaskNode.getWork().getParameter(TASK_NAME);
         if (taskName == null)
             taskName = humanTaskNode.getName();
-        modelClass.addAndGetAnnotation(UserTask.class).addPair("taskName", new StringLiteralExpr(taskName)).addPair("processName", new StringLiteralExpr(StringUtils.capitalize(ProcessToExecModelGenerator
-                                                                                                                                                                                                           .extractProcessId(processId))));
+        modelClass.addAndGetAnnotation(UserTask.class).addPair("taskName", new StringLiteralExpr(taskName)).addPair("processName", new StringLiteralExpr(processId));
     }
 
     private void addUserTaskParamAnnotation(FieldDeclaration fd, UserTaskParam.ParamType paramType) {

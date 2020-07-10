@@ -374,6 +374,11 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         removeOnFinish();
     }
 
+    @Override
+    public Set<String> allowedPhases(String id) {
+        return rt.getWorkItemManager().allowedPhases(id);
+    }
+
 
     @Override
     public Set<EventDescription<?>> events() {

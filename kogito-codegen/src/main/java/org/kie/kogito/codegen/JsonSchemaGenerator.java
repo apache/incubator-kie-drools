@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.kogito.codegen;
 
 import java.io.ByteArrayOutputStream;
@@ -29,11 +28,15 @@ import java.util.stream.Stream;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.victools.jsonschema.generator.CustomDefinition.AttributeInclusion;
+import com.github.victools.jsonschema.generator.CustomPropertyDefinition;
 import com.github.victools.jsonschema.generator.FieldScope;
 import com.github.victools.jsonschema.generator.OptionPreset;
+import com.github.victools.jsonschema.generator.SchemaGenerationContext;
 import com.github.victools.jsonschema.generator.SchemaGenerator;
 import com.github.victools.jsonschema.generator.SchemaGeneratorConfigBuilder;
 import com.github.victools.jsonschema.generator.SchemaVersion;
+import org.jbpm.util.JsonSchemaUtil;
 import org.kie.kogito.UserTask;
 import org.kie.kogito.UserTaskParam;
 import org.kie.kogito.codegen.GeneratedFile.Type;
@@ -90,7 +93,7 @@ public class JsonSchemaGenerator {
     public Collection<GeneratedFile> generate() throws IOException {
         SchemaGeneratorConfigBuilder builder = new SchemaGeneratorConfigBuilder(schemaVersion, OptionPreset.PLAIN_JSON);
         builder.forTypesInGeneral().withStringFormatResolver(target -> target.getSimpleTypeDescription().equals("Date") ? "date-time" : null);
-        builder.forFields().withIgnoreCheck(JsonSchemaGenerator::isNotUserTaskParam);
+        builder.forFields().withIgnoreCheck(JsonSchemaGenerator::isNotUserTaskParam).withCustomDefinitionProvider(this::getInputOutput);
         SchemaGenerator generator = new SchemaGenerator(builder.build());
         ObjectWriter writer = new ObjectMapper().writer();
         Map<String, List<Class<?>>> map = stream.filter(shouldGenSchema).collect(Collectors.groupingBy(getSchemaName));
@@ -107,15 +110,24 @@ public class JsonSchemaGenerator {
             }
             try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
                 writer.writeValue(outputStream, merged);
-                files.add(new GeneratedFile(Type.JSON_SCHEMA, entry.getKey() + ".json", outputStream.toByteArray()));
+                files.add(new GeneratedFile(Type.JSON_SCHEMA, JsonSchemaUtil.getFileName(entry.getKey()), outputStream.toByteArray()));
             }
         }
         return files;
     }
 
+    private CustomPropertyDefinition getInputOutput(FieldScope f, SchemaGenerationContext context) {
+        UserTaskParam param = f.getAnnotation(UserTaskParam.class);
+        ObjectNode objectNode = context.createDefinition(f.getDeclaredType());
+        if (param != null) {
+            objectNode.put(param.value().toString().toLowerCase(), true);
+        }
+        return new CustomPropertyDefinition(objectNode, AttributeInclusion.NO);
+    }
+
     private static String getKey(Class<?> c) {
         UserTask userTask = c.getAnnotation(UserTask.class);
-        return userTask.processName() + "_" + userTask.taskName();
+        return JsonSchemaUtil.getJsonSchemaName(userTask.processName(), userTask.taskName());
     }
 
     private static boolean isUserTaskClass(Class<?> c) {

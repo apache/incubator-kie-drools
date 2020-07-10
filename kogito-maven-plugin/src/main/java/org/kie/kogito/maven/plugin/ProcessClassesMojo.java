@@ -43,6 +43,7 @@ import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerSettings;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.jbpm.util.JsonSchemaUtil;
 import org.kie.kogito.Model;
 import org.kie.kogito.UserTask;
 import org.kie.kogito.codegen.ApplicationGenerator;
@@ -161,7 +162,7 @@ public class ProcessClassesMojo extends AbstractKieMojo {
             Collection<GeneratedFile> files = new JsonSchemaGenerator.Builder(reflections.getTypesAnnotatedWith(UserTask.class).stream()).withGenSchemaPredicate(x -> true).withSchemaVersion(schemaVersion).build()
                                                                                                                                          .generate();
             if (!files.isEmpty()) {
-                Path parentPath = path.resolve("META-INF").resolve("jsonSchema");
+                Path parentPath = path.resolve(JsonSchemaUtil.getJsonDir());
                 Files.createDirectories(parentPath);
                 for (GeneratedFile file : files) {
                     if (getLog().isInfoEnabled()) {

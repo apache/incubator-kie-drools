@@ -40,7 +40,7 @@ public class JsonSchemaGeneratorTest {
 
     private enum Color {GREEN, WHITE};
     
-    @UserTask(taskName = "test", processName = "test")
+    @UserTask(taskName = "test", processName = "org.jbpm.test")
     private static class PersonInputParams {
         
        
@@ -55,7 +55,7 @@ public class JsonSchemaGeneratorTest {
         private Color color;
     }
 
-    @UserTask(taskName = "test", processName = "test")
+    @UserTask(taskName = "test", processName = "org.jbpm.test")
     private static class PersonOutputParams {
 
         @UserTaskParam(UserTaskParam.ParamType.OUTPUT)
@@ -102,7 +102,7 @@ public class JsonSchemaGeneratorTest {
         Collection<GeneratedFile> files = new JsonSchemaGenerator.Builder(Stream.of(PersonInputParams.class, PersonOutputParams.class, IgnoredClass.class)).build().generate();
         assertEquals(1, files.size());
         GeneratedFile file = files.iterator().next();
-        assertEquals("test_test.json", file.relativePath());
+        assertEquals("org#jbpm#test_test.json", file.relativePath());
         assertSchema(file, SchemaVersion.DRAFT_7);
     }
     
@@ -116,7 +116,7 @@ public class JsonSchemaGeneratorTest {
         Collection<GeneratedFile> files = new JsonSchemaGenerator.Builder(Stream.of(PersonInputParams.class, PersonOutputParams.class, IgnoredClass.class)).withSchemaVersion("DRAFT_2019_09").build().generate();
         assertEquals(1, files.size());
         GeneratedFile file = files.iterator().next();
-        assertEquals("test_test.json", file.relativePath());
+        assertEquals("org#jbpm#test_test.json", file.relativePath());
         assertSchema(file, SchemaVersion.DRAFT_2019_09);
     }
 

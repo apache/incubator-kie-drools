@@ -56,6 +56,7 @@ import org.kie.kogito.services.identity.StaticIdentityProvider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -135,8 +136,12 @@ public class UserTaskTest extends AbstractCodegenTest {
         assertEquals(Active.ID, wi.getPhase());
         assertEquals(Active.STATUS, wi.getPhaseStatus());
 
-        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
+        String workItemId = workItems.get(0).getId();
+        assertFalse(processInstance.allowedPhases(workItemId).isEmpty());
+        processInstance.transitionWorkItem(workItemId, new HumanTaskTransition(Complete.ID, null, securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        
+        
 
         workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());

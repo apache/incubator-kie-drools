@@ -51,6 +51,7 @@ import org.jboss.jandex.Index;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.Indexer;
 import org.jboss.jandex.MethodInfo;
+import org.jbpm.util.JsonSchemaUtil;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.internal.jci.CompilationProblem;
 import org.kie.internal.kogito.codegen.Generated;
@@ -72,7 +73,7 @@ import org.slf4j.LoggerFactory;
 
 public class KogitoAssetsProcessor {
 
-    private static final String generatedResourcesDir = System.getProperty("kogito.codegen.resources.directory", "target/generated-resources/kogito");
+    private static final String generatedResourcesDir = System.getProperty("kogito.codegen.resources.directory", "target/generated-resources/kogito/");
     private static final String generatedSourcesDir = "target/generated-sources/kogito/";
     private static final String generatedCustomizableSourcesDir = System.getProperty("kogito.codegen.sources.directory", "target/generated-sources/kogito/");
     private static final Logger logger = LoggerFactory.getLogger(KogitoAssetsProcessor.class);
@@ -249,7 +250,15 @@ public class KogitoAssetsProcessor {
             dataEvents.forEach(c -> reflectiveClass.produce(
                     new ReflectiveClassBuildItem(true, true, c.name().toString())));
 
-            writeGeneratedFiles(appPaths, getJsonSchemaFiles(index, trgMfs));
+            Collection<GeneratedFile> jsonFiles = getJsonSchemaFiles(index, trgMfs);
+            Path relativePath = JsonSchemaUtil.getJsonDir();
+            Path jsonSchemaPath = appPaths.getFirstProjectPath().resolve("target").resolve("classes").resolve(relativePath);
+            Files.createDirectories(jsonSchemaPath);
+            
+            for (GeneratedFile jsonFile : jsonFiles) {
+                Files.write(jsonSchemaPath.resolve(jsonFile.relativePath()),jsonFile.contents());
+                resource.produce(new NativeImageResourceBuildItem(relativePath.resolve(jsonFile.relativePath()).toString()));
+            }
         }
     }
 
@@ -257,15 +266,12 @@ public class KogitoAssetsProcessor {
         for (Path projectPath : appPaths.projectPaths) {
             String restResourcePath = projectPath.resolve( generatedCustomizableSourcesDir ).toString();
             String resourcePath = projectPath.resolve( generatedResourcesDir ).toString();
-            String jsonSchemaPath = projectPath.resolve(generatedResourcesDir).resolve("jsonSchema").toString();
             String sourcePath = projectPath.resolve( generatedSourcesDir ).toString();
 
             for (GeneratedFile f : resourceFiles) {
                 try {
                     if ( f.getType() == GeneratedFile.Type.RESOURCE ) {
                         writeGeneratedFile( f, resourcePath );
-                    } else if (f.getType() == GeneratedFile.Type.JSON_SCHEMA) {
-                        writeGeneratedFile(f, jsonSchemaPath);
                     } else if (f.getType().isCustomizable()) {
                         writeGeneratedFile( f, restResourcePath );
                     } else {

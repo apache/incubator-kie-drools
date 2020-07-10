@@ -17,6 +17,7 @@
 package org.kie.api.runtime.process;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.process.workitem.Transition;
@@ -68,5 +69,11 @@ public interface WorkItemManager {
     default void transitionWorkItem(String id, Transition<?> transition) {
         
     }
+    
+    default Set<String> allowedPhases (String id) {
+        throw new UnsupportedOperationException();
+    }
+    
+    
 
 }

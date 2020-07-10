@@ -16,6 +16,8 @@
 package org.jbpm.process.instance.impl.humantask;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.drools.core.process.instance.WorkItemHandler;
 import org.jbpm.process.instance.impl.workitem.Abort;
@@ -23,6 +25,7 @@ import org.jbpm.process.instance.impl.workitem.Active;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.kogito.process.workitem.LifeCycle;
+import org.kie.kogito.process.workitem.LifeCyclePhase;
 import org.kie.kogito.process.workitem.Transition;
 
 /**
@@ -56,8 +59,13 @@ public class HumanTaskWorkItemHandler implements WorkItemHandler {
     @SuppressWarnings("unchecked")
     @Override
     public void transitionToPhase(WorkItem workItem, WorkItemManager manager, Transition<?> transition) {
-
         lifeCycle.transitionTo(workItem, manager, (Transition<Map<String, Object>>) transition);
+    }
+    
+    @Override
+    public Set<String> allowedPhases(WorkItem workItem) {
+        LifeCyclePhase activePhase =lifeCycle.phaseById(workItem.getPhaseId());
+        return lifeCycle.phases().stream().filter(phase -> phase.canTransition(activePhase)).map(LifeCyclePhase::id).collect(Collectors.toSet()); 
     }
 
 }

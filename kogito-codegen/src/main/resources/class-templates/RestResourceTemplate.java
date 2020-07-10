@@ -20,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 
 
 import org.kie.api.runtime.process.WorkItemNotFoundException;
+import org.jbpm.util.JsonSchemaUtil;
 import org.kie.kogito.Application;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.process.Process;

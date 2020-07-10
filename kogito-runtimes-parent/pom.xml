@@ -787,11 +787,17 @@
         <version>${version.io.cloudevents}</version>
       </dependency>
       
+      <!--  Json Schema -->
        <dependency>
          <groupId>com.github.victools</groupId>
          <artifactId>jsonschema-generator</artifactId>
          <version>${version.com.github.victools}</version>
       </dependency>
+      <dependency>
+        <groupId>io.rest-assured</groupId>
+        <artifactId>json-schema-validator</artifactId>
+        <version>${version.io.restassured}</version>
+    </dependency>
       
     </dependencies>
   </dependencyManagement>

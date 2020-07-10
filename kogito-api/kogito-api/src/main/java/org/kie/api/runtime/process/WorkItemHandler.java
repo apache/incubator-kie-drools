@@ -16,6 +16,8 @@
 
 package org.kie.api.runtime.process;
 
+import java.util.Set;
+
 import org.kie.kogito.process.workitem.Transition;
 
 /**
@@ -79,4 +81,7 @@ public interface WorkItemHandler {
         throw new UnsupportedOperationException();
     }
 
+    default Set<String> allowedPhases(WorkItem workItem) {
+        throw new UnsupportedOperationException();
+    }
 }

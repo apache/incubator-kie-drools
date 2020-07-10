@@ -130,6 +130,13 @@ public interface ProcessInstance<T> {
      * @throws WorkItemNotFoundException in case work item with given id does not exist
      */
     void transitionWorkItem(String id, Transition<?> transition);
+    
+    /**
+     * Identify phases that are available to be transition to for a particular work item
+     * @param id work item 
+     * @return id of the phases that can be transitioned to
+     */
+    Set<String> allowedPhases (String id);
 
     /**
      * Returns work item identified by given id if found
