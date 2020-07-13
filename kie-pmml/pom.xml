@@ -168,11 +168,6 @@
           </execution>
         </executions>
       </plugin>
-      <!-- TODO: This is a temporary workaround until org.codehaus.mojo:jaxb2-maven-plugin supports JDK9.
-                 (https://github.com/mojohaus/jaxb2-maven-plugin/issues/43). We need to add the plugin back
-                 once we are sure it works on both JDK8 and JDK9.
-           Using xjc directly (instead of jaxb2-maven-plugin) to support both JDK8 and JDK9 with single configuration.
-           See https://issues.jboss.org/browse/DROOLS-1170 for more info. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
