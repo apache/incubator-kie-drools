@@ -727,7 +727,7 @@ public class ExpressionTyper {
 
     // MVEL allows startsWith with a single char instead of a String
     private Optional<TypedExpressionCursor> checkStartsWithMVEL(MethodCallExpr methodCallExpr, java.lang.reflect.Type originalTypeCursor, Class<?>[] argsType) {
-        if ("startsWith".equals(methodCallExpr.getNameAsString())
+        if (("startsWith".equals(methodCallExpr.getNameAsString()) || "endsWith".equals(methodCallExpr.getNameAsString()))
                 && originalTypeCursor.equals(java.lang.String.class)
                 && Arrays.equals(argsType, new Class[]{char.class})) {
 
