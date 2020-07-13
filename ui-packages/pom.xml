@@ -45,9 +45,10 @@
     <profile>
       <!--
         Installs node and yarn in the webapp's node and node_modules folders.
-        Run 'mvn package -Dui.deps':
+        Run 'mvn package':
           * the first time you have checked out the source.
           * whenever the dependencies have been changed in package.json (delete the webapp's node_modules folder first!)
+        If you want to skip installation of the packages, turn the profile off by setting property `-Dskip.ui.deps`.
       -->
       <id>install-node-yarn</id>
       <activation>
@@ -121,6 +122,9 @@
       </build>
     </profile>
     <profile>
+      <!--
+        Builds the UI package. Can be skipped by using property `-Dskip.ui.build`.
+      -->
       <id>build-ui</id>
       <activation>
         <property><name>!skip.ui.build</name></property>

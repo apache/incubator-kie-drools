@@ -44,16 +44,17 @@ If you want to learn more about building native executables, please consult http
 
 ## Packaging together with the React app
 
-The application makes use of a separately developed [React UI application](../packages/management-console/package.json). The JS based frontend can be built as part of the build of this project by using the `ui` profile, invoked using
+The application makes use of a separately developed [React UI application](../ui-packages/packages/management-console/package.json). The JS based frontend can be built as part of the build of this project by using the profile defined in dependency [ui-packages](../ui-packages/pom.xml), invoked by default. Using the property `-Dskip.ui.build` as in following command you can skip the build of UI and use what is already built in the respective package:
 ```
-mvn package -Dui
+mvn package -Dskip.ui.build
 ```
 
-To prepare all the dependencies needed for the build of UI, there's a maven profile activated by `ui.deps` property being specified that user need to run before the actual build.
+To prepare all the dependencies needed for the build of UI, there's a maven profile activated by default. Using the `-Dskip.ui.deps` property you can skip the profile.
 
-The single command to activate both profiles is:
+
+The single command to disable both UI build related profiles is:
 ```
-mvn package -Dui.deps -Dui
+mvn package -Dskip.ui.deps -Dskip.ui.build
 ```
 
 ## Creating a native executable
