@@ -61,7 +61,6 @@ public class InlineCastTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("this is supported in Legacy Drools but not in the Executable Model")
     public void testInlineCastProjectionThis() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -131,7 +130,6 @@ public class InlineCastTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("https://issues.redhat.com/browse/DROOLS-5477")
     public void testExplicitCast() {
         String str =
                 "import " + OutputClause.class.getCanonicalName() + "\n;" +
@@ -150,7 +148,6 @@ public class InlineCastTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("https://issues.redhat.com/browse/DROOLS-5477")
     public void testInlineCastParent() {
         String str =
                 "import " + OutputClause.class.getCanonicalName() + "\n;" +
