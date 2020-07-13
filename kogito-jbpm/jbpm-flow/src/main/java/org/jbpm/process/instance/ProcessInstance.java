@@ -44,14 +44,14 @@ public interface ProcessInstance extends org.kie.api.runtime.process.ProcessInst
     void setState(int state, String outcome, Object faultData);
 
     void setErrorState(NodeInstance nodeInstanceInError, Exception e);
-
+    
     void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime);
 
     InternalKnowledgeRuntime getKnowledgeRuntime();
 
     void start();
 
-    void start(String tigger);
+    void start(String trigger);
 
     String getOutcome();
 
@@ -60,6 +60,8 @@ public interface ProcessInstance extends org.kie.api.runtime.process.ProcessInst
     void setRootProcessInstanceId(String parentId);
 
     Map<String, Object> getMetaData();
+
+    void setMetaData(String name, Object data);
 
     Object getFaultData();
 
@@ -82,4 +84,8 @@ public interface ProcessInstance extends org.kie.api.runtime.process.ProcessInst
     void configureSLA();
 
     void setReferenceId(String referenceId);
+
+    void disconnect();
+
+    void reconnect();
 }

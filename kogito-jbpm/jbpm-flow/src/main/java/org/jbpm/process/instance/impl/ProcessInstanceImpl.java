@@ -232,14 +232,16 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     }
     
     protected abstract void internalStart(String trigger);
-    
+
+    @Override
     public void disconnect() {
-        ((InternalProcessRuntime) kruntime.getProcessRuntime()).getProcessInstanceManager().internalRemoveProcessInstance(this);        
+        ((InternalProcessRuntime) kruntime.getProcessRuntime()).getProcessInstanceManager().internalRemoveProcessInstance(this);
         kruntime = null;
     }
-    
+
+    @Override
     public void reconnect() {
-    	((InternalProcessRuntime) kruntime.getProcessRuntime()).getProcessInstanceManager().internalAddProcessInstance(this);
+        ((InternalProcessRuntime) kruntime.getProcessRuntime()).getProcessInstanceManager().internalAddProcessInstance(this);
     }
 
     public String[] getEventTypes() {
@@ -257,10 +259,12 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
         return b.toString();
     }
 
-	public Map<String, Object> getMetaData() {
-		return this.metaData;
-	}
+    @Override
+    public Map<String, Object> getMetaData() {
+        return this.metaData;
+    }
 
+    @Override
     public void setMetaData(String name, Object data) {
         this.metaData.put(name, data);
     }

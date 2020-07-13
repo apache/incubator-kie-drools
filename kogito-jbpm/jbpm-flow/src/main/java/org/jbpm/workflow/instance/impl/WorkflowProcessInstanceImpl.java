@@ -109,8 +109,7 @@ import static org.kie.kogito.process.flexible.ItemDescription.Status.COMPLETED;
 /**
  * Default implementation of a RuleFlow process instance.
  */
-public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl implements WorkflowProcessInstance,
-                                                                                         org.jbpm.workflow.instance.NodeInstanceContainer {
+public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl implements WorkflowProcessInstance {
 
     private static final long serialVersionUID = 510l;
     private static final Logger logger = LoggerFactory.getLogger(WorkflowProcessInstanceImpl.class);
@@ -264,26 +263,6 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
             }
         }
         return result;
-    }
-
-    public NodeInstance getNodeInstanceByNodeDefinitionId(final String nodeDefinitionId, NodeContainer nodeContainer) {
-
-        for (Node node : nodeContainer.getNodes()) {
-
-            if (nodeDefinitionId.equals(node.getMetaData().get(UNIQUE_ID))) {
-                return getNodeInstance(node);
-            }
-
-            if (node instanceof NodeContainer) {
-                NodeInstance ni = getNodeInstanceByNodeDefinitionId(nodeDefinitionId, ((NodeContainer) node));
-
-                if (ni != null) {
-                    return ni;
-                }
-            }
-        }
-
-        throw new IllegalArgumentException("Node with definition id " + nodeDefinitionId + " was not found");
     }
 
     @Override
@@ -447,12 +426,10 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
 
     @Override
     public void reconnect() {
-
         super.reconnect();
         for (NodeInstance nodeInstance : nodeInstances) {
             if (nodeInstance instanceof EventBasedNodeInstanceInterface) {
-                ((EventBasedNodeInstanceInterface) nodeInstance)
-                        .addEventListeners();
+                ((EventBasedNodeInstanceInterface) nodeInstance).addEventListeners();
             }
         }
         registerExternalEventNodeListeners();

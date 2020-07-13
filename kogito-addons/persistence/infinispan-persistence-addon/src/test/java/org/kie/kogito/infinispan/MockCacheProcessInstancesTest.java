@@ -15,14 +15,6 @@
 
 package org.kie.kogito.infinispan;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_ERROR;
-
-import static org.mockito.Mockito.*;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +32,6 @@ import org.jbpm.workflow.core.node.ActionNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.Node;
-import org.kie.api.runtime.process.ProcessContext;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
 import org.kie.kogito.process.ProcessError;
@@ -50,16 +41,21 @@ import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
 import org.kie.kogito.services.identity.StaticIdentityProvider;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_ERROR;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class MockCacheProcessInstancesTest {
     
     private final ConcurrentHashMap<Object, Object> mockCache = new ConcurrentHashMap<>();
     private RemoteCacheManager cacheManager;
     
-    @SuppressWarnings("unchecked")
     @BeforeEach
     public void setup() {
         mockCache.clear();
@@ -70,41 +66,26 @@ public class MockCacheProcessInstancesTest {
         when(cacheManager.administration()).thenReturn(admin);
         when(admin.getOrCreateCache(any(), (String)any())).thenReturn(cache);
         
-        when(cache.put(any(), any())).then(new Answer<Object>() {
-
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Object key = invocation.getArgument(0, Object.class);
-                Object value = invocation.getArgument(1, Object.class);
-                return mockCache.put(key, value);
-            }
+        when(cache.put(any(), any())).then(invocation -> {
+            Object key = invocation.getArgument(0, Object.class);
+            Object value = invocation.getArgument(1, Object.class);
+            return mockCache.put(key, value);
         });
-        when(cache.putIfAbsent(any(), any())).then(new Answer<Object>() {
-
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Object key = invocation.getArgument(0, Object.class);
-                Object value = invocation.getArgument(1, Object.class);
-                return mockCache.put(key, value);
-            }
+        when(cache.putIfAbsent(any(), any())).then(invocation -> {
+            Object key = invocation.getArgument(0, Object.class);
+            Object value = invocation.getArgument(1, Object.class);
+            return mockCache.put(key, value);
         });
-        
-        when(cache.get(any())).then(new Answer<Object>() {
-
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Object key = invocation.getArgument(0, Object.class);               
-                
-                return mockCache.get(key);
-            }
+        when(cache.get(any())).then(invocation -> {
+            Object key = invocation.getArgument(0, Object.class);               
+            return mockCache.get(key);
         });
     }
 
     
     @Test
     public void testBasicFlow() {
-        
-        BpmnProcess process = (BpmnProcess) BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
         process.setProcessInstancesFactory(new CacheProcessInstancesFactory(cacheManager));
         process.configure();
                                      
@@ -123,8 +104,7 @@ public class MockCacheProcessInstancesTest {
     
     @Test
     public void testBasicFlowNoActors() {
-        
-        BpmnProcess process = (BpmnProcess) BpmnProcess.from(new ClassPathResource("BPMN2-UserTask-NoActors.bpmn2")).get(0);
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask-NoActors.bpmn2")).get(0);
         process.setProcessInstancesFactory(new CacheProcessInstancesFactory(cacheManager));
         process.configure();
                                      
@@ -148,8 +128,7 @@ public class MockCacheProcessInstancesTest {
     
     @Test
     public void testProcessInstanceNotFound() {
-        
-        BpmnProcess process = (BpmnProcess) BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
         process.setProcessInstancesFactory(new CacheProcessInstancesFactory(cacheManager));
         process.configure();
                                      
@@ -164,43 +143,33 @@ public class MockCacheProcessInstancesTest {
         Optional<? extends ProcessInstance<BpmnVariables>> loaded = process.instances().findById(processInstance.id());        
         assertThat(loaded).isNotPresent();
     }
-    
+
     @Test
     public void testBasicFlowWithErrorAndRetry() {
-        
         testBasicFlowWithError((processInstance) -> {
             processInstance.updateVariables(BpmnVariables.create(Collections.singletonMap("s", "test")));
-            processInstance.error().orElseThrow(() -> new IllegalStateException("Process instance not in error"))
-            .retrigger();
-        }); 
+            processInstance.error().orElseThrow(() -> new IllegalStateException("Process instance not in error")).retrigger();
+        });
     }
-    
+
     @Test
     public void testBasicFlowWithErrorAndSkip() {
-        
         testBasicFlowWithError((processInstance) -> {
             processInstance.updateVariables(BpmnVariables.create(Collections.singletonMap("s", "test")));
-            processInstance.error().orElseThrow(() -> new IllegalStateException("Process instance not in error"))
-            .skip();
-        }); 
+            processInstance.error().orElseThrow(() -> new IllegalStateException("Process instance not in error")).skip();
+        });
     }
     
     private void testBasicFlowWithError(Consumer<ProcessInstance<BpmnVariables>> op) {
-        
-        BpmnProcess process = (BpmnProcess) BpmnProcess.from(new ClassPathResource("BPMN2-UserTask-Script.bpmn2")).get(0);
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask-Script.bpmn2")).get(0);
         // workaround as BpmnProcess does not compile the scripts but just reads the xml
         for (Node node : ((WorkflowProcess)process.process()).getNodes()) {
             if (node instanceof ActionNode) {
                 DroolsAction a = ((ActionNode) node).getAction();
-                
-                a.setMetaData("Action", new Action() {
-                    
-                    @Override
-                    public void execute(ProcessContext kcontext) throws Exception {
-                        System.out.println("The variable value is " + kcontext.getVariable("s") + " about to call toString on it");
-
-                        kcontext.getVariable("s").toString();
-                    }
+               
+                a.setMetaData("Action", (Action) kcontext -> {
+                    System.out.println("The variable value is " + kcontext.getVariable("s") + " about to call toString on it");
+                    kcontext.getVariable("s").toString();
                 });
             }
         }
@@ -218,6 +187,8 @@ public class MockCacheProcessInstancesTest {
         assertThat(errorOp.get().errorMessage()).isNotNull().contains("java.lang.NullPointerException - null");
         
         op.accept(processInstance);
+        
+        assertThat(processInstance.error()).isNotPresent();
 
         WorkItem workItem = processInstance.workItems(SecurityPolicy.of(new StaticIdentityProvider("john"))).get(0);
         assertThat(workItem).isNotNull();

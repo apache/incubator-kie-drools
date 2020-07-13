@@ -31,24 +31,19 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
  * of a specific ProcessInstance. It colaborates with OutputMarshaller and
  * InputMarshaller, that delegates in a ProcessInstanceMarshaller to stream in/out runtime
  * information.
- * 
+ *
  * @see org.drools.core.marshalling.impl.OutputMarshaller
  * @see InputMarshaller
  * @see ProcessMarshallerRegistry
- * 
  */
 
 public interface ProcessInstanceMarshaller {
 
-	public Object writeProcessInstance(MarshallerWriteContext context,
-	                                   ProcessInstance processInstance) throws IOException;
+    Object writeProcessInstance(MarshallerWriteContext context, ProcessInstance processInstance) throws IOException;
 
-	public Object writeNodeInstance(MarshallerWriteContext context,
-	                                NodeInstance nodeInstance) throws IOException;
+    Object writeNodeInstance(MarshallerWriteContext context, NodeInstance nodeInstance) throws IOException;
 
-	public ProcessInstance readProcessInstance(MarshallerReaderContext context) throws IOException;
+    ProcessInstance readProcessInstance(MarshallerReaderContext context) throws IOException;
 
-	public NodeInstance readNodeInstance(MarshallerReaderContext context,
-	                                     NodeInstanceContainer nodeInstanceContainer,
-	                                     WorkflowProcessInstance processInstance) throws IOException;
+    NodeInstance readNodeInstance(MarshallerReaderContext context, NodeInstanceContainer nodeInstanceContainer, WorkflowProcessInstance processInstance) throws IOException;
 }

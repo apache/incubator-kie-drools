@@ -29,7 +29,7 @@ import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.jbpm.marshalling.impl.JBPMMessages;
 import org.jbpm.marshalling.impl.ProcessMarshallerRegistry;
 import org.jbpm.marshalling.impl.ProtobufRuleFlowProcessInstanceMarshaller;
-import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
@@ -60,9 +60,9 @@ public class ProcessInstanceMarshaller {
         env.set( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, strats );
     }
 
-    public byte[] marhsallProcessInstance(ProcessInstance<?> processInstance) {
-        
-        org.kie.api.runtime.process.ProcessInstance pi = ((AbstractProcessInstance<?>) processInstance).internalGetProcessInstance();
+    public byte[] marshallProcessInstance(ProcessInstance<?> processInstance) {
+
+        WorkflowProcessInstance pi = ((AbstractProcessInstance<?>) processInstance).internalGetProcessInstance();
         
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
@@ -86,7 +86,7 @@ public class ProcessInstanceMarshaller {
                 PersisterHelper.writeToStreamWithHeader(context, _instance);
             }
             context.close();
-            ((WorkflowProcessInstanceImpl) pi).disconnect();
+            pi.disconnect();
             return baos.toByteArray();
         } catch (Exception e) {
             throw new RuntimeException("Error while marshalling process instance", e);
@@ -113,7 +113,7 @@ public class ProcessInstanceMarshaller {
             
             org.jbpm.marshalling.impl.ProcessInstanceMarshaller marshaller = ProcessMarshallerRegistry.INSTANCE.getMarshaller( processInstanceType );
 
-            org.kie.api.runtime.process.ProcessInstance pi = marshaller.readProcessInstance(context);
+            WorkflowProcessInstance pi = (WorkflowProcessInstance) marshaller.readProcessInstance(context);
      
             context.close();
 

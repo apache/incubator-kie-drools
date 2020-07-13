@@ -93,7 +93,7 @@ public class CacheProcessInstances implements MutableProcessInstances {
     protected void updateStorage(String id, ProcessInstance instance, boolean checkDuplicates) {
         if (isActive(instance)) {
             String resolvedId = resolveId(id);
-            byte[] data = marshaller.marhsallProcessInstance(instance);
+            byte[] data = marshaller.marshallProcessInstance(instance);
             
             if (checkDuplicates) {
                 byte[] existing = cache.putIfAbsent(resolvedId, data);

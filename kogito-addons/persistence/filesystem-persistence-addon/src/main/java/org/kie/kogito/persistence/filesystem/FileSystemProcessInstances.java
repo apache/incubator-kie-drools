@@ -133,7 +133,7 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
 
     protected void storeProcessInstance(Path processInstanceStorage, ProcessInstance<?> instance) {
         try {
-            byte[] data = marshaller.marhsallProcessInstance(instance);
+            byte[] data = marshaller.marshallProcessInstance(instance);
             Files.write(processInstanceStorage, data);
             setMetadata(processInstanceStorage, PI_DESCRIPTION, instance.description());
             setMetadata(processInstanceStorage, PI_STATUS, String.valueOf(instance.status()));

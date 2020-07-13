@@ -469,7 +469,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         
         ProcessInstanceMarshaller marshaller = new ProcessInstanceMarshaller();
         
-        byte[] data = marshaller.marhsallProcessInstance(processInstance);
+        byte[] data = marshaller.marshallProcessInstance(processInstance);
         assertNotNull(data);
         
         processInstance = (ProcessInstance<BpmnVariables>) marshaller.unmarshallProcessInstance(data, process);

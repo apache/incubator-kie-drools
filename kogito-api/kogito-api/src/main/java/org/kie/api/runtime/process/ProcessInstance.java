@@ -79,6 +79,12 @@ public interface ProcessInstance
     String getProcessName();
 
     /**
+     * The description of the current process instance
+     * @return the process instance description
+     */
+    String getDescription();
+
+    /**
      * The state of the process instance.
      * @return the state of the process instance
      */
