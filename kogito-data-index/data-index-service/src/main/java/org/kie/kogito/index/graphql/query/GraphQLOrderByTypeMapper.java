@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import graphql.schema.GraphQLInputObjectType;
+import graphql.schema.GraphQLNamedType;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.GraphQLType;
@@ -59,7 +60,8 @@ public class GraphQLOrderByTypeMapper extends AbstractInputObjectTypeMapper {
                             break;
                         default:
                             String typeName;
-                            switch (field.getType().getName()) {
+                            String name = ((GraphQLNamedType) field.getType()).getName();
+                            switch (name) {
                                 case "Int":
                                 case "String":
                                 case "Boolean":
@@ -67,9 +69,9 @@ public class GraphQLOrderByTypeMapper extends AbstractInputObjectTypeMapper {
                                     typeName = ORDER_BY;
                                     break;
                                 default:
-                                    typeName = field.getType().getName() + ORDER_BY;
+                                    typeName = name + ORDER_BY;
                                     if (getSchema().getType(typeName) == null && !getAdditionalTypes().containsKey(typeName)) {
-                                        GraphQLInputObjectType type = new GraphQLOrderByTypeMapper(getSchema(), getAdditionalTypes()).apply((GraphQLObjectType) getAdditionalTypes().get(field.getType().getName()));
+                                        GraphQLInputObjectType type = new GraphQLOrderByTypeMapper(getSchema(), getAdditionalTypes()).apply((GraphQLObjectType) getAdditionalTypes().get(name));
                                         getAdditionalTypes().put(typeName, type);
                                     }
                             }

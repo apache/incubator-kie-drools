@@ -37,7 +37,6 @@ import io.vertx.ext.web.handler.graphql.GraphQLHandler;
 import io.vertx.ext.web.handler.graphql.GraphQLHandlerOptions;
 import io.vertx.ext.web.handler.graphql.GraphiQLHandler;
 import io.vertx.ext.web.handler.graphql.GraphiQLHandlerOptions;
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @ApplicationScoped
@@ -78,7 +77,7 @@ public class VertxRouterSetup {
                 .map(user -> ((QuarkusHttpUser) user).getSecurityIdentity())
                 .map(identity -> identity.getCredential(AccessTokenCredential.class))
                 .map(AccessTokenCredential::getToken)
-                .orElse(StringUtils.EMPTY);
+                .orElse("");
     }
 }
 

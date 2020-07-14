@@ -16,8 +16,7 @@
   <description>Kogito Apps</description>
 
   <properties>
-    <version.io.quarkus>1.4.1.Final</version.io.quarkus>
-    <version.io.smallrye.reactive>2.0.2</version.io.smallrye.reactive>
+    <version.io.quarkus>1.6.0.Final</version.io.quarkus>
     <version.frontend.plugin>1.9.1</version.frontend.plugin>
     <version.node>v12.16.2</version.node>
     <version.npm>6.10.3</version.npm>
