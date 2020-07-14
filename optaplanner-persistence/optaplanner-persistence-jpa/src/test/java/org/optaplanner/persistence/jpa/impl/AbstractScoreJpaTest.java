@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.persistence.jpa;
+package org.optaplanner.persistence.jpa.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

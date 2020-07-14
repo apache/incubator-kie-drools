@@ -23,7 +23,7 @@ import javax.persistence.Entity;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
-import org.optaplanner.persistence.jpa.AbstractScoreJpaTest;
+import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 
 public class SimpleBigDecimalScoreConverterTest extends AbstractScoreJpaTest {
 

@@ -19,8 +19,8 @@
     <!-- Dependencies -->
     <!-- ************************************************************************ -->
 
-    <!-- SNAPSHOT dependency versions -->
-    <version.org.kie>7.40.0-SNAPSHOT</version.org.kie>
+    <!-- SNAPSHOT and KIE dependency versions -->
+    <version.org.kie.kogito>0.11.1</version.org.kie.kogito>
 
     <!-- Normal dependency versions -->
     <!-- TODO Do we want import the quarkus-bom instead of defining these ourselves? -->
@@ -86,7 +86,7 @@
 
   <dependencyManagement>
     <dependencies>
-      <!-- SNAPSHOT dependencies -->
+      <!-- SNAPSHOT and KIE dependencies -->
       <dependency>
         <groupId>org.optaplanner</groupId>
         <artifactId>optaplanner-bom</artifactId>
@@ -94,26 +94,26 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <!-- TODO use org.kie.kogito:kogito-bom instead once Kogito fixes https://issues.redhat.com/browse/KOGITO-2726 -->
       <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-api</artifactId>
+        <version>${version.org.kie.kogito}</version>
       </dependency>
       <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-drools</artifactId>
+        <version>${version.org.kie.kogito}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.soup</groupId>
-        <artifactId>kie-soup-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>drools-core-dynamic</artifactId>
+        <version>${version.org.kie.kogito}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>drools-decisiontables</artifactId>
+        <version>${version.org.kie.kogito}</version>
       </dependency>
 
       <!-- Normal dependencies versions-->
@@ -324,6 +324,11 @@
         <groupId>org.eclipse</groupId>
         <artifactId>yasson</artifactId>
         <version>1.0.6</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-test-util</artifactId>
+        <version>7.40.0.Final</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -739,7 +744,7 @@
         <plugin>
           <groupId>com.github.spotbugs</groupId>
           <artifactId>spotbugs-maven-plugin</artifactId>
-          <version>${version.com.github.spotbugs-maven-plugin}</version>
+          <version>3.1.8</version>
           <!--              <dependencies>-->
           <!--                <dependency>-->
           <!--                  <groupId>org.kie</groupId>-->

@@ -21,7 +21,7 @@ import javax.persistence.Entity;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
-import org.optaplanner.persistence.jpa.AbstractScoreJpaTest;
+import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 
 public class BendableScoreConverterTest extends AbstractScoreJpaTest {
 

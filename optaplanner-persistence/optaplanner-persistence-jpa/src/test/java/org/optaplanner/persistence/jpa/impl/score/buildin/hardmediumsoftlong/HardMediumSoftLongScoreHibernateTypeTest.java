@@ -23,7 +23,7 @@ import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.TypeDef;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
-import org.optaplanner.persistence.jpa.AbstractScoreJpaTest;
+import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 
 public class HardMediumSoftLongScoreHibernateTypeTest extends AbstractScoreJpaTest {
 
