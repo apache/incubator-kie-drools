@@ -39,6 +39,7 @@ import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
 import org.kie.dmn.backend.marshalling.CustomStaxWriter;
+import org.kie.dmn.backend.marshalling.v1x.DMNXStream;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase;
@@ -190,7 +191,7 @@ public class XStreamMarshaller
     }
 
     private XStream newXStream() {
-        XStream xStream = XStreamUtils.createNonTrustingXStream(staxDriver, Definitions.class.getClassLoader());
+        XStream xStream = XStreamUtils.createNonTrustingXStream(staxDriver, Definitions.class.getClassLoader(), DMNXStream::from);
         xStream.addPermission(new TypeHierarchyPermission(QName.class));
         xStream.addPermission(new TypeHierarchyPermission(KieDMNModelInstrumentedBase.class));
         
