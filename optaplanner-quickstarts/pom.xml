@@ -38,6 +38,7 @@
       <modules>
         <!-- Until Kogito is productized, neither can optaplanner-quarkus be productized. -->
         <module>quarkus-school-timetabling</module>
+        <module>quarkus-facility-location</module>
       </modules>
     </profile>
   </profiles>
