@@ -555,7 +555,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         final List<AuditLogLine> auditLogLines = scenarioResultMetadata.getAuditLogLines();
         assertEquals(expectedMessages.size(), auditLogLines.size());
         for (int i = 0; i < expectedMessages.size(); i++) {
-            commonCheckAuditLogLine(auditLogLines.get(i), expectedMessages.get(i), "SUCCEED");
+            commonCheckAuditLogLine(auditLogLines.get(i), expectedMessages.get(i), "SUCCEEDED");
         }
     }
 

@@ -99,7 +99,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
         scenarioResultMetadata.addAllAvailable(availableRules);
         scenarioResultMetadata.addAllExecuted(ruleExecuted);
         final AtomicInteger counter = new AtomicInteger(0);
-        ruleExecuted.keySet().forEach(ruleName -> scenarioResultMetadata.addAuditMessage(counter.addAndGet(1), ruleName, "SUCCEED"));
+        ruleExecuted.keySet().forEach(ruleName -> scenarioResultMetadata.addAuditMessage(counter.addAndGet(1), ruleName, "SUCCEEDED"));
         return scenarioResultMetadata;
     }
 
