@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,15 @@ public class MeetingAssignment extends AbstractPersistable {
     // Planning variables: changes during planning, between score calculations.
     private TimeGrain startingTimeGrain;
     private Room room;
+
+    public MeetingAssignment() {
+    }
+
+    public MeetingAssignment(Meeting meeting, TimeGrain startingTimeGrain, Room room) {
+        this.meeting = meeting;
+        this.startingTimeGrain = startingTimeGrain;
+        this.room = room;
+    }
 
     public Meeting getMeeting() {
         return meeting;
