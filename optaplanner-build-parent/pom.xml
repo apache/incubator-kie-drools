@@ -20,7 +20,7 @@
     <!-- ************************************************************************ -->
 
     <!-- SNAPSHOT and KIE dependency versions -->
-    <version.org.kie.kogito>0.11.1</version.org.kie.kogito>
+    <version.org.kie.kogito>0.12.0</version.org.kie.kogito>
 
     <!-- Normal dependency versions -->
     <!-- TODO Do we want import the quarkus-bom instead of defining these ourselves? -->
