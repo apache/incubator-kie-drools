@@ -27,7 +27,7 @@ class OptaPlannerJsonbProcessor {
 
     @BuildStep
     FeatureBuildItem feature() {
-        return new FeatureBuildItem(FeatureBuildItem.OPTAPLANNER_JSONB);
+        return new FeatureBuildItem("optaplanner-jsonb");
     }
 
     @BuildStep

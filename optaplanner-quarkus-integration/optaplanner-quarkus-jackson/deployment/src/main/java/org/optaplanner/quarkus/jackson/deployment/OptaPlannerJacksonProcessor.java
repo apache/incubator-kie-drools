@@ -27,7 +27,7 @@ class OptaPlannerJacksonProcessor {
 
     @BuildStep
     FeatureBuildItem feature() {
-        return new FeatureBuildItem(FeatureBuildItem.OPTAPLANNER_JACKSON);
+        return new FeatureBuildItem("optaplanner-jackson");
     }
 
     @BuildStep

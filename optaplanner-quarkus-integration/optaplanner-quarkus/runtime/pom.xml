@@ -27,60 +27,10 @@
       <artifactId>optaplanner-core</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>org.kie</groupId>
-          <artifactId>kie-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.kie</groupId>
-          <artifactId>kie-internal</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.drools</groupId>
-          <artifactId>drools-core</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.drools</groupId>
-          <artifactId>drools-compiler</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.drools</groupId>
-          <artifactId>drools-canonical-model</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.drools</groupId>
-          <artifactId>drools-model-compiler</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.checkerframework</groupId>
-          <artifactId>checker-qual</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>com.google.code.findbugs</groupId>
-          <artifactId>jsr305</artifactId>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>drools-core-dynamic</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.mvel</groupId>
-      <artifactId>mvel2</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-drools</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jboss.spec.javax.annotation</groupId>
-          <artifactId>jboss-annotations-api_1.2_spec</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.annotation</groupId>
-      <artifactId>jakarta.annotation-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

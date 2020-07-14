@@ -65,7 +65,7 @@ class OptaPlannerProcessor {
 
     @BuildStep
     FeatureBuildItem feature() {
-        return new FeatureBuildItem(FeatureBuildItem.OPTAPLANNER);
+        return new FeatureBuildItem("optaplanner");
     }
 
     @BuildStep

@@ -24,8 +24,7 @@
   <url>https://www.optaplanner.org</url>
 
   <properties>
-    <version.io.quarkus>1.5.2.Final</version.io.quarkus>
-    <version.org.kie.kogito>0.10.1</version.org.kie.kogito>
+    <version.io.quarkus>1.6.0.Final</version.io.quarkus>
 
     <!-- TODO remove if https://issues.redhat.com/browse/PLANNER-2005 is fixed for 8.x -->
     <!-- TODO Extending kie-parent 7 is extremely dangerous and messy because it's not aligned to quarkus -->
@@ -86,18 +85,27 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-bom</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <systemPropertyVariables>
+              <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+            </systemPropertyVariables>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <configuration>
+            <systemPropertyVariables>
+              <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+            </systemPropertyVariables>
+          </configuration>
+        </plugin>
         <plugin>
           <groupId>io.quarkus</groupId>
           <artifactId>quarkus-maven-plugin</artifactId>
