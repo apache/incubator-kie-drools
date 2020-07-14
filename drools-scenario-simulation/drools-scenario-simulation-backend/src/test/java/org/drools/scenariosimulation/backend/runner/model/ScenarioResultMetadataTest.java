@@ -31,11 +31,24 @@ public class ScenarioResultMetadataTest {
     public void addAuditMessage() {
         assertTrue(scenarioResultMetadata.getAuditLogLines().isEmpty());
         int index = 1;
-        String message = "message";
-        String level = "INFO";
-        scenarioResultMetadata.addAuditMessage(index, message, level);
+        String decisionName = "decisionName";
+        String result = "SUCCEEDED";
+        scenarioResultMetadata.addAuditMessage(index, decisionName, result);
         final List<AuditLogLine> retrieved = scenarioResultMetadata.getAuditLogLines();
         assertEquals(1, retrieved.size());
-        commonCheckAuditLogLine(retrieved.get(0), message, level);
+        commonCheckAuditLogLine(retrieved.get(0), decisionName, result, null);
+    }
+
+    @Test
+    public void addAuditMessageWithErrorMessage() {
+        assertTrue(scenarioResultMetadata.getAuditLogLines().isEmpty());
+        int index = 1;
+        String decisionName = "decisionName";
+        String result = "SUCCEEDED";
+        String message = "Message";
+        scenarioResultMetadata.addAuditMessage(index, decisionName, result, message);
+        final List<AuditLogLine> retrieved = scenarioResultMetadata.getAuditLogLines();
+        assertEquals(1, retrieved.size());
+        commonCheckAuditLogLine(retrieved.get(0), decisionName, result, message);
     }
 }

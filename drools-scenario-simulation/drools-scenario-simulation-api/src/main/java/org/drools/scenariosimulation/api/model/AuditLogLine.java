@@ -15,6 +15,8 @@
  */
 package org.drools.scenariosimulation.api.model;
 
+import java.util.Optional;
+
 /**
  * Java representation of a single <b>audit</b> line
  */
@@ -25,6 +27,7 @@ public class AuditLogLine {
     private int executionIndex;
     private String decisionOrRuleName;
     private String result;
+    private Optional<String> message;
 
     public AuditLogLine() {
         // CDI
@@ -36,6 +39,16 @@ public class AuditLogLine {
         this.executionIndex = executionIndex;
         this.decisionOrRuleName = decisionOrRuleName;
         this.result = result;
+        this.message = Optional.empty();
+    }
+
+    public AuditLogLine(int scenarioIndex, String scenario, int executionIndex, String decisionOrRuleName, String result, String message) {
+        this.scenarioIndex = scenarioIndex;
+        this.scenario = scenario;
+        this.executionIndex = executionIndex;
+        this.decisionOrRuleName = decisionOrRuleName;
+        this.result = result;
+        this.message = Optional.ofNullable(message);
     }
 
     public int getScenarioIndex() {
@@ -56,5 +69,9 @@ public class AuditLogLine {
 
     public String getResult() {
         return result;
+    }
+
+    public Optional<String> getMessage() {
+        return message;
     }
 }

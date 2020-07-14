@@ -399,16 +399,18 @@ public class DMNScenarioRunnerHelperTest {
         if (messages == null) {
             assertEquals(decisionResults.size(), auditLogLines.size());
             for (int i = 0; i < decisionResults.size(); i++) {
-                commonCheckAuditLogLine(auditLogLines.get(i), decisionResults.get(i).getDecisionName(), decisionResults.get(i).getEvaluationStatus().name());
+                commonCheckAuditLogLine(auditLogLines.get(i), decisionResults.get(i).getDecisionName(), decisionResults.get(i).getEvaluationStatus().name(), null);
             }
         } else {
-            List<String> expectedDecision = Arrays.asList("decision2", "decision3");
-            int expectedLines = messages.size() * expectedDecision.size();
+            List<String> expectedDecisions = Arrays.asList("decision2", "decision3");
+            List<String> expectedResults = Arrays.asList(DecisionEvaluationStatus.SUCCEEDED.toString(), DecisionEvaluationStatus.FAILED.toString());
+            int expectedLines = messages.size() * expectedDecisions.size();
             assertEquals(expectedLines, auditLogLines.size());
             for (int i = 0; i < auditLogLines.size(); i++) {
                 int messagesIndex = i < messages.size() ? i : i - messages.size();
-                String decisionName = i < messages.size() ? expectedDecision.get(0) : expectedDecision.get(1);
-                commonCheckAuditLogLine(auditLogLines.get(i), decisionName, messages.get(messagesIndex).getLevel().name() + ": " + messages.get(messagesIndex).getText());
+                String decisionName = i < messages.size() ? expectedDecisions.get(0) : expectedDecisions.get(1);
+                String expectedResultName = i < messages.size() ? expectedResults.get(0) : expectedResults.get(1);
+                commonCheckAuditLogLine(auditLogLines.get(i), decisionName, expectedResultName, messages.get(messagesIndex).getLevel().name() + ": " + messages.get(messagesIndex).getText());
             }
         }
     }

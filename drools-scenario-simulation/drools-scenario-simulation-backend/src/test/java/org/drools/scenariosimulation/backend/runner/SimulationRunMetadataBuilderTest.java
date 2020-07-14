@@ -15,6 +15,7 @@
  */
 package org.drools.scenariosimulation.backend.runner;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -25,6 +26,7 @@ import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.junit.Test;
+import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
 
 import static org.drools.scenariosimulation.backend.TestUtils.commonCheckAuditLogLine;
@@ -53,10 +55,12 @@ public class SimulationRunMetadataBuilderTest {
         result2.addAvailable("d2");
         result2.addAvailable("d3");
         final AtomicInteger counter = new AtomicInteger(0);
+        List<String> expectedDecisions = Arrays.asList("d1", "d3");
+        List<String> expectedResults = Arrays.asList(DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED.toString(), DMNDecisionResult.DecisionEvaluationStatus.FAILED.toString());
         messages.forEach(message -> {
             final int i = counter.addAndGet(1);
-            result1.addAuditMessage(i, message.getText(), message.getLevel().name());
-            result2.addAuditMessage(i, message.getText(), message.getLevel().name());
+            result1.addAuditMessage(i, expectedDecisions.get(0), expectedResults.get(0));
+            result2.addAuditMessage(i, expectedDecisions.get(1), expectedResults.get(1), message.getLevel().name() + ": " + message.getText());
         });
 
         SimulationRunMetadataBuilder builder = SimulationRunMetadataBuilder.create();
@@ -75,9 +79,11 @@ public class SimulationRunMetadataBuilderTest {
         final List<AuditLogLine> auditLogLines = retrieved.getAuditLogLines();
         assertNotNull(auditLogLines);
         assertEquals(messages.size() * 2, auditLogLines.size());
+
         for (int i = 0; i < messages.size(); i++) {
-            DMNMessage dmnMessage = messages.get(i);
-            commonCheckAuditLogLine(auditLogLines.get(i), dmnMessage.getText(), dmnMessage.getLevel().name());
+            String decisionName = i < messages.size() ? expectedDecisions.get(0) : expectedDecisions.get(1);
+            String expectedResultName = i < messages.size() ? expectedResults.get(0) : expectedResults.get(1);
+            commonCheckAuditLogLine(auditLogLines.get(i), decisionName, expectedResultName, auditLogLines.get(i).getMessage().orElse(null));
         }
     }
 }
