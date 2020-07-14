@@ -92,7 +92,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
             if (decisionResult.getMessages().isEmpty()) {
                 scenarioResultMetadata.addAuditMessage(counter.addAndGet(1), decisionResult.getDecisionName(), decisionResult.getEvaluationStatus().name());
             } else {
-                decisionResult.getMessages().forEach(dmnMessage -> scenarioResultMetadata.addAuditMessage(counter.addAndGet(1), dmnMessage.getText(), dmnMessage.getLevel().name()));
+                decisionResult.getMessages().forEach(dmnMessage -> scenarioResultMetadata.addAuditMessage(counter.addAndGet(1), decisionResult.getDecisionName(), dmnMessage.getLevel().name() + ": " + dmnMessage.getText()));
             }
         }
         return scenarioResultMetadata;

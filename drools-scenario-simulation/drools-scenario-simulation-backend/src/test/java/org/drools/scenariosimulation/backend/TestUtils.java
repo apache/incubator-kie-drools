@@ -60,8 +60,8 @@ public class TestUtils {
 
     public static void commonCheckAuditLogLine(AuditLogLine toCheck, String expectedMessage, String expectedLevel) {
         assertNotNull(toCheck);
-        assertEquals(expectedMessage, toCheck.getMessage());
-        assertEquals(expectedLevel, toCheck.getLevel());
+        assertEquals(expectedMessage, toCheck.getDecisionOrRuleName());
+        assertEquals(expectedLevel, toCheck.getResult());
     }
 
     private static DMNMessage createDMNMessageMock(String text, Message.Level level) {
