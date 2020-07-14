@@ -495,8 +495,10 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
     @ParameterizedTest
     @ValueSource(strings = {"serverless/rule-workflow.sw.json", "serverless/rule-workflow.sw.yml"})
     public void testRuleWorkflow(String processLocation) throws Exception {
-
-        Application app = generateCode(Collections.singletonList(processLocation), Collections.singletonList("serverless/workflowrule.drl"));
+        Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
+        resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList(processLocation));
+        resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("serverless/workflowrule.drl"));
+        Application app = generateCode(resourcesTypeMap, false);
         assertThat(app).isNotNull();
 
         Process<? extends Model> p = app.processes().processById("ruleworkflow");

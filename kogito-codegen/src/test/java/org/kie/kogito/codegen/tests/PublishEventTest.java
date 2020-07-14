@@ -96,8 +96,10 @@ public class PublishEventTest extends AbstractCodegenTest {
    
     @Test
     public void testBusinessRuleProcessStartToEnd() throws Exception {
-        
-        Application app = generateCode(Collections.singletonList("ruletask/BusinessRuleTask.bpmn2"), Collections.singletonList("ruletask/BusinessRuleTask.drl"));        
+        Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
+        resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("ruletask/BusinessRuleTask.bpmn2"));
+        resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/BusinessRuleTask.drl"));
+        Application app = generateCode(resourcesTypeMap, false);
         assertThat(app).isNotNull();
         TestEventPublisher publisher = new TestEventPublisher();
         app.unitOfWorkManager().eventManager().setService("http://myhost");
@@ -321,8 +323,10 @@ public class PublishEventTest extends AbstractCodegenTest {
     
     @Test
     public void testBusinessRuleProcessStartToEndAbortOfUoW() throws Exception {
-        
-        Application app = generateCode(Collections.singletonList("ruletask/BusinessRuleTask.bpmn2"), Collections.singletonList("ruletask/BusinessRuleTask.drl"));        
+        Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
+        resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("ruletask/BusinessRuleTask.bpmn2"));
+        resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/BusinessRuleTask.drl"));
+        Application app = generateCode(resourcesTypeMap, false);
         assertThat(app).isNotNull();
         TestEventPublisher publisher = new TestEventPublisher();
         app.unitOfWorkManager().eventManager().setService("http://myhost");
@@ -469,8 +473,10 @@ public class PublishEventTest extends AbstractCodegenTest {
     
     @Test
     public void testBusinessRuleProcessStartToEndWithVariableTracked() throws Exception {
-        
-        Application app = generateCode(Collections.singletonList("ruletask/BusinessRuleTaskVariableTags.bpmn2"), Collections.singletonList("ruletask/BusinessRuleTask.drl"));        
+        Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
+        resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("ruletask/BusinessRuleTaskVariableTags.bpmn2"));
+        resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/BusinessRuleTask.drl"));
+        Application app = generateCode(resourcesTypeMap, false);
         assertThat(app).isNotNull();
         TestEventPublisher publisher = new TestEventPublisher();
         app.unitOfWorkManager().eventManager().setService("http://myhost");

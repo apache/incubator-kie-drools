@@ -46,8 +46,10 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
 
     @Test
     public void testBasicBusinessRuleTask() throws Exception {
-
-        Application app = generateCode(Collections.singletonList("ruletask/BusinessRuleTask.bpmn2"), Collections.singletonList("ruletask/BusinessRuleTask.drl"));
+        Map<AbstractCodegenTest.TYPE, List<String>> resourcesTypeMap = new HashMap<>();
+        resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("ruletask/BusinessRuleTask.bpmn2"));
+        resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/BusinessRuleTask.drl"));
+        Application app = generateCode(resourcesTypeMap, false);
         assertThat(app).isNotNull();
 
         Process<? extends Model> p = app.processes().processById("BusinessRuleTask");
@@ -66,8 +68,10 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
 
     @Test
     public void testBasicBusinessRuleTaskWithAgendaListener() throws Exception {
-
-        Application app = generateCode(Collections.singletonList("ruletask/BusinessRuleTask.bpmn2"), Collections.singletonList("ruletask/BusinessRuleTask.drl"));
+        Map<AbstractCodegenTest.TYPE, List<String>> resourcesTypeMap = new HashMap<>();
+        resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("ruletask/BusinessRuleTask.bpmn2"));
+        resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/BusinessRuleTask.drl"));
+        Application app = generateCode(resourcesTypeMap, false);
         assertThat(app).isNotNull();
         final AtomicInteger counter = new AtomicInteger();
         ((DefaultRuleEventListenerConfig)app.config().rule().ruleEventListeners()).register(new DefaultAgendaEventListener() {
@@ -96,8 +100,10 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
 
     @Test
     public void testBasicBusinessRuleTaskControlledByUnitOfWork() throws Exception {
-
-        Application app = generateCode(Collections.singletonList("ruletask/BusinessRuleTask.bpmn2"), Collections.singletonList("ruletask/BusinessRuleTask.drl"));
+        Map<AbstractCodegenTest.TYPE, List<String>> resourcesTypeMap = new HashMap<>();
+        resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("ruletask/BusinessRuleTask.bpmn2"));
+        resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/BusinessRuleTask.drl"));
+        Application app = generateCode(resourcesTypeMap, false);
         assertThat(app).isNotNull();
         final List<String> startedProcesses = new ArrayList<>();
         // add custom event listener that collects data
@@ -134,13 +140,10 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
 
     @Test
     public void testDecision() throws Exception {
-        Application app = generateCode(
-                Collections.singletonList("decision/models/dmnprocess.bpmn2"),
-                Collections.emptyList(),
-                Collections.singletonList("decision/models/vacationDaysAlt/vacationDaysAlt.dmn"),
-                Collections.emptyList(),
-                false);
-
+        Map<AbstractCodegenTest.TYPE, List<String>> resourcesTypeMap = new HashMap<>();
+        resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("decision/models/dmnprocess.bpmn2"));
+        resourcesTypeMap.put(TYPE.DECISION, Collections.singletonList("decision/models/vacationDaysAlt/vacationDaysAlt.dmn"));
+        Application app =generateCode(resourcesTypeMap, false);
         Process<? extends Model> p =
                 app.processes()
                         .processById("DmnProcess");
@@ -205,8 +208,10 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
     
     @Test
     public void testBusinessRuleTaskWithIOExpression() throws Exception {
-
-        Application app = generateCode(Collections.singletonList("ruletask/BusinessRuleTaskWithIOExpression.bpmn2"), Collections.singletonList("ruletask/BusinessRuleTask.drl"));
+        Map<AbstractCodegenTest.TYPE, List<String>> resourcesTypeMap = new HashMap<>();
+        resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("ruletask/BusinessRuleTaskWithIOExpression.bpmn2"));
+        resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/BusinessRuleTask.drl"));
+        Application app = generateCode(resourcesTypeMap, false);
         assertThat(app).isNotNull();
 
         Process<? extends Model> p = app.processes().processById("BusinessRuleTask");

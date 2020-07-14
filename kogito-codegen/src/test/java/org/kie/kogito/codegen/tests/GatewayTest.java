@@ -18,6 +18,9 @@ package org.kie.kogito.codegen.tests;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
@@ -31,8 +34,10 @@ public class GatewayTest extends AbstractCodegenTest {
     
     @Test
     public void testEventBasedGatewayWithData() throws Exception {
-        
-        Application app = generateCode(Collections.singletonList("gateway/EventBasedSplit.bpmn2"), Collections.singletonList("ruletask/BusinessRuleTask.drl"));        
+        Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
+        resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("gateway/EventBasedSplit.bpmn2"));
+        resourcesTypeMap.put(TYPE.RULES, Collections.singletonList("ruletask/BusinessRuleTask.drl"));
+        Application app = generateCode(resourcesTypeMap, false);
         assertThat(app).isNotNull();
                 
         Process<? extends Model> p = app.processes().processById("EventBasedSplit");

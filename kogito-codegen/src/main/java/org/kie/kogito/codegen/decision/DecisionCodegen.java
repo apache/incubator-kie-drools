@@ -104,7 +104,7 @@ public class DecisionCodegen extends AbstractGenerator {
         return ofDecisions(resources);
     }
 
-    public static DecisionCodegen ofFiles(Path basePath, List<File> files) throws IOException {
+    public static DecisionCodegen ofFiles(Path basePath, List<File> files) {
         return ofDecisions( parseFiles(basePath, files) );
     }
 
@@ -112,11 +112,11 @@ public class DecisionCodegen extends AbstractGenerator {
         return new DecisionCodegen(resources);
     }
 
-    private static List<DMNResource> parseFiles(Path path, List<File> files) throws IOException {
+    private static List<DMNResource> parseFiles(Path path, List<File> files) {
         return parseDecisions(path, files.stream().map(FileSystemResource::new).collect( toList() ));
     }
 
-    private static List<DMNResource> parseDecisions(Path path, List<Resource> resources) throws IOException {
+    private static List<DMNResource> parseDecisions(Path path, List<Resource> resources) {
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
                                                  .setRootClassLoader(null)
                                                  .buildConfiguration()
