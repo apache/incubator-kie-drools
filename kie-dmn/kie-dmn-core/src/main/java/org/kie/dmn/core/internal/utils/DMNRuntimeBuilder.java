@@ -25,9 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -54,7 +52,6 @@ import org.kie.dmn.core.impl.DMNRuntimeKB;
 import org.kie.dmn.feel.util.Either;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.internal.io.ResourceWithConfigurationImpl;
-import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
