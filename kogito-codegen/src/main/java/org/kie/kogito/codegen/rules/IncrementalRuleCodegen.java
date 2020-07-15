@@ -394,7 +394,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
     private Optional<String> generateQueryEndpoint( List<DroolsError> errors, List<org.kie.kogito.codegen.GeneratedFile> generatedFiles, QueryEndpointGenerator query ) {
         if (addonsConfig.useMonitoring()){
-            String dashboard = GrafanaConfigurationWriter.generateOperationalDashboard(operationalDashboardDmnTemplate, query.getEndpointName());
+            String dashboard = GrafanaConfigurationWriter.generateOperationalDashboard(operationalDashboardDmnTemplate, query.getEndpointName(), addonsConfig.useTracing());
 
             generatedFiles.add(new org.kie.kogito.codegen.GeneratedFile( org.kie.kogito.codegen.GeneratedFile.Type.RESOURCE,
                                                                         "dashboards/operational-dashboard-" + query.getEndpointName() + ".json",

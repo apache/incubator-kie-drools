@@ -31,6 +31,7 @@ import org.kie.kogito.grafana.factories.PanelFactory;
 import org.kie.kogito.grafana.model.GrafanaDashboard;
 import org.kie.kogito.grafana.model.functions.ExprBuilder;
 import org.kie.kogito.grafana.model.functions.GrafanaFunction;
+import org.kie.kogito.grafana.model.link.GrafanaLink;
 import org.kie.kogito.grafana.model.panel.GrafanaPanel;
 import org.kie.kogito.grafana.model.panel.PanelType;
 import org.kie.kogito.grafana.model.panel.common.YAxis;
@@ -162,6 +163,18 @@ public class JGrafana {
      */
     public JGrafana setTitle(String title) {
         this.dashboard.title = title;
+        return this;
+    }
+
+    /**
+     * Adds an external link to the dashboard.
+     *
+     * @param title: The title of the link.
+     * @param url: The url of the link.
+     * @return: The updated object.
+     */
+    public JGrafana addLink(String title, String url){
+        this.dashboard.links.add(new GrafanaLink(title, url));
         return this;
     }
 

@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.kie.kogito.grafana.model.link.GrafanaLink;
 import org.kie.kogito.grafana.model.panel.GrafanaPanel;
 import org.kie.kogito.grafana.model.templating.GrafanaTemplating;
 import org.kie.kogito.grafana.model.time.GrafanaTime;
@@ -80,7 +81,7 @@ public class GrafanaDashboard {
     public int version = 1;
 
     @JsonProperty("links")
-    public List<String> links = new ArrayList<>();
+    public List<GrafanaLink> links = new ArrayList<>();
 
     @JsonProperty("annotations")
     public Object annotations;

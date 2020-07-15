@@ -28,6 +28,7 @@ import javax.xml.namespace.QName;
 
 import org.kie.dmn.model.api.Decision;
 import org.kie.kogito.grafana.dmn.SupportedDecisionTypes;
+import org.kie.kogito.grafana.model.link.GrafanaLink;
 import org.kie.kogito.grafana.model.panel.PanelType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,9 @@ import org.slf4j.LoggerFactory;
 public class GrafanaConfigurationWriter {
 
     private static final Logger logger = LoggerFactory.getLogger(GrafanaConfigurationWriter.class);
+
+    private static final String AUDIT_LINK_NAME = "Audit UI";
+    private static final String AUDIT_LINK_URL_PLACEHOLDER = "${{urlPlaceholder}}";
 
     private GrafanaConfigurationWriter() {
         // Intentionally left blank.
@@ -47,7 +51,7 @@ public class GrafanaConfigurationWriter {
      * @param handlerName:  The name of the endpoint.
      * @return: The template customized for the endpoint.
      */
-    public static String generateOperationalDashboard(String templatePath, String handlerName) {
+    public static String generateOperationalDashboard(String templatePath, String handlerName, boolean generateAuditLink) {
         String template = readStandardDashboard(templatePath);
         template = customizeTemplate(template, handlerName);
         JGrafana jgrafana;
@@ -56,6 +60,10 @@ public class GrafanaConfigurationWriter {
         } catch (IOException e) {
             logger.error(String.format("Could not parse the grafana template for the endpoint %s", handlerName), e);
             throw new IllegalArgumentException("Could not parse the dashboard template.", e);
+        }
+
+        if (generateAuditLink){
+            jgrafana.addLink(AUDIT_LINK_NAME, AUDIT_LINK_URL_PLACEHOLDER);
         }
 
         try {
@@ -74,7 +82,7 @@ public class GrafanaConfigurationWriter {
      * @param decisions:    The decisions in the DMN model.
      * @return: The customized template containing also specific panels for the DMN decisions that have been specified in the arguments.
      */
-    public static String generateDomainSpecificDMNDashboard(String templatePath, String endpoint, List<Decision> decisions) {
+    public static String generateDomainSpecificDMNDashboard(String templatePath, String endpoint, List<Decision> decisions, boolean generateAuditLink) {
         String template = readStandardDashboard(templatePath);
         template = customizeTemplate(template, endpoint);
 
@@ -84,6 +92,10 @@ public class GrafanaConfigurationWriter {
         } catch (IOException e) {
             logger.error(String.format("Could not parse the grafana template for the endpoint %s", endpoint), e);
             throw new IllegalArgumentException("Could not parse the dashboard template.", e);
+        }
+
+        if (generateAuditLink){
+            jgrafana.addLink(AUDIT_LINK_NAME, AUDIT_LINK_URL_PLACEHOLDER);
         }
 
         for (Decision decision : decisions) {
