@@ -804,13 +804,6 @@
 
   <profiles>
     <profile>
-      <id>snapshot</id>
-      <properties>
-        <version.org.kie7>7.33.0-SNAPSHOT</version.org.kie7>
-      </properties>
-    </profile>
-
-    <profile>
       <id>run-code-coverage</id>
       <build>
         <plugins>
