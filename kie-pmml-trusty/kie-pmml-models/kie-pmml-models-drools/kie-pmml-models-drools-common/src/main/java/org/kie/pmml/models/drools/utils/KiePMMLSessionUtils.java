@@ -51,9 +51,9 @@ public class KiePMMLSessionUtils {
     private final String packageName;
     private final List<Command> commands;
 
-    private KiePMMLSessionUtils(final KieBase knowledgeBase, final String modelName, final PMML4Result pmml4Result) {
+    private KiePMMLSessionUtils(final KieBase knowledgeBase, final String modelName, final String packageName, final PMML4Result pmml4Result) {
         this.modelName = modelName;
-        packageName = getSanitizedPackageName(modelName);
+        this.packageName = packageName;
         kieSession = getKieSession(knowledgeBase);
         commands = new ArrayList<>();
         commands.add(COMMAND_FACTORY_SERVICE.newInsert(new KiePMMLStatusHolder()));
@@ -61,8 +61,8 @@ public class KiePMMLSessionUtils {
         commands.add(COMMAND_FACTORY_SERVICE.newSetGlobal(PMML4_RESULT_IDENTIFIER, pmml4Result));
     }
 
-    public static Builder builder(final KieBase knowledgeBase, final String modelName, final PMML4Result pmml4Result) {
-        return new Builder(knowledgeBase, modelName, pmml4Result);
+    public static Builder builder(final KieBase knowledgeBase, final String modelName, final String packageName, final PMML4Result pmml4Result) {
+        return new Builder(knowledgeBase, modelName, packageName, pmml4Result);
     }
 
     private StatelessKieSession getKieSession(final KieBase knowledgeBase) {
@@ -123,8 +123,8 @@ public class KiePMMLSessionUtils {
 
         private KiePMMLSessionUtils toBuild;
 
-        private Builder(final KieBase knowledgeBase, final String modelName, final PMML4Result pmml4Result) {
-            this.toBuild = new KiePMMLSessionUtils(knowledgeBase, modelName, pmml4Result);
+        private Builder(final KieBase knowledgeBase, final String modelName, final String packageName, final PMML4Result pmml4Result) {
+            this.toBuild = new KiePMMLSessionUtils(knowledgeBase, modelName, packageName, pmml4Result);
         }
 
         /**
