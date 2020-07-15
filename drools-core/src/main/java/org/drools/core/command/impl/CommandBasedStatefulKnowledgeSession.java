@@ -163,7 +163,7 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
 
     public WorkItemManager getWorkItemManager() {
         if ( workItemManager == null ) {
-            workItemManager = new WorkItemManager() {
+            workItemManager = new WorkItemManager<Long>() {
                 public void completeWorkItem(long id,
                                              Map<String, Object> results) {
                     CompleteWorkItemCommand command = new CompleteWorkItemCommand();
@@ -186,7 +186,7 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
                     runner.execute( command );
                 }
 
-                public WorkItem getWorkItem(long id) {
+                public WorkItem getWorkItem(Long id) {
                     GetWorkItemCommand command = new GetWorkItemCommand();
                     command.setWorkItemId( id );
                     return runner.execute( command );
@@ -196,11 +196,11 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
                     throw new UnsupportedOperationException();
                 }
 
-                public Set<WorkItem> getWorkItems() {
-                    throw new UnsupportedOperationException();
+                public void internalAbortWorkItem(Long id) {
+
                 }
 
-                public void internalAbortWorkItem(long id) {
+                public Set<WorkItem<Long>> getWorkItems() {
                     throw new UnsupportedOperationException();
                 }
 

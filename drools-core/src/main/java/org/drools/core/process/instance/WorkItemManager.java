@@ -19,17 +19,17 @@ package org.drools.core.process.instance;
 import java.util.Map;
 import java.util.Set;
 
-public interface WorkItemManager extends org.kie.api.runtime.process.WorkItemManager {
+public interface WorkItemManager<T> extends org.kie.api.runtime.process.WorkItemManager {
 
-    void internalExecuteWorkItem(WorkItem workItem);
+    void internalExecuteWorkItem(WorkItem<T> workItem);
 
-    void internalAddWorkItem(WorkItem workItem);
+    void internalAddWorkItem(WorkItem<T> workItem);
 
-    void internalAbortWorkItem(long id);
+    void internalAbortWorkItem(T id);
     
-    Set<WorkItem> getWorkItems();
+    Set<WorkItem<T>> getWorkItems();
 
-    WorkItem getWorkItem(long id);
+    WorkItem<T> getWorkItem(T id);
 
     void clear();
     

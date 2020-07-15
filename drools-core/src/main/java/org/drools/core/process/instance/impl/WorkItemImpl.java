@@ -23,11 +23,11 @@ import java.util.Map;
 
 import org.drools.core.process.instance.WorkItem;
 
-public class WorkItemImpl implements WorkItem, Serializable {
+public class WorkItemImpl<T> implements WorkItem<T>, Serializable {
 
     private static final long serialVersionUID = 510l;
     
-    private long id;
+    private T id;
     private String name;
     private int state = 0;
     private Map<String, Object> parameters = new HashMap<String, Object>();
@@ -37,12 +37,17 @@ public class WorkItemImpl implements WorkItem, Serializable {
     private long nodeInstanceId;
     private long nodeId;
     
-    public void setId(long id) {
+    public void setId(T id) {
         this.id = id;
     }
     
-    public long getId() {
+    public T getIdG() {
         return id;
+    }
+
+    @Override
+    public long getId() {
+        return Long.parseLong(id.toString());
     }
     
     public void setName(String name) {

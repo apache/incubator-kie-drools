@@ -35,7 +35,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class JPAWorkItemManager implements WorkItemManager {
+public class JPAWorkItemManager implements WorkItemManager<Long> {
 
     private InternalKnowledgeRuntime kruntime;
     private Map<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
@@ -93,7 +93,7 @@ public class JPAWorkItemManager implements WorkItemManager {
         }
     }
 
-    public void retryWorkItem( long workItemId ) {
+    public void retryWorkItem( Long workItemId ) {
         WorkItem workItem = getWorkItem( workItemId );
         retryWorkItem( workItem );
     }
@@ -109,7 +109,7 @@ public class JPAWorkItemManager implements WorkItemManager {
         }
     }
 
-    public void internalAbortWorkItem( long id ) {
+    public void internalAbortWorkItem( Long id ) {
         PersistenceContext context = getPersistenceContext();
 
         WorkItemInfo workItemInfo = (WorkItemInfo) context.findWorkItem( id );
@@ -204,7 +204,7 @@ public class JPAWorkItemManager implements WorkItemManager {
         }
     }
 
-    public WorkItem getWorkItem( long id ) {
+    public WorkItem getWorkItem( Long id ) {
         PersistenceContext context = getPersistenceContext();
 
         WorkItemInfo workItemInfo = null;
@@ -232,8 +232,8 @@ public class JPAWorkItemManager implements WorkItemManager {
         return workItem;
     }
 
-    public Set<WorkItem> getWorkItems() {
-        return new HashSet<WorkItem>();
+    public Set<WorkItem<Long>> getWorkItems() {
+        return new HashSet<>();
     }
 
     public void registerWorkItemHandler( String workItemName, WorkItemHandler handler ) {

@@ -35,12 +35,12 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.Closeable;
 
-public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
+public class DefaultWorkItemManager implements WorkItemManager<Long>, Externalizable {
 
     private static final long serialVersionUID = 510l;
 
     private AtomicLong workItemCounter = new AtomicLong(0);
-    private Map<Long, WorkItem> workItems = new ConcurrentHashMap<>();
+    private Map<Long, WorkItem<Long>> workItems = new ConcurrentHashMap<>();
     private InternalKnowledgeRuntime kruntime;
     private Map<String, WorkItemHandler> workItemHandlers = new HashMap<>();
 
@@ -57,7 +57,7 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         workItemCounter.set(in.readLong());
-        workItems = (Map<Long, WorkItem>) in.readObject();
+        workItems = (Map<Long, WorkItem<Long>>) in.readObject();
         kruntime = (InternalKnowledgeRuntime) in.readObject();
         workItemHandlers = (Map<String, WorkItemHandler>) in.readObject();
     }
@@ -69,8 +69,8 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         out.writeObject(workItemHandlers);
     }
 
-    public void internalExecuteWorkItem(WorkItem workItem) {
-        ((WorkItemImpl) workItem).setId(workItemCounter.incrementAndGet());
+    public void internalExecuteWorkItem(WorkItem<Long> workItem) {
+        ((WorkItemImpl<Long>) workItem).setId(workItemCounter.incrementAndGet());
         internalAddWorkItem(workItem);
         WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
         if (handler != null) {
@@ -87,7 +87,7 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         }
     }
 
-    public void internalAbortWorkItem(long id) {
+    public void internalAbortWorkItem(Long id) {
         WorkItemImpl workItem = (WorkItemImpl) workItems.get(id);
         // work item may have been aborted
         if (workItem != null) {
@@ -132,11 +132,11 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         }
     }
     
-    public Set<WorkItem> getWorkItems() {
+    public Set<WorkItem<Long>> getWorkItems() {
         return new HashSet<>(workItems.values());
     }
 
-    public WorkItem getWorkItem(long id) {
+    public WorkItem<Long> getWorkItem(Long id) {
         return workItems.get(id);
     }
 
