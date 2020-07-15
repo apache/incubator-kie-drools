@@ -62,6 +62,7 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.codegen.AbstractGenerator;
+import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratorContext;
@@ -76,9 +77,8 @@ import org.kie.kogito.rules.RuleUnitConfig;
 import org.kie.kogito.rules.units.AssignableChecker;
 import org.kie.kogito.rules.units.ReflectiveRuleUnitDescription;
 
-import static java.util.stream.Collectors.toList;
-
 import static com.github.javaparser.StaticJavaParser.parse;
+import static java.util.stream.Collectors.toList;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.kie.api.io.ResourceType.determineResourceType;
@@ -184,7 +184,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
     private KieModuleModel kieModuleModel;
     private boolean hotReloadMode = false;
-    private boolean useMonitoring = false;
+    private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
     private boolean useRestServices = true;
     private String packageName;
     private final boolean decisionTableSupported;
@@ -310,7 +310,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
                     RuleUnitGenerator ruSource = new RuleUnitGenerator(ruleUnit, pkgSources.getRulesFileName())
                             .withDependencyInjection(annotator)
                             .withQueries( pkgSources.getQueriesInRuleUnit( ruleUnit.getCanonicalName() ) )
-                            .withMonitoring(useMonitoring);
+                            .withAddons(addonsConfig);
 
                     moduleGenerator.addRuleUnit(ruSource);
                     unitsMap.put(ruleUnit.getCanonicalName(), ruSource.targetCanonicalName());
@@ -393,7 +393,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     }
 
     private Optional<String> generateQueryEndpoint( List<DroolsError> errors, List<org.kie.kogito.codegen.GeneratedFile> generatedFiles, QueryEndpointGenerator query ) {
-        if (useMonitoring){
+        if (addonsConfig.useMonitoring()){
             String dashboard = GrafanaConfigurationWriter.generateOperationalDashboard(operationalDashboardDmnTemplate, query.getEndpointName());
 
             generatedFiles.add(new org.kie.kogito.codegen.GeneratedFile( org.kie.kogito.codegen.GeneratedFile.Type.RESOURCE,
@@ -488,8 +488,8 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         return this;
     }
 
-    public IncrementalRuleCodegen withMonitoring(boolean useMonitoring) {
-        this.useMonitoring = useMonitoring;
+    public IncrementalRuleCodegen withAddons(AddonsConfig addonsConfig) {
+        this.addonsConfig = addonsConfig;
         return this;
     }
 

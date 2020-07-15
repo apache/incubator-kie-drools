@@ -51,13 +51,14 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.StringUtils;
-import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.kogito.Model;
+import org.kie.kogito.codegen.AddonsConfig;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.process.ProcessInstancesFactory;
 import org.kie.kogito.process.impl.AbstractProcess;
@@ -83,7 +84,7 @@ public class ProcessGenerator {
     private final String appCanonicalName;
     private String targetTypeName;
     private DependencyInjectionAnnotator annotator;
-    private boolean persistence;
+    private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
 
     private List<CompilationUnit> additionalClasses = new ArrayList<>();
 
@@ -411,7 +412,7 @@ public class ProcessGenerator {
                 .addMember(internalRegisterListeners(processMetaData))
                 .addMember(process(processMetaData));
         
-        if (persistence) {
+        if (addonsConfig.usePersistence()) {
         
             if (useInjection()) {
                 
@@ -528,8 +529,8 @@ public class ProcessGenerator {
         return this;
     }
     
-    public ProcessGenerator withPersistence(boolean persistence) {
-        this.persistence = persistence;
+    public ProcessGenerator withAddons(AddonsConfig addonsConfig) {
+        this.addonsConfig = addonsConfig;
         return this;
     }
     

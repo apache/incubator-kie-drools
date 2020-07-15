@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratorContext;
 import org.kie.kogito.grafana.JGrafana;
@@ -90,7 +91,7 @@ public class DecisionCodegenTest {
 
     @Test
     public void GivenADMNModel_WhenMonitoringIsActive_ThenGrafanaDashboardsAreGenerated() throws Exception {
-        DecisionCodegen codeGenerator = DecisionCodegen.ofPath(Paths.get("src/test/resources/decision/models/vacationDays").toAbsolutePath()).withMonitoring(true);
+        DecisionCodegen codeGenerator = DecisionCodegen.ofPath(Paths.get("src/test/resources/decision/models/vacationDays").toAbsolutePath()).withAddons(new AddonsConfig().withMonitoring(true));
 
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
 

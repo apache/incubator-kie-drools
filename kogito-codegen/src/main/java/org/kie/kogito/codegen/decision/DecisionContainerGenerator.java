@@ -44,6 +44,7 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.util.IoUtils;
 import org.kie.kogito.codegen.AbstractApplicationSection;
+import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.decision.DecisionModels;
 import org.kie.kogito.dmn.DmnExecutionIdSupplier;
 
@@ -55,7 +56,7 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
 
     private String applicationCanonicalName;
     private final List<DMNResource> resources;
-    private boolean useTracing = false;
+    private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
 
     public DecisionContainerGenerator(String applicationCanonicalName, List<DMNResource> resources) {
         super("DecisionModels", "decisionModels", DecisionModels.class);
@@ -63,8 +64,8 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
         this.resources = resources;
     }
 
-    public DecisionContainerGenerator withTracing(boolean useTracing) {
-        this.useTracing = useTracing;
+    public DecisionContainerGenerator withAddons(AddonsConfig addonsConfig) {
+        this.addonsConfig = addonsConfig;
         return this;
     }
 
@@ -99,7 +100,7 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
                 throw new RuntimeException("The template " + TEMPLATE_JAVA + " has been modified.");
             }
         }
-        if (useTracing) {
+        if (addonsConfig.useTracing()) {
             VariableDeclarator execIdSupplierVariable = typeDeclaration.getFieldByName("execIdSupplier")
                     .map(x -> x.getVariable(0))
                     .orElseThrow(() -> new RuntimeException("Can't find \"execIdSupplier\" field in " + TEMPLATE_JAVA));

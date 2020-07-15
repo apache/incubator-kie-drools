@@ -45,6 +45,7 @@ import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.modelcompiler.builder.QueryModel;
 import org.kie.internal.ruleunit.RuleUnitDescription;
+import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.FileGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
@@ -65,9 +66,9 @@ public class QueryEndpointGenerator implements FileGenerator {
     private final String queryClassName;
     private final String targetCanonicalName;
     private final String generatedFilePath;
-    private final boolean useMonitoring;
+    private final AddonsConfig addonsConfig;
 
-    public QueryEndpointGenerator(RuleUnitDescription ruleUnit, QueryModel query, DependencyInjectionAnnotator annotator, boolean useMonitoring) {
+    public QueryEndpointGenerator(RuleUnitDescription ruleUnit, QueryModel query, DependencyInjectionAnnotator annotator, AddonsConfig addonsConfig) {
         this.ruleUnit = ruleUnit;
         this.query = query;
         this.name = toCamelCase(query.getName());
@@ -77,7 +78,7 @@ public class QueryEndpointGenerator implements FileGenerator {
         this.queryClassName = ruleUnit.getSimpleName() + "Query" + name;
         this.targetCanonicalName = queryClassName + "Endpoint";
         this.generatedFilePath = (query.getNamespace() + "." + targetCanonicalName).replace('.', '/') + ".java";
-        this.useMonitoring = useMonitoring;
+        this.addonsConfig = addonsConfig;
     }
 
     public QueryGenerator getQueryGenerator() {
@@ -198,7 +199,7 @@ public class QueryEndpointGenerator implements FileGenerator {
                 .getStatement(1);
         returnMethodSingle.findAll(VariableDeclarator.class).forEach(decl -> decl.setType(toNonPrimitiveType(returnType)));
 
-        if (useMonitoring) {
+        if (addonsConfig.useMonitoring()) {
             addMonitoringToResource(cu, new MethodDeclaration[]{queryMethod, queryMethodSingle}, endpointName);
         }
     }

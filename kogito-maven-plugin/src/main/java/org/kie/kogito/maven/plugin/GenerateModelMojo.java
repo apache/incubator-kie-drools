@@ -41,6 +41,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratorContext;
@@ -215,6 +216,11 @@ public class GenerateModelMojo extends AbstractKieMojo {
         boolean useMonitoring = hasClassOnClasspath(project, "org.kie.kogito.monitoring.rest.MetricsResource");
         boolean useTracing = hasClassOnClasspath(project, "org.kie.kogito.tracing.decision.DecisionTracingListener");
 
+        AddonsConfig addonsConfig = new AddonsConfig()
+                .withPersistence(usePersistence)
+                .withMonitoring(useMonitoring)
+                .withTracing(useTracing);
+
         ClassLoader projectClassLoader = MojoUtil.createProjectClassLoader(this.getClass().getClassLoader(),
                                                                            project,
                                                                            outputDirectory,
@@ -226,8 +232,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
         ApplicationGenerator appGen =
                 new ApplicationGenerator(appPackageName, targetDirectory)
                         .withDependencyInjection(discoverDependencyInjectionAnnotator(project))
-                        .withPersistence(usePersistence)
-                        .withMonitoring(useMonitoring)
+                        .withAddons(addonsConfig)
                         .withClassLoader(projectClassLoader)
                         .withGeneratorContext(context);
 
@@ -236,7 +241,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
 
         if (generateProcesses()) {
             appGen.withGenerator(ProcessCodegen.ofPath(kieSourcesDirectory.toPath()))
-                    .withPersistence(usePersistence)
+                    .withAddons(addonsConfig)
                     .withClassLoader(projectClassLoader);
         }
 
@@ -245,14 +250,13 @@ public class GenerateModelMojo extends AbstractKieMojo {
             appGen.withGenerator(IncrementalRuleCodegen.ofPath(kieSourcesDirectory.toPath()))
                     .withKModule(getKModuleModel())
                     .withClassLoader(projectClassLoader)
-                    .withMonitoring(useMonitoring)
+                    .withAddons(addonsConfig)
                     .withRestServices(useRestServices);
         }
 
         if (generateDecisions()) {
             appGen.withGenerator(DecisionCodegen.ofPath(kieSourcesDirectory.toPath()))
-                    .withTracing(useTracing)
-                    .withMonitoring(useMonitoring);
+                    .withAddons(addonsConfig);
         }
 
         return appGen;

@@ -38,6 +38,7 @@ import org.drools.core.util.StringUtils;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.dmn.model.api.DecisionService;
+import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.CodegenUtils;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
@@ -56,7 +57,7 @@ public class DMNRestResourceGenerator {
     private final String resourceClazzName;
     private final String appCanonicalName;
     private DependencyInjectionAnnotator annotator;
-    private boolean useMonitoring;
+    private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
     private boolean isStronglyTyped = false;
 
     public DMNRestResourceGenerator(DMNModel model, String appCanonicalName) {
@@ -115,14 +116,14 @@ public class DMNRestResourceGenerator {
                 rewrittenReturnExpr.setName("extractSingletonDSIfSucceded");
             }
 
-            if (useMonitoring) {
+            if (addonsConfig.useMonitoring()) {
                 addMonitoringToMethod(clonedMethod, ds.getName());
             }
 
             template.addMember(clonedMethod);
         }
 
-        if (useMonitoring) {
+        if (addonsConfig.useMonitoring()) {
             addMonitoringImports(clazz);
             ClassOrInterfaceDeclaration exceptionClazz = clazz.findFirst(ClassOrInterfaceDeclaration.class, x -> "DMNEvaluationErrorExceptionMapper".equals(x.getNameAsString()))
                     .orElseThrow(() -> new NoSuchElementException("Could not find DMNEvaluationErrorExceptionMapper, template has changed."));
@@ -153,8 +154,8 @@ public class DMNRestResourceGenerator {
         return this;
     }
 
-    public DMNRestResourceGenerator withMonitoring(boolean useMonitoring) {
-        this.useMonitoring = useMonitoring;
+    public DMNRestResourceGenerator withAddons(AddonsConfig addonsConfig) {
+        this.addonsConfig = addonsConfig;
         return this;
     }
 

@@ -11,7 +11,7 @@ configure its global behavior.
     ApplicationGenerator appGen =
             new ApplicationGenerator(appPackageName, targetDirectory)
                     .withDependencyInjection(...)
-                    .withPersistence(...);
+                    .withAddons(...);
     ```
 
 - Each supported component (process, rules, etc.) implements the `Generator` 
@@ -27,7 +27,7 @@ configure its global behavior.
             .withClassLoader(...);
     
     appGen.withGenerator(ProcessCodegen.ofPath(processSourceDirectory))                    
-            .withPersistence(...);
+            .withAddons(...);
     ```
 
 - Each `Generator` should delegate to a subcomponent, to process a single

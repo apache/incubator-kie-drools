@@ -26,6 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.ResourceType;
+import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.GeneratedFile;
 
 import static java.util.Arrays.asList;
@@ -165,7 +166,7 @@ public class IncrementalRuleCodegenTest {
                 IncrementalRuleCodegen.ofFiles(
                         Collections.singleton(
                                 new File("src/test/resources/org/kie/kogito/codegen/unit/RuleUnitQuery.drl")))
-                        .withMonitoring(true);
+                        .withAddons(new AddonsConfig().withMonitoring(true));
         incrementalRuleCodegen.setPackageName("com.acme");
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
 

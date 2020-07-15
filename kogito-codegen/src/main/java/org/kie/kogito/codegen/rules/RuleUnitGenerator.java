@@ -31,6 +31,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.TypeParameter;
 import org.drools.modelcompiler.builder.QueryModel;
 import org.kie.internal.ruleunit.RuleUnitDescription;
+import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.FileGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
@@ -38,10 +39,9 @@ import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.units.GeneratedRuleUnitDescription;
 import org.kie.kogito.rules.units.impl.AbstractRuleUnit;
 
-import static java.util.stream.Collectors.toList;
-
 import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static java.util.stream.Collectors.toList;
 import static org.kie.kogito.codegen.metadata.ImageMetaData.LABEL_PREFIX;
 
 public class RuleUnitGenerator implements FileGenerator {
@@ -56,7 +56,7 @@ public class RuleUnitGenerator implements FileGenerator {
     private DependencyInjectionAnnotator annotator;
     private Collection<QueryModel> queries;
     private String applicationPackageName;
-    private boolean useMonitoring;
+    private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
 
     public RuleUnitGenerator(RuleUnitDescription ruleUnit, String generatedSourceFile) {
         this.ruleUnit = ruleUnit;
@@ -76,7 +76,7 @@ public class RuleUnitGenerator implements FileGenerator {
     public List<QueryEndpointGenerator> queries() {
         return queries.stream()
                 .filter(query -> !query.hasParameters())
-                .map(query -> new QueryEndpointGenerator(ruleUnit, query, annotator, useMonitoring))
+                .map(query -> new QueryEndpointGenerator(ruleUnit, query, annotator, addonsConfig))
                 .collect(toList());
     }
 
@@ -181,8 +181,8 @@ public class RuleUnitGenerator implements FileGenerator {
         return this;
     }
 
-    public RuleUnitGenerator withMonitoring(boolean useMonitoring) {
-        this.useMonitoring = useMonitoring;
+    public RuleUnitGenerator withAddons(AddonsConfig addonsConfig) {
+        this.addonsConfig = addonsConfig;
         return this;
     }
 

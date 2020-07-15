@@ -46,6 +46,7 @@ import org.kie.dmn.typesafe.DMNAllTypesIndex;
 import org.kie.dmn.typesafe.DMNTypeSafePackageName;
 import org.kie.dmn.typesafe.DMNTypeSafeTypeGenerator;
 import org.kie.kogito.codegen.AbstractGenerator;
+import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ConfigGenerator;
@@ -55,7 +56,6 @@ import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.grafana.GrafanaConfigurationWriter;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.kie.api.io.ResourceType.determineResourceType;
 import static org.kie.kogito.codegen.ApplicationGenerator.log;
@@ -136,7 +136,7 @@ public class DecisionCodegen extends AbstractGenerator {
 
     private final List<DMNResource> resources;
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
-    private boolean useMonitoring = false;
+    private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
 
     public DecisionCodegen(List<DMNResource> resources) {
         this.resources = resources;
@@ -182,13 +182,13 @@ public class DecisionCodegen extends AbstractGenerator {
             }
             DMNRestResourceGenerator resourceGenerator = new DMNRestResourceGenerator(model, applicationCanonicalName)
                     .withDependencyInjection(annotator)
-                    .withMonitoring(useMonitoring)
+                    .withAddons(addonsConfig)
                     .withStronglyTyped(stronglyTypedEnabled);
             rgs.add(resourceGenerator);
         }
 
         for (DMNRestResourceGenerator resourceGenerator : rgs) {
-            if (useMonitoring) {
+            if (addonsConfig.useMonitoring()) {
                 generateAndStoreGrafanaDashboards(resourceGenerator);
             }
 
@@ -253,13 +253,9 @@ public class DecisionCodegen extends AbstractGenerator {
         return moduleGenerator;
     }
 
-    public DecisionCodegen withMonitoring(boolean useMonitoring) {
-        this.useMonitoring = useMonitoring;
-        return this;
-    }
-
-    public DecisionCodegen withTracing(boolean useTracing) {
-        this.moduleGenerator.withTracing(useTracing);
+    public DecisionCodegen withAddons(AddonsConfig addonsConfig) {
+        this.moduleGenerator.withAddons(addonsConfig);
+        this.addonsConfig = addonsConfig;
         return this;
     }
 }

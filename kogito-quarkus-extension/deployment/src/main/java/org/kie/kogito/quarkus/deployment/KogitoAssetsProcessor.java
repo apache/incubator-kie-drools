@@ -58,6 +58,7 @@ import org.kie.internal.kogito.codegen.Generated;
 import org.kie.internal.kogito.codegen.VariableInfo;
 import org.kie.kogito.Model;
 import org.kie.kogito.UserTask;
+import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratorContext;
@@ -382,29 +383,33 @@ public class KogitoAssetsProcessor {
         boolean useTracing = !combinedIndexBuildItem.getIndex()
                 .getAllKnownSubclasses(createDotName(tracingClass)).isEmpty();
 
+        AddonsConfig addonsConfig = new AddonsConfig()
+                .withPersistence(usePersistence)
+                .withMonitoring(useMonitoring)
+                .withTracing(useTracing);
+
         GeneratorContext context = buildContext(appPaths, combinedIndexBuildItem.getIndex());
 
         ApplicationGenerator appGen = new ApplicationGenerator(appPackageName, new File(appPaths.getFirstProjectPath().toFile(), "target"))
                 .withDependencyInjection(new CDIDependencyInjectionAnnotator())
-                .withPersistence(usePersistence)
-                .withMonitoring(useMonitoring)
+                .withAddons(addonsConfig)
                 .withGeneratorContext(context);
 
-        addProcessGenerator(appPaths, usePersistence, appGen);
-        addRuleGenerator(appPaths, appGen, useMonitoring);
-        addDecisionGenerator(appPaths, appGen, useMonitoring, useTracing);
+        addProcessGenerator(appPaths, addonsConfig, appGen);
+        addRuleGenerator(appPaths, appGen, addonsConfig);
+        addDecisionGenerator(appPaths, appGen, addonsConfig);
 
         return appGen;
     }
 
-    private void addRuleGenerator( AppPaths appPaths, ApplicationGenerator appGen, boolean useMonitoring ) throws IOException {
+    private void addRuleGenerator( AppPaths appPaths, ApplicationGenerator appGen, AddonsConfig addonsConfig ) throws IOException {
         IncrementalRuleCodegen generator = appPaths.isJar ?
                 IncrementalRuleCodegen.ofJar(appPaths.getJarPath()) :
                 IncrementalRuleCodegen.ofPath(appPaths.getSourcePaths());
 
         appGen.withGenerator(generator)
                 .withKModule( findKieModuleModel( appPaths ) )
-                .withMonitoring(useMonitoring)
+                .withAddons(addonsConfig)
                 .withClassLoader(Thread.currentThread().getContextClassLoader());
     }
 
@@ -422,23 +427,22 @@ public class KogitoAssetsProcessor {
                 "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>");
     }
 
-    private void addProcessGenerator( AppPaths appPaths, boolean usePersistence, ApplicationGenerator appGen ) throws IOException {
+    private void addProcessGenerator( AppPaths appPaths, AddonsConfig addonsConfig, ApplicationGenerator appGen ) throws IOException {
         ProcessCodegen generator = appPaths.isJar ?
                 ProcessCodegen.ofJar(appPaths.getJarPath()) :
                 ProcessCodegen.ofPath(appPaths.getProjectPaths());
 
         appGen.withGenerator( generator )
-                .withPersistence(usePersistence)
+                .withAddons(addonsConfig)
                 .withClassLoader(Thread.currentThread().getContextClassLoader());
     }
 
-    private void addDecisionGenerator( AppPaths appPaths, ApplicationGenerator appGen, boolean useMonitoring, boolean useTracing ) throws IOException {
+    private void addDecisionGenerator( AppPaths appPaths, ApplicationGenerator appGen, AddonsConfig addonsConfig ) throws IOException {
         DecisionCodegen generator = appPaths.isJar ?
                 DecisionCodegen.ofJar(appPaths.getJarPath()) :
                 DecisionCodegen.ofPath(appPaths.getResourcePaths());
 
-        appGen.withGenerator(generator.withTracing(useTracing))
-                .withMonitoring(useMonitoring);
+        appGen.withGenerator(generator.withAddons(addonsConfig));
     }
 
     private String toRuntimeSource(String className) {
