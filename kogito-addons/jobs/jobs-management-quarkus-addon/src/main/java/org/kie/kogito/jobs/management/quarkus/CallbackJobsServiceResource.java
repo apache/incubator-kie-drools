@@ -35,7 +35,7 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.Sig;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
-import org.kie.services.time.TimerInstance;
+import org.kie.kogito.timer.TimerInstance;
 
 @Path("/management/jobs")
 public class CallbackJobsServiceResource {

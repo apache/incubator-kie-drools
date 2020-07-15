@@ -23,9 +23,9 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.RuleComponent;
 import org.drools.core.spi.Tuple;
-import org.kie.services.time.Trigger;
-import org.kie.services.time.impl.DefaultJobHandle;
-import org.kie.api.runtime.Calendars;
+import org.kie.kogito.timer.Trigger;
+import org.kie.kogito.timer.impl.DefaultJobHandle;
+import org.kie.kogito.timer.Calendars;
 
 public interface Timer extends Serializable, RuleComponent, RuleConditionElement {
 

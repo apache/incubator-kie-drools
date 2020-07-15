@@ -24,7 +24,7 @@ import org.drools.core.base.mvel.MVELObjectExpression;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Tuple;
-import org.kie.services.time.Interval;
+import org.kie.kogito.timer.Interval;
 import org.drools.core.util.DateUtils;
 
 /**

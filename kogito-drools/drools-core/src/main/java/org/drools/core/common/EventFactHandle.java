@@ -19,8 +19,8 @@ package org.drools.core.common;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.kie.services.time.JobHandle;
-import org.kie.services.time.TimerService;
+import org.kie.kogito.timer.JobHandle;
+import org.kie.kogito.timer.TimerService;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.LinkedList;
 

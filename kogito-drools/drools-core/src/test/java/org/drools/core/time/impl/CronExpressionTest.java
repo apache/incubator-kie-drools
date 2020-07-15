@@ -27,7 +27,7 @@ import java.util.TimeZone;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.kie.services.time.impl.CronExpression;
+import org.kie.kogito.timer.impl.CronExpression;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

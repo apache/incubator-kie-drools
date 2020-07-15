@@ -73,8 +73,8 @@ import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.services.jobs.impl.InMemoryJobService;
-import org.kie.services.time.TimerService;
-import org.kie.services.time.impl.CommandServiceTimerJobFactoryManager;
+import org.kie.kogito.timer.TimerService;
+import org.kie.api.time.CommandServiceTimerJobFactoryManager;
 
 public class ProcessRuntimeImpl implements InternalProcessRuntime {
 

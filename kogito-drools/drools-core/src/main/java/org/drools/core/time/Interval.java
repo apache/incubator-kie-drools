@@ -3,10 +3,10 @@ package org.drools.core.time;
 /**
  * @deprecated only for backwards compatibility reasons
  * (native compilation)
- * use {@link org.kie.services.time.Interval}
+ * use {@link org.kie.kogito.timer.Interval}
  */
 @Deprecated
-public class Interval extends org.kie.services.time.Interval {
+public class Interval extends org.kie.kogito.timer.Interval {
 
     public Interval() {
     }

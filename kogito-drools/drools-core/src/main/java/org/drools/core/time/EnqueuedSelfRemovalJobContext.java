@@ -22,9 +22,9 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.phreak.PhreakTimerNode;
 import org.drools.core.phreak.PhreakTimerNode.TimerNodeJobContext;
 import org.drools.core.phreak.PropagationEntry;
-import org.kie.services.time.JobContext;
-import org.kie.services.time.JobHandle;
-import org.kie.services.time.impl.TimerJobInstance;
+import org.kie.kogito.timer.JobContext;
+import org.kie.kogito.timer.JobHandle;
+import org.kie.kogito.timer.impl.TimerJobInstance;
 
 public class EnqueuedSelfRemovalJobContext implements JobContext {
     private static final long serialVersionUID = 614425985040796356L;

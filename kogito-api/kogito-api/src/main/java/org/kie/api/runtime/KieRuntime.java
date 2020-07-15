@@ -22,7 +22,8 @@ import org.kie.api.KieBase;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.api.runtime.rule.RuleRuntime;
-import org.kie.api.time.SessionClock;
+import org.kie.kogito.timer.Calendars;
+import org.kie.kogito.timer.SessionClock;
 
 public interface KieRuntime
     extends

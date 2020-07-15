@@ -30,17 +30,18 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.time.SessionPseudoClock;
-import org.kie.services.time.InternalSchedulerService;
-import org.kie.services.time.Job;
-import org.kie.services.time.JobContext;
-import org.kie.services.time.JobHandle;
-import org.kie.services.time.TimerService;
-import org.kie.services.time.Trigger;
-import org.kie.services.time.impl.DefaultJobHandle;
-import org.kie.services.time.impl.DefaultTimerJobFactoryManager;
-import org.kie.services.time.impl.DefaultTimerJobInstance;
-import org.kie.services.time.impl.TimerJobFactoryManager;
-import org.kie.services.time.impl.TimerJobInstance;
+import org.kie.kogito.timer.InternalSchedulerService;
+import org.kie.kogito.timer.Job;
+import org.kie.kogito.timer.JobContext;
+import org.kie.kogito.timer.JobHandle;
+import org.kie.kogito.timer.SessionClock;
+import org.kie.kogito.timer.TimerService;
+import org.kie.kogito.timer.Trigger;
+import org.kie.kogito.timer.impl.DefaultJobHandle;
+import org.kie.kogito.timer.impl.DefaultTimerJobFactoryManager;
+import org.kie.kogito.timer.impl.DefaultTimerJobInstance;
+import org.kie.kogito.timer.impl.TimerJobFactoryManager;
+import org.kie.kogito.timer.impl.TimerJobInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,7 +105,7 @@ public class PseudoClockScheduler
     /**
      * @inheritDoc
      * 
-     * @see org.kie.api.time.SessionClock#getCurrentTime()
+     * @see SessionClock#getCurrentTime()
      */
     public long getCurrentTime() {
         return this.timer.get();

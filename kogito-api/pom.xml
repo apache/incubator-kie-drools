@@ -54,6 +54,7 @@
     <module>kogito-api</module>
     <module>kogito-internal</module>
     <module>kogito-services</module>
+    <module>kogito-timer</module>
   </modules>
 
 </project>

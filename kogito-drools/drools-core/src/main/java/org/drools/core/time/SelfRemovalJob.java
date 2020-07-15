@@ -17,8 +17,8 @@ package org.drools.core.time;
 
 import java.io.Serializable;
 
-import org.kie.services.time.Job;
-import org.kie.services.time.JobContext;
+import org.kie.kogito.timer.Job;
+import org.kie.kogito.timer.JobContext;
 
 public class SelfRemovalJob implements Job, Serializable {
 

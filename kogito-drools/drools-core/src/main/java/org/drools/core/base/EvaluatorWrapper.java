@@ -30,7 +30,7 @@ import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
-import org.kie.services.time.Interval;
+import org.kie.kogito.timer.Interval;
 
 /**
  * An EvaluatorWrapper is used when executing MVEL expressions

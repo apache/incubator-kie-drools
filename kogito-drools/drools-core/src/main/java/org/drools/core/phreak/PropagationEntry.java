@@ -32,9 +32,9 @@ import org.drools.core.reteoo.ModifyPreviousTuples;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.spi.PropagationContext;
-import org.kie.services.time.JobContext;
-import org.kie.services.time.JobHandle;
-import org.kie.services.time.impl.PointInTimeTrigger;
+import org.kie.kogito.timer.JobContext;
+import org.kie.kogito.timer.JobHandle;
+import org.kie.kogito.timer.impl.PointInTimeTrigger;
 
 public interface PropagationEntry {
 

@@ -43,7 +43,7 @@ import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.process.BaseEventDescription;
 import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.process.NamedDataType;
-import org.kie.services.time.TimerInstance;
+import org.kie.kogito.timer.TimerInstance;
 
 /**
  * Runtime counterpart of an event node.

@@ -23,8 +23,8 @@ import java.io.ObjectOutput;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.kie.api.runtime.Calendars;
-import org.kie.api.time.Calendar;
+import org.kie.kogito.timer.Calendars;
+import org.kie.kogito.timer.Calendar;
 
 public class CalendarsImpl
     implements

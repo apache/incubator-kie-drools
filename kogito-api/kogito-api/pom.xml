@@ -45,6 +45,10 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-timer</artifactId>
+    </dependency>
 
     <!-- test -->
     <dependency>

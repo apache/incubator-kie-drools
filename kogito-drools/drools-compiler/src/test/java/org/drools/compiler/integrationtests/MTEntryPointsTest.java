@@ -33,7 +33,7 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.api.time.SessionPseudoClock;
+import org.kie.kogito.timer.SessionPseudoClock;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

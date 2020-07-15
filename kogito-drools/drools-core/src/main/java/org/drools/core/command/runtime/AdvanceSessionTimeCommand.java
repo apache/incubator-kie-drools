@@ -28,7 +28,7 @@ import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.time.SessionPseudoClock;
+import org.kie.kogito.timer.SessionPseudoClock;
 import org.kie.internal.command.RegistryContext;
 
 @XmlRootElement(name="advance-session-time")

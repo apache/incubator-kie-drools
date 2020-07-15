@@ -38,7 +38,7 @@ import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.time.SessionClock;
+import org.kie.kogito.timer.SessionClock;
 
 /**
  * Tests related to the pseudo session clock

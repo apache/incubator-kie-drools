@@ -21,14 +21,14 @@ import java.util.Map;
 
 import org.drools.core.time.EnqueuedSelfRemovalJobContext;
 import org.drools.core.time.SelfRemovalJob;
-import org.kie.services.time.InternalSchedulerService;
-import org.kie.services.time.Job;
-import org.kie.services.time.JobContext;
-import org.kie.services.time.JobHandle;
-import org.kie.services.time.Trigger;
-import org.kie.services.time.impl.DefaultTimerJobInstance;
-import org.kie.services.time.impl.TimerJobFactoryManager;
-import org.kie.services.time.impl.TimerJobInstance;
+import org.kie.kogito.timer.InternalSchedulerService;
+import org.kie.kogito.timer.Job;
+import org.kie.kogito.timer.JobContext;
+import org.kie.kogito.timer.JobHandle;
+import org.kie.kogito.timer.Trigger;
+import org.kie.kogito.timer.impl.DefaultTimerJobInstance;
+import org.kie.kogito.timer.impl.TimerJobFactoryManager;
+import org.kie.kogito.timer.impl.TimerJobInstance;
 
 public class TrackableTimeJobFactoryManager
     implements

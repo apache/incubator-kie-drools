@@ -54,12 +54,12 @@ import org.drools.core.reteoo.compiled.CompiledNetwork;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
-import org.kie.services.time.Job;
-import org.kie.services.time.JobContext;
-import org.kie.services.time.JobHandle;
-import org.kie.services.time.TimerService;
-import org.kie.services.time.impl.DefaultJobHandle;
-import org.kie.services.time.impl.PointInTimeTrigger;
+import org.kie.kogito.timer.Job;
+import org.kie.kogito.timer.JobContext;
+import org.kie.kogito.timer.JobHandle;
+import org.kie.kogito.timer.TimerService;
+import org.kie.kogito.timer.impl.DefaultJobHandle;
+import org.kie.kogito.timer.impl.PointInTimeTrigger;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 

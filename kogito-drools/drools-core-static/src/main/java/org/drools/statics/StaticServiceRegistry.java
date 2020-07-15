@@ -59,7 +59,7 @@ public class StaticServiceRegistry implements ServiceRegistry {
         registerService("org.drools.compiler.kie.builder.impl.InternalKieModuleProvider", "org.drools.modelcompiler.CanonicalKieModuleProvider", true);
         registerService("org.drools.compiler.compiler.DecisionTableProvider", "org.drools.decisiontable.DecisionTableProviderImpl", false);
 
-        constructorMap.put("TimerService", SimpleInstanceCreator.constructor("org.kie.services.time.impl.JDKTimerService"));
+        constructorMap.put("TimerService", SimpleInstanceCreator.constructor("org.kie.kogito.timer.impl.JDKTimerService"));
     }
 
     private void registerService(String service, String implementation, boolean mandatory) {

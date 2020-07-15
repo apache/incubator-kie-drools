@@ -87,7 +87,7 @@ import org.kie.kogito.process.NamedDataType;
 import org.kie.kogito.process.flexible.AdHocFragment;
 import org.kie.kogito.process.flexible.ItemDescription;
 import org.kie.kogito.process.flexible.Milestone;
-import org.kie.services.time.TimerInstance;
+import org.kie.kogito.timer.TimerInstance;
 import org.mvel2.integration.VariableResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

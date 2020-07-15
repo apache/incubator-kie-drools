@@ -637,7 +637,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         String weekendCalendarSource =
                 "package org.mypackage;\n" +
                 "\n" +
-                "public class WeekendCalendar implements org.kie.api.time.Calendar {\n" +
+                "public class WeekendCalendar implements org.kie.kogito.timer.Calendar {\n" +
                 "        @Override\n" +
                 "        public boolean isTimeIncluded( long timestamp ) {\n" +
                 "            java.util.Calendar c = java.util.Calendar.getInstance();\n" +
@@ -650,7 +650,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         String weekdayCalendarSource =
                 "package org.mypackage;\n" +
                 "\n" +
-                "public class WeekdayCalendar implements org.kie.api.time.Calendar {\n" +
+                "public class WeekdayCalendar implements org.kie.kogito.timer.Calendar {\n" +
                 "        @Override\n" +
                 "        public boolean isTimeIncluded( long timestamp ) {\n" +
                 "            java.util.Calendar c = java.util.Calendar.getInstance();\n" +

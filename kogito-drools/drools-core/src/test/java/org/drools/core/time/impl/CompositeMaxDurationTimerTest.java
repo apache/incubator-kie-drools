@@ -18,7 +18,7 @@ package org.drools.core.time.impl;
 import java.util.Date;
 
 import org.junit.jupiter.api.Test;
-import org.kie.services.time.Trigger;
+import org.kie.kogito.timer.Trigger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;

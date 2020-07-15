@@ -20,7 +20,7 @@ import java.text.ParseException;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
-import org.kie.services.time.impl.CronExpression;
+import org.kie.kogito.timer.impl.CronExpression;
 
 import static org.junit.jupiter.api.Assertions.fail;
 

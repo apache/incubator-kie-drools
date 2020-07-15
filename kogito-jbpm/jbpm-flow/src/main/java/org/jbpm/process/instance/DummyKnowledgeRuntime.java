@@ -15,7 +15,7 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.logger.KieRuntimeLogger;
-import org.kie.api.runtime.Calendars;
+import org.kie.kogito.timer.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.Globals;
@@ -28,9 +28,9 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
-import org.kie.api.time.SessionClock;
+import org.kie.kogito.timer.SessionClock;
 import org.kie.kogito.jobs.JobsService;
-import org.kie.services.time.TimerService;
+import org.kie.kogito.timer.TimerService;
 
 /**
  * A severely limited implementation of the WorkingMemory interface.

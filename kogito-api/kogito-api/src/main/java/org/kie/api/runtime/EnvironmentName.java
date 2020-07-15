@@ -32,7 +32,7 @@ public class EnvironmentName {
 
     public static final String OBJECT_MARSHALLING_STRATEGIES        = "org.kie.api.marshalling.ObjectMarshallingStrategies";
     public static final String GLOBALS                              = "org.kie.Globals";
-    public static final String CALENDARS                            = "org.kie.api.time.Calendars";
+    public static final String CALENDARS                            = "org.kie.kogito.timer.Calendars";
     public static final String DATE_FORMATS                         = "org.kie.build.DateFormats";
     public static final String IDENTITY_PROVIDER                    = "org.kie.internal.identity.IdentityProvider";
 

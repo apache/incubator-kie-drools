@@ -31,7 +31,7 @@ import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.time.SessionClock;
+import org.kie.kogito.timer.SessionClock;
 
 /**
  * A knowledge session for a <code>RuleBase</code>.

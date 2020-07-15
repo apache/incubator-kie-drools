@@ -17,7 +17,7 @@
 package org.drools.core.time;
 
 import org.junit.jupiter.api.Test;
-import org.kie.services.time.Interval;
+import org.kie.kogito.timer.Interval;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -44,7 +44,7 @@ public class TemporalDistanceTest {
                 { new Interval(-4,1), new Interval(-2,-1), new Interval(-3, -2), new Interval(0, 0), new Interval(-2, -1) },
                 { new Interval(-3,3), new Interval(-1,1), new Interval(-2,0), new Interval(1, 2), new Interval(0,0) }
         };
-        Interval[][] result = TimeUtils.calculateTemporalDistance( matrix );
+        Interval[][] result = TimeUtils.calculateTemporalDistance(matrix );
         assertEqualsMatrix( expected, result );
     }
 

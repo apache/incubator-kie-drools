@@ -24,7 +24,7 @@ import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.time.impl.JDKTimerServiceTest.HelloWorldJob;
 import org.drools.core.time.impl.JDKTimerServiceTest.HelloWorldJobContext;
 import org.junit.jupiter.api.Test;
-import org.kie.services.time.impl.CronTrigger;
+import org.kie.kogito.timer.impl.CronTrigger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

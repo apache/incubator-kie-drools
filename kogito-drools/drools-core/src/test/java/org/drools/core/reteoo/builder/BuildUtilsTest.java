@@ -29,11 +29,11 @@ import org.drools.core.test.model.StockTick;
 import org.drools.core.time.TemporalDependencyMatrix;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.services.time.Interval;
+import org.kie.kogito.timer.Interval;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.kie.services.time.Interval.MAX;
-import static org.kie.services.time.Interval.MIN;
+import static org.kie.kogito.timer.Interval.MAX;
+import static org.kie.kogito.timer.Interval.MIN;
 
 public class BuildUtilsTest {
     

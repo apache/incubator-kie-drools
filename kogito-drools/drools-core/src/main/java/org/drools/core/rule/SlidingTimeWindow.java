@@ -42,11 +42,11 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.reteoo.WindowNode.WindowMemory;
 import org.drools.core.spi.PropagationContext;
-import org.kie.services.time.Job;
-import org.kie.services.time.JobContext;
-import org.kie.services.time.JobHandle;
-import org.kie.services.time.TimerService;
-import org.kie.services.time.impl.PointInTimeTrigger;
+import org.kie.kogito.timer.Job;
+import org.kie.kogito.timer.JobContext;
+import org.kie.kogito.timer.JobHandle;
+import org.kie.kogito.timer.TimerService;
+import org.kie.kogito.timer.impl.PointInTimeTrigger;
 
 public class SlidingTimeWindow
         implements

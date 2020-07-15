@@ -17,7 +17,7 @@
 package org.drools.core.time;
 
 import org.drools.core.SessionConfiguration;
-import org.kie.services.time.TimerService;
+import org.kie.kogito.timer.TimerService;
 
 public class TimerServiceFactory {
 

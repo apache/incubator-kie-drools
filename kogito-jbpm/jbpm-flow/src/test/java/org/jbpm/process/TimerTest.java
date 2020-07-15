@@ -37,7 +37,7 @@ import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.services.jobs.impl.InMemoryJobService;
-import org.kie.services.time.TimerInstance;
+import org.kie.kogito.timer.TimerInstance;
 import org.slf4j.LoggerFactory;
 
 public class TimerTest extends AbstractBaseTest  {

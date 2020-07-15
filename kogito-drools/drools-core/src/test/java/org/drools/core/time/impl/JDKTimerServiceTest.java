@@ -33,11 +33,11 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.time.TimerServiceFactory;
 import org.junit.jupiter.api.Test;
-import org.kie.services.time.Job;
-import org.kie.services.time.JobContext;
-import org.kie.services.time.JobHandle;
-import org.kie.services.time.TimerService;
-import org.kie.services.time.Trigger;
+import org.kie.kogito.timer.Job;
+import org.kie.kogito.timer.JobContext;
+import org.kie.kogito.timer.JobHandle;
+import org.kie.kogito.timer.TimerService;
+import org.kie.kogito.timer.Trigger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -47,8 +47,8 @@ public class JDKTimerServiceTest {
     public void testSingleExecutionJob() throws Exception {
         SessionConfiguration config = SessionConfiguration.newInstance();
         config.setClockType(ClockType.REALTIME_CLOCK);
-        TimerService timeService = TimerServiceFactory.getTimerService( config );
-        Trigger trigger = new DelayedTrigger( 100 );
+        TimerService timeService = TimerServiceFactory.getTimerService(config );
+        Trigger trigger = new DelayedTrigger(100 );
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
         timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);
         Thread.sleep( 500 );
@@ -60,7 +60,7 @@ public class JDKTimerServiceTest {
     public void testRepeatedExecutionJob() throws Exception {
         SessionConfiguration config = SessionConfiguration.newInstance();
         config.setClockType(ClockType.REALTIME_CLOCK);
-        TimerService timeService = TimerServiceFactory.getTimerService( config );
+        TimerService timeService = TimerServiceFactory.getTimerService(config );
         Trigger trigger = new DelayedTrigger(  new long[] { 100, 100, 100} );
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
         timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);

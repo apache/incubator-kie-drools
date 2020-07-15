@@ -17,9 +17,9 @@ package org.drools.core.time;
 
 import java.util.Map;
 
-import org.kie.services.time.JobContext;
-import org.kie.services.time.JobHandle;
-import org.kie.services.time.impl.TimerJobInstance;
+import org.kie.kogito.timer.JobContext;
+import org.kie.kogito.timer.JobHandle;
+import org.kie.kogito.timer.impl.TimerJobInstance;
 
 public class SelfRemovalJobContext implements JobContext {
 

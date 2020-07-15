@@ -16,7 +16,7 @@
 package org.drools.core.rule;
 
 import org.drools.core.spi.Constraint;
-import org.kie.services.time.Interval;
+import org.kie.kogito.timer.Interval;
 
 public interface IntervalProviderConstraint extends Constraint {
     Interval getInterval();

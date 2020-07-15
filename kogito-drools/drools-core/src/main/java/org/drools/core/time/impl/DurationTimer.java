@@ -28,11 +28,11 @@ import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.Tuple;
-import org.kie.services.time.Trigger;
-import org.kie.services.time.impl.DefaultJobHandle;
-import org.kie.services.time.impl.PointInTimeTrigger;
+import org.kie.kogito.timer.Trigger;
+import org.kie.kogito.timer.impl.DefaultJobHandle;
+import org.kie.kogito.timer.impl.PointInTimeTrigger;
 import org.drools.core.util.NumberUtils;
-import org.kie.api.runtime.Calendars;
+import org.kie.kogito.timer.Calendars;
 
 public class DurationTimer extends BaseTimer
     implements

@@ -33,7 +33,7 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 
 import org.jbpm.util.PatternConstants;
-import org.kie.api.time.SessionClock;
+import org.kie.kogito.timer.SessionClock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -45,6 +45,7 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.Salience;
+
 import org.drools.core.time.TimeUtils;
 import org.drools.core.time.impl.CronTimer;
 import org.drools.core.time.impl.ExpressionIntervalTimer;
@@ -58,7 +59,7 @@ import org.kie.api.definition.rule.All;
 import org.kie.api.definition.rule.Direct;
 import org.kie.api.definition.rule.Propagation;
 import org.kie.api.definition.rule.Unit;
-import org.kie.services.time.impl.CronExpression;
+import org.kie.kogito.timer.impl.CronExpression;
 
 /**
  * This builds the rule structure from an AST.
@@ -428,7 +429,7 @@ public class RuleBuilder {
             try {
                 if ( times.length == 1 ) {
                     // only defines a delay
-                    delay = TimeUtils.parseTimeString( times[0] );
+                    delay = TimeUtils.parseTimeString(times[0] );
                 } else {
                     // defines a delay and a period for intervals
                     delay = TimeUtils.parseTimeString( times[0] );

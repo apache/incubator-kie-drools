@@ -27,7 +27,7 @@ import org.drools.core.base.ValueType;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.spi.Evaluator;
-import org.kie.services.time.Interval;
+import org.kie.kogito.timer.Interval;
 
 /**
  * <p>The implementation of the 'before' evaluator definition.</p>

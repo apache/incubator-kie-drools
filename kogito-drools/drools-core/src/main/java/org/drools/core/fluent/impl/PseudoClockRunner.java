@@ -34,7 +34,7 @@ import org.kie.api.runtime.Context;
 import org.kie.api.runtime.Executable;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.RequestContext;
-import org.kie.api.time.SessionPseudoClock;
+import org.kie.kogito.timer.SessionPseudoClock;
 
 public class PseudoClockRunner implements InternalLocalRunner {
 
