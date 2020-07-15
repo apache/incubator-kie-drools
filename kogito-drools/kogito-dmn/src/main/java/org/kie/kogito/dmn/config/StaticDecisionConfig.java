@@ -26,6 +26,10 @@ public class StaticDecisionConfig implements DecisionConfig {
         this.decisionEventListenerConfig = decisionEventListenerConfig;
     }
 
+    public StaticDecisionConfig() {
+        this(new DefaultDecisionEventListenerConfig());
+    }
+
     @Override
     public DecisionEventListenerConfig decisionEventListeners() {
         return decisionEventListenerConfig;

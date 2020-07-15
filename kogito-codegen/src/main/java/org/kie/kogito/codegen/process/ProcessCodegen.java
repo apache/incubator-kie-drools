@@ -104,6 +104,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
     private ClassLoader contextClassLoader;
     private ResourceGeneratorFactory resourceGeneratorFactory;
+    private String packageName;
 
     public static ProcessCodegen ofJar(Path... jarPaths) {
         List<Process> processes = new ArrayList<>();
@@ -233,6 +234,7 @@ public class ProcessCodegen extends AbstractGenerator {
     public void setPackageName(String packageName) {
         this.moduleGenerator = new ProcessesContainerGenerator(packageName);
         this.applicationCanonicalName = packageName + ".Application";
+        this.packageName = packageName;
     }
 
     public void setDependencyInjection(DependencyInjectionAnnotator annotator) {
@@ -478,7 +480,7 @@ public class ProcessCodegen extends AbstractGenerator {
     public void updateConfig(ConfigGenerator cfg) {
         if (!processes.isEmpty()) {
             cfg.withProcessConfig(
-                    new ProcessConfigGenerator());
+                    new ProcessConfigGenerator(packageName));
         }
     }
 

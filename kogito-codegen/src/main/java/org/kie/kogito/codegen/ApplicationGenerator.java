@@ -209,7 +209,9 @@ public class ApplicationGenerator {
         }
         generatedFiles.add(generateApplicationDescriptor());
         generatedFiles.addAll(generateApplicationSections());
-        generatedFiles.add(generateApplicationConfigDescriptor());
+
+        generatedFiles.addAll(configGenerator.generate());
+
         if (useInjection()) {
             generators.stream().filter(gen -> gen.section() != null)
                     .forEach(gen -> generateSectionClass(gen.section(), generatedFiles));
@@ -247,12 +249,6 @@ public class ApplicationGenerator {
                                       sectionUnit.toString()));
         }
         return generatedFiles;
-    }
-
-    public GeneratedFile generateApplicationConfigDescriptor() {
-        return new GeneratedFile(GeneratedFile.Type.APPLICATION_CONFIG,
-                                 configGenerator.generatedFilePath(),
-                                 log( configGenerator.compilationUnit().toString() ).getBytes(StandardCharsets.UTF_8));
     }
 
     public void generateSectionClass(ApplicationSection section, List<GeneratedFile> generatedFiles) {

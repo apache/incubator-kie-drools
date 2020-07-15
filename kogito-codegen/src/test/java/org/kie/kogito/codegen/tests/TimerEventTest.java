@@ -42,7 +42,7 @@ public class TimerEventTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
         
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("timer", 3);
-        ((DefaultProcessEventListenerConfig)app.config().process().processEventListeners()).register(listener);
+        app.config().process().processEventListeners().listeners().add(listener);
                 
         Process<? extends Model> p = app.processes().processById("IntermediateCatchEvent");
         
@@ -69,7 +69,7 @@ public class TimerEventTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
         
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("timer", 1);
-        ((DefaultProcessEventListenerConfig)app.config().process().processEventListeners()).register(listener);
+        app.config().process().processEventListeners().listeners().add(listener);
                 
         Process<? extends Model> p = app.processes().processById("IntermediateCatchEvent");
         
@@ -93,7 +93,7 @@ public class TimerEventTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
         
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("timer", 1);
-        ((DefaultProcessEventListenerConfig)app.config().process().processEventListeners()).register(listener);
+        app.config().process().processEventListeners().listeners().add(listener);
                 
         Process<? extends Model> p = app.processes().processById("IntermediateCatchEvent");
         
@@ -119,7 +119,7 @@ public class TimerEventTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
         
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
-        ((DefaultProcessEventListenerConfig)app.config().process().processEventListeners()).register(listener);
+        app.config().process().processEventListeners().listeners().add(listener);
                 
         Process<? extends Model> p = app.processes().processById("TimerBoundaryEvent");
         
@@ -143,7 +143,7 @@ public class TimerEventTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
         
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
-        ((DefaultProcessEventListenerConfig)app.config().process().processEventListeners()).register(listener);
+        app.config().process().processEventListeners().listeners().add(listener);
                 
         Process<? extends Model> p = app.processes().processById("TimerBoundaryEvent");
         
@@ -167,7 +167,7 @@ public class TimerEventTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
         
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
-        ((DefaultProcessEventListenerConfig)app.config().process().processEventListeners()).register(listener);
+        app.config().process().processEventListeners().listeners().add(listener);
                 
         Process<? extends Model> p = app.processes().processById("TimerBoundaryEvent");
         
@@ -193,7 +193,7 @@ public class TimerEventTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
         
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
-        ((DefaultProcessEventListenerConfig)app.config().process().processEventListeners()).register(listener);
+        app.config().process().processEventListeners().listeners().add(listener);
                 
         Process<? extends Model> p = app.processes().processById("TimerBoundaryEvent");
         
@@ -217,7 +217,7 @@ public class TimerEventTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
 
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("timer fired", 1);
-        ((DefaultProcessEventListenerConfig) app.config().process().processEventListeners()).register(listener);
+        app.config().process().processEventListeners().listeners().add(listener);
 
         Process<? extends Model> p = app.processes().processById("defaultPackage.TimerProcess");
         // activate to schedule timers
@@ -249,7 +249,7 @@ public class TimerEventTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
 
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("timer fired", 2);
-        ((DefaultProcessEventListenerConfig) app.config().process().processEventListeners()).register(listener);
+        app.config().process().processEventListeners().listeners().add(listener);
 
         Process<? extends Model> p = app.processes().processById("defaultPackage.TimerProcess");
         // activate to schedule timers

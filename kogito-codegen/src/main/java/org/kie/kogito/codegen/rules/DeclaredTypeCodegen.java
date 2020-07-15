@@ -167,7 +167,7 @@ public class DeclaredTypeCodegen extends AbstractGenerator {
 
     @Override
     public void updateConfig(ConfigGenerator cfg) {
-        cfg.withRuleConfig(new RuleConfigGenerator());
+        cfg.withRuleConfig(new RuleConfigGenerator("defaultpkg"));
     }
 
     public DeclaredTypeCodegen withClassLoader(ClassLoader projectClassLoader) {

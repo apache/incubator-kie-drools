@@ -268,7 +268,7 @@ public class UserTaskTest extends AbstractCodegenTest {
         Application app = generateCodeProcessesOnly("usertask/UserTasksProcess.bpmn2");
         assertThat(app).isNotNull();
         final List<String> workItemTransitionEvents = new ArrayList<>();
-        ((DefaultProcessEventListenerConfig) app.config().process().processEventListeners()).listeners().add(new DefaultProcessEventListener() {
+        app.config().process().processEventListeners().listeners().add(new DefaultProcessEventListener() {
 
             @Override
             public void beforeWorkItemTransition(ProcessWorkItemTransitionEvent event) {

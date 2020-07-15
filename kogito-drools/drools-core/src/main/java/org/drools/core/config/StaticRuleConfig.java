@@ -26,6 +26,10 @@ public class StaticRuleConfig implements RuleConfig {
         this.ruleEventListenerConfig = ruleEventListenerConfig;
     }
 
+    public StaticRuleConfig() {
+        this(new DefaultRuleEventListenerConfig());
+    }
+
     @Override
     public RuleEventListenerConfig ruleEventListeners() {
         return ruleEventListenerConfig;

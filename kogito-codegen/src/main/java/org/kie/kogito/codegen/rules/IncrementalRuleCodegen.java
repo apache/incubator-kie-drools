@@ -469,7 +469,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
     @Override
     public void updateConfig(ConfigGenerator cfg) {
-        cfg.withRuleConfig(new RuleConfigGenerator());
+        cfg.withRuleConfig(new RuleConfigGenerator(packageName));
     }
 
     public IncrementalRuleCodegen withKModule(KieModuleModel model) {

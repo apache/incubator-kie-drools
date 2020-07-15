@@ -92,7 +92,7 @@ public class BusinessRuleUnitTest extends AbstractCodegenTest {
         Application app = generateCode(resourcesTypeMap, false);
         assertThat(app).isNotNull();
         final AtomicInteger counter = new AtomicInteger();
-        ((DefaultRuleEventListenerConfig)app.config().rule().ruleEventListeners()).register(new DefaultAgendaEventListener() {
+        app.config().rule().ruleEventListeners().agendaListeners().add(new DefaultAgendaEventListener() {
 
             @Override
             public void afterMatchFired(AfterMatchFiredEvent event) {
@@ -126,7 +126,7 @@ public class BusinessRuleUnitTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
         final List<String> startedProcesses = new ArrayList<>();
         // add custom event listener that collects data
-        ((DefaultProcessEventListenerConfig)app.config().process().processEventListeners()).listeners().add(new DefaultProcessEventListener() {
+        app.config().process().processEventListeners().listeners().add(new DefaultProcessEventListener() {
 
             @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {

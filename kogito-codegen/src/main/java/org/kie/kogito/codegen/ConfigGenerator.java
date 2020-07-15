@@ -18,56 +18,57 @@ package org.kie.kogito.codegen;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
+import java.util.Optional;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier.Keyword;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.AssignExpr;
-import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.expr.ThisExpr;
-import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.util.StringUtils;
 import org.kie.kogito.Addons;
 import org.kie.kogito.codegen.decision.config.DecisionConfigGenerator;
+import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.di.SpringDependencyInjectionAnnotator;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parse;
+import static org.kie.kogito.codegen.ApplicationGenerator.log;
 import static org.kie.kogito.codegen.CodegenUtils.method;
 import static org.kie.kogito.codegen.CodegenUtils.newObject;
 
 public class ConfigGenerator {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigGenerator.class);
-    private static final String RESOURCE = "/class-templates/config/ApplicationConfigTemplate.java";
+    private static final String RESOURCE_DEFAULT = "/class-templates/config/ApplicationConfigTemplate.java";
+    private static final String RESOURCE_CDI = "/class-templates/config/CdiApplicationConfigTemplate.java";
+    private static final String RESOURCE_SPRING = "/class-templates/config/SpringApplicationConfigTemplate.java";
 
     private DependencyInjectionAnnotator annotator;
     private ProcessConfigGenerator processConfig;
     private RuleConfigGenerator ruleConfig;
     private DecisionConfigGenerator decisionConfig;
-    
+
     private String packageName;
     private final String sourceFilePath;
     private final String targetTypeName;
     private final String targetCanonicalName;
-    
+
     private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-    
+
     public ConfigGenerator(String packageName) {
         this.packageName = packageName;
         this.targetTypeName = "ApplicationConfig";
@@ -109,38 +110,73 @@ public class ConfigGenerator {
                 .setType(targetCanonicalName);
     }
 
+    public Collection<GeneratedFile> generate() {
+        ArrayList<GeneratedFile> generatedFiles = new ArrayList<>();
+        generatedFiles.add(
+                new GeneratedFile(GeneratedFile.Type.APPLICATION_CONFIG,
+                                  generatedFilePath(),
+                                  log(compilationUnit().toString()).getBytes(StandardCharsets.UTF_8)));
+
+        generateProcessConfigDescriptor().ifPresent(generatedFiles::add);
+        generateRuleConfigDescriptor().ifPresent(generatedFiles::add);
+        generateDecisionConfigDescriptor().ifPresent(generatedFiles::add);
+
+        return generatedFiles;
+    }
+
+    private Optional<GeneratedFile> generateProcessConfigDescriptor() {
+        if (processConfig == null) {
+            return Optional.empty();
+        }
+        Optional<CompilationUnit> compilationUnit = processConfig.compilationUnit();
+        return compilationUnit.map(c -> new GeneratedFile(GeneratedFile.Type.APPLICATION_CONFIG,
+                                                          processConfig.generatedFilePath(),
+                                                          log(c.toString()).getBytes(StandardCharsets.UTF_8)));
+    }
+
+    private Optional<GeneratedFile> generateRuleConfigDescriptor() {
+        if (ruleConfig == null) {
+            return Optional.empty();
+        }
+        Optional<CompilationUnit> compilationUnit = ruleConfig.compilationUnit();
+        return compilationUnit.map(c -> new GeneratedFile(GeneratedFile.Type.APPLICATION_CONFIG,
+                                                          ruleConfig.generatedFilePath(),
+                                                          log(c.toString()).getBytes(StandardCharsets.UTF_8)));
+    }
+
+    private Optional<GeneratedFile> generateDecisionConfigDescriptor() {
+        if (decisionConfig == null) {
+            return Optional.empty();
+        }
+        Optional<CompilationUnit> compilationUnit = decisionConfig.compilationUnit();
+        return compilationUnit.map(c -> new GeneratedFile(GeneratedFile.Type.APPLICATION_CONFIG,
+                                                          decisionConfig.generatedFilePath(),
+                                                          log(c.toString()).getBytes(StandardCharsets.UTF_8)));
+    }
+
     public CompilationUnit compilationUnit() {
+
+        String resource;
+
+        if (annotator == null) {
+            resource = RESOURCE_DEFAULT;
+        } else if (annotator instanceof CDIDependencyInjectionAnnotator) {
+            resource = RESOURCE_CDI;
+        } else if (annotator instanceof SpringDependencyInjectionAnnotator) {
+            resource = RESOURCE_SPRING;
+        } else {
+            throw new IllegalArgumentException("Unknown annotator " + annotator);
+        }
+
         CompilationUnit compilationUnit =
-                parse(this.getClass().getResourceAsStream(RESOURCE))
+                parse(this.getClass().getResourceAsStream(resource))
                         .setPackageDeclaration(packageName);
 
         ClassOrInterfaceDeclaration cls = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class)
                 .orElseThrow(() -> new RuntimeException("ApplicationConfig template class not found"));
 
-        if (processConfig != null) {
-            processConfig.members().forEach(cls::addMember);
-        }
-
-        if (ruleConfig != null) {
-            ruleConfig.members().forEach(cls::addMember);
-        }
-
-        if (decisionConfig != null) {
-            decisionConfig.members().forEach(cls::addMember);
-        }
-
         // add found addons
         cls.addMember(generateAddonsMethod());
-
-        // init method
-        MethodDeclaration initMethod = generateInitMethod();
-        if (useInjection()) {
-            annotator.withSingletonComponent(cls);
-            initMethod.addAnnotation("javax.annotation.PostConstruct");
-        } else {
-            cls.addConstructor(Keyword.PUBLIC).setBody(new BlockStmt().addStatement(new MethodCallExpr(new ThisExpr(), "init")));
-        }
-        cls.addMember(initMethod);
 
         cls.getMembers().sort(new BodyDeclarationComparator());
         return compilationUnit;
@@ -166,31 +202,6 @@ public class ConfigGenerator {
         return method(Keyword.PUBLIC, Addons.class, "addons", body);
     }
 
-    private MethodDeclaration generateInitMethod() {
-        BlockStmt body = new BlockStmt()
-                .addStatement(new AssignExpr(new NameExpr("processConfig"), newProcessConfigInstance(), AssignExpr.Operator.ASSIGN))
-                .addStatement(new AssignExpr(new NameExpr("ruleConfig"), newRuleConfigInstance(), AssignExpr.Operator.ASSIGN))
-                .addStatement(new AssignExpr(new NameExpr("decisionConfig"), newDecisionConfigInstance(), AssignExpr.Operator.ASSIGN));
-
-        return method(Keyword.PUBLIC, void.class, "init", body);
-    }
-
-    private Expression newProcessConfigInstance() {
-        return processConfig == null ? new NullLiteralExpr() : processConfig.newInstance();
-    }
-
-    private Expression newRuleConfigInstance() {
-        return ruleConfig == null ? new NullLiteralExpr() : ruleConfig.newInstance();
-    }
-
-    private Expression newDecisionConfigInstance() {
-        return decisionConfig == null ? new NullLiteralExpr() : decisionConfig.newInstance();
-    }
-
-    protected boolean useInjection() {
-        return this.annotator != null;
-    }
-
     public String generatedFilePath() {
         return sourceFilePath;
     }
@@ -198,17 +209,4 @@ public class ConfigGenerator {
     public void withClassLoader(ClassLoader projectClassLoader) {
         this.classLoader = projectClassLoader;
     }
-
-    public static MethodCallExpr callMerge(String configsName, Class<?> configToListenersScope, String configToListenersIdentifier, String listenersName) {
-        return new MethodCallExpr(null, "merge", NodeList.nodeList(
-                new NameExpr(configsName),
-                new MethodReferenceExpr(
-                        new TypeExpr(new ClassOrInterfaceType(null, configToListenersScope.getCanonicalName())),
-                        null,
-                        configToListenersIdentifier
-                ),
-                new NameExpr(listenersName)
-        ));
-    }
-
 }

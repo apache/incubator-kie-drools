@@ -236,7 +236,7 @@ public class DecisionCodegen extends AbstractGenerator {
     @Override
     public void updateConfig(ConfigGenerator cfg) {
         if (!resources.isEmpty()) {
-            cfg.withDecisionConfig(new DecisionConfigGenerator());
+            cfg.withDecisionConfig(new DecisionConfigGenerator(packageName));
         }
     }
 

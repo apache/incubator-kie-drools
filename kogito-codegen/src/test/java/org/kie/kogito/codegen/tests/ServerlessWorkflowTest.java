@@ -68,7 +68,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
 
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("SmallDelay", 1);
-        ((DefaultProcessEventListenerConfig) app.config().process().processEventListeners()).register(listener);
+        app.config().process().processEventListeners().listeners().add(listener);
 
 
         Process<? extends Model> p = app.processes().processById("function");
