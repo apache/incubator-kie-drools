@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<plannerBenchmarkResult>
+  <name>2020-07-13_125809</name>
+  <aggregation>false</aggregation>
+  <availableProcessors>4</availableProcessors>
+  <loggingLevelOptaPlannerCore>debug</loggingLevelOptaPlannerCore>
+  <loggingLevelDroolsCore>warn</loggingLevelDroolsCore>
+  <maxMemory>5523898368</maxMemory>
+  <optaPlannerVersion>Unjarred development snapshot</optaPlannerVersion>
+  <javaVersion>Java 1.8.0_252 (Oracle Corporation)</javaVersion>
+  <javaVM>Java OpenJDK 64-Bit Server VM 25.252-b09 (Oracle Corporation)</javaVM>
+  <operatingSystem>Linux amd64 5.6.13-200.fc31.x86_64</operatingSystem>
+  <parallelBenchmarkCount>2</parallelBenchmarkCount>
+  <warmUpTimeMillisSpentLimit>30</warmUpTimeMillisSpentLimit>
+  <solverBenchmarkResult>
+    <name>First Fit</name>
+    <subSingleCount>1</subSingleCount>
+    <solverConfig>
+      <solutionClass>org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution</solutionClass>
+      <entityClass>org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity</entityClass>
+      <scoreDirectorFactory>
+        <incrementalScoreCalculatorClass>org.optaplanner.benchmark.impl.result.PlannerBenchmarkResultTest$DummyIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+      </scoreDirectorFactory>
+      <termination>
+        <secondsSpentLimit>5</secondsSpentLimit>
+      </termination>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
+    </solverConfig>
+    <singleBenchmarkResult id="1">
+      <subSingleBenchmarkResult>
+        <subSingleBenchmarkIndex>0</subSingleBenchmarkIndex>
+        <succeeded>true</succeeded>
+        <score class="org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore">0hard/-37858soft</score>
+        <timeMillisSpent>276</timeMillisSpent>
+        <scoreCalculationCount>1632</scoreCalculationCount>
+      </subSingleBenchmarkResult>
+      <timeMillisSpent>-1</timeMillisSpent>
+      <scoreCalculationCount>-1</scoreCalculationCount>
+    </singleBenchmarkResult>
+    <singleBenchmarkResult id="2">
+      <subSingleBenchmarkResult>
+        <subSingleBenchmarkIndex>0</subSingleBenchmarkIndex>
+        <succeeded>true</succeeded>
+        <score class="org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore">0hard/-49506soft</score>
+        <timeMillisSpent>60</timeMillisSpent>
+        <scoreCalculationCount>5832</scoreCalculationCount>
+      </subSingleBenchmarkResult>
+      <timeMillisSpent>-1</timeMillisSpent>
+      <scoreCalculationCount>-1</scoreCalculationCount>
+    </singleBenchmarkResult>
+  </solverBenchmarkResult>
+  <solverBenchmarkResult>
+    <name>First Fit Decreasing</name>
+    <subSingleCount>1</subSingleCount>
+    <solverConfig>
+      <solutionClass>org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution</solutionClass>
+      <entityClass>org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity</entityClass>
+      <scoreDirectorFactory>
+        <incrementalScoreCalculatorClass>org.optaplanner.benchmark.impl.result.PlannerBenchmarkResultTest$DummyIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+      </scoreDirectorFactory>
+      <termination>
+        <secondsSpentLimit>5</secondsSpentLimit>
+      </termination>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
+    </solverConfig>
+    <singleBenchmarkResult id="3">
+      <subSingleBenchmarkResult>
+        <subSingleBenchmarkIndex>0</subSingleBenchmarkIndex>
+        <succeeded>true</succeeded>
+        <score class="org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore">0hard/-22838soft</score>
+        <timeMillisSpent>251</timeMillisSpent>
+        <scoreCalculationCount>1668</scoreCalculationCount>
+      </subSingleBenchmarkResult>
+      <timeMillisSpent>-1</timeMillisSpent>
+      <scoreCalculationCount>-1</scoreCalculationCount>
+    </singleBenchmarkResult>
+    <singleBenchmarkResult id="4">
+      <subSingleBenchmarkResult>
+        <subSingleBenchmarkIndex>0</subSingleBenchmarkIndex>
+        <succeeded>true</succeeded>
+        <score class="org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore">0hard/-30857soft</score>
+        <timeMillisSpent>61</timeMillisSpent>
+        <scoreCalculationCount>5530</scoreCalculationCount>
+      </subSingleBenchmarkResult>
+      <timeMillisSpent>-1</timeMillisSpent>
+      <scoreCalculationCount>-1</scoreCalculationCount>
+    </singleBenchmarkResult>
+  </solverBenchmarkResult>
+  <solverBenchmarkResult>
+    <name>Tabu Search</name>
+    <subSingleCount>1</subSingleCount>
+    <solverConfig>
+      <solutionClass>org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution</solutionClass>
+      <entityClass>org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity</entityClass>
+      <scoreDirectorFactory>
+        <incrementalScoreCalculatorClass>org.optaplanner.benchmark.impl.result.PlannerBenchmarkResultTest$DummyIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+      </scoreDirectorFactory>
+      <termination>
+        <secondsSpentLimit>5</secondsSpentLimit>
+      </termination>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+          <subChainChangeMoveSelector>
+            <selectReversingMoveToo>true</selectReversingMoveToo>
+          </subChainChangeMoveSelector>
+          <subChainSwapMoveSelector>
+            <selectReversingMoveToo>true</selectReversingMoveToo>
+          </subChainSwapMoveSelector>
+        </unionMoveSelector>
+        <acceptor>
+          <entityTabuSize>9</entityTabuSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>2000</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solverConfig>
+    <singleBenchmarkResult id="5">
+      <subSingleBenchmarkResult>
+        <subSingleBenchmarkIndex>0</subSingleBenchmarkIndex>
+        <succeeded>true</succeeded>
+        <score class="org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore">0hard/-21607soft</score>
+        <timeMillisSpent>5000</timeMillisSpent>
+        <scoreCalculationCount>777269</scoreCalculationCount>
+      </subSingleBenchmarkResult>
+      <timeMillisSpent>-1</timeMillisSpent>
+      <scoreCalculationCount>-1</scoreCalculationCount>
+    </singleBenchmarkResult>
+    <singleBenchmarkResult id="6">
+      <subSingleBenchmarkResult>
+        <subSingleBenchmarkIndex>0</subSingleBenchmarkIndex>
+        <succeeded>true</succeeded>
+        <score class="org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore">0hard/-25288soft</score>
+        <timeMillisSpent>5000</timeMillisSpent>
+        <scoreCalculationCount>856937</scoreCalculationCount>
+      </subSingleBenchmarkResult>
+      <timeMillisSpent>-1</timeMillisSpent>
+      <scoreCalculationCount>-1</scoreCalculationCount>
+    </singleBenchmarkResult>
+  </solverBenchmarkResult>
+  <solverBenchmarkResult>
+    <name>Late Acceptance</name>
+    <subSingleCount>1</subSingleCount>
+    <solverConfig>
+      <solutionClass>org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution</solutionClass>
+      <entityClass>org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity</entityClass>
+      <scoreDirectorFactory>
+        <incrementalScoreCalculatorClass>org.optaplanner.benchmark.impl.result.PlannerBenchmarkResultTest$DummyIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+      </scoreDirectorFactory>
+      <termination>
+        <secondsSpentLimit>5</secondsSpentLimit>
+      </termination>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+          <subChainChangeMoveSelector>
+            <selectReversingMoveToo>true</selectReversingMoveToo>
+          </subChainChangeMoveSelector>
+          <subChainSwapMoveSelector>
+            <selectReversingMoveToo>true</selectReversingMoveToo>
+          </subChainSwapMoveSelector>
+        </unionMoveSelector>
+        <acceptor>
+          <lateAcceptanceSize>200</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>1</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solverConfig>
+    <singleBenchmarkResult id="7">
+      <subSingleBenchmarkResult>
+        <subSingleBenchmarkIndex>0</subSingleBenchmarkIndex>
+        <succeeded>true</succeeded>
+        <score class="org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore">0hard/-21252soft</score>
+        <timeMillisSpent>5000</timeMillisSpent>
+        <scoreCalculationCount>761968</scoreCalculationCount>
+      </subSingleBenchmarkResult>
+      <timeMillisSpent>-1</timeMillisSpent>
+      <scoreCalculationCount>-1</scoreCalculationCount>
+    </singleBenchmarkResult>
+    <singleBenchmarkResult id="8">
+      <subSingleBenchmarkResult>
+        <subSingleBenchmarkIndex>0</subSingleBenchmarkIndex>
+        <succeeded>true</succeeded>
+        <score class="org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore">0hard/-25645soft</score>
+        <timeMillisSpent>5000</timeMillisSpent>
+        <scoreCalculationCount>858383</scoreCalculationCount>
+      </subSingleBenchmarkResult>
+      <timeMillisSpent>-1</timeMillisSpent>
+      <scoreCalculationCount>-1</scoreCalculationCount>
+    </singleBenchmarkResult>
+  </solverBenchmarkResult>
+  <solverBenchmarkResult>
+    <name>Tabu Search Nearby</name>
+    <subSingleCount>1</subSingleCount>
+    <solverConfig>
+      <solutionClass>org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution</solutionClass>
+      <entityClass>org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity</entityClass>
+      <scoreDirectorFactory>
+        <incrementalScoreCalculatorClass>org.optaplanner.benchmark.impl.result.PlannerBenchmarkResultTest$DummyIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+      </scoreDirectorFactory>
+      <termination>
+        <secondsSpentLimit>5</secondsSpentLimit>
+      </termination>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector>
+            <entitySelector id="entitySelector1"/>
+            <valueSelector>
+              <nearbySelection>
+                <originEntitySelector mimicSelectorRef="entitySelector1"/>
+                <nearbyDistanceMeterClass>org.optaplanner.benchmark.impl.result.PlannerBenchmarkResultTest$DummyDistanceNearbyMeter</nearbyDistanceMeterClass>
+                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </valueSelector>
+          </changeMoveSelector>
+          <swapMoveSelector>
+            <entitySelector id="entitySelector2"/>
+            <secondaryEntitySelector>
+              <nearbySelection>
+                <originEntitySelector mimicSelectorRef="entitySelector2"/>
+                <nearbyDistanceMeterClass>org.optaplanner.benchmark.impl.result.PlannerBenchmarkResultTest$DummyDistanceNearbyMeter</nearbyDistanceMeterClass>
+                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </secondaryEntitySelector>
+          </swapMoveSelector>
+          <tailChainSwapMoveSelector>
+            <entitySelector id="entitySelector3"/>
+            <valueSelector>
+              <nearbySelection>
+                <originEntitySelector mimicSelectorRef="entitySelector3"/>
+                <nearbyDistanceMeterClass>org.optaplanner.benchmark.impl.result.PlannerBenchmarkResultTest$DummyDistanceNearbyMeter</nearbyDistanceMeterClass>
+                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </valueSelector>
+          </tailChainSwapMoveSelector>
+        </unionMoveSelector>
+        <acceptor>
+          <entityTabuSize>9</entityTabuSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>2000</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solverConfig>
+    <singleBenchmarkResult id="9">
+      <subSingleBenchmarkResult>
+        <subSingleBenchmarkIndex>0</subSingleBenchmarkIndex>
+        <succeeded>true</succeeded>
+        <score class="org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore">0hard/-21929soft</score>
+        <timeMillisSpent>5000</timeMillisSpent>
+        <scoreCalculationCount>993153</scoreCalculationCount>
+      </subSingleBenchmarkResult>
+      <timeMillisSpent>-1</timeMillisSpent>
+      <scoreCalculationCount>-1</scoreCalculationCount>
+    </singleBenchmarkResult>
+    <singleBenchmarkResult id="10">
+      <subSingleBenchmarkResult>
+        <subSingleBenchmarkIndex>0</subSingleBenchmarkIndex>
+        <succeeded>true</succeeded>
+        <score class="org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore">0hard/-25258soft</score>
+        <timeMillisSpent>5000</timeMillisSpent>
+        <scoreCalculationCount>850727</scoreCalculationCount>
+      </subSingleBenchmarkResult>
+      <timeMillisSpent>-1</timeMillisSpent>
+      <scoreCalculationCount>-1</scoreCalculationCount>
+    </singleBenchmarkResult>
+  </solverBenchmarkResult>
+  <solverBenchmarkResult>
+    <name>Late Acceptance Nearby</name>
+    <subSingleCount>1</subSingleCount>
+    <solverConfig>
+      <solutionClass>org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution</solutionClass>
+      <entityClass>org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity</entityClass>
+      <scoreDirectorFactory>
+        <incrementalScoreCalculatorClass>org.optaplanner.benchmark.impl.result.PlannerBenchmarkResultTest$DummyIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+      </scoreDirectorFactory>
+      <termination>
+        <secondsSpentLimit>5</secondsSpentLimit>
+      </termination>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector>
+            <entitySelector id="entitySelector1"/>
+            <valueSelector>
+              <nearbySelection>
+                <originEntitySelector mimicSelectorRef="entitySelector1"/>
+                <nearbyDistanceMeterClass>org.optaplanner.benchmark.impl.result.PlannerBenchmarkResultTest$DummyDistanceNearbyMeter</nearbyDistanceMeterClass>
+                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </valueSelector>
+          </changeMoveSelector>
+          <swapMoveSelector>
+            <entitySelector id="entitySelector2"/>
+            <secondaryEntitySelector>
+              <nearbySelection>
+                <originEntitySelector mimicSelectorRef="entitySelector2"/>
+                <nearbyDistanceMeterClass>org.optaplanner.benchmark.impl.result.PlannerBenchmarkResultTest$DummyDistanceNearbyMeter</nearbyDistanceMeterClass>
+                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </secondaryEntitySelector>
+          </swapMoveSelector>
+          <tailChainSwapMoveSelector>
+            <entitySelector id="entitySelector3"/>
+            <valueSelector>
+              <nearbySelection>
+                <originEntitySelector mimicSelectorRef="entitySelector3"/>
+                <nearbyDistanceMeterClass>org.optaplanner.benchmark.impl.result.PlannerBenchmarkResultTest$DummyDistanceNearbyMeter</nearbyDistanceMeterClass>
+                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </valueSelector>
+          </tailChainSwapMoveSelector>
+        </unionMoveSelector>
+        <acceptor>
+          <lateAcceptanceSize>200</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>1</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solverConfig>
+    <singleBenchmarkResult id="11">
+      <subSingleBenchmarkResult>
+        <subSingleBenchmarkIndex>0</subSingleBenchmarkIndex>
+        <succeeded>true</succeeded>
+        <score class="org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore">0hard/-21148soft</score>
+        <timeMillisSpent>5000</timeMillisSpent>
+        <scoreCalculationCount>873469</scoreCalculationCount>
+      </subSingleBenchmarkResult>
+      <timeMillisSpent>-1</timeMillisSpent>
+      <scoreCalculationCount>-1</scoreCalculationCount>
+    </singleBenchmarkResult>
+    <singleBenchmarkResult id="12">
+      <subSingleBenchmarkResult>
+        <subSingleBenchmarkIndex>0</subSingleBenchmarkIndex>
+        <succeeded>true</succeeded>
+        <score class="org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore">0hard/-23083soft</score>
+        <timeMillisSpent>5000</timeMillisSpent>
+        <scoreCalculationCount>726321</scoreCalculationCount>
+      </subSingleBenchmarkResult>
+      <timeMillisSpent>-1</timeMillisSpent>
+      <scoreCalculationCount>-1</scoreCalculationCount>
+    </singleBenchmarkResult>
+  </solverBenchmarkResult>
+  <unifiedProblemBenchmarkResult>
+    <name>belgium-n50-k10</name>
+    <fileProblemProvider/>
+    <writeOutputSolutionEnabled>false</writeOutputSolutionEnabled>
+    <bestScoreProblemStatistic>
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
+    </bestScoreProblemStatistic>
+    <singleBenchmarkResult>1</singleBenchmarkResult>
+    <singleBenchmarkResult>3</singleBenchmarkResult>
+    <singleBenchmarkResult>5</singleBenchmarkResult>
+    <singleBenchmarkResult>7</singleBenchmarkResult>
+    <singleBenchmarkResult>9</singleBenchmarkResult>
+    <singleBenchmarkResult>11</singleBenchmarkResult>
+    <entityCount>59</entityCount>
+    <variableCount>49</variableCount>
+    <maximumValueCount>59</maximumValueCount>
+    <problemScale>2901</problemScale>
+    <inputSolutionLoadingTimeMillisSpent>1</inputSolutionLoadingTimeMillisSpent>
+  </unifiedProblemBenchmarkResult>
+  <unifiedProblemBenchmarkResult>
+    <name>belgium-n100-k10</name>
+    <fileProblemProvider/>
+    <writeOutputSolutionEnabled>false</writeOutputSolutionEnabled>
+    <bestScoreProblemStatistic>
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
+    </bestScoreProblemStatistic>
+    <singleBenchmarkResult>2</singleBenchmarkResult>
+    <singleBenchmarkResult>4</singleBenchmarkResult>
+    <singleBenchmarkResult>6</singleBenchmarkResult>
+    <singleBenchmarkResult>8</singleBenchmarkResult>
+    <singleBenchmarkResult>10</singleBenchmarkResult>
+    <singleBenchmarkResult>12</singleBenchmarkResult>
+    <entityCount>109</entityCount>
+    <variableCount>99</variableCount>
+    <maximumValueCount>109</maximumValueCount>
+    <problemScale>10801</problemScale>
+    <inputSolutionLoadingTimeMillisSpent>1</inputSolutionLoadingTimeMillisSpent>
+  </unifiedProblemBenchmarkResult>
+  <startingTimestamp>2020-07-13T12:58:09.105+02:00</startingTimestamp>
+  <benchmarkTimeMillisSpent>20771</benchmarkTimeMillisSpent>
+</plannerBenchmarkResult>

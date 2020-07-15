@@ -19,18 +19,39 @@ package org.optaplanner.benchmark.impl.result;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
+import org.optaplanner.benchmark.config.report.BenchmarkReportConfig;
+import org.optaplanner.benchmark.impl.aggregator.BenchmarkAggregator;
 import org.optaplanner.benchmark.impl.loader.FileProblemProvider;
+import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.random.RandomType;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
+import org.optaplanner.core.impl.io.jaxb.JaxbIO;
+import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 
 public class PlannerBenchmarkResultTest {
+
+    private static final String TEST_PLANNER_BENCHMARK_RESULT = "testPlannerBenchmarkResult.xml";
+
+    private final JaxbIO<PlannerBenchmarkResult> xmlIO = new JaxbIO(PlannerBenchmarkResult.class);
 
     @Test
     public void createMergedResult() {
@@ -114,4 +135,57 @@ public class PlannerBenchmarkResultTest {
         return subSingleBenchmarkResult;
     }
 
+    @Test
+    public void xmlReportRemainsSameAfterReadWrite() throws IOException {
+        PlannerBenchmarkResult plannerBenchmarkResult;
+        try (Reader reader = new InputStreamReader(
+                PlannerBenchmarkResultTest.class.getResourceAsStream(TEST_PLANNER_BENCHMARK_RESULT), "UTF-8")) {
+            plannerBenchmarkResult = xmlIO.read(reader);
+        }
+
+        Writer stringWriter = new StringWriter();
+        xmlIO.write(plannerBenchmarkResult, stringWriter);
+        String jaxbString = stringWriter.toString();
+
+        String originalXml = IOUtils.toString(
+                PlannerBenchmarkResultTest.class.getResourceAsStream(TEST_PLANNER_BENCHMARK_RESULT), StandardCharsets.UTF_8);
+
+        assertThat(jaxbString.trim()).isEqualToNormalizingNewlines(originalXml.trim());
+    }
+
+    @Test
+    public void xmlReadBenchmarkResultAggregated() throws URISyntaxException, IOException {
+        BenchmarkAggregator benchmarkAggregator = new BenchmarkAggregator();
+        benchmarkAggregator.setBenchmarkDirectory(Files.createTempDirectory(getClass().getSimpleName()).toFile());
+        benchmarkAggregator.setBenchmarkReportConfig(new BenchmarkReportConfig());
+
+        File plannerBenchmarkResultFile =
+                new File(PlannerBenchmarkResultTest.class.getResource(TEST_PLANNER_BENCHMARK_RESULT).toURI());
+
+        BenchmarkResultIO benchmarkResultIO = new BenchmarkResultIO();
+        PlannerBenchmarkResult plannerBenchmarkResult =
+                benchmarkResultIO.readPlannerBenchmarkResult(plannerBenchmarkResultFile);
+
+        BenchmarkReport benchmarkReport =
+                benchmarkAggregator.getBenchmarkReportConfig().buildBenchmarkReport(plannerBenchmarkResult);
+        plannerBenchmarkResult.accumulateResults(benchmarkReport);
+
+        PlannerBenchmarkResult aggregatedPlannerBenchmarkResult = benchmarkReport.getPlannerBenchmarkResult();
+
+        assertThat(aggregatedPlannerBenchmarkResult.getSolverBenchmarkResultList()).hasSize(6);
+        assertThat(aggregatedPlannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()).hasSize(2);
+        assertThat(aggregatedPlannerBenchmarkResult.getFailureCount()).isZero();
+    }
+
+    // nested class below are used in the testPlannerBenchmarkResult.xml
+
+    private static abstract class DummyIncrementalScoreCalculator
+            extends AbstractIncrementalScoreCalculator<TestdataChainedSolution> {
+
+    }
+
+    private static abstract class DummyDistanceNearbyMeter
+            implements NearbyDistanceMeter<TestdataChainedSolution, TestdataChainedEntity> {
+
+    }
 }

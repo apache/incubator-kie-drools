@@ -49,6 +49,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.config.util.KeyAsElementMapConverter;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.io.jaxb.JaxbCustomPropertiesAdapter;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
@@ -59,7 +60,6 @@ import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalc
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
-import org.optaplanner.core.impl.util.JaxbCustomPropertiesAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

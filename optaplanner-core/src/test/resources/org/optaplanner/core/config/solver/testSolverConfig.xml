@@ -66,6 +66,7 @@
   <localSearch>
     <termination>
       <terminationCompositionStyle>AND</terminationCompositionStyle>
+      <spentLimit>PT2S</spentLimit>
       <unimprovedSecondsSpentLimit>10</unimprovedSecondsSpentLimit>
       <termination>
         <terminationCompositionStyle>OR</terminationCompositionStyle>

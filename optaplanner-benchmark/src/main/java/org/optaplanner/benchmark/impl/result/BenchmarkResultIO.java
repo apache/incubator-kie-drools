@@ -33,14 +33,10 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.impl.solver.io.XStreamConfigReader;
-import org.optaplanner.persistence.xstream.api.score.AbstractScoreXStreamConverter;
+import org.optaplanner.core.impl.io.XmlUnmarshallingException;
+import org.optaplanner.core.impl.io.jaxb.JaxbIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.XStreamException;
-import com.thoughtworks.xstream.converters.ConversionException;
 
 public class BenchmarkResultIO {
 
@@ -48,21 +44,13 @@ public class BenchmarkResultIO {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final XStream xStream;
-
-    public BenchmarkResultIO() {
-        xStream = XStreamConfigReader.buildXStream();
-        xStream.processAnnotations(PlannerBenchmarkResult.class);
-        xStream.allowTypesByRegExp(new String[] { "org\\.optaplanner\\.\\w+\\.api\\..*" });
-        xStream.allowTypesByRegExp(new String[] { "org\\.optaplanner\\.\\w+\\.impl\\..*" });
-        AbstractScoreXStreamConverter.registerScoreConverters(xStream);
-    }
+    private final JaxbIO<PlannerBenchmarkResult> xmlIO = new JaxbIO(PlannerBenchmarkResult.class);
 
     public void writePlannerBenchmarkResult(File benchmarkReportDirectory,
             PlannerBenchmarkResult plannerBenchmarkResult) {
         File plannerBenchmarkResultFile = new File(benchmarkReportDirectory, PLANNER_BENCHMARK_RESULT_FILENAME);
         try (Writer writer = new OutputStreamWriter(new FileOutputStream(plannerBenchmarkResultFile), "UTF-8")) {
-            xStream.toXML(plannerBenchmarkResult, writer);
+            xmlIO.write(plannerBenchmarkResult, writer);
         } catch (IOException e) {
             throw new IllegalArgumentException(
                     "Failed writing plannerBenchmarkResultFile (" + plannerBenchmarkResultFile + ").", e);
@@ -98,14 +86,14 @@ public class BenchmarkResultIO {
         }
         PlannerBenchmarkResult plannerBenchmarkResult;
         try (Reader reader = new InputStreamReader(new FileInputStream(plannerBenchmarkResultFile), "UTF-8")) {
-            plannerBenchmarkResult = (PlannerBenchmarkResult) xStream.fromXML(reader);
-        } catch (ConversionException e) {
+            plannerBenchmarkResult = xmlIO.read(reader);
+        } catch (XmlUnmarshallingException e) {
             logger.warn("Failed reading plannerBenchmarkResultFile ({}).", plannerBenchmarkResultFile, e);
             // If the plannerBenchmarkResultFile's format has changed, the app should not crash entirely
             String benchmarkReportDirectoryName = plannerBenchmarkResultFile.getParentFile().getName();
             plannerBenchmarkResult = PlannerBenchmarkResult.createUnmarshallingFailedResult(
                     benchmarkReportDirectoryName);
-        } catch (XStreamException | IOException e) {
+        } catch (IOException e) {
             throw new IllegalArgumentException(
                     "Failed reading plannerBenchmarkResultFile (" + plannerBenchmarkResultFile + ").", e);
         }

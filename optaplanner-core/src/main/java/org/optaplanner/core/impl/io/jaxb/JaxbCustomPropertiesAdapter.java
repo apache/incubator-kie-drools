@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.util;
+package org.optaplanner.core.impl.io.jaxb;
 
 import java.util.List;
 import java.util.Map;
@@ -52,7 +52,7 @@ public class JaxbCustomPropertiesAdapter extends XmlAdapter<JaxbCustomProperties
         private List<JaxbAdaptedMapEntry> entries;
 
         private JaxbAdaptedMap() {
-            // required by JAXB
+            // Required by JAXB
         }
 
         public JaxbAdaptedMap(List<JaxbAdaptedMapEntry> entries) {

@@ -56,12 +56,11 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.solver.io.XStreamConfigReader;
+import org.optaplanner.core.impl.io.jaxb.JaxbIO;
 import org.optaplanner.core.impl.solver.thread.DefaultSolverThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
@@ -231,8 +230,8 @@ public class PlannerBenchmarkConfig {
      * @return never null
      */
     public static PlannerBenchmarkConfig createFromXmlReader(Reader reader, ClassLoader classLoader) {
-        XStream xStream = XStreamConfigReader.buildXStreamPortable(classLoader, PlannerBenchmarkConfig.class);
-        Object benchmarkConfigObject = xStream.fromXML(reader);
+        JaxbIO<?> xmlIO = new JaxbIO<>(PlannerBenchmarkConfig.class);
+        Object benchmarkConfigObject = xmlIO.read(reader);
         if (!(benchmarkConfigObject instanceof PlannerBenchmarkConfig)) {
             throw new IllegalArgumentException("The " + PlannerBenchmarkConfig.class.getSimpleName()
                     + "'s XML root element resolves to a different type ("

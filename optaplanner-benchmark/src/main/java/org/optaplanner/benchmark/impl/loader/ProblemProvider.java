@@ -16,6 +16,8 @@
 
 package org.optaplanner.benchmark.impl.loader;
 
+import javax.xml.bind.annotation.XmlSeeAlso;
+
 import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -29,6 +31,10 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
+@XmlSeeAlso({
+        InstanceProblemProvider.class,
+        FileProblemProvider.class
+})
 @XStreamAlias("problemProvider")
 @XStreamInclude({
         InstanceProblemProvider.class,

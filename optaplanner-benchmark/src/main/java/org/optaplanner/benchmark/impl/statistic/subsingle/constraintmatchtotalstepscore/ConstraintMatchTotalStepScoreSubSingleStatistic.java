@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
@@ -56,9 +58,11 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 public class ConstraintMatchTotalStepScoreSubSingleStatistic<Solution_>
         extends PureSubSingleStatistic<Solution_, ConstraintMatchTotalStepScoreStatisticPoint> {
 
+    @XmlTransient
     @XStreamOmitField
     private ConstraintMatchTotalStepScoreSubSingleStatisticListener listener;
 
+    @XmlTransient
     @XStreamOmitField
     protected List<File> graphFileList = null;
 

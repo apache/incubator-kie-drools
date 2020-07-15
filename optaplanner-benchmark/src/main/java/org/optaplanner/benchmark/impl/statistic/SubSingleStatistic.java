@@ -31,6 +31,10 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
@@ -46,6 +50,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 /**
  * 1 statistic of {@link SubSingleBenchmarkResult}.
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 @XStreamInclude({
         PureSubSingleStatistic.class
 })
@@ -53,9 +58,11 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
+    @XmlTransient
     @XStreamOmitField // Bi-directional relationship restored through subSingleBenchmarkResultIO
     protected SubSingleBenchmarkResult subSingleBenchmarkResult;
 
+    @XmlTransient
     @XStreamOmitField
     protected List<StatisticPoint_> pointList;
 

@@ -90,7 +90,6 @@
     <dependency>
       <groupId>org.glassfish.jaxb</groupId>
       <artifactId>jaxb-runtime</artifactId>
-      <scope>test</scope>
       <exclusions>
         <exclusion>
           <groupId>jakarta.xml.bind</groupId>

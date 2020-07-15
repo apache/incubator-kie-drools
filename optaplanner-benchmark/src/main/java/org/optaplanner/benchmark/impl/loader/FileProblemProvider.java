@@ -18,6 +18,8 @@ package org.optaplanner.benchmark.impl.loader;
 
 import java.io.File;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
@@ -28,10 +30,15 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @XStreamAlias("fileProblemProvider")
 public class FileProblemProvider<Solution_> implements ProblemProvider<Solution_> {
 
+    @XmlTransient
     @XStreamOmitField
-    private final SolutionFileIO<Solution_> solutionFileIO;
+    private SolutionFileIO<Solution_> solutionFileIO;
 
-    private final File problemFile;
+    private File problemFile;
+
+    private FileProblemProvider() {
+        // Required by JAXB
+    }
 
     public FileProblemProvider(SolutionFileIO<Solution_> solutionFileIO, File problemFile) {
         this.solutionFileIO = solutionFileIO;

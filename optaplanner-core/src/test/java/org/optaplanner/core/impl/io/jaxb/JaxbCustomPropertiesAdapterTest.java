@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.config.util;
+package org.optaplanner.core.impl.io.jaxb;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,7 +31,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.impl.util.JaxbCustomPropertiesAdapter;
 
 public class JaxbCustomPropertiesAdapterTest {
 

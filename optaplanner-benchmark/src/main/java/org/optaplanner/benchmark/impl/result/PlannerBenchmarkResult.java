@@ -29,6 +29,10 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -48,11 +52,13 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 /**
  * Represents the benchmarks on multiple {@link Solver} configurations on multiple problem instances (data sets).
  */
+@XmlRootElement(name = "plannerBenchmarkResult")
 @XStreamAlias("plannerBenchmarkResult")
 public class PlannerBenchmarkResult {
 
     private String name;
     private Boolean aggregation;
+    @XmlTransient
     @XStreamOmitField // Moving or renaming a report directory after creation is allowed
     private File benchmarkReportDirectory;
 
@@ -71,8 +77,11 @@ public class PlannerBenchmarkResult {
     private Long warmUpTimeMillisSpentLimit = null;
     private EnvironmentMode environmentMode = null;
 
+    @XmlElement(name = "solverBenchmarkResult")
     @XStreamImplicit(itemFieldName = "solverBenchmarkResult")
     private List<SolverBenchmarkResult> solverBenchmarkResultList = null;
+
+    @XmlElement(name = "unifiedProblemBenchmarkResult")
     @XStreamImplicit(itemFieldName = "unifiedProblemBenchmarkResult")
     private List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList = null;
 

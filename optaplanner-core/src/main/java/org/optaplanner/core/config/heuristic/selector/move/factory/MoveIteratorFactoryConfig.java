@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactoryToMoveSelectorBridge;
-import org.optaplanner.core.impl.util.JaxbCustomPropertiesAdapter;
+import org.optaplanner.core.impl.io.jaxb.JaxbCustomPropertiesAdapter;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;

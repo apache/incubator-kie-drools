@@ -52,6 +52,13 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
+      <exclusions>
+        <!-- Clash with jakarta.activation:jakarta.activation-api -->
+        <exclusion>
+          <groupId>javax.activation</groupId>
+          <artifactId>javax.activation-api</artifactId>
+        </exclusion>
+      </exclusions>
       <!-- Used at compile time by *ScoreHibernateType -->
       <optional>true</optional>
     </dependency>

@@ -56,10 +56,10 @@ import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
+import org.optaplanner.core.impl.io.jaxb.JaxbIO;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.DefaultSolver;
-import org.optaplanner.core.impl.solver.io.XStreamConfigReader;
 import org.optaplanner.core.impl.solver.random.DefaultRandomFactory;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
@@ -69,7 +69,6 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
@@ -205,8 +204,9 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * @return never null
      */
     public static SolverConfig createFromXmlReader(Reader reader, ClassLoader classLoader) {
-        XStream xStream = XStreamConfigReader.buildXStream(classLoader);
-        Object solverConfigObject = xStream.fromXML(reader);
+        JaxbIO<?> xmlIO = new JaxbIO<>(SolverConfig.class);
+        Object solverConfigObject = xmlIO.read(reader);
+
         if (!(solverConfigObject instanceof SolverConfig)) {
             throw new IllegalArgumentException("The " + SolverConfig.class.getSimpleName()
                     + "'s XML root element resolves to a different type ("
