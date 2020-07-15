@@ -53,10 +53,15 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
       <exclusions>
-        <!-- Clash with jakarta.activation:jakarta.activation-api -->
+        <!-- Duplicates classes of jakarta.activation:jakarta.activation-api -->
         <exclusion>
           <groupId>javax.activation</groupId>
           <artifactId>javax.activation-api</artifactId>
+        </exclusion>
+        <!-- Duplicates classes of jakarta.xml.bind:jakarta.xml.bind-api -->
+        <exclusion>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-api</artifactId>
         </exclusion>
       </exclusions>
       <!-- Used at compile time by *ScoreHibernateType -->
@@ -68,10 +73,6 @@
       <artifactId>jboss-transaction-api_1.2_spec</artifactId>
       <scope>runtime</scope>
       <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.spec.javax.xml.bind</groupId>
-      <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
     </dependency>
 
     <!-- Testing -->
