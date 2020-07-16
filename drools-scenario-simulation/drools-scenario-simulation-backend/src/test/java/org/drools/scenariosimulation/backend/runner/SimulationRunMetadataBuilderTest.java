@@ -86,7 +86,7 @@ public class SimulationRunMetadataBuilderTest {
         assertNotNull(retrieved);
         final List<AuditLogLine> auditLogLines = retrieved.getAuditLogLines();
         assertNotNull(auditLogLines);
-        assertEquals(messagesResult1decision1.size() + messagesResult1decision2.size() + messagesResult2decision1.size() + messagesResult2decision3.size(), auditLogLines.size());
+        assertEquals(auditLogLines.size(), messagesResult1decision1.size() + messagesResult1decision2.size() + messagesResult2decision1.size() + messagesResult2decision3.size());
 
         checkAuditLogLine(auditLogLines, expectedResult1Decision1, expectedResult1Decision2, expectedResult2Decision1, expectedResult2Decision3);
     }
