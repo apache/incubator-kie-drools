@@ -197,20 +197,32 @@ There are several ways to serialize a solution:
 [[xStreamSolutionFileIO]]
 ==== `XStreamSolutionFileIO`: serialize to and from an XML format
 
-To use the `XStreamSolutionFileIO` instance to read and write solutions,
-configure your `@PlanningSolution` class as an ``xStreamAnnotatedClass``:
+To read and write solutions in the XML format via XStream, extend the `XStreamSolutionFileIO`:
+
+[source,java,options="nowrap"]
+----
+public class NQueensSolutionFileIO extends XStreamSolutionFileIO<NQueens> {
+    public NQueensSolutionFileIO() {
+        // NQueens is the @PlanningSolution class.
+        super(NQueens.class);
+    }
+}
+----
+
+and use it in the benchmark configuration:
 
 [source,xml,options="nowrap"]
 ----
     <problemBenchmarks>
-      <xStreamAnnotatedClass>org.optaplanner.examples.nqueens.domain.NQueens</xStreamAnnotatedClass>
+      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
       ...
     </problemBenchmarks>
 ----
 
-Those input files need to have been written with a `XStreamSolutionFileIO` instance, not just any `XStream` instance,
-because the `XStreamSolutionFileIO` uses a customized `XStream` instance.
+Those input files need to have been written with the same `SolutionFileIO` class that uses or extends the
+`XStreamSolutionFileIO`, not just any `XStream` instance, because the `XStreamSolutionFileIO` uses a customized `XStream`
+instance.
 
 [IMPORTANT]
 ====
@@ -315,7 +327,7 @@ To quickly configure and run a benchmark for typical solver configs, use a `solv
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xStreamAnnotatedClass>org.optaplanner.examples.nqueens.domain.NQueens</xStreamAnnotatedClass>
+      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
       <inputSolutionFile>data/nqueens/unsolved/64queens.xml</inputSolutionFile>
     </problemBenchmarks>
