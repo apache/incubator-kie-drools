@@ -33,6 +33,12 @@
     </license>
   </licenses>
 
+  <properties>
+    <!-- override the default GroupId:ArtifactId to map both master branch and 7.x branches to the same SonarCloud project -->
+    <sonar.projectKey>org.optaplanner:optaplanner</sonar.projectKey>
+    <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
+  </properties>
+
   <repositories>
     <repository>
       <id>jboss-public-repository-group</id>

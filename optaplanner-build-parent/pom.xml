@@ -64,9 +64,6 @@
     <impsort.goal>sort</impsort.goal>
     <!-- TODO https://issues.redhat.com/browse/PLANNER-2042 -->
     <spotbugs.failOnViolation>false</spotbugs.failOnViolation>
-    <!-- override the default GroupId:ArtifactId to map both master branch and 7.x branches to the same SonarCloud project -->
-    <sonar.projectKey>org.optaplanner:optaplanner</sonar.projectKey>
-    <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
     <!-- Jacoco plugin configurations -->
     <version.jacoco.plugin>0.8.5</version.jacoco.plugin>
     <!-- JaCoCo coverage data file location -->
