@@ -40,10 +40,13 @@ public class JavaCompilerSettings {
     private boolean debug = false;
     private List<String> classpaths;
 
+    private final List<String> options;
+
     /** @deprecated */
     private boolean verbose = false;
 
     public JavaCompilerSettings() {
+        options = new ArrayList<>();
     }
     
     public JavaCompilerSettings( final JavaCompilerSettings pSettings ) {
@@ -53,6 +56,7 @@ public class JavaCompilerSettings {
         warnings = pSettings.warnings;
         deprecations = pSettings.deprecations;
         debug = pSettings.debug;
+        options = pSettings.options;
     }
     
     public void setTargetVersion( final String pTargetVersion ) {
@@ -129,5 +133,13 @@ public class JavaCompilerSettings {
             classpaths = new ArrayList<>();
         }
         classpaths.add(classpath);
+    }
+
+    public List<String> getOptions() {
+        return options;
+    }
+
+    public void addOption(String option) {
+        options.add(option);
     }
 }
