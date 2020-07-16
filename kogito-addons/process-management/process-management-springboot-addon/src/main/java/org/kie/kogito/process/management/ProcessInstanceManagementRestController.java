@@ -55,6 +55,12 @@ public class ProcessInstanceManagementRestController extends BaseProcessInstance
     }
 
     @Override
+    @GetMapping(value = "{processId}/nodes", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity getProcessNodes(@PathVariable("processId") String processId) {
+        return doGetProcessNodes(processId);
+    }
+
+    @Override
     @GetMapping(value = "{processId}/instances/{processInstanceId}/error", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity getInstanceInError(@PathVariable("processId") String processId,
                                              @PathVariable("processInstanceId") String processInstanceId) {

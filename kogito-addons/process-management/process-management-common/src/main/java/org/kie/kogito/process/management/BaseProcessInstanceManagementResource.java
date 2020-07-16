@@ -21,7 +21,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.Application;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.process.Process;
@@ -30,10 +33,12 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.WorkItem;
+import org.kie.kogito.process.impl.AbstractProcess;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 
 public abstract class BaseProcessInstanceManagementResource<T> implements ProcessInstanceManagement<T> {
 
+    private static final String PROCESS_REQUIRED = "Process id must be given";
     private static final String PROCESS_AND_INSTANCE_REQUIRED = "Process id and Process instance id must be given";
     private static final String PROCESS_NOT_FOUND = "Process with id %s not found";
     private static final String PROCESS_INSTANCE_NOT_FOUND = "Process instance with id %s not found";
@@ -46,6 +51,21 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
     public BaseProcessInstanceManagementResource(Processes processes, Application application) {
         this.processes = processes;
         this.application = application;
+    }
+
+    public T doGetProcessNodes(String processId) {
+        return executeOnProcess(processId, process -> {
+            List<Node> nodes = ((WorkflowProcess) ((AbstractProcess<?>) process).process()).getNodesRecursively();
+            List<Map<String, Object>> list = nodes.stream().map(n -> {
+                Map<String, Object> data = new HashMap<>();
+                data.put("id", n.getId());
+                data.put("uniqueId", ((org.jbpm.workflow.core.Node) n).getUniqueId());
+                data.put("type", n.getClass().getSimpleName());
+                data.put("name", n.getName());
+                return data;
+            }).collect(Collectors.toList());
+            return buildOkResponse(list);
+        });
     }
 
     public T doGetInstanceInError(String processId, String processInstanceId) {
@@ -64,7 +84,7 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
 
     public T doGetWorkItemsInProcessInstance(String processId, String processInstanceId) {
 
-        return executeOnInstance(processId, processInstanceId, processInstance -> {
+        return executeOnProcessInstance(processId, processInstanceId, processInstance -> {
             // use special security policy to bypass auth check as this is management operation
             List<WorkItem> workItems = processInstance.workItems(new SecurityPolicy(null) {
             });
@@ -101,7 +121,7 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
 
     public T doTriggerNodeInstanceId(String processId, String processInstanceId, String nodeId) {
 
-        return executeOnInstance(processId, processInstanceId, processInstance -> {
+        return executeOnProcessInstance(processId, processInstanceId, processInstance -> {
             processInstance.triggerNode(nodeId);
 
             if (processInstance.status() == ProcessInstance.STATE_ERROR) {
@@ -114,7 +134,7 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
 
     public T doRetriggerNodeInstanceId(String processId, String processInstanceId, String nodeInstanceId) {
 
-        return executeOnInstance(processId, processInstanceId, processInstance -> {
+        return executeOnProcessInstance(processId, processInstanceId, processInstance -> {
             processInstance.retriggerNodeInstance(nodeInstanceId);
 
             if (processInstance.status() == ProcessInstance.STATE_ERROR) {
@@ -127,7 +147,7 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
 
     public T doCancelNodeInstanceId(String processId, String processInstanceId, String nodeInstanceId) {
 
-        return executeOnInstance(processId, processInstanceId, processInstance -> {
+        return executeOnProcessInstance(processId, processInstanceId, processInstance -> {
             processInstance.cancelNodeInstance(nodeInstanceId);
 
             if (processInstance.status() == ProcessInstance.STATE_ERROR) {
@@ -140,7 +160,7 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
 
     public T doCancelProcessInstanceId(String processId, String processInstanceId) {
 
-        return executeOnInstance(processId, processInstanceId, processInstance -> {
+        return executeOnProcessInstance(processId, processInstanceId, processInstance -> {
             processInstance.abort();
 
             if (processInstance.status() == ProcessInstance.STATE_ERROR) {
@@ -154,9 +174,7 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
     /*
      * Helper methods
      */
-
-    private T executeOnInstanceInError(String processId, String processInstanceId, Function<ProcessInstance<?>,
-            T> supplier) {
+    private T executeOnInstanceInError(String processId, String processInstanceId, Function<ProcessInstance<?>, T> supplier) {
         if (processId == null || processInstanceId == null) {
             return badRequestResponse(PROCESS_AND_INSTANCE_REQUIRED);
         }
@@ -182,7 +200,7 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
         });
     }
 
-    private T executeOnInstance(String processId, String processInstanceId, Function<ProcessInstance<?>, T> supplier) {
+    private T executeOnProcessInstance(String processId, String processInstanceId, Function<ProcessInstance<?>, T> supplier) {
         if (processId == null || processInstanceId == null) {
             return badRequestResponse(PROCESS_AND_INSTANCE_REQUIRED);
         }
@@ -201,6 +219,18 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
                 return notFoundResponse(String.format(PROCESS_INSTANCE_NOT_FOUND, processInstanceId));
             }
         });
+    }
+
+    private T executeOnProcess(String processId, Function<Process<?>, T> supplier) {
+        if (processId == null) {
+            return badRequestResponse(PROCESS_REQUIRED);
+        }
+
+        Process<?> process = processes.processById(processId);
+        if (process == null) {
+            return notFoundResponse(String.format(PROCESS_NOT_FOUND, processId));
+        }
+        return supplier.apply(process);
     }
 
     protected abstract <R> T buildOkResponse(R body);

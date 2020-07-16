@@ -28,6 +28,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>process-management-addon</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-resteasy</artifactId>
         </dependency>

@@ -16,9 +16,6 @@
 
 package org.kie.kogito.integrationtests.springboot;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
@@ -26,31 +23,42 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.CoreMatchers.is;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = KogitoSpringbootApplication.class)
-class FlexibleProcessTest {
+class ManagementAddOnTest {
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
     @Test
-    void testInstantiateProcess() {
-        Map<String, String> params = new HashMap<>();
-        params.put("var1", "first");
-        params.put("var2", "second");
-
+    void testGetProcessNodesWithInvalidProcessId() {
         given()
                 .contentType(ContentType.JSON)
-            .when()
-                .body(params)
-                .post("/AdHocProcess")
-            .then()
+                .when()
+                .get("/management/processes/{processId}/nodes", "aprocess")
+                .then()
+                .statusCode(404)
+                .body(equalTo("Process with id aprocess not found"));
+    }
+
+    @Test
+    void testGetProcessNodes() {
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/management/processes/{processId}/nodes", "greetings")
+                .then()
                 .statusCode(200)
-                .body("id", not(emptyOrNullString()))
-                .body("var1", equalTo("Hello first! Script"))
-                .body("var2", equalTo("second Script 2"));
+                .body("$.size", is(10))
+                .body("[0].id", is(1))
+                .body("[0].name", is("End"))
+                .body("[0].type", is("EndNode"))
+                .body("[0].uniqueId", is("1"))
+                .body("[9].id", is(10))
+                .body("[9].name", is("BoundaryEvent"))
+                .body("[9].type", is("BoundaryEventNode"))
+                .body("[9].uniqueId", is("10"));
     }
 }

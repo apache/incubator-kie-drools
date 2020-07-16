@@ -16,27 +16,29 @@
 
 package org.kie.kogito.process.management;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.jbpm.workflow.core.Node;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.Application;
 import org.kie.kogito.auth.SecurityPolicy;
-import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstances;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.WorkItem;
+import org.kie.kogito.process.impl.AbstractProcess;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -73,16 +75,27 @@ class BaseProcessInstanceManagementResourceTest {
     private ProcessInstances instances;
 
     @Mock
-    private Process process;
+    private AbstractProcess process;
+    
+    @Mock
+    private WorkflowProcess wp;
+    
+    @Mock
+    private Node node;
 
     @Mock
     private Object variables;
 
     @BeforeEach
     void setUp() {
-        when(processes.processById(anyString())).thenReturn(process);
-        when(process.instances()).thenReturn(instances);
-        when(instances.findById(anyString())).thenReturn(Optional.of(processInstance));
+        lenient().when(node.getId()).thenReturn(1l);
+        lenient().when(node.getName()).thenReturn("node");
+        lenient().when(node.getUniqueId()).thenReturn(NODE_ID);
+        lenient().when(wp.getNodesRecursively()).thenReturn(singletonList(node));
+        lenient().when(process.process()).thenReturn(wp);
+        lenient().when(processes.processById(anyString())).thenReturn(process);
+        lenient().when(process.instances()).thenReturn(instances);
+        lenient().when(instances.findById(anyString())).thenReturn(Optional.of(processInstance));
         lenient().when(processInstance.error()).thenReturn(Optional.of(error));
         lenient().when(processInstance.variables()).thenReturn(variables);
         lenient().when(processInstance.id()).thenReturn(PROCESS_INSTANCE_ID);
@@ -106,6 +119,11 @@ class BaseProcessInstanceManagementResourceTest {
             @Override
             protected Object notFoundResponse(String message) {
                 return message;
+            }
+
+            @Override
+            public Object getProcessNodes(String processId) {
+                return null;
             }
 
             @Override
@@ -151,6 +169,21 @@ class BaseProcessInstanceManagementResourceTest {
     }
 
     @Test
+    void testDoGetProcessNodes() {
+        Object response = tested.doGetProcessNodes(PROCESS_ID);
+
+        verify(processes).processById(PROCESS_ID);
+        verify(process).process();
+        verify(wp).getNodesRecursively();
+
+        assertThat(response).isInstanceOf(List.class).asList().hasSize(1).element(0)
+                .hasFieldOrPropertyWithValue("id", node.getId())
+                .hasFieldOrPropertyWithValue("name", node.getName())
+                .hasFieldOrPropertyWithValue("uniqueId", node.getUniqueId())
+                .hasFieldOrPropertyWithValue("type", node.getClass().getSimpleName());
+    }
+
+    @Test
     void testDoGetInstanceInError() {
         Object response = tested.doGetInstanceInError(PROCESS_ID, PROCESS_INSTANCE_ID);
         verify(processInstance, times(2)).error();
@@ -165,7 +198,7 @@ class BaseProcessInstanceManagementResourceTest {
 
     @Test
     void testDoGetWorkItemsInProcessInstance(@Mock WorkItem workItem) {
-        when(processInstance.workItems(any(SecurityPolicy.class))).thenReturn(Collections.singletonList(workItem));
+        when(processInstance.workItems(any(SecurityPolicy.class))).thenReturn(singletonList(workItem));
         Object response = tested.doGetWorkItemsInProcessInstance(PROCESS_ID, PROCESS_INSTANCE_ID);
         assertThat(response).isInstanceOf(List.class);
         assertThat(((List)response).get(0)).isEqualTo(workItem);

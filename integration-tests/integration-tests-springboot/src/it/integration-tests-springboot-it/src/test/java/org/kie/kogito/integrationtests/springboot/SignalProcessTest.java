@@ -17,7 +17,6 @@
 package org.kie.kogito.integrationtests.springboot;
 
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,6 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.emptyOrNullString;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = KogitoSpringbootApplication.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class SignalProcessTest {
 
     static {
