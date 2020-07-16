@@ -31,6 +31,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
+import org.assertj.core.api.Assumptions;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
@@ -222,6 +226,12 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testScriptTaskJS() throws Exception {
+        Assumptions.assumeThat(
+                new ScriptEngineManager().getEngineByName("JavaScript")
+                        .getClass().getSimpleName())
+                .describedAs("GraalJS is not supported.")
+                .isNotEqualTo("GraalJSScriptEngine");
+
         KieBase kbase = createKnowledgeBase("BPMN2-ScriptTaskJS.bpmn2");
         ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler handler = new TestWorkItemHandler();
