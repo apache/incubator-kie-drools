@@ -46,7 +46,8 @@ public class StaticComponentsSupplier implements ComponentsSupplier {
         public Class< ? > defineClass(final String name,
                                       final byte[] bytes,
                                       final ProtectionDomain domain) {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException(
+                    "The artifact drools-core-static does not support this operation, try using drools-core-dynamic instead.");
         }
     }
 
