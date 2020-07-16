@@ -8,6 +8,15 @@ import GetProcessInstancesWithBusinessKeyDocument = GraphQL.GetProcessInstancesW
 import { BrowserRouter } from 'react-router-dom';
 jest.mock('../../../Molecules/ProcessListTableItems/ProcessListTableItems');
 Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
+const MockedComponent = (): React.ReactElement => {
+  return <></>;
+};
+jest.mock('@kogito-apps/common', () => ({
+  ...jest.requireActual('@kogito-apps/common'),
+  KogitoEmptyState: () => {
+    return <MockedComponent />;
+  }
+}));
 
 const initData1 = {
   ProcessInstances: [

@@ -16,6 +16,15 @@ const mocks = [];
 jest.mock('../../ProcessListPage/ProcessListPage.tsx');
 
 jest.mock('@kogito-apps/common/src/graphql/types');
+const MockedComponent = (): React.ReactElement => {
+  return <></>;
+};
+jest.mock('@kogito-apps/common', () => ({
+  ...jest.requireActual('@kogito-apps/common'),
+  KogitoPageLayout: () => {
+    return <MockedComponent />;
+  }
+}));
 describe('PageLayout tests', () => {
   // @ts-ignore
   GraphQL.useGetQueryFieldsQuery.mockReturnValue({

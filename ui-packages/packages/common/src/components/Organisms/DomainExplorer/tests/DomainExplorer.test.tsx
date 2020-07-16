@@ -23,6 +23,7 @@ jest.mock('@patternfly/react-core', () => ({
   ...jest.requireActual('@patternfly/react-core'),
   DataToolbar: () => <MockedDataToolbar />
 }));
+jest.mock('../../../Atoms/KogitoSpinner/KogitoSpinner');
 const props = {
   domains: ['Travels', 'VisaApplications'],
   loadingState: false,

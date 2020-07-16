@@ -968,51 +968,9 @@ exports[`Domain Explorer component Mock query testing 1`] = `
         <div
           className="pf-l-bullseye"
         >
-          <KogitoSpinner
+          <MockedKogitoSpinner
             spinnerText="Loading domain data..."
-          >
-            <EmptyState>
-              <div
-                className="pf-c-empty-state pf-m-lg"
-              >
-                <EmptyStateIcon
-                  component={[Function]}
-                  variant="container"
-                >
-                  <div
-                    className="pf-c-empty-state__icon"
-                  >
-                    <Spinner>
-                      <span
-                        aria-valuetext="Loading..."
-                        className="pf-c-spinner pf-m-xl"
-                        role="progressbar"
-                      >
-                        <span
-                          className="pf-c-spinner__clipper"
-                        />
-                        <span
-                          className="pf-c-spinner__lead-ball"
-                        />
-                        <span
-                          className="pf-c-spinner__tail-ball"
-                        />
-                      </span>
-                    </Spinner>
-                  </div>
-                </EmptyStateIcon>
-                <Title
-                  size="lg"
-                >
-                  <h1
-                    className="pf-c-title pf-m-lg"
-                  >
-                    Loading domain data...
-                  </h1>
-                </Title>
-              </div>
-            </EmptyState>
-          </KogitoSpinner>
+          />
         </div>
       </Bullseye>
     </article>
@@ -1112,51 +1070,9 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
         <div
           className="pf-l-bullseye"
         >
-          <KogitoSpinner
+          <MockedKogitoSpinner
             spinnerText="Loading domain data..."
-          >
-            <EmptyState>
-              <div
-                className="pf-c-empty-state pf-m-lg"
-              >
-                <EmptyStateIcon
-                  component={[Function]}
-                  variant="container"
-                >
-                  <div
-                    className="pf-c-empty-state__icon"
-                  >
-                    <Spinner>
-                      <span
-                        aria-valuetext="Loading..."
-                        className="pf-c-spinner pf-m-xl"
-                        role="progressbar"
-                      >
-                        <span
-                          className="pf-c-spinner__clipper"
-                        />
-                        <span
-                          className="pf-c-spinner__lead-ball"
-                        />
-                        <span
-                          className="pf-c-spinner__tail-ball"
-                        />
-                      </span>
-                    </Spinner>
-                  </div>
-                </EmptyStateIcon>
-                <Title
-                  size="lg"
-                >
-                  <h1
-                    className="pf-c-title pf-m-lg"
-                  >
-                    Loading domain data...
-                  </h1>
-                </Title>
-              </div>
-            </EmptyState>
-          </KogitoSpinner>
+          />
         </div>
       </Bullseye>
     </article>

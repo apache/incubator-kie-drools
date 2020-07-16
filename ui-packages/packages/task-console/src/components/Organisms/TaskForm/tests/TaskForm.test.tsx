@@ -6,7 +6,17 @@ import { TaskInfo, TaskInfoImpl } from '../../../../model/TaskInfo';
 import { UserTaskInstance } from '../../../../graphql/types';
 import ApplyForVisaForm from '../../../../util/tests/mocks/ApplyForVisa';
 
+const MockedComponent = (): React.ReactElement => {
+  return <></>;
+};
+
 jest.mock('axios');
+jest.mock('@kogito-apps/common', () => ({
+  ...jest.requireActual('@kogito-apps/common'),
+  KogitoEmptyState: () => {
+    return <MockedComponent />;
+  }
+}));
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const userTaskInstance: UserTaskInstance = {

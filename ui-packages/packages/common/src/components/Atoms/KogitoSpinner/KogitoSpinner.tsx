@@ -5,13 +5,18 @@ import {
   EmptyStateIcon,
   Spinner
 } from '@patternfly/react-core';
+import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
 
 interface KogitoSpinnerProps {
   spinnerText: string;
 }
-const KogitoSpinner: React.FC<KogitoSpinnerProps> = ({ spinnerText }) => {
+const KogitoSpinner: React.FC<KogitoSpinnerProps & OUIAProps> = ({
+  spinnerText,
+  ouiaId,
+  ouiaSafe
+}) => {
   return (
-    <EmptyState>
+    <EmptyState {...componentOuiaProps(ouiaId, 'kogito-spinner', ouiaSafe)}>
       <EmptyStateIcon variant="container" component={Spinner} />
       <Title size="lg">{spinnerText}</Title>
     </EmptyState>

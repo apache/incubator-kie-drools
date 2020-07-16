@@ -8,7 +8,8 @@ describe('LoadMore component tests with isLoading false', () => {
     setOffset: jest.fn(),
     getMoreItems: jest.fn(),
     pageSize: 10,
-    isLoadingMore: false
+    isLoadingMore: false,
+    ouiaId: 'load-more-ouia-id'
   };
   it('snapshot testing', () => {
     const wrapper = shallow(<LoadMore {...props} />);
@@ -40,7 +41,8 @@ describe('LoadMore component tests with isLoading true', () => {
     setOffset: jest.fn(),
     getMoreItems: jest.fn(),
     pageSize: 10,
-    isLoadingMore: true
+    isLoadingMore: true,
+    ouiaId: 'load-more-ouia-id'
   };
   it('snapshot testing', () => {
     const wrapper = shallow(<LoadMore {...props} />);

@@ -1,6 +1,11 @@
 import React from 'react';
 import ProcessListTableItems from '../ProcessListTableItems';
-import { GraphQL, getWrapperAsync, getWrapper } from '@kogito-apps/common';
+import {
+  GraphQL,
+  getWrapperAsync,
+  getWrapper,
+  KogitoEmptyState
+} from '@kogito-apps/common';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
 import GetChildInstancesDocument = GraphQL.GetChildInstancesDocument;
 import { BrowserRouter } from 'react-router-dom';
@@ -25,6 +30,13 @@ jest.mock('../../../Atoms/ProcessListModal/ProcessListModal');
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
+
+jest.mock('@kogito-apps/common', () => ({
+  ...jest.requireActual('@kogito-apps/common'),
+  KogitoEmptyState: () => {
+    return <MockedComponent />;
+  }
+}));
 
 jest.mock('@patternfly/react-icons', () => ({
   ...jest.requireActual('@patternfly/react-icons'),
@@ -788,12 +800,9 @@ describe('ProcessListTableItems component tests', () => {
     wrapper = wrapper.update();
     wrapper = wrapper.find(DataListContent);
     expect(wrapper).toMatchSnapshot();
-    expect(
-      wrapper
-        .find(EmptyStateBody)
-        .children()
-        .contains('This process has no related sub processes')
-    ).toBeTruthy();
+    expect(wrapper.find(KogitoEmptyState).props()['body']).toEqual(
+      'This process has no related sub processes'
+    );
   });
 
   it('snapshot tests with child instances', async () => {

@@ -22,7 +22,8 @@ jest.mock('@patternfly/react-icons', () => ({
 
 const props = {
   title: 'No child process instances',
-  body: 'This process has no related sub processes'
+  body: 'This process has no related sub processes',
+  ouiaId: 'empty-state-ouia-id'
 };
 
 describe('KogitoEmptyState component tests', () => {

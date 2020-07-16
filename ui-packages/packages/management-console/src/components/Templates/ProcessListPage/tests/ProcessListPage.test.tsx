@@ -8,11 +8,15 @@ import { act } from 'react-dom/test-utils';
 jest.mock('../../../Organisms/ProcessListTable/ProcessListTable');
 jest.mock('../../../Atoms/ProcessListBulkInstances/ProcessListBulkInstances');
 jest.mock('../../../Atoms/ProcessListModal/ProcessListModal');
-
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
-
+jest.mock('@kogito-apps/common', () => ({
+  ...jest.requireActual('@kogito-apps/common'),
+  LoadMore: () => {
+    return <MockedComponent />;
+  }
+}));
 jest.mock('@patternfly/react-icons', () => ({
   ...jest.requireActual('@patternfly/react-icons'),
   ExclamationTriangleIcon: () => {

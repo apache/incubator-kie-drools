@@ -14072,118 +14072,14 @@ exports[`DataTable component tests Should render ErrorComponent 1`] = `
   <div
     className=".pf-u-my-xl"
   >
-    <Component
+    <KogitoEmptyState
       body="Try using the refresh action to reload user tasks"
       onClick={[MockFunction]}
       title="Oops... error while loading"
       type={1}
     >
-      <Bullseye>
-        <div
-          className="pf-l-bullseye"
-        >
-          <EmptyState
-            variant="full"
-          >
-            <div
-              className="pf-c-empty-state"
-            >
-              <EmptyStateIcon
-                color="var(--pf-global--warning-color--100)"
-                icon={[Function]}
-                size="sm"
-              >
-                <ExclamationTriangleIcon
-                  aria-hidden="true"
-                  className="pf-c-empty-state__icon"
-                  color="var(--pf-global--warning-color--100)"
-                  noVerticalAlign={false}
-                  size="sm"
-                  title={null}
-                >
-                  <svg
-                    aria-hidden="true"
-                    aria-labelledby={null}
-                    className="pf-c-empty-state__icon"
-                    fill="var(--pf-global--warning-color--100)"
-                    height="1em"
-                    role="img"
-                    style={
-                      Object {
-                        "verticalAlign": "-0.125em",
-                      }
-                    }
-                    viewBox="0 0 576 512"
-                    width="1em"
-                  >
-                    <path
-                      d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"
-                      transform=""
-                    />
-                  </svg>
-                </ExclamationTriangleIcon>
-              </EmptyStateIcon>
-              <Title
-                headingLevel="h5"
-                size="lg"
-              >
-                <h5
-                  className="pf-c-title pf-m-lg"
-                >
-                  Oops... error while loading
-                </h5>
-              </Title>
-              <EmptyStateBody>
-                <div
-                  className="pf-c-empty-state__body"
-                >
-                  Try using the refresh action to reload user tasks
-                </div>
-              </EmptyStateBody>
-              <Component
-                onClick={[MockFunction]}
-                variant="primary"
-              >
-                <ComponentWithOuia
-                  component={[Function]}
-                  componentProps={
-                    Object {
-                      "children": "Refresh",
-                      "onClick": [MockFunction],
-                      "variant": "primary",
-                    }
-                  }
-                  consumerContext={null}
-                >
-                  <Button
-                    onClick={[MockFunction]}
-                    ouiaContext={
-                      Object {
-                        "isOuia": false,
-                        "ouiaId": null,
-                      }
-                    }
-                    variant="primary"
-                  >
-                    <button
-                      aria-disabled={null}
-                      aria-label={null}
-                      className="pf-c-button pf-m-primary"
-                      disabled={false}
-                      onClick={[MockFunction]}
-                      tabIndex={null}
-                      type="button"
-                    >
-                      Refresh
-                    </button>
-                  </Button>
-                </ComponentWithOuia>
-              </Component>
-            </div>
-          </EmptyState>
-        </div>
-      </Bullseye>
-    </Component>
+      <MockedComponent />
+    </KogitoEmptyState>
   </div>
 </DataTable>
 `;
@@ -14225,51 +14121,9 @@ exports[`DataTable component tests Should render LoadingComponent 1`] = `
     <div
       className="pf-l-bullseye"
     >
-      <KogitoSpinner
+      <MockedKogitoSpinner
         spinnerText="Loading..."
-      >
-        <EmptyState>
-          <div
-            className="pf-c-empty-state pf-m-lg"
-          >
-            <EmptyStateIcon
-              component={[Function]}
-              variant="container"
-            >
-              <div
-                className="pf-c-empty-state__icon"
-              >
-                <Spinner>
-                  <span
-                    aria-valuetext="Loading..."
-                    className="pf-c-spinner pf-m-xl"
-                    role="progressbar"
-                  >
-                    <span
-                      className="pf-c-spinner__clipper"
-                    />
-                    <span
-                      className="pf-c-spinner__lead-ball"
-                    />
-                    <span
-                      className="pf-c-spinner__tail-ball"
-                    />
-                  </span>
-                </Spinner>
-              </div>
-            </EmptyStateIcon>
-            <Title
-              size="lg"
-            >
-              <h1
-                className="pf-c-title pf-m-lg"
-              >
-                Loading...
-              </h1>
-            </Title>
-          </div>
-        </EmptyState>
-      </KogitoSpinner>
+      />
     </div>
   </Bullseye>
 </DataTable>

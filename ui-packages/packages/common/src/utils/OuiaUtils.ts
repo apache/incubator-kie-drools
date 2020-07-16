@@ -79,8 +79,17 @@ export const ouiaPageTypeAndObjectId = (
   };
 };
 
+type OuiaId = number | string;
+
+export interface OUIAProps {
+  // If there is only one instance of the component on the page at once, it is OPTIONAL
+  ouiaId?: OuiaId;
+  // False if in animation
+  ouiaSafe?: boolean;
+}
+
 /**
- * Function to set ouia attribute - only when OUIA is enabled.
+ * Function to set ouia attribute.
  * Usage:
  * <div
  *   {...ouiaAttribute(ouiaContext,'name','value')}
@@ -89,54 +98,56 @@ export const ouiaPageTypeAndObjectId = (
  * @param name name of the attribute
  * @param value value of the attribute
  */
-export const ouiaAttribute = (ouiaContext, name: string, value: string) => {
-  return ouiaContext.isOuia && { [name]: value };
+export const ouiaAttribute = (ouiaContext, name: string, value: any) => {
+  if (ouiaContext.isOuia && value) {
+    return { [name]: value };
+  }
+  return {};
 };
 
 /**
- * Function to set OUIA attributes on the component. For use in components that extends on InjectedOUIAProps
- * and are wrapped by withOuiaContext() into Higher-order component.
+ * Function to set OUIA attributes on the component.
  *
  * Typical usage:
- * const MyComponent:React.FC<InjectedOuiaProps> = ({
- *   ouiaContext,
- *   ouiaId
+ * const MyComponent:React.FC<OUIAProps> = ({
+ *   ouiaId,
+ *   ouiaSafe
  * }) => {
  * return
- *   <OtherComponent {...componentOuiaProps(ouiaContext, ouiaId, 'MyComponent', !isLoading())} >
+ *   <OtherComponent {...componentOuiaProps(ouiaId, 'MyComponent', ouiaSafe)} >
  *   .
  *   .
  *   .
  *   </OtherComponent>
  * }
  *
- * @param ouiaContext ouiaContext provided by the higher-order component wrapper
- * @param ouiaId id that is being passed to this component via the context (not to be set explicitly)
+ * @param ouiaId id of the component - a value passed as part of OUIAProps to the component
  * @param ouiaType type of the component - typically a string explicitly provided to this function call
- * @param isSafe boolean value indicating if the component is safe = is not doing any loading action.
+ * @param isSafe boolean value indicating if the component is safe = is not doing any loading action. Default is true.
  */
-export const componentOuiaProps = (ouiaContext, ouiaId, ouiaType, isSafe?) => {
-  return (
-    ouiaContext.isOuia && {
-      'data-ouia-component-type': ouiaType,
-      'data-ouia-component-id': ouiaId || ouiaContext.ouiaId,
-      'data-ouia-safe': isSafe ? true : false
-    }
-  );
+export const componentOuiaProps = (
+  ouiaId: OuiaId | null,
+  ouiaType: string,
+  isSafe: boolean = true
+) => {
+  return {
+    ...(ouiaId && { 'data-ouia-component-id': ouiaId }),
+    'data-ouia-component-type': ouiaType,
+    'data-ouia-safe': isSafe
+  };
 };
 
 /**
- * Function to set an data-ouia-component-id attribute if OUIA is enabled (either by default or in browser local storage `ouia:enabled`=true)
+ * Function to set an data-ouia-component-id attribute.
  *
  * Typical usage:
  * <MyComponent>
- *   <Button {...attributeOuiaId(ouiaContext, 'button-1')} />
- *   <Button {...attributeOuiaId(ouiaContext, 'button-2')} />
+ *   <Button {...attributeOuiaId('button-1')} />
+ *   <Button {...attributeOuiaId('button-2')} />
  * </MyComponent>
  *
- * @param ouiaContext ouiaContext provided by the higher-order component wrapper
  * @param ouiaId id string value to be set as an id
  */
-export const attributeOuiaId = (ouiaContext, ouiaId: string) => {
-  return ouiaAttribute(ouiaContext, 'ouiaId', ouiaId);
+export const attributeOuiaId = (ouiaId: OuiaId) => {
+  return ouiaAttribute({ isOuia: true }, 'data-ouia-component-id', ouiaId);
 };

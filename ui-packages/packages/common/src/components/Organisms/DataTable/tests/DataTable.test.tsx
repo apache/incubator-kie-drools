@@ -14,6 +14,16 @@ jest.mock('uuid', () => {
   let value = 1;
   return () => value++;
 });
+const MockedComponent = (): React.ReactElement => {
+  return <></>;
+};
+jest.mock('../../../Atoms/KogitoEmptyState/KogitoEmptyState', () => ({
+  ...jest.requireActual('../../../Atoms/KogitoEmptyState/KogitoEmptyState'),
+  KogitoEmptyState: () => {
+    return <MockedComponent />;
+  }
+}));
+jest.mock('../../../Atoms/KogitoSpinner/KogitoSpinner');
 
 const data = [
   {

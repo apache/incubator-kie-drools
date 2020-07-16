@@ -3,12 +3,20 @@
 exports[`KogitoEmptyState component tests Info test 1`] = `
 <Component
   body="This process has no related sub processes"
+  ouiaId="empty-state-ouia-id"
   title="No child process instances"
   type={3}
 >
-  <Bullseye>
+  <Bullseye
+    data-ouia-component-id="empty-state-ouia-id"
+    data-ouia-component-type="kogito-empty-state"
+    data-ouia-safe={true}
+  >
     <div
       className="pf-l-bullseye"
+      data-ouia-component-id="empty-state-ouia-id"
+      data-ouia-component-type="kogito-empty-state"
+      data-ouia-safe={true}
     >
       <EmptyState
         variant="full"
@@ -58,12 +66,20 @@ exports[`KogitoEmptyState component tests Refresh test 1`] = `
 <Component
   body="This process has no related sub processes"
   onClick={[MockFunction]}
+  ouiaId="empty-state-ouia-id"
   title="No child process instances"
   type={1}
 >
-  <Bullseye>
+  <Bullseye
+    data-ouia-component-id="empty-state-ouia-id"
+    data-ouia-component-type="kogito-empty-state"
+    data-ouia-safe={true}
+  >
     <div
       className="pf-l-bullseye"
+      data-ouia-component-id="empty-state-ouia-id"
+      data-ouia-component-type="kogito-empty-state"
+      data-ouia-safe={true}
     >
       <EmptyState
         variant="full"
@@ -152,12 +168,20 @@ exports[`KogitoEmptyState component tests Reset test 1`] = `
 <Component
   body="This process has no related sub processes"
   onClick={[MockFunction]}
+  ouiaId="empty-state-ouia-id"
   title="No child process instances"
   type={2}
 >
-  <Bullseye>
+  <Bullseye
+    data-ouia-component-id="empty-state-ouia-id"
+    data-ouia-component-type="kogito-empty-state"
+    data-ouia-safe={true}
+  >
     <div
       className="pf-l-bullseye"
+      data-ouia-component-id="empty-state-ouia-id"
+      data-ouia-component-type="kogito-empty-state"
+      data-ouia-safe={true}
     >
       <EmptyState
         variant="full"
@@ -249,12 +273,20 @@ exports[`KogitoEmptyState component tests Reset test 1`] = `
 exports[`KogitoEmptyState component tests Search test 1`] = `
 <Component
   body="This process has no related sub processes"
+  ouiaId="empty-state-ouia-id"
   title="No child process instances"
   type={0}
 >
-  <Bullseye>
+  <Bullseye
+    data-ouia-component-id="empty-state-ouia-id"
+    data-ouia-component-type="kogito-empty-state"
+    data-ouia-safe={true}
+  >
     <div
       className="pf-l-bullseye"
+      data-ouia-component-id="empty-state-ouia-id"
+      data-ouia-component-type="kogito-empty-state"
+      data-ouia-safe={true}
     >
       <EmptyState
         variant="full"

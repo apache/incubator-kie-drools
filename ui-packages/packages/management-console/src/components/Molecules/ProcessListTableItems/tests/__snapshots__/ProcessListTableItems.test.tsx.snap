@@ -18,58 +18,14 @@ exports[`ProcessListTableItems component tests snapshot tests for no child insta
     <div
       className="pf-c-data-list__expandable-content-body"
     >
-      <Component
+      <KogitoEmptyState
         body="This process has no related sub processes"
         key="0"
         title="No child process instances"
         type={3}
       >
-        <Bullseye>
-          <div
-            className="pf-l-bullseye"
-          >
-            <EmptyState
-              variant="full"
-            >
-              <div
-                className="pf-c-empty-state"
-              >
-                <EmptyStateIcon
-                  color="var(--pf-global--info-color--100)"
-                  icon={[Function]}
-                  size="sm"
-                >
-                  <InfoCircleIcon
-                    aria-hidden="true"
-                    className="pf-c-empty-state__icon"
-                    color="var(--pf-global--info-color--100)"
-                    size="sm"
-                  >
-                    <MockedComponent />
-                  </InfoCircleIcon>
-                </EmptyStateIcon>
-                <Title
-                  headingLevel="h5"
-                  size="lg"
-                >
-                  <h5
-                    className="pf-c-title pf-m-lg"
-                  >
-                    No child process instances
-                  </h5>
-                </Title>
-                <EmptyStateBody>
-                  <div
-                    className="pf-c-empty-state__body"
-                  >
-                    This process has no related sub processes
-                  </div>
-                </EmptyStateBody>
-              </div>
-            </EmptyState>
-          </div>
-        </Bullseye>
-      </Component>
+        <MockedComponent />
+      </KogitoEmptyState>
     </div>
   </section>
 </DataListContent>

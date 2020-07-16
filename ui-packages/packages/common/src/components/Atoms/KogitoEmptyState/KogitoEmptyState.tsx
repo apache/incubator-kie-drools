@@ -14,6 +14,7 @@ import {
   SearchIcon
 } from '@patternfly/react-icons';
 import '@patternfly/patternfly/patternfly-addons.css';
+import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
 
 export enum KogitoEmptyStateType {
   Search,
@@ -29,14 +30,16 @@ interface IOwnProps {
   onClick?: () => void;
 }
 
-export const KogitoEmptyState: React.FC<IOwnProps> = ({
+export const KogitoEmptyState: React.FC<IOwnProps & OUIAProps> = ({
   type,
   title,
   body,
-  onClick
+  onClick,
+  ouiaId,
+  ouiaSafe
 }) => {
   return (
-    <Bullseye>
+    <Bullseye {...componentOuiaProps(ouiaId, 'kogito-empty-state', ouiaSafe)}>
       <EmptyState variant={EmptyStateVariant.full}>
         {type === KogitoEmptyStateType.Search && (
           <EmptyStateIcon icon={SearchIcon} size="sm" />
