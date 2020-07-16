@@ -40,4 +40,11 @@ public interface TaskEvent {
 
     String getMessage();
 
+    String getCorrelationKey();
+
+    Integer getProcessType();
+
+    void setCorrelationKey(String correlationKey);
+
+    void setProcessType(Integer processType);
 }

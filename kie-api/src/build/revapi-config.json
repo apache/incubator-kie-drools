@@ -80,6 +80,24 @@
                   "methodName": "<init>",
                   "elementKind": "constructor",
                   "justification": "identify kie native resources"
+                },
+                {
+                  "code": "java.method.addedToInterface",
+                  "new": "method java.lang.String org.kie.api.task.model.TaskSummary::getCorrelationKey()",
+                  "package": "org.kie.api.task.model",
+                  "classSimpleName": "TaskSummary",
+                  "methodName": "getCorrelationKey",
+                  "elementKind": "method",
+                  "justification":"https://issues.redhat.com/browse/JBPM-9195"
+                },
+                {
+                  "code": "java.method.addedToInterface",
+                  "new": "method java.lang.Integer org.kie.api.task.model.TaskSummary::getProcessType()",
+                  "package": "org.kie.api.task.model",
+                  "classSimpleName": "TaskSummary",
+                  "methodName": "getProcessType",
+                  "elementKind": "method",
+                  "justification":"https://issues.redhat.com/browse/JBPM-9195"
                 }
             ]
         }

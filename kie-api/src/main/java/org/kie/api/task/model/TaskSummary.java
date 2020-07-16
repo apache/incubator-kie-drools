@@ -38,4 +38,8 @@ public interface TaskSummary extends QuickTaskSummary {
 
     Boolean isQuickTaskSummary();
 
+    String getCorrelationKey();
+
+    Integer getProcessType();
+
 }
