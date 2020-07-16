@@ -27,8 +27,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.quarkus.domain.TestdataPlanningEntity;
-import org.optaplanner.quarkus.domain.TestdataPlanningSolution;
+import org.optaplanner.quarkus.testdata.normal.constraints.TestdataQuarkusConstraintProvider;
+import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusEntity;
+import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusSolution;
 
 import io.quarkus.test.QuarkusUnitTest;
 
@@ -37,17 +38,17 @@ public class OptaPlannerProcessorConstraintProviderTest {
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
-                    .addClasses(TestdataPlanningEntity.class,
-                            TestdataPlanningSolution.class, TestdataPlanningConstraintProvider.class));
+                    .addClasses(TestdataQuarkusEntity.class,
+                            TestdataQuarkusSolution.class, TestdataQuarkusConstraintProvider.class));
 
     @Inject
     SolverConfig solverConfig;
     @Inject
-    SolverFactory<TestdataPlanningSolution> solverFactory;
+    SolverFactory<TestdataQuarkusSolution> solverFactory;
 
     @Test
     public void solverConfigXml_default() {
-        assertEquals(TestdataPlanningConstraintProvider.class,
+        assertEquals(TestdataQuarkusConstraintProvider.class,
                 solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass());
         assertNotNull(solverFactory.buildSolver());
     }

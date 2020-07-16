@@ -16,8 +16,10 @@
 
 package org.optaplanner.spring.boot.autoconfigure;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,20 +39,27 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
 import org.optaplanner.persistence.jackson.api.OptaPlannerJacksonModule;
 import org.springframework.beans.factory.BeanClassLoaderAware;
+import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.domain.EntityScanPackages;
 import org.springframework.boot.autoconfigure.domain.EntityScanner;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.type.AnnotationMetadata;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.Module;
 
@@ -124,7 +133,7 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
     }
 
     private void applySolverProperties(SolverConfig solverConfig) {
-        EntityScanner entityScanner = new EntityScanner(this.context);
+        WorkaroundEntityScanner entityScanner = new WorkaroundEntityScanner(this.context);
         if (solverConfig.getSolutionClass() == null) {
             solverConfig.setSolutionClass(findSolutionClass(entityScanner));
         }
@@ -147,7 +156,7 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
         }
     }
 
-    private Class<?> findSolutionClass(EntityScanner entityScanner) {
+    private Class<?> findSolutionClass(WorkaroundEntityScanner entityScanner) {
         Set<Class<?>> solutionClassSet;
         try {
             solutionClassSet = entityScanner.scan(PlanningSolution.class);
@@ -171,7 +180,7 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
         return solutionClassSet.iterator().next();
     }
 
-    private List<Class<?>> findEntityClassList(EntityScanner entityScanner) {
+    private List<Class<?>> findEntityClassList(WorkaroundEntityScanner entityScanner) {
         Set<Class<?>> entityClassSet;
         try {
             entityClassSet = entityScanner.scan(PlanningEntity.class);
@@ -281,6 +290,62 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
         @Bean
         Module jacksonModule() {
             return OptaPlannerJacksonModule.createModule();
+        }
+
+    }
+
+    /**
+     * Copyright shared with original authors of {@link EntityScanner},
+     * which also uses the Apache Software License,
+     * because this class was mostly copied from that class {@link EntityScanner}.
+     */
+    // TODO Remove this class when https://github.com/spring-projects/spring-boot/pull/22412 is fixed and released
+    private static class WorkaroundEntityScanner {
+
+        private final ApplicationContext context;
+
+        public WorkaroundEntityScanner(ApplicationContext context) {
+            Assert.notNull(context, "Context must not be null");
+            this.context = context;
+        }
+
+        @SafeVarargs
+        public final Set<Class<?>> scan(Class<? extends Annotation>... annotationTypes) throws ClassNotFoundException {
+            List<String> packages = getPackages();
+            if (packages.isEmpty()) {
+                return Collections.emptySet();
+            }
+            ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false) {
+                @Override
+                protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
+                    AnnotationMetadata metadata = beanDefinition.getMetadata();
+                    // Actual workaround: Do not exclude abstract classes nor interfaces
+                    // All other code is the same as in the original.
+                    return metadata.isIndependent();
+                }
+            };
+            scanner.setEnvironment(this.context.getEnvironment());
+            scanner.setResourceLoader(this.context);
+            for (Class<? extends Annotation> annotationType : annotationTypes) {
+                scanner.addIncludeFilter(new AnnotationTypeFilter(annotationType));
+            }
+            Set<Class<?>> entitySet = new HashSet<>();
+            for (String basePackage : packages) {
+                if (StringUtils.hasText(basePackage)) {
+                    for (BeanDefinition candidate : scanner.findCandidateComponents(basePackage)) {
+                        entitySet.add(ClassUtils.forName(candidate.getBeanClassName(), this.context.getClassLoader()));
+                    }
+                }
+            }
+            return entitySet;
+        }
+
+        private List<String> getPackages() {
+            List<String> packages = EntityScanPackages.get(this.context).getPackageNames();
+            if (packages.isEmpty() && AutoConfigurationPackages.has(this.context)) {
+                packages = AutoConfigurationPackages.get(this.context);
+            }
+            return packages;
         }
 
     }

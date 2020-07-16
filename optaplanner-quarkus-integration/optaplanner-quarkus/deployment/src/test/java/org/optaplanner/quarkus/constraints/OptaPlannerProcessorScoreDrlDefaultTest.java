@@ -29,8 +29,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.quarkus.domain.TestdataPlanningEntity;
-import org.optaplanner.quarkus.domain.TestdataPlanningSolution;
+import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusEntity;
+import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusSolution;
 
 import io.quarkus.test.QuarkusUnitTest;
 
@@ -39,14 +39,14 @@ public class OptaPlannerProcessorScoreDrlDefaultTest {
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
-                    .addClasses(TestdataPlanningEntity.class,
-                            TestdataPlanningSolution.class)
+                    .addClasses(TestdataQuarkusEntity.class,
+                            TestdataQuarkusSolution.class)
                     .addAsResource("org/optaplanner/quarkus/constraints/defaultConstraints.drl", "constraints.drl"));
 
     @Inject
     SolverConfig solverConfig;
     @Inject
-    SolverFactory<TestdataPlanningSolution> solverFactory;
+    SolverFactory<TestdataQuarkusSolution> solverFactory;
 
     @Test
     public void solverConfigXml_default() {

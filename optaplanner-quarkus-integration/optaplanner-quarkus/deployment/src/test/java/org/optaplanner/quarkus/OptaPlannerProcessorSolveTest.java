@@ -35,9 +35,9 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.impl.solver.DefaultSolverManager;
-import org.optaplanner.quarkus.constraints.TestdataPlanningConstraintProvider;
-import org.optaplanner.quarkus.domain.TestdataPlanningEntity;
-import org.optaplanner.quarkus.domain.TestdataPlanningSolution;
+import org.optaplanner.quarkus.testdata.normal.constraints.TestdataQuarkusConstraintProvider;
+import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusEntity;
+import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusSolution;
 
 import io.quarkus.test.QuarkusUnitTest;
 
@@ -47,15 +47,15 @@ public class OptaPlannerProcessorSolveTest {
     static final QuarkusUnitTest config = new QuarkusUnitTest()
             .overrideConfigKey("quarkus.optaplanner.solver.termination.best-score-limit", "0")
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
-                    .addClasses(TestdataPlanningEntity.class,
-                            TestdataPlanningSolution.class, TestdataPlanningConstraintProvider.class));
+                    .addClasses(TestdataQuarkusEntity.class,
+                            TestdataQuarkusSolution.class, TestdataQuarkusConstraintProvider.class));
 
     @Inject
-    SolverFactory<TestdataPlanningSolution> solverFactory;
+    SolverFactory<TestdataQuarkusSolution> solverFactory;
     @Inject
-    SolverManager<TestdataPlanningSolution, Long> solverManager;
+    SolverManager<TestdataQuarkusSolution, Long> solverManager;
     @Inject
-    ScoreManager<TestdataPlanningSolution> scoreManager;
+    ScoreManager<TestdataQuarkusSolution> scoreManager;
 
     @Test
     public void singletonSolverFactory() {
@@ -65,20 +65,20 @@ public class OptaPlannerProcessorSolveTest {
         // assertSame(solverFactory.getScoreDirectorFactory(), ((DefaultScoreManager<TestdataPlanningSolution>) scoreManager).getScoreDirectorFactory());
         assertNotNull(solverManager);
         // There is only one SolverFactory instance
-        assertSame(solverFactory, ((DefaultSolverManager<TestdataPlanningSolution, Long>) solverManager).getSolverFactory());
+        assertSame(solverFactory, ((DefaultSolverManager<TestdataQuarkusSolution, Long>) solverManager).getSolverFactory());
     }
 
     @Test
     public void solve() throws ExecutionException, InterruptedException {
-        TestdataPlanningSolution problem = new TestdataPlanningSolution();
+        TestdataQuarkusSolution problem = new TestdataQuarkusSolution();
         problem.setValueList(IntStream.range(1, 3)
                 .mapToObj(i -> "v" + i)
                 .collect(Collectors.toList()));
         problem.setEntityList(IntStream.range(1, 3)
-                .mapToObj(i -> new TestdataPlanningEntity())
+                .mapToObj(i -> new TestdataQuarkusEntity())
                 .collect(Collectors.toList()));
-        SolverJob<TestdataPlanningSolution, Long> solverJob = solverManager.solve(1L, problem);
-        TestdataPlanningSolution solution = solverJob.getFinalBestSolution();
+        SolverJob<TestdataQuarkusSolution, Long> solverJob = solverManager.solve(1L, problem);
+        TestdataQuarkusSolution solution = solverJob.getFinalBestSolution();
         assertNotNull(solution);
         assertTrue(solution.getScore().getScore() >= 0);
     }

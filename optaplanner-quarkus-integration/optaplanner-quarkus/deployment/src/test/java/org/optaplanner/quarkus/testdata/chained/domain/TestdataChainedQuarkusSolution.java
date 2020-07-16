@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.quarkus.domain;
+package org.optaplanner.quarkus.testdata.chained.domain;
 
 import java.util.List;
 
@@ -26,33 +26,38 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
 @PlanningSolution
-public class TestdataPlanningSolution {
+public class TestdataChainedQuarkusSolution {
 
-    private List<String> valueList;
-    private List<TestdataPlanningEntity> entityList;
-
-    private SimpleScore score;
-
-    @ValueRangeProvider(id = "valueRange")
     @ProblemFactCollectionProperty
-    public List<String> getValueList() {
-        return valueList;
-    }
-
-    public void setValueList(List<String> valueList) {
-        this.valueList = valueList;
-    }
-
+    @ValueRangeProvider(id = "chainedAnchorRange")
+    private List<TestdataChainedQuarkusAnchor> chainedAnchorList;
     @PlanningEntityCollectionProperty
-    public List<TestdataPlanningEntity> getEntityList() {
-        return entityList;
-    }
-
-    public void setEntityList(List<TestdataPlanningEntity> entityList) {
-        this.entityList = entityList;
-    }
+    @ValueRangeProvider(id = "chainedEntityRange")
+    private List<TestdataChainedQuarkusEntity> chainedEntityList;
 
     @PlanningScore
+    private SimpleScore score;
+
+    // ************************************************************************
+    // Getters/setters
+    // ************************************************************************
+
+    public List<TestdataChainedQuarkusAnchor> getChainedAnchorList() {
+        return chainedAnchorList;
+    }
+
+    public void setChainedAnchorList(List<TestdataChainedQuarkusAnchor> chainedAnchorList) {
+        this.chainedAnchorList = chainedAnchorList;
+    }
+
+    public List<TestdataChainedQuarkusEntity> getChainedEntityList() {
+        return chainedEntityList;
+    }
+
+    public void setChainedEntityList(List<TestdataChainedQuarkusEntity> chainedEntityList) {
+        this.chainedEntityList = chainedEntityList;
+    }
+
     public SimpleScore getScore() {
         return score;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package org.optaplanner.spring.boot.autoconfigure.testdata;
+package org.optaplanner.quarkus.testdata.normal.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
 @PlanningEntity
-public class TestdataSpringEntity {
+public class TestdataQuarkusEntity {
 
-    @PlanningVariable(valueRangeProviderRefs = "valueRange")
     private String value;
 
-    // ************************************************************************
-    // Getters/setters
-    // ************************************************************************
-
+    @PlanningVariable(valueRangeProviderRefs = "valueRange")
     public String getValue() {
         return value;
     }

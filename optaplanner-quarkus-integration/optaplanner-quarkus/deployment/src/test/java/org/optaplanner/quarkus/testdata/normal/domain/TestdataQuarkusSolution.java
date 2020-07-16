@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,31 +14,27 @@
  * limitations under the License.
  */
 
-package org.optaplanner.spring.boot.autoconfigure.testdata;
+package org.optaplanner.quarkus.testdata.normal.domain;
 
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
 @PlanningSolution
-public class TestdataSpringSolution {
+public class TestdataQuarkusSolution {
 
-    @ValueRangeProvider(id = "valueRange")
     private List<String> valueList;
-    @PlanningEntityCollectionProperty
-    private List<TestdataSpringEntity> entityList;
+    private List<TestdataQuarkusEntity> entityList;
 
-    @PlanningScore
     private SimpleScore score;
 
-    // ************************************************************************
-    // Getters/setters
-    // ************************************************************************
-
+    @ValueRangeProvider(id = "valueRange")
+    @ProblemFactCollectionProperty
     public List<String> getValueList() {
         return valueList;
     }
@@ -47,14 +43,16 @@ public class TestdataSpringSolution {
         this.valueList = valueList;
     }
 
-    public List<TestdataSpringEntity> getEntityList() {
+    @PlanningEntityCollectionProperty
+    public List<TestdataQuarkusEntity> getEntityList() {
         return entityList;
     }
 
-    public void setEntityList(List<TestdataSpringEntity> entityList) {
+    public void setEntityList(List<TestdataQuarkusEntity> entityList) {
         this.entityList = entityList;
     }
 
+    @PlanningScore
     public SimpleScore getScore() {
         return score;
     }
@@ -62,4 +60,5 @@ public class TestdataSpringSolution {
     public void setScore(SimpleScore score) {
         this.score = score;
     }
+
 }

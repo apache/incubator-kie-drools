@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,27 @@
  * limitations under the License.
  */
 
-package org.optaplanner.quarkus.constraints;
+package org.optaplanner.quarkus.testdata.chained.constraints;
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.Joiners;
-import org.optaplanner.quarkus.domain.TestdataPlanningEntity;
+import org.optaplanner.quarkus.testdata.chained.domain.TestdataChainedQuarkusAnchor;
+import org.optaplanner.quarkus.testdata.chained.domain.TestdataChainedQuarkusEntity;
+import org.optaplanner.quarkus.testdata.chained.domain.TestdataChainedQuarkusObject;
 
-public class TestdataPlanningConstraintProvider implements ConstraintProvider {
+public class TestdataChainedQuarkusConstraintProvider implements ConstraintProvider {
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory factory) {
         return new Constraint[] {
-                factory.from(TestdataPlanningEntity.class)
-                        .join(TestdataPlanningEntity.class, Joiners.equal(TestdataPlanningEntity::getValue))
-                        .filter((a, b) -> a != b)
-                        .penalize("Don't assign 2 entities the same value.", SimpleScore.ONE)
+                factory.from(TestdataChainedQuarkusAnchor.class)
+                        .ifNotExists(TestdataChainedQuarkusEntity.class,
+                                Joiners.equal((anchor) -> (TestdataChainedQuarkusObject) anchor,
+                                        TestdataChainedQuarkusEntity::getPrevious))
+                        .penalize("Assign at least one entity to each anchor.", SimpleScore.ONE)
         };
     }
 
