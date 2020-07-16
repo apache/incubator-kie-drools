@@ -59,7 +59,6 @@ public class KieFEELExtendedFunctionsTest extends BaseFEELTest {
                 { "includes( [date(\"2018-08-15\")..date(\"2018-08-31\")], date(\"2018-08-25\") )", Boolean.TRUE, null },
                 { "includes( [date(\"2018-08-15\")..date(\"2018-08-31\")], [date(\"2018-08-20\")..date(\"2018-08-22\")] )", Boolean.TRUE, null },
                 { "overlaps( [date(\"2018-08-15\")..date(\"2018-08-28\")], [date(\"2018-08-20\")..date(\"2018-08-31\")] )", Boolean.TRUE, null },
-                { "overlapped by( [date(\"2018-08-20\")..date(\"2018-08-31\")], [date(\"2018-08-15\")..date(\"2018-08-22\")] )", Boolean.TRUE, null },
                 { "time(10, 20, 30)", LocalTime.of(10, 20, 30), null },
                 { "date( 2020, 2, 31 )", null, FEELEvent.Severity.ERROR},
                 { "date( \"2020-02-31\" )", null, FEELEvent.Severity.ERROR},

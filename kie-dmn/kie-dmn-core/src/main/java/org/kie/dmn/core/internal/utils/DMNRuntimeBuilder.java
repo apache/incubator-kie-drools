@@ -63,6 +63,7 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageNa
  */
 public class DMNRuntimeBuilder {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DMNRuntimeBuilder.class);
     private final DMNRuntimeBuilderCtx ctx;
 
     private DMNRuntimeBuilder() {
@@ -218,7 +219,7 @@ public class DMNRuntimeBuilder {
                     return Either.ofLeft(new IllegalStateException("Unable to compile DMN model for the resource " + dmnRes.getResAndConfig().getResource()));
                 }
             }
-            return Either.ofRight(new DMNRuntimeImpl(new DMNRuntimeKBStatic(dmnModels, ctx.dmnProfiles, ctx.pmmlRuntimes)));
+            return Either.ofRight(new DMNRuntimeImpl(new DMNRuntimeKBStatic(ctx.cc.getRootClassLoader(), dmnModels, ctx.dmnProfiles, ctx.pmmlRuntimes)));
         }
 
         private DMNMarshaller getMarshaller() {
@@ -233,11 +234,14 @@ public class DMNRuntimeBuilder {
 
     private static class DMNRuntimeKBStatic implements DMNRuntimeKB {
 
+        private final ClassLoader rootClassLoader;
         private final List<DMNProfile> dmnProfiles;
         private final List<DMNModel> models;
         private final Map<String, PMMLRuntime> pmmlRuntimes;
 
-        private DMNRuntimeKBStatic(Collection<DMNModel> models, Collection<DMNProfile> dmnProfiles, Map<String, PMMLRuntime> pmmlRuntimes) {
+        private DMNRuntimeKBStatic(ClassLoader rootClassLoader, Collection<DMNModel> models, Collection<DMNProfile> dmnProfiles, Map<String, PMMLRuntime> pmmlRuntimes) {
+            this.rootClassLoader = rootClassLoader;
+            LOG.trace("DMNRuntimeKBStatic rootClassLoader is set to {}", rootClassLoader);
             this.models = Collections.unmodifiableList(new ArrayList<>(models));
             this.dmnProfiles = Collections.unmodifiableList(new ArrayList<>(dmnProfiles));
             this.pmmlRuntimes = pmmlRuntimes;
@@ -270,7 +274,7 @@ public class DMNRuntimeBuilder {
 
         @Override
         public ClassLoader getRootClassLoader() {
-            return null;
+            return rootClassLoader;
         }
 
         @Override

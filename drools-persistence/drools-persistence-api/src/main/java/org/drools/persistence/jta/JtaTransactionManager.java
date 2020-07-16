@@ -248,9 +248,10 @@ public class JtaTransactionManager
                 logger.warn( "Unable to commit transaction", e);
                 throw new RuntimeException( "Unable to commit transaction",
                                             e );
+            } finally {
+                transactionResources.get().clear();
             }
         }
-        transactionResources.get().clear();
     }
     
     public void rollback(boolean transactionOwner) {

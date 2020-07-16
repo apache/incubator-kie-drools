@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,7 @@ import com.github.javaparser.ast.expr.ArrayInitializerExpr;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.CharLiteralExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -99,6 +101,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExp
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.nameExprToMethodCallExpr;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.replaceAllHalfBinaryChildren;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.safeResolveType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.transformDrlNameExprToNameExpr;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.trasformHalfBinaryToBinary;
@@ -274,6 +277,7 @@ public class ExpressionTyper {
 
         } else if (drlxExpr instanceof InstanceOfExpr) {
             InstanceOfExpr instanceOfExpr = (InstanceOfExpr)drlxExpr;
+            ruleContext.addInlineCastType(printConstraint(instanceOfExpr.getExpression()), instanceOfExpr.getType());
             return toTypedExpressionRec(instanceOfExpr.getExpression())
                     .map( e -> new TypedExpression(new InstanceOfExpr(e.getExpression(), instanceOfExpr.getType()), boolean.class) );
 
@@ -686,14 +690,22 @@ public class ExpressionTyper {
     private TypedExpressionCursor parseMethodCallExpr(MethodCallExpr methodCallExpr, java.lang.reflect.Type originalTypeCursor) {
         Class<?> rawClassCursor = toRawClass(originalTypeCursor);
         String methodName = methodCallExpr.getNameAsString();
-        Method m = rawClassCursor != null ? ClassUtil.findMethod(rawClassCursor, methodName, parseNodeArguments(methodCallExpr)) : null;
+        Class[] argsType = parseNodeArguments(methodCallExpr);
+
+        Optional<TypedExpressionCursor> startsWithMvel = checkStartsWithMVEL(methodCallExpr, originalTypeCursor, argsType);
+        if(startsWithMvel.isPresent()) {
+            return startsWithMvel.get();
+        }
+
+        Method m = rawClassCursor != null ? ClassUtil.findMethod(rawClassCursor, methodName, argsType) : null;
         if (m == null) {
             Optional<Class<?>> functionType = ruleContext.getFunctionType(methodName);
             if (functionType.isPresent()) {
                 methodCallExpr.setScope(null);
                 return new TypedExpressionCursor(methodCallExpr, functionType.get());
             }
-            ruleContext.addCompilationError(new InvalidExpressionErrorResult("Method " + methodName + " on " + originalTypeCursor + " is missing"));
+            ruleContext.addCompilationError(new InvalidExpressionErrorResult(
+                    String.format("Method %s on %s with arguments %s is missing", methodName, originalTypeCursor, Arrays.toString(argsType))));
             return new TypedExpressionCursor(methodCallExpr, Object.class);
         }
 
@@ -710,6 +722,20 @@ public class ExpressionTyper {
             }
         } else {
             return new TypedExpressionCursor(methodCallExpr, genericReturnType);
+        }
+    }
+
+    // MVEL allows startsWith with a single char instead of a String
+    private Optional<TypedExpressionCursor> checkStartsWithMVEL(MethodCallExpr methodCallExpr, java.lang.reflect.Type originalTypeCursor, Class<?>[] argsType) {
+        if (("startsWith".equals(methodCallExpr.getNameAsString()) || "endsWith".equals(methodCallExpr.getNameAsString()))
+                && originalTypeCursor.equals(java.lang.String.class)
+                && Arrays.equals(argsType, new Class[]{char.class})) {
+
+            MethodCallExpr methodCallExprWithString = methodCallExpr.clone();
+            methodCallExprWithString.findAll(CharLiteralExpr.class).forEach(c ->  c.replace(new StringLiteralExpr(c.getValue())));
+            return Optional.of(new TypedExpressionCursor(methodCallExprWithString, boolean.class));
+        } else {
+            return Optional.empty();
         }
     }
 
@@ -863,10 +889,28 @@ public class ExpressionTyper {
                     context.addReactOnProperties( firstName );
                 }
 
-                java.lang.reflect.Type typeOfFirstAccessor = isInLineCast ? typeCursor : firstAccessor.getGenericReturnType();
+                Optional<java.lang.reflect.Type> castType = ruleContext.explicitCastType(firstName)
+                        .flatMap(t -> safeResolveType(ruleContext.getTypeResolver(), t.asString()));
+
+                java.lang.reflect.Type typeOfFirstAccessor;
+
                 NameExpr thisAccessor = new NameExpr( THIS_PLACEHOLDER );
                 NameExpr scope = backReference.map( d -> new NameExpr( d.getBindingId() ) ).orElse( thisAccessor );
-                return of( new TypedExpressionCursor( new MethodCallExpr( scope, firstAccessor.getName() ), typeOfFirstAccessor ) );
+
+                Expression fieldAccessor;
+                if(castType.isPresent()) {
+                    typeOfFirstAccessor = castType.get();
+                    ClassOrInterfaceType typeWithoutDollar = toClassOrInterfaceType(typeOfFirstAccessor.getTypeName());
+                    fieldAccessor = addCastToExpression(typeWithoutDollar, new MethodCallExpr(scope, firstAccessor.getName()), false);
+                } else if (isInLineCast) {
+                    typeOfFirstAccessor = typeCursor;
+                    fieldAccessor = new MethodCallExpr(scope, firstAccessor.getName());
+                } else {
+                    typeOfFirstAccessor = firstAccessor.getGenericReturnType();
+                    fieldAccessor = new MethodCallExpr(scope, firstAccessor.getName());
+                }
+
+                return of(new TypedExpressionCursor(fieldAccessor, typeOfFirstAccessor ) );
             }
 
             Field field = DrlxParseUtil.getField( classCursor, firstName );

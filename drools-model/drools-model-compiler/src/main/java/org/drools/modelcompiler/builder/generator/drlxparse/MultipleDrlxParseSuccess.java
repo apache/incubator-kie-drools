@@ -17,6 +17,7 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -45,6 +46,11 @@ public class MultipleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     @Override
     public boolean isTemporal() {
         return Stream.of(results).anyMatch( DrlxParseSuccess::isTemporal );
+    }
+
+    @Override
+    public Optional<Expression> getImplicitCastExpression() {
+        return Optional.empty();
     }
 
     @Override

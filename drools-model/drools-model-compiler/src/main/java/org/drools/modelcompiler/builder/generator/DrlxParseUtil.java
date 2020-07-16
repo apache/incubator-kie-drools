@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -70,8 +69,6 @@ import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
-import com.github.javaparser.ast.nodeTypes.NodeWithScope;
-import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.ast.nodeTypes.NodeWithTraversableScope;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
@@ -93,13 +90,11 @@ import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.DrlxExpression;
 import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
-import org.drools.mvel.parser.ast.expr.InlineCastExpr;
 import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
-import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
 
-import static java.util.Optional.empty;
 import static com.github.javaparser.StaticJavaParser.parseType;
+import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
@@ -569,7 +564,8 @@ public class DrlxParseUtil {
     }
 
     public static ClassOrInterfaceType toClassOrInterfaceType( String className ) {
-        return StaticJavaParser.parseClassOrInterfaceType(className);
+        String withoutDollars = className.replace("$", "."); // nested class in Java cannot be used in casts
+        return StaticJavaParser.parseClassOrInterfaceType(withoutDollars);
     }
 
     public static Optional<String> findBindingIdFromDotExpression(String expression) {
@@ -787,6 +783,22 @@ public class DrlxParseUtil {
             return e.asCastExpr().getExpression();
         } else {
             return e;
+        }
+    }
+
+    public static Collection<String> collectUsedDeclarationsInExpression(Expression expr) {
+        return expr.findAll(NameExpr.class)
+                   .stream()
+                   .map(NameExpr::getName)
+                   .map(SimpleName::getIdentifier)
+                   .collect(toList());
+    }
+
+    public static Optional<java.lang.reflect.Type> safeResolveType(TypeResolver typeResolver, String typeName) {
+        try {
+            return Optional.of(typeResolver.resolveType(typeName));
+        } catch (ClassNotFoundException e) {
+            return Optional.empty();
         }
     }
 

@@ -259,9 +259,13 @@ public class ConstraintParser {
     }
 
     private DrlxParseResult parseFieldAccessExpr( FieldAccessExpr fieldCallExpr, Class<?> patternType, String bindingId ) {
-        TypedExpression converted = new ToMethodCall(context).toMethodCallWithClassCheck(fieldCallExpr, bindingId, patternType);
+        ToMethodCall toMethodCall = new ToMethodCall(context);
+        TypedExpression converted = toMethodCall.toMethodCallWithClassCheck(fieldCallExpr, bindingId, patternType);
         Expression withThis = DrlxParseUtil.prepend(new NameExpr(THIS_PLACEHOLDER), converted.getExpression());
-        return new SingleDrlxParseSuccess(patternType, bindingId, withThis, converted.getType()).setLeft(converted );
+
+        return new SingleDrlxParseSuccess(patternType, bindingId, withThis, converted.getType())
+                .setLeft(converted)
+                .setImplicitCastExpression(toMethodCall.getImplicitCastExpression());
     }
 
     private DrlxParseResult parsePointFreeExpr(PointFreeExpr pointFreeExpr, Class<?> patternType, String bindingId, boolean isPositional) {
