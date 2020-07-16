@@ -78,6 +78,7 @@ public class ScenarioResultMetadata {
      * @param messageIndex
      * @param decisionOrRuleName
      * @param result
+     * @param message
      */
     public void addAuditMessage(int messageIndex, String decisionOrRuleName, String result, String message) {
         auditLogLines.add(new AuditLogLine(scenarioWithIndex.getIndex(), scenarioWithIndex.getScesimData().getDescription(), messageIndex, decisionOrRuleName, result, message));

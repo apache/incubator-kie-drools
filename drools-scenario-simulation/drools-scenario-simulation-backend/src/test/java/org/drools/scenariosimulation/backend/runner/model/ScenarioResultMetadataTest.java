@@ -7,6 +7,7 @@ import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.dmn.api.core.DMNDecisionResult;
 
 import static org.drools.scenariosimulation.backend.TestUtils.commonCheckAuditLogLine;
 import static org.junit.Assert.assertEquals;
@@ -32,7 +33,7 @@ public class ScenarioResultMetadataTest {
         assertTrue(scenarioResultMetadata.getAuditLogLines().isEmpty());
         int index = 1;
         String decisionName = "decisionName";
-        String result = "SUCCEEDED";
+        String result = DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED.toString();
         scenarioResultMetadata.addAuditMessage(index, decisionName, result);
         final List<AuditLogLine> retrieved = scenarioResultMetadata.getAuditLogLines();
         assertEquals(1, retrieved.size());
@@ -44,7 +45,7 @@ public class ScenarioResultMetadataTest {
         assertTrue(scenarioResultMetadata.getAuditLogLines().isEmpty());
         int index = 1;
         String decisionName = "decisionName";
-        String result = "SUCCEEDED";
+        String result =  DMNDecisionResult.DecisionEvaluationStatus.FAILED.toString();
         String message = "Message";
         scenarioResultMetadata.addAuditMessage(index, decisionName, result, message);
         final List<AuditLogLine> retrieved = scenarioResultMetadata.getAuditLogLines();
