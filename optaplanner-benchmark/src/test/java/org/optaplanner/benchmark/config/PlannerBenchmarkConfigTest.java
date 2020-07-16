@@ -35,6 +35,8 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.io.jaxb.JaxbIO;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class PlannerBenchmarkConfigTest {
 
@@ -183,5 +185,12 @@ public class PlannerBenchmarkConfigTest {
                 PlannerBenchmarkConfigTest.class.getResourceAsStream(TEST_PLANNER_BENCHMARK_CONFIG), StandardCharsets.UTF_8);
 
         assertThat(jaxbString.trim()).isEqualToNormalizingNewlines(originalXml.trim());
+    }
+
+    // Used by the testBenchmarkConfig.xml
+    private static class TestdataSolutionFileIO extends XStreamSolutionFileIO<TestdataSolution> {
+        private TestdataSolutionFileIO() {
+            super(TestdataSolution.class);
+        }
     }
 }

@@ -44,7 +44,7 @@
       </localSearch>
     </solver>
     <problemBenchmarks>
-      <xStreamAnnotatedClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</xStreamAnnotatedClass>
+      <solutionFileIOClass>org.optaplanner.benchmark.config.PlannerBenchmarkConfigTest$TestdataSolutionFileIO</solutionFileIOClass>
       <writeOutputSolutionEnabled>true</writeOutputSolutionEnabled>
       <inputSolutionFile>nonExistingDataset1.xml</inputSolutionFile>
       <inputSolutionFile>nonExistingDataset2.xml</inputSolutionFile>
@@ -73,7 +73,7 @@
       </localSearch>
     </solver>
     <problemBenchmarks>
-      <xStreamAnnotatedClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</xStreamAnnotatedClass>
+      <solutionFileIOClass>org.optaplanner.benchmark.config.PlannerBenchmarkConfigTest$TestdataSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>nonExistingDataset4.xml</inputSolutionFile>
     </problemBenchmarks>
     <subSingleCount>2</subSingleCount>

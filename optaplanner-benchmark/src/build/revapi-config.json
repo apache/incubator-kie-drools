@@ -311,6 +311,24 @@
           "classSimpleName": "SingleStatisticType",
           "elementKind": "enum",
           "justification": "PlannerBenchmarkConfig is serializable via JAXB."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method java.util.List<java.lang.Class> org.optaplanner.benchmark.config.ProblemBenchmarksConfig::getXStreamAnnotatedClassList()",
+          "package": "org.optaplanner.benchmark.config",
+          "classSimpleName": "ProblemBenchmarksConfig",
+          "methodName": "getXStreamAnnotatedClassList",
+          "elementKind": "method",
+          "justification": "Input dataset deserialization via xStreamAnnotatedClassList is no longer supported."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method void org.optaplanner.benchmark.config.ProblemBenchmarksConfig::setXStreamAnnotatedClassList(java.util.List<java.lang.Class>)",
+          "package": "org.optaplanner.benchmark.config",
+          "classSimpleName": "ProblemBenchmarksConfig",
+          "methodName": "setXStreamAnnotatedClassList",
+          "elementKind": "method",
+          "justification": "Input dataset deserialization via xStreamAnnotatedClassList is no longer supported."
         }
       ]
     }

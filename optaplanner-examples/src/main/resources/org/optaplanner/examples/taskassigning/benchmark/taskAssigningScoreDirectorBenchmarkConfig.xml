@@ -5,7 +5,7 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xStreamAnnotatedClass>org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution</xStreamAnnotatedClass>
+      <solutionFileIOClass>org.optaplanner.examples.taskassigning.persistence.TaskAssigningSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>data/taskassigning/unsolved/24tasks-8employees.xml</inputSolutionFile>
       <inputSolutionFile>data/taskassigning/unsolved/50tasks-5employees.xml</inputSolutionFile>
       <inputSolutionFile>data/taskassigning/unsolved/100tasks-5employees.xml</inputSolutionFile>
@@ -19,8 +19,8 @@
       <termination>
         <minutesSpentLimit>5</minutesSpentLimit>
       </termination>
-      <constructionHeuristic />
-      <localSearch />
+      <constructionHeuristic/>
+      <localSearch/>
     </solver>
   </inheritedSolverBenchmark>
 

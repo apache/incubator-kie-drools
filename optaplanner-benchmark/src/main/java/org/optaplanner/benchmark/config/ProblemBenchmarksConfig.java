@@ -40,7 +40,6 @@ import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -50,10 +49,6 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
 
     private Class<SolutionFileIO> solutionFileIOClass = null;
 
-    // TODO: we can switch all examples to JAXB too, but we should not bind Benchmark to any specific serialization technology used in examples
-    @XmlElement(name = "xStreamAnnotatedClass")
-    @XStreamImplicit(itemFieldName = "xStreamAnnotatedClass")
-    private List<Class> xStreamAnnotatedClassList = null;
     private Boolean writeOutputSolutionEnabled = null;
 
     @XmlElement(name = "inputSolutionFile")
@@ -80,14 +75,6 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
 
     public void setSolutionFileIOClass(Class<SolutionFileIO> solutionFileIOClass) {
         this.solutionFileIOClass = solutionFileIOClass;
-    }
-
-    public List<Class> getXStreamAnnotatedClassList() {
-        return xStreamAnnotatedClassList;
-    }
-
-    public void setXStreamAnnotatedClassList(List<Class> xStreamAnnotatedClassList) {
-        this.xStreamAnnotatedClassList = xStreamAnnotatedClassList;
     }
 
     public Boolean getWriteOutputSolutionEnabled() {
@@ -179,9 +166,8 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
             extraProblemIndex++;
         }
         if (ConfigUtils.isEmptyCollection(inputSolutionFileList)) {
-            if (solutionFileIOClass != null || xStreamAnnotatedClassList != null) {
+            if (solutionFileIOClass != null) {
                 throw new IllegalArgumentException("Cannot use solutionFileIOClass (" + solutionFileIOClass
-                        + ") or xStreamAnnotatedClassList (" + xStreamAnnotatedClassList
                         + ") with an empty inputSolutionFileList (" + inputSolutionFileList + ").");
             }
         } else {
@@ -198,21 +184,10 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
     }
 
     private <Solution_> SolutionFileIO<Solution_> buildSolutionFileIO() {
-        if (solutionFileIOClass != null && xStreamAnnotatedClassList != null) {
-            throw new IllegalArgumentException("The solutionFileIOClass (" + solutionFileIOClass
-                    + ") and xStreamAnnotatedClassList (" + xStreamAnnotatedClassList + ") can be used together.");
+        if (solutionFileIOClass == null) {
+            throw new IllegalArgumentException("The solutionFileIOClass (" + solutionFileIOClass + ") cannot be null.");
         }
-        if (solutionFileIOClass != null) {
-            return ConfigUtils.newInstance(this, "solutionFileIOClass", solutionFileIOClass);
-        } else {
-            Class[] xStreamAnnotatedClasses;
-            if (xStreamAnnotatedClassList != null) {
-                xStreamAnnotatedClasses = xStreamAnnotatedClassList.toArray(new Class[0]);
-            } else {
-                xStreamAnnotatedClasses = new Class[0];
-            }
-            return new XStreamSolutionFileIO<>(xStreamAnnotatedClasses);
-        }
+        return ConfigUtils.newInstance(this, "solutionFileIOClass", solutionFileIOClass);
     }
 
     private <Solution_> ProblemBenchmarkResult<Solution_> buildProblemBenchmark(
@@ -278,8 +253,6 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
     public ProblemBenchmarksConfig inherit(ProblemBenchmarksConfig inheritedConfig) {
         solutionFileIOClass = ConfigUtils.inheritOverwritableProperty(solutionFileIOClass,
                 inheritedConfig.getSolutionFileIOClass());
-        xStreamAnnotatedClassList = ConfigUtils.inheritMergeableListProperty(xStreamAnnotatedClassList,
-                inheritedConfig.getXStreamAnnotatedClassList());
         writeOutputSolutionEnabled = ConfigUtils.inheritOverwritableProperty(writeOutputSolutionEnabled,
                 inheritedConfig.getWriteOutputSolutionEnabled());
         inputSolutionFileList = ConfigUtils.inheritMergeableListProperty(inputSolutionFileList,
