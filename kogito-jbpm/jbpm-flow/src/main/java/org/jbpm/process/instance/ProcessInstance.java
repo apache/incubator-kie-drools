@@ -27,15 +27,16 @@ import org.kie.api.definition.process.Process;
  * A process instance is the representation of a process during its execution.
  * It contains all the runtime status information about the running process.
  * A process can have multiple instances.
- * 
  */
-public interface ProcessInstance extends org.kie.api.runtime.process.ProcessInstance, ContextInstanceContainer, ContextableInstance {
+public interface ProcessInstance extends org.kie.api.runtime.process.ProcessInstance,
+                                         ContextInstanceContainer,
+                                         ContextableInstance {
 
     void setId(String id);
 
-    void setProcess(Process process);
-
     Process getProcess();
+
+    void setProcess(Process process);
 
     void setState(int state);
 
@@ -44,10 +45,10 @@ public interface ProcessInstance extends org.kie.api.runtime.process.ProcessInst
     void setState(int state, String outcome, Object faultData);
 
     void setErrorState(NodeInstance nodeInstanceInError, Exception e);
-    
-    void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime);
 
     InternalKnowledgeRuntime getKnowledgeRuntime();
+
+    void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime);
 
     void start();
 
@@ -59,15 +60,17 @@ public interface ProcessInstance extends org.kie.api.runtime.process.ProcessInst
 
     void setRootProcessInstanceId(String parentId);
 
+    void setRootProcessId(String processId);
+
     Map<String, Object> getMetaData();
 
     void setMetaData(String name, Object data);
 
     Object getFaultData();
 
-    void setSignalCompletion(boolean signalCompletion);
-
     boolean isSignalCompletion();
+
+    void setSignalCompletion(boolean signalCompletion);
 
     String getDeploymentId();
 

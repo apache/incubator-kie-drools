@@ -36,13 +36,13 @@ import org.kie.api.runtime.rule.Agenda;
 
 /**
  * Default implementation of a process instance.
- * 
  */
-public abstract class ProcessInstanceImpl implements ProcessInstance, Serializable {
-	
-	private static final long serialVersionUID = 510l;
-	
-	private String id;
+public abstract class ProcessInstanceImpl implements ProcessInstance,
+                                                     Serializable {
+
+    private static final long serialVersionUID = 510l;
+
+    private String id;
     private String processId;
     private transient Process process;
     private String processXml;
@@ -57,123 +57,123 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     private String description;
     private String rootProcessId;
 
+    public String getId() {
+        return this.id;
+    }
 
     public void setId(final String id) {
         this.id = id;
     }
 
-    public String getId() {
-        return this.id;
+    public void updateProcess(final Process process) {
+        setProcess(process);
+        XmlProcessDumper dumper = XmlProcessDumperFactory.newXmlProcessDumperFactory();
+        this.processXml = dumper.dumpProcess(process);
     }
 
-    public void setProcess(final Process process) {
-        this.processId = process.getId();
-        this.process = ( Process ) process;
-    }
-    
-    public void updateProcess(final Process process) {
-    	setProcess(process);
-    	XmlProcessDumper dumper = XmlProcessDumperFactory.newXmlProcessDumperFactory();
-    	this.processXml = dumper.dumpProcess(process);
-    }
-    
     public String getProcessXml() {
-    	return processXml;
+        return processXml;
     }
-    
+
     public void setProcessXml(String processXml) {
-    	if (processXml != null && processXml.trim().length() > 0) {
-    		this.processXml = processXml;
-    	}
+        if (processXml != null && processXml.trim().length() > 0) {
+            this.processXml = processXml;
+        }
     }
 
     public Process getProcess() {
         if (this.process == null) {
-        	if (processXml == null) {
-        		if (kruntime == null) {
+            if (processXml == null) {
+                if (kruntime == null) {
                     throw new IllegalStateException("Process instance " + id + "[" + processId + "] is disconnected.");
-        		}
-        		this.process = kruntime.getKieBase().getProcess(processId);
-        	} else {
-    	    	XmlProcessDumper dumper = XmlProcessDumperFactory.newXmlProcessDumperFactory();
-        		this.process = dumper.readProcess(processXml);
-        	}
+                }
+                this.process = kruntime.getKieBase().getProcess(processId);
+            } else {
+                XmlProcessDumper dumper = XmlProcessDumperFactory.newXmlProcessDumperFactory();
+                this.process = dumper.readProcess(processXml);
+            }
         }
         return this.process;
     }
-    
-    public void setProcessId(String processId) {
-    	this.processId = processId;
+
+    public void setProcess(final Process process) {
+        this.processId = process.getId();
+        this.process = process;
     }
-    
+
     public String getProcessId() {
         return processId;
     }
-    
+
+    public void setProcessId(String processId) {
+        this.processId = processId;
+    }
+
     public String getProcessName() {
-    	return getProcess().getName();
+        return getProcess().getName();
+    }
+
+    public void setState(final int state, String outcome) {
+        this.outcome = outcome;
+        internalSetState(state);
+    }
+
+    public void internalSetState(final int state) {
+        this.state = state;
+    }
+
+    @Override
+    public int getState() {
+        return this.state;
     }
 
     public void setState(final int state) {
         internalSetState(state);
     }
-    
-    public void setState(final int state, String outcome) {
-        this.outcome = outcome;
-        internalSetState(state);
-    }
-    
-    public void internalSetState(final int state) {
-    	this.state = state;
-    }
-
-    public int getState() {
-        return this.state;
-    }
-    
-    public void setKnowledgeRuntime(final InternalKnowledgeRuntime kruntime) {
-        if ( this.kruntime != null ) {
-            throw new IllegalArgumentException( "Runtime can only be set once." );
-        }
-        this.kruntime = kruntime;
-    }
 
     public InternalKnowledgeRuntime getKnowledgeRuntime() {
         return this.kruntime;
     }
-    
-	public Agenda getAgenda() {
-		if (getKnowledgeRuntime() == null) {
-			return null;
-		}
-		return getKnowledgeRuntime().getAgenda();
-	}
+
+    public void setKnowledgeRuntime(final InternalKnowledgeRuntime kruntime) {
+        if (this.kruntime != null) {
+            throw new IllegalArgumentException("Runtime can only be set once.");
+        }
+        this.kruntime = kruntime;
+    }
+
+    public Agenda getAgenda() {
+        if (getKnowledgeRuntime() == null) {
+            return null;
+        }
+        return getKnowledgeRuntime().getAgenda();
+    }
 
     public ContextContainer getContextContainer() {
-        return ( ContextContainer ) getProcess();
+        return (ContextContainer) getProcess();
     }
-    
+
     public void setContextInstance(String contextId, ContextInstance contextInstance) {
         this.contextInstances.put(contextId, contextInstance);
     }
-    
+
     public ContextInstance getContextInstance(String contextId) {
         ContextInstance contextInstance = this.contextInstances.get(contextId);
         if (contextInstance != null) {
             return contextInstance;
         }
-        Context context = ((ContextContainer)getProcess()).getDefaultContext(contextId);
+        Context context = ((ContextContainer) getProcess()).getDefaultContext(contextId);
         if (context != null) {
             contextInstance = getContextInstance(context);
             return contextInstance;
         }
         return null;
     }
-    
+
     public List<ContextInstance> getContextInstances(String contextId) {
         return this.subContextInstances.get(contextId);
     }
-    
+
     public void addContextInstance(String contextId, ContextInstance contextInstance) {
         List<ContextInstance> list = this.subContextInstances.get(contextId);
         if (list == null) {
@@ -193,7 +193,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     public ContextInstance getContextInstance(String contextId, long id) {
         List<ContextInstance> contextInstances = subContextInstances.get(contextId);
         if (contextInstances != null) {
-            for (ContextInstance contextInstance: contextInstances) {
+            for (ContextInstance contextInstance : contextInstances) {
                 if (contextInstance.getContextId() == id) {
                     return contextInstance;
                 }
@@ -213,24 +213,26 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
         }
         return contextInstance;
     }
-    
+
     public void signalEvent(String type, Object event) {
     }
 
+    @Override
     public void start() {
-    	start(null);
+        start(null);
     }
-    
+
+    @Override
     public void start(String trigger) {
-    	synchronized (this) {
-            if ( getState() != ProcessInstanceImpl.STATE_PENDING ) {
-                throw new IllegalArgumentException( "A process instance can only be started once" );
+        synchronized (this) {
+            if (getState() != ProcessInstanceImpl.STATE_PENDING) {
+                throw new IllegalArgumentException("A process instance can only be started once");
             }
-            setState( ProcessInstanceImpl.STATE_ACTIVE );
+            setState(ProcessInstanceImpl.STATE_ACTIVE);
             internalStart(trigger);
-		}
+        }
     }
-    
+
     protected abstract void internalStart(String trigger);
 
     @Override
@@ -244,18 +246,19 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
         ((InternalProcessRuntime) kruntime.getProcessRuntime()).getProcessInstanceManager().internalAddProcessInstance(this);
     }
 
+    @Override
     public String[] getEventTypes() {
-    	return null;
+        return null;
     }
-    
+
     public String toString() {
-        final StringBuilder b = new StringBuilder( "ProcessInstance " );
-        b.append( getId() );
-        b.append( " [processId=" );
-        b.append( this.process.getId() );
-        b.append( ",state=" );
-        b.append( this.state );
-        b.append( "]" );
+        final StringBuilder b = new StringBuilder("ProcessInstance ");
+        b.append(getId());
+        b.append(" [processId=");
+        b.append(this.process.getId());
+        b.append(",state=");
+        b.append(this.state);
+        b.append("]");
         return b.toString();
     }
 
@@ -269,54 +272,61 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
         this.metaData.put(name, data);
     }
 
-    public void setOutcome(String outcome) {
-        this.outcome = outcome;
-    }
-
+    @Override
     public String getOutcome() {
         return outcome;
     }
 
+    public void setOutcome(String outcome) {
+        this.outcome = outcome;
+    }
+
+    @Override
     public String getParentProcessInstanceId() {
         return parentProcessInstanceId;
     }
 
+    @Override
     public void setParentProcessInstanceId(String parentProcessInstanceId) {
         this.parentProcessInstanceId = parentProcessInstanceId;
     }
-    
+
+    @Override
     public String getRootProcessInstanceId() {
         return rootProcessInstanceId;
     }
 
+    @Override
     public void setRootProcessInstanceId(String rootProcessInstanceId) {
         this.rootProcessInstanceId = rootProcessInstanceId;
-    }    
-    
+    }
+
+    @Override
     public String getRootProcessId() {
         return rootProcessId;
     }
-    
+
+    @Override
     public void setRootProcessId(String rootProcessId) {
         this.rootProcessId = rootProcessId;
     }
 
+    @Override
     public String getDescription() {
-		if (description == null) {
-			description = process.getName();			
-			if (process != null) {
-				Object metaData = process.getMetaData().get("customDescription");
-				if (metaData instanceof String) {
-				    description = ((WorkflowProcess)process).evaluateExpression((String) metaData, this);
-				}
-			}
-		}
-    	
-    	return description;
-    }
-    
-    public void setDescription(String description) {
-    	this.description = description;
+        if (description == null) {
+            description = process.getName();
+            if (process != null) {
+                Object metaData = process.getMetaData().get("customDescription");
+                if (metaData instanceof String) {
+                    description = ((WorkflowProcess) process).evaluateExpression((String) metaData, this);
+                }
+            }
+        }
+
+        return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
