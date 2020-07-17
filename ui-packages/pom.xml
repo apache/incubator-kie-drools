@@ -81,13 +81,13 @@
                 </configuration>
               </execution>
               <execution>
-                <id>yarn install</id>
+                <id>npm install lock-treatment-tool</id>
                 <goals>
-                  <goal>yarn</goal>
+                  <goal>npm</goal>
                 </goals>
                 <configuration>
                   <npmRegistryURL>${env.NPM_REGISTRY_URL}</npmRegistryURL>
-                  <arguments>install --fetch-retry-mintimeout=100000 --fetch-retries=10</arguments>
+                  <arguments>install lock-treatment-tool --global-style --no-package-lock --no-save</arguments>
                 </configuration>
               </execution>
             </executions>
@@ -107,13 +107,23 @@
             <artifactId>frontend-maven-plugin</artifactId>
             <executions>
               <execution>
-                <id>yarn init</id>
+                <id>lock-treatment-tool execution</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <npmRegistryURL>${env.NPM_REGISTRY_URL}</npmRegistryURL>
+                  <arguments>run locktt --</arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>yarn install</id>
                 <goals>
                   <goal>yarn</goal>
                 </goals>
                 <configuration>
                   <npmRegistryURL>${env.NPM_REGISTRY_URL}</npmRegistryURL>
-                  <arguments>run init</arguments>
+                  <arguments>install --fetch-retry-mintimeout=100000 --fetch-retries=10</arguments>
                 </configuration>
               </execution>
             </executions>

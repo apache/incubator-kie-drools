@@ -7,7 +7,6 @@ out/
 .idea
 **/.DS_Store
 *.log*
-**/yarn.lock
 **/stats.json
 **/junit.xml
 package-lock.json

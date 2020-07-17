@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.jsx",
+    "src/**/*.js",
+    "../../config/declare.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "preserveSymlinks": true
+}

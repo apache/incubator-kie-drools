@@ -1,0 +1,62 @@
+{
+  "name": "@kogito-apps/trusty",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "",
+  "license": "Apache-2.0",
+
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-apps.git"
+  },
+  "dependencies": {
+    "@kogito-apps/common": "1.0.0",
+    "@types/react": "16.9.0",
+    "node-sass": "4.14.1"
+  },
+  "scripts": {
+    "start": "webpack-dev-server --hot --color --progress --info=true --config webpack.dev.js",
+    "build:prod": "yarn run lint && webpack --config webpack.prod.js",
+    "lint": "tslint -c ./tslint.json --project . './src/**/*.ts{,x}'"
+  },
+  "devDependencies": {
+    "faker": "^4.1.0",
+    "json-server": "^0.16.1"
+  },
+  "jest": {
+    "preset": "ts-jest/presets/js-with-ts",
+    "setupFiles": [
+      "../../config/Jest-config/test-shim.js",
+      "../../config/Jest-config/test-setup.js"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "globals": {
+      "ts-jest": {
+        "isolatedModules": true
+      }
+    },
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest",
+      "\\.(jpg|jpeg|png|svg)$": "../../config/Jest-config/fileMocks.js"
+    },
+    "testMatch": [
+      "**/tests/*.(ts|tsx|js)"
+    ],
+    "moduleNameMapper": {
+      "\\.(scss|sass|css)$": "identity-obj-proxy"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "yarn run format",
+      "yarn run lint"
+    ]
+  }
+}
