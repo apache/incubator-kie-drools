@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.protobuf.ByteString;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.commons.jci.stores.ResourceStore;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
@@ -39,6 +39,7 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
+import org.kie.internal.builder.KnowledgeBuilder;
 
 public class KieMetaInfoBuilder {
 
@@ -63,22 +64,20 @@ public class KieMetaInfoBuilder {
         // TODO: I think this method is wrong because it is only inspecting packages that are included
         // in at least one kbase, but I believe it should inspect all packages, even if not included in
         // any kbase, as they could be included in the future
-        Map<String, TypeMetaInfo> typeInfos = new HashMap<String, TypeMetaInfo>();
-        Map<String, Set<String>> rulesPerPackage = new HashMap<String, Set<String>>();
+        Map<String, TypeMetaInfo> typeInfos = new HashMap<>();
+        Map<String, Set<String>> rulesPerPackage = new HashMap<>();
 
         KieModuleModel kieModuleModel = kModule.getKieModuleModel();
         for ( String kieBaseName : kieModuleModel.getKieBaseModels().keySet() ) {
-            KnowledgeBuilderImpl kBuilder = (KnowledgeBuilderImpl) kModule.getKnowledgeBuilderForKieBase( kieBaseName );
-            Map<String, PackageRegistry> pkgRegistryMap = kBuilder.getPackageRegistry();
-
+            KnowledgeBuilder kBuilder = kModule.getKnowledgeBuilderForKieBase( kieBaseName );
             KieModuleCache.KModuleCache.Builder _kmoduleCacheBuilder = createCacheBuilder();
             KieModuleCache.CompilationData.Builder _compData = createCompilationData();
 
             for ( KiePackage kPkg : kBuilder.getKnowledgePackages() ) {
-                PackageRegistry pkgRegistry = pkgRegistryMap.get( kPkg.getName() );
+                PackageRegistry pkgRegistry = (( InternalKnowledgeBuilder ) kBuilder).getPackageRegistry( kPkg.getName() );
                 JavaDialectRuntimeData runtimeData = (JavaDialectRuntimeData) pkgRegistry.getDialectRuntimeRegistry().getDialectData( "java" );
 
-                List<String> types = new ArrayList<String>();
+                List<String> types = new ArrayList<>();
                 for ( FactType factType : kPkg.getFactTypes() ) {
                     Class< ? > typeClass = ((ClassDefinition) factType).getDefinedClass();
                     TypeDeclaration typeDeclaration = pkgRegistry.getPackage().getTypeDeclaration( typeClass );
@@ -99,12 +98,10 @@ public class KieMetaInfoBuilder {
 
                 Set<String> rules = rulesPerPackage.get( kPkg.getName() );
                 if( rules == null ) {
-                    rules = new HashSet<String>();
+                    rules = new HashSet<>();
                 }
                 for ( Rule rule : kPkg.getRules() ) {
-                    if( !rules.contains( rule.getName() ) ) {
-                        rules.add(rule.getName());
-                    }
+                    rules.add(rule.getName());
                 }
                 if (!rules.isEmpty()) {
                     rulesPerPackage.put(kPkg.getName(), rules);

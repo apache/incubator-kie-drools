@@ -28,7 +28,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.management.ObjectName;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.kie.builder.MaterializedLambda;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
@@ -250,7 +250,7 @@ public class KieContainerImpl
 
         currentKM.updateKieModule(newKM);
 
-        List<String> kbasesToRemove = new ArrayList<String>();
+        List<String> kbasesToRemove = new ArrayList<>();
         for ( Entry<String, KieBase> kBaseEntry : kBases.entrySet() ) {
             String kbaseName = kBaseEntry.getKey();
             KieBaseModelImpl newKieBaseModel = (KieBaseModelImpl) kProject.getKieBaseModel( kbaseName );
@@ -287,7 +287,7 @@ public class KieContainerImpl
     }
 
     private Collection<String> getUnchangedResources( InternalKieModule newKM, KieJarChangeSet cs ) {
-        List<String> dslFiles = new ArrayList<String>();
+        List<String> dslFiles = new ArrayList<>();
         for (String file : newKM.getFileNames()) {
             if ( includeIfUnchanged( file ) && !cs.contains( file ) ) {
                 dslFiles.add(file);
@@ -335,7 +335,7 @@ public class KieContainerImpl
     }
 
     private List<String> getModifiedClasses(KieJarChangeSet cs) {
-        List<String> modifiedClasses = new ArrayList<String>();
+        List<String> modifiedClasses = new ArrayList<>();
         for ( ResourceChangeSet rcs : cs.getChanges().values() ) {
             if ( rcs.getChangeType() != ChangeType.REMOVED ) {
                 String resourceName = rcs.getResourceName();
@@ -428,13 +428,13 @@ public class KieContainerImpl
 
     public void generateCompiledAlphaNetwork(KieBaseModelImpl kBaseModel, InternalKieModule kModule, InternalKnowledgeBase kBase) {
         final String configurationProperty = kBaseModel.getKModule().getConfigurationProperty(ALPHA_NETWORK_COMPILER_OPTION);
-        final Boolean isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
+        final boolean isAlphaNetworkEnabled = Boolean.valueOf(configurationProperty);
         if (isAlphaNetworkEnabled) {
             KnowledgeBuilder kbuilder = kModule.getKnowledgeBuilderForKieBase(kBaseModel.getName());
             kBase.getRete().getEntryPointNodes().values().stream()
                     .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
                     .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
-                    .forEach(otn -> otn.setCompiledNetwork(ObjectTypeNodeCompiler.compile(((KnowledgeBuilderImpl) kbuilder), otn)));
+                    .forEach(otn -> otn.setCompiledNetwork(ObjectTypeNodeCompiler.compile((( InternalKnowledgeBuilder ) kbuilder), otn)));
         }
     }
 
@@ -483,7 +483,7 @@ public class KieContainerImpl
             StatefulKnowledgeSessionImpl kSession = stateless ?
                     kBase.internalCreateStatefulKnowledgeSession( env, sessConf, false ).setStateless( true ) :
                     (StatefulKnowledgeSessionImpl) kBase.newKieSession( sessConf, env );
-            registerNewKieSession( kSessionModel, ( InternalKnowledgeBase ) kBase, kSession );
+            registerNewKieSession( kSessionModel, kBase, kSession );
             return kSession;
         });
     }

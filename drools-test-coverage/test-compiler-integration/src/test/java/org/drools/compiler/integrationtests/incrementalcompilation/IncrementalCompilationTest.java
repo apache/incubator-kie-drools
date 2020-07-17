@@ -4570,4 +4570,30 @@ public class IncrementalCompilationTest {
             ks.newKieBuilder( kfs ).buildAll(DrlProject.class);
         }
     }
+
+    @Test
+    public void testIncrementalCompilationFromEmptyProject() {
+        // DROOLS-5547
+        final String drl1 =
+                "rule \"test1\" when then end\n";
+
+        final String drl2 =
+                "rule \"test2\" extends \"test1\" when then end\n" +
+                        "rule \"test3\" extends \"test1\" when then end\n";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        final KieFileSystem kfs = ks.newKieFileSystem();
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
+
+        assertEquals(0, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size());
+
+        kfs.write("src/main/resources/r1.drl", drl1);
+        final IncrementalResults addResults1 = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/r1.drl").build();
+        assertEquals(0, addResults1.getAddedMessages().size());
+
+        kfs.write("src/main/resources/r2.drl", drl2);
+        final IncrementalResults addResults2 = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/r2.drl").build();
+        assertEquals(0, addResults2.getAddedMessages().size());
+    }
 }
