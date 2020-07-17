@@ -110,7 +110,9 @@ import org.drools.compiler.rule.builder.RuleBuilder;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.dialect.DialectError;
 import org.drools.compiler.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
@@ -160,7 +162,6 @@ import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.ScoreCardConfiguration;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.io.ResourceWithConfigurationImpl;
-import org.drools.core.addon.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -386,7 +387,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
                                              ResourceConfiguration configuration) throws DroolsParserException, IOException {
         DecisionTableConfiguration dtableConfiguration = configuration instanceof DecisionTableConfiguration ?
                 (DecisionTableConfiguration) configuration :
-                null;
+                new DecisionTableConfigurationImpl();
 
         if (!dtableConfiguration.getRuleTemplateConfigurations().isEmpty()) {
             List<String> generatedDrls = DecisionTableFactory.loadFromInputStreamWithTemplates(resource, dtableConfiguration);
