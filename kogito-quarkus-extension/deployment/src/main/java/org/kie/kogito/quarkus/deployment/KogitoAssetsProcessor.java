@@ -184,7 +184,7 @@ public class KogitoAssetsProcessor {
         return new RuntimeInitializedClassBuildItem(ClassFieldAccessorFactory.class.getName());
     }
 
-    @BuildStep(loadsApplicationClasses = true)
+    @BuildStep
     public void generateModel(ArchiveRootBuildItem root,
                               BuildProducer<GeneratedBeanBuildItem> generatedBeans,
                               CombinedIndexBuildItem combinedIndexBuildItem,

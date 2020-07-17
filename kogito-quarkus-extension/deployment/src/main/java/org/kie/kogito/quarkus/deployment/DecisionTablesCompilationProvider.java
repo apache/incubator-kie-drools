@@ -14,11 +14,11 @@ import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 
 public class DecisionTablesCompilationProvider extends KogitoCompilationProvider {
 
-    private static final Set<String> MANAGED_EXTESIONS = Collections.unmodifiableSet( new HashSet<>( Arrays.asList( ".xls", ".xlsx", ".csv" ) ) );
+    private static final Set<String> MANAGED_EXTENSIONS = Collections.unmodifiableSet( new HashSet<>( Arrays.asList( ".xls", ".xlsx", ".csv" ) ) );
 
     @Override
     public Set<String> handledExtensions() {
-        return MANAGED_EXTESIONS;
+        return MANAGED_EXTENSIONS;
     }
 
     @Override
