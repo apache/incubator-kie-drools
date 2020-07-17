@@ -35,19 +35,14 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("subChainChangeMoveSelector")
 public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig<SubChainChangeMoveSelectorConfig> {
 
     public static final String XML_ELEMENT_NAME = "subChainChangeMoveSelector";
 
     private Class<?> entityClass = null;
     @XmlElement(name = "subChainSelector")
-    @XStreamAlias("subChainSelector")
     private SubChainSelectorConfig subChainSelectorConfig = null;
     @XmlElement(name = "valueSelector")
-    @XStreamAlias("valueSelector")
     private ValueSelectorConfig valueSelectorConfig = null;
 
     private Boolean selectReversingMoveToo = null;

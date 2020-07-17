@@ -35,7 +35,6 @@ import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.config.util.KeyAsElementMapConverter;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.io.jaxb.JaxbCustomPropertiesAdapter;
 import org.optaplanner.core.impl.partitionedsearch.DefaultPartitionedSearchPhase;
@@ -47,11 +46,6 @@ import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-
-@XStreamAlias("partitionedSearch")
 public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchPhaseConfig> {
 
     public static final String XML_ELEMENT_NAME = "partitionedSearch";
@@ -65,7 +59,6 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
 
     protected Class<? extends SolutionPartitioner<?>> solutionPartitionerClass = null;
     @XmlJavaTypeAdapter(JaxbCustomPropertiesAdapter.class)
-    @XStreamConverter(KeyAsElementMapConverter.class)
     protected Map<String, String> solutionPartitionerCustomProperties = null;
 
     protected String runnablePartThreadLimit = null;
@@ -79,7 +72,6 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
             @XmlElement(name = NoChangePhaseConfig.XML_ELEMENT_NAME, type = NoChangePhaseConfig.class),
             @XmlElement(name = PartitionedSearchPhaseConfig.XML_ELEMENT_NAME, type = PartitionedSearchPhaseConfig.class)
     })
-    @XStreamImplicit()
     protected List<PhaseConfig> phaseConfigList = null;
 
     // ************************************************************************

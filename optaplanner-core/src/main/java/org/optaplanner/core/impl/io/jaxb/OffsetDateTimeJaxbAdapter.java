@@ -24,6 +24,7 @@ import java.time.temporal.ChronoField;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
+// TODO: Move the code to the jaxb-ri
 public class OffsetDateTimeJaxbAdapter extends XmlAdapter<String, OffsetDateTime> {
     private final DateTimeFormatter formatter;
 

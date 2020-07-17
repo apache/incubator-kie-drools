@@ -33,9 +33,6 @@ import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.PhaseToSolverTerminationBridge;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamInclude;
-
 @XmlSeeAlso({
         ConstructionHeuristicPhaseConfig.class,
         CustomPhaseConfig.class,
@@ -44,21 +41,12 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
         NoChangePhaseConfig.class,
         PartitionedSearchPhaseConfig.class
 })
-@XStreamInclude({
-        CustomPhaseConfig.class,
-        NoChangePhaseConfig.class,
-        ExhaustiveSearchPhaseConfig.class,
-        ConstructionHeuristicPhaseConfig.class,
-        LocalSearchPhaseConfig.class,
-        PartitionedSearchPhaseConfig.class
-})
 public abstract class PhaseConfig<C extends PhaseConfig> extends AbstractConfig<C> {
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
 
     @XmlElement(name = "termination")
-    @XStreamAlias("termination")
     private TerminationConfig terminationConfig = null;
 
     // ************************************************************************

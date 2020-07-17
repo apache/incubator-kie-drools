@@ -60,20 +60,14 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-
 /**
  * Represents 1 problem instance (data set) benchmarked on multiple {@link Solver} configurations.
  */
-@XStreamAlias("problemBenchmarkResult")
 public class ProblemBenchmarkResult<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    @XmlTransient
-    @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
+    @XmlTransient // Bi-directional relationship restored through BenchmarkResultIO
     private PlannerBenchmarkResult plannerBenchmarkResult;
 
     private String name = null;
@@ -93,12 +87,10 @@ public class ProblemBenchmarkResult<Solution_> {
             @XmlElement(name = "moveCountPerStepProblemStatistic", type = MoveCountPerStepProblemStatistic.class),
             @XmlElement(name = "memoryUseProblemStatistic", type = MemoryUseProblemStatistic.class),
     })
-    @XStreamImplicit(itemFieldName = "problemStatistic")
     private List<ProblemStatistic> problemStatisticList = null;
 
     @XmlIDREF
     @XmlElement(name = "singleBenchmarkResult")
-    @XStreamImplicit(itemFieldName = "singleBenchmarkResult")
     private List<SingleBenchmarkResult> singleBenchmarkResultList = null;
 
     private Long entityCount = null;
@@ -107,8 +99,7 @@ public class ProblemBenchmarkResult<Solution_> {
     private Long problemScale = null;
     private Long inputSolutionLoadingTimeMillisSpent = null;
 
-    @XmlTransient
-    @XStreamOmitField // Loaded lazily from singleBenchmarkResults
+    @XmlTransient // Loaded lazily from singleBenchmarkResults
     private Integer maximumSubSingleCount = null;
 
     // ************************************************************************

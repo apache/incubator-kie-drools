@@ -62,9 +62,6 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("exhaustiveSearch")
 public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPhaseConfig> {
 
     public static final String XML_ELEMENT_NAME = "exhaustiveSearch";
@@ -78,7 +75,6 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
     protected ValueSorterManner valueSorterManner = null;
 
     @XmlElement(name = "entitySelector")
-    @XStreamAlias("entitySelector")
     protected EntitySelectorConfig entitySelectorConfig = null;
 
     @XmlElements({
@@ -100,7 +96,6 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
                     type = TailChainSwapMoveSelectorConfig.class),
             @XmlElement(name = UnionMoveSelectorConfig.XML_ELEMENT_NAME, type = UnionMoveSelectorConfig.class)
     })
-    @XStreamAlias("moveSelector")
     protected MoveSelectorConfig moveSelectorConfig = null;
 
     public ExhaustiveSearchType getExhaustiveSearchType() {

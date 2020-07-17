@@ -33,24 +33,15 @@ import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarSwapMoveSelector;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-
-@XStreamAlias("pillarSwapMoveSelector")
 public class PillarSwapMoveSelectorConfig extends AbstractPillarMoveSelectorConfig<PillarSwapMoveSelectorConfig> {
 
     public static final String XML_ELEMENT_NAME = "pillarSwapMoveSelector";
 
     @XmlElement(name = "secondaryPillarSelector")
-    @XStreamAlias("secondaryPillarSelector")
     private PillarSelectorConfig secondaryPillarSelectorConfig = null;
 
     @XmlElementWrapper(name = "variableNameIncludes")
     @XmlElement(name = "variableNameInclude")
-    @XStreamImplicit(itemFieldName = "variableNameInclude")
-    //    @XStreamAlias("variableNameIncludes")
-    //    @XStreamConverter(value = NamedCollectionConverter.class,
-    //            strings = {"variableNameInclude"}, types = {String.class}, useImplicitType = false)
     private List<String> variableNameIncludeList = null;
 
     public PillarSelectorConfig getSecondaryPillarSelectorConfig() {

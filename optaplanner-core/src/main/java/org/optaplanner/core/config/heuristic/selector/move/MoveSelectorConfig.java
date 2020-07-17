@@ -53,8 +53,6 @@ import org.optaplanner.core.impl.heuristic.selector.move.decorator.SelectedCount
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.ShufflingMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.SortingMoveSelector;
 
-import com.thoughtworks.xstream.annotations.XStreamInclude;
-
 /**
  * General superclass for {@link ChangeMoveSelectorConfig}, etc.
  */
@@ -66,14 +64,6 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
         TailChainSwapMoveSelectorConfig.class, KOptMoveSelectorConfig.class,
         SubChainChangeMoveSelectorConfig.class, SubChainSwapMoveSelectorConfig.class,
         MoveListFactoryConfig.class, MoveIteratorFactoryConfig.class })
-@XStreamInclude({
-        UnionMoveSelectorConfig.class, CartesianProductMoveSelectorConfig.class,
-        ChangeMoveSelectorConfig.class, SwapMoveSelectorConfig.class,
-        PillarChangeMoveSelectorConfig.class, PillarSwapMoveSelectorConfig.class,
-        TailChainSwapMoveSelectorConfig.class, KOptMoveSelectorConfig.class,
-        SubChainChangeMoveSelectorConfig.class, SubChainSwapMoveSelectorConfig.class,
-        MoveListFactoryConfig.class, MoveIteratorFactoryConfig.class
-})
 public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends SelectorConfig<C> {
 
     protected SelectionCacheType cacheType = null;

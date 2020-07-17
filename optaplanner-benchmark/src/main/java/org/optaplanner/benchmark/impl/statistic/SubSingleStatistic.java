@@ -44,26 +44,18 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.thoughtworks.xstream.annotations.XStreamInclude;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-
 /**
  * 1 statistic of {@link SubSingleBenchmarkResult}.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XStreamInclude({
-        PureSubSingleStatistic.class
-})
 public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends StatisticPoint> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    @XmlTransient
-    @XStreamOmitField // Bi-directional relationship restored through subSingleBenchmarkResultIO
+    @XmlTransient // Bi-directional relationship restored through BenchmarkResultIO
     protected SubSingleBenchmarkResult subSingleBenchmarkResult;
 
     @XmlTransient
-    @XStreamOmitField
     protected List<StatisticPoint_> pointList;
 
     protected SubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {

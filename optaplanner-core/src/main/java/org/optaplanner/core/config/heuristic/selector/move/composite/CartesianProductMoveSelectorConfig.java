@@ -42,10 +42,6 @@ import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.composite.CartesianProductMoveSelector;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-
-@XStreamAlias("cartesianProductMoveSelector")
 public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<CartesianProductMoveSelectorConfig> {
 
     public static final String XML_ELEMENT_NAME = "cartesianProductMoveSelector";
@@ -69,7 +65,6 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
                     type = TailChainSwapMoveSelectorConfig.class),
             @XmlElement(name = UnionMoveSelectorConfig.XML_ELEMENT_NAME, type = UnionMoveSelectorConfig.class)
     })
-    @XStreamImplicit()
     private List<MoveSelectorConfig> moveSelectorConfigList = null;
 
     private Boolean ignoreEmptyChildIterators = null;

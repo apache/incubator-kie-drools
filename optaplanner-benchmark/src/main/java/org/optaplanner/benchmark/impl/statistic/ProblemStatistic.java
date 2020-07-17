@@ -42,9 +42,6 @@ import org.optaplanner.benchmark.impl.statistic.stepscore.StepScoreProblemStatis
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.thoughtworks.xstream.annotations.XStreamInclude;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-
 /**
  * 1 statistic of {@link ProblemBenchmarkResult}.
  */
@@ -57,20 +54,11 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
         MoveCountPerStepProblemStatistic.class,
         MemoryUseProblemStatistic.class
 })
-@XStreamInclude({
-        BestScoreProblemStatistic.class,
-        StepScoreProblemStatistic.class,
-        ScoreCalculationSpeedProblemStatistic.class,
-        BestSolutionMutationProblemStatistic.class,
-        MoveCountPerStepProblemStatistic.class,
-        MemoryUseProblemStatistic.class
-})
 public abstract class ProblemStatistic {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    @XmlTransient
-    @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
+    @XmlTransient // Bi-directional relationship restored through BenchmarkResultIO
     protected ProblemBenchmarkResult<Object> problemBenchmarkResult;
 
     protected final ProblemStatisticType problemStatisticType;

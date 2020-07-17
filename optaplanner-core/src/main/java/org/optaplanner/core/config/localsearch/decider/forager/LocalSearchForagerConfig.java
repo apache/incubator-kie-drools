@@ -24,9 +24,6 @@ import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.localsearch.decider.forager.AcceptedLocalSearchForager;
 import org.optaplanner.core.impl.localsearch.decider.forager.LocalSearchForager;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("localSearchForagerConfig")
 public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerConfig> {
 
     protected LocalSearchPickEarlyType pickEarlyType = null;

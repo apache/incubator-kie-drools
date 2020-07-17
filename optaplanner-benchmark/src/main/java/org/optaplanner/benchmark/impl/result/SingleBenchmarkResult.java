@@ -40,14 +40,9 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.util.ConfigUtils;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-
 /**
  * Represents 1 benchmark for 1 {@link Solver} configuration for 1 problem instance (data set).
  */
-@XStreamAlias("singleBenchmarkResult")
 public class SingleBenchmarkResult implements BenchmarkResult {
 
     // Required by JAXB to refer to existing instances of this class
@@ -57,15 +52,12 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     @XmlAttribute
     private String id = String.valueOf(ID_GENERATOR.getAndIncrement());
 
-    @XmlTransient
-    @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
+    @XmlTransient // Bi-directional relationship restored through BenchmarkResultIO
     private SolverBenchmarkResult solverBenchmarkResult;
-    @XmlTransient
-    @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
+    @XmlTransient // Bi-directional relationship restored through BenchmarkResultIO
     private ProblemBenchmarkResult problemBenchmarkResult;
 
     @XmlElement(name = "subSingleBenchmarkResult")
-    @XStreamImplicit(itemFieldName = "subSingleBenchmarkResult")
     private List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = null;
 
     private Long usedMemoryAfterInputSolution = null;

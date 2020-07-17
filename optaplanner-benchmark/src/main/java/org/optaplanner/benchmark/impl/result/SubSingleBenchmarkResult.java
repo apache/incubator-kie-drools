@@ -40,21 +40,15 @@ import org.optaplanner.core.api.solver.Solver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-
 /**
  * Represents 1 benchmark run for 1 Single Benchmark configuration for 1 {@link Solver} configuration for 1 problem
  * instance (data set).
  */
-@XStreamAlias("subSingleBenchmarkResult")
 public class SubSingleBenchmarkResult implements BenchmarkResult {
 
     private static final Logger logger = LoggerFactory.getLogger(SubSingleBenchmarkResult.class);
 
-    @XmlTransient
-    @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
+    @XmlTransient // Bi-directional relationship restored through BenchmarkResultIO
     private SingleBenchmarkResult singleBenchmarkResult;
     private int subSingleBenchmarkIndex;
 
@@ -68,11 +62,9 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
             @XmlElement(name = "pickedMoveTypeStepScoreDiffSubSingleStatistic",
                     type = PickedMoveTypeStepScoreDiffSubSingleStatistic.class)
     })
-    @XStreamImplicit(itemFieldName = "pureSubSingleStatistic")
     private List<PureSubSingleStatistic> pureSubSingleStatisticList = null;
 
-    @XmlTransient
-    @XStreamOmitField // Lazily restored when read through ProblemStatistic and CSV files
+    @XmlTransient // Lazily restored when read through ProblemStatistic and CSV files
     private Map<StatisticType, SubSingleStatistic> effectiveSubSingleStatisticMap;
 
     private Long usedMemoryAfterInputSolution = null;

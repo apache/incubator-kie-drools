@@ -28,7 +28,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.config.util.KeyAsElementMapConverter;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.io.jaxb.JaxbCustomPropertiesAdapter;
 import org.optaplanner.core.impl.phase.custom.CustomPhase;
@@ -37,12 +36,6 @@ import org.optaplanner.core.impl.phase.custom.DefaultCustomPhase;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-
-@XStreamAlias("customPhase")
 public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
 
     public static final String XML_ELEMENT_NAME = "customPhase";
@@ -51,15 +44,12 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
     // and also because the input config file should match the output config file
 
     @XmlElement(name = "customPhaseCommandClass")
-    @XStreamImplicit(itemFieldName = "customPhaseCommandClass")
     protected List<Class<? extends CustomPhaseCommand>> customPhaseCommandClassList = null;
 
     @XmlJavaTypeAdapter(JaxbCustomPropertiesAdapter.class)
-    @XStreamConverter(KeyAsElementMapConverter.class)
     protected Map<String, String> customProperties = null;
 
     @XmlTransient
-    @XStreamOmitField
     protected List<CustomPhaseCommand<?>> customPhaseCommandList = null;
 
     // ************************************************************************

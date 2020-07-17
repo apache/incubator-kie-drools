@@ -34,15 +34,11 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarChangeMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("pillarChangeMoveSelector")
 public class PillarChangeMoveSelectorConfig extends AbstractPillarMoveSelectorConfig<PillarChangeMoveSelectorConfig> {
 
     public static final String XML_ELEMENT_NAME = "pillarChangeMoveSelector";
 
     @XmlElement(name = "valueSelector")
-    @XStreamAlias("valueSelector")
     private ValueSelectorConfig valueSelectorConfig = null;
 
     public ValueSelectorConfig getValueSelectorConfig() {

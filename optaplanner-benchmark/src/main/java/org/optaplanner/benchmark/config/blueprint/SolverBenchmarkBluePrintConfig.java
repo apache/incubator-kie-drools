@@ -20,9 +20,6 @@ import java.util.List;
 
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("solverBenchmarkBluePrint")
 public class SolverBenchmarkBluePrintConfig {
 
     protected SolverBenchmarkBluePrintType solverBenchmarkBluePrintType = null;

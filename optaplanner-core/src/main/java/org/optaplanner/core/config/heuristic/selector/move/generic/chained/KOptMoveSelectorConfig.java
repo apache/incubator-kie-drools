@@ -30,8 +30,6 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.KOptMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
 /**
  * THIS IS VERY EXPERIMENTAL. It's NOT DOCUMENTED because we'll only document it when it actually works in more than 1 use case.
  * It's riddled with TODOs.
@@ -39,7 +37,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  *
  * @see TailChainSwapMoveSelectorConfig
  */
-@XStreamAlias("kOptMoveSelector")
 public class KOptMoveSelectorConfig extends MoveSelectorConfig<KOptMoveSelectorConfig> {
 
     public static final String XML_ELEMENT_NAME = "kOptMoveSelector";
@@ -47,13 +44,11 @@ public class KOptMoveSelectorConfig extends MoveSelectorConfig<KOptMoveSelectorC
     public static final int K = 3;
 
     @XmlElement(name = "entitySelector")
-    @XStreamAlias("entitySelector")
     private EntitySelectorConfig entitySelectorConfig = null;
     /**
      * Like {@link TailChainSwapMoveSelectorConfig#valueSelectorConfig} but used multiple times to create 1 move.
      */
     @XmlElement(name = "valueSelector")
-    @XStreamAlias("valueSelector")
     private ValueSelectorConfig valueSelectorConfig = null;
 
     public EntitySelectorConfig getEntitySelectorConfig() {

@@ -27,19 +27,14 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("solverBenchmark")
 public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBenchmarkConfig> {
 
     private String name = null;
 
     @XmlElement(name = "solver")
-    @XStreamAlias("solver")
     private SolverConfig solverConfig = null;
 
     @XmlElement(name = "problemBenchmarks")
-    @XStreamAlias("problemBenchmarks")
     private ProblemBenchmarksConfig problemBenchmarksConfig = null;
 
     private Integer subSingleCount = null;

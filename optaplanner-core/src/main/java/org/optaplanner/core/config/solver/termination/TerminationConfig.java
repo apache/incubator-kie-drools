@@ -43,10 +43,6 @@ import org.optaplanner.core.impl.solver.termination.UnimprovedStepCountTerminati
 import org.optaplanner.core.impl.solver.termination.UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination;
 import org.optaplanner.core.impl.solver.termination.UnimprovedTimeMillisSpentTermination;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-
-@XStreamAlias("termination")
 public class TerminationConfig extends AbstractConfig<TerminationConfig> {
 
     private Class<? extends Termination> terminationClass = null;
@@ -79,7 +75,6 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     private Long scoreCalculationCountLimit = null;
 
     @XmlElement(name = "termination")
-    @XStreamImplicit(itemFieldName = "termination")
     private List<TerminationConfig> terminationConfigList = null;
 
     public Class<? extends Termination> getTerminationClass() {

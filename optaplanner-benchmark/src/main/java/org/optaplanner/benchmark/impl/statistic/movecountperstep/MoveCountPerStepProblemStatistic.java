@@ -43,9 +43,6 @@ import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("moveCountPerStepProblemStatistic")
 public class MoveCountPerStepProblemStatistic extends ProblemStatistic {
 
     protected File graphFile = null;

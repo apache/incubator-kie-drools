@@ -31,9 +31,6 @@ import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("benchmarkReport")
 public class BenchmarkReportConfig extends AbstractConfig<BenchmarkReportConfig> {
 
     private Locale locale = null;

@@ -38,27 +38,17 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMoveSelector;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-
-@XStreamAlias("swapMoveSelector")
 public class SwapMoveSelectorConfig extends MoveSelectorConfig<SwapMoveSelectorConfig> {
 
     public static final String XML_ELEMENT_NAME = "swapMoveSelector";
 
     @XmlElement(name = "entitySelector")
-    @XStreamAlias("entitySelector")
     private EntitySelectorConfig entitySelectorConfig = null;
     @XmlElement(name = "secondaryEntitySelector")
-    @XStreamAlias("secondaryEntitySelector")
     private EntitySelectorConfig secondaryEntitySelectorConfig = null;
 
     @XmlElementWrapper(name = "variableNameIncludes")
     @XmlElement(name = "variableNameInclude")
-    @XStreamImplicit(itemFieldName = "variableNameInclude")
-    //    @XStreamAlias("variableNameIncludes")
-    //    @XStreamConverter(value = NamedCollectionConverter.class,
-    //            strings = {"variableNameInclude"}, types = {String.class}, useImplicitType = false)
     private List<String> variableNameIncludeList = null;
 
     public EntitySelectorConfig getEntitySelectorConfig() {

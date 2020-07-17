@@ -61,9 +61,6 @@ import org.optaplanner.core.impl.solver.thread.DefaultSolverThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import com.thoughtworks.xstream.converters.ConversionException;
 
 import freemarker.template.Configuration;
@@ -76,7 +73,6 @@ import freemarker.template.TemplateException;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "plannerBenchmark")
-@XStreamAlias("plannerBenchmark")
 public class PlannerBenchmarkConfig {
 
     // ************************************************************************
@@ -498,7 +494,6 @@ public class PlannerBenchmarkConfig {
     private static final Logger logger = LoggerFactory.getLogger(PlannerBenchmarkConfig.class);
 
     @XmlTransient
-    @XStreamOmitField
     private ClassLoader classLoader = null;
 
     private String name = null;
@@ -513,19 +508,15 @@ public class PlannerBenchmarkConfig {
     private Long warmUpDaysSpentLimit = null;
 
     @XmlElement(name = "benchmarkReport")
-    @XStreamAlias("benchmarkReport")
     private BenchmarkReportConfig benchmarkReportConfig = null;
 
     @XmlElement(name = "inheritedSolverBenchmark")
-    @XStreamAlias("inheritedSolverBenchmark")
     private SolverBenchmarkConfig inheritedSolverBenchmarkConfig = null;
 
     @XmlElement(name = "solverBenchmarkBluePrint")
-    @XStreamImplicit(itemFieldName = "solverBenchmarkBluePrint")
     private List<SolverBenchmarkBluePrintConfig> solverBenchmarkBluePrintConfigList = null;
 
     @XmlElement(name = "solverBenchmark")
-    @XStreamImplicit(itemFieldName = "solverBenchmark")
     private List<SolverBenchmarkConfig> solverBenchmarkConfigList = null;
 
     // ************************************************************************

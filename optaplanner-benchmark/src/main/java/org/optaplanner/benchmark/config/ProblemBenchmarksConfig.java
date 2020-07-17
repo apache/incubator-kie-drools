@@ -41,10 +41,6 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-
-@XStreamAlias("problemBenchmarks")
 public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksConfig> {
 
     private Class<SolutionFileIO> solutionFileIOClass = null;
@@ -52,17 +48,14 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
     private Boolean writeOutputSolutionEnabled = null;
 
     @XmlElement(name = "inputSolutionFile")
-    @XStreamImplicit(itemFieldName = "inputSolutionFile")
     private List<File> inputSolutionFileList = null;
 
     private Boolean problemStatisticEnabled = null;
 
     @XmlElement(name = "problemStatisticType")
-    @XStreamImplicit(itemFieldName = "problemStatisticType")
     private List<ProblemStatisticType> problemStatisticTypeList = null;
 
     @XmlElement(name = "singleStatisticType")
-    @XStreamImplicit(itemFieldName = "singleStatisticType")
     private List<SingleStatisticType> singleStatisticTypeList = null;
 
     // ************************************************************************

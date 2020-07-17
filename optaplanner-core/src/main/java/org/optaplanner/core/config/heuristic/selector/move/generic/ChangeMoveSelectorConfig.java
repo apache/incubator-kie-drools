@@ -38,19 +38,14 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("changeMoveSelector")
 public class ChangeMoveSelectorConfig extends MoveSelectorConfig<ChangeMoveSelectorConfig> {
 
     public static final String XML_ELEMENT_NAME = "changeMoveSelector";
 
     @XmlElement(name = "entitySelector")
-    @XStreamAlias("entitySelector")
     private EntitySelectorConfig entitySelectorConfig = null;
 
     @XmlElement(name = "valueSelector")
-    @XStreamAlias("valueSelector")
     private ValueSelectorConfig valueSelectorConfig = null;
 
     public ChangeMoveSelectorConfig() {

@@ -38,17 +38,11 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.io.jaxb.JaxbIO;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-
 /**
  * Represents 1 {@link Solver} configuration benchmarked on multiple problem instances (data sets).
  */
-@XStreamAlias("solverBenchmarkResult")
 public class SolverBenchmarkResult {
-    @XmlTransient
-    @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
+    @XmlTransient // Bi-directional relationship restored through BenchmarkResultIO
     private PlannerBenchmarkResult plannerBenchmarkResult;
 
     private String name = null;
@@ -56,12 +50,10 @@ public class SolverBenchmarkResult {
     private Integer subSingleCount = null;
 
     private SolverConfig solverConfig = null;
-    @XmlTransient
-    @XStreamOmitField // Restored through BenchmarkResultIO
+    @XmlTransient // Restored through BenchmarkResultIO
     private ScoreDefinition scoreDefinition = null;
 
     @XmlElement(name = "singleBenchmarkResult")
-    @XStreamImplicit(itemFieldName = "singleBenchmarkResult")
     private List<SingleBenchmarkResult> singleBenchmarkResultList = null;
 
     // ************************************************************************

@@ -52,10 +52,6 @@ import org.optaplanner.core.impl.heuristic.selector.entity.mimic.EntityMimicReco
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicRecordingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingEntitySelector;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-
-@XStreamAlias("entitySelector")
 public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
 
     public static EntitySelectorConfig newMimicSelectorConfig(String mimicSelectorRef) {
@@ -65,10 +61,8 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
     }
 
     @XmlAttribute
-    @XStreamAsAttribute
     protected String id = null;
     @XmlAttribute
-    @XStreamAsAttribute
     protected String mimicSelectorRef = null;
 
     protected Class<?> entityClass = null;
@@ -77,7 +71,6 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
     protected SelectionOrder selectionOrder = null;
 
     @XmlElement(name = "nearbySelection")
-    @XStreamAlias("nearbySelection")
     protected NearbySelectionConfig nearbySelectionConfig = null;
 
     protected Class<? extends SelectionFilter> filterClass = null;

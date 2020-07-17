@@ -62,29 +62,21 @@ import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicRecordingVa
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicReplayingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.ValueMimicRecorder;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-
-@XStreamAlias("valueSelector")
 public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
 
     @XmlAttribute
-    @XStreamAsAttribute
     protected String id = null;
     @XmlAttribute
-    @XStreamAsAttribute
     protected String mimicSelectorRef = null;
 
     protected Class<?> downcastEntityClass = null;
     @XmlAttribute
-    @XStreamAsAttribute // Works with a nested element input too, which is a BC req in 7.x, but undesired in 8.0
     protected String variableName = null;
 
     protected SelectionCacheType cacheType = null;
     protected SelectionOrder selectionOrder = null;
 
     @XmlElement(name = "nearbySelection")
-    @XStreamAlias("nearbySelection")
     protected NearbySelectionConfig nearbySelectionConfig = null;
 
     protected Class<? extends SelectionFilter> filterClass = null;

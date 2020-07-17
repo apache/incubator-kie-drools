@@ -49,10 +49,6 @@ import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-
-@XStreamAlias("queuedEntityPlacer")
 public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPlacerConfig> {
 
     public static QueuedEntityPlacerConfig unfoldNew(HeuristicConfigPolicy configPolicy,
@@ -88,7 +84,6 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPla
     }
 
     @XmlElement(name = "entitySelector")
-    @XStreamAlias("entitySelector")
     protected EntitySelectorConfig entitySelectorConfig = null;
 
     @XmlElements({
@@ -110,7 +105,6 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPla
                     type = TailChainSwapMoveSelectorConfig.class),
             @XmlElement(name = UnionMoveSelectorConfig.XML_ELEMENT_NAME, type = UnionMoveSelectorConfig.class)
     })
-    @XStreamImplicit()
     protected List<MoveSelectorConfig> moveSelectorConfigList = null;
 
     public QueuedEntityPlacerConfig() {

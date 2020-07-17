@@ -24,9 +24,6 @@ import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("instanceProblemProvider")
 public class InstanceProblemProvider<Solution_> implements ProblemProvider<Solution_> {
 
     private String problemName;

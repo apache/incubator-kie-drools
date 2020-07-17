@@ -50,19 +50,13 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-
-@XStreamAlias("pickedMoveTypeBestScoreDiffSubSingleStatistic")
 public class PickedMoveTypeBestScoreDiffSubSingleStatistic<Solution_>
         extends PureSubSingleStatistic<Solution_, PickedMoveTypeBestScoreDiffStatisticPoint> {
 
     @XmlTransient
-    @XStreamOmitField
     private PickedMoveTypeBestScoreDiffSubSingleStatisticListener listener;
 
     @XmlTransient
-    @XStreamOmitField
     protected List<File> graphFileList = null;
 
     public PickedMoveTypeBestScoreDiffSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {

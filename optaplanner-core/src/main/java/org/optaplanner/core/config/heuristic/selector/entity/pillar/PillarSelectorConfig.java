@@ -35,13 +35,9 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.DefaultPillarSelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("pillarSelector")
 public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
 
     @XmlElement(name = "entitySelector")
-    @XStreamAlias("entitySelector")
     protected EntitySelectorConfig entitySelectorConfig = null;
 
     protected Integer minimumSubPillarSize = null;

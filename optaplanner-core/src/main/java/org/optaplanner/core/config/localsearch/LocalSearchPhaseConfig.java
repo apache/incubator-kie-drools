@@ -20,7 +20,6 @@ import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.ThreadFactory;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -60,10 +59,6 @@ import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-
-@XStreamAlias("localSearch")
 public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> {
 
     public static final String XML_ELEMENT_NAME = "localSearch";
@@ -92,14 +87,10 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
                     type = TailChainSwapMoveSelectorConfig.class),
             @XmlElement(name = UnionMoveSelectorConfig.XML_ELEMENT_NAME, type = UnionMoveSelectorConfig.class)
     })
-    // TODO This is a List due to XStream limitations. With JAXB it could be just a MoveSelectorConfig instead.
-    @XStreamImplicit()
-    private List<MoveSelectorConfig> moveSelectorConfigList = null;
+    private MoveSelectorConfig moveSelectorConfig = null;
     @XmlElement(name = "acceptor")
-    @XStreamAlias("acceptor")
     private LocalSearchAcceptorConfig acceptorConfig = null;
     @XmlElement(name = "forager")
-    @XStreamAlias("forager")
     private LocalSearchForagerConfig foragerConfig = null;
 
     // ************************************************************************
@@ -115,11 +106,11 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
     }
 
     public MoveSelectorConfig getMoveSelectorConfig() {
-        return moveSelectorConfigList == null ? null : moveSelectorConfigList.get(0);
+        return moveSelectorConfig;
     }
 
     public void setMoveSelectorConfig(MoveSelectorConfig moveSelectorConfig) {
-        this.moveSelectorConfigList = moveSelectorConfig == null ? null : Collections.singletonList(moveSelectorConfig);
+        this.moveSelectorConfig = moveSelectorConfig;
     }
 
     public LocalSearchAcceptorConfig getAcceptorConfig() {
@@ -148,7 +139,7 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
     }
 
     public LocalSearchPhaseConfig withMoveSelectorConfig(MoveSelectorConfig moveSelectorConfig) {
-        this.moveSelectorConfigList = moveSelectorConfig == null ? null : Collections.singletonList(moveSelectorConfig);
+        this.moveSelectorConfig = moveSelectorConfig;
         return this;
     }
 
@@ -317,22 +308,15 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
         } else {
             defaultSelectionOrder = SelectionOrder.RANDOM;
         }
-        if (ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
+        if (moveSelectorConfig == null) {
             // Default to changeMoveSelector and swapMoveSelector
             UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig();
             unionMoveSelectorConfig.setMoveSelectorConfigList(Arrays.asList(
                     new ChangeMoveSelectorConfig(), new SwapMoveSelectorConfig()));
             moveSelector = unionMoveSelectorConfig.buildMoveSelector(configPolicy,
                     defaultCacheType, defaultSelectionOrder);
-        } else if (moveSelectorConfigList.size() == 1) {
-            moveSelector = moveSelectorConfigList.get(0).buildMoveSelector(
-                    configPolicy, defaultCacheType, defaultSelectionOrder);
         } else {
-            // TODO moveSelectorConfigList is only a List because of XStream limitations.
-            throw new IllegalArgumentException("The moveSelectorConfigList (" + moveSelectorConfigList
-                    + ") must be a singleton or empty. Use a single " + UnionMoveSelectorConfig.class.getSimpleName()
-                    + " or " + CartesianProductMoveSelectorConfig.class.getSimpleName()
-                    + " element to nest multiple MoveSelectors.");
+            moveSelector = moveSelectorConfig.buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder);
         }
         return moveSelector;
     }

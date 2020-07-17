@@ -34,9 +34,6 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.DefaultSubChainSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("subChainSelector")
 public class SubChainSelectorConfig extends SelectorConfig<SubChainSelectorConfig> {
 
     /**
@@ -48,7 +45,6 @@ public class SubChainSelectorConfig extends SelectorConfig<SubChainSelectorConfi
     private static final int DEFAULT_MAXIMUM_SUB_CHAIN_SIZE = Integer.MAX_VALUE;
 
     @XmlElement(name = "valueSelector")
-    @XStreamAlias("valueSelector")
     protected ValueSelectorConfig valueSelectorConfig = null;
 
     protected Integer minimumSubChainSize = null;

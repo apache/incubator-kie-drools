@@ -42,9 +42,6 @@ import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.core.impl.score.ScoreUtils;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("stepScoreProblemStatistic")
 public class StepScoreProblemStatistic extends ProblemStatistic {
 
     protected List<File> graphFileList = null;

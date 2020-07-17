@@ -329,6 +329,61 @@
           "methodName": "setXStreamAnnotatedClassList",
           "elementKind": "method",
           "justification": "Input dataset deserialization via xStreamAnnotatedClassList is no longer supported."
+        },
+        {
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "new": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "annotationType": "com.thoughtworks.xstream.annotations.XStreamAlias",
+          "annotation": "@com.thoughtworks.xstream.annotations.XStreamAlias(\"plannerBenchmark\")",
+          "package": "org.optaplanner.benchmark.config",
+          "classSimpleName": "PlannerBenchmarkConfig",
+          "elementKind": "class",
+          "justification": "XStream was replaced by JAXB in the benchmark configuration"
+        },
+        {
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.benchmark.config.ProblemBenchmarksConfig",
+          "new": "class org.optaplanner.benchmark.config.ProblemBenchmarksConfig",
+          "annotationType": "com.thoughtworks.xstream.annotations.XStreamAlias",
+          "annotation": "@com.thoughtworks.xstream.annotations.XStreamAlias(\"problemBenchmarks\")",
+          "package": "org.optaplanner.benchmark.config",
+          "classSimpleName": "ProblemBenchmarksConfig",
+          "elementKind": "class",
+          "justification": "XStream was replaced by JAXB in the benchmark configuration"
+        },
+        {
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig<Solution_ extends java.lang.Object>",
+          "new": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig<Solution_ extends java.lang.Object>",
+          "annotationType": "com.thoughtworks.xstream.annotations.XStreamAlias",
+          "annotation": "@com.thoughtworks.xstream.annotations.XStreamAlias(\"solverBenchmark\")",
+          "package": "org.optaplanner.benchmark.config",
+          "classSimpleName": "SolverBenchmarkConfig",
+          "elementKind": "class",
+          "justification": "XStream was replaced by JAXB in the benchmark configuration"
+        },
+        {
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig",
+          "new": "class org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig",
+          "annotationType": "com.thoughtworks.xstream.annotations.XStreamAlias",
+          "annotation": "@com.thoughtworks.xstream.annotations.XStreamAlias(\"solverBenchmarkBluePrint\")",
+          "package": "org.optaplanner.benchmark.config.blueprint",
+          "classSimpleName": "SolverBenchmarkBluePrintConfig",
+          "elementKind": "class",
+          "justification": "XStream was replaced by JAXB in the benchmark configuration"
+        },
+        {
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.benchmark.config.report.BenchmarkReportConfig",
+          "new": "class org.optaplanner.benchmark.config.report.BenchmarkReportConfig",
+          "annotationType": "com.thoughtworks.xstream.annotations.XStreamAlias",
+          "annotation": "@com.thoughtworks.xstream.annotations.XStreamAlias(\"benchmarkReport\")",
+          "package": "org.optaplanner.benchmark.config.report",
+          "classSimpleName": "BenchmarkReportConfig",
+          "elementKind": "class",
+          "justification": "XStream was replaced by JAXB in the benchmark configuration"
         }
       ]
     }

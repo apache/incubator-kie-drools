@@ -21,9 +21,6 @@ import org.optaplanner.core.impl.phase.NoChangePhase;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("noChangePhase")
 public class NoChangePhaseConfig extends PhaseConfig<NoChangePhaseConfig> {
 
     public static final String XML_ELEMENT_NAME = "noChangePhase";

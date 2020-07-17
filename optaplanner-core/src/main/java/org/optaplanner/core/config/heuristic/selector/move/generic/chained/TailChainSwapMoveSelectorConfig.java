@@ -30,18 +30,14 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.TailChainSwapMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
 /**
  * Also known as a 2-opt move selector config.
  */
-@XStreamAlias("tailChainSwapMoveSelector")
 public class TailChainSwapMoveSelectorConfig extends MoveSelectorConfig<TailChainSwapMoveSelectorConfig> {
 
     public static final String XML_ELEMENT_NAME = "tailChainSwapMoveSelector";
 
     @XmlElement(name = "entitySelector")
-    @XStreamAlias("entitySelector")
     private EntitySelectorConfig entitySelectorConfig = null;
     /**
      * Uses a valueSelector instead of a secondaryEntitySelector because
@@ -49,7 +45,6 @@ public class TailChainSwapMoveSelectorConfig extends MoveSelectorConfig<TailChai
      * and also because with nearby selection, it's more important that the value is near (instead of the secondary entity).
      */
     @XmlElement(name = "valueSelector")
-    @XStreamAlias("valueSelector")
     private ValueSelectorConfig valueSelectorConfig = null;
 
     public EntitySelectorConfig getEntitySelectorConfig() {

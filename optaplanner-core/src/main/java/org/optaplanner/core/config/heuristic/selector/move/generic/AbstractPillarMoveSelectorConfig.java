@@ -24,15 +24,12 @@ import org.optaplanner.core.config.heuristic.selector.entity.pillar.PillarSelect
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
 public abstract class AbstractPillarMoveSelectorConfig<C extends AbstractPillarMoveSelectorConfig<C>>
         extends MoveSelectorConfig<C> {
 
     protected SubPillarType subPillarType = null;
     protected Class<? extends Comparator> subPillarSequenceComparatorClass = null;
     @XmlElement(name = "pillarSelector")
-    @XStreamAlias("pillarSelector")
     protected PillarSelectorConfig pillarSelectorConfig = null;
 
     public SubPillarType getSubPillarType() {

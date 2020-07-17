@@ -69,9 +69,6 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import com.thoughtworks.xstream.converters.ConversionException;
 
 /**
@@ -79,7 +76,6 @@ import com.thoughtworks.xstream.converters.ConversionException;
  * To build a {@link SolverFactory} with it, use {@link SolverFactory#create(SolverConfig)}.
  */
 @XmlRootElement(name = "solver")
-@XStreamAlias("solver")
 public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     /**
@@ -228,7 +224,6 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     private static final Logger logger = LoggerFactory.getLogger(SolverConfig.class);
 
     @XmlTransient
-    @XStreamOmitField
     private ClassLoader classLoader = null;
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
@@ -245,15 +240,12 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     protected Class<?> solutionClass = null;
     @XmlElement(name = "entityClass")
-    @XStreamImplicit(itemFieldName = "entityClass")
     protected List<Class<?>> entityClassList = null;
 
     @XmlElement(name = "scoreDirectorFactory")
-    @XStreamAlias("scoreDirectorFactory")
     protected ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = null;
 
     @XmlElement(name = "termination")
-    @XStreamAlias("termination")
     private TerminationConfig terminationConfig;
 
     @XmlElements({
@@ -265,7 +257,6 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
             @XmlElement(name = NoChangePhaseConfig.XML_ELEMENT_NAME, type = NoChangePhaseConfig.class),
             @XmlElement(name = PartitionedSearchPhaseConfig.XML_ELEMENT_NAME, type = PartitionedSearchPhaseConfig.class)
     })
-    @XStreamImplicit()
     protected List<PhaseConfig> phaseConfigList = null;
 
     // ************************************************************************

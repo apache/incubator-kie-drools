@@ -45,21 +45,15 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-
 /**
  * Represents the benchmarks on multiple {@link Solver} configurations on multiple problem instances (data sets).
  */
 @XmlRootElement(name = "plannerBenchmarkResult")
-@XStreamAlias("plannerBenchmarkResult")
 public class PlannerBenchmarkResult {
 
     private String name;
     private Boolean aggregation;
-    @XmlTransient
-    @XStreamOmitField // Moving or renaming a report directory after creation is allowed
+    @XmlTransient // Moving or renaming a report directory after creation is allowed
     private File benchmarkReportDirectory;
 
     // If it is an aggregation, many properties can stay null
@@ -78,11 +72,9 @@ public class PlannerBenchmarkResult {
     private EnvironmentMode environmentMode = null;
 
     @XmlElement(name = "solverBenchmarkResult")
-    @XStreamImplicit(itemFieldName = "solverBenchmarkResult")
     private List<SolverBenchmarkResult> solverBenchmarkResultList = null;
 
     @XmlElement(name = "unifiedProblemBenchmarkResult")
-    @XStreamImplicit(itemFieldName = "unifiedProblemBenchmarkResult")
     private List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList = null;
 
     private OffsetDateTime startingTimestamp = null;

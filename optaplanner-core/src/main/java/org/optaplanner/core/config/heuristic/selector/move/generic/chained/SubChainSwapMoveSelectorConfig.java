@@ -31,19 +31,14 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.SubChainSwapMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("subChainSwapMoveSelector")
 public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig<SubChainSwapMoveSelectorConfig> {
 
     public static final String XML_ELEMENT_NAME = "subChainSwapMoveSelector";
 
     private Class<?> entityClass = null;
     @XmlElement(name = "subChainSelector")
-    @XStreamAlias("subChainSelector")
     private SubChainSelectorConfig subChainSelectorConfig = null;
     @XmlElement(name = "secondarySubChainSelector")
-    @XStreamAlias("secondarySubChainSelector")
     private SubChainSelectorConfig secondarySubChainSelectorConfig = null;
 
     private Boolean selectReversingMoveToo = null;

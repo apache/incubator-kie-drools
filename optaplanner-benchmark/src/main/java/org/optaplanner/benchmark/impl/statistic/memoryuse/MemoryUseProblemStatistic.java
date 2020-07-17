@@ -40,9 +40,6 @@ import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("memoryUseProblemStatistic")
 public class MemoryUseProblemStatistic extends ProblemStatistic {
 
     protected File graphFile = null;

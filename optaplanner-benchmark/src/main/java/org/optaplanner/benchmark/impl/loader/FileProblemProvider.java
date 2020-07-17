@@ -24,14 +24,9 @@ import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-
-@XStreamAlias("fileProblemProvider")
 public class FileProblemProvider<Solution_> implements ProblemProvider<Solution_> {
 
     @XmlTransient
-    @XStreamOmitField
     private SolutionFileIO<Solution_> solutionFileIO;
 
     private File problemFile;

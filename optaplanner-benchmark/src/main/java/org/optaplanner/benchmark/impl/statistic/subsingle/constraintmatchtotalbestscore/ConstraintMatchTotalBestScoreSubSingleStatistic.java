@@ -51,19 +51,13 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-
-@XStreamAlias("constraintMatchTotalBestScoreSubSingleStatistic")
 public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
         extends PureSubSingleStatistic<Solution_, ConstraintMatchTotalBestScoreStatisticPoint> {
 
     @XmlTransient
-    @XStreamOmitField
     private ConstraintMatchTotalBestScoreSubSingleStatisticListener listener;
 
     @XmlTransient
-    @XStreamOmitField
     protected List<File> graphFileList = null;
 
     public ConstraintMatchTotalBestScoreSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
