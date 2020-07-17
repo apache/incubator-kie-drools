@@ -55,7 +55,7 @@ public class EvalConditionMetric extends EvalCondition {
                                                                   this.requiredDeclarations.clone());
 
         if (this.getCloned() == Collections.<EvalCondition> emptyList()) {
-            this.setCloned(new ArrayList<EvalCondition>(1));
+            this.setCloned(new ArrayList<>(1));
         }
 
         this.getCloned().add(clone);
