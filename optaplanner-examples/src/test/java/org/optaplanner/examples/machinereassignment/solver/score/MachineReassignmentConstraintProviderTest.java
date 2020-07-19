@@ -19,9 +19,9 @@ package org.optaplanner.examples.machinereassignment.solver.score;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.collections4.map.HashedMap;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
@@ -257,11 +257,11 @@ public class MachineReassignmentConstraintProviderTest {
         MrMachine machine1 = new MrMachine();
         MrMachine machine2 = new MrMachine();
 
-        Map<MrMachine, Integer> costMapFromMachine1 = new HashedMap<>();
+        Map<MrMachine, Integer> costMapFromMachine1 = new HashMap<>();
         costMapFromMachine1.put(machine2, 20);
         machine1.setMachineMoveCostMap(costMapFromMachine1);
 
-        Map<MrMachine, Integer> costMapFromMachine2 = new HashedMap<>();
+        Map<MrMachine, Integer> costMapFromMachine2 = new HashMap<>();
         costMapFromMachine2.put(machine1, 0);
         machine2.setMachineMoveCostMap(costMapFromMachine2);
 

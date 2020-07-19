@@ -34,11 +34,25 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-drools</artifactId>
+      <artifactId>kogito-internal</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-drools-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>drools-compiler</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>drools-core-dynamic</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <!-- External dependencies -->
     <!-- Common utils -->
@@ -73,6 +87,7 @@
     <dependency>
       <groupId>org.glassfish.jaxb</groupId>
       <artifactId>jaxb-runtime</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <!-- Testing -->
     <dependency>
@@ -104,6 +119,20 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <ignoredUsedUndeclaredDependencies>
+            <!-- TODO Remove this and declare org.drools dependencies once their versions are managed by kogito-bom. -->
+            <dependency>org.drools:*</dependency>
+          </ignoredUsedUndeclaredDependencies>
+          <ignoredUnusedDeclaredDependencies>
+            <!-- Provides org.drools:* dependencies -->
+            <dependency>org.kie.kogito:kogito-drools-model</dependency>
+          </ignoredUnusedDeclaredDependencies>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.revapi</groupId>
         <artifactId>revapi-maven-plugin</artifactId>

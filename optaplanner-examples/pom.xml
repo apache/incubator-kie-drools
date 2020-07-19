@@ -89,18 +89,6 @@
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-persistence-xstream</artifactId>
     </dependency>
-    <dependency><!-- TODO add examples that use the JAXB integration -->
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-persistence-jaxb</artifactId>
-    </dependency>
-    <dependency><!-- TODO add examples that use the jackson integration -->
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-persistence-jackson</artifactId>
-    </dependency>
-    <dependency><!-- TODO add examples that use the JSON-B integration -->
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-persistence-jsonb</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-benchmark</artifactId>
@@ -123,6 +111,10 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>jakarta.json</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jfree</groupId>

@@ -37,6 +37,10 @@
       <artifactId>drools-core-static</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-ruleunits</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.graalvm.nativeimage</groupId>
       <artifactId>svm</artifactId>
     </dependency>
@@ -59,6 +63,19 @@
             </path>
           </annotationProcessorPaths>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <!-- TODO enable dependency check later. -->
+            <id>analyze-only</id>
+            <configuration>
+              <failOnWarning>false</failOnWarning>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

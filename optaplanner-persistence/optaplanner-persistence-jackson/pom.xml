@@ -37,10 +37,6 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-persistence-common</artifactId>
-    </dependency>
     <!-- External dependencies -->
     <!-- Logging -->
     <dependency>

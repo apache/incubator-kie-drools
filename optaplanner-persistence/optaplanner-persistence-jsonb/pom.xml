@@ -37,10 +37,6 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-persistence-common</artifactId>
-    </dependency>
     <!-- External dependencies -->
     <!-- Logging -->
     <dependency>
@@ -56,6 +52,7 @@
     <dependency>
       <groupId>org.glassfish</groupId>
       <artifactId>jakarta.json</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse</groupId>
