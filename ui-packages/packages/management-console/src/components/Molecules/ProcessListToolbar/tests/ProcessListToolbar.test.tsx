@@ -50,24 +50,6 @@ const initData = {
               enter: '2019-10-22T04:43:01.144Z',
               exit: '2019-10-22T04:43:01.144Z',
               type: 'EndNode'
-            },
-            {
-              nodeId: '2',
-              name: 'Book flight',
-              definitionId: 'ServiceTask_1',
-              id: '2f588da5-a323-4111-9017-3093ef9319d1',
-              enter: '2019-10-22T04:43:01.144Z',
-              exit: '2019-10-22T04:43:01.144Z',
-              type: 'WorkItemNode'
-            },
-            {
-              nodeId: '3',
-              name: 'StartProcess',
-              definitionId: 'StartEvent_1',
-              id: '6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2',
-              enter: '2019-10-22T04:43:01.144Z',
-              exit: '2019-10-22T04:43:01.144Z',
-              type: 'StartNode'
             }
           ],
           childProcessInstances: []
@@ -97,70 +79,6 @@ const initData = {
           enter: '2019-10-22T04:43:01.143Z',
           exit: '2019-10-22T04:43:01.146Z',
           type: 'SubProcessNode'
-        },
-        {
-          name: 'Confirm travel',
-          definitionId: 'UserTask_2',
-          id: '843bd287-fb6e-4ee7-a304-ba9b430e52d8',
-          enter: '2019-10-22T04:43:01.148Z',
-          exit: null,
-          type: 'HumanTaskNode'
-        },
-        {
-          name: 'Join',
-          definitionId: 'ParallelGateway_2',
-          id: 'fd2e12d5-6a4b-4c75-9f31-028d3f032a95',
-          enter: '2019-10-22T04:43:01.148Z',
-          exit: '2019-10-22T04:43:01.148Z',
-          type: 'Join'
-        },
-        {
-          name: 'Book Hotel',
-          definitionId: 'CallActivity_1',
-          id: '7f7d74c1-78f7-49be-b5ad-8d132f46a49c',
-          enter: '2019-10-22T04:43:01.146Z',
-          exit: '2019-10-22T04:43:01.148Z',
-          type: 'SubProcessNode'
-        },
-        {
-          name: 'Book',
-          definitionId: 'ParallelGateway_1',
-          id: 'af0d984c-4abd-4f5c-83a8-426e6b3d102a',
-          enter: '2019-10-22T04:43:01.143Z',
-          exit: '2019-10-22T04:43:01.146Z',
-          type: 'Split'
-        },
-        {
-          name: 'Join',
-          definitionId: 'ExclusiveGateway_2',
-          id: 'b2761011-3043-4f48-82bd-1395bf651a91',
-          enter: '2019-10-22T04:43:01.143Z',
-          exit: '2019-10-22T04:43:01.143Z',
-          type: 'Join'
-        },
-        {
-          name: 'is visa required',
-          definitionId: 'ExclusiveGateway_1',
-          id: 'a91a2600-d0cd-46ff-a6c6-b3081612d1af',
-          enter: '2019-10-22T04:43:01.143Z',
-          exit: '2019-10-22T04:43:01.143Z',
-          type: 'Split'
-        },
-        {
-          name: 'Visa check',
-          definitionId: 'BusinessRuleTask_1',
-          id: '1baa5de4-47cc-45a8-8323-005388191e4f',
-          enter: '2019-10-22T04:43:01.135Z',
-          exit: '2019-10-22T04:43:01.143Z',
-          type: 'RuleSetNode'
-        },
-        {
-          name: 'StartProcess',
-          definitionId: 'StartEvent_1',
-          id: '90e5a337-1c26-4fcc-8ee2-d20e6ba2a1a3',
-          enter: '2019-10-22T04:43:01.135Z',
-          exit: '2019-10-22T04:43:01.135Z',
-          type: 'StartNode'
         }
       ],
       childProcessInstances: [
@@ -212,74 +130,12 @@ const props = {
   handleAbortModalToggle: jest.fn()
 };
 
-const props1 = {
-  statusArray: ['ACTIVE', 'COMPLETED', 'ERROR'],
-  filterClick: jest.fn(),
-  setStatusArray: jest.fn(),
-  setIsStatusSelected: jest.fn(),
-  filters: {
-    status: ['ACTIVE', 'COMPLETED', 'ERROR'],
-    businessKey: ['tra']
-  },
-  setFilters: jest.fn(),
-  setInitData: jest.fn(),
-  handleAbortAll: jest.fn(),
-  setAbortedObj: jest.fn(),
-  abortedObj: {},
-  initData,
-  setOffset: jest.fn(),
-  getProcessInstances: jest.fn(),
-  setLimit: jest.fn(),
-  pageSize: 10,
-  setFilteredData: jest.fn(),
-  setSearchWord: jest.fn(),
-  searchWord: '',
-  setIsClearAllClicked: jest.fn(),
-  handleCheckAll: jest.fn(),
-  isAllChecked: false,
-  setIsAllChecked: jest.fn(),
-  setSelectedNumber: jest.fn(),
-  selectedNumber: 0,
-  setModalTitle: jest.fn(),
-  setTitleType: jest.fn(),
-  setAbortedMessageObj: jest.fn(),
-  setCompletedMessageObj: jest.fn(),
-  handleAbortModalToggle: jest.fn()
-};
-
-const props2 = {
-  statusArray: [],
-  filterClick: jest.fn(),
-  setStatusArray: jest.fn(),
-  setIsStatusSelected: jest.fn(),
-  filters: { status: [], businessKey: [] },
-  setFilters: jest.fn(),
-  setInitData: jest.fn(),
-  handleAbortAll: jest.fn(),
-  setAbortedObj: jest.fn(),
-  abortedObj: { '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': 'travels' },
-  initData,
-  setOffset: jest.fn(),
-  getProcessInstances: jest.fn(),
-  setLimit: jest.fn(),
-  pageSize: 10,
-  setFilteredData: jest.fn(),
-  setSearchWord: jest.fn(),
-  searchWord: '',
-  setIsClearAllClicked: jest.fn(),
-  handleCheckAll: jest.fn(),
-  isAllChecked: false,
-  setIsAllChecked: jest.fn(),
-  setSelectedNumber: jest.fn(),
-  selectedNumber: 0,
-  setModalTitle: jest.fn(),
-  setTitleType: jest.fn(),
-  setAbortedMessageObj: jest.fn(),
-  setCompletedMessageObj: jest.fn(),
-  handleAbortModalToggle: jest.fn()
-};
-
 /* tslint:disable */
+afterEach(() => {
+  props.setStatusArray.mockClear();
+  props.setSearchWord.mockClear();
+  props.filterClick.mockClear();
+});
 
 describe('ProcessListToolbar component tests', () => {
   it('Snapshot tests', () => {
@@ -292,7 +148,13 @@ describe('ProcessListToolbar component tests', () => {
 
   it('Snapshot tests for disabled filter button', () => {
     let wrapper = getWrapper(
-      <ProcessListToolbar {...props2} />,
+      <ProcessListToolbar
+        {...{
+          ...props,
+          statusArray: [],
+          filters: { status: [], businessKey: [] }
+        }}
+      />,
       'ProcessListToolbar'
     );
     wrapper = wrapper.find(DataToolbarItem);
@@ -326,7 +188,18 @@ describe('ProcessListToolbar component tests', () => {
   });
 
   it('onSelect tests', () => {
-    const wrapper = shallow(<ProcessListToolbar {...props1} />);
+    const wrapper = shallow(
+      <ProcessListToolbar
+        {...{
+          ...props,
+          statusArray: ['ACTIVE', 'COMPLETED', 'ERROR'],
+          filters: {
+            status: ['ACTIVE', 'COMPLETED', 'ERROR'],
+            businessKey: ['tra']
+          }
+        }}
+      />
+    );
     expect(wrapper.find('#status-select').exists()).toBeTruthy();
     wrapper
       .find('#status-select')
@@ -334,7 +207,7 @@ describe('ProcessListToolbar component tests', () => {
     wrapper
       .find('#status-select')
       .simulate('select', { target: { id: 'SUSPENDED' } });
-    expect(props1.setStatusArray.mock.calls).toEqual([
+    expect(props.setStatusArray.mock.calls).toEqual([
       [['ACTIVE', 'ERROR']],
       [['ACTIVE', 'COMPLETED', 'ERROR', 'SUSPENDED']]
     ]);
@@ -360,6 +233,19 @@ describe('ProcessListToolbar component tests', () => {
     expect(props.filterClick).toHaveBeenCalled();
   });
 
+  it('onDelete tests - for status delete last', () => {
+    const wrapper = shallow(
+      <ProcessListToolbar {...{ ...props, statusArray: ['ERROR'] }} />
+    );
+    wrapper
+      .find('#datatoolbar-filter-status')
+      .props()
+      ['deleteChip']('Status', 'ERROR');
+    expect(props.setStatusArray).toHaveBeenCalledWith([]);
+    expect(props.setFilters).toHaveBeenCalled();
+    expect(props.filterClick).not.toBeCalled();
+  });
+
   it('onRefresh click', () => {
     const wrapper = shallow(<ProcessListToolbar {...props} />);
     wrapper.find('#refresh-button').simulate('click');
@@ -367,7 +253,7 @@ describe('ProcessListToolbar component tests', () => {
   });
 
   it('onStatusToggle click', () => {
-    const wrapper = shallow(<ProcessListToolbar {...props1} />);
+    const wrapper = shallow(<ProcessListToolbar {...props} />);
     wrapper
       .find('#status-select')
       .props()
@@ -378,14 +264,18 @@ describe('ProcessListToolbar component tests', () => {
 
   describe('handleTextBoxchange click', () => {
     it('word is passed', () => {
-      const wrapper = shallow(<ProcessListToolbar {...props1} />);
+      const wrapper = shallow(
+        <ProcessListToolbar {...{ ...props, searchWord: 'tra' }} />
+      );
       wrapper.find('#businessKey').simulate('change', 'tra');
-      expect(props1.setSearchWord.mock.calls).toEqual([['tra']]);
+      expect(props.setSearchWord.mock.calls).toEqual([['tra']]);
     });
     it('word is empty', () => {
-      const wrapper = shallow(<ProcessListToolbar {...props2} />);
+      const wrapper = shallow(
+        <ProcessListToolbar {...{ ...props, searchWord: '' }} />
+      );
       wrapper.find('#businessKey').simulate('change', '');
-      expect(props2.setSearchWord.mock.calls).toEqual([[''], ['']]);
+      expect(props.setSearchWord.mock.calls).toEqual([[''], ['']]);
     });
   });
 
@@ -397,7 +287,11 @@ describe('ProcessListToolbar component tests', () => {
 
   describe('select multiple checkbox tests', () => {
     const wrapper = shallow(<ProcessListToolbar {...props} />);
-    const wrapper1 = shallow(<ProcessListToolbar {...props1} />);
+    const wrapper1 = shallow(
+      <ProcessListToolbar
+        {...{ ...props, abortedObj: {}, isAllChecked: false }}
+      />
+    );
     it('none selected click', () => {
       wrapper
         .find('#bulk-select')

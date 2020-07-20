@@ -119,7 +119,7 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
       });
       setFilters({ ...filters, status: copyOfStatusArray });
       setStatusArray(copyOfStatusArray);
-      filterClick(copyOfStatusArray);
+      copyOfStatusArray.length > 0 && filterClick(copyOfStatusArray);
     }
     if (type === 'Business key') {
       filters.businessKey.splice(filters.businessKey.indexOf(id), 1);

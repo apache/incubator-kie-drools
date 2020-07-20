@@ -59,24 +59,6 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
                   "nodeId": "1",
                   "type": "EndNode",
                 },
-                Object {
-                  "definitionId": "ServiceTask_1",
-                  "enter": "2019-10-22T04:43:01.144Z",
-                  "exit": "2019-10-22T04:43:01.144Z",
-                  "id": "2f588da5-a323-4111-9017-3093ef9319d1",
-                  "name": "Book flight",
-                  "nodeId": "2",
-                  "type": "WorkItemNode",
-                },
-                Object {
-                  "definitionId": "StartEvent_1",
-                  "enter": "2019-10-22T04:43:01.144Z",
-                  "exit": "2019-10-22T04:43:01.144Z",
-                  "id": "6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2",
-                  "name": "StartProcess",
-                  "nodeId": "3",
-                  "type": "StartNode",
-                },
               ],
               "parentProcessInstance": Object {
                 "businessKey": null,
@@ -120,70 +102,6 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
               "id": "7cdeba99-cd36-4425-980d-e59d44769a3e",
               "name": "Book Flight",
               "type": "SubProcessNode",
-            },
-            Object {
-              "definitionId": "UserTask_2",
-              "enter": "2019-10-22T04:43:01.148Z",
-              "exit": null,
-              "id": "843bd287-fb6e-4ee7-a304-ba9b430e52d8",
-              "name": "Confirm travel",
-              "type": "HumanTaskNode",
-            },
-            Object {
-              "definitionId": "ParallelGateway_2",
-              "enter": "2019-10-22T04:43:01.148Z",
-              "exit": "2019-10-22T04:43:01.148Z",
-              "id": "fd2e12d5-6a4b-4c75-9f31-028d3f032a95",
-              "name": "Join",
-              "type": "Join",
-            },
-            Object {
-              "definitionId": "CallActivity_1",
-              "enter": "2019-10-22T04:43:01.146Z",
-              "exit": "2019-10-22T04:43:01.148Z",
-              "id": "7f7d74c1-78f7-49be-b5ad-8d132f46a49c",
-              "name": "Book Hotel",
-              "type": "SubProcessNode",
-            },
-            Object {
-              "definitionId": "ParallelGateway_1",
-              "enter": "2019-10-22T04:43:01.143Z",
-              "exit": "2019-10-22T04:43:01.146Z",
-              "id": "af0d984c-4abd-4f5c-83a8-426e6b3d102a",
-              "name": "Book",
-              "type": "Split",
-            },
-            Object {
-              "definitionId": "ExclusiveGateway_2",
-              "enter": "2019-10-22T04:43:01.143Z",
-              "exit": "2019-10-22T04:43:01.143Z",
-              "id": "b2761011-3043-4f48-82bd-1395bf651a91",
-              "name": "Join",
-              "type": "Join",
-            },
-            Object {
-              "definitionId": "ExclusiveGateway_1",
-              "enter": "2019-10-22T04:43:01.143Z",
-              "exit": "2019-10-22T04:43:01.143Z",
-              "id": "a91a2600-d0cd-46ff-a6c6-b3081612d1af",
-              "name": "is visa required",
-              "type": "Split",
-            },
-            Object {
-              "definitionId": "BusinessRuleTask_1",
-              "enter": "2019-10-22T04:43:01.135Z",
-              "exit": "2019-10-22T04:43:01.143Z",
-              "id": "1baa5de4-47cc-45a8-8323-005388191e4f",
-              "name": "Visa check",
-              "type": "RuleSetNode",
-            },
-            Object {
-              "definitionId": "StartEvent_1",
-              "enter": "2019-10-22T04:43:01.135Z",
-              "exit": "2019-10-22T04:43:01.135Z",
-              "id": "90e5a337-1c26-4fcc-8ee2-d20e6ba2a1a3",
-              "name": "StartProcess",
-              "type": "StartNode",
             },
           ],
           "parentProcessInstance": null,
@@ -3461,7 +3379,7 @@ Array [
                   aria-label="Select all"
                   className=""
                   id="select-all-checkbox"
-                  isChecked={false}
+                  isChecked={true}
                   isDisabled={false}
                   isValid={true}
                   onChange={[Function]}
@@ -3507,7 +3425,7 @@ Array [
                     aria-label="Select all"
                     className=""
                     id="select-all-checkbox"
-                    isChecked={false}
+                    isChecked={true}
                     isDisabled={false}
                     isValid={true}
                     onChange={[Function]}
@@ -3553,7 +3471,7 @@ Array [
                         aria-label="Select all"
                         className=""
                         id="select-all-checkbox"
-                        isChecked={false}
+                        isChecked={true}
                         isDisabled={false}
                         isValid={true}
                         onChange={[Function]}
@@ -3614,7 +3532,7 @@ Array [
                         aria-label="Select all"
                         className=""
                         id="select-all-checkbox"
-                        isChecked={false}
+                        isChecked={true}
                         isDisabled={false}
                         isValid={true}
                         onChange={[Function]}
@@ -3652,6 +3570,7 @@ Array [
                             <input
                               aria-invalid="false"
                               aria-label="Select all"
+                              checked=""
                               id="select-all-checkbox"
                               type="checkbox"
                             />
@@ -3691,7 +3610,7 @@ Array [
                         aria-label="Select all"
                         className=""
                         id="select-all-checkbox"
-                        isChecked={false}
+                        isChecked={true}
                         isDisabled={false}
                         isValid={true}
                         onChange={[Function]}
@@ -3706,7 +3625,7 @@ Array [
                       aria-label="Select all"
                       className=""
                       id="select-all-checkbox"
-                      isChecked={false}
+                      isChecked={true}
                       isDisabled={false}
                       isValid={true}
                       key="split-checkbox"
@@ -3719,7 +3638,7 @@ Array [
                         <input
                           aria-invalid={false}
                           aria-label="Select all"
-                          checked={false}
+                          checked={true}
                           disabled={false}
                           id="select-all-checkbox"
                           onChange={[Function]}
@@ -3758,6 +3677,7 @@ Array [
                                 <input
                                   aria-invalid="false"
                                   aria-label="Select all"
+                                  checked=""
                                   id="select-all-checkbox"
                                   type="checkbox"
                                 />
@@ -4133,7 +4053,7 @@ Array [
             onKeyPress={[Function]}
             placeholder="Filter by business key"
             type="search"
-            value=""
+            value="Tra"
           >
             <TextInputBase
               aria-label="business key"
@@ -4150,7 +4070,7 @@ Array [
               placeholder="Filter by business key"
               type="search"
               validated="default"
-              value=""
+              value="Tra"
             >
               <input
                 aria-invalid={false}
@@ -4165,7 +4085,7 @@ Array [
                 readOnly={false}
                 required={false}
                 type="search"
-                value=""
+                value="Tra"
               />
             </TextInputBase>
           </ForwardRef>
