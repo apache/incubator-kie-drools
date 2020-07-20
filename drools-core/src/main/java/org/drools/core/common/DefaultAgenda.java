@@ -628,7 +628,7 @@ public class DefaultAgenda
         activateRuleFlowGroup( ruleFlowGroup, processInstanceId, nodeInstanceId );
     }
 
-    public void activateRuleFlowGroup(final InternalRuleFlowGroup group, long processInstanceId, String nodeInstanceId) {
+    public void activateRuleFlowGroup(final InternalRuleFlowGroup group, Object processInstanceId, String nodeInstanceId) {
         this.workingMemory.getAgendaEventSupport().fireBeforeRuleFlowGroupActivated( group, this.workingMemory );
         group.setActive( true );
         group.hasRuleFlowListener(true);
@@ -950,6 +950,12 @@ public class DefaultAgenda
     public boolean isRuleInstanceAgendaItem(String ruleflowGroupName,
                                             String ruleName,
                                             long processInstanceId) {
+        return isRuleInstanceAgendaItem(ruleflowGroupName, ruleName, (Object) processInstanceId);
+    }
+
+    protected boolean isRuleInstanceAgendaItem(String ruleflowGroupName,
+                                            String ruleName,
+                                            Object processInstanceId) {
         propagationList.flush();
         RuleFlowGroup systemRuleFlowGroup = this.getRuleFlowGroup( ruleflowGroupName );
 
@@ -979,7 +985,7 @@ public class DefaultAgenda
     }
 
     private boolean checkProcessInstance(Activation activation,
-                                         long processInstanceId) {
+                                         Object processInstanceId) {
         final Map<String, Declaration> declarations = activation.getSubRule().getOuterDeclarations();
         for ( Declaration declaration : declarations.values() ) {
             if ( "processInstance".equals( declaration.getIdentifier() )
@@ -987,7 +993,7 @@ public class DefaultAgenda
                 Object value = declaration.getValue( workingMemory,
                                                      activation.getTuple().get( declaration ).getObject() );
                 if ( value instanceof ProcessInstance ) {
-                    return ((ProcessInstance) value).getId() == processInstanceId;
+                    return processInstanceId.equals(((ProcessInstance) value).getId());
                 }
             }
         }

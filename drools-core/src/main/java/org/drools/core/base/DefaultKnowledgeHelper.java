@@ -513,15 +513,15 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         if (ProcessContext.class.equals(contextClass)) {
             String ruleflowGroupName = getMatch().getRule().getRuleFlowGroup();
             if (ruleflowGroupName != null) {
-                Map<Long, String> nodeInstances = ((InternalRuleFlowGroup) workingMemory.getAgenda().getRuleFlowGroup(ruleflowGroupName)).getNodeInstances();
+                Map<Object, String> nodeInstances = ((InternalRuleFlowGroup) workingMemory.getAgenda().getRuleFlowGroup(ruleflowGroupName)).getNodeInstances();
                 if (!nodeInstances.isEmpty()) {
                     if (nodeInstances.size() > 1) {
                         // TODO
                         throw new UnsupportedOperationException(
                             "Not supporting multiple node instances for the same ruleflow group");
                     }
-                    Map.Entry<Long, String> entry = nodeInstances.entrySet().iterator().next();
-                    ProcessInstance processInstance = workingMemory.getProcessInstance(entry.getKey());
+                    Map.Entry<Object, String> entry = nodeInstances.entrySet().iterator().next();
+                    ProcessInstance processInstance = workingMemory.getProcessInstance((Long) entry.getKey());
                     org.drools.core.spi.ProcessContext context = new org.drools.core.spi.ProcessContext(workingMemory.getKnowledgeRuntime());
                     context.setProcessInstance(processInstance);
                     String nodeInstance = entry.getValue();
