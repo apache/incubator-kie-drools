@@ -191,10 +191,7 @@ public class LightProcessRuntime implements InternalProcessRuntime {
     }
 
     private org.jbpm.process.instance.ProcessInstance createProcessInstance(Process process, CorrelationKey correlationKey, Map<String, Object> parameters) {
-        org.jbpm.process.instance.ProcessInstance pi =
-                runtimeContext.createProcessInstance(process,
-                                                     correlationKey);
-
+        org.jbpm.process.instance.ProcessInstance pi = runtimeContext.createProcessInstance(process, correlationKey);
         pi.setKnowledgeRuntime(knowledgeRuntime);
         runtimeContext.setupParameters(pi, parameters);
         return pi;

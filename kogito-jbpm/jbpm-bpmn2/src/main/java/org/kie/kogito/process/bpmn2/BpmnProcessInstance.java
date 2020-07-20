@@ -18,6 +18,7 @@ package org.kie.kogito.process.bpmn2;
 import java.util.Map;
 
 import org.kie.api.runtime.process.ProcessRuntime;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.process.impl.AbstractProcess;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 
@@ -26,7 +27,11 @@ public class BpmnProcessInstance extends AbstractProcessInstance<BpmnVariables> 
     public BpmnProcessInstance(AbstractProcess<BpmnVariables> process, BpmnVariables variables, ProcessRuntime rt) {
         super(process, variables, rt);
     }
-    
+
+    public BpmnProcessInstance(AbstractProcess<BpmnVariables> process, BpmnVariables variables, ProcessRuntime rt, WorkflowProcessInstance wpi) {
+        super(process, variables, rt, wpi);
+    }
+            
     public BpmnProcessInstance(AbstractProcess<BpmnVariables> process, BpmnVariables variables, String businessKey, ProcessRuntime rt) {
         super(process, variables, businessKey, rt);
     }

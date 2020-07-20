@@ -23,6 +23,7 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.Model;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
@@ -66,6 +67,11 @@ public class BpmnProcess extends AbstractProcess<BpmnVariables> {
         BpmnVariables variablesModel = createModel();
         variablesModel.fromMap(variables.toMap());
         return new BpmnProcessInstance(this, variablesModel, this.createProcessRuntime());
+    }
+
+    @Override
+    public ProcessInstance<? extends Model> createInstance(WorkflowProcessInstance wpi) {
+        return new BpmnProcessInstance(this, createModel(), this.createProcessRuntime(), wpi);
     }
 
     @Override

@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.jbpm.compiler.canonical.ModelMetaData;
 import org.kie.api.runtime.process.ProcessRuntime;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 
@@ -89,6 +90,7 @@ public class ProcessInstanceGenerator {
                                 .setTypeArguments(new ClassOrInterfaceType(null, model.getModelClassSimpleName())))
                 .addMember(constructorDecl())
                 .addMember(constructorWithBusinessKeyDecl())
+                .addMember(constructorWithWorkflowInstanceDecl())
                 .addMember(bind())
                 .addMember(unbind());
         classDecl.getMembers().sort(new BodyDeclarationComparator());
@@ -157,6 +159,22 @@ public class ProcessInstanceGenerator {
                         new NameExpr(VALUE),
                         new NameExpr("businessKey"),
                         new NameExpr(PROCESS_RUNTIME))));
+    }
+
+    private ConstructorDeclaration constructorWithWorkflowInstanceDecl() {
+        return new ConstructorDeclaration()
+                .setName(targetTypeName)
+                .addModifier(Modifier.Keyword.PUBLIC)
+                .addParameter(ProcessGenerator.processType(canonicalName), PROCESS)
+                .addParameter(model.getModelClassSimpleName(), VALUE)
+                .addParameter(ProcessRuntime.class.getCanonicalName(), PROCESS_RUNTIME)
+                .addParameter(WorkflowProcessInstance.class.getCanonicalName(), "wpi")
+                .setBody(new BlockStmt().addStatement(new MethodCallExpr(
+                        "super",
+                        new NameExpr(PROCESS),
+                        new NameExpr(VALUE),
+                        new NameExpr(PROCESS_RUNTIME),
+                        new NameExpr("wpi"))));
     }
 
     public String targetTypeName() {

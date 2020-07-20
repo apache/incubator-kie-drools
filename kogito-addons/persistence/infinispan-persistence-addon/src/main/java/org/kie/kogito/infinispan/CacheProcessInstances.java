@@ -31,31 +31,27 @@ import org.kie.kogito.process.impl.marshalling.ProcessInstanceMarshaller;
 
 @SuppressWarnings({"rawtypes"})
 public class CacheProcessInstances implements MutableProcessInstances {
-        
+
     private final RemoteCache<String, byte[]> cache;
     private ProcessInstanceMarshaller marshaller;
-    
     private org.kie.kogito.process.Process<?> process;
-    
-    public CacheProcessInstances(Process<?> process, RemoteCacheManager cacheManager, String templateName, String proto, MessageMarshaller<?>...marshallers) {
-        this.process = process;    
+
+    public CacheProcessInstances(Process<?> process, RemoteCacheManager cacheManager, String templateName, String proto, MessageMarshaller<?>... marshallers) {
+        this.process = process;
         this.cache = cacheManager.administration().getOrCreateCache(process.id() + "_store", ignoreNullOrEmpty(templateName));
-        
         this.marshaller = new ProcessInstanceMarshaller(new ProtoStreamObjectMarshallingStrategy(proto, marshallers));
     }
 
-    
     @Override
     public Optional<? extends ProcessInstance> findById(String id) {
         byte[] data = cache.get(resolveId(id));
         if (data == null) {
             return Optional.empty();
         }
-        
+
         return Optional.of(marshaller.unmarshallProcessInstance(data, process));
     }
 
-    
     @Override
     public Collection<? extends ProcessInstance> values() {
         return cache.values()
@@ -63,7 +59,7 @@ public class CacheProcessInstances implements MutableProcessInstances {
                 .map(data -> marshaller.unmarshallProcessInstance(data, process))
                 .collect(Collectors.toList());
     }
-    
+
     @Override
     public void update(String id, ProcessInstance instance) {
         updateStorage(id, instance, false);
@@ -78,23 +74,21 @@ public class CacheProcessInstances implements MutableProcessInstances {
         if (value == null || value.trim().isEmpty()) {
             return null;
         }
-        
+
         return value;
     }
-
 
     @Override
     public void create(String id, ProcessInstance instance) {
         updateStorage(id, instance, true);
-        
     }
-    
+
     @SuppressWarnings("unchecked")
     protected void updateStorage(String id, ProcessInstance instance, boolean checkDuplicates) {
         if (isActive(instance)) {
             String resolvedId = resolveId(id);
             byte[] data = marshaller.marshallProcessInstance(instance);
-            
+
             if (checkDuplicates) {
                 byte[] existing = cache.putIfAbsent(resolvedId, data);
                 if (existing != null) {
@@ -103,18 +97,16 @@ public class CacheProcessInstances implements MutableProcessInstances {
             } else {
                 cache.put(resolvedId, data);
             }
-            
+
             ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(() -> {
                 byte[] reloaded = cache.get(resolvedId);
                 if (reloaded != null) {
-                    return ((AbstractProcessInstance<?>) marshaller.unmarshallProcessInstance(reloaded, process, (AbstractProcessInstance<?>) instance)).internalGetProcessInstance();                    
+                    return marshaller.unmarshallWorkflowProcessInstance(reloaded, process);
                 }
-                
                 return null;
             });
         }
     }
-
 
     @Override
     public boolean exists(String id) {

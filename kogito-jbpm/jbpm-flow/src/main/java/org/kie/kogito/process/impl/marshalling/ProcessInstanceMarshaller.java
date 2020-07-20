@@ -33,20 +33,19 @@ import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
-import org.kie.kogito.Model;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.impl.AbstractProcess;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 
 public class ProcessInstanceMarshaller {
-    
+
     private Environment env = new EnvironmentImpl();
-    
+
     public ProcessInstanceMarshaller(ObjectMarshallingStrategy... strategies) {
         ObjectMarshallingStrategy[] strats = null;
-        if ( strategies == null ) {
-            strats = new ObjectMarshallingStrategy[]{new SerializablePlaceholderResolverStrategy( ClassObjectMarshallingStrategyAcceptor.DEFAULT  )};
+        if (strategies == null) {
+            strats = new ObjectMarshallingStrategy[]{new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)};
         } else {
             strats = new ObjectMarshallingStrategy[strategies.length + 1];
             int i = 0;
@@ -54,16 +53,16 @@ public class ProcessInstanceMarshaller {
                 strats[i] = strategy;
                 i++;
             }
-            strats[i] = new SerializablePlaceholderResolverStrategy( ClassObjectMarshallingStrategyAcceptor.DEFAULT  );
+            strats[i] = new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT);
         }
-        
-        env.set( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, strats );
+
+        env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, strats);
     }
 
     public byte[] marshallProcessInstance(ProcessInstance<?> processInstance) {
 
         WorkflowProcessInstance pi = ((AbstractProcessInstance<?>) processInstance).internalGetProcessInstance();
-        
+
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
             ProcessMarshallerWriteContext context = new ProcessMarshallerWriteContext(baos,
@@ -77,12 +76,12 @@ public class ProcessInstanceMarshaller {
 
             String processType = pi.getProcess().getType();
             context.stream.writeUTF(processType);
-            
-            org.jbpm.marshalling.impl.ProcessInstanceMarshaller marshaller = ProcessMarshallerRegistry.INSTANCE.getMarshaller( processType );
+
+            org.jbpm.marshalling.impl.ProcessInstanceMarshaller marshaller = ProcessMarshallerRegistry.INSTANCE.getMarshaller(processType);
 
             Object result = marshaller.writeProcessInstance(context, pi);
-            if( marshaller instanceof ProtobufRuleFlowProcessInstanceMarshaller && result != null ) {
-                JBPMMessages.ProcessInstance _instance = (JBPMMessages.ProcessInstance)result;
+            if (marshaller instanceof ProtobufRuleFlowProcessInstanceMarshaller && result != null) {
+                JBPMMessages.ProcessInstance _instance = (JBPMMessages.ProcessInstance) result;
                 PersisterHelper.writeToStreamWithHeader(context, _instance);
             }
             context.close();
@@ -92,36 +91,31 @@ public class ProcessInstanceMarshaller {
             throw new RuntimeException("Error while marshalling process instance", e);
         }
     }
-    
-    public ProcessInstance<?> unmarshallProcessInstance(byte[] data, Process<?> process) {
-        Model m = (Model) process.createModel();
-        AbstractProcessInstance<?> processInstance = (AbstractProcessInstance<?>) process.createInstance(m);
-        return unmarshallProcessInstance(data, process, processInstance);
-    }
-    
-    public ProcessInstance<?> unmarshallProcessInstance(byte[] data, Process<?> process, AbstractProcessInstance<?> processInstance) {
-        try (ByteArrayInputStream bais = new ByteArrayInputStream( data )) {
-            MarshallerReaderContext context = new MarshallerReaderContext( bais,
-                                                                           Collections.singletonMap(process.id(), ((AbstractProcess<?>)process).process()),
-                                                                           null,
-                                                                           null,
-                                                                           null,
-                                                                           this.env
-                                                                          );
+
+    public WorkflowProcessInstance unmarshallWorkflowProcessInstance(byte[] data, Process<?> process) {
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(data)) {
+            MarshallerReaderContext context = new MarshallerReaderContext(bais,
+                                                                          Collections.singletonMap(process.id(), ((AbstractProcess<?>) process).process()),
+                                                                          null,
+                                                                          null,
+                                                                          null,
+                                                                          this.env
+            );
             ObjectInputStream stream = context.stream;
             String processInstanceType = stream.readUTF();
-            
-            org.jbpm.marshalling.impl.ProcessInstanceMarshaller marshaller = ProcessMarshallerRegistry.INSTANCE.getMarshaller( processInstanceType );
+
+            org.jbpm.marshalling.impl.ProcessInstanceMarshaller marshaller = ProcessMarshallerRegistry.INSTANCE.getMarshaller(processInstanceType);
 
             WorkflowProcessInstance pi = (WorkflowProcessInstance) marshaller.readProcessInstance(context);
-     
-            context.close();
 
-            processInstance.internalSetProcessInstance(pi);
-            
-            return processInstance;
+            context.close();
+            return pi;
         } catch (Exception e) {
             throw new RuntimeException("Error while unmarshalling process instance", e);
         }
+    }
+
+    public ProcessInstance<?> unmarshallProcessInstance(byte[] data, Process<?> process) {
+        return ((AbstractProcess<?>) process).createInstance(unmarshallWorkflowProcessInstance(data, process));
     }
 }

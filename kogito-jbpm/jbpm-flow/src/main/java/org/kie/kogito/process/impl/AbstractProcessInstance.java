@@ -78,7 +78,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     protected Supplier<WorkflowProcessInstance> reloadSupplier;
 
-    protected CompletionEventListener completionEventListener = new CompletionEventListener();
+    protected CompletionEventListener completionEventListener;
 
     public AbstractProcessInstance(AbstractProcess<T> process, T variables, ProcessRuntime rt) {
         this(process, variables, null, rt);
@@ -93,25 +93,24 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
         Map<String, Object> map = bind(variables);
         String processId = process.process().getId();
-        this.processInstance = (WorkflowProcessInstance)((CorrelationAwareProcessRuntime) rt).createProcessInstance(processId, correlationKey, map);
-        this.description = processInstance.getDescription();
-        this.status = ProcessInstance.STATE_PENDING;
+        syncProcessInstance((WorkflowProcessInstance) ((CorrelationAwareProcessRuntime) rt).createProcessInstance(processId, correlationKey, map));
     }
 
-    // for marshaller/persistence only
-    public void internalSetProcessInstance(WorkflowProcessInstance processInstance) {
-        if (this.processInstance != null && this.status != ProcessInstance.STATE_PENDING) {
-            throw new IllegalStateException("Impossible to override process instance that already exists");
+    public AbstractProcessInstance(AbstractProcess<T> process, T variables, ProcessRuntime rt, org.kie.api.runtime.process.WorkflowProcessInstance wpi) {
+        this.process = process;
+        this.rt = rt;
+        this.variables = variables;
+        syncProcessInstance((WorkflowProcessInstance) wpi);
+        reconnect();
+    }
+
+    protected void reconnect() {
+        if (processInstance.getKnowledgeRuntime() == null) {
+            processInstance.setKnowledgeRuntime(((InternalProcessRuntime) rt).getInternalKieRuntime());
         }
-        this.processInstance = processInstance;
-        this.status = processInstance.getState();
-        this.id = processInstance.getId();
-        setCorrelationKey(processInstance.getCorrelationKey());
-        this.description = processInstance.getDescription();
-        this.processInstance.setKnowledgeRuntime(((InternalProcessRuntime) rt).getInternalKieRuntime());
-        this.processInstance.reconnect();
-        this.processInstance.setMetaData("KogitoProcessInstance", this);
-        processInstance.addEventListener("processInstanceCompleted:" + this.id, completionEventListener, false);
+        processInstance.reconnect();
+        processInstance.setMetaData("KogitoProcessInstance", this);
+        addCompletionEventListener();
 
         for (org.kie.api.runtime.process.NodeInstance nodeInstance : processInstance.getNodeInstances()) {
             if (nodeInstance instanceof WorkItemNodeInstance) {
@@ -120,6 +119,37 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         }
 
         unbind(variables, processInstance.getVariables());
+    }
+
+    private void addCompletionEventListener() {
+        if (completionEventListener == null) {
+            completionEventListener = new CompletionEventListener();
+            processInstance.addEventListener("processInstanceCompleted:" + id, completionEventListener, false);
+        }
+    }
+
+    private void removeCompletionListener() {
+        if (completionEventListener != null) {
+            processInstance.removeEventListener("processInstanceCompleted:" + id, completionEventListener, false);
+            completionEventListener = null;
+        }
+    }
+
+    protected void disconnect() {
+        if (processInstance == null) {
+            return;
+        }
+
+        processInstance.disconnect();
+        processInstance.setMetaData("KogitoProcessInstance", null);
+    }
+
+    private void syncProcessInstance(WorkflowProcessInstance wpi) {
+        processInstance = wpi;
+        status = wpi.getState();
+        id = wpi.getId();
+        description = wpi.getDescription();
+        setCorrelationKey(wpi.getCorrelationKey());
     }
 
     private void setCorrelationKey(String businessKey){
@@ -138,7 +168,11 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         if (this.status == STATE_ERROR) {
             this.processError = buildProcessError();
         }
-        this.processInstance = null;
+        removeCompletionListener();
+        if (processInstance.getKnowledgeRuntime() != null) {
+            disconnect();
+        }
+        processInstance = null;
     }
 
     public void start() {
@@ -161,7 +195,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         if (correlationKey != null && process.instances.exists(id)) {
             throw new ProcessInstanceDuplicatedException(correlationKey.getName());
         }
-        processInstance.addEventListener("processInstanceCompleted:" + this.id, completionEventListener, false);
+        addCompletionEventListener();
         org.kie.api.runtime.process.ProcessInstance processInstance = this.rt.startProcessInstance(this.id, trigger);
         addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).create(pi.id(), pi));
         unbind(variables, processInstance.getVariables());
@@ -257,7 +291,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         processInstance.setState(STATE_ACTIVE);
         ((InternalProcessRuntime) rt).getProcessInstanceManager().addProcessInstance(this.processInstance, this.correlationKey);
         this.id = processInstance.getId();
-        processInstance.addEventListener("processInstanceCompleted:" + this.id, completionEventListener, false);
+        addCompletionEventListener();
         if (referenceId != null) {
             processInstance.setReferenceId(referenceId);
         }
@@ -316,6 +350,8 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             this.processInstance = reloadSupplier.get();
             if (this.processInstance == null) {
                 throw new ProcessInstanceNotFoundException(id);
+            } else {
+                reconnect();
             }
         }
 
@@ -345,15 +381,14 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
                 .stream()
                 .filter(ni -> ni instanceof WorkItemNodeInstance && ((WorkItemNodeInstance) ni).getWorkItem().enforce(policies))
                 .map(ni -> new BaseWorkItem(ni.getId(),
-                        ((WorkItemNodeInstance) ni).getWorkItemId(),
-                        (String) ((WorkItemNodeInstance) ni).getWorkItem().getParameters().getOrDefault("TaskName", ni.getNodeName()),
-                        ((WorkItemNodeInstance) ni).getWorkItem().getState(),
-                        ((WorkItemNodeInstance) ni).getWorkItem().getPhaseId(),
-                        ((WorkItemNodeInstance) ni).getWorkItem().getPhaseStatus(),
-                        ((WorkItemNodeInstance) ni).getWorkItem().getParameters(),
-                        ((WorkItemNodeInstance) ni).getWorkItem().getResults()))
+                                            ((WorkItemNodeInstance) ni).getWorkItemId(),
+                                            (String) ((WorkItemNodeInstance) ni).getWorkItem().getParameters().getOrDefault("TaskName", ni.getNodeName()),
+                                            ((WorkItemNodeInstance) ni).getWorkItem().getState(),
+                                            ((WorkItemNodeInstance) ni).getWorkItem().getPhaseId(),
+                                            ((WorkItemNodeInstance) ni).getWorkItem().getPhaseStatus(),
+                                            ((WorkItemNodeInstance) ni).getWorkItem().getParameters(),
+                                            ((WorkItemNodeInstance) ni).getWorkItem().getResults()))
                 .collect(Collectors.toList());
-
     }
 
     @Override
@@ -397,15 +432,9 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     protected void removeOnFinish() {
         if (processInstance.getState() != ProcessInstance.STATE_ACTIVE && processInstance.getState() != ProcessInstance.STATE_ERROR) {
-            processInstance.removeEventListener("processInstanceCompleted:" + processInstance.getId(), completionEventListener, false);
-
-            this.status = processInstance.getState();
-            this.id = processInstance.getId();
-            setCorrelationKey(processInstance.getCorrelationKey());
-            this.description = processInstance.getDescription();
-
+            removeCompletionListener();
+            syncProcessInstance(processInstance);
             addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).remove(pi.id()));
-
         } else {
             addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).update(pi.id(), pi));
         }
@@ -422,8 +451,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         try {
             for (Field f : variables.getClass().getDeclaredFields()) {
                 f.setAccessible(true);
-                Object v = null;
-                v = f.get(variables);
+                Object v = f.get(variables);
                 vmap.put(f.getName(), v);
             }
         } catch (IllegalAccessException e) {

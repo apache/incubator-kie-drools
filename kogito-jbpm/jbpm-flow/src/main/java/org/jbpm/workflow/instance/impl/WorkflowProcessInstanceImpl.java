@@ -198,9 +198,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
             result = new ArrayList<>(result);
             for (NodeInstance nodeInstance : nodeInstances) {
                 if (nodeInstance instanceof NodeInstanceContainer) {
-                    result
-                            .addAll(((org.jbpm.workflow.instance.NodeInstanceContainer) nodeInstance)
-                                    .getNodeInstances(true));
+                    result.addAll(((org.jbpm.workflow.instance.NodeInstanceContainer) nodeInstance).getNodeInstances(true));
                 }
             }
         }

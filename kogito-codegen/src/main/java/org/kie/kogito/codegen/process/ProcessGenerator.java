@@ -56,6 +56,7 @@ import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
@@ -175,8 +176,7 @@ public class ProcessGenerator {
                 .addParameter(String.class.getCanonicalName(), BUSINESS_KEY)
                 .addParameter(modelTypeName, "value")
                 .setType(processInstanceFQCN)
-                .setBody(new BlockStmt()
-                                 .addStatement(returnStmt));
+                .setBody(new BlockStmt().addStatement(returnStmt));
         return methodDeclaration;
     }
     
@@ -190,8 +190,7 @@ public class ProcessGenerator {
                 .addModifier(Modifier.Keyword.PUBLIC)
                 .addParameter(Model.class.getCanonicalName(), "value")
                 .setType(processInstanceFQCN)
-                .setBody(new BlockStmt()
-                                 .addStatement(returnStmt));
+                .setBody(new BlockStmt().addStatement(returnStmt));
         return methodDeclaration;
     }
     
@@ -208,11 +207,29 @@ public class ProcessGenerator {
                 .addParameter(String.class.getCanonicalName(), BUSINESS_KEY)
                 .addParameter(Model.class.getCanonicalName(), "value")
                 .setType(processInstanceFQCN)
-                .setBody(new BlockStmt()
-                                 .addStatement(returnStmt));
+                .setBody(new BlockStmt().addStatement(returnStmt));
         return methodDeclaration;
     }
 
+    private MethodDeclaration createInstanceGenericWithWorkflowInstanceMethod(String processInstanceFQCN) {
+        MethodDeclaration methodDeclaration = new MethodDeclaration();
+
+        ReturnStmt returnStmt = new ReturnStmt(
+                new ObjectCreationExpr()
+                        .setType(processInstanceFQCN)
+                        .setArguments(NodeList.nodeList(
+                                new ThisExpr(),
+                                new MethodCallExpr(new ThisExpr(), "createModel"),
+                                createProcessRuntime(),
+                                new NameExpr("wpi"))));
+
+        methodDeclaration.setName("createInstance")
+                .addModifier(Modifier.Keyword.PUBLIC)
+                .addParameter(WorkflowProcessInstance.class.getCanonicalName(), "wpi")
+                .setType(processInstanceFQCN)
+                .setBody(new BlockStmt().addStatement(returnStmt));
+        return methodDeclaration;
+    }
 
     private MethodDeclaration process(ProcessMetaData processMetaData) {
         return processMetaData.getGeneratedClassModel()
@@ -408,6 +425,7 @@ public class ProcessGenerator {
                 .addMember(createModelMethod)
                 .addMember(createInstanceGenericMethod(processInstanceFQCN))
                 .addMember(createInstanceGenericWithBusinessKeyMethod(processInstanceFQCN))
+                .addMember(createInstanceGenericWithWorkflowInstanceMethod(processInstanceFQCN))
                 .addMember(internalConfigure(processMetaData))
                 .addMember(internalRegisterListeners(processMetaData))
                 .addMember(process(processMetaData));

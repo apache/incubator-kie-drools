@@ -46,15 +46,13 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-
 public class FileSystemProcessInstancesTest {
 
     private SecurityPolicy securityPolicy = SecurityPolicy.of(new StaticIdentityProvider("john"));
 
     @Test
     public void testBasicFlow() {
-
-        BpmnProcess process = (BpmnProcess) BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
         process.setProcessInstancesFactory(new FileSystemProcessInstancesFactory());
         process.configure();
 
@@ -65,12 +63,11 @@ public class FileSystemProcessInstancesTest {
         assertThat(processInstance.status()).isEqualTo(STATE_ACTIVE);
         assertThat(processInstance.description()).isEqualTo("User Task");
 
-        assertThat(process.instances().values()).hasSize(1);
-
         FileSystemProcessInstances fileSystemBasedStorage = (FileSystemProcessInstances) process.instances();
-        verify(fileSystemBasedStorage, times(1)).create(any(), any());
-        verify(fileSystemBasedStorage, times(1)).setMetadata(any(), eq(FileSystemProcessInstances.PI_DESCRIPTION), eq("User Task"));
-        verify(fileSystemBasedStorage, times(1)).setMetadata(any(), eq(FileSystemProcessInstances.PI_STATUS), eq("1"));
+        assertThat(fileSystemBasedStorage.exists(processInstance.id())).isTrue();
+        verify(fileSystemBasedStorage).create(any(), any());
+        verify(fileSystemBasedStorage).setMetadata(any(), eq(FileSystemProcessInstances.PI_DESCRIPTION), eq("User Task"));
+        verify(fileSystemBasedStorage).setMetadata(any(), eq(FileSystemProcessInstances.PI_STATUS), eq("1"));
 
         String testVar = (String) processInstance.variables().get("test");
         assertThat(testVar).isEqualTo("test");
@@ -84,25 +81,24 @@ public class FileSystemProcessInstancesTest {
         assertThat(processInstance.status()).isEqualTo(STATE_COMPLETED);
 
         fileSystemBasedStorage = (FileSystemProcessInstances) process.instances();
-        verify(fileSystemBasedStorage, times(2)).remove(any());
+        verify(fileSystemBasedStorage, times(2)).remove(processInstance.id());
     }
-    
+
     @Test
     public void testBasicFlowWithStartFrom() {
-
-        BpmnProcess process = (BpmnProcess) BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
         process.setProcessInstancesFactory(new FileSystemProcessInstancesFactory());
         process.configure();
 
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
 
         processInstance.startFrom("_2");
-        
+
         assertThat(processInstance.status()).isEqualTo(STATE_ACTIVE);
         assertThat(processInstance.description()).isEqualTo("User Task");
 
         FileSystemProcessInstances fileSystemBasedStorage = (FileSystemProcessInstances) process.instances();
-        verify(fileSystemBasedStorage, times(1)).update(any(), any());
+        verify(fileSystemBasedStorage).update(any(), any());
 
         String testVar = (String) processInstance.variables().get("test");
         assertThat(testVar).isEqualTo("test");
@@ -114,17 +110,16 @@ public class FileSystemProcessInstancesTest {
         assertThat(workItem.getParameters().get("ActorId")).isEqualTo("john");
         processInstance.completeWorkItem(workItem.getId(), null, securityPolicy);
         assertThat(processInstance.status()).isEqualTo(STATE_COMPLETED);
-        
+
         fileSystemBasedStorage = (FileSystemProcessInstances) process.instances();
         verify(fileSystemBasedStorage, times(2)).remove(any());
     }
-    
+
     @Test
     public void testBasicFlowControlledByUnitOfWork() {
-
         UnitOfWorkManager uowManager = new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory());
         ProcessConfig config = new StaticProcessConfig(new DefaultWorkItemHandlerConfig(), new DefaultProcessEventListenerConfig(), uowManager, null);
-        BpmnProcess process = (BpmnProcess) BpmnProcess.from(config, new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
+        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
         process.setProcessInstancesFactory(new FileSystemProcessInstancesFactory());
         process.configure();
 
@@ -132,19 +127,18 @@ public class FileSystemProcessInstancesTest {
 
         UnitOfWork uow = uowManager.newUnitOfWork();
         uow.start();
-        
+
         processInstance.start();
-        
+
         uow.end();
         assertThat(processInstance.status()).isEqualTo(STATE_ACTIVE);
         assertThat(processInstance.description()).isEqualTo("User Task");
 
-        assertThat(process.instances().values()).hasSize(1);
-        
         FileSystemProcessInstances fileSystemBasedStorage = (FileSystemProcessInstances) process.instances();
-        verify(fileSystemBasedStorage, times(1)).create(any(), any());
-        verify(fileSystemBasedStorage, times(1)).setMetadata(any(), eq(FileSystemProcessInstances.PI_DESCRIPTION), eq("User Task"));
-        verify(fileSystemBasedStorage, times(1)).setMetadata(any(), eq(FileSystemProcessInstances.PI_STATUS), eq("1"));
+        assertThat(fileSystemBasedStorage.exists(processInstance.id())).isTrue();
+        verify(fileSystemBasedStorage).create(processInstance.id(), processInstance);
+        verify(fileSystemBasedStorage).setMetadata(any(), eq(FileSystemProcessInstances.PI_DESCRIPTION), eq("User Task"));
+        verify(fileSystemBasedStorage).setMetadata(any(), eq(FileSystemProcessInstances.PI_STATUS), eq("1"));
 
         String testVar = (String) processInstance.variables().get("test");
         assertThat(testVar).isEqualTo("test");
@@ -154,20 +148,20 @@ public class FileSystemProcessInstancesTest {
         WorkItem workItem = processInstance.workItems(securityPolicy).get(0);
         assertThat(workItem).isNotNull();
         assertThat(workItem.getParameters().get("ActorId")).isEqualTo("john");
-        
+
         uow = uowManager.newUnitOfWork();
         uow.start();
         processInstance.completeWorkItem(workItem.getId(), null, securityPolicy);
         uow.end();
-        
+
         assertThat(processInstance.status()).isEqualTo(STATE_COMPLETED);
-        
+
         fileSystemBasedStorage = (FileSystemProcessInstances) process.instances();
-        verify(fileSystemBasedStorage, times(1)).remove(any());
+        verify(fileSystemBasedStorage).remove(processInstance.id());
     }
 
     private class FileSystemProcessInstancesFactory extends KogitoProcessInstancesFactory {
-                
+
         @Override
         public FileSystemProcessInstances createProcessInstances(Process<?> process) {
             FileSystemProcessInstances instances = spy(super.createProcessInstances(process));

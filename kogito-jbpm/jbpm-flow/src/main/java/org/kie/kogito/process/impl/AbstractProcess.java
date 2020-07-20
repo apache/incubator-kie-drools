@@ -29,6 +29,7 @@ import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.StartNode;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessRuntime;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.Model;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ExactExpirationTime;
@@ -86,6 +87,8 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
         return createInstance(businessKey, m);
     }
 
+    public abstract ProcessInstance<? extends Model> createInstance(WorkflowProcessInstance wpi);
+    
     @Override
     public ProcessInstances<T> instances() {
         return instances;

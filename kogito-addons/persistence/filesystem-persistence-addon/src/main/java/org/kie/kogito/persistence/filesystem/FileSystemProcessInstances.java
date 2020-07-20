@@ -71,7 +71,7 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
         if (Files.notExists(processInstanceStorage)) {
             return Optional.empty();
         }
-        return (Optional<? extends ProcessInstance>) Optional.of(marshaller.unmarshallProcessInstance(readBytesFromFile(processInstanceStorage), process));
+        return Optional.of(marshaller.unmarshallProcessInstance(readBytesFromFile(processInstanceStorage), process));
 
     }
 
@@ -157,13 +157,11 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
 
             try {
                 byte[] reloaded = readBytesFromFile(processInstanceStorage);
-
-                return ((AbstractProcessInstance<?>) marshaller.unmarshallProcessInstance(reloaded, process, (AbstractProcessInstance<?>) instance)).internalGetProcessInstance();
+                return marshaller.unmarshallWorkflowProcessInstance(reloaded, process);
             } catch (RuntimeException e) {
                 LOGGER.error("Unexpected exception thrown when reloading process instance {}", instance.id(), e);
                 return null;
             }
-
         });
     }
 
