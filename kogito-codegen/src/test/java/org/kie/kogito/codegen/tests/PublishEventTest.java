@@ -149,7 +149,6 @@ public class PublishEventTest extends AbstractCodegenTest {
     
     @Test
     public void testBasicUserTaskProcess() throws Exception {
-        
         Application app = generateCodeProcessesOnly("usertask/UserTasksProcess.bpmn2");        
         assertThat(app).isNotNull();
                 
@@ -177,7 +176,7 @@ public class PublishEventTest extends AbstractCodegenTest {
         assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
         assertThat(body.getNodeInstances()).extractingResultOf("getLeaveTime").containsNull();// human task is active thus null for leave time
         
-        assertUserTaskInstanceEvent(events.get(1), "First Task", null, "1", "Ready", "UserTasksProcess");
+        assertUserTaskInstanceEvent(events.get(1), "FirstTask", null, "1", "Ready", "UserTasksProcess", "First Task");
         
         
         List<WorkItem> workItems = processInstance.workItems(SecurityPolicy.of(new StaticIdentityProvider("john")));
@@ -196,8 +195,8 @@ public class PublishEventTest extends AbstractCodegenTest {
         assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
         assertThat(body.getNodeInstances()).extractingResultOf("getLeaveTime").containsNull();// human task is active thus null for leave time
         
-        assertUserTaskInstanceEvent(events.get(1), "Second Task", null, "1", "Ready", "UserTasksProcess");
-        assertUserTaskInstanceEvent(events.get(2), "First Task", null, "1", "Completed", "UserTasksProcess");
+        assertUserTaskInstanceEvent(events.get(1), "SecondTask", null, "1", "Ready", "UserTasksProcess", "Second Task");
+        assertUserTaskInstanceEvent(events.get(2), "FirstTask", null, "1", "Completed", "UserTasksProcess", "First Task");
         
         workItems = processInstance.workItems(SecurityPolicy.of(new StaticIdentityProvider("john")));
         assertEquals(1, workItems.size());
@@ -215,7 +214,7 @@ public class PublishEventTest extends AbstractCodegenTest {
         assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
         assertThat(body.getNodeInstances()).extractingResultOf("getLeaveTime").allMatch(v -> v != null);
         
-        assertUserTaskInstanceEvent(events.get(1), "Second Task", null, "1", "Completed", "UserTasksProcess");
+        assertUserTaskInstanceEvent(events.get(1), "SecondTask", null, "1", "Completed", "UserTasksProcess", "Second Task");
     }
     
     @Test
@@ -249,7 +248,7 @@ public class PublishEventTest extends AbstractCodegenTest {
         assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
         assertThat(body.getNodeInstances()).extractingResultOf("getLeaveTime").containsNull();// human task is active thus null for leave time
         
-        assertUserTaskInstanceEvent(events.get(1), "First Task", null, "1", "Ready", "UserTasksProcess");
+        assertUserTaskInstanceEvent(events.get(1), "FirstTask", null, "1", "Ready", "UserTasksProcess", "First Task");
     }
     
     @Test
@@ -601,13 +600,14 @@ public class PublishEventTest extends AbstractCodegenTest {
         return body;
     }
     
-    protected UserTaskInstanceEventBody assertUserTaskInstanceEvent(DataEvent<?> event, String taskName, String taskDescription, String taskPriority, String taskState, String processId) {
+    protected UserTaskInstanceEventBody assertUserTaskInstanceEvent(DataEvent<?> event, String taskName, String taskDescription, String taskPriority, String taskState, String processId, String nodeName) {
         assertThat(event).isInstanceOf(UserTaskInstanceDataEvent.class);
         UserTaskInstanceEventBody body = ((UserTaskInstanceDataEvent)event).getData();
         assertThat(body).isNotNull();
         assertThat(body.getId()).isNotNull();
         assertThat(body.getTaskName()).isEqualTo(taskName);
         assertThat(body.getTaskDescription()).isEqualTo(taskDescription);
+        assertThat(body.getReferenceName()).isEqualTo(nodeName);
         assertThat(body.getTaskPriority()).isEqualTo(taskPriority);
         assertThat(body.getStartDate()).isNotNull();
         assertThat(body.getState()).isEqualTo(taskState);

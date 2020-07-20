@@ -29,6 +29,10 @@ import org.kie.api.runtime.process.HumanTaskWorkItem;
 public class HumanTaskNodeInstance extends WorkItemNodeInstance {
 
     private static final long serialVersionUID = 510l;
+    private static final String NODE_NAME = "NodeName";
+    private static final String DESCRIPTION = "Description";
+    private static final String PRIORITY = "Priority";
+    private static final String TASK_NAME = "TaskName";
     private String separator = System.getProperty("org.jbpm.ht.user.separator", ",");
     
     private static final String ACTOR_ID = "ActorId";
@@ -55,10 +59,10 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
             workItem.setParameter(ACTOR_ID, actorId);
         }
         
-        workItem.setTaskName((String) workItem.getParameter("NodeName"));
-        workItem.setTaskDescription((String) workItem.getParameter("Description"));
-        workItem.setTaskPriority((String) workItem.getParameter("Priority"));
-        workItem.setReferenceName((String) workItem.getParameter("TaskName"));
+        workItem.setTaskName((String) workItem.getParameter(TASK_NAME));
+        workItem.setTaskDescription((String) workItem.getParameter(DESCRIPTION));
+        workItem.setTaskPriority((String) workItem.getParameter(PRIORITY));
+        workItem.setReferenceName((String) workItem.getParameter(NODE_NAME));
         
         return workItem;
     }
