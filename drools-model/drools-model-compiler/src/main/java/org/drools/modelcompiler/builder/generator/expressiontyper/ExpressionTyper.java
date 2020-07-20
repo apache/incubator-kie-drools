@@ -757,13 +757,18 @@ public class ExpressionTyper {
 
     private Class[] parseNodeArguments( NodeWithArguments<?> methodCallExpr ) {
         Class[] argsType = new Class[methodCallExpr.getArguments().size()];
-        for (int i = 0; i < methodCallExpr.getArguments().size(); i++) {
-            Expression arg = methodCallExpr.getArgument( i );
-            TypedExpressionResult typedArg = toTypedExpressionFromMethodCallOrField( arg );
-            TypedExpression typedExpr = typedArg.getTypedExpression()
-                    .orElseThrow(() -> new NoSuchElementException("Node argument doesn't contain typed expression!"));
-            argsType[i] = toRawClass( typedExpr.getType() );
-            methodCallExpr.setArgument( i, typedExpr.getExpression() );
+        context.setRegisterPropertyReactivity( false );
+        try {
+            for (int i = 0; i < methodCallExpr.getArguments().size(); i++) {
+                Expression arg = methodCallExpr.getArgument( i );
+                TypedExpressionResult typedArg = toTypedExpressionFromMethodCallOrField( arg );
+                TypedExpression typedExpr = typedArg.getTypedExpression()
+                        .orElseThrow( () -> new NoSuchElementException( "Node argument doesn't contain typed expression!" ) );
+                argsType[i] = toRawClass( typedExpr.getType() );
+                methodCallExpr.setArgument( i, typedExpr.getExpression() );
+            }
+        } finally {
+            context.setRegisterPropertyReactivity( true );
         }
         return argsType;
     }

@@ -852,4 +852,74 @@ public class PropertyReactivityTest extends BaseModelTest {
 
         assertEquals(41, p.getAge());
     }
+
+    public static int dummy(int i) {
+        return i;
+    }
+
+    @Test
+    public void testWatchCallingExternalMethod() {
+        // DROOLS-5514
+        final String str =
+                "import static " + this.getClass().getCanonicalName() + ".dummy;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $p : Person( dummy(age) < 50 ) @watch(!*, age)\n" +
+                "then\n" +
+                "    modify($p) { setAge( $p.getAge()+1 ) };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.fireAllRules();
+
+        assertEquals(50, p.getAge());
+    }
+
+    @Test
+    public void testWatchCallingExternalMethod2() {
+        // DROOLS-5514
+        final String str =
+                "import static " + this.getClass().getCanonicalName() + ".dummy;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $p : Person( dummy(age) < 50 )\n" +
+                "then\n" +
+                "    modify($p) { setName( $p.getName()+\"1\" ) };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.fireAllRules(3);
+
+        assertEquals("Mario111", p.getName());
+    }
+
+    @Test
+    public void testWatchCallingExternalMethod3() {
+        // DROOLS-5514
+        final String str =
+                "import static " + this.getClass().getCanonicalName() + ".dummy;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $p : Person( dummy(age) < 50 ) @watch(!*, age)\n" +
+                "then\n" +
+                "    modify($p) { setName( $p.getName()+\"1\" ) };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.fireAllRules(3);
+
+        assertEquals("Mario1", p.getName());
+    }
 }
