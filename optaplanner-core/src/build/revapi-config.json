@@ -8221,6 +8221,14 @@
           "classSimpleName": "TerminationConfig",
           "elementKind": "class",
           "justification": "XStream was replaced by JAXB in the solver configuration"
+        },
+        {
+          "code": "java.class.removed",
+          "old": "class org.optaplanner.core.config.util.KeyAsElementMapConverter",
+          "package": "org.optaplanner.core.config.util",
+          "classSimpleName": "KeyAsElementMapConverter",
+          "elementKind": "class",
+          "justification": "XStream was replaced by JAXB in the solver configuration"
         }
       ]
     }

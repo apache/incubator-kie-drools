@@ -34,7 +34,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -56,12 +55,11 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.io.XmlUnmarshallingException;
 import org.optaplanner.core.impl.io.jaxb.JaxbIO;
 import org.optaplanner.core.impl.solver.thread.DefaultSolverThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.thoughtworks.xstream.converters.ConversionException;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -140,15 +138,9 @@ public class PlannerBenchmarkConfig {
                 throw new IllegalArgumentException(errorMessage);
             }
             return createFromXmlInputStream(in, classLoader);
-        } catch (ConversionException e) {
-            String lineNumber = e.get("line number");
+        } catch (XmlUnmarshallingException e) {
             throw new IllegalArgumentException("Unmarshalling of benchmarkConfigResource (" + benchmarkConfigResource
-                    + ") fails on line number (" + lineNumber + ")."
-                    + (Objects.equals(e.get("required-type"), "java.lang.Class")
-                            ? "\n  Maybe the classname on line number (" + lineNumber
-                                    + ") is surrounded by whitespace, which is invalid."
-                            : ""),
-                    e);
+                    + ") failed.", e);
         } catch (IOException e) {
             throw new IllegalArgumentException("Reading the benchmarkConfigResource (" + benchmarkConfigResource + ") failed.",
                     e);

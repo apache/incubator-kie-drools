@@ -30,7 +30,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -56,6 +55,7 @@ import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
+import org.optaplanner.core.impl.io.XmlUnmarshallingException;
 import org.optaplanner.core.impl.io.jaxb.JaxbIO;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
@@ -68,8 +68,6 @@ import org.optaplanner.core.impl.solver.termination.BasicPlumbingTermination;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.thoughtworks.xstream.converters.ConversionException;
 
 /**
  * To read it from XML, use {@link #createFromXmlResource(String)}.
@@ -112,14 +110,8 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                 throw new IllegalArgumentException(errorMessage);
             }
             return createFromXmlInputStream(in, classLoader);
-        } catch (ConversionException e) {
-            String lineNumber = e.get("line number");
-            throw new IllegalArgumentException("Unmarshalling of solverConfigResource (" + solverConfigResource
-                    + ") fails on line number (" + lineNumber + ")."
-                    + (Objects.equals(e.get("required-type"), "java.lang.Class")
-                            ? "\n  Maybe the classname on line number (" + lineNumber
-                                    + ") is surrounded by whitespace, which is invalid."
-                            : ""),
+        } catch (XmlUnmarshallingException e) {
+            throw new IllegalArgumentException("Unmarshalling of solverConfigResource (" + solverConfigResource + ") failed.",
                     e);
         } catch (IOException e) {
             throw new IllegalArgumentException("Reading the solverConfigResource (" + solverConfigResource + ") failed.", e);
