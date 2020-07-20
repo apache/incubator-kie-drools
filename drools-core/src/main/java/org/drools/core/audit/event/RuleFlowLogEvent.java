@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.kie.api.runtime.process.ProcessInstance;
+
 /**
  * A ruleflow event logged by the WorkingMemoryLogger.
  * It is a snapshot of the event as it was thrown by the working memory.
@@ -30,6 +32,11 @@ public class RuleFlowLogEvent extends LogEvent {
     private String processId;
     private String processName;
     private Object processInstanceId;
+
+    public RuleFlowLogEvent(final int type,
+                            ProcessInstance processInstance) {
+        this(type, processInstance.getProcessId(), processInstance.getProcessName(), processInstance.getId());
+    }
 
     /**
      * Create a new ruleflow log event.
