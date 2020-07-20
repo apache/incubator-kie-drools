@@ -59,7 +59,8 @@ import org.reflections.util.ConfigurationBuilder;
 @Mojo(name = "process-model-classes",
       requiresDependencyResolution = ResolutionScope.RUNTIME,
       requiresProject = true,
-      defaultPhase = LifecyclePhase.PROCESS_CLASSES)
+      defaultPhase = LifecyclePhase.PROCESS_CLASSES,
+      threadSafe = true)
 public class ProcessClassesMojo extends AbstractKieMojo {
         
     private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.getInstance().loadCompiler(JavaDialectConfiguration.CompilerType.NATIVE, "1.8");

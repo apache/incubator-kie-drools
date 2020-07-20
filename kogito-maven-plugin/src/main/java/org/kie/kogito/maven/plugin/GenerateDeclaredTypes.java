@@ -26,9 +26,10 @@ import org.kie.kogito.codegen.rules.DeclaredTypeCodegen;
 import org.kie.kogito.maven.plugin.util.MojoUtil;
 
 @Mojo(name = "generateDeclaredTypes",
-        requiresDependencyResolution = ResolutionScope.NONE,
-        requiresProject = true,
-        defaultPhase = LifecyclePhase.GENERATE_SOURCES)
+      requiresDependencyResolution = ResolutionScope.NONE,
+      requiresProject = true,
+      defaultPhase = LifecyclePhase.GENERATE_SOURCES,
+      threadSafe = true)
 public class GenerateDeclaredTypes extends AbstractKieMojo {
 
 

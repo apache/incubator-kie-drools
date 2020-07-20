@@ -51,9 +51,10 @@ import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 import org.kie.kogito.maven.plugin.util.MojoUtil;
 
 @Mojo(name = "generateModel",
-        requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
-        requiresProject = true,
-        defaultPhase = LifecyclePhase.COMPILE)
+      requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
+      requiresProject = true,
+      defaultPhase = LifecyclePhase.COMPILE,
+      threadSafe = true)
 public class GenerateModelMojo extends AbstractKieMojo {
 
     public static final List<String> DROOLS_EXTENSIONS = Arrays.asList(".drl", ".xls", ".xlsx", ".csv");
