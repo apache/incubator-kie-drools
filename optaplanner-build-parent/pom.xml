@@ -65,14 +65,14 @@
     <!-- Jacoco plugin configurations -->
     <version.jacoco.plugin>0.8.5</version.jacoco.plugin>
     <!-- JaCoCo coverage data file location -->
-    <!--suppress UnresolvedMavenProperty-->
-    <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
     <jacoco.exec.file>${project.root.dir}/target/jacoco.exec</jacoco.exec.file>
     <jacoco.agent.argLine/>
     <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
     <!-- Latest release to be used by api-compatibility-check to check backwards compatibility of the API. -->
     <revapi.oldKieVersion>7.39.0.Final</revapi.oldKieVersion>
     <revapi.newKieVersion>${project.version}</revapi.newKieVersion>
+    <!--suppress UnresolvedMavenProperty-->
+    <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
   </properties>
 
   <dependencyManagement>
