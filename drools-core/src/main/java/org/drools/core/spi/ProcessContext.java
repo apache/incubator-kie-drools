@@ -16,83 +16,21 @@
 
 package org.drools.core.spi;
 
+import java.util.Collection;
+
 import org.drools.core.ClassObjectFilter;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.CaseAssignment;
 import org.kie.api.runtime.process.CaseData;
-import org.kie.api.runtime.process.NodeInstance;
-import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-
-public class ProcessContext implements org.kie.api.runtime.process.ProcessContext {
-    
-    private static Logger logger = LoggerFactory.getLogger(ProcessContext.class);
-    
-    private KieRuntime kruntime;
-    private ProcessInstance processInstance;
-    private NodeInstance nodeInstance;
+public class ProcessContext extends AbstractProcessContext {
     
     public ProcessContext(KieRuntime kruntime) {
-        this.kruntime = kruntime;
+        super(kruntime);
     }
-
-    public ProcessInstance getProcessInstance() {
-        if (processInstance != null) {
-            return processInstance;
-        }
-        if (nodeInstance != null) {
-            return (ProcessInstance) nodeInstance.getProcessInstance();
-        }
-        return null;
-    }
-
-    public void setProcessInstance(ProcessInstance processInstance) {
-        this.processInstance = processInstance;
-    }
-    
-    public NodeInstance getNodeInstance() {
-        return nodeInstance;
-    }
-
-    public void setNodeInstance(NodeInstance nodeInstance) {
-        this.nodeInstance = nodeInstance;
-    }
-    
-    public Object getVariable(String variableName) {
-        if (nodeInstance != null) {
-            return nodeInstance.getVariable(variableName);
-        } else {
-            return ((WorkflowProcessInstance) getProcessInstance()).getVariable(variableName);
-        }
-    }
-    
-    public void setVariable(String variableName, Object value) {
-        if (nodeInstance != null) {
-            nodeInstance.setVariable(variableName, value);
-        } else {
-            ((WorkflowProcessInstance) getProcessInstance()).setVariable(variableName, value);
-        }
-    }
-
-    public KieRuntime getKieRuntime() {
-        return kruntime;
-    }
-    
-    public KieRuntime getKnowledgeRuntime() {
-    	return kruntime;
-    }
-    
-    public Logger getLogger() { 
-        return logger;
-    }
-
     public CaseData getCaseData() {
 
-        Collection<? extends Object> objects = kruntime.getObjects(new ClassObjectFilter(CaseData.class));
+        Collection<? extends Object> objects = getKieRuntime().getObjects(new ClassObjectFilter(CaseData.class));
         if (objects.size() == 0) {
             return null;
         }
@@ -101,7 +39,7 @@ public class ProcessContext implements org.kie.api.runtime.process.ProcessContex
     }
 
     public CaseAssignment getCaseAssignment() {
-        Collection<? extends Object> objects = kruntime.getObjects(new ClassObjectFilter(CaseAssignment.class));
+        Collection<? extends Object> objects = getKieRuntime().getObjects(new ClassObjectFilter(CaseAssignment.class));
         if (objects.size() == 0) {
             return null;
         }

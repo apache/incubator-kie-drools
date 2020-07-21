@@ -50,6 +50,7 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
+import org.drools.core.spi.AbstractProcessContext;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Tuple;
@@ -522,14 +523,14 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
                     }
                     Map.Entry<Object, String> entry = nodeInstances.entrySet().iterator().next();
                     ProcessInstance processInstance = workingMemory.getProcessInstance(entry.getKey());
-                    org.drools.core.spi.ProcessContext context = new org.drools.core.spi.ProcessContext(workingMemory.getKnowledgeRuntime());
+                    AbstractProcessContext context = createProcessContext();
                     context.setProcessInstance(processInstance);
                     String nodeInstance = entry.getValue();
                     String[] nodeInstanceIds = nodeInstance.split(":");
                     NodeInstanceContainer container = (WorkflowProcessInstance) processInstance;
                     for (int i = 0; i < nodeInstanceIds.length; i++) {
                         for (NodeInstance subNodeInstance: container.getNodeInstances()) {
-                            if (subNodeInstance.getId() == Long.parseLong(nodeInstanceIds[i])) {
+                            if ( sameNodeInstance( subNodeInstance, nodeInstanceIds[i] ) ) {
                                 if (i == nodeInstanceIds.length - 1) {
                                     context.setNodeInstance(subNodeInstance);
                                     break;
@@ -544,6 +545,14 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
             }
         }
         return null;
+    }
+
+    protected AbstractProcessContext createProcessContext() {
+        return new org.drools.core.spi.ProcessContext(workingMemory.getKnowledgeRuntime());
+    }
+
+    protected boolean sameNodeInstance( NodeInstance subNodeInstance, String nodeInstanceId ) {
+        return subNodeInstance.getId() == Long.parseLong( nodeInstanceId );
     }
 
     public KieRuntime getKieRuntime() {
