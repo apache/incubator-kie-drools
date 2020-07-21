@@ -79,14 +79,14 @@ import org.kie.internal.process.CorrelationKey;
 /**
  * Wrapper of StatefulKnowledgeSessionImpl so to intercept call from RHS internal Drools execution and proxy or delegate method call as appropriate.
  */
-public final class WrappedStatefulKnowledgeSessionForRHS
+public class WrappedStatefulKnowledgeSessionForRHS
         implements KieSession,
                    InternalWorkingMemoryActions,
                    EventSupport,
                    KieRuntime,
                    Externalizable {
 
-    private StatefulKnowledgeSessionImpl delegate;
+    protected StatefulKnowledgeSessionImpl delegate;
 
     public WrappedStatefulKnowledgeSessionForRHS(WorkingMemory workingMemory) {
         super();
@@ -779,9 +779,7 @@ public final class WrappedStatefulKnowledgeSessionForRHS
         return delegate.getSessionClock();
     }
 
-    @Override
     public ProcessInstance startProcessFromNodeIds(String processId, Map<String, Object> params, String... nodeIds) {
         return delegate.startProcessFromNodeIds(processId, params, nodeIds);
     }
-
 }

@@ -92,12 +92,16 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     }
 
     public DefaultKnowledgeHelper(final WorkingMemory workingMemory) {
-        this.workingMemory = new WrappedStatefulKnowledgeSessionForRHS( workingMemory );
+        this.workingMemory = createWrappedSession( workingMemory );
     }
 
     public DefaultKnowledgeHelper(Activation activation, final WorkingMemory workingMemory) {
-        this.workingMemory = new WrappedStatefulKnowledgeSessionForRHS( workingMemory );
+        this.workingMemory = createWrappedSession( workingMemory );
         this.activation = activation;
+    }
+
+    protected WrappedStatefulKnowledgeSessionForRHS createWrappedSession( WorkingMemory workingMemory ) {
+        return new WrappedStatefulKnowledgeSessionForRHS( workingMemory );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
