@@ -16,6 +16,7 @@
 package org.drools.workbench.models.guided.dtable.backend.util;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -176,27 +177,49 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
         }
 
         @Override
+        protected void generatePredicateSingleFieldConstraint(final SingleFieldConstraint constr,
+                                                              final LHSGeneratorContext gctx) {
+            Optional<StringBuffer> interpolatedResult = getInterpolatedResult(constr.getValue());
+            if (!interpolatedResult.isPresent()) {
+                return;
+            }
+
+            buf.append("eval( ");
+            buf.append(interpolatedResult.get().toString());
+            buf.append(" )");
+            gctx.setHasOutput(true);
+        }
+
+        @Override
         public void visitFreeFormLine(final FreeFormLine ffl) {
+            final Optional<StringBuffer> interpolatedResult = getInterpolatedResult(ffl.getText());
+            if (!interpolatedResult.isPresent()) {
+                return;
+            }
+
+            //Don't update the original FreeFormLine object
+            FreeFormLine fflClone = new FreeFormLine();
+            fflClone.setText(interpolatedResult.get().toString());
+            super.visitFreeFormLine(fflClone);
+        }
+
+        protected Optional<StringBuffer> getInterpolatedResult(final String text) {
             StringBuffer interpolatedResult = new StringBuffer();
-            final Matcher matcherTemplateKey = patternTemplateKey.matcher(ffl.getText());
+            final Matcher matcherTemplateKey = patternTemplateKey.matcher(text);
             while (matcherTemplateKey.find()) {
                 String varName = matcherTemplateKey.group(1);
                 String value = rowDataProvider.getTemplateKeyValue(varName);
 
                 // All vars must be populated for a single FreeFormLine
                 if (StringUtils.isEmpty(value)) {
-                    return;
+                    return Optional.empty();
                 }
 
                 matcherTemplateKey.appendReplacement(interpolatedResult,
                                                      value);
             }
             matcherTemplateKey.appendTail(interpolatedResult);
-
-            //Don't update the original FreeFormLine object
-            FreeFormLine fflClone = new FreeFormLine();
-            fflClone.setText(interpolatedResult.toString());
-            super.visitFreeFormLine(fflClone);
+            return Optional.of(interpolatedResult);
         }
 
         @Override
