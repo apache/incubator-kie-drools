@@ -17,22 +17,24 @@
 package org.kie.kogito.tracing.decision.event.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 public class MessageFEELEvent {
 
-    private final FEELEvent.Severity severity;
-    private final String message;
+    private MessageFEELEventSeverity severity;
+    private String message;
     @JsonInclude(NON_NULL)
-    private final Integer line;
+    private Integer line;
     @JsonInclude(NON_NULL)
-    private final Integer column;
+    private Integer column;
     @JsonInclude(NON_NULL)
-    private final MessageExceptionField sourceException;
+    private MessageExceptionField sourceException;
 
-    public MessageFEELEvent(FEELEvent.Severity severity, String message, Integer line, Integer column, MessageExceptionField sourceException) {
+    private MessageFEELEvent() {
+    }
+
+    public MessageFEELEvent(MessageFEELEventSeverity severity, String message, Integer line, Integer column, MessageExceptionField sourceException) {
         this.severity = severity;
         this.message = message;
         this.line = line == null || line < 0 ? null : line;
@@ -40,7 +42,7 @@ public class MessageFEELEvent {
         this.sourceException = sourceException;
     }
 
-    public FEELEvent.Severity getSeverity() {
+    public MessageFEELEventSeverity getSeverity() {
         return severity;
     }
 
@@ -58,18 +60,5 @@ public class MessageFEELEvent {
 
     public MessageExceptionField getSourceException() {
         return sourceException;
-    }
-
-    public static MessageFEELEvent from(FEELEvent feelEvent) {
-        if (feelEvent == null) {
-            return null;
-        }
-        return new MessageFEELEvent(
-                feelEvent.getSeverity(),
-                feelEvent.getMessage(),
-                feelEvent.getLine(),
-                feelEvent.getColumn(),
-                MessageExceptionField.from(feelEvent.getSourceException())
-        );
     }
 }

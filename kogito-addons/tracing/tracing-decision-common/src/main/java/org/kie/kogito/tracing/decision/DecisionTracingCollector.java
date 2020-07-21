@@ -24,10 +24,10 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import io.cloudevents.json.Json;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.kogito.tracing.decision.aggregator.Aggregator;
 import org.kie.kogito.tracing.decision.aggregator.DefaultAggregator;
+import org.kie.kogito.tracing.decision.event.CloudEventUtils;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 import org.kie.kogito.tracing.decision.terminationdetector.CounterTerminationDetector;
 import org.kie.kogito.tracing.decision.terminationdetector.TerminationDetector;
@@ -40,7 +40,7 @@ public class DecisionTracingCollector {
 
     private final Map<String, List<EvaluateEvent>> cacheMap;
     private final Map<String, TerminationDetector> terminationDetectorMap;
-    private final Aggregator<?> aggregator;
+    private final Aggregator aggregator;
     private final Consumer<String> payloadConsumer;
     private final BiFunction<String, String, DMNModel> modelSupplier;
     private final Supplier<TerminationDetector> terminationDetectorSupplier;
@@ -50,7 +50,7 @@ public class DecisionTracingCollector {
     }
 
     public DecisionTracingCollector(
-            Aggregator<?> aggregator,
+            Aggregator aggregator,
             Consumer<String> payloadConsumer,
             BiFunction<String, String, DMNModel> modelSupplier,
             Supplier<TerminationDetector> terminationDetectorSupplier
@@ -88,6 +88,6 @@ public class DecisionTracingCollector {
     }
 
     private String aggregate(DMNModel model, String executionId, List<EvaluateEvent> events) {
-        return Json.encode(aggregator.aggregate(model, executionId, events));
+        return CloudEventUtils.encode(aggregator.aggregate(model, executionId, events));
     }
 }

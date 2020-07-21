@@ -38,6 +38,10 @@ import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
 import org.kie.dmn.api.core.event.BeforeInvokeBKMEvent;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.kogito.decision.DecisionExecutionIdUtils;
+import org.kie.kogito.tracing.decision.event.trace.TraceResourceId;
+
+import static org.kie.kogito.tracing.decision.event.evaluate.EvaluateEventType.AFTER_EVALUATE_DECISION_SERVICE;
+import static org.kie.kogito.tracing.decision.event.evaluate.EvaluateEventType.BEFORE_EVALUATE_DECISION_SERVICE;
 
 public class EvaluateEvent {
 
@@ -153,6 +157,12 @@ public class EvaluateEvent {
         return decisionTableResult;
     }
 
+    public TraceResourceId toTraceResourceId() {
+        return getType() == BEFORE_EVALUATE_DECISION_SERVICE || getType() == AFTER_EVALUATE_DECISION_SERVICE
+               ? new TraceResourceId(getModelNamespace(), getModelName(), getNodeId(), getNodeName())
+               : new TraceResourceId(getModelNamespace(), getModelName());
+    }
+
     public static EvaluateEvent from(BeforeEvaluateAllEvent event) {
         return new EvaluateEvent(EvaluateEventType.BEFORE_EVALUATE_ALL, System.currentTimeMillis(), System.nanoTime(), event.getResult(), event.getModelNamespace(), event.getModelName());
     }
@@ -186,11 +196,11 @@ public class EvaluateEvent {
     }
 
     public static EvaluateEvent from(BeforeEvaluateDecisionServiceEvent event) {
-        return new EvaluateEvent(EvaluateEventType.BEFORE_EVALUATE_DECISION_SERVICE, System.currentTimeMillis(), System.nanoTime(), event.getResult(), event.getDecisionService());
+        return new EvaluateEvent(BEFORE_EVALUATE_DECISION_SERVICE, System.currentTimeMillis(), System.nanoTime(), event.getResult(), event.getDecisionService());
     }
 
     public static EvaluateEvent from(AfterEvaluateDecisionServiceEvent event) {
-        return new EvaluateEvent(EvaluateEventType.AFTER_EVALUATE_DECISION_SERVICE, System.currentTimeMillis(), System.nanoTime(), event.getResult(), event.getDecisionService());
+        return new EvaluateEvent(AFTER_EVALUATE_DECISION_SERVICE, System.currentTimeMillis(), System.nanoTime(), event.getResult(), event.getDecisionService());
     }
 
     public static EvaluateEvent from(BeforeEvaluateDecisionTableEvent event) {

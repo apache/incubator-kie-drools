@@ -14,22 +14,13 @@
  *  limitations under the License.
  */
 
-package org.kie.kogito.tracing.decision.event.evaluate;
+package org.kie.kogito.tracing.decision.event.trace;
 
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-public class EvaluateEventUtils {
-
-    static <I, O> List<O> map(List<I> input, Function<I, O> mapper) {
-        return input == null
-                ? null
-                : input.stream().map(mapper).collect(Collectors.toList());
-    }
-
-    private EvaluateEventUtils() {
-        throw new IllegalStateException("Utility class");
-    }
-
+public enum TraceExecutionStepType {
+    DMN_BKM_EVALUATION,
+    DMN_BKM_INVOCATION,
+    DMN_CONTEXT_ENTRY,
+    DMN_DECISION,
+    DMN_DECISION_SERVICE,
+    DMN_DECISION_TABLE
 }

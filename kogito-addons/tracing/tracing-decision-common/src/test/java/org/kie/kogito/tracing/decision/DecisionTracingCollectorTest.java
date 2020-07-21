@@ -21,12 +21,12 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import io.cloudevents.json.Json;
 import io.cloudevents.v1.CloudEventImpl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.feel.util.Pair;
+import org.kie.kogito.tracing.decision.event.CloudEventUtils;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 import org.kie.kogito.tracing.decision.event.trace.TraceEvent;
 import org.kie.kogito.tracing.decision.mock.MockDefaultAggregator;
@@ -103,8 +103,8 @@ class DecisionTracingCollectorTest {
         int evaluateDecisionServiceIndex = evaluateAllIndex == 1 ? 0 : 1;
 
         List<String> payloads = payloadCaptor.getAllValues();
-        assertEquals(Json.encode(aggregatorCalls.get(EVALUATE_ALL_EXECUTION_ID).getRight()), payloads.get(evaluateAllIndex));
-        assertEquals(Json.encode(aggregatorCalls.get(EVALUATE_DECISION_SERVICE_EXECUTION_ID).getRight()), payloads.get(evaluateDecisionServiceIndex));
+        assertEquals(CloudEventUtils.encode(aggregatorCalls.get(EVALUATE_ALL_EXECUTION_ID).getRight()), payloads.get(evaluateAllIndex));
+        assertEquals(CloudEventUtils.encode(aggregatorCalls.get(EVALUATE_DECISION_SERVICE_EXECUTION_ID).getRight()), payloads.get(evaluateDecisionServiceIndex));
     }
 
 }

@@ -16,22 +16,20 @@
 
 package org.kie.kogito.tracing.decision.event.common;
 
-import org.kie.api.builder.Message;
-
 public enum InternalMessageType {
-    DMN_MODEL_NOT_FOUND(Message.Level.ERROR, "DMN model not found"),
-    NO_EXECUTION_STEP_HIERARCHY(Message.Level.WARNING, "Can't build execution step hierarchy"),
-    NOT_ENOUGH_DATA(Message.Level.ERROR, "Not enough data to build a valid TraceEvent");
+    DMN_MODEL_NOT_FOUND(MessageLevel.ERROR, "DMN model not found"),
+    NO_EXECUTION_STEP_HIERARCHY(MessageLevel.WARNING, "Can't build execution step hierarchy"),
+    NOT_ENOUGH_DATA(MessageLevel.ERROR, "Not enough data to build a valid TraceEvent");
 
-    private final Message.Level level;
+    private final MessageLevel level;
     private final String text;
 
-    InternalMessageType(Message.Level level, String text) {
+    InternalMessageType(MessageLevel level, String text) {
         this.level = level;
         this.text = text;
     }
 
-    public Message.Level getLevel() {
+    public MessageLevel getLevel() {
         return level;
     }
 

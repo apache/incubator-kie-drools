@@ -16,22 +16,31 @@
 
 package org.kie.kogito.tracing.decision.event.trace;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.kie.dmn.api.core.DMNModel;
-import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-import static org.kie.kogito.tracing.decision.event.evaluate.EvaluateEventType.AFTER_EVALUATE_DECISION_SERVICE;
-import static org.kie.kogito.tracing.decision.event.evaluate.EvaluateEventType.BEFORE_EVALUATE_DECISION_SERVICE;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TraceResourceId {
 
-    private final String modelNamespace;
-    private final String modelName;
+    @JsonProperty("modelNamespace")
+    private String modelNamespace;
+
+    @JsonProperty("modelName")
+    private String modelName;
+
+    @JsonProperty("decisionServiceId")
     @JsonInclude(NON_NULL)
-    private final String decisionServiceId;
+    private String decisionServiceId;
+
+    @JsonProperty("decisionServiceName")
     @JsonInclude(NON_NULL)
-    private final String decisionServiceName;
+    private String decisionServiceName;
+
+    private TraceResourceId() {
+    }
 
     public TraceResourceId(String modelNamespace, String modelName) {
         this(modelNamespace, modelName, null, null);
@@ -58,21 +67,5 @@ public class TraceResourceId {
 
     public String getDecisionServiceName() {
         return decisionServiceName;
-    }
-
-    public static TraceResourceId from(DMNModel model) {
-        if (model == null) {
-            return null;
-        }
-        return new TraceResourceId(model.getNamespace(), model.getName());
-    }
-
-    public static TraceResourceId from(EvaluateEvent event) {
-        if (event == null) {
-            return null;
-        }
-        return event.getType() == BEFORE_EVALUATE_DECISION_SERVICE || event.getType() == AFTER_EVALUATE_DECISION_SERVICE
-               ? new TraceResourceId(event.getModelNamespace(), event.getModelName(), event.getNodeId(), event.getNodeName())
-               : new TraceResourceId(event.getModelNamespace(), event.getModelName());
     }
 }

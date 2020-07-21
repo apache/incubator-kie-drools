@@ -20,9 +20,10 @@ import java.util.List;
 
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
+import org.kie.kogito.tracing.decision.event.EventUtils;
 import org.kie.kogito.tracing.decision.event.common.Message;
 
-import static org.kie.kogito.tracing.decision.event.evaluate.EvaluateEventUtils.map;
+import static org.kie.kogito.tracing.decision.event.EventUtils.map;
 
 public class EvaluateDecisionResult {
 
@@ -75,7 +76,7 @@ public class EvaluateDecisionResult {
                 dr.getDecisionName(),
                 dr.getEvaluationStatus(),
                 dr.getResult(),
-                map(dr.getMessages(), Message::from),
+                map(dr.getMessages(), EventUtils::messageFrom),
                 dr.hasErrors()
         );
     }
