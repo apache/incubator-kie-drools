@@ -61,7 +61,7 @@ public class AllSetButLastBitMask extends SingleLongBitMask implements BitMask, 
 
     @Override
     public boolean isAllSet() {
-        return false;
+        return true;
     }
 
     @Override

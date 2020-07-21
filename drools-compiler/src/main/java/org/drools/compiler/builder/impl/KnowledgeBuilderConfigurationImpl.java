@@ -33,6 +33,8 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.xml.RulesSemanticModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule.CompilationCache;
 import org.drools.compiler.rule.builder.DroolsCompilerComponentFactory;
+import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.compiler.rule.builder.dialect.mvel.MVELDialectConfiguration;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
@@ -58,6 +60,7 @@ import org.kie.internal.builder.conf.DefaultDialectOption;
 import org.kie.internal.builder.conf.DefaultPackageNameOption;
 import org.kie.internal.builder.conf.DumpDirOption;
 import org.kie.internal.builder.conf.EvaluatorOption;
+import org.kie.internal.builder.conf.ExternaliseCanonicalModelLambdaOption;
 import org.kie.internal.builder.conf.GroupDRLsInKieBasesByFolderOption;
 import org.kie.internal.builder.conf.KBuilderSeverityOption;
 import org.kie.internal.builder.conf.KnowledgeBuilderOption;
@@ -68,7 +71,6 @@ import org.kie.internal.builder.conf.ProcessStringEscapesOption;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.builder.conf.SingleValueKnowledgeBuilderOption;
 import org.kie.internal.builder.conf.TrimCellsInDTableOption;
-import org.kie.internal.builder.conf.ExternaliseCanonicalModelLambdaOption;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,10 +114,10 @@ public class KnowledgeBuilderConfigurationImpl
     public static final String                DEFAULT_PACKAGE = "defaultpkg";
 
     private static final int                  DEFAULT_PARALLEL_RULES_BUILD_THRESHOLD = 10;
-    
-    private Map<String, DialectConfiguration> dialectConfigurations;
 
-    private DefaultDialectOption              defaultDialect;
+    private final Map<String, DialectConfiguration> dialectConfigurations = new HashMap<>();
+
+    private DefaultDialectOption              defaultDialect = DefaultDialectOption.get("java");
     
     private ParallelRulesBuildThresholdOption parallelRulesBuildThreshold = ParallelRulesBuildThresholdOption.get(DEFAULT_PARALLEL_RULES_BUILD_THRESHOLD);
 
@@ -239,8 +241,6 @@ public class KnowledgeBuilderConfigurationImpl
         			this.chainedProperties.getProperty(ParallelRulesBuildThresholdOption.PROPERTY_NAME, 
         												String.valueOf(DEFAULT_PARALLEL_RULES_BUILD_THRESHOLD)));
         
-        this.dialectConfigurations = new HashMap<String, DialectConfiguration>();
-
         buildDialectConfigurationMap();
 
         this.accumulateFunctions = AccumulateUtil.buildAccumulateFunctionsMap(chainedProperties, getClassLoader());
@@ -383,34 +383,17 @@ public class KnowledgeBuilderConfigurationImpl
     }
 
     private void buildDialectConfigurationMap() {
-        //DialectRegistry registry = new DialectRegistry();
+        DialectConfiguration mvel = new MVELDialectConfiguration();
+        mvel.init(this);
+        dialectConfigurations.put("mvel", mvel);
+
+        DialectConfiguration java = new JavaDialectConfiguration();
+        java.init(this);
+        dialectConfigurations.put("java", java);
+
         Map<String, String> dialectProperties = new HashMap<String, String>();
-        this.chainedProperties.mapStartsWith(dialectProperties,
-                "drools.dialect",
-                false);
-        setDefaultDialect(dialectProperties.remove(DefaultDialectOption.PROPERTY_NAME));
-
-        for (Map.Entry<String, String> entry : dialectProperties.entrySet()) {
-            String str = entry.getKey();
-            String dialectName = str.substring(str.lastIndexOf(".") + 1);
-            String dialectClass = entry.getValue();
-            addDialect(dialectName, dialectClass);
-        }
-    }
-
-    public void addDialect(String dialectName,
-            String dialectClass) {
-        Class<?> cls = null;
-        try {
-            cls = getClassLoader().loadClass(dialectClass);
-            DialectConfiguration dialectConf = (DialectConfiguration) cls.newInstance();
-            dialectConf.init(this);
-            addDialect(dialectName,
-                    dialectConf);
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to load dialect '" + dialectClass + ":" + dialectName + ":" + ((cls != null) ? cls.getName() : "null") + "'",
-                    e);
-        }
+        this.chainedProperties.mapStartsWith(dialectProperties, "drools.dialect", false);
+        setDefaultDialect(dialectProperties.get(DefaultDialectOption.PROPERTY_NAME));
     }
 
     public void addDialect(String dialectName,

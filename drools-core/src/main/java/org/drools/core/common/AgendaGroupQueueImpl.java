@@ -55,7 +55,7 @@ public class AgendaGroupQueueImpl
 
     private InternalWorkingMemory workingMemory;
     private boolean               autoDeactivate = true;
-    private Map<Long, String>     nodeInstances  = new ConcurrentHashMap<Long, String>();
+    private Map<Object, String>     nodeInstances  = new ConcurrentHashMap<>();
 
     private volatile              boolean hasRuleFlowLister;
 
@@ -201,13 +201,13 @@ public class AgendaGroupQueueImpl
         this.autoDeactivate = autoDeactivate;
     }
 
-    public void addNodeInstance(Long processInstanceId,
+    public void addNodeInstance(Object processInstanceId,
                                 String nodeInstanceId) {
         nodeInstances.put( processInstanceId,
                            nodeInstanceId );
     }
 
-    public void removeNodeInstance(Long processInstanceId,
+    public void removeNodeInstance(Object processInstanceId,
                                    String nodeInstanceId) {
         nodeInstances.put( processInstanceId,
                            nodeInstanceId );
@@ -234,7 +234,7 @@ public class AgendaGroupQueueImpl
     }
 
     @Override
-    public Map<Long, String> getNodeInstances() {
+    public Map<Object, String> getNodeInstances() {
         return nodeInstances;
     }
 

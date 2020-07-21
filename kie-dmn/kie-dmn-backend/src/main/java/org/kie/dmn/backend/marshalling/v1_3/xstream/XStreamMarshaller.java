@@ -34,10 +34,12 @@ import com.thoughtworks.xstream.io.xml.AbstractPullReader;
 import com.thoughtworks.xstream.io.xml.QNameMap;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 import com.thoughtworks.xstream.io.xml.StaxWriter;
+import com.thoughtworks.xstream.security.TypeHierarchyPermission;
 import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
 import org.kie.dmn.backend.marshalling.CustomStaxWriter;
+import org.kie.dmn.backend.marshalling.v1x.DMNXStream;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase;
@@ -93,10 +95,9 @@ import org.kie.dmn.model.v1_3.dmndi.DMNStyle;
 import org.kie.dmn.model.v1_3.dmndi.DiagramElement;
 import org.kie.dmn.model.v1_3.dmndi.Dimension;
 import org.kie.dmn.model.v1_3.dmndi.Point;
+import org.kie.soup.xstream.XStreamUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.kie.soup.xstream.XStreamUtils.createTrustingXStream;
 
 public class XStreamMarshaller
         implements DMNMarshaller {
@@ -190,7 +191,9 @@ public class XStreamMarshaller
     }
 
     private XStream newXStream() {
-        XStream xStream = createTrustingXStream( staxDriver, Definitions.class.getClassLoader() );
+        XStream xStream = XStreamUtils.createNonTrustingXStream(staxDriver, Definitions.class.getClassLoader(), DMNXStream::from);
+        xStream.addPermission(new TypeHierarchyPermission(QName.class));
+        xStream.addPermission(new TypeHierarchyPermission(KieDMNModelInstrumentedBase.class));
         
         xStream.alias("artifact", TArtifact.class);
         xStream.alias("definitions", TDefinitions.class);

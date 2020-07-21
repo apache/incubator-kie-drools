@@ -312,14 +312,6 @@ public class AlphaNode extends ObjectSource
         public boolean isAssociatedWith(Rule rule) {
             return sink.isAssociatedWith(rule);
         }
-
-        public boolean thisNodeEquals(final Object object) {
-            return false;
-        }
-
-        public int nodeHashCode() {
-            return this.hashCode();
-        }
     }
 
     public BitMask calculateDeclaredMask(Class modifiedClass, List<String> settableProperties) {

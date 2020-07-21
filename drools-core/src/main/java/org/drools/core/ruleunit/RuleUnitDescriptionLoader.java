@@ -62,11 +62,21 @@ public class RuleUnitDescriptionLoader {
         if (nonExistingUnits.contains(ruleUnit)) {
             return null;
         }
-        try {
-            return RuleUnitComponentFactory.get().createRuleUnitDescription( pkg, (Class<?>) pkg.getTypeResolver().resolveType(ruleUnit) );
-        } catch (final ClassNotFoundException e) {
-            nonExistingUnits.add(ruleUnit);
+        RuleUnitComponentFactory ruleUnitComponentFactory = RuleUnitComponentFactory.get();
+        // short-circuit if there is no support for units
+        if (ruleUnitComponentFactory == null) {
             return null;
+        }
+        try {
+            return ruleUnitComponentFactory.createRuleUnitDescription(pkg, pkg.getTypeResolver().resolveType(ruleUnit) );
+        } catch (final ClassNotFoundException e) {
+            RuleUnitDescription ruleUnitDescription = ruleUnitComponentFactory.createRuleUnitDescription(pkg, ruleUnit);
+            if (ruleUnitDescription == null) {
+                nonExistingUnits.add(ruleUnit);
+                return null;
+            } else {
+                return ruleUnitDescription;
+            }
         }
     }
 }

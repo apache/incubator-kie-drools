@@ -63,7 +63,7 @@ public class EmptyButLastBitMask extends SingleLongBitMask implements BitMask, E
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return true;
     }
 
     @Override

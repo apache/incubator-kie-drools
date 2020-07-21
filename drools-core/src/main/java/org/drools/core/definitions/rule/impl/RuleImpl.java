@@ -60,6 +60,7 @@ import org.kie.internal.definition.rule.InternalRule;
 import org.kie.internal.security.KiePolicyHelper;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 
 public class RuleImpl implements Externalizable,
                                  Wireable,
@@ -867,7 +868,9 @@ public class RuleImpl implements Externalizable,
 
     public void setRuleUnitClassName( String ruleUnitClassName ) {
         this.ruleUnitClassName = ruleUnitClassName;
-        setAgendaGroup( ruleUnitClassName );
+        if (isLegacyRuleUnit()) {
+            setAgendaGroup( ruleUnitClassName );
+        }
     }
 
     public boolean hasRuleUnit() {

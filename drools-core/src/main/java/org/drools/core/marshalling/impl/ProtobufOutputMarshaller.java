@@ -304,10 +304,10 @@ public class ProtobufOutputMarshaller {
                     .setHasRuleFlowLister( group.isRuleFlowListener() )
                     .setActivatedForRecency( group.getActivatedForRecency() );
 
-            Map<Long, String> nodeInstances = group.getNodeInstances();
-            for ( Map.Entry<Long, String> entry : nodeInstances.entrySet() ) {
+            Map<Object, String> nodeInstances = group.getNodeInstances();
+            for ( Map.Entry<Object, String> entry : nodeInstances.entrySet() ) {
                 org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.Builder _nib = ProtobufMessages.Agenda.AgendaGroup.NodeInstance.newBuilder();
-                _nib.setProcessInstanceId( entry.getKey() );
+                _nib.setProcessInstanceId( (Long) entry.getKey() );
                 _nib.setNodeInstanceId( entry.getValue() );
                 _agb.addNodeInstance( _nib.build() );
             }

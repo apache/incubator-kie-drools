@@ -36,10 +36,6 @@ import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
-
 public abstract class AbstractTerminalNode extends BaseNode implements TerminalNode, PathEndNode, Externalizable {
 
     private LeftTupleSource tupleSource;
@@ -106,7 +102,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         return tupleSource.getPositionInPath() + 1;
     }
 
-    public void initDeclaredMask(BuildContext context) {
+    protected void initDeclaredMask(BuildContext context) {
         if ( !(unwrapTupleSource() instanceof LeftInputAdapterNode)) {
             // RTN's not after LIANode are not relevant for property specific, so don't block anything.
             setDeclaredMask( AllSetBitMask.get() );
@@ -145,6 +141,9 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         }
 
         setInferredMask( getInferredMask().resetAll( getNegativeMask() ) );
+        if ( getNegativeMask().isAllSet() && !getDeclaredMask().isAllSet() ) {
+            setInferredMask( getInferredMask().setAll( getDeclaredMask() ) );
+        }
     }
 
     public LeftTupleSource unwrapTupleSource() {
