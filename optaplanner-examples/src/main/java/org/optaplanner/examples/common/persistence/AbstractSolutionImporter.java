@@ -17,6 +17,7 @@
 package org.optaplanner.examples.common.persistence;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -62,11 +63,13 @@ public abstract class AbstractSolutionImporter<Solution_> extends LoggingMain {
         if (possibleSolutionSize == null) {
             return null;
         }
-        String possibleSolutionSizeString = possibleSolutionSize.toString();
         if (possibleSolutionSize.compareTo(BigInteger.valueOf(1000L)) < 0) {
-            return possibleSolutionSizeString;
+            return possibleSolutionSize.toString();
         }
-        int decimalDigits = possibleSolutionSizeString.length();
+        BigDecimal possibleSolutionSizeBigDecimal = new BigDecimal(possibleSolutionSize);
+        int decimalDigits = possibleSolutionSizeBigDecimal.scale() < 0
+                ? possibleSolutionSizeBigDecimal.precision() - possibleSolutionSizeBigDecimal.scale()
+                : possibleSolutionSizeBigDecimal.precision();
         return "10^" + decimalDigits;
     }
 
