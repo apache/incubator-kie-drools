@@ -243,7 +243,7 @@ public class KnowledgeBuilderConfigurationImpl
         
         buildDialectConfigurationMap();
 
-        this.accumulateFunctions = AccumulateUtil.buildAccumulateFunctionsMap(chainedProperties, getClassLoader());
+        this.accumulateFunctions = AccumulateUtil.buildAccumulateFunctionsMap(chainedProperties, getFunctionFactoryClassLoader() );
 
         buildEvaluatorRegistry();
 
@@ -266,6 +266,10 @@ public class KnowledgeBuilderConfigurationImpl
 
         this.kieComponentFactory = createKieComponentFactory();
         this.classBuilderFactory = kieComponentFactory.getClassBuilderFactory();
+    }
+
+    protected ClassLoader getFunctionFactoryClassLoader() {
+        return getClassLoader();
     }
 
     private void buildSeverityMap() {
@@ -572,7 +576,7 @@ public class KnowledgeBuilderConfigurationImpl
     }
 
     private void buildEvaluatorRegistry() {
-        this.evaluatorRegistry = new EvaluatorRegistry(getClassLoader());
+        this.evaluatorRegistry = new EvaluatorRegistry( getFunctionFactoryClassLoader() );
         Map<String, String> temp = new HashMap<String, String>();
         this.chainedProperties.mapStartsWith(temp,
                 EvaluatorOption.PROPERTY_NAME,

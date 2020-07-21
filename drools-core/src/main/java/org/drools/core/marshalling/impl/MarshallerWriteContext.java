@@ -16,6 +16,14 @@
 
 package org.drools.core.marshalling.impl;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -31,14 +39,6 @@ import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.marshalling.MarshallerFactory;
-
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Map;
 
 public class MarshallerWriteContext extends ObjectOutputStream {
     public final MarshallerWriteContext                                            stream;
@@ -104,7 +104,7 @@ public class MarshallerWriteContext extends ObjectOutputStream {
         if ( resolverStrategyFactory == null ) {
             ObjectMarshallingStrategy[] strats = (ObjectMarshallingStrategy[]) env.get( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES );
             if ( strats == null ) {
-                strats = new ObjectMarshallingStrategy[]{MarshallerFactory.newSerializeMarshallingStrategy()};
+                strats = getMarshallingStrategy();
             }
             this.objectMarshallingStrategyStore = new ObjectMarshallingStrategyStoreImpl( strats );
         }
@@ -120,6 +120,10 @@ public class MarshallerWriteContext extends ObjectOutputStream {
         this.marshalWorkItems = marshalWorkItems;
         this.env = env;
 
+    }
+
+    protected ObjectMarshallingStrategy[] getMarshallingStrategy() {
+        return new ObjectMarshallingStrategy[]{MarshallerFactory.newSerializeMarshallingStrategy()};
     }
 
     public Integer getStrategyIndex(ObjectMarshallingStrategy strategy) {

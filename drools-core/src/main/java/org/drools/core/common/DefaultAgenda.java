@@ -993,11 +993,15 @@ public class DefaultAgenda
                 Object value = declaration.getValue( workingMemory,
                                                      activation.getTuple().get( declaration ).getObject() );
                 if ( value instanceof ProcessInstance ) {
-                    return processInstanceId.equals(((ProcessInstance) value).getId());
+                    return sameProcessInstance( processInstanceId, ( ProcessInstance ) value );
                 }
             }
         }
         return true;
+    }
+
+    protected boolean sameProcessInstance( Object processInstanceId, ProcessInstance value ) {
+        return processInstanceId.equals( value.getId());
     }
 
     @Override

@@ -1891,6 +1891,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return getProcessRuntime().getProcessInstances();
     }
 
+    public ProcessInstance getProcessInstance(Object processInstanceId) {
+        return getProcessInstance( (long) processInstanceId );
+    }
+
     public ProcessInstance getProcessInstance(long processInstanceId) {
         return getProcessRuntime().getProcessInstance( processInstanceId );
     }

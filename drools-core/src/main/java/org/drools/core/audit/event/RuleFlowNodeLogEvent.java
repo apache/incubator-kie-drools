@@ -20,11 +20,22 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.kie.api.runtime.process.ProcessInstance;
+
 public class RuleFlowNodeLogEvent extends RuleFlowLogEvent {
     
     private String nodeId;
     private String nodeName;
     private String nodeInstanceId;
+
+    public RuleFlowNodeLogEvent(final int type,
+                                final String nodeId,
+                                final String nodeName,
+                                final String nodeInstanceId,
+                                ProcessInstance processInstance) {
+        this(type, nodeId, nodeName, nodeInstanceId,
+                processInstance.getProcessId(), processInstance.getProcessName(), processInstance.getId());
+    }
 
     /**
      * Create a new ruleflow node log event.
@@ -39,7 +50,7 @@ public class RuleFlowNodeLogEvent extends RuleFlowLogEvent {
                                 final String nodeInstanceId,
                                 final String processId,
                                 final String processName,
-                                final long processInstanceId) {
+                                final Object processInstanceId) {
         super( type, processId, processName, processInstanceId );
         this.nodeId = nodeId;
         this.nodeName = nodeName;
