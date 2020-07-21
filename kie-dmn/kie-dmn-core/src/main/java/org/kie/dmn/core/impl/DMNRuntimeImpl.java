@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
@@ -57,7 +58,6 @@ import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.runtime.FEELFunction;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -150,8 +150,13 @@ public class DMNRuntimeImpl
         return result;
     }
 
-    public PMMLRuntime getPMMLRuntime(String sanitizedKieBase) {
-        return runtimeKB.getPMMLRuntime(sanitizedKieBase);
+    /**
+     *
+     * @param sanitizedKieBase The "sanitized" model name - that is also used for the kiebase
+     * @return
+     */
+    public KieRuntimeFactory getKieRuntimeFactory(String sanitizedKieBase) {
+        return runtimeKB.getKiePMMLRuntimeFactory(sanitizedKieBase);
     }
 
     private void evaluateByNameInternal( DMNModel model, DMNContext context, DMNResultImpl result, String name ) {

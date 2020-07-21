@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import org.kie.api.io.Resource;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
@@ -40,8 +41,6 @@ import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
-
 public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvocationEvaluator {
 
     private static final Logger LOG = LoggerFactory.getLogger(DMNKiePMMLTrustyInvocationEvaluator.class);
@@ -54,8 +53,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
     @Override
     protected PMML4Result getPMML4Result(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
         PMMLContext pmmlContext = getPMMLPMMLContext(UUID.randomUUID().toString(), model, dmnr);
-        String sanitizedKieBase = getSanitizedPackageName(model);
-        PMMLRuntime pmmlRuntime = getPMMLRuntime(eventManager, sanitizedKieBase);
+        PMMLRuntime pmmlRuntime = getPMMLRuntime(eventManager);
         return pmmlRuntime.evaluate(model, pmmlContext);
     }
 
@@ -104,8 +102,14 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         }
     }
 
-    private PMMLRuntime getPMMLRuntime(DMNRuntimeEventManager eventManager, String sanitizedKieBase) {
-        return ((DMNRuntimeImpl) eventManager.getRuntime()).getPMMLRuntime(sanitizedKieBase);
+    /**
+     *
+     * @param eventManager
+     * @return
+     */
+    private PMMLRuntime getPMMLRuntime(DMNRuntimeEventManager eventManager) {
+        KieRuntimeFactory kieFactory = ((DMNRuntimeImpl) eventManager.getRuntime()).getKieRuntimeFactory(model);
+        return kieFactory.get(PMMLRuntime.class);
     }
 
     private PMMLContext getPMMLPMMLContext(String correlationId, String modelName, DMNResult dmnr) {

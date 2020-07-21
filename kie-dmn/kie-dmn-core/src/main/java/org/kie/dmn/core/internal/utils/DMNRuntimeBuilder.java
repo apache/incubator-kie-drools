@@ -23,8 +23,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
@@ -32,6 +30,7 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.io.impl.ClassPathResource;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.DMNModel;
@@ -52,11 +51,8 @@ import org.kie.dmn.core.impl.DMNRuntimeKB;
 import org.kie.dmn.feel.util.Either;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.internal.io.ResourceWithConfigurationImpl;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 
 /**
  * Internal Utility class.
@@ -75,7 +71,7 @@ public class DMNRuntimeBuilder {
         public final DMNCompilerConfigurationImpl cc;
         public final List<DMNProfile> dmnProfiles = new ArrayList<>();
         private RelativeImportResolver relativeResolver;
-        private Map<String, PMMLRuntime> pmmlRuntimes;
+        private Function<String, KieRuntimeFactory> kieRuntimeFactoryFunction;
 
         public DMNRuntimeBuilderCtx() {
             this.cc = new DMNCompilerConfigurationImpl();
@@ -85,8 +81,8 @@ public class DMNRuntimeBuilder {
             this.relativeResolver = relativeResolver;
         }
 
-        public void setPMMLRuntime(Map<String, PMMLRuntime> pmmlRuntimes) {
-            this.pmmlRuntimes = pmmlRuntimes;
+        public void setKieRuntimeFactoryFunction(Function<String, KieRuntimeFactory> kieRuntimeFactoryFunction) {
+            this.kieRuntimeFactoryFunction = kieRuntimeFactoryFunction;
         }
     }
 
@@ -128,8 +124,8 @@ public class DMNRuntimeBuilder {
         return this;
     }
 
-    public DMNRuntimeBuilder setPMMLRuntimes(Map<String, PMMLRuntime> pmmlRuntimes) {
-        ctx.setPMMLRuntime(pmmlRuntimes);
+    public DMNRuntimeBuilder setKieRuntimeFactoryFunction(Function<String, KieRuntimeFactory> kieRuntimeFactoryFunction) {
+        ctx.setKieRuntimeFactoryFunction(kieRuntimeFactoryFunction);
         return this;
     }
 
@@ -219,7 +215,7 @@ public class DMNRuntimeBuilder {
                     return Either.ofLeft(new IllegalStateException("Unable to compile DMN model for the resource " + dmnRes.getResAndConfig().getResource()));
                 }
             }
-            return Either.ofRight(new DMNRuntimeImpl(new DMNRuntimeKBStatic(ctx.cc.getRootClassLoader(), dmnModels, ctx.dmnProfiles, ctx.pmmlRuntimes)));
+            return Either.ofRight(new DMNRuntimeImpl(new DMNRuntimeKBStatic(ctx.cc.getRootClassLoader(), dmnModels, ctx.dmnProfiles, ctx.kieRuntimeFactoryFunction)));
         }
 
         private DMNMarshaller getMarshaller() {
@@ -237,14 +233,14 @@ public class DMNRuntimeBuilder {
         private final ClassLoader rootClassLoader;
         private final List<DMNProfile> dmnProfiles;
         private final List<DMNModel> models;
-        private final Map<String, PMMLRuntime> pmmlRuntimes;
+        private final Function<String, KieRuntimeFactory> kiePMMLRuntimeFactoryFunction;
 
-        private DMNRuntimeKBStatic(ClassLoader rootClassLoader, Collection<DMNModel> models, Collection<DMNProfile> dmnProfiles, Map<String, PMMLRuntime> pmmlRuntimes) {
+        private DMNRuntimeKBStatic(ClassLoader rootClassLoader, Collection<DMNModel> models, Collection<DMNProfile> dmnProfiles, Function<String, KieRuntimeFactory> kiePMMLRuntimeFactoryFunction) {
             this.rootClassLoader = rootClassLoader;
             LOG.trace("DMNRuntimeKBStatic rootClassLoader is set to {}", rootClassLoader);
             this.models = Collections.unmodifiableList(new ArrayList<>(models));
             this.dmnProfiles = Collections.unmodifiableList(new ArrayList<>(dmnProfiles));
-            this.pmmlRuntimes = pmmlRuntimes;
+            this.kiePMMLRuntimeFactoryFunction = kiePMMLRuntimeFactoryFunction;
         }
 
         @Override
@@ -283,16 +279,8 @@ public class DMNRuntimeBuilder {
         }
 
         @Override
-        public PMMLRuntime getPMMLRuntime(String sanitizedKieBase) {
-            return pmmlRuntimes.values().stream()
-                    .filter(pmmlRuntime ->  pmmlRuntime.getModels().stream().anyMatch(kiePMMLModel -> {
-                        String originalSanitizedKieBase = getSanitizedPackageName(kiePMMLModel.getName());
-                        return Objects.equals(sanitizedKieBase, originalSanitizedKieBase);
-                    }))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException(String.format("Failed to find a PMMLRuntime for %s", sanitizedKieBase)));
+        public KieRuntimeFactory getKiePMMLRuntimeFactory(String modelName) {
+            return kiePMMLRuntimeFactoryFunction.apply(modelName);
         }
-
-
     }
 }

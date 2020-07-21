@@ -31,7 +31,6 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
@@ -44,7 +43,6 @@ import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,18 +57,17 @@ public class DMNRuntimeKBWrappingIKB implements DMNRuntimeKB {
 
 
     @Override
-    public PMMLRuntime getPMMLRuntime(String sanitizedKieBase) {
+    public KieRuntimeFactory getKiePMMLRuntimeFactory(String modelName) {
         KieContainer kieContainer = ((KnowledgeBaseImpl) knowledgeBase).getKieContainer();
         KieBase kieBase;
-        if (kieContainer.getKieBaseNames().contains(sanitizedKieBase)) {
-            logger.debug("Retrieving {} KieBase", sanitizedKieBase);
-            kieBase = kieContainer.getKieBase(sanitizedKieBase);
+        if (kieContainer.getKieBaseNames().contains(modelName)) {
+            logger.debug("Retrieving {} KieBase", modelName);
+            kieBase = kieContainer.getKieBase(modelName);
         } else {
             logger.debug("Retrieving default KieBase");
             kieBase = kieContainer.getKieBase();
         }
-        final KieRuntimeFactory kieRuntimeFactory = KieRuntimeFactory.of(kieBase);
-        return kieRuntimeFactory.get(PMMLRuntime.class);
+        return KieRuntimeFactory.of(kieBase);
     }
 
     @Override

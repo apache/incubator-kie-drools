@@ -20,10 +20,10 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.compiler.DMNProfile;
-import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
 public class VoidDMNRuntimeKB implements DMNRuntimeKB {
 
@@ -63,6 +63,7 @@ public class VoidDMNRuntimeKB implements DMNRuntimeKB {
     }
 
     @Override
-    public PMMLRuntime getPMMLRuntime(String sanitizedKieBase) { throw new UnsupportedOperationException();
+    public KieRuntimeFactory getKiePMMLRuntimeFactory(String modelName) {
+        throw new UnsupportedOperationException();
     }
 }
