@@ -47,7 +47,7 @@ public class DoubleBetaConstraints extends MultipleBetaConstraint {
         super(constraints, conf, disableIndexing);
     }
 
-    private DoubleBetaConstraints( BetaNodeFieldConstraint[] constraints,
+    protected DoubleBetaConstraints( BetaNodeFieldConstraint[] constraints,
                                    IndexPrecedenceOption indexPrecedenceOption,
                                    boolean disableIndexing) {
         super(constraints, indexPrecedenceOption, disableIndexing);

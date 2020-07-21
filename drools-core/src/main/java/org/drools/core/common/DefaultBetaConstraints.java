@@ -46,13 +46,13 @@ public class DefaultBetaConstraints
 
     private static final long serialVersionUID = 510l;
 
-    private transient boolean           disableIndexing;
+    protected transient boolean           disableIndexing;
 
-    private BetaNodeFieldConstraint[]   constraints;
+    protected BetaNodeFieldConstraint[]   constraints;
 
-    private IndexPrecedenceOption       indexPrecedenceOption;
+    protected IndexPrecedenceOption       indexPrecedenceOption;
 
-    private int                         indexed;
+    protected int                         indexed;
 
     private transient Boolean           leftUpdateOptimizationAllowed;
 

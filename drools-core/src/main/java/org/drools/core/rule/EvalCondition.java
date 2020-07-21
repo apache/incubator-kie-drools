@@ -38,9 +38,9 @@ public class EvalCondition extends ConditionalElement
     Wireable {
     private static final long          serialVersionUID   = 510l;
 
-    private EvalExpression             expression;
+    protected EvalExpression             expression;
 
-    private Declaration[]              requiredDeclarations;
+    protected Declaration[]              requiredDeclarations;
 
     private static final Declaration[] EMPTY_DECLARATIONS = new Declaration[0];
 
@@ -153,7 +153,7 @@ public class EvalCondition extends ConditionalElement
             return true;
         }
 
-        if ( object == null || object.getClass() != EvalCondition.class ) {
+        if ( object == null || object.getClass() != this.getClass() ) {
             return false;
         }
 
@@ -200,7 +200,6 @@ public class EvalCondition extends ConditionalElement
         return null;
     }
 
-
     public void replaceDeclaration(Declaration declaration,
                                    Declaration resolved) {
         for ( int i = 0; i < this.requiredDeclarations.length; i++ ) {
@@ -211,7 +210,16 @@ public class EvalCondition extends ConditionalElement
         this.expression.replaceDeclaration( declaration,
                                             resolved );
     }
+
+    public List<EvalCondition> getCloned() {
+        return cloned;
+    }
+
     
+    public void setCloned(List<EvalCondition> cloned) {
+        this.cloned = cloned;
+    }
+
     @Override
     public String toString() {
         return this.expression.toString();

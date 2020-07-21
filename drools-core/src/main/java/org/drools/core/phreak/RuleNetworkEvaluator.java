@@ -77,20 +77,20 @@ public class RuleNetworkEvaluator {
 
     public static final RuleNetworkEvaluator INSTANCE = new RuleNetworkEvaluator();
 
-    private static final PhreakJoinNode         pJoinNode   = new PhreakJoinNode();
-    private static final PhreakEvalNode         pEvalNode   = new PhreakEvalNode();
-    private static final PhreakFromNode         pFromNode   = new PhreakFromNode();
-    private static final PhreakReactiveFromNode pReactiveFromNode = new PhreakReactiveFromNode();
-    private static final PhreakNotNode          pNotNode    = new PhreakNotNode();
-    private static final PhreakExistsNode       pExistsNode = new PhreakExistsNode();
-    private static final PhreakAccumulateNode   pAccNode    = new PhreakAccumulateNode();
-    private static final PhreakBranchNode       pBranchNode = new PhreakBranchNode();
-    private static final PhreakQueryNode        pQueryNode  = new PhreakQueryNode();
-    private static final PhreakTimerNode        pTimerNode  = new PhreakTimerNode();
-    private static final PhreakAsyncSendNode    pSendNode   = new PhreakAsyncSendNode();
-    private static final PhreakAsyncReceiveNode pReceiveNode = new PhreakAsyncReceiveNode();
-    private static final PhreakRuleTerminalNode pRtNode     = new PhreakRuleTerminalNode();
-    private static PhreakQueryTerminalNode      pQtNode     = new PhreakQueryTerminalNode();
+    private static final PhreakJoinNode         pJoinNode   = PhreakNetworkNodeFactory.Factory.get().createPhreakJoinNode();
+    private static final PhreakEvalNode         pEvalNode   = PhreakNetworkNodeFactory.Factory.get().createPhreakEvalNode();
+    private static final PhreakFromNode         pFromNode   = PhreakNetworkNodeFactory.Factory.get().createPhreakFromNode();
+    private static final PhreakReactiveFromNode pReactiveFromNode = PhreakNetworkNodeFactory.Factory.get().createPhreakReactiveFromNode();
+    private static final PhreakNotNode          pNotNode    = PhreakNetworkNodeFactory.Factory.get().createPhreakNotNode();
+    private static final PhreakExistsNode       pExistsNode = PhreakNetworkNodeFactory.Factory.get().createPhreakExistsNode();
+    private static final PhreakAccumulateNode   pAccNode    = PhreakNetworkNodeFactory.Factory.get().createPhreakAccumulateNode();
+    private static final PhreakBranchNode       pBranchNode = PhreakNetworkNodeFactory.Factory.get().createPhreakBranchNode();
+    private static final PhreakQueryNode        pQueryNode  = PhreakNetworkNodeFactory.Factory.get().createPhreakQueryNode();
+    private static final PhreakTimerNode        pTimerNode  = PhreakNetworkNodeFactory.Factory.get().createPhreakTimerNode();
+    private static final PhreakAsyncSendNode    pSendNode   = PhreakNetworkNodeFactory.Factory.get().createPhreakAsyncSendNode();
+    private static final PhreakAsyncReceiveNode pReceiveNode = PhreakNetworkNodeFactory.Factory.get().createPhreakAsyncReceiveNode();
+    private static final PhreakRuleTerminalNode pRtNode     = PhreakNetworkNodeFactory.Factory.get().createPhreakRuleTerminalNode();
+    private static PhreakQueryTerminalNode      pQtNode     = PhreakNetworkNodeFactory.Factory.get().createPhreakQueryTerminalNode();
 
     private static int cycle = 0;
 

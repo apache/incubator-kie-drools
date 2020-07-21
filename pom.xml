@@ -77,6 +77,7 @@
     <module>drools-test-coverage</module>
     <module>drools-scenario-simulation</module>
     <module>kie-memory-compiler</module>
+    <module>drools-metric</module>
   </modules>
 
   <dependencyManagement>

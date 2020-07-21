@@ -40,9 +40,9 @@ public class SingleBetaConstraints
 
     protected BetaNodeFieldConstraint constraint;
 
-    private boolean indexed;
+    protected boolean indexed;
 
-    private transient boolean disableIndex;
+    protected transient boolean disableIndex;
 
     public SingleBetaConstraints() {
 
