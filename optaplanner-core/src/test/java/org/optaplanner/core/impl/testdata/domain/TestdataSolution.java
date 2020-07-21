@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.testdata.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
@@ -31,6 +32,28 @@ public class TestdataSolution extends TestdataObject {
 
     public static SolutionDescriptor<TestdataSolution> buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataSolution.class, TestdataEntity.class);
+    }
+
+    public static TestdataSolution generateSolution() {
+        return generateSolution(5, 7);
+    }
+
+    public static TestdataSolution generateSolution(int valueListSize, int entityListSize) {
+        TestdataSolution solution = new TestdataSolution("Generated Solution 0");
+        List<TestdataValue> valueList = new ArrayList<>(valueListSize);
+        for (int i = 0; i < valueListSize; i++) {
+            TestdataValue value = new TestdataValue("Generated Value " + i);
+            valueList.add(value);
+        }
+        solution.setValueList(valueList);
+        List<TestdataEntity> entityList = new ArrayList<>(entityListSize);
+        for (int i = 0; i < entityListSize; i++) {
+            TestdataValue value = valueList.get(i % valueListSize);
+            TestdataEntity entity = new TestdataEntity("Generated Entity " + i, value);
+            entityList.add(entity);
+        }
+        solution.setEntityList(entityList);
+        return solution;
     }
 
     private List<TestdataValue> valueList;

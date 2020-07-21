@@ -54,12 +54,12 @@ public class DefaultScoreManager<Solution_> implements ScoreManager<Solution_> {
     @Override
     public ScoreExplanation<Solution_> explainScore(Solution_ solution) {
         try (InnerScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector(true, true)) {
+            scoreDirector.setWorkingSolution(solution); // Init the ScoreDirector first, else NPEs may be thrown.
             boolean constraintMatchEnabled = scoreDirector.isConstraintMatchEnabled();
             if (!constraintMatchEnabled) {
                 throw new IllegalStateException("When constraintMatchEnabled (" + constraintMatchEnabled
                         + ") is disabled, this method should not be called.");
             }
-            scoreDirector.setWorkingSolution(solution);
             return new DefaultScoreExplanation(solution, scoreDirector.calculateScore(), scoreDirector.explainScore(),
                     scoreDirector.getConstraintMatchTotalMap(), scoreDirector.getIndictmentMap());
         }
