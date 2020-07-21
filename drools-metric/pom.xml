@@ -11,7 +11,7 @@
   </parent>
 
   <artifactId>drools-metric</artifactId>
-  <packaging>bundle</packaging>
+  <packaging>jar</packaging>
 
   <name>Drools :: Metric Analysis</name>
 
@@ -20,17 +20,6 @@
   </properties>
 
   <dependencies>
-
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <scope>provided</scope>
-    </dependency>
 
     <dependency>
       <groupId>org.drools</groupId>
@@ -59,26 +48,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Export-Package>
-              org.drools.metric.*
-            </Export-Package>
-            <Import-Package>
-              *
-            </Import-Package>
-            <Bundle-Activator>org.drools.metric.osgi.Activator</Bundle-Activator>
-            <_removeheaders>Private-Package</_removeheaders>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>
