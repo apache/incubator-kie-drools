@@ -752,8 +752,11 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.2.0</version>
           <configuration>
             <author>false</author>
+            <failOnError>true</failOnError>
+            <failOnWarnings>true</failOnWarnings>
             <quiet>true</quiet>
           </configuration>
         </plugin>
@@ -846,6 +849,18 @@
       <plugin>
         <groupId>net.revelc.code</groupId>
         <artifactId>impsort-maven-plugin</artifactId>
+      </plugin>
+      <plugin> <!-- Make sure the build fails-fast on Javadoc issues. -->
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>javadoc-javadoc</id>
+            <phase>package</phase>
+            <goals>
+              <goal>javadoc</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -1063,9 +1078,6 @@
       <activation>
         <jdk>[11,)</jdk>
       </activation>
-      <properties>
-        <javadoc.additional.params>-Xdoclint:none</javadoc.additional.params>
-      </properties>
       <build>
         <pluginManagement>
           <plugins>
