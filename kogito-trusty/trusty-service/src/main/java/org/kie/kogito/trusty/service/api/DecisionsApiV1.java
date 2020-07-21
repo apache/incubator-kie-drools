@@ -16,6 +16,9 @@
 
 package org.kie.kogito.trusty.service.api;
 
+import java.util.Optional;
+import java.util.function.Function;
+
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -32,6 +35,9 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.kie.kogito.trusty.service.ITrustyService;
+import org.kie.kogito.trusty.service.responses.DecisionOutcomeResponse;
+import org.kie.kogito.trusty.service.responses.DecisionOutcomesResponse;
+import org.kie.kogito.trusty.service.responses.DecisionStructuredInputsResponse;
 import org.kie.kogito.trusty.service.responses.ExecutionHeaderResponse;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 
@@ -62,14 +68,89 @@ public class DecisionsApiV1 {
                     required = true,
                     schema = @Schema(implementation = String.class)
             ) @PathParam("executionId") String executionId) {
+        return handleDecisionRequest(executionId, ExecutionHeaderResponse::fromExecution);
+    }
 
-        Decision decision;
+    @GET
+    @Path("/{executionId}/structuredInputs")
+    @APIResponses(value = {
+            @APIResponse(description = "Gets the decision structured inputs.", responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = DecisionStructuredInputsResponse.class))),
+            @APIResponse(description = "Bad Request", responseCode = "400", content = @Content(mediaType = MediaType.TEXT_PLAIN))
+    }
+    )
+    @Operation(summary = "Gets the decision structured inputs.")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getStructuredInputs(
+            @Parameter(
+                    name = "executionId",
+                    description = "The execution ID.",
+                    required = true,
+                    schema = @Schema(implementation = String.class)
+            ) @PathParam("executionId") String executionId) {
+        return handleDecisionRequest(executionId, DecisionStructuredInputsResponse::from);
+    }
+
+    @GET
+    @Path("/{executionId}/outcomes")
+    @APIResponses(value = {
+            @APIResponse(description = "Gets the decision outcomes.", responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = DecisionOutcomesResponse.class))),
+            @APIResponse(description = "Bad Request", responseCode = "400", content = @Content(mediaType = MediaType.TEXT_PLAIN))
+    }
+    )
+    @Operation(summary = "Gets the decision outcomes.")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOutcomes(
+            @Parameter(
+                    name = "executionId",
+                    description = "The execution ID.",
+                    required = true,
+                    schema = @Schema(implementation = String.class)
+            ) @PathParam("executionId") String executionId) {
+        return handleDecisionRequest(executionId, DecisionOutcomesResponse::from);
+    }
+
+    @GET
+    @Path("/{executionId}/outcomes/{outcomeId}")
+    @APIResponses(value = {
+            @APIResponse(description = "Gets a specific outcome of a decision.", responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = DecisionOutcomeResponse.class))),
+            @APIResponse(description = "Bad Request", responseCode = "400", content = @Content(mediaType = MediaType.TEXT_PLAIN))
+    }
+    )
+    @Operation(summary = "Gets a specific outcome of a decision.")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOutcomeById(
+            @Parameter(
+                    name = "executionId",
+                    description = "The execution ID.",
+                    required = true,
+                    schema = @Schema(implementation = String.class)
+            ) @PathParam("executionId") String executionId,
+            @Parameter(
+                    name = "outcomeId",
+                    description = "The outcome ID.",
+                    required = true,
+                    schema = @Schema(implementation = String.class)
+            ) @PathParam("outcomeId") String outcomeId) {
+        return handleDecisionRequest(executionId, decision -> decision.getOutcomes() == null ? null : decision.getOutcomes().stream()
+                .filter(outcome -> outcomeId != null && outcomeId.equals(outcome.getOutcomeId()))
+                .findFirst()
+                .map(DecisionOutcomeResponse::from)
+                .orElse(null)
+        );
+    }
+
+    private Response handleDecisionRequest(String executionId, Function<Decision, Object> transformer) {
+        return retrieveDecision(executionId)
+                .map(transformer)
+                .map(obj -> Response.ok(obj).build())
+                .orElseGet(() -> Response.status(Response.Status.BAD_REQUEST.getStatusCode()).build());
+    }
+
+    private Optional<Decision> retrieveDecision(String executionId) {
         try {
-            decision = trustyService.getDecisionById(executionId);
+            return Optional.of(trustyService.getDecisionById(executionId));
         } catch (IllegalArgumentException ex) {
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), ex.getMessage()).build();
+            return Optional.empty();
         }
-
-        return Response.ok(ExecutionHeaderResponse.fromExecution(decision)).build();
     }
 }

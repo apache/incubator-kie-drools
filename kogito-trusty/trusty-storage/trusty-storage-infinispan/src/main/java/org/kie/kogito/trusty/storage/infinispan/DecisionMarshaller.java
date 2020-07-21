@@ -17,52 +17,47 @@
 package org.kie.kogito.trusty.storage.infinispan;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.infinispan.protostream.MessageMarshaller;
-import org.kie.kogito.persistence.infinispan.protostream.AbstractMarshaller;
 import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.kie.kogito.trusty.storage.api.model.Execution;
 import org.kie.kogito.trusty.storage.api.model.ExecutionTypeEnum;
+import org.kie.kogito.trusty.storage.api.model.TypedValue;
 
-public class DecisionMarshaller extends AbstractMarshaller implements MessageMarshaller<Decision> {
-
-    private static final ObjectMapper myMapper = new ObjectMapper();
+public class DecisionMarshaller extends AbstractModelMarshaller<Decision> {
 
     public DecisionMarshaller(ObjectMapper mapper) {
-        super(mapper);
+        super(mapper, Decision.class);
     }
 
     @Override
     public Decision readFrom(ProtoStreamReader reader) throws IOException {
-        Decision result = new Decision();
-
-        result.setExecutionId(reader.readString(Execution.EXECUTION_ID));
-        result.setExecutionTimestamp(reader.readLong(Execution.EXECUTION_TIMESTAMP));
-        result.setSuccess(reader.readBoolean(Execution.HAS_SUCCEEDED));
-        result.setExecutorName(reader.readString(Execution.EXECUTOR_NAME));
-        result.setExecutedModelName(reader.readString(Execution.EXECUTED_MODEL_NAME));
-        result.setExecutionType(myMapper.readValue(reader.readString(Execution.EXECUTION_TYPE), ExecutionTypeEnum.class));
-        return result;
+        ExecutionTypeEnum executionType = enumFromString(reader.readString(Execution.EXECUTION_TYPE_FIELD), ExecutionTypeEnum.class);
+        if (executionType != ExecutionTypeEnum.DECISION) {
+            throw new IllegalStateException("Unsupported execution type: " + executionType);
+        }
+        return new Decision(
+                reader.readString(Execution.EXECUTION_ID_FIELD),
+                reader.readLong(Execution.EXECUTION_TIMESTAMP_FIELD),
+                reader.readBoolean(Execution.HAS_SUCCEEDED_FIELD),
+                reader.readString(Execution.EXECUTOR_NAME_FIELD),
+                reader.readString(Execution.EXECUTED_MODEL_NAME_FIELD),
+                reader.readCollection(Decision.INPUTS_FIELD, new ArrayList<>(), TypedValue.class),
+                reader.readCollection(Decision.OUTCOMES_FIELD, new ArrayList<>(), DecisionOutcome.class)
+        );
     }
 
     @Override
-    public void writeTo(ProtoStreamWriter writer, Decision result) throws IOException {
-        writer.writeString(Execution.EXECUTION_ID, result.getExecutionId());
-        writer.writeLong(Execution.EXECUTION_TIMESTAMP, result.getExecutionTimestamp());
-        writer.writeBoolean(Execution.HAS_SUCCEEDED, result.hasSucceeded());
-        writer.writeString(Execution.EXECUTOR_NAME, result.getExecutorName());
-        writer.writeString(Execution.EXECUTED_MODEL_NAME, result.getExecutedModelName());
-        writer.writeString(Execution.EXECUTION_TYPE, myMapper.writeValueAsString(result.getExecutionType()));
-    }
-
-    @Override
-    public Class<? extends Decision> getJavaClass() {
-        return Decision.class;
-    }
-
-    @Override
-    public String getTypeName() {
-        return getJavaClass().getName();
+    public void writeTo(ProtoStreamWriter writer, Decision input) throws IOException {
+        writer.writeString(Execution.EXECUTION_TYPE_FIELD, stringFromEnum(input.getExecutionType()));
+        writer.writeString(Execution.EXECUTION_ID_FIELD, input.getExecutionId());
+        writer.writeLong(Execution.EXECUTION_TIMESTAMP_FIELD, input.getExecutionTimestamp());
+        writer.writeBoolean(Execution.HAS_SUCCEEDED_FIELD, input.hasSucceeded());
+        writer.writeString(Execution.EXECUTOR_NAME_FIELD, input.getExecutorName());
+        writer.writeString(Execution.EXECUTED_MODEL_NAME_FIELD, input.getExecutedModelName());
+        writer.writeCollection(Decision.INPUTS_FIELD, input.getInputs(), TypedValue.class);
+        writer.writeCollection(Decision.OUTCOMES_FIELD, input.getOutcomes(), DecisionOutcome.class);
     }
 }

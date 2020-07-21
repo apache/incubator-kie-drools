@@ -49,7 +49,7 @@ public class ExecutionHeaderResponse {
     @JsonProperty("executionType")
     private ExecutionTypeEnum executionType;
 
-    public ExecutionHeaderResponse() {
+    private ExecutionHeaderResponse() {
     }
 
     public ExecutionHeaderResponse(String executionId, OffsetDateTime executionDate, boolean hasSucceeded, String executorName, String executedModelName, ExecutionTypeEnum executionType) {

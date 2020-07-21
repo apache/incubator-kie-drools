@@ -16,7 +16,7 @@
 
 package org.kie.kogito.trusty.service.responses;
 
-import java.util.List;
+import java.util.Collection;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -35,12 +35,12 @@ public class ExecutionsResponse {
     private int offset;
 
     @JsonProperty("headers")
-    private List<ExecutionHeaderResponse> headers;
+    private Collection<ExecutionHeaderResponse> headers;
 
-    public ExecutionsResponse() {
+    private ExecutionsResponse() {
     }
 
-    public ExecutionsResponse(int total, int returnedRecords, int offset, List<ExecutionHeaderResponse> headers) {
+    public ExecutionsResponse(int total, int returnedRecords, int offset, Collection<ExecutionHeaderResponse> headers) {
         this.total = total;
         this.limit = returnedRecords;
         this.offset = offset;
@@ -79,7 +79,7 @@ public class ExecutionsResponse {
      *
      * @return THe execution headers.
      */
-    public List<ExecutionHeaderResponse> getHeaders() {
+    public Collection<ExecutionHeaderResponse> getHeaders() {
         return headers;
     }
 }

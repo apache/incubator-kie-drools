@@ -6,20 +6,97 @@ option indexed_by_default = true;
 message Decision {
 
     /* @Field(store = Store.YES) */
-    optional string executionId = 1;
+    optional string executionType = 1;
 
     /* @Field(store = Store.YES) */
-    optional int64 executionTimestamp = 2;
+    optional string executionId = 2;
 
     /* @Field(store = Store.YES) */
-    optional bool hasSucceeded = 3;
+    optional int64 executionTimestamp = 3;
 
     /* @Field(store = Store.YES) */
-    optional string executorName = 4;
+    optional bool hasSucceeded = 4;
 
     /* @Field(store = Store.YES) */
-    optional string executedModelName = 5;
+    optional string executorName = 5;
 
     /* @Field(store = Store.YES) */
-    optional string executionType = 6;
+    optional string executedModelName = 6;
+
+    /* @Field(store = Store.YES) */
+    repeated TypedValue inputs = 7;
+
+    /* @Field(store = Store.YES) */
+    repeated DecisionOutcome outcomes = 8;
+}
+
+/* @Indexed */
+message DecisionOutcome {
+    /* @Field(store = Store.YES) */
+    optional string outcomeId = 1;
+
+    /* @Field(store = Store.YES) */
+    optional string outcomeName = 2;
+
+    /* @Field(store = Store.YES) */
+    optional string evaluationStatus = 3;
+
+    /* @Field(store = Store.YES) */
+    optional TypedValue outcomeResult = 4;
+
+    /* @Field(store = Store.YES) */
+    repeated TypedValue outcomeInputs = 5;
+
+    /* @Field(store = Store.YES) */
+    repeated ExecutionMessage messages = 6;
+}
+
+/*
+  This definition corresponds to org.kie.kogito.trusty.storage.api.model.Message model,
+  but it's not named Message as a workaround for an error in infinispan protostream library:
+  using the Message name throws an exception during serialization.
+ */
+/* @Indexed */
+message ExecutionMessage {
+    /* @Field(store = Store.YES) */
+    optional string level = 1;
+
+    /* @Field(store = Store.YES) */
+    optional string category = 2;
+
+    /* @Field(store = Store.YES) */
+    optional string type = 3;
+
+    /* @Field(store = Store.YES) */
+    optional string sourceId = 4;
+
+    /* @Field(store = Store.YES) */
+    optional string text = 5;
+
+    /* @Field(store = Store.YES) */
+    optional MessageExceptionField exception = 6;
+}
+
+/* @Indexed */
+message MessageExceptionField {
+    /* @Field(store = Store.YES) */
+    optional string className = 1;
+
+    /* @Field(store = Store.YES) */
+    optional string message = 2;
+
+    /* @Field(store = Store.YES) */
+    optional MessageExceptionField cause = 3;
+}
+
+/* @Indexed */
+message TypedValue {
+    /* @Field(store = Store.YES) */
+    optional string name = 1;
+
+    /* @Field(store = Store.YES) */
+    optional string typeRef = 2;
+
+    /* @Field(store = Store.YES) */
+    optional string value = 3;
 }

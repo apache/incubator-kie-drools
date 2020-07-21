@@ -48,9 +48,9 @@ public class TrustyService implements ITrustyService {
     public List<Execution> getExecutionHeaders(OffsetDateTime from, OffsetDateTime to, int limit, int offset, String prefix) {
         Storage<String, Decision> storage = storageService.getDecisionsStorage();
         List<AttributeFilter<?>> filters = new ArrayList<>();
-        filters.add(QueryFilterFactory.like(Execution.EXECUTION_ID, prefix + "*"));
-        filters.add(QueryFilterFactory.greaterThanEqual(Execution.EXECUTION_TIMESTAMP, from.toInstant().toEpochMilli()));
-        filters.add(QueryFilterFactory.lessThanEqual(Execution.EXECUTION_TIMESTAMP, to.toInstant().toEpochMilli()));
+        filters.add(QueryFilterFactory.like(Execution.EXECUTION_ID_FIELD, prefix + "*"));
+        filters.add(QueryFilterFactory.greaterThanEqual(Execution.EXECUTION_TIMESTAMP_FIELD, from.toInstant().toEpochMilli()));
+        filters.add(QueryFilterFactory.lessThanEqual(Execution.EXECUTION_TIMESTAMP_FIELD, to.toInstant().toEpochMilli()));
         return new ArrayList<>(storage.query().limit(limit).offset(offset).filter(filters).execute());
     }
 

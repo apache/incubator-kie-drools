@@ -16,9 +16,50 @@
 
 package org.kie.kogito.trusty.storage.api.model;
 
+import java.util.Collection;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * A decision.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Decision extends Execution {
 
+    public static final String INPUTS_FIELD = "inputs";
+    public static final String OUTCOMES_FIELD = "outcomes";
+
+    @JsonProperty(INPUTS_FIELD)
+    private Collection<TypedValue> inputs;
+
+    @JsonProperty(OUTCOMES_FIELD)
+    private Collection<DecisionOutcome> outcomes;
+
+    public Decision() {
+        super(ExecutionTypeEnum.DECISION);
+    }
+
+    public Decision(String executionId, Long executionTimestamp, Boolean hasSucceeded, String executorName, String executedModelName, List<TypedValue> inputs, List<DecisionOutcome> outcomes) {
+        super(executionId, executionTimestamp, hasSucceeded, executorName, executedModelName, ExecutionTypeEnum.DECISION);
+        this.inputs = inputs;
+        this.outcomes = outcomes;
+    }
+
+    public Collection<TypedValue> getInputs() {
+        return inputs;
+    }
+
+    public void setInputs(Collection<TypedValue> inputs) {
+        this.inputs = inputs;
+    }
+
+    public Collection<DecisionOutcome> getOutcomes() {
+        return outcomes;
+    }
+
+    public void setOutcomes(Collection<DecisionOutcome> outcomes) {
+        this.outcomes = outcomes;
+    }
 }

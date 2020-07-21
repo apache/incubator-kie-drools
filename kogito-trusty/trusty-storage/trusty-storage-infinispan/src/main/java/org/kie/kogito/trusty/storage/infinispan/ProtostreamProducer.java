@@ -24,8 +24,6 @@ import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.infinispan.protostream.FileDescriptorSource;
-import org.infinispan.protostream.MessageMarshaller;
-import org.kie.kogito.trusty.storage.api.model.Decision;
 
 @ApplicationScoped
 public class ProtostreamProducer {
@@ -41,7 +39,27 @@ public class ProtostreamProducer {
     }
 
     @Produces
-    MessageMarshaller decisionMarshaller() {
+    org.infinispan.protostream.MessageMarshaller decisionModelMarshaller() {
         return new DecisionMarshaller(mapper);
+    }
+
+    @Produces
+    org.infinispan.protostream.MessageMarshaller decisionOutcomeModelMarshaller() {
+        return new DecisionOutcomeMarshaller(mapper);
+    }
+
+    @Produces
+    org.infinispan.protostream.MessageMarshaller messageExceptionFieldModelMarshaller() {
+        return new MessageExceptionFieldMarshaller(mapper);
+    }
+
+    @Produces
+    org.infinispan.protostream.MessageMarshaller messageModelMarshaller() {
+        return new MessageMarshaller(mapper);
+    }
+
+    @Produces
+    org.infinispan.protostream.MessageMarshaller typedValueModelMarshaller() {
+        return new TypedValueMarshaller(mapper);
     }
 }

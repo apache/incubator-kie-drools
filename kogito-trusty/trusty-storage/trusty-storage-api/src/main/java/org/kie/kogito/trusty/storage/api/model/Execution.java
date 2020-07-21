@@ -25,35 +25,39 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Execution {
 
-    public final static String EXECUTION_ID = "executionId";
-    public final static String EXECUTION_TIMESTAMP = "executionTimestamp";
-    public final static String HAS_SUCCEEDED = "hasSucceeded";
-    public final static String EXECUTOR_NAME = "executorName";
-    public final static String EXECUTED_MODEL_NAME = "executedModelName";
-    public final static String EXECUTION_TYPE = "executionType";
+    public final static String EXECUTION_ID_FIELD = "executionId";
+    public final static String EXECUTION_TIMESTAMP_FIELD = "executionTimestamp";
+    public final static String HAS_SUCCEEDED_FIELD = "hasSucceeded";
+    public final static String EXECUTOR_NAME_FIELD = "executorName";
+    public final static String EXECUTED_MODEL_NAME_FIELD = "executedModelName";
+    public final static String EXECUTION_TYPE_FIELD = "executionType";
 
-    @JsonProperty(EXECUTION_ID)
+    @JsonProperty(EXECUTION_ID_FIELD)
     private String executionId;
 
-    @JsonProperty(EXECUTION_TIMESTAMP)
+    @JsonProperty(EXECUTION_TIMESTAMP_FIELD)
     private Long executionTimestamp;
 
-    @JsonProperty(HAS_SUCCEEDED)
-    private boolean hasSucceeded;
+    @JsonProperty(HAS_SUCCEEDED_FIELD)
+    private Boolean hasSucceeded;
 
-    @JsonProperty(EXECUTOR_NAME)
+    @JsonProperty(EXECUTOR_NAME_FIELD)
     private String executorName;
 
-    @JsonProperty(EXECUTED_MODEL_NAME)
+    @JsonProperty(EXECUTED_MODEL_NAME_FIELD)
     private String executedModelName;
 
-    @JsonProperty(EXECUTION_TYPE)
+    @JsonProperty(EXECUTION_TYPE_FIELD)
     private ExecutionTypeEnum executionType;
 
     public Execution() {
     }
 
-    public Execution(String executionId, Long executionTimestamp, boolean hasSucceeded,
+    public Execution(ExecutionTypeEnum executionType) {
+        this.executionType = executionType;
+    }
+
+    public Execution(String executionId, Long executionTimestamp, Boolean hasSucceeded,
                      String executorName, String executedModelName, ExecutionTypeEnum executionType) {
         this.executionId = executionId;
         this.executionTimestamp = executionTimestamp;
@@ -104,7 +108,7 @@ public class Execution {
      *
      * @return true if the execution was successful from an technical point of view, false otherwise.
      */
-    public boolean hasSucceeded() {
+    public Boolean hasSucceeded() {
         return hasSucceeded;
     }
 
@@ -167,7 +171,7 @@ public class Execution {
      *
      * @param hasSucceeded Success value.
      */
-    public void setSuccess(boolean hasSucceeded) {
+    public void setSuccess(Boolean hasSucceeded) {
         this.hasSucceeded = hasSucceeded;
     }
 }
