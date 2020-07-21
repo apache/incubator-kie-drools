@@ -5131,4 +5131,29 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
                 "end\n";
         assertEqualsIgnoreWhitespace(expectedDrl, resultDrl);
     }
+
+    @Test
+    public void testTwoPredicates() {
+
+        final String drl = "rule \"r0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "Person( ( age != null ) == true, ( name == null ) == false )\n" +
+                "then\n" +
+                "end\n";
+
+        final PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        final RuleModel m = ruleModelPersistence.unmarshal(drl,
+                                                           Collections.EMPTY_LIST,
+                                                           dmo);
+        final String resultDrl = ruleModelPersistence.marshal(m);
+
+        final String expectedDrl = "rule \"r0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "Person( eval( ( age != null ) == true ), eval( ( name == null ) == false ))\n" +
+                "then\n" +
+                "end\n";
+        assertEqualsIgnoreWhitespace(expectedDrl, resultDrl);
+    }
 }
