@@ -62,8 +62,6 @@
     <formatter.goal>format</formatter.goal>
     <!-- TODO name impsort should indicate it's related to formatting -->
     <impsort.goal>sort</impsort.goal>
-    <!-- TODO https://issues.redhat.com/browse/PLANNER-2042 -->
-    <spotbugs.failOnViolation>false</spotbugs.failOnViolation>
     <!-- Jacoco plugin configurations -->
     <version.jacoco.plugin>0.8.5</version.jacoco.plugin>
     <!-- JaCoCo coverage data file location -->
@@ -762,26 +760,6 @@
           <configuration>
             <author>false</author>
             <quiet>true</quiet>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>com.github.spotbugs</groupId>
-          <artifactId>spotbugs-maven-plugin</artifactId>
-          <version>3.1.8</version>
-          <!--              <dependencies>-->
-          <!--                <dependency>-->
-          <!--                  <groupId>org.kie</groupId>-->
-          <!--                  <artifactId>kie-build-tools</artifactId>-->
-          <!--                  <version>${version.org.kie}</version>-->
-          <!--                </dependency>-->
-          <!--              </dependencies>-->
-          <configuration>
-            <maxRank>14</maxRank>
-            <includeTests>true</includeTests>
-            <effort>Max</effort>
-            <xmlOutput>true</xmlOutput>
-            <failOnError>${spotbugs.failOnViolation}</failOnError>
-            <excludeFilterFile>spotbugs-excludes.xml</excludeFilterFile>
           </configuration>
         </plugin>
         <plugin>
