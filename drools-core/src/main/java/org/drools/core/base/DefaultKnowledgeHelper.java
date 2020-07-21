@@ -521,7 +521,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
                             "Not supporting multiple node instances for the same ruleflow group");
                     }
                     Map.Entry<Object, String> entry = nodeInstances.entrySet().iterator().next();
-                    ProcessInstance processInstance = workingMemory.getProcessInstance((Long) entry.getKey());
+                    ProcessInstance processInstance = workingMemory.getProcessInstance(entry.getKey());
                     org.drools.core.spi.ProcessContext context = new org.drools.core.spi.ProcessContext(workingMemory.getKnowledgeRuntime());
                     context.setProcessInstance(processInstance);
                     String nodeInstance = entry.getValue();

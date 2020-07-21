@@ -751,6 +751,10 @@ public final class WrappedStatefulKnowledgeSessionForRHS
         return delegate.getProcessInstances();
     }
 
+    public ProcessInstance getProcessInstance(Object id) {
+        return delegate.getProcessInstance(id);
+    }
+
     public ProcessInstance getProcessInstance(long id) {
         return delegate.getProcessInstance(id);
     }
