@@ -23,20 +23,21 @@ import java.util.function.UnaryOperator;
 
 import org.drools.model.DeclarationSource;
 import org.drools.model.PatternDSL;
+import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
 
 /**
- * Instances of {@link PatternDSL.PatternDef} are mutable and as such cannot be reused by constraint streams that could
+ * Instances of {@link PatternDef} are mutable and as such can not be reused by constraint streams that could
  * result in mutually different rules.
  * However, multiple rules can be based on the same constraint streams through stream sharing.
- * This class makes it nearly impossible for {@link PatternDSL.PatternDef}s to be unknowingly shared.
+ * This class makes it nearly impossible for {@link PatternDef}s to be unknowingly shared.
  *
  * <p>
  * Instances of this class are immutable.
  * Mutating methods (such as {@link #expand(UnaryOperator)}) create a new instance, effectively preventing
  * streams from sharing patterns.
  * Patterns are only built when {@link #build()} or {@link #build(DeclarationSource)} is called. Callers must ensure
- * that {@link PatternDSL.PatternDef}s obtained by these methods are never mutated, as that defeats the purpose.
+ * that {@link PatternDef}s obtained by these methods are never mutated, as that defeats the purpose.
  *
  * <p>
  * Example:
@@ -53,7 +54,7 @@ import org.drools.model.Variable;
 public final class DroolsPatternBuilder<T> {
 
     private final Variable<T> baseVariable;
-    private final Function<PatternDSL.PatternDef<T>, PatternDSL.PatternDef<T>> builder;
+    private final Function<PatternDef<T>, PatternDef<T>> builder;
 
     /**
      * @param baseVariable will be used during the {@link PatternDSL#pattern(Variable)} call within {@link #build()} or
@@ -65,24 +66,24 @@ public final class DroolsPatternBuilder<T> {
     }
 
     private DroolsPatternBuilder(Variable<T> baseVariable,
-            Function<PatternDSL.PatternDef<T>, PatternDSL.PatternDef<T>> builder) {
+            Function<PatternDef<T>, PatternDef<T>> builder) {
         this.baseVariable = baseVariable;
         this.builder = builder;
     }
 
     /**
-     * Mutate the existing {@link PatternDSL.PatternDef}, adding a new operation, such as a new filter or a new variable
+     * Mutate the existing {@link PatternDef}, adding a new operation, such as a new filter or a new variable
      * binding.
      *
      * @return copy of the {@link DroolsPatternBuilder} with the new expanding operation included.
      */
-    public DroolsPatternBuilder<T> expand(UnaryOperator<PatternDSL.PatternDef<T>> expander) {
-        Function<PatternDSL.PatternDef<T>, PatternDSL.PatternDef<T>> newBuilder = builder == null ? expander
+    public DroolsPatternBuilder<T> expand(UnaryOperator<PatternDef<T>> expander) {
+        Function<PatternDef<T>, PatternDef<T>> newBuilder = builder == null ? expander
                 : builder.andThen(expander);
         return new DroolsPatternBuilder<>(baseVariable, newBuilder);
     }
 
-    private PatternDSL.PatternDef<T> build(PatternDSL.PatternDef<T> basePattern) {
+    private PatternDef<T> build(PatternDef<T> basePattern) {
         if (builder == null) {
             return basePattern;
         } else {
@@ -96,7 +97,7 @@ public final class DroolsPatternBuilder<T> {
      *
      * @return should no longer be mutated to guarantee that rules cannot influence one another
      */
-    public PatternDSL.PatternDef<T> build() {
+    public PatternDef<T> build() {
         return build(pattern(baseVariable));
     }
 
@@ -107,7 +108,7 @@ public final class DroolsPatternBuilder<T> {
      * @param declarationSource will be applied to the newly created pattern
      * @return should no longer be mutated to guarantee that rules cannot influence one another
      */
-    public PatternDSL.PatternDef<T> build(DeclarationSource declarationSource) {
+    public PatternDef<T> build(DeclarationSource declarationSource) {
         return build(pattern(baseVariable, declarationSource));
     }
 
