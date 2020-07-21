@@ -23,9 +23,9 @@ import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.optaplanner.examples.examination.domain.Examination;
 import org.optaplanner.examples.examination.persistence.ExaminationExporter;
 import org.optaplanner.examples.examination.persistence.ExaminationImporter;
+import org.optaplanner.examples.examination.persistence.ExaminationXmlSolutionFileIO;
 import org.optaplanner.examples.examination.swingui.ExaminationPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 /**
  * Examination is super optimized and a bit complex.
@@ -57,7 +57,7 @@ public class ExaminationApp extends CommonApp<Examination> {
 
     @Override
     public SolutionFileIO<Examination> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(Examination.class);
+        return new ExaminationXmlSolutionFileIO();
     }
 
     @Override

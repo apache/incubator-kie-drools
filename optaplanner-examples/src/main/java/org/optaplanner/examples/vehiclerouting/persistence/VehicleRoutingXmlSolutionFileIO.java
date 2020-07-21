@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.examination.persistence;
+package org.optaplanner.examples.vehiclerouting.persistence;
 
-import org.optaplanner.examples.examination.domain.Examination;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
-public class ExaminationSolutionFileIO extends XStreamSolutionFileIO<Examination> {
+public class VehicleRoutingXmlSolutionFileIO extends XStreamSolutionFileIO<VehicleRoutingSolution> {
 
-    public ExaminationSolutionFileIO() {
-        super(Examination.class);
+    public VehicleRoutingXmlSolutionFileIO() {
+        super(VehicleRoutingSolution.class);
     }
 }

@@ -20,9 +20,9 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 import org.optaplanner.examples.projectjobscheduling.persistence.ProjectJobSchedulingImporter;
+import org.optaplanner.examples.projectjobscheduling.persistence.ProjectJobSchedulingXmlSolutionFileIO;
 import org.optaplanner.examples.projectjobscheduling.swingui.ProjectJobSchedulingPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class ProjectJobSchedulingApp extends CommonApp<Schedule> {
 
@@ -53,7 +53,7 @@ public class ProjectJobSchedulingApp extends CommonApp<Schedule> {
 
     @Override
     public SolutionFileIO<Schedule> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(Schedule.class);
+        return new ProjectJobSchedulingXmlSolutionFileIO();
     }
 
     @Override

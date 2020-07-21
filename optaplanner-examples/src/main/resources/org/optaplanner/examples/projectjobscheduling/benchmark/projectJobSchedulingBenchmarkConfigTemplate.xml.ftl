@@ -5,7 +5,7 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.projectjobscheduling.persistence.ProjectJobSchedulingSolutionFileIO</solutionFileIOClass>
+      <solutionFileIOClass>org.optaplanner.examples.projectjobscheduling.persistence.ProjectJobSchedulingXmlSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>data/projectjobscheduling/unsolved/A-1.xml</inputSolutionFile>
       <inputSolutionFile>data/projectjobscheduling/unsolved/A-2.xml</inputSolutionFile>
       <inputSolutionFile>data/projectjobscheduling/unsolved/A-3.xml</inputSolutionFile>

@@ -22,9 +22,9 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 import org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleExporter;
 import org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleImporter;
+import org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleXmlSolutionFileIO;
 import org.optaplanner.examples.pas.swingui.PatientAdmissionSchedulePanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class PatientAdmissionScheduleApp extends CommonApp<PatientAdmissionSchedule> {
 
@@ -52,7 +52,7 @@ public class PatientAdmissionScheduleApp extends CommonApp<PatientAdmissionSched
 
     @Override
     public SolutionFileIO<PatientAdmissionSchedule> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(PatientAdmissionSchedule.class);
+        return new PatientAdmissionScheduleXmlSolutionFileIO();
     }
 
     @Override

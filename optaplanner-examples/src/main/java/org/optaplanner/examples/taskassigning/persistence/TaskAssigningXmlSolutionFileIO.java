@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nqueens.persistence;
+package org.optaplanner.examples.taskassigning.persistence;
 
-import org.optaplanner.examples.nqueens.domain.NQueens;
+import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
-public class NQueensSolutionFileIO extends XStreamSolutionFileIO<NQueens> {
+public class TaskAssigningXmlSolutionFileIO extends XStreamSolutionFileIO<TaskAssigningSolution> {
 
-    public NQueensSolutionFileIO() {
-        super(NQueens.class);
+    public TaskAssigningXmlSolutionFileIO() {
+        super(TaskAssigningSolution.class);
     }
 }

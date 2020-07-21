@@ -5,7 +5,7 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleSolutionFileIO</solutionFileIOClass>
+      <solutionFileIOClass>org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleXmlSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>data/pas/unsolved/testdata01.xml</inputSolutionFile>
       <inputSolutionFile>data/pas/unsolved/testdata02.xml</inputSolutionFile>
       <inputSolutionFile>data/pas/unsolved/testdata03.xml</inputSolutionFile>

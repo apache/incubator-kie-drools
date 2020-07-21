@@ -17,10 +17,10 @@
 package org.optaplanner.examples.cloudbalancing.app;
 
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
+import org.optaplanner.examples.cloudbalancing.persistence.CloudBalanceXmlSolutionFileIO;
 import org.optaplanner.examples.cloudbalancing.swingui.CloudBalancingPanel;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 /**
  * For an easy example, look at {@link CloudBalancingHelloWorld} instead.
@@ -52,7 +52,7 @@ public class CloudBalancingApp extends CommonApp<CloudBalance> {
 
     @Override
     public SolutionFileIO<CloudBalance> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(CloudBalance.class);
+        return new CloudBalanceXmlSolutionFileIO();
     }
 
 }

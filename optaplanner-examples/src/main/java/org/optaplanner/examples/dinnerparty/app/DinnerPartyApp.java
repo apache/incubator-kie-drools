@@ -20,9 +20,9 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
 import org.optaplanner.examples.dinnerparty.persistence.DinnerPartyImporter;
+import org.optaplanner.examples.dinnerparty.persistence.DinnerPartyXmlSolutionFileIO;
 import org.optaplanner.examples.dinnerparty.swingui.DinnerPartyPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class DinnerPartyApp extends CommonApp<DinnerParty> {
 
@@ -50,7 +50,7 @@ public class DinnerPartyApp extends CommonApp<DinnerParty> {
 
     @Override
     public SolutionFileIO<DinnerParty> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(DinnerParty.class);
+        return new DinnerPartyXmlSolutionFileIO();
     }
 
     @Override

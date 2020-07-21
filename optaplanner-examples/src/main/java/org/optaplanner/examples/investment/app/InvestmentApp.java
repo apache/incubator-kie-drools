@@ -20,9 +20,9 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.persistence.InvestmentImporter;
+import org.optaplanner.examples.investment.persistence.InvestmentXmlSolutionFileIO;
 import org.optaplanner.examples.investment.swingui.InvestmentPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class InvestmentApp extends CommonApp<InvestmentSolution> {
 
@@ -50,7 +50,7 @@ public class InvestmentApp extends CommonApp<InvestmentSolution> {
 
     @Override
     public SolutionFileIO<InvestmentSolution> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(InvestmentSolution.class);
+        return new InvestmentXmlSolutionFileIO();
     }
 
     @Override

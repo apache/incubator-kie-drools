@@ -201,8 +201,8 @@ To read and write solutions in the XML format via XStream, extend the `XStreamSo
 
 [source,java,options="nowrap"]
 ----
-public class NQueensSolutionFileIO extends XStreamSolutionFileIO<NQueens> {
-    public NQueensSolutionFileIO() {
+public class NQueensXmlSolutionFileIO extends XStreamSolutionFileIO<NQueens> {
+    public NQueensXmlSolutionFileIO() {
         // NQueens is the @PlanningSolution class.
         super(NQueens.class);
     }
@@ -214,7 +214,7 @@ and use it in the benchmark configuration:
 [source,xml,options="nowrap"]
 ----
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensSolutionFileIO</solutionFileIOClass>
+      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensXmlSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
       ...
     </problemBenchmarks>
@@ -327,7 +327,7 @@ To quickly configure and run a benchmark for typical solver configs, use a `solv
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensSolutionFileIO</solutionFileIOClass>
+      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensXmlSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
       <inputSolutionFile>data/nqueens/unsolved/64queens.xml</inputSolutionFile>
     </problemBenchmarks>

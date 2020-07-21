@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cloudbalancing.persistence;
+package org.optaplanner.examples.tsp.persistence;
 
-import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
-public class CloudBalanceSolutionFileIO extends XStreamSolutionFileIO<CloudBalance> {
-    public CloudBalanceSolutionFileIO() {
-        super(CloudBalance.class);
+public class TspXmlSolutionFileIO extends XStreamSolutionFileIO<TspSolution> {
+
+    public TspXmlSolutionFileIO() {
+        super(TspSolution.class);
     }
 }

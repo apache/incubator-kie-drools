@@ -18,9 +18,9 @@ package org.optaplanner.examples.scrabble.app;
 
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.scrabble.domain.ScrabbleSolution;
+import org.optaplanner.examples.scrabble.persistence.ScrabbleXmlSolutionFileIO;
 import org.optaplanner.examples.scrabble.swingui.ScrabblePanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class ScrabbleApp extends CommonApp<ScrabbleSolution> {
 
@@ -47,7 +47,7 @@ public class ScrabbleApp extends CommonApp<ScrabbleSolution> {
 
     @Override
     public SolutionFileIO<ScrabbleSolution> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(ScrabbleSolution.class);
+        return new ScrabbleXmlSolutionFileIO();
     }
 
 }

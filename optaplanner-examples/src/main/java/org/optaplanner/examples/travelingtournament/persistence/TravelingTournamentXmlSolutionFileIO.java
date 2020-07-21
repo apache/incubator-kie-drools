@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.taskassigning.persistence;
+package org.optaplanner.examples.travelingtournament.persistence;
 
-import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
+import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
-public class TaskAssigningSolutionFileIO extends XStreamSolutionFileIO<TaskAssigningSolution> {
+public class TravelingTournamentXmlSolutionFileIO extends XStreamSolutionFileIO<TravelingTournament> {
 
-    public TaskAssigningSolutionFileIO() {
-        super(TaskAssigningSolution.class);
+    public TravelingTournamentXmlSolutionFileIO() {
+        super(TravelingTournament.class);
     }
 }

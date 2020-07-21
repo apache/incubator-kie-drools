@@ -23,9 +23,9 @@ import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.persistence.TspExporter;
 import org.optaplanner.examples.tsp.persistence.TspImageStipplerImporter;
 import org.optaplanner.examples.tsp.persistence.TspImporter;
+import org.optaplanner.examples.tsp.persistence.TspXmlSolutionFileIO;
 import org.optaplanner.examples.tsp.swingui.TspPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class TspApp extends CommonApp<TspSolution> {
 
@@ -54,7 +54,7 @@ public class TspApp extends CommonApp<TspSolution> {
 
     @Override
     public SolutionFileIO<TspSolution> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(TspSolution.class);
+        return new TspXmlSolutionFileIO();
     }
 
     @Override

@@ -5,7 +5,7 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.nurserostering.persistence.NurseRosterSolutionFileIO</solutionFileIOClass>
+      <solutionFileIOClass>org.optaplanner.examples.nurserostering.persistence.NurseRosterXmlSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>data/nurserostering/unsolved/long01.xml</inputSolutionFile>
       <inputSolutionFile>data/nurserostering/unsolved/long02.xml</inputSolutionFile>
       <!--<inputSolutionFile>data/nurserostering/unsolved/long03.xml</inputSolutionFile>-->

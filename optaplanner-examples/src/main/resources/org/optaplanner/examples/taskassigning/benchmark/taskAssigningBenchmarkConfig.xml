@@ -5,7 +5,7 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.taskassigning.persistence.TaskAssigningSolutionFileIO</solutionFileIOClass>
+      <solutionFileIOClass>org.optaplanner.examples.taskassigning.persistence.TaskAssigningXmlSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>data/taskassigning/unsolved/24tasks-8employees.xml</inputSolutionFile>
       <inputSolutionFile>data/taskassigning/unsolved/50tasks-5employees.xml</inputSolutionFile>
       <inputSolutionFile>data/taskassigning/unsolved/100tasks-5employees.xml</inputSolutionFile>

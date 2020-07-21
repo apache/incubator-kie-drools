@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.travelingtournament.persistence;
+package org.optaplanner.examples.dinnerparty.persistence;
 
-import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
+import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
-public class TravelingTournamentSolutionFileIO extends XStreamSolutionFileIO<TravelingTournament> {
+public class DinnerPartyXmlSolutionFileIO extends XStreamSolutionFileIO<DinnerParty> {
 
-    public TravelingTournamentSolutionFileIO() {
-        super(TravelingTournament.class);
+    public DinnerPartyXmlSolutionFileIO() {
+        super(DinnerParty.class);
     }
 }

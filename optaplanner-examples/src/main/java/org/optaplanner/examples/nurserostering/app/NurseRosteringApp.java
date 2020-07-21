@@ -20,11 +20,11 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
+import org.optaplanner.examples.nurserostering.persistence.NurseRosterXmlSolutionFileIO;
 import org.optaplanner.examples.nurserostering.persistence.NurseRosteringExporter;
 import org.optaplanner.examples.nurserostering.persistence.NurseRosteringImporter;
 import org.optaplanner.examples.nurserostering.swingui.NurseRosteringPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class NurseRosteringApp extends CommonApp<NurseRoster> {
 
@@ -52,7 +52,7 @@ public class NurseRosteringApp extends CommonApp<NurseRoster> {
 
     @Override
     public SolutionFileIO<NurseRoster> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(NurseRoster.class);
+        return new NurseRosterXmlSolutionFileIO();
     }
 
     @Override

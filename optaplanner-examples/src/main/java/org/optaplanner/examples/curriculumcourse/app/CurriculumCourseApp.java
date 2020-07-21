@@ -20,11 +20,11 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
+import org.optaplanner.examples.curriculumcourse.persistence.CourseScheduleXmlSolutionFileIO;
 import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseExporter;
 import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseImporter;
 import org.optaplanner.examples.curriculumcourse.swingui.CurriculumCoursePanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class CurriculumCourseApp extends CommonApp<CourseSchedule> {
 
@@ -53,7 +53,7 @@ public class CurriculumCourseApp extends CommonApp<CourseSchedule> {
 
     @Override
     public SolutionFileIO<CourseSchedule> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(CourseSchedule.class);
+        return new CourseScheduleXmlSolutionFileIO();
     }
 
     @Override

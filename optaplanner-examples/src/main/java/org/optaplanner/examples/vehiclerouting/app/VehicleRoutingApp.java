@@ -20,9 +20,9 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporter;
+import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingXmlSolutionFileIO;
 import org.optaplanner.examples.vehiclerouting.swingui.VehicleRoutingPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class VehicleRoutingApp extends CommonApp<VehicleRoutingSolution> {
 
@@ -54,7 +54,7 @@ public class VehicleRoutingApp extends CommonApp<VehicleRoutingSolution> {
 
     @Override
     public SolutionFileIO<VehicleRoutingSolution> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(VehicleRoutingSolution.class);
+        return new VehicleRoutingXmlSolutionFileIO();
     }
 
     @Override

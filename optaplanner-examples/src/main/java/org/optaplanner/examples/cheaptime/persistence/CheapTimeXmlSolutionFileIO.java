@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.pas.persistence;
+package org.optaplanner.examples.cheaptime.persistence;
 
-import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
+import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
-public class PatientAdmissionScheduleSolutionFileIO extends XStreamSolutionFileIO<PatientAdmissionSchedule> {
+public class CheapTimeXmlSolutionFileIO extends XStreamSolutionFileIO<CheapTimeSolution> {
 
-    public PatientAdmissionScheduleSolutionFileIO() {
-        super(PatientAdmissionSchedule.class);
+    public CheapTimeXmlSolutionFileIO() {
+        super(CheapTimeSolution.class);
     }
 }
