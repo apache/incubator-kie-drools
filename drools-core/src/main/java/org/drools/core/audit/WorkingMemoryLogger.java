@@ -528,9 +528,7 @@ public abstract class WorkingMemoryLogger
         filterLogEvent(new RuleFlowVariableLogEvent(LogEvent.BEFORE_VARIABLE_INSTANCE_CHANGED,
             event.getVariableId(),
             event.getVariableInstanceId(),
-            event.getProcessInstance().getProcessId(), 
-            event.getProcessInstance().getProcessName(),
-            event.getProcessInstance().getId(),
+            event.getProcessInstance(),
             event.getNewValue() == null ? "null" : event.getNewValue().toString()) );
     }
 
@@ -538,9 +536,7 @@ public abstract class WorkingMemoryLogger
         filterLogEvent(new RuleFlowVariableLogEvent(LogEvent.AFTER_VARIABLE_INSTANCE_CHANGED,
             event.getVariableId(),
             event.getVariableInstanceId(),
-            event.getProcessInstance().getProcessId(), 
-            event.getProcessInstance().getProcessName(),
-            event.getProcessInstance().getId(),
+            event.getProcessInstance(),
             event.getNewValue() == null ? "null" : event.getNewValue().toString()) );
     }
 
