@@ -31,8 +31,6 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
@@ -49,10 +47,6 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_>,
     /**
      * The {@link PlanningSolution working solution} must never be the same instance as the
      * {@link PlanningSolution best solution}, it should be a (un)changed clone.
-     * <p>
-     * Only call this method on a separate {@link ScoreDirector} instance,
-     * built by {@link SolverFactory#getScoreDirectorFactory()},
-     * not on the one used inside the {@link Solver} itself.
      *
      * @param workingSolution never null
      */

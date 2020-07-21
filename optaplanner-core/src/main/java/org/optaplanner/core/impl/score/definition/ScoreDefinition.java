@@ -18,9 +18,9 @@ package org.optaplanner.core.impl.score.definition;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
@@ -139,7 +139,7 @@ public interface ScoreDefinition<S extends Score<S>> {
     /**
      * Used by {@link BavetConstraintFactory}
      *
-     * @param constraintMatchEnabled true if {@link ScoreDirector#isConstraintMatchEnabled()} should be true
+     * @param constraintMatchEnabled true if {@link InnerScoreDirector#isConstraintMatchEnabled()} should be true
      * @return never null
      */
     ScoreInliner<S> buildScoreInliner(boolean constraintMatchEnabled);
@@ -147,7 +147,7 @@ public interface ScoreDefinition<S extends Score<S>> {
     /**
      * Used by {@link DroolsScoreDirector}.
      *
-     * @param constraintMatchEnabled true if {@link ScoreDirector#isConstraintMatchEnabled()} should be true
+     * @param constraintMatchEnabled true if{@link InnerScoreDirector#isConstraintMatchEnabled()} should be true
      * @return never null
      */
     AbstractScoreHolder<S> buildScoreHolder(boolean constraintMatchEnabled);

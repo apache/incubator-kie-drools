@@ -21,7 +21,7 @@ import java.util.Map;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
-import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  * An instance of this class must be used in only one thread.
@@ -37,18 +37,16 @@ public interface ConstraintSession<Solution_> extends AutoCloseable {
     Score<?> calculateScore(int initScore);
 
     /**
-     * As defined by {@link ScoreDirector#getConstraintMatchTotalMap()}.
+     * As defined by {@link InnerScoreDirector#getConstraintMatchTotalMap()}.
      *
      * @return never null
-     * @see ScoreDirector#getConstraintMatchTotalMap()
      */
     Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap();
 
     /**
-     * As defined by {@link ScoreDirector#getIndictmentMap()}.
+     * As defined by {@link InnerScoreDirector#getIndictmentMap()}.
      *
      * @return never null
-     * @see ScoreDirector#getIndictmentMap()
      */
     Map<Object, Indictment> getIndictmentMap();
 

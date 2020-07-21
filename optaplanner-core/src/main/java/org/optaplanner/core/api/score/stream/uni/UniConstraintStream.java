@@ -290,7 +290,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     <B> UniConstraintStream<A> ifExists(Class<B> otherClass, BiJoiner<A, B>... joiners);
 
     /**
-     * Create a new {@link UniConstraintStream} for every A, if another A exists that does not {@link #equals(Object)}
+     * Create a new {@link UniConstraintStream} for every A, if another A exists that does not {@link Object#equals(Object)}
      * the first.
      *
      * @param otherClass never null
@@ -301,7 +301,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * Create a new {@link UniConstraintStream} for every A, if another A exists that does not {@link #equals(Object)}
+     * Create a new {@link UniConstraintStream} for every A, if another A exists that does not {@link Object#equals(Object)}
      * the first, and for which the {@link BiJoiner} is true (for the properties it extracts from both facts).
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
@@ -465,7 +465,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     <B> UniConstraintStream<A> ifNotExists(Class<B> otherClass, BiJoiner<A, B>... joiners);
 
     /**
-     * Create a new {@link UniConstraintStream} for every A, if no other A exists that does not {@link #equals(Object)}
+     * Create a new {@link UniConstraintStream} for every A, if no other A exists that does not {@link Object#equals(Object)}
      * the first.
      *
      * @param otherClass never null
@@ -476,7 +476,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * Create a new {@link UniConstraintStream} for every A, if no other A exists that does not {@link #equals(Object)}
+     * Create a new {@link UniConstraintStream} for every A, if no other A exists that does not {@link Object#equals(Object)}
      * the first, and for which the {@link BiJoiner} is true (for the properties it extracts from both facts).
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.

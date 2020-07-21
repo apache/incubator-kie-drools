@@ -22,6 +22,7 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.Phase;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  * Runs a custom algorithm as a {@link Phase} of the {@link Solver} that changes the planning variables.
@@ -46,7 +47,7 @@ public interface CustomPhaseCommand<Solution_> {
      * otherwise calculated {@link Score}s will be corrupted.
      * <p>
      * Don't forget to call {@link ScoreDirector#triggerVariableListeners()} after each set of changes
-     * (especially before every {@link ScoreDirector#calculateScore()} call)
+     * (especially before every {@link InnerScoreDirector#calculateScore()} call)
      * to ensure all shadow variables are updated.
      *
      * @param scoreDirector never null, the {@link ScoreDirector} that needs to get notified of the changes.

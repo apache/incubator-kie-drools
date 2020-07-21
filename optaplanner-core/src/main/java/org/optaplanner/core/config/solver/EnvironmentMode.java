@@ -20,9 +20,9 @@ import java.util.Random;
 
 import javax.xml.bind.annotation.XmlEnum;
 
-import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.heuristic.move.Move;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  * The environment mode also allows you to detect common bugs in your implementation.
@@ -42,7 +42,7 @@ public enum EnvironmentMode {
      * <p>
      * This mode is reproducible (see {@link #REPRODUCIBLE} mode).
      * <p>
-     * This mode is intrusive because it calls the {@link ScoreDirector#calculateScore()} more frequently
+     * This mode is intrusive because it calls the {@link InnerScoreDirector#calculateScore()} more frequently
      * than a non assert mode.
      * <p>
      * This mode is horribly slow.
@@ -67,7 +67,7 @@ public enum EnvironmentMode {
      * <p>
      * This mode is reproducible (see {@link #REPRODUCIBLE} mode).
      * <p>
-     * This mode is intrusive because it calls the {@link ScoreDirector#calculateScore()} more frequently
+     * This mode is intrusive because it calls the {@link InnerScoreDirector#calculateScore()} more frequently
      * than a non assert mode.
      * <p>
      * This mode is slow.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,7 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
 /**
  * Each context is uniquely identified by its {@link System#identityHashCode(Object)}.
- * This is necessary so that the Drools accumulate function can properly undo in
- * {@link DroolsUniAccumulateFunctionBridge} and its Bi, Tri, ... alternatives.
+ * This is necessary so that the Drools accumulate function can properly undo.
  *
  * @param <ResultContainer_> The same type from {@link UniConstraintCollector} and its Bi, Tri, ... alternatives.
  */

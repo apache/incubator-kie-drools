@@ -31,7 +31,6 @@ import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
-import org.optaplanner.core.impl.heuristic.selector.entity.pillar.DefaultPillarSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
@@ -50,10 +49,7 @@ public class DefaultSubChainSelector extends AbstractSelector
 
     protected SingletonInverseVariableSupply inverseVariableSupply;
 
-    /**
-     * Unlike {@link DefaultPillarSelector#minimumSubPillarSize} and {@link DefaultPillarSelector#maximumSubPillarSize},
-     * the sub selection here is a sequence. For example from ABCDE, it can select BCD, but not ACD.
-     */
+    // The sub selection here is a sequence. For example from ABCDE, it can select BCD, but not ACD.
     protected final int minimumSubChainSize;
     protected final int maximumSubChainSize;
 

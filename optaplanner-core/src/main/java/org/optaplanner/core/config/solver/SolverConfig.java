@@ -585,7 +585,6 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     // TODO https://issues.redhat.com/browse/PLANNER-1688
     /**
      * Do not use this method, it is an internal method.
-     * Use {@link SolverFactory#getScoreDirectorFactory()} instead.
      * <p>
      * Will be removed in 8.0 (by putting it in an InnerSolverConfig).
      *
