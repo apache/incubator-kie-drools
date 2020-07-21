@@ -111,10 +111,10 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
             }
             return createFromXmlInputStream(in, classLoader);
         } catch (XmlUnmarshallingException e) {
-            throw new IllegalArgumentException("Unmarshalling of solverConfigResource (" + solverConfigResource + ") failed.",
+            throw new IllegalArgumentException("Unmarshalling of solverConfigResource (" + solverConfigResource + ") fails.",
                     e);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Reading the solverConfigResource (" + solverConfigResource + ") failed.", e);
+            throw new IllegalArgumentException("Reading the solverConfigResource (" + solverConfigResource + ") fails.", e);
         }
     }
 
@@ -145,7 +145,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException("The solverConfigFile (" + solverConfigFile + ") was not found.", e);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Reading the solverConfigFile (" + solverConfigFile + ") failed.", e);
+            throw new IllegalArgumentException("Reading the solverConfigFile (" + solverConfigFile + ") fails.", e);
         }
     }
 
@@ -171,7 +171,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException("This vm does not support the charset (" + StandardCharsets.UTF_8 + ").", e);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Reading solverConfigInputStream failed.", e);
+            throw new IllegalArgumentException("Reading solverConfigInputStream fails.", e);
         }
     }
 

@@ -140,9 +140,9 @@ public class PlannerBenchmarkConfig {
             return createFromXmlInputStream(in, classLoader);
         } catch (XmlUnmarshallingException e) {
             throw new IllegalArgumentException("Unmarshalling of benchmarkConfigResource (" + benchmarkConfigResource
-                    + ") failed.", e);
+                    + ") fails.", e);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Reading the benchmarkConfigResource (" + benchmarkConfigResource + ") failed.",
+            throw new IllegalArgumentException("Reading the benchmarkConfigResource (" + benchmarkConfigResource + ") fails.",
                     e);
         }
     }
@@ -175,7 +175,7 @@ public class PlannerBenchmarkConfig {
             throw new IllegalArgumentException("The benchmarkConfigFile (" + benchmarkConfigFile
                     + ") was not found.", e);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Reading the benchmarkConfigFile (" + benchmarkConfigFile + ") failed.", e);
+            throw new IllegalArgumentException("Reading the benchmarkConfigFile (" + benchmarkConfigFile + ") fails.", e);
         }
     }
 
@@ -199,7 +199,7 @@ public class PlannerBenchmarkConfig {
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException("This vm does not support the charset (" + StandardCharsets.UTF_8 + ").", e);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Reading failed.", e);
+            throw new IllegalArgumentException("Reading fails.", e);
         }
     }
 
@@ -296,7 +296,7 @@ public class PlannerBenchmarkConfig {
             }
             return createFromFreemarkerXmlInputStream(templateIn, model, classLoader);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Reading the templateResource (" + templateResource + ") failed.", e);
+            throw new IllegalArgumentException("Reading the templateResource (" + templateResource + ") fails.", e);
         }
     }
 
@@ -351,7 +351,7 @@ public class PlannerBenchmarkConfig {
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException("The templateFile (" + templateFile + ") was not found.", e);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Reading the templateFile (" + templateFile + ") failed.", e);
+            throw new IllegalArgumentException("Reading the templateFile (" + templateFile + ") fails.", e);
         }
     }
 
@@ -402,7 +402,7 @@ public class PlannerBenchmarkConfig {
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException("This vm does not support the charset (" + StandardCharsets.UTF_8 + ").", e);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Reading failed.", e);
+            throw new IllegalArgumentException("Reading fails.", e);
         }
     }
 
