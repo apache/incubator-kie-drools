@@ -134,6 +134,7 @@ message Agenda {
         message NodeInstance {
             optional int64 process_instance_id = 1;
             optional string node_instance_id = 2;
+            optional string process_instance_string_id = 3;
         }
     }
 
@@ -151,6 +152,7 @@ message Agenda {
         message NodeInstance {
             optional int64 process_instance_id = 1;
             optional string node_instance_id = 2;
+            optional string process_instance_string_id = 3;
         }
     }
 }
