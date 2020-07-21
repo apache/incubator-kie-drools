@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
-import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 public class BendableScoreTest extends AbstractScoreTest {
 
@@ -298,25 +297,4 @@ public class BendableScoreTest extends AbstractScoreTest {
                 scoreDefinitionHHSSS.createScore(1, Integer.MIN_VALUE, -20, 0, 0),
                 scoreDefinitionHHSSS.createScore(1, -20, Integer.MIN_VALUE, 0, 0));
     }
-
-    @Test
-    public void serializeAndDeserialize() {
-        PlannerTestUtils.serializeAndDeserializeWithXStream(
-                scoreDefinitionHSS.createScore(-12, 3400, -56),
-                output -> {
-                    assertThat(output.getInitScore()).isEqualTo(0);
-                    assertThat(output.getHardScore(0)).isEqualTo(-12);
-                    assertThat(output.getSoftScore(0)).isEqualTo(3400);
-                    assertThat(output.getSoftScore(1)).isEqualTo(-56);
-                });
-        PlannerTestUtils.serializeAndDeserializeWithXStream(
-                scoreDefinitionHSS.createScoreUninitialized(-7, -12, 3400, -56),
-                output -> {
-                    assertThat(output.getInitScore()).isEqualTo(-7);
-                    assertThat(output.getHardScore(0)).isEqualTo(-12);
-                    assertThat(output.getSoftScore(0)).isEqualTo(3400);
-                    assertThat(output.getSoftScore(1)).isEqualTo(-56);
-                });
-    }
-
 }

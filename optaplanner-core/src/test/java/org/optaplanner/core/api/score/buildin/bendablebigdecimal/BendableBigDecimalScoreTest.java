@@ -26,7 +26,6 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.score.buildin.bendablebigdecimal.BendableBigDecimalScoreDefinition;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
-import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 public class BendableBigDecimalScoreTest extends AbstractScoreTest {
 
@@ -40,7 +39,6 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
     private static final BigDecimal PLUS_19 = BigDecimal.valueOf(19);
     private static final BigDecimal PLUS_16 = BigDecimal.valueOf(16);
     private static final BigDecimal NINE = BigDecimal.valueOf(9);
-    private static final BigDecimal SIX = BigDecimal.valueOf(6);
     private static final BigDecimal FIVE = BigDecimal.valueOf(5);
     private static final BigDecimal FOUR = BigDecimal.valueOf(4);
     private static final BigDecimal THREE = BigDecimal.valueOf(3);
@@ -354,26 +352,4 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
                 scoreDefinitionHHSSS.createScore(ONE, MIN_INTEGER, MINUS_20, ZERO, ZERO),
                 scoreDefinitionHHSSS.createScore(ONE, MINUS_20, MIN_INTEGER, ZERO, ZERO));
     }
-
-    @Test
-    public void serializeAndDeserialize() {
-        PlannerTestUtils.serializeAndDeserializeWithXStream(
-                scoreDefinitionHSS.createScore(new BigDecimal("-12"), new BigDecimal("3400"), new BigDecimal("-56")),
-                output -> {
-                    assertThat(output.getInitScore()).isEqualTo(0);
-                    assertThat(output.getHardScore(0)).isEqualTo(new BigDecimal("-12"));
-                    assertThat(output.getSoftScore(0)).isEqualTo(new BigDecimal("3400"));
-                    assertThat(output.getSoftScore(1)).isEqualTo(new BigDecimal("-56"));
-                });
-        PlannerTestUtils.serializeAndDeserializeWithXStream(
-                scoreDefinitionHSS.createScoreUninitialized(-7, new BigDecimal("-12"), new BigDecimal("3400"),
-                        new BigDecimal("-56")),
-                output -> {
-                    assertThat(output.getInitScore()).isEqualTo(-7);
-                    assertThat(output.getHardScore(0)).isEqualTo(new BigDecimal("-12"));
-                    assertThat(output.getSoftScore(0)).isEqualTo(new BigDecimal("3400"));
-                    assertThat(output.getSoftScore(1)).isEqualTo(new BigDecimal("-56"));
-                });
-    }
-
 }

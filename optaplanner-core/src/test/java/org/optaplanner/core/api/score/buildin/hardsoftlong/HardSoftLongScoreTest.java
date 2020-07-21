@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
-import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 public class HardSoftLongScoreTest extends AbstractScoreTest {
 
@@ -163,23 +162,4 @@ public class HardSoftLongScoreTest extends AbstractScoreTest {
                 HardSoftLongScore.of(0L, 0L),
                 HardSoftLongScore.of(0L, 1L));
     }
-
-    @Test
-    public void serializeAndDeserialize() {
-        PlannerTestUtils.serializeAndDeserializeWithXStream(
-                HardSoftLongScore.of(-12, 3400L),
-                output -> {
-                    assertThat(output.getInitScore()).isEqualTo(0);
-                    assertThat(output.getHardScore()).isEqualTo(-12L);
-                    assertThat(output.getSoftScore()).isEqualTo(3400L);
-                });
-        PlannerTestUtils.serializeAndDeserializeWithXStream(
-                HardSoftLongScore.ofUninitialized(-7, -12L, 3400L),
-                output -> {
-                    assertThat(output.getInitScore()).isEqualTo(-7);
-                    assertThat(output.getHardScore()).isEqualTo(-12L);
-                    assertThat(output.getSoftScore()).isEqualTo(3400L);
-                });
-    }
-
 }

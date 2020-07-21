@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.score.buildin.bendablelong.BendableLongScoreDefinition;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
-import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 public class BendableLongScoreTest extends AbstractScoreTest {
 
@@ -300,25 +299,4 @@ public class BendableLongScoreTest extends AbstractScoreTest {
                 scoreDefinitionHHSSS.createScore(1L, Long.MIN_VALUE, -20L, 0L, 0L),
                 scoreDefinitionHHSSS.createScore(1L, -20L, Long.MIN_VALUE, 0L, 0L));
     }
-
-    @Test
-    public void serializeAndDeserialize() {
-        PlannerTestUtils.serializeAndDeserializeWithXStream(
-                scoreDefinitionHSS.createScore(-12L, 3400L, -56L),
-                output -> {
-                    assertThat(output.getInitScore()).isEqualTo(0);
-                    assertThat(output.getHardScore(0)).isEqualTo(-12L);
-                    assertThat(output.getSoftScore(0)).isEqualTo(3400L);
-                    assertThat(output.getSoftScore(1)).isEqualTo(-56L);
-                });
-        PlannerTestUtils.serializeAndDeserializeWithXStream(
-                scoreDefinitionHSS.createScoreUninitialized(-7, -12L, 3400L, -56L),
-                output -> {
-                    assertThat(output.getInitScore()).isEqualTo(-7);
-                    assertThat(output.getHardScore(0)).isEqualTo(-12L);
-                    assertThat(output.getSoftScore(0)).isEqualTo(3400L);
-                    assertThat(output.getSoftScore(1)).isEqualTo(-56L);
-                });
-    }
-
 }

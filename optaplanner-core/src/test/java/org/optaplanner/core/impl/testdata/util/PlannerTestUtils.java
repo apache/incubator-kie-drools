@@ -33,7 +33,6 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -55,9 +54,6 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.security.AnyTypePermission;
 
 /**
  * @see PlannerAssert
@@ -158,22 +154,6 @@ public class PlannerTestUtils {
             throw new IllegalStateException("No method mocked for parameter (" + externalObject + ").");
         });
         return scoreDirector;
-    }
-
-    // ************************************************************************
-    // Serialization methods
-    // ************************************************************************
-
-    public static <T> void serializeAndDeserializeWithXStream(T input, Consumer<T> outputAsserter) {
-        XStream xStream = new XStream();
-        xStream.setMode(XStream.ID_REFERENCES);
-        if (input != null) {
-            xStream.processAnnotations(input.getClass());
-        }
-        XStream.setupDefaultSecurity(xStream);
-        xStream.addPermission(new AnyTypePermission());
-        String xmlString = xStream.toXML(input);
-        outputAsserter.accept((T) xStream.fromXML(xmlString));
     }
 
     // ************************************************************************
