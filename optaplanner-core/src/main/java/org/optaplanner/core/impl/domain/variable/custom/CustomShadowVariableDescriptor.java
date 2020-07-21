@@ -72,7 +72,7 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
                         + ") has a " + CustomShadowVariable.class.getSimpleName()
                         + " annotated property (" + variableMemberAccessor.getName()
                         + ") with a non-null variableListenerRef (" + variableListenerRef
-                        + "), so it can not have a variableListenerClass (" + variableListenerClass
+                        + "), so it cannot have a variableListenerClass (" + variableListenerClass
                         + ") nor any sources (" + Arrays.toString(sources) + ").");
             }
         } else {

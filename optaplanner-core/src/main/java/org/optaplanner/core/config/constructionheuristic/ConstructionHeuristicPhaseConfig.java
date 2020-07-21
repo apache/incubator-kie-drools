@@ -217,7 +217,7 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
             }
             if (moveSelectorConfigList != null) {
                 throw new IllegalArgumentException("The moveSelectorConfigList (" + moveSelectorConfigList
-                        + ") can not be configured if the entityPlacerConfig (" + entityPlacerConfig_
+                        + ") cannot be configured if the entityPlacerConfig (" + entityPlacerConfig_
                         + ") is explicitly configured.");
             }
         }

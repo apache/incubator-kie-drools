@@ -442,7 +442,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                             if (patternEntryIndex != 0 && shiftTypeIsNone) {
                                 throw new IllegalArgumentException("On patternEntryIndex (" + patternEntryIndex
                                         + ") of FreeBeforeWorkSequence pattern (" + pattern.getCode()
-                                        + ") the shiftType can not be (None).");
+                                        + ") the shiftType cannot be (None).");
                             }
                         } else if (pattern instanceof WorkBeforeFreeSequencePattern) {
                             WorkBeforeFreeSequencePattern castedPattern = (WorkBeforeFreeSequencePattern) pattern;

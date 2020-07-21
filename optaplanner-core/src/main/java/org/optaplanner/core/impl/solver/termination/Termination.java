@@ -55,7 +55,7 @@ public interface Termination extends PhaseLifecycleListener {
      * Clients that use a timeGradient should cache it at the start of a single step
      * because some implementations are not time-stable.
      * <p>
-     * If a timeGradient can not be calculated, it should return -1.0.
+     * If a timeGradient cannot be calculated, it should return -1.0.
      * Several implementations (such a {@link SimulatedAnnealingAcceptor}) require a correctly implemented timeGradient.
      * <p>
      * A Termination's timeGradient can be requested after they are terminated, so implementations

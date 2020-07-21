@@ -57,7 +57,7 @@ public interface InnerConstraintFactory<Solution_> extends ConstraintFactory {
         if (planningIdMemberAccessor == null) {
             throw new IllegalArgumentException("The fromClass (" + fromClass + ") has no member with a @"
                     + PlanningId.class.getSimpleName() + " annotation,"
-                    + " so the pairs can not be made unique ([A,B] vs [B,A]).");
+                    + " so the pairs cannot be made unique ([A,B] vs [B,A]).");
         }
         // TODO In Bavet breaks node sharing + involves unneeded indirection
         Function<A, Comparable> planningIdGetter = fact -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);

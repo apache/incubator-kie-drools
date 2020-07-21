@@ -173,8 +173,8 @@ When two scores are compared, each of the score constraints are compared individ
 Pareto scoring can even be combined with score levels and score constraint weighting.
 
 Consider this example with positive constraints, where we want to get the most apples and oranges.
-Since it is impossible to compare apples and oranges, we can not weigh them against each other.
-Yet, despite that we can not compare them, we can state that two apples are better than one apple.
+Since it is impossible to compare apples and oranges, we cannot weigh them against each other.
+Yet, despite that we cannot compare them, we can state that two apples are better than one apple.
 Similarly, we can state that two apples and one orange are better than just one orange.
 So despite our inability to compare some Scores conclusively (at which point we declare them equal), we can find a set of optimal scores.
 Those are called pareto optimal.
@@ -762,10 +762,10 @@ For the Score (or each <<scoreLevel,score level>> separately), specify a trend:
 * `ANY` (default): Initializing an extra variable can change the score positively or negatively. Gives no performance gain.
 * `ONLY_UP` (rare): Initializing an extra variable can only change the score positively. Implies that:
 ** There are only positive constraints
-** And initializing the next variable can not unmatch a positive constraint that was matched by a previous initialized variable.
+** And initializing the next variable cannot unmatch a positive constraint that was matched by a previous initialized variable.
 * ``ONLY_DOWN``: Initializing an extra variable can only change the score negatively. Implies that:
 ** There are only negative constraints
-** And initializing the next variable can not unmatch a negative constraint that was matched by a previous initialized variable.
+** And initializing the next variable cannot unmatch a negative constraint that was matched by a previous initialized variable.
 
 Most use cases only have negative constraints.
 Many of those have an `InitializingScoreTrend` that only goes down:

@@ -202,7 +202,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
                 int renewableResourceSize = readIntegerValue("\\- renewable *:", "R");
                 if (renewableResourceSize < globalResourceListSize) {
                     throw new IllegalArgumentException("The renewableResourceSize (" + renewableResourceSize
-                            + ") can not be less than globalResourceListSize (" + globalResourceListSize + ").");
+                            + ") cannot be less than globalResourceListSize (" + globalResourceListSize + ").");
                 }
                 renewableLocalResourceSize = renewableResourceSize - globalResourceListSize;
                 nonrenewableLocalResourceSize = readIntegerValue("\\- nonrenewable *:", "N");

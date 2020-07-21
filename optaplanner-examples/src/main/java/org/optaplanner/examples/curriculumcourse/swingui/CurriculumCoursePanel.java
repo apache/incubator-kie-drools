@@ -258,7 +258,7 @@ public class CurriculumCoursePanel extends SolutionPanel<CourseSchedule> {
             roomListField.setSelectedItem(lecture.getRoom());
             listFieldsPanel.add(roomListField);
             listFieldsPanel.add(new JLabel("Pinned:"));
-            JCheckBox pinnedField = new JCheckBox("can not move during solving");
+            JCheckBox pinnedField = new JCheckBox("cannot move during solving");
             pinnedField.setSelected(lecture.isPinned());
             listFieldsPanel.add(pinnedField);
             int result = JOptionPane.showConfirmDialog(CurriculumCoursePanel.this.getRootPane(), listFieldsPanel,

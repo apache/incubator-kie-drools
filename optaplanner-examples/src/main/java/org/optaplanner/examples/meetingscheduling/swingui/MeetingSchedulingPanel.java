@@ -276,7 +276,7 @@ public class MeetingSchedulingPanel extends SolutionPanel<MeetingSchedule> {
             roomListField.setSelectedItem(meetingAssignment.getRoom());
             listFieldsPanel.add(roomListField);
             listFieldsPanel.add(new JLabel("Pinned:"));
-            JCheckBox pinnedField = new JCheckBox("can not move during solving");
+            JCheckBox pinnedField = new JCheckBox("cannot move during solving");
             pinnedField.setSelected(meetingAssignment.isPinned());
             listFieldsPanel.add(pinnedField);
             int result = JOptionPane.showConfirmDialog(MeetingSchedulingPanel.this.getRootPane(), listFieldsPanel,

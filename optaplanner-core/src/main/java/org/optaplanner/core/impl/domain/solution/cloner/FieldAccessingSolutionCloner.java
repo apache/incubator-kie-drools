@@ -459,7 +459,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
                 return field.get(bean);
             } catch (IllegalAccessException e) {
                 throw new IllegalStateException("The class (" + bean.getClass() + ") has a field (" + field
-                        + ") which can not be read to create a planning clone.", e);
+                        + ") which cannot be read to create a planning clone.", e);
             }
         }
 
@@ -468,7 +468,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
                 field.set(bean, value);
             } catch (IllegalAccessException e) {
                 throw new IllegalStateException("The class (" + bean.getClass() + ") has a field (" + field
-                        + ") which can not be written with the value (" + value + ") to create a planning clone.", e);
+                        + ") which cannot be written with the value (" + value + ") to create a planning clone.", e);
             }
         }
 

@@ -29,7 +29,7 @@ For an object representing the full data set and solution, a sample instance hol
 . Determine which relationships (or fields) change during planning.
 
 * _Planning entity_: The class (or classes) that OptaPlanner can change during solving. In this example, it is the class ``Process``, because OptaPlanner can assign processes to computers.
-* _Problem fact_: A class representing input data that OptaPlanner can not change.
+* _Problem fact_: A class representing input data that OptaPlanner cannot change.
 * _Planning variable_: The property (or properties) of a planning entity class that changes during solving. In this example, it is the property `computer` on the class ``Process``.
 * _Planning solution_: The class that represents a solution to the problem. This class must represent the full data set and contain all planning entities. In this example that is the class ``CloudBalance``.
 
@@ -130,7 +130,7 @@ The `CloudBalance` class has a [path]_@PlanningSolution_
 
 . The `processList` property holds a list of processes. OptaPlanner can change the processes, allocating them to different computers. Therefore, a process is a planning entity and the list of processes is a collection of planning entities. We annotate the getter `getProcessList()` with ``@PlanningEntityCollectionProperty``.
 
-. The `computerList` property holds a list of computers. OptaPlanner can not change the computers. Therefore, a computer is a problem fact. Especially for score calculation with Drools, the property `computerList` needs to be annotated with a `@ProblemFactCollectionProperty` so that OptaPlanner can retrieve the list of computers (problem facts) and make it available to the Drools engine.
+. The `computerList` property holds a list of computers. OptaPlanner cannot change the computers. Therefore, a computer is a problem fact. Especially for score calculation with Drools, the property `computerList` needs to be annotated with a `@ProblemFactCollectionProperty` so that OptaPlanner can retrieve the list of computers (problem facts) and make it available to the Drools engine.
 
 
 . The `CloudBalance` class also has a `@PlanningScore` annotated property ``score``, which is the `Score` of that solution in its current state.

@@ -93,7 +93,7 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
      */
     public List<RuleItemBuilder<?>> createRuleItemBuilders(DroolsConstraint<?> constraint,
             Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        throw new UnsupportedOperationException("Non-scoring stream (" + this + ") can not create a rule.");
+        throw new UnsupportedOperationException("Non-scoring stream (" + this + ") cannot create a rule.");
     }
 
     // ************************************************************************
@@ -112,7 +112,7 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
      * @return never null, never empty
      */
     public Class[] getExpectedJustificationTypes() {
-        throw new UnsupportedOperationException("Non-scoring stream (" + this + ") can not have any expected matches.");
+        throw new UnsupportedOperationException("Non-scoring stream (" + this + ") cannot have any expected matches.");
     }
 
 }

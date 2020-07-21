@@ -53,7 +53,7 @@ By using advanced optimization algorithms, *OptaPlanner does find a good solutio
 
 Usually, a planning problem has at least two levels of constraints:
 
-* A _(negative) hard constraint_ must not be broken. For example: __1 teacher can not teach 2 different lessons at the same time__.
+* A _(negative) hard constraint_ must not be broken. For example: __1 teacher cannot teach 2 different lessons at the same time__.
 * A _(negative) soft constraint_ should not be broken if it can be avoided. For example: __Teacher A does not like to teach on Friday afternoon__.
 
 Some problems have positive constraints too:

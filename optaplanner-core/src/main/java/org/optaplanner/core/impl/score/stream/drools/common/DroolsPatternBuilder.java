@@ -26,7 +26,7 @@ import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 
 /**
- * Instances of {@link PatternDSL.PatternDef} are mutable and as such can not be reused by constraint streams that could
+ * Instances of {@link PatternDSL.PatternDef} are mutable and as such cannot be reused by constraint streams that could
  * result in mutually different rules.
  * However, multiple rules can be based on the same constraint streams through stream sharing.
  * This class makes it nearly impossible for {@link PatternDSL.PatternDef}s to be unknowingly shared.
@@ -94,7 +94,7 @@ public final class DroolsPatternBuilder<T> {
      * Builds a new instance of the pattern, with all the {@link UnaryOperator}s from
      * {@link #expand(UnaryOperator)} applied.
      *
-     * @return should no longer be mutated to guarantee that rules can not influence one another
+     * @return should no longer be mutated to guarantee that rules cannot influence one another
      */
     public PatternDSL.PatternDef<T> build() {
         return build(pattern(baseVariable));
@@ -105,7 +105,7 @@ public final class DroolsPatternBuilder<T> {
      * {@link #expand(UnaryOperator)} applied.
      *
      * @param declarationSource will be applied to the newly created pattern
-     * @return should no longer be mutated to guarantee that rules can not influence one another
+     * @return should no longer be mutated to guarantee that rules cannot influence one another
      */
     public PatternDSL.PatternDef<T> build(DeclarationSource declarationSource) {
         return build(pattern(baseVariable, declarationSource));

@@ -265,7 +265,7 @@ public class TennisPanel extends SolutionPanel<TennisSolution> {
             teamListField.setSelectedItem(teamAssignment.getTeam());
             listFieldsPanel.add(teamListField);
             listFieldsPanel.add(new JLabel("Pinned:"));
-            JCheckBox pinnedField = new JCheckBox("can not move during solving");
+            JCheckBox pinnedField = new JCheckBox("cannot move during solving");
             pinnedField.setSelected(teamAssignment.isPinned());
             listFieldsPanel.add(pinnedField);
             int result = JOptionPane.showConfirmDialog(TennisPanel.this.getRootPane(), listFieldsPanel,

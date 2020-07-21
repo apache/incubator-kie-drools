@@ -656,7 +656,7 @@ public class SolutionDescriptor<Solution_> {
                 if (pair.getValue() < 0) {
                     throw new IllegalStateException("Impossible state because the shadowVariable ("
                             + shadow.getSimpleEntityAndVariableName()
-                            + ") can not be used more as a sink than it has sources.");
+                            + ") cannot be used more as a sink than it has sources.");
                 }
                 throw new IllegalStateException("There is a cyclic shadow variable path"
                         + " that involves the shadowVariable (" + shadow.getSimpleEntityAndVariableName()

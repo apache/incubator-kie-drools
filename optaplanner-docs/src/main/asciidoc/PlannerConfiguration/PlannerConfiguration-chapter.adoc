@@ -675,7 +675,7 @@ For example, if a teacher can *never* teach in a room that does not belong to hi
     }
 ----
 
-Never use this to enforce a soft constraint (or even a hard constraint when the problem might not have a feasible solution). For example: __Unless there is no other way__, a teacher can not teach in a room that does not belong to his department.
+Never use this to enforce a soft constraint (or even a hard constraint when the problem might not have a feasible solution). For example: __Unless there is no other way__, a teacher cannot teach in a room that does not belong to his department.
 In this case, the teacher should _not_ be limited in his room value range (because sometimes there is no other way).
 
 [NOTE]

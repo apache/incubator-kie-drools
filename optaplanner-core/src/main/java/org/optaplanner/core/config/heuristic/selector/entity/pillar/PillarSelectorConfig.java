@@ -149,7 +149,7 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
                             comparator);
                 }
             default:
-                throw new IllegalStateException("Subpillars can not be enabled and disabled at the same time.");
+                throw new IllegalStateException("Subpillars cannot be enabled and disabled at the same time.");
         }
     }
 
