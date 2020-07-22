@@ -279,7 +279,7 @@ public class DMNRuntimeBuilder {
         }
 
         @Override
-        public KieRuntimeFactory getKiePMMLRuntimeFactory(String modelName) {
+        public KieRuntimeFactory getKieRuntimeFactory(String modelName) {
             return kiePMMLRuntimeFactoryFunction.apply(modelName);
         }
     }
