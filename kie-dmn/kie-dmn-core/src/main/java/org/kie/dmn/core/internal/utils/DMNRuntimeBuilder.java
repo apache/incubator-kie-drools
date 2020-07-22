@@ -235,7 +235,7 @@ public class DMNRuntimeBuilder {
         private final List<DMNModel> models;
         private final Function<String, KieRuntimeFactory> kieRuntimeFactoryFunction;
 
-        private DMNRuntimeKBStatic(ClassLoader rootClassLoader, Collection<DMNModel> models, Collection<DMNProfile> dmnProfiles, Function<String, KieRuntimeFactory> kiePMMLRuntimeFactoryFunction) {
+        private DMNRuntimeKBStatic(ClassLoader rootClassLoader, Collection<DMNModel> models, Collection<DMNProfile> dmnProfiles, Function<String, KieRuntimeFactory> kieRuntimeFactoryFunction) {
             this.rootClassLoader = rootClassLoader;
             LOG.trace("DMNRuntimeKBStatic rootClassLoader is set to {}", rootClassLoader);
             this.models = Collections.unmodifiableList(new ArrayList<>(models));
