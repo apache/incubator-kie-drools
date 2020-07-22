@@ -24,6 +24,6 @@ public class VoidDMNRuntimeKBTest {
     @Test(expected = UnsupportedOperationException.class)
     public void getKiePMMLRuntimeFactory() {
         VoidDMNRuntimeKB retrieved = new VoidDMNRuntimeKB();
-        retrieved.getKiePMMLRuntimeFactory("MODELNAME");
+        retrieved.getKieRuntimeFactory("MODELNAME");
     }
 }

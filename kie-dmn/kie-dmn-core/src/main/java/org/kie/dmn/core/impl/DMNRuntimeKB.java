@@ -48,7 +48,7 @@ public interface DMNRuntimeKB {
 
     /**
      *
-     * @param modelName
+     * @param kieBaseName
      * @return
      * @throws UnsupportedOperationException if not supported on this platform.
      */

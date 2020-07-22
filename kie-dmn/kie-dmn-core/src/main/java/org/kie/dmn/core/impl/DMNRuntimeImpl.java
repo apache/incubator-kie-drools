@@ -152,11 +152,11 @@ public class DMNRuntimeImpl
 
     /**
      *
-     * @param kieBaseName The "sanitized" model name - that is also used for the kiebase
+     * @param kieBaseName
      * @return
      */
     public KieRuntimeFactory getKieRuntimeFactory(String kieBaseName) {
-        return runtimeKB.getKiePMMLRuntimeFactory(kieBaseName);
+        return runtimeKB.getKieRuntimeFactory(kieBaseName);
     }
 
     private void evaluateByNameInternal( DMNModel model, DMNContext context, DMNResultImpl result, String name ) {
