@@ -57,7 +57,7 @@ public class DMNRuntimeKBWrappingIKB implements DMNRuntimeKB {
 
 
     @Override
-    public KieRuntimeFactory getKiePMMLRuntimeFactory(String modelName) {
+    public KieRuntimeFactory getKieRuntimeFactory(String modelName) {
         KieContainer kieContainer = ((KnowledgeBaseImpl) knowledgeBase).getKieContainer();
         KieBase kieBase;
         if (kieContainer.getKieBaseNames().contains(modelName)) {
