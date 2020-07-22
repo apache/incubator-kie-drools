@@ -1077,10 +1077,8 @@ public class RuleModelDRLPersistenceImpl
         private void generateSingleFieldConstraint(final SingleFieldConstraint constr,
                                                    final LHSGeneratorContext gctx) {
             if (constr.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE) {
-                buf.append("eval( ");
-                buf.append(constr.getValue());
-                buf.append(" )");
-                gctx.setHasOutput(true);
+                generatePredicateSingleFieldConstraint(constr,
+                                                       gctx);
             } else {
                 if (constr.isBound()) {
                     bindingsFields.put(constr.getFieldBinding(),
@@ -1122,6 +1120,14 @@ public class RuleModelDRLPersistenceImpl
                     gctx.setHasOutput(true);
                 }
             }
+        }
+
+        protected void generatePredicateSingleFieldConstraint(final SingleFieldConstraint constr,
+                                                              final LHSGeneratorContext gctx) {
+            buf.append("eval( ");
+            buf.append(constr.getValue());
+            buf.append(" )");
+            gctx.setHasOutput(true);
         }
 
         private void generateNormalFieldRestriction(final SingleFieldConstraint constr,
@@ -3543,7 +3549,8 @@ public class RuleModelDRLPersistenceImpl
             }
         }
         if (isCompositeFieldConstraint(splittedExpr)) {
-            ComplexExpr complexExpr = new ComplexExpr(splittedExpr.get(1));
+            ComplexExpr complexExpr = new ComplexExpr(splittedExpr.get(1),
+                                                      expr);
             for (int i = 0; i < splittedExpr.size(); i += 2) {
                 complexExpr.subExprs.add(parseExpr(splittedExpr.get(i),
                                                    isJavaDialect,
@@ -4328,21 +4335,29 @@ public class RuleModelDRLPersistenceImpl
 
         private final List<Expr> subExprs = new ArrayList<Expr>();
         private final String connector;
+        private final String expr;
 
-        private ComplexExpr(final String connector) {
+        private ComplexExpr(final String connector,
+                            final String expr) {
             this.connector = connector;
+            this.expr = expr;
         }
 
         public FieldConstraint asFieldConstraint(final RuleModel m,
                                                  final FactPattern factPattern) {
-            final CompositeFieldConstraint comp = new CompositeFieldConstraint();
-            comp.setCompositeJunctionType(connector.equals("&&") ? CompositeFieldConstraint.COMPOSITE_TYPE_AND : CompositeFieldConstraint.COMPOSITE_TYPE_OR);
-            for (final Expr expr : subExprs) {
-                comp.addConstraint(expr.asFieldConstraint(m,
-                                                          factPattern));
+            if (!connector.equals("&&") && !connector.equals("||")) {
+                return new EvalExpr(expr).asFieldConstraint(m, factPattern);
+            } else {
+
+                final CompositeFieldConstraint comp = new CompositeFieldConstraint();
+                comp.setCompositeJunctionType(connector.equals("&&") ? CompositeFieldConstraint.COMPOSITE_TYPE_AND : CompositeFieldConstraint.COMPOSITE_TYPE_OR);
+                for (final Expr subExpr : subExprs) {
+                    comp.addConstraint(subExpr.asFieldConstraint(m,
+                                                                 factPattern));
+                }
+                convertLegacyMatchesToNewFormat(comp);
+                return comp;
             }
-            convertLegacyMatchesToNewFormat(comp);
-            return comp;
         }
 
         /**

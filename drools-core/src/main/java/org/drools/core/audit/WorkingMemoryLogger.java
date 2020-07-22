@@ -434,31 +434,19 @@ public abstract class WorkingMemoryLogger
     }
     
     public void beforeProcessStarted(ProcessStartedEvent event) {
-        filterLogEvent( new RuleFlowLogEvent( LogEvent.BEFORE_RULEFLOW_CREATED,
-                event.getProcessInstance().getProcessId(),
-                event.getProcessInstance().getProcessName(),
-                event.getProcessInstance().getId()) );
+        filterLogEvent( new RuleFlowLogEvent( LogEvent.BEFORE_RULEFLOW_CREATED, event.getProcessInstance() ) );
     }
 
     public void afterProcessStarted(ProcessStartedEvent event) {
-        filterLogEvent(new RuleFlowLogEvent(LogEvent.AFTER_RULEFLOW_CREATED,
-                event.getProcessInstance().getProcessId(),
-                event.getProcessInstance().getProcessName(),
-                event.getProcessInstance().getId()) );
+        filterLogEvent(new RuleFlowLogEvent(LogEvent.AFTER_RULEFLOW_CREATED, event.getProcessInstance() ) );
     }
 
     public void beforeProcessCompleted(ProcessCompletedEvent event) {
-        filterLogEvent( new RuleFlowLogEvent( LogEvent.BEFORE_RULEFLOW_COMPLETED,
-                event.getProcessInstance().getProcessId(),
-                event.getProcessInstance().getProcessName(),
-                event.getProcessInstance().getId()) );
+        filterLogEvent( new RuleFlowLogEvent( LogEvent.BEFORE_RULEFLOW_COMPLETED, event.getProcessInstance() ) );
     }
     
     public void afterProcessCompleted(ProcessCompletedEvent event) {
-        filterLogEvent(new RuleFlowLogEvent(LogEvent.AFTER_RULEFLOW_COMPLETED,
-                event.getProcessInstance().getProcessId(),
-                event.getProcessInstance().getProcessName(),
-                event.getProcessInstance().getId()) );
+        filterLogEvent(new RuleFlowLogEvent(LogEvent.AFTER_RULEFLOW_COMPLETED, event.getProcessInstance() ) );
     }
 
     public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
@@ -466,9 +454,7 @@ public abstract class WorkingMemoryLogger
                 createNodeId(event.getNodeInstance()),
                 event.getNodeInstance().getNodeName(),
                 createNodeInstanceId(event.getNodeInstance()),
-                event.getProcessInstance().getProcessId(),
-                event.getProcessInstance().getProcessName(),
-                event.getProcessInstance().getId()) );
+                event.getProcessInstance()) );
     }
 
     public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
@@ -476,9 +462,7 @@ public abstract class WorkingMemoryLogger
                 createNodeId(event.getNodeInstance()),
                 event.getNodeInstance().getNodeName(),
                 createNodeInstanceId(event.getNodeInstance()),
-                event.getProcessInstance().getProcessId(), 
-                event.getProcessInstance().getProcessName(),
-                event.getProcessInstance().getId()) );
+                event.getProcessInstance()) );
     }
     
     private String createNodeId(NodeInstance nodeInstance) {
@@ -529,9 +513,7 @@ public abstract class WorkingMemoryLogger
             createNodeId(event.getNodeInstance()),
             event.getNodeInstance().getNodeName(),
             createNodeInstanceId(event.getNodeInstance()),
-            event.getProcessInstance().getProcessId(),
-            event.getProcessInstance().getProcessName(),
-            event.getProcessInstance().getId()) );
+            event.getProcessInstance()) );
     }
 
     public void afterNodeLeft(ProcessNodeLeftEvent event) {
@@ -539,18 +521,14 @@ public abstract class WorkingMemoryLogger
             createNodeId(event.getNodeInstance()),
             event.getNodeInstance().getNodeName(),
             createNodeInstanceId(event.getNodeInstance()),
-            event.getProcessInstance().getProcessId(), 
-            event.getProcessInstance().getProcessName(),
-            event.getProcessInstance().getId()) );
+            event.getProcessInstance()) );
     }
 
     public void beforeVariableChanged(ProcessVariableChangedEvent event) {
         filterLogEvent(new RuleFlowVariableLogEvent(LogEvent.BEFORE_VARIABLE_INSTANCE_CHANGED,
             event.getVariableId(),
             event.getVariableInstanceId(),
-            event.getProcessInstance().getProcessId(), 
-            event.getProcessInstance().getProcessName(),
-            event.getProcessInstance().getId(),
+            event.getProcessInstance(),
             event.getNewValue() == null ? "null" : event.getNewValue().toString()) );
     }
 
@@ -558,9 +536,7 @@ public abstract class WorkingMemoryLogger
         filterLogEvent(new RuleFlowVariableLogEvent(LogEvent.AFTER_VARIABLE_INSTANCE_CHANGED,
             event.getVariableId(),
             event.getVariableInstanceId(),
-            event.getProcessInstance().getProcessId(), 
-            event.getProcessInstance().getProcessName(),
-            event.getProcessInstance().getId(),
+            event.getProcessInstance(),
             event.getNewValue() == null ? "null" : event.getNewValue().toString()) );
     }
 

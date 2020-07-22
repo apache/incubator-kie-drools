@@ -29,7 +29,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.PBActivationsFilter;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
-import org.drools.core.phreak.PhreakTimerNode;
 import org.drools.core.phreak.PhreakTimerNode.Scheduler;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
@@ -120,7 +119,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
         if ( resolverStrategyFactory == null ) {
             ObjectMarshallingStrategy[] strats = (ObjectMarshallingStrategy[]) env.get( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES );
             if ( strats == null ) {
-                strats = new ObjectMarshallingStrategy[]{MarshallerFactory.newSerializeMarshallingStrategy()};
+                strats = getMarshallingStrategy();
             }
             this.resolverStrategyFactory = new ObjectMarshallingStrategyStoreImpl( strats );
         }
@@ -138,6 +137,10 @@ public class MarshallerReaderContext extends ObjectInputStream {
         this.timerNodeSchedulers = new HashMap<>();
 
         this.parameterObject = null;
+    }
+
+    protected ObjectMarshallingStrategy[] getMarshallingStrategy() {
+        return new ObjectMarshallingStrategy[]{MarshallerFactory.newSerializeMarshallingStrategy()};
     }
 
     @Override
