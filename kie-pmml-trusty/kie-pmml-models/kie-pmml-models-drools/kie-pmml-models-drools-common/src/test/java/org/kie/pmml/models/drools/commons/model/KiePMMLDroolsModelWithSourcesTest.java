@@ -48,13 +48,22 @@ public class KiePMMLDroolsModelWithSourcesTest {
     @Test
     public void constructor() {
         assertEquals(MODEL_NAME, kiePMMLDroolsModelWithSources.getName());
-        assertEquals(SOURCES_MAP, kiePMMLDroolsModelWithSources.getSourcesMap());
     }
 
 
     @Test(expected = KiePMMLException.class)
     public void evaluate() {
         kiePMMLDroolsModelWithSources.evaluate(KIE_BASE, Collections.emptyMap());
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void getOutputFieldsMap() {
+        kiePMMLDroolsModelWithSources.getOutputFieldsMap();
+    }
+
+    @Test
+    public void getSourcesMap() {
+        assertEquals(SOURCES_MAP, kiePMMLDroolsModelWithSources.getSourcesMap());
     }
 
     @Test
