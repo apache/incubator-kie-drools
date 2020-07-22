@@ -240,7 +240,7 @@ public class DMNRuntimeBuilder {
             LOG.trace("DMNRuntimeKBStatic rootClassLoader is set to {}", rootClassLoader);
             this.models = Collections.unmodifiableList(new ArrayList<>(models));
             this.dmnProfiles = Collections.unmodifiableList(new ArrayList<>(dmnProfiles));
-            this.kiePMMLRuntimeFactoryFunction = kiePMMLRuntimeFactoryFunction;
+            this.kieRuntimeFactoryFunction = kieRuntimeFactoryFunction;
         }
 
         @Override
