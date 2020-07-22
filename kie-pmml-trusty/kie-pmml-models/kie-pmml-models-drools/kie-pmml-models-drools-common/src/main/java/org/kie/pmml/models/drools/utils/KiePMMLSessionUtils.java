@@ -46,10 +46,10 @@ public class KiePMMLSessionUtils {
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLSessionUtils.class.getName());
 
     private static final CommandFactoryServiceImpl COMMAND_FACTORY_SERVICE = new CommandFactoryServiceImpl();
-    private final StatelessKieSession kieSession;
-    private final String modelName;
-    private final String packageName;
-    private final List<Command> commands;
+    final StatelessKieSession kieSession;
+    final String modelName;
+    final String packageName;
+    final List<Command> commands;
 
     private KiePMMLSessionUtils(final KieBase knowledgeBase, final String modelName, final String packageName, final PMML4Result pmml4Result) {
         this.modelName = modelName;
@@ -65,7 +65,15 @@ public class KiePMMLSessionUtils {
         return new Builder(knowledgeBase, modelName, packageName, pmml4Result);
     }
 
-    private StatelessKieSession getKieSession(final KieBase knowledgeBase) {
+    /**
+     * Invoke <code>KieSession.fireAllRules()</code>
+     */
+    public void fireAllRules() {
+        BatchExecutionCommand batchExecutionCommand = COMMAND_FACTORY_SERVICE.newBatchExecution(commands);
+        kieSession.execute(batchExecutionCommand);
+    }
+
+    StatelessKieSession getKieSession(final KieBase knowledgeBase) {
         StatelessKieSession toReturn;
         try {
             toReturn = knowledgeBase.newStatelessKieSession();
@@ -79,11 +87,13 @@ public class KiePMMLSessionUtils {
     }
 
     /**
-     * Invoke <code>KieSession.fireAllRules()</code>
+     * Insert an <code>Object</code> to the underlying <code>KieSession</code>.
+     * @param toInsert the <code>Object</code> to insert
+     * @param globalName its global name
      */
-    public void fireAllRules() {
-        BatchExecutionCommand batchExecutionCommand = COMMAND_FACTORY_SERVICE.newBatchExecution(commands);
-        kieSession.execute(batchExecutionCommand);
+    void insertObjectInSession(final Object toInsert, final String globalName) {
+        commands.add(COMMAND_FACTORY_SERVICE.newInsert(toInsert));
+        commands.add(COMMAND_FACTORY_SERVICE.newSetGlobal(globalName, toInsert));
     }
 
     /**
@@ -109,19 +119,9 @@ public class KiePMMLSessionUtils {
         }
     }
 
-    /**
-     * Insert an <code>Object</code> to the underlying <code>KieSession</code>.
-     * @param toInsert the <code>Object</code> to insert
-     * @param globalName its global name
-     */
-    private void insertObjectInSession(final Object toInsert, final String globalName) {
-        commands.add(COMMAND_FACTORY_SERVICE.newInsert(toInsert));
-        commands.add(COMMAND_FACTORY_SERVICE.newSetGlobal(globalName, toInsert));
-    }
-
     public static class Builder {
 
-        private KiePMMLSessionUtils toBuild;
+        KiePMMLSessionUtils toBuild;
 
         private Builder(final KieBase knowledgeBase, final String modelName, final String packageName, final PMML4Result pmml4Result) {
             this.toBuild = new KiePMMLSessionUtils(knowledgeBase, modelName, packageName, pmml4Result);
