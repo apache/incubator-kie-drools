@@ -52,7 +52,7 @@ public interface DMNRuntimeKB {
      * @return
      * @throws UnsupportedOperationException if not supported on this platform.
      */
-    KieRuntimeFactory getKiePMMLRuntimeFactory(String modelName);
+    KieRuntimeFactory getKieRuntimeFactory(String kieBaseName);
 
 
 }
