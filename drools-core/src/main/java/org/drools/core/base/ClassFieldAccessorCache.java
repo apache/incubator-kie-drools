@@ -18,15 +18,14 @@ package org.drools.core.base;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.security.ProtectionDomain;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.drools.core.util.ByteArrayClassLoader;
-import org.drools.core.util.ClassUtils;
 import org.drools.core.util.asm.ClassFieldInspector;
+import org.drools.reflective.ComponentsFactory;
+import org.drools.reflective.util.ByteArrayClassLoader;
 
 import static org.drools.core.util.ClassUtils.convertPrimitiveNameToType;
 
@@ -153,7 +152,7 @@ public class ClassFieldAccessorCache {
     }
 
     public static class CacheEntry {
-        private final ByteArrayClassLoader                                     byteArrayClassLoader;
+        private final ByteArrayClassLoader byteArrayClassLoader;
         private final ConcurrentMap<AccessorKey, BaseClassFieldReader>   readCache   = new ConcurrentHashMap<AccessorKey, BaseClassFieldReader>();
         private final ConcurrentMap<AccessorKey, BaseClassFieldWriter>   writeCache  = new ConcurrentHashMap<AccessorKey, BaseClassFieldWriter>();
 
@@ -166,12 +165,8 @@ public class ClassFieldAccessorCache {
                 throw new RuntimeException( "ClassFieldAccessorFactory cannot have a null parent ClassLoader" );
             }
 
-            this.byteArrayClassLoader = AccessController.doPrivileged(
-                    (PrivilegedAction<ByteArrayClassLoader>) () ->
-                            ClassUtils.isAndroid() ?
-                                    (ByteArrayClassLoader) ClassUtils.instantiateObject(
-                                            "org.drools.android.MultiDexClassLoader", null, parentClassLoader) :
-                            new DefaultByteArrayClassLoader(parentClassLoader));
+            this.byteArrayClassLoader = AccessController.doPrivileged( (PrivilegedAction<org.drools.reflective.util.ByteArrayClassLoader>)
+                    () -> ComponentsFactory.createByteArrayClassLoader(parentClassLoader) );
         }
 
         public ByteArrayClassLoader getByteArrayClassLoader() {
@@ -249,21 +244,4 @@ public class ClassFieldAccessorCache {
         }
 
     }
-
-    public static class DefaultByteArrayClassLoader extends ClassLoader implements ByteArrayClassLoader {
-        public DefaultByteArrayClassLoader(final ClassLoader parent) {
-            super( parent );
-        }
-
-        public Class< ? > defineClass(final String name,
-                                      final byte[] bytes,
-                                      final ProtectionDomain domain) {
-            return defineClass( name,
-                                bytes,
-                                0,
-                                bytes.length,
-                                domain );
-        }
-    }
-
 }

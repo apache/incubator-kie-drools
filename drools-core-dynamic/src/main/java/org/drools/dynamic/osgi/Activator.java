@@ -27,6 +27,6 @@ public class Activator extends BaseActivator {
     public Activator() {
         super( Activator.class.getClassLoader() );
         ServiceRegistryImpl.setSupplier( new DynamicServiceRegistrySupplier() );
-        ComponentsFactory.INSTANCE.setComponentsSupplier( new DynamicComponentsSupplier() );
+        ComponentsFactory.setComponentsSupplier( new DynamicComponentsSupplier() );
     }
 }

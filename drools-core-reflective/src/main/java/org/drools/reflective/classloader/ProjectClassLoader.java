@@ -89,7 +89,7 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
     }
 
     public static ProjectClassLoader createProjectClassLoader() {
-        return ComponentsFactory.INSTANCE.createProjectClassLoader(findParentClassLoader(), null);
+        return ComponentsFactory.createProjectClassLoader(findParentClassLoader(), null);
     }
 
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent) {
@@ -98,9 +98,9 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
 
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent, ResourceProvider resourceProvider) {
         if (parent == null) {
-            return ComponentsFactory.INSTANCE.createProjectClassLoader(findParentClassLoader(), resourceProvider);
+            return ComponentsFactory.createProjectClassLoader(findParentClassLoader(), resourceProvider);
         }
-        return parent instanceof ProjectClassLoader ? (ProjectClassLoader)parent : ComponentsFactory.INSTANCE.createProjectClassLoader(parent, resourceProvider);
+        return parent instanceof ProjectClassLoader ? (ProjectClassLoader)parent : ComponentsFactory.createProjectClassLoader(parent, resourceProvider);
     }
 
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent, Map<String, byte[]> store) {
@@ -232,7 +232,7 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         Class<?> clazz = loadedClasses.get(className);
 
         boolean clazzFound = clazz != null;
-        if(annotationClazz != null) {
+        if (annotationClazz != null) {
             return clazzFound && !clazz.isAnnotationPresent(annotationClazz);
         } else {
             return clazzFound;
