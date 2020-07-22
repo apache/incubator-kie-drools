@@ -41,9 +41,8 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.drools.core.util.Drools;
-import org.kie.api.KieBase;
-import org.kie.api.KieServices;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
@@ -64,7 +63,6 @@ import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.impl.DMNMessageImpl;
 import org.kie.dmn.core.util.DefaultDMNMessagesManager;
-import org.kie.dmn.core.util.KieHelper;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
@@ -128,7 +126,7 @@ public class DMNValidatorImpl implements DMNValidator {
      * A KieContainer is normally available,
      * unless at runtime some problem prevented building it correctly.
      */
-    private Optional<KieContainer> kieContainer;
+    private Optional<KieContainer> kieContainer = Optional.empty();
 
     /**
      * Collect at init time the runtime issues which prevented to build the `kieContainer` correctly.
@@ -139,51 +137,14 @@ public class DMNValidatorImpl implements DMNValidator {
     private final DMNCompilerConfiguration dmnCompilerConfig;
 
     private final DMNDTAnalyser dmnDTValidator;
+    private InternalKnowledgeBase kb11;
+    private InternalKnowledgeBase kb12;
 
     public DMNValidatorImpl(List<DMNProfile> dmnProfiles) {
-        final KieServices ks = KieServices.Factory.get();
-        final KieContainer kieContainer = KieHelper.getKieContainer(
-                ks.newReleaseId( "org.kie", "kie-dmn-validation", Drools.getFullVersion() ),
-                ks.getResources().newReaderResource(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
-                        "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\">\n" + 
-                        "  <kbase name=\"kbase_DMNv1x\" default=\"false\" packages=\"org.kie.dmn.validation.DMNv1x\" />\n" + 
-                        "  <kbase name=\"kbase_DMNv1_1\" default=\"false\" includes=\"kbase_DMNv1x\" packages=\"org.kie.dmn.validation.DMNv1_1\">\n" + 
-                        "    <ksession name=\"ksession_DMNv1_1\" default=\"false\" type=\"stateless\"/>\n" + 
-                        "  </kbase>\n" + 
-                        "  <kbase name=\"kbase_DMNv1_2\" default=\"false\" includes=\"kbase_DMNv1x\" packages=\"org.kie.dmn.validation.DMNv1_2\">\n" + 
-                        "    <ksession name=\"ksession_DMNv1_2\" default=\"false\" type=\"stateless\"/>\n" + 
-                        "  </kbase>\n" + 
-                        "</kmodule>")).setTargetPath("META-INF/kmodule.xml"),
-                ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1x/dmn-validation-rules.drl", getClass() ),
-                ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1x/dmn-validation-rules-auth-req.drl", getClass() ),
-                ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1x/dmn-validation-rules-bkm.drl", getClass() ),
-                ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1x/dmn-validation-rules-business-context.drl", getClass() ),
-                ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1x/dmn-validation-rules-context.drl", getClass() ),
-                ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1x/dmn-validation-rules-decision.drl", getClass() ),
-                ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1x/dmn-validation-rules-dmnelementref.drl", getClass() ),
-                ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1x/dmn-validation-rules-dtable.drl", getClass() ),
-                ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1x/dmn-validation-rules-info-req.drl", getClass() ),
-                ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1x/dmn-validation-rules-inputdata.drl", getClass() ),
-                ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1x/dmn-validation-rules-know-req.drl", getClass() ),
-                ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1x/dmn-validation-rules-know-source.drl", getClass() ),
-                ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1_1/dmn-validation-rules-typeref.drl", getClass() ),
-                ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1_2/dmn-validation-rules-typeref.drl", getClass() ),
-                ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1_2/dmn-validation-rules-dmndi.drl", getClass()));
-        if( kieContainer != null ) {
-            if (LOG.isDebugEnabled()) {
-                for (String kbName : kieContainer.getKieBaseNames()) {
-                    KieBase kieBase = kieContainer.getKieBase(kbName);
-                    LOG.debug("KieBase: {}", kbName);
-                    kieBase.getKiePackages().stream().flatMap(kp -> kp.getRules().stream()).map(r -> r.getPackageName() + " " + r.getName()).forEach(x -> LOG.debug("  {}", x));
-                }
-            }
-            this.kieContainer = Optional.of( kieContainer );
-        } else {
-            this.kieContainer = Optional.empty();
-            LOG.error("Unable to load embedded DMN validation rules file." );
-            String message = MsgUtil.createMessage( Msg.FAILED_VALIDATOR );
-            failedInitMsg.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, message, Msg.FAILED_VALIDATOR.getType(), null ) );
-        }
+        kb11 = KieBaseBuilder.createKieBaseFromModel(Arrays.asList(org.kie.dmn.validation.bootstrap.ValidationBootstrapModels.V1X_MODEL,
+                                                                   org.kie.dmn.validation.bootstrap.ValidationBootstrapModels.V11_MODEL));
+        kb12 = KieBaseBuilder.createKieBaseFromModel(Arrays.asList(org.kie.dmn.validation.bootstrap.ValidationBootstrapModels.V1X_MODEL,
+                                                                   org.kie.dmn.validation.bootstrap.ValidationBootstrapModels.V12_MODEL));
         ChainedProperties localChainedProperties = new ChainedProperties();
         this.dmnProfiles.addAll(DMNAssemblerService.getDefaultDMNProfiles(localChainedProperties));
         this.dmnProfiles.addAll(dmnProfiles);
@@ -554,16 +515,18 @@ public class DMNValidatorImpl implements DMNValidator {
     }
 
     private List<DMNMessage> validateModel(Definitions dmnModel, List<Definitions> otherModel_Definitions) {
-        if (!kieContainer.isPresent()) {
-            return failedInitMsg;
-        }
+        //        if (!kieContainer.isPresent()) {
+        //            return failedInitMsg;
+        //        }
         
         String kieSessionName = "ksession_DMNv1_2";
+        StatelessKieSession kieSession = kb12.newStatelessKieSession();
         if (dmnModel instanceof KieDMNModelInstrumentedBase) {
             kieSessionName = "ksession_DMNv1_1";
+            kieSession = kb11.newStatelessKieSession();
         }
 
-        StatelessKieSession kieSession = kieContainer.get().newStatelessKieSession(kieSessionName);
+        //        StatelessKieSession kieSession = kieContainer.get().newStatelessKieSession(kieSessionName);
         MessageReporter reporter = new MessageReporter();
         kieSession.setGlobal( "reporter", reporter );
 
