@@ -72,7 +72,8 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
                                                      knowledgeBase.getClass().getName()));
         }
         final PMML4Result toReturn = getPMML4Result(targetField);
-        String packageName = this.getClass().getPackage().getName();
+        String fullClassName = this.getClass().getName();
+        String packageName =  fullClassName.contains(".") ? fullClassName.substring(0, fullClassName.lastIndexOf('.')) : "";
         KiePMMLSessionUtils.Builder builder = KiePMMLSessionUtils.builder((KieBase) knowledgeBase, name, packageName,
                                                                           toReturn)
                 .withObjectsInSession(requestData, fieldTypeMap)
