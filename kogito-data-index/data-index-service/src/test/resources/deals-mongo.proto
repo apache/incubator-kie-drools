@@ -1,0 +1,37 @@
+syntax = "proto2";
+package org.acme.deals;
+import "kogito-index.proto";
+import "kogito-types.proto";
+option kogito_model = "Deals";
+option kogito_id = "deals";
+
+message Address {
+    option java_package = "org.acme.travels";
+    optional string city = 1;
+    optional string country = 2;
+    optional string street = 3;
+    optional string zipCode = 4;
+}
+
+/* @Indexed */
+message Deals {
+    option java_package = "org.acme.deals";
+    /* @Field(store = Store.YES) */
+    optional string id = 1;
+    /* @Field(store = Store.YES) */
+    optional string name = 2;
+    /* @Field(store = Store.YES) */
+    optional string review = 3;
+    optional Traveller traveller = 4;
+    /* @Field(store = Store.YES) */
+    optional org.kie.kogito.index.model.KogitoMetadata metadata = 5;
+}
+
+message Traveller {
+    option java_package = "org.acme.travels";
+    optional Address address = 1;
+    optional string email = 2;
+    optional string firstName = 3;
+    optional string lastName = 4;
+    optional string nationality = 5;
+}

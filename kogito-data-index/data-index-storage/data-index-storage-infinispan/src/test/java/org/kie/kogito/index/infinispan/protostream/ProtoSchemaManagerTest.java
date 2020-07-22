@@ -29,7 +29,7 @@ import org.kie.kogito.persistence.api.schema.SchemaDescriptor;
 import org.kie.kogito.persistence.api.schema.SchemaRegisteredEvent;
 import org.kie.kogito.persistence.api.schema.SchemaRegistrationException;
 import org.kie.kogito.persistence.api.schema.SchemaType;
-import org.kie.kogito.persistence.protobuf.ProtobufService;
+import org.kie.kogito.persistence.infinispan.cache.ProtobufCacheService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -51,7 +51,7 @@ class ProtoSchemaManagerTest {
     DataIndexStorageService cacheManager;
 
     @Mock
-    ProtobufService protobufService;
+    ProtobufCacheService protobufCacheService;
 
     @InjectMocks
     ProtoSchemaManager protoSchemaManager;
@@ -66,7 +66,7 @@ class ProtoSchemaManagerTest {
     void prepare() {
         initMocks(this);
         when(protoSchemaAcceptor.accept(any())).thenReturn(true);
-        when(protobufService.getProtobufCache()).thenReturn(protobufCache);
+        when(protobufCacheService.getProtobufCache()).thenReturn(protobufCache);
         when(cacheManager.getProcessIdModelCache()).thenReturn(processIdModelCache);
     }
 
@@ -77,7 +77,7 @@ class ProtoSchemaManagerTest {
         ProcessDescriptor processDescriptor = new ProcessDescriptor(processId, processType);
         String name = "testName";
         String content = "testContent";
-        SchemaDescriptor schemaDescriptor = new SchemaDescriptor(name, content, processDescriptor);
+        SchemaDescriptor schemaDescriptor = new SchemaDescriptor(name, content, null, processDescriptor);
         SchemaType schemaType = new SchemaType(ProtoSchemaAcceptor.PROTO_SCHEMA_TYPE);
         SchemaRegisteredEvent event = new SchemaRegisteredEvent(schemaDescriptor, schemaType);
 
@@ -95,7 +95,7 @@ class ProtoSchemaManagerTest {
         ProcessDescriptor processDescriptor = new ProcessDescriptor(processId, processType);
         String name = "testName";
         String content = "testContent";
-        SchemaDescriptor schemaDescriptor = new SchemaDescriptor(name, content, processDescriptor);
+        SchemaDescriptor schemaDescriptor = new SchemaDescriptor(name, content, null, processDescriptor);
         SchemaType schemaType = new SchemaType(ProtoSchemaAcceptor.PROTO_SCHEMA_TYPE);
         SchemaRegisteredEvent event = new SchemaRegisteredEvent(schemaDescriptor, schemaType);
 

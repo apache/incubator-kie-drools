@@ -41,7 +41,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import io.quarkus.runtime.ShutdownEvent;
-import io.quarkus.runtime.StartupEvent;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +71,7 @@ public class ProtobufMonitorService {
 
     ExecutorService executorService;
 
-    public void onStart(@Observes StartupEvent ev) {
+    public void startMonitoring() {
         if (protoFiles.isPresent()) {
             String folderPath = protoFiles.get();
             File protoFolder = new File(folderPath);

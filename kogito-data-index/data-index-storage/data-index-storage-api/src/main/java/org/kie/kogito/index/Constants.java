@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,8 @@ package org.kie.kogito.index;
 
 public final class Constants {
 
-    private Constants(){}
+    private Constants() {
+    }
 
     public static final String PROCESS_INSTANCES_DOMAIN_ATTRIBUTE = "processInstances";
     public static final String USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE = "userTasks";
@@ -28,5 +29,8 @@ public final class Constants {
     public static final String PROCESS_NAME = "processName";
     public static final String ID = "id";
 
-
+    public static final String PROCESS_INSTANCES_STORAGE = "processinstances";
+    public static final String USER_TASK_INSTANCES_STORAGE = "usertaskinstances";
+    public static final String JOBS_STORAGE = "jobs";
+    public static final String PROCESS_ID_MODEL_STORAGE = "processidmodel";
 }

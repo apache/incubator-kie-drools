@@ -187,18 +187,18 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
                         case IS_NULL:
                             return Boolean.TRUE.equals(entry.getValue()) ? isNull(attribute) : notNull(attribute);
                         case EQUAL:
-                            return equalTo(attribute, entry.getValue().toString());
+                            return equalTo(attribute, entry.getValue());
                         case GT:
-                            return greaterThan(attribute, entry.getValue().toString());
+                            return greaterThan(attribute, entry.getValue());
                         case GTE:
-                            return greaterThanEqual(attribute, entry.getValue().toString());
+                            return greaterThanEqual(attribute, entry.getValue());
                         case LT:
-                            return lessThan(attribute, entry.getValue().toString());
+                            return lessThan(attribute, entry.getValue());
                         case LTE:
-                            return lessThanEqual(attribute, entry.getValue().toString());
+                            return lessThanEqual(attribute, entry.getValue());
                         case BETWEEN:
                             Map<String, Object> value = (Map<String, Object>) entry.getValue();
-                            return between(attribute, value.get("from").toString(), value.get("to").toString());
+                            return between(attribute, value.get("from"), value.get("to"));
                         default:
                             return null;
                     }
@@ -231,7 +231,7 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
                 case IS_NULL:
                     return Boolean.TRUE.equals(entry.getValue()) ? isNull(attribute) : notNull(attribute);
                 case EQUAL:
-                    return equalTo(attribute, entry.getValue().toString());
+                    return equalTo(attribute, entry.getValue());
                 default:
                     return null;
             }
@@ -272,7 +272,7 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
                 case IN:
                     return in(attribute, (List) entry.getValue());
                 case EQUAL:
-                    return equalTo(attribute, entry.getValue().toString());
+                    return equalTo(attribute, entry.getValue());
                 default:
                     return null;
             }

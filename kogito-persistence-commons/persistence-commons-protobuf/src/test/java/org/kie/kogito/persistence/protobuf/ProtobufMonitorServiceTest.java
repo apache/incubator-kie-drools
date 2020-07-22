@@ -69,7 +69,7 @@ class ProtobufMonitorServiceTest {
                             e.printStackTrace();
                         }
                     });
-            protobufMonitorService.onStart(null);
+            protobufMonitorService.startMonitoring();
 
             latch.await(1, TimeUnit.MINUTES);
             assertEquals(0, latch.getCount());
@@ -109,7 +109,7 @@ class ProtobufMonitorServiceTest {
                             e.printStackTrace();
                         }
                     });
-            protobufMonitorService.onStart(null);
+            protobufMonitorService.startMonitoring();
 
             latch.await(1, TimeUnit.MINUTES);
             assertEquals(0, latch.getCount());

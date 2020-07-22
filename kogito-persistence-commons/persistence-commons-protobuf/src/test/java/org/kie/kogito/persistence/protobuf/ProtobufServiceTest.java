@@ -35,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.kie.kogito.persistence.protobuf.ProtobufService.SCHEMA_TYPE;
 import static org.kie.kogito.persistence.protobuf.TestUtils.getTestFileContent;
+import static org.kie.kogito.persistence.protobuf.TestUtils.getValidEntityIndexDescriptors;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -47,6 +48,9 @@ import static org.mockito.Mockito.verify;
 class ProtobufServiceTest {
 
     FileDescriptorSource kogitoDescriptors;
+
+    @Mock
+    ProtobufMonitorService protobufMonitorService;
 
     @Mock
     Event<FileDescriptorRegisteredEvent> domainModelEvent;
@@ -65,14 +69,14 @@ class ProtobufServiceTest {
 
     @Test
     void onStart() {
-        kogitoDescriptors.addProtoFile("test1", "test1");
-        kogitoDescriptors.addProtoFile("test2", "test2");
+        String content = getTestFileContent();
+        kogitoDescriptors.addProtoFile("test", content);
 
         StartupEvent event = mock(StartupEvent.class);
         protobufService.onStart(event);
 
-        verify(schemaEvent, times(1)).fire(eq(new SchemaRegisteredEvent(new SchemaDescriptor("test1", "test1", null), SCHEMA_TYPE)));
-        verify(schemaEvent, times(1)).fire(eq(new SchemaRegisteredEvent(new SchemaDescriptor("test2", "test2", null), SCHEMA_TYPE)));
+        verify(schemaEvent, times(1)).fire(eq(new SchemaRegisteredEvent(new SchemaDescriptor("test", content, getValidEntityIndexDescriptors(true), null), SCHEMA_TYPE)));
+        verify(protobufMonitorService).startMonitoring();
     }
 
     @Test
@@ -128,7 +132,7 @@ class ProtobufServiceTest {
 
         assertEquals(testExceptionMessage, exceptionMessage);
 
-        verify(schemaEvent, times(1)).fire(new SchemaRegisteredEvent(new SchemaDescriptor(TestUtils.PROCESS_ID + ".proto", content, new ProcessDescriptor(TestUtils.PROCESS_ID, TestUtils.PROCESS_TYPE)), SCHEMA_TYPE));
+        verify(schemaEvent, times(1)).fire(new SchemaRegisteredEvent(new SchemaDescriptor(TestUtils.PROCESS_ID + ".proto", content, getValidEntityIndexDescriptors(true), new ProcessDescriptor(TestUtils.PROCESS_ID, TestUtils.PROCESS_TYPE)), SCHEMA_TYPE));
         verify(domainModelEvent, never()).fire(any(FileDescriptorRegisteredEvent.class));
     }
 
@@ -142,7 +146,7 @@ class ProtobufServiceTest {
             fail("RegisterProtoBufferType failed", e);
         }
 
-        verify(schemaEvent, times(1)).fire(new SchemaRegisteredEvent(new SchemaDescriptor(TestUtils.PROCESS_ID + ".proto", content, new ProcessDescriptor(TestUtils.PROCESS_ID, TestUtils.PROCESS_TYPE)), SCHEMA_TYPE));
+        verify(schemaEvent, times(1)).fire(new SchemaRegisteredEvent(new SchemaDescriptor(TestUtils.PROCESS_ID + ".proto", content, getValidEntityIndexDescriptors(true), new ProcessDescriptor(TestUtils.PROCESS_ID, TestUtils.PROCESS_TYPE)), SCHEMA_TYPE));
         verify(domainModelEvent, times(1)).fire(any(FileDescriptorRegisteredEvent.class));
     }
 }

@@ -114,33 +114,33 @@ public class IndexingService {
 
         ArrayNode indexPIArray = (ArrayNode) kogitoEvent.get(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE);
         if (indexPIArray != null) {
-            
-            kogitoBuilder.set(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE, copyToArray((ArrayNode) kogitoCache.get(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE), indexPIArray));
+            kogitoBuilder.set(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE, copyToArray(kogitoCache.get(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE), indexPIArray));
             kogitoBuilder.set(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE, kogitoCache.get(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE));
         }
 
         ArrayNode indexTIArray = (ArrayNode) kogitoEvent.get(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE);
         if (indexTIArray != null) {
-            kogitoBuilder.set(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE, copyToArray((ArrayNode) kogitoCache.get(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE), indexTIArray));
+            kogitoBuilder.set(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE, copyToArray(kogitoCache.get(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE), indexTIArray));
             kogitoBuilder.set(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE, kogitoCache.get(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE));
         }
 
         return kogitoBuilder;
     }
 
-    private ArrayNode copyToArray(ArrayNode arrayCache, ArrayNode arrayEvent) {
-        if (arrayCache == null) {
+    private ArrayNode copyToArray(JsonNode arrayCache, ArrayNode arrayEvent) {
+        if (arrayCache == null || arrayCache.isNull()) {
             return getObjectMapper().createArrayNode().add(arrayEvent.get(0));
         }
+        ArrayNode arrayNode = (ArrayNode) arrayCache;
         String indexId = arrayEvent.get(0).get(ID).asText();
         for (int i = 0; i < arrayCache.size(); i++) {
             if (indexId.equals(arrayCache.get(i).get(ID).asText())) {
-                arrayCache.set(i, arrayEvent.get(0));
-                return arrayCache;
+                arrayNode.set(i, arrayEvent.get(0));
+                return arrayNode;
             }
         }
 
-        arrayCache.add(arrayEvent.get(0));
-        return arrayCache;
+        arrayNode.add(arrayEvent.get(0));
+        return arrayNode;
     }
 }

@@ -26,30 +26,30 @@ import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.StorageService;
 
+import static org.kie.kogito.index.Constants.JOBS_STORAGE;
+import static org.kie.kogito.index.Constants.PROCESS_ID_MODEL_STORAGE;
+import static org.kie.kogito.index.Constants.PROCESS_INSTANCES_STORAGE;
+import static org.kie.kogito.index.Constants.USER_TASK_INSTANCES_STORAGE;
+
 @ApplicationScoped
 public class DataIndexStorageServiceImpl implements DataIndexStorageService {
-
-    private static final String PROCESS_INSTANCES_CACHE = "processinstances";
-    private static final String USER_TASK_INSTANCES_CACHE = "usertaskinstances";
-    private static final String JOBS_CACHE = "jobs";
-    private static final String PROCESS_ID_MODEL_CACHE = "processidmodel";
 
     @Inject
     StorageService cacheService;
 
     @Override
     public Storage<String, ProcessInstance> getProcessInstancesCache() {
-        return cacheService.getCache(PROCESS_INSTANCES_CACHE, ProcessInstance.class);
+        return cacheService.getCache(PROCESS_INSTANCES_STORAGE, ProcessInstance.class);
     }
 
     @Override
     public Storage<String, UserTaskInstance> getUserTaskInstancesCache() {
-        return  cacheService.getCache(USER_TASK_INSTANCES_CACHE, UserTaskInstance.class);
+        return cacheService.getCache(USER_TASK_INSTANCES_STORAGE, UserTaskInstance.class);
     }
 
     @Override
     public Storage<String, Job> getJobsCache() {
-        return cacheService.getCache(JOBS_CACHE, Job.class);
+        return cacheService.getCache(JOBS_STORAGE, Job.class);
     }
 
     @Override
@@ -60,6 +60,6 @@ public class DataIndexStorageServiceImpl implements DataIndexStorageService {
 
     @Override
     public Storage<String, String> getProcessIdModelCache() {
-        return cacheService.getCache(PROCESS_ID_MODEL_CACHE);
+        return cacheService.getCache(PROCESS_ID_MODEL_STORAGE);
     }
 }

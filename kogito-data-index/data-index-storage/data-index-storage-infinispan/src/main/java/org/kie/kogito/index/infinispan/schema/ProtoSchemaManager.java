@@ -29,7 +29,7 @@ import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.schema.SchemaDescriptor;
 import org.kie.kogito.persistence.api.schema.SchemaRegisteredEvent;
 import org.kie.kogito.persistence.api.schema.SchemaRegistrationException;
-import org.kie.kogito.persistence.protobuf.ProtobufService;
+import org.kie.kogito.persistence.infinispan.cache.ProtobufCacheService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,14 +47,14 @@ public class ProtoSchemaManager {
     DataIndexStorageService cacheManager;
 
     @Inject
-    ProtobufService protobufService;
+    ProtobufCacheService protobufCacheService;
 
     public void onSchemaRegisteredEvent(@Observes SchemaRegisteredEvent event) {
         if (schemaAcceptor.accept(event.getSchemaType())) {
             SchemaDescriptor schemaDescriptor = event.getSchemaDescriptor();
-            protobufService.getProtobufCache().put(schemaDescriptor.getName(), schemaDescriptor.getSchemaContent());
+            protobufCacheService.getProtobufCache().put(schemaDescriptor.getName(), schemaDescriptor.getSchemaContent());
             schemaDescriptor.getProcessDescriptor().ifPresent(processDescriptor -> {
-                Storage<String, String> cache = protobufService.getProtobufCache();
+                Storage<String, String> cache = protobufCacheService.getProtobufCache();
                 cacheManager.getProcessIdModelCache().put(processDescriptor.getProcessId(), processDescriptor.getProcessType());
 
                 List<String> errors = checkSchemaErrors(cache);
@@ -90,7 +90,7 @@ public class ProtoSchemaManager {
 
     private void logProtoCacheKeys() {
         LOGGER.debug(">>>>>>list cache keys start");
-        protobufService.getProtobufCache().entrySet().forEach(e -> LOGGER.debug(e.toString()));
+        protobufCacheService.getProtobufCache().entrySet().forEach(e -> LOGGER.debug(e.toString()));
         LOGGER.debug(">>>>>>list cache keys end");
     }
 }

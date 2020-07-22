@@ -98,7 +98,7 @@ public class GraphQLQueryMapperTest {
         assertThat(filter.getValue()).asList().hasSize(3).containsExactly(
                 in("id", asList("adasdasd", "bla")),
                 notNull("id"),
-                equalTo("state", "1")
+                equalTo("state", 1)
         );
     }
 

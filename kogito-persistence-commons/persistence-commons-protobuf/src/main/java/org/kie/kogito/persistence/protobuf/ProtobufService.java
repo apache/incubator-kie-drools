@@ -16,6 +16,11 @@
 
 package org.kie.kogito.persistence.protobuf;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -24,14 +29,12 @@ import javax.inject.Inject;
 import io.quarkus.runtime.StartupEvent;
 import org.infinispan.protostream.FileDescriptorSource;
 import org.infinispan.protostream.SerializationContext;
-import org.infinispan.protostream.config.Configuration;
 import org.infinispan.protostream.descriptors.Descriptor;
 import org.infinispan.protostream.descriptors.FieldDescriptor;
 import org.infinispan.protostream.descriptors.FileDescriptor;
 import org.infinispan.protostream.descriptors.Option;
 import org.infinispan.protostream.impl.SerializationContextImpl;
-import org.kie.kogito.persistence.api.Storage;
-import org.kie.kogito.persistence.api.StorageService;
+import org.kie.kogito.persistence.api.schema.EntityIndexDescriptor;
 import org.kie.kogito.persistence.api.schema.ProcessDescriptor;
 import org.kie.kogito.persistence.api.schema.SchemaDescriptor;
 import org.kie.kogito.persistence.api.schema.SchemaRegisteredEvent;
@@ -40,6 +43,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.lang.String.format;
+import static java.util.stream.Collectors.toMap;
+import static org.kie.kogito.persistence.protobuf.ProtoIndexParser.INDEXED_ANNOTATION;
+import static org.kie.kogito.persistence.protobuf.ProtoIndexParser.configureBuilder;
+import static org.kie.kogito.persistence.protobuf.ProtoIndexParser.createEntityIndexeDescriptors;
 
 @ApplicationScoped
 public class ProtobufService {
@@ -48,10 +55,13 @@ public class ProtobufService {
 
     static final SchemaType SCHEMA_TYPE = new SchemaType("proto");
 
-    public static final String DOMAIN_MODEL_PROTO_NAME = "domainModel";
+    static final String DOMAIN_MODEL_PROTO_NAME = "domainModel";
 
     @Inject
     FileDescriptorSource kogitoDescriptors;
+
+    @Inject
+    ProtobufMonitorService protobufMonitorService;
 
     @Inject
     Event<FileDescriptorRegisteredEvent> domainModelEvent;
@@ -59,33 +69,31 @@ public class ProtobufService {
     @Inject
     Event<SchemaRegisteredEvent> schemaEvent;
 
-    @Inject
-    StorageService storageService;
-
     void onStart(@Observes StartupEvent ev) {
         kogitoDescriptors.getFileDescriptors().forEach((name, bytes) -> {
             LOGGER.info("Registering Kogito ProtoBuffer file: {}", name);
-            schemaEvent.fire(new SchemaRegisteredEvent(new SchemaDescriptor(name, new String(bytes), null), SCHEMA_TYPE));
-        });
-    }
+            String content = new String(bytes);
+            try {
+                SerializationContext ctx = createSerializationContext(FileDescriptorSource.fromString(name, content));
+                FileDescriptor desc = ctx.getFileDescriptors().get(name);
+                Map<String, EntityIndexDescriptor> entityIndexes = desc.getMessageTypes().stream().map(t -> t.<EntityIndexDescriptor>getProcessedAnnotation(INDEXED_ANNOTATION))
+                        .filter(Objects::nonNull).collect(toMap(EntityIndexDescriptor::getName, Function.identity()));
+                Map<String, EntityIndexDescriptor> entityIndexDescriptors = createEntityIndexeDescriptors(desc, entityIndexes);
 
-    public Storage<String, String> getProtobufCache() {
-        return storageService.getCache(Constants.PROTOBUF_METADATA_CACHE_NAME, String.class);
+                schemaEvent.fire(new SchemaRegisteredEvent(new SchemaDescriptor(name, content, entityIndexDescriptors, null), SCHEMA_TYPE));
+            } catch (ProtobufValidationException e) {
+                throw new ProtobufFileRegistrationException(e);
+            }
+        });
+
+        protobufMonitorService.startMonitoring();
     }
 
     public void registerProtoBufferType(String content) throws ProtobufValidationException {
         LOGGER.debug("Registering new ProtoBuffer file with content: \n{}", content);
 
         content = content.replaceAll("kogito.Date", "string");
-        SerializationContext ctx = new SerializationContextImpl(Configuration.builder().build());
-        try {
-            ctx.registerProtoFiles(kogitoDescriptors);
-            ctx.registerProtoFiles(FileDescriptorSource.fromString(DOMAIN_MODEL_PROTO_NAME, content));
-        } catch (Exception ex) {
-            LOGGER.warn("Error trying to parse proto buffer file: {}", ex.getMessage(), ex);
-            throw new ProtobufValidationException(ex.getMessage());
-        }
-
+        SerializationContext ctx = createSerializationContext(kogitoDescriptors, FileDescriptorSource.fromString(DOMAIN_MODEL_PROTO_NAME, content));
         FileDescriptor desc = ctx.getFileDescriptors().get(DOMAIN_MODEL_PROTO_NAME);
         Option processIdOption = desc.getOption("kogito_id");
         if (processIdOption == null || processIdOption.getValue() == null) {
@@ -109,8 +117,12 @@ public class ProtobufService {
 
         validateDescriptorField(messageName, descriptor, Constants.KOGITO_DOMAIN_ATTRIBUTE);
 
+        Map<String, EntityIndexDescriptor> entityIndexes = desc.getMessageTypes().stream().map(t -> t.<EntityIndexDescriptor>getProcessedAnnotation(INDEXED_ANNOTATION))
+                .filter(Objects::nonNull).collect(toMap(EntityIndexDescriptor::getName, Function.identity()));
+        Map<String, EntityIndexDescriptor> entityIndexeDescriptors = createEntityIndexeDescriptors(desc, entityIndexes);
+
         try {
-            schemaEvent.fire(new SchemaRegisteredEvent(new SchemaDescriptor(processId + ".proto", content, new ProcessDescriptor(processId, fullTypeName)), SCHEMA_TYPE));
+            schemaEvent.fire(new SchemaRegisteredEvent(new SchemaDescriptor(processId + ".proto", content, entityIndexeDescriptors, new ProcessDescriptor(processId, fullTypeName)), SCHEMA_TYPE));
         } catch (RuntimeException ex) {
             throw new ProtobufValidationException(ex.getMessage());
         }
@@ -122,5 +134,16 @@ public class ProtobufService {
         if (processInstances == null) {
             throw new ProtobufValidationException(format("Could not find %s attribute in proto message: %s", processInstancesDomainAttribute, messageName));
         }
+    }
+
+    private SerializationContext createSerializationContext(FileDescriptorSource... fileDescriptorSources) throws ProtobufValidationException {
+        SerializationContext ctx = new SerializationContextImpl(configureBuilder().build());
+        try {
+            Arrays.stream(fileDescriptorSources).forEach(ctx::registerProtoFiles);
+        } catch (Exception ex) {
+            LOGGER.warn("Error trying to parse proto buffer file: {}", ex.getMessage(), ex);
+            throw new ProtobufValidationException(ex.getMessage());
+        }
+        return ctx;
     }
 }

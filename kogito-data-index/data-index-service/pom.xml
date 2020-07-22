@@ -28,6 +28,10 @@
       <artifactId>persistence-commons-protobuf</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>data-index-storage-mongodb</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-vertx</artifactId>
     </dependency>
@@ -109,6 +113,11 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
+      <artifactId>mongodb</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
       <artifactId>kafka</artifactId>
       <scope>test</scope>
     </dependency>
@@ -121,6 +130,12 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>persistence-commons-infinispan</artifactId>
       <type>test-jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>persistence-commons-mongodb</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <build>
@@ -144,7 +159,7 @@
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
           <excludes>
-            <exclude>**/Native*IT.java</exclude>
+            <exclude>**/*Native*IT.java</exclude>
           </excludes>
           <systemProperties>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
@@ -154,30 +169,70 @@
         </configuration>
         <executions>
           <execution>
-            <id>default</id>
-            <goals>
-              <goal>integration-test</goal>
-            </goals>
-            <configuration>
-              <excludes combine.children="append"> <!-- Add the exclude to existing ones -->
-                <exclude>**/Keycloak*IT.java</exclude> <!-- Separate execution for this one -->
-              </excludes>
-            </configuration>
-          </execution>
-          <execution>
-            <id>testWithKeycloak</id>
+            <id>infinispan-default</id>
             <goals>
               <goal>integration-test</goal>
             </goals>
             <configuration>
               <includes>
-                <include>**/Keycloak*IT.java</include>
+                <include>**/Infinispan*IT.java</include>
+              </includes>
+              <excludes combine.children="append"> <!-- Add the exclude to existing ones -->
+                <exclude>**/*Keycloak*IT.java</exclude> <!-- Separate execution for this one -->
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>infinispan-testWithKeycloak</id>
+            <goals>
+              <goal>integration-test</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>**/InfinispanKeycloak*IT.java</include>
               </includes>
               <systemProperties>
                 <quarkus.test.profile>keycloak</quarkus.test.profile>
                 <quarkus.http.auth.policy.role-policy1.roles-allowed>confidential</quarkus.http.auth.policy.role-policy1.roles-allowed>
                 <quarkus.http.auth.permission.roles1.paths>/*</quarkus.http.auth.permission.roles1.paths>
                 <quarkus.http.auth.permission.roles1.policy>role-policy1</quarkus.http.auth.permission.roles1.policy>
+              </systemProperties>
+            </configuration>
+          </execution>
+          <execution>
+            <id>mongo-default</id>
+            <goals>
+              <goal>integration-test</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>**/Mongo*IT.java</include>
+              </includes>
+              <excludes combine.children="append"> <!-- Add the exclude to existing ones -->
+                <exclude>**/*Keycloak*IT.java</exclude> <!-- Separate execution for this one -->
+              </excludes>
+              <systemProperties>
+                <quarkus.mongodb.database>kogito</quarkus.mongodb.database>
+                <kogito.persistence.type>mongodb</kogito.persistence.type>
+              </systemProperties>
+            </configuration>
+          </execution>
+          <execution>
+            <id>mongo-testWithKeycloak</id>
+            <goals>
+              <goal>integration-test</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>**/MongoKeycloak*IT.java</include>
+              </includes>
+              <systemProperties>
+                <quarkus.test.profile>keycloak</quarkus.test.profile>
+                <quarkus.http.auth.policy.role-policy1.roles-allowed>confidential</quarkus.http.auth.policy.role-policy1.roles-allowed>
+                <quarkus.http.auth.permission.roles1.paths>/*</quarkus.http.auth.permission.roles1.paths>
+                <quarkus.http.auth.permission.roles1.policy>role-policy1</quarkus.http.auth.permission.roles1.policy>
+                <quarkus.mongodb.database>kogito</quarkus.mongodb.database>
+                <kogito.persistence.type>mongodb</kogito.persistence.type>
               </systemProperties>
             </configuration>
           </execution>
@@ -227,17 +282,34 @@
             <artifactId>maven-failsafe-plugin</artifactId>
             <executions>
               <execution>
-                <id>native-tests</id>
+                <id>infinispan-native-tests</id>
                 <goals>
                   <goal>integration-test</goal>
                   <goal>verify</goal>
                 </goals>
                 <configuration>
                   <includes>
-                    <include>**/Native*IT.java</include>
+                    <include>**/InfinispanNative*IT.java</include>
                   </includes>
                   <systemProperties>
                     <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+                  </systemProperties>
+                </configuration>
+              </execution>
+              <execution>
+                <id>mongo-native-tests</id>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+                <configuration>
+                  <includes>
+                    <include>**/MongoNative*IT.java</include>
+                  </includes>
+                  <systemProperties>
+                    <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+                    <quarkus.mongodb.database>kogito</quarkus.mongodb.database>
+                    <kogito.persistence.type>mongodb</kogito.persistence.type>
                   </systemProperties>
                 </configuration>
               </execution>

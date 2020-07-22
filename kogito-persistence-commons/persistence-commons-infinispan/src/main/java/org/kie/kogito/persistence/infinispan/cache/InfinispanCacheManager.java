@@ -19,10 +19,8 @@ package org.kie.kogito.persistence.infinispan.cache;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import io.quarkus.runtime.ShutdownEvent;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.infinispan.client.hotrod.DataFormat;
 import org.infinispan.client.hotrod.RemoteCache;
@@ -71,10 +69,6 @@ public class InfinispanCacheManager implements StorageService {
         }
     }
 
-    public void stop(@Observes ShutdownEvent event) {
-        destroy();
-    }
-
     /**
      * Gets the cache if exists, otherwise tries to create one with the given template.
      * If the template does not exist on the server, creates the cache based on a default configuration.
@@ -103,7 +97,7 @@ public class InfinispanCacheManager implements StorageService {
     }
 
     @Override
-    public Storage<String, String> getCache(String name){
+    public Storage<String, String> getCache(String name) {
         return new StorageImpl<>(manager.administration().getOrCreateCache(name, (String) null), String.class.getName());
     }
 
@@ -113,7 +107,7 @@ public class InfinispanCacheManager implements StorageService {
     }
 
     @Override
-    public <T> Storage<String, T> getCacheWithDataFormat(String name, Class<T> type, String rootType){
+    public <T> Storage<String, T> getCacheWithDataFormat(String name, Class<T> type, String rootType) {
         return new StorageImpl<>(getOrCreateCache(name, cacheTemplateName).withDataFormat(jsonDataFormat), rootType);
     }
 }

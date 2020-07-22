@@ -1,0 +1,78 @@
+syntax = "proto2";
+package org.acme.travels.travels;
+import "kogito-index.proto";
+import "kogito-types.proto";
+option kogito_model = "Travels";
+option kogito_id = "travels";
+
+message Address {
+    option java_package = "org.acme.travels.travels";
+    optional string city = 1;
+    optional string country = 2;
+    optional string street = 3;
+    optional string zipCode = 4;
+}
+
+message Flight {
+    option java_package = "org.acme.travels.travels";
+    optional kogito.Date arrival = 1;
+    optional kogito.Date departure = 2;
+    optional string flightNumber = 3;
+    optional string gate = 4;
+    optional string seat = 5;
+}
+
+message Hotel {
+    option java_package = "org.acme.travels.travels";
+    optional Address address = 1;
+    optional string bookingNumber = 2;
+    optional string name = 3;
+    optional string phone = 4;
+    optional string room = 5;
+}
+
+message Traveller {
+    option java_package = "org.acme.travels.travels";
+    optional Address address = 1;
+    optional string email = 2;
+    optional string firstName = 3;
+    optional string lastName = 4;
+    optional string nationality = 5;
+}
+
+message Travels {
+    option java_package = "org.acme.travels.travels";
+    optional Flight flight = 1;
+    optional Hotel hotel = 2;
+    optional string id = 3;
+    optional Traveller traveller = 4;
+    optional Trip trip = 5;
+    optional VisaApplication visaApplication = 6;
+    optional org.kie.kogito.index.model.KogitoMetadata metadata = 7;
+}
+/* @Indexed */
+message Trip {
+    option java_package = "org.acme.travels.travels";
+    /* @Field(store = Store.YES) */
+    optional kogito.Date begin = 1;
+    /* @Field(store = Store.YES) */
+    optional string city = 2;
+    /* @Field(store = Store.YES) */
+    optional string country = 3;
+    /* @Field(store = Store.YES) */
+    optional kogito.Date end = 4;
+    /* @Field(store = Store.YES) */
+    optional bool visaRequired = 5;
+}
+
+message VisaApplication {
+    option java_package = "org.acme.travels.travels";
+    optional bool approved = 1;
+    optional string city = 2;
+    optional string country = 3;
+    optional int32 duration = 4;
+    optional string firstName = 5;
+    optional string lastName = 6;
+    optional string nationality = 7;
+    optional string passportNumber = 8;
+}

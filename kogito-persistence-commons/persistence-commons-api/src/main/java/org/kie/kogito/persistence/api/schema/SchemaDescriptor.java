@@ -16,6 +16,7 @@
 
 package org.kie.kogito.persistence.api.schema;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -25,11 +26,14 @@ public class SchemaDescriptor {
 
     String schemaContent;
 
+    Map<String, EntityIndexDescriptor> entityIndexDescriptors;
+
     ProcessDescriptor processDescriptor;
 
-    public SchemaDescriptor(String name, String schemaContent, ProcessDescriptor processDescriptor) {
+    public SchemaDescriptor(String name, String schemaContent, Map<String, EntityIndexDescriptor> entityIndexDescriptors, ProcessDescriptor processDescriptor) {
         this.name = name;
         this.schemaContent = schemaContent;
+        this.entityIndexDescriptors = entityIndexDescriptors;
         this.processDescriptor = processDescriptor;
     }
 
@@ -39,6 +43,10 @@ public class SchemaDescriptor {
 
     public String getSchemaContent() {
         return schemaContent;
+    }
+
+    public Map<String, EntityIndexDescriptor> getEntityIndexDescriptors() {
+        return entityIndexDescriptors;
     }
 
     public Optional<ProcessDescriptor> getProcessDescriptor() {
@@ -56,11 +64,12 @@ public class SchemaDescriptor {
         SchemaDescriptor that = (SchemaDescriptor) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(schemaContent, that.schemaContent) &&
+                Objects.equals(entityIndexDescriptors, that.entityIndexDescriptors) &&
                 Objects.equals(processDescriptor, that.processDescriptor);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, schemaContent, processDescriptor);
+        return Objects.hash(name, schemaContent, entityIndexDescriptors, processDescriptor);
     }
 }
