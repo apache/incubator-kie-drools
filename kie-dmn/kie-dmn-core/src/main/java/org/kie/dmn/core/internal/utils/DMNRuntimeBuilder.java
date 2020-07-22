@@ -233,7 +233,7 @@ public class DMNRuntimeBuilder {
         private final ClassLoader rootClassLoader;
         private final List<DMNProfile> dmnProfiles;
         private final List<DMNModel> models;
-        private final Function<String, KieRuntimeFactory> kiePMMLRuntimeFactoryFunction;
+        private final Function<String, KieRuntimeFactory> kieRuntimeFactoryFunction;
 
         private DMNRuntimeKBStatic(ClassLoader rootClassLoader, Collection<DMNModel> models, Collection<DMNProfile> dmnProfiles, Function<String, KieRuntimeFactory> kiePMMLRuntimeFactoryFunction) {
             this.rootClassLoader = rootClassLoader;
