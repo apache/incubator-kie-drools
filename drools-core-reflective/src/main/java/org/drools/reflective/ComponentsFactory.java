@@ -21,39 +21,30 @@ import org.drools.reflective.util.ByteArrayClassLoader;
 
 import static org.kie.api.internal.utils.ServiceUtil.instanceFromNames;
 
-public enum ComponentsFactory {
-
-    INSTANCE;
+public class ComponentsFactory {
 
     private static final String DYNAMIC_IMPL = "org.drools.dynamic.DynamicComponentsSupplier";
     private static final String STATIC_IMPL = "org.drools.statics.StaticComponentsSupplier";
 
-    private ComponentsSupplier supplier;
+    private static ComponentsSupplier supplier = instanceFromNames(DYNAMIC_IMPL, STATIC_IMPL);
 
-    public ProjectClassLoader createProjectClassLoader( ClassLoader parent, ResourceProvider resourceProvider ) {
-        return getComponentsSupplier().createProjectClassLoader(parent, resourceProvider);
+    public static ProjectClassLoader createProjectClassLoader( ClassLoader parent, ResourceProvider resourceProvider ) {
+        return supplier.createProjectClassLoader(parent, resourceProvider);
     }
 
-    public ByteArrayClassLoader createByteArrayClassLoader( ClassLoader parent ) {
-        return getComponentsSupplier().createByteArrayClassLoader(parent);
+    public static ByteArrayClassLoader createByteArrayClassLoader( ClassLoader parent ) {
+        return supplier.createByteArrayClassLoader(parent);
     }
 
-    public Object createConsequenceExceptionHandler(String className, ClassLoader classLoader) {
-        return getComponentsSupplier().createConsequenceExceptionHandler(className, classLoader);
+    public static Object createConsequenceExceptionHandler(String className, ClassLoader classLoader) {
+        return supplier.createConsequenceExceptionHandler(className, classLoader);
     }
 
-    public Object createTimerService( String className ) {
-        return getComponentsSupplier().createTimerService( className );
+    public static Object createTimerService( String className ) {
+        return supplier.createTimerService( className );
     }
 
-    public ComponentsSupplier getComponentsSupplier() {
-        if (supplier == null) {
-            supplier = instanceFromNames(DYNAMIC_IMPL, STATIC_IMPL);
-        }
-        return supplier;
-    }
-
-    public void setComponentsSupplier( ComponentsSupplier supplier ) {
-        this.supplier = supplier;
+    public static void setComponentsSupplier( ComponentsSupplier supplier ) {
+        ComponentsFactory.supplier = supplier;
     }
 }

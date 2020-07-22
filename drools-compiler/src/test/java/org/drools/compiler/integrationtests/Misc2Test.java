@@ -61,7 +61,6 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialectConfiguration;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.InitialFact;
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
@@ -70,7 +69,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NodeMemories;
-import org.drools.core.conflict.SalienceConflictResolver;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.facttemplates.FactTemplate;
@@ -2400,42 +2398,6 @@ public class Misc2Test extends CommonTestMethodBase {
         KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
         assertTrue( kb.hasErrors() );
-    }
-
-    @Test
-    public void testLegacySalienceResolver() {
-        // DROOLS-159
-        String drl = "package org.drools.test; \n" +
-                     "" +
-                     "global java.util.List list; \n " +
-                     "" +
-                     "rule X salience 10 \n" +
-                     "then\n" +
-                     " list.add( 1 ); \n" +
-                     "end\n" +
-                     "" +
-                     "rule Y salience 5 \n" +
-                     "then\n" +
-                     " list.add( 2 ); \n" +
-                     "end\n" +
-                     "";
-
-        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
-        assertFalse( kb.hasErrors() );
-
-        KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        ( (RuleBaseConfiguration) kbconf ).setConflictResolver( SalienceConflictResolver.getInstance() );
-
-        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( kbconf );
-        knowledgeBase.addPackages( kb.getKnowledgePackages() );
-        KieSession knowledgeSession = knowledgeBase.newKieSession();
-
-        List list = new ArrayList();
-        knowledgeSession.setGlobal( "list", list );
-        knowledgeSession.fireAllRules();
-
-        assertEquals( Arrays.asList( 1, 2 ), list );
     }
 
     @Test

@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.drools.core.common.AgendaGroupFactory;
-import org.drools.core.conflict.DepthConflictResolver;
 import org.drools.core.reteoo.KieComponentFactory;
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.core.spi.ConflictResolver;
@@ -324,8 +323,6 @@ public class RuleBaseConfiguration
         } else if ( name.equals( "drools.ruleBaseUpdateHandler" ) ) {
             setRuleBaseUpdateHandler( StringUtils.isEmpty( value ) ? "" : value);
         } else if ( name.equals( "drools.conflictResolver" ) ) {
-            setConflictResolver( determineConflictResolver( StringUtils.isEmpty( value ) ? DepthConflictResolver.class.getName() : value));
-        } else if ( name.equals( "drools.advancedProcessRuleIntegration" ) ) {
             setAdvancedProcessRuleIntegration( StringUtils.isEmpty( value ) ? false : Boolean.valueOf(value));
         } else if ( name.equals( MultithreadEvaluationOption.PROPERTY_NAME ) ) {
             setMultithreadEvaluation( StringUtils.isEmpty( value ) ? false : Boolean.valueOf(value));
@@ -378,8 +375,6 @@ public class RuleBaseConfiguration
             return getConsequenceExceptionHandler();
         } else if ( name.equals( "drools.ruleBaseUpdateHandler" ) ) {
             return getRuleBaseUpdateHandler();
-        } else if ( name.equals( "drools.conflictResolver" ) ) {
-            return getConflictResolver().getClass().getName();
         } else if ( name.equals( "drools.advancedProcessRuleIntegration" ) ) {
             return Boolean.toString(isAdvancedProcessRuleIntegration());
         } else if ( name.equals( MultithreadEvaluationOption.PROPERTY_NAME ) ) {
@@ -461,8 +456,6 @@ public class RuleBaseConfiguration
         setSequentialAgenda(SequentialAgenda.determineSequentialAgenda(this.chainedProperties.getProperty(SequentialAgendaOption.PROPERTY_NAME, "sequential")));
 
         setSequential(Boolean.valueOf(this.chainedProperties.getProperty(SequentialOption.PROPERTY_NAME, "false")).booleanValue());
-
-        setConflictResolver( determineConflictResolver( this.chainedProperties.getProperty( "drools.conflictResolver", "org.drools.core.conflict.DepthConflictResolver" ) ) );
 
         setAdvancedProcessRuleIntegration( Boolean.valueOf( this.chainedProperties.getProperty( "drools.advancedProcessRuleIntegration",
                                                                                                 "false" ) ).booleanValue() );
@@ -855,33 +848,6 @@ public class RuleBaseConfiguration
         } else {
             return true;
         }
-    }
-
-    private ConflictResolver determineConflictResolver(String className) {
-        Class clazz = null;
-        try {
-            clazz = this.classLoader.loadClass( className );
-        } catch ( ClassNotFoundException e ) {
-            throw new IllegalArgumentException( "conflict Resolver '" + className + "' not found" );
-        }
-
-
-        try {
-            return (ConflictResolver) clazz.getMethod( "getInstance",
-                                                       null ).invoke( null,
-                                                                      null );
-        } catch ( Exception e ) {
-            throw new IllegalArgumentException( "Unable to set Conflict Resolver '" + className + "'" );
-        }
-    }
-
-    public void setConflictResolver(ConflictResolver conflictResolver) {
-        checkCanChange(); // throws an exception if a change isn't possible;
-        this.conflictResolver = conflictResolver;
-    }
-
-    public ConflictResolver getConflictResolver() {
-        return this.conflictResolver;
     }
 
     public ClassLoader getClassLoader() {
