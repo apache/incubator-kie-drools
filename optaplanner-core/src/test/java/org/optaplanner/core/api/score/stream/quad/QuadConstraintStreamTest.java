@@ -431,7 +431,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     // ************************************************************************
 
     @TestTemplate
-    public void groupBy_OMapping1Collector() {
+    public void groupBy_0Mapping1Collector() {
         assumeDrools();
         /*
          * E1 has G1 and V1

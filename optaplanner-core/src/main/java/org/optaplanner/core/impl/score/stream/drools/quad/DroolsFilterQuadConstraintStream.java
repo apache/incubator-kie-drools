@@ -18,16 +18,17 @@ package org.optaplanner.core.impl.score.stream.drools.quad;
 
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.QuadConstraintGraphNode;
 
 public final class DroolsFilterQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> {
 
-    private final DroolsQuadCondition<A, B, C, D, ?> condition;
+    private final QuadConstraintGraphNode node;
 
     public DroolsFilterQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent, QuadPredicate<A, B, C, D> predicate) {
-        super(constraintFactory, parent);
-        this.condition = parent.getCondition().andFilter(predicate);
+        super(constraintFactory);
+        this.node = constraintFactory.getConstraintGraph().filter(parent.getConstraintGraphNode(), predicate);
     }
 
     // ************************************************************************
@@ -35,8 +36,8 @@ public final class DroolsFilterQuadConstraintStream<Solution_, A, B, C, D>
     // ************************************************************************
 
     @Override
-    public DroolsQuadCondition<A, B, C, D, ?> getCondition() {
-        return condition;
+    public QuadConstraintGraphNode getConstraintGraphNode() {
+        return node;
     }
 
     @Override

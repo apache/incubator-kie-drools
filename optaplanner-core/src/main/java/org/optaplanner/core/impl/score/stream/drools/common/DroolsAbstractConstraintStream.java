@@ -20,18 +20,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
-import org.drools.model.Global;
-import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsScoringUniConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 
 public abstract class DroolsAbstractConstraintStream<Solution_> extends AbstractConstraintStream<Solution_> {
 
@@ -39,7 +36,7 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     private final List<DroolsAbstractConstraintStream<Solution_>> childStreamList = new ArrayList<>(2);
 
     public DroolsAbstractConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
-        this.constraintFactory = constraintFactory;
+        this.constraintFactory = Objects.requireNonNull(constraintFactory);
     }
 
     // ************************************************************************
@@ -47,29 +44,24 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     // ************************************************************************
 
     protected DroolsConstraint<Solution_> buildConstraint(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, ScoreImpactType impactType,
-            DroolsAbstractConstraintStream<Solution_> scoringStream) {
-        Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(
-                constraintPackage, constraintName, constraintWeight);
-        List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
+            Score<?> constraintWeight, ScoreImpactType impactType, ConstraintConsequence consequence) {
+        Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(constraintPackage,
+                constraintName, constraintWeight);
         return new DroolsConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
-                impactType, false, fromStreamList, scoringStream);
+                impactType, false, consequence);
     }
 
     protected DroolsConstraint<Solution_> buildConstraintConfigurable(String constraintPackage, String constraintName,
-            ScoreImpactType impactType, DroolsAbstractConstraintStream<Solution_> scoringStream) {
-        Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(
-                constraintPackage, constraintName);
-        List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
+            ScoreImpactType impactType, ConstraintConsequence constraintConsequence) {
+        Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(constraintPackage,
+                constraintName);
         return new DroolsConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
-                impactType, true, fromStreamList, scoringStream);
+                impactType, true, constraintConsequence);
     }
 
     // ************************************************************************
     // Pattern creation
     // ************************************************************************
-
-    public abstract List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList();
 
     public void addChildStream(DroolsAbstractConstraintStream<Solution_> childStream) {
         childStreamList.add(childStream);
@@ -80,39 +72,12 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     }
 
     // ************************************************************************
-    // Pattern creation
-    // ************************************************************************
-
-    /**
-     * Assemble elements of the rule that will process this stream and turn it into a constraint match. Will be ignored
-     * unless on a scoring stream such as {@link DroolsScoringUniConstraintStream}.
-     *
-     * @param constraint constraint which is being scored
-     * @param scoreHolderGlobal contains the score to be affected
-     * @return rule representing this constraint stream
-     */
-    public List<RuleItemBuilder<?>> createRuleItemBuilders(DroolsConstraint<?> constraint,
-            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        throw new UnsupportedOperationException("Non-scoring stream (" + this + ") cannot create a rule.");
-    }
-
-    // ************************************************************************
     // Getters/setters
     // ************************************************************************
 
     @Override
     public DroolsConstraintFactory<Solution_> getConstraintFactory() {
         return constraintFactory;
-    }
-
-    /**
-     * As defined by {@link DroolsRuleStructure#getExpectedJustificationTypes()}.
-     * May only be called on scoring streams.
-     *
-     * @return never null, never empty
-     */
-    public Class[] getExpectedJustificationTypes() {
-        throw new UnsupportedOperationException("Non-scoring stream (" + this + ") cannot have any expected matches.");
     }
 
 }

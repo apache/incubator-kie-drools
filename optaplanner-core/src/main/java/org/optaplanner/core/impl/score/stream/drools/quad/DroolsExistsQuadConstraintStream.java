@@ -16,30 +16,24 @@
 
 package org.optaplanner.core.impl.score.stream.drools.quad;
 
-import java.util.List;
-
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.QuadConstraintGraphNode;
 
 public final class DroolsExistsQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> {
 
-    private final DroolsQuadCondition<A, B, C, D, ?> condition;
+    private final QuadConstraintGraphNode node;
     private final String streamName;
 
     public <E> DroolsExistsQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent, boolean shouldExist, Class<E> otherClass,
             PentaJoiner<A, B, C, D, E>... joiners) {
-        super(constraintFactory, parent);
+        super(constraintFactory);
+        this.node = shouldExist
+                ? constraintFactory.getConstraintGraph().ifExists(parent.getConstraintGraphNode(), otherClass, joiners)
+                : constraintFactory.getConstraintGraph().ifNotExists(parent.getConstraintGraphNode(), otherClass, joiners);
         this.streamName = shouldExist ? "QuadIfExists()" : "QuadIfNotExists()";
-        this.condition = shouldExist ? parent.getCondition().andIfExists(otherClass, joiners)
-                : parent.getCondition().andIfNotExists(otherClass, joiners);
-    }
-
-    @Override
-    public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return parent.getFromStreamList();
     }
 
     // ************************************************************************
@@ -47,8 +41,8 @@ public final class DroolsExistsQuadConstraintStream<Solution_, A, B, C, D>
     // ************************************************************************
 
     @Override
-    public DroolsQuadCondition<A, B, C, D, ?> getCondition() {
-        return condition;
+    public QuadConstraintGraphNode getConstraintGraphNode() {
+        return node;
     }
 
     @Override

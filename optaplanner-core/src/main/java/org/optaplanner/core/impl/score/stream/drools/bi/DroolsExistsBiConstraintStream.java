@@ -16,38 +16,24 @@
 
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
-import java.util.List;
-
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.BiConstraintGraphNode;
 
 public final class DroolsExistsBiConstraintStream<Solution_, A, B>
         extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
-    private final DroolsAbstractConstraintStream<Solution_> parent;
-    private final DroolsBiCondition<A, B, ?> condition;
+    private final BiConstraintGraphNode node;
     private final String streamName;
 
     public <C> DroolsExistsBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, boolean shouldExist, Class<C> otherClass,
             TriJoiner<A, B, C>... joiners) {
         super(constraintFactory);
-        this.parent = parent;
+        this.node = shouldExist
+                ? constraintFactory.getConstraintGraph().ifExists(parent.getConstraintGraphNode(), otherClass, joiners)
+                : constraintFactory.getConstraintGraph().ifNotExists(parent.getConstraintGraphNode(), otherClass, joiners);
         this.streamName = shouldExist ? "BiIfExists()" : "BiIfNotExists()";
-        this.condition = shouldExist ? parent.getCondition().andIfExists(otherClass, joiners)
-                : parent.getCondition().andIfNotExists(otherClass, joiners);
-    }
-
-    @Override
-    public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return parent.getFromStreamList();
-    }
-
-    @Override
-    protected DroolsAbstractConstraintStream<Solution_> getParent() {
-        return parent;
     }
 
     // ************************************************************************
@@ -55,8 +41,8 @@ public final class DroolsExistsBiConstraintStream<Solution_, A, B>
     // ************************************************************************
 
     @Override
-    public DroolsBiCondition<A, B, ?> getCondition() {
-        return condition;
+    public BiConstraintGraphNode getConstraintGraphNode() {
+        return node;
     }
 
     @Override

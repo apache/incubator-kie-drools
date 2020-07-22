@@ -16,30 +16,24 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
-import java.util.List;
-
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphChildNode;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphNode;
 
 public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
-    private final DroolsAbstractUniConstraintStream<Solution_, A> parent;
-    private final DroolsUniCondition<A, ?> condition;
+    private final UniConstraintGraphChildNode node;
     private final String streamName;
 
     public <B> DroolsExistsUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, boolean shouldExist, Class<B> otherClass,
             BiJoiner<A, B>... joiners) {
         super(constraintFactory);
-        this.parent = parent;
+        this.node = shouldExist
+                ? constraintFactory.getConstraintGraph().ifExists(parent.getConstraintGraphNode(), otherClass, joiners)
+                : constraintFactory.getConstraintGraph().ifNotExists(parent.getConstraintGraphNode(), otherClass, joiners);
         this.streamName = shouldExist ? "IfExists()" : "IfNotExists()";
-        this.condition = shouldExist ? parent.getCondition().andIfExists(otherClass, joiners)
-                : parent.getCondition().andIfNotExists(otherClass, joiners);
-    }
-
-    @Override
-    public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return parent.getFromStreamList();
     }
 
     // ************************************************************************
@@ -47,8 +41,8 @@ public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsA
     // ************************************************************************
 
     @Override
-    public DroolsUniCondition<A, ?> getCondition() {
-        return condition;
+    public UniConstraintGraphNode getConstraintGraphNode() {
+        return node;
     }
 
     @Override

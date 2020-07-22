@@ -18,25 +18,21 @@ package org.optaplanner.core.impl.score.stream.drools.quad;
 
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.QuadConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsAbstractTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
-import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 
 public final class DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> {
 
-    private final DroolsAbstractTriConstraintStream<Solution_, A, B, C> leftParentStream;
-    private final DroolsAbstractUniConstraintStream<Solution_, D> rightParentStream;
-    private final DroolsQuadCondition<A, B, C, D, ?> condition;
+    private final QuadConstraintGraphNode node;
 
     public DroolsJoinQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent,
             DroolsAbstractUniConstraintStream<Solution_, D> otherStream, QuadJoiner<A, B, C, D> joiner) {
-        super(constraintFactory, null);
-        this.leftParentStream = parent;
-        this.rightParentStream = otherStream;
-        this.condition = parent.getCondition().andJoin(otherStream.getCondition(),
-                (AbstractQuadJoiner<A, B, C, D>) joiner);
+        super(constraintFactory);
+        this.node = constraintFactory.getConstraintGraph().join(parent.getConstraintGraphNode(),
+                otherStream.getConstraintGraphNode(), joiner);
     }
 
     // ************************************************************************
@@ -44,21 +40,13 @@ public final class DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>
     // ************************************************************************
 
     @Override
-    public DroolsQuadCondition<A, B, C, D, ?> getCondition() {
-        return condition;
+    public QuadConstraintGraphNode getConstraintGraphNode() {
+        return node;
     }
 
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
-
-    public DroolsAbstractTriConstraintStream<Solution_, A, B, C> getLeftParentStream() {
-        return leftParentStream;
-    }
-
-    public DroolsAbstractUniConstraintStream<Solution_, D> getRightParentStream() {
-        return rightParentStream;
-    }
 
     @Override
     public String toString() {

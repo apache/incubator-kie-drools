@@ -593,7 +593,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
     // ************************************************************************
 
     @TestTemplate
-    public void groupBy_OMapping1Collector() {
+    public void groupBy_0Mapping1Collector() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 

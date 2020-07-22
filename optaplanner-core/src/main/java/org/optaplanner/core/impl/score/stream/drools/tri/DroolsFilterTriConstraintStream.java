@@ -18,16 +18,17 @@ package org.optaplanner.core.impl.score.stream.drools.tri;
 
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.TriConstraintGraphNode;
 
 public final class DroolsFilterTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
 
-    private final DroolsTriCondition<A, B, C, ?> condition;
+    private final TriConstraintGraphNode node;
 
     public DroolsFilterTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriPredicate<A, B, C> triPredicate) {
-        super(constraintFactory, parent);
-        this.condition = parent.getCondition().andFilter(triPredicate);
+        super(constraintFactory);
+        this.node = constraintFactory.getConstraintGraph().filter(parent.getConstraintGraphNode(), triPredicate);
     }
 
     // ************************************************************************
@@ -35,8 +36,8 @@ public final class DroolsFilterTriConstraintStream<Solution_, A, B, C>
     // ************************************************************************
 
     @Override
-    public DroolsTriCondition<A, B, C, ?> getCondition() {
-        return condition;
+    public TriConstraintGraphNode getConstraintGraphNode() {
+        return node;
     }
 
     @Override

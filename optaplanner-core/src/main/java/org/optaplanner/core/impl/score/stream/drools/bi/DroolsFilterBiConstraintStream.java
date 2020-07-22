@@ -19,28 +19,21 @@ package org.optaplanner.core.impl.score.stream.drools.bi;
 import java.util.function.BiPredicate;
 
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.BiConstraintGraphNode;
 
 public class DroolsFilterBiConstraintStream<Solution_, A, B> extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
-    private final DroolsAbstractBiConstraintStream<Solution_, A, B> parent;
-    private final DroolsBiCondition<A, B, ?> condition;
+    private final BiConstraintGraphNode node;
 
     public DroolsFilterBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiPredicate<A, B> biPredicate) {
         super(constraintFactory);
-        this.parent = parent;
-        this.condition = parent.getCondition().andFilter(biPredicate);
+        this.node = constraintFactory.getConstraintGraph().filter(parent.getConstraintGraphNode(), biPredicate);
     }
 
     @Override
-    public DroolsBiCondition<A, B, ?> getCondition() {
-        return condition;
-    }
-
-    @Override
-    protected DroolsAbstractConstraintStream<Solution_> getParent() {
-        return parent;
+    public BiConstraintGraphNode getConstraintGraphNode() {
+        return node;
     }
 
     @Override

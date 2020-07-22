@@ -702,7 +702,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
-    public void groupBy_0Mapping1Collector_count() {
+    public void groupBy_0Mapping1Collector() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 2, 3);
 

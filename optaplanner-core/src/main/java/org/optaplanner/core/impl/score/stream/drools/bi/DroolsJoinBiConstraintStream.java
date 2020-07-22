@@ -16,42 +16,25 @@
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
-import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.BiConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 
 public class DroolsJoinBiConstraintStream<Solution_, A, B> extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
-    private final DroolsAbstractUniConstraintStream<Solution_, A> leftParentStream;
-    private final DroolsAbstractUniConstraintStream<Solution_, B> rightParentStream;
-    private final DroolsBiCondition<A, B, ?> condition;
+    private final BiConstraintGraphNode node;
 
     public DroolsJoinBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent,
             DroolsAbstractUniConstraintStream<Solution_, B> otherStream, BiJoiner<A, B> biJoiner) {
         super(constraintFactory);
-        this.leftParentStream = parent;
-        this.rightParentStream = otherStream;
-        this.condition = parent.getCondition().andJoin(otherStream.getCondition(), (AbstractBiJoiner<A, B>) biJoiner);
+        this.node = constraintFactory.getConstraintGraph().join(parent.getConstraintGraphNode(),
+                otherStream.getConstraintGraphNode(), biJoiner);
     }
 
     @Override
-    public DroolsBiCondition<A, B, ?> getCondition() {
-        return condition;
-    }
-
-    public DroolsAbstractUniConstraintStream<Solution_, A> getLeftParentStream() {
-        return leftParentStream;
-    }
-
-    public DroolsAbstractUniConstraintStream<Solution_, B> getRightParentStream() {
-        return rightParentStream;
-    }
-
-    @Override
-    protected DroolsAbstractConstraintStream<Solution_> getParent() {
-        return null; // There is no one single parent for a join stream.
+    public BiConstraintGraphNode getConstraintGraphNode() {
+        return node;
     }
 
     @Override

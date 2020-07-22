@@ -24,7 +24,7 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractAccumulateFunction;
 
-final class DroolsBiAccumulateFunction<A, B, ResultContainer_, NewA>
+public final class DroolsBiAccumulateFunction<A, B, ResultContainer_, NewA>
         extends DroolsAbstractAccumulateFunction<ResultContainer_, BiTuple<A, B>, NewA> {
 
     private final Supplier<ResultContainer_> supplier;

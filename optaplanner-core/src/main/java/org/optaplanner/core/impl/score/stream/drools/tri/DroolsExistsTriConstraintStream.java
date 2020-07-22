@@ -16,30 +16,24 @@
 
 package org.optaplanner.core.impl.score.stream.drools.tri;
 
-import java.util.List;
-
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.TriConstraintGraphNode;
 
 public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
 
-    private final DroolsTriCondition<A, B, C, ?> condition;
+    private final TriConstraintGraphNode node;
     private final String streamName;
 
     public <D> DroolsExistsTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, boolean shouldExist, Class<D> otherClass,
             QuadJoiner<A, B, C, D>... joiners) {
-        super(constraintFactory, parent);
+        super(constraintFactory);
+        this.node = shouldExist
+                ? constraintFactory.getConstraintGraph().ifExists(parent.getConstraintGraphNode(), otherClass, joiners)
+                : constraintFactory.getConstraintGraph().ifNotExists(parent.getConstraintGraphNode(), otherClass, joiners);
         this.streamName = shouldExist ? "TriIfExists()" : "TriIfNotExists()";
-        this.condition = shouldExist ? parent.getCondition().andIfExists(otherClass, joiners)
-                : parent.getCondition().andIfNotExists(otherClass, joiners);
-    }
-
-    @Override
-    public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return parent.getFromStreamList();
     }
 
     // ************************************************************************
@@ -47,8 +41,8 @@ public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
     // ************************************************************************
 
     @Override
-    public DroolsTriCondition<A, B, C, ?> getCondition() {
-        return condition;
+    public TriConstraintGraphNode getConstraintGraphNode() {
+        return node;
     }
 
     @Override

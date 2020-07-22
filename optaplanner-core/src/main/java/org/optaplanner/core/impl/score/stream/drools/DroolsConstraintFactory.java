@@ -21,11 +21,11 @@ import static org.drools.model.DSL.globalOf;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.LongSupplier;
 
 import org.drools.model.Global;
+import org.drools.model.Rule;
 import org.drools.model.impl.ModelImpl;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
@@ -35,13 +35,14 @@ import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.common.ConstraintGraph;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
 public final class DroolsConstraintFactory<Solution_> implements InnerConstraintFactory<Solution_> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final String defaultConstraintPackage;
-    private final AtomicLong createdVariableCounter = new AtomicLong();
+    private final ConstraintGraph constraintGraph = new ConstraintGraph();
 
     public DroolsConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
@@ -93,9 +94,14 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
             }
             DroolsConstraint<Solution_> droolsConstraint = (DroolsConstraint) constraint;
             droolsConstraintList.add(droolsConstraint);
-            model.addRule(droolsConstraint.createRule(scoreHolderGlobal));
         }
-        return new DroolsConstraintSessionFactory<>(solutionDescriptor, model, droolsConstraintList);
+        DroolsConstraint<Solution_>[] constraintArray = droolsConstraintList.toArray(new DroolsConstraint[0]);
+        Map<Rule, Class[]> ruleToExpectedJustificationTypesMap =
+                constraintGraph.generateRule(scoreHolderGlobal, constraintArray);
+        ruleToExpectedJustificationTypesMap.keySet()
+                .forEach(model::addRule);
+        return new DroolsConstraintSessionFactory<>(solutionDescriptor, model, ruleToExpectedJustificationTypesMap,
+                constraintArray);
     }
 
     // ************************************************************************
@@ -106,14 +112,8 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
         return solutionDescriptor;
     }
 
-    /**
-     * In order to guarantee that all variables have unique names within the context of a rule, we need to be able to
-     * uniquely identify them. This ID supplier is used by all variable-creating code.
-     *
-     * @return supplier that returns a unique number each time it is invoked
-     */
-    public LongSupplier getVariableIdSupplier() {
-        return createdVariableCounter::incrementAndGet;
+    public ConstraintGraph getConstraintGraph() {
+        return constraintGraph;
     }
 
     @Override

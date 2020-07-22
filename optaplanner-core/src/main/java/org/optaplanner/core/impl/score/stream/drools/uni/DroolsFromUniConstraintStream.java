@@ -16,23 +16,18 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
-import java.util.Collections;
-import java.util.List;
+import static java.util.Objects.requireNonNull;
 
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.common.nodes.UniConstraintGraphNode;
 
 public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
-    private final Class<A> fromClass;
-    private final DroolsUniCondition<A, ?> condition;
+    private final UniConstraintGraphNode node;
 
     public DroolsFromUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory, Class<A> fromClass) {
         super(constraintFactory);
-        if (fromClass == null) {
-            throw new IllegalArgumentException("The fromClass (null) cannot be null.");
-        }
-        this.fromClass = fromClass;
-        this.condition = new DroolsUniCondition<>(fromClass, constraintFactory.getVariableIdSupplier());
+        this.node = constraintFactory.getConstraintGraph().from(requireNonNull(fromClass));
     }
 
     // ************************************************************************
@@ -40,26 +35,17 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
     // ************************************************************************
 
     @Override
-    public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return Collections.singletonList((DroolsFromUniConstraintStream<Solution_, Object>) this);
-    }
-
-    @Override
-    public DroolsUniCondition<A, ?> getCondition() {
-        return condition;
+    public UniConstraintGraphNode getConstraintGraphNode() {
+        return node;
     }
 
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
 
-    public Class<A> getFromClass() {
-        return fromClass;
-    }
-
     @Override
     public String toString() {
-        return "From(" + fromClass.getSimpleName() + ") with " + getChildStreams().size() + " children";
+        return "From(" + node.getFactType().getSimpleName() + ") with " + getChildStreams().size() + " children";
     }
 
 }

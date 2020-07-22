@@ -66,7 +66,7 @@ public abstract class AbstractConstraintStreamHelper<Right, JoinedStream, Joiner
         if (filterCount == 0) { // No filters, return the original join stream.
             return joined;
         }
-        // We merge all filters into one, so that we don't pay the penalty for lack of indexing more than once.
+        // Merge all filters into one to avoid paying the penalty for lack of indexing more than once.
         Joiner filteringJoiner = joiners[indexOfFirstFilter];
         Predicate resultingFilter = extractPredicate(filteringJoiner);
         for (int i = indexOfFirstFilter + 1; i < joinerCount; i++) {
