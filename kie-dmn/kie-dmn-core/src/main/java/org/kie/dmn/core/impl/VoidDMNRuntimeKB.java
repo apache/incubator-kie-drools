@@ -63,7 +63,7 @@ public class VoidDMNRuntimeKB implements DMNRuntimeKB {
     }
 
     @Override
-    public KieRuntimeFactory getKiePMMLRuntimeFactory(String modelName) {
+    public KieRuntimeFactory getKieRuntimeFactory(String modelName) {
         throw new UnsupportedOperationException();
     }
 }
