@@ -252,7 +252,7 @@ public abstract class AbstractKieProject implements KieProject {
                 log.warn( "No files found for KieBase " + kBaseModel.getName() +
                                   (kModule instanceof FileKieModule ? ", searching folder " + kModule.getFile() : ""));
             }
-            kbuilder = InternalKnowledgeBuilder.EMPTY;
+            kbuilder = new InternalKnowledgeBuilder.Empty(getClassLoader());
 
         } else {
             kbuilder = createKnowledgeBuilder( kBaseModel, kModule );

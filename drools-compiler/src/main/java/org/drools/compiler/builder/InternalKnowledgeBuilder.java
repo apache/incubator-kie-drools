@@ -44,8 +44,6 @@ import org.kie.internal.builder.ResultSeverity;
 
 public interface InternalKnowledgeBuilder extends KnowledgeBuilder, DroolsAssemblerContext, AssemblerContext {
 
-    KnowledgeBuilder EMPTY = new EmptyKnowledgeBuilder();
-
     ResourceRemovalResult removeObjectsGeneratedFromResource( Resource resource );
 
     void addPackage( PackageDescr packageDescr );
@@ -89,7 +87,13 @@ public interface InternalKnowledgeBuilder extends KnowledgeBuilder, DroolsAssemb
         }
     }
 
-    class EmptyKnowledgeBuilder implements InternalKnowledgeBuilder {
+    class Empty implements InternalKnowledgeBuilder {
+
+        private final ClassLoader rootClassLoader;
+
+        public Empty( ClassLoader rootClassLoader ) {
+            this.rootClassLoader = rootClassLoader;
+        }
 
         @Override
         public Collection<KiePackage> getKnowledgePackages() {
@@ -118,7 +122,7 @@ public interface InternalKnowledgeBuilder extends KnowledgeBuilder, DroolsAssemb
 
         @Override
         public ClassLoader getRootClassLoader() {
-            return this.getClass().getClassLoader();
+            return rootClassLoader;
         }
 
         @Override
