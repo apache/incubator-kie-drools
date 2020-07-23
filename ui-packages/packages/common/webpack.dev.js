@@ -1,21 +1,24 @@
 const path = require('path');
 const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+
+const HOST = process.env.HOST || 'localhost';
+const PORT = process.env.PORT || '9000';
 
 module.exports = merge(common, {
-  mode: 'production',
+  mode: 'development',
   devtool: 'source-map',
-  optimization: {
-    minimizer: [new OptimizeCSSAssetsPlugin({})]
+  devServer: {
+    contentBase: './dist',
+    host: HOST,
+    port: PORT,
+    compress: true,
+    inline: true,
+    historyApiFallback: true,
+    hot: true,
+    overlay: true,
+    open: true
   },
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: '[name].css',
-      chunkFilename: '[name].bundle.css'
-    })
-  ],
   module: {
     rules: [
       {
@@ -37,11 +40,11 @@ module.exports = merge(common, {
           path.resolve(
             '../../node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css'
           ),
-          path.resolve(
-            '../../node_modules/@kogito-apps/common/dist/src/components/styles.css'
+          path.resolve (
+            '../../node_modules/@kogito-apps/common/src/components'
           )
         ],
-        loaders: ['style-loader', 'css-loader']
+        use: ['style-loader', 'css-loader']
       }
     ]
   }

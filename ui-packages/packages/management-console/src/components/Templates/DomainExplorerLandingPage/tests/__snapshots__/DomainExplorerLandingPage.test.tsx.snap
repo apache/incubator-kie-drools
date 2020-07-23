@@ -46,9 +46,9 @@ exports[`Domain Explorer Landing Page Component Snapshot test with default props
             <div
               className="pf-c-card__body"
             >
-              <MockedDomainExplorerListDomains>
-                 
-              </MockedDomainExplorerListDomains>
+              <DomainExplorerListDomains>
+                <MockedDomainExplorerListDomains />
+              </DomainExplorerListDomains>
             </div>
           </CardBody>
         </article>

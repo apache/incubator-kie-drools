@@ -6,8 +6,8 @@ import {
   DataListCell,
   Spinner
 } from '@patternfly/react-core';
-import './LoadMore.css';
 import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
+import '../../styles.css';
 
 interface IOwnProps {
   offset: number;
@@ -55,7 +55,7 @@ const LoadMore: React.FC<IOwnProps & OUIAProps> = ({
       )}
     >
       <DataListItem aria-labelledby="kie-datalist-item">
-        <DataListCell className="kogito-management-console__load-more">
+        <DataListCell className="kogito-common__load-more">
           {!isLoadingMore ? (
             <>
               <Button onClick={load10More} variant="secondary" id="load10">

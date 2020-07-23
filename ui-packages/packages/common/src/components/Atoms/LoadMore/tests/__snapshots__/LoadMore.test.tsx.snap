@@ -11,7 +11,7 @@ exports[`LoadMore component tests with isLoading false snapshot testing 1`] = `
     aria-labelledby="kie-datalist-item"
   >
     <DataListCell
-      className="kogito-management-console__load-more"
+      className="kogito-common__load-more"
     >
       <Component
         id="load10"
@@ -60,7 +60,7 @@ exports[`LoadMore component tests with isLoading true snapshot testing 1`] = `
     aria-labelledby="kie-datalist-item"
   >
     <DataListCell
-      className="kogito-management-console__load-more"
+      className="kogito-common__load-more"
     >
       <Component
         id="loading"

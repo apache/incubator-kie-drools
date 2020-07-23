@@ -12,7 +12,7 @@ import {
 import { SearchIcon } from '@patternfly/react-icons';
 import { Redirect } from 'react-router';
 
-interface IOwnProps {
+export interface IOwnProps {
   defaultPath: string;
   defaultButton: string;
   location: any;

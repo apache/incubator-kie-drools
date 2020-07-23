@@ -1,23 +1,30 @@
 {
   "name": "@kogito-apps/common",
   "version": "1.0.0",
+  "description": "This library provides a set of common React components for use with the Kogito applications.",
   "private": true,
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "author": "",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kogito-apps.git"
   },
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "precommit": "lint-staged",
-    "build:prod": "yarn run lint && yarn run test:coverage",
+    "build": "tsc -m commonjs --outDir ./dist && webpack --config webpack.prod.js --mode production",
+    "build:watch": "tsc -m commonjs --outDir ./dist -w && webpack --config webpack.prod.js --mode production --watch",
+    "build:prod": "yarn run clean && yarn run build",
     "test:report": "yarn test --ci --reporters=jest-junit",
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
     "update-snapshot": "jest --updateSnapshot",
     "test:coverage": "yarn test --coverage",
     "storybook": "start-storybook -p 9001 -c .storybook",
-    "lint": "tslint -c ./tslint.json --project . './src/**/*.ts{,x}'",
+    "lint": "tslint -c ./tslint.json './src/**/*.ts{,x}'",
     "format": "prettier --config ../../.prettierrc --check --write './src/**/*.{tsx,ts,js}'",
     "clean": "rimraf dist",
     "codegen": "graphql-codegen"
@@ -40,7 +47,6 @@
     "storybook-react-router": "1.0.8"
   },
   "jest": {
-    "preset": "ts-jest/presets/js-with-ts",
     "setupFiles": [
       "../../config/Jest-config/test-shim.js",
       "../../config/Jest-config/test-setup.js",
@@ -53,7 +59,8 @@
     ],
     "coveragePathIgnorePatterns": [
       "./src/static",
-      "./src/graphql"
+      "./src/graphql",
+      "dist/"
     ],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"

@@ -249,7 +249,6 @@ describe('Domain Explorer Table Component', () => {
       offset: 10,
       handleRetry: jest.fn()
     };
-
     const wrapper = await getWrapperAsync(
       <MockedProvider>
         <DomainExplorerTable {...props} />
@@ -258,9 +257,7 @@ describe('Domain Explorer Table Component', () => {
     );
     wrapper.update();
 
-    expect(
-      wrapper.find('.kogito-management-console--domain-explorer__table')
-    ).toBeTruthy();
+    expect(wrapper.find('.kogito-common--domain-explorer__table')).toBeTruthy();
   });
   it('check zero offset', async () => {
     const props = {
@@ -365,9 +362,7 @@ describe('Domain Explorer Table Component', () => {
       'DomainExplorerTable'
     );
     wrapper.update();
-    expect(
-      wrapper.find('.kogito-management-console--domain-explorer__table')
-    ).toBeTruthy();
+    expect(wrapper.find('.kogito-common--domain-explorer__table')).toBeTruthy();
   });
   it('check false value of isLoadingMore', async () => {
     const props = {

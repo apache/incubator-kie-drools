@@ -125,7 +125,7 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
         "flight / seat",
       ]
     }
-    className="kogito-management-console--domain-explorer__table"
+    className="kogito-common--domain-explorer__table"
     onCollapse={[Function]}
     rows={
       Array [
@@ -170,7 +170,7 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
               rowKey="rowKey"
             />,
           ],
-          "className": "kogito-management-console--domain-explorer__table",
+          "className": "kogito-common--domain-explorer__table",
           "onCollapse": [Function],
           "rows": Array [
             Object {
@@ -211,7 +211,7 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
             "flight / seat",
           ]
         }
-        className="kogito-management-console--domain-explorer__table"
+        className="kogito-common--domain-explorer__table"
         contentId="expanded-content"
         dropdownDirection="down"
         dropdownPosition="right"
@@ -254,7 +254,7 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
       >
         <Provider
           aria-label="Domain Explorer Table"
-          className="pf-c-table pf-m-grid-md kogito-management-console--domain-explorer__table"
+          className="pf-c-table pf-m-grid-md kogito-common--domain-explorer__table"
           columns={
             Array [
               Object {
@@ -541,7 +541,7 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
         >
           <table
             aria-label="Domain Explorer Table"
-            className="pf-c-table pf-m-grid-md kogito-management-console--domain-explorer__table"
+            className="pf-c-table pf-m-grid-md kogito-common--domain-explorer__table"
             role="grid"
           >
             <TableHeader>
@@ -3641,7 +3641,7 @@ exports[`Domain Explorer Table Component check null value for process instance a
                         "Last update",
                       ]
                     }
-                    className="kogito-management-console__embedded-table"
+                    className="kogito-common__embedded-table"
                     rows={
                       Array [
                         Object {
@@ -3886,7 +3886,7 @@ exports[`Domain Explorer Table Component check null value for process instance a
                         "Last update",
                       ]
                     }
-                    className="kogito-management-console__embedded-table"
+                    className="kogito-common__embedded-table"
                     rows={
                       Array [
                         Object {

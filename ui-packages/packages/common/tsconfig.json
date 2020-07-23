@@ -1,14 +1,21 @@
 {
     "extends": "../../tsconfig.json",
-    "include": [
-        "src/**/*.ts",
-        "src/**/*.tsx",
-        "src/**/*.jsx",
-        "src/**/*.js",
-        "../../config/declare.d.ts",
+    "compilerOptions": {
+        "declarationDir": "./dist",
+        "declaration": true
+    },
+    "files": [
         "./index.ts"
     ],
+    "include": [
+        "src/",
+        "../../config/declare.d.ts"
+    ],
     "exclude": [
-        "src/graphql/queries.tsx"
-    ]
+        "src/graphql/queries.tsx",
+        "src/**/*.test.ts",
+        "src/**/*.test.tsx",
+        "src/**/*.stories.tsx",
+        "src/**/__mocks__"
+    ] 
 }

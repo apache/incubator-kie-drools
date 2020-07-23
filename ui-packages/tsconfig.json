@@ -4,14 +4,13 @@
     "target": "es5",
     "module": "esnext",
     "sourceMap": true,
-    "outDir": "./dist",
-    "allowJs": true,
     "jsx": "react",
+    "outDir": "./dist",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "lib": ["es6", "dom"],
+    "lib": ["es6", "dom", "es2018.promise"],
     "noUnusedLocals": true
   },
   "exclude": ["node_modules"]

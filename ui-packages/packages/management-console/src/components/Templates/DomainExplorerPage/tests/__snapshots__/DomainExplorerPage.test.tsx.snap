@@ -134,7 +134,7 @@ exports[`DomainExplorerPage component Check error response for getQueryFields qu
     <section
       className="pf-c-page__main-section"
     >
-      <MockedDomainExplorer
+      <DomainExplorer
         domainName="Travels"
         metaData={
           Object {
@@ -169,8 +169,8 @@ exports[`DomainExplorerPage component Check error response for getQueryFields qu
         }
         rememberedSelections={Array []}
       >
-         
-      </MockedDomainExplorer>
+        <MockedDomainExplorer />
+      </DomainExplorer>
     </section>
   </PageSection>
 </DomainExplorerPage>
@@ -310,7 +310,7 @@ exports[`DomainExplorerPage component Mock query testing 1`] = `
     <section
       className="pf-c-page__main-section"
     >
-      <MockedDomainExplorer
+      <DomainExplorer
         domainName="Travels"
         metaData={
           Object {
@@ -345,8 +345,8 @@ exports[`DomainExplorerPage component Mock query testing 1`] = `
         }
         rememberedSelections={Array []}
       >
-         
-      </MockedDomainExplorer>
+        <MockedDomainExplorer />
+      </DomainExplorer>
     </section>
   </PageSection>
 </DomainExplorerPage>
@@ -424,7 +424,7 @@ exports[`DomainExplorerPage component Snapshot with default props 1`] = `
     <section
       className="pf-c-page__main-section"
     >
-      <MockedDomainExplorer
+      <DomainExplorer
         domainName="Travels"
         metaData={
           Object {
@@ -459,8 +459,8 @@ exports[`DomainExplorerPage component Snapshot with default props 1`] = `
         }
         rememberedSelections={Array []}
       >
-         
-      </MockedDomainExplorer>
+        <MockedDomainExplorer />
+      </DomainExplorer>
     </section>
   </PageSection>
 </DomainExplorerPage>
@@ -525,7 +525,7 @@ exports[`DomainExplorerPage component check assertions on rememberedParams 1`] =
     <section
       className="pf-c-page__main-section"
     >
-      <MockedDomainExplorer
+      <DomainExplorer
         domainName="Travels"
         metaData={
           Object {
@@ -547,8 +547,8 @@ exports[`DomainExplorerPage component check assertions on rememberedParams 1`] =
         rememberedParams={Array []}
         rememberedSelections={Array []}
       >
-         
-      </MockedDomainExplorer>
+        <MockedDomainExplorer />
+      </DomainExplorer>
     </section>
   </PageSection>
 </DomainExplorerPage>

@@ -20,7 +20,7 @@ import {
   TextVariants
 } from '@patternfly/react-core';
 import { SyncIcon } from '@patternfly/react-icons';
-import './DomainExplorerManageColumns.css';
+import '../../styles.css';
 import _ from 'lodash';
 import gql from 'graphql-tag';
 import { query } from 'gql-query-builder';

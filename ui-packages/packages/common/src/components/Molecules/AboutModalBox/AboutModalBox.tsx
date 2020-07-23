@@ -6,7 +6,7 @@ import {
   TextList,
   TextListItem
 } from '@patternfly/react-core';
-import './AboutModalBox.css';
+import '../../styles.css';
 import { aboutLogoContext } from '../../contexts';
 import aboutPageBackground from '../../../static/kogitoAbout.png';
 

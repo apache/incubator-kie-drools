@@ -4,9 +4,15 @@ import { MemoryRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/react-testing';
 import { getWrapper } from '@kogito-apps/common';
 
-jest.mock(
-  '@kogito-apps/common/src/components/Organisms/DomainExplorerListDomains/DomainExplorerListDomains'
-);
+const MockedDomainExplorerListDomains = (): React.ReactElement => {
+  return <></>;
+};
+jest.mock('@kogito-apps/common', () => ({
+  ...jest.requireActual('@kogito-apps/common'),
+  DomainExplorerListDomains: () => {
+    return <MockedDomainExplorerListDomains />;
+  }
+}));
 
 const MockedBreadcrumb = (): React.ReactElement => {
   return <></>;

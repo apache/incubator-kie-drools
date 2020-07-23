@@ -28,8 +28,7 @@ module.exports = {
       {
         test: /\.(tsx|ts)?$/,
         include: [
-          path.resolve(__dirname, 'src'),
-          path.resolve('../../node_modules/@kogito-apps/common/src')
+          path.resolve(__dirname, 'src')
         ],
         use: [
           {
@@ -58,7 +57,9 @@ module.exports = {
             '../../node_modules/@patternfly/patternfly/assets/pficon'
           ),
           path.resolve('./src/static'),
-          path.resolve('../../node_modules/@kogito-apps/common/src/static')
+          path.resolve(
+            '../../node_modules/@kogito-apps/common/dist/src/static'
+          ),
         ],
         use: {
           loader: 'file-loader',
@@ -112,7 +113,9 @@ module.exports = {
           path.resolve(
             '../../node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css/assets/images'
           ),
-          path.resolve('../../node_modules/@kogito-apps/common/src/static')
+          path.resolve(
+            '../../node_modules/@kogito-apps/common/dist/src/static'
+          ),
         ],
         use: [
           {

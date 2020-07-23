@@ -13,7 +13,7 @@ import {
   ClipboardCopyVariant
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
-import './ServerErrors.css';
+import '../../styles.css';
 import { withRouter } from 'react-router-dom';
 
 const ServerErrors = props => {

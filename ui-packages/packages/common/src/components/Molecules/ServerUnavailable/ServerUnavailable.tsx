@@ -19,7 +19,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { aboutLogoContext } from '../../contexts';
 import PageToolbar from '../PageToolbar/PageToolbar';
 import userImage from '../../../static/avatar.svg';
-import './ServerUnavailable.css';
+import '../../styles.css';
 
 const ServerUnavailable = props => {
   const [isNavOpen, setIsNavOpen] = useState(true);

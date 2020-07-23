@@ -13,7 +13,7 @@ import DomainExplorerTable from '../../Molecules/DomainExplorerTable/DomainExplo
 import KogitoSpinner from '../../Atoms/KogitoSpinner/KogitoSpinner';
 import LoadMore from '../../Atoms/LoadMore/LoadMore';
 import ServerErrors from '../../Molecules/ServerErrors/ServerErrors';
-import './DomainExplorer.css';
+import '../../styles.css';
 
 import { GraphQL } from '../../../graphql/types';
 import useGetQueryTypesQuery = GraphQL.useGetQueryTypesQuery;

@@ -1,0 +1,54 @@
+.pf-c-about-modal-box__hero {
+    background-attachment: unset !important;
+}
+
+.kogito-common--PageLayout {
+    --pf-c-page__header-brand-link--c-brand--MaxHeight: 42px !important;
+}
+
+.kogito-common__load-more {
+    margin-bottom: var(--pf-global--spacer--lg);
+    text-align: center;
+}
+
+.kogito-common--domain-explorer__table td:not(:first-of-type) {
+    min-width: 10em;
+}
+
+.kogito-common__embedded-table  {
+    --pf-c-table--nested--first-last-child--PaddingLeft: 0;
+    margin-bottom: var(--pf-global--spacer--lg);
+    max-width: 80vw;
+}
+
+.kogito-common--domain-explorer__table .pf-c-table__toggle{
+    padding: 24px;
+}
+
+.kogito-common--domain-explorer__table-OverFlow {
+    overflow-y: auto;
+} 
+
+.kogito-common--manage-columns__data-list .pf-c-data-list__toggle {
+    margin-left: calc(-1 * var(--pf-global--spacer--md));
+}
+
+.kogito-common--manage-columns__data-list-content:not(:last-of-type) {
+    box-shadow: none;   
+}
+
+.kogito-common--manage-columns__data-list-content > .pf-c-data-list__expandable-content-body{
+    padding: 0px !important;   
+}
+
+.kogito-common--manage-columns__data-list-content > .pf-c-data-list__expandable-content-body .pf-c-data-list__item-row {
+    padding-left: calc( var(--pf-global--spacer--2xl) + var(--pf-global--spacer--lg));
+}
+
+.kogito-common--manage-columns__data-list-content .pf-c-data-list__cell {
+    padding-left: var(--pf-global--spacer--md);
+}
+
+.kogito-common--manage-columns__modal .pf-c-dropdown {
+    margin-bottom: var(--pf-global--spacer--md);
+} 

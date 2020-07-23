@@ -5,10 +5,15 @@ import { MockedProvider } from '@apollo/react-testing';
 import DomainExplorerPage from '../DomainExplorerPage';
 import { getWrapper } from '@kogito-apps/common';
 
-jest.mock(
-  '@kogito-apps/common/src/components/Organisms/DomainExplorer/DomainExplorer'
-);
-
+const MockedDomainExplorer = (): React.ReactElement => {
+  return <></>;
+};
+jest.mock('@kogito-apps/common', () => ({
+  ...jest.requireActual('@kogito-apps/common'),
+  DomainExplorer: () => {
+    return <MockedDomainExplorer />;
+  }
+}));
 const MockedBreadcrumb = (): React.ReactElement => {
   return <></>;
 };
