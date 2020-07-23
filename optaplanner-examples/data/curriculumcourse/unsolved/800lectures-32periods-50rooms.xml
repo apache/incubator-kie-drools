@@ -379,9 +379,9 @@
       <teacher reference="3"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="98">
+      <curriculumSet id="98">
         <Curriculum reference="93"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>8</studentSize>
     </Course>
     <Course id="99">
@@ -390,7 +390,7 @@
       <teacher reference="4"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="100"/>
+      <curriculumSet id="100"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="101">
@@ -399,10 +399,10 @@
       <teacher reference="5"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="102">
+      <curriculumSet id="102">
         <Curriculum reference="85"/>
         <Curriculum reference="86"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>27</studentSize>
     </Course>
     <Course id="103">
@@ -411,10 +411,10 @@
       <teacher reference="6"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="104">
+      <curriculumSet id="104">
         <Curriculum reference="75"/>
         <Curriculum reference="94"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>22</studentSize>
     </Course>
     <Course id="105">
@@ -423,10 +423,10 @@
       <teacher reference="7"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="106">
+      <curriculumSet id="106">
         <Curriculum reference="64"/>
         <Curriculum reference="65"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>28</studentSize>
     </Course>
     <Course id="107">
@@ -435,10 +435,10 @@
       <teacher reference="8"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="108">
+      <curriculumSet id="108">
         <Curriculum reference="93"/>
         <Curriculum reference="94"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>21</studentSize>
     </Course>
     <Course id="109">
@@ -447,7 +447,7 @@
       <teacher reference="9"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="110"/>
+      <curriculumSet id="110"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="111">
@@ -456,9 +456,9 @@
       <teacher reference="10"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="112">
+      <curriculumSet id="112">
         <Curriculum reference="68"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>14</studentSize>
     </Course>
     <Course id="113">
@@ -467,9 +467,9 @@
       <teacher reference="11"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="114">
+      <curriculumSet id="114">
         <Curriculum reference="64"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>18</studentSize>
     </Course>
     <Course id="115">
@@ -478,9 +478,9 @@
       <teacher reference="12"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="116">
+      <curriculumSet id="116">
         <Curriculum reference="84"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>9</studentSize>
     </Course>
     <Course id="117">
@@ -489,11 +489,11 @@
       <teacher reference="13"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="118">
+      <curriculumSet id="118">
         <Curriculum reference="81"/>
         <Curriculum reference="86"/>
         <Curriculum reference="88"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>41</studentSize>
     </Course>
     <Course id="119">
@@ -502,7 +502,7 @@
       <teacher reference="14"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="120"/>
+      <curriculumSet id="120"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="121">
@@ -511,10 +511,10 @@
       <teacher reference="15"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="122">
+      <curriculumSet id="122">
         <Curriculum reference="67"/>
         <Curriculum reference="93"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>21</studentSize>
     </Course>
     <Course id="123">
@@ -523,7 +523,7 @@
       <teacher reference="16"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="124"/>
+      <curriculumSet id="124"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="125">
@@ -532,9 +532,9 @@
       <teacher reference="17"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="126">
+      <curriculumSet id="126">
         <Curriculum reference="78"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>6</studentSize>
     </Course>
     <Course id="127">
@@ -543,10 +543,10 @@
       <teacher reference="18"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="128">
+      <curriculumSet id="128">
         <Curriculum reference="93"/>
         <Curriculum reference="95"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>25</studentSize>
     </Course>
     <Course id="129">
@@ -555,12 +555,12 @@
       <teacher reference="19"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="130">
+      <curriculumSet id="130">
         <Curriculum reference="70"/>
         <Curriculum reference="75"/>
         <Curriculum reference="78"/>
         <Curriculum reference="79"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>49</studentSize>
     </Course>
     <Course id="131">
@@ -569,9 +569,9 @@
       <teacher reference="20"/>
       <lectureSize>7</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="132">
+      <curriculumSet id="132">
         <Curriculum reference="72"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>16</studentSize>
     </Course>
     <Course id="133">
@@ -580,7 +580,7 @@
       <teacher reference="21"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="134"/>
+      <curriculumSet id="134"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="135">
@@ -589,10 +589,10 @@
       <teacher reference="22"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="136">
+      <curriculumSet id="136">
         <Curriculum reference="68"/>
         <Curriculum reference="77"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>22</studentSize>
     </Course>
     <Course id="137">
@@ -601,7 +601,7 @@
       <teacher reference="23"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="138"/>
+      <curriculumSet id="138"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="139">
@@ -610,11 +610,11 @@
       <teacher reference="24"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="140">
+      <curriculumSet id="140">
         <Curriculum reference="77"/>
         <Curriculum reference="93"/>
         <Curriculum reference="95"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>33</studentSize>
     </Course>
     <Course id="141">
@@ -623,9 +623,9 @@
       <teacher reference="25"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="142">
+      <curriculumSet id="142">
         <Curriculum reference="72"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>16</studentSize>
     </Course>
     <Course id="143">
@@ -634,10 +634,10 @@
       <teacher reference="26"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="144">
+      <curriculumSet id="144">
         <Curriculum reference="69"/>
         <Curriculum reference="95"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>30</studentSize>
     </Course>
     <Course id="145">
@@ -646,7 +646,7 @@
       <teacher reference="27"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="146"/>
+      <curriculumSet id="146"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="147">
@@ -655,9 +655,9 @@
       <teacher reference="28"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="148">
+      <curriculumSet id="148">
         <Curriculum reference="66"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>22</studentSize>
     </Course>
     <Course id="149">
@@ -666,9 +666,9 @@
       <teacher reference="29"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="150">
+      <curriculumSet id="150">
         <Curriculum reference="67"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>13</studentSize>
     </Course>
     <Course id="151">
@@ -677,7 +677,7 @@
       <teacher reference="30"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="152"/>
+      <curriculumSet id="152"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="153">
@@ -686,7 +686,7 @@
       <teacher reference="31"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="154"/>
+      <curriculumSet id="154"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="155">
@@ -695,11 +695,11 @@
       <teacher reference="32"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="156">
+      <curriculumSet id="156">
         <Curriculum reference="64"/>
         <Curriculum reference="69"/>
         <Curriculum reference="88"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>43</studentSize>
     </Course>
     <Course id="157">
@@ -708,7 +708,7 @@
       <teacher reference="33"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="158"/>
+      <curriculumSet id="158"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="159">
@@ -717,10 +717,10 @@
       <teacher reference="34"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="160">
+      <curriculumSet id="160">
         <Curriculum reference="71"/>
         <Curriculum reference="85"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>23</studentSize>
     </Course>
     <Course id="161">
@@ -729,7 +729,7 @@
       <teacher reference="35"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="162"/>
+      <curriculumSet id="162"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="163">
@@ -738,10 +738,10 @@
       <teacher reference="36"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="164">
+      <curriculumSet id="164">
         <Curriculum reference="70"/>
         <Curriculum reference="94"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>28</studentSize>
     </Course>
     <Course id="165">
@@ -750,10 +750,10 @@
       <teacher reference="37"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="166">
+      <curriculumSet id="166">
         <Curriculum reference="74"/>
         <Curriculum reference="76"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>31</studentSize>
     </Course>
     <Course id="167">
@@ -762,9 +762,9 @@
       <teacher reference="38"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="168">
+      <curriculumSet id="168">
         <Curriculum reference="92"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>19</studentSize>
     </Course>
     <Course id="169">
@@ -773,9 +773,9 @@
       <teacher reference="39"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="170">
+      <curriculumSet id="170">
         <Curriculum reference="64"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>18</studentSize>
     </Course>
     <Course id="171">
@@ -784,7 +784,7 @@
       <teacher reference="40"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="172"/>
+      <curriculumSet id="172"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="173">
@@ -793,10 +793,10 @@
       <teacher reference="41"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="174">
+      <curriculumSet id="174">
         <Curriculum reference="73"/>
         <Curriculum reference="84"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>30</studentSize>
     </Course>
     <Course id="175">
@@ -805,11 +805,11 @@
       <teacher reference="42"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="176">
+      <curriculumSet id="176">
         <Curriculum reference="69"/>
         <Curriculum reference="78"/>
         <Curriculum reference="87"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>28</studentSize>
     </Course>
     <Course id="177">
@@ -818,11 +818,11 @@
       <teacher reference="43"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="178">
+      <curriculumSet id="178">
         <Curriculum reference="74"/>
         <Curriculum reference="77"/>
         <Curriculum reference="78"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>32</studentSize>
     </Course>
     <Course id="179">
@@ -831,11 +831,11 @@
       <teacher reference="44"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="180">
+      <curriculumSet id="180">
         <Curriculum reference="76"/>
         <Curriculum reference="87"/>
         <Curriculum reference="92"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>41</studentSize>
     </Course>
     <Course id="181">
@@ -844,7 +844,7 @@
       <teacher reference="45"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="182"/>
+      <curriculumSet id="182"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="183">
@@ -853,7 +853,7 @@
       <teacher reference="46"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="184"/>
+      <curriculumSet id="184"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="185">
@@ -862,10 +862,10 @@
       <teacher reference="47"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="186">
+      <curriculumSet id="186">
         <Curriculum reference="66"/>
         <Curriculum reference="88"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>34</studentSize>
     </Course>
     <Course id="187">
@@ -874,10 +874,10 @@
       <teacher reference="48"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="188">
+      <curriculumSet id="188">
         <Curriculum reference="78"/>
         <Curriculum reference="81"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>19</studentSize>
     </Course>
     <Course id="189">
@@ -886,9 +886,9 @@
       <teacher reference="49"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="190">
+      <curriculumSet id="190">
         <Curriculum reference="81"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>13</studentSize>
     </Course>
     <Course id="191">
@@ -897,9 +897,9 @@
       <teacher reference="50"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="192">
+      <curriculumSet id="192">
         <Curriculum reference="80"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>12</studentSize>
     </Course>
     <Course id="193">
@@ -908,9 +908,9 @@
       <teacher reference="51"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="194">
+      <curriculumSet id="194">
         <Curriculum reference="88"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>12</studentSize>
     </Course>
     <Course id="195">
@@ -919,9 +919,9 @@
       <teacher reference="52"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="196">
+      <curriculumSet id="196">
         <Curriculum reference="81"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>13</studentSize>
     </Course>
     <Course id="197">
@@ -930,10 +930,10 @@
       <teacher reference="53"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="198">
+      <curriculumSet id="198">
         <Curriculum reference="74"/>
         <Curriculum reference="88"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>30</studentSize>
     </Course>
     <Course id="199">
@@ -942,9 +942,9 @@
       <teacher reference="54"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="200">
+      <curriculumSet id="200">
         <Curriculum reference="81"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>13</studentSize>
     </Course>
     <Course id="201">
@@ -953,11 +953,11 @@
       <teacher reference="55"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="202">
+      <curriculumSet id="202">
         <Curriculum reference="69"/>
         <Curriculum reference="82"/>
         <Curriculum reference="92"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>49</studentSize>
     </Course>
     <Course id="203">
@@ -966,7 +966,7 @@
       <teacher reference="56"/>
       <lectureSize>7</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="204"/>
+      <curriculumSet id="204"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="205">
@@ -975,9 +975,9 @@
       <teacher reference="57"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="206">
+      <curriculumSet id="206">
         <Curriculum reference="79"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>19</studentSize>
     </Course>
     <Course id="207">
@@ -986,10 +986,10 @@
       <teacher reference="58"/>
       <lectureSize>7</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="208">
+      <curriculumSet id="208">
         <Curriculum reference="66"/>
         <Curriculum reference="81"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>35</studentSize>
     </Course>
     <Course id="209">
@@ -998,9 +998,9 @@
       <teacher reference="59"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="210">
+      <curriculumSet id="210">
         <Curriculum reference="95"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>17</studentSize>
     </Course>
     <Course id="211">
@@ -1009,9 +1009,9 @@
       <teacher reference="60"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="212">
+      <curriculumSet id="212">
         <Curriculum reference="64"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>18</studentSize>
     </Course>
     <Course id="213">
@@ -1020,9 +1020,9 @@
       <teacher reference="61"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="214">
+      <curriculumSet id="214">
         <Curriculum reference="80"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>12</studentSize>
     </Course>
     <Course id="215">
@@ -1031,7 +1031,7 @@
       <teacher reference="62"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="216"/>
+      <curriculumSet id="216"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="217">
@@ -1040,9 +1040,9 @@
       <teacher reference="3"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="218">
+      <curriculumSet id="218">
         <Curriculum reference="74"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>18</studentSize>
     </Course>
     <Course id="219">
@@ -1051,10 +1051,10 @@
       <teacher reference="4"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="220">
+      <curriculumSet id="220">
         <Curriculum reference="73"/>
         <Curriculum reference="83"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>37</studentSize>
     </Course>
     <Course id="221">
@@ -1063,9 +1063,9 @@
       <teacher reference="5"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="222">
+      <curriculumSet id="222">
         <Curriculum reference="89"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>19</studentSize>
     </Course>
     <Course id="223">
@@ -1074,10 +1074,10 @@
       <teacher reference="6"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="224">
+      <curriculumSet id="224">
         <Curriculum reference="87"/>
         <Curriculum reference="92"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>28</studentSize>
     </Course>
     <Course id="225">
@@ -1086,7 +1086,7 @@
       <teacher reference="7"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="226"/>
+      <curriculumSet id="226"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="227">
@@ -1095,9 +1095,9 @@
       <teacher reference="8"/>
       <lectureSize>9</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="228">
+      <curriculumSet id="228">
         <Curriculum reference="91"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>21</studentSize>
     </Course>
     <Course id="229">
@@ -1106,7 +1106,7 @@
       <teacher reference="9"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="230"/>
+      <curriculumSet id="230"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="231">
@@ -1115,10 +1115,10 @@
       <teacher reference="10"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="232">
+      <curriculumSet id="232">
         <Curriculum reference="79"/>
         <Curriculum reference="86"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>35</studentSize>
     </Course>
     <Course id="233">
@@ -1127,10 +1127,10 @@
       <teacher reference="11"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="234">
+      <curriculumSet id="234">
         <Curriculum reference="66"/>
         <Curriculum reference="82"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>39</studentSize>
     </Course>
     <Course id="235">
@@ -1139,9 +1139,9 @@
       <teacher reference="12"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="236">
+      <curriculumSet id="236">
         <Curriculum reference="94"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>13</studentSize>
     </Course>
     <Course id="237">
@@ -1150,7 +1150,7 @@
       <teacher reference="13"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="238"/>
+      <curriculumSet id="238"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="239">
@@ -1159,11 +1159,11 @@
       <teacher reference="14"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="240">
+      <curriculumSet id="240">
         <Curriculum reference="71"/>
         <Curriculum reference="75"/>
         <Curriculum reference="82"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>38</studentSize>
     </Course>
     <Course id="241">
@@ -1172,9 +1172,9 @@
       <teacher reference="15"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="242">
+      <curriculumSet id="242">
         <Curriculum reference="76"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>13</studentSize>
     </Course>
     <Course id="243">
@@ -1183,9 +1183,9 @@
       <teacher reference="16"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="244">
+      <curriculumSet id="244">
         <Curriculum reference="70"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>15</studentSize>
     </Course>
     <Course id="245">
@@ -1194,7 +1194,7 @@
       <teacher reference="17"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="246"/>
+      <curriculumSet id="246"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="247">
@@ -1203,7 +1203,7 @@
       <teacher reference="18"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="248"/>
+      <curriculumSet id="248"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="249">
@@ -1212,9 +1212,9 @@
       <teacher reference="19"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="250">
+      <curriculumSet id="250">
         <Curriculum reference="69"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>13</studentSize>
     </Course>
     <Course id="251">
@@ -1223,7 +1223,7 @@
       <teacher reference="20"/>
       <lectureSize>7</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="252"/>
+      <curriculumSet id="252"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="253">
@@ -1232,11 +1232,11 @@
       <teacher reference="21"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="254">
+      <curriculumSet id="254">
         <Curriculum reference="79"/>
         <Curriculum reference="82"/>
         <Curriculum reference="88"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>48</studentSize>
     </Course>
     <Course id="255">
@@ -1245,9 +1245,9 @@
       <teacher reference="22"/>
       <lectureSize>7</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="256">
+      <curriculumSet id="256">
         <Curriculum reference="75"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>9</studentSize>
     </Course>
     <Course id="257">
@@ -1256,9 +1256,9 @@
       <teacher reference="23"/>
       <lectureSize>8</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="258">
+      <curriculumSet id="258">
         <Curriculum reference="77"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>8</studentSize>
     </Course>
     <Course id="259">
@@ -1267,10 +1267,10 @@
       <teacher reference="24"/>
       <lectureSize>7</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="260">
+      <curriculumSet id="260">
         <Curriculum reference="83"/>
         <Curriculum reference="85"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>27</studentSize>
     </Course>
     <Course id="261">
@@ -1279,7 +1279,7 @@
       <teacher reference="25"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="262"/>
+      <curriculumSet id="262"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="263">
@@ -1288,11 +1288,11 @@
       <teacher reference="26"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="264">
+      <curriculumSet id="264">
         <Curriculum reference="66"/>
         <Curriculum reference="75"/>
         <Curriculum reference="85"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>42</studentSize>
     </Course>
     <Course id="265">
@@ -1301,7 +1301,7 @@
       <teacher reference="27"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="266"/>
+      <curriculumSet id="266"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="267">
@@ -1310,9 +1310,9 @@
       <teacher reference="28"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="268">
+      <curriculumSet id="268">
         <Curriculum reference="78"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>6</studentSize>
     </Course>
     <Course id="269">
@@ -1321,9 +1321,9 @@
       <teacher reference="29"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="270">
+      <curriculumSet id="270">
         <Curriculum reference="65"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>10</studentSize>
     </Course>
     <Course id="271">
@@ -1332,7 +1332,7 @@
       <teacher reference="30"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="272"/>
+      <curriculumSet id="272"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="273">
@@ -1341,7 +1341,7 @@
       <teacher reference="31"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="274"/>
+      <curriculumSet id="274"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="275">
@@ -1350,7 +1350,7 @@
       <teacher reference="32"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="276"/>
+      <curriculumSet id="276"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="277">
@@ -1359,7 +1359,7 @@
       <teacher reference="33"/>
       <lectureSize>7</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="278"/>
+      <curriculumSet id="278"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="279">
@@ -1368,10 +1368,10 @@
       <teacher reference="34"/>
       <lectureSize>7</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="280">
+      <curriculumSet id="280">
         <Curriculum reference="73"/>
         <Curriculum reference="76"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>34</studentSize>
     </Course>
     <Course id="281">
@@ -1380,10 +1380,10 @@
       <teacher reference="35"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="282">
+      <curriculumSet id="282">
         <Curriculum reference="89"/>
         <Curriculum reference="92"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>38</studentSize>
     </Course>
     <Course id="283">
@@ -1392,9 +1392,9 @@
       <teacher reference="36"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="284">
+      <curriculumSet id="284">
         <Curriculum reference="70"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>15</studentSize>
     </Course>
     <Course id="285">
@@ -1403,10 +1403,10 @@
       <teacher reference="37"/>
       <lectureSize>8</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="286">
+      <curriculumSet id="286">
         <Curriculum reference="71"/>
         <Curriculum reference="73"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>33</studentSize>
     </Course>
     <Course id="287">
@@ -1415,9 +1415,9 @@
       <teacher reference="38"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="288">
+      <curriculumSet id="288">
         <Curriculum reference="76"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>13</studentSize>
     </Course>
     <Course id="289">
@@ -1426,10 +1426,10 @@
       <teacher reference="39"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="290">
+      <curriculumSet id="290">
         <Curriculum reference="79"/>
         <Curriculum reference="88"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>31</studentSize>
     </Course>
     <Course id="291">
@@ -1438,7 +1438,7 @@
       <teacher reference="40"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="292"/>
+      <curriculumSet id="292"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="293">
@@ -1447,10 +1447,10 @@
       <teacher reference="41"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="294">
+      <curriculumSet id="294">
         <Curriculum reference="78"/>
         <Curriculum reference="86"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>22</studentSize>
     </Course>
     <Course id="295">
@@ -1459,7 +1459,7 @@
       <teacher reference="42"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="296"/>
+      <curriculumSet id="296"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="297">
@@ -1468,10 +1468,10 @@
       <teacher reference="43"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="298">
+      <curriculumSet id="298">
         <Curriculum reference="82"/>
         <Curriculum reference="94"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>30</studentSize>
     </Course>
     <Course id="299">
@@ -1480,9 +1480,9 @@
       <teacher reference="44"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="300">
+      <curriculumSet id="300">
         <Curriculum reference="87"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>9</studentSize>
     </Course>
     <Course id="301">
@@ -1491,7 +1491,7 @@
       <teacher reference="45"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="302"/>
+      <curriculumSet id="302"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="303">
@@ -1500,10 +1500,10 @@
       <teacher reference="46"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="304">
+      <curriculumSet id="304">
         <Curriculum reference="67"/>
         <Curriculum reference="87"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>22</studentSize>
     </Course>
     <Course id="305">
@@ -1512,9 +1512,9 @@
       <teacher reference="47"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="306">
+      <curriculumSet id="306">
         <Curriculum reference="75"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>9</studentSize>
     </Course>
     <Course id="307">
@@ -1523,9 +1523,9 @@
       <teacher reference="48"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="308">
+      <curriculumSet id="308">
         <Curriculum reference="65"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>10</studentSize>
     </Course>
     <Course id="309">
@@ -1534,9 +1534,9 @@
       <teacher reference="49"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="310">
+      <curriculumSet id="310">
         <Curriculum reference="95"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>17</studentSize>
     </Course>
     <Course id="311">
@@ -1545,9 +1545,9 @@
       <teacher reference="50"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="312">
+      <curriculumSet id="312">
         <Curriculum reference="94"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>13</studentSize>
     </Course>
     <Course id="313">
@@ -1556,9 +1556,9 @@
       <teacher reference="51"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="314">
+      <curriculumSet id="314">
         <Curriculum reference="65"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>10</studentSize>
     </Course>
     <Course id="315">
@@ -1567,10 +1567,10 @@
       <teacher reference="52"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="316">
+      <curriculumSet id="316">
         <Curriculum reference="66"/>
         <Curriculum reference="84"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>31</studentSize>
     </Course>
     <Course id="317">
@@ -1579,7 +1579,7 @@
       <teacher reference="53"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="318"/>
+      <curriculumSet id="318"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="319">
@@ -1588,10 +1588,10 @@
       <teacher reference="54"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="320">
+      <curriculumSet id="320">
         <Curriculum reference="65"/>
         <Curriculum reference="72"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>26</studentSize>
     </Course>
     <Course id="321">
@@ -1600,10 +1600,10 @@
       <teacher reference="55"/>
       <lectureSize>7</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="322">
+      <curriculumSet id="322">
         <Curriculum reference="89"/>
         <Curriculum reference="95"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>36</studentSize>
     </Course>
     <Course id="323">
@@ -1612,9 +1612,9 @@
       <teacher reference="56"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="324">
+      <curriculumSet id="324">
         <Curriculum reference="86"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>16</studentSize>
     </Course>
     <Course id="325">
@@ -1623,9 +1623,9 @@
       <teacher reference="57"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="326">
+      <curriculumSet id="326">
         <Curriculum reference="89"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>19</studentSize>
     </Course>
     <Course id="327">
@@ -1634,9 +1634,9 @@
       <teacher reference="58"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="328">
+      <curriculumSet id="328">
         <Curriculum reference="83"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>16</studentSize>
     </Course>
     <Course id="329">
@@ -1645,10 +1645,10 @@
       <teacher reference="59"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="330">
+      <curriculumSet id="330">
         <Curriculum reference="69"/>
         <Curriculum reference="83"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>29</studentSize>
     </Course>
     <Course id="331">
@@ -1657,9 +1657,9 @@
       <teacher reference="60"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="332">
+      <curriculumSet id="332">
         <Curriculum reference="83"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>16</studentSize>
     </Course>
     <Course id="333">
@@ -1668,9 +1668,9 @@
       <teacher reference="61"/>
       <lectureSize>7</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="334">
+      <curriculumSet id="334">
         <Curriculum reference="68"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>14</studentSize>
     </Course>
     <Course id="335">
@@ -1679,10 +1679,10 @@
       <teacher reference="62"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="336">
+      <curriculumSet id="336">
         <Curriculum reference="80"/>
         <Curriculum reference="94"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>25</studentSize>
     </Course>
     <Course id="337">
@@ -1691,9 +1691,9 @@
       <teacher reference="12"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="338">
+      <curriculumSet id="338">
         <Curriculum reference="90"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>12</studentSize>
     </Course>
     <Course id="339">
@@ -1702,10 +1702,10 @@
       <teacher reference="40"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="340">
+      <curriculumSet id="340">
         <Curriculum reference="64"/>
         <Curriculum reference="95"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>35</studentSize>
     </Course>
     <Course id="341">
@@ -1714,7 +1714,7 @@
       <teacher reference="44"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="342"/>
+      <curriculumSet id="342"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="343">
@@ -1723,11 +1723,11 @@
       <teacher reference="20"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="344">
+      <curriculumSet id="344">
         <Curriculum reference="72"/>
         <Curriculum reference="82"/>
         <Curriculum reference="85"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>44</studentSize>
     </Course>
     <Course id="345">
@@ -1736,7 +1736,7 @@
       <teacher reference="52"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="346"/>
+      <curriculumSet id="346"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="347">
@@ -1745,9 +1745,9 @@
       <teacher reference="44"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="348">
+      <curriculumSet id="348">
         <Curriculum reference="79"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>19</studentSize>
     </Course>
     <Course id="349">
@@ -1756,10 +1756,10 @@
       <teacher reference="50"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="350">
+      <curriculumSet id="350">
         <Curriculum reference="84"/>
         <Curriculum reference="91"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>30</studentSize>
     </Course>
     <Course id="351">
@@ -1768,9 +1768,9 @@
       <teacher reference="9"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="352">
+      <curriculumSet id="352">
         <Curriculum reference="95"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>17</studentSize>
     </Course>
     <Course id="353">
@@ -1779,10 +1779,10 @@
       <teacher reference="23"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="354">
+      <curriculumSet id="354">
         <Curriculum reference="67"/>
         <Curriculum reference="90"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>25</studentSize>
     </Course>
     <Course id="355">
@@ -1791,9 +1791,9 @@
       <teacher reference="41"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="356">
+      <curriculumSet id="356">
         <Curriculum reference="76"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>13</studentSize>
     </Course>
     <Course id="357">
@@ -1802,7 +1802,7 @@
       <teacher reference="40"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="358"/>
+      <curriculumSet id="358"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="359">
@@ -1811,7 +1811,7 @@
       <teacher reference="42"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="360"/>
+      <curriculumSet id="360"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="361">
@@ -1820,12 +1820,12 @@
       <teacher reference="24"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="362">
+      <curriculumSet id="362">
         <Curriculum reference="76"/>
         <Curriculum reference="80"/>
         <Curriculum reference="87"/>
         <Curriculum reference="90"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>46</studentSize>
     </Course>
     <Course id="363">
@@ -1834,7 +1834,7 @@
       <teacher reference="53"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="364"/>
+      <curriculumSet id="364"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="365">
@@ -1843,7 +1843,7 @@
       <teacher reference="44"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="366"/>
+      <curriculumSet id="366"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="367">
@@ -1852,10 +1852,10 @@
       <teacher reference="42"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="368">
+      <curriculumSet id="368">
         <Curriculum reference="74"/>
         <Curriculum reference="90"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>30</studentSize>
     </Course>
     <Course id="369">
@@ -1864,10 +1864,10 @@
       <teacher reference="55"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="370">
+      <curriculumSet id="370">
         <Curriculum reference="80"/>
         <Curriculum reference="93"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>20</studentSize>
     </Course>
     <Course id="371">
@@ -1876,10 +1876,10 @@
       <teacher reference="51"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="372">
+      <curriculumSet id="372">
         <Curriculum reference="69"/>
         <Curriculum reference="91"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>34</studentSize>
     </Course>
     <Course id="373">
@@ -1888,7 +1888,7 @@
       <teacher reference="49"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="374"/>
+      <curriculumSet id="374"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="375">
@@ -1897,9 +1897,9 @@
       <teacher reference="57"/>
       <lectureSize>7</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="376">
+      <curriculumSet id="376">
         <Curriculum reference="68"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>14</studentSize>
     </Course>
     <Course id="377">
@@ -1908,10 +1908,10 @@
       <teacher reference="38"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="378">
+      <curriculumSet id="378">
         <Curriculum reference="67"/>
         <Curriculum reference="92"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>32</studentSize>
     </Course>
     <Course id="379">
@@ -1920,10 +1920,10 @@
       <teacher reference="35"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="380">
+      <curriculumSet id="380">
         <Curriculum reference="70"/>
         <Curriculum reference="72"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>31</studentSize>
     </Course>
     <Course id="381">
@@ -1932,9 +1932,9 @@
       <teacher reference="57"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="382">
+      <curriculumSet id="382">
         <Curriculum reference="69"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>13</studentSize>
     </Course>
     <Course id="383">
@@ -1943,10 +1943,10 @@
       <teacher reference="17"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="384">
+      <curriculumSet id="384">
         <Curriculum reference="69"/>
         <Curriculum reference="92"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>32</studentSize>
     </Course>
     <Course id="385">
@@ -1955,9 +1955,9 @@
       <teacher reference="39"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="386">
+      <curriculumSet id="386">
         <Curriculum reference="82"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>17</studentSize>
     </Course>
     <Course id="387">
@@ -1966,11 +1966,11 @@
       <teacher reference="53"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="388">
+      <curriculumSet id="388">
         <Curriculum reference="73"/>
         <Curriculum reference="84"/>
         <Curriculum reference="87"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>39</studentSize>
     </Course>
     <Course id="389">
@@ -1979,9 +1979,9 @@
       <teacher reference="19"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="390">
+      <curriculumSet id="390">
         <Curriculum reference="68"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>14</studentSize>
     </Course>
     <Course id="391">
@@ -1990,11 +1990,11 @@
       <teacher reference="21"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="392">
+      <curriculumSet id="392">
         <Curriculum reference="65"/>
         <Curriculum reference="71"/>
         <Curriculum reference="90"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>34</studentSize>
     </Course>
     <Course id="393">
@@ -2003,9 +2003,9 @@
       <teacher reference="11"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="394">
+      <curriculumSet id="394">
         <Curriculum reference="83"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>16</studentSize>
     </Course>
     <Course id="395">
@@ -2014,10 +2014,10 @@
       <teacher reference="50"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="396">
+      <curriculumSet id="396">
         <Curriculum reference="73"/>
         <Curriculum reference="79"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>40</studentSize>
     </Course>
     <Course id="397">
@@ -2026,7 +2026,7 @@
       <teacher reference="29"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="398"/>
+      <curriculumSet id="398"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="399">
@@ -2035,10 +2035,10 @@
       <teacher reference="26"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="400">
+      <curriculumSet id="400">
         <Curriculum reference="64"/>
         <Curriculum reference="70"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>33</studentSize>
     </Course>
     <Course id="401">
@@ -2047,9 +2047,9 @@
       <teacher reference="17"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="402">
+      <curriculumSet id="402">
         <Curriculum reference="72"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>16</studentSize>
     </Course>
     <Course id="403">
@@ -2058,7 +2058,7 @@
       <teacher reference="60"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="404"/>
+      <curriculumSet id="404"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="405">
@@ -2067,7 +2067,7 @@
       <teacher reference="62"/>
       <lectureSize>7</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="406"/>
+      <curriculumSet id="406"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="407">
@@ -2076,7 +2076,7 @@
       <teacher reference="8"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="408"/>
+      <curriculumSet id="408"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="409">
@@ -2085,7 +2085,7 @@
       <teacher reference="33"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="410"/>
+      <curriculumSet id="410"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="411">
@@ -2094,10 +2094,10 @@
       <teacher reference="10"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="412">
+      <curriculumSet id="412">
         <Curriculum reference="81"/>
         <Curriculum reference="91"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>34</studentSize>
     </Course>
     <Course id="413">
@@ -2106,7 +2106,7 @@
       <teacher reference="16"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="414"/>
+      <curriculumSet id="414"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="415">
@@ -2115,9 +2115,9 @@
       <teacher reference="45"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="416">
+      <curriculumSet id="416">
         <Curriculum reference="87"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>9</studentSize>
     </Course>
     <Course id="417">
@@ -2126,7 +2126,7 @@
       <teacher reference="33"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="418"/>
+      <curriculumSet id="418"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="419">
@@ -2135,9 +2135,9 @@
       <teacher reference="17"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="420">
+      <curriculumSet id="420">
         <Curriculum reference="93"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>8</studentSize>
     </Course>
     <Course id="421">
@@ -2146,10 +2146,10 @@
       <teacher reference="15"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="422">
+      <curriculumSet id="422">
         <Curriculum reference="72"/>
         <Curriculum reference="73"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>37</studentSize>
     </Course>
     <Course id="423">
@@ -2158,9 +2158,9 @@
       <teacher reference="62"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="424">
+      <curriculumSet id="424">
         <Curriculum reference="77"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>8</studentSize>
     </Course>
     <Course id="425">
@@ -2169,7 +2169,7 @@
       <teacher reference="38"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="426"/>
+      <curriculumSet id="426"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="427">
@@ -2178,11 +2178,11 @@
       <teacher reference="53"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="428">
+      <curriculumSet id="428">
         <Curriculum reference="65"/>
         <Curriculum reference="67"/>
         <Curriculum reference="91"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>44</studentSize>
     </Course>
     <Course id="429">
@@ -2191,10 +2191,10 @@
       <teacher reference="56"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="430">
+      <curriculumSet id="430">
         <Curriculum reference="80"/>
         <Curriculum reference="86"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>28</studentSize>
     </Course>
     <Course id="431">
@@ -2203,10 +2203,10 @@
       <teacher reference="44"/>
       <lectureSize>9</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="432">
+      <curriculumSet id="432">
         <Curriculum reference="84"/>
         <Curriculum reference="90"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>21</studentSize>
     </Course>
     <Course id="433">
@@ -2215,9 +2215,9 @@
       <teacher reference="3"/>
       <lectureSize>7</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="434">
+      <curriculumSet id="434">
         <Curriculum reference="85"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>11</studentSize>
     </Course>
     <Course id="435">
@@ -2226,10 +2226,10 @@
       <teacher reference="29"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="436">
+      <curriculumSet id="436">
         <Curriculum reference="80"/>
         <Curriculum reference="89"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>31</studentSize>
     </Course>
     <Course id="437">
@@ -2238,7 +2238,7 @@
       <teacher reference="11"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="438"/>
+      <curriculumSet id="438"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="439">
@@ -2247,7 +2247,7 @@
       <teacher reference="20"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="440"/>
+      <curriculumSet id="440"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="441">
@@ -2256,11 +2256,11 @@
       <teacher reference="60"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="442">
+      <curriculumSet id="442">
         <Curriculum reference="71"/>
         <Curriculum reference="75"/>
         <Curriculum reference="92"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>40</studentSize>
     </Course>
     <Course id="443">
@@ -2269,10 +2269,10 @@
       <teacher reference="25"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="444">
+      <curriculumSet id="444">
         <Curriculum reference="67"/>
         <Curriculum reference="82"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>30</studentSize>
     </Course>
     <Course id="445">
@@ -2281,7 +2281,7 @@
       <teacher reference="9"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="446"/>
+      <curriculumSet id="446"/>
       <studentSize>0</studentSize>
     </Course>
     <Course id="447">
@@ -2290,9 +2290,9 @@
       <teacher reference="6"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="448">
+      <curriculumSet id="448">
         <Curriculum reference="89"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>19</studentSize>
     </Course>
     <Course id="449">
@@ -2301,10 +2301,10 @@
       <teacher reference="52"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="450">
+      <curriculumSet id="450">
         <Curriculum reference="74"/>
         <Curriculum reference="91"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>39</studentSize>
     </Course>
     <Course id="451">
@@ -2313,10 +2313,10 @@
       <teacher reference="3"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
-      <curriculumList id="452">
+      <curriculumSet id="452">
         <Curriculum reference="70"/>
         <Curriculum reference="86"/>
-      </curriculumList>
+      </curriculumSet>
       <studentSize>31</studentSize>
     </Course>
   </courseList>

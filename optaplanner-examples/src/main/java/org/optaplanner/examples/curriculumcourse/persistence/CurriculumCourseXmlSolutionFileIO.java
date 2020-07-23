@@ -19,9 +19,9 @@ package org.optaplanner.examples.curriculumcourse.persistence;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
-public class CourseScheduleXmlSolutionFileIO extends XStreamSolutionFileIO<CourseSchedule> {
+public class CurriculumCourseXmlSolutionFileIO extends XStreamSolutionFileIO<CourseSchedule> {
 
-    public CourseScheduleXmlSolutionFileIO() {
+    public CurriculumCourseXmlSolutionFileIO() {
         super(CourseSchedule.class);
     }
 }

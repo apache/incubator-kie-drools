@@ -197,7 +197,7 @@ public class CurriculumCoursePanel extends SolutionPanel<CourseSchedule> {
                     createButton(lecture, color, toolTip));
             teachersPanel.addCell(lecture.getTeacher(), lecture.getPeriod(),
                     createButton(lecture, color, toolTip));
-            for (Curriculum curriculum : lecture.getCurriculumList()) {
+            for (Curriculum curriculum : lecture.getCurriculumSet()) {
                 curriculaPanel.addCell(curriculum, lecture.getPeriod(),
                         createButton(lecture, color, toolTip));
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
 
 package org.optaplanner.examples.curriculumcourse.domain;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
@@ -30,6 +32,16 @@ public class Day extends AbstractPersistable {
     private int dayIndex;
 
     private List<Period> periodList;
+
+    public Day() {
+    }
+
+    public Day(int dayIndex, Period... periods) {
+        super(dayIndex);
+        this.dayIndex = dayIndex;
+        this.periodList = Arrays.stream(periods)
+                .collect(Collectors.toList());
+    }
 
     public int getDayIndex() {
         return dayIndex;

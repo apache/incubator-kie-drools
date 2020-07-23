@@ -78,7 +78,7 @@
   <solverBenchmark>
     <name>Course Scheduling Late Acceptance ${randomType}</name>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.curriculumcourse.persistence.CourseScheduleXmlSolutionFileIO</solutionFileIOClass>
+      <solutionFileIOClass>org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseXmlSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp07.xml</inputSolutionFile>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp08.xml</inputSolutionFile>
     </problemBenchmarks>

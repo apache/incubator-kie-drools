@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,11 @@ public class Timeslot extends AbstractPersistable {
             "18:00" };
 
     private int timeslotIndex;
+
+    public Timeslot(int timeslotIndex) {
+        super(timeslotIndex);
+        this.timeslotIndex = timeslotIndex;
+    }
 
     public int getTimeslotIndex() {
         return timeslotIndex;

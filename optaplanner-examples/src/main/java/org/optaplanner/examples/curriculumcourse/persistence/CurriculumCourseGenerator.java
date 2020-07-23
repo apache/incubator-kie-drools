@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -159,9 +160,7 @@ public class CurriculumCourseGenerator extends LoggingMain {
     private void createTimeslotList(CourseSchedule schedule) {
         List<Timeslot> timeslotList = new ArrayList<>(TIMESLOT_LIST_SIZE);
         for (int i = 0; i < TIMESLOT_LIST_SIZE; i++) {
-            Timeslot timeslot = new Timeslot();
-            timeslot.setId((long) i);
-            timeslot.setTimeslotIndex(i);
+            Timeslot timeslot = new Timeslot(i);
             timeslotList.add(timeslot);
         }
         schedule.setTimeslotList(timeslotList);
@@ -227,7 +226,7 @@ public class CurriculumCourseGenerator extends LoggingMain {
             course.setTeacher(teacher);
             course.setLectureSize(0);
             course.setMinWorkingDaySize(1);
-            course.setCurriculumList(new ArrayList<>());
+            course.setCurriculumSet(new LinkedHashSet<>());
             course.setStudentSize(0);
             courseList.add(course);
         }
@@ -290,7 +289,7 @@ public class CurriculumCourseGenerator extends LoggingMain {
                 if (lectureCount > PERIOD_LIST_SIZE) {
                     break;
                 }
-                course.getCurriculumList().add(curriculum);
+                course.getCurriculumSet().add(curriculum);
                 course.setStudentSize(course.getStudentSize() + studentSize);
             }
 

@@ -5,7 +5,7 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.curriculumcourse.persistence.CourseScheduleXmlSolutionFileIO</solutionFileIOClass>
+      <solutionFileIOClass>org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseXmlSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp01_initialized.xml</inputSolutionFile>
     </problemBenchmarks>
 

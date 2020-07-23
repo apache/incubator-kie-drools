@@ -167,8 +167,8 @@ public class CourseSchedule extends AbstractPersistable {
                     if (leftCourse.getTeacher().equals(rightCourse.getTeacher())) {
                         conflictCount++;
                     }
-                    for (Curriculum curriculum : leftCourse.getCurriculumList()) {
-                        if (rightCourse.getCurriculumList().contains(curriculum)) {
+                    for (Curriculum curriculum : leftCourse.getCurriculumSet()) {
+                        if (rightCourse.getCurriculumSet().contains(curriculum)) {
                             conflictCount++;
                         }
                     }

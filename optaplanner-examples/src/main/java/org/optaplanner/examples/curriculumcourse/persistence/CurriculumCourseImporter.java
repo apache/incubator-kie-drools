@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -127,7 +128,7 @@ public class CurriculumCourseImporter extends AbstractTxtSolutionImporter<Course
                 course.setTeacher(findOrCreateTeacher(teacherMap, lineTokens[1]));
                 course.setLectureSize(Integer.parseInt(lineTokens[2]));
                 course.setMinWorkingDaySize(Integer.parseInt(lineTokens[3]));
-                course.setCurriculumList(new ArrayList<>());
+                course.setCurriculumSet(new LinkedHashSet<>());
                 course.setStudentSize(Integer.parseInt(lineTokens[4]));
                 courseList.add(course);
                 courseMap.put(course.getCode(), course);
@@ -183,9 +184,7 @@ public class CurriculumCourseImporter extends AbstractTxtSolutionImporter<Course
             schedule.setDayList(dayList);
             List<Timeslot> timeslotList = new ArrayList<>(timeslotListSize);
             for (int i = 0; i < timeslotListSize; i++) {
-                Timeslot timeslot = new Timeslot();
-                timeslot.setId((long) i);
-                timeslot.setTimeslotIndex(i);
+                Timeslot timeslot = new Timeslot(i);
                 timeslotList.add(timeslot);
             }
             schedule.setTimeslotList(timeslotList);
@@ -233,7 +232,7 @@ public class CurriculumCourseImporter extends AbstractTxtSolutionImporter<Course
                         throw new IllegalArgumentException("Read line (" + line + ") uses an unexisting course("
                                 + lineTokens[j] + ").");
                     }
-                    course.getCurriculumList().add(curriculum);
+                    course.getCurriculumSet().add(curriculum);
                 }
                 curriculumList.add(curriculum);
             }

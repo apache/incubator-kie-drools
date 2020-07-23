@@ -55,7 +55,7 @@ rule "conflictingLecturesSameCourseInSamePeriod"
         Lecture($leftId : id, $leftCourse : course, $period : period, period != null)
         Lecture(course == $leftCourse, period == $period, id > $leftId)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - (1 + $leftCourse.getCurriculumList().size()));
+        scoreHolder.addHardConstraintMatch(kcontext, - (1 + $leftCourse.getCurriculumSet().size()));
 end
 
 // RoomOccupancy: Two lectures in the same room at the same period.
@@ -120,13 +120,13 @@ rule "curriculumCompactness"
     when
         $curriculum : Curriculum()
 
-        Lecture(curriculumList contains $curriculum,
+        Lecture(curriculumSet contains $curriculum,
             $day : day, $timeslotIndex : timeslotIndex, period != null
         )
-        not Lecture(curriculumList contains $curriculum,
+        not Lecture(curriculumSet contains $curriculum,
             day == $day, timeslotIndex == ($timeslotIndex - 1)
         )
-        not Lecture(curriculumList contains $curriculum,
+        not Lecture(curriculumSet contains $curriculum,
             day == $day, timeslotIndex == ($timeslotIndex + 1)
         )
     then

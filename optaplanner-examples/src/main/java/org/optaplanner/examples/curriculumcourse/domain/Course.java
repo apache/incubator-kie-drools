@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,12 @@
 
 package org.optaplanner.examples.curriculumcourse.domain;
 
-import java.util.List;
+import static java.util.Objects.requireNonNull;
+
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
@@ -31,8 +36,22 @@ public class Course extends AbstractPersistable {
     private int lectureSize;
     private int minWorkingDaySize;
 
-    private List<Curriculum> curriculumList;
+    private Set<Curriculum> curriculumSet;
     private int studentSize;
+
+    public Course() {
+    }
+
+    public Course(int id, String code, Teacher teacher, int lectureSize, int studentSize, int minWorkingDaySize,
+            Curriculum... curricula) {
+        super(id);
+        this.code = requireNonNull(code);
+        this.teacher = requireNonNull(teacher);
+        this.lectureSize = lectureSize;
+        this.minWorkingDaySize = minWorkingDaySize;
+        this.curriculumSet = Arrays.stream(curricula).collect(Collectors.toCollection(LinkedHashSet::new));
+        this.studentSize = studentSize;
+    }
 
     public String getCode() {
         return code;
@@ -66,12 +85,12 @@ public class Course extends AbstractPersistable {
         this.minWorkingDaySize = minWorkingDaySize;
     }
 
-    public List<Curriculum> getCurriculumList() {
-        return curriculumList;
+    public Set<Curriculum> getCurriculumSet() {
+        return curriculumSet;
     }
 
-    public void setCurriculumList(List<Curriculum> curriculumList) {
-        this.curriculumList = curriculumList;
+    public void setCurriculumSet(Set<Curriculum> curriculumSet) {
+        this.curriculumSet = curriculumSet;
     }
 
     public int getStudentSize() {

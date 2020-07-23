@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ public class LectureDifficultyWeightFactory implements SelectionSorterWeightFact
     public static class LectureDifficultyWeight implements Comparable<LectureDifficultyWeight> {
 
         private static final Comparator<LectureDifficultyWeight> COMPARATOR = comparingInt(
-                (LectureDifficultyWeight c) -> c.lecture.getCurriculumList().size())
+                (LectureDifficultyWeight c) -> c.lecture.getCurriculumSet().size())
                         .thenComparing(c -> c.unavailablePeriodPenaltyCount)
                         .thenComparingInt(c -> c.lecture.getCourse().getLectureSize())
                         .thenComparingInt(c -> c.lecture.getCourse().getStudentSize())
