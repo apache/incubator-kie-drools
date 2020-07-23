@@ -2,6 +2,7 @@ package com.myspace.demo;
 
 import java.util.List;
 
+import org.jbpm.util.JsonSchemaUtil;
 import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.WorkItem;
@@ -84,16 +85,14 @@ public class $Type$Resource {
         }
     }
 
-    @GetMapping(value = "$taskName$/schema",produces = MediaType.APPLICATION_JSON)
+    @GetMapping(value = "$taskName$/schema", produces = MediaType.APPLICATION_JSON)
     public JsonSchema getSchema() {
-        return JsonSchemaUtil.load(this.getClass().getClassLoader(),process.id(),"$taskName$");
+        return JsonSchemaUtil.load(this.getClass().getClassLoader(), process.id(), "$taskName$");
     }
 
-    @GetMapping(value = "/{id}/$taskName$/{workItemId}/schema",produces = MediaType.APPLICATION_JSON)
-    public JsonSchema getSchemaAndPhases(@PathParam("id") final String id, @PathParam("workItemId") final String workItemId) {
-        Map<String,Object> jsonSchema = JsonSchemaUtil.load(this.getClass().getClassLoader(),process.id(),"$taskName$");
-        process.instances().findById(id).ifPresent(pi ->jsonSchema.put("phases",pi.allowedPhases(workItemId)));
-        return jsonSchema;
+    @GetMapping(value = "/{id}/$taskName$/{workItemId}/schema", produces = MediaType.APPLICATION_JSON)
+    public JsonSchema getSchemaAndPhases(@PathParam("id") final String id, @PathParam("workItemId") final String workItemId, @QueryParam("user") final String user, @QueryParam("group") final List<String> groups) {
+        return JsonSchemaUtil.addPhases(process, application, id, workItemId, policies(user, groups), JsonSchemaUtil.load(this.getClass().getClassLoader(), process.id(), "$taskName$"));
     }
 
     @DeleteMapping(value = "/{id}/$taskName$/{workItemId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -104,7 +103,6 @@ public class $Type$Resource {
                                   @RequestParam(value = "group", required = false) final List<String> groups) {
 
         try {
-
             return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
                 ProcessInstance<$Type$> pi = process.instances().findById(id).orElse(null);
                 if (pi == null) {

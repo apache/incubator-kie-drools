@@ -19,9 +19,17 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.kogito.Application;
+import org.kie.kogito.process.Process;
+import org.kie.kogito.process.WorkItem;
+import org.kie.kogito.process.workitem.LifeCyclePhase;
+import org.kie.kogito.process.workitem.Policy;
 
 public class JsonSchemaUtil {
 
@@ -57,5 +65,15 @@ public class JsonSchemaUtil {
     public static Map<String, Object> load(InputStream in) throws IOException {
         return mapper.readValue(in, new TypeReference<Map<String, Object>>() {
         });
+    }
+
+    public static <T> Map<String, Object> addPhases(Process<T> process, Application application, String processInstanceId, String workItemId, Policy<T>[] policies, Map<String, Object> jsonSchema) {
+        process.instances().findById(processInstanceId).ifPresent(pi -> jsonSchema.put("phases", allowedPhases(application.config().process().workItemHandlers().forName("Human Task"), pi.workItem(workItemId,
+                                                                                                                                                                                                    policies))));
+        return jsonSchema;
+    }
+
+    public static Set<String> allowedPhases(WorkItemHandler handler, WorkItem workItem) {
+        return handler.allowedPhases(workItem.getPhase()).map(LifeCyclePhase::id).collect(Collectors.toSet());
     }
 }

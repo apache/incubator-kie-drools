@@ -16,8 +16,7 @@
 package org.jbpm.process.instance.impl.humantask;
 
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.drools.core.process.instance.WorkItemHandler;
 import org.jbpm.process.instance.impl.workitem.Abort;
@@ -63,9 +62,8 @@ public class HumanTaskWorkItemHandler implements WorkItemHandler {
     }
     
     @Override
-    public Set<String> allowedPhases(WorkItem workItem) {
-        LifeCyclePhase activePhase =lifeCycle.phaseById(workItem.getPhaseId());
-        return lifeCycle.phases().stream().filter(phase -> phase.canTransition(activePhase)).map(LifeCyclePhase::id).collect(Collectors.toSet()); 
+    public Stream<LifeCyclePhase> allowedPhases(String phaseId) {
+        return lifeCycle.allowedPhases(phaseId);
     }
 
 }

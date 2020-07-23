@@ -190,21 +190,6 @@ public class LightWorkItemManager implements WorkItemManager {
         }
     }
 
-    @Override
-    public Set<String> allowedPhases (String id) {
-        WorkItem workItem = workItems.get(id);
-        if (workItem != null) {    
-            WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
-            if (handler != null) {
-                return handler.allowedPhases(workItem);
-            } else {
-                throw new WorkItemHandlerNotFoundException(workItem.getName() );
-            }
-        } else {
-            throw new WorkItemNotFoundException("Work Item (" + id + ") does not exist", id);
-        }
-    }
-
     public void abortWorkItem(String id, Policy<?>... policies) {
         WorkItemImpl workItem = (WorkItemImpl) workItems.get(id);
         // work item may have been aborted

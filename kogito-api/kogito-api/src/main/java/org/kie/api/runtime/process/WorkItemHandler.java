@@ -16,8 +16,9 @@
 
 package org.kie.api.runtime.process;
 
-import java.util.Set;
+import java.util.stream.Stream;
 
+import org.kie.kogito.process.workitem.LifeCyclePhase;
 import org.kie.kogito.process.workitem.Transition;
 
 /**
@@ -80,8 +81,13 @@ public interface WorkItemHandler {
     default void transitionToPhase(WorkItem workItem, WorkItemManager manager, Transition<?> transition) {
         throw new UnsupportedOperationException();
     }
-
-    default Set<String> allowedPhases(WorkItem workItem) {
-        throw new UnsupportedOperationException();
+    
+    /**
+     * Returns the set of phases the provided phase is able to be transitioned to
+     * @param phaseId  the phase we want to obtain which phases can be transitioned to
+     * @return stream containing all phases that can be transitioned from the provided phase
+     */
+    default Stream<LifeCyclePhase> allowedPhases(String phaseId) {
+        return Stream.empty();
     }
 }

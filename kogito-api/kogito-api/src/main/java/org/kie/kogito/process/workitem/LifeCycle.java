@@ -16,6 +16,7 @@
 package org.kie.kogito.process.workitem;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -56,4 +57,14 @@ public interface LifeCycle<T> {
      * @return current data set
      */
     T data(WorkItem workItem);
+    
+    /**
+     * Returns the set of phases the provided phase is able to be transitioned to
+     * @param phaseId  the phase we want to obtain which phases can be transitioned to
+     * @return stream containing all phases that can be transitioned from the provided phase
+     */
+    default Stream<LifeCyclePhase> allowedPhases(String phaseId) {
+        LifeCyclePhase activePhase = phaseById(phaseId);
+        return phases().stream().filter(phase -> phase.canTransition(activePhase));
+    }
 }
