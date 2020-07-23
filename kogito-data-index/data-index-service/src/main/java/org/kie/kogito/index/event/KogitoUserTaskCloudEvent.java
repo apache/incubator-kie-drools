@@ -16,10 +16,14 @@
 
 package org.kie.kogito.index.event;
 
+import java.net.URI;
 import java.time.ZonedDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.net.UrlEscapers;
 import org.kie.kogito.index.model.UserTaskInstance;
+
+import static java.lang.String.format;
 
 public class KogitoUserTaskCloudEvent extends KogitoCloudEvent<UserTaskInstance> {
 
@@ -61,6 +65,20 @@ public class KogitoUserTaskCloudEvent extends KogitoCloudEvent<UserTaskInstance>
     public void setData(UserTaskInstance data) {
         super.setData(data);
         setTime(getTime());
+        setSource(getSource());
+    }
+
+    @Override
+    public void setSource(URI source) {
+        super.setSource(source);
+        if (getData() != null && source != null) {
+            getData().setEndpoint(getEndpoint(source, getData().getProcessInstanceId(), getData().getName(), getData().getId()));
+        }
+    }
+
+    protected String getEndpoint(URI source, String pId, String taskName, String taskId) {
+        String name = UrlEscapers.urlPathSegmentEscaper().escape(taskName);
+        return source.toString() + format("/%s/%s/%s", pId, name, taskId);
     }
 
     @Override

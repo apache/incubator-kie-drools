@@ -25,47 +25,49 @@ import org.bson.codecs.pojo.annotations.BsonId;
 public class UserTaskInstanceEntity {
 
     @BsonId
-    String id;
+    private String id;
 
-    String description;
+    private String description;
 
-    String name;
+    private String name;
 
-    String priority;
+    private String priority;
 
-    String processInstanceId;
+    private String processInstanceId;
 
-    String state;
+    private String state;
 
-    String actualOwner;
+    private String actualOwner;
 
-    Set<String> adminGroups;
+    private Set<String> adminGroups;
 
-    Set<String> adminUsers;
+    private Set<String> adminUsers;
 
-    Long completed;
+    private Long completed;
 
-    Long started;
+    private Long started;
 
-    Set<String> excludedUsers;
+    private Set<String> excludedUsers;
 
-    Set<String> potentialGroups;
+    private Set<String> potentialGroups;
 
-    Set<String> potentialUsers;
+    private Set<String> potentialUsers;
 
-    String referenceName;
+    private String referenceName;
 
-    Long lastUpdate;
+    private Long lastUpdate;
 
-    String processId;
+    private String processId;
 
-    String rootProcessId;
+    private String rootProcessId;
 
-    String rootProcessInstanceId;
+    private String rootProcessInstanceId;
 
-    Document inputs;
+    private Document inputs;
 
-    Document outputs;
+    private Document outputs;
+
+    private String endpoint;
 
     public String getId() {
         return id;
@@ -235,6 +237,14 @@ public class UserTaskInstanceEntity {
         this.outputs = outputs;
     }
 
+    public String getEndpoint() {
+        return endpoint;
+    }
+
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -250,5 +260,33 @@ public class UserTaskInstanceEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "UserTaskInstanceEntity{" +
+                "id='" + id + '\'' +
+                ", description='" + description + '\'' +
+                ", name='" + name + '\'' +
+                ", priority='" + priority + '\'' +
+                ", processInstanceId='" + processInstanceId + '\'' +
+                ", state='" + state + '\'' +
+                ", actualOwner='" + actualOwner + '\'' +
+                ", adminGroups=" + adminGroups +
+                ", adminUsers=" + adminUsers +
+                ", completed=" + completed +
+                ", started=" + started +
+                ", excludedUsers=" + excludedUsers +
+                ", potentialGroups=" + potentialGroups +
+                ", potentialUsers=" + potentialUsers +
+                ", referenceName='" + referenceName + '\'' +
+                ", lastUpdate=" + lastUpdate +
+                ", processId='" + processId + '\'' +
+                ", rootProcessId='" + rootProcessId + '\'' +
+                ", rootProcessInstanceId='" + rootProcessInstanceId + '\'' +
+                ", inputs=" + inputs +
+                ", outputs=" + outputs +
+                ", endpoint='" + endpoint + '\'' +
+                '}';
     }
 }

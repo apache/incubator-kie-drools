@@ -26,6 +26,29 @@ import org.kie.kogito.persistence.infinispan.protostream.AbstractMarshaller;
 
 public class UserTaskInstanceMarshaller extends AbstractMarshaller implements MessageMarshaller<UserTaskInstance> {
 
+    protected static final String ID = "id";
+    protected static final String DESCRIPTION = "description";
+    protected static final String NAME = "name";
+    protected static final String PRIORITY = "priority";
+    protected static final String PROCESS_INSTANCE_ID = "processInstanceId";
+    protected static final String PROCESS_ID = "processId";
+    protected static final String ROOT_PROCESS_INSTANCE_ID = "rootProcessInstanceId";
+    protected static final String ROOT_PROCESS_ID = "rootProcessId";
+    protected static final String STATE = "state";
+    protected static final String ACTUAL_OWNER = "actualOwner";
+    protected static final String ADMIN_GROUPS = "adminGroups";
+    protected static final String ADMIN_USERS = "adminUsers";
+    protected static final String COMPLETED = "completed";
+    protected static final String STARTED = "started";
+    protected static final String EXCLUDED_USERS = "excludedUsers";
+    protected static final String POTENTIAL_GROUPS = "potentialGroups";
+    protected static final String POTENTIAL_USERS = "potentialUsers";
+    protected static final String INPUTS = "inputs";
+    protected static final String OUTPUTS = "outputs";
+    protected static final String REFERENCE_NAME = "referenceName";
+    protected static final String LAST_UPDATE = "lastUpdate";
+    protected static final String ENDPOINT = "endpoint";
+
     public UserTaskInstanceMarshaller(ObjectMapper mapper) {
         super(mapper);
     }
@@ -33,53 +56,55 @@ public class UserTaskInstanceMarshaller extends AbstractMarshaller implements Me
     @Override
     public UserTaskInstance readFrom(ProtoStreamReader reader) throws IOException {
         UserTaskInstance ut = new UserTaskInstance();
-        ut.setId(reader.readString("id"));
-        ut.setDescription(reader.readString("description"));
-        ut.setName(reader.readString("name"));
-        ut.setPriority(reader.readString("priority"));
-        ut.setProcessInstanceId(reader.readString("processInstanceId"));
-        ut.setProcessId(reader.readString("processId"));
-        ut.setRootProcessInstanceId(reader.readString("rootProcessInstanceId"));
-        ut.setRootProcessId(reader.readString("rootProcessId"));
-        ut.setState(reader.readString("state"));
-        ut.setActualOwner(reader.readString("actualOwner"));
-        ut.setAdminGroups(reader.readCollection("adminGroups", new HashSet<>(), String.class));
-        ut.setAdminUsers(reader.readCollection("adminUsers", new HashSet<>(), String.class));
-        ut.setCompleted(dateToZonedDateTime(reader.readDate("completed")));
-        ut.setStarted(dateToZonedDateTime(reader.readDate("started")));
-        ut.setExcludedUsers(reader.readCollection("excludedUsers", new HashSet<>(), String.class));
-        ut.setPotentialGroups(reader.readCollection("potentialGroups", new HashSet<>(), String.class));
-        ut.setPotentialUsers(reader.readCollection("potentialUsers", new HashSet<>(), String.class));
-        ut.setInputs(jsonFromString(reader.readString("inputs")));
-        ut.setOutputs(jsonFromString(reader.readString("outputs")));
-        ut.setReferenceName(reader.readString("referenceName"));
-        ut.setLastUpdate(dateToZonedDateTime(reader.readDate("lastUpdate")));
+        ut.setId(reader.readString(ID));
+        ut.setDescription(reader.readString(DESCRIPTION));
+        ut.setName(reader.readString(NAME));
+        ut.setPriority(reader.readString(PRIORITY));
+        ut.setProcessInstanceId(reader.readString(PROCESS_INSTANCE_ID));
+        ut.setProcessId(reader.readString(PROCESS_ID));
+        ut.setRootProcessInstanceId(reader.readString(ROOT_PROCESS_INSTANCE_ID));
+        ut.setRootProcessId(reader.readString(ROOT_PROCESS_ID));
+        ut.setState(reader.readString(STATE));
+        ut.setActualOwner(reader.readString(ACTUAL_OWNER));
+        ut.setAdminGroups(reader.readCollection(ADMIN_GROUPS, new HashSet<>(), String.class));
+        ut.setAdminUsers(reader.readCollection(ADMIN_USERS, new HashSet<>(), String.class));
+        ut.setCompleted(dateToZonedDateTime(reader.readDate(COMPLETED)));
+        ut.setStarted(dateToZonedDateTime(reader.readDate(STARTED)));
+        ut.setExcludedUsers(reader.readCollection(EXCLUDED_USERS, new HashSet<>(), String.class));
+        ut.setPotentialGroups(reader.readCollection(POTENTIAL_GROUPS, new HashSet<>(), String.class));
+        ut.setPotentialUsers(reader.readCollection(POTENTIAL_USERS, new HashSet<>(), String.class));
+        ut.setInputs(jsonFromString(reader.readString(INPUTS)));
+        ut.setOutputs(jsonFromString(reader.readString(OUTPUTS)));
+        ut.setReferenceName(reader.readString(REFERENCE_NAME));
+        ut.setLastUpdate(dateToZonedDateTime(reader.readDate(LAST_UPDATE)));
+        ut.setEndpoint(reader.readString(ENDPOINT));
         return ut;
     }
 
     @Override
     public void writeTo(ProtoStreamWriter writer, UserTaskInstance ut) throws IOException {
-        writer.writeString("id", ut.getId());
-        writer.writeString("description", ut.getDescription());
-        writer.writeString("name", ut.getName());
-        writer.writeString("priority", ut.getPriority());
-        writer.writeString("processInstanceId", ut.getProcessInstanceId());
-        writer.writeString("processId", ut.getProcessId());
-        writer.writeString("rootProcessInstanceId", ut.getRootProcessInstanceId());
-        writer.writeString("rootProcessId", ut.getRootProcessId());
-        writer.writeString("state", ut.getState());
-        writer.writeString("actualOwner", ut.getActualOwner());
-        writer.writeCollection("adminGroups", ut.getAdminGroups(), String.class);
-        writer.writeCollection("adminUsers", ut.getAdminUsers(), String.class);
-        writer.writeDate("completed", zonedDateTimeToDate(ut.getCompleted()));
-        writer.writeDate("started", zonedDateTimeToDate(ut.getStarted()));
-        writer.writeCollection("excludedUsers", ut.getExcludedUsers(), String.class);
-        writer.writeCollection("potentialGroups", ut.getPotentialGroups(), String.class);
-        writer.writeCollection("potentialUsers", ut.getPotentialUsers(), String.class);
-        writer.writeString("inputs", ut.getInputs() == null ? null : ut.getInputs().toString());
-        writer.writeString("outputs", ut.getOutputs() == null ? null : ut.getOutputs().toString());
-        writer.writeString("referenceName", ut.getReferenceName());
-        writer.writeDate("lastUpdate", zonedDateTimeToDate(ut.getLastUpdate()));
+        writer.writeString(ID, ut.getId());
+        writer.writeString(DESCRIPTION, ut.getDescription());
+        writer.writeString(NAME, ut.getName());
+        writer.writeString(PRIORITY, ut.getPriority());
+        writer.writeString(PROCESS_INSTANCE_ID, ut.getProcessInstanceId());
+        writer.writeString(PROCESS_ID, ut.getProcessId());
+        writer.writeString(ROOT_PROCESS_INSTANCE_ID, ut.getRootProcessInstanceId());
+        writer.writeString(ROOT_PROCESS_ID, ut.getRootProcessId());
+        writer.writeString(STATE, ut.getState());
+        writer.writeString(ACTUAL_OWNER, ut.getActualOwner());
+        writer.writeCollection(ADMIN_GROUPS, ut.getAdminGroups(), String.class);
+        writer.writeCollection(ADMIN_USERS, ut.getAdminUsers(), String.class);
+        writer.writeDate(COMPLETED, zonedDateTimeToDate(ut.getCompleted()));
+        writer.writeDate(STARTED, zonedDateTimeToDate(ut.getStarted()));
+        writer.writeCollection(EXCLUDED_USERS, ut.getExcludedUsers(), String.class);
+        writer.writeCollection(POTENTIAL_GROUPS, ut.getPotentialGroups(), String.class);
+        writer.writeCollection(POTENTIAL_USERS, ut.getPotentialUsers(), String.class);
+        writer.writeString(INPUTS, ut.getInputs() == null ? null : ut.getInputs().toString());
+        writer.writeString(OUTPUTS, ut.getOutputs() == null ? null : ut.getOutputs().toString());
+        writer.writeString(REFERENCE_NAME, ut.getReferenceName());
+        writer.writeDate(LAST_UPDATE, zonedDateTimeToDate(ut.getLastUpdate()));
+        writer.writeString(ENDPOINT, ut.getEndpoint());
     }
 
     @Override

@@ -293,6 +293,16 @@
             "defaultValue": null
           },
           {
+            "name": "milestones",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "MilestoneArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "endpoint",
             "description": "",
             "type": {
@@ -821,6 +831,111 @@
       },
       {
         "kind": "INPUT_OBJECT",
+        "name": "MilestoneArgument",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "id",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "IdArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "name",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "StringArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "status",
+            "description": "",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "MilestoneStatusArgument",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "MilestoneStatusArgument",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "equal",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "MilestoneStatus",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "in",
+            "description": "",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "MilestoneStatus",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "MilestoneStatus",
+        "description": "",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "AVAILABLE",
+            "description": "",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ACTIVE",
+            "description": "",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "COMPLETED",
+            "description": "",
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
         "name": "StringArrayArgument",
         "description": "",
         "fields": null,
@@ -1256,6 +1371,26 @@
             "deprecationReason": null
           },
           {
+            "name": "milestones",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Milestone",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "variables",
             "description": "",
             "args": [],
@@ -1500,6 +1635,65 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "Milestone",
+        "description": "",
+        "fields": [
+          {
+            "name": "id",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "name",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "status",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "MilestoneStatus",
                 "ofType": null
               }
             },
@@ -2176,6 +2370,18 @@
                 "name": "DateTime",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "endpoint",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null

@@ -267,6 +267,7 @@ type UserTaskInstance {
     outputs: String
     referenceName: String
     lastUpdate: DateTime!
+    endpoint: String
 }
 
 type UserTaskInstanceMeta {

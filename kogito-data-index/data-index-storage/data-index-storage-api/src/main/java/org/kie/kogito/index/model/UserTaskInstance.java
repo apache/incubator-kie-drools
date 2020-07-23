@@ -25,6 +25,7 @@ public class UserTaskInstance extends UserTaskInstanceMeta {
     private String rootProcessInstanceId;
     private JsonNode inputs;
     private JsonNode outputs;
+    private String endpoint;
 
     public String getProcessId() {
         return processId;
@@ -46,14 +47,23 @@ public class UserTaskInstance extends UserTaskInstanceMeta {
         }
     }
 
+    public String getEndpoint() {
+        return endpoint;
+    }
+
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+    }
+
     @Override
     public String toString() {
         return "UserTaskInstance{" +
                 "processId='" + processId + '\'' +
                 ", rootProcessId='" + rootProcessId + '\'' +
                 ", rootProcessInstanceId='" + rootProcessInstanceId + '\'' +
-                ", inputs='" + inputs + '\'' +
-                ", outputs='" + outputs + '\'' +
+                ", inputs=" + inputs +
+                ", outputs=" + outputs +
+                ", endpoint='" + endpoint + '\'' +
                 "} " + super.toString();
     }
 

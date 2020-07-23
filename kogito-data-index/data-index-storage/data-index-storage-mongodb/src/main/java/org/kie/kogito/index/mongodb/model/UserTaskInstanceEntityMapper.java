@@ -60,6 +60,7 @@ public class UserTaskInstanceEntityMapper implements MongoEntityMapper<UserTaskI
         entity.setRootProcessInstanceId(instance.getRootProcessInstanceId());
         entity.setInputs(jsonNodeToDocument(instance.getInputs()));
         entity.setOutputs(jsonNodeToDocument(instance.getOutputs()));
+        entity.setEndpoint(instance.getEndpoint());
         return entity;
     }
 
@@ -91,6 +92,7 @@ public class UserTaskInstanceEntityMapper implements MongoEntityMapper<UserTaskI
         instance.setRootProcessInstanceId(entity.getRootProcessInstanceId());
         instance.setInputs(documentToJsonNode(entity.getInputs(), JsonNode.class));
         instance.setOutputs(documentToJsonNode(entity.getOutputs(), JsonNode.class));
+        instance.setEndpoint(entity.getEndpoint());
         return instance;
     }
 }

@@ -847,7 +847,8 @@ public abstract class AbstractIndexingServiceIT {
                 .body("data.UserTaskInstances[0].potentialGroups", hasItems(event.getData().getPotentialGroups().toArray()))
                 .body("data.UserTaskInstances[0].started", is(formatZonedDateTime(event.getData().getStarted().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.UserTaskInstances[0].completed", is(formatZonedDateTime(event.getData().getCompleted().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.UserTaskInstances[0].lastUpdate", is(formatZonedDateTime(event.getTime().withZoneSameInstant(ZoneOffset.UTC))));
+                .body("data.UserTaskInstances[0].lastUpdate", is(formatZonedDateTime(event.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.UserTaskInstances[0].endpoint", is(event.getData().getEndpoint()));
     }
 
     private String getProtoBufferFileWithoutModelType() {

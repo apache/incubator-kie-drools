@@ -149,6 +149,8 @@ message UserTaskInstance {
     optional string referenceName = 20;
     /* @Field(store = Store.YES) */
     optional int64 lastUpdate = 21;
+    /* @Field(store = Store.YES) */
+    optional string endpoint = 22;
 }
 
 /* @Indexed */

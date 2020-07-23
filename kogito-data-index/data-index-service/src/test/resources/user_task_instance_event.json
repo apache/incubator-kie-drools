@@ -52,9 +52,9 @@
     "startDate": "2019-08-30T11:47:42.886Z[UTC]",
     "state": "Completed",
     "taskDescription": "",
-    "taskName": "Apply for visa",
+    "taskName": "VisaApplication",
     "taskPriority": "1",
-    "referenceName": "http://localhost:8080/travels/{uuid}/ConfirmTravel/{task-uuid}"
+    "referenceName": "Apply for visa"
   },
   "id": "ef315bd2-93a9-456f-b539-d73c0c83c1df",
   "kogitoProcessId": "travels",
@@ -66,5 +66,6 @@
   "kogitoAddons": "jobs-management,prometheus-monitoring,process-management",
   "specversion": "0.3",
   "time": "2019-08-30T13:48:37.857915+02:00[Europe/Warsaw]",
-  "type": "UserTaskInstanceEvent"
+  "type": "UserTaskInstanceEvent",
+  "source": "http://localhost:8080/travels"
 }

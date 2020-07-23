@@ -117,6 +117,30 @@ export namespace GraphQL {
     lastUpdate?: Maybe<OrderBy>;
   };
 
+  export type Milestone = {
+    __typename?: 'Milestone';
+    id: Scalars['String'];
+    name: Scalars['String'];
+    status: MilestoneStatus;
+  };
+
+  export type MilestoneArgument = {
+    id?: Maybe<IdArgument>;
+    name?: Maybe<StringArgument>;
+    status?: Maybe<MilestoneStatusArgument>;
+  };
+
+  export enum MilestoneStatus {
+    Available = 'AVAILABLE',
+    Active = 'ACTIVE',
+    Completed = 'COMPLETED'
+  }
+
+  export type MilestoneStatusArgument = {
+    equal?: Maybe<MilestoneStatus>;
+    in?: Maybe<Array<Maybe<MilestoneStatus>>>;
+  };
+
   export type NodeInstance = {
     __typename?: 'NodeInstance';
     id: Scalars['String'];
@@ -177,6 +201,7 @@ export namespace GraphQL {
     endpoint: Scalars['String'];
     serviceUrl?: Maybe<Scalars['String']>;
     nodes: Array<NodeInstance>;
+    milestones?: Maybe<Array<Milestone>>;
     variables?: Maybe<Scalars['String']>;
     start: Scalars['DateTime'];
     end?: Maybe<Scalars['DateTime']>;
@@ -200,6 +225,7 @@ export namespace GraphQL {
     state?: Maybe<ProcessInstanceStateArgument>;
     error?: Maybe<ProcessInstanceErrorArgument>;
     nodes?: Maybe<NodeInstanceArgument>;
+    milestones?: Maybe<MilestoneArgument>;
     endpoint?: Maybe<StringArgument>;
     roles?: Maybe<StringArrayArgument>;
     start?: Maybe<DateArgument>;
@@ -356,6 +382,7 @@ export namespace GraphQL {
     outputs?: Maybe<Scalars['String']>;
     referenceName?: Maybe<Scalars['String']>;
     lastUpdate: Scalars['DateTime'];
+    endpoint?: Maybe<Scalars['String']>;
   };
 
   export type UserTaskInstanceArgument = {

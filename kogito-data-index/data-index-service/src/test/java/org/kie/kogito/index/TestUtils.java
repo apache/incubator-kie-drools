@@ -158,8 +158,8 @@ public final class TestUtils {
                 .contentType("application/json")
                 .processInstanceId(processInstanceId)
                 .type("UserTaskInstanceEvent")
-                .source(URI.create("http://localhost:8080/"))
                 .data(getUserTaskInstance(taskId, processId, processInstanceId, rootProcessInstanceId, rootProcessId, state))
+                .source(URI.create("http://localhost:8080/" + processId))
                 .time(ZonedDateTime.now())
                 .build();
     }

@@ -121,6 +121,7 @@ public class KogitoCloudEventDeserializerTest {
                 .hasFieldOrPropertyWithValue("kogitoAddons", "jobs-management,prometheus-monitoring,process-management")
                 .hasFieldOrPropertyWithValue("time", ZonedDateTime.parse("2019-08-30T11:48:37.857915Z[UTC]", DateTimeFormatter.ISO_DATE_TIME))
                 .hasFieldOrPropertyWithValue("type", "UserTaskInstanceEvent")
+                .hasFieldOrPropertyWithValue("source", URI.create("http://localhost:8080/travels"))
                 .hasFieldOrPropertyWithValue("specVersion", "0.3")
                 .hasFieldOrPropertyWithValue("schemaURL", null)
                 .hasFieldOrPropertyWithValue("contentType", null)
@@ -132,8 +133,8 @@ public class KogitoCloudEventDeserializerTest {
                 .hasFieldOrPropertyWithValue("data.rootProcessId", null)
                 .hasFieldOrPropertyWithValue("data.state", "Completed")
                 .hasFieldOrPropertyWithValue("data.description", "")
-                .hasFieldOrPropertyWithValue("data.name", "Apply for visa")
-                .hasFieldOrPropertyWithValue("data.referenceName", "http://localhost:8080/travels/{uuid}/ConfirmTravel/{task-uuid}")
+                .hasFieldOrPropertyWithValue("data.name", "VisaApplication")
+                .hasFieldOrPropertyWithValue("data.referenceName", "Apply for visa")
                 .hasFieldOrPropertyWithValue("data.priority", "1")
                 .hasFieldOrPropertyWithValue("data.potentialGroups", emptySet())
                 .hasFieldOrPropertyWithValue("data.potentialUsers", emptySet())
@@ -142,7 +143,8 @@ public class KogitoCloudEventDeserializerTest {
                 .hasFieldOrPropertyWithValue("data.adminUsers", emptySet())
                 .hasFieldOrPropertyWithValue("data.excludedUsers", emptySet())
                 .hasFieldOrPropertyWithValue("data.completed", ZonedDateTime.parse("2019-08-30T11:48:37.828Z[UTC]", DateTimeFormatter.ISO_DATE_TIME))
-                .hasFieldOrPropertyWithValue("data.started", ZonedDateTime.parse("2019-08-30T11:47:42.886Z[UTC]", DateTimeFormatter.ISO_DATE_TIME));
+                .hasFieldOrPropertyWithValue("data.started", ZonedDateTime.parse("2019-08-30T11:47:42.886Z[UTC]", DateTimeFormatter.ISO_DATE_TIME))
+                .hasFieldOrPropertyWithValue("data.endpoint", "http://localhost:8080/travels/f78fb147-ec22-4478-a592-3063add9f956/VisaApplication/228d5922-5e88-4bfa-8329-7116a5cbe58b");
 
         softly.assertAll();
     }
