@@ -20,7 +20,7 @@ import {
   KogitoEmptyState,
   KogitoEmptyStateType,
   KogitoSpinner,
-  ProcessDescriptor,
+  ItemDescriptor,
   ServerErrors,
   EndpointLink
 } from '@kogito-apps/common';
@@ -374,7 +374,7 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
                 >
                   <div>
                     <strong>
-                      <ProcessDescriptor
+                      <ItemDescriptor
                         processInstanceData={processInstanceData}
                       />
                     </strong>

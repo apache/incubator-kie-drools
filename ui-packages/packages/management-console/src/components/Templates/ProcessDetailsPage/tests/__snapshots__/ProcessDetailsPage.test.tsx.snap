@@ -533,7 +533,7 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
                         <h2
                           className="pf-c-title pf-m-4xl kogito-management-console--details__title"
                         >
-                          <ProcessDescriptor
+                          <ItemDescriptor
                             processInstanceData={
                               Object {
                                 "addons": Array [
@@ -573,7 +573,7 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
                             }
                           >
                             <MockedComponent />
-                          </ProcessDescriptor>
+                          </ItemDescriptor>
                         </h2>
                       </Title>
                     </div>
@@ -1250,7 +1250,7 @@ exports[`Process Details Page component tests snapshot testing in Error state 1`
                         <h2
                           className="pf-c-title pf-m-4xl kogito-management-console--details__title"
                         >
-                          <ProcessDescriptor
+                          <ItemDescriptor
                             processInstanceData={
                               Object {
                                 "addons": Array [],
@@ -1288,7 +1288,7 @@ exports[`Process Details Page component tests snapshot testing in Error state 1`
                             }
                           >
                             <MockedComponent />
-                          </ProcessDescriptor>
+                          </ItemDescriptor>
                         </h2>
                       </Title>
                     </div>
@@ -1954,7 +1954,7 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
                         <h2
                           className="pf-c-title pf-m-4xl kogito-management-console--details__title"
                         >
-                          <ProcessDescriptor
+                          <ItemDescriptor
                             processInstanceData={
                               Object {
                                 "addons": Array [
@@ -1994,7 +1994,7 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
                             }
                           >
                             <MockedComponent />
-                          </ProcessDescriptor>
+                          </ItemDescriptor>
                         </h2>
                       </Title>
                     </div>

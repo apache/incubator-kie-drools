@@ -19,7 +19,7 @@ import {
 import {
   ServerErrors,
   ouiaPageTypeAndObjectId,
-  ProcessDescriptor,
+  ItemDescriptor,
   KogitoSpinner,
   GraphQL
 } from '@kogito-apps/common';
@@ -233,7 +233,7 @@ const ProcessDetailsPage: React.FC<
                         size="4xl"
                         className="kogito-management-console--details__title"
                       >
-                        <ProcessDescriptor
+                        <ItemDescriptor
                           processInstanceData={data.ProcessInstances[0]}
                         />
                       </Title>

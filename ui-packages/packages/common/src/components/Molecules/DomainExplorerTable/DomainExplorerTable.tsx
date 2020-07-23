@@ -27,7 +27,7 @@ import {
 import Moment from 'react-moment';
 import { Link } from 'react-router-dom';
 import '../../styles.css';
-import ProcessDescriptor from '../ProcessDescriptor/ProcessDescriptor';
+import ItemDescriptor from '../ItemDescriptor/ItemDescriptor';
 import KogitoSpinner from '../../Atoms/KogitoSpinner/KogitoSpinner';
 import EndpointLink from '../../Atoms/EndpointLink/EndpointLink';
 import { GraphQL } from '../../../graphql/types';
@@ -169,7 +169,7 @@ const DomainExplorerTable = ({
                         }}
                       >
                         <strong>
-                          <ProcessDescriptor processInstanceData={tempObj} />
+                          <ItemDescriptor processInstanceData={tempObj} />
                         </strong>
                       </Link>
                       <div>

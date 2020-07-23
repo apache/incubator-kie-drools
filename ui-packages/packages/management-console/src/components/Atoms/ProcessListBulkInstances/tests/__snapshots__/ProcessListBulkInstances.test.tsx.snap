@@ -14,7 +14,7 @@ exports[`ProcessBulkList component tests snapshot testing for a single abort ins
       <TextListItem
         key="8035b580-6ae4-4aa8-9ec0-e18e19809e0b"
       >
-        <ProcessDescriptor
+        <ItemDescriptor
           processInstanceData={
             Object {
               "addons": Array [
@@ -155,7 +155,7 @@ exports[`ProcessBulkList component tests snapshot testing multi-abort with abort
       <TextListItem
         key="8035b580-6ae4-4aa8-9ec0-e18e19809e0b"
       >
-        <ProcessDescriptor
+        <ItemDescriptor
           processInstanceData={
             Object {
               "addons": Array [
@@ -293,7 +293,7 @@ exports[`ProcessBulkList component tests snapshot testing multi-abort with abort
       <TextListItem
         key="e735128t-6tt7-4aa8-9ec0-e18e19809e0b"
       >
-        <ProcessDescriptor
+        <ItemDescriptor
           processInstanceData={
             Object {
               "addons": Array [
@@ -435,7 +435,7 @@ exports[`ProcessBulkList component tests snapshot testing multi-abort with no ab
       <TextListItem
         key="e735128t-6tt7-4aa8-9ec0-e18e19809e0b"
       >
-        <ProcessDescriptor
+        <ItemDescriptor
           processInstanceData={
             Object {
               "addons": Array [
@@ -566,7 +566,7 @@ exports[`ProcessBulkList component tests snapshot testing multi-abort with no sk
       <TextListItem
         key="8035b580-6ae4-4aa8-9ec0-e18e19809e0b"
       >
-        <ProcessDescriptor
+        <ItemDescriptor
           processInstanceData={
             Object {
               "addons": Array [

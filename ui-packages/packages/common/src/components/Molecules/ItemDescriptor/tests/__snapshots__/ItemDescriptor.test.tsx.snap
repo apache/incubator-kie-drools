@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ProcessDescriptor component tests snapshot testing for buisness key null 1`] = `
+exports[`ItemDescriptor component tests snapshot testing for buisness key null 1`] = `
 <Fragment>
   <Tooltip
     appendTo={[Function]}
@@ -51,7 +51,7 @@ exports[`ProcessDescriptor component tests snapshot testing for buisness key nul
 </Fragment>
 `;
 
-exports[`ProcessDescriptor component tests snapshot testing for business key available 1`] = `
+exports[`ItemDescriptor component tests snapshot testing for business key available 1`] = `
 <Fragment>
   <Tooltip
     appendTo={[Function]}

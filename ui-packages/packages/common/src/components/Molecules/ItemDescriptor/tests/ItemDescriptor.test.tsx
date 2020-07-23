@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import ProcessDescriptor from './../ProcessDescriptor';
+import ItemDescriptor from './../ItemDescriptor';
 import { GraphQL } from '../../../../graphql/types';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
 
@@ -109,16 +109,16 @@ const processInstanceData2 = {
   ],
   childProcessInstances: []
 };
-describe('ProcessDescriptor component tests', () => {
+describe('ItemDescriptor component tests', () => {
   it('snapshot testing for business key available', () => {
     const wrapper = shallow(
-      <ProcessDescriptor processInstanceData={processInstanceData1} />
+      <ItemDescriptor processInstanceData={processInstanceData1} />
     );
     expect(wrapper).toMatchSnapshot();
   });
   it('snapshot testing for buisness key null', () => {
     const wrapper = shallow(
-      <ProcessDescriptor processInstanceData={processInstanceData2} />
+      <ItemDescriptor processInstanceData={processInstanceData2} />
     );
     expect(wrapper).toMatchSnapshot();
   });

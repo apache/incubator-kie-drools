@@ -6,7 +6,7 @@ import { MockedProvider } from '@apollo/react-testing';
 
 global.Math.random = () => 0.7218415351930461;
 
-jest.mock('../../ProcessDescriptor/ProcessDescriptor');
+jest.mock('../../ItemDescriptor/ItemDescriptor');
 
 describe('Domain Explorer Table Component', () => {
   let useEffect;

@@ -51,7 +51,7 @@ jest.mock('@patternfly/react-icons', () => ({
 
 jest.mock('@kogito-apps/common', () => ({
   ...jest.requireActual('@kogito-apps/common'),
-  ProcessDescriptor: () => {
+  ItemDescriptor: () => {
     return <MockedComponent />;
   },
   KogitoSpinner: () => {

@@ -15,7 +15,7 @@ interface IOwnProps {
     'id' | 'processName' | 'businessKey'
   >;
 }
-const ProcessDescriptor: React.FC<IOwnProps> = ({ processInstanceData }) => {
+const ItemDescriptor: React.FC<IOwnProps> = ({ processInstanceData }) => {
   const idStringModifier = (strId: string) => {
     return (
       <TextContent className="pf-u-display-inline">
@@ -41,4 +41,4 @@ const ProcessDescriptor: React.FC<IOwnProps> = ({ processInstanceData }) => {
   );
 };
 
-export default ProcessDescriptor;
+export default ItemDescriptor;
