@@ -133,45 +133,33 @@ public class GeneratorContextRuleModelVisitor {
     private void visitActionFieldList(final ActionInsertFact afl) {
         String factType = afl.getFactType();
         for (ActionFieldValue afv : afl.getFieldValues()) {
-            InterpolationVariable var = new InterpolationVariable(afv.getValue(),
-                                                                  afv.getType(),
-                                                                  factType,
-                                                                  afv.getField());
-            if (afv.getNature() == FieldNatureType.TYPE_TEMPLATE && !vars.contains(var)) {
-                vars.add(var);
-            } else {
-                hasNonTemplateOutput = true;
-            }
+            manageTemplateVariable(new InterpolationVariable(afv.getValue(),
+                                                             afv.getType(),
+                                                             factType,
+                                                             afv.getField()),
+                                   afv.getNature());
         }
     }
 
     private void visitActionFieldList(final ActionSetField afl) {
         String factType = model.getLHSBindingType(afl.getVariable());
         for (ActionFieldValue afv : afl.getFieldValues()) {
-            InterpolationVariable var = new InterpolationVariable(afv.getValue(),
-                                                                  afv.getType(),
-                                                                  factType,
-                                                                  afv.getField());
-            if (afv.getNature() == FieldNatureType.TYPE_TEMPLATE && !vars.contains(var)) {
-                vars.add(var);
-            } else {
-                hasNonTemplateOutput = true;
-            }
+            manageTemplateVariable(new InterpolationVariable(afv.getValue(),
+                                                             afv.getType(),
+                                                             factType,
+                                                             afv.getField()),
+                                   afv.getNature());
         }
     }
 
     private void visitActionFieldList(final ActionUpdateField afl) {
         String factType = model.getLHSBindingType(afl.getVariable());
         for (ActionFieldValue afv : afl.getFieldValues()) {
-            InterpolationVariable var = new InterpolationVariable(afv.getValue(),
-                                                                  afv.getType(),
-                                                                  factType,
-                                                                  afv.getField());
-            if (afv.getNature() == FieldNatureType.TYPE_TEMPLATE && !vars.contains(var)) {
-                vars.add(var);
-            } else {
-                hasNonTemplateOutput = true;
-            }
+            manageTemplateVariable(new InterpolationVariable(afv.getValue(),
+                                                             afv.getType(),
+                                                             factType,
+                                                             afv.getField()),
+                                   afv.getNature());
         }
     }
 
@@ -249,29 +237,26 @@ public class GeneratorContextRuleModelVisitor {
     }
 
     private void visitSingleFieldConstraint(final SingleFieldConstraint sfc) {
-        final InterpolationVariable var = new InterpolationVariable(sfc.getValue(),
-                                                                    sfc.getFieldType(),
-                                                                    (factPattern == null ? "" : factPattern.getFactType()),
-                                                                    sfc.getFieldName());
-        if (BaseSingleFieldConstraint.TYPE_TEMPLATE == sfc.getConstraintValueType() && !vars.contains(var)) {
-            vars.add(var);
-        } else {
-            hasNonTemplateOutput = true;
+        if (BaseSingleFieldConstraint.TYPE_PREDICATE == sfc.getConstraintValueType()) {
+            parseStringPattern(sfc.getValue());
+            return;
         }
+
+        manageTemplateVariable(new InterpolationVariable(sfc.getValue(),
+                                                         sfc.getFieldType(),
+                                                         (factPattern == null ? "" : factPattern.getFactType()),
+                                                         sfc.getFieldName()),
+                               sfc.getConstraintValueType());
 
         //Visit Connection constraints
         if (sfc.getConnectives() != null) {
             for (int i = 0; i < sfc.getConnectives().length; i++) {
                 final ConnectiveConstraint cc = sfc.getConnectives()[i];
-                InterpolationVariable ccVar = new InterpolationVariable(cc.getValue(),
-                                                                        cc.getFieldType(),
-                                                                        (factPattern == null ? "" : factPattern.getFactType()),
-                                                                        cc.getFieldName());
-                if (BaseSingleFieldConstraint.TYPE_TEMPLATE == cc.getConstraintValueType() && !vars.contains(ccVar)) {
-                    vars.add(ccVar);
-                } else {
-                    hasNonTemplateOutput = true;
-                }
+                manageTemplateVariable(new InterpolationVariable(cc.getValue(),
+                                                                 cc.getFieldType(),
+                                                                 (factPattern == null ? "" : factPattern.getFactType()),
+                                                                 cc.getFieldName()),
+                                       cc.getConstraintValueType());
             }
         }
     }
@@ -282,30 +267,31 @@ public class GeneratorContextRuleModelVisitor {
         if (factType == null) {
             factType = sfexp.getExpressionLeftSide().getClassType();
         }
-        final InterpolationVariable var = new InterpolationVariable(sfexp.getValue(),
-                                                                    genericType,
-                                                                    factType,
-                                                                    sfexp.getFieldName());
-        if (BaseSingleFieldConstraint.TYPE_TEMPLATE == sfexp.getConstraintValueType() && !vars.contains(var)) {
-            vars.add(var);
-        } else {
-            hasNonTemplateOutput = true;
-        }
+        manageTemplateVariable(new InterpolationVariable(sfexp.getValue(),
+                                                         genericType,
+                                                         factType,
+                                                         sfexp.getFieldName()),
+                               sfexp.getConstraintValueType());
 
         //Visit Connection constraints
         if (sfexp.getConnectives() != null) {
             for (int i = 0; i < sfexp.getConnectives().length; i++) {
                 final ConnectiveConstraint cc = sfexp.getConnectives()[i];
-                InterpolationVariable ccVar = new InterpolationVariable(cc.getValue(),
-                                                                        genericType,
-                                                                        factType,
-                                                                        cc.getFieldName());
-                if (BaseSingleFieldConstraint.TYPE_TEMPLATE == cc.getConstraintValueType() && !vars.contains(ccVar)) {
-                    vars.add(ccVar);
-                } else {
-                    hasNonTemplateOutput = true;
-                }
+                manageTemplateVariable(new InterpolationVariable(cc.getValue(),
+                                                                 genericType,
+                                                                 factType,
+                                                                 cc.getFieldName()),
+                                       cc.getConstraintValueType());
             }
+        }
+    }
+
+    private void manageTemplateVariable(final InterpolationVariable var,
+                                        final int constraintValueType) {
+        if (constraintValueType == BaseSingleFieldConstraint.TYPE_TEMPLATE && !vars.contains(var)) {
+            vars.add(var);
+        } else {
+            hasNonTemplateOutput = true;
         }
     }
 

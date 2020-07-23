@@ -49,16 +49,15 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLDroolsModel.class);
 
     private static final AgendaEventListener agendaEventListener = getAgendaEventListener(logger);
-
     protected List<KiePMMLOutputField> outputFields = new ArrayList<>();
-
     /**
      * Map between the original field name and the generated type.
      */
     protected Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
 
-    protected KiePMMLDroolsModel(String name, List<KiePMMLExtension> extensions) {
-        super(name, extensions);
+    protected KiePMMLDroolsModel(final String modelName,
+                                 final List<KiePMMLExtension> extensions) {
+        super(modelName, extensions);
     }
 
     public Map<String, KiePMMLOriginalTypeGeneratedType> getFieldTypeMap() {
@@ -69,10 +68,14 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
     public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData) {
         logger.trace("evaluate {} {}", knowledgeBase, requestData);
         if (!(knowledgeBase instanceof KieBase)) {
-            throw new KiePMMLException(String.format("Expecting KieBase, received %s", knowledgeBase.getClass().getName()));
+            throw new KiePMMLException(String.format("Expecting KieBase, received %s",
+                                                     knowledgeBase.getClass().getName()));
         }
         final PMML4Result toReturn = getPMML4Result(targetField);
-        KiePMMLSessionUtils.Builder builder = KiePMMLSessionUtils.builder((KieBase)knowledgeBase, name, toReturn)
+        String fullClassName = this.getClass().getName();
+        String packageName =  fullClassName.contains(".") ? fullClassName.substring(0, fullClassName.lastIndexOf('.')) : "";
+        KiePMMLSessionUtils.Builder builder = KiePMMLSessionUtils.builder((KieBase) knowledgeBase, name, packageName,
+                                                                          toReturn)
                 .withObjectsInSession(requestData, fieldTypeMap)
                 .withOutputFieldsMap(outputFieldsMap);
         if (logger.isDebugEnabled()) {

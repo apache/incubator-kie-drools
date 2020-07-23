@@ -363,10 +363,14 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.kieBaseEventListeners = new LinkedList<KieBaseEventListener>();
         this.lock = new ReentrantLock();
 
-        this.timerService = TimerServiceFactory.getTimerService( this.config );
+        this.timerService = createTimerService();
 
         this.opCounter = new AtomicLong(0);
         this.lastIdleTimestamp = new AtomicLong(-1);
+    }
+
+    protected TimerService createTimerService() {
+        return TimerServiceFactory.getTimerService( this.config );
     }
 
     private void registerReceiveNodes( List<AsyncReceiveNode> nodes ) {
@@ -1889,6 +1893,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public Collection<ProcessInstance> getProcessInstances() {
         return getProcessRuntime().getProcessInstances();
+    }
+
+    public ProcessInstance getProcessInstance(Object processInstanceId) {
+        return getProcessInstance( (long) processInstanceId );
     }
 
     public ProcessInstance getProcessInstance(long processInstanceId) {

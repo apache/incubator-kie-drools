@@ -58,9 +58,9 @@ import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleFlowGroup;
 import org.drools.core.spi.Tuple;
-import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.index.TupleList;
+import org.drools.reflective.ComponentsFactory;
 import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.AgendaFilter;
@@ -171,8 +171,8 @@ public class DefaultAgenda
             this.focusStack.add( this.mainAgendaGroup );
         }
 
-        Object object = ClassUtils.instantiateObject( kBase.getConfiguration().getConsequenceExceptionHandler(),
-                                                      kBase.getConfiguration().getClassLoader() );
+        Object object = ComponentsFactory.createConsequenceExceptionHandler( kBase.getConfiguration().getConsequenceExceptionHandler(),
+                                                                             kBase.getConfiguration().getClassLoader() );
         if ( object instanceof ConsequenceExceptionHandler ) {
             this.legacyConsequenceExceptionHandler = (ConsequenceExceptionHandler) object;
         } else {
@@ -628,7 +628,7 @@ public class DefaultAgenda
         activateRuleFlowGroup( ruleFlowGroup, processInstanceId, nodeInstanceId );
     }
 
-    public void activateRuleFlowGroup(final InternalRuleFlowGroup group, long processInstanceId, String nodeInstanceId) {
+    public void activateRuleFlowGroup(final InternalRuleFlowGroup group, Object processInstanceId, String nodeInstanceId) {
         this.workingMemory.getAgendaEventSupport().fireBeforeRuleFlowGroupActivated( group, this.workingMemory );
         group.setActive( true );
         group.hasRuleFlowListener(true);
@@ -950,6 +950,12 @@ public class DefaultAgenda
     public boolean isRuleInstanceAgendaItem(String ruleflowGroupName,
                                             String ruleName,
                                             long processInstanceId) {
+        return isRuleInstanceAgendaItem(ruleflowGroupName, ruleName, (Object) processInstanceId);
+    }
+
+    protected boolean isRuleInstanceAgendaItem(String ruleflowGroupName,
+                                            String ruleName,
+                                            Object processInstanceId) {
         propagationList.flush();
         RuleFlowGroup systemRuleFlowGroup = this.getRuleFlowGroup( ruleflowGroupName );
 
@@ -979,7 +985,7 @@ public class DefaultAgenda
     }
 
     private boolean checkProcessInstance(Activation activation,
-                                         long processInstanceId) {
+                                         Object processInstanceId) {
         final Map<String, Declaration> declarations = activation.getSubRule().getOuterDeclarations();
         for ( Declaration declaration : declarations.values() ) {
             if ( "processInstance".equals( declaration.getIdentifier() )
@@ -987,11 +993,15 @@ public class DefaultAgenda
                 Object value = declaration.getValue( workingMemory,
                                                      activation.getTuple().get( declaration ).getObject() );
                 if ( value instanceof ProcessInstance ) {
-                    return ((ProcessInstance) value).getId() == processInstanceId;
+                    return sameProcessInstance( processInstanceId, ( ProcessInstance ) value );
                 }
             }
         }
         return true;
+    }
+
+    protected boolean sameProcessInstance( Object processInstanceId, ProcessInstance value ) {
+        return processInstanceId.equals( value.getId());
     }
 
     @Override

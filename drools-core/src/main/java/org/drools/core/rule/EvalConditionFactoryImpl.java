@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.core.util;
 
-import java.security.ProtectionDomain;
+package org.drools.core.rule;
 
-public interface ByteArrayClassLoader {
-    Class< ? > defineClass(final String name,
-                           final byte[] bytes,
-                           final ProtectionDomain domain);
+public class EvalConditionFactoryImpl implements EvalConditionFactory {
+
+    @Override
+    public EvalCondition createEvalCondition(final Declaration[] requiredDeclarations) {
+        return new EvalCondition(requiredDeclarations);
+    }
 }

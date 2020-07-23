@@ -20,11 +20,22 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.kie.api.runtime.process.ProcessInstance;
+
 public class RuleFlowVariableLogEvent extends RuleFlowLogEvent {
     
     private String variableId;
     private String variableInstanceId;
     private String objectToString;
+
+    public RuleFlowVariableLogEvent(final int type,
+                                    final String variableId,
+                                    final String variableInstanceId,
+                                    final ProcessInstance processInstance,
+                                    final String objectToString) {
+        this(type, variableId, variableInstanceId,
+                processInstance.getProcessId(), processInstance.getProcessName(), processInstance.getId(), objectToString);
+    }
 
     /**
      * Create a new ruleflow variable log event.
@@ -34,7 +45,7 @@ public class RuleFlowVariableLogEvent extends RuleFlowLogEvent {
                                     final String variableInstanceId,
                                     final String processId,
                                     final String processName,
-                                    final long processInstanceId,
+                                    final Object processInstanceId,
                                     final String objectToString) {
         super( type, processId, processName, processInstanceId );
         this.variableId = variableId;

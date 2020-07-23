@@ -372,7 +372,7 @@ public class ProtobufInputMarshaller {
             group.setActivatedForRecency( _agendaGroup.getActivatedForRecency() );
 
             for ( org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance _nodeInstance : _agendaGroup.getNodeInstanceList() ) {
-                group.addNodeInstance( _nodeInstance.getProcessInstanceId(),
+                group.addNodeInstance( _nodeInstance.hasProcessInstanceId() ? _nodeInstance.getProcessInstanceId() : _nodeInstance.getProcessInstanceStringId(),
                                        _nodeInstance.getNodeInstanceId() );
             }
             agenda.getAgendaGroupsMap().put( group.getName(),

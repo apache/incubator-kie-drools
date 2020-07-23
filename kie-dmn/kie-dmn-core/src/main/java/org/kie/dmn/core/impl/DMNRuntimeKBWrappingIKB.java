@@ -31,7 +31,10 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNPackage;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
@@ -50,6 +53,21 @@ public class DMNRuntimeKBWrappingIKB implements DMNRuntimeKB {
 
     public DMNRuntimeKBWrappingIKB(InternalKnowledgeBase knowledgeBase) {
         this.knowledgeBase = knowledgeBase;
+    }
+
+
+    @Override
+    public KieRuntimeFactory getKieRuntimeFactory(String kieBaseName) {
+        KieContainer kieContainer = ((KnowledgeBaseImpl) knowledgeBase).getKieContainer();
+        KieBase kieBase;
+        if (kieContainer.getKieBaseNames().contains(kieBaseName)) {
+            logger.debug("Retrieving {} KieBase", kieBaseName);
+            kieBase = kieContainer.getKieBase(kieBaseName);
+        } else {
+            logger.debug("Retrieving default KieBase");
+            kieBase = kieContainer.getKieBase();
+        }
+        return KieRuntimeFactory.of(kieBase);
     }
 
     @Override

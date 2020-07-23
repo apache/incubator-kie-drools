@@ -31,6 +31,7 @@ import org.drools.core.base.mvel.MVELEvalExpression;
 import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EvalCondition;
+import org.drools.core.rule.EvalConditionFactory;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
@@ -97,7 +98,7 @@ public class MVELEvalBuilder
                                                                        KnowledgeHelper.class,
                                                                        false,
                                                                        MVELCompilationUnit.Scope.EXPRESSION );
-            final EvalCondition eval = new EvalCondition( previousDeclarations );
+            final EvalCondition eval = EvalConditionFactory.Factory.get().createEvalCondition( previousDeclarations );
 
             MVELEvalExpression expr = new MVELEvalExpression( unit,
                                                               dialect.getId() );

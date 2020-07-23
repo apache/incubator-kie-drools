@@ -21,11 +21,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
@@ -44,26 +41,25 @@ import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
-
 public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvocationEvaluator {
 
     private static final Logger LOG = LoggerFactory.getLogger(DMNKiePMMLTrustyInvocationEvaluator.class);
 
-    public DMNKiePMMLTrustyInvocationEvaluator(String dmnNS, DMNElement node, Resource pmmlResource, String model, PMMLInfo<?> pmmlInfo) {
+    public DMNKiePMMLTrustyInvocationEvaluator(String dmnNS, DMNElement node, Resource pmmlResource, String model,
+                                               PMMLInfo<?> pmmlInfo) {
         super(dmnNS, node, pmmlResource, model, pmmlInfo);
     }
 
     @Override
     protected PMML4Result getPMML4Result(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
         PMMLContext pmmlContext = getPMMLPMMLContext(UUID.randomUUID().toString(), model, dmnr);
-        String sanitizedKieBase = getSanitizedPackageName(model);
-        PMMLRuntime pmmlRuntime = getPMMLRuntime(eventManager, sanitizedKieBase);
+        PMMLRuntime pmmlRuntime = getPMMLRuntime(eventManager);
         return pmmlRuntime.evaluate(model, pmmlContext);
     }
 
     @Override
-    protected Map<String, Object> getOutputFieldValues(PMML4Result pmml4Result, Map<String, Object> resultVariables, DMNResult dmnr) {
+    protected Map<String, Object> getOutputFieldValues(PMML4Result pmml4Result, Map<String, Object> resultVariables,
+                                                       DMNResult dmnr) {
         Map<String, Object> toReturn = new HashMap<>();
         for (Map.Entry<String, Object> kv : resultVariables.entrySet()) {
             String resultName = kv.getKey();
@@ -106,19 +102,14 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         }
     }
 
-    private PMMLRuntime getPMMLRuntime(DMNRuntimeEventManager eventManager, String sanitizedKieBase) {
-        KnowledgeBaseImpl knowledgeBase = ((KnowledgeBaseImpl) ((DMNRuntimeImpl) eventManager.getRuntime()).getInternalKnowledgeBase());
-        KieContainer kieContainer = knowledgeBase.getKieContainer();
-        KieBase kieBase;
-        if (kieContainer.getKieBaseNames().contains(sanitizedKieBase)) {
-            LOG.debug("Retrieving {} KieBase", sanitizedKieBase);
-            kieBase = kieContainer.getKieBase(sanitizedKieBase);
-        } else {
-            LOG.debug("Retrieving default KieBase");
-            kieBase = kieContainer.getKieBase();
-        }
-        final KieRuntimeFactory kieRuntimeFactory = KieRuntimeFactory.of(kieBase);
-        return kieRuntimeFactory.get(PMMLRuntime.class);
+    /**
+     *
+     * @param eventManager
+     * @return
+     */
+    private PMMLRuntime getPMMLRuntime(DMNRuntimeEventManager eventManager) {
+        KieRuntimeFactory kieFactory = ((DMNRuntimeImpl) eventManager.getRuntime()).getKieRuntimeFactory(model);
+        return kieFactory.get(PMMLRuntime.class);
     }
 
     private PMMLContext getPMMLPMMLContext(String correlationId, String modelName, DMNResult dmnr) {

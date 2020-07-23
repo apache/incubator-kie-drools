@@ -81,7 +81,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
      * @param resource
      * @return
      */
-    static String[] getFactoryClassNamePackageName(Resource resource) {
+    public static String[] getFactoryClassNamePackageName(Resource resource) {
         String sourcePath = resource.getSourcePath();
         String fileName = sourcePath.substring(sourcePath.lastIndexOf('/') + 1);
         fileName = fileName.replace(".pmml", "");

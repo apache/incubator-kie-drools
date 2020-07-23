@@ -19,6 +19,7 @@ package org.kie.dmn.core.impl;
 import java.util.List;
 
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.compiler.DMNProfile;
@@ -44,6 +45,14 @@ public interface DMNRuntimeKB {
      * @throws UnsupportedOperationException if not supported on this platform.
      */
     InternalKnowledgeBase getInternalKnowledgeBase();
+
+    /**
+     *
+     * @param kieBaseName
+     * @return
+     * @throws UnsupportedOperationException if not supported on this platform.
+     */
+    KieRuntimeFactory getKieRuntimeFactory(String kieBaseName);
 
 
 }

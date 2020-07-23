@@ -18,6 +18,7 @@ package org.kie.pmml.models.drools.commons.model;
 import java.util.Collections;
 import java.util.Map;
 
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.HasSourcesMap;
 
@@ -30,11 +31,13 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements
 
     protected Map<String, String> sourcesMap;
     private final String kmodulePackageName;
+    private final PackageDescr packageDescr;
 
-    public KiePMMLDroolsModelWithSources(String name, String kmodulePackageName, Map<String, String> sourcesMap) {
+    public KiePMMLDroolsModelWithSources(String name, String kmodulePackageName, Map<String, String> sourcesMap, PackageDescr packageDescr) {
         super(name, Collections.emptyList());
         this.sourcesMap = Collections.unmodifiableMap(sourcesMap);
         this.kmodulePackageName = kmodulePackageName;
+        this.packageDescr = packageDescr;
     }
 
     @Override
@@ -55,5 +58,9 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements
     @Override
     public String getKModulePackageName() {
         return kmodulePackageName;
+    }
+
+    public PackageDescr getPackageDescr() {
+        return packageDescr;
     }
 }

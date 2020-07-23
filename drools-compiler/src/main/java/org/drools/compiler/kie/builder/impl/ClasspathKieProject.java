@@ -49,6 +49,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
+import static org.drools.compiler.kproject.models.KieModuleModelImpl.KMODULE_JAR_PATH;
 import static org.drools.reflective.classloader.ProjectClassLoader.createProjectClassLoader;
 
 /**
@@ -137,6 +138,9 @@ public class ClasspathKieProject extends AbstractKieProject {
     }
 
     public static InternalKieModule fetchKModule(URL url) {
+        if (url.toString().equals( "resource:" + KMODULE_JAR_PATH )) {
+            return InternalKieModuleProvider.getFromClasspath();
+        }
         if (url.toString().startsWith("bundle:") || url.toString().startsWith("bundleresource:")) {
             return fetchOsgiKModule(url);
         }
