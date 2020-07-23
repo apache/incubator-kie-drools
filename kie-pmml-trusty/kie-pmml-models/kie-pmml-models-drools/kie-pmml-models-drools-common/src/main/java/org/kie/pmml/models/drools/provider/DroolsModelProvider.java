@@ -74,8 +74,8 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
             final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
             KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(dataDictionary, transformationDictionary, model, fieldTypeMap);
             Map<String, String> sourcesMap = getKiePMMLDroolsModelSourcesMap(dataDictionary, transformationDictionary, model, fieldTypeMap, packageName);
-            E toReturn = (E) new KiePMMLDroolsModelWithSources(model.getModelName(), packageName, sourcesMap);
             PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, packageName);
+            E toReturn = (E) new KiePMMLDroolsModelWithSources(model.getModelName(), packageName, sourcesMap, packageDescr);
             ((KnowledgeBuilderImpl) kBuilder).addPackage(packageDescr);
             return toReturn;
         } catch (Exception e) {
