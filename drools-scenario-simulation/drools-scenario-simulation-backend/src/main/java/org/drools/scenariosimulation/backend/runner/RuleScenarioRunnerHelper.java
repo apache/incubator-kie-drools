@@ -56,8 +56,6 @@ import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.fillBe
 
 public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
 
-
-
     @Override
     protected Map<String, Object> executeScenario(KieContainer kieContainer,
                                                   ScenarioRunnerData scenarioRunnerData,
