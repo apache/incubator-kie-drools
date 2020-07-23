@@ -11,6 +11,7 @@
     "build": "lerna run build --stream --",
     "build:fast": "lerna run build:fast --stream --",
     "build:prod": "lerna run build:prod --stream --",
+    "test": "lerna run test --stream --",
     "cypress:run": "lerna run cypress:run --",
     "cypress:run-management-console": "cypress run --project ./packages/management-console",
     "cypress:run-task-console": "cypress run --project ./packages/task-console",

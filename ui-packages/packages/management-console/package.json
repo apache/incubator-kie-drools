@@ -10,7 +10,7 @@
   },
   "scripts": {
     "precommit": "lint-staged",
-    "build:prod": "yarn run lint && webpack --config webpack.prod.js && yarn run test:coverage",
+    "build:prod": "yarn run lint && webpack --config webpack.prod.js",
     "start": "webpack-dev-server --hot --color --progress --info=true --config webpack.dev.js",
     "start-auth": "webpack-dev-server --hot --color --progress --info=true --config webpack.dev.js --define process.env.KOGITO_AUTH_ENABLED=true",
     "test:report": "yarn test --ci --reporters=jest-junit",
