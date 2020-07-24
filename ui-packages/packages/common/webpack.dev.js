@@ -47,5 +47,8 @@ module.exports = merge(common, {
         use: ['style-loader', 'css-loader']
       }
     ]
+  },
+  output: {
+    filename: 'src/components/styles.css'
   }
 });

@@ -29,6 +29,7 @@ const AboutModalBox: React.FC<IOwnProps> = ({
       trademark={`${process.env.KOGITO_APP_NAME} is part of Kogito, an open source software released under the Apache Software License 2.0`}
       brandImageAlt="Kogito Logo"
       brandImageSrc={logoSrc}
+      className="kogito-common--aboutModalBox"
       backgroundImageSrc={aboutPageBackground}
     >
       <TextContent>

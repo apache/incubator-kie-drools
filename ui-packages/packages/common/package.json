@@ -17,7 +17,7 @@
   "scripts": {
     "precommit": "lint-staged",
     "build": "tsc -m commonjs --outDir ./dist && webpack --config webpack.prod.js",
-    "build:watch": "tsc -m commonjs --outDir ./dist -w && webpack --config webpack.prod.js --watch",
+    "build:watch": "tsc -m commonjs --outDir ./dist -w && webpack --config webpack.dev.js --watch",
     "build:prod": "yarn run clean && yarn run lint && yarn run build",
     "test:report": "yarn test --ci --reporters=jest-junit",
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
