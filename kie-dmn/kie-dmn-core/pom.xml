@@ -227,6 +227,11 @@
       <artifactId>kie-memory-compiler</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.microprofile.openapi</groupId>
+      <artifactId>microprofile-openapi-api</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

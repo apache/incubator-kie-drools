@@ -192,6 +192,7 @@ public abstract class BaseVariantTest {
 
         for (DMNModel m : runtime.getModels()) {
             Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, index, factory)
+                    .withMPAnnotation()
                     .processTypes()
                     .generateSourceCodeOfAllTypes();
             allSources.putAll(allTypesSourceCode);
@@ -220,6 +221,14 @@ public abstract class BaseVariantTest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Utility test method, for class inspection.
+     */
+    protected Class<?> getStronglyClassByName(DMNModel dmnModel, String className) {
+        String fqn = factory.create(dmnModel).appendPackage(className);
+        return allCompiledClasses.get(fqn);
     }
 
     protected FEELPropertyAccessible createInstanceFromCompiledClasses(Map<String, Class<?>> compile, DMNTypeSafePackageName packageName, String className) throws Exception {

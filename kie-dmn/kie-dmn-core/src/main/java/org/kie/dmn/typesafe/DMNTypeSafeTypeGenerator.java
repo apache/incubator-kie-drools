@@ -44,7 +44,7 @@ public class DMNTypeSafeTypeGenerator {
     private DMNModelImpl dmnModel;
     private final String disclaimerMarker;
 
-    private boolean withJacksonAnnotation = false;
+    private DMNStronglyCodeGenConfig codeGenConfig = new DMNStronglyCodeGenConfig();
 
     private List<TypeDefinition> types = new ArrayList<>();
 
@@ -61,7 +61,13 @@ public class DMNTypeSafeTypeGenerator {
 
     // So far it's used in Kogito DMN
     public DMNTypeSafeTypeGenerator withJacksonAnnotation() {
-        this.withJacksonAnnotation = true;
+        codeGenConfig.setWithJacksonAnnotation(true);
+        return this;
+    }
+
+    // So far it's used in Kogito DMN
+    public DMNTypeSafeTypeGenerator withMPAnnotation() {
+        codeGenConfig.setWithMPOpenApiAnnotation(true);
         return this;
     }
 
@@ -88,7 +94,7 @@ public class DMNTypeSafeTypeGenerator {
 
     public DMNTypeSafeTypeGenerator processTypes() {
         Set<InputDataNode> inputs = dmnModel.getInputs();
-        DMNInputSetType inputSetType = new DMNInputSetType(index, withJacksonAnnotation);
+        DMNInputSetType inputSetType = new DMNInputSetType(index, codeGenConfig);
         for (InputDataNode i : inputs) {
             inputSetType.addField(i.getName(), i.getType());
         }
@@ -98,7 +104,7 @@ public class DMNTypeSafeTypeGenerator {
         types.add(inputSetType);
 
         for (DMNType type : index.typesToGenerateByNS(dmnModel.getNamespace())) { // this generator shall only be concerned with the types belonging to this generator dmnModel.
-            DMNDeclaredType dmnDeclaredType = new DMNDeclaredType(index, type, withJacksonAnnotation);
+            DMNDeclaredType dmnDeclaredType = new DMNDeclaredType(index, type, codeGenConfig);
             dmnDeclaredType.setJavadoc(postfixToJavadoc(new StringBuilder("A representation of the DMN defined ItemDefinition type '").append(type.getName()).append("'.").toString(), dmnModel));
             types.add(dmnDeclaredType);
         }
@@ -122,4 +128,5 @@ public class DMNTypeSafeTypeGenerator {
         }
         return allSources;
     }
+
 }
