@@ -1,4 +1,5 @@
 const fs = require('fs');
+const graphQL = require('./graphql');
 const confirmTravelForm = require('./forms/ConfirmTravel');
 const applyForVisaForm = require('./forms/ApplyForVisa');
 
@@ -27,6 +28,13 @@ module.exports = controller = {
     switch (task[0].complete) {
       case 'success':
         let successMessage;
+
+        const userTask = graphQL.UserTaskInstances.find(userTask => userTask.id ===  req.params.taskId);
+
+        if(phase === 'complete') {
+          userTask.state = 'Completed';
+          userTask.completed = new Date().toISOString()
+        }
 
         if (phase) {
           successMessage = `Task '${req.params.taskId}' has successfully finished phase '${phase}'`;

@@ -5,6 +5,13 @@ import TaskForm from '../TaskForm';
 import { TaskInfo, TaskInfoImpl } from '../../../../model/TaskInfo';
 import { UserTaskInstance } from '../../../../graphql/types';
 import ApplyForVisaForm from '../../../../util/tests/mocks/ApplyForVisa';
+import FormRenderer from '../../../Molecules/FormRenderer/FormRenderer';
+import { act } from 'react-dom/test-utils';
+import FormNotification from '../../../Atoms/FormNotification/FormNotification';
+import { TaskFormSubmitHandler } from '../../../../util/uniforms/TaskFormSubmitHandler/TaskFormSubmitHandler';
+
+jest.mock('../../../Atoms/FormNotification/FormNotification');
+jest.mock('../../../Molecules/FormRenderer/FormRenderer');
 
 const MockedComponent = (): React.ReactElement => {
   return <></>;
@@ -49,6 +56,107 @@ const taskInfo: TaskInfo = new TaskInfoImpl(
   'http://localhost:8080/travels'
 );
 
+enum Mode {
+  SUCCESS,
+  ERROR,
+  ERROR_WITH_MESSAGE
+}
+
+const testSubmitCallbacks = async (mode: Mode) => {
+  const formSubmitSuccessCallback = jest.fn();
+  const formSubmitErrorCallback = jest.fn();
+
+  mockedAxios.get.mockResolvedValue({
+    status: 200,
+    data: ApplyForVisaForm
+  });
+
+  let wrapper = await getWrapperAsync(
+    <TaskForm
+      taskInfo={taskInfo}
+      successCallback={formSubmitSuccessCallback}
+      errorCallback={formSubmitErrorCallback}
+    />,
+    'TaskForm'
+  );
+
+  wrapper.update();
+
+  expect(wrapper).toMatchSnapshot();
+
+  const renderer = wrapper.find(FormRenderer);
+
+  expect(renderer.getElement()).not.toBeNull();
+
+  // since the FormRenderer is mocked we are forcing the form submit callback
+  const callback =
+    mode === Mode.SUCCESS
+      ? renderer.getElement().props.formSubmitHandler.successCallback
+      : renderer.getElement().props.formSubmitHandler.errorCallback;
+
+  expect(callback).not.toBeNull();
+
+  act(() => {
+    if (mode === Mode.ERROR_WITH_MESSAGE) {
+      callback('phase', 'Extra error info.');
+    } else {
+      callback('phase');
+    }
+  });
+
+  wrapper = wrapper.update();
+
+  expect(wrapper).toMatchSnapshot();
+
+  let notification = wrapper.find(FormNotification);
+
+  let expectedCallback;
+  let unExpectedCallback;
+  let expectedMessage;
+
+  switch (mode) {
+    case Mode.SUCCESS: {
+      expectedMessage =
+        "Task '45a73767-5da3-49bf-9c40-d533c3e77ef3' successfully transitioned to phase 'phase'.";
+      expectedCallback = formSubmitSuccessCallback;
+      unExpectedCallback = formSubmitErrorCallback;
+      break;
+    }
+    case Mode.ERROR: {
+      expectedMessage =
+        "Task '45a73767-5da3-49bf-9c40-d533c3e77ef3' couldn't transition to phase 'phase'.";
+      expectedCallback = formSubmitErrorCallback;
+      unExpectedCallback = formSubmitSuccessCallback;
+      break;
+    }
+    case Mode.ERROR_WITH_MESSAGE: {
+      expectedMessage =
+        "Task '45a73767-5da3-49bf-9c40-d533c3e77ef3' couldn't transition to phase 'phase'. Error: 'Extra error info.'";
+      expectedCallback = formSubmitErrorCallback;
+      unExpectedCallback = formSubmitSuccessCallback;
+    }
+  }
+
+  expect(notification.getElement()).not.toBeNull();
+  expect(notification.getElement().props.message).toStrictEqual(
+    expectedMessage
+  );
+  expect(notification.getElement().props.closeAction).not.toBeNull();
+
+  act(() => {
+    notification.getElement().props.closeAction();
+  });
+
+  expect(expectedCallback).toBeCalled();
+  expect(unExpectedCallback).not.toBeCalled();
+
+  wrapper = wrapper.update();
+
+  notification = wrapper.find(FormNotification);
+
+  expect(notification.exists()).toBeFalsy();
+};
+
 describe('TaskForm Test', () => {
   it('Test rendering form', async () => {
     mockedAxios.get.mockResolvedValue({
@@ -63,12 +171,23 @@ describe('TaskForm Test', () => {
     wrapper.update();
 
     expect(wrapper).toMatchSnapshot();
+
+    const renderer = wrapper.find(FormRenderer);
+
+    expect(renderer).not.toBeNull();
+
+    expect(renderer.props().formSchema).toBe(ApplyForVisaForm);
+    expect(renderer.props().formSubmitHandler).toBeInstanceOf(TaskFormSubmitHandler);
+    expect(renderer.props().model).toStrictEqual(
+      JSON.parse(userTaskInstance.inputs)
+    );
   });
 
   it('Test rendering form with error', async () => {
     mockedAxios.get.mockResolvedValue({
       status: 500
     });
+
     const wrapper = await getWrapperAsync(
       <TaskForm taskInfo={taskInfo} />,
       'TaskForm'
@@ -77,5 +196,17 @@ describe('TaskForm Test', () => {
     wrapper.update();
 
     expect(wrapper).toMatchSnapshot();
+  });
+
+  it('Test successful callback', async () => {
+    await testSubmitCallbacks(Mode.SUCCESS);
+  });
+
+  it('Test unsuccessful callback', async () => {
+    await testSubmitCallbacks(Mode.ERROR);
+  });
+
+  it('Test unsuccessful callback with extra message', async () => {
+    await testSubmitCallbacks(Mode.ERROR_WITH_MESSAGE);
   });
 });

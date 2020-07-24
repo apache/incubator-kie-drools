@@ -1,5 +1,5 @@
 import Moment from 'react-moment';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import {
   DataListAction,
   DataListCell,
@@ -7,11 +7,11 @@ import {
   DataListItemCells,
   DataListItemRow
 } from '@patternfly/react-core';
+import { Link } from 'react-router-dom';
 import {
-  useGetProcessInstanceByIdLazyQuery,
+  useGetProcessInstanceByIdQuery,
   UserTaskInstance
 } from '../../../graphql/types';
-import { Link } from 'react-router-dom';
 import TaskConsoleContext, {
   IContext
 } from '../../../context/TaskConsoleContext/TaskConsoleContext';
@@ -23,31 +23,15 @@ export interface IOwnProps {
 }
 
 const TaskListItem: React.FC<IOwnProps> = ({ userTaskInstanceData }) => {
-  const [isProcessInstanceLoaded, setProcessInstanceLoaded] = useState(false);
 
-  const [
-    getProcessInstance,
-    { loading, data }
-  ] = useGetProcessInstanceByIdLazyQuery({
-    fetchPolicy: 'network-only'
+  const { loading, data } = useGetProcessInstanceByIdQuery({
+    fetchPolicy: 'network-only',
+    variables: {
+      id: userTaskInstanceData.processInstanceId
+    }
   });
 
   const context: IContext<TaskInfo> = useContext(TaskConsoleContext);
-
-  if (!isProcessInstanceLoaded && userTaskInstanceData.state === 'Ready') {
-    getProcessInstance({
-      variables: {
-        id: userTaskInstanceData.processInstanceId
-      }
-    });
-    setProcessInstanceLoaded(true);
-  }
-
-  useEffect(() => {
-    if (!loading && data !== undefined) {
-      setProcessInstanceLoaded(true);
-    }
-  }, [data]);
 
   return (
     <React.Fragment>
@@ -82,13 +66,9 @@ const TaskListItem: React.FC<IOwnProps> = ({ userTaskInstanceData }) => {
           >
             <Link
               to={'/Task/' + userTaskInstanceData.id}
-              onClick={() =>
-                context.setActiveItem(
-                  new TaskInfoImpl(
-                    userTaskInstanceData,
-                    data.ProcessInstances[0].endpoint
-                  )
-                )
+              onClick={() => {
+                !loading && data && context.setActiveItem(new TaskInfoImpl(userTaskInstanceData, data.ProcessInstances[0].endpoint));
+                }
               }
             >
               Open Task

@@ -1,4 +1,4 @@
-const schema = {
+module.exports = ConfirmTravelForm = {
   type: 'object',
   properties: {
     flight: {
@@ -59,23 +59,6 @@ const schema = {
       },
       disabled: true
     }
-  }
-};
-
-
-module.exports = ConfirmTravelForm = {
-  schema: schema,
-
-  actions: [
-    {
-      name: 'Complete',
-      primary: true,
-      outputs: []
-    },
-    {
-      name: 'Release',
-      phase: 'release',
-      outputs: []
-    }
-  ]
+  },
+  phases: ['complete', 'release']
 };

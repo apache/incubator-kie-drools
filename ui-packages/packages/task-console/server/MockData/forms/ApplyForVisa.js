@@ -1,4 +1,4 @@
-const schema = {
+module.exports = ApplyForVisaForm = {
   type: 'object',
   properties: {
     trip: {
@@ -69,23 +69,6 @@ const schema = {
         nationality: { type: 'string' }
       }
     }
-  }
-};
-
-module.exports = ApplyForVisaForm = {
-
-  schema: schema,
-
-  actions: [
-    {
-      name: 'Complete',
-      primary: true,
-      outputs: ['visaApplication'],
-    },
-    {
-      name: 'Release',
-      phase: 'release',
-      outputs: [],
-    }
-  ]
+  },
+  phases: ['complete',  'release']
 };

@@ -1,12 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 
-import { TaskInfo } from '../../../model/TaskInfo';
-import FormRenderer from '../../Molecules/FormRenderer/FormRenderer';
-import { FormDescription } from '../../../model/FormDescription';
-import TaskConsoleContext, {
-  IContext
-} from '../../../context/TaskConsoleContext/TaskConsoleContext';
-
 import { isEmpty } from 'lodash';
 import axios from 'axios';
 import {
@@ -14,15 +7,14 @@ import {
   KogitoEmptyStateType,
   KogitoSpinner
 } from '@kogito-apps/common';
-import {
-  BaseSizes,
-  Button,
-  Modal,
-  Text,
-  TextContent,
-  Title,
-  TitleLevel
-} from '@patternfly/react-core';
+import { TaskInfo } from '../../../model/TaskInfo';
+import TaskConsoleContext, {
+  IContext
+} from '../../../context/TaskConsoleContext/TaskConsoleContext';
+import FormNotification from '../../Atoms/FormNotification/FormNotification';
+import FormRenderer from '../../Molecules/FormRenderer/FormRenderer';
+import { TaskFormSubmitHandler } from '../../../util/uniforms/TaskFormSubmitHandler/TaskFormSubmitHandler';
+import { FormSchema } from '../../../util/uniforms/FormSchema';
 
 interface IOwnProps {
   taskInfo?: TaskInfo;
@@ -45,10 +37,7 @@ const TaskForm: React.FC<IOwnProps> = ({
   const [alertMessage, setAlertMessage]: [AlertMessage, any] = useState(null);
   const [loading, setLoading] = useState(true);
   const [userTaskInfo, setUserTaskInfo]: [TaskInfo, any] = useState(null);
-  const [taskFormDescription, setTaskFormDescription]: [
-    FormDescription,
-    any
-  ] = useState(null);
+  const [taskFormSchema, setTaskFormSchema]: [FormSchema, any] = useState(null);
 
   if (!userTaskInfo) {
     if (taskInfo) {
@@ -67,7 +56,7 @@ const TaskForm: React.FC<IOwnProps> = ({
   const loadForm = () => {
     if (userTaskInfo) {
       axios
-        .get(userTaskInfo.getTaskEndPoint() + '/form', {
+        .get(userTaskInfo.getTaskEndPoint() + '/schema', {
           headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
@@ -77,7 +66,7 @@ const TaskForm: React.FC<IOwnProps> = ({
         })
         .then(res => {
           if (res.status === 200) {
-            setTaskFormDescription(res.data);
+            setTaskFormSchema(res.data);
           }
           setLoading(false);
         })
@@ -108,7 +97,29 @@ const TaskForm: React.FC<IOwnProps> = ({
       );
     }
 
-    if (taskFormDescription) {
+    if (taskFormSchema) {
+
+      const notifySuccess = (phase: string) => {
+        const message = `Task '${taskInfo.task.id}' successfully transitioned to phase '${phase}'.`;
+        showAlertMessage(message, successCallback);
+      };
+
+      const notifyError = (phase: string, error?: string) => {
+        let message = `Task '${taskInfo.task.id}' couldn't transition to phase '${phase}'.`;
+
+        if (error) {
+          message += ` Error: '${error}'`;
+        }
+
+        showAlertMessage(message, errorCallback);
+      };
+
+      const formSubmitHandler = new TaskFormSubmitHandler(
+        userTaskInfo,
+        taskFormSchema,
+        phase => notifySuccess(phase),
+      (phase, errorMessage) => notifyError(phase, errorMessage));
+
       const outputs = JSON.parse(userTaskInfo.task.outputs);
       const formData = !isEmpty(outputs)
         ? outputs
@@ -117,40 +128,15 @@ const TaskForm: React.FC<IOwnProps> = ({
       return (
         <React.Fragment>
           {alertMessage && (
-            <Modal
-              isSmall={true}
-              title=""
-              header={
-                <Title headingLevel={TitleLevel.h1} size={BaseSizes['2xl']}>
-                  Executing Task
-                </Title>
-              }
-              isOpen={true}
-              onClose={alertMessage.callback}
-              actions={[
-                <Button
-                  key="confirm-selection"
-                  variant="primary"
-                  onClick={alertMessage.callback}
-                >
-                  OK
-                </Button>
-              ]}
-              isFooterLeftAligned={false}
-            >
-              <TextContent>
-                <Text>{alertMessage.message}</Text>
-              </TextContent>
-            </Modal>
+            <FormNotification
+              message={alertMessage.message}
+              closeAction={alertMessage.callback}
+            />
           )}
           <FormRenderer
-            taskInfo={taskInfo}
-            form={taskFormDescription}
+            formSchema={taskFormSchema}
             model={formData}
-            successCallback={result =>
-              showAlertMessage(result, successCallback)
-            }
-            errorCallback={result => showAlertMessage(result, errorCallback)}
+            formSubmitHandler={formSubmitHandler}
           />
         </React.Fragment>
       );

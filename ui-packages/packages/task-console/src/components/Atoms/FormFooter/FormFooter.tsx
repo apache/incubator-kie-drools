@@ -1,17 +1,16 @@
 import React from 'react';
 import { ActionGroup, Button } from '@patternfly/react-core';
-
-export interface IFormAction {
-  name: string;
-  primary?: boolean;
-  onActionClick: () => void;
-}
+import { IFormAction } from '../../../util/uniforms/FormSubmitHandler/FormSubmitHandler';
 
 interface IOwnProps {
   actions?: IFormAction[];
 }
 
 const FormFooter: React.FC<IOwnProps> = ({ actions }) => {
+  const capitalize = label => {
+    return label.charAt(0).toUpperCase() + label.slice(1);
+  };
+
   return actions && actions.length > 0 ? (
     <ActionGroup>
       {actions.map(action => {
@@ -19,10 +18,14 @@ const FormFooter: React.FC<IOwnProps> = ({ actions }) => {
           <Button
             key={'submit-' + action.name}
             type="submit"
-            variant={action.primary ? 'primary' : 'secondary'}
-            onClick={action.onActionClick}
+            variant={action.primary!== undefined ? (action.primary ? 'primary' : 'secondary') : "primary"}
+            onClick={() => {
+              if(action.execute) {
+                action.execute()
+              }
+            }}
           >
-            {action.name}
+            {capitalize(action.name)}
           </Button>
         );
       })}

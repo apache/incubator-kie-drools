@@ -44,7 +44,7 @@ app.post(
 );
 
 app.get(
-  '/:processId/:processInstanceId/:taskReferenceName/:taskId/form',
+  '/:processId/:processInstanceId/:taskReferenceName/:taskId/schema',
   controller.getTaskForm
 );
 

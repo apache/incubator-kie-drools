@@ -1,4 +1,4 @@
-const schema = {
+module.exports = ApplyForVisaForm = {
   type: 'object',
   properties: {
     trip: {
@@ -21,7 +21,9 @@ const schema = {
         visaRequired: {
           type: 'boolean'
         }
-      }
+      },
+      input: true,
+      output: false
     },
     traveller: {
       type: 'object',
@@ -48,7 +50,9 @@ const schema = {
           }
         }
       },
-      required: ['firstName', 'lastName']
+      required: ['firstName', 'lastName'],
+      input: true,
+      output: true
     },
     visaApplication: {
       type: 'object',
@@ -66,24 +70,10 @@ const schema = {
         },
         passportNumber: { type: 'string' },
         nationality: { type: 'string' }
-      }
+      },
+      input: true,
+      output: false
     }
-  }
-};
-
-module.exports = ApplyForVisaForm = {
-  schema: schema,
-
-  actions: [
-    {
-      name: 'Complete',
-      primary: true,
-      outputs: []
-    },
-    {
-      name: 'Release',
-      phase: 'release',
-      outputs: ['traveller']
-    }
-  ]
+  },
+  phases: ['complete', 'release']
 };

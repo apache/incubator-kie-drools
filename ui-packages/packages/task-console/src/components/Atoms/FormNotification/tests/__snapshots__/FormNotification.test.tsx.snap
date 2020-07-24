@@ -1,0 +1,430 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Form Footer test Snapshot testing 1`] = `
+<FormNotification
+  closeAction={[MockFunction]}
+  message="The form has been submitted"
+>
+  <Modal
+    actions={
+      Array [
+        <Unknown
+          onClick={[MockFunction]}
+          variant="primary"
+        >
+          OK
+        </Unknown>,
+      ]
+    }
+    appendTo={
+      <body
+        class="pf-c-backdrop__open"
+      >
+        <div>
+          <div
+            class="pf-c-backdrop"
+          >
+            <div
+              class="pf-l-bullseye"
+            >
+              <div
+                aria-describedby="pf-modal-0"
+                aria-label=""
+                aria-modal="true"
+                class="pf-c-modal-box pf-m-sm"
+                role="dialog"
+              >
+                <button
+                  aria-label="Close"
+                  class="pf-c-button pf-m-plain"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 352 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                      transform=""
+                    />
+                  </svg>
+                </button>
+                <div
+                  class="pf-c-title"
+                >
+                  <h1
+                    class="pf-c-title pf-m-2xl"
+                  >
+                    Executing Task
+                  </h1>
+                </div>
+                <div
+                  class="pf-c-modal-box__body"
+                  id="pf-modal-0"
+                >
+                  <div
+                    class="pf-c-content"
+                  >
+                    <p
+                      class=""
+                      data-pf-content="true"
+                    >
+                      The form has been submitted
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="pf-c-modal-box__footer"
+                >
+                  <button
+                    class="pf-c-button pf-m-primary"
+                    type="button"
+                  >
+                    OK
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </body>
+    }
+    ariaDescribedById=""
+    className=""
+    header={
+      <Title
+        headingLevel="h1"
+        size="2xl"
+      >
+        Executing Task
+      </Title>
+    }
+    hideTitle={false}
+    isFooterLeftAligned={false}
+    isLarge={false}
+    isOpen={true}
+    isSmall={true}
+    onClose={[MockFunction]}
+    showClose={true}
+    title=""
+  >
+    <Portal
+      containerInfo={
+        <div>
+          <div
+            class="pf-c-backdrop"
+          >
+            <div
+              class="pf-l-bullseye"
+            >
+              <div
+                aria-describedby="pf-modal-0"
+                aria-label=""
+                aria-modal="true"
+                class="pf-c-modal-box pf-m-sm"
+                role="dialog"
+              >
+                <button
+                  aria-label="Close"
+                  class="pf-c-button pf-m-plain"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 352 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                      transform=""
+                    />
+                  </svg>
+                </button>
+                <div
+                  class="pf-c-title"
+                >
+                  <h1
+                    class="pf-c-title pf-m-2xl"
+                  >
+                    Executing Task
+                  </h1>
+                </div>
+                <div
+                  class="pf-c-modal-box__body"
+                  id="pf-modal-0"
+                >
+                  <div
+                    class="pf-c-content"
+                  >
+                    <p
+                      class=""
+                      data-pf-content="true"
+                    >
+                      The form has been submitted
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="pf-c-modal-box__footer"
+                >
+                  <button
+                    class="pf-c-button pf-m-primary"
+                    type="button"
+                  >
+                    OK
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <ModalContent
+        actions={
+          Array [
+            <Unknown
+              onClick={[MockFunction]}
+              variant="primary"
+            >
+              OK
+            </Unknown>,
+          ]
+        }
+        ariaDescribedById=""
+        className=""
+        header={
+          <Title
+            headingLevel="h1"
+            size="2xl"
+          >
+            Executing Task
+          </Title>
+        }
+        hideTitle={false}
+        id="pf-modal-0"
+        isFooterLeftAligned={false}
+        isLarge={false}
+        isOpen={true}
+        isSmall={true}
+        onClose={[MockFunction]}
+        showClose={true}
+        title=""
+      >
+        <Backdrop>
+          <div
+            className="pf-c-backdrop"
+          >
+            <FocusTrap
+              active={true}
+              className="pf-l-bullseye"
+              focusTrapOptions={
+                Object {
+                  "clickOutsideDeactivates": true,
+                }
+              }
+              paused={false}
+            >
+              <div
+                className="pf-l-bullseye"
+              >
+                <ModalBox
+                  className=""
+                  id="pf-modal-0"
+                  isLarge={false}
+                  isSmall={true}
+                  style={Object {}}
+                  title=""
+                >
+                  <div
+                    aria-describedby="pf-modal-0"
+                    aria-label=""
+                    aria-modal="true"
+                    className="pf-c-modal-box pf-m-sm"
+                    role="dialog"
+                    style={Object {}}
+                  >
+                    <ModalBoxCloseButton
+                      onClose={[MockFunction]}
+                    >
+                      <Component
+                        aria-label="Close"
+                        className=""
+                        onClick={[MockFunction]}
+                        variant="plain"
+                      >
+                        <ComponentWithOuia
+                          component={[Function]}
+                          componentProps={
+                            Object {
+                              "aria-label": "Close",
+                              "children": <TimesIcon
+                                color="currentColor"
+                                noVerticalAlign={false}
+                                size="sm"
+                                title={null}
+                              />,
+                              "className": "",
+                              "onClick": [MockFunction],
+                              "variant": "plain",
+                            }
+                          }
+                          consumerContext={null}
+                        >
+                          <Button
+                            aria-label="Close"
+                            className=""
+                            onClick={[MockFunction]}
+                            ouiaContext={
+                              Object {
+                                "isOuia": false,
+                                "ouiaId": null,
+                              }
+                            }
+                            variant="plain"
+                          >
+                            <button
+                              aria-disabled={null}
+                              aria-label="Close"
+                              className="pf-c-button pf-m-plain"
+                              disabled={false}
+                              onClick={[MockFunction]}
+                              tabIndex={null}
+                              type="button"
+                            >
+                              <TimesIcon
+                                color="currentColor"
+                                noVerticalAlign={false}
+                                size="sm"
+                                title={null}
+                              >
+                                <svg
+                                  aria-hidden={true}
+                                  aria-labelledby={null}
+                                  fill="currentColor"
+                                  height="1em"
+                                  role="img"
+                                  style={
+                                    Object {
+                                      "verticalAlign": "-0.125em",
+                                    }
+                                  }
+                                  viewBox="0 0 352 512"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                    transform=""
+                                  />
+                                </svg>
+                              </TimesIcon>
+                            </button>
+                          </Button>
+                        </ComponentWithOuia>
+                      </Component>
+                    </ModalBoxCloseButton>
+                    <div
+                      className="pf-c-title"
+                    >
+                      <Title
+                        headingLevel="h1"
+                        size="2xl"
+                      >
+                        <h1
+                          className="pf-c-title pf-m-2xl"
+                        >
+                          Executing Task
+                        </h1>
+                      </Title>
+                    </div>
+                    <ModalBoxBody
+                      id="pf-modal-0"
+                    >
+                      <div
+                        className="pf-c-modal-box__body"
+                        id="pf-modal-0"
+                      >
+                        <TextContent>
+                          <div
+                            className="pf-c-content"
+                          >
+                            <Text>
+                              <p
+                                className=""
+                                data-pf-content={true}
+                              >
+                                The form has been submitted
+                              </p>
+                            </Text>
+                          </div>
+                        </TextContent>
+                      </div>
+                    </ModalBoxBody>
+                    <ModalBoxFooter
+                      isLeftAligned={false}
+                    >
+                      <div
+                        className="pf-c-modal-box__footer"
+                      >
+                        <Component
+                          key="confirm-selection"
+                          onClick={[MockFunction]}
+                          variant="primary"
+                        >
+                          <ComponentWithOuia
+                            component={[Function]}
+                            componentProps={
+                              Object {
+                                "children": "OK",
+                                "onClick": [MockFunction],
+                                "variant": "primary",
+                              }
+                            }
+                            consumerContext={null}
+                          >
+                            <Button
+                              onClick={[MockFunction]}
+                              ouiaContext={
+                                Object {
+                                  "isOuia": false,
+                                  "ouiaId": null,
+                                }
+                              }
+                              variant="primary"
+                            >
+                              <button
+                                aria-disabled={null}
+                                aria-label={null}
+                                className="pf-c-button pf-m-primary"
+                                disabled={false}
+                                onClick={[MockFunction]}
+                                tabIndex={null}
+                                type="button"
+                              >
+                                OK
+                              </button>
+                            </Button>
+                          </ComponentWithOuia>
+                        </Component>
+                      </div>
+                    </ModalBoxFooter>
+                  </div>
+                </ModalBox>
+              </div>
+            </FocusTrap>
+          </div>
+        </Backdrop>
+      </ModalContent>
+    </Portal>
+  </Modal>
+</FormNotification>
+`;
