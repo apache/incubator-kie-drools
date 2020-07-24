@@ -23,11 +23,11 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 
 /**
- * <b>Fake</b> model used for testing. It is mapped to <code>PMML_MODEL.REGRESSION_MODEL</code>
+ * <b>Fake</b> model used for testing. It is mapped to <code>PMML_MODEL.TEST_MODEL</code>
  */
 public class KiePMMLTestingModel extends KiePMMLModel {
 
-    public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.REGRESSION_MODEL;
+    public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.TEST_MODEL;
 
     protected KiePMMLTestingModel(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);

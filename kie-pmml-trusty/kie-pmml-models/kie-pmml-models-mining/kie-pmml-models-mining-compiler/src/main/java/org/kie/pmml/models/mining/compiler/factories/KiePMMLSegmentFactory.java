@@ -56,7 +56,7 @@ public class KiePMMLSegmentFactory {
                                       getFromCommonDataAndTransformationDictionaryAndModel(dataDictionary,
                                                                                            transformationDictionary,
                                                                                            segment.getModel(),
-                                                                                           kBuilder).orElseThrow(() -> new KiePMMLException("Failed to get the KiePMMLModel for segment " + segment.getId())))
+                                                                                           kBuilder).orElseThrow(() -> new KiePMMLException("Failed to get the KiePMMLModel for segment " + segment.getModel().getModelName())))
                 .withWeight(segment.getWeight().doubleValue())
                 .build();
     }

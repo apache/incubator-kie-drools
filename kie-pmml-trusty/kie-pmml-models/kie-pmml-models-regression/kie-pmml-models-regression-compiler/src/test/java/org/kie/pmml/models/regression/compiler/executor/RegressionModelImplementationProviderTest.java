@@ -29,9 +29,9 @@ import static org.junit.Assert.assertTrue;
 
 public class RegressionModelImplementationProviderTest {
 
-    private final static RegressionModelImplementationProvider PROVIDER = new RegressionModelImplementationProvider();
-    private final static String RELEASE_ID = "org.drools:kie-pmml-models-testing:1.0";
-    private static final String SOURCE_1 = "LinearRegressionSample.xml";
+    private static final RegressionModelImplementationProvider PROVIDER = new RegressionModelImplementationProvider();
+    private static final String RELEASE_ID = "org.drools:kie-pmml-models-testing:1.0";
+    private static final String SOURCE_1 = "LinearRegressionSample.pmml";
     private static final String SOURCE_2 = "test_regression.pmml";
     private static final String SOURCE_3 = "test_regression_clax.pmml";
 
