@@ -26,25 +26,36 @@ public class ComponentsFactory {
     private static final String DYNAMIC_IMPL = "org.drools.dynamic.DynamicComponentsSupplier";
     private static final String STATIC_IMPL = "org.drools.statics.StaticComponentsSupplier";
 
-    private static ComponentsSupplier supplier = instanceFromNames(DYNAMIC_IMPL, STATIC_IMPL);
+    private static ComponentsSupplier supplier;
 
     public static ProjectClassLoader createProjectClassLoader( ClassLoader parent, ResourceProvider resourceProvider ) {
-        return supplier.createProjectClassLoader(parent, resourceProvider);
+        return getComponentsSupplier().createProjectClassLoader(parent, resourceProvider);
     }
 
     public static ByteArrayClassLoader createByteArrayClassLoader( ClassLoader parent ) {
-        return supplier.createByteArrayClassLoader(parent);
+        return getComponentsSupplier().createByteArrayClassLoader(parent);
     }
 
     public static Object createConsequenceExceptionHandler(String className, ClassLoader classLoader) {
-        return supplier.createConsequenceExceptionHandler(className, classLoader);
+        return getComponentsSupplier().createConsequenceExceptionHandler(className, classLoader);
     }
 
     public static Object createTimerService( String className ) {
-        return supplier.createTimerService( className );
+        return getComponentsSupplier().createTimerService( className );
     }
 
     public static void setComponentsSupplier( ComponentsSupplier supplier ) {
         ComponentsFactory.supplier = supplier;
+    }
+
+    private static ComponentsSupplier getComponentsSupplier() {
+        if (supplier == null) {
+            ComponentsFactory.supplier = Holder.supplier;
+        }
+        return ComponentsFactory.supplier;
+    }
+
+    private static class Holder {
+        private static ComponentsSupplier supplier = instanceFromNames(DYNAMIC_IMPL, STATIC_IMPL);
     }
 }

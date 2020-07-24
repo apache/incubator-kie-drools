@@ -16,6 +16,7 @@
 package org.drools.compiler.kie.builder.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -157,17 +158,37 @@ public interface InternalKieModule extends KieModule, Serializable {
     }
 
     static InternalKieModule createKieModule(ReleaseId releaseId, File jar) {
+        if (jar.isDirectory() || !jar.getPath().endsWith( ".jar" )) {
+            return null;
+        }
         try (ZipFile zipFile = new ZipFile(jar)) {
             ZipEntry zipEntry = zipFile.getEntry(KieModuleModelImpl.KMODULE_JAR_PATH);
             if (zipEntry != null) {
-                KieModuleModel kieModuleModel = KieModuleModelImpl.fromXML( zipFile.getInputStream( zipEntry ) );
-                setDefaultsforEmptyKieModule( kieModuleModel );
-                return kieModuleModel != null ? InternalKieModuleProvider.get( adapt( releaseId ), kieModuleModel, jar ) : null;
+                return internalCreateKieModule( releaseId, jar, zipFile, zipEntry );
             }
-        } catch (Exception e) {
-            LocalLogger.logger.error(e.getMessage(), e);
+        } catch (MalformedKieModuleException e) {
+            // if the kie module exists but it's malformed raise the error
+            throw e;
+        } catch (IOException e) {
+            // ignore: the zip file could be empty or not a jar at all
         }
         return null;
+    }
+
+    static InternalKieModule internalCreateKieModule( ReleaseId releaseId, File jar, ZipFile zipFile, ZipEntry zipEntry ) throws MalformedKieModuleException {
+        try (InputStream xmlStream = zipFile.getInputStream( zipEntry )) {
+            KieModuleModel kieModuleModel = KieModuleModelImpl.fromXML( xmlStream );
+            setDefaultsforEmptyKieModule( kieModuleModel );
+            return kieModuleModel != null ? InternalKieModuleProvider.get( adapt( releaseId ), kieModuleModel, jar ) : null;
+        } catch (Exception e) {
+            throw new MalformedKieModuleException( e );
+        }
+    }
+
+    class MalformedKieModuleException extends RuntimeException {
+        MalformedKieModuleException(Exception cause) {
+            super(cause);
+        }
     }
 
     default void updateKieModule(InternalKieModule newKM) {
