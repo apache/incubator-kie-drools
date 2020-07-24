@@ -582,7 +582,7 @@ To use it, first add a test scoped dependency to the `optaplanner-test` JAR.
 
 
 [[constraintStreamsTestingIsolatedConstraints]]
-== Testing constraints in isolation
+=== Testing constraints in isolation
 
 Consider the following constraint stream:
 
