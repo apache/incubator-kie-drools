@@ -15,6 +15,7 @@
  */
 package org.drools.scenariosimulation.backend.fluent;
 
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -29,10 +30,14 @@ public class CoverageAgendaListenerTest extends AbstractRuleCoverageTest {
     public void beforeMatchFired() {
         CoverageAgendaListener coverageAgendaListener = new CoverageAgendaListener();
         assertTrue(coverageAgendaListener.getRuleExecuted().isEmpty());
+        assertTrue(coverageAgendaListener.getAuditsMessages().isEmpty());
         BeforeMatchFiredEvent beforeMatchFiredEvent = createBeforeMatchFiredEventMock("rule1");
         coverageAgendaListener.beforeMatchFired(beforeMatchFiredEvent);
         Map<String, Integer> ruleExecuted = coverageAgendaListener.getRuleExecuted();
         assertEquals(1, ruleExecuted.size());
         assertEquals((Integer) 1, ruleExecuted.get("rule1"));
+        List<String> auditMessages = coverageAgendaListener.getAuditsMessages();
+        assertEquals(1, auditMessages.size());
+        assertEquals("rule1", auditMessages.get(0));
     }
 }

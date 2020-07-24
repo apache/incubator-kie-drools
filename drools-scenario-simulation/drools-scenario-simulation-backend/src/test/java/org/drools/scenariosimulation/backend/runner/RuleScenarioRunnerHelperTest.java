@@ -552,7 +552,8 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         assertEquals(2, scenarioResultMetadata.getExecuted().size());
         assertEquals((Integer) 2, scenarioResultMetadata.getExecutedWithCounter().get("rule1"));
         assertEquals((Integer) 2, scenarioResultMetadata.getExecutedWithCounter().get("rule2"));
-        List<String> expectedMessages = Arrays.asList("rule1", "rule2");
+        List<String> expectedMessages = new ArrayList<>();
+        commonAddMessageString(Arrays.asList("rule1", "rule2"), expectedMessages);
 
         final List<AuditLogLine> auditLogLines = scenarioResultMetadata.getAuditLogLines();
         assertEquals(expectedMessages.size(), auditLogLines.size());
@@ -651,4 +652,8 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
                 .hasMessageStartingWith("Impossible to run");
     }
 
+    private void commonAddMessageString(List<String> ruleNames, List<String> expectedMessages) {
+        ruleNames.forEach(ruleName ->
+                                  IntStream.range(1, 3).forEach(index -> expectedMessages.add(ruleName)));
+    }
 }
