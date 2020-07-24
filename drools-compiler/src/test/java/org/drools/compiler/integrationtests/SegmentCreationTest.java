@@ -15,6 +15,8 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.List;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -26,6 +28,7 @@ import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
+import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
@@ -40,9 +43,10 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class SegmentCreationTest {
     
@@ -119,33 +123,32 @@ public class SegmentCreationTest {
         // LiaNode and Rule are in same segment
         LiaNodeMemory liaMem = ( LiaNodeMemory ) wm.getNodeMemory( liaNode ); 
         SegmentMemory smem = liaMem.getSegmentMemory();
-        assertEquals( liaNode, smem.getRootNode() );
-        assertEquals( rtn, smem.getTipNode() );
-        assertNull( smem.getNext() );
-        assertNull( smem.getFirst() );
+        assertNull( smem );
     }
     
     @Test
     public void testSingleSharedPattern() throws Exception {
-        KieBase kbase = buildKnowledgeBase( "   A() \n",
-                                                  "   A() \n");
+        KieBase kbase = buildKnowledgeBase( "   A() B()\n",
+                                                  "   A() B()\n");
 
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
 
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
-        RuleTerminalNode rtn1 = ( RuleTerminalNode) liaNode.getSinkPropagator().getSinks()[0];
-        RuleTerminalNode rtn2 = ( RuleTerminalNode) liaNode.getSinkPropagator().getSinks()[1];
+        JoinNode beta = ( JoinNode) liaNode.getSinkPropagator().getSinks()[0];
+        RuleTerminalNode rtn1 = ( RuleTerminalNode) beta.getSinkPropagator().getSinks()[0];
+        RuleTerminalNode rtn2 = ( RuleTerminalNode) beta.getSinkPropagator().getSinks()[1];
         
         wm.insert(new LinkingTest.A());
-        wm.flushPropagations();
+        wm.insert(new LinkingTest.B());
+        wm.fireAllRules();
 
         // LiaNode  is in it's own segment
         LiaNodeMemory liaMem = ( LiaNodeMemory ) wm.getNodeMemory( liaNode ); 
         SegmentMemory smem = liaMem.getSegmentMemory();
         assertEquals( liaNode, smem.getRootNode() );
-        assertEquals( liaNode, smem.getTipNode() );
+        assertEquals( beta, smem.getTipNode() );
         
         // each RTN is in it's own segment
         SegmentMemory rtnSmem1 = smem.getFirst();
@@ -159,49 +162,53 @@ public class SegmentCreationTest {
     
     @Test
     public void testMultiSharedPattern() throws Exception {
-        KieBase kbase = buildKnowledgeBase( "   A() \n", 
-                                                  "   A() B() \n",
-                                                  "   A() B() C() \n");
+        KieBase kbase = buildKnowledgeBase( " D() A() \n",
+                                                  "  D()  A() B() \n",
+                                                  "  D() A() B() C() \n");
 
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
+        ObjectTypeNode dotn = getObjectTypeNode(kbase, LinkingTest.D.class );
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
-        RuleTerminalNode rtn1 = ( RuleTerminalNode) liaNode.getSinkPropagator().getSinks()[0];        
-        JoinNode bNode = ( JoinNode ) liaNode.getSinkPropagator().getSinks()[1];
+        LeftInputAdapterNode lian = (LeftInputAdapterNode) dotn.getObjectSinkPropagator().getSinks()[0];
+
+        JoinNode beta = (JoinNode) aotn.getObjectSinkPropagator().getSinks()[0];
+        RuleTerminalNode rtn1 = ( RuleTerminalNode) beta.getSinkPropagator().getSinks()[0];
+        JoinNode bNode = ( JoinNode ) beta.getSinkPropagator().getSinks()[1];
         RuleTerminalNode rtn2 = ( RuleTerminalNode) bNode.getSinkPropagator().getSinks()[0];
         
         JoinNode cNode = ( JoinNode ) bNode.getSinkPropagator().getSinks()[1];
         RuleTerminalNode rtn3 = ( RuleTerminalNode) cNode.getSinkPropagator().getSinks()[0];        
                 
+        wm.insert( new LinkingTest.D() );
         wm.insert( new LinkingTest.A() );
         wm.insert( new LinkingTest.B() );
         wm.insert(new LinkingTest.C());
         wm.flushPropagations();
 
         // LiaNode  is in it's own segment
-        LiaNodeMemory liaMem = ( LiaNodeMemory ) wm.getNodeMemory( liaNode ); 
-        SegmentMemory smem = liaMem.getSegmentMemory();
-        assertEquals( liaNode, smem.getRootNode() );
-        assertEquals( liaNode, smem.getTipNode() );
-        
-        SegmentMemory rtnSmem1 = smem.getFirst();
-        assertEquals( rtn1, rtnSmem1.getRootNode() );
-        assertEquals( rtn1, rtnSmem1.getTipNode() );
-        
-        SegmentMemory bSmem = rtnSmem1.getNext();
-        assertEquals( bNode, bSmem.getRootNode() );
-        assertEquals( bNode, bSmem.getTipNode() );  
+        BetaMemory betaMem = (BetaMemory ) wm.getNodeMemory( beta );
+        SegmentMemory smem = betaMem.getSegmentMemory();
+        assertEquals( lian, smem.getRootNode() );
+        assertEquals( beta, smem.getTipNode() );
         
         // child segment is not yet initialised, so null
-        assertNull( bSmem.getFirst() );
+        assertNull( smem.getFirst() );
         
         // there is no next
-        assertNull( bSmem.getNext() );
+        assertNull( smem.getNext() );
         
         wm.fireAllRules(); // child segments should now be initialised
         wm.flushPropagations();
+
+        SegmentMemory rtnSmem1 = smem.getFirst();
+        assertEquals( rtn1, rtnSmem1.getRootNode() );
+        assertEquals( rtn1, rtnSmem1.getTipNode() );
+
+        SegmentMemory bSmem = rtnSmem1.getNext();
+        assertEquals( bNode, bSmem.getRootNode() );
+        assertEquals( bNode, bSmem.getTipNode() );
 
         SegmentMemory rtnSmem2 = bSmem.getFirst();
         assertEquals( rtn2, rtnSmem2.getRootNode() );
@@ -255,33 +262,36 @@ public class SegmentCreationTest {
     
     @Test
     public void tesSubnetworkAfterShare() throws Exception {
-        KieBase kbase = buildKnowledgeBase( "   A() \n", 
-                                                  "   A()  not ( B() and C() ) \n" );
+        KieBase kbase = buildKnowledgeBase( "  D() A() \n",
+                                                  "   D() A()  not ( B() and C() ) \n" );
 
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
+        ObjectTypeNode dotn = getObjectTypeNode(kbase, LinkingTest.D.class );
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
-        RuleTerminalNode rtn1 = ( RuleTerminalNode) liaNode.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode lian = (LeftInputAdapterNode) dotn.getObjectSinkPropagator().getSinks()[0];
+
+        JoinNode joinNode = (JoinNode) aotn.getObjectSinkPropagator().getSinks()[0];
+        RuleTerminalNode rtn1 = ( RuleTerminalNode) joinNode.getSinkPropagator().getSinks()[0];
         
-        JoinNode bNode = ( JoinNode ) liaNode.getSinkPropagator().getSinks()[1];
+        JoinNode bNode = ( JoinNode ) joinNode.getSinkPropagator().getSinks()[1];
         JoinNode cNode = ( JoinNode ) bNode.getSinkPropagator().getSinks()[0];
         RightInputAdapterNode riaNode = ( RightInputAdapterNode ) cNode.getSinkPropagator().getSinks()[0];
         
-        NotNode notNode = ( NotNode ) liaNode.getSinkPropagator().getSinks()[2];
+        NotNode notNode = ( NotNode ) joinNode.getSinkPropagator().getSinks()[2];
         RuleTerminalNode rtn2 = ( RuleTerminalNode) notNode.getSinkPropagator().getSinks()[0];
                
+        wm.insert( new LinkingTest.D() );
         wm.insert( new LinkingTest.A() );
         wm.insert( new LinkingTest.B() );
         wm.insert( new LinkingTest.C() );
-        wm.flushPropagations();
+        wm.fireAllRules();
 
-        // LiaNode  is in it's own segment
-        LiaNodeMemory liaMem = ( LiaNodeMemory ) wm.getNodeMemory( liaNode ); 
+        BetaMemory liaMem = ( BetaMemory ) wm.getNodeMemory( joinNode );
         SegmentMemory smem = liaMem.getSegmentMemory();
-        assertEquals( liaNode, smem.getRootNode() );
-        assertEquals( liaNode, smem.getTipNode() );
+        assertEquals( lian, smem.getRootNode() );
+        assertEquals( joinNode, smem.getTipNode() );
         
         SegmentMemory rtnSmem1 = smem.getFirst();
         assertEquals( rtn1, rtnSmem1.getRootNode() );
@@ -301,48 +311,52 @@ public class SegmentCreationTest {
     
     @Test
     public void tesShareInSubnetwork() throws Exception {
-        KieBase kbase = buildKnowledgeBase( "   A() \n", 
-                                                  "   A() B() C() \n",
-                                                  "   A()  not ( B() and C() ) \n" );
+        KieBase kbase = buildKnowledgeBase( "  D() A() \n",
+                                                  "   D() A() B() C() \n",
+                                                  "   D() A()  not ( B() and C() ) \n" );
 
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
+        ObjectTypeNode dotn = getObjectTypeNode(kbase, LinkingTest.D.class );
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
-        RuleTerminalNode rtn1 = ( RuleTerminalNode) liaNode.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode lian = (LeftInputAdapterNode) dotn.getObjectSinkPropagator().getSinks()[0];
+
+        JoinNode beta = (JoinNode) aotn.getObjectSinkPropagator().getSinks()[0];
+        RuleTerminalNode rtn1 = ( RuleTerminalNode) beta.getSinkPropagator().getSinks()[0];
         
-        JoinNode bNode = ( JoinNode ) liaNode.getSinkPropagator().getSinks()[1];
+        JoinNode bNode = ( JoinNode ) beta.getSinkPropagator().getSinks()[1];
         JoinNode cNode = ( JoinNode ) bNode.getSinkPropagator().getSinks()[0];
         RuleTerminalNode rtn2 = ( RuleTerminalNode ) cNode.getSinkPropagator().getSinks()[0];
         RightInputAdapterNode riaNode = ( RightInputAdapterNode ) cNode.getSinkPropagator().getSinks()[1];
         
-        NotNode notNode = ( NotNode ) liaNode.getSinkPropagator().getSinks()[2];
+        NotNode notNode = ( NotNode ) beta.getSinkPropagator().getSinks()[2];
         RuleTerminalNode rtn3 = ( RuleTerminalNode) notNode.getSinkPropagator().getSinks()[0];
                
+        wm.insert( new LinkingTest.D() );
         wm.insert( new LinkingTest.A() );
         wm.insert( new LinkingTest.B() );
         wm.insert( new LinkingTest.C() );
         wm.flushPropagations();
 
         // LiaNode  is in it's own segment
-        LiaNodeMemory liaMem = ( LiaNodeMemory ) wm.getNodeMemory( liaNode ); 
+        LiaNodeMemory liaMem = ( LiaNodeMemory ) wm.getNodeMemory( lian );
         SegmentMemory smem = liaMem.getSegmentMemory();
-        assertEquals( liaNode, smem.getRootNode() );
-        assertEquals( liaNode, smem.getTipNode() );
-        
+        assertEquals( lian, smem.getRootNode() );
+        assertEquals( beta, smem.getTipNode() );
+
+        assertNull(  smem.getFirst() ); // segment is not initialized yet
+
+        wm.fireAllRules();
+
         SegmentMemory rtnSmem1 = smem.getFirst();
         assertEquals( rtn1, rtnSmem1.getRootNode() );
         assertEquals( rtn1, rtnSmem1.getTipNode() );
-        
+
         SegmentMemory bSmem = rtnSmem1.getNext();
         assertEquals( bNode, bSmem.getRootNode() );
         assertEquals( cNode, bSmem.getTipNode() );
-        
-        assertNull(  bSmem.getFirst() ); // segment is not initialized yet
-        
-        wm.fireAllRules();
-        
+
         SegmentMemory rtn2Smem = bSmem.getFirst();
         assertEquals( rtn2, rtn2Smem.getRootNode() );
         assertEquals( rtn2, rtn2Smem.getTipNode() ); 
@@ -405,11 +419,11 @@ public class SegmentCreationTest {
 
     @Test
     public void testBranchCEMultipleSegments() throws Exception {
-        KieBase kbase = buildKnowledgeBase( "   $a : A() \n", // r1
-                                                  "   $a : A() \n" +
+        KieBase kbase = buildKnowledgeBase( "  D() $a : A() \n", // r1
+                                                  "  D()  $a : A() \n" +
                                                   "   if ( $a != null ) do[t1] \n" +
                                                   "   B() \n", // r2
-                                                  "   $a : A() \n"+
+                                                  "  D() $a : A() \n"+
                                                   "   if ( $a != null ) do[t1] \n" +
                                                   "   B() \n" +
                                                   "   C() \n" // r3
@@ -419,7 +433,7 @@ public class SegmentCreationTest {
 
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
+        LeftTupleSource liaNode = (LeftTupleSource) aotn.getObjectSinkPropagator().getSinks()[0];
 
         ConditionalBranchNode cen1Node = ( ConditionalBranchNode ) liaNode.getSinkPropagator().getSinks()[1];
         JoinNode bNode = ( JoinNode ) cen1Node.getSinkPropagator().getSinks()[0];
@@ -454,6 +468,7 @@ public class SegmentCreationTest {
         assertEquals( 1, cNodeSmem.getAllLinkedMaskTest() );
         assertEquals( 1, cNodeSmem.getLinkedNodeMask() );
 
+        wm.insert(new LinkingTest.D());
         wm.insert(new LinkingTest.A());
         wm.flushPropagations();
 
@@ -477,6 +492,7 @@ public class SegmentCreationTest {
         str += "import " + LinkingTest.A.class.getCanonicalName() + "\n" ;
         str += "import " + LinkingTest.B.class.getCanonicalName() + "\n" ;
         str += "import " + LinkingTest.C.class.getCanonicalName() + "\n" ;
+        str += "import " + LinkingTest.D.class.getCanonicalName() + "\n" ;
         str += "global java.util.List list \n";
 
         int i = 0;

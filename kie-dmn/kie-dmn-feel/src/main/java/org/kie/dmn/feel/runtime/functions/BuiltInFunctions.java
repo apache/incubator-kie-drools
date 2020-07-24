@@ -19,6 +19,20 @@ package org.kie.dmn.feel.runtime.functions;
 import java.util.stream.Stream;
 
 import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.feel.runtime.functions.interval.AfterFunction;
+import org.kie.dmn.feel.runtime.functions.interval.BeforeFunction;
+import org.kie.dmn.feel.runtime.functions.interval.CoincidesFunction;
+import org.kie.dmn.feel.runtime.functions.interval.DuringFunction;
+import org.kie.dmn.feel.runtime.functions.interval.FinishedByFunction;
+import org.kie.dmn.feel.runtime.functions.interval.FinishesFunction;
+import org.kie.dmn.feel.runtime.functions.interval.IncludesFunction;
+import org.kie.dmn.feel.runtime.functions.interval.MeetsFunction;
+import org.kie.dmn.feel.runtime.functions.interval.MetByFunction;
+import org.kie.dmn.feel.runtime.functions.interval.OverlapsAfterFunction;
+import org.kie.dmn.feel.runtime.functions.interval.OverlapsBeforeFunction;
+import org.kie.dmn.feel.runtime.functions.interval.OverlapsFunction;
+import org.kie.dmn.feel.runtime.functions.interval.StartedByFunction;
+import org.kie.dmn.feel.runtime.functions.interval.StartsFunction;
 
 public class BuiltInFunctions {
 
@@ -87,6 +101,22 @@ public class BuiltInFunctions {
             WeekOfYearFunction.INSTANCE,
             
             IsFunction.INSTANCE,
+            
+            // Interval based logic
+            AfterFunction.INSTANCE,
+            BeforeFunction.INSTANCE,
+            CoincidesFunction.INSTANCE,
+            StartsFunction.INSTANCE,
+            StartedByFunction.INSTANCE,
+            FinishesFunction.INSTANCE,
+            FinishedByFunction.INSTANCE,
+            DuringFunction.INSTANCE,
+            IncludesFunction.INSTANCE,
+            OverlapsFunction.INSTANCE,
+            OverlapsBeforeFunction.INSTANCE,
+            OverlapsAfterFunction.INSTANCE,
+            MeetsFunction.INSTANCE,
+            MetByFunction.INSTANCE
             };
 
     public static FEELFunction[] getFunctions() {

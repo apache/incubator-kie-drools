@@ -1,0 +1,117 @@
+package compoundpredicatestreemodel
+
+import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder
+import org.dmg.pmml.SimplePredicate
+import org.kie.api.pmml.PMML4Result
+
+global PMML4Result $pmml4Result
+
+declare  RESULT
+
+    value : String
+end
+
+declare  INPUT1
+
+    value : double
+end
+
+declare  INPUT2
+
+    value : double
+end
+
+declare  INPUT3
+
+    value : double
+end
+
+
+rule "_classRootNode"
+when
+    $statusHolder : KiePMMLStatusHolder( status == null )
+then
+
+$statusHolder.setStatus("_classRootNode");
+update($statusHolder);
+
+end
+
+rule "_classRootNode_classOrAndNestedNode"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_classRootNode" )
+    (
+    INPUT1( value < -5.0 )  or
+
+    INPUT2( value < -5.0 && value > -10.0 )   )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "classOrAndNestedNode");
+
+end
+
+rule "_classRootNode_classOrNode"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_classRootNode" )
+    (
+    INPUT1( value == 2.0 )  or
+    INPUT2( value == 3.5 )  )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "classOrNode");
+
+end
+
+rule "_classRootNode_classAndNode"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_classRootNode" )
+    INPUT2( value >= 8.0 )
+    INPUT3( value > 8.5 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "classAndNode");
+
+end
+
+rule "_classRootNode_classXorNode"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_classRootNode" )
+    (
+    not(
+    (
+    INPUT1( value == 6.0 )  and
+    INPUT1( value == 7.0 )  )  ) and
+    exists(
+    (
+    INPUT1( value == 6.0 )  or
+
+    INPUT1( value == 7.0 )   )  ) )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "classXorNode");
+
+end
+
+rule "default__classRootNode"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_classRootNode" )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "classRootNode");
+
+end

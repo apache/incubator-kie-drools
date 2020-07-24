@@ -19,11 +19,19 @@ package org.drools.core.time;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.drools.core.common.InternalKnowledgeRuntime;
+
 /**
  * A trigger interface for scheduling jobs
  */
 public interface Trigger extends Serializable {
-    
+
+    /**
+     * this method will be called before any job being called to provide some context 
+     * to trigger
+     * @param runtime
+     */
+    default void initialize(InternalKnowledgeRuntime runtime) {}
     /**
      * This method is used to query the trigger about the existence of a
      * possible next fire time, but WITHOUT changing any internal state 

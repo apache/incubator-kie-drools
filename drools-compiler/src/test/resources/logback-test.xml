@@ -13,6 +13,8 @@
   <logger name="org.drools.core.management" level="debug"/>
   <!--<logger name="org.drools.compiler.reteoo.compiled" level="debug"/>-->
 
+  <logger name="org.drools.metric.util.MetricLogUtils" level="trace"/>
+
   <root level="warn">
     <appender-ref ref="consoleAppender" />
   </root>

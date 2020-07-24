@@ -155,25 +155,19 @@ public class SessionConfigurationImpl extends SessionConfiguration {
             this.chainedProperties.addProperties( properties );
         }
 
-        setKeepReference(Boolean.valueOf(this.chainedProperties.getProperty(KeepReferenceOption.PROPERTY_NAME, "true")));
+        setKeepReference(Boolean.valueOf( getPropertyValue( KeepReferenceOption.PROPERTY_NAME, "true" ) ));
 
-        setForceEagerActivationFilter(ForceEagerActivationOption.resolve(this.chainedProperties.getProperty(ForceEagerActivationOption.PROPERTY_NAME,
-                                                                                                            "false")).getFilter());
+        setForceEagerActivationFilter(ForceEagerActivationOption.resolve( getPropertyValue( ForceEagerActivationOption.PROPERTY_NAME, "false" ) ).getFilter());
 
-        setTimedRuleExecutionFilter(TimedRuleExecutionOption.resolve(this.chainedProperties.getProperty(TimedRuleExecutionOption.PROPERTY_NAME,
-                                                                                                       "false")).getFilter());
+        setTimedRuleExecutionFilter(TimedRuleExecutionOption.resolve( getPropertyValue( TimedRuleExecutionOption.PROPERTY_NAME, "false" ) ).getFilter());
 
-        setBeliefSystemType( BeliefSystemType.resolveBeliefSystemType( this.chainedProperties.getProperty( BeliefSystemTypeOption.PROPERTY_NAME,
-                                                                                                           BeliefSystemType.SIMPLE.getId())) );
+        setBeliefSystemType( BeliefSystemType.resolveBeliefSystemType( getPropertyValue( BeliefSystemTypeOption.PROPERTY_NAME, BeliefSystemType.SIMPLE.getId() ) ) );
 
-        setClockType( ClockType.resolveClockType( this.chainedProperties.getProperty( ClockTypeOption.PROPERTY_NAME,
-                                                                                      ClockType.REALTIME_CLOCK.getId() ) ) );
+        setClockType( ClockType.resolveClockType( getPropertyValue( ClockTypeOption.PROPERTY_NAME, ClockType.REALTIME_CLOCK.getId() ) ) );
 
-        setQueryListenerOption( QueryListenerOption.determineQueryListenerClassOption( this.chainedProperties.getProperty( QueryListenerOption.PROPERTY_NAME,
-                                                                                                                           QueryListenerOption.STANDARD.getAsString() ) ) );
+        setQueryListenerOption( QueryListenerOption.determineQueryListenerClassOption( getPropertyValue( QueryListenerOption.PROPERTY_NAME, QueryListenerOption.STANDARD.getAsString() ) ) );
 
-        setTimerJobFactoryType(TimerJobFactoryType.resolveTimerJobFactoryType(this.chainedProperties.getProperty(TimerJobFactoryOption.PROPERTY_NAME,
-                                                                                                                 TimerJobFactoryType.THREAD_SAFE_TRACKABLE.getId())));
+        setTimerJobFactoryType(TimerJobFactoryType.resolveTimerJobFactoryType( getPropertyValue( TimerJobFactoryOption.PROPERTY_NAME, TimerJobFactoryType.THREAD_SAFE_TRACKABLE.getId() ) ));
     }
 
     public SessionConfigurationImpl addDefaultProperties(Properties properties) {
@@ -291,7 +285,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
         this.workItemHandlers = new HashMap<String, WorkItemHandler>();
 
         // split on each space
-        String locations[] = this.chainedProperties.getProperty( "drools.workItemHandlers", "" ).split( "\\s" );
+        String locations[] = getPropertyValue( "drools.workItemHandlers", "" ).split( "\\s" );
 
         // load each SemanticModule
         for ( String factoryLocation : locations ) {
@@ -334,8 +328,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
 
     @SuppressWarnings("unchecked")
     private void initWorkItemManagerFactory() {
-        String className = this.chainedProperties.getProperty( "drools.workItemManagerFactory",
-                                                               "org.drools.core.process.instance.impl.DefaultWorkItemManagerFactory" );
+        String className = getPropertyValue( "drools.workItemManagerFactory", "org.drools.core.process.instance.impl.DefaultWorkItemManagerFactory" );
         Class<WorkItemManagerFactory> clazz = null;
         try {
             clazz = (Class<WorkItemManagerFactory>) this.classLoader.loadClass( className );
@@ -355,13 +348,11 @@ public class SessionConfigurationImpl extends SessionConfiguration {
     }
 
     public String getProcessInstanceManagerFactory() {
-        return this.chainedProperties.getProperty( "drools.processInstanceManagerFactory",
-                                                   "org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory" );
+        return getPropertyValue( "drools.processInstanceManagerFactory", "org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory" );
     }
 
     public String getSignalManagerFactory() {
-        return this.chainedProperties.getProperty( "drools.processSignalManagerFactory",
-                                                   "org.jbpm.process.instance.event.DefaultSignalManagerFactory" );
+        return getPropertyValue( "drools.processSignalManagerFactory", "org.jbpm.process.instance.event.DefaultSignalManagerFactory" );
     }
 
     public ExecutableRunner getRunner( KieBase kbase, Environment environment ) {
@@ -375,8 +366,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
     @SuppressWarnings("unchecked")
     private void initCommandService(KieBase kbase,
                                     Environment environment) {
-        String className = this.chainedProperties.getProperty( "drools.commandService",
-                                                               null );
+        String className = getPropertyValue( "drools.commandService", null );
         if ( className == null ) {
             return;
         }
@@ -404,12 +394,10 @@ public class SessionConfigurationImpl extends SessionConfiguration {
     }
 
     public TimerService newTimerService() {
-        String className = this.chainedProperties.getProperty( "drools.timerService",
-                                                               "org.drools.core.time.impl.JDKTimerService" );
+        String className = getPropertyValue( "drools.timerService", "org.drools.core.time.impl.JDKTimerService" );
         if ( className == null ) {
             return null;
         }
-
         Class<TimerService> clazz = null;
         try {
             clazz = (Class<TimerService>) this.classLoader.loadClass( className );
@@ -420,20 +408,24 @@ public class SessionConfigurationImpl extends SessionConfiguration {
             try {
                 return clazz.newInstance();
             } catch ( Exception e ) {
-                
+
                 throw new IllegalArgumentException(
-                                                    "Unable to instantiate timer service '" + className
-                                                            + "'",
-                                                    e );
+                        "Unable to instantiate timer service '" + className
+                                + "'",
+                        e );
             }
         } else {
             try {
                 return (TimerService) MVELSafeHelper.getEvaluator().eval(className);
             } catch (Exception e) {
                 throw new IllegalArgumentException( "Timer service '" + className
-                                                + "' not found", e );
+                        + "' not found", e );
             }
         }
+    }
+
+    public String getPropertyValue( String name, String defaultValue ) {
+        return this.chainedProperties.getProperty( name, defaultValue );
     }
 
     public QueryListenerOption getQueryListenerOption() {

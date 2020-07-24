@@ -76,57 +76,52 @@ public class KnowledgePackageImpl
     private static final String[] implicitImports = new String[]{
             "org.kie.api.definition.rule.*",
             "org.kie.api.definition.type.*",
-            "org.drools.core.factmodel.traits.Alias",
-            "org.drools.core.factmodel.traits.Trait",
-            "org.drools.core.factmodel.traits.Traitable",
             "org.drools.core.beliefsystem.abductive.Abductive",
             "org.drools.core.beliefsystem.abductive.Abducible"};
 
     /**
      * Name of the pkg.
      */
-    private String name;
+    protected String name;
 
     /**
      * Set of all rule-names in this <code>Package</code>.
      */
-    private Map<String, RuleImpl> rules = new LinkedHashMap<>();
+    protected Map<String, RuleImpl> rules = new LinkedHashMap<>();
 
-    private Map<String, ImportDeclaration> imports = new HashMap<>();
+    protected Map<String, ImportDeclaration> imports = new HashMap<>();
 
-    private Map<String, Function> functions;
+    protected Map<String, Function> functions;
 
-    private Map<String, AccumulateFunction> accumulateFunctions;
+    protected Map<String, AccumulateFunction> accumulateFunctions;
 
-    private Set<String> staticImports;
+    protected Set<String> staticImports;
 
-    private Map<String, Class<?>> globals;
+    protected Map<String, Class<?>> globals;
 
-    private Map<String, FactTemplate> factTemplates;
+    protected Map<String, FactTemplate> factTemplates;
 
-    private DialectRuntimeRegistry dialectRuntimeRegistry;
+    protected DialectRuntimeRegistry dialectRuntimeRegistry;
 
-    private Map<String, TypeDeclaration> typeDeclarations = new ConcurrentHashMap<>();
+    protected Map<String, TypeDeclaration> typeDeclarations = new ConcurrentHashMap<>();
 
-    private Set<String> entryPointsIds;
+    protected Set<String> entryPointsIds;
 
-    private Map<String, WindowDeclaration> windowDeclarations;
+    protected Map<String, WindowDeclaration> windowDeclarations;
 
-    private ClassFieldAccessorStore classFieldAccessorStore;
+    protected ClassFieldAccessorStore classFieldAccessorStore;
 
-    private TraitRegistry traitRegistry;
+    protected ResourceTypePackageRegistry resourceTypePackages;
 
-    private ResourceTypePackageRegistry resourceTypePackages;
-
-    private Map<String, Object> cloningResources = new HashMap<>();
+    protected Map<String, Object> cloningResources = new HashMap<>();
 
     /**
      * This is to indicate the the package has no errors during the
      * compilation/building phase
      */
-    private boolean valid = true;
+    protected boolean valid = true;
 
-    private boolean needStreamMode = false;
+    protected boolean needStreamMode = false;
 
     /**
      * This will keep a summary error message as to why this package is not
@@ -265,7 +260,6 @@ public class KnowledgePackageImpl
             out.writeObject(this.rules);
             out.writeObject(this.entryPointsIds);
             out.writeObject(this.windowDeclarations);
-            out.writeObject(this.traitRegistry);
             out.writeObject(this.resourceTypePackages);
         } finally {
             // writing the whole stream as a byte array
@@ -314,7 +308,6 @@ public class KnowledgePackageImpl
         this.rules = (Map<String, RuleImpl>) in.readObject();
         this.entryPointsIds = (Set<String>) in.readObject();
         this.windowDeclarations = (Map<String, WindowDeclaration>) in.readObject();
-        this.traitRegistry = (TraitRegistry) in.readObject();
         this.resourceTypePackages = (ResourceTypePackageRegistry) in.readObject();
 
         in.setStore(null);
@@ -654,10 +647,14 @@ public class KnowledgePackageImpl
         }
         this.typeResolver = new ClassTypeResolver(new HashSet<String>(getImports().keySet()), classLoader, getName());
         typeResolver.addImport(getName() + ".*");
-        for (String implicitImport : implicitImports) {
+        for (String implicitImport : getImplicitImports()) {
             typeResolver.addImplicitImport(implicitImport);
         }
         this.ruleUnitDescriptionLoader = new RuleUnitDescriptionLoader(this);
+    }
+
+    protected String[] getImplicitImports() {
+        return implicitImports;
     }
 
     public RuleUnitDescriptionLoader getRuleUnitDescriptionLoader() {
@@ -673,17 +670,6 @@ public class KnowledgePackageImpl
 
     public Map<String, WindowDeclaration> getWindowDeclarations() {
         return windowDeclarations;
-    }
-
-    public boolean hasTraitRegistry() {
-        return traitRegistry != null;
-    }
-
-    public TraitRegistry getTraitRegistry() {
-        if (traitRegistry == null) {
-            traitRegistry = new TraitRegistry();
-        }
-        return traitRegistry;
     }
 
     public boolean removeObjectsGeneratedFromResource(Resource resource) {
@@ -835,6 +821,16 @@ public class KnowledgePackageImpl
         }
         
         return clonedPkg;
+    }
+
+    @Override
+    public boolean hasTraitRegistry() {
+        return false;
+    }
+
+    @Override
+    public TraitRegistry getTraitRegistry() {
+        return null;
     }
 
     @Override

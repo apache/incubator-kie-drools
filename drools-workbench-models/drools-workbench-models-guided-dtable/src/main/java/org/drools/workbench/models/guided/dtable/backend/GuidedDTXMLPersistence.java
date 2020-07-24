@@ -23,6 +23,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.workbench.models.guided.dtable.backend.util.GuidedDecisionTableUpgradeHelper1;
 import org.drools.workbench.models.guided.dtable.backend.util.GuidedDecisionTableUpgradeHelper2;
 import org.drools.workbench.models.guided.dtable.backend.util.GuidedDecisionTableUpgradeHelper3;
+import org.drools.workbench.models.guided.dtable.backend.util.GuidedDecisionTableUpgradeHelper4;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
@@ -39,7 +40,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.legacy.AttributeCo
 import org.drools.workbench.models.guided.dtable.shared.model.legacy.ConditionCol;
 import org.drools.workbench.models.guided.dtable.shared.model.legacy.GuidedDecisionTable;
 import org.drools.workbench.models.guided.dtable.shared.model.legacy.MetadataCol;
-import org.kie.soup.commons.xstream.XStreamUtils;
+import org.kie.soup.xstream.XStreamUtils;
 
 @SuppressWarnings("deprecation")
 public class GuidedDTXMLPersistence {
@@ -48,6 +49,7 @@ public class GuidedDTXMLPersistence {
     private static final GuidedDecisionTableUpgradeHelper1 upgrader1 = new GuidedDecisionTableUpgradeHelper1();
     private static final GuidedDecisionTableUpgradeHelper2 upgrader2 = new GuidedDecisionTableUpgradeHelper2();
     private static final GuidedDecisionTableUpgradeHelper3 upgrader3 = new GuidedDecisionTableUpgradeHelper3();
+    private static final GuidedDecisionTableUpgradeHelper4 upgrader4 = new GuidedDecisionTableUpgradeHelper4();
     private static final GuidedDTXMLPersistence INSTANCE = new GuidedDTXMLPersistence();
 
     private GuidedDTXMLPersistence() {
@@ -117,6 +119,9 @@ public class GuidedDTXMLPersistence {
     }
 
     public String marshal( GuidedDecisionTable52 dt ) {
+
+        dt.setVersion(GuidedDecisionTable52.serialVersionUID);
+
         return xt.toXML( dt );
     }
 
@@ -134,6 +139,9 @@ public class GuidedDTXMLPersistence {
         } else {
             newDTModel = (GuidedDecisionTable52) model;
         }
+
+        //Row name column
+        newDTModel = upgrader4.upgrade( newDTModel );
 
         //Upgrade RowNumber, Salience and Duration data-types are correct
         newDTModel = upgrader2.upgrade( newDTModel );

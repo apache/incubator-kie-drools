@@ -28,16 +28,19 @@ import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.Expression;
 import org.kie.dmn.model.api.FunctionDefinition;
 import org.kie.dmn.model.api.Invocation;
+import org.kie.dmn.model.api.List;
 import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.api.Relation;
+import org.kie.dmn.model.api.dmndi.DMNEdge;
+import org.kie.dmn.model.api.dmndi.DMNShape;
 
 public final class MarshallingUtils {
 
     private final static Pattern QNAME_PAT = Pattern.compile("(\\{([^\\}]*)\\})?(([^:]*):)?(.*)");
 
     public static QName parseQNameString(String qns) {
-        if ( qns != null ) {
-            Matcher m = QNAME_PAT.matcher( qns );
+        if (qns != null) {
+            Matcher m = QNAME_PAT.matcher(qns);
             if (m.matches()) {
                 if (m.group(4) != null) {
                     return new QName(m.group(2), m.group(5), m.group(4));
@@ -45,18 +48,20 @@ public final class MarshallingUtils {
                     return new QName(m.group(2), m.group(5));
                 }
             } else {
-                return new QName( qns );
+                return new QName(qns);
             }
         } else {
             return null;
         }
     }
-    
+
     public static String formatQName(QName qname, DMNModelInstrumentedBase parent) {
         if (!XMLConstants.DEFAULT_NS_PREFIX.equals(qname.getPrefix())) {
             String nsForPrefix = parent.getNamespaceURI(qname.getPrefix());
             if (parent.getURIFEEL().equals(nsForPrefix)) {
                 return qname.getLocalPart(); // DMN v1.2 feel comes without a prefix.
+            } else if (parent instanceof DMNShape || parent instanceof DMNEdge) {
+                return qname.getPrefix() + ":" + qname.getLocalPart();
             } else {
                 return qname.getPrefix() + "." + qname.getLocalPart(); // DMN v1.2 namespace typeRef lookup is done with dot.
             }
@@ -65,9 +70,6 @@ public final class MarshallingUtils {
         }
     }
 
-    /**
-     * TODO missing what-if in the case of List..
-     */
     public static String defineExpressionNodeName(Expression e) {
         String nodeName = "expression";
         if (e instanceof Context) {
@@ -82,6 +84,8 @@ public final class MarshallingUtils {
             nodeName = "literalExpression";
         } else if (e instanceof Relation) {
             nodeName = "relation";
+        } else if (e instanceof List) {
+            nodeName = "list";
         }
         return nodeName;
     }

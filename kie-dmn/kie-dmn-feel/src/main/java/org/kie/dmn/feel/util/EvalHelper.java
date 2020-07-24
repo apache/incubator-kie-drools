@@ -43,6 +43,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 
+import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.lang.types.BuiltInType;
@@ -233,7 +234,7 @@ public class EvalHelper {
                             case '\\':
                                 r.append( '\\' );
                                 break;
-                            case 'u': {
+                            case 'u':
                                 if ( text.length() >= i + 5 ) {
                                     // escape unicode
                                     String hex = text.substring( i + 1, i + 5 );
@@ -245,7 +246,18 @@ public class EvalHelper {
                                     r.append( "\\" ).append( cn );
                                 }
                                 break;
-                            }
+                            case 'U':
+                                if ( text.length() >= i + 7 ) {
+                                    // escape unicode
+                                    String hex = text.substring( i + 1, i + 7 );
+                                    char[] chars = Character.toChars( Integer.parseInt( hex, 16 ) );
+                                    r.append( chars );
+                                    i += 6;
+                                } else {
+                                    // not really unicode
+                                    r.append( "\\" ).append( cn );
+                                }
+                                break;
                             default:
                                 r.append( "\\" ).append( cn );
                         }
@@ -261,7 +273,7 @@ public class EvalHelper {
         return text;
     }
 
-    public static class PropertyValueResult {
+    public static class PropertyValueResult implements FEELPropertyAccessible.AbstractPropertyValueResult {
 
         private final boolean defined;
         private final Either<Exception, Object> valueResult;
@@ -289,6 +301,11 @@ public class EvalHelper {
 
         public Either<Exception, Object> getValueResult() {
             return valueResult;
+        }
+
+        @Override
+        public Optional<Object> toOptional() {
+            return valueResult.cata(l -> Optional.empty(), Optional::of);
         }
 
     }

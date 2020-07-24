@@ -36,7 +36,7 @@ public class RowAdapter implements Row {
     }
 
     private InternalFactHandle getFactHandle(Declaration declr) {
-        return this.factHandles[  declr.getPattern().getOffset() ];
+        return this.factHandles[ declr.getOffset() ];
     }
 
     public Object get(String identifier) {

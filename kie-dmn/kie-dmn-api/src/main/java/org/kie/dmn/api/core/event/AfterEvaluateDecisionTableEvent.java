@@ -18,15 +18,11 @@ package org.kie.dmn.api.core.event;
 
 import java.util.List;
 
-import org.kie.dmn.api.core.DMNResult;
-
-public interface AfterEvaluateDecisionTableEvent {
+public interface AfterEvaluateDecisionTableEvent extends DMNEvent {
 
     String getNodeName();
 
     String getDecisionTableName();
-
-    DMNResult getResult();
 
     List<Integer> getMatches();
 

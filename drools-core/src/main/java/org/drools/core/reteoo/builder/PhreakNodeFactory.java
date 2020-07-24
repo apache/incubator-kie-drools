@@ -28,6 +28,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AlphaNode;
+import org.drools.core.reteoo.AlphaTerminalNode;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.AsyncSendNode;
 import org.drools.core.reteoo.ConditionalBranchEvaluator;
@@ -49,7 +50,6 @@ import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
-import org.drools.core.reteoo.TraitObjectTypeNode;
 import org.drools.core.reteoo.TraitProxyObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Accumulate;
@@ -92,16 +92,8 @@ public class PhreakNodeFactory implements NodeFactory, Serializable {
         return new RuleTerminalNode( id, source, rule, subrule, subruleIndex, context );
     }
 
-    public ObjectTypeNode buildObjectTypeNode( int id, EntryPointNode objectSource, ObjectType objectType, BuildContext context ) {
-        if ( objectType.getValueType().equals( ValueType.TRAIT_TYPE ) ) {
-            if ( TraitProxy.class.isAssignableFrom( ( (ClassObjectType) objectType ).getClassType() ) ) {
-                return new TraitProxyObjectTypeNode( id, objectSource, objectType, context );
-            } else {
-                return new TraitObjectTypeNode( id, objectSource, objectType, context );
-            }
-        } else {
-            return new ObjectTypeNode( id, objectSource, objectType, context );
-        }
+    public ObjectTypeNode buildObjectTypeNode(int id, EntryPointNode objectSource, ObjectType objectType, BuildContext context) {
+        return new ObjectTypeNode(id, objectSource, objectType, context);
     }
 
     public EvalConditionNode buildEvalNode(final int id,
@@ -133,8 +125,8 @@ public class PhreakNodeFactory implements NodeFactory, Serializable {
         return new AccumulateNode( id, leftInput, rightInput, resultConstraints, sourceBinder,resultBinder, accumulate, unwrapRightObject, context );
     }
 
-    public LeftInputAdapterNode buildLeftInputAdapterNode( int id, ObjectSource objectSource, BuildContext context ) {
-        return new LeftInputAdapterNode( id, objectSource, context );
+    public LeftInputAdapterNode buildLeftInputAdapterNode( int id, ObjectSource objectSource, BuildContext context, boolean terminal ) {
+        return terminal ? new AlphaTerminalNode( id, objectSource, context ) : new LeftInputAdapterNode( id, objectSource, context );
     }
 
     public TerminalNode buildQueryTerminalNode(int id, LeftTupleSource source, RuleImpl rule, GroupElement subrule, int subruleIndex, BuildContext context) {

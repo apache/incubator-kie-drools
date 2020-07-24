@@ -50,6 +50,7 @@ import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
+import org.drools.modelcompiler.builder.generator.ToMethodCall;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
@@ -63,10 +64,12 @@ import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
 import org.drools.mvel.parser.ast.expr.OOPathExpr;
 import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 
+import static com.github.javaparser.ast.expr.BinaryExpr.Operator.EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
+import static com.github.javaparser.ast.expr.BinaryExpr.Operator.NOT_EQUALS;
 import static org.drools.core.util.StringUtils.lcFirstForBean;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
@@ -103,7 +106,10 @@ public class ConstraintParser {
             if (hasBind) {
                 SingleDrlxParseSuccess singleResult = (SingleDrlxParseSuccess) result;
                 String bindId = drlx.getBind().asString();
-                context.addDeclaration( bindId, singleResult.getExprRawClass() );
+                DeclarationSpec decl = context.addDeclaration( bindId, singleResult.getExprRawClass() );
+                if (drlx.getExpr() instanceof NameExpr) {
+                    decl.setBoundVariable( drlx.getExpr().toString() );
+                }
                 singleResult.setExprBinding( bindId );
             }
         });
@@ -223,7 +229,13 @@ public class ConstraintParser {
     }
 
     private DrlxParseResult parseNameExpr(DrlNameExpr nameExpr, Class<?> patternType, String bindingId, Expression drlxExpr, boolean hasBind, String expression) {
-        TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, nameExpr, bindingId, patternType, context.getTypeResolver());
+        TypedExpression converted;
+        try {
+            converted = new ToMethodCall(context).toMethodCallWithClassCheck(nameExpr, bindingId, patternType);
+        } catch(ToMethodCall.CannotConvertException e) {
+            context.addCompilationError(e.getInvalidExpressionErrorResult());
+            converted = null;
+        }
         if (converted == null) {
             return new DrlxParseFail();
         }
@@ -247,9 +259,13 @@ public class ConstraintParser {
     }
 
     private DrlxParseResult parseFieldAccessExpr( FieldAccessExpr fieldCallExpr, Class<?> patternType, String bindingId ) {
-        TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, fieldCallExpr, bindingId, patternType, context.getTypeResolver());
+        ToMethodCall toMethodCall = new ToMethodCall(context);
+        TypedExpression converted = toMethodCall.toMethodCallWithClassCheck(fieldCallExpr, bindingId, patternType);
         Expression withThis = DrlxParseUtil.prepend(new NameExpr(THIS_PLACEHOLDER), converted.getExpression());
-        return new SingleDrlxParseSuccess(patternType, bindingId, withThis, converted.getType()).setLeft(converted );
+
+        return new SingleDrlxParseSuccess(patternType, bindingId, withThis, converted.getType())
+                .setLeft(converted)
+                .setImplicitCastExpression(toMethodCall.getImplicitCastExpression());
     }
 
     private DrlxParseResult parsePointFreeExpr(PointFreeExpr pointFreeExpr, Class<?> patternType, String bindingId, boolean isPositional) {
@@ -345,9 +361,11 @@ public class ConstraintParser {
             right = optRight.get();
         }
 
+        boolean equalityExpr = operator == EQUALS || operator == NOT_EQUALS;
+
         CoercedExpression.CoercedExpressionResult coerced;
         try {
-            coerced = new CoercedExpression(left, right).coerce();
+            coerced = new CoercedExpression(left, right, equalityExpr).coerce();
         } catch (CoercedExpression.CoercedExpressionException e) {
             return new DrlxParseFail(e.getInvalidExpressionErrorResult());
         }
@@ -357,22 +375,19 @@ public class ConstraintParser {
 
         Expression combo;
 
-        switch (operator) {
-            case EQUALS:
-            case NOT_EQUALS:
-                combo = getEqualityExpression(left, right, operator).expression;
-                break;
-            default:
-                if (left.getExpression() == null || right.getExpression() == null) {
-                    return new DrlxParseFail(new ParseExpressionErrorResult(drlxExpr));
-                }
-                SpecialComparisonResult specialComparisonResult = handleSpecialComparisonCases(operator, left, right);
-                combo = specialComparisonResult.expression;
-                left = specialComparisonResult.coercedLeft;
-                right = specialComparisonResult.coercedRight;
+        if (equalityExpr) {
+            combo = getEqualityExpression( left, right, operator ).expression;
+        } else {
+            if (left.getExpression() == null || right.getExpression() == null) {
+                return new DrlxParseFail(new ParseExpressionErrorResult(drlxExpr));
+            }
+            SpecialComparisonResult specialComparisonResult = handleSpecialComparisonCases(operator, left, right);
+            combo = specialComparisonResult.expression;
+            left = specialComparisonResult.coercedLeft;
+            right = specialComparisonResult.coercedRight;
         }
 
-        for(Expression e : leftTypedExpressionResult.getPrefixExpressions()) {
+        for (Expression e : leftTypedExpressionResult.getPrefixExpressions()) {
             combo = new BinaryExpr(e, combo, BinaryExpr.Operator.AND );
         }
 

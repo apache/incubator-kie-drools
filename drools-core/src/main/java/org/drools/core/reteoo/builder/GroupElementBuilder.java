@@ -16,6 +16,13 @@
 
 package org.drools.core.reteoo.builder;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.drools.core.InitialFact;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.TupleStartEqualsConstraint;
 import org.drools.core.reteoo.ExistsNode;
@@ -27,13 +34,10 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.GroupElement.Type;
+import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.BetaNodeFieldConstraint;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.kie.api.definition.rule.Propagation;
 
 public class GroupElementBuilder
         implements
@@ -102,16 +106,34 @@ public class GroupElementBuilder
 
             final GroupElement ge = (GroupElement) rce;
 
-            // iterate over each child and build it
-            for (final RuleConditionElement child : ge.getChildren()) {
+            if (ge.getChildren().size() == 1) {
+                RuleConditionElement child = ge.getChildren().get(0);
                 final ReteooComponentBuilder builder = utils.getBuilderFor(child);
                 builder.build( context, utils, child );
-                buildTupleSource(context, utils);
-                buildJoinNode(context, utils);
+                buildTupleSource( context, utils, isTerminalAlpha( context, child ) );
+            } else {
+
+                for (final RuleConditionElement child : ge.getChildren()) {
+                    final ReteooComponentBuilder builder = utils.getBuilderFor( child );
+                    builder.build( context, utils, child );
+                    buildTupleSource( context, utils, false );
+                    buildJoinNode( context, utils );
+                }
             }
         }
 
-        public static void buildTupleSource(BuildContext context, BuildUtils utils) {
+        private boolean isTerminalAlpha( BuildContext context, RuleConditionElement child ) {
+            Class<?> patternClass = ((Pattern) child).getObjectType().getClassType();
+            boolean isInitialFact = patternClass != null && InitialFact.class.isAssignableFrom( patternClass );
+            boolean hasTimer = context.getRule().getTimer() != null;
+            RuleBaseConfiguration conf = context.getKnowledgeBase().getConfiguration();
+            boolean lockOnActive = context.getRule().isLockOnActive();
+            boolean eager = context.getRule().getMetaData( Propagation.class.getName() ) != null;
+            return !isInitialFact && !hasTimer && !lockOnActive && !eager &&
+                    !conf.isMultithreadEvaluation() && !conf.isSequential() && !conf.isDeclarativeAgenda();
+        }
+
+        public static void buildTupleSource(BuildContext context, BuildUtils utils, boolean terminal) {
             // if a previous object source was bound, but no tuple source
             if (context.getObjectSource() != null && context.getTupleSource() == null) {
                 // we know this is the root OTN, so record it
@@ -127,7 +149,7 @@ public class GroupElementBuilder
                                                           context.getComponentFactory().getNodeFactoryService()
                                                                  .buildLeftInputAdapterNode( context.getNextId(),
                                                                                              context.getObjectSource(),
-                                                                                             context ) ) );
+                                                                                             context, terminal ) ) );
                 context.setObjectSource( null );
             }
         }

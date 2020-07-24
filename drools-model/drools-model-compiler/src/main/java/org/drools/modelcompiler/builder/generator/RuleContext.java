@@ -35,6 +35,8 @@ import java.util.function.Predicate;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.lang.descr.AnnotationDescr;
@@ -48,7 +50,7 @@ import org.drools.core.addon.TypeResolver;
 import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
 import org.drools.core.util.Bag;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.errors.UnknownRuleUnitError;
+import org.drools.modelcompiler.builder.errors.UnknownRuleUnitException;
 import org.kie.api.definition.type.ClassReactive;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.internal.builder.KnowledgeBuilderResult;
@@ -99,6 +101,10 @@ public class RuleContext {
     private Deque<Scope> scopesStack = new LinkedList<>();
     private Map<String, String> definedVars = new HashMap<>();
 
+    private Map<String, Type> explicitCastType = new HashMap<>();
+
+    private int legacyAccumulateCounter = 0;
+
     public enum RuleDialect {
         JAVA,
         MVEL;
@@ -147,7 +153,7 @@ public class RuleContext {
         if (ruDescr.isPresent()) {
             ruleUnitDescr = ruDescr.get();
         } else if (!useNamingConvention) {
-            addCompilationError( new UnknownRuleUnitError( unitName ) );
+            throw new UnknownRuleUnitException( unitName );
         }
     }
 
@@ -188,6 +194,15 @@ public class RuleContext {
 
     public boolean hasErrors() {
         return kbuilder.hasResults( ResultSeverity.ERROR );
+    }
+
+    public RuleContext addInlineCastType(String field, Type type) {
+        explicitCastType.put(field, type);
+        return this;
+    }
+
+    public Optional<Type> explicitCastType(String field) {
+        return Optional.ofNullable(explicitCastType.get(field));
     }
 
     public Optional<DeclarationSpec> getDeclarationById(String id) {
@@ -241,7 +256,12 @@ public class RuleContext {
     }
 
     public Class<?> getRuleUnitVarType(String name) {
-        return ruleUnitVars.get( name );
+        Class<?> varType = ruleUnitVars.get( name );
+        if (varType != null) {
+            return varType;
+        }
+        DeclarationSpec decl = scopedDeclarations.get( "$p" );
+        return decl != null ? decl.getDeclarationClass() : null;
     }
 
     public DeclarationSpec addDeclaration(String bindingId, Class<?> declarationClass) {
@@ -530,6 +550,24 @@ public class RuleContext {
                 return;
             }
         }
+    }
+
+    public int getLegacyAccumulateCounter() {
+        return legacyAccumulateCounter;
+    }
+
+    public void increaseLegacyAccumulateCounter() {
+        legacyAccumulateCounter++;
+    }
+
+    public Type getDelarationType(String variableName) {
+        return getDeclarationById(variableName).map(DeclarationSpec::getBoxedType)
+                                               .orElseGet(UnknownType::new);
+    }
+
+    @Override
+    public String toString() {
+        return "RuleContext for " + descr.getNamespace() + "." + descr.getName();
     }
 }
 

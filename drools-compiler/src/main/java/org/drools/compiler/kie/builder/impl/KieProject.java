@@ -18,6 +18,7 @@ package org.drools.compiler.kie.builder.impl;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
@@ -60,6 +61,7 @@ public interface KieProject {
     InputStream getPomAsStream();
 
     KnowledgeBuilder buildKnowledgePackages( KieBaseModelImpl kBaseModel, ResultsImpl messages );
+    KnowledgeBuilder buildKnowledgePackages( KieBaseModelImpl kBaseModel, ResultsImpl messages, Predicate<String> buildFilter );
 
     default void writeProjectOutput(MemoryFileSystem trgMfs, ResultsImpl messages) {}
 }

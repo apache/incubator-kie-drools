@@ -124,7 +124,7 @@ public class SequentialTest extends CommonTestMethodBase {
 
         // Checks that itself, f3 and r1_y do not react as they are higher up
         str +="rule r4 agenda-group 'g1' when\n";
-        str +="    a : A(object >= 3  )\n";
+        str +="    a : A(object >= 2  )\n";
         str +="then\n";
         str +="    modify(a) { setObject( 5 ) };\n";
         str +="    list.add( drools.getRule().getName() );\n";

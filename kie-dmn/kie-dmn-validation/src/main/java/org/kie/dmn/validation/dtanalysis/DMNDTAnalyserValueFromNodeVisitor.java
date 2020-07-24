@@ -52,7 +52,7 @@ public class DMNDTAnalyserValueFromNodeVisitor extends DefaultedVisitor<Comparab
 
     @Override
     public Comparable<?> defaultVisit(ASTNode n) {
-        throw new UnsupportedOperationException("valueFromNode: " + n);
+        throw new UnsupportedOperationException("Gaps/Overlaps analysis cannot be performed for InputEntry with unary test: {}" + n.getText());
     }
 
     @Override

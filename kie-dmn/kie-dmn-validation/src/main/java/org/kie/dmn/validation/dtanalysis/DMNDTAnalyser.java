@@ -22,7 +22,9 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -57,7 +59,11 @@ import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.api.OutputClause;
 import org.kie.dmn.model.api.UnaryTests;
+import org.kie.dmn.validation.DMNValidator;
+import org.kie.dmn.validation.DMNValidator.Validation;
 import org.kie.dmn.validation.dtanalysis.DMNDTAnalyserValueFromNodeVisitor.DMNDTAnalyserOutputClauseVisitor;
+import org.kie.dmn.validation.dtanalysis.mcdc.MCDCAnalyser;
+import org.kie.dmn.validation.dtanalysis.mcdc.MCDCAnalyser.PosNegBlock;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
 import org.kie.dmn.validation.dtanalysis.model.BoundValueComparator;
 import org.kie.dmn.validation.dtanalysis.model.DDTAInputClause;
@@ -85,16 +91,19 @@ public class DMNDTAnalyser {
         outputClauseVisitor = new DMNDTAnalyserOutputClauseVisitor((List) dmnProfiles);
     }
 
-    public List<DTAnalysis> analyse(DMNModel model) {
+    public List<DTAnalysis> analyse(DMNModel model, Set<DMNValidator.Validation> flags) {
+        if (!flags.contains(Validation.ANALYZE_DECISION_TABLE)) {
+            throw new IllegalArgumentException();
+        }
         List<DTAnalysis> results = new ArrayList<>();
 
         List<? extends DecisionTable> decisionTables = model.getDefinitions().findAllChildren(DecisionTable.class);
         for (DecisionTable dt : decisionTables) {
             try {
-                DTAnalysis result = dmnDTAnalysis(model, dt);
+                DTAnalysis result = dmnDTAnalysis(model, dt, flags);
                 results.add(result);
             } catch (Throwable t) {
-                LOG.debug("Skipped dmnDTAnalysis for table: " + dt.getId(), t);
+                LOG.debug("Skipped dmnDTAnalysis for table: {}", dt.getId(), t);
                 DTAnalysis result = DTAnalysis.ofError(dt, t);
                 results.add(result);
             }
@@ -103,7 +112,7 @@ public class DMNDTAnalyser {
         return results;
     }
 
-    private DTAnalysis dmnDTAnalysis(DMNModel model, DecisionTable dt) {
+    private DTAnalysis dmnDTAnalysis(DMNModel model, DecisionTable dt, Set<Validation> flags) {
         DDTATable ddtaTable = new DDTATable();
         compileTableInputClauses(model, dt, ddtaTable);
         compileTableOutputClauses(model, dt, ddtaTable);
@@ -111,6 +120,7 @@ public class DMNDTAnalyser {
         compileTableComputeColStringMissingEnum(model, dt, ddtaTable);
         printDebugTableInfo(ddtaTable);
         DTAnalysis analysis = new DTAnalysis(dt, ddtaTable);
+        analysis.computeOutputInLOV();
         if (!dt.getHitPolicy().equals(HitPolicy.COLLECT)) {
             if (ddtaTable.getColIDsStringWithoutEnum().isEmpty()) {
                 LOG.debug("findGaps");
@@ -139,6 +149,11 @@ public class DMNDTAnalyser {
         analysis.compute2ndNFViolations();
         LOG.debug("computeHitPolicyRecommender");
         analysis.computeHitPolicyRecommender();
+        if (flags.contains(Validation.COMPUTE_DECISION_TABLE_MCDC)) {
+            LOG.debug("mcdc.");
+            List<PosNegBlock> selectedBlocks = new MCDCAnalyser(ddtaTable, dt).compute();
+            analysis.setMCDCSelectedBlocks(selectedBlocks);
+        }
         return analysis;
     }
 
@@ -235,7 +250,7 @@ public class DMNDTAnalyser {
                     List<Comparable<?>> discreteValues = getDiscreteValues(utln);
                     Collections.sort((List) discreteValues);
                     Interval discreteDomainMinMax = new Interval(RangeBoundary.CLOSED, discreteValues.get(0), discreteValues.get(discreteValues.size() - 1), RangeBoundary.CLOSED, 0, jColIdx + 1);
-                    DDTAInputClause ic = new DDTAInputClause(discreteDomainMinMax, discreteValues);
+                    DDTAInputClause ic = new DDTAInputClause(discreteDomainMinMax, discreteValues, getDiscreteValues(utln));
                     ddtaTable.getInputs().add(ic);
                 } else if (utln.getElements().size() == 1) {
                     UnaryTestNode utn0 = (UnaryTestNode) utln.getElements().get(0);
@@ -328,7 +343,13 @@ public class DMNDTAnalyser {
         } else if (typeRef.getNamespaceURI().equals(model.getDefinitions().getURIFEEL()) && typeRef.getLocalPart().equals("boolean")) {
             return "false, true";
         }
-        return null;
+
+        List<DMNModel> childModels = ((DMNModelImpl) model).getImportChainDirectChildModels();
+        return childModels.stream()
+                          .map(childModel -> findAllowedValues(childModel, typeRef))
+                          .filter(Objects::nonNull)
+                          .findFirst()
+                          .orElse(null);
     }
 
     private void findOverlaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, Collection<Integer> activeRules) {
@@ -476,6 +497,9 @@ public class DMNDTAnalyser {
 
     private List<Interval> toIntervals(List<BaseNode> elements, boolean isNegated, Interval minMax, List discreteValues, int rule, int col) {
         List<Interval> results = new ArrayList<>();
+        if (elements.size() == 1 && elements.get(0) instanceof UnaryTestNode && ((UnaryTestNode) elements.get(0)).getValue() instanceof NullNode) {
+            return Collections.emptyList();
+        }
         if (discreteValues != null && !discreteValues.isEmpty() && areAllEQUnaryTest(elements) && elements.size() > 1) {
             int bitsetLogicalSize = discreteValues.size(); // JDK BitSet size will always be larger.
             BitSet hitValues = new BitSet(bitsetLogicalSize);

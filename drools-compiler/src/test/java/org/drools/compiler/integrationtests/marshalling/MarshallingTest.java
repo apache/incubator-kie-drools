@@ -73,7 +73,6 @@ import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.KeyStoreConstants;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -612,13 +611,9 @@ public class MarshallingTest extends CommonTestMethodBase {
         assertEquals( stilton2.getObject(),
                       results.get( 1 ) );
 
-        assertEquals( brie1.getObject(),
-                      results.get( 2 ) );
-        assertEquals( brie3.getObject(),
-                      results.get( 3 ) );
-
-        assertEquals( brie2.getObject(),
-                      results.get( 4 ) );
+        assertTrue( results.contains( brie1.getObject() ) );
+        assertTrue( results.contains( brie3.getObject() ) );
+        assertTrue( results.contains( brie3.getObject() ) );
 
         session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session, kBase, true );
         kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
@@ -679,10 +674,8 @@ public class MarshallingTest extends CommonTestMethodBase {
                       results.size() );
         assertEquals( stilton2.getObject(),
                       results.get( 1 ) );
-        assertEquals( bob2.getObject(),
-                      results.get( 2 ) );
-        assertEquals( bob1.getObject(),
-                      results.get( 3 ) );
+        assertTrue( results.contains( bob2.getObject() ) );
+        assertTrue( results.contains( bob1.getObject() ) );
 
         // serialize session and rulebase
         kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
@@ -715,10 +708,8 @@ public class MarshallingTest extends CommonTestMethodBase {
                       results.get( 5 ) );
         assertEquals( bob3.getObject(),
                       results.get( 6 ) );
-        assertEquals( addr2.getObject(),
-                      results.get( 7 ) );
-        assertEquals( addr1.getObject(),
-                      results.get( 8 ) );
+        assertTrue( results.contains( addr2.getObject() ) );
+        assertTrue( results.contains( addr1.getObject() ) );
 
         // serialize session and rulebase
         kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
@@ -745,10 +736,8 @@ public class MarshallingTest extends CommonTestMethodBase {
                       results.get( 10 ) );
         assertEquals( bob5.getObject(),
                       results.get( 11 ) );
-        assertEquals( addr4.getObject(),
-                      results.get( 12 ) );
-        assertEquals( addr3.getObject(),
-                      results.get( 13 ) );
+        assertTrue( results.contains( addr4.getObject() ) );
+        assertTrue( results.contains( addr3.getObject() ) );
 
         // serialize session and rulebase
         kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
@@ -817,10 +806,8 @@ public class MarshallingTest extends CommonTestMethodBase {
                       results.size() );
         assertEquals( stilton2.getObject(),
                       results.get( 0 ) );
-        assertEquals( bob2.getObject(),
-                      results.get( 1 ) );
-        assertEquals( bob1.getObject(),
-                      results.get( 2 ) );
+        assertTrue( results.contains( bob1.getObject() ) );
+        assertTrue( results.contains( bob2.getObject() ) );
 
         kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
         session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session, kBase, true );
@@ -842,10 +829,8 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         assertEquals( 2,
                       results.size() );
-        assertEquals( bob4.getObject(),
-                      results.get( 0 ) );
-        assertEquals( bob3.getObject(),
-                      results.get( 1 ) );
+        assertTrue( results.contains( bob3.getObject() ) );
+        assertTrue( results.contains( bob4.getObject() ) );
 
         // now recreate the rulebase, deserialize the session and test it
         kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
@@ -867,10 +852,8 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         assertEquals( 2,
                       results.size() );
-        assertEquals( bob6.getObject(),
-                      results.get( 0 ) );
-        assertEquals( bob5.getObject(),
-                      results.get( 1 ) );
+        assertTrue( results.contains( bob5.getObject() ) );
+        assertTrue( results.contains( bob6.getObject() ) );
 
         kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
         session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session, kBase, true );
@@ -891,10 +874,8 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         assertEquals( 2,
                       results.size() );
-        assertEquals( bob8.getObject(),
-                      results.get( 0 ) );
-        assertEquals( bob7.getObject(),
-                      results.get( 1 ) );
+        assertTrue( results.contains( bob7.getObject() ) );
+        assertTrue( results.contains( bob8.getObject() ) );
 
         kBase = (InternalKnowledgeBase) SerializationHelper.serializeObject( kBase );
         session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session, kBase, true );

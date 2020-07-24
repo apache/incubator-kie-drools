@@ -18,23 +18,25 @@ package org.kie.scanner;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.appformer.maven.integration.ArtifactResolver;
+import org.appformer.maven.support.DependencyFilter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.eclipse.aether.artifact.Artifact;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.internal.utils.ClassLoaderResolver;
-import org.appformer.maven.integration.ArtifactResolver;
-import org.appformer.maven.support.DependencyFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
 
 
 public class MavenClassLoaderResolver implements ClassLoaderResolver {
@@ -63,13 +65,25 @@ public class MavenClassLoaderResolver implements ClassLoaderResolver {
         }
 
         InternalKieModule internalKModule = (InternalKieModule)kmodule;
-        Collection<ReleaseId> jarDependencies = internalKModule.getJarDependencies( DependencyFilter.COMPILE_FILTER );
+        Collection<ReleaseId> jarDependencies;
+
+        ArtifactResolver resolver = null;
+        if (internalKModule.getPomModel() == null) {
+            // if the kmodule doesn't have a pom try to determine its dependencies through maven
+            resolver = ArtifactResolver.getResolverFor( internalKModule.getPomModel() );
+            jarDependencies = getJarDependencies(resolver, kmodule.getReleaseId(), DependencyFilter.COMPILE_FILTER);
+        } else {
+            jarDependencies = internalKModule.getJarDependencies( DependencyFilter.COMPILE_FILTER );
+        }
 
         if (jarDependencies.isEmpty()) {
             return parent;
         }
 
-        ArtifactResolver resolver = ArtifactResolver.getResolverFor( internalKModule.getPomModel() );
+        if (resolver == null) {
+            resolver = ArtifactResolver.getResolverFor( internalKModule.getPomModel() );
+        }
+
         List<URL> urls = new ArrayList<URL>();
         List<ReleaseId> unresolvedDeps = new ArrayList<ReleaseId>();
 
@@ -92,4 +106,10 @@ public class MavenClassLoaderResolver implements ClassLoaderResolver {
         return new KieURLClassLoader(urls.toArray(new URL[urls.size()]), parent);
     }
 
+    private Collection<ReleaseId> getJarDependencies(ArtifactResolver resolver, ReleaseId releaseId, DependencyFilter filter) {
+        return resolver.getArtifactDependecies(releaseId.toString()).stream()
+                .filter( dep -> filter.accept( dep.getReleaseId(), dep.getScope() ) )
+                .map( dep -> adapt( dep.getReleaseId() ) )
+                .collect( Collectors.toList() );
+    }
 }

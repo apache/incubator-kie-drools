@@ -39,13 +39,14 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
     }
 
     @Override
-    String className(String sourceCode) {
-        return CLASS_NAME_PREFIX + md5Hash(sourceCode);
+    String getPrefix() {
+        return CLASS_NAME_PREFIX;
     }
 
     @Override
     void createMethodDeclaration(EnumDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("test", Modifier.Keyword.PUBLIC);
+        methodDeclaration.setThrownExceptions(NodeList.nodeList(parseClassOrInterfaceType("java.lang.Exception")));
         methodDeclaration.addAnnotation("Override");
         methodDeclaration.setType(new PrimitiveType(PrimitiveType.Primitive.BOOLEAN));
 

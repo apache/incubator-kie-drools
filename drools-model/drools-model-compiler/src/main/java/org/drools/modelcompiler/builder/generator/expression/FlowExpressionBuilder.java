@@ -41,7 +41,6 @@ import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSucce
 
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
@@ -68,13 +67,32 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
             context.addExpression(dslExpr);
         }
 
-        if(DrlxParseUtil.isThisExpression(drlxParseResult.getExpr())) {
-            Expression inputExpr = createInputExpression(drlxParseResult.getExprBinding());
-            context.addExpression(inputExpr);
+        if (DrlxParseUtil.isThisExpression(drlxParseResult.getExpr())) {
+            if (drlxParseResult.hasGeneratedPatternBinding()) {
+                MethodCallExpr bindExpr = createBindExpression( drlxParseResult );
+                context.addExpression( bindExpr );
+            } else {
+                Expression inputExpr = createInputExpression( drlxParseResult.getExprBinding() );
+                context.addExpression( inputExpr );
+            }
         } else if (drlxParseResult.getExprBinding() != null) {
             Expression dslExpr = buildBinding(drlxParseResult);
             context.addExpression(dslExpr);
         }
+    }
+
+    private MethodCallExpr createBindExpression( SingleDrlxParseSuccess drlxParseResult ) {
+        MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
+        bindDSL.addArgument(context.getVarExpr(drlxParseResult.getExprBinding()));
+
+        MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
+        bindAsDSL.addArgument(context.getVarExpr(drlxParseResult.getPatternBinding() != null ? drlxParseResult.getPatternBinding() : drlxParseResult.getAccumulateBinding()));
+        LambdaExpr lambdaExpr = new LambdaExpr();
+        lambdaExpr.setEnclosingParameters(true);
+        lambdaExpr.addParameter(new Parameter(drlxParseResult.getPatternJPType(), DrlxParseUtil.THIS_PLACEHOLDER));
+        lambdaExpr.setBody(new ExpressionStmt(new NameExpr(DrlxParseUtil.THIS_PLACEHOLDER)));
+        bindAsDSL.addArgument(lambdaExpr);
+        return bindAsDSL;
     }
 
     @Override
@@ -114,7 +132,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         }
 
         if (drlxParseResult.isTemporal() && drlxParseResult.getLeft() != null && !(drlxParseResult.getLeft().getExpression() instanceof NameExpr)) {
-            exprDSL.addArgument( generateLambdaWithoutParameters(drlxParseResult.getLeft().getExpression()) );
+            exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getLeft(), drlxParseResult.getPatternType()));
         }
 
         usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
@@ -126,7 +144,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         if (drlxParseResult.getRightLiteral() != null) {
             exprDSL.addArgument( "" + drlxParseResult.getRightLiteral() );
         } else if (drlxParseResult.isTemporal() && drlxParseResult.getRight() != null && !(drlxParseResult.getRight().getExpression() instanceof NameExpr)) {
-            exprDSL.addArgument( generateLambdaWithoutParameters(drlxParseResult.getRight().getExpression()) );
+            exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getRight(), drlxParseResult.getPatternType()));
         }
 
         exprDSL.addArgument(buildConstraintExpression( drlxParseResult, drlxParseResult.getExpr() ));

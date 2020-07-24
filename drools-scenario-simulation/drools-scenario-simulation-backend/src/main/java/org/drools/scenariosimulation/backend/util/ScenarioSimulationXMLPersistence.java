@@ -35,7 +35,7 @@ import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.backend.interfaces.ThrowingConsumer;
-import org.kie.soup.commons.xstream.XStreamUtils;
+import org.kie.soup.xstream.XStreamUtils;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.w3c.dom.Document;
 
@@ -128,11 +128,8 @@ public class ScenarioSimulationXMLPersistence {
     }
 
     public ScenarioSimulationModel unmarshal(final String rawXml, boolean migrate) throws Exception {
-        if (rawXml == null) {
-            return new ScenarioSimulationModel();
-        }
-        if (rawXml.trim().equals("")) {
-            return new ScenarioSimulationModel();
+        if (rawXml == null || rawXml.trim().equals("")) {
+            throw new IllegalArgumentException("Malformed file, content is empty!");
         }
 
         String xml = migrate ? migrateIfNecessary(rawXml) : rawXml;

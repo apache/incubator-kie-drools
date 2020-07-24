@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.compiler.kie.builder.impl;
 
@@ -20,7 +20,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
+import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
@@ -37,6 +39,7 @@ import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
+import org.kie.internal.builder.conf.GroupDRLsInKieBasesByFolderOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +60,8 @@ public abstract class AbstractKieProject implements KieProject {
     private Map<KieBaseModel, Set<String>>       includesInKieBase          = new HashMap<>();
 
     private final Map<String, KieSessionModel>   kSessionModels             = new HashMap<>();
+
+    private static final Predicate<String> BUILD_ALL = s -> true;
 
     public ResultsImpl verify() {
         ResultsImpl messages = new ResultsImpl();
@@ -207,16 +212,12 @@ public abstract class AbstractKieProject implements KieProject {
         }
     }
 
-    public KnowledgeBuilder buildKnowledgePackages( KieBaseModelImpl kBaseModel,
-                                                    ResultsImpl messages ) {
-        InternalKieModule kModule = getKieModuleForKBase(kBaseModel.getName());
-        KnowledgeBuilderImpl kbuilder = ( KnowledgeBuilderImpl ) createKnowledgeBuilder( kBaseModel, kModule );
-        if (kbuilder == null) {
-            return null;
-        }
+    public KnowledgeBuilder buildKnowledgePackages( KieBaseModelImpl kBaseModel, ResultsImpl messages ) {
+        return buildKnowledgePackages( kBaseModel, messages, BUILD_ALL );
+    }
 
-        kbuilder.setReleaseId( getGAV() );
-        boolean useFolders = kbuilder.getBuilderConfiguration().isGroupDRLsInKieBasesByFolder();
+    public KnowledgeBuilder buildKnowledgePackages( KieBaseModelImpl kBaseModel, ResultsImpl messages, Predicate<String> buildFilter ) {
+        boolean useFolders = useFolders( kBaseModel );
 
         Set<Asset> assets = new HashSet<>();
 
@@ -234,7 +235,7 @@ public abstract class AbstractKieProject implements KieProject {
                 continue;
             }
             if (compileIncludedKieBases()) {
-                addFiles( assets, getKieBaseModel( include ), includeModule, useFolders );
+                addFiles( buildFilter, assets, getKieBaseModel( include ), includeModule, useFolders );
             }
         }
 
@@ -242,42 +243,61 @@ public abstract class AbstractKieProject implements KieProject {
             return null;
         }
 
-        addFiles( assets, kBaseModel, kModule, useFolders );
+        InternalKieModule kModule = getKieModuleForKBase(kBaseModel.getName());
+        addFiles( buildFilter, assets, kBaseModel, kModule, useFolders );
 
-        CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
-
+        KnowledgeBuilder kbuilder;
         if (assets.isEmpty()) {
-            if (kModule instanceof FileKieModule) {
-                log.warn("No files found for KieBase " + kBaseModel.getName() + ", searching folder " + kModule.getFile());
-            } else {
-                log.warn("No files found for KieBase " + kBaseModel.getName());
+            if (buildFilter == BUILD_ALL) {
+                log.warn( "No files found for KieBase " + kBaseModel.getName() +
+                                  (kModule instanceof FileKieModule ? ", searching folder " + kModule.getFile() : ""));
             }
+            kbuilder = new InternalKnowledgeBuilder.Empty(getClassLoader());
+
         } else {
+            kbuilder = createKnowledgeBuilder( kBaseModel, kModule );
+            if ( kbuilder == null ) {
+                return null;
+            }
+
+            (( KnowledgeBuilderImpl ) kbuilder).setReleaseId( getGAV() );
+
+            CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
+
             for (Asset asset : assets) {
-                asset.kmodule.addResourceToCompiler(ckbuilder, kBaseModel, asset.name);
+                asset.kmodule.addResourceToCompiler( ckbuilder, kBaseModel, asset.name );
             }
-        }
+            ckbuilder.build();
 
-        ckbuilder.build();
-
-        if ( kbuilder.hasErrors() ) {
-            for ( KnowledgeBuilderError error : kbuilder.getErrors() ) {
-                messages.addMessage( error ).setKieBaseName( kBaseModel.getName() );
+            if ( kbuilder.hasErrors() ) {
+                for (KnowledgeBuilderError error : kbuilder.getErrors()) {
+                    messages.addMessage( error ).setKieBaseName( kBaseModel.getName() );
+                }
+                log.error( "Unable to build KieBaseModel:" + kBaseModel.getName() + "\n" + kbuilder.getErrors().toString() );
             }
-            log.error("Unable to build KieBaseModel:" + kBaseModel.getName() + "\n" + kbuilder.getErrors().toString());
-        }
-        if ( kbuilder.hasResults( ResultSeverity.WARNING ) ) {
-            for ( KnowledgeBuilderResult warn : kbuilder.getResults( ResultSeverity.WARNING ) ) {
-                messages.addMessage( warn ).setKieBaseName( kBaseModel.getName() );
+            if ( kbuilder.hasResults( ResultSeverity.WARNING ) ) {
+                for (KnowledgeBuilderResult warn : kbuilder.getResults( ResultSeverity.WARNING )) {
+                    messages.addMessage( warn ).setKieBaseName( kBaseModel.getName() );
+                }
+                log.warn( "Warning : " + kBaseModel.getName() + "\n" + kbuilder.getResults( ResultSeverity.WARNING ).toString() );
             }
-            log.warn( "Warning : " + kBaseModel.getName() + "\n" + kbuilder.getResults( ResultSeverity.WARNING ).toString() );
         }
 
         // cache KnowledgeBuilder and results
-        kModule.cacheKnowledgeBuilderForKieBase(kBaseModel.getName(), kbuilder);
-        kModule.cacheResultsForKieBase(kBaseModel.getName(), messages);
+        if (buildFilter == BUILD_ALL) {
+            kModule.cacheKnowledgeBuilderForKieBase( kBaseModel.getName(), kbuilder );
+            kModule.cacheResultsForKieBase( kBaseModel.getName(), messages );
+        }
 
         return kbuilder;
+    }
+
+    private boolean useFolders( KieBaseModelImpl kBaseModel ) {
+        String modelProp = kBaseModel.getKModule().getConfigurationProperty( GroupDRLsInKieBasesByFolderOption.PROPERTY_NAME );
+        if (modelProp == null) {
+            modelProp = System.getProperty( GroupDRLsInKieBasesByFolderOption.PROPERTY_NAME );
+        }
+        return modelProp != null && modelProp.toString().equalsIgnoreCase( "true" );
     }
 
     protected boolean compileIncludedKieBases() {
@@ -288,10 +308,10 @@ public abstract class AbstractKieProject implements KieProject {
         return KnowledgeBuilderFactory.newKnowledgeBuilder( getBuilderConfiguration( kBaseModel, kModule ) );
     }
 
-    private void addFiles(Set<Asset> assets, KieBaseModel kieBaseModel,
-                          InternalKieModule kieModule, boolean useFolders) {
+    private void addFiles( Predicate<String> buildFilter, Set<Asset> assets, KieBaseModel kieBaseModel,
+                           InternalKieModule kieModule, boolean useFolders) {
         for (String fileName : kieModule.getFileNames()) {
-            if (!fileName.startsWith(".") && !fileName.endsWith(".properties") &&
+            if (buildFilter.test( fileName ) && !fileName.startsWith(".") && !fileName.endsWith(".properties") &&
                     filterFileInKBase(kieModule, kieBaseModel, fileName, () -> kieModule.getResource( fileName ), useFolders)) {
                 assets.add(new Asset( kieModule, fileName ));
             }

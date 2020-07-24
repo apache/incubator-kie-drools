@@ -485,4 +485,30 @@ public class ValidatorTest extends AbstractValidatorTest {
                                                    ((DMNElement) ((DMNModelInstrumentedBase) p.getSourceReference()).getParent()).getId().equals("_d8b0c243-3fb6-40ec-a29c-28f8bdb92e13")));
     }
 
+    @Test
+    public void testInformationItemMissingTypeRef_SC() {
+        // DROOLS-5152 DMN align message level for missing typeRef attribute
+        checkInformationItemMissingTypeRef(VALIDATE_SCHEMA, VALIDATE_COMPILATION);
+    }
+
+    @Test
+    public void testInformationItemMissingTypeRef_SM() {
+        // DROOLS-5152 DMN align message level for missing typeRef attribute
+        checkInformationItemMissingTypeRef(VALIDATE_SCHEMA, VALIDATE_MODEL);
+    }
+
+    @Test
+    public void testInformationItemMissingTypeRef_SMC() {
+        // DROOLS-5152 DMN align message level for missing typeRef attribute
+        checkInformationItemMissingTypeRef(VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+    }
+
+    private void checkInformationItemMissingTypeRef(DMNValidator.Validation... options) {
+        List<DMNMessage> validate = validator.validate(getReader("variableMissingTypeRef.dmn"),
+                                                       options);
+        assertTrue(ValidatorUtil.formatMessages(validate),
+                   validate.stream().allMatch(p -> p.getLevel() == Level.WARNING &&
+                                                   p.getSourceId().equals("_FE47213A-2042-49DE-9A44-65831DA6AD11")));
+    }
+
 }

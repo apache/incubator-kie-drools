@@ -97,19 +97,19 @@ public class ModelGenerator {
     public static final Set<String> temporalOperators = new HashSet<>();
 
     static {
-        attributesMap.put("no-loop", "Rule.Attribute.NO_LOOP");
-        attributesMap.put("salience", "Rule.Attribute.SALIENCE");
-        attributesMap.put("enabled", "Rule.Attribute.ENABLED");
-        attributesMap.put("auto-focus", "Rule.Attribute.AUTO_FOCUS");
-        attributesMap.put("lock-on-active", "Rule.Attribute.LOCK_ON_ACTIVE");
-        attributesMap.put("agenda-group", "Rule.Attribute.AGENDA_GROUP");
-        attributesMap.put("activation-group", "Rule.Attribute.ACTIVATION_GROUP");
-        attributesMap.put("ruleflow-group", "Rule.Attribute.RULEFLOW_GROUP");
-        attributesMap.put("duration", "Rule.Attribute.DURATION");
-        attributesMap.put("timer", "Rule.Attribute.TIMER");
-        attributesMap.put("calendars", "Rule.Attribute.CALENDARS");
-        attributesMap.put("date-effective", "Rule.Attribute.DATE_EFFECTIVE");
-        attributesMap.put("date-expires", "Rule.Attribute.DATE_EXPIRES");
+        attributesMap.put("no-loop",  "org.drools.model.Rule.Attribute.NO_LOOP");
+        attributesMap.put("salience", "org.drools.model.Rule.Attribute.SALIENCE");
+        attributesMap.put("enabled", "org.drools.model.Rule.Attribute.ENABLED");
+        attributesMap.put("auto-focus", "org.drools.model.Rule.Attribute.AUTO_FOCUS");
+        attributesMap.put("lock-on-active", "org.drools.model.Rule.Attribute.LOCK_ON_ACTIVE");
+        attributesMap.put("agenda-group", "org.drools.model.Rule.Attribute.AGENDA_GROUP");
+        attributesMap.put("activation-group", "org.drools.model.Rule.Attribute.ACTIVATION_GROUP");
+        attributesMap.put("ruleflow-group", "org.drools.model.Rule.Attribute.RULEFLOW_GROUP");
+        attributesMap.put("duration", "org.drools.model.Rule.Attribute.DURATION");
+        attributesMap.put("timer", "org.drools.model.Rule.Attribute.TIMER");
+        attributesMap.put("calendars", "org.drools.model.Rule.Attribute.CALENDARS");
+        attributesMap.put("date-effective", "org.drools.model.Rule.Attribute.DATE_EFFECTIVE");
+        attributesMap.put("date-expires", "org.drools.model.Rule.Attribute.DATE_EXPIRES");
 
         temporalOperators.add("before");
         temporalOperators.add("after");
@@ -290,7 +290,7 @@ public class ModelGenerator {
                     break;
                 case "date-effective":
                 case "date-expires":
-                    attributeCall.addArgument( parseExpression(String.format("GregorianCalendar.from(LocalDate.parse(\"%s\", " + DATE_TIME_FORMATTER_FIELD + ").atStartOfDay(ZoneId.systemDefault()))", as.getValue().getValue())));
+                    attributeCall.addArgument( parseExpression(String.format("java.util.GregorianCalendar.from(java.time.LocalDate.parse(\"%s\", " + DATE_TIME_FORMATTER_FIELD + ").atStartOfDay(java.time.ZoneId.systemDefault()))", as.getValue().getValue())));
                     break;
                 default:
                     throw new UnsupportedOperationException("Unhandled case for rule attribute: " + as.getKey());
@@ -457,11 +457,11 @@ public class ModelGenerator {
         for ( BehaviorDescr behaviorDescr : decl.getBehaviors() ) {
             MethodCallExpr windowCall = new MethodCallExpr(null, WINDOW_CALL);
             if ( Behavior.BehaviorType.TIME_WINDOW.matches(behaviorDescr.getSubType() ) ) {
-                windowCall.addArgument( "Window.Type.TIME" );
+                windowCall.addArgument( "org.drools.model.Window.Type.TIME" );
                 windowCall.addArgument( "" + TimeUtils.parseTimeString(behaviorDescr.getParameters().get(0 ) ) );
             }
             if ( Behavior.BehaviorType.LENGTH_WINDOW.matches( behaviorDescr.getSubType() ) ) {
-                windowCall.addArgument( "Window.Type.LENGTH" );
+                windowCall.addArgument( "org.drools.model.Window.Type.LENGTH" );
                 windowCall.addArgument( "" + Integer.valueOf( behaviorDescr.getParameters().get( 0 ) ) );
             }
             declarationOfCall.addArgument( windowCall );

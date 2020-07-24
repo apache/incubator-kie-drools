@@ -62,10 +62,13 @@ import org.drools.mvelcompiler.MvelCompilerException;
 import org.drools.mvelcompiler.ParsingResult;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
+import static java.util.stream.Collectors.toSet;
+
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.ast.NodeList.nodeList;
-import static java.util.stream.Collectors.toSet;
+import static org.drools.core.util.ClassUtils.isGetter;
+import static org.drools.core.util.ClassUtils.isSetter;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
@@ -201,15 +204,15 @@ public class Consequence {
                                   compile.getUsedBindings());
     }
     private BlockStmt rewriteConsequence(String consequence) {
-        String ruleConsequenceAsBlock = rewriteModifyBlock(consequence.trim());
-
-        String ruleConsequenceRewrittenForPrimitives =
-                new PrimitiveTypeConsequenceRewrite(context)
-                        .rewrite(addCurlyBracesToBlock(ruleConsequenceAsBlock));
-
         try {
+            String ruleConsequenceAsBlock = rewriteModifyBlock(consequence.trim());
+
+            String ruleConsequenceRewrittenForPrimitives =
+                    new PrimitiveTypeConsequenceRewrite(context)
+                            .rewrite(addCurlyBracesToBlock(ruleConsequenceAsBlock));
+
             return parseBlock( ruleConsequenceRewrittenForPrimitives );
-        } catch (ParseProblemException e) {
+        } catch (MvelCompilerException | ParseProblemException e) {
             context.addCompilationError( new InvalidExpressionErrorResult( "Unable to parse consequence caused by: " + e.getMessage() ) );
         }
         return null;
@@ -321,10 +324,10 @@ public class Consequence {
         }
 
         for (MethodCallExpr methodCallExpr : methodCallExprs) {
-            if (isDroolsMethod(methodCallExpr)) {
-                if (!methodCallExpr.getScope().isPresent()) {
-                    methodCallExpr.setScope(new NameExpr("drools"));
-                }
+            if (!methodCallExpr.getScope().isPresent() && isImplicitDroolsMethod( methodCallExpr )) {
+                methodCallExpr.setScope(new NameExpr("drools"));
+            }
+            if (hasDroolsScope( methodCallExpr ) || hasDroolsAsParameter( methodCallExpr )) {
                 if (knowledgeHelperMethods.contains(methodCallExpr.getNameAsString())) {
                     methodCallExpr.setScope(createAsKnowledgeHelperExpression());
                 } else if (methodCallExpr.getNameAsString().equals("update")) {
@@ -390,40 +393,56 @@ public class Consequence {
     private Set<String> findModifiedProperties( List<MethodCallExpr> methodCallExprs, MethodCallExpr updateExpr, String updatedVar ) {
         Set<String> modifiedProps = new HashSet<>();
         for (MethodCallExpr methodCall : methodCallExprs.subList(0, methodCallExprs.indexOf(updateExpr))) {
+            if (!isDirectExpression(methodCall)) {
+                continue; // don't evaluate a method which is a part of other expression
+            }
             DrlxParseUtil.RemoveRootNodeResult removeRootNodeViaScope = DrlxParseUtil.findRemoveRootNodeViaScope(methodCall);
             Optional<Expression> root = removeRootNodeViaScope.getRootNode()
                     .filter(s -> isNameExprWithName(s, updatedVar));
             if (methodCall.getScope().isPresent() && root.isPresent()) {
-                String propName = methodToProperty(methodCall, removeRootNodeViaScope.getFirstChild());
+                boolean isDirectMethod = removeRootNodeViaScope.getFirstChild().equals(removeRootNodeViaScope.getWithoutRootNode());
+                String propName = null;
+                if (isDirectMethod && isSetter(methodCall.getNameAsString())) {
+                    // direct setter of the updated fact
+                    propName = setter2property(methodCall.getNameAsString());
+                } else if (!isDirectMethod && !isGetter(methodCall.getNameAsString())) {
+                    // indirect setter so the prop of the first getter is modified
+                    // using "!isGetter()" instead of "isSetter()" because we want the behavior similar to standard-drl (DialectUtil.parseModifiedProperties)
+                    Expression firstExpr = removeRootNodeViaScope.getFirstChild();
+                    if (firstExpr.isMethodCallExpr()) {
+                        propName = getter2property(firstExpr.asMethodCallExpr().getNameAsString());
+                    }
+                } else {
+                    // e.g. only getter
+                    continue;
+                }
                 if (propName != null) {
+                    // TODO: also register additional property in case the invoked method is annotated with @Modifies
                     modifiedProps.add(propName);
                 } else {
                     // if we were unable to detect the property the mask has to be all set, so avoid the rest of the cycle
-                    return null;
+                    return new HashSet<>();
                 }
             }
         }
         return modifiedProps;
     }
 
-    private String methodToProperty(MethodCallExpr mce, Expression getter) {
-        String propertyName = setter2property(mce.getNameAsString());
-
-        if (propertyName == null && getter.isMethodCallExpr()) {
-            propertyName = getter2property(getter.asMethodCallExpr().getNameAsString());
-        }
-
-        // TODO also register additional property in case the invoked method is annotated with @Modifies
-
-        return propertyName;
+    private boolean isDirectExpression(MethodCallExpr methodCall) {
+        return methodCall.getParentNode().map(parent -> parent instanceof ExpressionStmt).orElse(false);
     }
 
-    private static boolean isDroolsMethod(MethodCallExpr mce) {
-        final boolean hasDroolsScope = DrlxParseUtil.findRootNodeViaScope(mce)
+    private static boolean hasDroolsAsParameter( MethodCallExpr mce ) {
+        return findAllChildrenRecursive(mce).stream().anyMatch(a -> isNameExprWithName(a, "drools"));
+    }
+
+    private static boolean hasDroolsScope( MethodCallExpr mce ) {
+        return DrlxParseUtil.findRootNodeViaScope(mce)
                 .filter(s -> isNameExprWithName(s, "drools"))
                 .isPresent();
-        final boolean isImplicitDroolsMethod = !mce.getScope().isPresent() && implicitDroolsMethods.contains(mce.getNameAsString());
-        final boolean hasDroolsAsParameter = findAllChildrenRecursive(mce).stream().anyMatch(a -> isNameExprWithName(a, "drools"));
-        return hasDroolsScope || isImplicitDroolsMethod || hasDroolsAsParameter;
+    }
+
+    private static boolean isImplicitDroolsMethod( MethodCallExpr mce ) {
+        return !mce.getScope().isPresent() && implicitDroolsMethods.contains(mce.getNameAsString());
     }
 }

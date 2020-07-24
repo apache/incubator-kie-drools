@@ -22,10 +22,12 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -35,11 +37,11 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.expression.AbstractExpressionBuilder;
+import org.drools.mvel.parser.ast.expr.DrlxExpression;
 import org.drools.mvel.parser.ast.expr.OOPathChunk;
 import org.drools.mvel.parser.ast.expr.OOPathExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
 
-import static org.kie.internal.ruleunit.RuleUnitUtil.isDataSource;
 import static org.drools.core.util.ClassUtils.extractGenericType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
@@ -47,6 +49,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACTIVE_FROM_CALL;
+import static org.kie.internal.ruleunit.RuleUnitUtil.isDataSource;
 
 public class OOPathExprGenerator {
 
@@ -96,7 +99,10 @@ public class OOPathExprGenerator {
                 bindingId = context.getOOPathId(fieldType, chunkKey);
             }
             final Expression accessorLambda = generateLambdaWithoutParameters(Collections.emptySortedSet(),
-                                                                              prepend(new NameExpr(THIS_PLACEHOLDER), callExpr.getExpression()));
+                                                                              prepend(new NameExpr(THIS_PLACEHOLDER), callExpr.getExpression()), false, Optional.ofNullable(previousClass), context);
+            if (accessorLambda instanceof LambdaExpr) {
+                context.getPackageModel().getLambdaReturnTypes().put((LambdaExpr)accessorLambda, callExpr.getType());
+            }
 
             final MethodCallExpr reactiveFrom = new MethodCallExpr(null, REACTIVE_FROM_CALL);
             reactiveFrom.addArgument(context.getVarExpr(previousBind));
@@ -105,10 +111,10 @@ public class OOPathExprGenerator {
             DeclarationSpec newDeclaration = context.addDeclaration(bindingId, fieldType, reactiveFrom);
             context.addOOPathDeclaration(newDeclaration);
 
-            final List<Expression> conditions = chunk.getConditions();
+            final List<DrlxExpression> conditions = chunk.getConditions();
             if (!conditions.isEmpty()) {
                 Class<?> finalFieldType = fieldType;
-                final List<DrlxParseResult> conditionParseResult = conditions.stream().map((Expression c) ->
+                final List<DrlxParseResult> conditionParseResult = conditions.stream().map((DrlxExpression c) ->
                                                                                                    new ConstraintParser(context, packageModel).drlxParse(finalFieldType, bindingId, PrintUtil.printConstraint(c))
                 ).collect(Collectors.toList());
                 ooPathConditionExpressions.put(bindingId, conditionParseResult);
@@ -134,9 +140,17 @@ public class OOPathExprGenerator {
 
         for (DrlxParseResult drlx : list) {
             if (drlx.isSuccess()) {
-                MethodCallExpr expr = ( MethodCallExpr ) expressionBuilder.buildExpressionWithIndexing( (( DrlxParseSuccess ) drlx) );
-                expr.setScope( patternExpr );
-                patternExpr = expr;
+                SingleDrlxParseSuccess singleDrlx = ( SingleDrlxParseSuccess ) drlx;
+                if (singleDrlx.getExprBinding() != null) {
+                    MethodCallExpr expr = expressionBuilder.buildBinding( singleDrlx );
+                    expr.setScope( patternExpr );
+                    patternExpr = expr;
+                }
+                if (!(singleDrlx.getExpr() instanceof NameExpr)) {
+                    MethodCallExpr expr = ( MethodCallExpr ) expressionBuilder.buildExpressionWithIndexing( singleDrlx );
+                    expr.setScope( patternExpr );
+                    patternExpr = expr;
+                }
             }
         }
 
@@ -149,15 +163,18 @@ public class OOPathExprGenerator {
                 .map(DrlxParseSuccess.class::cast)
                 .collect(Collectors.toList());
 
-        if (value.size() == 1) {
-            context.addExpression( expressionBuilder.buildExpressionWithIndexing(value.get(0)) );
-        } else {
-            final MethodCallExpr andDSL = new MethodCallExpr(null, AND_CALL);
-            value.forEach(e -> {
-                final Expression expression = expressionBuilder.buildExpressionWithIndexing(e);
-                andDSL.addArgument(expression);
-            });
-            context.addExpression( andDSL );
-        }
+        final MethodCallExpr andDSL = new MethodCallExpr(null, AND_CALL);
+        value.forEach(e -> {
+            SingleDrlxParseSuccess singleDrlx = ( SingleDrlxParseSuccess ) e;
+            if (singleDrlx.getExprBinding() != null) {
+                MethodCallExpr expression = expressionBuilder.buildBinding( singleDrlx );
+                andDSL.addArgument( expression );
+            }
+            if (!(singleDrlx.getExpr() instanceof NameExpr)) {
+                MethodCallExpr expression = expressionBuilder.buildExpressionWithIndexing( singleDrlx );
+                andDSL.addArgument( expression );
+            }
+        });
+        context.addExpression( andDSL );
     }
 }

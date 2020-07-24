@@ -128,9 +128,11 @@ public interface NodeFactory {
                                         Accumulate accumulate,
                                         boolean unwrapRightObject,
                                         BuildContext context );
+
     LeftInputAdapterNode buildLeftInputAdapterNode( int nextId,
                                                     ObjectSource objectSource,
-                                                    BuildContext context );
+                                                    BuildContext context,
+                                                    boolean terminal );
 
     TerminalNode buildQueryTerminalNode( int id,
                                          LeftTupleSource source,

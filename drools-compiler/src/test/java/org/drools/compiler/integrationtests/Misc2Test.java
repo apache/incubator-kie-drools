@@ -61,7 +61,6 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialectConfiguration;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.InitialFact;
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
@@ -70,7 +69,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NodeMemories;
-import org.drools.core.conflict.SalienceConflictResolver;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.facttemplates.FactTemplate;
@@ -2403,42 +2401,6 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     @Test
-    public void testLegacySalienceResolver() {
-        // DROOLS-159
-        String drl = "package org.drools.test; \n" +
-                     "" +
-                     "global java.util.List list; \n " +
-                     "" +
-                     "rule X salience 10 \n" +
-                     "then\n" +
-                     " list.add( 1 ); \n" +
-                     "end\n" +
-                     "" +
-                     "rule Y salience 5 \n" +
-                     "then\n" +
-                     " list.add( 2 ); \n" +
-                     "end\n" +
-                     "";
-
-        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
-        assertFalse( kb.hasErrors() );
-
-        KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        ( (RuleBaseConfiguration) kbconf ).setConflictResolver( SalienceConflictResolver.getInstance() );
-
-        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( kbconf );
-        knowledgeBase.addPackages( kb.getKnowledgePackages() );
-        KieSession knowledgeSession = knowledgeBase.newKieSession();
-
-        List list = new ArrayList();
-        knowledgeSession.setGlobal( "list", list );
-        knowledgeSession.fireAllRules();
-
-        assertEquals( Arrays.asList( 1, 2 ), list );
-    }
-
-    @Test
     public void testUnaryNegation() {
         // DROOLS-177
         String str =
@@ -2699,57 +2661,6 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals( 2, foo.getX() );
-    }
-
-    @Test
-    public void testIsAWith2KContainers() {
-        // BZ-996056
-        String str =
-                "import org.drools.compiler.Person\n" +
-                "\n" +
-                "global java.util.List students\n" +
-                "\n" +
-                "declare trait Student\n" +
-                "    school : String\n" +
-                "end\n" +
-                "\n" +
-                "rule \"create student\" \n" +
-                "    when\n" +
-                "        $student : Person( age < 26, this not isA Student )\n" +
-                "    then\n" +
-                "        Student s = don( $student, Student.class );\n" +
-                "        s.setSchool(\"Masaryk University\");\n" +
-                "        update( $student );\n" +
-                "end\n" +
-                "\n" +
-                "rule \"found student\"\n" +
-                "    salience 10\n" +
-                "    when\n" +
-                "        student : Person( this isA Student )\n" +
-                "    then\n" +
-                "        students.add(student);\n" +
-                "end";
-
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
-
-        kfs.write( "src/main/resources/isA.drl", str );
-
-        KieBuilder kbuilder = ks.newKieBuilder( kfs );
-
-        kbuilder.buildAll();
-        assertEquals( 0, kbuilder.getResults().getMessages().size() );
-
-        ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).getKieBase();
-
-        KieSession ksession = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieSession();
-        assertNotNull( ksession );
-
-        List students = new ArrayList();
-        ksession.setGlobal( "students", students );
-        ksession.insert( new Person( "tom", 20 ) );
-        ksession.fireAllRules();
-        assertEquals( 1, students.size() );
     }
 
     @Test
@@ -3166,57 +3077,6 @@ public class Misc2Test extends CommonTestMethodBase {
         public int getExecutionMode() {
             return executionMode;
         }
-    }
-
-    public static interface FooIntf {
-        public boolean isSafe();
-
-        public void setSafe( boolean safe );
-    }
-
-    public static class BarKlass implements FooIntf {
-        public boolean isSafe() {
-            return true;
-        }
-
-        public void setSafe( boolean safe ) {
-        }
-    }
-
-    @Test
-    public void testMvelJittingWithTraitProxies() throws Exception {
-        // DROOLS-291
-        String drl = "package org.drools.test; \n" +
-                     "" +
-                     "import org.drools.compiler.integrationtests.Misc2Test.FooIntf; \n" +
-                     "import org.drools.compiler.integrationtests.Misc2Test.BarKlass; \n" +
-                     "" +
-                     "declare BarKlass end \n" +
-                     "declare FooIntf end \n" +
-                     "" +
-                     "declare trait ExtFoo extends FooIntf end \n" +
-                     "" +
-                     "declare Kore @Traitable safe : boolean end \n" +
-                     "" +
-                     "rule \"Test2\" when FooIntf( safe == true ) then end \n" +
-                     "" +
-                     "rule \"In1\" when $s : String() then don( new Kore( true ), ExtFoo.class ); end \n" +
-                     "rule \"In2\" when $s : Integer() then insert( new BarKlass() ); end \n" +
-                     "" +
-                     "";
-        KieBase kb = loadKnowledgeBaseFromString( drl );
-        KieSession ks = kb.newKieSession();
-
-        for ( int j = 0; j < 21; j++ ) {
-            ks.insert( "x" + j );
-            ks.fireAllRules();
-        }
-
-        // wait for jitting
-        Thread.sleep( 100 );
-
-        ks.insert( 0 );
-        ks.fireAllRules();
     }
 
     @Test
@@ -4074,7 +3934,6 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( 4, list.get( 2 ) );
 
     }
-
 
     @Test
     public void testEvalConstraintWithMvelOperator() {
@@ -9194,5 +9053,26 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals( 1, martin.getAddresses().size() );
+    }
+
+    @Test
+    public void testKieHelperReleaseId() throws Exception {
+        String drl =
+                "rule R when\n" +
+                     "    $s: String()" +
+                     "then\n" +
+                     "end";
+
+        ReleaseId releaseId = KieServices.get().newReleaseId("org.sample", "test", "1.0.0");
+        KieContainer kieContainer = new KieHelper().addContent(drl, ResourceType.DRL)
+                                                   .setReleaseId(releaseId)
+                                                   .getKieContainer(null);
+
+        assertEquals(releaseId, kieContainer.getReleaseId());
+
+        KieSession ksession = kieContainer.newKieSession();
+
+        ksession.insert("Hello");
+        assertEquals(1, ksession.fireAllRules());
     }
 }

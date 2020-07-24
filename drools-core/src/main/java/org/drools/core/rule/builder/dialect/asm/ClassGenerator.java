@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.core.rule.builder.dialect.asm;
 
@@ -30,16 +30,66 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.util.ByteArrayClassLoader;
-import org.drools.core.util.ClassUtils;
 import org.drools.core.addon.TypeResolver;
+import org.drools.core.util.ClassUtils;
+import org.drools.reflective.util.ByteArrayClassLoader;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
 
 import static java.lang.reflect.Modifier.isAbstract;
-import static org.drools.core.util.ClassUtils.*;
-import static org.mvel2.asm.Opcodes.*;
+
+import static org.drools.reflective.util.ClassUtils.convertFromPrimitiveType;
+import static org.drools.reflective.util.ClassUtils.convertPrimitiveNameToType;
+import static org.drools.reflective.util.ClassUtils.convertToPrimitiveType;
+import static org.mvel2.asm.Opcodes.AASTORE;
+import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
+import static org.mvel2.asm.Opcodes.ACC_STATIC;
+import static org.mvel2.asm.Opcodes.ACC_SUPER;
+import static org.mvel2.asm.Opcodes.ACONST_NULL;
+import static org.mvel2.asm.Opcodes.ALOAD;
+import static org.mvel2.asm.Opcodes.ANEWARRAY;
+import static org.mvel2.asm.Opcodes.ARETURN;
+import static org.mvel2.asm.Opcodes.BIPUSH;
+import static org.mvel2.asm.Opcodes.CHECKCAST;
+import static org.mvel2.asm.Opcodes.D2F;
+import static org.mvel2.asm.Opcodes.D2I;
+import static org.mvel2.asm.Opcodes.D2L;
+import static org.mvel2.asm.Opcodes.DUP;
+import static org.mvel2.asm.Opcodes.F2D;
+import static org.mvel2.asm.Opcodes.F2I;
+import static org.mvel2.asm.Opcodes.F2L;
+import static org.mvel2.asm.Opcodes.GETFIELD;
+import static org.mvel2.asm.Opcodes.GETSTATIC;
+import static org.mvel2.asm.Opcodes.I2B;
+import static org.mvel2.asm.Opcodes.I2C;
+import static org.mvel2.asm.Opcodes.I2D;
+import static org.mvel2.asm.Opcodes.I2F;
+import static org.mvel2.asm.Opcodes.I2L;
+import static org.mvel2.asm.Opcodes.I2S;
+import static org.mvel2.asm.Opcodes.ILOAD;
+import static org.mvel2.asm.Opcodes.INSTANCEOF;
+import static org.mvel2.asm.Opcodes.INVOKEINTERFACE;
+import static org.mvel2.asm.Opcodes.INVOKESPECIAL;
+import static org.mvel2.asm.Opcodes.INVOKESTATIC;
+import static org.mvel2.asm.Opcodes.INVOKEVIRTUAL;
+import static org.mvel2.asm.Opcodes.ISTORE;
+import static org.mvel2.asm.Opcodes.L2D;
+import static org.mvel2.asm.Opcodes.L2F;
+import static org.mvel2.asm.Opcodes.L2I;
+import static org.mvel2.asm.Opcodes.NEW;
+import static org.mvel2.asm.Opcodes.NEWARRAY;
+import static org.mvel2.asm.Opcodes.PUTFIELD;
+import static org.mvel2.asm.Opcodes.PUTSTATIC;
+import static org.mvel2.asm.Opcodes.RETURN;
+import static org.mvel2.asm.Opcodes.T_BOOLEAN;
+import static org.mvel2.asm.Opcodes.T_BYTE;
+import static org.mvel2.asm.Opcodes.T_CHAR;
+import static org.mvel2.asm.Opcodes.T_DOUBLE;
+import static org.mvel2.asm.Opcodes.T_FLOAT;
+import static org.mvel2.asm.Opcodes.T_INT;
+import static org.mvel2.asm.Opcodes.T_LONG;
+import static org.mvel2.asm.Opcodes.T_SHORT;
 
 public class ClassGenerator {
 
@@ -63,14 +113,27 @@ public class ClassGenerator {
     private byte[] bytecode;
     private Class<?> clazz;
 
-    private static final Method defineClassMethod;
+    private static class DefineMethodInitializer {
+        private static final String PROPERTY_IMAGE_CODE_KEY = "org.graalvm.nativeimage.imagecode";
 
-    static {
-        try {
-            defineClassMethod = ClassLoader.class.getDeclaredMethod("defineClass", String.class, byte[].class, int.class, int.class);
-            defineClassMethod.setAccessible(true);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
+        private static final Method defineClassMethod = createDefineMethod();
+
+        private static Method createDefineMethod() {
+            if (inImageCode()) {
+                return null;
+            }
+
+            try {
+                Method defineClassMethod = ClassLoader.class.getDeclaredMethod("defineClass", String.class, byte[].class, int.class, int.class);
+                defineClassMethod.setAccessible(true);
+                return defineClassMethod;
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        private static boolean inImageCode() {
+            return System.getProperty(PROPERTY_IMAGE_CODE_KEY) != null;
         }
     }
 
@@ -117,7 +180,7 @@ public class ClassGenerator {
                 clazz = cl.defineClass(className, bytecode, null);
             } else {
                 try {
-                    clazz = (Class<?>) defineClassMethod.invoke(classLoader, className, bytecode, 0, bytecode.length);
+                    clazz = (Class<?>) DefineMethodInitializer.defineClassMethod.invoke(classLoader, className, bytecode, 0, bytecode.length);
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new RuntimeException( e );
                 }

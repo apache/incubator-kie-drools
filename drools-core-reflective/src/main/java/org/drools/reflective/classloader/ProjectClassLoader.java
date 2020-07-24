@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
@@ -90,7 +89,7 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
     }
 
     public static ProjectClassLoader createProjectClassLoader() {
-        return ComponentsFactory.INSTANCE.createProjectClassLoader(findParentClassLoader(), null);
+        return ComponentsFactory.createProjectClassLoader(findParentClassLoader(), null);
     }
 
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent) {
@@ -99,9 +98,9 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
 
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent, ResourceProvider resourceProvider) {
         if (parent == null) {
-            return ComponentsFactory.INSTANCE.createProjectClassLoader(findParentClassLoader(), resourceProvider);
+            return ComponentsFactory.createProjectClassLoader(findParentClassLoader(), resourceProvider);
         }
-        return parent instanceof ProjectClassLoader ? (ProjectClassLoader)parent : ComponentsFactory.INSTANCE.createProjectClassLoader(parent, resourceProvider);
+        return parent instanceof ProjectClassLoader ? (ProjectClassLoader)parent : ComponentsFactory.createProjectClassLoader(parent, resourceProvider);
     }
 
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent, Map<String, byte[]> store) {
@@ -233,7 +232,7 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         Class<?> clazz = loadedClasses.get(className);
 
         boolean clazzFound = clazz != null;
-        if(annotationClazz != null) {
+        if (annotationClazz != null) {
             return clazzFound && !clazz.isAnnotationPresent(annotationClazz);
         } else {
             return clazzFound;
@@ -342,7 +341,12 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
     }
 
     private static boolean isOsgiClassLoader(ClassLoader cl) {
-        return Stream.of( cl.getClass().getInterfaces() ).map( Class::getSimpleName ).anyMatch( name -> name.equals( "BundleReference" ) );
+        for (Class<?> clc = cl.getClass(); clc != null && !clc.equals(ClassLoader.class); clc = clc.getSuperclass()) {
+            if (Stream.of(clc.getInterfaces()).map(Class::getSimpleName).anyMatch(name -> name.equals("BundleReference"))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // WARNING: This is and should be used just for testing purposes.

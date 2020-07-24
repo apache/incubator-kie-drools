@@ -506,14 +506,15 @@ public class ASTBuilderVisitor
     }
 
     @Override
+    public BaseNode visitFnInvocation(FEEL_1_1Parser.FnInvocationContext ctx) {
+        BaseNode name = visit(ctx.unaryExpression());
+        ListNode params = (ListNode) visit(ctx.parameters());
+        return buildFunctionCall(ctx, name, params);
+    }
+
+    @Override
     public BaseNode visitPrimaryName(FEEL_1_1Parser.PrimaryNameContext ctx) {
-        BaseNode name = visit( ctx.qualifiedName() );
-        if( ctx.parameters() != null ) {
-            ListNode params = (ListNode) visit( ctx.parameters() );
-            return buildFunctionCall( ctx, name, params );
-        } else {
-            return name;
-        }
+        return visit(ctx.qualifiedName());
     }
 
     private String getFunctionName(BaseNode name) {

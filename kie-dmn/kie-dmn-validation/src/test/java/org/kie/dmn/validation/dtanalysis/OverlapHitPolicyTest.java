@@ -67,23 +67,18 @@ public class OverlapHitPolicyTest extends AbstractDTAnalysisTest {
         List<DMNMessage> validate = validator.validate(definitions, VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         checkAnalysis(validate);
 
-        DMNMessageType msg = null;
-        switch (hp) {
-            case UNIQUE:
-                msg = DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE;
-                break;
-            case ANY:
-                msg = DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_ANY;
-                break;
-            default:
-                msg = DMNMessageType.DECISION_TABLE_OVERLAP;
-                break;
+        if (hp == HitPolicy.UNIQUE) {
+            assertTrue("It should contain at least 1 DMNMessage for the type",
+                       validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE)));
+        } else if (hp == HitPolicy.ANY) {
+            assertTrue("It should contain at least 1 DMNMessage for the type",
+                       validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_ANY)));
+        } else {
+            LOG.debug("Testing for {} I am expecting there is NOT DMNMessage pertaining to Overlaps", hp);
+            assertTrue(validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE)) &&
+                       validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_ANY)) &&
+                       validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP)));
         }
-        final DMNMessageType whichMsg = msg;
-
-        LOG.debug("Testing for {} I am expecting a DMNMessage of type {}", hp, whichMsg);
-        assertTrue("It should contain at least 1 DMNMessage for the type " + whichMsg,
-                   validate.stream().anyMatch(p -> p.getMessageType().equals(whichMsg)));
     }
 
     private void checkAnalysis(List<DMNMessage> validate) {

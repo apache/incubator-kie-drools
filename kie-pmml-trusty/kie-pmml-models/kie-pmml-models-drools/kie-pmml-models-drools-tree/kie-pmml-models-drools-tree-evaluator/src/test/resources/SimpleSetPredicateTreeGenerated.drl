@@ -1,0 +1,77 @@
+package simplesetpredicatetreemodel
+
+import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder
+import org.dmg.pmml.SimplePredicate
+import org.kie.api.pmml.PMML4Result
+
+global PMML4Result $pmml4Result
+
+declare  RESULT
+
+    value : String
+end
+
+declare  INPUT1
+
+    value : double
+end
+
+declare  INPUT2
+
+    value : double
+end
+
+declare  INPUT3
+
+    value : double
+end
+
+
+rule "_classA"
+when
+    $statusHolder : KiePMMLStatusHolder( status == null )
+then
+
+$statusHolder.setStatus("_classA");
+update($statusHolder);
+
+end
+
+rule "_classA_classB"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_classA" )
+    INPUT1( value in (-5, 0.5, 1, 10) )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "classB");
+
+end
+
+rule "_classA_classC"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_classA" )
+    not(
+    INPUT2( value in (3, 8.5) )   )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "classC");
+
+end
+
+rule "default__classA"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_classA" )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "classA");
+
+end

@@ -61,6 +61,7 @@ import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.compiler.rule.builder.util.ConstraintUtil;
 import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
@@ -68,7 +69,6 @@ import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.base.SimpleValueType;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition.Target;
-import org.drools.core.base.evaluators.IsAEvaluatorDefinition;
 import org.drools.core.base.mvel.ActivationPropertyHandler;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
@@ -231,7 +231,8 @@ public class PatternBuilder
             firstXpathChunk.getConstraints()
                     .forEach(s -> patternDescr.addConstraint(new ExprConstraintDescr(s)));
             if (!xpathAnalysis.isSinglePart()) {
-                patternDescr.addConstraint(new ExprConstraintDescr(patternDescr.getIdentifier() + " : " + expr.substring(xpathAnalysis.getPart(1).getStart())));
+                String xpathExpr = (patternDescr.getIdentifier() == null ? "" : patternDescr.getIdentifier() + " : ") + expr.substring(xpathAnalysis.getPart(1).getStart());
+                patternDescr.addConstraint(new ExprConstraintDescr(xpathExpr));
                 patternDescr.setIdentifier("$void$");
             }
         } else {
@@ -243,7 +244,8 @@ public class PatternBuilder
             }
             patternDescr.setXpathStartDeclaration(declr);
             patternDescr.setObjectType(declr.getExtractor().getExtractToClassName());
-            expr = patternDescr.getIdentifier() + (patternDescr.isUnification() ? " := " : " : ") + expr.substring(identifier.length() + 1);
+            expr = (patternDescr.getIdentifier() != null ? patternDescr.getIdentifier() + (patternDescr.isUnification() ? " := " : " : ") : "")
+                    + expr.substring(identifier.length() + 1);
             descr.setExpression(expr);
         }
     }
@@ -557,14 +559,6 @@ public class PatternBuilder
             }
         }
 
-        for (Constraint constr : pattern.getConstraints()) {
-            if (constr instanceof EvaluatorConstraint && ((EvaluatorConstraint) constr).isSelf()) {
-                EvaluatorConstraint ec = ((EvaluatorConstraint) constr);
-                if (ec.getEvaluator().getOperator() == IsAEvaluatorDefinition.ISA || ec.getEvaluator().getOperator() == IsAEvaluatorDefinition.NOT_ISA) {
-                    listenedProperties.add(TraitableBean.TRAITSET_FIELD_NAME);
-                }
-            }
-        }
         pattern.setListenedProperties(listenedProperties);
     }
 
@@ -769,7 +763,7 @@ public class PatternBuilder
                 return constraints;
             }
             Constraint constraint = isXPath ?
-                    buildXPathDescr(context, patternDescr, pattern, d, mvelCtx) :
+                    buildXPathDescr(context, patternDescr, pattern, (ExpressionDescr)  d, mvelCtx) :
                     buildCcdDescr(context, patternDescr, pattern, d, descr, mvelCtx);
             if (constraint != null) {
                 Declaration declCorrXpath = getDeclarationCorrespondingToXpath(pattern, isXPath, constraint);
@@ -834,10 +828,10 @@ public class PatternBuilder
     private Constraint buildXPathDescr(RuleBuildContext context,
                                        PatternDescr patternDescr,
                                        Pattern pattern,
-                                       BaseDescr descr,
+                                       ExpressionDescr descr,
                                        MVELDumper.MVELDumperContext mvelCtx) {
 
-        String expression = ((ExpressionDescr) descr).getExpression();
+        String expression = descr.getExpression();
         XpathAnalysis xpathAnalysis = XpathAnalysis.analyze(expression);
 
         if (xpathAnalysis.hasError()) {
@@ -889,6 +883,7 @@ public class PatternBuilder
                     currentObjectType = getObjectType(context, patternDescr, patternClass.getName());
                 }
 
+                context.increaseXpathChuckNr();
                 pattern.setObjectType(currentObjectType);
                 backReferenceClasses.add(0, patternClass);
                 backRef.reset();
@@ -908,6 +903,7 @@ public class PatternBuilder
             mvelCtx.setInXpath(false);
             pattern.setBackRefDeclarations(null);
             pattern.setObjectType(originalType);
+            context.resetXpathChuckNr();
         }
 
         xpathConstraint.setXpathStartDeclaration(patternDescr.getXpathStartDeclaration());
@@ -978,6 +974,9 @@ public class PatternBuilder
         // Or it's a Map and we have to treat it as a special case
 
         String rewrittenExpr = rewriteOrExpressions(context, pattern, d, expr);
+        if (simple) { // simple means also relDescr is != null
+            rewrittenExpr = ConstraintUtil.inverseExpression(relDescr, expr, findLeftExpressionValue(relDescr), findRightExpressionValue(relDescr), relDescr.getOperator(), pattern);
+        }
         if (negated) {
             rewrittenExpr = "!(" + rewrittenExpr + ")";
         }
@@ -1040,11 +1039,13 @@ public class PatternBuilder
 
     private String normalizeExpression(RuleBuildContext context, Pattern pattern, RelationalExprDescr subDescr, String subExpr) {
         String leftValue = findLeftExpressionValue(subDescr);
+        String rightValue = findRightExpressionValue(subDescr);
         String operator = subDescr.getOperator();
+
+        subExpr = ConstraintUtil.inverseExpression(subDescr, subExpr, leftValue, rightValue, operator, pattern);
 
         ValueType valueType = getValueType(context, pattern, leftValue);
         if (valueType != null && valueType.getSimpleType() == SimpleValueType.DATE) {
-            String rightValue = findRightExpressionValue(subDescr);
             FieldValue fieldValue = getFieldValue(context, valueType, rightValue);
             if (fieldValue != null) {
                 subExpr = subExpr.replace(rightValue, getNormalizeDate(valueType, fieldValue));
@@ -1053,7 +1054,6 @@ public class PatternBuilder
         }
 
         if (operator.equals("str")) {
-            String rightValue = findRightExpressionValue(subDescr);
             return normalizeStringOperator(leftValue, rightValue, new LiteralRestrictionDescr(operator,
                                                                                               subDescr.isNegated(),
                                                                                               subDescr.getParameters(),
@@ -1461,6 +1461,9 @@ public class PatternBuilder
         }
 
         Declaration declr = pattern.addDeclaration(fieldBindingDescr.getVariable());
+        if (context.isInXpath()) {
+            declr.setxPathOffset( context.getXpathChuckNr() );
+        }
 
         final InternalReadAccessor extractor = getFieldReadAccessor(context,
                                                                     fieldBindingDescr,
@@ -1477,7 +1480,7 @@ public class PatternBuilder
 
         declr.setReadAccessor(extractor);
 
-        if (typeDeclaration != null && extractor instanceof ClassFieldReader) {
+        if (!declr.isFromXpathChunk() && typeDeclaration != null && extractor instanceof ClassFieldReader) {
             addFieldToPatternWatchlist(pattern, typeDeclaration, ((ClassFieldReader) extractor).getFieldName());
         }
     }

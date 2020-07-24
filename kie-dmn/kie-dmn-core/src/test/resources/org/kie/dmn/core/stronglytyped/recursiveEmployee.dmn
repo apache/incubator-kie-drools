@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_d1e3d83e-230d-42fb-bc58-313463f7f40b" id="_d1e3d83e-230d-42fb-bc58-313463f7f40b" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_d1e3d83e-230d-42fb-bc58-313463f7f40b" exporter="Decision Modeler" exporterVersion="6.9.3" triso:logoChoice="Default">
+    <semantic:itemDefinition name="tEmployee" label="tEmployee">
+        <semantic:itemComponent id="_433c17b1-54b6-4172-9347-452893828a5d" name="full name">
+            <semantic:typeRef>string</semantic:typeRef>
+        </semantic:itemComponent>
+        <semantic:itemComponent id="_e0c99654-177f-4e2c-93ac-3893b4acb787" name="age">
+            <semantic:typeRef>number</semantic:typeRef>
+        </semantic:itemComponent>
+        <semantic:itemComponent id="_70f474af-ee44-49a4-8aaa-14a96cd9c0e4" name="manager">
+            <semantic:typeRef>tEmployee</semantic:typeRef>
+        </semantic:itemComponent>
+        <semantic:itemComponent id="_fa675654-7398-4fa6-b01e-72b6adf3d561" name="direct reports" isCollection="true">
+            <semantic:typeRef>tEmployee</semantic:typeRef>
+        </semantic:itemComponent>
+    </semantic:itemDefinition>
+    <semantic:inputData id="_c39715db-e36b-4016-b94e-552888a3c494" name="an Employee">
+        <semantic:variable name="an Employee" id="_0d4db5a9-f64a-4e30-94b9-25efc14bde13" typeRef="tEmployee"/>
+    </semantic:inputData>
+    <semantic:decision id="_44a22aed-23d4-4283-a7ae-01f29f3d5b50" name="highlights">
+        <semantic:variable name="highlights" id="_e0e8ce99-004b-498f-9d58-6dd1567ab657" typeRef="Any"/>
+        <semantic:informationRequirement id="_6ed065d1-87ac-41da-8b53-1dc4a737cb46">
+            <semantic:requiredInput href="#_c39715db-e36b-4016-b94e-552888a3c494"/>
+        </semantic:informationRequirement>
+        <semantic:context id="_bd44ccc2-ef2e-4620-9afe-161b9bdc878c" typeRef="Any" triso:expressionId="_b4b0affa-3097-4b34-8f8e-06871961f41c">
+            <semantic:contextEntry id="_fbab6aae-23e5-4db7-9324-3b271d82a706">
+                <semantic:variable name="mgr" id="_f5587d90-be1f-4550-945e-312a85b05f11" typeRef="string"/>
+                <semantic:literalExpression id="_85043cd9-a415-4cd7-a9b9-f9b1d69f79b1" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" triso:unparsed="true">
+                    <semantic:text>"reports to " + an Employee.manager.full name</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry id="_22a33636-485f-4731-83fe-b78e0a356af3">
+                <semantic:variable name="reports" id="_cdb04a5f-e7d2-41c0-a4d8-50e5e6a06bf8" typeRef="string"/>
+                <semantic:literalExpression id="_d25391a2-c100-4e71-8bad-f34b82bf8e01">
+                    <semantic:text>"is manager of " + string(count(an Employee.direct reports)) + " : " + string(an Employee.direct reports.full name)</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry id="_74d245cf-dd62-48bc-9924-c5d7b0b3d498">
+                <semantic:literalExpression id="_a925e298-f5cd-43fe-aaa7-6174dca07ece">
+                    <semantic:text>an Employee.full name + ": " + mgr + " and " + reports</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+        </semantic:context>
+    </semantic:decision>
+</semantic:definitions>

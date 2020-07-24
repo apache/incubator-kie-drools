@@ -16,6 +16,14 @@
 
 package org.drools.core.event.rule.impl;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InternalFactHandle;
@@ -26,14 +34,6 @@ import org.drools.core.spi.PropagationContext;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class SerializableActivation
     implements
@@ -92,7 +92,7 @@ public class SerializableActivation
 
     public Object getDeclarationValue(String variableName) {
         Declaration decl = ((RuleImpl)this.rule).getDeclaration( variableName );
-        return decl.getValue( null, ((InternalFactHandle)factHandles.get(decl.getPattern().getOffset())).getObject() );
+        return decl.getValue( null, ((InternalFactHandle)factHandles.get(decl.getOffset())).getObject() );
     }
 
     public List<String> getDeclarationIds() {

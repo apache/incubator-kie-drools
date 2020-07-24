@@ -5093,7 +5093,6 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
         final SingleFieldConstraint left = (SingleFieldConstraint) composite.getConstraint(0);
         final SingleFieldConstraint right = (SingleFieldConstraint) composite.getConstraint(1);
 
-
         assertEquals(factMvel, left.getFactType());
         assertEquals(symbol, left.getFieldName());
         assertEquals("!= null", left.getOperator());
@@ -5103,5 +5102,58 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
         assertEquals(symbol, right.getFieldName());
         assertEquals("matches", right.getOperator());
         assertEquals("P.*", right.getValue());
+    }
+
+    @Test
+    /**
+     * The GRE can not produce this, but the Persistence class is also used by XLS->GDST->XLS conversions.
+     */
+    public void testMoreComplexExpression() {
+
+        final String drl = "rule \"r0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "Person( ( age != null ) == true )\n" +
+                "then\n" +
+                "end\n";
+
+        final PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        final RuleModel m = ruleModelPersistence.unmarshal(drl,
+                                                           Collections.EMPTY_LIST,
+                                                           dmo);
+        final String resultDrl = ruleModelPersistence.marshal(m);
+
+        final String expectedDrl = "rule \"r0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "Person( eval( ( age != null ) == true ))\n" +
+                "then\n" +
+                "end\n";
+        assertEqualsIgnoreWhitespace(expectedDrl, resultDrl);
+    }
+
+    @Test
+    public void testTwoPredicates() {
+
+        final String drl = "rule \"r0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "Person( ( age != null ) == true, ( name == null ) == false )\n" +
+                "then\n" +
+                "end\n";
+
+        final PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        final RuleModel m = ruleModelPersistence.unmarshal(drl,
+                                                           Collections.EMPTY_LIST,
+                                                           dmo);
+        final String resultDrl = ruleModelPersistence.marshal(m);
+
+        final String expectedDrl = "rule \"r0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "Person( eval( ( age != null ) == true ), eval( ( name == null ) == false ))\n" +
+                "then\n" +
+                "end\n";
+        assertEqualsIgnoreWhitespace(expectedDrl, resultDrl);
     }
 }

@@ -54,7 +54,7 @@ public class SameMsgInAllAPITest extends AbstractDTAnalysisTest {
     }
 
     private void verify(List<DMNMessage> validate) {
-        assertThat(validate, hasSize(7));
+        assertThat(validate, hasSize(5));
         DTAnalysis analysis = getAnalysis(validate, "_4771db14-e088-4d5a-8942-211c57ad0b42");
 
         assertThat(analysis.getGaps(), hasSize(3));

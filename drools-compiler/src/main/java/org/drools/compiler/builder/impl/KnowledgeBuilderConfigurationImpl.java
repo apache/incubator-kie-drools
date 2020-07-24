@@ -33,11 +33,14 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.xml.RulesSemanticModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule.CompilationCache;
 import org.drools.compiler.rule.builder.DroolsCompilerComponentFactory;
+import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.compiler.rule.builder.dialect.mvel.MVELDialectConfiguration;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.ClassBuilderFactory;
+import org.drools.core.reteoo.KieComponentFactory;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
@@ -57,6 +60,7 @@ import org.kie.internal.builder.conf.DefaultDialectOption;
 import org.kie.internal.builder.conf.DefaultPackageNameOption;
 import org.kie.internal.builder.conf.DumpDirOption;
 import org.kie.internal.builder.conf.EvaluatorOption;
+import org.kie.internal.builder.conf.ExternaliseCanonicalModelLambdaOption;
 import org.kie.internal.builder.conf.GroupDRLsInKieBasesByFolderOption;
 import org.kie.internal.builder.conf.KBuilderSeverityOption;
 import org.kie.internal.builder.conf.KnowledgeBuilderOption;
@@ -67,10 +71,11 @@ import org.kie.internal.builder.conf.ProcessStringEscapesOption;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.builder.conf.SingleValueKnowledgeBuilderOption;
 import org.kie.internal.builder.conf.TrimCellsInDTableOption;
-import org.kie.internal.builder.conf.ExternaliseCanonicalModelLambdaOption;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.core.reteoo.KieComponentFactory.createKieComponentFactory;
 
 /**
  * This class configures the package compiler.
@@ -109,10 +114,10 @@ public class KnowledgeBuilderConfigurationImpl
     public static final String                DEFAULT_PACKAGE = "defaultpkg";
 
     private static final int                  DEFAULT_PARALLEL_RULES_BUILD_THRESHOLD = 10;
-    
-    private Map<String, DialectConfiguration> dialectConfigurations;
 
-    private DefaultDialectOption              defaultDialect;
+    private final Map<String, DialectConfiguration> dialectConfigurations = new HashMap<>();
+
+    private DefaultDialectOption              defaultDialect = DefaultDialectOption.get("java");
     
     private ParallelRulesBuildThresholdOption parallelRulesBuildThreshold = ParallelRulesBuildThresholdOption.get(DEFAULT_PARALLEL_RULES_BUILD_THRESHOLD);
 
@@ -132,7 +137,7 @@ public class KnowledgeBuilderConfigurationImpl
     private boolean                           classLoaderCache                      = true;
     private boolean                           trimCellsInDTable                     = true;
     private boolean                           groupDRLsInKieBasesByFolder           = false;
-    private boolean                           externaliseCanonicalModelLambda       = false;
+    private boolean                           externaliseCanonicalModelLambda       = true;
 
     private static final PropertySpecificOption DEFAULT_PROP_SPEC_OPT = PropertySpecificOption.ALWAYS;
     private PropertySpecificOption            propertySpecificOption  = DEFAULT_PROP_SPEC_OPT;
@@ -144,6 +149,8 @@ public class KnowledgeBuilderConfigurationImpl
     private DroolsCompilerComponentFactory    componentFactory;
 
     private ClassBuilderFactory               classBuilderFactory;
+
+    private KieComponentFactory               kieComponentFactory;
 
     private LanguageLevelOption               languageLevel           = DrlParser.DEFAULT_LANGUAGE_LEVEL;
 
@@ -234,11 +241,9 @@ public class KnowledgeBuilderConfigurationImpl
         			this.chainedProperties.getProperty(ParallelRulesBuildThresholdOption.PROPERTY_NAME, 
         												String.valueOf(DEFAULT_PARALLEL_RULES_BUILD_THRESHOLD)));
         
-        this.dialectConfigurations = new HashMap<String, DialectConfiguration>();
-
         buildDialectConfigurationMap();
 
-        this.accumulateFunctions = AccumulateUtil.buildAccumulateFunctionsMap(chainedProperties, getClassLoader());
+        this.accumulateFunctions = AccumulateUtil.buildAccumulateFunctionsMap(chainedProperties, getFunctionFactoryClassLoader() );
 
         buildEvaluatorRegistry();
 
@@ -255,11 +260,16 @@ public class KnowledgeBuilderConfigurationImpl
                                                        DEFAULT_PACKAGE));
 
         setProperty(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME,
-                    this.chainedProperties.getProperty(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME,"false"));
+                    this.chainedProperties.getProperty(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME,"true"));
 
         this.componentFactory = new DroolsCompilerComponentFactory();
 
-        this.classBuilderFactory = new ClassBuilderFactory();
+        this.kieComponentFactory = createKieComponentFactory();
+        this.classBuilderFactory = kieComponentFactory.getClassBuilderFactory();
+    }
+
+    protected ClassLoader getFunctionFactoryClassLoader() {
+        return getClassLoader();
     }
 
     private void buildSeverityMap() {
@@ -377,34 +387,17 @@ public class KnowledgeBuilderConfigurationImpl
     }
 
     private void buildDialectConfigurationMap() {
-        //DialectRegistry registry = new DialectRegistry();
+        DialectConfiguration mvel = new MVELDialectConfiguration();
+        mvel.init(this);
+        dialectConfigurations.put("mvel", mvel);
+
+        DialectConfiguration java = new JavaDialectConfiguration();
+        java.init(this);
+        dialectConfigurations.put("java", java);
+
         Map<String, String> dialectProperties = new HashMap<String, String>();
-        this.chainedProperties.mapStartsWith(dialectProperties,
-                "drools.dialect",
-                false);
-        setDefaultDialect(dialectProperties.remove(DefaultDialectOption.PROPERTY_NAME));
-
-        for (Map.Entry<String, String> entry : dialectProperties.entrySet()) {
-            String str = entry.getKey();
-            String dialectName = str.substring(str.lastIndexOf(".") + 1);
-            String dialectClass = entry.getValue();
-            addDialect(dialectName, dialectClass);
-        }
-    }
-
-    public void addDialect(String dialectName,
-            String dialectClass) {
-        Class<?> cls = null;
-        try {
-            cls = getClassLoader().loadClass(dialectClass);
-            DialectConfiguration dialectConf = (DialectConfiguration) cls.newInstance();
-            dialectConf.init(this);
-            addDialect(dialectName,
-                    dialectConf);
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to load dialect '" + dialectClass + ":" + dialectName + ":" + ((cls != null) ? cls.getName() : "null") + "'",
-                    e);
-        }
+        this.chainedProperties.mapStartsWith(dialectProperties, "drools.dialect", false);
+        setDefaultDialect(dialectProperties.get(DefaultDialectOption.PROPERTY_NAME));
     }
 
     public void addDialect(String dialectName,
@@ -583,7 +576,7 @@ public class KnowledgeBuilderConfigurationImpl
     }
 
     private void buildEvaluatorRegistry() {
-        this.evaluatorRegistry = new EvaluatorRegistry(getClassLoader());
+        this.evaluatorRegistry = new EvaluatorRegistry( getFunctionFactoryClassLoader() );
         Map<String, String> temp = new HashMap<String, String>();
         this.chainedProperties.mapStartsWith(temp,
                 EvaluatorOption.PROPERTY_NAME,
@@ -721,6 +714,10 @@ public class KnowledgeBuilderConfigurationImpl
 
     public void setClassBuilderFactory(ClassBuilderFactory classBuilderFactory) {
         this.classBuilderFactory = classBuilderFactory;
+    }
+
+    public KieComponentFactory getKieComponentFactory() {
+        return kieComponentFactory;
     }
 
     public LanguageLevelOption getLanguageLevel() {

@@ -214,11 +214,11 @@ public class ConstraintPrintVisitor extends PrettyPrintVisitor implements DrlVoi
             chunk.accept(this, arg);
             printer.print(chunk.getField().toString());
 
-            List<Expression> condition = chunk.getConditions();
-            final Iterator<Expression> iterator = condition.iterator();
+            List<DrlxExpression> condition = chunk.getConditions();
+            final Iterator<DrlxExpression> iterator = condition.iterator();
             if (!condition.isEmpty()) {
                 printer.print("[");
-                Expression first = iterator.next();
+                DrlxExpression first = iterator.next();
                 first.accept(this, arg);
                 while(iterator.hasNext()) {
                     printer.print(",");

@@ -30,7 +30,11 @@ import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
+import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
+import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 
@@ -38,6 +42,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
@@ -349,5 +354,37 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
     public void testMissingInputData() {
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("missing_input_data.dmn", getClass());
         assertThat(messages.get(0).getMessageType(), is(DMNMessageType.ERR_COMPILING_FEEL));
+    }
+    
+    
+    @Test
+    public void testOrdering() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Order.dmn", this.getClass());
+        final DMNModel dmnModel = runtime	.getModel("http://www.trisotech.com/definitions/_6318588b-c32f-4070-848b-bd8017e6b94e", "Drawing 1");
+
+        int index = 1;
+        for (InputDataNode node : dmnModel.getInputs()) {
+            assertTrue(node.getName().endsWith("" + index++));
+        }
+
+        index = 1;
+        for (DecisionNode node : dmnModel.getDecisions()) {
+            assertTrue(node.getName().endsWith("" + index++));
+        }
+
+        index = 1;
+        for (BusinessKnowledgeModelNode node : dmnModel.getBusinessKnowledgeModels()) {
+            assertTrue(node.getName().endsWith("" + index++));
+        }
+
+        index = 1;
+        for (ItemDefNode node : dmnModel.getItemDefinitions()) {
+            assertTrue(node.getName().endsWith("" + index++));
+        }
+
+        index = 1;
+        for (DecisionServiceNode node : dmnModel.getDecisionServices()) {
+            assertTrue(node.getName().endsWith("" + index++));
+        }
     }
 }

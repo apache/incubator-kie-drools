@@ -112,7 +112,7 @@ public class ConstraintEvaluator {
         if (declaration == patternDeclaration) {
             return handle.getObject();
         } else {
-            Object object = tuple != null && declaration.getPattern().getOffset() < tuple.size() ? tuple.getObject(declaration.getPattern().getOffset()) : handle.getObject();
+            Object object = tuple != null && declaration.getOffset() < tuple.size() ? tuple.getObject(declaration.getOffset()) : handle.getObject();
             return declaration.getValue(workingMemory, object);
         }
     }
@@ -138,7 +138,7 @@ public class ConstraintEvaluator {
         for (int i = 0; i < fhs.length; i++) {
             fhs[i] = declarations[i] == patternDeclaration ?
                      handle :
-                     tuple.get(declarations[i].getPattern().getOffset());
+                     tuple.get(declarations[i].getOffset());
         }
         return fhs;
     }

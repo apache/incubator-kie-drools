@@ -1,0 +1,122 @@
+package returnlastpredictionstrategytreemodel 
+
+import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder
+import org.dmg.pmml.SimplePredicate
+import org.kie.api.pmml.PMML4Result
+
+global PMML4Result $pmml4Result
+
+declare  RESULT 
+
+    value : String  
+end
+
+declare  INPUT1 
+
+    value : double  
+end
+
+declare  INPUT2 
+
+    value : double  
+end
+
+declare  INPUT3 
+
+    value : double  
+end
+
+
+rule "_classA"
+when
+    $statusHolder : KiePMMLStatusHolder( status == null )  
+then
+
+$statusHolder.setStatus("_classA");
+update($statusHolder);
+
+end
+
+rule "_classA_classB"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_classA" )  
+    INPUT1( value == 5.0 )  
+then
+
+$statusHolder.setStatus("_classA_classB");
+update($statusHolder);
+
+end
+
+rule "_classA_classB_classC"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_classA_classB" )  
+    INPUT3( value <= 2.0 )  
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "classC");
+
+end
+
+rule "default__classA_classB"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_classA_classB" )  
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "classB");
+
+end
+
+rule "_classA_classC"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_classA" )  
+    INPUT2( value == 7.0 )  
+then
+
+$statusHolder.setStatus("_classA_classC");
+update($statusHolder);
+
+end
+
+rule "_classA_classC_classB"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_classA_classC" )  
+    INPUT3( value > 10.0 )  
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "classB");
+
+end
+
+rule "default__classA_classC"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_classA_classC" )  
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "classC");
+
+end
+
+rule "default__classA"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_classA" )  
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "classA");
+
+end

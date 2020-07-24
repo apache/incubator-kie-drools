@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_0E8AC0AE-0FCB-4A5C-96FD-F84EE5BD0990" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_E5C2E65B-D466-4BE5-80F6-1DDA6536A1BE" name="completeness" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_0E8AC0AE-0FCB-4A5C-96FD-F84EE5BD0990">
+  <dmn:extensionElements/>
+  <dmn:decision id="_4EB09842-93DE-456C-8A22-8774A77EBB79" name="risk category">
+    <dmn:extensionElements/>
+    <dmn:variable id="_437D3FCB-7E79-47B1-A8A7-24CB325E15BA" name="risk category" typeRef="string"/>
+    <dmn:informationRequirement id="_017AB7FB-EDBD-4073-B41A-FDBB82C0D218">
+      <dmn:requiredInput href="#_52F64A44-9D49-4E57-9C28-B1C2276B0386"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_E72BD036-C550-4992-AA6D-A8AD4666C63A" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_5002E3CF-66B5-4C1F-9AAE-4F8806DF669A">
+        <dmn:inputExpression id="_39D420E0-CAA3-4EA7-855C-B14A04A7336B" typeRef="number">
+          <dmn:text>risk score</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_583A3A2E-9032-4DD5-972D-99F0536A4642">
+        <dmn:outputValues id="_06D4D79A-75F1-4335-8A5A-3A03D2D8D564">
+          <dmn:text>"high", "low", "medium"</dmn:text>
+        </dmn:outputValues>
+      </dmn:output>
+      <dmn:rule id="_16015D22-2441-4CE0-97A7-85173AC358CB">
+        <dmn:inputEntry id="_6B13DC63-0DFE-41D7-A1DD-AC0D5C972A37">
+          <dmn:text>&lt;10</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_034EE59B-51F3-48FB-82EF-4F16D1AE0624">
+          <dmn:text>"lowa"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+      <dmn:rule id="_5BDAD344-8229-404A-AD4D-5F8DD4CE24AB">
+        <dmn:inputEntry id="_0A5165AE-EBE6-4578-A1AC-62A5F26BFE05">
+          <dmn:text>(10..30]</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_1FF5F092-DB20-4119-A113-D374B4D788B9">
+          <dmn:text>"medium"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+      <dmn:rule id="_8F1D533A-180F-4343-B57A-EC60E22DA0F4">
+        <dmn:inputEntry id="_A98C161B-4A06-4FBA-BFD7-F9A7C836D4D4">
+          <dmn:text>&gt;30</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_35DBA316-7385-4359-BB8C-0D5E6D4A64FD">
+          <dmn:text>"high"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:inputData id="_52F64A44-9D49-4E57-9C28-B1C2276B0386" name="risk score">
+    <dmn:extensionElements/>
+    <dmn:variable id="_6EC1A164-9098-4D0C-B020-9409C884902F" name="risk score" typeRef="number"/>
+  </dmn:inputData>
+</dmn:definitions>

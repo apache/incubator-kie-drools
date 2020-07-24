@@ -42,7 +42,6 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.core.api.DMNFactory;
-import org.kie.dmn.core.compiler.CoerceDecisionServiceSingletonOutputOption;
 import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
@@ -94,8 +93,7 @@ public class DMNAssemblerService implements KieAssemblerService {
         List<DMNResource> dmnResources = new ArrayList<>();
         for (ResourceWithConfiguration r : resources) {
             Definitions definitions = dmnMarshaller.unmarshal(r.getResource().getReader());
-            QName modelID = new QName(definitions.getNamespace(), definitions.getName());
-            DMNResource dmnResource = new DMNResource(modelID, r, definitions);
+            DMNResource dmnResource = new DMNResource(definitions, r);
             dmnResources.add(dmnResource);
         }
 
@@ -196,7 +194,7 @@ public class DMNAssemblerService implements KieAssemblerService {
             dmnpkg.addProfiles(kbuilderImpl.getCachedOrCreate(DMN_PROFILES_CACHE_KEY, () -> getDMNProfiles(kbuilderImpl)));
         } else {
             kbuilderImpl.addBuilderResult(new DMNKnowledgeBuilderError(ResultSeverity.ERROR, resource, "Unable to compile DMN model for the resource"));
-            logger.error( "Unable to compile DMN model for resource {}", resource.getSourcePath() );
+            logger.error("Unable to compile DMN model for the resource {}", resource.getSourcePath());
         }
         return model;
     }
@@ -253,7 +251,6 @@ public class DMNAssemblerService implements KieAssemblerService {
 
         if (isStrictMode(kbuilderImpl.getBuilderConfiguration().getChainedProperties())) {
             compilerConfiguration.setProperty(RuntimeTypeCheckOption.PROPERTY_NAME, "true");
-            compilerConfiguration.setProperty(CoerceDecisionServiceSingletonOutputOption.PROPERTY_NAME, "false");
         }
 
         return DMNFactory.newCompiler(compilerConfiguration);

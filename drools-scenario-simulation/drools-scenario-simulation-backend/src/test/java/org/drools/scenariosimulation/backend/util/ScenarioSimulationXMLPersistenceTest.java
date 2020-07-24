@@ -305,6 +305,16 @@ public class ScenarioSimulationXMLPersistenceTest {
         assertEquals("1.0", version);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void unmarshalEmptyContent() throws Exception {
+        ScenarioSimulationXMLPersistence.getInstance().unmarshal("");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void unmarshalNullContent() throws Exception {
+        ScenarioSimulationXMLPersistence.getInstance().unmarshal(null);
+    }
+
     @Test
     public void unmarshalRULE() throws Exception {
         String toUnmarshal = getFileContent("scesim-rule.scesim");

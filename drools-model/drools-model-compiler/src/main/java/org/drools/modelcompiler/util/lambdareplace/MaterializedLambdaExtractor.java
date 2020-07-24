@@ -71,8 +71,8 @@ public class MaterializedLambdaExtractor extends MaterializedLambda {
     }
 
     @Override
-    String className(String sourceCode) {
-        return CLASS_NAME_PREFIX + md5Hash(sourceCode);
+    String getPrefix() {
+        return CLASS_NAME_PREFIX;
     }
 
     @Override

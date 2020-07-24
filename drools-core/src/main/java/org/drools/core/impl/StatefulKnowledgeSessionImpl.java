@@ -153,7 +153,6 @@ import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.core.base.ClassObjectType.InitialFact_ObjectType;
 import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
@@ -364,10 +363,14 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.kieBaseEventListeners = new LinkedList<KieBaseEventListener>();
         this.lock = new ReentrantLock();
 
-        this.timerService = TimerServiceFactory.getTimerService( this.config );
+        this.timerService = createTimerService();
 
         this.opCounter = new AtomicLong(0);
         this.lastIdleTimestamp = new AtomicLong(-1);
+    }
+
+    protected TimerService createTimerService() {
+        return TimerServiceFactory.getTimerService( this.config );
     }
 
     private void registerReceiveNodes( List<AsyncReceiveNode> nodes ) {
@@ -745,7 +748,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public InternalFactHandle initInitialFact(InternalKnowledgeBase kBase, InternalWorkingMemoryEntryPoint entryPoint, EntryPointId epId, MarshallerReaderContext context) {
         InitialFact initialFact = InitialFactImpl.getInstance();
-        InternalFactHandle handle = new DefaultFactHandle(0, initialFact, 0, entryPoint );
+        InternalFactHandle handle = this.kBase.getConfiguration().getComponentFactory().getFactHandleFactoryService()
+                    .createDefaultFactHandle(0, initialFact, 0, entryPoint);
 
         ObjectTypeNode otn = entryPoint.getEntryPointNode().getObjectTypeNodes().get( InitialFact_ObjectType );
         if (otn != null) {
@@ -1053,7 +1057,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             for (EntryPointNode addedNode : kBase.getAddedEntryNodeCache()) {
                 EntryPointId id = addedNode.getEntryPoint();
                 if (EntryPointId.DEFAULT.equals(id)) continue;
-                WorkingMemoryEntryPoint wmEntryPoint = new NamedEntryPoint(id, addedNode, this);
+                WorkingMemoryEntryPoint wmEntryPoint = createNamedEntryPoint(addedNode, id, this);
                 entryPoints.put(id.getEntryPointId(), wmEntryPoint);
             }
         }
@@ -1065,6 +1069,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
+    public NamedEntryPoint createNamedEntryPoint(EntryPointNode addedNode, EntryPointId id, StatefulKnowledgeSessionImpl wm) {
+        return kBase.getConfiguration().getComponentFactory().getNamedEntryPointFactory().createNamedEntryPoint(addedNode, id, wm);
+    }
+
     protected void initDefaultEntryPoint() {
         this.defaultEntryPoint = createDefaultEntryPoint();
         this.entryPoints.clear();
@@ -1073,7 +1081,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     protected InternalWorkingMemoryEntryPoint createDefaultEntryPoint() {
         EntryPointNode epn = this.kBase.getRete().getEntryPointNode( EntryPointId.DEFAULT );
-        return new NamedEntryPoint( EntryPointId.DEFAULT, epn, this );
+        return createNamedEntryPoint(epn, EntryPointId.DEFAULT, this);
     }
 
     public SessionConfiguration getSessionConfiguration() {
@@ -1197,7 +1205,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public FactHandleFactory getFactHandleFactory() {
-        return this.handleFactory;
+        return this.kBase.getConfiguration().getComponentFactory().getFactHandleFactoryService();
     }
 
     public void setGlobal(final String identifier,
@@ -1887,6 +1895,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return getProcessRuntime().getProcessInstances();
     }
 
+    public ProcessInstance getProcessInstance(Object processInstanceId) {
+        return getProcessInstance( (long) processInstanceId );
+    }
+
     public ProcessInstance getProcessInstance(long processInstanceId) {
         return getProcessRuntime().getProcessInstance( processInstanceId );
     }
@@ -2222,6 +2234,16 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         public WorkItemManager getWorkItemManager() {
             throw new UnsupportedOperationException( );
         }
+
+        @Override
+        public ProcessInstance startProcessFromNodeIds(String processId, Map<String, Object> params, String... nodeInstancesIds) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public ProcessInstance startProcessFromNodeIds(String processId, CorrelationKey key, Map<String, Object> params, String... nodeIds) {
+            throw new UnsupportedOperationException();
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -2300,6 +2322,16 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             }
         }
         return result;
+    }
+
+    @Override
+    public ProcessInstance startProcessFromNodeIds(String processId, Map<String, Object> params, String... nodeInstancesIds) {
+        return getProcessRuntime().startProcessFromNodeIds(processId, params, nodeInstancesIds);
+    }
+
+    @Override
+    public ProcessInstance startProcessFromNodeIds(String processId, CorrelationKey key, Map<String, Object> params, String... nodeIds) {
+        return getProcessRuntime().startProcessFromNodeIds(processId, key, params, nodeIds);
     }
 
     ///////////////////////////////////////////////////////////////////////////

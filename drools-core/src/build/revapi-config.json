@@ -43,18 +43,8 @@
 
   "ignores": {
     "revapi": {
-      "_comment": "Changes between 7.26.0.Final and the current branch. These changes are desired and thus ignored.",
-      "ignore": [
-           {
-             "code": "java.method.removed",
-             "old": "method org.drools.core.datasources.InternalDataSource<?> org.drools.core.common.DefaultFactHandle::getDataSource()",
-             "package": "org.drools.core.common",
-             "classSimpleName": "DefaultFactHandle",
-             "methodName": "getDataSource",
-             "elementKind": "method",
-             "justification": "kogito unfork"
-           }
-      ]
+      "_comment": "Changes between 7.33.0.Final and the current branch. These changes are desired and thus ignored.",
+      "ignore": []
     }
   }
 }

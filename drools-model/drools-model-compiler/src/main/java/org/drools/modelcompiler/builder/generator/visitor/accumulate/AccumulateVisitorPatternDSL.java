@@ -36,7 +36,6 @@ import org.drools.modelcompiler.builder.generator.expression.PatternExpressionBu
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.drools.modelcompiler.util.LambdaUtil;
 
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findPatternWithBinding;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.fromVar;
 import static org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder.BIND_CALL;
 
@@ -67,11 +66,18 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
             final SortedSet<String> patterBinding = new TreeSet<>(newBinding.patternBinding);
             final List<Expression> allExpressions = context.getExpressions();
             final MethodCallExpr newBindingExpression = newBinding.bindExpression;
+
+            PatternToReplace patternToReplace = new PatternToReplace(context, patterBinding);
+
             if (patterBinding.size() == 1) {
-                findPatternWithBinding(context, patterBinding, allExpressions)
+                patternToReplace.findFromPattern()
                         .ifPresent(pattern -> addBindAsLastChainCall(newBindingExpression, pattern));
+
+                patternToReplace.findFromBinding()
+                        .ifPresent(pattern -> composeTwoBindings(newBindingExpression, pattern));
+
             } else if (patterBinding.size() == 2) {
-                findPatternWithBinding(context, patterBinding, allExpressions)
+                patternToReplace.findFromPattern()
                         .ifPresent(pattern -> composeTwoBindings(newBindingExpression, pattern));
             } else {
                 final MethodCallExpr lastPattern = DrlxParseUtil.findLastPattern(allExpressions)

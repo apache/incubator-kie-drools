@@ -37,7 +37,6 @@ public class BuiltInEvaluatorDefinitions {
         EVALUATOR_DEFINITIONS.add( new StartedByEvaluatorDefinition() );
         EVALUATOR_DEFINITIONS.add( new CoincidesEvaluatorDefinition() );
         EVALUATOR_DEFINITIONS.add( new StrEvaluatorDefinition() );
-        EVALUATOR_DEFINITIONS.add( new IsAEvaluatorDefinition() );
     }
 
     public static List<EvaluatorDefinition> getEvaluatorDefinitions() {

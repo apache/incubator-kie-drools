@@ -41,9 +41,9 @@ public class GuidedDTDRLPersistenceFirstHitPolicyTest {
 
         dtable.setData( DataUtilities.makeDataLists(
                 new Object[][]{
-                        new Object[]{1, "desc-row1"},
-                        new Object[]{2, "desc-row2"},
-                        new Object[]{3, "desc-row3"}
+                        new Object[]{1, "", "desc-row1"},
+                        new Object[]{2, "", "desc-row2"},
+                        new Object[]{3, "", "desc-row3"}
                 } ) );
 
     }

@@ -47,7 +47,7 @@ public class QuadroupleBetaConstraints extends MultipleBetaConstraint {
         super(constraints, conf, disableIndexing);
     }
 
-    private QuadroupleBetaConstraints( BetaNodeFieldConstraint[] constraints,
+    protected QuadroupleBetaConstraints( BetaNodeFieldConstraint[] constraints,
                                    IndexPrecedenceOption indexPrecedenceOption,
                                    boolean disableIndexing) {
         super(constraints, indexPrecedenceOption, disableIndexing);

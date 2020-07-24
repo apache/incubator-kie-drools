@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_001031e1-9f0e-4156-afad-3ee970139021" id="_001031e1-9f0e-4156-afad-3ee970139021" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_001031e1-9f0e-4156-afad-3ee970139021" exporter="Decision Modeler" exporterVersion="6.12.0" triso:logoChoice="Default">
+    <semantic:decision id="_9190daa5-d635-4050-9ca2-ee1c251e3da4" name="hardcoded">
+        <semantic:variable name="hardcoded" id="_bede6e57-caa3-4d14-8707-197aeaf01f6d" typeRef="Any"/>
+        <semantic:context id="_81fa5677-a94e-4251-a185-341057382825" typeRef="Any" triso:expressionId="_71d6f106-e798-488f-9556-461de0838486">
+            <semantic:contextEntry id="_2c69bd34-a830-4ca2-9d11-622828d3f332">
+                <semantic:variable name="e1" id="_2b5e23cc-69a8-4ce5-a090-d17933715e80" typeRef="Any"/>
+                <semantic:literalExpression id="_f0c1dd55-5dee-4abc-a83b-7e27c4a76c53">
+                    <!-- this FEEL expression is wrong, cannot `date and time` - `date`, moreover will trigger a RuntimeException. -->
+                    <semantic:text>date and time("2012-12-24T23:59:00") - date("2012-12-01")</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry id="_f9eb7120-cfc6-4689-b929-59e1cf0c0309">
+                <semantic:literalExpression id="_003e65af-6355-4a93-b6e1-fcff95af2f74">
+                    <semantic:text>e1</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+        </semantic:context>
+    </semantic:decision>
+</semantic:definitions>

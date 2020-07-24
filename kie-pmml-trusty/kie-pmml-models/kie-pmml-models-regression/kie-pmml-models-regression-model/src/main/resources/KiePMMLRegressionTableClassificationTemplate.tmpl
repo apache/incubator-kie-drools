@@ -1,0 +1,52 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.kie.pmml.models.regression.evaluator;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.DoubleUnaryOperator;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import org.kie.pmml.commons.model.enums.OP_TYPE;
+import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
+
+import org.kie.pmml.models.regression.model.KiePMMLRegressionClassificationTable;
+
+public class KiePMMLRegressionTableClassificationTemplate extends KiePMMLRegressionClassificationTable {
+
+    public KiePMMLRegressionTableClassificationTemplate() {
+        targetField = "fld4";
+        regressionNormalizationMethod = null;
+        opType = null;
+   }
+
+    @Override
+    public Object getTargetCategory() {
+
+    }
+
+    @Override
+    public boolean isBinary() {
+
+    }
+
+    @Override
+    protected void populateOutputFieldsMap(final Map.Entry<String, Double> predictedEntry, final LinkedHashMap<String, Double> probabilityMap) {
+
+    }
+}

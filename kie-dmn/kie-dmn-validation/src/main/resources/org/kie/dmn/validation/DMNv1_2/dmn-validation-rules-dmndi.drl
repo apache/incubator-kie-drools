@@ -1,0 +1,128 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.kie.dmn.validation.DMNv1_2;
+
+import javax.xml.XMLConstants;
+
+import org.kie.dmn.model.api.*;
+import org.kie.dmn.model.api.dmndi.*;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.core.util.Msg;
+
+import function org.kie.dmn.validation.ValidatorUtil.doesDefinitionsContainIdForDMNEdge;
+
+global org.kie.dmn.validation.MessageReporter reporter;
+
+rule DRGELEMENT_MISSING_DMNSHAPE
+when
+    DMNDI()
+    $element : DRGElement()
+    not DMNShape(dmnElementRef.prefix == XMLConstants.DEFAULT_NS_PREFIX, dmnElementRef.localPart == $element.id)
+then
+    reporter.report(DMNMessage.Severity.WARN, $element, Msg.DMNDI_MISSING_SHAPE, $element.getIdentifierString());
+end
+
+rule TEXTANNOTATION_MISSING_DMNSHAPE
+when
+    DMNDI()
+    $textAnn : TextAnnotation()
+    not DMNShape(dmnElementRef.prefix == XMLConstants.DEFAULT_NS_PREFIX, dmnElementRef.localPart == $textAnn.id)
+then
+    reporter.report(DMNMessage.Severity.WARN, $textAnn, Msg.DMNDI_MISSING_SHAPE, $textAnn.getIdentifierString());
+end
+
+rule INFORMATIONREQUIREMENT_MISSING_DMNEDGE
+when
+    DMNDI()
+    $req : InformationRequirement()
+    not DMNEdge(dmnElementRef.prefix == XMLConstants.DEFAULT_NS_PREFIX, dmnElementRef.localPart == $req.id)
+then
+    reporter.report(DMNMessage.Severity.WARN, $req, Msg.DMNDI_MISSING_EDGE, $req.getIdentifierString());
+end
+
+rule KNOWLEDGEREQUIREMENT_MISSING_DMNEDGE
+when
+    DMNDI()
+    $req : KnowledgeRequirement()
+    not DMNEdge(dmnElementRef.prefix == XMLConstants.DEFAULT_NS_PREFIX, dmnElementRef.localPart == $req.id)
+then
+    reporter.report(DMNMessage.Severity.WARN, $req, Msg.DMNDI_MISSING_EDGE, $req.getIdentifierString());
+end
+
+rule AUTHORITYREQUIREMENT_MISSING_DMNEDGE
+when
+    DMNDI()
+    $req : AuthorityRequirement()
+    not DMNEdge(dmnElementRef.prefix == XMLConstants.DEFAULT_NS_PREFIX, dmnElementRef.localPart == $req.id)
+then
+    reporter.report(DMNMessage.Severity.WARN, $req, Msg.DMNDI_MISSING_EDGE, $req.getIdentifierString());
+end
+
+rule ASSOCIATION_MISSING_DMNEDGE
+when
+    DMNDI()
+    $asso : Association()
+    not DMNEdge(dmnElementRef.prefix == XMLConstants.DEFAULT_NS_PREFIX, dmnElementRef.localPart == $asso.id)
+then
+    reporter.report(DMNMessage.Severity.WARN, $asso, Msg.DMNDI_MISSING_EDGE, $asso.getIdentifierString());
+end
+
+rule DMNSHAPE_UNKNOWN_REF_WITHOUT_IMPORT
+when
+    DMNDI()
+    $shape : DMNShape(dmnElementRef.prefix == XMLConstants.DEFAULT_NS_PREFIX)
+    not DRGElement(id == $shape.dmnElementRef.localPart)
+    not TextAnnotation(id == $shape.dmnElementRef.localPart)
+then
+    reporter.report(DMNMessage.Severity.ERROR, $shape, Msg.DMNDI_UNKNOWN_REF, $shape.getDmnElementRef(), $shape.getIdentifierString());
+end
+
+rule DMNSHAPE_UNKNOWN_REF_WITH_IMPORT
+when
+    DMNDI()
+    $shape : DMNShape($prefix : dmnElementRef.prefix != XMLConstants.DEFAULT_NS_PREFIX)
+    Definitions($nsContext : nsContext)
+    $import : Import(ImportDMNResolverUtil.whichImportType(this) == ImportDMNResolverUtil.ImportType.DMN, namespace == $nsContext[$prefix])
+    $importDef : Definitions(namespace == $import.namespace) from entry-point "DMNImports"
+    not DRGElement(id == $shape.dmnElementRef.localPart) from $importDef.drgElement
+    not TextAnnotation(id == $shape.dmnElementRef.localPart) from $importDef.artifact
+then
+    reporter.report(DMNMessage.Severity.ERROR, $shape, Msg.DMNDI_UNKNOWN_REF, $shape.getDmnElementRef(), $shape.getIdentifierString());
+end
+
+rule DMNEGDE_UNKNOWN_REF_WITHOUT_IMPORT
+when
+    DMNDI()
+    $edge : DMNEdge(dmnElementRef.prefix == XMLConstants.DEFAULT_NS_PREFIX)
+    not InformationRequirement(id == $edge.dmnElementRef.localPart)
+    not KnowledgeRequirement(id == $edge.dmnElementRef.localPart)
+    not AuthorityRequirement(id == $edge.dmnElementRef.localPart)
+    not Association(id == $edge.dmnElementRef.localPart)
+then
+    reporter.report(DMNMessage.Severity.ERROR, $edge, Msg.DMNDI_UNKNOWN_REF, $edge.getDmnElementRef(), $edge.getIdentifierString());
+end
+
+rule DMNEGDE_UNKNOWN_REF_WITH_IMPORT
+when
+    DMNDI()
+    $edge : DMNEdge($prefix : dmnElementRef.prefix != XMLConstants.DEFAULT_NS_PREFIX, $localPart : dmnElementRef.localPart)
+    Definitions($nsContext : nsContext)
+    $import : Import(ImportDMNResolverUtil.whichImportType(this) == ImportDMNResolverUtil.ImportType.DMN, namespace == $nsContext[$prefix])
+    $importDef : Definitions(namespace == $import.namespace) from entry-point "DMNImports"
+    eval(!doesDefinitionsContainIdForDMNEdge($importDef, $localPart))
+then
+    reporter.report(DMNMessage.Severity.ERROR, $edge, Msg.DMNDI_UNKNOWN_REF, $edge.getDmnElementRef(), $edge.getIdentifierString());
+end

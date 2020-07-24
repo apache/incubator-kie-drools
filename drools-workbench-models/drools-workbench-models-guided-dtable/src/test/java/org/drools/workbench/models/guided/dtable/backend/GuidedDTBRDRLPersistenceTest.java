@@ -21,18 +21,50 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.Function;
 
+import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.datamodel.rule.PluggableIAction;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.TemplateAware;
 import org.drools.workbench.models.guided.dtable.backend.util.GuidedDTBRDRLPersistence;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.oracle.DataType;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class GuidedDTBRDRLPersistenceTest {
+
+    @Test
+    public void testSingleFieldConstraintPredicate() {
+        final GuidedDTBRDRLPersistence persistence = new GuidedDTBRDRLPersistence((key) -> "true");
+
+        final RuleModel ruleModel = new RuleModel();
+        ruleModel.name = "Template aware";
+
+        ruleModel.addRhsItem(new TemplateAwareIAction("initialValue"));
+        final FactPattern factPattern = new FactPattern("Person");
+        final SingleFieldConstraint constraint = new SingleFieldConstraint();
+        constraint.setConstraintValueType(BaseSingleFieldConstraint.TYPE_PREDICATE);
+        constraint.setValue("(age != null) == \"@{param1}\"");
+        factPattern.addConstraint(constraint);
+        ruleModel.addLhsItem(factPattern);
+
+        final String result = persistence.marshal(ruleModel);
+
+        final String expected = "rule \"Template aware\"\n" +
+                "\tdialect \"mvel\"\n" +
+                "\twhen\n" +
+                "\t\tPerson( eval( (age != null) == \"true\" ))\n" +
+                "\tthen\n" +
+                "\t\tsubstitutedValue;\n" +
+                "end\n";
+
+        assertEquals(expected,
+                     result);
+    }
 
     @Test
     public void testRHSWithTemplateAwareIAction() {

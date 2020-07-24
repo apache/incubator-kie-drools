@@ -36,6 +36,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
@@ -44,7 +45,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Supplier;
 
-import org.drools.compiler.builder.DroolsAssemblerContext;
+import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.errors.MissingImplementationException;
 import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
@@ -109,7 +110,9 @@ import org.drools.compiler.rule.builder.RuleBuilder;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.dialect.DialectError;
 import org.drools.compiler.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
@@ -146,10 +149,8 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ChangeSet;
-import org.kie.internal.builder.AssemblerContext;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.DecisionTableConfiguration;
-import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderResult;
@@ -159,7 +160,6 @@ import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.ScoreCardConfiguration;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.io.ResourceWithConfigurationImpl;
-import org.drools.core.addon.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -168,9 +168,7 @@ import static org.drools.core.impl.KnowledgeBaseImpl.registerFunctionClassAndInn
 import static org.drools.core.util.StringUtils.isEmpty;
 import static org.drools.core.util.StringUtils.ucFirst;
 
-public class KnowledgeBuilderImpl implements KnowledgeBuilder,
-                                             DroolsAssemblerContext,
-                                             AssemblerContext {
+public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
 
     protected static final transient Logger logger = LoggerFactory.getLogger(KnowledgeBuilderImpl.class);
 
@@ -284,7 +282,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
         }
 
         processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
-        typeBuilder = new TypeDeclarationBuilder(this);
+        this.typeBuilder = createTypeDeclarationBuilder();
     }
 
     public KnowledgeBuilderImpl(InternalKnowledgeBase kBase,
@@ -310,7 +308,16 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
         this.kBase = kBase;
 
         processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
-        typeBuilder = new TypeDeclarationBuilder(this);
+
+        this.typeBuilder = createTypeDeclarationBuilder();
+    }
+
+    private TypeDeclarationBuilder createTypeDeclarationBuilder() {
+        TypeDeclarationBuilderFactory typeDeclarationBuilderFactory =
+                Optional.ofNullable(ServiceRegistry.getInstance().get(TypeDeclarationBuilderFactory.class))
+                        .orElse(new DefaultTypeDeclarationBuilderFactory());
+
+        return typeDeclarationBuilderFactory.createTypeDeclarationBuilder(this);
     }
 
     public void setReleaseId( ReleaseId releaseId ) {
@@ -376,7 +383,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
                                              ResourceConfiguration configuration) throws DroolsParserException, IOException {
         DecisionTableConfiguration dtableConfiguration = configuration instanceof DecisionTableConfiguration ?
                 (DecisionTableConfiguration) configuration :
-                null;
+                new DecisionTableConfigurationImpl();
 
         if (!dtableConfiguration.getRuleTemplateConfigurations().isEmpty()) {
             List<String> generatedDrls = DecisionTableFactory.loadFromInputStreamWithTemplates(resource, dtableConfiguration);
@@ -900,6 +907,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
      * This adds a package from a Descr/AST This will also trigger a compile, if
      * there are any generated classes to compile of course.
      */
+    @Override
     public void addPackage(final PackageDescr packageDescr) {
         PackageRegistry pkgRegistry = getOrCreatePackageRegistry(packageDescr);
         if (pkgRegistry == null) {
@@ -989,7 +997,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
         InternalKnowledgePackage pkg;
         if (this.kBase == null || (pkg = this.kBase.getPackage(packageDescr.getName())) == null) {
             // there is no rulebase or it does not define this package so define it
-            pkg = new KnowledgePackageImpl(packageDescr.getName());
+            pkg = configuration.getKieComponentFactory().createKnowledgePackage((packageDescr.getName()));
             pkg.setClassFieldAccessorCache(new ClassFieldAccessorCache(this.rootClassLoader));
 
             // if there is a rulebase then add the package.
@@ -1860,6 +1868,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
         return this.pkgRegistryMap.get(name);
     }
 
+    @Override
     public InternalKnowledgePackage getPackage(String name) {
         PackageRegistry registry = this.pkgRegistryMap.get(name);
         return registry == null ? null : registry.getPackage();
@@ -2147,42 +2156,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
         return new ResourceRemovalResult(modified, removedTypes);
     }
 
-
-    public static class ResourceRemovalResult {
-        private boolean modified;
-        private Collection<String> removedTypes;
-
-        public ResourceRemovalResult(  ) {
-            this( false, Collections.emptyList() );
-        }
-
-        public ResourceRemovalResult( boolean modified, Collection<String> removedTypes ) {
-            this.modified = modified;
-            this.removedTypes = removedTypes;
-        }
-
-        public void add(ResourceRemovalResult other) {
-            mergeModified( other.modified );
-            if (this.removedTypes.isEmpty()) {
-                this.removedTypes = other.removedTypes;
-            } else {
-                this.removedTypes.addAll( other.removedTypes );
-            }
-        }
-
-        public void mergeModified( boolean otherModified ) {
-            this.modified = this.modified || otherModified;
-        }
-
-        public boolean isModified() {
-            return modified;
-        }
-
-        public Collection<String> getRemovedTypes() {
-            return removedTypes;
-        }
-    }
-
+    @Override
     public void rewireAllClassObjectTypes() {
         if (kBase != null) {
             for (InternalKnowledgePackage pkg : kBase.getPackagesMap().values()) {

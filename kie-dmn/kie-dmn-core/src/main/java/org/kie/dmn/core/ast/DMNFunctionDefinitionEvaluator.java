@@ -121,6 +121,7 @@ public class DMNFunctionDefinitionEvaluator
         private final DMNExpressionEvaluator evaluator;
         private final DMNRuntimeEventManager eventManager;
         private final DMNResultImpl resultContext;
+        private final DMNContext closureContext;
         private final FunctionDefinition functionDefinition;
         private final boolean performRuntimeTypeCheck;
 
@@ -133,6 +134,8 @@ public class DMNFunctionDefinitionEvaluator
             this.evaluator = evaluator;
             this.eventManager = eventManager;
             this.resultContext = result;
+            this.closureContext = result.getContext().clone();
+            this.closureContext.set(name, this); // allow recursion in closure.
             performRuntimeTypeCheck = ((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(result.getModel());
         }
 
@@ -140,14 +143,14 @@ public class DMNFunctionDefinitionEvaluator
             DMNContext previousContext = resultContext.getContext();
             // we could be more strict and only set the parameters and the dependencies as values in the new
             // context, but for now, cloning the original context
-            DMNContextFEELCtxWrapper dmnContext = new DMNContextFEELCtxWrapper(ctx);
+            DMNContextFEELCtxWrapper dmnContext = new DMNContextFEELCtxWrapper(ctx, resultContext.getContext().getMetadata().asMap());
             dmnContext.enterFrame();
             try {
                 if (originatorNode instanceof BusinessKnowledgeModelNode) {
                     DMNRuntimeEventManagerUtils.fireBeforeInvokeBKM(eventManager, (BusinessKnowledgeModelNode) originatorNode, resultContext);
                 }
                 if( evaluator != null ) {
-                    previousContext.getAll().forEach(dmnContext::set);
+                    closureContext.getAll().forEach(dmnContext::set);
                     for( int i = 0; i < params.length; i++ ) {
                         final String paramName = parameters.get(i).name;
                         if ((!performRuntimeTypeCheck) || parameters.get(i).type.isAssignableValue(params[i])) {

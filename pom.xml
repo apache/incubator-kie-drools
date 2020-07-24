@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-parent</artifactId>
-    <version>7.35.0-SNAPSHOT</version>
+    <version>7.41.0-SNAPSHOT</version>
     <!-- relativePath causes out-of-date problems on hudson slaves -->
     <!--<relativePath>../droolsjbpm-build-bootstrap/pom.xml</relativePath>-->
   </parent>
@@ -45,7 +45,7 @@
 
   <scm>
     <connection>scm:git:https://github.com:kiegroup/drools.git</connection>
-    <developerConnection>scm:git:git@github.com:kirgroup/drools.git</developerConnection>
+    <developerConnection>scm:git:git@github.com:kiegroup/drools.git</developerConnection>
     <url>https://github.com/kiegroup/drools</url>
   </scm>
 
@@ -55,6 +55,7 @@
     <module>kie-test-util</module>
     <module>drools-beliefs</module>
     <module>drools-core</module>
+    <module>drools-traits</module>
     <module>drools-compiler</module>
     <module>drools-ruleunit</module>
     <module>drools-cdi</module>
@@ -68,12 +69,15 @@
     <module>drools-model</module>
     <module>kie-dmn</module>
     <module>kie-pmml</module>
+    <module>kie-pmml-trusty</module>
     <module>drools-scorecards</module>
     <module>drools-examples-api</module>
     <module>drools-examples-cdi</module>
     <module>drools-workbench-models</module>
     <module>drools-test-coverage</module>
     <module>drools-scenario-simulation</module>
+    <module>kie-memory-compiler</module>
+    <module>drools-metric</module>
   </modules>
 
   <dependencyManagement>

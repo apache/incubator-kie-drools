@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.kie.soup.project.datamodel.oracle.DataType;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class RuleModelVisitorTest {
@@ -69,6 +70,27 @@ public class RuleModelVisitorTest {
         assertEquals("fieldName", interpolationVariable.getFactField());
         assertEquals("fieldType", interpolationVariable.getDataType());
         assertEquals("==", interpolationVariable.getOperator());
+    }
+
+    @Test
+    public void testSingleFieldConstraintPredicate() {
+
+        Map<InterpolationVariable, Integer> variableMap = new HashMap<>();
+        RuleModelVisitor visitor = new RuleModelVisitor(variableMap);
+
+        SingleFieldConstraint singleFieldConstraint = new SingleFieldConstraint();
+        singleFieldConstraint.setConstraintValueType(BaseSingleFieldConstraint.TYPE_PREDICATE);
+        singleFieldConstraint.setValue("(age != null) == \"@{param1}\"");
+
+        visitor.visit(singleFieldConstraint);
+
+        assertEquals(1, variableMap.keySet().size());
+
+        InterpolationVariable interpolationVariable = variableMap.keySet().iterator().next();
+        assertEquals("param1", interpolationVariable.getVarName());
+        assertEquals("Object", interpolationVariable.getDataType());
+        assertNull(interpolationVariable.getFactField());
+        assertNull(interpolationVariable.getOperator());
     }
 
     private static class TemplateAwareIAction implements IAction,

@@ -9,6 +9,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.ResolverStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
@@ -37,7 +38,8 @@ public class TimeFunction extends BaseFEELFunction {
                 .optionalStart()
                 .appendOffsetId()
                 .optionalEnd()
-                .toFormatter();
+                .toFormatter()
+                .withResolverStyle(ResolverStyle.STRICT);
     }
 
     TimeFunction() {

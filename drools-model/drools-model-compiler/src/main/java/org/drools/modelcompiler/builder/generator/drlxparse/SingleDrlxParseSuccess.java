@@ -36,6 +36,8 @@ import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.UnificationTypedExpression;
 
+import static java.util.Optional.ofNullable;
+
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.AND;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
@@ -44,7 +46,7 @@ import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.NOT_EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.OR;
-import static java.util.Optional.ofNullable;
+import static org.drools.modelcompiler.builder.generator.visitor.pattern.PatternDSL.GENERATED_PATTERN_PREFIX;
 import static org.drools.modelcompiler.util.ClassUtil.getAccessibleProperties;
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
@@ -56,7 +58,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     private final Type exprType;
 
     private String originalDrlConstraint;
-    private String patternBinding;
+    private final String patternBinding;
     private String accumulateBinding;
     private boolean isPatternBindingUnification = false;
 
@@ -79,11 +81,39 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     private boolean unification;
     private boolean temporal;
 
+    private Optional<Expression> implicitCastExpression = Optional.empty();
+
     public SingleDrlxParseSuccess(Class<?> patternType, String patternBinding, Expression expr, Type exprType) {
         this.patternType = patternType;
         this.patternBinding = patternBinding;
         this.expr = expr;
         this.exprType = exprType;
+    }
+
+    public SingleDrlxParseSuccess(SingleDrlxParseSuccess drlx) {
+        // Shallow copy constructor
+        this(drlx.getPatternType(), drlx.getPatternBinding(), drlx.getExpr(), drlx.getExprType());
+        this.originalDrlConstraint = drlx.getOriginalDrlConstraint();
+        this.accumulateBinding = drlx.getAccumulateBinding();
+        this.isPatternBindingUnification = drlx.isPatternBindingUnification();
+        this.exprBinding = drlx.getExprBinding();
+        this.decodeConstraintType = drlx.getDecodeConstraintType();
+        this.usedDeclarations = drlx.getUsedDeclarations();
+        this.usedDeclarationsOnLeft = drlx.getUsedDeclarationsOnLeft();
+        this.reactOnProperties = drlx.getReactOnProperties();
+        this.left = drlx.getLeft();
+        this.right = drlx.getRight();
+        this.rightLiteral = drlx.getRightLiteral();
+        this.isStatic = drlx.isStatic();
+        this.isValidExpression = drlx.isValidExpression();
+        this.skipThisAsParam = drlx.isSkipThisAsParam();
+        this.isBetaNode = drlx.isBetaNode();
+        this.requiresSplit = drlx.isRequiresSplit();
+        this.unification = drlx.isUnification();
+        this.temporal = drlx.isTemporal();
+        this.implicitCastExpression = drlx.getImplicitCastExpression();
+
+        this.watchedProperties = drlx.getWatchedProperties();
     }
 
     public SingleDrlxParseSuccess setDecodeConstraintType( Index.ConstraintType decodeConstraintType ) {
@@ -180,6 +210,10 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
     public String getPatternBinding() {
         return patternBinding;
+    }
+
+    public boolean hasGeneratedPatternBinding() {
+        return patternBinding != null && patternBinding.startsWith( GENERATED_PATTERN_PREFIX );
     }
 
     public void setExpr(Expression expr) {
@@ -383,6 +417,25 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     public DrlxParseResult setOriginalDrlConstraint(String originalDrlConstraint) {
         this.originalDrlConstraint = originalDrlConstraint;
         return this;
+    }
+
+    public String getOriginalDrlConstraint() {
+        return originalDrlConstraint;
+    }
+
+    public SingleDrlxParseSuccess setImplicitCastExpression(Optional<Expression> implicitCastExpression) {
+        this.implicitCastExpression = implicitCastExpression;
+        return this;
+    }
+
+    @Override
+    public Optional<Expression> getImplicitCastExpression() {
+        return implicitCastExpression;
+    }
+
+    @Override
+    public String toString() {
+        return originalDrlConstraint;
     }
 }
 

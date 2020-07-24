@@ -32,6 +32,8 @@ public class ExpressionTyperContext {
     private Set<String> reactOnProperties = new HashSet<>();
     private List<Expression> prefixExpresssions = new ArrayList<>();
 
+    private boolean registerPropertyReactivity = true;
+
     public void addUsedDeclarations(String name) {
         usedDeclarations.add(name);
     }
@@ -41,7 +43,9 @@ public class ExpressionTyperContext {
     }
 
     public void addReactOnProperties(String prop) {
-        reactOnProperties.add(lcFirstForBean(prop));
+        if (registerPropertyReactivity) {
+            reactOnProperties.add( lcFirstForBean( prop ) );
+        }
     }
 
     public Set<String> getReactOnProperties() {
@@ -50,5 +54,13 @@ public class ExpressionTyperContext {
 
     public List<Expression> getPrefixExpresssions() {
         return prefixExpresssions;
+    }
+
+    public void setRegisterPropertyReactivity( boolean registerPropertyReactivity ) {
+        this.registerPropertyReactivity = registerPropertyReactivity;
+    }
+
+    public boolean isRegisterPropertyReactivity() {
+        return registerPropertyReactivity;
     }
 }

@@ -25,6 +25,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 
 public class MarshallingStubUtils {
 
@@ -47,6 +48,8 @@ public class MarshallingStubUtils {
         } else if (result instanceof Set<?>) {
             Set<?> stubbedValues = ((Set<?>) result).stream().map(r -> stubDMNResult(r, stubbingWrapper)).collect(Collectors.toSet());
             return stubbedValues;
+        } else if (result instanceof ComparablePeriod) {
+            return ((ComparablePeriod) result).asPeriod();
         } else if (result != null && result.getClass().getPackage().getName().startsWith("org.kie.dmn")) {
             return stubbingWrapper.apply(result);
         }

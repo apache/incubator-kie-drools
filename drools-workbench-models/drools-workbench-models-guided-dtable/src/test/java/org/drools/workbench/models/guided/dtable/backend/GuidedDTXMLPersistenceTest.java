@@ -66,12 +66,13 @@ public class GuidedDTXMLPersistenceTest {
         p.getChildColumns().add(c);
         dt.getConditions().add(p);
 
-        dt.setData(upgrader.makeDataLists(new String[][]{new String[]{"1", "hola"}}));
+        dt.setData(upgrader.makeDataLists(new String[][]{new String[]{"1", "My rule", "hola"}}));
         dt.setTableName("blah");
 
         String xml = GuidedDTXMLPersistence.getInstance().marshal(dt);
         System.out.println(xml);
         assertNotNull(xml);
+        assertTrue( xml.contains( "<version>739</version>" ) );
         assertEquals(-1,
                      xml.indexOf("ActionSetField"));
         assertEquals(-1,
@@ -93,6 +94,8 @@ public class GuidedDTXMLPersistenceTest {
                      dt_.getConditions().size());
         assertEquals(1,
                      dt_.getConditions().get(0).getChildColumns().size());
+        assertEquals("My rule",
+                     dt_.getData().get(0).get(GuidedDecisionTable52.RULE_NAME_COLUMN_INDEX).getStringValue());
     }
 
     @Test
@@ -119,6 +122,8 @@ public class GuidedDTXMLPersistenceTest {
                      asf.getFactField());
         assertEquals(false,
                      asf.isUpdate());
+        assertEquals(7,
+                     dt_.getData().get(0).size());
     }
 
     @Test
@@ -148,7 +153,7 @@ public class GuidedDTXMLPersistenceTest {
         List<List<DTCellValue52>> dataList = guidedDTable.getData();
         Assertions.assertThat(dataList).hasSize(1);
         List<DTCellValue52> cellValueList = dataList.get(0);
-        Assertions.assertThat(cellValueList).hasSize(1);
+        Assertions.assertThat(cellValueList).hasSize(2);
         // NUMERIC gets upgraded/migrated to NUMERIC_INTEGER
         Assertions.assertThat(cellValueList.get(0).getDataType()).isEqualTo(DataType.DataTypes.NUMERIC_INTEGER);
         Assertions.assertThat(cellValueList.get(0).getNumericValue().intValue()).isEqualTo(1);

@@ -350,7 +350,6 @@ public class PMML4Compiler {
     }
 
     private static KieBase checkBuildingResources(PMML pmml) throws IOException {
-
         KieServices ks = KieServices.Factory.get();
         KieContainer kieContainer = ks.getKieClasspathContainer(PMML4Compiler.class.getClassLoader());
 

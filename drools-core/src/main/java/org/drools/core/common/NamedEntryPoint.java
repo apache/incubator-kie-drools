@@ -28,11 +28,10 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.base.TraitDisabledHelper;
 import org.drools.core.base.TraitHelper;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.factmodel.traits.TraitProxy;
-import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
@@ -77,16 +76,19 @@ public class NamedEntryPoint
     protected EntryPointId     entryPoint;
     protected EntryPointNode entryPointNode;
 
-    protected final StatefulKnowledgeSessionImpl wm;
+    protected StatefulKnowledgeSessionImpl wm;
 
     protected FactHandleFactory         handleFactory;
     protected PropagationContextFactory pctxFactory;
 
-    protected final ReentrantLock lock;
+    protected ReentrantLock lock;
 
     protected Set<InternalFactHandle> dynamicFacts = null;
 
-    protected TraitHelper traitHelper;
+    protected NamedEntryPoint() {
+        lock = null;
+        wm = null;
+    }
 
     public NamedEntryPoint(EntryPointId entryPoint,
                            EntryPointNode entryPointNode,
@@ -109,7 +111,6 @@ public class NamedEntryPoint
         this.handleFactory = this.wm.getFactHandleFactory();
         this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         this.objectStore = new ClassAwareObjectStore(this.kBase.getConfiguration(), this.lock);
-        this.traitHelper = new TraitHelper( wm, this );
     }
 
     protected NamedEntryPoint( EntryPointId entryPoint,
@@ -122,7 +123,6 @@ public class NamedEntryPoint
         this.handleFactory = handleFactory;
         this.lock = lock;
         this.objectStore = objectStore;
-        this.traitHelper = new TraitHelper( wm, this );
     }
 
      public void lock() {
@@ -401,10 +401,7 @@ public class NamedEntryPoint
                     }
                 }
 
-                if (handle.isTraitable() && object != originalObject
-                        && object instanceof TraitableBean && originalObject instanceof TraitableBean) {
-                    this.traitHelper.replaceCore(handle, object, originalObject, propagationContext.getModificationMask(), object.getClass(), activation);
-                }
+                beforeUpdate(handle, object, activation, originalObject, propagationContext);
 
                 update(handle, object, originalObject, typeConf, propagationContext);
             } finally {
@@ -414,6 +411,9 @@ public class NamedEntryPoint
             this.lock.unlock();
         }
         return handle;
+    }
+
+    protected void beforeUpdate(InternalFactHandle handle, Object object, Activation activation, Object originalObject, PropagationContext propagationContext) {
     }
 
     public void update(InternalFactHandle handle, Object object, Object originalObject, ObjectTypeConf typeConf, PropagationContext propagationContext) {
@@ -497,9 +497,7 @@ public class NamedEntryPoint
             return;
         }
 
-        if ( handle.isTraitable() ) {
-            traitHelper.deleteWMAssertedTraitProxies( handle, rule, terminalNode );
-        }
+        beforeDestroy(rule, terminalNode, handle);
 
         final Object object = handle.getObject();
 
@@ -514,6 +512,10 @@ public class NamedEntryPoint
         deleteFromTMS( handle, key, typeConf, propagationContext );
 
         this.handleFactory.destroyFactHandle( handle );
+    }
+
+    protected void beforeDestroy(RuleImpl rule, TerminalNode terminalNode, InternalFactHandle handle) {
+
     }
 
     private void deleteFromTMS( InternalFactHandle handle, EqualityKey key, ObjectTypeConf typeConf, PropagationContext propagationContext ) {
@@ -556,11 +558,7 @@ public class NamedEntryPoint
                                            typeConf,
                                            this.wm );
 
-        if ( handle.isTraiting() && handle.getObject() instanceof TraitProxy ) {
-            (( (TraitProxy) handle.getObject() ).getObject()).removeTrait( ( (TraitProxy) handle.getObject() )._getTypeCode() );
-        } else if ( handle.isTraitable() ) {
-            traitHelper.deleteWMAssertedTraitProxies( handle, rule, terminalNode );
-        }
+        afterRetract(handle, rule, terminalNode);
 
         this.objectStore.removeHandle( handle );
 
@@ -570,6 +568,10 @@ public class NamedEntryPoint
                                                                  object,
                                                                  this.wm);
         return propagationContext;
+    }
+
+    protected void afterRetract(InternalFactHandle handle, RuleImpl rule, TerminalNode terminalNode) {
+
     }
 
     public void removeFromObjectStore(InternalFactHandle handle) {
@@ -766,12 +768,13 @@ public class NamedEntryPoint
         return tms;
     }
 
-    public PropagationContextFactory getPctxFactory() {
-        return pctxFactory;
+    @Override
+    public TraitHelper getTraitHelper() {
+        return new TraitDisabledHelper();
     }
 
-    public TraitHelper getTraitHelper() {
-        return traitHelper;
+    public PropagationContextFactory getPctxFactory() {
+        return pctxFactory;
     }
 
     @Override

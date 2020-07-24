@@ -16,7 +16,7 @@ import static com.github.javaparser.ast.NodeList.nodeList;
 // A special case of compiler in which only the modify statements are processed
 public class ModifyCompiler {
 
-    private PreprocessPhase preprocessPhase = new PreprocessPhase();
+    private static final PreprocessPhase preprocessPhase = new PreprocessPhase(true);
 
     public ParsingResult compile(String mvelBlock) {
 
@@ -31,12 +31,15 @@ public class ModifyCompiler {
                     usedBindings.addAll(invoke.getUsedBindings());
                     Optional<Node> parentNode = s.getParentNode();
                     parentNode.ifPresent(p -> {
-                        BlockStmt p1 = (BlockStmt) p;
-                        p1.getStatements().addAll(invoke.getNewObjectStatements());
-                        p1.getStatements().addAll(invoke.getOtherStatements());
-                        for (String modifiedProperty : invoke.getUsedBindings()) {
-                            p1.addStatement(new MethodCallExpr(null, "update", nodeList(new NameExpr(modifiedProperty))));
+                        BlockStmt replacementBlock = new BlockStmt();
+                        replacementBlock.getStatements().addAll(invoke.getNewObjectStatements());
+                        replacementBlock.getStatements().addAll(invoke.getOtherStatements());
+                        for (String modifiedFact : invoke.getUsedBindings()) {
+                            replacementBlock.addStatement(new MethodCallExpr(null, "update", nodeList(new NameExpr(modifiedFact))));
                         }
+                        BlockStmt p1 = (BlockStmt) p;
+                        int index = p1.getStatements().indexOf(s);
+                        p1.addStatement(index, replacementBlock);
                     });
                     s.remove();
                 });

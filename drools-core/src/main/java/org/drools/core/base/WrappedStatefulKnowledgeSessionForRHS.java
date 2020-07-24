@@ -79,14 +79,14 @@ import org.kie.internal.process.CorrelationKey;
 /**
  * Wrapper of StatefulKnowledgeSessionImpl so to intercept call from RHS internal Drools execution and proxy or delegate method call as appropriate.
  */
-public final class WrappedStatefulKnowledgeSessionForRHS
+public class WrappedStatefulKnowledgeSessionForRHS
         implements KieSession,
                    InternalWorkingMemoryActions,
                    EventSupport,
                    KieRuntime,
                    Externalizable {
 
-    private StatefulKnowledgeSessionImpl delegate;
+    protected StatefulKnowledgeSessionImpl delegate;
 
     public WrappedStatefulKnowledgeSessionForRHS(WorkingMemory workingMemory) {
         super();
@@ -751,6 +751,10 @@ public final class WrappedStatefulKnowledgeSessionForRHS
         return delegate.getProcessInstances();
     }
 
+    public ProcessInstance getProcessInstance(Object id) {
+        return delegate.getProcessInstance(id);
+    }
+
     public ProcessInstance getProcessInstance(long id) {
         return delegate.getProcessInstance(id);
     }
@@ -775,19 +779,7 @@ public final class WrappedStatefulKnowledgeSessionForRHS
         return delegate.getSessionClock();
     }
 
-//    public void switchToRuleUnit(RuleUnit ruleUnit, Activation activation) {
-//        delegate.getRuleUnitExecutor().switchToRuleUnit(ruleUnit, activation);
-//    }
-//
-//    public void switchToRuleUnit(Class<? extends RuleUnit> ruleUnitClass, Activation activation) {
-//        delegate.getRuleUnitExecutor().switchToRuleUnit(ruleUnitClass, activation);
-//    }
-//
-//    public void guardRuleUnit(RuleUnit ruleUnit, Activation activation) {
-//        delegate.getRuleUnitExecutor().guardRuleUnit(ruleUnit, activation);
-//    }
-//
-//    public void guardRuleUnit(Class<? extends RuleUnit> ruleUnitClass, Activation activation) {
-//        delegate.getRuleUnitExecutor().guardRuleUnit(ruleUnitClass, activation);
-//    }
+    public ProcessInstance startProcessFromNodeIds(String processId, Map<String, Object> params, String... nodeIds) {
+        return delegate.startProcessFromNodeIds(processId, params, nodeIds);
+    }
 }

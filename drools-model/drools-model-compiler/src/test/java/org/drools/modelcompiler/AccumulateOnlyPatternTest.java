@@ -16,18 +16,24 @@
 
 package org.drools.modelcompiler;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.StockTick;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
+import static org.junit.Assert.assertEquals;
+
 public class AccumulateOnlyPatternTest extends OnlyPatternTest {
 
-    public AccumulateOnlyPatternTest(RUN_TYPE testRunType ) {
-        super( testRunType );
+    public AccumulateOnlyPatternTest(RUN_TYPE testRunType) {
+        super(testRunType);
     }
 
     @Test
@@ -52,5 +58,83 @@ public class AccumulateOnlyPatternTest extends OnlyPatternTest {
         st2.setDueDate(new GregorianCalendar(2020, Calendar.FEBRUARY, 4));
         ksession.insert(st2);
         Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void testSubnetworkTuple() {
+        final String drl =
+                "import java.math.*; " +
+                        "import " + InputDataTypes.class.getCanonicalName() + "; " +
+                        "import " + ControlType.class.getCanonicalName() + "; " +
+                        "global java.util.List result; \n" +
+                        "rule \"AccumulateMinDate\" " +
+                        "	when " +
+                        "		$min : Number() from accumulate ( ControlType( booleanValue == false ) and InputDataTypes($dueDate : dueDate );" +
+                        "                                           min($dueDate.getTime().getTime())" +
+                        "                                         ) " +
+                        " " +
+                        "	then " +
+                        "		result.add($min); " +
+                        "end";
+
+        final KieSession ksession = getKieSession(drl);
+
+        List<Number> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        ControlType t1 = new ControlType(false);
+        ksession.insert(t1);
+
+        Calendar year2019 = calendarFromString("2019-11-06T16:00:00.00-07:00");
+        InputDataTypes i1 = new InputDataTypes(year2019);
+        ksession.insert(i1);
+
+        InputDataTypes i2 = new InputDataTypes(calendarFromString("2020-11-06T16:00:00.00-07:00"));
+        ksession.insert(i2);
+
+        try {
+            assertEquals(1, ksession.fireAllRules());
+            assertEquals(year2019.getTime().getTime(), result.iterator().next().longValue());
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    public static class InputDataTypes {
+
+        private Calendar dueDate;
+
+        public InputDataTypes(Calendar dueDate) {
+            this.dueDate = dueDate;
+        }
+
+        public Calendar getDueDate() {
+            return dueDate;
+        }
+
+        public void setDueDate(Calendar date) {
+            dueDate = date;
+        }
+    }
+
+    public static class ControlType {
+
+        private boolean booleanValue;
+
+        public ControlType(boolean booleanValue) {
+            this.booleanValue = booleanValue;
+        }
+
+        public void setBooleanValue(boolean booleanValue) {
+            this.booleanValue = booleanValue;
+        }
+
+        public boolean getBooleanValue() {
+            return booleanValue;
+        }
+    }
+
+    private GregorianCalendar calendarFromString(String inputString) {
+        return GregorianCalendar.from(ZonedDateTime.from(DateTimeFormatter.ISO_DATE_TIME.parse(inputString)));
     }
 }

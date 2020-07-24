@@ -62,6 +62,8 @@ public class RuleBuildContext extends PackageBuildContext {
 
     private boolean inXpath;
 
+    private int xpathChuckNr = 0;
+
     /**
      * Default constructor
      */
@@ -235,5 +237,17 @@ public class RuleBuildContext extends PackageBuildContext {
         }
 
         return rule.getPackage() + "." + classNameBuilder.reverse().toString();
+    }
+
+    public void increaseXpathChuckNr() {
+        xpathChuckNr++;
+    }
+
+    public void resetXpathChuckNr() {
+        xpathChuckNr = 0;
+    }
+
+    public int getXpathChuckNr() {
+        return xpathChuckNr;
     }
 }

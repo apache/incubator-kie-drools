@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:drools="http://www.drools.org/kie/dmn/1.1" xmlns:openapi="https://openapis.org/omg/extension/1.0" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:rss="http://purl.org/rss/2.0/" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"               xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_a8c437e4-afa9-479d-bb01-f27af54eec14" id="_a8c437e4-afa9-479d-bb01-f27af54eec14" name="testcases2" namespace="http://www.trisotech.com/definitions/_a8c437e4-afa9-479d-bb01-f27af54eec14" exporter="Decision Modeler" exporterVersion="6.9.0" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:itemDefinition name="tPercent" label="tPercent" isCollection="false">
+        <semantic:typeRef>number</semantic:typeRef>
+    </semantic:itemDefinition>
+    <semantic:itemDefinition name="tPropertyUsage" label="tPropertyUsage" isCollection="false">
+        <semantic:typeRef>string</semantic:typeRef>
+        <semantic:allowedValues triso:constraintsType="enumeration">
+            <semantic:text>"PrimaryResidence","SecondHome","Investment"</semantic:text>
+        </semantic:allowedValues>
+    </semantic:itemDefinition>
+    <semantic:itemDefinition name="tMincreditscore" label="tMincreditscore" isCollection="false">
+        <semantic:typeRef>number</semantic:typeRef>
+        <semantic:allowedValues triso:constraintsType="enumeration">
+            <semantic:text>620,640,660,680,700,1000</semantic:text>
+        </semantic:allowedValues>
+    </semantic:itemDefinition>
+    <semantic:decision id="_96627f1f-4bc5-4325-b56a-d57a7c25d386" name="Min credit score">
+        <semantic:variable name="Min credit score" id="_e594917c-0f9d-4680-8e0b-ca6524079c58" typeRef="tMincreditscore"/>
+        <semantic:informationRequirement id="_27fe2585-4268-4e48-b653-b7a1c0535137">
+            <semantic:requiredInput href="#_1ff896ea-8a67-4b30-b62e-d6245bd0c777"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_66d05c52-dacd-40df-a617-11f457c5bdac">
+            <semantic:requiredInput href="#_447344d4-1edb-43cd-b5a5-a883c0379d09"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_a11ab941-a2a1-4e75-b9b4-1006688a4691">
+            <semantic:requiredInput href="#_17d4efd8-104b-4acb-8cc6-4927a0e05fd2"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_b28bad92-3982-489a-808e-23108d341f55">
+            <semantic:requiredInput href="#_18ae18b4-94d9-44b9-b2c5-c77487e87204"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_452a0adf-dd49-47c3-b02d-fe0ad45902c7" hitPolicy="PRIORITY" outputLabel="Min credit score" typeRef="tMincreditscore" triso:expressionId="_4d21fba9-ab6a-455c-bf9e-cd526fee36ca">
+            <semantic:input id="_243ba6b1-5c65-4b15-bdfa-56b8a2546b68" label="Usage">
+                <semantic:inputExpression typeRef="tPropertyUsage">
+                    <semantic:text>Usage</semantic:text>
+                </semantic:inputExpression>
+                <semantic:inputValues triso:constraintsType="enumeration">
+                    <semantic:text>"PrimaryResidence","SecondHome","Investment"</semantic:text>
+                </semantic:inputValues>
+            </semantic:input>
+            <semantic:input id="_b31a5b53-e078-422a-9cbb-973e66710b1d" label="LTV">
+                <semantic:inputExpression typeRef="tPercent">
+                    <semantic:text>LTV</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:input id="_9d8c7230-35cf-4dd7-a073-bbb245787b13" label="DTI">
+                <semantic:inputExpression typeRef="tPercent">
+                    <semantic:text>DTI</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:input id="_39b7398c-ff2d-47e2-a189-ff99e34f301f" label="Reserves">
+                <semantic:inputExpression typeRef="number">
+                    <semantic:text>Reserves</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:output id="_9e8ddaca-2149-43e6-8a27-63e448840d55">
+                <semantic:outputValues triso:constraintsType="enumeration">
+                    <semantic:text>620,640,660,680,700,1000</semantic:text>
+                </semantic:outputValues>
+            </semantic:output>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_dc3789f1-8314-4bac-9d48-5d60a154ad3b">
+                <semantic:inputEntry id="_8bfd5616-8f17-46ae-b965-d436f528551e">
+                    <semantic:text>"PrimaryResidence"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_cebc159a-df98-48ae-8968-db5fa7e8ce54">
+                    <semantic:text>&lt;=75</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_83edb5b9-7970-47ce-9ed0-bd2ffab4ed02">
+                    <semantic:text>&lt;=36</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_69431b82-f155-45e6-80e3-66597e999682">
+                    <semantic:text>&gt;0</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_e5b01740-2561-4d7d-bcca-c58359f06382">
+                    <semantic:text>620</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_09a0eaef-dbcf-4584-8eea-0b1fef178846">
+                <semantic:inputEntry id="_01ca9efa-265d-4b53-9441-22d80073ec3c">
+                    <semantic:text>"PrimaryResidence"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_0dcff139-0f26-400b-b276-1490b6abbacc">
+                    <semantic:text>&lt;=75</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_184ea368-da8c-4f33-aec8-4478533cdc4e">
+                    <semantic:text>(36..45]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_1851cf4c-cb8c-475d-8c5d-6e2e310ca270">
+                    <semantic:text>&gt;=2</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_f43a0c15-04e2-4d63-a09a-74b86731ae01">
+                    <semantic:text>620</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_56ab57e3-9d7a-4ca1-8ca4-6a799786cc9b">
+                <semantic:inputEntry id="_5c1e635c-06c3-42f2-9443-2b2438d3c2f4">
+                    <semantic:text>"PrimaryResidence"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_8db5ac97-f388-4d80-aa70-e7e4c43880d2">
+                    <semantic:text>&lt;=75</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_438fac59-2de5-4fb9-b9d5-5fce83227c2d">
+                    <semantic:text>(36..45]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_d711eac4-90f2-4c1d-81b9-001dab6c4aec">
+                    <semantic:text>(0..2)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_97914c9a-38f7-4845-b883-2a7e5b332686">
+                    <semantic:text>640</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_638fd94a-a29d-4d43-a686-f1ae3f4af52b">
+                <semantic:inputEntry id="_dc95473f-990a-45ee-9d63-9a22591040d2">
+                    <semantic:text>"PrimaryResidence"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_59efbc43-4021-4204-a12f-d999c9fa6670">
+                    <semantic:text>(75..95]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_8ed34429-7c4d-4f1c-ad12-b7e1357a79e8">
+                    <semantic:text>&lt;=36</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_84c4f8ed-3132-4b55-a359-92ba6acdc9af">
+                    <semantic:text>&gt;=6</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_c52a08a6-0f61-4695-8c91-b0950ba54b1d">
+                    <semantic:text>660</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_b6da3c37-3db7-456e-936d-6fc6a9412c61">
+                <semantic:inputEntry id="_6220d2a2-7ee4-4a17-9ea6-97cef99db6f3">
+                    <semantic:text>"PrimaryResidence"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_a317f0d1-f6c7-4a8e-be31-7b369388b2dc">
+                    <semantic:text>(75..95]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_25840928-0137-4c9f-8a3b-047c8e724d41">
+                    <semantic:text>&lt;=36</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_af57d4d3-d0cd-48a8-99b9-c5a1d43fba30">
+                    <semantic:text>(0..6)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_a095f57d-ab90-420b-a108-a0ecc691e32a">
+                    <semantic:text>680</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_b24f8964-ca54-4def-be39-f2ed614994fa">
+                <semantic:inputEntry id="_86dd6619-2239-4b18-8c35-0cd8770397a7">
+                    <semantic:text>"PrimaryResidence"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_cd62d46c-f36e-48c3-ae01-6278fefc5509">
+                    <semantic:text>(75..95]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_0b1000e5-415e-4756-aea1-98c1c3e4ce39">
+                    <semantic:text>(36..45]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_3c970767-e53f-4e96-9a62-f8b173d8fae4">
+                    <semantic:text>&gt;=2</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_563634dd-8f65-401d-a781-107974fad9ca">
+                    <semantic:text>680</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_fea7440f-c637-47b5-a206-7e2e37613302">
+                <semantic:inputEntry id="_39ecd45f-6005-467d-8355-97b9fd73defc">
+                    <semantic:text>"PrimaryResidence"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_6ee8b06e-77d5-4ac7-97a9-d4244057c859">
+                    <semantic:text>(75..95]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_ba3aaa60-7ba4-4338-bf77-a985b6238968">
+                    <semantic:text>(36..45]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_7c058842-7040-48bd-9257-ef9a86dc8ba1">
+                    <semantic:text>(0..2)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_1c83c1c7-ac82-4498-8e84-555d053a6099">
+                    <semantic:text>700</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_c7b057f5-55ff-46f6-91be-43442b5d0b7e">
+                <semantic:inputEntry id="_975dfd6a-cbab-455c-9f51-4bfe7f2bb200">
+                    <semantic:text>"SecondHome"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_e763e377-f0fe-4c2c-aec0-ed3c67fbf9e4">
+                    <semantic:text>&lt;=75</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_d57d3e88-b2a0-4c45-8710-df2fa40469d0">
+                    <semantic:text>&lt;=36</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_af16e5e4-8795-47e0-8812-2ddff7d2340b">
+                    <semantic:text>&gt;=2</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_16669737-fe23-4a3d-a969-91ec4d81d315">
+                    <semantic:text>640</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_47724127-ebb8-49e1-a507-ee0ec0b5755a">
+                <semantic:inputEntry id="_3778d330-9e80-442b-b1c4-ac5d82c48074">
+                    <semantic:text>"SecondHome"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_e08d60e3-b831-492e-bd18-c67505d88937">
+                    <semantic:text>&lt;=75</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_fa010f37-d5cf-41eb-924b-379d01936bd6">
+                    <semantic:text>(36..45]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_83f5b613-1130-41d2-a858-93dd458128f0">
+                    <semantic:text>&gt;=12</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_c1a11181-9769-45dd-8bd0-280eff357203">
+                    <semantic:text>640</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_fb299a0f-004e-4632-8a25-0661b5c04858">
+                <semantic:inputEntry id="_45571d41-c921-414f-b7b7-fa95ec1e9241">
+                    <semantic:text>"SecondHome"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_7de7ed03-d69f-4045-a601-2231c509a18b">
+                    <semantic:text>&lt;=75</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_d05f8887-e749-4d48-b8e0-bb7f079508ae">
+                    <semantic:text>(36..45]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_ef1572cc-487a-481c-a4ee-76a4054fead0">
+                    <semantic:text>[2..12)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_16348180-7ef4-4b7f-ab4a-9de5f4f649a6">
+                    <semantic:text>660</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_bed22088-d881-4fd6-a13b-61919a587273">
+                <semantic:inputEntry id="_35e5e6df-debc-4c74-bd4e-ea51e19deb50">
+                    <semantic:text>"SecondHome"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_721b9e91-765b-4e03-854c-34f9a07ba940">
+                    <semantic:text>(75..90]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_79fdb0f8-9525-4009-9954-286d0e3623c3">
+                    <semantic:text>&lt;=36</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_7c0ec04f-793f-47df-9e98-e18751bb1391">
+                    <semantic:text>&gt;=2</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_6e907b2a-aac7-4cea-85ba-bb4f35d94af3">
+                    <semantic:text>680</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_844b5339-1469-4409-a5ba-2410ce2f1e64">
+                <semantic:inputEntry id="_2279ec60-1a8f-48dc-ab24-7b8ebc82addb">
+                    <semantic:text>"SecondHome"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_7a3dade7-9d34-4835-9b96-91b59c4a2c0c">
+                    <semantic:text>(75..90]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_3f5e5551-4ccf-4a38-b714-a3c2f3b1d7d0">
+                    <semantic:text>(36..45]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_68bb5f6c-772e-475f-ae7a-7d524488b4d7">
+                    <semantic:text>&gt;=12</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_f9ccc1e8-c149-467c-b62f-f705b3c99190">
+                    <semantic:text>680</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_86f2477f-7d3c-4a9e-82d8-41c1a70fcdcc">
+                <semantic:inputEntry id="_87aa3f34-c091-4373-85cd-fe2060f043f9">
+                    <semantic:text>"SecondHome"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_157a2406-9e7b-470c-a67e-68621c798c06">
+                    <semantic:text>(75..90]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_65c0049d-f466-426d-a21d-b68b5f123d81">
+                    <semantic:text>(36..45]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_2db28922-af06-42e0-9133-f73defa3955b">
+                    <semantic:text>[2..12)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_11a5db3b-e920-485f-8200-48a983666716">
+                    <semantic:text>700</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_242c1510-20f5-4d43-a0d0-048978b3558d">
+                <semantic:inputEntry id="_8d664d63-b170-47b5-be5c-1a78e6531ced">
+                    <semantic:text>"Investment"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_016465f7-17f3-4964-9d65-cf49b8a1e15f">
+                    <semantic:text>&lt;=75</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_09aada13-f55a-413c-b6e3-e451110a2a20">
+                    <semantic:text>&lt;=36</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_4da02b38-b095-4ab6-bf47-b659f09e8e12">
+                    <semantic:text>&gt;=6</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_8e3629ce-041d-4dfc-8cc4-c1311d93380f">
+                    <semantic:text>640</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_261610c2-cd2b-4ce2-8908-41e41964ee85">
+                <semantic:inputEntry id="_7ce89925-a804-4270-a198-77b3880e8414">
+                    <semantic:text>"Investment"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_cfefef8e-e6a7-462c-970c-ea9ebd3148cb">
+                    <semantic:text>&lt;=75</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_c1afc59d-c61e-4c50-80de-1815d13fb46f">
+                    <semantic:text>(36..45]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_37484c5b-0fbd-462c-a3ea-44c1f6d72c72">
+                    <semantic:text>&gt;=12</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_78587d89-3df4-4c64-92a6-98ea623c3f2f">
+                    <semantic:text>640</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_a80af417-9016-435c-abfb-ad40bd7b3e58">
+                <semantic:inputEntry id="_ecc73008-3049-4b07-96eb-c22b36dd2813">
+                    <semantic:text>"Investment"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_effcba76-5093-4642-a79b-656725eb3192">
+                    <semantic:text>&lt;=75</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_ff7972b8-dec5-442a-9f51-25c0ffff474d">
+                    <semantic:text>(36..45]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_afefcff4-0048-4dd2-98c5-28f08fb2b357">
+                    <semantic:text>[6..12)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_928d67aa-3c67-43e4-b84e-23d0584fced3">
+                    <semantic:text>660</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_b1405d15-8a29-46b1-9d16-da2d7e9ba1a8">
+                <semantic:inputEntry id="_549e1cb3-db04-4b22-b0bc-3907dd2e105f">
+                    <semantic:text>"Investment"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_8c499b4f-9777-4889-82f6-8aedbce49a21">
+                    <semantic:text>(75..85]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_e8934808-8dc2-4a50-be3d-d1cf67a605d4">
+                    <semantic:text>&lt;=36</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_cc156f72-999e-4610-b0cf-2be71f78844c">
+                    <semantic:text>&gt;=6</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_1d08c9a0-1402-4df3-a253-4f594a9af9ca">
+                    <semantic:text>680</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_9ecf8561-38db-4038-a17f-ed07f6d86f5c">
+                <semantic:inputEntry id="_ce31644b-4937-44db-bd09-84e3adf72859">
+                    <semantic:text>"Investment"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_a60ea5e3-ee4d-47f2-917d-81c9759ebb5b">
+                    <semantic:text>(75..85]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_8fb3fe94-40ba-4ed1-b428-bd8d689aca1b">
+                    <semantic:text>(36..45]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_644d6385-cc63-4d21-a52c-4fd3311c4975">
+                    <semantic:text>&gt;=12</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_f480c105-737c-4917-a695-b1b80fb2c18e">
+                    <semantic:text>680</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_f5cde5ef-3415-4aff-afd0-3e9c927215e1">
+                <semantic:inputEntry id="_60a546d4-ab10-4613-bd90-de03bce5659f">
+                    <semantic:text>"Investment"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_c6af2c13-2b2d-4612-90d5-dc20dbdf0b60">
+                    <semantic:text>(75..85]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_cd77ee95-fd65-49d1-aa89-4fbab8b97d1d">
+                    <semantic:text>(36..45]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_aa9d8d18-7818-44b1-9552-1cad23998903">
+                    <semantic:text>[6..12)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_deeba735-b2af-43d5-b7b6-e234f4a2ff01">
+                    <semantic:text>700</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_e6e88cc4-60af-44ff-8f1d-9b5e5179629c">
+                <semantic:inputEntry id="_927f5729-766e-40c9-bccc-0787df67843f">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_f859c15a-9053-4356-aa28-5a749c33dbb2">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_c83c2f7e-bd5f-4317-b2ce-24ceb7ed0a11">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_0675981b-5c03-4e8f-93ba-1b0c15d129fa">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_aa2bba0d-be55-4e03-9f4f-a14bbe17a21d">
+                    <semantic:text>1000</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+    <semantic:inputData id="_1ff896ea-8a67-4b30-b62e-d6245bd0c777" name="Usage">
+        <semantic:variable name="Usage" id="_ee3f4235-a29c-47bd-99d5-996f4d25f6e7" typeRef="tPropertyUsage"/>
+    </semantic:inputData>
+    <semantic:inputData id="_447344d4-1edb-43cd-b5a5-a883c0379d09" name="LTV">
+        <semantic:variable name="LTV" id="_fb4a255e-bd2d-47c6-a654-974979332f51" typeRef="tPercent"/>
+    </semantic:inputData>
+    <semantic:inputData id="_17d4efd8-104b-4acb-8cc6-4927a0e05fd2" name="DTI">
+        <semantic:variable name="DTI" id="_94768cf6-7b86-4197-a8c8-058a88e9da6f" typeRef="tPercent"/>
+    </semantic:inputData>
+    <semantic:inputData id="_18ae18b4-94d9-44b9-b2c5-c77487e87204" name="Reserves">
+        <semantic:variable name="Reserves" id="_10ba3efb-6f3b-4b5e-a044-b2248d5f56b8" typeRef="number"/>
+    </semantic:inputData>
+</semantic:definitions>

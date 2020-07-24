@@ -47,7 +47,7 @@ public class NativeOperatorSpec implements OperatorSpec {
             optionalRight.ifPresent( right -> {
                 final TypedExpression coercedRight;
                 if (operator != null && operator.requiresCoercion()) {
-                    final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+                    final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right, false).coerce();
                     coercedRight = coerce.getCoercedRight();
                 } else {
                     coercedRight = right;
