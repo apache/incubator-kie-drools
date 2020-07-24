@@ -32,18 +32,16 @@ import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.True;
 import org.kie.pmml.commons.exceptions.KieDataFieldException;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
-import org.kie.pmml.models.tree.api.model.enums.BOOLEAN_OPERATOR;
-import org.kie.pmml.models.tree.api.model.enums.OPERATOR;
-import org.kie.pmml.models.tree.api.model.predicates.KiePMMLCompoundPredicate;
-import org.kie.pmml.models.tree.api.model.predicates.KiePMMLFalsePredicate;
-import org.kie.pmml.models.tree.api.model.predicates.KiePMMLPredicate;
-import org.kie.pmml.models.tree.api.model.predicates.KiePMMLSimplePredicate;
-import org.kie.pmml.models.tree.api.model.predicates.KiePMMLTruePredicate;
+import org.kie.pmml.commons.model.enums.OPERATOR;
+import org.kie.pmml.commons.model.predicates.KiePMMLCompoundPredicate;
+import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
+import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
+import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
+import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 
 public class KiePMMLPredicateFactory {
 
@@ -54,10 +52,10 @@ public class KiePMMLPredicateFactory {
 
     public static List<KiePMMLPredicate> getPredicates(List<Predicate> predicates, DataDictionary dataDictionary) throws KiePMMLException {
         logger.info("getPredicates {}", predicates);
-        return predicates.stream().map(throwingFunctionWrapper(predicate -> getPredicate(predicate, dataDictionary))).collect(Collectors.toList());
+        return predicates.stream().map(predicate -> getPredicate(predicate, dataDictionary)).collect(Collectors.toList());
     }
 
-    public static KiePMMLPredicate getPredicate(Predicate predicate, DataDictionary dataDictionary) throws KiePMMLException {
+    public static KiePMMLPredicate getPredicate(Predicate predicate, DataDictionary dataDictionary) {
         logger.info("getPredicate {}", predicate);
         if (predicate instanceof SimplePredicate) {
             final DataType dataType = dataDictionary.getDataFields().stream()
@@ -77,13 +75,13 @@ public class KiePMMLPredicateFactory {
         }
     }
 
-    public static KiePMMLSimplePredicate getKiePMMLSimplePredicate(SimplePredicate predicate, DataType dataType) throws KiePMMLException {
+    public static KiePMMLSimplePredicate getKiePMMLSimplePredicate(SimplePredicate predicate, DataType dataType)  {
         return KiePMMLSimplePredicate.builder(predicate.getField().getValue(), Collections.emptyList(), OPERATOR.byName(predicate.getOperator().value()))
                 .withValue(getActualValue(predicate.getValue(), dataType))
                 .build();
     }
 
-    public static KiePMMLCompoundPredicate getKiePMMLCompoundPredicate(CompoundPredicate predicate, DataDictionary dataDictionary) throws KiePMMLException {
+    public static KiePMMLCompoundPredicate getKiePMMLCompoundPredicate(CompoundPredicate predicate, DataDictionary dataDictionary) {
         return KiePMMLCompoundPredicate.builder(Collections.emptyList(), BOOLEAN_OPERATOR.byName(predicate.getBooleanOperator().value()))
                 .withKiePMMLPredicates(getPredicates(predicate.getPredicates(), dataDictionary))
                 .build();

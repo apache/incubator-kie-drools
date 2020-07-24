@@ -20,12 +20,12 @@ import java.util.Objects;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.abstracts.KiePMMLBase;
-import org.kie.pmml.commons.model.abstracts.KiePMMLPredicate;
+import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLBase;
+import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class KiePMMLSegment extends KiePMMLBase {
+public class KiePMMLSegment extends AbstractKiePMMLBase {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLSegment.class);
     private final KiePMMLPredicate kiePMMLPredicate;
@@ -90,7 +90,7 @@ public class KiePMMLSegment extends KiePMMLBase {
         return Objects.hash(kiePMMLPredicate, model, weight);
     }
 
-    public static class Builder extends KiePMMLBase.Builder<KiePMMLSegment> {
+    public static class Builder extends AbstractKiePMMLBase.Builder<KiePMMLSegment> {
 
         private Builder(String name, List<KiePMMLExtension> extensions, KiePMMLPredicate kiePMMLPredicate, KiePMMLModel model) {
             super("Segmentation-", () -> new KiePMMLSegment(name, extensions, kiePMMLPredicate, model));

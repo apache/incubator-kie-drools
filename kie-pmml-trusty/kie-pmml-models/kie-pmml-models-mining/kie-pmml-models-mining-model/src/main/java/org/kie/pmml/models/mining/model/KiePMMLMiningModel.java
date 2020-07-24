@@ -45,7 +45,7 @@ public class KiePMMLMiningModel extends KiePMMLModel {
     }
 
     @Override
-    public Object evaluate(Map<String, Object> requestData) {
+    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
         return null;
     }
 

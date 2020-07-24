@@ -16,12 +16,13 @@
 package org.kie.pmml.models.mining.compiler.executor;
 
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.MiningModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
-import org.kie.pmml.models.mining.compiler.factories.KiePMMLMiningModelFactory;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
 
+import static org.kie.pmml.models.mining.compiler.factories.KiePMMLMiningModelFactory.getKiePMMLMiningModel;
 import static org.kie.pmml.models.mining.model.KiePMMLMiningModel.PMML_MODEL_TYPE;
 
 /**
@@ -35,7 +36,20 @@ public class MiningModelImplementationProvider implements ModelImplementationPro
     }
 
     @Override
-    public KiePMMLMiningModel getKiePMMLModel(DataDictionary dataDictionary,MiningModel model, Object kBuilder) {
-        return KiePMMLMiningModelFactory.getKiePMMLMiningModel(dataDictionary, model);
+    public KiePMMLMiningModel getKiePMMLModel(final DataDictionary dataDictionary,
+                                              final TransformationDictionary transformationDictionary,
+                                              final MiningModel model,
+                                              final Object kBuilder) {
+        return getKiePMMLMiningModel(dataDictionary, transformationDictionary, model, kBuilder);
     }
+
+    @Override
+    public KiePMMLMiningModel getKiePMMLModelFromPlugin(final String packageName,
+                                                        final DataDictionary dataDictionary,
+                                                        final TransformationDictionary transformationDictionary,
+                                                        final MiningModel model,
+                                                        final Object kBuilder) {
+        return null;
+    }
+
 }

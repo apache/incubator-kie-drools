@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.commons.model.abstracts.KiePMMLBase;
+import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLBase;
 import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @see <a href=http://dmg.org/pmml/v4-3/MultipleModels.html#xsdElement_Segmentation>Segmentation</a>
  */
-public class KiePMMLSegmentation extends KiePMMLBase {
+public class KiePMMLSegmentation extends AbstractKiePMMLBase {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLSegmentation.class);
 
@@ -87,7 +87,7 @@ public class KiePMMLSegmentation extends KiePMMLBase {
         return Objects.hash(super.hashCode(), multipleModelMethod, segments);
     }
 
-    public static class Builder extends KiePMMLBase.Builder<KiePMMLSegmentation> {
+    public static class Builder extends AbstractKiePMMLBase.Builder<KiePMMLSegmentation> {
 
         private Builder(String name, List<KiePMMLExtension> extensions, MULTIPLE_MODEL_METHOD multipleModelMethod) {
             super("Segmentation-", () -> new KiePMMLSegmentation(name, extensions, multipleModelMethod));

@@ -48,7 +48,9 @@ public class PMMLRegressionModelEvaluator implements PMMLModelEvaluator {
     }
 
     @Override
-    public PMML4Result evaluate(final KieBase knowledgeBase, KiePMMLModel model, PMMLContext pmmlContext) {
+    public PMML4Result evaluate(final KieBase knowledgeBase,
+                                final KiePMMLModel model,
+                                final PMMLContext pmmlContext) {
         validate(model);
         PMML4Result toReturn = new PMML4Result();
         String targetField = model.getTargetField();
@@ -61,7 +63,7 @@ public class PMMLRegressionModelEvaluator implements PMMLModelEvaluator {
         return toReturn;
     }
 
-    private void validate(KiePMMLModel toValidate) {
+    private void validate(final KiePMMLModel toValidate) {
         if (!(toValidate instanceof KiePMMLRegressionModel)) {
             throw new KiePMMLModelException(String.format(EXPECTED_A_KIE_PMMLREGRESSION_MODEL_RECEIVED, toValidate.getClass().getName()));
         }
@@ -77,7 +79,7 @@ public class PMMLRegressionModelEvaluator implements PMMLModelEvaluator {
         }
     }
 
-    private void validateRegression(KiePMMLRegressionTable toValidate) {
+    private void validateRegression(final KiePMMLRegressionTable toValidate) {
         if (toValidate.getTargetField() == null || StringUtils.isEmpty(toValidate.getTargetField().trim())) {
             throw new KiePMMLInternalException(String.format(TARGET_FIELD_REQUIRED_RETRIEVED, toValidate.getTargetField()));
         }

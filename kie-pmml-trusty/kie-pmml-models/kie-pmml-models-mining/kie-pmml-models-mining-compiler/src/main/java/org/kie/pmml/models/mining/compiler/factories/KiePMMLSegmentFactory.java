@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.Segment;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
@@ -26,6 +27,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.compiler.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
+import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.getPredicate;
+import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModel;
 
 public class KiePMMLSegmentFactory {
 
@@ -34,18 +37,27 @@ public class KiePMMLSegmentFactory {
     private KiePMMLSegmentFactory() {
     }
 
-    public static List<KiePMMLSegment> getSegments(List<Segment> segments, DataDictionary dataDictionary, Object kBuilder) throws KiePMMLException {
-        logger.info("getSegments {}", segments);
-        return segments.stream().map(segment -> getSegment(segment, dataDictionary, kBuilder)).collect(Collectors.toList());
+    public static List<KiePMMLSegment> getSegments(final DataDictionary dataDictionary,
+                                                   final TransformationDictionary transformationDictionary,
+                                                   final List<Segment> segments,
+                                                   final Object kBuilder) {
+        logger.debug("getSegments {}", segments);
+        return segments.stream().map(segment -> getSegment(dataDictionary, transformationDictionary, segment, kBuilder)).collect(Collectors.toList());
     }
 
-    public static KiePMMLSegment getSegment(Segment segment, DataDictionary dataDictionary, Object kBuilder) throws KiePMMLException {
-        logger.info("getSegment {}", segment);
-        return null;
-//        return KiePMMLSegment.builder(getKiePMMLExtensions(segment.getExtensions()),
-//                                      getPredicate(segment.getPredicate(), dataDictionary),
-//                                      getFromDataDictionaryAndModel(dataDictionary, segment.getModel(), kBuilder).orElseThrow(() -> new KiePMMLException("Failed to get the KiePMMLModel for segment " + segment.getId())))
-//                .withWeight(segment.getWeight().doubleValue())
-//                .build();
+    public static KiePMMLSegment getSegment(final DataDictionary dataDictionary,
+                                            final TransformationDictionary transformationDictionary,
+                                            final Segment segment,
+                                            final Object kBuilder) {
+        logger.debug("getSegment {}", segment);
+        return KiePMMLSegment.builder("PUPPA",
+                                      getKiePMMLExtensions(segment.getExtensions()),
+                                      getPredicate(segment.getPredicate(), dataDictionary),
+                                      getFromCommonDataAndTransformationDictionaryAndModel(dataDictionary,
+                                                                                           transformationDictionary,
+                                                                                           segment.getModel(),
+                                                                                           kBuilder).orElseThrow(() -> new KiePMMLException("Failed to get the KiePMMLModel for segment " + segment.getId())))
+                .withWeight(segment.getWeight().doubleValue())
+                .build();
     }
 }

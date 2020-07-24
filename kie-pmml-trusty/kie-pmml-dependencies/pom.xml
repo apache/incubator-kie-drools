@@ -93,6 +93,19 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-drools-scorecard-evaluator</artifactId>
     </dependency>
+    <!-- Mining -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-mining-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-mining-compiler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-mining-evaluator</artifactId>
+    </dependency>
   </dependencies>
 
 </project>

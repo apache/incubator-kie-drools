@@ -15,18 +15,19 @@
  */
 package  org.kie.pmml.models.mining.evaluator;
 
+import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
-import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
+import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
 
 /**
  * Default <code>PMMLModelExecutor</code> for <b>Mining</b>
  */
-public class PMMLMiningModelEvaluator implements PMMLModelExecutor {
+public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
 
     @Override
     public PMML_MODEL getPMMLModelType(){
@@ -34,7 +35,9 @@ public class PMMLMiningModelEvaluator implements PMMLModelExecutor {
     }
 
     @Override
-    public PMML4Result evaluate(KiePMMLModel model, PMMLContext context, String releaseId) {
+    public PMML4Result evaluate(final KieBase knowledgeBase,
+                                final KiePMMLModel model,
+                                final PMMLContext pmmlContext) {
         if(!(model instanceof KiePMMLMiningModel)){
             throw new KiePMMLModelException("Expected a KiePMMLMiningModel, received a "+ model.getClass().getName());
         }

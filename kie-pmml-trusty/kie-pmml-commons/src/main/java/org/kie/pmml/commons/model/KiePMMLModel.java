@@ -90,7 +90,7 @@ public abstract class KiePMMLModel extends AbstractKiePMMLBase {
      * @param requestData
      * @return
      */
-    public abstract Object evaluate(final Object knowledgeBase, Map<String, Object> requestData);
+    public abstract Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData);
 
 
     public abstract static class Builder<T extends KiePMMLModel> extends AbstractKiePMMLBase.Builder<T> {
