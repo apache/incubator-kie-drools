@@ -13,74 +13,8 @@
     },
     "ignores": {
         "revapi": {
-            "_comment": "Changes between 7.33.0.Final and the current branch. These changes are desired and thus ignored.",
+            "_comment": "Changes between 7.39.0.Final and the current branch. These changes are desired and thus ignored.",
             "ignore": [
-                {
-                    "code": "java.method.addedToInterface",
-                    "new": "method java.util.List<java.lang.String> org.kie.api.event.process.ProcessVariableChangedEvent::getTags()",
-                    "package": "org.kie.api.event.process",
-                    "classSimpleName": "ProcessVariableChangedEvent",
-                    "methodName": "getTags",
-                    "elementKind": "method",
-                    "justification": "add the possibility to retrieve custom tags associated with variables"
-                },
-                {
-                    "code": "java.method.addedToInterface",
-                    "new": "method boolean org.kie.api.event.process.ProcessVariableChangedEvent::hasTag(java.lang.String)",
-                    "package": "org.kie.api.event.process",
-                    "classSimpleName": "ProcessVariableChangedEvent",
-                    "methodName": "hasTag",
-                    "elementKind": "method",
-                    "justification": "add the possibility to find out if custom tag is associated with variables"
-                },
-                {
-                    "code": "java.method.addedToInterface",
-                    "new": "method org.kie.api.runtime.process.ProcessInstance org.kie.api.runtime.process.ProcessRuntime::startProcessFromNodeIds(java.lang.String, java.util.Map<java.lang.String, java.lang.Object>, java.lang.String[])",
-                    "package": "org.kie.api.runtime.process",
-                    "classSimpleName": "ProcessRuntime",
-                    "methodName": "startProcessFromNodeIds",
-                    "elementKind": "method",
-                    "justification": "allows starting a process from arbitrary nodes"
-                },
-                {
-                    "code": "java.method.addedToInterface",
-                    "new": "method java.lang.String org.kie.api.definition.process.Node::getNodeUniqueId()",
-                    "package": "org.kie.api.definition.process",
-                    "classSimpleName": "Node",
-                    "methodName": "getNodeUniqueId",
-                    "elementKind": "method",
-                    "justification": "get unique id"
-                },
-                {
-                    "code": "java.method.addedToInterface",
-                    "new": "method org.kie.api.definition.process.Node org.kie.api.definition.process.NodeContainer::getNodeByUniqueId(java.lang.String)",
-                    "package": "org.kie.api.definition.process",
-                    "classSimpleName": "NodeContainer",
-                    "methodName": "getNodeByUniqueId",
-                    "elementKind": "method",
-                    "justification": "get the node within the container with the give id"
-                },
-                {
-                  "code": "java.field.serialVersionUIDUnchanged",
-                  "old": "field org.kie.api.io.ResourceType.serialVersionUID",
-                  "new": "field org.kie.api.io.ResourceType.serialVersionUID",
-                  "serialVersionUID": "1613735834228581906",
-                  "package": "org.kie.api.io",
-                  "classSimpleName": "ResourceType",
-                  "fieldName": "serialVersionUID",
-                  "elementKind": "field",
-                  "justification": "identify kie native resources"
-                },
-                {
-                  "code": "java.method.numberOfParametersChanged",
-                  "old": "method void org.kie.api.io.ResourceType::<init>(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String[])",
-                  "new": "method void org.kie.api.io.ResourceType::<init>(java.lang.String, boolean, java.lang.String, java.lang.String, java.lang.String, java.lang.String[])",
-                  "package": "org.kie.api.io",
-                  "classSimpleName": "ResourceType",
-                  "methodName": "<init>",
-                  "elementKind": "constructor",
-                  "justification": "identify kie native resources"
-                },
                 {
                   "code": "java.method.addedToInterface",
                   "new": "method java.lang.String org.kie.api.task.model.TaskSummary::getCorrelationKey()",
