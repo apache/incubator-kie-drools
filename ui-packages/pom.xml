@@ -31,6 +31,28 @@
   </properties>
   <build>
     <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>node_modules</directory>
+            </fileset>
+            <fileset>
+              <directory>packages/common/node_modules</directory>
+            </fileset>
+            <fileset>
+              <directory>packages/management-console/node_modules</directory>
+            </fileset>
+            <fileset>
+              <directory>packages/task-console/node_modules</directory>
+            </fileset>
+            <fileset>
+              <directory>packages/trusty/node_modules</directory>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
       <!-- frontend related plugins-->
       <plugin>
         <groupId>com.github.eirslett</groupId>
