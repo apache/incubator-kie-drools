@@ -1,8 +1,8 @@
 @Library('jenkins-pipeline-shared-libraries')_
 
-def changeAuthor = env.ghprbPullAuthorLogin ?: CHANGE_AUTHOR
-def changeBranch = env.ghprbSourceBranch ?: CHANGE_BRANCH
-def changeTarget = env.ghprbTargetBranch ?: CHANGE_TARGET
+changeAuthor = env.ghprbPullAuthorLogin ?: CHANGE_AUTHOR
+changeBranch = env.ghprbSourceBranch ?: CHANGE_BRANCH
+changeTarget = env.ghprbTargetBranch ?: CHANGE_TARGET
 
 pipeline {
     agent {
@@ -21,60 +21,43 @@ pipeline {
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
     }
     stages {
-        stage('build sh script') {
+        stage('Initialize') {
             steps {
                 script {
                     mailer.buildLogScriptPR()
+
+                    checkoutRepo("kogito-runtimes")
+                    checkoutRepo("kogito-apps")
+                    checkoutRepo("kogito-examples")
+                    checkoutRepo("kogito-examples", "kogito-examples-persistence")
+                    checkoutRepo("kogito-examples", "kogito-examples-events")
                 }
             }
         }
         stage('Build kogito-runtimes') {
             steps {
-                dir("kogito-runtimes") {
-                    script {
-                        githubscm.checkoutIfExists('kogito-runtimes', changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
-                        maven.runMavenWithSubmarineSettings('clean install -Prun-code-coverage', false)
-                        /*
-                           The analysis must happen before the other stages as these clone different projects into a root
-                           directory of kogito-runtimes and are by mistake incorporated in a test coverage report.
-                         */
-                        maven.runMavenWithSubmarineSettings('-e -nsu validate -Psonarcloud-analysis', false)
-                    }
-                }
+                mavenCleanInstall("kogito-runtimes", false, ["run-code-coverage"])
+                runMaven("validate", "kogito-runtimes", false, ["sonarcloud-analysis"], "-e -nsu")
             }
         }
         stage('Build kogito-apps') {
             steps {
-                dir("kogito-apps") {
-                    script {
-                        githubscm.checkoutIfExists('kogito-apps', changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
-                        maven.runMavenWithSubmarineSettings('clean install', false)
-                    }
-                }
+                mavenCleanInstall("kogito-apps")
             }
         }
         stage('Build kogito-examples') {
             steps {
-                dir("kogito-examples") {
-                    script {
-                        githubscm.checkoutIfExists('kogito-examples', changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
-                        maven.runMavenWithSubmarineSettings('clean install', false)
-                    }
-                }
-                // Use a separate dir for persistence to not overwrite the test results
-                dir("kogito-examples-persistence") {
-                    script {
-                        githubscm.checkoutIfExists('kogito-examples', changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
-                        maven.runMavenWithSubmarineSettings('clean install -Ppersistence', false)
-                    }
-                }
-                // Use a separate dir for events to not overwrite the test results
-                dir("kogito-examples-events") {
-                    script {
-                        githubscm.checkoutIfExists('kogito-examples', changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
-                        maven.runMavenWithSubmarineSettings('clean install -Pevents', false)
-                    }
-                }
+                mavenCleanInstall("kogito-examples")
+            }
+        }
+        stage('Build kogito-examples with persistence') {
+            steps {
+                mavenCleanInstall("kogito-examples-persistence", false, ["persistence"])
+            }
+        }
+        stage('Build kogito-examples with events') {
+            steps {
+                mavenCleanInstall("kogito-examples-events", false, ["events"])
             }
         }
     }
@@ -82,27 +65,45 @@ pipeline {
         always {
             sh '$WORKSPACE/trace.sh'
             junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
+            cleanWs()
         }
         failure {
             script {
                 mailer.sendEmail_failedPR()
             }
-            cleanWs()
         }
         unstable {
             script {
                 mailer.sendEmail_unstablePR()
             }
-            cleanWs()
         }
         fixed {
             script {
                 mailer.sendEmail_fixedPR()
             }
-            cleanWs()
         }
-        success {
-            cleanWs()
-        }
+    }
+}
+
+void checkoutRepo(String repo, String dirName=repo) {
+    dir(dirName) {
+        githubscm.checkoutIfExists(repo, changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
+    }
+}
+
+void mavenCleanInstall(String directory, boolean skipTests = false, List profiles = [], String extraArgs = "") {
+    runMaven("clean install", directory, skipTests, profiles, extraArgs)
+}
+
+void runMaven(String command, String directory, boolean skipTests = false, List profiles = [], String extraArgs = "") {
+    mvnCmd = command
+    if(profiles.size() > 0){
+        mvnCmd += " -P${profiles.join(',')}"
+    }
+    if(extraArgs != ""){
+        mvnCmd += " ${extraArgs}"
+    }
+    dir(directory) {
+        maven.runMavenWithSubmarineSettings(mvnCmd, skipTests)
     }
 }
