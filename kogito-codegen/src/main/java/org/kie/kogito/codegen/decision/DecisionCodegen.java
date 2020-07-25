@@ -118,7 +118,6 @@ public class DecisionCodegen extends AbstractGenerator {
 
     private static List<DMNResource> parseDecisions(Path path, List<Resource> resources) {
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
-                                                 .setRootClassLoader(null)
                                                  .buildConfiguration()
                                                  .fromResources(resources)
                                                  .getOrElseThrow(e -> new RuntimeException("Error compiling DMN model(s)", e));
