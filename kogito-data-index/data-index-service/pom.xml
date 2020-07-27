@@ -28,10 +28,6 @@
       <artifactId>persistence-commons-protobuf</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>data-index-storage-mongodb</artifactId>
-    </dependency>
-    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-vertx</artifactId>
     </dependency>
@@ -73,6 +69,13 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-health</artifactId>
+    </dependency>
+
+    <!-- Enable MongoDB for test only -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>data-index-storage-mongodb</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
