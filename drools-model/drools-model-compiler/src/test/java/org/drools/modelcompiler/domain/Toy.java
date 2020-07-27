@@ -24,8 +24,15 @@ public class Toy extends AbstractReactiveObject {
 
     private String owner;
 
+    private Integer targetAge;
+
     public Toy(String name) {
         this.name = name;
+    }
+
+    public Toy(String name, Integer targetAge) {
+        this.name = name;
+        this.targetAge = targetAge;
     }
 
     public String getName() {
@@ -43,6 +50,14 @@ public class Toy extends AbstractReactiveObject {
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public Integer getTargetAge() {
+        return targetAge;
+    }
+
+    public void setTargetAge(Integer targetAge) {
+        this.targetAge = targetAge;
     }
 
     @Override
