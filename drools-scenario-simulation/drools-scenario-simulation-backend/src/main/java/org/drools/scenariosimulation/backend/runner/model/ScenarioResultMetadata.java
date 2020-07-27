@@ -66,11 +66,22 @@ public class ScenarioResultMetadata {
     /**
      * Add an <code>AuditLogLine</code> to the end of {@link ScenarioResultMetadata#auditLogLines}
      * @param messageIndex
-     * @param message
-     * @param severity
+     * @param decisionOrRuleName
+     * @param result
      */
-    public void addAuditMessage(int messageIndex, String message, String severity) {
-        auditLogLines.add(new AuditLogLine(scenarioWithIndex.getIndex(), scenarioWithIndex.getScesimData().getDescription(), messageIndex, message, severity));
+    public void addAuditMessage(int messageIndex, String decisionOrRuleName, String result) {
+        auditLogLines.add(new AuditLogLine(scenarioWithIndex.getIndex(), scenarioWithIndex.getScesimData().getDescription(), messageIndex, decisionOrRuleName, result));
+    }
+
+    /**
+     * Add an <code>AuditLogLine</code> to the end of {@link ScenarioResultMetadata#auditLogLines}
+     * @param messageIndex
+     * @param decisionOrRuleName
+     * @param result
+     * @param message
+     */
+    public void addAuditMessage(int messageIndex, String decisionOrRuleName, String result, String message) {
+        auditLogLines.add(new AuditLogLine(scenarioWithIndex.getIndex(), scenarioWithIndex.getScesimData().getDescription(), messageIndex, decisionOrRuleName, result, message));
     }
 
     /**

@@ -51,6 +51,7 @@ public class ConstantsHolder {
     public static final String SETTINGS_NODE = "settings";
     public static final String FACT_MAPPING_VALUE_TYPE_NODE = "factMappingValueType";
     public static final String NOT_EXPRESSION = "NOT_EXPRESSION";
+    public static final String EXECUTED = "EXECUTED";
     public static final List<String> SETTINGS = Collections.unmodifiableList(Arrays.asList(DMO_SESSION_NODE, "dmnFilePath", "type", "fileName", "kieSession",
                                                                                            "kieBase", "ruleFlowGroup", "dmnNamespace", "dmnName", "skipFromBuild", "stateless"));
 
