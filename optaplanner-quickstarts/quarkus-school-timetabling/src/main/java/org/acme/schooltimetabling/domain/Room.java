@@ -23,9 +23,8 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import org.optaplanner.core.api.domain.lookup.PlanningId;
-
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 
 @Entity
 public class Room extends PanacheEntityBase {
@@ -44,6 +43,11 @@ public class Room extends PanacheEntityBase {
 
     public Room(String name) {
         this.name = name.trim();
+    }
+
+    public Room(long id, String name) {
+        this(name);
+        this.id = id;
     }
 
     public Long getId() {

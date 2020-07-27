@@ -41,7 +41,7 @@ public class TimeTableConstraintProvider implements ConstraintProvider {
         };
     }
 
-    private Constraint roomConflict(ConstraintFactory constraintFactory) {
+    Constraint roomConflict(ConstraintFactory constraintFactory) {
         // A room can accommodate at most one lesson at the same time.
         return constraintFactory
                 // Select each pair of 2 different lessons ...
@@ -54,7 +54,7 @@ public class TimeTableConstraintProvider implements ConstraintProvider {
                 .penalize("Room conflict", HardSoftScore.ONE_HARD);
     }
 
-    private Constraint teacherConflict(ConstraintFactory constraintFactory) {
+    Constraint teacherConflict(ConstraintFactory constraintFactory) {
         // A teacher can teach at most one lesson at the same time.
         return constraintFactory
                 .fromUniquePair(Lesson.class,
@@ -63,7 +63,7 @@ public class TimeTableConstraintProvider implements ConstraintProvider {
                 .penalize("Teacher conflict", HardSoftScore.ONE_HARD);
     }
 
-    private Constraint studentGroupConflict(ConstraintFactory constraintFactory) {
+    Constraint studentGroupConflict(ConstraintFactory constraintFactory) {
         // A student can attend at most one lesson at the same time.
         return constraintFactory
                 .fromUniquePair(Lesson.class,
@@ -72,7 +72,7 @@ public class TimeTableConstraintProvider implements ConstraintProvider {
                 .penalize("Student group conflict", HardSoftScore.ONE_HARD);
     }
 
-    private Constraint teacherRoomStability(ConstraintFactory constraintFactory) {
+    Constraint teacherRoomStability(ConstraintFactory constraintFactory) {
         // A teacher prefers to teach in a single room.
         return constraintFactory
                 .fromUniquePair(Lesson.class,
@@ -81,7 +81,7 @@ public class TimeTableConstraintProvider implements ConstraintProvider {
                 .penalize("Teacher room stability", HardSoftScore.ONE_SOFT);
     }
 
-    private Constraint teacherTimeEfficiency(ConstraintFactory constraintFactory) {
+    Constraint teacherTimeEfficiency(ConstraintFactory constraintFactory) {
         // A teacher prefers to teach sequential lessons and dislikes gaps between lessons.
         return constraintFactory
                 .from(Lesson.class)
@@ -95,7 +95,7 @@ public class TimeTableConstraintProvider implements ConstraintProvider {
                 .reward("Teacher time efficiency", HardSoftScore.ONE_SOFT);
     }
 
-    private Constraint studentGroupSubjectVariety(ConstraintFactory constraintFactory) {
+    Constraint studentGroupSubjectVariety(ConstraintFactory constraintFactory) {
         // A student group dislikes sequential lessons on the same subject.
         return constraintFactory
                 .from(Lesson.class)

@@ -24,11 +24,10 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @PlanningEntity
 @Entity
@@ -61,6 +60,13 @@ public class Lesson extends PanacheEntityBase {
         this.subject = subject.trim();
         this.teacher = teacher.trim();
         this.studentGroup = studentGroup.trim();
+    }
+
+    public Lesson(long id, String subject, String teacher, String studentGroup, Room room, Timeslot timeslot) {
+        this(subject, teacher, studentGroup);
+        this.id = id;
+        this.room = room;
+        this.timeslot = timeslot;
     }
 
     public Long getId() {
