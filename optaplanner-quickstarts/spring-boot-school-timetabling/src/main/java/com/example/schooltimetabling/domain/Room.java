@@ -46,6 +46,11 @@ public class Room {
         this.name = name.trim();
     }
 
+    public Room(long id, String name) {
+        this(name);
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return name;

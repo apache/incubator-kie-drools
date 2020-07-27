@@ -61,6 +61,13 @@ public class Lesson {
         this.studentGroup = studentGroup.trim();
     }
 
+    public Lesson(long id, String subject, String teacher, String studentGroup, Room room, Timeslot timeslot) {
+        this(subject, teacher, studentGroup);
+        this.id = id;
+        this.room = room;
+        this.timeslot = timeslot;
+    }
+
     @Override
     public String toString() {
         return subject + "(" + id + ")";
