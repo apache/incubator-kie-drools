@@ -3,11 +3,6 @@
 exports[`ProcessDetailsTimeline component tests Snapshot testing for completed state 1`] = `
 <Card>
   <MockedProcessListModal
-    checkedArray={
-      Array [
-        "COMPLETED",
-      ]
-    }
     handleModalToggle={[Function]}
     isModalOpen={false}
     modalContent=""
@@ -308,11 +303,6 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for completed s
 exports[`ProcessDetailsTimeline component tests Snapshot testing for no service url 1`] = `
 <Card>
   <MockedProcessListModal
-    checkedArray={
-      Array [
-        "ACTIVE",
-      ]
-    }
     handleModalToggle={[Function]}
     isModalOpen={false}
     modalContent=""
@@ -613,11 +603,6 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for no service 
 exports[`ProcessDetailsTimeline component tests Snapshot testing for service url available 1`] = `
 <Card>
   <MockedProcessListModal
-    checkedArray={
-      Array [
-        "ACTIVE",
-      ]
-    }
     handleModalToggle={[Function]}
     isModalOpen={false}
     modalContent=""

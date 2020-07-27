@@ -406,8 +406,8 @@ const props1 = {
   },
   initData: initData1,
   setInitData: jest.fn(),
-  setAbortedObj: jest.fn(),
-  abortedObj: {},
+  setSelectedInstances: jest.fn(),
+  selectedInstances: {} as any,
   loadingInitData: false,
   setIsAllChecked: jest.fn(),
   selectedNumber: 0,
@@ -454,8 +454,12 @@ const props2 = {
   },
   initData: initData1,
   setInitData: jest.fn(),
-  setAbortedObj: jest.fn(),
-  abortedObj: {},
+  setSelectedInstances: jest.fn(),
+  selectedInstances: {
+    '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': {
+      id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b'
+    } as any
+  } as any,
   loadingInitData: false,
   setIsAllChecked: jest.fn(),
   selectedNumber: 0,
@@ -502,12 +506,12 @@ const props3 = {
   },
   initData: initData2,
   setInitData: jest.fn(),
-  setAbortedObj: jest.fn(),
-  abortedObj: {
+  setSelectedInstances: jest.fn(),
+  selectedInstances: {
     '8035b580-6ae4-4aa8-9ec0-e18e19809e0b1': {
       id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b1'
-    }
-  },
+    } as any
+  } as any,
   loadingInitData: false,
   setIsAllChecked: jest.fn(),
   selectedNumber: 1,
@@ -554,12 +558,12 @@ const props4 = {
   },
   initData: initData2,
   setInitData: jest.fn(),
-  setAbortedObj: jest.fn(),
-  abortedObj: {
+  setSelectedInstances: jest.fn(),
+  selectedInstances: {
     '8035b580-6ae4-4aa8-9ec0-e18e19809e0b1': {
       id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b1'
     }
-  },
+  } as any,
   loadingInitData: false,
   setIsAllChecked: jest.fn(),
   selectedNumber: 1,
@@ -605,12 +609,12 @@ const props5 = {
   },
   initData: initData3,
   setInitData: jest.fn(),
-  setAbortedObj: jest.fn(),
-  abortedObj: {
+  setSelectedInstances: jest.fn(),
+  selectedInstances: {
     'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e': {
       id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e'
-    }
-  },
+    } as any
+  } as any,
   loadingInitData: false,
   setIsAllChecked: jest.fn(),
   selectedNumber: 1,
@@ -657,12 +661,12 @@ const props6 = {
   },
   initData: initData4,
   setInitData: jest.fn(),
-  setAbortedObj: jest.fn(),
-  abortedObj: {
+  setSelectedInstances: jest.fn(),
+  selectedInstances: {
     'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e': {
       id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e'
     }
-  },
+  } as any,
   loadingInitData: false,
   setIsAllChecked: jest.fn(),
   selectedNumber: 1,
@@ -709,12 +713,12 @@ const props7 = {
   },
   initData: initData5,
   setInitData: jest.fn(),
-  setAbortedObj: jest.fn(),
-  abortedObj: {
+  setSelectedInstances: jest.fn(),
+  selectedInstances: {
     'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e': {
       id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e'
     }
-  },
+  } as any,
   loadingInitData: false,
   setIsAllChecked: jest.fn(),
   selectedNumber: 1,
@@ -1047,7 +1051,7 @@ describe('ProcessListTableItems component tests', () => {
       .props()
       ['onChange'](true, event);
 
-    expect(props3.setAbortedObj).toHaveBeenCalled();
+    expect(props3.setSelectedInstances).toHaveBeenCalled();
     expect(props3.setInitData).toHaveBeenCalled();
     expect(props3.initData.ProcessInstances[0].isChecked).toBeFalsy();
   });
@@ -1066,7 +1070,7 @@ describe('ProcessListTableItems component tests', () => {
       .find(DataListCheck)
       .props()
       ['onChange'](true, event);
-    expect(props3.setAbortedObj).toHaveBeenCalled();
+    expect(props3.setSelectedInstances).toHaveBeenCalled();
     expect(props5.initData.ProcessInstances[0].isChecked).toBeTruthy();
     expect(props3.setInitData).toHaveBeenCalled();
   });
@@ -1085,7 +1089,7 @@ describe('ProcessListTableItems component tests', () => {
       .find(DataListCheck)
       .props()
       ['onChange'](true, event);
-    expect(props3.setAbortedObj).toHaveBeenCalled();
+    expect(props3.setSelectedInstances).toHaveBeenCalled();
     expect(props3.setInitData).toHaveBeenCalled();
     expect(props6.initData.ProcessInstances[0].isChecked).toBeTruthy();
   });
@@ -1103,7 +1107,7 @@ describe('ProcessListTableItems component tests', () => {
       .find(DataListCheck)
       .props()
       ['onChange'](true, event);
-    expect(props3.setAbortedObj).toHaveBeenCalled();
+    expect(props3.setSelectedInstances).toHaveBeenCalled();
     expect(props3.setInitData).toHaveBeenCalled();
     expect(props6.initData.ProcessInstances[0].isChecked).toBeTruthy();
   });

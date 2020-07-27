@@ -6,7 +6,7 @@ import {
   handleAbort,
   handleNodeInstanceRetrigger,
   handleNodeInstanceCancel,
-  handleAbortAll
+  performMultipleAbort
 } from '../Utils';
 import { GraphQL } from '@kogito-apps/common';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
@@ -15,6 +15,7 @@ import wait from 'waait';
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 const children = 'children';
+/* tslint:disable:no-string-literal */
 describe('uitility function testing', () => {
   it('state icon creator tests', () => {
     const activeTestResult = stateIconCreator(ProcessInstanceState.Active);
@@ -104,7 +105,7 @@ describe('uitility function testing', () => {
       const onAbortSuccess = jest.fn();
       const onAbortFailure = jest.fn();
       mockedAxios.delete.mockResolvedValue({});
-      handleAbort(processInstanceData, onAbortSuccess, onAbortFailure);
+      await handleAbort(processInstanceData, onAbortSuccess, onAbortFailure);
       await wait(0);
       expect(onAbortSuccess).toHaveBeenCalled();
     });
@@ -112,7 +113,7 @@ describe('uitility function testing', () => {
       const onAbortSuccess = jest.fn();
       const onAbortFailure = jest.fn();
       mockedAxios.delete.mockRejectedValue({ message: '403 error' });
-      handleAbort(processInstanceData, onAbortSuccess, onAbortFailure);
+      await handleAbort(processInstanceData, onAbortSuccess, onAbortFailure);
       await wait(0);
       expect(onAbortFailure.mock.calls[0][0]).toEqual('"403 error"');
       expect(onAbortFailure).toHaveBeenCalled();
@@ -231,103 +232,34 @@ describe('uitility function testing', () => {
     });
   });
 
-  describe('handle Abort all tests', () => {
-    const abortedObj = {
-      'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e': {
-        id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e'
-      },
-      'dfr443-b975-71er-a9a0-6a86bf7ac21e': {
-        id: 'dfr443-b975-71er-a9a0-6a86bf7ac21e'
-      },
-      'epp55g-b975-1234-PPe2-6a86bf7ac21e': {
-        id: 'epp55g-b975-1234-PPe2-6a86bf7ac21e'
-      },
-      'hh5rf-nv554-tmr33-ae3z-6a86bf7ac21e': {
-        id: 'hh5rf-nv554-tmr33-ae3z-6a86bf7ac21e'
-      },
-      'i5r33-ll3we-qqwas-m3045-6a86bf7ac21e': {
-        id: 'i5r33-ll3we-qqwas-m3045-6a86bf7ac21e'
-      },
-      'jrtr1-0094-rt57-kkrt4-6a86bf7ac21e': {
-        id: 'jrtr1-0094-rt57-kkrt4-6a86bf7ac21e'
+  describe('handle multiple abort click tests', () => {
+    const requiredInstances = {
+      '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': {
+        id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+        processId: 'trav',
+        serviceUrl: 'http://localhost:4000'
       }
-    };
-    const initData = {
-      ProcessInstances: [
-        {
-          id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
-          processId: 'trav',
-          serviceUrl: 'http://localhost:4000',
-          state: ProcessInstanceState.Active,
-          addons: ['process-management'],
-          childDataList: [
-            {
-              id: 'hh5rf-nv554-tmr33-ae3z-6a86bf7ac21e',
-              processId: 'trav',
-              serviceUrl: 'http://localhost:4000',
-              state: ProcessInstanceState.Active,
-              addons: ['process-management']
-            },
-            {
-              id: 'i5r33-ll3we-qqwas-m3045-6a86bf7ac21e',
-              processId: 'trav',
-              serviceUrl: 'http://localhost:4000',
-              state: ProcessInstanceState.Aborted,
-              addons: ['process-management']
-            },
-            {
-              id: 'jrtr1-0094-rt57-kkrt4-6a86bf7ac21e',
-              processId: 'trav',
-              serviceUrl: 'http://localhost:4000',
-              state: ProcessInstanceState.Completed,
-              addons: ['process-management']
-            }
-          ]
-        },
-        {
-          id: 'dfr443-b975-71er-a9a0-6a86bf7ac21e',
-          processId: 'trav',
-          serviceUrl: 'http://localhost:4000',
-          state: ProcessInstanceState.Aborted,
-          addons: ['process-management']
-        },
-        {
-          id: 'epp55g-b975-1234-PPe2-6a86bf7ac21e',
-          processId: 'trav',
-          serviceUrl: 'http://localhost:4000',
-          state: ProcessInstanceState.Completed,
-          addons: ['process-management']
-        }
-      ]
-    };
-    const setModalTitle = jest.fn();
-    const setTitleType = jest.fn();
-    const setAbortedMessageObj = jest.fn();
-    const setCompletedMessageObj = jest.fn();
-    const handleAbortModalToggle = jest.fn();
-    it('executes Abort process successfully', () => {
-      mockedAxios.all.mockResolvedValue([Promise.resolve({})]);
-      handleAbortAll(
-        abortedObj,
-        initData,
-        setModalTitle,
-        setTitleType,
-        setAbortedMessageObj,
-        setCompletedMessageObj,
-        handleAbortModalToggle
-      );
+    } as any;
+    it('executes multi-abort process successfully', async () => {
+      const onAbortMultiAction = jest.fn();
+      mockedAxios.all.mockResolvedValue([
+        mockedAxios.delete.mockResolvedValue({})
+      ]);
+      await performMultipleAbort(requiredInstances, onAbortMultiAction);
+      await wait(0);
+      expect(onAbortMultiAction.mock.calls[0][0]).toBeDefined();
+      expect(onAbortMultiAction).toHaveBeenCalled();
     });
-    it('fails executing Abort process', () => {
-      mockedAxios.all.mockRejectedValue(new Error('Promise failed'));
-      handleAbortAll(
-        abortedObj,
-        initData,
-        setModalTitle,
-        setTitleType,
-        setAbortedMessageObj,
-        setCompletedMessageObj,
-        handleAbortModalToggle
-      );
+    it('catched an error in the instance', async () => {
+      const onAbortMultiAction = jest.fn();
+      mockedAxios.delete.mockRejectedValue({ message: '404 error' });
+      await performMultipleAbort(requiredInstances, onAbortMultiAction);
+      await wait(0);
+      expect(
+        onAbortMultiAction.mock.calls[0][1][
+          '8035b580-6ae4-4aa8-9ec0-e18e19809e0b'
+        ]['errorMessage']
+      ).toEqual('"404 error"');
     });
   });
 });

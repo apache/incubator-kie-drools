@@ -11,6 +11,7 @@ import {
 import { GraphQL } from '@kogito-apps/common';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
 import ProcessInstance = GraphQL.ProcessInstance;
+import { ProcessInstanceBulkList } from '../components/Molecules/ProcessListToolbar/ProcessListToolbar';
 
 export const stateIconCreator = (state: ProcessInstanceState): JSX.Element => {
   switch (state) {
@@ -120,7 +121,7 @@ export const handleRetry = (
     });
 };
 
-export const handleAbort = (
+export const handleAbort = async (
   processInstance: Pick<
     ProcessInstance,
     'id' | 'processId' | 'serviceUrl' | 'state'
@@ -128,17 +129,15 @@ export const handleAbort = (
   onRetrySuccess: () => void,
   onRetryFailure: (errorMessage: string) => void
 ) => {
-  axios
-    .delete(
+  try {
+    await axios.delete(
       `${processInstance.serviceUrl}/management/processes/${processInstance.processId}/instances/${processInstance.id}`
-    )
-    .then(() => {
-      processInstance.state = ProcessInstanceState.Aborted;
-      onRetrySuccess();
-    })
-    .catch(error => {
-      onRetryFailure(JSON.stringify(error.message));
-    });
+    );
+    processInstance.state = ProcessInstanceState.Aborted;
+    onRetrySuccess();
+  } catch (error) {
+    onRetryFailure(JSON.stringify(error.message));
+  }
 };
 
 export const handleNodeInstanceRetrigger = (
@@ -177,79 +176,26 @@ export const handleNodeInstanceCancel = (
     });
 };
 
-export const handleAbortAll = (
-  abortedObj,
-  initData,
-  setModalTitle,
-  setTitleType,
-  setAbortedMessageObj,
-  setCompletedMessageObj,
-  handleAbortModalToggle
+export const performMultipleAbort = async (
+  instancesToBeAborted: ProcessInstanceBulkList,
+  multiAbortAction: (
+    successInstances: ProcessInstanceBulkList,
+    failedInstances: ProcessInstanceBulkList
+  ) => void
 ) => {
-  const tempAbortedObj = { ...abortedObj };
-  const completedAndAborted = {};
-  for (const [id, processInstance] of Object.entries(tempAbortedObj)) {
-    initData.ProcessInstances.map(instance => {
-      if (instance.id === id) {
-        /* istanbul ignore else */
-        if (
-          instance.addons.includes('process-management') &&
-          instance.serviceUrl !== null
-        ) {
-          if (
-            instance.state === ProcessInstanceState.Completed ||
-            instance.state === ProcessInstanceState.Aborted
-          ) {
-            completedAndAborted[id] = processInstance;
-            delete tempAbortedObj[id];
-          } else {
-            instance.state = ProcessInstanceState.Aborted;
-          }
-        }
+  const successInstances = {};
+  const failedInstances = {};
+  for (const id of Object.keys(instancesToBeAborted)) {
+    await handleAbort(
+      instancesToBeAborted[id],
+      () => {
+        successInstances[id] = instancesToBeAborted[id];
+      },
+      errorMessage => {
+        failedInstances[id] = instancesToBeAborted[id];
+        failedInstances[id].errorMessage = errorMessage;
       }
-      if (instance.childDataList !== undefined) {
-        instance.childDataList.map(child => {
-          if (child.id === id) {
-            /* istanbul ignore else */
-            if (
-              instance.addons.includes('process-management') &&
-              instance.serviceUrl !== null
-            ) {
-              if (
-                child.state === ProcessInstanceState.Completed ||
-                child.state === ProcessInstanceState.Aborted
-              ) {
-                completedAndAborted[id] = processInstance;
-                delete tempAbortedObj[id];
-              } else {
-                child.state = ProcessInstanceState.Aborted;
-              }
-            }
-          }
-        });
-      }
-    });
-  }
-  const promiseArray = [];
-  Object.keys(tempAbortedObj).forEach((id: string) => {
-    promiseArray.push(
-      axios.delete(
-        `${tempAbortedObj[id].serviceUrl}/management/processes/${tempAbortedObj[id].processId}/instances/${tempAbortedObj[id].id}`
-      )
     );
-  });
-  setModalTitle('Abort operation');
-  Promise.all(promiseArray)
-    .then(() => {
-      setTitleType('success');
-      setAbortedMessageObj(tempAbortedObj);
-      setCompletedMessageObj(completedAndAborted);
-      handleAbortModalToggle();
-    })
-    .catch(() => {
-      setTitleType('failure');
-      setAbortedMessageObj(tempAbortedObj);
-      setCompletedMessageObj(completedAndAborted);
-      handleAbortModalToggle();
-    });
+  }
+  multiAbortAction(successInstances, failedInstances);
 };

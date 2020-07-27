@@ -26,11 +26,9 @@ interface LocationProps {
   selected?: any[];
 }
 
-const DomainExplorerPage: React.FC<
-  IOwnProps &
-    RouteComponentProps<MatchProps, {}, LocationProps> &
-    InjectedOuiaProps
-> = ({ ouiaContext, ...props }) => {
+const DomainExplorerPage: React.FC<IOwnProps &
+  RouteComponentProps<MatchProps, {}, LocationProps> &
+  InjectedOuiaProps> = ({ ouiaContext, ...props }) => {
   const rememberedParams =
     (props.location.state && props.location.state.parameters) || [];
   const rememberedSelections =

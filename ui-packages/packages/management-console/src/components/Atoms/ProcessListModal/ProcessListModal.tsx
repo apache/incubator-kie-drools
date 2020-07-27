@@ -9,29 +9,28 @@ import {
   Text
 } from '@patternfly/react-core';
 import ProcessListBulkInstances from '../ProcessListBulkInstances/ProcessListBulkInstances';
-
+import { IOperation } from '../../Molecules/ProcessListToolbar/ProcessListToolbar';
 interface IOwnProps {
   modalTitle: JSX.Element;
   modalContent?: string;
   handleModalToggle: () => void;
-  abortedMessageObj?: any;
-  completedMessageObj?: any;
   isModalOpen: boolean;
-  checkedArray: string[];
-  isAbortModalOpen?: boolean;
-  isSingleAbort?: any;
+  resetSelected?: () => void;
+  operationResult?: IOperation;
 }
 const ProcessListModal: React.FC<IOwnProps> = ({
   modalContent,
   modalTitle,
-  abortedMessageObj,
-  completedMessageObj,
   isModalOpen,
-  checkedArray,
   handleModalToggle,
-  isAbortModalOpen,
-  isSingleAbort
+  resetSelected,
+  operationResult
 }) => {
+  const onOkClick = () => {
+    handleModalToggle();
+    operationResult && resetSelected();
+  };
+
   return (
     <Modal
       isSmall={true}
@@ -42,29 +41,17 @@ const ProcessListModal: React.FC<IOwnProps> = ({
         </Title>
       }
       isOpen={isModalOpen}
-      onClose={handleModalToggle}
+      onClose={onOkClick}
       actions={[
-        <Button
-          key="confirm-selection"
-          variant="primary"
-          onClick={handleModalToggle}
-        >
+        <Button key="confirm-selection" variant="primary" onClick={onOkClick}>
           OK
         </Button>
       ]}
       isFooterLeftAligned={false}
     >
-      {abortedMessageObj !== undefined &&
-        completedMessageObj !== undefined &&
-        isAbortModalOpen && (
-          <ProcessListBulkInstances
-            abortedMessageObj={abortedMessageObj}
-            completedMessageObj={completedMessageObj}
-            isSingleAbort={isSingleAbort}
-            checkedArray={checkedArray}
-            isAbortModalOpen={isAbortModalOpen}
-          />
-        )}
+      {operationResult !== undefined && (
+        <ProcessListBulkInstances operationResult={operationResult} />
+      )}
       <TextContent>
         <Text>
           <strong>{modalContent}</strong>

@@ -8,167 +8,98 @@ import {
   TextListItem
 } from '@patternfly/react-core';
 import { ItemDescriptor } from '@kogito-apps/common';
+import { IOperation } from '../../Molecules/ProcessListToolbar/ProcessListToolbar';
 
 interface IOwnProps {
-  abortedMessageObj: any;
-  completedMessageObj: any;
-  isSingleAbort: any;
-  checkedArray: any;
-  isAbortModalOpen: boolean;
+  operationResult: IOperation;
 }
-const ProcessListBulkInstances: React.FC<IOwnProps> = ({
-  abortedMessageObj,
-  completedMessageObj,
-  isSingleAbort,
-  checkedArray,
-  isAbortModalOpen
-}) => {
+const ProcessListBulkInstances: React.FC<IOwnProps> = ({ operationResult }) => {
   return (
     <>
-      {' '}
-      {Object.keys(abortedMessageObj).length !== 0 &&
-        Object.keys(completedMessageObj).length !== 0 &&
-        !isSingleAbort && (
-          <>
-            <TextContent>
-              <Text component={TextVariants.h2}>
-                {' '}
-                The following processes were aborted:
-              </Text>
-
-              <TextList>
-                {Object.entries(abortedMessageObj).map((process: any) => {
+      {Object.keys(operationResult.results.successInstances).length > 0 ? (
+        <>
+          <TextContent>
+            <Text component={TextVariants.h2}>
+              {operationResult.messages.successMessage}
+            </Text>
+            <TextList>
+              {Object.entries(operationResult.results.successInstances).map(
+                (process: any) => {
                   return (
                     <TextListItem key={process[0]}>
-                      <ItemDescriptor processInstanceData={process[1]} />
+                      <strong>
+                        <ItemDescriptor processInstanceData={process[1]} />
+                      </strong>
                     </TextListItem>
                   );
-                })}
-              </TextList>
-            </TextContent>
-            {!checkedArray.includes('ABORTED') &&
-              isAbortModalOpen &&
-              abortedMessageObj !== undefined &&
-              Object.keys(abortedMessageObj).length !== 0 && (
-                <TextContent className="pf-u-mt-sm">
-                  <Text>
-                    Note: The process status has been updated. The list may
-                    appear inconsistent until you refresh any applied filters.
-                  </Text>
-                </TextContent>
+                }
               )}
-            <Divider component="div" className="pf-u-my-xl" />
-            <TextContent>
-              <Text component={TextVariants.h2}>
-                The following processes were skipped because they were either
-                completed or aborted:
-              </Text>
-
-              <TextList>
-                {Object.entries(completedMessageObj).map((process: any) => {
+            </TextList>
+          </TextContent>
+          {Object.keys(operationResult.results.successInstances).length !== 0 &&
+            operationResult.messages.warningMessage && (
+              <TextContent className="pf-u-mt-sm">
+                <Text component={TextVariants.small}>
+                  {operationResult.messages.warningMessage}
+                </Text>
+              </TextContent>
+            )}
+        </>
+      ) : (
+        <TextContent>
+          <Text component={TextVariants.h2}>
+            {operationResult.messages.noProcessMessage}
+          </Text>
+        </TextContent>
+      )}
+      {Object.keys(operationResult.results.ignoredInstances).length !== 0 && (
+        <>
+          <Divider component="div" className="pf-u-my-xl" />
+          <TextContent>
+            <Text component={TextVariants.h2}>
+              <span>Ignored processes:</span>
+            </Text>
+            <Text component={TextVariants.small} className="pf-u-mt-sm">
+              <span>{operationResult.messages.ignoredMessage}</span>
+            </Text>
+            <TextList>
+              {Object.entries(operationResult.results.ignoredInstances).map(
+                (process: any) => {
                   return (
                     <TextListItem key={process[0]}>
-                      <ItemDescriptor processInstanceData={process[1]} />
+                      <strong>
+                        <ItemDescriptor processInstanceData={process[1]} />
+                      </strong>
                     </TextListItem>
                   );
-                })}
-              </TextList>
-            </TextContent>
-          </>
-        )}
-      {Object.keys(abortedMessageObj).length === 0 &&
-        Object.keys(completedMessageObj).length !== 0 &&
-        !isSingleAbort && (
-          <>
-            <TextContent>
-              <Text component={TextVariants.h2}>
-                {' '}
-                No processes were aborted
-              </Text>
-            </TextContent>
-            <Divider component="div" className="pf-u-my-xl" />
-            <TextContent>
-              <Text component={TextVariants.h2}>
-                The following processes were skipped because they were either
-                completed or aborted:
-              </Text>
-
-              <TextList>
-                {Object.entries(completedMessageObj).map((process: any) => {
-                  return (
-                    <TextListItem key={process[0]}>
-                      <ItemDescriptor processInstanceData={process[1]} />
-                    </TextListItem>
-                  );
-                })}
-              </TextList>
-            </TextContent>
-          </>
-        )}
-      {Object.keys(abortedMessageObj).length !== 0 &&
-        Object.keys(completedMessageObj).length === 0 &&
-        !isSingleAbort && (
-          <>
-            <TextContent>
-              <Text component={TextVariants.h2}>
-                {' '}
-                The following processes were aborted:
-              </Text>
-              <TextList>
-                {Object.entries(abortedMessageObj).map((process: any) => {
-                  return (
-                    <TextListItem key={process[0]}>
-                      <ItemDescriptor processInstanceData={process[1]} />
-                    </TextListItem>
-                  );
-                })}
-              </TextList>
-            </TextContent>
-            {!checkedArray.includes('ABORTED') &&
-              isAbortModalOpen &&
-              abortedMessageObj !== undefined &&
-              Object.keys(abortedMessageObj).length !== 0 && (
-                <TextContent className="pf-u-mt-sm">
-                  <Text>
-                    Note: The process status has been updated. The list may
-                    appear inconsistent until you refresh any applied filters.
-                  </Text>
-                </TextContent>
+                }
               )}
-          </>
-        )}
-      {Object.keys(abortedMessageObj).length !== 0 &&
-        Object.keys(completedMessageObj).length === 0 &&
-        isSingleAbort && (
-          <>
-            <TextContent>
-              <Text component={TextVariants.h2}>
-                {' '}
-                The following process was aborted:
-              </Text>
-              <TextList>
-                {Object.entries(abortedMessageObj).map((process: any) => {
+            </TextList>
+          </TextContent>
+        </>
+      )}
+      {Object.keys(operationResult.results.failedInstances).length !== 0 && (
+        <>
+          <Divider component="div" className="pf-u-my-xl" />
+          <TextContent>
+            <Text component={TextVariants.h2}>Errors:</Text>
+            <TextList>
+              {Object.entries(operationResult.results.failedInstances).map(
+                (process: any) => {
                   return (
                     <TextListItem key={process[0]}>
-                      <ItemDescriptor processInstanceData={process[1]} />
+                      <strong>
+                        <ItemDescriptor processInstanceData={process[1]} />
+                      </strong>{' '}
+                      -{process[1].errorMessage}
                     </TextListItem>
                   );
-                })}
-              </TextList>
-            </TextContent>
-            {!checkedArray.includes('ABORTED') &&
-              isAbortModalOpen &&
-              abortedMessageObj !== undefined &&
-              Object.keys(abortedMessageObj).length !== 0 && (
-                <TextContent className="pf-u-mt-sm">
-                  <Text>
-                    Note: The process status has been updated. The list may
-                    appear inconsistent until you refresh any applied filters.
-                  </Text>
-                </TextContent>
+                }
               )}
-          </>
-        )}
+            </TextList>
+          </TextContent>
+        </>
+      )}
     </>
   );
 };

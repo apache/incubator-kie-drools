@@ -12,6 +12,7 @@ import ProcessListTableItems from '../../Molecules/ProcessListTableItems/Process
 import '@patternfly/patternfly/patternfly-addons.css';
 import './ProcessListTable.css';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
+import { ProcessInstanceBulkList } from '../../Molecules/ProcessListToolbar/ProcessListToolbar';
 
 type filterType = {
   status: GraphQL.ProcessInstanceState[];
@@ -23,8 +24,8 @@ interface IOwnProps {
   initData: any;
   isLoading: boolean;
   setIsError: (isError: boolean) => void;
-  abortedObj: any;
-  setAbortedObj: any;
+  selectedInstances: ProcessInstanceBulkList;
+  setSelectedInstances: (selectedInstances: ProcessInstanceBulkList) => void;
   pageSize: number;
   filters: filterType;
   setIsAllChecked: (isAllChecked: boolean) => void;
@@ -38,8 +39,8 @@ const ProcessListTable: React.FC<IOwnProps> = ({
   setLimit,
   isLoading,
   setIsError,
-  abortedObj,
-  setAbortedObj,
+  selectedInstances,
+  setSelectedInstances,
   pageSize,
   filters,
   setIsAllChecked,
@@ -97,7 +98,7 @@ const ProcessListTable: React.FC<IOwnProps> = ({
 
   useEffect(() => {
     setIsError(false);
-    setAbortedObj({});
+    setSelectedInstances({});
     if (!loading && data !== undefined) {
       data.ProcessInstances.forEach((instance: any) => {
         instance.isChecked = false;
@@ -139,8 +140,8 @@ const ProcessListTable: React.FC<IOwnProps> = ({
               initData={initData}
               setInitData={setInitData}
               loadingInitData={loading}
-              abortedObj={abortedObj}
-              setAbortedObj={setAbortedObj}
+              selectedInstances={selectedInstances}
+              setSelectedInstances={setSelectedInstances}
               setIsAllChecked={setIsAllChecked}
               selectedNumber={selectedNumber}
               setSelectedNumber={setSelectedNumber}

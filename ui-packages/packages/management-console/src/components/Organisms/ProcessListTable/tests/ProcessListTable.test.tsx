@@ -468,8 +468,13 @@ const props1 = {
   setIsError: jest.fn(),
   setIsLoading: jest.fn(),
   initData: initData1,
-  abortedObj: { '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': 'travels' },
-  setAbortedObj: jest.fn(),
+  checkedArray: ['ACTIVE'],
+  selectedInstances: {
+    '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': {
+      id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b'
+    } as any
+  } as any,
+  setSelectedInstances: jest.fn(),
   pageSize: 10,
   isLoadingMore: false,
   filteredData: initData1,
@@ -491,8 +496,13 @@ const props2 = {
   setIsError: jest.fn(),
   setIsLoading: jest.fn(),
   initData: initData2,
-  abortedObj: { '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': 'travels' },
-  setAbortedObj: jest.fn(),
+  checkedArray: ['ACTIVE'],
+  selectedInstances: {
+    '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': {
+      id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b'
+    } as any
+  } as any,
+  setSelectedInstances: jest.fn(),
   pageSize: 10,
   isLoadingMore: false,
   filteredData: initData1,
@@ -514,8 +524,13 @@ const props3 = {
   setIsError: jest.fn(),
   setIsLoading: jest.fn(),
   initData: initData2,
-  abortedObj: { '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': 'travels' },
-  setAbortedObj: jest.fn(),
+  checkedArray: ['ACTIVE'],
+  selectedInstances: {
+    '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': {
+      id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b'
+    } as any
+  } as any,
+  setSelectedInstances: jest.fn(),
   pageSize: 10,
   isLoadingMore: true,
   filteredData: initData1,
@@ -536,8 +551,12 @@ const props4 = {
   setIsError: jest.fn(),
   setIsLoading: jest.fn(),
   initData: initData1,
-  abortedObj: { '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': 'travels' },
-  setAbortedObj: jest.fn(),
+  selectedInstances: {
+    '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': {
+      id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b'
+    } as any
+  } as any,
+  setSelectedInstances: jest.fn(),
   pageSize: 10,
   isLoadingMore: false,
   filteredData: initData1,

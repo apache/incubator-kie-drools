@@ -37,6 +37,8 @@ import {
   stateIconCreator
 } from '../../../utils/Utils';
 import ProcessInstance = GraphQL.ProcessInstance;
+import { ProcessInstanceBulkList } from '../ProcessListToolbar/ProcessListToolbar';
+/* tslint:disable:no-empty */
 
 type filterType = {
   status: GraphQL.ProcessInstanceState[];
@@ -49,26 +51,24 @@ interface IOwnProps {
   initData: any;
   setInitData: any;
   loadingInitData: boolean;
-  abortedObj: any;
-  setAbortedObj: any;
+  selectedInstances: ProcessInstanceBulkList;
+  setSelectedInstances: (selectedInstances: ProcessInstanceBulkList) => void;
   setIsAllChecked: (isAllChecked: boolean) => void;
   setSelectedNumber: (selectedNumber: number) => void;
   selectedNumber: number;
   filters: filterType;
 }
-
 enum TitleType {
   SUCCESS = 'success',
   FAILURE = 'failure'
 }
-
 const ProcessListTableItems: React.FC<IOwnProps> = ({
   processInstanceData,
   initData,
   setInitData,
   loadingInitData,
-  abortedObj,
-  setAbortedObj,
+  selectedInstances,
+  setSelectedInstances,
   setIsAllChecked,
   selectedNumber,
   setSelectedNumber,
@@ -147,8 +147,8 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
     );
   };
 
-  const onAbortClick = () => {
-    handleAbort(
+  const onAbortClick = async () => {
+    await handleAbort(
       processInstanceData,
       () =>
         onShowMessage(
@@ -196,19 +196,19 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
 
   const onCheckBoxClick = () => {
     const copyOfInitData = { ...initData };
-    let copyOfAbortedObject = { ...abortedObj };
+    let copyOfSelectedInstances = { ...selectedInstances };
     copyOfInitData.ProcessInstances.map(instanceData => {
       if (instanceData.id === processInstanceData.id) {
         if (instanceData.isChecked) {
-          if (abortedObj[instanceData.id] !== undefined) {
-            delete copyOfAbortedObject[instanceData.id];
+          if (selectedInstances[instanceData.id] !== undefined) {
+            delete copyOfSelectedInstances[instanceData.id];
             setSelectedNumber(selectedNumber > 0 && selectedNumber - 1);
           }
           instanceData.isChecked = false;
         } else {
           const tempObj = {};
           tempObj[instanceData.id] = instanceData;
-          copyOfAbortedObject = { ...copyOfAbortedObject, ...tempObj };
+          copyOfSelectedInstances = { ...copyOfSelectedInstances, ...tempObj };
           instanceData.isChecked = true;
           setSelectedNumber(selectedNumber + 1);
         }
@@ -217,15 +217,18 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
         instanceData.childDataList.map(child => {
           if (child.id === processInstanceData.id) {
             if (child.isChecked) {
-              if (copyOfAbortedObject[child.id] !== undefined) {
-                delete copyOfAbortedObject[child.id];
+              if (copyOfSelectedInstances[child.id] !== undefined) {
+                delete copyOfSelectedInstances[child.id];
                 setSelectedNumber(selectedNumber > 0 && selectedNumber - 1);
               }
               child.isChecked = false;
             } else {
               const tempObj = {};
               tempObj[child.id] = child;
-              copyOfAbortedObject = { ...copyOfAbortedObject, ...tempObj };
+              copyOfSelectedInstances = {
+                ...copyOfSelectedInstances,
+                ...tempObj
+              };
               setSelectedNumber(selectedNumber + 1);
               child.isChecked = true;
             }
@@ -235,7 +238,7 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
     });
     lengthChecker(copyOfInitData);
     setInitData(copyOfInitData);
-    setAbortedObj(copyOfAbortedObject);
+    setSelectedInstances(copyOfSelectedInstances);
   };
   const lengthChecker = copyOfData => {
     let totalLength = 0;
@@ -320,7 +323,6 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
       <ProcessListModal
         isModalOpen={isModalOpen}
         handleModalToggle={handleModalToggle}
-        checkedArray={processInstanceData && [processInstanceData.state]}
         modalTitle={setTitle(titleType, modalTitle)}
         modalContent={modalContent}
       />
@@ -485,8 +487,8 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
                         initData={initData}
                         setInitData={setInitData}
                         loadingInitData={loading}
-                        abortedObj={abortedObj}
-                        setAbortedObj={setAbortedObj}
+                        selectedInstances={selectedInstances}
+                        setSelectedInstances={setSelectedInstances}
                         setIsAllChecked={setIsAllChecked}
                         selectedNumber={selectedNumber}
                         setSelectedNumber={setSelectedNumber}

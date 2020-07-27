@@ -22,12 +22,9 @@ import PageTitle from '../../Molecules/PageTitle/PageTitle';
 import ProcessListToolbar from '../../Molecules/ProcessListToolbar/ProcessListToolbar';
 import './ProcessListPage.css';
 import ProcessListTable from '../../Organisms/ProcessListTable/ProcessListTable';
-import ProcessListModal from '../../Atoms/ProcessListModal/ProcessListModal';
-import ProcessInstanceState = GraphQL.ProcessInstanceState;
-import { setTitle } from '../../../utils/Utils';
 
 type filterType = {
-  status: ProcessInstanceState[];
+  status: GraphQL.ProcessInstanceState[];
   businessKey: string[];
 };
 interface MatchProps {
@@ -38,19 +35,15 @@ interface LocationProps {
   filters?: filterType;
 }
 
-const ProcessListPage: React.FC<
-  InjectedOuiaProps & RouteComponentProps<MatchProps, {}, LocationProps>
-> = ({ ouiaContext, ...props }) => {
+const ProcessListPage: React.FC<InjectedOuiaProps &
+  RouteComponentProps<MatchProps, {}, LocationProps>> = ({
+  ouiaContext,
+  ...props
+}) => {
   const [defaultPageSize] = useState<number>(10);
   const [initData, setInitData] = useState<any>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
-  const [abortedObj, setAbortedObj] = useState({});
-  const [isAbortModalOpen, setIsAbortModalOpen] = useState<boolean>(false);
-  const [abortedMessageObj, setAbortedMessageObj] = useState({});
-  const [completedMessageObj, setCompletedMessageObj] = useState({});
-  const [titleType, setTitleType] = useState<string>('');
-  const [modalTitle, setModalTitle] = useState<string>('');
   const [limit, setLimit] = useState<number>(defaultPageSize);
   const [offset, setOffset] = useState<number>(0);
   const [pageSize, setPageSize] = useState<number>(defaultPageSize);
@@ -59,13 +52,14 @@ const ProcessListPage: React.FC<
     props.location.state
       ? { ...props.location.state.filters }
       : {
-          status: [ProcessInstanceState.Active],
+          status: [GraphQL.ProcessInstanceState.Active],
           businessKey: []
         }
   );
-  const [statusArray, setStatusArray] = useState<ProcessInstanceState[]>(
-    filters.status
-  );
+  const [statusArray, setStatusArray] = useState<
+    GraphQL.ProcessInstanceState[]
+  >(filters.status);
+  const [selectedInstances, setSelectedInstances] = useState({});
   const [searchWord, setSearchWord] = useState<string>('');
   const [selectedNumber, setSelectedNumber] = useState<number>(0);
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
@@ -105,10 +99,6 @@ const ProcessListPage: React.FC<
     setPageSize(defaultPageSize);
   };
 
-  const handleAbortModalToggle = () => {
-    setIsAbortModalOpen(!isAbortModalOpen);
-  };
-
   useEffect(() => {
     return ouiaPageTypeAndObjectId(ouiaContext, 'process-instances');
   });
@@ -131,9 +121,7 @@ const ProcessListPage: React.FC<
     setIsLoading(true);
     setIsLoadingMore(false);
     setIsError(false);
-    setAbortedObj({});
-    setAbortedMessageObj({});
-    setCompletedMessageObj({});
+    setSelectedInstances({});
     setIsAllChecked(false);
     setSelectedNumber(0);
     setInitData({});
@@ -162,9 +150,7 @@ const ProcessListPage: React.FC<
   };
 
   useEffect(() => {
-    setAbortedObj({});
-    setAbortedMessageObj({});
-    setCompletedMessageObj({});
+    setSelectedInstances({});
     if (isLoadingMore === undefined || !isLoadingMore) {
       setIsLoading(loading);
     }
@@ -187,10 +173,7 @@ const ProcessListPage: React.FC<
   }, [data]);
 
   useEffect(() => {
-    setAbortedObj({});
-    setAbortedMessageObj({});
-    setCompletedMessageObj({});
-    /* istanbul ignore else */
+    setSelectedInstances({});
     if (isLoadingMore === undefined || !isLoadingMore) {
       setIsLoading(getProcessInstancesWithBK.loading);
     }
@@ -219,13 +202,13 @@ const ProcessListPage: React.FC<
 
   const resetClick = () => {
     setSearchWord('');
-    setStatusArray([ProcessInstanceState.Active]);
+    setStatusArray([GraphQL.ProcessInstanceState.Active]);
     setFilters({
       ...filters,
-      status: [ProcessInstanceState.Active],
+      status: [GraphQL.ProcessInstanceState.Active],
       businessKey: []
     });
-    onFilterClick([ProcessInstanceState.Active]);
+    onFilterClick([GraphQL.ProcessInstanceState.Active]);
   };
 
   if (error || getProcessInstancesWithBK.error) {
@@ -235,16 +218,6 @@ const ProcessListPage: React.FC<
   }
   return (
     <React.Fragment>
-      <ProcessListModal
-        modalTitle={setTitle(titleType, modalTitle)}
-        isModalOpen={isAbortModalOpen}
-        abortedMessageObj={abortedMessageObj}
-        completedMessageObj={completedMessageObj}
-        isAbortModalOpen={isAbortModalOpen}
-        checkedArray={filters.status}
-        handleModalToggle={handleAbortModalToggle}
-        isSingleAbort={false}
-      />
       <PageSection variant="light">
         <PageTitle title="Process Instances" />
         <Breadcrumb>
@@ -267,8 +240,8 @@ const ProcessListPage: React.FC<
                     setFilters={setFilters}
                     initData={initData}
                     setInitData={setInitData}
-                    abortedObj={abortedObj}
-                    setAbortedObj={setAbortedObj}
+                    selectedInstances={selectedInstances}
+                    setSelectedInstances={setSelectedInstances}
                     getProcessInstances={getProcessInstances}
                     setSearchWord={setSearchWord}
                     searchWord={searchWord}
@@ -278,11 +251,6 @@ const ProcessListPage: React.FC<
                     setSelectedNumber={setSelectedNumber}
                     statusArray={statusArray}
                     setStatusArray={setStatusArray}
-                    setModalTitle={setModalTitle}
-                    setTitleType={setTitleType}
-                    setAbortedMessageObj={setAbortedMessageObj}
-                    setCompletedMessageObj={setCompletedMessageObj}
-                    handleAbortModalToggle={handleAbortModalToggle}
                   />
                 </>
               )}
@@ -294,8 +262,8 @@ const ProcessListPage: React.FC<
                   isLoading={isLoading}
                   setIsError={setIsError}
                   pageSize={defaultPageSize}
-                  abortedObj={abortedObj}
-                  setAbortedObj={setAbortedObj}
+                  selectedInstances={selectedInstances}
+                  setSelectedInstances={setSelectedInstances}
                   filters={filters}
                   setIsAllChecked={setIsAllChecked}
                   setSelectedNumber={setSelectedNumber}

@@ -221,7 +221,6 @@ const ProcessDetailsTimeline: React.FC<IOwnProps> = ({ data }) => {
       <ProcessListModal
         isModalOpen={isModalOpen}
         handleModalToggle={handleModalToggle}
-        checkedArray={data && [data.state]}
         modalTitle={setTitle(titleType, modalTitle)}
         modalContent={modalContent}
       />

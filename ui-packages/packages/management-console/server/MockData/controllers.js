@@ -61,11 +61,12 @@ module.exports = controller = {
   },
   callAbort: (req, res) => {
     const graphData = require('./graphql');
+    const failedAbortInstances=['8035b580-6ae4-4aa8-9ec0-e18e19809e0b2','8035b580-6ae4-4aa8-9ec0-e18e19809e0b3']
     const data = graphData.filter(data => {
       return data.id === req.params.processInstanceId;
     });
-    if (data.length === 0) {
-      res.status(500).send('Internal server error');
+    if (failedAbortInstances.includes(data[0].id)) {
+      res.status(404).send('process not found');
     } else {
       data[0].state = 'ABORTED';
       res.status(200).send('success');

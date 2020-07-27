@@ -2,11 +2,6 @@
 
 exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
 <ProcessListToolbar
-  abortedObj={
-    Object {
-      "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels",
-    }
-  }
   filterClick={[MockFunction]}
   filters={
     Object {
@@ -23,7 +18,6 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
     }
   }
   getProcessInstances={[MockFunction]}
-  handleAbortAll={[MockFunction]}
   handleAbortModalToggle={[MockFunction]}
   handleCheckAll={[MockFunction]}
   initData={
@@ -49,6 +43,63 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
                 "nodeDefinitionId": "a1e139d5-81c77-48c9-84ae-34578e90433n",
               },
               "id": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e",
+              "nodes": Array [
+                Object {
+                  "definitionId": "EndEvent_1",
+                  "enter": "2019-10-22T04:43:01.144Z",
+                  "exit": "2019-10-22T04:43:01.144Z",
+                  "id": "7244ba1b-75ec-4789-8c65-499a0c5b1a6f",
+                  "name": "End Event 1",
+                  "nodeId": "1",
+                  "type": "EndNode",
+                },
+                Object {
+                  "definitionId": "ServiceTask_1",
+                  "enter": "2019-10-22T04:43:01.144Z",
+                  "exit": "2019-10-22T04:43:01.144Z",
+                  "id": "2f588da5-a323-4111-9017-3093ef9319d1",
+                  "name": "Book flight",
+                  "nodeId": "2",
+                  "type": "WorkItemNode",
+                },
+                Object {
+                  "definitionId": "StartEvent_1",
+                  "enter": "2019-10-22T04:43:01.144Z",
+                  "exit": "2019-10-22T04:43:01.144Z",
+                  "id": "6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2",
+                  "name": "StartProcess",
+                  "nodeId": "3",
+                  "type": "StartNode",
+                },
+              ],
+              "parentProcessInstance": Object {
+                "businessKey": null,
+                "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+                "processName": "travels",
+              },
+              "parentProcessInstanceId": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+              "processId": "flightBooking",
+              "processName": "FlightBooking",
+              "roles": Array [],
+              "rootProcessInstanceId": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+              "serviceUrl": "http://localhost:4000",
+              "start": "2019-10-22T03:40:44.089Z",
+              "state": "ERROR",
+              "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
+            },
+            Object {
+              "addons": Array [
+                "process-management",
+              ],
+              "businessKey": null,
+              "childProcessInstances": Array [],
+              "end": "2019-10-22T05:40:44.089Z",
+              "endpoint": "http://localhost:4000",
+              "error": Object {
+                "message": "Something went wrong",
+                "nodeDefinitionId": "a1e139d5-81c77-48c9-84ae-34578e90433n",
+              },
+              "id": "ceebdeb-b975-46e2-a9a0-6a86bf7ac21e",
               "nodes": Array [
                 Object {
                   "definitionId": "EndEvent_1",
@@ -120,9 +171,9 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
   isAllChecked={true}
   pageSize={10}
   searchWord="Tra"
+  selectedInstances={Object {}}
   selectedNumber={0}
   setAbortedMessageObj={[MockFunction]}
-  setAbortedObj={[MockFunction]}
   setCompletedMessageObj={[MockFunction]}
   setFilteredData={[MockFunction]}
   setFilters={[MockFunction]}
@@ -134,6 +185,7 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
   setModalTitle={[MockFunction]}
   setOffset={[MockFunction]}
   setSearchWord={[MockFunction]}
+  setSelectedInstances={[MockFunction]}
   setSelectedNumber={[MockFunction]}
   setStatusArray={[MockFunction]}
   setTitleType={[MockFunction]}
@@ -147,6 +199,11 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
     ]
   }
 >
+  <MockedProcessListModal
+    handleModalToggle={[Function]}
+    isModalOpen={false}
+    resetSelected={[Function]}
+  />
   <DataToolbar
     className="pf-m-toggle-group-container kogito-management-console__state-dropdown-list"
     clearAllFilters={[Function]}
@@ -2745,60 +2802,263 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
             </DataToolbarItem>
             <ForwardRef
               className="pf-u-ml-md"
+              id="process-management-buttons"
             >
               <DataToolbarGroupWithRef
                 breakpointMods={Array []}
                 className="pf-u-ml-md"
+                id="process-management-buttons"
                 innerRef={null}
               >
                 <div
                   className="pf-c-data-toolbar__group pf-u-ml-md"
+                  id="process-management-buttons"
                 >
-                  <DataToolbarItem>
+                  <OverflowMenu
+                    breakpoint="xl"
+                  >
                     <div
-                      className="pf-c-data-toolbar__item"
+                      className="pf-c-overflow-menu"
                     >
-                      <Component
-                        onClick={[Function]}
-                        variant="secondary"
-                      >
-                        <ComponentWithOuia
-                          component={[Function]}
-                          componentProps={
-                            Object {
-                              "children": "Abort selected",
-                              "onClick": [Function],
-                              "variant": "secondary",
-                            }
-                          }
-                          consumerContext={null}
+                      <OverflowMenuContent />
+                      <OverflowMenuControl>
+                        <div
+                          className="pf-c-overflow-menu__control"
                         >
-                          <Button
-                            onClick={[Function]}
-                            ouiaContext={
-                              Object {
-                                "isOuia": false,
-                                "ouiaId": null,
-                              }
+                           
+                          <Dropdown
+                            dropdownItems={
+                              Array [
+                                <DropdownItem
+                                  isDisabled={true}
+                                  onClick={[Function]}
+                                >
+                                  Abort selected
+                                </DropdownItem>,
+                              ]
                             }
-                            variant="secondary"
+                            isOpen={false}
+                            isPlain={true}
+                            onSelect={[Function]}
+                            toggle={
+                              <KebabToggle
+                                onToggle={[Function]}
+                              />
+                            }
                           >
-                            <button
-                              aria-disabled={null}
-                              aria-label={null}
-                              className="pf-c-button pf-m-secondary"
-                              disabled={false}
-                              onClick={[Function]}
-                              tabIndex={null}
-                              type="button"
+                            <Component
+                              dropdownItems={
+                                Array [
+                                  <DropdownItem
+                                    isDisabled={true}
+                                    onClick={[Function]}
+                                  >
+                                    Abort selected
+                                  </DropdownItem>,
+                                ]
+                              }
+                              isOpen={false}
+                              isPlain={true}
+                              toggle={
+                                <KebabToggle
+                                  onToggle={[Function]}
+                                />
+                              }
                             >
-                              Abort selected
-                            </button>
-                          </Button>
-                        </ComponentWithOuia>
-                      </Component>
+                              <ComponentWithOuia
+                                component={[Function]}
+                                componentProps={
+                                  Object {
+                                    "dropdownItems": Array [
+                                      <DropdownItem
+                                        isDisabled={true}
+                                        onClick={[Function]}
+                                      >
+                                        Abort selected
+                                      </DropdownItem>,
+                                    ],
+                                    "isOpen": false,
+                                    "isPlain": true,
+                                    "toggle": <KebabToggle
+                                      onToggle={[Function]}
+                                    />,
+                                  }
+                                }
+                                consumerContext={null}
+                              >
+                                <DropdownWithContext
+                                  autoFocus={true}
+                                  className=""
+                                  direction="down"
+                                  dropdownItems={
+                                    Array [
+                                      <DropdownItem
+                                        isDisabled={true}
+                                        onClick={[Function]}
+                                      >
+                                        Abort selected
+                                      </DropdownItem>,
+                                    ]
+                                  }
+                                  isGrouped={false}
+                                  isOpen={false}
+                                  isPlain={true}
+                                  onSelect={[Function]}
+                                  ouiaComponentType="Dropdown"
+                                  ouiaContext={
+                                    Object {
+                                      "isOuia": false,
+                                      "ouiaId": null,
+                                    }
+                                  }
+                                  position="left"
+                                  toggle={
+                                    <KebabToggle
+                                      onToggle={[Function]}
+                                    />
+                                  }
+                                >
+                                  <div
+                                    className="pf-c-dropdown"
+                                  >
+                                    <KebabToggle
+                                      ariaHasPopup={true}
+                                      id="pf-toggle-id-1"
+                                      isOpen={false}
+                                      isPlain={true}
+                                      key=".0"
+                                      onEnter={[Function]}
+                                      onToggle={[Function]}
+                                      parentRef={
+                                        Object {
+                                          "current": <div
+                                            class="pf-c-dropdown"
+                                          >
+                                            <button
+                                              aria-expanded="false"
+                                              aria-haspopup="true"
+                                              aria-label="Actions"
+                                              class="pf-c-dropdown__toggle pf-m-plain"
+                                              id="pf-toggle-id-1"
+                                              type="button"
+                                            >
+                                              <svg
+                                                aria-hidden="true"
+                                                fill="currentColor"
+                                                height="1em"
+                                                role="img"
+                                                style="vertical-align: -0.125em;"
+                                                viewBox="0 0 192 512"
+                                                width="1em"
+                                              >
+                                                <path
+                                                  d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
+                                                  transform=""
+                                                />
+                                              </svg>
+                                            </button>
+                                          </div>,
+                                        }
+                                      }
+                                    >
+                                      <Toggle
+                                        aria-label="Actions"
+                                        ariaHasPopup={true}
+                                        bubbleEvent={false}
+                                        className=""
+                                        id="pf-toggle-id-1"
+                                        isActive={false}
+                                        isDisabled={false}
+                                        isFocused={false}
+                                        isHovered={false}
+                                        isOpen={false}
+                                        isPlain={true}
+                                        isPrimary={false}
+                                        isSplitButton={false}
+                                        onEnter={[Function]}
+                                        onToggle={[Function]}
+                                        parentRef={
+                                          Object {
+                                            "current": <div
+                                              class="pf-c-dropdown"
+                                            >
+                                              <button
+                                                aria-expanded="false"
+                                                aria-haspopup="true"
+                                                aria-label="Actions"
+                                                class="pf-c-dropdown__toggle pf-m-plain"
+                                                id="pf-toggle-id-1"
+                                                type="button"
+                                              >
+                                                <svg
+                                                  aria-hidden="true"
+                                                  fill="currentColor"
+                                                  height="1em"
+                                                  role="img"
+                                                  style="vertical-align: -0.125em;"
+                                                  viewBox="0 0 192 512"
+                                                  width="1em"
+                                                >
+                                                  <path
+                                                    d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
+                                                    transform=""
+                                                  />
+                                                </svg>
+                                              </button>
+                                            </div>,
+                                          }
+                                        }
+                                      >
+                                        <button
+                                          aria-expanded={false}
+                                          aria-haspopup={true}
+                                          aria-label="Actions"
+                                          className="pf-c-dropdown__toggle pf-m-plain"
+                                          disabled={false}
+                                          id="pf-toggle-id-1"
+                                          onClick={[Function]}
+                                          onKeyDown={[Function]}
+                                          type="button"
+                                        >
+                                          <EllipsisVIcon
+                                            color="currentColor"
+                                            noVerticalAlign={false}
+                                            size="sm"
+                                            title={null}
+                                          >
+                                            <svg
+                                              aria-hidden={true}
+                                              aria-labelledby={null}
+                                              fill="currentColor"
+                                              height="1em"
+                                              role="img"
+                                              style={
+                                                Object {
+                                                  "verticalAlign": "-0.125em",
+                                                }
+                                              }
+                                              viewBox="0 0 192 512"
+                                              width="1em"
+                                            >
+                                              <path
+                                                d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
+                                                transform=""
+                                              />
+                                            </svg>
+                                          </EllipsisVIcon>
+                                        </button>
+                                      </Toggle>
+                                    </KebabToggle>
+                                  </div>
+                                </DropdownWithContext>
+                              </ComponentWithOuia>
+                            </Component>
+                          </Dropdown>
+                           
+                        </div>
+                      </OverflowMenuControl>
                     </div>
-                  </DataToolbarItem>
+                  </OverflowMenu>
                 </div>
               </DataToolbarGroupWithRef>
             </ForwardRef>
@@ -3549,7 +3809,7 @@ Array [
               >
                 <DropdownToggle
                   ariaHasPopup={true}
-                  id="pf-toggle-id-1"
+                  id="pf-toggle-id-2"
                   isOpen={false}
                   isPlain={false}
                   key=".0"
@@ -3580,7 +3840,7 @@ Array [
                             aria-haspopup="true"
                             aria-label="Select"
                             class="pf-c-dropdown__toggle-button"
-                            id="pf-toggle-id-1"
+                            id="pf-toggle-id-2"
                             type="button"
                           >
                             
@@ -3651,7 +3911,7 @@ Array [
                       ariaHasPopup={true}
                       bubbleEvent={false}
                       className=""
-                      id="pf-toggle-id-1"
+                      id="pf-toggle-id-2"
                       isActive={false}
                       isDisabled={false}
                       isFocused={false}
@@ -3687,7 +3947,7 @@ Array [
                                 aria-haspopup="true"
                                 aria-label="Select"
                                 class="pf-c-dropdown__toggle-button"
-                                id="pf-toggle-id-1"
+                                id="pf-toggle-id-2"
                                 type="button"
                               >
                                 
@@ -3718,7 +3978,7 @@ Array [
                         aria-label="Select"
                         className="pf-c-dropdown__toggle-button"
                         disabled={false}
-                        id="pf-toggle-id-1"
+                        id="pf-toggle-id-2"
                         onClick={[Function]}
                         onKeyDown={[Function]}
                         type="button"
@@ -4236,51 +4496,6 @@ Array [
     <div
       className="pf-c-data-toolbar__item pf-m-separator"
     />
-  </DataToolbarItem>,
-  <DataToolbarItem>
-    <div
-      className="pf-c-data-toolbar__item"
-    >
-      <Component
-        onClick={[Function]}
-        variant="secondary"
-      >
-        <ComponentWithOuia
-          component={[Function]}
-          componentProps={
-            Object {
-              "children": "Abort selected",
-              "onClick": [Function],
-              "variant": "secondary",
-            }
-          }
-          consumerContext={null}
-        >
-          <Button
-            onClick={[Function]}
-            ouiaContext={
-              Object {
-                "isOuia": false,
-                "ouiaId": null,
-              }
-            }
-            variant="secondary"
-          >
-            <button
-              aria-disabled={null}
-              aria-label={null}
-              className="pf-c-button pf-m-secondary"
-              disabled={false}
-              onClick={[Function]}
-              tabIndex={null}
-              type="button"
-            >
-              Abort selected
-            </button>
-          </Button>
-        </ComponentWithOuia>
-      </Component>
-    </div>
   </DataToolbarItem>,
 ]
 `;

@@ -43,9 +43,8 @@ enum TitleType {
   FAILURE = 'failure'
 }
 
-const ProcessDetailsPage: React.FC<
-  RouteComponentProps<MatchProps, {}, {}> & InjectedOuiaProps
-> = ({ ouiaContext, ...props }) => {
+const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, {}, {}> &
+  InjectedOuiaProps> = ({ ouiaContext, ...props }) => {
   const id = props.match.params.instanceID;
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalTitle, setModalTitle] = useState<string>('');
@@ -80,8 +79,8 @@ const ProcessDetailsPage: React.FC<
     setModalContent(content);
     handleModalToggle();
   };
-  const onAbortClick = () => {
-    handleAbort(
+  const onAbortClick = async () => {
+    await handleAbort(
       data.ProcessInstances[0],
       () =>
         onShowMessage(
@@ -162,11 +161,6 @@ const ProcessDetailsPage: React.FC<
             <ProcessListModal
               isModalOpen={isModalOpen}
               handleModalToggle={handleModalToggle}
-              checkedArray={
-                data &&
-                data.ProcessInstances &&
-                data.ProcessInstances[0] && [data.ProcessInstances[0].state]
-              }
               modalTitle={setTitle(titleType, modalTitle)}
               modalContent={modalContent}
             />

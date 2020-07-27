@@ -2,10 +2,10 @@
 
 exports[`ProcessListTable component tests Snapshot testing initial empty data 1`] = `
 <ProcessListTable
-  abortedObj={
-    Object {
-      "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels",
-    }
+  checkedArray={
+    Array [
+      "ACTIVE",
+    ]
   }
   filteredData={
     Object {
@@ -147,29 +147,14 @@ exports[`ProcessListTable component tests Snapshot testing initial empty data 1`
   isLoading={false}
   isLoadingMore={true}
   pageSize={10}
-  selectedNumber={0}
-  setAbortedObj={
-    [MockFunction] {
-      "calls": Array [
-        Array [
-          Object {},
-        ],
-        Array [
-          Object {},
-        ],
-      ],
-      "results": Array [
-        Object {
-          "type": "return",
-          "value": undefined,
-        },
-        Object {
-          "type": "return",
-          "value": undefined,
-        },
-      ],
+  selectedInstances={
+    Object {
+      "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": Object {
+        "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+      },
     }
   }
+  selectedNumber={0}
   setFilteredData={[MockFunction]}
   setInitData={
     [MockFunction] {
@@ -263,6 +248,28 @@ exports[`ProcessListTable component tests Snapshot testing initial empty data 1`
       ],
     }
   }
+  setSelectedInstances={
+    [MockFunction] {
+      "calls": Array [
+        Array [
+          Object {},
+        ],
+        Array [
+          Object {},
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    }
+  }
   setSelectedNumber={[MockFunction]}
 >
   <DataList
@@ -286,10 +293,10 @@ exports[`ProcessListTable component tests Snapshot testing initial empty data 1`
 
 exports[`ProcessListTable component tests Snapshot testing with no data 1`] = `
 <ProcessListTable
-  abortedObj={
-    Object {
-      "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels",
-    }
+  checkedArray={
+    Array [
+      "ACTIVE",
+    ]
   }
   filteredData={
     Object {
@@ -431,29 +438,14 @@ exports[`ProcessListTable component tests Snapshot testing with no data 1`] = `
   isLoading={false}
   isLoadingMore={false}
   pageSize={10}
-  selectedNumber={0}
-  setAbortedObj={
-    [MockFunction] {
-      "calls": Array [
-        Array [
-          Object {},
-        ],
-        Array [
-          Object {},
-        ],
-      ],
-      "results": Array [
-        Object {
-          "type": "return",
-          "value": undefined,
-        },
-        Object {
-          "type": "return",
-          "value": undefined,
-        },
-      ],
+  selectedInstances={
+    Object {
+      "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": Object {
+        "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+      },
     }
   }
+  selectedNumber={0}
   setFilteredData={[MockFunction]}
   setInitData={
     [MockFunction] {
@@ -525,6 +517,28 @@ exports[`ProcessListTable component tests Snapshot testing with no data 1`] = `
       ],
     }
   }
+  setSelectedInstances={
+    [MockFunction] {
+      "calls": Array [
+        Array [
+          Object {},
+        ],
+        Array [
+          Object {},
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    }
+  }
   setSelectedNumber={[MockFunction]}
 >
   <DataList
@@ -548,10 +562,10 @@ exports[`ProcessListTable component tests Snapshot testing with no data 1`] = `
 
 exports[`ProcessListTable component tests Snapshot testing with success data 1`] = `
 <ProcessListTable
-  abortedObj={
-    Object {
-      "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels",
-    }
+  checkedArray={
+    Array [
+      "ACTIVE",
+    ]
   }
   filteredData={
     Object {
@@ -811,29 +825,14 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
   isLoading={false}
   isLoadingMore={false}
   pageSize={10}
-  selectedNumber={0}
-  setAbortedObj={
-    [MockFunction] {
-      "calls": Array [
-        Array [
-          Object {},
-        ],
-        Array [
-          Object {},
-        ],
-      ],
-      "results": Array [
-        Object {
-          "type": "return",
-          "value": undefined,
-        },
-        Object {
-          "type": "return",
-          "value": undefined,
-        },
-      ],
+  selectedInstances={
+    Object {
+      "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": Object {
+        "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+      },
     }
   }
+  selectedNumber={0}
   setFilteredData={[MockFunction]}
   setInitData={
     [MockFunction] {
@@ -927,6 +926,28 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
       ],
     }
   }
+  setSelectedInstances={
+    [MockFunction] {
+      "calls": Array [
+        Array [
+          Object {},
+        ],
+        Array [
+          Object {},
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    }
+  }
   setSelectedNumber={[MockFunction]}
 >
   <DataList
@@ -937,11 +958,6 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
       className="pf-c-data-list"
     >
       <MockedProcessListTableItems
-        abortedObj={
-          Object {
-            "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels",
-          }
-        }
         filters={
           Object {
             "businessKey": Array [],
@@ -1195,29 +1211,14 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
             "variables": "{\\"flight\\":{\\"flightNumber\\":\\"MX555\\",\\"seat\\":null,\\"gate\\":null,\\"departure\\":\\"2020-05-08T03:30:00.000+05:30\\",\\"arrival\\":\\"2020-05-09T03:30:00.000+05:30\\"},\\"hotel\\":{\\"name\\":\\"Perfect hotel\\",\\"address\\":{\\"street\\":\\"street\\",\\"city\\":\\"Bengaluru\\",\\"zipCode\\":\\"12345\\",\\"country\\":\\"India\\"},\\"phone\\":\\"09876543\\",\\"bookingNumber\\":\\"XX-012345\\",\\"room\\":null},\\"trip\\":{\\"city\\":\\"Bengaluru\\",\\"country\\":\\"India\\",\\"begin\\":\\"2020-05-08T03:30:00.000+05:30\\",\\"end\\":\\"2020-05-09T03:30:00.000+05:30\\",\\"visaRequired\\":false},\\"traveller\\":{\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"email\\":\\"ajaganat@redhat.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Bangalore\\",\\"city\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\",\\"country\\":\\"Poland\\"}}}",
           }
         }
-        selectedNumber={0}
-        setAbortedObj={
-          [MockFunction] {
-            "calls": Array [
-              Array [
-                Object {},
-              ],
-              Array [
-                Object {},
-              ],
-            ],
-            "results": Array [
-              Object {
-                "type": "return",
-                "value": undefined,
-              },
-              Object {
-                "type": "return",
-                "value": undefined,
-              },
-            ],
+        selectedInstances={
+          Object {
+            "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": Object {
+              "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+            },
           }
         }
+        selectedNumber={0}
         setInitData={
           [MockFunction] {
             "calls": Array [
@@ -1272,6 +1273,28 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
           }
         }
         setIsAllChecked={[MockFunction]}
+        setSelectedInstances={
+          [MockFunction] {
+            "calls": Array [
+              Array [
+                Object {},
+              ],
+              Array [
+                Object {},
+              ],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": undefined,
+              },
+              Object {
+                "type": "return",
+                "value": undefined,
+              },
+            ],
+          }
+        }
         setSelectedNumber={[MockFunction]}
       />
     </ul>
@@ -1281,11 +1304,6 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
 
 exports[`ProcessListTable component tests Snapshot testing with success data(with businessKey) 1`] = `
 <ProcessListTable
-  abortedObj={
-    Object {
-      "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels",
-    }
-  }
   filteredData={
     Object {
       "ProcessInstances": Array [
@@ -1546,22 +1564,14 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
   isLoading={false}
   isLoadingMore={false}
   pageSize={10}
-  selectedNumber={0}
-  setAbortedObj={
-    [MockFunction] {
-      "calls": Array [
-        Array [
-          Object {},
-        ],
-      ],
-      "results": Array [
-        Object {
-          "type": "return",
-          "value": undefined,
-        },
-      ],
+  selectedInstances={
+    Object {
+      "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": Object {
+        "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+      },
     }
   }
+  selectedNumber={0}
   setFilteredData={[MockFunction]}
   setInitData={
     [MockFunction] {
@@ -1634,6 +1644,21 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
   }
   setIsLoading={[MockFunction]}
   setLimit={[MockFunction]}
+  setSelectedInstances={
+    [MockFunction] {
+      "calls": Array [
+        Array [
+          Object {},
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    }
+  }
   setSelectedNumber={[MockFunction]}
 >
   <DataList
@@ -1644,11 +1669,6 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
       className="pf-c-data-list"
     >
       <MockedProcessListTableItems
-        abortedObj={
-          Object {
-            "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels",
-          }
-        }
         filters={
           Object {
             "businessKey": Array [
@@ -1904,22 +1924,14 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
             "variables": "{\\"flight\\":{\\"flightNumber\\":\\"MX555\\",\\"seat\\":null,\\"gate\\":null,\\"departure\\":\\"2020-05-08T03:30:00.000+05:30\\",\\"arrival\\":\\"2020-05-09T03:30:00.000+05:30\\"},\\"hotel\\":{\\"name\\":\\"Perfect hotel\\",\\"address\\":{\\"street\\":\\"street\\",\\"city\\":\\"Bengaluru\\",\\"zipCode\\":\\"12345\\",\\"country\\":\\"India\\"},\\"phone\\":\\"09876543\\",\\"bookingNumber\\":\\"XX-012345\\",\\"room\\":null},\\"trip\\":{\\"city\\":\\"Bengaluru\\",\\"country\\":\\"India\\",\\"begin\\":\\"2020-05-08T03:30:00.000+05:30\\",\\"end\\":\\"2020-05-09T03:30:00.000+05:30\\",\\"visaRequired\\":false},\\"traveller\\":{\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"email\\":\\"ajaganat@redhat.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Bangalore\\",\\"city\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\",\\"country\\":\\"Poland\\"}}}",
           }
         }
-        selectedNumber={0}
-        setAbortedObj={
-          [MockFunction] {
-            "calls": Array [
-              Array [
-                Object {},
-              ],
-            ],
-            "results": Array [
-              Object {
-                "type": "return",
-                "value": undefined,
-              },
-            ],
+        selectedInstances={
+          Object {
+            "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": Object {
+              "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+            },
           }
         }
+        selectedNumber={0}
         setInitData={
           [MockFunction] {
             "calls": Array [
@@ -1974,6 +1986,21 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
           }
         }
         setIsAllChecked={[MockFunction]}
+        setSelectedInstances={
+          [MockFunction] {
+            "calls": Array [
+              Array [
+                Object {},
+              ],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": undefined,
+              },
+            ],
+          }
+        }
         setSelectedNumber={[MockFunction]}
       />
     </ul>
@@ -1983,10 +2010,10 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
 
 exports[`ProcessListTable component tests Snapshot testing with wrong query parameters 1`] = `
 <ProcessListTable
-  abortedObj={
-    Object {
-      "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels",
-    }
+  checkedArray={
+    Array [
+      "ACTIVE",
+    ]
   }
   filteredData={
     Object {
@@ -2128,36 +2155,14 @@ exports[`ProcessListTable component tests Snapshot testing with wrong query para
   isLoading={false}
   isLoadingMore={false}
   pageSize={10}
-  selectedNumber={0}
-  setAbortedObj={
-    [MockFunction] {
-      "calls": Array [
-        Array [
-          Object {},
-        ],
-        Array [
-          Object {},
-        ],
-        Array [
-          Object {},
-        ],
-      ],
-      "results": Array [
-        Object {
-          "type": "return",
-          "value": undefined,
-        },
-        Object {
-          "type": "return",
-          "value": undefined,
-        },
-        Object {
-          "type": "return",
-          "value": undefined,
-        },
-      ],
+  selectedInstances={
+    Object {
+      "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": Object {
+        "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+      },
     }
   }
+  selectedNumber={0}
   setFilteredData={[MockFunction]}
   setInitData={
     [MockFunction] {
@@ -2250,6 +2255,35 @@ exports[`ProcessListTable component tests Snapshot testing with wrong query para
         ],
       ],
       "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    }
+  }
+  setSelectedInstances={
+    [MockFunction] {
+      "calls": Array [
+        Array [
+          Object {},
+        ],
+        Array [
+          Object {},
+        ],
+        Array [
+          Object {},
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
         Object {
           "type": "return",
           "value": undefined,

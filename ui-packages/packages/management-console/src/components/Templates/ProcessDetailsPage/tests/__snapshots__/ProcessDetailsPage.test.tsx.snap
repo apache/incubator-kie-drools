@@ -162,11 +162,6 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
       className="pf-c-page__main-section pf-m-light"
     >
       <MockedProcessListModal
-        checkedArray={
-          Array [
-            "ACTIVE",
-          ]
-        }
         handleModalToggle={[Function]}
         isModalOpen={false}
         modalContent=""
@@ -879,11 +874,6 @@ exports[`Process Details Page component tests snapshot testing in Error state 1`
       className="pf-c-page__main-section pf-m-light"
     >
       <MockedProcessListModal
-        checkedArray={
-          Array [
-            "ERROR",
-          ]
-        }
         handleModalToggle={[Function]}
         isModalOpen={false}
         modalContent=""
@@ -1583,11 +1573,6 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
       className="pf-c-page__main-section pf-m-light"
     >
       <MockedProcessListModal
-        checkedArray={
-          Array [
-            "SUSPENDED",
-          ]
-        }
         handleModalToggle={[Function]}
         isModalOpen={false}
         modalContent=""
