@@ -52,6 +52,8 @@ public class LhsBuilder implements SourceBuilder {
 
     private static Set<String> operators;
 
+    private static Set<String> annotations;
+
     static {
         operators = new HashSet<String>();
         operators.add( "==" );
@@ -67,6 +69,9 @@ public class LhsBuilder implements SourceBuilder {
         operators.add( "str[startsWith]" );
         operators.add( "str[endsWith]" );
         operators.add( "str[length]" );
+
+        annotations = new HashSet<String>();
+        annotations.add( "@watch" );
     }
 
     private static final Pattern patParFrm = Pattern.compile( "\\(\\s*\\)\\s*from\\b" );
@@ -90,6 +95,13 @@ public class LhsBuilder implements SourceBuilder {
         this.forAll = false;
 
         String colDef = colDefinition == null ? "" : colDefinition;
+        String annDef = "";
+        int annPos = findFirstAnnotationPos(colDef);
+        if (annPos > 0) {
+            annDef = " " + colDef.substring( annPos );
+            colDef = colDef.substring( 0, annPos ).trim();
+        }
+
         if ( "".equals( colDef ) ) {
             colDefPrefix = colDefSuffix = "";
             multiple = false;
@@ -112,7 +124,7 @@ public class LhsBuilder implements SourceBuilder {
         Matcher matParFrm = patParFrm.matcher( colDef );
         if ( matParFrm.find() ) {
             colDefPrefix = colDef.substring( 0, matParFrm.start() ) + '(';
-            colDefSuffix = ") from" + colDef.substring( matParFrm.end() );
+            colDefSuffix = ") from" + colDef.substring( matParFrm.end() ) + annDef;
             return;
         }
 
@@ -120,7 +132,7 @@ public class LhsBuilder implements SourceBuilder {
         Matcher matFrm = patFrm.matcher( colDef );
         if ( matFrm.find() ) {
             colDefPrefix = colDef.substring( 0, matFrm.start() ) + "(";
-            colDefSuffix = ") from " + colDef.substring( matFrm.end() );
+            colDefSuffix = ") from " + colDef.substring( matFrm.end() ) + annDef;
             return;
         }
 
@@ -128,19 +140,30 @@ public class LhsBuilder implements SourceBuilder {
         Matcher matPar = patPar.matcher( colDef );
         if ( matPar.find() ) {
             colDefPrefix = colDef.substring( 0, matPar.start() ) + '(';
-            colDefSuffix = ")" + colDef.substring( matPar.end() );
+            colDefSuffix = ")" + colDef.substring( matPar.end() ) + annDef;
             return;
         }
 
         if ( patOopath.matcher( colDef ).matches() ) {
             colDefPrefix = colDef + '[';
-            colDefSuffix = "]";
+            colDefSuffix = "]" + annDef;
             return;
         }
 
         // <a>
         colDefPrefix = colDef + '(';
-        colDefSuffix = ")";
+        colDefSuffix = ")" + annDef;
+    }
+
+    private int findFirstAnnotationPos(String colDef) {
+        int pos = -1;
+        for (String annotation : annotations) {
+            int annPos = colDef.indexOf( annotation );
+            if (annPos > 0) {
+                pos = pos < 0 ? annPos : Math.min( pos, annPos );
+            }
+        }
+        return pos;
     }
 
     public ActionType.Code getActionTypeCode() {
