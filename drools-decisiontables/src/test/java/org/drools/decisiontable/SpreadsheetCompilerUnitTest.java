@@ -852,7 +852,6 @@ public class SpreadsheetCompilerUnitTest {
         final SpreadsheetCompiler converter = new SpreadsheetCompiler();
         final InputStream stream = this.getClass().getResourceAsStream( "/data/CanDrinkUsingWatch.xls" );
         final String drl = converter.compile(stream, InputType.XLS);
-        System.out.println(drl);
         assertTrue( drl.contains( "$p: Person(age < 18) @watch(name)" ) );
     }
 }
