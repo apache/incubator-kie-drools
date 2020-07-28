@@ -224,8 +224,8 @@
 
   <developers>
     <developer>
-      <name>All developers are listed on the team website</name>
-      <url>http://kogito.kie.org/community/team.html</url>
+      <name>All developers are listed in the KIE GitHub organization</name>
+      <url>https://github.com/orgs/kiegroup/people</url>
     </developer>
   </developers>
 
