@@ -33,7 +33,9 @@ public class OptaPlannerBeanProvider {
     @Singleton
     @Produces
     <Solution_> SolverFactory<Solution_> solverFactory(SolverConfig solverConfig) {
-        return SolverFactory.create(solverConfig);
+        SolverConfig solverConfigWithUpdatedClassloader = solverConfig.copyConfig();
+        solverConfigWithUpdatedClassloader.setClassLoader(Thread.currentThread().getContextClassLoader());
+        return SolverFactory.create(solverConfigWithUpdatedClassloader);
     }
 
     @DefaultBean
