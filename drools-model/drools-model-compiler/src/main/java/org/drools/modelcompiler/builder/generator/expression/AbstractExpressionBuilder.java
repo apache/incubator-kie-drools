@@ -158,18 +158,28 @@ public abstract class AbstractExpressionBuilder {
                                                 drlxParseResult.isSkipThisAsParam(), ofNullable(drlxParseResult.getPatternType()), context);
     }
 
-    boolean hasIndex( SingleDrlxParseSuccess drlxParseResult ) {
+    boolean shouldCreateIndex(SingleDrlxParseSuccess drlxParseResult ) {
         if ( drlxParseResult.getDecodeConstraintType() == Index.ConstraintType.FORALL_SELF_JOIN ) {
             return true;
         }
 
         TypedExpression left = drlxParseResult.getLeft();
+
+        if(isDoubleReferencing(left)) {
+            return false;
+        }
+
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
 
         return left != null && left.getFieldName() != null &&
                 drlxParseResult.getDecodeConstraintType() != null &&
                 !isThisExpression( left.getExpression() ) &&
                 ( isAlphaIndex( usedDeclarations ) || isBetaIndex( usedDeclarations, drlxParseResult.getRight() ) );
+    }
+
+    private boolean isDoubleReferencing(TypedExpression left) {
+        return left != null && left.getExpression().isMethodCallExpr()
+                && left.getExpression().asMethodCallExpr().getScope().filter(Expression::isMethodCallExpr).isPresent();
     }
 
     boolean isAlphaIndex( Collection<String> usedDeclarations ) {

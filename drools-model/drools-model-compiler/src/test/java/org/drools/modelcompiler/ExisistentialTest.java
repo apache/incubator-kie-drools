@@ -252,7 +252,6 @@ public class ExisistentialTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( drl1 );
 
-        ReteDumper.dumpRete(ksession);
         ksession.insert( new Person("test", 18) );
         assertEquals( 0, ksession.fireAllRules() );
     }
