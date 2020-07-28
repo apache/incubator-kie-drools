@@ -199,3 +199,13 @@ export const performMultipleAbort = async (
   }
   multiAbortAction(successInstances, failedInstances);
 };
+
+export const getProcessInstanceDescription = (
+  processInstance: GraphQL.ProcessInstance
+) => {
+  return {
+    id: processInstance.id,
+    name: processInstance.processName,
+    description: processInstance.businessKey
+  };
+};

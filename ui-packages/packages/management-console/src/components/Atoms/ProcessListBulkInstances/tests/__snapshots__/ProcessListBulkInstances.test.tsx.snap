@@ -14,44 +14,11 @@ exports[`ProcessBulkList component tests snapshot testing for a single abort ins
       >
         <strong>
           <ItemDescriptor
-            processInstanceData={
+            itemDescription={
               Object {
-                "addons": Array [
-                  "jobs-management",
-                  "prometheus-monitoring",
-                  "process-management",
-                ],
-                "businessKey": null,
-                "childProcessInstances": Array [],
-                "end": null,
-                "endpoint": "http://localhost:4000",
-                "error": Object {
-                  "message": "Something went wrong",
-                  "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-3459188e90433n",
-                },
+                "description": null,
                 "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
-                "lastUpdated": "2019-10-22T03:40:44.089Z",
-                "nodes": Array [
-                  Object {
-                    "definitionId": "CallActivity_2",
-                    "enter": "2019-10-22T04:43:01.143Z",
-                    "exit": "2019-10-22T04:43:01.146Z",
-                    "id": "7cdeba99-cd36-4425-980d-e59d44769a3e",
-                    "name": "Book Flight",
-                    "nodeId": "1",
-                    "type": "SubProcessNode",
-                  },
-                ],
-                "parentProcessInstance": null,
-                "parentProcessInstanceId": null,
-                "processId": "travels",
-                "processName": "travels",
-                "roles": Array [],
-                "rootProcessInstanceId": null,
-                "serviceUrl": "http://localhost:4000",
-                "start": "2019-10-22T03:40:44.089Z",
-                "state": "ACTIVE",
-                "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
+                "name": "travels",
               }
             }
           />
@@ -62,44 +29,11 @@ exports[`ProcessBulkList component tests snapshot testing for a single abort ins
       >
         <strong>
           <ItemDescriptor
-            processInstanceData={
+            itemDescription={
               Object {
-                "addons": Array [
-                  "jobs-management",
-                  "prometheus-monitoring",
-                  "process-management",
-                ],
-                "businessKey": null,
-                "childProcessInstances": Array [],
-                "end": null,
-                "endpoint": "http://localhost:4000",
-                "error": Object {
-                  "message": "Something went wrong",
-                  "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-3459188e90433n",
-                },
+                "description": null,
                 "id": "8ceb1234-6ae4-deb444-9ec0-neb9809e0b",
-                "lastUpdated": "2019-10-22T03:40:44.089Z",
-                "nodes": Array [
-                  Object {
-                    "definitionId": "CallActivity_2",
-                    "enter": "2019-10-22T04:43:01.143Z",
-                    "exit": "2019-10-22T04:43:01.146Z",
-                    "id": "7cdeba99-cd36-4425-980d-e59d44769a3e",
-                    "name": "Book Flight",
-                    "nodeId": "1",
-                    "type": "SubProcessNode",
-                  },
-                ],
-                "parentProcessInstance": null,
-                "parentProcessInstanceId": null,
-                "processId": "travels1",
-                "processName": "travels1",
-                "roles": Array [],
-                "rootProcessInstanceId": null,
-                "serviceUrl": "http://localhost:4000",
-                "start": "2019-10-22T03:40:44.089Z",
-                "state": "ACTIVE",
-                "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
+                "name": "travels1",
               }
             }
           />
@@ -132,44 +66,11 @@ exports[`ProcessBulkList component tests snapshot testing for a single abort ins
       >
         <strong>
           <ItemDescriptor
-            processInstanceData={
+            itemDescription={
               Object {
-                "addons": Array [
-                  "jobs-management",
-                  "prometheus-monitoring",
-                  "process-management",
-                ],
-                "businessKey": null,
-                "childProcessInstances": Array [],
-                "end": null,
-                "endpoint": "http://localhost:4000",
-                "error": Object {
-                  "message": "Something went wrong",
-                  "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-3459188e90433n",
-                },
+                "description": null,
                 "id": "8ceb1234-6ae4-deb444-9ec0-neb9809e0b",
-                "lastUpdated": "2019-10-22T03:40:44.089Z",
-                "nodes": Array [
-                  Object {
-                    "definitionId": "CallActivity_2",
-                    "enter": "2019-10-22T04:43:01.143Z",
-                    "exit": "2019-10-22T04:43:01.146Z",
-                    "id": "7cdeba99-cd36-4425-980d-e59d44769a3e",
-                    "name": "Book Flight",
-                    "nodeId": "1",
-                    "type": "SubProcessNode",
-                  },
-                ],
-                "parentProcessInstance": null,
-                "parentProcessInstanceId": null,
-                "processId": "travels1",
-                "processName": "travels1",
-                "roles": Array [],
-                "rootProcessInstanceId": null,
-                "serviceUrl": "http://localhost:4000",
-                "start": "2019-10-22T03:40:44.089Z",
-                "state": "ACTIVE",
-                "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
+                "name": "travels1",
               }
             }
           />
@@ -196,44 +97,11 @@ exports[`ProcessBulkList component tests snapshot testing multi-abort with abort
       >
         <strong>
           <ItemDescriptor
-            processInstanceData={
+            itemDescription={
               Object {
-                "addons": Array [
-                  "jobs-management",
-                  "prometheus-monitoring",
-                  "process-management",
-                ],
-                "businessKey": null,
-                "childProcessInstances": Array [],
-                "end": null,
-                "endpoint": "http://localhost:4000",
-                "error": Object {
-                  "message": "Something went wrong",
-                  "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-3459188e90433n",
-                },
+                "description": null,
                 "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
-                "lastUpdated": "2019-10-22T03:40:44.089Z",
-                "nodes": Array [
-                  Object {
-                    "definitionId": "CallActivity_2",
-                    "enter": "2019-10-22T04:43:01.143Z",
-                    "exit": "2019-10-22T04:43:01.146Z",
-                    "id": "7cdeba99-cd36-4425-980d-e59d44769a3e",
-                    "name": "Book Flight",
-                    "nodeId": "1",
-                    "type": "SubProcessNode",
-                  },
-                ],
-                "parentProcessInstance": null,
-                "parentProcessInstanceId": null,
-                "processId": "travels",
-                "processName": "travels",
-                "roles": Array [],
-                "rootProcessInstanceId": null,
-                "serviceUrl": "http://localhost:4000",
-                "start": "2019-10-22T03:40:44.089Z",
-                "state": "ACTIVE",
-                "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
+                "name": "travels",
               }
             }
           />
@@ -267,41 +135,11 @@ exports[`ProcessBulkList component tests snapshot testing multi-abort with abort
       >
         <strong>
           <ItemDescriptor
-            processInstanceData={
+            itemDescription={
               Object {
-                "addons": Array [
-                  "process-management",
-                ],
-                "businessKey": null,
-                "childProcessInstances": Array [],
-                "end": null,
-                "endpoint": "http://localhost:4000",
-                "error": Object {
-                  "message": "Something went wrong",
-                  "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-3459188e90433n",
-                },
+                "description": null,
                 "id": "e735128t-6tt7-4aa8-9ec0-e18e19809e0b",
-                "nodes": Array [
-                  Object {
-                    "definitionId": "CallActivity_2",
-                    "enter": "2019-10-22T04:43:01.143Z",
-                    "exit": "2019-10-22T04:43:01.146Z",
-                    "id": "7cdeba99-cd36-4425-980d-e59d44769a3e",
-                    "name": "Book Flight",
-                    "nodeId": "1",
-                    "type": "SubProcessNode",
-                  },
-                ],
-                "parentProcessInstance": null,
-                "parentProcessInstanceId": null,
-                "processId": "travels",
-                "processName": "travels",
-                "roles": Array [],
-                "rootProcessInstanceId": null,
-                "serviceUrl": null,
-                "start": "2019-12-22T03:40:44.089Z",
-                "state": "COMPLETED",
-                "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
+                "name": "travels",
               }
             }
           />
@@ -347,41 +185,11 @@ exports[`ProcessBulkList component tests snapshot testing multi-abort with no ab
       >
         <strong>
           <ItemDescriptor
-            processInstanceData={
+            itemDescription={
               Object {
-                "addons": Array [
-                  "process-management",
-                ],
-                "businessKey": null,
-                "childProcessInstances": Array [],
-                "end": null,
-                "endpoint": "http://localhost:4000",
-                "error": Object {
-                  "message": "Something went wrong",
-                  "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-3459188e90433n",
-                },
+                "description": null,
                 "id": "e735128t-6tt7-4aa8-9ec0-e18e19809e0b",
-                "nodes": Array [
-                  Object {
-                    "definitionId": "CallActivity_2",
-                    "enter": "2019-10-22T04:43:01.143Z",
-                    "exit": "2019-10-22T04:43:01.146Z",
-                    "id": "7cdeba99-cd36-4425-980d-e59d44769a3e",
-                    "name": "Book Flight",
-                    "nodeId": "1",
-                    "type": "SubProcessNode",
-                  },
-                ],
-                "parentProcessInstance": null,
-                "parentProcessInstanceId": null,
-                "processId": "travels",
-                "processName": "travels",
-                "roles": Array [],
-                "rootProcessInstanceId": null,
-                "serviceUrl": null,
-                "start": "2019-12-22T03:40:44.089Z",
-                "state": "COMPLETED",
-                "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
+                "name": "travels",
               }
             }
           />
@@ -406,44 +214,11 @@ exports[`ProcessBulkList component tests snapshot testing multi-abort with no sk
       >
         <strong>
           <ItemDescriptor
-            processInstanceData={
+            itemDescription={
               Object {
-                "addons": Array [
-                  "jobs-management",
-                  "prometheus-monitoring",
-                  "process-management",
-                ],
-                "businessKey": null,
-                "childProcessInstances": Array [],
-                "end": null,
-                "endpoint": "http://localhost:4000",
-                "error": Object {
-                  "message": "Something went wrong",
-                  "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-3459188e90433n",
-                },
+                "description": null,
                 "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
-                "lastUpdated": "2019-10-22T03:40:44.089Z",
-                "nodes": Array [
-                  Object {
-                    "definitionId": "CallActivity_2",
-                    "enter": "2019-10-22T04:43:01.143Z",
-                    "exit": "2019-10-22T04:43:01.146Z",
-                    "id": "7cdeba99-cd36-4425-980d-e59d44769a3e",
-                    "name": "Book Flight",
-                    "nodeId": "1",
-                    "type": "SubProcessNode",
-                  },
-                ],
-                "parentProcessInstance": null,
-                "parentProcessInstanceId": null,
-                "processId": "travels",
-                "processName": "travels",
-                "roles": Array [],
-                "rootProcessInstanceId": null,
-                "serviceUrl": "http://localhost:4000",
-                "start": "2019-10-22T03:40:44.089Z",
-                "state": "ACTIVE",
-                "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
+                "name": "travels",
               }
             }
           />

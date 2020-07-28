@@ -228,8 +228,13 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, {}, {}> &
                         className="kogito-management-console--details__title"
                       >
                         <ItemDescriptor
-                          processInstanceData={data.ProcessInstances[0]}
+                          itemDescription={{
+                            id: data.ProcessInstances[0].id,
+                            name: data.ProcessInstances[0].processName,
+                            description: data.ProcessInstances[0].businessKey
+                          }}
                         />
+
                       </Title>
                     </SplitItem>
                     <SplitItem>

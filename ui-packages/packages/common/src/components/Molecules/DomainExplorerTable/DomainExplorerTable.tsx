@@ -169,7 +169,13 @@ const DomainExplorerTable = ({
                         }}
                       >
                         <strong>
-                          <ItemDescriptor processInstanceData={tempObj} />
+                          <ItemDescriptor
+                            itemDescription={{
+                              id: tempObj.id,
+                              name: tempObj.processName,
+                              description: tempObj.businessKey
+                            }}
+                          />
                         </strong>
                       </Link>
                       <div>

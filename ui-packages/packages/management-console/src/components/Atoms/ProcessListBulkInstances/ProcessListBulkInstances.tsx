@@ -9,6 +9,7 @@ import {
 } from '@patternfly/react-core';
 import { ItemDescriptor } from '@kogito-apps/common';
 import { IOperation } from '../../Molecules/ProcessListToolbar/ProcessListToolbar';
+import { getProcessInstanceDescription } from '../../../utils/Utils';
 
 interface IOwnProps {
   operationResult: IOperation;
@@ -28,7 +29,11 @@ const ProcessListBulkInstances: React.FC<IOwnProps> = ({ operationResult }) => {
                   return (
                     <TextListItem key={process[0]}>
                       <strong>
-                        <ItemDescriptor processInstanceData={process[1]} />
+                        <ItemDescriptor
+                          itemDescription={getProcessInstanceDescription(
+                            process[1]
+                          )}
+                        />
                       </strong>
                     </TextListItem>
                   );
@@ -68,7 +73,11 @@ const ProcessListBulkInstances: React.FC<IOwnProps> = ({ operationResult }) => {
                   return (
                     <TextListItem key={process[0]}>
                       <strong>
-                        <ItemDescriptor processInstanceData={process[1]} />
+                        <ItemDescriptor
+                          itemDescription={getProcessInstanceDescription(
+                            process[1]
+                          )}
+                        />
                       </strong>
                     </TextListItem>
                   );
@@ -89,7 +98,11 @@ const ProcessListBulkInstances: React.FC<IOwnProps> = ({ operationResult }) => {
                   return (
                     <TextListItem key={process[0]}>
                       <strong>
-                        <ItemDescriptor processInstanceData={process[1]} />
+                        <ItemDescriptor
+                          itemDescription={getProcessInstanceDescription(
+                            process[1]
+                          )}
+                        />
                       </strong>{' '}
                       -{process[1].errorMessage}
                     </TextListItem>

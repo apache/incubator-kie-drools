@@ -1,7 +1,7 @@
 import React from 'react';
 
-const MockedProcessDescriptor = () => {
+const MockedItemDescriptor = () => {
   return <></>;
 };
 
-export default MockedProcessDescriptor;
+export default MockedItemDescriptor;

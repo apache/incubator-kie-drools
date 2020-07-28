@@ -6,16 +6,18 @@ import {
   Text,
   TextVariants
 } from '@patternfly/react-core';
-import { GraphQL } from '../../../graphql/types';
-import ProcessInstance = GraphQL.ProcessInstance;
+
+export interface ItemDescription {
+  id: string;
+  name: string;
+  description?: string;
+}
 
 interface IOwnProps {
-  processInstanceData: Pick<
-    ProcessInstance,
-    'id' | 'processName' | 'businessKey'
-  >;
+  itemDescription: ItemDescription;
 }
-const ItemDescriptor: React.FC<IOwnProps> = ({ processInstanceData }) => {
+
+const ItemDescriptor: React.FC<IOwnProps> = ({ itemDescription }) => {
   const idStringModifier = (strId: string) => {
     return (
       <TextContent className="pf-u-display-inline">
@@ -27,13 +29,13 @@ const ItemDescriptor: React.FC<IOwnProps> = ({ processInstanceData }) => {
   };
   return (
     <>
-      <Tooltip content={processInstanceData.id}>
+      <Tooltip content={itemDescription.id}>
         <span>
-          {processInstanceData.processName}{' '}
-          {processInstanceData.businessKey ? (
-            <Badge>{processInstanceData.businessKey}</Badge>
+          {itemDescription.name}{' '}
+          {itemDescription.description ? (
+            <Badge>{itemDescription.description}</Badge>
           ) : (
-            idStringModifier(processInstanceData.id)
+            idStringModifier(itemDescription.id)
           )}
         </span>
       </Tooltip>

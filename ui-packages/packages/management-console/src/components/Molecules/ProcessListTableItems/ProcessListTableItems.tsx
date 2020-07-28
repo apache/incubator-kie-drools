@@ -30,6 +30,7 @@ import ErrorPopover from '../../Atoms/ErrorPopover/ErrorPopover';
 import ProcessListModal from '../../Atoms/ProcessListModal/ProcessListModal';
 import DisablePopup from '../DisablePopup/DisablePopup';
 import {
+  getProcessInstanceDescription,
   handleAbort,
   handleRetry,
   handleSkip,
@@ -377,7 +378,9 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
                   <div>
                     <strong>
                       <ItemDescriptor
-                        processInstanceData={processInstanceData}
+                        itemDescription={getProcessInstanceDescription(
+                          processInstanceData
+                        )}
                       />
                     </strong>
                   </div>

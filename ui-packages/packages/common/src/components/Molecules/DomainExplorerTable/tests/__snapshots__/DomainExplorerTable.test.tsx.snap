@@ -3692,13 +3692,12 @@ exports[`Domain Explorer Table Component check null value for process instance a
                                   }
                                 >
                                   <strong>
-                                    <MockedProcessDescriptor
-                                      processInstanceData={
+                                    <MockedItemDescriptor
+                                      itemDescription={
                                         Object {
-                                          "businessKey": "Hello World",
+                                          "description": "Hello World",
                                           "id": "Hello World",
-                                          "processName": "Hello World",
-                                          "serviceUrl": undefined,
+                                          "name": "Hello World",
                                         }
                                       }
                                     />
@@ -3795,13 +3794,12 @@ exports[`Domain Explorer Table Component check null value for process instance a
                                   }
                                 >
                                   <strong>
-                                    <MockedProcessDescriptor
-                                      processInstanceData={
+                                    <MockedItemDescriptor
+                                      itemDescription={
                                         Object {
-                                          "businessKey": "Hello World",
+                                          "description": "Hello World",
                                           "id": "Hello World",
-                                          "processName": "Hello World",
-                                          "serviceUrl": undefined,
+                                          "name": "Hello World",
                                         }
                                       }
                                     />
@@ -3937,13 +3935,12 @@ exports[`Domain Explorer Table Component check null value for process instance a
                                   }
                                 >
                                   <strong>
-                                    <MockedProcessDescriptor
-                                      processInstanceData={
+                                    <MockedItemDescriptor
+                                      itemDescription={
                                         Object {
-                                          "businessKey": null,
+                                          "description": null,
                                           "id": "Hello World",
-                                          "processName": "Hello World",
-                                          "serviceUrl": undefined,
+                                          "name": "Hello World",
                                         }
                                       }
                                     />
@@ -4040,13 +4037,12 @@ exports[`Domain Explorer Table Component check null value for process instance a
                                   }
                                 >
                                   <strong>
-                                    <MockedProcessDescriptor
-                                      processInstanceData={
+                                    <MockedItemDescriptor
+                                      itemDescription={
                                         Object {
-                                          "businessKey": "Hello World",
+                                          "description": "Hello World",
                                           "id": "Hello World",
-                                          "processName": "Hello World",
-                                          "serviceUrl": undefined,
+                                          "name": "Hello World",
                                         }
                                       }
                                     />
