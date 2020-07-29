@@ -104,7 +104,8 @@ public class TrustyServiceTestUtils {
         return CloudEventUtils.build(
                 traceEvent.getHeader().getExecutionId(),
                 URI.create(URLEncoder.encode(traceEvent.getHeader().getResourceId().getModelName(), StandardCharsets.UTF_8)),
-                traceEvent
+                traceEvent,
+                TraceEvent.class
         );
     }
 
@@ -113,7 +114,7 @@ public class TrustyServiceTestUtils {
     }
 
     public static CloudEventImpl<TraceEvent> buildCloudEventWithoutData() {
-        return CloudEventUtils.build(CLOUDEVENT_WITHOUT_DATA_ID, URI.create(URLEncoder.encode(MODEL_NAME, StandardCharsets.UTF_8)), null);
+        return CloudEventUtils.build(CLOUDEVENT_WITHOUT_DATA_ID, URI.create(URLEncoder.encode(MODEL_NAME, StandardCharsets.UTF_8)), null, TraceEvent.class);
     }
 
     public static String buildCloudEventWithoutDataJsonString() {
@@ -403,5 +404,4 @@ public class TrustyServiceTestUtils {
             return null;
         }
     }
-
 }
