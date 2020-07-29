@@ -245,7 +245,7 @@ public class ExisistentialTest extends BaseModelTest {
                 "package org.drools.compiler\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
-                "  $p: Person( $name : name )\n" +
+                "  Person( $name : name )\n" +
                 "  not Person( name.length == $name.length )\n" +
                 "then\n" +
                 "end\n";
