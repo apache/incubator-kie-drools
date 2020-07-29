@@ -47,7 +47,12 @@ public class TraceEventConsumer {
 
     @Incoming("kogito-tracing")
     public CompletionStage<Void> handleMessage(Message<String> message) {
-        decodeCloudEvent(message.getPayload()).ifPresent(this::handleCloudEvent);
+        try {
+            decodeCloudEvent(message.getPayload()).ifPresent(this::handleCloudEvent);
+        }
+        catch(Exception e){
+            LOG.error("Something unexpected happened during the processing of a TraceEvent. The event is discarded.", e);
+        }
         return message.ack();
     }
 

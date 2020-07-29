@@ -16,100 +16,51 @@
 
 package org.kie.kogito.trusty.service.messaging;
 
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-
-import javax.inject.Inject;
-
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import io.vertx.core.Vertx;
+import io.quarkus.test.junit.mockito.InjectMock;
 import io.vertx.kafka.client.producer.KafkaProducer;
-import io.vertx.kafka.client.producer.KafkaProducerRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.trusty.service.TrustyInfinispanServerTestResource;
 import org.kie.kogito.trusty.service.TrustyKafkaTestResource;
 import org.kie.kogito.trusty.service.TrustyService;
-import org.kie.kogito.trusty.storage.api.TrustyStorageService;
 import org.kie.kogito.trusty.storage.api.model.Decision;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.kie.kogito.trusty.service.TrustyServiceTestUtils.CLOUDEVENT_WITH_ERRORS_ID;
-import static org.kie.kogito.trusty.service.TrustyServiceTestUtils.CORRECT_CLOUDEVENT_ID;
 import static org.kie.kogito.trusty.service.TrustyServiceTestUtils.buildCloudEventJsonString;
-import static org.kie.kogito.trusty.service.TrustyServiceTestUtils.buildCorrectDecision;
 import static org.kie.kogito.trusty.service.TrustyServiceTestUtils.buildCorrectTraceEvent;
-import static org.kie.kogito.trusty.service.TrustyServiceTestUtils.buildDecisionWithErrors;
-import static org.kie.kogito.trusty.service.TrustyServiceTestUtils.buildTraceEventWithErrors;
+import static org.kie.kogito.trusty.service.messaging.KafkaUtils.generateProducer;
+import static org.kie.kogito.trusty.service.messaging.KafkaUtils.sendToKafkaAndWaitForCompletion;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @QuarkusTest
-@QuarkusTestResource(TrustyInfinispanServerTestResource.class)
 @QuarkusTestResource(TrustyKafkaTestResource.class)
-class TraceEventConsumerIT {
+public class TraceEventConsumerIT {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TraceEventConsumerIT.class);
-
-    @Inject
-    TraceEventConsumer traceEventConsumer;
-
-    @Inject
+    @InjectMock
     TrustyService trustyService;
-
-    @Inject
-    TrustyStorageService trustyStorageService;
 
     KafkaProducer<String, String> producer;
 
     @BeforeEach
     public void setup() {
-        trustyStorageService.getDecisionsStorage().clear();
-
-        System.err.println("kafka.bootstrap.servers: " + System.getProperty(TrustyKafkaTestResource.KAFKA_BOOTSTRAP_SERVERS, "localhost:9092"));
-
-        producer = KafkaProducer.create(Vertx.vertx(), Map.of(
-                "bootstrap.servers", System.getProperty(TrustyKafkaTestResource.KAFKA_BOOTSTRAP_SERVERS, "localhost:9092"),
-                "key.serializer", "org.apache.kafka.common.serialization.StringSerializer",
-                "value.serializer", "org.apache.kafka.common.serialization.StringSerializer",
-                "acks", "all"
-        ));
+        producer = generateProducer();
     }
 
     @Test
-    void testCorrectCloudEvent() throws Exception {
-        sendToKafkaAndWaitForCompletion(buildCloudEventJsonString(buildCorrectTraceEvent()));
-        Decision storedDecision = trustyService.getDecisionById(CORRECT_CLOUDEVENT_ID);
-        assertNotNull(storedDecision);
-        TraceEventTestUtils.assertDecision(buildCorrectDecision(), storedDecision);
-    }
+    public void eventLoopIsNotStoppedWithException() throws Exception {
+        String executionIdException = "idException";
+        String executionIdNoException = "idNoException";
+        doThrow(new RuntimeException("Something really bad")).when(trustyService).storeDecision(eq(executionIdException), any(Decision.class));
+        doNothing().when(trustyService).storeDecision(eq(executionIdNoException), any(Decision.class));
 
-    @Test
-    void testCloudEventWithErrors() throws Exception {
-        sendToKafkaAndWaitForCompletion(buildCloudEventJsonString(buildTraceEventWithErrors()));
-        Decision storedDecision = trustyService.getDecisionById(CLOUDEVENT_WITH_ERRORS_ID);
-        assertNotNull(storedDecision);
-        TraceEventTestUtils.assertDecision(buildDecisionWithErrors(), storedDecision);
-    }
+        sendToKafkaAndWaitForCompletion(buildCloudEventJsonString(buildCorrectTraceEvent(executionIdException)), producer);
+        sendToKafkaAndWaitForCompletion(buildCloudEventJsonString(buildCorrectTraceEvent(executionIdNoException)), producer);
 
-    private CompletableFuture<Void> sendToKafka(String payload) {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        producer.write(KafkaProducerRecord.create("trusty-service-test", payload), event -> {
-            if (event.succeeded()) {
-                future.complete(null);
-            } else {
-                future.completeExceptionally(event.cause());
-            }
-        });
-        return future;
+        verify(trustyService, times(2)).storeDecision(any(String.class), any(Decision.class));
     }
-
-    private void sendToKafkaAndWaitForCompletion(String payload) throws Exception {
-        sendToKafka(payload)
-                .thenRunAsync(() -> LOG.info("Sent payload to Kafka (length: {})", payload.length()), CompletableFuture.delayedExecutor(2L, TimeUnit.SECONDS))
-                .get(15L, TimeUnit.SECONDS);
-    }
-
 }

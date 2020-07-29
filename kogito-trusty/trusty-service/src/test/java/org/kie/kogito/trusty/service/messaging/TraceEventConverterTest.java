@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.tracing.decision.event.trace.TraceEvent;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 
+import static org.kie.kogito.trusty.service.TrustyServiceTestUtils.CORRECT_CLOUDEVENT_ID;
 import static org.kie.kogito.trusty.service.TrustyServiceTestUtils.buildCorrectDecision;
 import static org.kie.kogito.trusty.service.TrustyServiceTestUtils.buildCorrectTraceEvent;
 import static org.kie.kogito.trusty.service.TrustyServiceTestUtils.buildDecisionWithErrors;
@@ -31,7 +32,7 @@ class TraceEventConverterTest {
 
     @Test
     void testCorrectTraceEvent() {
-        doTest(buildCorrectTraceEvent(), buildCorrectDecision());
+        doTest(buildCorrectTraceEvent(CORRECT_CLOUDEVENT_ID), buildCorrectDecision(CORRECT_CLOUDEVENT_ID));
     }
 
     @Test
