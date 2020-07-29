@@ -17,7 +17,7 @@ package org.drools.workbench.models.testscenarios.backend.populators;
 
 import java.util.Map;
 
-import org.drools.core.util.MVELSafeHelper;
+import org.drools.mvel.MVELSafeHelper;
 import org.drools.workbench.models.testscenarios.shared.CollectionFieldData;
 import org.drools.workbench.models.testscenarios.shared.FieldData;
 

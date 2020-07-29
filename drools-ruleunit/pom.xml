@@ -47,6 +47,10 @@
         <artifactId>drools-compiler</artifactId>
       </dependency>
       <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-mvel</artifactId>
+      </dependency>
+      <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
         <scope>test</scope>

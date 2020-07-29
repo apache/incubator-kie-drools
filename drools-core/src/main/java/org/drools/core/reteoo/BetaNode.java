@@ -117,7 +117,7 @@ public abstract class BetaNode extends LeftTupleSource
      * @param rightInput
      *            The right input <code>ObjectSource</code>.
      */
-    BetaNode(final int id,
+    protected BetaNode(final int id,
              final LeftTupleSource leftInput,
              final ObjectSource rightInput,
              final BetaConstraints constraints,

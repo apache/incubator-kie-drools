@@ -16,6 +16,9 @@
 
 package org.drools.model.functions;
 
+import java.lang.reflect.Field;
+import java.util.function.Function;
+
 public interface LambdaPrinter {
 
     String getLambdaFingerprint(Object lambda);
@@ -30,9 +33,8 @@ public interface LambdaPrinter {
 
             private static LambdaPrinter buildPrinter() {
                 try {
-                    return (LambdaPrinter) Class.forName( "org.drools.modelcompiler.util.LambdaIntrospector" ).newInstance();
+                    return new LambdaVisitor( (Function<Object, String>) Class.forName( "org.drools.mvel.asm.LambdaIntrospector" ).newInstance() );
                 } catch (Exception e) {
-                    System.err.println( "Unable to find LambdaIntrospector, caused by: " + e.getMessage() );
                     return new DummyLambdaPrinter();
                 }
             }
@@ -47,7 +49,34 @@ public interface LambdaPrinter {
 
         @Override
         public String getLambdaFingerprint( Object lambda ) {
+            if (lambda.toString().equals("INSTANCE")) { // Materialized lambda
+                return getExpressionHash(lambda);
+            }
             return lambda.toString();
+        }
+
+        private static String getExpressionHash(Object lambda) {
+            Field expressionHash;
+            try {
+                expressionHash = lambda.getClass().getDeclaredField("EXPRESSION_HASH");
+                return (String) expressionHash.get(lambda);
+            } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+                throw new RuntimeException( e );
+            }
+        }
+    }
+
+    class LambdaVisitor implements LambdaPrinter {
+
+        private final Function<Object, String> introspector;
+
+        public LambdaVisitor( Function<Object, String> introspector ) {
+            this.introspector = introspector;
+        }
+
+        @Override
+        public String getLambdaFingerprint( Object lambda ) {
+            return introspector.apply( lambda );
         }
     }
 

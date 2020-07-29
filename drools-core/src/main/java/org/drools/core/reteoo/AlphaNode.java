@@ -25,7 +25,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
@@ -78,14 +77,11 @@ public class AlphaNode extends ObjectSource
                 context.getKnowledgeBase().getConfiguration().getAlphaNodeHashingThreshold());
 
         this.constraint = constraint.cloneIfInUse();
-        if (this.constraint instanceof MvelConstraint) {
-            ((MvelConstraint) this.constraint).registerEvaluationContext(context);
-        }
+        this.constraint.registerEvaluationContext(context);
 
         initDeclaredMask(context);
         hashcode = calculateHashCode();
     }
-
 
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException {
@@ -125,7 +121,7 @@ public class AlphaNode extends ObjectSource
             if (source instanceof AlphaNode) {
                 source.setPartitionId( context, partitionId );
             }
-            source.sink.changeSinkPartition( (ObjectSink)this, this.partitionId, partitionId, source.alphaNodeHashingThreshold );
+            source.sink.changeSinkPartition( this, this.partitionId, partitionId, source.alphaNodeHashingThreshold );
         }
         this.partitionId = partitionId;
     }
@@ -188,15 +184,12 @@ public class AlphaNode extends ObjectSource
             return true;
         }
 
-        if ( object == null || !(object instanceof AlphaNode) || this.hashCode() != object.hashCode() ) {
+        if ( !(object instanceof AlphaNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
         AlphaNode other = (AlphaNode) object;
-        return this.source.getId() == other.source.getId() &&
-                (constraint instanceof MvelConstraint ?
-                    ((MvelConstraint) constraint).equals(other.constraint, getKnowledgeBase()) :
-                    constraint.equals(other.constraint));
+        return this.source.getId() == other.source.getId() && constraint.equals(other.constraint, getKnowledgeBase());
     }
 
     /**

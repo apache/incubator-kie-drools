@@ -34,8 +34,8 @@ import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
+import org.drools.compiler.compiler.JavaConfiguration;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
 import org.kie.internal.jci.CompilationProblem;
 import org.slf4j.Logger;
@@ -47,9 +47,9 @@ public class JavaParserCompiler {
 
     private static final Logger logger          = LoggerFactory.getLogger(JavaParserCompiler.class);
 
-    private static final JavaDialectConfiguration.CompilerType COMPILER_TYPE = isJboss() ?
-            JavaDialectConfiguration.CompilerType.ECLIPSE :
-            JavaDialectConfiguration.CompilerType.NATIVE;
+    private static final JavaConfiguration.CompilerType COMPILER_TYPE = isJboss() ?
+            JavaConfiguration.CompilerType.ECLIPSE :
+            JavaConfiguration.CompilerType.NATIVE;
 
     private static final JavaCompiler JAVA_COMPILER = createCompiler();
 
@@ -57,7 +57,7 @@ public class JavaParserCompiler {
 
     private static JavaCompiler createCompiler() {
         JavaCompiler javaCompiler = JavaCompilerFactory.INSTANCE.loadCompiler( COMPILER_TYPE, "1.8" );
-        if (COMPILER_TYPE == JavaDialectConfiguration.CompilerType.ECLIPSE) {
+        if (COMPILER_TYPE == JavaConfiguration.CompilerType.ECLIPSE) {
             ((EclipseJavaCompiler )javaCompiler).setPrefix( "src/main/java/" );
         }
         return javaCompiler;
@@ -112,7 +112,7 @@ public class JavaParserCompiler {
     }
 
     private static JavaCompiler createEclipseCompiler() {
-        EclipseJavaCompiler javaCompiler = (EclipseJavaCompiler) JavaCompilerFactory.INSTANCE.loadCompiler(JavaDialectConfiguration.CompilerType.ECLIPSE, "1.8");
+        EclipseJavaCompiler javaCompiler = (EclipseJavaCompiler) JavaCompilerFactory.INSTANCE.loadCompiler(JavaConfiguration.CompilerType.ECLIPSE, "1.8");
         javaCompiler.setPrefix("src/main/java/");
         return javaCompiler;
     }

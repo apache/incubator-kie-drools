@@ -87,10 +87,6 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.mvel</groupId>
-      <artifactId>mvel2</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
       <!-- mdp temporary change, for kmodule.xml, undo once new format is chosen
@@ -135,16 +131,6 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-test-util</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.java.dev.glazedlists</groupId>
-      <artifactId>glazedlists_java15</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

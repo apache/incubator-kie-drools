@@ -42,7 +42,7 @@ public interface Accumulator
      * 
      * @return
      */
-    public Object createWorkingMemoryContext();
+    Object createWorkingMemoryContext();
     
     /**
      * Creates the context object for an accumulator session.
@@ -51,7 +51,7 @@ public interface Accumulator
      * 
      * @return
      */
-    public Serializable createContext();
+    Serializable createContext();
 
     /**
      * Executes the initialization block of code
@@ -61,11 +61,11 @@ public interface Accumulator
      * @param workingMemory
      * @throws Exception
      */
-    public void init(Object workingMemoryContext,
-                     Object context,
-                     Tuple leftTuple,
-                     Declaration[] declarations,
-                     WorkingMemory workingMemory) throws Exception;
+    void init(Object workingMemoryContext,
+              Object context,
+              Tuple leftTuple,
+              Declaration[] declarations,
+              WorkingMemory workingMemory) throws Exception;
 
     /**
      * Executes the accumulate (action) code for the given fact handle
@@ -77,20 +77,20 @@ public interface Accumulator
      * @param workingMemory
      * @throws Exception
      */
-    public void accumulate(Object workingMemoryContext,
-                           Object context,
-                           Tuple leftTuple,
-                           InternalFactHandle handle,
-                           Declaration[] declarations,
-                           Declaration[] innerDeclarations,
-                           WorkingMemory workingMemory) throws Exception;
+    void accumulate(Object workingMemoryContext,
+                    Object context,
+                    Tuple leftTuple,
+                    InternalFactHandle handle,
+                    Declaration[] declarations,
+                    Declaration[] innerDeclarations,
+                    WorkingMemory workingMemory) throws Exception;
     
     /**
      * Returns true if this accumulator supports operation reversal
      * 
      * @return
      */
-    public boolean supportsReverse();
+    boolean supportsReverse();
     
     /**
      * Reverses the accumulate action for the given fact handle
@@ -103,13 +103,13 @@ public interface Accumulator
      * @param workingMemory
      * @throws Exception
      */
-    public void reverse(Object workingMemoryContext,
-                        Object context,
-                        Tuple leftTuple,
-                        InternalFactHandle handle,
-                        Declaration[] declarations,
-                        Declaration[] innerDeclarations,
-                        WorkingMemory workingMemory) throws Exception;
+    void reverse(Object workingMemoryContext,
+                 Object context,
+                 Tuple leftTuple,
+                 InternalFactHandle handle,
+                 Declaration[] declarations,
+                 Declaration[] innerDeclarations,
+                 WorkingMemory workingMemory) throws Exception;
 
     /**
      * Gets the result of the accummulation
@@ -120,18 +120,17 @@ public interface Accumulator
      * @return
      * @throws Exception
      */
-    public Object getResult(Object workingMemoryContext,
-                            Object context, 
-                            Tuple leftTuple,
-                            Declaration[] declarations,
-                            WorkingMemory workingMemory) throws Exception;
-    
-    
+    Object getResult(Object workingMemoryContext,
+                     Object context,
+                     Tuple leftTuple,
+                     Declaration[] declarations,
+                     WorkingMemory workingMemory) throws Exception;
+
     /**
      * This class is used as a wrapper delegate when a security 
      * policy is in place.
      */
-    public static class SafeAccumulator implements Accumulator, Serializable {
+    class SafeAccumulator implements Accumulator, Serializable {
         private static final long serialVersionUID = -2845820209337318924L;
         private Accumulator delegate;
 
@@ -232,7 +231,7 @@ public interface Accumulator
         }
     }
 
-    public static boolean isCompiledInvoker(final Accumulator accumulator) {
+    static boolean isCompiledInvoker(final Accumulator accumulator) {
         return (accumulator instanceof CompiledInvoker)
                 || (accumulator instanceof SafeAccumulator && ((SafeAccumulator) accumulator).wrapsCompiledInvoker());
     }

@@ -22,9 +22,9 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 import org.drools.core.WorkingMemory;
-import org.drools.core.base.accumulators.MVELAccumulatorFunctionExecutor;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.spi.Accumulator;
+import org.drools.core.spi.MvelAccumulator;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
 import org.kie.internal.security.KiePolicyHelper;
@@ -167,8 +167,8 @@ public class MultiAccumulate extends Accumulate {
 
     protected void replaceAccumulatorDeclaration(Declaration declaration, Declaration resolved) {
         for (Accumulator accumulator : accumulators) {
-            if ( accumulator instanceof MVELAccumulatorFunctionExecutor ) {
-                ( (MVELAccumulatorFunctionExecutor) accumulator ).replaceDeclaration( declaration, resolved );
+            if ( accumulator instanceof MvelAccumulator ) {
+                ( (MvelAccumulator) accumulator ).replaceDeclaration( declaration, resolved );
             }
         }
     }

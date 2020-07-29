@@ -313,22 +313,22 @@ public class KieRepositoryImpl
      *    so we're using synchronized methods instead
      */
     // package scope so that we can test it
-    static class KieModuleRepo {
+    public static class KieModuleRepo {
 
         // PROPERTIES -------------------------------------------------------------------------------------------------------------
 
         public static final String CACHE_GA_MAX_PROPERTY = "kie.repository.project.cache.size";
-        static int MAX_SIZE_GA_CACHE // made changeable for test purposes
+        public static int MAX_SIZE_GA_CACHE // made changeable for test purposes
             = Integer.parseInt(System.getProperty(CACHE_GA_MAX_PROPERTY, "100"));
 
         public static final String CACHE_VERSIONS_MAX_PROPERTY = "kie.repository.project.versions.cache.size";
-        static int MAX_SIZE_GA_VERSIONS_CACHE // made changeable for test purposes
+        public static int MAX_SIZE_GA_VERSIONS_CACHE // made changeable for test purposes
             = Integer.parseInt(System.getProperty(CACHE_VERSIONS_MAX_PROPERTY, "10"));
 
         // FIELDS -----------------------------------------------------------------------------------------------------------------
 
         // kieModules evicts based on access-time, not on insertion-time
-        final Map<String, NavigableMap<ComparableVersion, KieModule>> kieModules
+        public final Map<String, NavigableMap<ComparableVersion, KieModule>> kieModules
             = new LinkedHashMap<String, NavigableMap<ComparableVersion, KieModule>>(16, 0.75f, true) {
             @Override
             protected boolean removeEldestEntry( Map.Entry<String, NavigableMap<ComparableVersion, KieModule>> eldest) {
@@ -336,7 +336,7 @@ public class KieRepositoryImpl
             }
         };
 
-        final LinkedHashMap<ReleaseId, KieModule> oldKieModules = new LinkedHashMap<ReleaseId, KieModule>() {
+        public final LinkedHashMap<ReleaseId, KieModule> oldKieModules = new LinkedHashMap<ReleaseId, KieModule>() {
             @Override
             protected boolean removeEldestEntry( Map.Entry<ReleaseId, KieModule> eldest ) {
                 return size() > (MAX_SIZE_GA_CACHE*MAX_SIZE_GA_VERSIONS_CACHE);
@@ -346,7 +346,7 @@ public class KieRepositoryImpl
 
         // METHODS ----------------------------------------------------------------------------------------------------------------
 
-        synchronized KieModule remove(ReleaseId releaseId) {
+        public synchronized KieModule remove(ReleaseId releaseId) {
             KieModule removedKieModule = null;
             String ga = releaseId.getGroupId() + ":" + releaseId.getArtifactId();
             ComparableVersion comparableVersion = new ComparableVersion(releaseId.getVersion());
@@ -363,7 +363,7 @@ public class KieRepositoryImpl
             return removedKieModule;
         }
 
-        synchronized void store(KieModule kieModule) {
+        public synchronized void store(KieModule kieModule) {
             ReleaseId releaseId = kieModule.getReleaseId();
             String ga = releaseId.getGroupId() + ":" + releaseId.getArtifactId();
             ComparableVersion comparableVersion = new ComparableVersion(releaseId.getVersion());

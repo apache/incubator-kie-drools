@@ -18,30 +18,36 @@ package org.drools.core.rule;
 
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.spi.InternalReadAccessor;
 
 public interface DialectRuntimeData extends Cloneable {
-    public void removeRule( KnowledgePackageImpl pkg, RuleImpl rule );
+    void removeRule( KnowledgePackageImpl pkg, RuleImpl rule );
 
-    public void removeFunction( KnowledgePackageImpl pkg, Function function );
+    void removeFunction( KnowledgePackageImpl pkg, Function function );
 
-    public void merge( DialectRuntimeRegistry registry, DialectRuntimeData newData );
+    void merge( DialectRuntimeRegistry registry, DialectRuntimeData newData );
 
-    public void merge( DialectRuntimeRegistry registry, DialectRuntimeData newData, boolean excludeDeclaredClasses );
+    void merge( DialectRuntimeRegistry registry, DialectRuntimeData newData, boolean excludeDeclaredClasses );
 
-    public boolean isDirty();
+    boolean isDirty();
 
-    public void setDirty( boolean dirty );
+    void setDirty( boolean dirty );
 
-    public void reload();
+    void reload();
 
-    public DialectRuntimeData clone( DialectRuntimeRegistry registry, ClassLoader rootClassLoader);
+    DialectRuntimeData clone( DialectRuntimeRegistry registry, ClassLoader rootClassLoader);
 
-    public DialectRuntimeData clone( DialectRuntimeRegistry registry, ClassLoader rootClassLoader, boolean excludeDeclaredClasses );
+    DialectRuntimeData clone( DialectRuntimeRegistry registry, ClassLoader rootClassLoader, boolean excludeDeclaredClasses );
 
-    public void onAdd( DialectRuntimeRegistry dialectRuntimeRegistry,
-                       ClassLoader rootClassLoader );
+    void onAdd( DialectRuntimeRegistry dialectRuntimeRegistry, ClassLoader rootClassLoader );
 
-    public void onRemove();
+    void onRemove();
 
-    public void onBeforeExecute();
+    void onBeforeExecute();
+
+    default void resetParserConfiguration() { }
+
+    default void compile(InternalReadAccessor reader) {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -27,7 +27,7 @@ import java.util.jar.JarInputStream;
 
 import com.google.common.collect.TreeMultimap;
 import org.drools.core.addon.ClassTypeResolver;
-import org.drools.core.util.asm.ClassFieldInspector;
+import org.drools.mvel.asm.ClassFieldInspectorImpl;
 
 public class PackageHeaderLoader {
 
@@ -64,7 +64,7 @@ public class PackageHeaderLoader {
     private void addFields(Class clazz) throws IOException {
         String className = clazz.getName();
 
-        ClassFieldInspector inspector = new ClassFieldInspector(clazz);
+        ClassFieldInspectorImpl inspector = new ClassFieldInspectorImpl(clazz);
         Set<String> fieldNames = inspector.getFieldNames().keySet();
         Map<String, Class<?>> fieldTypes = inspector.getFieldTypes();
 

@@ -78,7 +78,7 @@ public abstract class ObjectSource extends BaseNode
     /**
      * Single parameter constructor that specifies the unique id of the node.
      */
-    ObjectSource(final int id,
+    protected ObjectSource(final int id,
                  final RuleBasePartitionId partitionId,
                  final boolean partitionsEnabled) {
         this( id,

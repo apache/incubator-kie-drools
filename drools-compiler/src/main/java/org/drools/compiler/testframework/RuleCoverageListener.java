@@ -33,7 +33,7 @@ import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
  */
 public class RuleCoverageListener implements AgendaEventListener {
 
-    final Set<String> rules;
+    private final Set<String> rules;
     private int totalCount;
 
     /**
@@ -62,6 +62,10 @@ public class RuleCoverageListener implements AgendaEventListener {
     }
 
     public void beforeMatchFired(BeforeMatchFiredEvent event) {
+    }
+
+    public Set<String> getRules() {
+        return rules;
     }
 
     /**

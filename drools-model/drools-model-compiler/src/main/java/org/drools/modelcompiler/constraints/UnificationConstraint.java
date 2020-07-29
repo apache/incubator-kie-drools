@@ -19,6 +19,7 @@ package org.drools.modelcompiler.constraints;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.PlainIndexEvaluator;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IndexableConstraint;
@@ -30,8 +31,6 @@ import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.model.Index;
 import org.drools.modelcompiler.constraints.LambdaConstraint.LambdaContextEntry;
-
-import static org.drools.core.rule.constraint.MvelConstraint.INDEX_EVALUATOR;
 
 public class UnificationConstraint extends MutableTypeConstraint implements IndexableConstraint {
 
@@ -83,7 +82,7 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
 
     @Override
     public FieldIndex getFieldIndex() {
-        return new FieldIndex(readAccessor, declaration, INDEX_EVALUATOR);
+        return new FieldIndex(readAccessor, declaration, PlainIndexEvaluator.INSTANCE);
     }
 
     @Override

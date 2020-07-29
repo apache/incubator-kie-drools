@@ -18,7 +18,6 @@ package org.drools.core.definitions.rule.impl;
 
 import java.io.Externalizable;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
@@ -59,7 +58,6 @@ import org.kie.api.io.Resource;
 import org.kie.internal.definition.rule.InternalRule;
 import org.kie.internal.security.KiePolicyHelper;
 
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 
 public class RuleImpl implements Externalizable,
@@ -877,6 +875,14 @@ public class RuleImpl implements Externalizable,
         return ruleUnitClassName != null;
     }
 
+    public Declaration[] findEnabledDeclarations(Map<String, Declaration> decls) {
+        return this.enabled.findDeclarations(decls);
+    }
+
+    public Declaration[] findSalienceDeclarations(Map<String, Declaration> decls) {
+        return this.salience.findDeclarations(decls);
+    }
+
     public static class SafeSalience implements Salience, Serializable {
         private static final long serialVersionUID = 1L;
         private final Salience delegate;
@@ -913,21 +919,11 @@ public class RuleImpl implements Externalizable,
 
         @Override
         public boolean getValue(final Tuple tuple,
-                                final Declaration[] declrs,
+                                final Declaration[] declarations,
                                 final RuleImpl rule,
                                 final WorkingMemory workingMemory) {
-            return AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> delegate.getValue(tuple, declrs, rule, workingMemory), KiePolicyHelper.getAccessContext());
+            return AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> delegate.getValue(tuple, declarations, rule, workingMemory), KiePolicyHelper.getAccessContext());
         }
 
-    }
-    public static String getMethodBytecode( Class cls, String ruleClassName, String packageName, String methodName, String resource ) {
-        try (InputStream is = cls.getClassLoader().getResourceAsStream(resource)) {
-            byte[] data = readBytesFromInputStream( is );
-            org.drools.core.util.asm.MethodComparator.Tracer visit = new org.drools.core.util.asm.MethodComparator.Tracer(methodName);
-            new org.mvel2.asm.ClassReader( data ).accept( visit, org.mvel2.asm.ClassReader.SKIP_DEBUG  );
-            return visit.getText();
-        } catch ( java.io.IOException e ) {
-            throw new RuntimeException("Unable getResourceAsStream for Class '" + ruleClassName+ "' ");
-        }
     }
 }

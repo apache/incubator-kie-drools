@@ -16,10 +16,12 @@
 
 package org.drools.core.spi;
 
-import org.drools.core.WorkingMemory;
-import org.kie.api.definition.rule.Rule;
-
 import java.io.Serializable;
+import java.util.Map;
+
+import org.drools.core.WorkingMemory;
+import org.drools.core.rule.Declaration;
+import org.kie.api.definition.rule.Rule;
 
 public interface Salience extends Serializable {
 
@@ -35,5 +37,9 @@ public interface Salience extends Serializable {
 
     default boolean isDefault() {
         return getValue() == DEFAULT_SALIENCE_VALUE;
+    }
+
+    default Declaration[] findDeclarations( Map<String, Declaration> decls) {
+        return null;
     }
 }

@@ -41,6 +41,8 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.internal.builder.KnowledgeBuilder;
 
+import static org.drools.core.util.Drools.hasMvel;
+
 public class KieMetaInfoBuilder {
 
     private final InternalKieModule kModule;
@@ -50,10 +52,12 @@ public class KieMetaInfoBuilder {
     }
 
     public void writeKieModuleMetaInfo(ResourceStore trgMfs) {
-        KieModuleMetaInfo info = generateKieModuleMetaInfo(trgMfs);
-        trgMfs.write( KieModuleModelImpl.KMODULE_INFO_JAR_PATH,
-                      info.marshallMetaInfos().getBytes( IoUtils.UTF8_CHARSET ),
-                      true );
+        if (hasMvel()) {
+            KieModuleMetaInfo info = generateKieModuleMetaInfo( trgMfs );
+            trgMfs.write( KieModuleModelImpl.KMODULE_INFO_JAR_PATH,
+                    info.marshallMetaInfos().getBytes( IoUtils.UTF8_CHARSET ),
+                    true );
+        }
     }
 
     public KieModuleMetaInfo getKieModuleMetaInfo(){

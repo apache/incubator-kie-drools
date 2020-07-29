@@ -38,8 +38,8 @@ import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
+import org.drools.compiler.compiler.JavaConfiguration;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration.CompilerType;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,7 +111,7 @@ public class CompilerBytecodeLoader {
         try {
             MemoryResourceReader pReader = new MemoryResourceReader();
             pReader.add(cuPackage.replaceAll("\\.", "/") + "/" + cuClass + ".java", cu.toString().getBytes());
-            JavaCompiler compiler = JavaCompilerFactory.INSTANCE.loadCompiler(CompilerType.ECLIPSE, "1.8");
+            JavaCompiler compiler = JavaCompilerFactory.INSTANCE.loadCompiler(JavaConfiguration.CompilerType.ECLIPSE, "1.8");
             MemoryFileSystem pStore = new MemoryFileSystem();
             CompilationResult compilationResult = compiler.compile(new String[]{cuPackage.replaceAll("\\.", "/") + "/" + cuClass + ".java"},
                                                                    pReader,

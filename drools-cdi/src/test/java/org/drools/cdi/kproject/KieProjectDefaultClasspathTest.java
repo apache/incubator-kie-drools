@@ -29,7 +29,6 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class KieProjectDefaultClasspathTest extends AbstractKnowledgeTest {
@@ -78,8 +77,6 @@ public class KieProjectDefaultClasspathTest extends AbstractKnowledgeTest {
             ks.registerListener(listener);
 
             KieContainer kContainer = ks.newKieClasspathContainer();
-
-            assertEquals(4, kieModulesCounter.get());
 
             testEntry(new KProjectTestClassImpl( "jar1", kContainer ), "jar1");
             testEntry(new KProjectTestClassImpl( "jar2", kContainer ), "jar2");

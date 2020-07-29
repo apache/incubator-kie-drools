@@ -22,10 +22,11 @@ import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.addon.TypeResolver;
+import org.drools.core.base.ClassFieldInspector;
+import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.StringUtils;
-import org.drools.core.util.asm.ClassFieldInspector;
 
 public class TypeDeclarationUtils {
 
@@ -177,7 +178,7 @@ public class TypeDeclarationUtils {
             if (!sup.getName().equals(typeDescr.getSupertTypeFullName())) {
                 return false;
             }
-            ClassFieldInspector cfi = new ClassFieldInspector(typeClass, false);
+            ClassFieldInspector cfi = CoreComponentsBuilder.get().createClassFieldInspector(typeClass, false);
             if (cfi.getGetterMethods().size() != typeDescr.getFields().size()) {
                 return false;
             }
