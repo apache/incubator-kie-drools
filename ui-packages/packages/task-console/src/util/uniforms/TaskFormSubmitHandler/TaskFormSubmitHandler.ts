@@ -15,9 +15,13 @@
  */
 import axios from 'axios';
 
-import { IFormAction, IFormSubmitHandler } from '../FormSubmitHandler/FormSubmitHandler';
+import {
+  IFormAction,
+  IFormSubmitHandler
+} from '../FormSubmitHandler/FormSubmitHandler';
 import { FormSchema } from '../FormSchema';
-import { TaskInfo } from '../../../model/TaskInfo';
+import { GraphQL } from '@kogito-apps/common';
+import UserTaskInstance = GraphQL.UserTaskInstance;
 
 interface FormAssignments {
   inputs: string[];
@@ -25,31 +29,33 @@ interface FormAssignments {
 }
 
 export class TaskFormSubmitHandler implements IFormSubmitHandler {
-
-  private readonly taskInfo: TaskInfo;
+  private readonly userTaskInstance: UserTaskInstance;
   private readonly formSchema: FormSchema;
   private readonly successCallback?: (result: string) => void;
-  private readonly errorCallback?: (errorMessage: string, error?: string) => void;
+  private readonly errorCallback?: (
+    errorMessage: string,
+    error?: string
+  ) => void;
 
   private readonly assignments;
   private readonly actions: IFormAction[] = [];
 
   private selectedPhase: string;
 
-  constructor(taskInfo: TaskInfo,
-              formSchema: FormSchema,
-              successCallback?: (phase: string) => void,
-              errorCallback?: (phase: string, errorMessage?: string) => void) {
-
-    this.taskInfo = taskInfo;
+  constructor(
+    userTaskInstance: UserTaskInstance,
+    formSchema: FormSchema,
+    successCallback?: (phase: string) => void,
+    errorCallback?: (phase: string, errorMessage?: string) => void
+  ) {
+    this.userTaskInstance = userTaskInstance;
     this.formSchema = formSchema;
     this.successCallback = successCallback;
     this.errorCallback = errorCallback;
 
     this.assignments = readSchemaAssignments(this.formSchema);
 
-    if (!taskInfo.task.completed && formSchema.phases) {
-
+    if (!userTaskInstance.completed && formSchema.phases) {
       this.actions = formSchema.phases.map(phase => {
         return {
           name: phase,
@@ -67,11 +73,10 @@ export class TaskFormSubmitHandler implements IFormSubmitHandler {
 
   getActions = () => {
     return this.actions;
-  }
+  };
 
   doSubmit = async (formData: any) => {
-
-    if(this.actions.length === 0 || !this.selectedPhase) {
+    if (this.actions.length === 0 || !this.selectedPhase) {
       throw new Error('Submit disabled for form');
     }
 
@@ -84,7 +89,7 @@ export class TaskFormSubmitHandler implements IFormSubmitHandler {
         }
       });
 
-      const endpoint = `${this.taskInfo.getTaskEndPoint()}?phase=${this.selectedPhase}`;
+      const endpoint = `${this.userTaskInstance.endpoint}?phase=${this.selectedPhase}`;
 
       const response = await axios.post(endpoint, data, {
         headers: {

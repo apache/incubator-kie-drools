@@ -11,11 +11,11 @@ import {
 import React, { useEffect } from 'react';
 import UserTaskPageHeader from '../../Molecules/UserTaskPageHeader/UserTaskPageHeader';
 import './UserTaskDataTable.css';
-import { useGetUserTasksByStatesQuery } from '../../../graphql/types';
 import {
   ouiaPageTypeAndObjectId,
   KogitoSpinner,
-  DataTable
+  DataTable,
+  GraphQL
 } from '@kogito-apps/common';
 import {
   ICell,
@@ -48,7 +48,7 @@ const UserTaskDataTableContainer: React.FC<InjectedOuiaProps> = ({
     data,
     refetch,
     networkStatus
-  } = useGetUserTasksByStatesQuery({
+  } = GraphQL.useGetUserTasksByStatesQuery({
     variables: {
       state: ['Ready'] // FIXME: state should not be hard-coded.
     },

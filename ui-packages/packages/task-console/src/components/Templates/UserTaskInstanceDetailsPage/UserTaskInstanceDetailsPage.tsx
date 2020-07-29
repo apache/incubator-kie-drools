@@ -11,24 +11,27 @@ import {
   PageSection,
   withOuiaContext
 } from '@patternfly/react-core';
-import { ouiaPageTypeAndObjectId } from '@kogito-apps/common';
+import { ouiaPageTypeAndObjectId, GraphQL } from '@kogito-apps/common';
 import PageTitle from '../../Molecules/PageTitle/PageTitle';
 import TaskForm from '../../Organisms/TaskForm/TaskForm';
 import TaskConsoleContext, {
   IContext
 } from '../../../context/TaskConsoleContext/TaskConsoleContext';
-import { TaskInfo } from '../../../model/TaskInfo';
+import UserTaskInstance = GraphQL.UserTaskInstance;
 
 interface MatchProps {
   taskID: string;
 }
 
-const UserTaskInstanceDetailsPage: React.FC<
-  RouteComponentProps<MatchProps, {}, {}> & InjectedOuiaProps
-> = ({ ouiaContext, ...props }) => {
+const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<
+  MatchProps,
+  {},
+  {}
+> &
+  InjectedOuiaProps> = ({ ouiaContext, ...props }) => {
   const id = props.match.params.taskID;
 
-  const context: IContext<TaskInfo> = useContext(TaskConsoleContext);
+  const context: IContext<UserTaskInstance> = useContext(TaskConsoleContext);
 
   useEffect(() => {
     window.onpopstate = () => {
@@ -40,7 +43,7 @@ const UserTaskInstanceDetailsPage: React.FC<
     return ouiaPageTypeAndObjectId(ouiaContext, 'user-tasks', id);
   });
 
-  const taskInfo = context.getActiveItem();
+  const activeUserTask = context.getActiveItem();
 
   return (
     <React.Fragment>
@@ -58,7 +61,7 @@ const UserTaskInstanceDetailsPage: React.FC<
             <Card className="pf-u-h-100">
               <CardBody className="pf-u-h-100">
                 <TaskForm
-                  taskInfo={taskInfo}
+                  userTaskInstance={activeUserTask}
                   successCallback={() => props.history.goBack()}
                   errorCallback={() => props.history.goBack()}
                 />

@@ -8,14 +8,11 @@ import {
   DataListItemRow
 } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
-import {
-  useGetProcessInstanceByIdQuery,
-  UserTaskInstance
-} from '../../../graphql/types';
 import TaskConsoleContext, {
   IContext
 } from '../../../context/TaskConsoleContext/TaskConsoleContext';
-import { TaskInfoImpl, TaskInfo } from '../../../model/TaskInfo';
+import { GraphQL } from '@kogito-apps/common';
+import UserTaskInstance = GraphQL.UserTaskInstance;
 
 export interface IOwnProps {
   id: number;
@@ -23,15 +20,7 @@ export interface IOwnProps {
 }
 
 const TaskListItem: React.FC<IOwnProps> = ({ userTaskInstanceData }) => {
-
-  const { loading, data } = useGetProcessInstanceByIdQuery({
-    fetchPolicy: 'network-only',
-    variables: {
-      id: userTaskInstanceData.processInstanceId
-    }
-  });
-
-  const context: IContext<TaskInfo> = useContext(TaskConsoleContext);
+  const context: IContext<UserTaskInstance> = useContext(TaskConsoleContext);
 
   return (
     <React.Fragment>
@@ -67,9 +56,8 @@ const TaskListItem: React.FC<IOwnProps> = ({ userTaskInstanceData }) => {
             <Link
               to={'/Task/' + userTaskInstanceData.id}
               onClick={() => {
-                !loading && data && context.setActiveItem(new TaskInfoImpl(userTaskInstanceData, data.ProcessInstances[0].endpoint));
-                }
-              }
+                context.setActiveItem(userTaskInstanceData);
+              }}
             >
               Open Task
             </Link>

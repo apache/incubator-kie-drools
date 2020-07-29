@@ -1,10 +1,11 @@
 import React from 'react';
 import TaskConsoleContext, { DefaultContext } from './TaskConsoleContext';
-import { TaskInfo } from '../../model/TaskInfo';
+import { GraphQL } from '@kogito-apps/common';
+import UserTaskInstance = GraphQL.UserTaskInstance;
 
 const TaskConsoleContextProvider: React.FC = props => {
   return (
-    <TaskConsoleContext.Provider value={new DefaultContext<TaskInfo>()}>
+    <TaskConsoleContext.Provider value={new DefaultContext<UserTaskInstance>()}>
       {props.children}
     </TaskConsoleContext.Provider>
   );

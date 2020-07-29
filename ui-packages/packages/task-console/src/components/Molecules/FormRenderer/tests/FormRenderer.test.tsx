@@ -2,10 +2,11 @@ import React from 'react';
 import { mount } from 'enzyme';
 import _ from 'lodash';
 import { AutoForm } from 'uniforms-patternfly';
-import { UserTaskInstance } from '../../../../graphql/types';
+import { GraphQL } from '@kogito-apps/common';
 import FormRenderer from '../FormRenderer';
 import ApplyForVisaForm from '../../../../util/tests/mocks/ApplyForVisa';
 import { IFormAction } from '../../../../util/uniforms/FormSubmitHandler/FormSubmitHandler';
+import UserTaskInstance = GraphQL.UserTaskInstance;
 
 const userTaskInstance: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',
@@ -50,7 +51,6 @@ const MockFormSubmitHandler = jest.fn(() => ({
   getActions: jest.fn(() => formActions)
 }));
 
-
 describe('FormRenderer test', () => {
   beforeEach(() => {
     submitHandler = new MockFormSubmitHandler();
@@ -65,17 +65,17 @@ describe('FormRenderer test', () => {
 
   it('Render form with actions', () => {
     formActions.push({
-      name: "complete",
+      name: 'complete',
       primary: false,
       execute: jest.fn()
-    })
+    });
 
     const wrapper = mount(<FormRenderer {...props} />);
     expect(wrapper).toMatchSnapshot();
 
     const form = wrapper.findWhere(node => node.type() === AutoForm);
 
-    expect(form.exists()).toBeTruthy()
+    expect(form.exists()).toBeTruthy();
     expect(form.props().disabled).toBeFalsy();
   });
 
@@ -84,7 +84,7 @@ describe('FormRenderer test', () => {
     expect(wrapper).toMatchSnapshot();
 
     const form = wrapper.findWhere(node => node.type() === AutoForm);
-    expect(form.exists()).toBeTruthy()
+    expect(form.exists()).toBeTruthy();
     expect(form.props().disabled).toBeTruthy();
   });
 });

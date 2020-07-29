@@ -11,15 +11,15 @@
       {
         "kind": "OBJECT",
         "name": "Query",
-        "description": "",
+        "description": null,
         "fields": [
           {
             "name": "ProcessInstances",
-            "description": "",
+            "description": null,
             "args": [
               {
                 "name": "where",
-                "description": "",
+                "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
                   "name": "ProcessInstanceArgument",
@@ -29,7 +29,7 @@
               },
               {
                 "name": "orderBy",
-                "description": "",
+                "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
                   "name": "ProcessInstanceOrderBy",
@@ -39,7 +39,7 @@
               },
               {
                 "name": "pagination",
-                "description": "",
+                "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
                   "name": "Pagination",
@@ -62,11 +62,11 @@
           },
           {
             "name": "UserTaskInstances",
-            "description": "",
+            "description": null,
             "args": [
               {
                 "name": "where",
-                "description": "",
+                "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
                   "name": "UserTaskInstanceArgument",
@@ -76,7 +76,7 @@
               },
               {
                 "name": "orderBy",
-                "description": "",
+                "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
                   "name": "UserTaskInstanceOrderBy",
@@ -86,7 +86,7 @@
               },
               {
                 "name": "pagination",
-                "description": "",
+                "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
                   "name": "Pagination",
@@ -109,11 +109,11 @@
           },
           {
             "name": "Jobs",
-            "description": "",
+            "description": null,
             "args": [
               {
                 "name": "where",
-                "description": "",
+                "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
                   "name": "JobArgument",
@@ -123,7 +123,7 @@
               },
               {
                 "name": "orderBy",
-                "description": "",
+                "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
                   "name": "JobOrderBy",
@@ -133,7 +133,7 @@
               },
               {
                 "name": "pagination",
-                "description": "",
+                "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
                   "name": "Pagination",
@@ -163,12 +163,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "ProcessInstanceArgument",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "and",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "LIST",
               "name": null,
@@ -186,7 +186,7 @@
           },
           {
             "name": "or",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "LIST",
               "name": null,
@@ -204,7 +204,7 @@
           },
           {
             "name": "id",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "IdArgument",
@@ -214,7 +214,7 @@
           },
           {
             "name": "processId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -224,7 +224,7 @@
           },
           {
             "name": "processName",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -234,7 +234,7 @@
           },
           {
             "name": "parentProcessInstanceId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "IdArgument",
@@ -244,7 +244,7 @@
           },
           {
             "name": "rootProcessInstanceId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "IdArgument",
@@ -254,7 +254,7 @@
           },
           {
             "name": "rootProcessId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -264,7 +264,7 @@
           },
           {
             "name": "state",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "ProcessInstanceStateArgument",
@@ -274,7 +274,7 @@
           },
           {
             "name": "error",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "ProcessInstanceErrorArgument",
@@ -284,7 +284,7 @@
           },
           {
             "name": "nodes",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "NodeInstanceArgument",
@@ -294,7 +294,7 @@
           },
           {
             "name": "milestones",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "MilestoneArgument",
@@ -304,7 +304,7 @@
           },
           {
             "name": "endpoint",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -314,7 +314,7 @@
           },
           {
             "name": "roles",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArrayArgument",
@@ -324,7 +324,7 @@
           },
           {
             "name": "start",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "DateArgument",
@@ -334,7 +334,7 @@
           },
           {
             "name": "end",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "DateArgument",
@@ -344,7 +344,7 @@
           },
           {
             "name": "addons",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArrayArgument",
@@ -354,7 +354,7 @@
           },
           {
             "name": "lastUpdate",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "DateArgument",
@@ -364,7 +364,7 @@
           },
           {
             "name": "businessKey",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -380,12 +380,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "IdArgument",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "in",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "LIST",
               "name": null,
@@ -403,7 +403,7 @@
           },
           {
             "name": "equal",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -413,7 +413,7 @@
           },
           {
             "name": "isNull",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
@@ -449,12 +449,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "StringArgument",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "in",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "LIST",
               "name": null,
@@ -472,7 +472,7 @@
           },
           {
             "name": "like",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -482,7 +482,7 @@
           },
           {
             "name": "isNull",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
@@ -492,7 +492,7 @@
           },
           {
             "name": "equal",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -508,12 +508,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "ProcessInstanceStateArgument",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "equal",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "ProcessInstanceState",
@@ -523,7 +523,7 @@
           },
           {
             "name": "in",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "LIST",
               "name": null,
@@ -543,44 +543,44 @@
       {
         "kind": "ENUM",
         "name": "ProcessInstanceState",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
         "enumValues": [
           {
             "name": "PENDING",
-            "description": "",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "ACTIVE",
-            "description": "",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "COMPLETED",
-            "description": "",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "ABORTED",
-            "description": "",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "SUSPENDED",
-            "description": "",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "ERROR",
-            "description": "",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -590,12 +590,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "ProcessInstanceErrorArgument",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "nodeDefinitionId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -605,7 +605,7 @@
           },
           {
             "name": "message",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -621,12 +621,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "NodeInstanceArgument",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "id",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "IdArgument",
@@ -636,7 +636,7 @@
           },
           {
             "name": "name",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -646,7 +646,7 @@
           },
           {
             "name": "definitionId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -656,7 +656,7 @@
           },
           {
             "name": "nodeId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -666,7 +666,7 @@
           },
           {
             "name": "type",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -676,7 +676,7 @@
           },
           {
             "name": "enter",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "DateArgument",
@@ -686,7 +686,7 @@
           },
           {
             "name": "exit",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "DateArgument",
@@ -702,12 +702,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "DateArgument",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "isNull",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
@@ -717,7 +717,7 @@
           },
           {
             "name": "equal",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "DateTime",
@@ -727,7 +727,7 @@
           },
           {
             "name": "greaterThan",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "DateTime",
@@ -737,7 +737,7 @@
           },
           {
             "name": "greaterThanEqual",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "DateTime",
@@ -747,7 +747,7 @@
           },
           {
             "name": "lessThan",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "DateTime",
@@ -757,7 +757,7 @@
           },
           {
             "name": "lessThanEqual",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "DateTime",
@@ -767,7 +767,7 @@
           },
           {
             "name": "between",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "DateRange",
@@ -783,7 +783,7 @@
       {
         "kind": "SCALAR",
         "name": "DateTime",
-        "description": null,
+        "description": "An ISO-8601 compliant DateTime Scalar",
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -793,12 +793,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "DateRange",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "from",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -812,7 +812,7 @@
           },
           {
             "name": "to",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -832,12 +832,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "MilestoneArgument",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "id",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "IdArgument",
@@ -847,7 +847,7 @@
           },
           {
             "name": "name",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -857,7 +857,7 @@
           },
           {
             "name": "status",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "MilestoneStatusArgument",
@@ -873,12 +873,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "MilestoneStatusArgument",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "equal",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "MilestoneStatus",
@@ -888,7 +888,7 @@
           },
           {
             "name": "in",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "LIST",
               "name": null,
@@ -908,26 +908,26 @@
       {
         "kind": "ENUM",
         "name": "MilestoneStatus",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
         "enumValues": [
           {
             "name": "AVAILABLE",
-            "description": "",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "ACTIVE",
-            "description": "",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "COMPLETED",
-            "description": "",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -937,12 +937,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "StringArrayArgument",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "contains",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -952,7 +952,7 @@
           },
           {
             "name": "containsAll",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "LIST",
               "name": null,
@@ -970,7 +970,7 @@
           },
           {
             "name": "containsAny",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "LIST",
               "name": null,
@@ -988,7 +988,7 @@
           },
           {
             "name": "isNull",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
@@ -1004,12 +1004,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "ProcessInstanceOrderBy",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "processId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -1019,7 +1019,7 @@
           },
           {
             "name": "processName",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -1029,7 +1029,7 @@
           },
           {
             "name": "rootProcessId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -1039,7 +1039,7 @@
           },
           {
             "name": "state",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -1049,7 +1049,7 @@
           },
           {
             "name": "start",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -1059,7 +1059,7 @@
           },
           {
             "name": "end",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -1069,7 +1069,7 @@
           },
           {
             "name": "error",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "ProcessInstanceErrorOrderBy",
@@ -1079,7 +1079,7 @@
           },
           {
             "name": "lastUpdate",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -1089,7 +1089,7 @@
           },
           {
             "name": "businessKey",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -1105,20 +1105,20 @@
       {
         "kind": "ENUM",
         "name": "OrderBy",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
         "enumValues": [
           {
             "name": "ASC",
-            "description": "",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "DESC",
-            "description": "",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -1128,12 +1128,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "ProcessInstanceErrorOrderBy",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "nodeDefinitionId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -1143,7 +1143,7 @@
           },
           {
             "name": "message",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -1159,12 +1159,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "Pagination",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "limit",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -1174,7 +1174,7 @@
           },
           {
             "name": "offset",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -1200,11 +1200,11 @@
       {
         "kind": "OBJECT",
         "name": "ProcessInstance",
-        "description": "",
+        "description": null,
         "fields": [
           {
             "name": "id",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -1220,7 +1220,7 @@
           },
           {
             "name": "processId",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -1236,7 +1236,7 @@
           },
           {
             "name": "processName",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -1248,7 +1248,7 @@
           },
           {
             "name": "parentProcessInstanceId",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -1260,7 +1260,7 @@
           },
           {
             "name": "rootProcessInstanceId",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -1272,7 +1272,7 @@
           },
           {
             "name": "rootProcessId",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -1284,7 +1284,7 @@
           },
           {
             "name": "roles",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "LIST",
@@ -1304,7 +1304,7 @@
           },
           {
             "name": "state",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -1320,7 +1320,7 @@
           },
           {
             "name": "endpoint",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -1336,7 +1336,7 @@
           },
           {
             "name": "serviceUrl",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -1348,7 +1348,7 @@
           },
           {
             "name": "nodes",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -1372,7 +1372,7 @@
           },
           {
             "name": "milestones",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "LIST",
@@ -1392,7 +1392,7 @@
           },
           {
             "name": "variables",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -1404,7 +1404,7 @@
           },
           {
             "name": "start",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -1420,7 +1420,7 @@
           },
           {
             "name": "end",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -1432,7 +1432,7 @@
           },
           {
             "name": "parentProcessInstance",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -1444,7 +1444,7 @@
           },
           {
             "name": "childProcessInstances",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "LIST",
@@ -1464,7 +1464,7 @@
           },
           {
             "name": "error",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -1476,7 +1476,7 @@
           },
           {
             "name": "addons",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "LIST",
@@ -1496,7 +1496,7 @@
           },
           {
             "name": "lastUpdate",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -1512,7 +1512,7 @@
           },
           {
             "name": "businessKey",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -1531,11 +1531,11 @@
       {
         "kind": "OBJECT",
         "name": "NodeInstance",
-        "description": "",
+        "description": null,
         "fields": [
           {
             "name": "id",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -1551,7 +1551,7 @@
           },
           {
             "name": "name",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -1567,7 +1567,7 @@
           },
           {
             "name": "type",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -1583,7 +1583,7 @@
           },
           {
             "name": "enter",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -1599,7 +1599,7 @@
           },
           {
             "name": "exit",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -1611,7 +1611,7 @@
           },
           {
             "name": "definitionId",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -1627,7 +1627,7 @@
           },
           {
             "name": "nodeId",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -1650,11 +1650,11 @@
       {
         "kind": "OBJECT",
         "name": "Milestone",
-        "description": "",
+        "description": null,
         "fields": [
           {
             "name": "id",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -1670,7 +1670,7 @@
           },
           {
             "name": "name",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -1686,7 +1686,7 @@
           },
           {
             "name": "status",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -1709,11 +1709,11 @@
       {
         "kind": "OBJECT",
         "name": "ProcessInstanceError",
-        "description": "",
+        "description": null,
         "fields": [
           {
             "name": "nodeDefinitionId",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -1729,7 +1729,7 @@
           },
           {
             "name": "message",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -1748,12 +1748,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "UserTaskInstanceArgument",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "and",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "LIST",
               "name": null,
@@ -1771,7 +1771,7 @@
           },
           {
             "name": "or",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "LIST",
               "name": null,
@@ -1789,7 +1789,7 @@
           },
           {
             "name": "state",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -1799,7 +1799,7 @@
           },
           {
             "name": "id",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "IdArgument",
@@ -1809,7 +1809,7 @@
           },
           {
             "name": "description",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -1819,7 +1819,7 @@
           },
           {
             "name": "name",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -1829,7 +1829,7 @@
           },
           {
             "name": "priority",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -1839,7 +1839,7 @@
           },
           {
             "name": "processInstanceId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "IdArgument",
@@ -1849,7 +1849,7 @@
           },
           {
             "name": "actualOwner",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -1859,7 +1859,7 @@
           },
           {
             "name": "potentialUsers",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArrayArgument",
@@ -1869,7 +1869,7 @@
           },
           {
             "name": "potentialGroups",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArrayArgument",
@@ -1879,7 +1879,7 @@
           },
           {
             "name": "excludedUsers",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArrayArgument",
@@ -1889,7 +1889,7 @@
           },
           {
             "name": "adminGroups",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArrayArgument",
@@ -1899,7 +1899,7 @@
           },
           {
             "name": "adminUsers",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArrayArgument",
@@ -1909,7 +1909,7 @@
           },
           {
             "name": "completed",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "DateArgument",
@@ -1919,7 +1919,7 @@
           },
           {
             "name": "started",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "DateArgument",
@@ -1929,7 +1929,7 @@
           },
           {
             "name": "referenceName",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -1939,7 +1939,7 @@
           },
           {
             "name": "lastUpdate",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "DateArgument",
@@ -1955,12 +1955,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "UserTaskInstanceOrderBy",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "state",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -1970,7 +1970,7 @@
           },
           {
             "name": "actualOwner",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -1980,7 +1980,7 @@
           },
           {
             "name": "description",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -1990,7 +1990,7 @@
           },
           {
             "name": "name",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -2000,7 +2000,7 @@
           },
           {
             "name": "priority",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -2010,7 +2010,7 @@
           },
           {
             "name": "completed",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -2020,7 +2020,7 @@
           },
           {
             "name": "started",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -2030,7 +2030,7 @@
           },
           {
             "name": "referenceName",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -2040,7 +2040,7 @@
           },
           {
             "name": "lastUpdate",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -2056,11 +2056,11 @@
       {
         "kind": "OBJECT",
         "name": "UserTaskInstance",
-        "description": "",
+        "description": null,
         "fields": [
           {
             "name": "id",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -2076,7 +2076,7 @@
           },
           {
             "name": "description",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2088,7 +2088,7 @@
           },
           {
             "name": "name",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2100,7 +2100,7 @@
           },
           {
             "name": "priority",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2112,7 +2112,7 @@
           },
           {
             "name": "processInstanceId",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -2128,7 +2128,7 @@
           },
           {
             "name": "processId",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -2144,7 +2144,7 @@
           },
           {
             "name": "rootProcessInstanceId",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2156,7 +2156,7 @@
           },
           {
             "name": "rootProcessId",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2168,7 +2168,7 @@
           },
           {
             "name": "state",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -2184,7 +2184,7 @@
           },
           {
             "name": "actualOwner",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2196,7 +2196,7 @@
           },
           {
             "name": "adminGroups",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "LIST",
@@ -2216,7 +2216,7 @@
           },
           {
             "name": "adminUsers",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "LIST",
@@ -2236,7 +2236,7 @@
           },
           {
             "name": "completed",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2248,7 +2248,7 @@
           },
           {
             "name": "started",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -2264,7 +2264,7 @@
           },
           {
             "name": "excludedUsers",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "LIST",
@@ -2284,7 +2284,7 @@
           },
           {
             "name": "potentialGroups",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "LIST",
@@ -2304,7 +2304,7 @@
           },
           {
             "name": "potentialUsers",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "LIST",
@@ -2324,7 +2324,7 @@
           },
           {
             "name": "inputs",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2336,7 +2336,7 @@
           },
           {
             "name": "outputs",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2348,7 +2348,7 @@
           },
           {
             "name": "referenceName",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2360,7 +2360,7 @@
           },
           {
             "name": "lastUpdate",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -2376,7 +2376,7 @@
           },
           {
             "name": "endpoint",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2395,12 +2395,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "JobArgument",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "and",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "LIST",
               "name": null,
@@ -2418,7 +2418,7 @@
           },
           {
             "name": "or",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "LIST",
               "name": null,
@@ -2436,7 +2436,7 @@
           },
           {
             "name": "id",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "IdArgument",
@@ -2446,7 +2446,7 @@
           },
           {
             "name": "processId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -2456,7 +2456,7 @@
           },
           {
             "name": "processInstanceId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "IdArgument",
@@ -2466,7 +2466,7 @@
           },
           {
             "name": "rootProcessInstanceId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "IdArgument",
@@ -2476,7 +2476,7 @@
           },
           {
             "name": "rootProcessId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -2486,7 +2486,7 @@
           },
           {
             "name": "status",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "JobStatusArgument",
@@ -2496,7 +2496,7 @@
           },
           {
             "name": "expirationTime",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "DateArgument",
@@ -2506,7 +2506,7 @@
           },
           {
             "name": "priority",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "NumericArgument",
@@ -2516,7 +2516,7 @@
           },
           {
             "name": "scheduledId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "IdArgument",
@@ -2526,7 +2526,7 @@
           },
           {
             "name": "lastUpdate",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "DateArgument",
@@ -2542,12 +2542,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "JobStatusArgument",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "equal",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "JobStatus",
@@ -2557,7 +2557,7 @@
           },
           {
             "name": "in",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "LIST",
               "name": null,
@@ -2577,38 +2577,38 @@
       {
         "kind": "ENUM",
         "name": "JobStatus",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
         "enumValues": [
           {
             "name": "ERROR",
-            "description": "",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "EXECUTED",
-            "description": "",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "SCHEDULED",
-            "description": "",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "RETRY",
-            "description": "",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "CANCELED",
-            "description": "",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -2618,12 +2618,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "NumericArgument",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "in",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "LIST",
               "name": null,
@@ -2641,7 +2641,7 @@
           },
           {
             "name": "isNull",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
@@ -2651,7 +2651,7 @@
           },
           {
             "name": "equal",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -2661,7 +2661,7 @@
           },
           {
             "name": "greaterThan",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -2671,7 +2671,7 @@
           },
           {
             "name": "greaterThanEqual",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -2681,7 +2681,7 @@
           },
           {
             "name": "lessThan",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -2691,7 +2691,7 @@
           },
           {
             "name": "lessThanEqual",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -2701,7 +2701,7 @@
           },
           {
             "name": "between",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "NumericRange",
@@ -2717,12 +2717,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "NumericRange",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "from",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -2736,7 +2736,7 @@
           },
           {
             "name": "to",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -2756,12 +2756,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "JobOrderBy",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "processId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -2771,7 +2771,7 @@
           },
           {
             "name": "rootProcessId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -2781,7 +2781,7 @@
           },
           {
             "name": "status",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -2791,7 +2791,7 @@
           },
           {
             "name": "expirationTime",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -2801,7 +2801,7 @@
           },
           {
             "name": "priority",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -2811,7 +2811,7 @@
           },
           {
             "name": "retries",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -2821,7 +2821,7 @@
           },
           {
             "name": "lastUpdate",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -2831,7 +2831,7 @@
           },
           {
             "name": "executionCounter",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",
@@ -2847,11 +2847,11 @@
       {
         "kind": "OBJECT",
         "name": "Job",
-        "description": "",
+        "description": null,
         "fields": [
           {
             "name": "id",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -2867,7 +2867,7 @@
           },
           {
             "name": "processId",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2879,7 +2879,7 @@
           },
           {
             "name": "processInstanceId",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2891,7 +2891,7 @@
           },
           {
             "name": "rootProcessInstanceId",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2903,7 +2903,7 @@
           },
           {
             "name": "rootProcessId",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2915,7 +2915,7 @@
           },
           {
             "name": "status",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -2931,7 +2931,7 @@
           },
           {
             "name": "expirationTime",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2943,7 +2943,7 @@
           },
           {
             "name": "priority",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2955,7 +2955,7 @@
           },
           {
             "name": "callbackEndpoint",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2967,7 +2967,7 @@
           },
           {
             "name": "repeatInterval",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2979,7 +2979,7 @@
           },
           {
             "name": "repeatLimit",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -2991,7 +2991,7 @@
           },
           {
             "name": "scheduledId",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -3003,7 +3003,7 @@
           },
           {
             "name": "retries",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -3015,7 +3015,7 @@
           },
           {
             "name": "lastUpdate",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -3027,7 +3027,7 @@
           },
           {
             "name": "executionCounter",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -3046,11 +3046,11 @@
       {
         "kind": "OBJECT",
         "name": "Subscription",
-        "description": "",
+        "description": null,
         "fields": [
           {
             "name": "ProcessInstanceAdded",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -3066,7 +3066,7 @@
           },
           {
             "name": "ProcessInstanceUpdated",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -3082,7 +3082,7 @@
           },
           {
             "name": "UserTaskInstanceAdded",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -3098,7 +3098,7 @@
           },
           {
             "name": "UserTaskInstanceUpdated",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -3114,7 +3114,7 @@
           },
           {
             "name": "JobAdded",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -3130,7 +3130,7 @@
           },
           {
             "name": "JobUpdated",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -3949,12 +3949,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "BooleanArgument",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "isNull",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
@@ -3964,7 +3964,7 @@
           },
           {
             "name": "equal",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
@@ -3980,11 +3980,11 @@
       {
         "kind": "OBJECT",
         "name": "KogitoMetadata",
-        "description": "",
+        "description": null,
         "fields": [
           {
             "name": "lastUpdate",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -4000,7 +4000,7 @@
           },
           {
             "name": "processInstances",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "LIST",
@@ -4016,7 +4016,7 @@
           },
           {
             "name": "userTasks",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "LIST",
@@ -4039,11 +4039,11 @@
       {
         "kind": "OBJECT",
         "name": "ProcessInstanceMeta",
-        "description": "",
+        "description": null,
         "fields": [
           {
             "name": "id",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -4059,7 +4059,7 @@
           },
           {
             "name": "processId",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -4075,7 +4075,7 @@
           },
           {
             "name": "processName",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -4087,7 +4087,7 @@
           },
           {
             "name": "parentProcessInstanceId",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -4099,7 +4099,7 @@
           },
           {
             "name": "rootProcessInstanceId",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -4111,7 +4111,7 @@
           },
           {
             "name": "rootProcessId",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -4123,7 +4123,7 @@
           },
           {
             "name": "roles",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "LIST",
@@ -4143,7 +4143,7 @@
           },
           {
             "name": "state",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -4159,7 +4159,7 @@
           },
           {
             "name": "endpoint",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -4175,7 +4175,7 @@
           },
           {
             "name": "serviceUrl",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -4187,7 +4187,7 @@
           },
           {
             "name": "start",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -4203,7 +4203,7 @@
           },
           {
             "name": "end",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -4215,7 +4215,7 @@
           },
           {
             "name": "lastUpdate",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -4231,7 +4231,7 @@
           },
           {
             "name": "businessKey",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -4250,11 +4250,11 @@
       {
         "kind": "OBJECT",
         "name": "UserTaskInstanceMeta",
-        "description": "",
+        "description": null,
         "fields": [
           {
             "name": "id",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -4270,7 +4270,7 @@
           },
           {
             "name": "description",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -4282,7 +4282,7 @@
           },
           {
             "name": "name",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -4294,7 +4294,7 @@
           },
           {
             "name": "priority",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -4306,7 +4306,7 @@
           },
           {
             "name": "processInstanceId",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -4322,7 +4322,7 @@
           },
           {
             "name": "state",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -4338,7 +4338,7 @@
           },
           {
             "name": "actualOwner",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -4350,7 +4350,7 @@
           },
           {
             "name": "adminGroups",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "LIST",
@@ -4370,7 +4370,7 @@
           },
           {
             "name": "adminUsers",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "LIST",
@@ -4390,7 +4390,7 @@
           },
           {
             "name": "completed",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -4402,7 +4402,7 @@
           },
           {
             "name": "started",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -4418,7 +4418,7 @@
           },
           {
             "name": "excludedUsers",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "LIST",
@@ -4438,7 +4438,7 @@
           },
           {
             "name": "potentialGroups",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "LIST",
@@ -4458,7 +4458,7 @@
           },
           {
             "name": "potentialUsers",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "LIST",
@@ -4478,7 +4478,7 @@
           },
           {
             "name": "referenceName",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -4490,7 +4490,7 @@
           },
           {
             "name": "lastUpdate",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -4513,12 +4513,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "KogitoMetadataArgument",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "lastUpdate",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "DateArgument",
@@ -4528,7 +4528,7 @@
           },
           {
             "name": "processInstances",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "ProcessInstanceMetaArgument",
@@ -4538,7 +4538,7 @@
           },
           {
             "name": "userTasks",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "UserTaskInstanceMetaArgument",
@@ -4554,12 +4554,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "ProcessInstanceMetaArgument",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "id",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "IdArgument",
@@ -4569,7 +4569,7 @@
           },
           {
             "name": "processId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -4579,7 +4579,7 @@
           },
           {
             "name": "processName",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -4589,7 +4589,7 @@
           },
           {
             "name": "parentProcessInstanceId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "IdArgument",
@@ -4599,7 +4599,7 @@
           },
           {
             "name": "rootProcessInstanceId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "IdArgument",
@@ -4609,7 +4609,7 @@
           },
           {
             "name": "rootProcessId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -4619,7 +4619,7 @@
           },
           {
             "name": "state",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "ProcessInstanceStateArgument",
@@ -4629,7 +4629,7 @@
           },
           {
             "name": "endpoint",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -4639,7 +4639,7 @@
           },
           {
             "name": "roles",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArrayArgument",
@@ -4649,7 +4649,7 @@
           },
           {
             "name": "start",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "DateArgument",
@@ -4659,7 +4659,7 @@
           },
           {
             "name": "end",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "DateArgument",
@@ -4669,7 +4669,7 @@
           },
           {
             "name": "businessKey",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -4685,12 +4685,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "UserTaskInstanceMetaArgument",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "state",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -4700,7 +4700,7 @@
           },
           {
             "name": "id",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "IdArgument",
@@ -4710,7 +4710,7 @@
           },
           {
             "name": "description",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -4720,7 +4720,7 @@
           },
           {
             "name": "name",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -4730,7 +4730,7 @@
           },
           {
             "name": "priority",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -4740,7 +4740,7 @@
           },
           {
             "name": "processInstanceId",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "IdArgument",
@@ -4750,7 +4750,7 @@
           },
           {
             "name": "actualOwner",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -4760,7 +4760,7 @@
           },
           {
             "name": "potentialUsers",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArrayArgument",
@@ -4770,7 +4770,7 @@
           },
           {
             "name": "potentialGroups",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArrayArgument",
@@ -4780,7 +4780,7 @@
           },
           {
             "name": "excludedUsers",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArrayArgument",
@@ -4790,7 +4790,7 @@
           },
           {
             "name": "adminGroups",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArrayArgument",
@@ -4800,7 +4800,7 @@
           },
           {
             "name": "adminUsers",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArrayArgument",
@@ -4810,7 +4810,7 @@
           },
           {
             "name": "completed",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "DateArgument",
@@ -4820,7 +4820,7 @@
           },
           {
             "name": "started",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "DateArgument",
@@ -4830,7 +4830,7 @@
           },
           {
             "name": "referenceName",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringArgument",
@@ -4846,12 +4846,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "KogitoMetadataOrderBy",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "lastUpdate",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "OrderBy",

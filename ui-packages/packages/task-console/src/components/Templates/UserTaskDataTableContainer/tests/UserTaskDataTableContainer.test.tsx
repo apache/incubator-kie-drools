@@ -1,14 +1,12 @@
 import React from 'react';
 import UserTaskDataTableContainer from '../UserTaskDataTableContainer';
-import { getWrapperAsync } from '@kogito-apps/common';
+import { getWrapperAsync, GraphQL } from '@kogito-apps/common';
 import { MemoryRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/react-testing';
 
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
-// tslint:disable-next-line: no-var-requires
-const mockGraphqlTypes = require('../../../../graphql/types');
 
 jest.mock('../../../Molecules/UserTaskPageHeader/UserTaskPageHeader');
 jest.mock('@kogito-apps/common', () => ({
@@ -17,7 +15,6 @@ jest.mock('@kogito-apps/common', () => ({
     return <MockedComponent />;
   }
 }));
-jest.unmock('../../../../graphql/types');
 
 const mockUserTaskInstancesData = {
   UserTaskInstances: [
@@ -43,7 +40,9 @@ const mockUserTaskInstancesData = {
       rootProcessId: null,
       rootProcessInstanceId: null,
       started: '2020-02-19T10:59:34.185Z',
-      state: 'Ready'
+      state: 'Ready',
+      endpoint:
+        'http://localhost:8080/travels/9ae407dd-cdfa-4722-8a49-0a6d2e14550d/VisaApplication/9ae407dd-cdfa-4722-8a49-0a6d2e14550d'
     },
     {
       __typename: 'UserTaskInstance',
@@ -67,14 +66,16 @@ const mockUserTaskInstancesData = {
       rootProcessId: null,
       rootProcessInstanceId: null,
       started: '2020-02-19T11:11:56.282Z',
-      state: null
+      state: null,
+      endpoint:
+        'http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3'
     }
   ]
 };
 
 describe('UserTaskDataTableContainer component tests', () => {
   it('Should render UserTaskDataTableContainer correctly', async () => {
-    mockGraphqlTypes.useGetUserTasksByStatesQuery = jest.fn().mockReturnValue({
+    GraphQL.useGetUserTasksByStatesQuery = jest.fn().mockReturnValue({
       loading: false,
       error: undefined,
       refetch: jest.fn(),
@@ -94,7 +95,7 @@ describe('UserTaskDataTableContainer component tests', () => {
   });
 
   it('Should render UserTaskDataTableContainer with no data', async () => {
-    mockGraphqlTypes.useGetUserTasksByStatesQuery = jest.fn().mockReturnValue({
+    GraphQL.useGetUserTasksByStatesQuery = jest.fn().mockReturnValue({
       loading: false,
       error: undefined,
       refetch: jest.fn(),
@@ -110,6 +111,6 @@ describe('UserTaskDataTableContainer component tests', () => {
       'UserTaskDataTableContainer'
     );
     expect(wrapper).toMatchSnapshot();
-    expect(mockGraphqlTypes.useGetUserTasksByStatesQuery).toBeCalled();
+    expect(GraphQL.useGetUserTasksByStatesQuery).toBeCalled();
   });
 });

@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import FormFooter  from '../FormFooter';
+import FormFooter from '../FormFooter';
 import { IFormAction } from '../../../../util/uniforms/FormSubmitHandler/FormSubmitHandler';
 
 describe('Form Footer test', () => {

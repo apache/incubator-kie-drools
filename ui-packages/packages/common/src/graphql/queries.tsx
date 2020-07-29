@@ -243,3 +243,59 @@ const GET_INPUT_FIELDS_FROM_TYPES = gql`
     }
   }
 `;
+
+const GET_USER_TASKS_BY_STATES = gql`
+  query getUserTasksByStates($state: [String!]) {
+    UserTaskInstances(where: { state: { in: $state } }) {
+      id
+      description
+      name
+      priority
+      processInstanceId
+      processId
+      rootProcessInstanceId
+      rootProcessId
+      state
+      actualOwner
+      adminGroups
+      adminUsers
+      completed
+      started
+      excludedUsers
+      potentialGroups
+      potentialUsers
+      inputs
+      outputs
+      referenceName
+      endpoint
+    }
+  }
+`;
+
+const GET_USER_TASK = gql`
+  query getUserTaskById($id: String) {
+    UserTaskInstances(where: { id: { equal: $id } }) {
+      id
+      description
+      name
+      priority
+      processInstanceId
+      processId
+      rootProcessInstanceId
+      rootProcessId
+      state
+      actualOwner
+      adminGroups
+      adminUsers
+      completed
+      started
+      excludedUsers
+      potentialGroups
+      potentialUsers
+      inputs
+      outputs
+      referenceName
+      endpoint
+    }
+  }
+`;

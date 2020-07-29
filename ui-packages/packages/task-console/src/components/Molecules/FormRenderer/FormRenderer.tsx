@@ -1,4 +1,4 @@
-import React  from 'react';
+import React from 'react';
 import JSONSchemaBridge from 'uniforms-bridge-json-schema';
 import { AutoFields, AutoForm, ErrorsField } from 'uniforms-patternfly';
 import FormFooter from '../../Atoms/FormFooter/FormFooter';
@@ -18,7 +18,6 @@ const FormRenderer: React.FC<IOwnProps> = ({
   model,
   formSubmitHandler
 }) => {
-
   const validator = new DefaultFormValidator(formSchema);
 
   const bridge = new JSONSchemaBridge(formSchema, formModel => {
@@ -40,9 +39,7 @@ const FormRenderer: React.FC<IOwnProps> = ({
       disabled={formSubmitHandler.getActions().length === 0}
       schema={bridge}
       showInlineError={true}
-      onSubmit={formModel =>
-        formSubmitHandler.doSubmit(formModel)
-      }
+      onSubmit={formModel => formSubmitHandler.doSubmit(formModel)}
     >
       <ErrorsField />
       <AutoFields />

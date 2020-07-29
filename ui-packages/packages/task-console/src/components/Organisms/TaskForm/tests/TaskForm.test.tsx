@@ -1,14 +1,13 @@
 import React from 'react';
 import axios from 'axios';
-import { getWrapperAsync } from '@kogito-apps/common';
+import { getWrapperAsync, GraphQL } from '@kogito-apps/common';
 import TaskForm from '../TaskForm';
-import { TaskInfo, TaskInfoImpl } from '../../../../model/TaskInfo';
-import { UserTaskInstance } from '../../../../graphql/types';
 import ApplyForVisaForm from '../../../../util/tests/mocks/ApplyForVisa';
 import FormRenderer from '../../../Molecules/FormRenderer/FormRenderer';
 import { act } from 'react-dom/test-utils';
 import FormNotification from '../../../Atoms/FormNotification/FormNotification';
 import { TaskFormSubmitHandler } from '../../../../util/uniforms/TaskFormSubmitHandler/TaskFormSubmitHandler';
+import UserTaskInstance = GraphQL.UserTaskInstance;
 
 jest.mock('../../../Atoms/FormNotification/FormNotification');
 jest.mock('../../../Molecules/FormRenderer/FormRenderer');
@@ -48,13 +47,10 @@ const userTaskInstance: UserTaskInstance = {
     '{"Skippable":"true","trip":{"city":"Boston","country":"US","begin":"2020-02-19T23:00:00.000+01:00","end":"2020-02-26T23:00:00.000+01:00","visaRequired":true},"TaskName":"VisaApplication","NodeName":"Apply for visa","traveller":{"firstName":"Rachel","lastName":"White","email":"rwhite@gorle.com","nationality":"Polish","address":{"street":"Cabalone","city":"Zerf","zipCode":"765756","country":"Poland"}},"Priority":"1"}',
   outputs: '{}',
   referenceName: 'VisaApplication',
-  lastUpdate: '2020-02-19T11:11:56.282Z'
+  lastUpdate: '2020-02-19T11:11:56.282Z',
+  endpoint:
+    'http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3'
 };
-
-const taskInfo: TaskInfo = new TaskInfoImpl(
-  userTaskInstance,
-  'http://localhost:8080/travels'
-);
 
 enum Mode {
   SUCCESS,
@@ -73,7 +69,7 @@ const testSubmitCallbacks = async (mode: Mode) => {
 
   let wrapper = await getWrapperAsync(
     <TaskForm
-      taskInfo={taskInfo}
+      userTaskInstance={userTaskInstance}
       successCallback={formSubmitSuccessCallback}
       errorCallback={formSubmitErrorCallback}
     />,
@@ -164,7 +160,7 @@ describe('TaskForm Test', () => {
       data: ApplyForVisaForm
     });
     const wrapper = await getWrapperAsync(
-      <TaskForm taskInfo={taskInfo} />,
+      <TaskForm userTaskInstance={userTaskInstance} />,
       'TaskForm'
     );
 
@@ -177,7 +173,9 @@ describe('TaskForm Test', () => {
     expect(renderer).not.toBeNull();
 
     expect(renderer.props().formSchema).toBe(ApplyForVisaForm);
-    expect(renderer.props().formSubmitHandler).toBeInstanceOf(TaskFormSubmitHandler);
+    expect(renderer.props().formSubmitHandler).toBeInstanceOf(
+      TaskFormSubmitHandler
+    );
     expect(renderer.props().model).toStrictEqual(
       JSON.parse(userTaskInstance.inputs)
     );
@@ -189,7 +187,7 @@ describe('TaskForm Test', () => {
     });
 
     const wrapper = await getWrapperAsync(
-      <TaskForm taskInfo={taskInfo} />,
+      <TaskForm userTaskInstance={userTaskInstance} />,
       'TaskForm'
     );
 

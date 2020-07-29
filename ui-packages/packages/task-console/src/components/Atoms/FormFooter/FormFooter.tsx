@@ -18,10 +18,16 @@ const FormFooter: React.FC<IOwnProps> = ({ actions }) => {
           <Button
             key={'submit-' + action.name}
             type="submit"
-            variant={action.primary!== undefined ? (action.primary ? 'primary' : 'secondary') : "primary"}
+            variant={
+              action.primary !== undefined
+                ? action.primary
+                  ? 'primary'
+                  : 'secondary'
+                : 'primary'
+            }
             onClick={() => {
-              if(action.execute) {
-                action.execute()
+              if (action.execute) {
+                action.execute();
               }
             }}
           >

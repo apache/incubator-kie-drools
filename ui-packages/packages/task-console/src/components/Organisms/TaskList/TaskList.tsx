@@ -4,10 +4,10 @@ import TaskListItem from '../../Molecules/TaskListItem/TaskListItem';
 import {
   KogitoEmptyState,
   KogitoEmptyStateType,
-  KogitoSpinner
+  KogitoSpinner,
+  GraphQL
 } from '@kogito-apps/common';
 import '@patternfly/patternfly/patternfly-addons.css';
-import { useGetUserTasksByStatesQuery } from '../.././../graphql/types';
 
 interface IOwnProps {
   setInitData: any;
@@ -29,7 +29,12 @@ const TaskList: React.FC<IOwnProps> = ({
   isLoading,
   setIsError
 }) => {
-  const { loading, error, data, networkStatus } = useGetUserTasksByStatesQuery({
+  const {
+    loading,
+    error,
+    data,
+    networkStatus
+  } = GraphQL.useGetUserTasksByStatesQuery({
     variables: {
       state: ['Ready']
     },

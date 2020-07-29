@@ -6,17 +6,16 @@ import {
   InjectedOuiaProps,
   withOuiaContext
 } from '@patternfly/react-core';
-import _ from 'lodash';
 import React, { useState, useEffect } from 'react';
 import UserTaskPageHeader from '../../Molecules/UserTaskPageHeader/UserTaskPageHeader';
 import DataToolbarComponent from '../../Molecules/DataListToolbar/DataListToolbar';
 import './DataList.css';
 import TaskList from '../../Organisms/TaskList/TaskList';
-import { useGetUserTasksByStatesLazyQuery } from '../../../graphql/types';
 import {
   ouiaPageTypeAndObjectId,
   KogitoEmptyState,
-  KogitoEmptyStateType
+  KogitoEmptyStateType,
+  GraphQL
 } from '@kogito-apps/common';
 
 const DataListContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
@@ -30,7 +29,7 @@ const DataListContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
   const [
     getProcessInstances,
     { loading, data }
-  ] = useGetUserTasksByStatesLazyQuery({ fetchPolicy: 'network-only' });
+  ] = GraphQL.useGetUserTasksByStatesLazyQuery({ fetchPolicy: 'network-only' });
 
   const onFilterClick = (arr = checkedArray) => {
     setIsLoading(true);

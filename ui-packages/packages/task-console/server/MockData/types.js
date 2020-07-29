@@ -254,6 +254,7 @@ module.exports = typeDefs = gql`
     outputs: String
     referenceName: String
     lastUpdate: DateTime!
+    endpoint: String
   }
 
   type UserTaskInstanceMeta {
