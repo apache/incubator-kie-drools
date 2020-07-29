@@ -22,7 +22,6 @@ import java.util.Arrays;
 
 import javax.xml.XMLConstants;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_1.xstream.extensions.DecisionServicesExtensionRegister;
@@ -138,11 +137,10 @@ public class DMNXMLLoaderTest {
     }
 
     @Test
-    @Ignore("No unmarshaller implemented")
     public void testLoadingExample() {
         final DMNMarshaller DMNMarshaller = DMNMarshallerFactory.newDefaultMarshaller();
 
-        final InputStream is = this.getClass().getResourceAsStream( "/src/test/resources/ch11example.xml" );
+        final InputStream is = this.getClass().getResourceAsStream("ch11example.xml");
         final InputStreamReader isr = new InputStreamReader( is );
         final Object o = DMNMarshaller.unmarshal( isr );
 
@@ -152,11 +150,10 @@ public class DMNXMLLoaderTest {
     }
 
     @Test
-    @Ignore("No unmarshaller implemented")
     public void testLoadingDishDecision() {
         final DMNMarshaller DMNMarshaller = DMNMarshallerFactory.newDefaultMarshaller();
 
-        final InputStream is = this.getClass().getResourceAsStream( "/src/test/resources/dish-decision.xml" );
+        final InputStream is = this.getClass().getResourceAsStream("dish-decision.xml");
         final InputStreamReader isr = new InputStreamReader( is );
         final Object o = DMNMarshaller.unmarshal( isr );
 
