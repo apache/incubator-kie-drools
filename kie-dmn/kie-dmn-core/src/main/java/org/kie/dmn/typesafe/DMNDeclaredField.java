@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -31,6 +32,7 @@ import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefiniti
 import org.drools.modelcompiler.builder.generator.declaredtype.api.SimpleAnnotationDefinition;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
+import org.kie.dmn.feel.runtime.UnaryTestImpl;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.drools.core.util.StringUtils.ucFirst;
@@ -43,14 +45,14 @@ public class DMNDeclaredField implements FieldDefinition {
     private String fieldName;
     private String originalMapKey;
     private DMNType fieldDMNType;
-    private boolean withJacksonAnnotation;
+    private DMNStronglyCodeGenConfig codeGenConfig;
 
-    DMNDeclaredField(DMNAllTypesIndex index, Map.Entry<String, DMNType> dmnField, boolean withJacksonAnnotation) {
+    DMNDeclaredField(DMNAllTypesIndex index, Map.Entry<String, DMNType> dmnField, DMNStronglyCodeGenConfig codeGenConfig) {
         this.index = index;
         this.fieldName = CodegenStringUtil.escapeIdentifier(StringUtils.lcFirst(dmnField.getKey()));
         this.originalMapKey = dmnField.getKey();
         this.fieldDMNType = dmnField.getValue();
-        this.withJacksonAnnotation = withJacksonAnnotation;
+        this.codeGenConfig = codeGenConfig;
     }
 
     @Override
@@ -89,9 +91,19 @@ public class DMNDeclaredField implements FieldDefinition {
         List<AnnotationDefinition> annotations = new ArrayList<>();
         annotations.add(new SimpleAnnotationDefinition("org.kie.dmn.feel.lang.FEELProperty")
                                 .addValue("value", "\"" + originalMapKey + "\""));
-        if (withJacksonAnnotation) {
+        if (codeGenConfig.isWithJacksonAnnotation()) {
             annotations.add(new SimpleAnnotationDefinition("com.fasterxml.jackson.annotation.JsonProperty")
                                     .addValue("value", "\"" + originalMapKey + "\""));
+        }
+        if (codeGenConfig.isWithMPOpenApiAnnotation()) {
+            if (fieldDMNType.getAllowedValues() != null && !fieldDMNType.getAllowedValues().isEmpty() && getObjectType().equals("java.lang.String")) {
+                String enumeration = fieldDMNType.getAllowedValues().stream()
+                                                 .map(UnaryTestImpl.class::cast)
+                                                 .map(UnaryTestImpl::toString)
+                                                 .collect(Collectors.joining(","));
+                annotations.add(new SimpleAnnotationDefinition("org.eclipse.microprofile.openapi.annotations.media.Schema")
+                                .addValue("enumeration", "{" + enumeration + "}"));
+            }
         }
         return annotations;
     }
