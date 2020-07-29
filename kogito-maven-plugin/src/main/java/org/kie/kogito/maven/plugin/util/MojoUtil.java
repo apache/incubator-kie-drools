@@ -43,7 +43,8 @@ import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsfor
 
 public final class MojoUtil {
 
-    public static Set<URL> getProjectFiles(final MavenProject mavenProject, final List<InternalKieModule> kmoduleDeps)
+    public static Set<URL> getProjectFiles(final MavenProject mavenProject,
+                                           final List<InternalKieModule> kmoduleDeps)
             throws DependencyResolutionRequiredException, IOException {
         final Set<URL> urls = new HashSet<>();
         for (final String element : mavenProject.getCompileClasspathElements()) {
@@ -52,14 +53,8 @@ public final class MojoUtil {
 
         mavenProject.setArtifactFilter(new CumulativeScopeArtifactFilter(Arrays.asList("compile", "runtime")));
         for (final Artifact artifact : mavenProject.getArtifacts()) {
-            final File file = artifact.getFile();
-            if (file != null && file.isFile()) {
-                urls.add(file.toURI().toURL());
-                final KieModuleModel depModel = getDependencyKieModel(file);
-                if (kmoduleDeps != null && depModel != null) {
-                    final ReleaseId releaseId = new ReleaseIdImpl(artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion());
-                    kmoduleDeps.add(new ZipKieModule(releaseId, depModel, file));
-                }
+            if (artifact.getType().equals("jar")) {
+                populateURLsFromJarArtifact(urls, artifact, kmoduleDeps);
             }
         }
         return urls;
@@ -76,6 +71,20 @@ public final class MojoUtil {
             return URLClassLoader.newInstance(urls.toArray(new URL[0]), parentClassLoader);
         } catch (final DependencyResolutionRequiredException | IOException e) {
             throw new MojoExecutionException("Error setting up Kie ClassLoader", e);
+        }
+    }
+
+    private static void populateURLsFromJarArtifact(final Set<URL> toPopulate, final Artifact artifact,
+                                                    final List<InternalKieModule> kmoduleDeps) throws IOException {
+        final File file = artifact.getFile();
+        if (file != null && file.isFile()) {
+            toPopulate.add(file.toURI().toURL());
+            final KieModuleModel depModel = getDependencyKieModel(file);
+            if (kmoduleDeps != null && depModel != null) {
+                final ReleaseId releaseId = new ReleaseIdImpl(artifact.getGroupId(), artifact.getArtifactId(),
+                                                              artifact.getVersion());
+                kmoduleDeps.add(new ZipKieModule(releaseId, depModel, file));
+            }
         }
     }
 

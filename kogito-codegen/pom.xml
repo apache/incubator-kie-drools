@@ -101,6 +101,12 @@
       <artifactId>grafana-api</artifactId>
     </dependency>
 
+    <!-- PMML -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-pmml</artifactId>
+    </dependency>
+
     <!-- marshallers -->
     <dependency>
       <groupId>org.infinispan.protostream</groupId>

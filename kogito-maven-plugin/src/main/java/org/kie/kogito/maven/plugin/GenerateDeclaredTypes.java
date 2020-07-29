@@ -72,6 +72,9 @@ public class GenerateDeclaredTypes extends AbstractKieMojo {
     @Parameter(property = "kogito.codegen.decisions", defaultValue = "")
     private String generateDecisions; // defaults to true iff there exist DMN files
 
+    @Parameter(property = "kogito.codegen.predictions", defaultValue = "")
+    private String generatePredictions; // defaults to true iff there exist PMML files
+
     @Parameter(property = "kogito.sources.keep", defaultValue = "false")
     private boolean keepSources;
 

@@ -16,6 +16,7 @@
 package org.kie.kogito;
 
 import org.kie.kogito.decision.DecisionConfig;
+import org.kie.kogito.prediction.PredictionConfig;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.rules.RuleConfig;
 
@@ -44,6 +45,13 @@ public interface Config {
      * @return decision specific configuration or null of no decision is found in the application
      */
     DecisionConfig decision();
+
+    /**
+     * Provides prediction specific configuration
+     *
+     * @return prediction specific configuration or null of no prediction is found in the application
+     */
+    PredictionConfig prediction();
 
     /**
      * Provides access to addons in the application.

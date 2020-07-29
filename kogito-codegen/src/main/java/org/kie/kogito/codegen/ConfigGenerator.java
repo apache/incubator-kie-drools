@@ -40,6 +40,7 @@ import org.kie.kogito.codegen.decision.config.DecisionConfigGenerator;
 import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.di.SpringDependencyInjectionAnnotator;
+import org.kie.kogito.codegen.prediction.config.PredictionConfigGenerator;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
 import org.slf4j.Logger;
@@ -61,6 +62,7 @@ public class ConfigGenerator {
     private ProcessConfigGenerator processConfig;
     private RuleConfigGenerator ruleConfig;
     private DecisionConfigGenerator decisionConfig;
+    private PredictionConfigGenerator predictionConfig;
 
     private String packageName;
     private final String sourceFilePath;
@@ -100,6 +102,14 @@ public class ConfigGenerator {
         return this;
     }
 
+    public ConfigGenerator withPredictionConfig(PredictionConfigGenerator cfg) {
+        this.predictionConfig = cfg;
+        if (this.predictionConfig != null) {
+            this.predictionConfig.withDependencyInjection(annotator);
+        }
+        return this;
+    }
+
     public ConfigGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
         this.annotator = annotator;
         return this;
@@ -119,6 +129,7 @@ public class ConfigGenerator {
 
         generateProcessConfigDescriptor().ifPresent(generatedFiles::add);
         generateRuleConfigDescriptor().ifPresent(generatedFiles::add);
+        generatePredictionConfigDescriptor().ifPresent(generatedFiles::add);
         generateDecisionConfigDescriptor().ifPresent(generatedFiles::add);
 
         return generatedFiles;
@@ -151,6 +162,16 @@ public class ConfigGenerator {
         Optional<CompilationUnit> compilationUnit = decisionConfig.compilationUnit();
         return compilationUnit.map(c -> new GeneratedFile(GeneratedFile.Type.APPLICATION_CONFIG,
                                                           decisionConfig.generatedFilePath(),
+                                                          log(c.toString()).getBytes(StandardCharsets.UTF_8)));
+    }
+
+    private Optional<GeneratedFile> generatePredictionConfigDescriptor() {
+        if (predictionConfig == null) {
+            return Optional.empty();
+        }
+        Optional<CompilationUnit> compilationUnit = predictionConfig.compilationUnit();
+        return compilationUnit.map(c -> new GeneratedFile(GeneratedFile.Type.APPLICATION_CONFIG,
+                                                          predictionConfig.generatedFilePath(),
                                                           log(c.toString()).getBytes(StandardCharsets.UTF_8)));
     }
 

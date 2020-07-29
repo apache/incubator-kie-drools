@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.drools.core.config.DefaultRuleEventListenerConfig;
 import org.drools.core.event.DefaultAgendaEventListener;
 import org.junit.jupiter.api.Test;
 import org.kie.api.event.process.DefaultProcessEventListener;
@@ -36,7 +35,6 @@ import org.kie.kogito.codegen.data.Account;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.uow.UnitOfWork;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -143,7 +141,7 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
         Map<AbstractCodegenTest.TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("decision/models/dmnprocess.bpmn2"));
         resourcesTypeMap.put(TYPE.DECISION, Collections.singletonList("decision/models/vacationDaysAlt/vacationDaysAlt.dmn"));
-        Application app =generateCode(resourcesTypeMap, false);
+        Application app = generateCode(resourcesTypeMap, false);
         Process<? extends Model> p =
                 app.processes()
                         .processById("DmnProcess");

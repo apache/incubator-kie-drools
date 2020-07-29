@@ -24,11 +24,14 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -42,6 +45,7 @@ import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.context.SpringBootKogitoBuildContext;
 import org.kie.kogito.codegen.decision.DecisionCodegen;
+import org.kie.kogito.codegen.prediction.PredictionCodegen;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 import org.slf4j.Logger;
@@ -55,7 +59,7 @@ public class AbstractCodegenTest {
 
     /**
      * Order matters here because inside {@link AbstractCodegenTest#generateCode(Map, boolean)} it is the order used to invoke
-     * 
+     *
      * {@link ApplicationGenerator#withGenerator(Generator) }
      */
     protected enum TYPE {
@@ -65,7 +69,6 @@ public class AbstractCodegenTest {
         JAVA,
         PREDICTION
     }
-
     private TestClassLoader classloader;
 
     private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.INSTANCE.loadCompiler(JavaDialectConfiguration.CompilerType.NATIVE, "11");
@@ -95,6 +98,12 @@ public class AbstractCodegenTest {
                                                                                               .stream()
                                                                                               .map(resource -> new File(TEST_JAVA, resource))
                                                                                               .collect(Collectors.toList())));
+        generatorTypeMap.put(TYPE.PREDICTION,
+                             strings -> PredictionCodegen.ofFiles(Paths.get(TEST_RESOURCES).toAbsolutePath(),
+                                                                  strings
+                                                                          .stream()
+                                                                          .map(resource -> new File(TEST_RESOURCES, resource))
+                                                                          .collect(Collectors.toList())));
     }
 
     private boolean withSpringContext;
@@ -137,11 +146,17 @@ public class AbstractCodegenTest {
                         .withRuleUnits(hasRuleUnit)
                         .withDependencyInjection(null);
 
-
+        // Hack just to avoid test breaking
+        Set<TYPE> generatedTypes = new HashSet<>();
         for (TYPE type :  TYPE.values()) {
             if (resourcesTypeMap.containsKey(type) && !resourcesTypeMap.get(type).isEmpty()) {
                 appGen.withGenerator(generatorTypeMap.get(type).apply(resourcesTypeMap.get(type)));
+                generatedTypes.add(type);
             }
+        }
+        // Hack just to avoid test breaking
+        if (generatedTypes.contains(TYPE.DECISION) && !generatedTypes.contains(TYPE.PREDICTION)) {
+            appGen.withGenerator(generatorTypeMap.get(TYPE.PREDICTION).apply(Collections.EMPTY_LIST));
         }
 
         Collection<GeneratedFile> generatedFiles = appGen.generate();

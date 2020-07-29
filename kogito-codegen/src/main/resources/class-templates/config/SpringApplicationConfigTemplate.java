@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import org.drools.core.config.StaticRuleConfig;
 import org.kie.kogito.dmn.config.StaticDecisionConfig;
+import org.kie.kogito.pmml.config.StaticPredictionConfig;
 import org.kie.kogito.process.impl.StaticProcessConfig;
 
 @org.springframework.stereotype.Component
@@ -16,10 +17,12 @@ public class ApplicationConfig extends org.kie.kogito.StaticConfig {
     public ApplicationConfig(
             List<org.kie.kogito.process.ProcessConfig> processConfig,
             List<org.kie.kogito.rules.RuleConfig> ruleConfig,
-            List<org.kie.kogito.decision.DecisionConfig> decisionConfig) {
+            List<org.kie.kogito.decision.DecisionConfig> decisionConfig,
+            List<org.kie.kogito.prediction.PredictionConfig> predictionConfig) {
         super(orDefault(processConfig, StaticProcessConfig::new),
               orDefault(ruleConfig, StaticRuleConfig::new),
-              orDefault(decisionConfig, StaticDecisionConfig::new));
+              orDefault(decisionConfig, StaticDecisionConfig::new),
+              orDefault(predictionConfig, StaticPredictionConfig::new));
     }
 
     private static <T> T orDefault(List<T> instances, Supplier<T> supplier) {

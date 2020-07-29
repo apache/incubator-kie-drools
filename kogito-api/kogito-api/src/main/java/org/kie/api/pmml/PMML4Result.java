@@ -30,7 +30,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.kie.api.definition.type.PropertyReactive;
-//import org.kie.pmml.pmml_4_2.model.mining.SegmentExecution;
 
 @PropertyReactive
 @XmlType(name = "PMML4Result")
@@ -47,18 +46,21 @@ public class PMML4Result {
     private int segmentIndex;
     @XmlAttribute(name="resultCode", required=true)
     private String resultCode;
+    @XmlAttribute(name="resultObjectName")
+    private String resultObjectName;
     @XmlElementWrapper(name="resultVariables")
     private Map<String, Object> resultVariables;
-    
+
+
     public PMML4Result() {
         resultVariables = new HashMap<>();
     }
-    
+
     public PMML4Result(String correlationId) {
         this.correlationId = correlationId;
         this.resultVariables = new HashMap<>();
     }
-    
+
     public String getResultCode() {
         return resultCode;
     }
@@ -91,13 +93,22 @@ public class PMML4Result {
         this.segmentIndex = segmentIndex;
     }
 
+
+    public String getResultObjectName() {
+        return resultObjectName;
+    }
+
+    public void setResultObjectName(String resultObjectName) {
+        this.resultObjectName = resultObjectName;
+    }
+
     public Map<String, Object> getResultVariables() {
         if (resultVariables == null) {
             resultVariables = new HashMap<>();
         }
         return resultVariables;
     }
-    
+
     public void updateResultVariable(String objName, Object obj) {
         if (this.resultVariables == null) {
             this.resultVariables = new HashMap<>();
@@ -108,19 +119,19 @@ public class PMML4Result {
     public void setResultVariables(Map<String, Object> resultVariables) {
         this.resultVariables = resultVariables;
     }
-    
+
     public void addResultVariable(String objName, Object object) {
         if (this.resultVariables == null) {
             this.resultVariables = new HashMap<>();
         }
         this.resultVariables.put(objName, object);
     }
-    
+
     private String getGetterMethodName(Object wrapper, String fieldName, String prefix) {
         String capFieldName = fieldName.substring(0,1).toUpperCase() + fieldName.substring(1);
         return prefix + capFieldName;
     }
-    
+
     public <T> Optional<T> getResultValue(String objName, String objField, Class<T> clazz, Object...params) {
         T value = null;
         Object obj = getResultValue(objName, objField, params);
@@ -129,12 +140,16 @@ public class PMML4Result {
         }
         return value != null ? Optional.of(value) : Optional.empty();
     }
-    
+
     public Object getResultValue(String objName, String objField, Object...params) {
         Object value = null;
         Object holder = getResultVariables().get(objName);
         if (holder != null) {
             if (objField != null && !objField.trim().isEmpty()) {
+                if (Map.class.isAssignableFrom(holder.getClass())) {
+                    value = ((Map) holder).get(objField);
+                    return value;
+                }
                 String defFldRetriever = getGetterMethodName(holder,objField,"get");
                 try {
                     Class[] paramTypes = null;
@@ -182,11 +197,11 @@ public class PMML4Result {
             } else {
                 value = holder;
             }
-            
+
         }
         return value;
     }
-    
+
     public String getCorrelationId() {
         return correlationId;
     }
@@ -252,5 +267,5 @@ public class PMML4Result {
                 + resultVariables + "]";
     }
 
-    
+
 }

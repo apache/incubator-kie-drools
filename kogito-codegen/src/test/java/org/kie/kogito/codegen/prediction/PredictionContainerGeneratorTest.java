@@ -1,0 +1,247 @@
+package org.kie.kogito.codegen.prediction;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.FileSystem;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.stmt.Statement;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.kie.kogito.codegen.AddonsConfig;
+import org.kie.pmml.commons.model.KiePMMLModel;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class PredictionContainerGeneratorTest {
+
+    private final static String APP_CANONICAL_NAME = "APP_CANONICAL_NAME";
+    private final static List<PMMLResource> PMML_RESOURCES = getPMMLResources();
+    private static PredictionContainerGenerator predictionContainerGenerator;
+
+    @BeforeAll
+    public static void setup() {
+        predictionContainerGenerator = new PredictionContainerGenerator(APP_CANONICAL_NAME,
+                                                                        PMML_RESOURCES);
+        assertNotNull(predictionContainerGenerator);
+    }
+
+    @Test
+    void constructor() {
+        assertEquals(APP_CANONICAL_NAME, predictionContainerGenerator.applicationCanonicalName);
+        assertEquals(PMML_RESOURCES, predictionContainerGenerator.resources);
+    }
+
+    @Test
+    void withAddons() {
+        PredictionContainerGenerator retrieved = predictionContainerGenerator.withAddons(null);
+        assertEquals(retrieved, predictionContainerGenerator);
+        assertNull(predictionContainerGenerator.addonsConfig);
+        predictionContainerGenerator.withAddons(AddonsConfig.DEFAULT);
+        assertEquals(AddonsConfig.DEFAULT, predictionContainerGenerator.addonsConfig);
+    }
+
+    @Test
+    void classDeclaration() {
+        ClassOrInterfaceDeclaration retrieved = predictionContainerGenerator.classDeclaration();
+        assertNotNull(retrieved);
+        String retrievedString = retrieved.toString();
+        String expected = PMML_RESOURCES
+                .stream()
+                .map(pmmlResource ->  "\"" + pmmlResource.getModelPath() + "\"")
+                .collect(Collectors.joining(", "));
+        expected = String.format("org.kie.kogito.pmml.PMMLKogito.createKieRuntimeFactories(%s);", expected);
+        assertTrue(retrievedString.contains(expected));
+
+    }
+
+    @Test
+    void setupStatements() {
+        List<Statement> retrieved = predictionContainerGenerator.setupStatements();
+        assertNotNull(retrieved);
+        String expected = "[if (config().prediction() != null) {\n" +
+                "    predictionModels.init(this);\n" +
+                "}]";
+        String retrievedString = retrieved.toString();
+        assertEquals(expected, retrievedString);
+    }
+
+    @Test
+    void useApplication() {
+        assertFalse(predictionContainerGenerator.useApplication());
+    }
+
+    private static List<PMMLResource> getPMMLResources() {
+        return IntStream.range(0, 3)
+                .mapToObj(i -> getPMMLResource("Resource-" + i)).collect(Collectors.toList());
+    }
+
+    private static PMMLResource getPMMLResource(String resourceName) {
+        Path path = getPath();
+        String modelPath = "path/to/" + resourceName;
+        List<KiePMMLModel> kiePmmlModels =
+                IntStream.range(0, 3).mapToObj(i -> getKiePMMLModelInternal(resourceName + "_Model-" + i)).collect(Collectors.toList());
+        return new PMMLResource(kiePmmlModels, path, modelPath);
+    }
+
+    private static KiePMMLModel getKiePMMLModelInternal(String modelName) {
+        return new KiePMMLModel(modelName, Collections.emptyList()) {
+
+            @Override
+            public Object evaluate(Object o, Map<String, Object> map) {
+                return null;
+            }
+        };
+    }
+
+    private static Path getPath() {
+        return new Path() {
+            @Override
+            public FileSystem getFileSystem() {
+                return null;
+            }
+
+            @Override
+            public boolean isAbsolute() {
+                return false;
+            }
+
+            @Override
+            public Path getRoot() {
+                return null;
+            }
+
+            @Override
+            public Path getFileName() {
+                return null;
+            }
+
+            @Override
+            public Path getParent() {
+                return null;
+            }
+
+            @Override
+            public int getNameCount() {
+                return 0;
+            }
+
+            @Override
+            public Path getName(int index) {
+                return null;
+            }
+
+            @Override
+            public Path subpath(int beginIndex, int endIndex) {
+                return null;
+            }
+
+            @Override
+            public boolean startsWith(Path other) {
+                return false;
+            }
+
+            @Override
+            public boolean endsWith(Path other) {
+                return false;
+            }
+
+            @Override
+            public Path normalize() {
+                return null;
+            }
+
+            @Override
+            public Path resolve(Path other) {
+                return null;
+            }
+
+            @Override
+            public Path relativize(Path other) {
+                return null;
+            }
+
+            @Override
+            public URI toUri() {
+                return null;
+            }
+
+            @Override
+            public Path toAbsolutePath() {
+                return null;
+            }
+
+            @Override
+            public Path toRealPath(LinkOption... options) throws IOException {
+                return null;
+            }
+
+            @Override
+            public WatchKey register(WatchService watcher, WatchEvent.Kind<?>[] events,
+                                     WatchEvent.Modifier... modifiers) throws IOException {
+                return null;
+            }
+
+            @Override
+            public int compareTo(Path other) {
+                return 0;
+            }
+
+            @Override
+            public Iterator<Path> iterator() {
+                return null;
+            }
+
+            @Override
+            public boolean startsWith(String other) {
+                return false;
+            }
+
+            @Override
+            public boolean endsWith(String other) {
+                return false;
+            }
+
+            @Override
+            public Path resolve(String other) {
+                return null;
+            }
+
+            @Override
+            public Path resolveSibling(Path other) {
+                return null;
+            }
+
+            @Override
+            public Path resolveSibling(String other) {
+                return null;
+            }
+
+            @Override
+            public File toFile() {
+                return null;
+            }
+
+            @Override
+            public WatchKey register(WatchService watcher, WatchEvent.Kind<?>... events) throws IOException {
+                return null;
+            }
+        };
+    }
+}

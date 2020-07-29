@@ -264,6 +264,14 @@ public class ResourceType
                                                                      "src/main/resources",
                                                                      "feel");
 
+    /** NO-Operation ResourceType - used for example to dynamically disable a given AssemblerService */
+    public static final ResourceType NOOP = addResourceTypeToRegistry("NOOP",
+                                                                      false,
+                                                                      "No-operation type",
+                                                                      "src/main/resources",
+                                                                      "no_op");
+
+
     public static ResourceType getResourceType(final String resourceType) {
         ResourceType resource = CACHE.get(resourceType);
         if (resource == null) {

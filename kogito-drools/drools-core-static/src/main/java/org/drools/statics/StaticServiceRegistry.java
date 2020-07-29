@@ -24,6 +24,8 @@ import java.util.Map;
 
 import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.internal.assembler.KieAssemblers;
+import org.kie.api.internal.runtime.KieRuntimeService;
+import org.kie.api.internal.runtime.KieRuntimes;
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
@@ -55,11 +57,15 @@ public class StaticServiceRegistry implements ServiceRegistry {
         serviceMap.put(org.kie.kogito.rules.DataSource.Factory.class, SimpleInstanceCreator.instance("org.kie.kogito.rules.units.impl.DataSourceFactoryImpl"));
         serviceMap.put(org.kie.internal.ruleunit.RuleUnitComponentFactory.class, SimpleInstanceCreator.instance("org.kie.kogito.rules.units.impl.RuleUnitComponentFactoryImpl"));
         serviceMap.put(KieAssemblers.class, new StaticKieAssemblers());
+        serviceMap.put(KieRuntimes.class, SimpleInstanceCreator.instance("org.kie.internal.services.KieRuntimesImpl"));
+
 
         registerService("org.drools.compiler.kie.builder.impl.InternalKieModuleProvider", "org.drools.modelcompiler.CanonicalKieModuleProvider", true);
         registerService("org.drools.compiler.compiler.DecisionTableProvider", "org.drools.decisiontable.DecisionTableProviderImpl", false);
 
         constructorMap.put("TimerService", SimpleInstanceCreator.constructor("org.kie.kogito.timer.impl.JDKTimerService"));
+
+        registerKieRuntimeService("org.kie.pmml.evaluator.api.executor.PMMLRuntime", "org.kie.pmml.evaluator.core.service.PMMLRuntimeService");
     }
 
     private void registerService(String service, String implementation, boolean mandatory) {
@@ -71,6 +77,15 @@ public class StaticServiceRegistry implements ServiceRegistry {
             } else {
                 log.debug("Ignored non-mandatory service load error", e);
             }
+        }
+    }
+
+    private void registerKieRuntimeService(String runtimeName, String kieRuntimeServiceImplementation) {
+        try {
+            KieRuntimeService kieRuntimeService = (KieRuntimeService)SimpleInstanceCreator.instance(kieRuntimeServiceImplementation);
+            ((KieRuntimes) serviceMap.get(KieRuntimes.class)).getRuntimes().put(runtimeName, kieRuntimeService);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

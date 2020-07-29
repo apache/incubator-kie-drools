@@ -42,6 +42,9 @@
     <module>drools-compiler</module>
     <module>kogito-drools-model</module>
     <module>kogito-ruleunits</module>
+    <module>kogito-pmml-api-dependencies</module>
+    <module>kogito-pmml-dependencies</module>
+    <module>kogito-pmml</module>
     <module>kogito-dmn</module>
     <module>drools-decisiontables</module>
     <module>kogito-drools</module>

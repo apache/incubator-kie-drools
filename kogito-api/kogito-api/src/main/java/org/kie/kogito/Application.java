@@ -16,6 +16,7 @@
 package org.kie.kogito;
 
 import org.kie.kogito.decision.DecisionModels;
+import org.kie.kogito.prediction.PredictionModels;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.rules.RuleUnits;
 import org.kie.kogito.uow.UnitOfWorkManager;
@@ -50,7 +51,15 @@ public interface Application {
     default RuleUnits ruleUnits() {
         return null;
     }
-    
+
+    /**
+     * Returns prediction models found in the application otherwise null
+     * @return prediction models or null if not found
+     */
+    default PredictionModels predictionModels() {
+        return null;
+    }
+
     /**
      * Returns decision models found in the application otherwise null
      * @return decision models or null if not found

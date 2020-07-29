@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -31,6 +31,13 @@
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-pmml-dependencies</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
@@ -181,6 +188,13 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!-- PMML -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-pmml-dependencies</artifactId>
+      <type>pom</type>
+    </dependency>
+
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>drools-decisiontables</artifactId>
@@ -204,7 +218,7 @@
       <groupId>com.github.javaparser</groupId>
       <artifactId>javaparser-core</artifactId>
     </dependency>
-    
+
     <!-- classpath scanning -->
     <dependency>
       <groupId>org.reflections</groupId>
