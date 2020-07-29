@@ -1,5 +1,6 @@
 package org.drools;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +17,10 @@ public class Person {
     public String nicknamePublic;
 
     private Map<String, String> items = new HashMap<>();
+
+    private BigDecimal salary;
+
+    private Integer ageAsInteger;
 
     public Person(String name) {
         this(name, null);
@@ -67,5 +72,21 @@ public class Person {
 
     public void setItems(Map<String, String> items) {
         this.items = items;
+    }
+
+    public BigDecimal getSalary() {
+        return salary;
+    }
+
+    public void setSalary( BigDecimal salary ) {
+        this.salary = salary;
+    }
+
+    public Integer getAgeAsInteger() {
+        return ageAsInteger;
+    }
+
+    public void setAgeAsInteger( Integer ageAsInteger ) {
+        this.ageAsInteger = ageAsInteger;
     }
 }
