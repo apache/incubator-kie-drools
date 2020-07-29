@@ -846,4 +846,12 @@ public class SpreadsheetCompilerUnitTest {
         assertTrue( drl.contains( "query Results $r: /results end" ) );
         assertTrue( drl.contains( "$p: /persons[age < 18]" ) );
     }
+
+    @Test
+    public void testUseWatchAnnotation() {
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        final InputStream stream = this.getClass().getResourceAsStream( "/data/CanDrinkUsingWatch.xls" );
+        final String drl = converter.compile(stream, InputType.XLS);
+        assertTrue( drl.contains( "$p: Person(age < 18) @watch(name)" ) );
+    }
 }
