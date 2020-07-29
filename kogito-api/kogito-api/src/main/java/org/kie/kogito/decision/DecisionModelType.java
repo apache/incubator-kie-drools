@@ -15,7 +15,14 @@
 
 package org.kie.kogito.decision;
 
-public interface DecisionModels {
+public enum DecisionModelType {
 
-    DecisionModel getDecisionModel(String namespace, String name);
+    DMN("dmn");
+
+    private String type;
+
+    DecisionModelType(final String type) {
+        this.type = type;
+    }
+
 }

@@ -45,19 +45,20 @@ public class DecisionCodegenTest {
         codeGenerator.setContext(context);
 
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
-        assertEquals(5, generatedFiles.size());
+        assertEquals(6, generatedFiles.size());
 
         assertIterableEquals(Arrays.asList(
                 "decision/InputSet.java",
                 "decision/TEmployee.java",
                 "decision/TAddress.java",
                 "decision/TPayroll.java",
-                "decision/VacationsResource.java"
+                "decision/VacationsResource.java",
+                "org/kie/kogito/app/DecisionModelResourcesProvider.java"
                              ),
                              fileNames(generatedFiles)
         );
 
-        ClassOrInterfaceDeclaration classDeclaration = codeGenerator.moduleGenerator().classDeclaration();
+        ClassOrInterfaceDeclaration classDeclaration = codeGenerator.section().classDeclaration();
         assertNotNull(classDeclaration);
     }
 
@@ -79,14 +80,15 @@ public class DecisionCodegenTest {
         codeGenerator.setContext(context);
 
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
-        assertEquals(2, generatedFiles.size());
+        assertEquals(3, generatedFiles.size());
 
         assertIterableEquals(Arrays.asList("http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/InputSet.java",
-                                           "http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/OneOfEachTypeResource.java"),
+                                           "http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/OneOfEachTypeResource.java",
+                                           "org/kie/kogito/app/DecisionModelResourcesProvider.java"),
                              fileNames(generatedFiles)
         );
 
-        ClassOrInterfaceDeclaration classDeclaration = codeGenerator.moduleGenerator().classDeclaration();
+        ClassOrInterfaceDeclaration classDeclaration = codeGenerator.section().classDeclaration();
         assertNotNull(classDeclaration);
     }
 
@@ -123,9 +125,9 @@ public class DecisionCodegenTest {
         DecisionCodegen codeGenerator = DecisionCodegen.ofPath(Paths.get("src/test/resources/decision-test20200507").toAbsolutePath());
 
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
-        assertEquals(2, generatedFiles.size());
+        assertEquals(3, generatedFiles.size());
 
-        ClassOrInterfaceDeclaration classDeclaration = codeGenerator.moduleGenerator().classDeclaration();
+        ClassOrInterfaceDeclaration classDeclaration = codeGenerator.section().classDeclaration();
         assertNotNull(classDeclaration);
     }
 

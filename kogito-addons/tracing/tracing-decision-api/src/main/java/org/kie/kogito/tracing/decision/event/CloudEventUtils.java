@@ -22,28 +22,27 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import io.cloudevents.json.Json;
 import io.cloudevents.v1.CloudEventBuilder;
 import io.cloudevents.v1.CloudEventImpl;
-import org.kie.kogito.tracing.decision.event.trace.TraceEvent;
 
 public class CloudEventUtils {
 
-    private static final TypeReference<CloudEventImpl<TraceEvent>> CLOUD_EVENT_TYPE_REF = new TypeReference<>() {
-    };
-
-    public static CloudEventImpl<TraceEvent> build(String id, URI source, TraceEvent data) {
-        return CloudEventBuilder.<TraceEvent>builder()
-                .withType(TraceEvent.class.getName())
+    public static <E> CloudEventImpl<E> build(String id,
+                                              URI source,
+                                              E data,
+                                              Class<E> dataType) {
+        return CloudEventBuilder.<E>builder()
+                .withType(dataType.getName())
                 .withId(id)
                 .withSource(source)
                 .withData(data)
                 .build();
     }
 
-    public static String encode(CloudEventImpl<TraceEvent> event) {
+    public static <E> String encode(CloudEventImpl<E> event) {
         return Json.encode(event);
     }
 
-    public static CloudEventImpl<TraceEvent> decode(String json) {
-        return Json.decodeValue(json, CLOUD_EVENT_TYPE_REF);
+    public static <E> CloudEventImpl<E> decode(String json, TypeReference<CloudEventImpl<E>> ref) {
+        return Json.decodeValue(json, ref);
     }
 
     private CloudEventUtils() {

@@ -22,37 +22,28 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.quarkus.vertx.ConsumeEvent;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.subjects.PublishSubject;
-import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import org.kie.kogito.Application;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 import org.kie.kogito.tracing.decision.modelsupplier.ApplicationModelSupplier;
-import org.reactivestreams.Publisher;
 
 @Singleton
 public class QuarkusDecisionTracingCollector {
 
-    private final PublishSubject<String> eventSubject;
     private final DecisionTracingCollector collector;
 
-    public QuarkusDecisionTracingCollector(BiFunction<String, String, org.kie.dmn.api.core.DMNModel> modelSupplier) {
-        eventSubject = PublishSubject.create();
-        collector = new DecisionTracingCollector(eventSubject::onNext, modelSupplier);
+    public QuarkusDecisionTracingCollector(final QuarkusTraceEventEmitter eventEmitter,
+                                           final BiFunction<String, String, org.kie.dmn.api.core.DMNModel> modelSupplier) {
+        this.collector = new DecisionTracingCollector(eventEmitter::emit, modelSupplier);
     }
 
     @Inject
-    public QuarkusDecisionTracingCollector(Application application) {
-        this(new ApplicationModelSupplier(application));
-    }
-
-    @Outgoing("kogito-tracing-decision")
-    public Publisher<String> getEventPublisher() {
-        return eventSubject.toFlowable(BackpressureStrategy.BUFFER);
+    public QuarkusDecisionTracingCollector(final Application application,
+                                           final QuarkusTraceEventEmitter eventEmitter) {
+        this(eventEmitter, new ApplicationModelSupplier(application));
     }
 
     @ConsumeEvent("kogito-tracing-decision_EvaluateEvent")
-    public void onEvent(EvaluateEvent event) {
+    public void onEvent(final EvaluateEvent event) {
         collector.addEvent(event);
     }
 }

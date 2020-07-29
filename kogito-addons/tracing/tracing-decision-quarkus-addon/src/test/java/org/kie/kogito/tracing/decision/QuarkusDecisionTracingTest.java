@@ -87,8 +87,9 @@ public class QuarkusDecisionTracingTest {
         final Application mockedApplication = mock(Application.class);
         when(mockedApplication.decisionModels()).thenReturn(mockedDecisionModels);
 
-        QuarkusDecisionTracingCollector collector = new QuarkusDecisionTracingCollector(mockedApplication);
-        collector.getEventPublisher().subscribe(subscriber);
+        QuarkusTraceEventEmitter eventEmitter = new QuarkusTraceEventEmitter();
+        QuarkusDecisionTracingCollector collector = new QuarkusDecisionTracingCollector(mockedApplication, eventEmitter);
+        eventEmitter.getEventPublisher().subscribe(subscriber);
         eventCaptor.getAllValues().forEach(collector::onEvent);
 
         subscriber.assertValueCount(1);
@@ -96,5 +97,4 @@ public class QuarkusDecisionTracingTest {
         CloudEventImpl<JsonNode> cloudEvent = Json.decodeValue(subscriber.values().get(0), CloudEventImpl.class, JsonNode.class);
         assertEquals(TEST_EXECUTION_ID, cloudEvent.getAttributes().getId());
     }
-
 }

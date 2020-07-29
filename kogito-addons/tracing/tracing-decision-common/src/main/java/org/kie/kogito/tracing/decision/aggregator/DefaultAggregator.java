@@ -77,8 +77,8 @@ public class DefaultAggregator implements Aggregator {
     @Override
     public CloudEventImpl<TraceEvent> aggregate(DMNModel model, String executionId, List<EvaluateEvent> events) {
         return events == null || events.isEmpty()
-               ? buildNotEnoughDataCloudEvent(model, executionId)
-               : buildDefaultCloudEvent(model, executionId, events);
+                ? buildNotEnoughDataCloudEvent(model, executionId)
+                : buildDefaultCloudEvent(model, executionId, events);
     }
 
     private static CloudEventImpl<TraceEvent> buildNotEnoughDataCloudEvent(DMNModel model, String executionId) {
@@ -97,7 +97,7 @@ public class DefaultAggregator implements Aggregator {
 
         TraceEvent event = new TraceEvent(header, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
 
-        return CloudEventUtils.build(executionId, URI.create(URLEncoder.encode(UNKNOWN_SOURCE_URL, StandardCharsets.UTF_8)), event);
+        return CloudEventUtils.build(executionId, URI.create(URLEncoder.encode(UNKNOWN_SOURCE_URL, StandardCharsets.UTF_8)), event, TraceEvent.class);
     }
 
     private static CloudEventImpl<TraceEvent> buildDefaultCloudEvent(DMNModel model, String executionId, List<EvaluateEvent> events) {
@@ -128,13 +128,13 @@ public class DefaultAggregator implements Aggregator {
         // complete event
         TraceEvent event = new TraceEvent(header, inputs, outputs, executionStepsPair.getLeft());
 
-        return CloudEventUtils.build(executionId, buildSource(firstEvent), event);
+        return CloudEventUtils.build(executionId, buildSource(firstEvent), event, TraceEvent.class);
     }
 
     private static URI buildSource(EvaluateEvent event) {
         return event.getType() == BEFORE_EVALUATE_DECISION_SERVICE || event.getType() == AFTER_EVALUATE_DECISION_SERVICE
-               ? URI.create(String.format("%s/%s", urlEncode(event.getModelName()), urlEncode(event.getNodeName())))
-               : URI.create(urlEncode(event.getModelName()));
+                ? URI.create(String.format("%s/%s", urlEncode(event.getModelName()), urlEncode(event.getNodeName())))
+                : URI.create(urlEncode(event.getModelName()));
     }
 
     private static List<TraceInputValue> buildTraceInputValues(DMNModel model, EvaluateEvent firstEvent) {

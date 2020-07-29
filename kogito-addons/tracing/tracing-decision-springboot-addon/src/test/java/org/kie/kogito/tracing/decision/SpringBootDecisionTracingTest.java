@@ -86,7 +86,8 @@ public class SpringBootDecisionTracingTest {
 
         KafkaTemplate<String, String> template = mock(KafkaTemplate.class);
 
-        SpringBootDecisionTracingCollector collector = new SpringBootDecisionTracingCollector(mockedApplication, template, TEST_TOPIC);
+        SpringBootTraceEventEmitter eventEmitter = new SpringBootTraceEventEmitter(template, TEST_TOPIC);
+        SpringBootDecisionTracingCollector collector = new SpringBootDecisionTracingCollector(mockedApplication, eventEmitter);
         eventCaptor.getAllValues().forEach(collector::onApplicationEvent);
 
         ArgumentCaptor<String> topicCaptor = ArgumentCaptor.forClass(String.class);
@@ -98,5 +99,4 @@ public class SpringBootDecisionTracingTest {
         CloudEventImpl<JsonNode> cloudEvent = Json.decodeValue(payloadCaptor.getValue(), CloudEventImpl.class, JsonNode.class);
         assertEquals(TEST_EXECUTION_ID, cloudEvent.getAttributes().getId());
     }
-
 }

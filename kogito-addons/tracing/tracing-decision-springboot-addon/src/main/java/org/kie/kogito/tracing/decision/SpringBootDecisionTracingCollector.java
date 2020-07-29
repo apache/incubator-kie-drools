@@ -18,13 +18,12 @@ package org.kie.kogito.tracing.decision;
 
 import java.util.function.BiFunction;
 
+import org.kie.dmn.api.core.DMNModel;
 import org.kie.kogito.Application;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 import org.kie.kogito.tracing.decision.modelsupplier.ApplicationModelSupplier;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -33,23 +32,20 @@ public class SpringBootDecisionTracingCollector {
 
     private final DecisionTracingCollector collector;
 
-    public SpringBootDecisionTracingCollector(BiFunction<String, String, org.kie.dmn.api.core.DMNModel> modelSupplier, KafkaTemplate<String, String> template, String kafkaTopicName) {
-        collector = new DecisionTracingCollector((payload) -> template.send(kafkaTopicName, payload), modelSupplier);
+    public SpringBootDecisionTracingCollector(final SpringBootTraceEventEmitter eventEmitter,
+                                              final BiFunction<String, String, DMNModel> modelSupplier) {
+        this.collector = new DecisionTracingCollector(eventEmitter::emit, modelSupplier);
     }
 
     @Autowired
-    public SpringBootDecisionTracingCollector(
-            Application application,
-            KafkaTemplate<String, String> template,
-            @Value(value = "${kogito.addon.tracing.decision.kafka.topic.name:kogito-tracing-decision}") String kafkaTopicName
-    ) {
-        this(new ApplicationModelSupplier(application), template, kafkaTopicName);
+    public SpringBootDecisionTracingCollector(final Application application,
+                                              final SpringBootTraceEventEmitter eventEmitter) {
+        this(eventEmitter, new ApplicationModelSupplier(application));
     }
 
     @Async("kogitoTracingDecisionAddonTaskExecutor")
     @EventListener
-    public void onApplicationEvent(EvaluateEvent event) {
+    public void onApplicationEvent(final EvaluateEvent event) {
         collector.addEvent(event);
     }
-
 }

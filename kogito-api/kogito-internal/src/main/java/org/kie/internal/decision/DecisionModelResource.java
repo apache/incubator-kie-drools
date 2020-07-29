@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,10 +12,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.internal.decision;
 
-package org.kie.kogito.decision;
+import java.io.InputStream;
+import java.util.function.Supplier;
 
-public interface DecisionModels {
+import org.kie.api.management.GAV;
+import org.kie.kogito.decision.DecisionModelType;
 
-    DecisionModel getDecisionModel(String namespace, String name);
+public interface DecisionModelResource extends Supplier<String> {
+
+    GAV getGav();
+
+    String getPath();
+
+    String getNamespace();
+
+    String getModelName();
+
+    String getIdentifier();
+
+    DecisionModelType getModelType();
+
+    InputStream getInputStream();
 }

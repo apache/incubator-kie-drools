@@ -46,7 +46,7 @@ import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 
-public class DMNRestResourceGenerator {
+public class DecisionRestResourceGenerator {
 
     private final DMNModel dmnModel;
     private final String decisionName;
@@ -60,7 +60,7 @@ public class DMNRestResourceGenerator {
     private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
     private boolean isStronglyTyped = false;
 
-    public DMNRestResourceGenerator(DMNModel model, String appCanonicalName) {
+    public DecisionRestResourceGenerator(DMNModel model, String appCanonicalName) {
         this.dmnModel = model;
         this.packageName = CodegenStringUtil.escapeIdentifier(model.getNamespace());
         this.decisionId = model.getDefinitions().getId();
@@ -73,7 +73,7 @@ public class DMNRestResourceGenerator {
     }
 
     public String generate() {
-        CompilationUnit clazz = parse(this.getClass().getResourceAsStream("/class-templates/DMNRestResourceTemplate.java"));
+        CompilationUnit clazz = parse(this.getClass().getResourceAsStream("/class-templates/DecisionRestResourceTemplate.java"));
         clazz.setPackageDeclaration(this.packageName);
 
         ClassOrInterfaceDeclaration template = clazz
@@ -112,7 +112,7 @@ public class DMNRestResourceGenerator {
             if (ds.getOutputDecision().size() == 1) {
                 MethodCallExpr rewrittenReturnExpr = returnStmt.findFirst(MethodCallExpr.class,
                                                                           mce -> mce.getNameAsString().equals("extractContextIfSucceded"))
-                                                               .orElseThrow(() -> new RuntimeException("Template was modified!"));
+                        .orElseThrow(() -> new RuntimeException("Template was modified!"));
                 rewrittenReturnExpr.setName("extractSingletonDSIfSucceded");
             }
 
@@ -149,12 +149,12 @@ public class DMNRestResourceGenerator {
         return this.dmnModel;
     }
 
-    public DMNRestResourceGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
+    public DecisionRestResourceGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
         this.annotator = annotator;
         return this;
     }
 
-    public DMNRestResourceGenerator withAddons(AddonsConfig addonsConfig) {
+    public DecisionRestResourceGenerator withAddons(AddonsConfig addonsConfig) {
         this.addonsConfig = addonsConfig;
         return this;
     }
@@ -198,11 +198,11 @@ public class DMNRestResourceGenerator {
         String s = vv.getValue();
         String documentation = "";
         String interpolated = s.replace("$name$", decisionName)
-                               .replace("$nameURL$", nameURL)
-                               .replace("$id$", decisionId)
-                               .replace("$modelName$", dmnModel.getName())
-                               .replace("$modelNamespace$", dmnModel.getNamespace())
-                               .replace("$documentation$", documentation);
+                .replace("$nameURL$", nameURL)
+                .replace("$id$", decisionId)
+                .replace("$modelName$", dmnModel.getName())
+                .replace("$modelNamespace$", dmnModel.getNamespace())
+                .replace("$documentation$", documentation);
         vv.setString(interpolated);
     }
 
@@ -220,7 +220,7 @@ public class DMNRestResourceGenerator {
         return this.annotator != null;
     }
 
-    public DMNRestResourceGenerator withStronglyTyped(boolean stronglyTyped) {
+    public DecisionRestResourceGenerator withStronglyTyped(boolean stronglyTyped) {
         this.isStronglyTyped = stronglyTyped;
         return this;
     }
