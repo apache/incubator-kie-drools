@@ -16,13 +16,20 @@
 
 package org.optaplanner.core.impl.score.stream;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Stream.concat;
 import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
+import java.util.List;
+import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.lookup.PlanningId;
+import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
@@ -34,14 +41,14 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 
-public interface InnerConstraintFactory<Solution_> extends ConstraintFactory {
+public abstract class InnerConstraintFactory<Solution_> implements ConstraintFactory {
 
     // ************************************************************************
     // from
     // ************************************************************************
 
     @Override
-    default <A> UniConstraintStream<A> from(Class<A> fromClass) {
+    public <A> UniConstraintStream<A> from(Class<A> fromClass) {
         UniConstraintStream<A> stream = fromUnfiltered(fromClass);
         EntityDescriptor<Solution_> entityDescriptor = getSolutionDescriptor().findEntityDescriptor(fromClass);
         if (entityDescriptor != null && entityDescriptor.hasAnyGenuineVariables()) {
@@ -52,7 +59,7 @@ public interface InnerConstraintFactory<Solution_> extends ConstraintFactory {
     }
 
     @Override
-    default <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner) {
+    public <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner) {
         MemberAccessor planningIdMemberAccessor = ConfigUtils.findPlanningIdMemberAccessor(fromClass);
         if (planningIdMemberAccessor == null) {
             throw new IllegalArgumentException("The fromClass (" + fromClass + ") has no member with a @"
@@ -73,6 +80,48 @@ public interface InnerConstraintFactory<Solution_> extends ConstraintFactory {
         }
     }
 
+    public <A> void assertValidFromType(Class<A> fromType) {
+        SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
+        Stream<Class> entityClassStream = solutionDescriptor.getEntityDescriptors().stream()
+                .map(EntityDescriptor::getEntityClass);
+        Stream<Class> factClassStream = solutionDescriptor.getProblemFactMemberAccessorMap()
+                .values()
+                .stream()
+                .map(MemberAccessor::getType);
+        Stream<Class> factCollectionClassStream = solutionDescriptor.getProblemFactCollectionMemberAccessorMap()
+                .entrySet()
+                .stream()
+                .map(entry -> {
+                    MemberAccessor accessor = entry.getValue();
+                    return ConfigUtils.extractCollectionGenericTypeParameter("solutionClass",
+                            solutionDescriptor.getSolutionClass(), accessor.getType(), accessor.getGenericType(),
+                            ProblemFactCollectionProperty.class, entry.getKey());
+                });
+        Set<Class> allAcceptedClassSet = concat(concat(entityClassStream, factClassStream), factCollectionClassStream)
+                .collect(toSet());
+        /*
+         * Need to support the following situations:
+         * 1/ FactType == FromType; querying for the declared type.
+         * 2/ FromType extends/implements FactType; querying for impl type where declared type is its interface.
+         * 3/ FromType super FactType; querying for interface where declared type is its implementation.
+         */
+        boolean hasMatchingType = allAcceptedClassSet.stream()
+                .anyMatch(factType -> fromType.isAssignableFrom(factType) || factType.isAssignableFrom(fromType));
+        if (!hasMatchingType) {
+            List<String> canonicalClassNameList = allAcceptedClassSet.stream()
+                    .map(Class::getCanonicalName)
+                    .sorted()
+                    .collect(toList());
+            throw new IllegalArgumentException("Cannot use class (" + fromType.getCanonicalName()
+                    + ") in a constraint stream as it is neither the same as, nor a superclass or superinterface of "
+                    + "one of planning entities or problem facts.\n"
+                    + "Ensure that all from(), join(), ifExists() and ifNotExists() building blocks only reference "
+                    + "classes assignable from planning entities or problem facts (" + canonicalClassNameList + ") "
+                    + "annotated on the planning solution (" + solutionDescriptor.getSolutionClass().getCanonicalName()
+                    + ").");
+        }
+    }
+
     // ************************************************************************
     // SessionFactory creation
     // ************************************************************************
@@ -83,7 +132,7 @@ public interface InnerConstraintFactory<Solution_> extends ConstraintFactory {
      * @param constraints never null
      * @return never null
      */
-    ConstraintSessionFactory<Solution_> buildSessionFactory(Constraint[] constraints);
+    public abstract ConstraintSessionFactory<Solution_> buildSessionFactory(Constraint[] constraints);
 
     // ************************************************************************
     // Getters/setters
@@ -92,6 +141,6 @@ public interface InnerConstraintFactory<Solution_> extends ConstraintFactory {
     /**
      * @return never null
      */
-    SolutionDescriptor<Solution_> getSolutionDescriptor();
+    public abstract SolutionDescriptor<Solution_> getSolutionDescriptor();
 
 }

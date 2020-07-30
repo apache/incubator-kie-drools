@@ -81,6 +81,7 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @SafeVarargs
     private final <E> QuadConstraintStream<A, B, C, D> ifExistsOrNot(boolean shouldExist, Class<E> otherClass,
             PentaJoiner<A, B, C, D, E>... joiners) {
+        getConstraintFactory().assertValidFromType(otherClass);
         DroolsExistsQuadConstraintStream<Solution_, A, B, C, D> stream = new DroolsExistsQuadConstraintStream<>(
                 constraintFactory, this, shouldExist, otherClass, joiners);
         addChildStream(stream);

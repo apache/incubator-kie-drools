@@ -96,6 +96,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @SafeVarargs
     private final <C> BiConstraintStream<A, B> ifExistsOrNot(boolean shouldExist, Class<C> otherClass,
             TriJoiner<A, B, C>... joiners) {
+        getConstraintFactory().assertValidFromType(otherClass);
         DroolsExistsBiConstraintStream<Solution_, A, B> stream = new DroolsExistsBiConstraintStream<>(constraintFactory, this,
                 shouldExist, otherClass, joiners);
         addChildStream(stream);

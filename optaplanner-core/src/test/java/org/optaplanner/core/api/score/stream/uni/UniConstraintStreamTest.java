@@ -179,6 +179,17 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     // ************************************************************************
 
     @TestTemplate
+    public void join_unknownClass() {
+        assertThatThrownBy(() -> buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishValueGroup.class)
+                    .join(Integer.class)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        })).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
+    }
+
+    @TestTemplate
     public void join_0() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
         TestdataLavishValueGroup valueGroup = new TestdataLavishValueGroup("MyValueGroup");
@@ -297,6 +308,18 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     // ************************************************************************
     // If (not) exists
     // ************************************************************************
+
+    @TestTemplate
+    public void ifExists_unknownClass() {
+        assumeDrools();
+        assertThatThrownBy(() -> buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishValueGroup.class)
+                    .ifExists(Integer.class)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        })).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
+    }
 
     @TestTemplate
     public void ifExists_0Joiner0Filter() {
@@ -466,6 +489,18 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @TestTemplate
+    public void ifNotExists_unknownClass() {
+        assumeDrools();
+        assertThatThrownBy(() -> buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishValueGroup.class)
+                    .ifNotExists(Integer.class)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        })).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
+    }
+
+    @TestTemplate
     public void ifNotExists_0Joiner0Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
@@ -617,6 +652,16 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         scoreDirector.afterProblemPropertyChanged(entity2);
         assertScore(scoreDirector,
                 assertMatch(solution.getFirstEntity()));
+    }
+
+    @TestTemplate
+    public void from_unknownClass() {
+        assertThatThrownBy(() -> buildScoreDirector((factory) -> {
+            return factory.from(Integer.class)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        })).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
     }
 
     @TestTemplate

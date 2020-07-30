@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
 
-public final class BavetConstraintFactory<Solution_> implements InnerConstraintFactory<Solution_> {
+public final class BavetConstraintFactory<Solution_> extends InnerConstraintFactory<Solution_> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final String defaultConstraintPackage;
@@ -52,6 +52,7 @@ public final class BavetConstraintFactory<Solution_> implements InnerConstraintF
 
     @Override
     public <A> BavetAbstractUniConstraintStream<Solution_, A> fromUnfiltered(Class<A> fromClass) {
+        assertValidFromType(fromClass);
         return new BavetFromUniConstraintStream<>(this, fromClass);
     }
 

@@ -97,6 +97,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @SafeVarargs
     private final <D> TriConstraintStream<A, B, C> ifExistsOrNot(boolean shouldExist, Class<D> otherClass,
             QuadJoiner<A, B, C, D>... joiners) {
+        getConstraintFactory().assertValidFromType(otherClass);
         DroolsExistsTriConstraintStream<Solution_, A, B, C> stream = new DroolsExistsTriConstraintStream<>(constraintFactory,
                 this, shouldExist, otherClass, joiners);
         addChildStream(stream);

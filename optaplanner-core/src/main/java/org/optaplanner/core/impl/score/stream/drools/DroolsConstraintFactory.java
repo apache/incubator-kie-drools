@@ -38,7 +38,7 @@ import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.ConstraintGraph;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
-public final class DroolsConstraintFactory<Solution_> implements InnerConstraintFactory<Solution_> {
+public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFactory<Solution_> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final String defaultConstraintPackage;
@@ -58,6 +58,7 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
 
     @Override
     public <A> UniConstraintStream<A> fromUnfiltered(Class<A> fromClass) {
+        assertValidFromType(fromClass);
         return new DroolsFromUniConstraintStream<>(this, fromClass);
     }
 
