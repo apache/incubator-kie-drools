@@ -5,6 +5,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Build Pull Request
     steps:
+    - name: print secret?
+      run: echo "FAKE SECRET IS ${{ secrets.FAKE_SECRET }}"
     - uses: actions/checkout@v2
     - name: Build Chain
       id: build-chain
