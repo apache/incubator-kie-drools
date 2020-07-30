@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK_TYPESAFE;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
@@ -156,6 +157,16 @@ public class DMNTypeSafeTest extends BaseVariantTest {
         DMNContext result = evaluateAll.getContext();
         Map<String, Object> d = (Map<String, Object>) result.get("d");
         assertThat(d.get("Hello"), is("Hello Mr. x"));
+    }
+
+    @Test
+    public void testMetadata(){
+        String key = "test";
+        String value = "value";
+        DMNContext context = new DMNContextFPAImpl(null);
+        context.getMetadata().set(key, value);
+
+        assertEquals(value, context.getMetadata().get(key));
     }
 
     private static DMNResult evaluateTyped(FEELPropertyAccessible context, DMNRuntime runtime, DMNModel dmnModel) {
