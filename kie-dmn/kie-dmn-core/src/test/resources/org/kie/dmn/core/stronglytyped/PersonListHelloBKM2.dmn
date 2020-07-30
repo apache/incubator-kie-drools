@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_7e41a76e-2df6-4899-bf81-ae098757a3b6" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.1.13" id="_7e41a76e-2df6-4899-bf81-ae098757a3b6" name="PersonListHelloBKM2" namespace="http://www.trisotech.com/definitions/_7e41a76e-2df6-4899-bf81-ae098757a3b6" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition label="tPerson" name="tPerson">
+    <semantic:itemComponent id="_d5de49aa-1aef-4b6d-b4f7-3890718f0d3d" name="Full Name">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_45b015fb-a5e0-47ea-a749-02acc793aaa3" name="Age">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition label="tPersonList" name="tPersonList" isCollection="true">
+    <semantic:typeRef>tPerson</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition label="tStringList" name="tStringList" isCollection="true">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:inputData id="_b35feb3a-b88b-41ca-8970-05f33a916c8b" name="My Input Data" triso:displayName="My Input Data">
+    <semantic:variable id="_f6a8381a-d12b-45e6-a2f7-3ff04c1a48ef" name="My Input Data" typeRef="tPersonList"/>
+  </semantic:inputData>
+  <semantic:decision id="_67087158-8a52-475d-9dc0-766b4873047f" name="My Decision" triso:displayName="My Decision">
+    <semantic:variable id="_43bcf30a-91b7-4bf3-ae54-b039a18497bb" name="My Decision" typeRef="tPersonList"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_b35feb3a-b88b-41ca-8970-05f33a916c8b"/>
+    </semantic:informationRequirement>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_b2ae3f58-ab6f-4c0b-9038-e9a873b695b1"/>
+    </semantic:knowledgeRequirement>
+    <semantic:literalExpression id="_88edd628-f9da-4115-8d31-c5d419b277a8">
+      <semantic:text>for A Person in My Input Data return My BKM(A Person.Full Name, A Person.Age)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:businessKnowledgeModel id="_b2ae3f58-ab6f-4c0b-9038-e9a873b695b1" name="My BKM" triso:displayName="My BKM">
+    <semantic:encapsulatedLogic id="_c55814da-c236-4dd8-80eb-192d29ea6f50">
+      <semantic:formalParameter id="_6060d4af-0759-408a-9a58-fafffe9997c1" name="pName" typeRef="feel:string"/>
+      <semantic:formalParameter id="_09f0ea5f-3ff4-4ae3-afd2-3eb807a246f7" name="pAge" typeRef="feel:number"/>
+      <semantic:context id="context__c55814da-c236-4dd8-80eb-192d29ea6f50">
+        <semantic:contextEntry>
+          <semantic:variable id="_3774a46f-ffea-49be-9c62-5dafed96c0b1" name="Full Name" typeRef="feel:string"/>
+          <semantic:literalExpression id="_8da964a5-502e-40b9-ab76-f8414252f798">
+            <semantic:text>"Prof. " + pName</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+        <semantic:contextEntry>
+          <semantic:variable id="_8eeb07c3-7468-43ec-998f-985ebecfdbf3" name="Age" typeRef="feel:number"/>
+          <semantic:context id="_efcebb17-6997-497c-a233-bbb03003d9a9">
+            <semantic:contextEntry>
+              <semantic:variable id="_afc36106-72ae-45a4-b291-c1cbbf2c1589" name="AgePlus1"/>
+              <semantic:literalExpression id="_49d43907-3086-4af6-9549-10fd045ebaad">
+                <semantic:text>pAge + 1</semantic:text>
+              </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry>
+              <semantic:variable id="_59dddb62-267e-4d0c-9693-37473c50f0b5" name="AgePlus1Minus1"/>
+              <semantic:literalExpression id="_7787f954-2dbf-42b5-be9b-c2b015fc33c6">
+                <semantic:text>AgePlus1 - 1</semantic:text>
+              </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry>
+              <semantic:literalExpression id="_84cbad17-74d9-473d-8fee-49345b193fe1">
+                <semantic:text>AgePlus1Minus1 + 0</semantic:text>
+              </semantic:literalExpression>
+            </semantic:contextEntry>
+          </semantic:context>
+        </semantic:contextEntry>
+      </semantic:context>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_1f050e9b-c9b7-448f-b8f3-2a0072d51ac1" name="My BKM" typeRef="tPerson"/>
+  </semantic:businessKnowledgeModel>
+</semantic:definitions>

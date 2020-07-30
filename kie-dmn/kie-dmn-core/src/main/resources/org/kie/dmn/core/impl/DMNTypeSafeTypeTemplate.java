@@ -43,8 +43,12 @@ public interface DMNTypeSafeTypeTemplate {
         {
             Object propertyValues = values.get("$property$");
             if(propertyValues != null) {
-                $property$ = new PropertyType();
-                $property$.fromMap((java.util.Map<String, Object>) propertyValues);
+                if (propertyValues instanceof PropertyType) {
+                    $property$ = (PropertyType) propertyValues;
+                } else {
+                    $property$ = new PropertyType();
+                    $property$.fromMap((java.util.Map<String, Object>) propertyValues);
+                }
             }
         }
 
@@ -53,13 +57,18 @@ public interface DMNTypeSafeTypeTemplate {
             Object propertyValues = values.get("$property$");
             if(propertyValues != null) {
                 $property$ = new java.util.ArrayList<>();
-                for (java.util.Map<String, Object> v : (java.util.Collection<java.util.Map<String, Object>>) propertyValues) {
-                    PropertyType item = new PropertyType();
-                    item.fromMap(v);
-                    $property$.add(item);
+                for (Object v : (java.util.Collection<Object>) propertyValues) {
+                    if (v instanceof PropertyType) {
+                        $property$.add((PropertyType)v);
+                    } else {
+                        PropertyType item = new PropertyType();
+                        item.fromMap((java.util.Map<String, Object>)v);
+                        $property$.add(item);
+                    }
                 }
             }
         }
+
         // Collections of basic fields
         {
             Object propertyValues = values.get("$property$");
@@ -71,4 +80,5 @@ public interface DMNTypeSafeTypeTemplate {
             }
         }
     }
+
 }

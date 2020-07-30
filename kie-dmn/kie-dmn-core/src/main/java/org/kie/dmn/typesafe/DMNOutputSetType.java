@@ -16,14 +16,14 @@
 
 package org.kie.dmn.typesafe;
 
-class DMNInputSetType extends AbstractDMNSetType {
+class DMNOutputSetType extends AbstractDMNSetType {
 
-    DMNInputSetType(DMNAllTypesIndex index, DMNStronglyCodeGenConfig codeGenConfig) {
+    DMNOutputSetType(DMNAllTypesIndex index, DMNStronglyCodeGenConfig codeGenConfig) {
         super(index, codeGenConfig);
     }
 
     @Override
     public String getTypeName() {
-        return "InputSet";
+        return "OutputSet";
     }
 }

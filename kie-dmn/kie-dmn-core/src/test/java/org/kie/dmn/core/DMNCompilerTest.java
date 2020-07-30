@@ -17,6 +17,7 @@
 package org.kie.dmn.core;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -26,6 +27,7 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
@@ -266,6 +268,12 @@ public class DMNCompilerTest extends BaseVariantTest {
         }
         LOG.debug("{}", evaluateAll);
         assertThat(evaluateAll.getDecisionResultByName("Greeting").getResult(), is("Hello John!"));
+
+        if (isTypeSafe()) {
+            FEELPropertyAccessible outputSet = convertToOutputSet(dmnModel, evaluateAll);
+            Map<String, Object> allProperties = outputSet.allFEELProperties();
+            assertThat(allProperties.get("Greeting"), is("Hello John!"));
+        }
     }
 
     @Test

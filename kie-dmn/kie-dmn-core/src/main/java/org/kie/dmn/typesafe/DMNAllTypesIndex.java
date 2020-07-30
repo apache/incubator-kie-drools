@@ -16,11 +16,8 @@
 
 package org.kie.dmn.typesafe;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Period;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -105,11 +102,11 @@ public class DMNAllTypesIndex {
             case UNKNOWN:
                 return Object.class;
             case DATE:
-                return LocalDate.class;
+                return Temporal.class;
             case TIME:
-                return LocalTime.class;
+                return Temporal.class;
             case DATE_TIME:
-                return LocalDateTime.class;
+                return Temporal.class;
             case BOOLEAN:
                 return Boolean.class;
             case NUMBER:
@@ -126,10 +123,10 @@ public class DMNAllTypesIndex {
         switch (expectedFEELType.getName()) {
             case SimpleType.YEARS_AND_MONTHS_DURATION:
             case "yearMonthDuration":
-                return Period.class;
+                return TemporalAmount.class;
             case SimpleType.DAYS_AND_TIME_DURATION:
             case "dayTimeDuration":
-                return Duration.class;
+                return TemporalAmount.class;
             default:
                 throw new IllegalArgumentException();
         }
