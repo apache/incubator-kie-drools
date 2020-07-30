@@ -252,15 +252,13 @@ public abstract class AbstractKieProject implements KieProject {
                 log.warn( "No files found for KieBase " + kBaseModel.getName() +
                                   (kModule instanceof FileKieModule ? ", searching folder " + kModule.getFile() : ""));
             }
-            kbuilder = new InternalKnowledgeBuilder.Empty(getClassLoader());
+            kbuilder = new InternalKnowledgeBuilder.Empty( getClassLoader(), () -> provideKnowledgeBuilder( kBaseModel, kModule ) );
 
         } else {
-            kbuilder = createKnowledgeBuilder( kBaseModel, kModule );
+            kbuilder = provideKnowledgeBuilder( kBaseModel, kModule );
             if ( kbuilder == null ) {
                 return null;
             }
-
-            (( KnowledgeBuilderImpl ) kbuilder).setReleaseId( getGAV() );
 
             CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
@@ -289,6 +287,14 @@ public abstract class AbstractKieProject implements KieProject {
             kModule.cacheResultsForKieBase( kBaseModel.getName(), messages );
         }
 
+        return kbuilder;
+    }
+
+    public KnowledgeBuilderImpl provideKnowledgeBuilder( KieBaseModelImpl kBaseModel, InternalKieModule kModule ) {
+        KnowledgeBuilderImpl kbuilder = (KnowledgeBuilderImpl) createKnowledgeBuilder( kBaseModel, kModule );
+        if ( kbuilder != null ) {
+            kbuilder.setReleaseId( getGAV() );
+        }
         return kbuilder;
     }
 

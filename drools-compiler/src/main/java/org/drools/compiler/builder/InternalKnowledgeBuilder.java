@@ -19,8 +19,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.compiler.PackageBuilderResults;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -90,9 +92,20 @@ public interface InternalKnowledgeBuilder extends KnowledgeBuilder, DroolsAssemb
     class Empty implements InternalKnowledgeBuilder {
 
         private final ClassLoader rootClassLoader;
+        private final Supplier<KnowledgeBuilderImpl> lazyBuilder;
 
-        public Empty( ClassLoader rootClassLoader ) {
+        private KnowledgeBuilderImpl knowledgeBuilder;
+
+        public Empty( ClassLoader rootClassLoader, Supplier<KnowledgeBuilderImpl> lazyBuilder ) {
             this.rootClassLoader = rootClassLoader;
+            this.lazyBuilder = lazyBuilder;
+        }
+
+        private synchronized KnowledgeBuilderImpl getKnowledgeBuilder() {
+            if (knowledgeBuilder == null) {
+                knowledgeBuilder = lazyBuilder.get();
+            }
+            return knowledgeBuilder;
         }
 
         @Override
@@ -136,82 +149,82 @@ public interface InternalKnowledgeBuilder extends KnowledgeBuilder, DroolsAssemb
 
         @Override
         public void add( Resource resource, ResourceType type ) {
-            throw new UnsupportedOperationException();
+            getKnowledgeBuilder().add(resource, type);
         }
 
         @Override
         public void add( Resource resource, ResourceType type, ResourceConfiguration configuration ) {
-            throw new UnsupportedOperationException();
+            getKnowledgeBuilder().add(resource, type, configuration);
         }
 
         @Override
         public KieBase newKieBase() {
-            throw new UnsupportedOperationException();
+            return getKnowledgeBuilder().newKieBase();
         }
 
         @Override
         public void undo() {
-            throw new UnsupportedOperationException();
+            getKnowledgeBuilder().undo();
         }
 
         @Override
         public CompositeKnowledgeBuilder batch() {
-            throw new UnsupportedOperationException();
+            return getKnowledgeBuilder().batch();
         }
 
         @Override
         public <T extends ResourceTypePackage<?>> T computeIfAbsent( ResourceType resourceType, String namespace, Function<? super ResourceType, T> mappingFunction ) {
-            throw new UnsupportedOperationException();
+            return getKnowledgeBuilder().computeIfAbsent( resourceType, namespace, mappingFunction );
         }
 
         @Override
         public void reportError( KnowledgeBuilderError error ) {
-            throw new UnsupportedOperationException();
+            getKnowledgeBuilder().reportError( error );
         }
 
         @Override
         public ResourceRemovalResult removeObjectsGeneratedFromResource( Resource resource ) {
-            throw new UnsupportedOperationException();
+            return getKnowledgeBuilder().removeObjectsGeneratedFromResource( resource );
         }
 
         @Override
         public void addPackage( PackageDescr packageDescr ) {
-            throw new UnsupportedOperationException();
+            getKnowledgeBuilder().addPackage( packageDescr );
         }
 
         @Override
         public InternalKnowledgePackage getPackage( String name ) {
-            throw new UnsupportedOperationException();
+            return getKnowledgeBuilder().getPackage( name );
         }
 
         @Override
         public KnowledgeBuilderConfigurationImpl getBuilderConfiguration() {
-            throw new UnsupportedOperationException();
+            return getKnowledgeBuilder().getBuilderConfiguration();
         }
 
         @Override
         public TypeDeclaration getAndRegisterTypeDeclaration( Class<?> cls, String name ) {
-            throw new UnsupportedOperationException();
+            return getKnowledgeBuilder().getAndRegisterTypeDeclaration(cls, name);
         }
 
         @Override
         public TypeDeclaration getTypeDeclaration( Class<?> typeClass ) {
-            throw new UnsupportedOperationException();
+            return getKnowledgeBuilder().getTypeDeclaration(typeClass);
         }
 
         @Override
         public List<PackageDescr> getPackageDescrs( String namespace ) {
-            throw new UnsupportedOperationException();
+            return getKnowledgeBuilder().getPackageDescrs(namespace);
         }
 
         @Override
         public PackageRegistry getPackageRegistry( String packageName ) {
-            throw new UnsupportedOperationException();
+            return getKnowledgeBuilder().getPackageRegistry(packageName);
         }
 
         @Override
         public InternalKnowledgeBase getKnowledgeBase() {
-            throw new UnsupportedOperationException();
+            return getKnowledgeBuilder().getKnowledgeBase();
         }
     }
 }
