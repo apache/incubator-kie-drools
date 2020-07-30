@@ -292,7 +292,7 @@ public abstract class AbstractKieProject implements KieProject {
 
     public KnowledgeBuilderImpl provideKnowledgeBuilder( KieBaseModelImpl kBaseModel, InternalKieModule kModule ) {
         KnowledgeBuilderImpl kbuilder = (KnowledgeBuilderImpl) createKnowledgeBuilder( kBaseModel, kModule );
-        if ( kbuilder == null ) {
+        if ( kbuilder != null ) {
             kbuilder.setReleaseId( getGAV() );
         }
         return kbuilder;
