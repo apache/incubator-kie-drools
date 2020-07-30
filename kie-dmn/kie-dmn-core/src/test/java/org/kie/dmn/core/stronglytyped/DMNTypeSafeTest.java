@@ -167,6 +167,7 @@ public class DMNTypeSafeTest extends BaseVariantTest {
         context.getMetadata().set(key, value);
 
         assertEquals(value, context.getMetadata().get(key));
+        assertEquals(value, context.clone().getMetadata().get(key));
     }
 
     private static DMNResult evaluateTyped(FEELPropertyAccessible context, DMNRuntime runtime, DMNModel dmnModel) {
