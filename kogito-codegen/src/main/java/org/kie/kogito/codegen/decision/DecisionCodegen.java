@@ -39,7 +39,12 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.marshalling.DMNMarshaller;
+import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
+import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
+import org.kie.dmn.model.api.BusinessKnowledgeModel;
+import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.Decision;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.typesafe.DMNAllTypesIndex;
@@ -198,12 +203,29 @@ public class DecisionCodegen extends AbstractGenerator {
 
             storeFile(GeneratedFile.Type.REST, resourceGenerator.generatedFilePath(), resourceGenerator.generate());
         }
+
+        DMNMarshaller marshaller = DMNMarshallerFactory.newDefaultMarshaller();
+        for (DMNResource resource : resources) {
+            DMNModel model = resource.getDmnModel();
+            Definitions definitions = model.getDefinitions();
+            for (DRGElement drg : definitions.getDrgElement()) {
+                if (drg instanceof Decision) {
+                    Decision decision = (Decision) drg;
+                    decision.setExpression(null);
+                } else if (drg instanceof BusinessKnowledgeModel) {
+                    BusinessKnowledgeModel bkm = (BusinessKnowledgeModel) drg;
+                    bkm.setEncapsulatedLogic(null);
+                }
+            }
+            String relativePath = CodegenStringUtil.escapeIdentifier(model.getNamespace()).replace(".", "/") + "/" + CodegenStringUtil.escapeIdentifier(model.getName()) + ".dmn_nologic";
+            storeFile(GeneratedFile.Type.GENERATED_CP_RESOURCE, relativePath, marshaller.marshal(definitions));
+        }
     }
 
     private void generateAndStoreDecisionModelResourcesProvider() {
         final DecisionModelResourcesProviderGenerator generator = new DecisionModelResourcesProviderGenerator(packageName, applicationCanonicalName, resources)
-                .withDependencyInjection(annotator)
-                .withAddons(addonsConfig);
+                                                                                                                                                               .withDependencyInjection(annotator)
+                                                                                                                                                               .withAddons(addonsConfig);
         storeFile(GeneratedFile.Type.CLASS, generator.generatedFilePath(), generator.generate());
     }
 

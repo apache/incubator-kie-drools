@@ -36,6 +36,10 @@ public class GeneratedFile {
         MESSAGE_CONSUMER( false ),
         MESSAGE_PRODUCER( false ),
         RESOURCE(false),
+        /** Represent a cp resource automatically generated during codegen, so after generate-resources maven phase.
+         * For Quarkus it will be added to target/classes and subject of GeneratedResourceBuildItem and NativeImageResourceBuildItem
+         * When using the kogito-maven-plugin (and SB), it will be added to target/classes */
+        GENERATED_CP_RESOURCE(false),
         JSON_SCHEMA(true),
         PMML(false);
 

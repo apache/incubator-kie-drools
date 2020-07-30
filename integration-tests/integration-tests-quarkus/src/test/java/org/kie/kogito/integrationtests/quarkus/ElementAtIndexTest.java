@@ -56,4 +56,15 @@ public class ElementAtIndexTest {
                .body("'element at index'", nullValue());
     }
 
+    @Test
+    public void testGET() {
+        given().accept(ContentType.XML)
+               .when()
+               .get("/ElementAtIndex")
+               .then()
+               .statusCode(200)
+               .body("definitions.decision[0].children().size()", is(4))
+               .body("definitions.children().findAll { node -> node.name() == 'literalExpression' }.size()", is(0));
+    }
+
 }

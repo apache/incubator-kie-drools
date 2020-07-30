@@ -28,6 +28,7 @@ import io.quarkus.deployment.builditem.ArchiveRootBuildItem;
 import io.quarkus.deployment.builditem.CapabilityBuildItem;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
 import io.quarkus.deployment.builditem.LaunchModeBuildItem;
 import io.quarkus.deployment.builditem.LiveReloadBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
@@ -192,6 +193,7 @@ public class KogitoAssetsProcessor {
                               LaunchModeBuildItem launchMode,
                               LiveReloadBuildItem liveReload,
                               BuildProducer<NativeImageResourceBuildItem> resource,
+                              BuildProducer<GeneratedResourceBuildItem> genResBI,
                               BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
                               CurateOutcomeBuildItem curateOutcomeBuildItem) throws IOException, BootstrapDependencyProcessingException {
 
@@ -205,7 +207,7 @@ public class KogitoAssetsProcessor {
         Collection<GeneratedFile> generatedFiles = appGen.generate();
 
         Collection<GeneratedFile> javaFiles = generatedFiles.stream().filter( f -> f.relativePath().endsWith( ".java" ) ).collect( Collectors.toCollection( ArrayList::new ));
-        writeGeneratedFiles(appPaths, generatedFiles);
+        writeGeneratedFiles(appPaths, generatedFiles, resource, genResBI);
 
         if (!javaFiles.isEmpty()) {
 
@@ -264,16 +266,22 @@ public class KogitoAssetsProcessor {
         }
     }
 
-    private void writeGeneratedFiles(AppPaths appPaths, Collection<GeneratedFile> resourceFiles) {
+    private void writeGeneratedFiles(AppPaths appPaths, Collection<GeneratedFile> resourceFiles, BuildProducer<NativeImageResourceBuildItem> niResBI, BuildProducer<GeneratedResourceBuildItem> genResBI) {
         for (Path projectPath : appPaths.projectPaths) {
             String restResourcePath = projectPath.resolve( generatedCustomizableSourcesDir ).toString();
             String resourcePath = projectPath.resolve( generatedResourcesDir ).toString();
-            String sourcePath = projectPath.resolve( generatedSourcesDir ).toString();
+            String sourcePath = projectPath.resolve( generatedSourcesDir ).toString(); 
 
             for (GeneratedFile f : resourceFiles) {
                 try {
                     if ( f.getType() == GeneratedFile.Type.RESOURCE ) {
                         writeGeneratedFile( f, resourcePath );
+                    } else if (f.getType() == GeneratedFile.Type.GENERATED_CP_RESOURCE) { // since quarkus-maven-plugin is later phase of maven-resources-plugin, need to manually late-provide the resource in the expected location for quarkus:dev phase --so not: writeGeneratedFile( f, resourcePath );
+                        Path resolve = appPaths.getFirstProjectPath().resolve("target").resolve("classes").resolve(f.relativePath());
+                        resolve.getParent().toFile().mkdirs();
+                        Files.write(resolve, f.contents());
+                        genResBI.produce(new GeneratedResourceBuildItem(f.relativePath(), f.contents()));
+                        niResBI.produce(new NativeImageResourceBuildItem(f.relativePath()));
                     } else if (f.getType().isCustomizable()) {
                         writeGeneratedFile( f, restResourcePath );
                     } else {

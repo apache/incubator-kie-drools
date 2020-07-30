@@ -3,6 +3,7 @@ package org.kie.dmn.kogito.quarkus.example;
 import java.time.Period;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -34,6 +35,15 @@ public class DMNRestResourceTemplate {
         org.kie.kogito.decision.DecisionModel decision = application.decisionModels().getDecisionModel("$modelNamespace$", "$modelName$");
         org.kie.kogito.dmn.rest.DMNResult result = new org.kie.kogito.dmn.rest.DMNResult("$modelNamespace$", "$modelName$", decision.evaluateAll(decision.newContext(variables)));
         return extractContextIfSucceded(result);
+    }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_XML)
+    public String dmn() throws java.io.IOException {
+        return new String(org.drools.core.util.IoUtils.
+                          readBytesFromInputStream(this.getClass()
+                                                   .getResourceAsStream(org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.escapeIdentifier("$modelName$") + 
+                                                                        ".dmn_nologic")));
     }
 
     @javax.ws.rs.ext.Provider
