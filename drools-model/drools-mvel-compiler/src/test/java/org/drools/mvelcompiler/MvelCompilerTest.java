@@ -100,6 +100,20 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testBoxingSetter() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ $p.ageAsInteger = 20; }",
+             "{ $p.setAgeAsInteger(20); }");
+    }
+
+    @Test
+    public void testSetterBigDecimal() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ $p.salary = $p.salary + 50000; }",
+             "{ $p.setSalary($p.getSalary().add(new java.math.BigDecimal(50000))); }");
+    }
+
+    @Test
     public void testSetterPublicField() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ $p.nickName = \"Luca\"; } ",

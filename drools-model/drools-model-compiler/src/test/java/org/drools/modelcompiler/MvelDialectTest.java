@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -408,5 +409,74 @@ public class MvelDialectTest extends BaseModelTest {
 
         Results results = createKieBuilder( drl ).getResults();
         assertFalse(results.getMessages( Message.Level.ERROR ).isEmpty());
+    }
+
+    @Test
+    public void testBinaryOperationOnBigDecimal() throws Exception {
+        // RHDM-1421
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person( age >= 26 )\n" +
+                "then\n" +
+                "    $p.money = $p.money + 50000;\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 70000 ) );
+
+        ksession.insert(john);
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(new BigDecimal( 120000 ), john.getMoney());
+    }
+
+    @Test
+    public void testBinaryOperationOnInteger() throws Exception {
+        // RHDM-1421
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person( age >= 26 )\n" +
+                "then\n" +
+                "    $p.salary = $p.salary + 50000;\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        Person john = new Person("John", 30);
+        john.setSalary( 70000 );
+
+        ksession.insert(john);
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(120000, (int) john.getSalary());
+    }
+
+    @Test
+    public void testSetOnInteger() throws Exception {
+        // RHDM-1421
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person( age >= 26 )\n" +
+                "then\n" +
+                "    $p.salary = 50000;\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        Person john = new Person("John", 30);
+        john.setSalary( 70000 );
+
+        ksession.insert(john);
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(50000, (int) john.getSalary());
     }
 }

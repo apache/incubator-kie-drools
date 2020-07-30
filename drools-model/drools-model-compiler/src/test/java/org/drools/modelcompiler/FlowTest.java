@@ -81,7 +81,6 @@ import static org.drools.model.FlowDSL.bind;
 import static org.drools.model.FlowDSL.declarationOf;
 import static org.drools.model.FlowDSL.eval;
 import static org.drools.model.FlowDSL.execute;
-import static org.drools.model.FlowDSL.executeScript;
 import static org.drools.model.FlowDSL.expr;
 import static org.drools.model.FlowDSL.forall;
 import static org.drools.model.FlowDSL.from;
@@ -1062,49 +1061,6 @@ public class FlowTest {
         ksession.insert( new StockTick("DROO") );
 
         assertEquals(2, ksession.fireAllRules());
-    }
-
-    @Test
-    public void testMVELinsert() {
-        final Variable<Integer> var_$pattern_Integer$1$ = declarationOf(Integer.class, "$pattern_Integer$1$");
-
-        org.drools.model.Rule rule = rule("R").build(input(var_$pattern_Integer$1$),
-                                                     executeScript("mvel", null,
-                                                                   "System.out.println(\"Hello World\");\n" +
-                                                                   "drools.insert(\"Hello World\");")
-                                                     );
-
-        Model model = new ModelImpl().addRule(rule);
-        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
-
-        KieSession ksession = kieBase.newKieSession();
-
-        FactHandle fh_47 = ksession.insert(47);
-        ksession.fireAllRules();
-
-        Collection<String> results = getObjectsIntoList(ksession, String.class);
-        assertTrue(results.contains("Hello World"));
-    }
-
-    @Test
-    public void testMVELmodify() {
-        final  Variable<Person> var_$p = declarationOf(Person.class, "$p");
-        final org.drools.model.BitMask mask_$p = org.drools.model.BitMask.getPatternMask(Person.class,
-                                                                                         "age");
-
-        org.drools.model.Rule rule = rule("R").build(input(var_$p),
-                                                     on(var_$p).executeScript("mvel", null, "System.out.println($p); modify($p) { setAge(1); } System.out.println($p);"));
-
-        Model model = new ModelImpl().addRule(rule);
-        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
-
-        KieSession ksession = kieBase.newKieSession();
-
-        ksession.insert(new Person("Matteo", 47));
-        ksession.fireAllRules();
-
-        List<Person> results = getObjectsIntoList(ksession, Person.class);
-        assertEquals(1, results.get(0).getAge());
     }
 
     @Test

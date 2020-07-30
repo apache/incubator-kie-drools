@@ -181,17 +181,13 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         TypedExpression target = n.getTarget().accept(this, arg);
 
         BigDecimalConversion bigDecimalConversion = shouldConvertPlusEqualsOperatorBigDecimal(n, rhs);
-        if(bigDecimalConversion.shouldConvert()) {
+        if (bigDecimalConversion.shouldConvert()) {
             return bigDecimalConversion.convertExpression(target);
-        } else if (target instanceof FieldToAccessorTExpr) {
-            return target;
-        } else if (target instanceof VariableDeclaratorTExpr) {
-            return target;
-        } else if (target instanceof MapPutExprT) {
-            return target;
-        } else {
-            return new AssignExprT(n.getOperator(), target, rhsOrNull());
         }
+        if (target instanceof FieldToAccessorTExpr || target instanceof VariableDeclaratorTExpr || target instanceof MapPutExprT) {
+            return target;
+        }
+        return new AssignExprT(n.getOperator(), target, rhsOrNull());
     }
 
     @Override

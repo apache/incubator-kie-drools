@@ -467,17 +467,17 @@ public final class ClassUtils {
                 .orElse( null );
     }
 
-    public static Method getSetter(Class<?> clazz, String field, Class<?>... parameterTypes) {
+    public static Method getSetter(Class<?> clazz, String field, Class<?> parameterType) {
         return Stream.<Supplier<String>>of(
                 () -> "set" + ucFirst(field),
                 () -> field,
                 () -> "set" + field
         )
-                .map( f -> getMethod(clazz, f.get(), parameterTypes) )
+                .map( f -> getMethod(clazz, f.get(), parameterType) )
                 .filter( Optional::isPresent )
                 .findFirst()
                 .flatMap( Function.identity() )
-                .orElse( null );
+                .orElse( parameterType.isPrimitive() ? getSetter(clazz, field, convertFromPrimitiveType(parameterType)) : null );
     }
 
     private static Optional<Method> getMethod(Class<?> clazz, String name, Class<?>... parameterTypes) {
