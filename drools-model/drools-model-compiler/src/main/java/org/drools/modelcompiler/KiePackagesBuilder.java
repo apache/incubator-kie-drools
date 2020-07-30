@@ -19,6 +19,7 @@ package org.drools.modelcompiler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -442,18 +443,10 @@ public class KiePackagesBuilder {
 
                 PatternImpl<?> sourcePattern = (PatternImpl<?>) accumulatePattern.getPattern();
                 Set<String> usedVariableName = new LinkedHashSet<>();
-                Binding binding = null;
 
                 if (sourcePattern != null) {
                     for (Variable v : sourcePattern.getInputVariables()) {
                         usedVariableName.add( v.getName() );
-                    }
-
-                    if ( !sourcePattern.getBindings().isEmpty() ) {
-                        binding = sourcePattern.getBindings().iterator().next();
-                        for (Variable var: binding.getInputVariables()) {
-                            usedVariableName.add(var.getName());
-                        }
                     }
                 }
 
@@ -469,7 +462,7 @@ public class KiePackagesBuilder {
                     source = buildPattern(ctx, group, condition );
                 }
 
-                pattern.setSource(buildAccumulate(ctx, accumulatePattern, source, pattern, new ArrayList<>(usedVariableName), binding) );
+                pattern.setSource(buildAccumulate(ctx, accumulatePattern, source, pattern, new ArrayList<>(usedVariableName), sourcePattern != null ? sourcePattern.getBindings() : Collections.emptyList()) );
 
                 for(Variable v : accumulatePattern.getBoundVariables()) {
                     if(source instanceof Pattern) {
@@ -677,14 +670,22 @@ public class KiePackagesBuilder {
 
     private Accumulate buildAccumulate(RuleContext ctx, AccumulatePattern accPattern,
                                        RuleConditionElement source, Pattern pattern,
-                                       List<String> usedVariableName, Binding binding) {
+                                       List<String> usedVariableName, Collection<Binding> bindings) {
 
         AccumulateFunction[] accFunctions = accPattern.getAccumulateFunctions();
-        BindingEvaluator bindingEvaluator = createBindingEvaluator(ctx, binding);
         Accumulate accumulate;
 
         if (accFunctions.length == 1) {
             final AccumulateFunction accFunction = accFunctions[0];
+
+            Binding binding = findBindingForAccumulate( bindings, accFunction );
+            if (binding != null) {
+                for (Variable var : binding.getInputVariables()) {
+                    usedVariableName.add( var.getName() );
+                }
+            }
+            final BindingEvaluator bindingEvaluator = createBindingEvaluator(ctx, binding);
+
             final Accumulator accumulator = createAccumulator(usedVariableName, bindingEvaluator, accFunction);
             final Variable boundVar = accPattern.getBoundVariables()[0];
             final Declaration declaration = new Declaration(boundVar.getName(),
@@ -711,6 +712,7 @@ public class KiePackagesBuilder {
             accumulate = new SingleAccumulate(source, requiredDeclarations, accumulator);
 
         } else {
+            final BindingEvaluator bindingEvaluator = createBindingEvaluator(ctx, bindings.isEmpty() ? null : bindings.iterator().next());
             InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
             Accumulator[] accumulators = new Accumulator[accFunctions.length];
             for (int i = 0; i < accFunctions.length; i++) {
@@ -733,6 +735,11 @@ public class KiePackagesBuilder {
         }
 
         return accumulate;
+    }
+
+    private Binding findBindingForAccumulate( Collection<Binding> bindings, AccumulateFunction accFunction ) {
+        return bindings.stream().filter( b -> b.getBoundVariable() == accFunction.getSource() ).findFirst()
+                .orElse( bindings.isEmpty() ? null : bindings.iterator().next() );
     }
 
     private Declaration[] getRequiredDeclarationsForAccumulate( RuleContext ctx, Binding binding, AccumulateFunction accFunction ) {
