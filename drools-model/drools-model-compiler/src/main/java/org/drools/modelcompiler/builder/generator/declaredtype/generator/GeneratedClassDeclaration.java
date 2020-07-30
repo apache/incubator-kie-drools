@@ -177,6 +177,8 @@ public class GeneratedClassDeclaration {
             field = generatedClass.addFieldWithInitializer(returnType, fieldName, parseExpression(fieldDefinition.getInitExpr()), modifiers);
         }
 
+        fieldDefinition.getJavadocComment().ifPresent(field::setJavadocComment);
+
         if (fieldDefinition.createAccessors()) {
             MethodDeclaration setter = field.createSetter();
             fieldDefinition.overriddenSetterName().ifPresent(setter::setName);

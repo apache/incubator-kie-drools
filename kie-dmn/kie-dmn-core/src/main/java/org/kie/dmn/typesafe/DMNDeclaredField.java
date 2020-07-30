@@ -200,4 +200,8 @@ public class DMNDeclaredField implements FieldDefinition {
         return Optional.of("set" + CodegenStringUtil.escapeIdentifier(ucFirst(originalMapKey)));
     }
 
+    @Override
+    public Optional<String> getJavadocComment() {
+        return Optional.of(fieldDMNType.toString());
+    }
 }

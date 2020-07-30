@@ -186,13 +186,15 @@ public abstract class BaseVariantTest {
 
     protected Map<String, Class<?>> allCompiledClasses;
 
+    protected Map<String, String> allSources;
+
     protected String testName = "";
 
     private void createTypeSafeInput(DMNRuntime runtime) {
         String prefix = String.format("%s%s", testName, testConfig.name());
         factory = new DMNTypeSafePackageName.ModelFactory(prefix);
         DMNAllTypesIndex index = new DMNAllTypesIndex(factory, runtime.getModels().toArray(new DMNModel[]{}));
-        Map<String, String> allSources = new HashMap<>();
+        allSources = new HashMap<>();
 
         for (DMNModel m : runtime.getModels()) {
             Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, index, factory)
@@ -235,14 +237,6 @@ public abstract class BaseVariantTest {
         }
     }
 
-    /**
-     * Utility test method, for class inspection.
-     */
-    protected Class<?> getStronglyClassByName(DMNModel dmnModel, String className) {
-        String fqn = factory.create(dmnModel).appendPackage(className);
-        return allCompiledClasses.get(fqn);
-    }
-
     private DMNResult evaluateDecisionServiceTypeSafe(DMNRuntime runtime, DMNModel dmnModel, DMNContext context, String decisionServiceName) {
         Map<String, Object> inputMap = context.getAll();
         FEELPropertyAccessible inputSet;
@@ -265,6 +259,14 @@ public abstract class BaseVariantTest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Utility test method, for class inspection.
+     */
+    protected Class<?> getStronglyClassByName(DMNModel dmnModel, String className) {
+        String fqn = factory.create(dmnModel).appendPackage(className);
+        return allCompiledClasses.get(fqn);
     }
 
     protected FEELPropertyAccessible createInstanceFromCompiledClasses(Map<String, Class<?>> compile, DMNTypeSafePackageName packageName, String className) throws Exception {
