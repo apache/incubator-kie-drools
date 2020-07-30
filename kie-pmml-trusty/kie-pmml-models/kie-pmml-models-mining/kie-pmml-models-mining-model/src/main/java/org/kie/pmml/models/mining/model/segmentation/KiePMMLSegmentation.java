@@ -21,15 +21,11 @@ import java.util.Objects;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLBase;
 import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-3/MultipleModels.html#xsdElement_Segmentation>Segmentation</a>
  */
 public class KiePMMLSegmentation extends AbstractKiePMMLBase {
-
-    private static final Logger logger = LoggerFactory.getLogger(KiePMMLSegmentation.class);
 
     private final MULTIPLE_MODEL_METHOD multipleModelMethod;
     private List<KiePMMLSegment> segments;

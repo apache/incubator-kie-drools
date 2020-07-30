@@ -22,12 +22,9 @@ import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLBase;
 import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class KiePMMLSegment extends AbstractKiePMMLBase {
 
-    private static final Logger logger = LoggerFactory.getLogger(KiePMMLSegment.class);
     private final KiePMMLPredicate kiePMMLPredicate;
     private final KiePMMLModel model;
     private double weight = 1;

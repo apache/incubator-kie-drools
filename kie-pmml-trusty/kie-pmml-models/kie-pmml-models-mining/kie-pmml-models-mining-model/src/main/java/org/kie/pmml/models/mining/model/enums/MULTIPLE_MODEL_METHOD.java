@@ -1,11 +1,9 @@
 package org.kie.pmml.models.mining.model.enums;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.concurrent.atomic.AtomicReference;
@@ -24,11 +22,20 @@ import org.kie.pmml.commons.model.tuples.KiePMMLValueWeight;
 public enum MULTIPLE_MODEL_METHOD {
 
     MAJORITY_VOTE("majorityVote", inputData -> {
-        return objectStream(inputData.values().stream())
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
-                .values()
-                .stream()
-                .max(Comparator.comparingLong(Long::longValue)).orElseThrow(() -> new KieEnumException("Failed to retrieve MAJORITY_VOTE"));
+        Map<Object, Long> groupedValues = objectStream(inputData.values().stream())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        Object toReturn = null;
+        long currentMax = 0L;
+        for (Map.Entry<Object, Long> entry : groupedValues.entrySet()) {
+            if (entry.getValue() > currentMax) {
+                toReturn = entry.getKey();
+                currentMax = entry.getValue();
+            }
+        }
+        if (toReturn == null) {
+            throw new KieEnumException("Failed to retrieve MAJORITY_VOTE");
+        }
+        return toReturn;
     }),
     WEIGHTED_MAJORITY_VOTE("weightedMajorityVote", inputData -> {
         throw new KieEnumException("WEIGHTED_MAJORITY_VOTE not implemented, yet");
@@ -50,20 +57,35 @@ public enum MULTIPLE_MODEL_METHOD {
     MEDIAN("median", inputData -> {
         DoubleStream sortedValues = doubleStream(inputData.values().stream(), "MEDIAN").sorted();
         OptionalDouble toReturn = inputData.size() % 2 == 0 ?
-                sortedValues.skip(inputData.size() / 2 - 1).limit(2).average() : sortedValues.skip(inputData.size() / 2).findFirst();
+                sortedValues.skip(inputData.size() / 2 - 1).limit(2).average() :
+                sortedValues.skip(inputData.size() / 2).findFirst();
         return toReturn.orElseThrow(() -> new KieEnumException("Failed to get MEDIAN"));
     }),
     WEIGHTED_MEDIAN("x-weightedMedian", inputData -> {
-        final List<Double> sortedValues = new ArrayList<>();
-        AtomicReference<Double> weights = new AtomicReference<>(0.0);
-        valueWeightStream(inputData.values().stream(), "WEIGHTED_MEDIAN")
-                .forEach(elem -> {
-                    sortedValues.add(elem.getValue());
-                    weights.accumulateAndGet(elem.getWeight(), Double::sum);
-                });
-        double weightsMedian = weights.get() / 2;
-        Collections.sort(sortedValues);
-        return sortedValues.stream().filter(value -> value >= weightsMedian).findFirst().orElseThrow(() -> new KieEnumException("Failed to get WEIGHTED_MEDIAN"));
+        final List<KiePMMLValueWeight> kiePMMLValueWeights = valueWeightStream(inputData.values()
+                                                                                       .stream(),
+                                                                               "WEIGHTED_MEDIAN")
+                .sorted((o1, o2) -> {
+                    int toReturn = 0;
+                    if (o1.getValue() > o2.getValue()) {
+                        toReturn = 1;
+                    } else if (o1.getValue() < o2.getValue()) {
+                        toReturn = -1;
+                    }
+                    return toReturn;
+                }).collect(Collectors.toList());
+        double weightsSum = kiePMMLValueWeights.stream().map(KiePMMLValueWeight::getWeight)
+                .reduce(Double::sum)
+                .orElseThrow(() -> new KieEnumException("Failed to get WEIGHTED_MEDIAN"));
+        double weightsMedian = weightsSum / 2;
+        double weightedMedianSum = 0;
+        for (KiePMMLValueWeight kiePMMLValueWeight : kiePMMLValueWeights) {
+            weightedMedianSum += kiePMMLValueWeight.getWeight();
+            if (weightedMedianSum > weightsMedian) {
+                return kiePMMLValueWeight.getValue();
+            }
+        }
+        throw new KieEnumException("Failed to get WEIGHTED_MEDIAN");
     }),
     MAX("max", inputData -> {
         return doubleStream(inputData.values().stream(), "MAX").max().orElseThrow(() -> new KieEnumException("Failed to get MAX"));
@@ -77,16 +99,26 @@ public enum MULTIPLE_MODEL_METHOD {
     }),
     SELECT_FIRST("selectFirst", inputData -> {
         if (inputData.entrySet().iterator().hasNext()) {
-            return inputData.entrySet().iterator().next().getValue().getValue();
+            Object toReturn = inputData.entrySet().iterator().next().getValue().getValue();
+            if (toReturn instanceof KiePMMLValueWeight) {
+                toReturn = ((KiePMMLValueWeight) toReturn).getValue();
+            }
+            return toReturn;
         } else {
             throw new KieEnumException("Failed to SELECT_FIRST");
         }
     }),
-    SELECT_ALL("selectAll", inputData -> {
-        return objectStream(inputData.values().stream())
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-    }),
+    SELECT_ALL("selectAll", inputData ->
+            objectStream(inputData.values().stream())
+                    .filter(Objects::nonNull)
+                    .map(value -> {
+                        if (value instanceof KiePMMLValueWeight) {
+                            return ((KiePMMLValueWeight) value).getValue();
+                        } else {
+                            return value;
+                        }
+                    })
+                    .collect(Collectors.toList())),
     MODEL_CHAIN("modelChain", inputData -> {
         throw new KieEnumException("MODEL_CHAIN not implemented, yet");
     });
@@ -94,8 +126,10 @@ public enum MULTIPLE_MODEL_METHOD {
     private final String name;
     /**
      * The function mapped to the given method
-     * The <b>key</b> of the map is the name of the (inner) model, the <b>value</b> is the result of the model evaluation.
-     * It has to be a <code>LinkedHashMap</code> to keep inserrction order and allow evaluation of <code>SELECT_FIRST</code> method
+     * The <b>key</b> of the map is the name of the (inner) model, the <b>value</b> is the result of the model
+     * evaluation.
+     * It has to be a <code>LinkedHashMap</code> to keep inserrction order and allow evaluation of
+     * <code>SELECT_FIRST</code> method
      */
     private final Function<LinkedHashMap<String, KiePMMLNameValue>, Object> function;
 
@@ -105,7 +139,8 @@ public enum MULTIPLE_MODEL_METHOD {
     }
 
     /**
-     * Returns a <code>Stream&lt;Object&gt;</code> representing the values inside the original <code>Stream&lt;KiePMMLNameValue&gt;</code>
+     * Returns a <code>Stream&lt;Object&gt;</code> representing the values inside the original <code>Stream&lt;
+     * KiePMMLNameValue&gt;</code>
      * <p>
      * {@link KiePMMLNameValue#getValue()}
      * @param toUnwrap
@@ -116,7 +151,8 @@ public enum MULTIPLE_MODEL_METHOD {
     }
 
     /**
-     * Returns a <code>Stream&lt;KiePMMLValueWeight&gt;</code> representing the values inside the original <code>Stream&lt;KiePMMLNameValue&gt;</code>
+     * Returns a <code>Stream&lt;KiePMMLValueWeight&gt;</code> representing the values inside the original
+     * <code>Stream&lt;KiePMMLNameValue&gt;</code>
      * {@link KiePMMLNameValue#getValue()}
      * @param toUnwrap
      * @param enumName
@@ -126,14 +162,16 @@ public enum MULTIPLE_MODEL_METHOD {
         return toUnwrap.map(KiePMMLNameValue::getValue)
                 .map(elem -> {
                     if (!(elem instanceof KiePMMLValueWeight)) {
-                        throw new KieEnumException("Failed to get " + enumName + ". Expecting KiePMMLValueWeight, found " + elem.getClass().getSimpleName());
+                        throw new KieEnumException("Failed to get " + enumName + ". Expecting KiePMMLValueWeight, " +
+                                                           "found " + elem.getClass().getSimpleName());
                     }
                     return ((KiePMMLValueWeight) elem);
                 });
     }
 
     /**
-     * Returns a <code>DoubleStream</code> representing the values inside the original <code>Stream&lt;KiePMMLNameValue&gt;</code>
+     * Returns a <code>DoubleStream</code> representing the values inside the original <code>Stream&lt;
+     * KiePMMLNameValue&gt;</code>
      * <p>
      * {@link KiePMMLValueWeight#getValue()}
      * @param toUnwrap
@@ -156,7 +194,8 @@ public enum MULTIPLE_MODEL_METHOD {
 
     /**
      * Return the overall evaluation of the input data
-     * The <b>key</b> of the map is the name of the (inner) model, the <b>value</b> is the result of the model evaluation
+     * The <b>key</b> of the map is the name of the (inner) model, the <b>value</b> is the result of the model
+     * evaluation
      * @param inputData
      * @return
      * @throws KieEnumException
