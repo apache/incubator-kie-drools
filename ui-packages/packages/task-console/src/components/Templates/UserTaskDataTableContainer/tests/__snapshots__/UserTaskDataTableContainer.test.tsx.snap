@@ -43,27 +43,25 @@ exports[`UserTaskDataTableContainer component tests Should render UserTaskDataTa
                     columns={
                       Array [
                         Object {
-                          "data": "processId",
-                          "title": "ProcessId",
+                          "label": "ProcessId",
+                          "path": "$.processId",
                         },
                         Object {
-                          "data": "name",
-                          "title": "Name",
+                          "label": "Name",
+                          "path": "$.name",
                         },
                         Object {
-                          "data": "priority",
-                          "title": "Priority",
+                          "label": "Priority",
+                          "path": "$.priority",
                         },
                         Object {
-                          "data": "processInstanceId",
-                          "title": "ProcessInstanceId",
+                          "label": "ProcessInstanceId",
+                          "path": "$.processInstanceId",
                         },
                         Object {
-                          "cellTransforms": Array [
-                            [Function],
-                          ],
-                          "data": "state",
-                          "title": "State",
+                          "bodyCellTransformer": [Function],
+                          "label": "State",
+                          "path": "$.state",
                         },
                       ]
                     }
@@ -179,27 +177,25 @@ exports[`UserTaskDataTableContainer component tests Should render UserTaskDataTa
                     columns={
                       Array [
                         Object {
-                          "data": "processId",
-                          "title": "ProcessId",
+                          "label": "ProcessId",
+                          "path": "$.processId",
                         },
                         Object {
-                          "data": "name",
-                          "title": "Name",
+                          "label": "Name",
+                          "path": "$.name",
                         },
                         Object {
-                          "data": "priority",
-                          "title": "Priority",
+                          "label": "Priority",
+                          "path": "$.priority",
                         },
                         Object {
-                          "data": "processInstanceId",
-                          "title": "ProcessInstanceId",
+                          "label": "ProcessInstanceId",
+                          "path": "$.processInstanceId",
                         },
                         Object {
-                          "cellTransforms": Array [
-                            [Function],
-                          ],
-                          "data": "state",
-                          "title": "State",
+                          "bodyCellTransformer": [Function],
+                          "label": "State",
+                          "path": "$.state",
                         },
                       ]
                     }

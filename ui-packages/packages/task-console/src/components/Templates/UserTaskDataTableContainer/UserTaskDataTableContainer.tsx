@@ -14,14 +14,10 @@ import './UserTaskDataTable.css';
 import {
   ouiaPageTypeAndObjectId,
   KogitoSpinner,
+  DataTableColumn,
   DataTable,
   GraphQL
 } from '@kogito-apps/common';
-import {
-  ICell,
-  ITransform,
-  IFormatterValueType
-} from '@patternfly/react-table';
 
 const UserTaskLoadingComponent = (
   <Bullseye>
@@ -29,7 +25,8 @@ const UserTaskLoadingComponent = (
   </Bullseye>
 );
 
-const stateColumnTransformer: ITransform = (value: IFormatterValueType) => {
+const stateColumnTransformer = (value, rowDataObj) => {
+  // rowDataObj is the original data object to render the row
   if (!value) {
     return null;
   }
@@ -56,27 +53,27 @@ const UserTaskDataTableContainer: React.FC<InjectedOuiaProps> = ({
     notifyOnNetworkStatusChange: true
   });
 
-  const columns: ICell[] = [
+  const columns: DataTableColumn[] = [
     {
-      title: 'ProcessId',
-      data: 'processId'
+      label: 'ProcessId',
+      path: '$.processId'
     },
     {
-      title: 'Name',
-      data: 'name'
+      label: 'Name',
+      path: '$.name'
     },
     {
-      title: 'Priority',
-      data: 'priority'
+      label: 'Priority',
+      path: '$.priority'
     },
     {
-      title: 'ProcessInstanceId',
-      data: 'processInstanceId'
+      label: 'ProcessInstanceId',
+      path: '$.processInstanceId'
     },
     {
-      title: 'State',
-      data: 'state',
-      cellTransforms: [stateColumnTransformer]
+      label: 'State',
+      path: '$.state',
+      bodyCellTransformer: stateColumnTransformer
     }
   ];
 

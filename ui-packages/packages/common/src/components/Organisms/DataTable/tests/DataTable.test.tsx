@@ -1,14 +1,9 @@
 import React from 'react';
-import DataTable from '../DataTable';
+import DataTable, { DataTableColumn } from '../DataTable';
 import { gql } from 'apollo-boost';
 import { MockedProvider } from '@apollo/react-testing';
 import { getWrapperAsync } from '@kogito-apps/common';
 import { Label } from '@patternfly/react-core';
-import {
-  ICell,
-  ITransform,
-  IFormatterValueType
-} from '@patternfly/react-table';
 
 jest.mock('uuid', () => {
   let value = 1;
@@ -73,7 +68,7 @@ const data = [
     referenceName: 'ConfirmTravel'
   }
 ];
-const stateColumnTransformer: ITransform = (value: IFormatterValueType) => {
+const stateColumnTransformer = (value, rowDataObj) => {
   if (!value) {
     return null;
   }
@@ -82,27 +77,27 @@ const stateColumnTransformer: ITransform = (value: IFormatterValueType) => {
     children: <Label>{title}</Label>
   };
 };
-const columns: ICell[] = [
+const columns: DataTableColumn[] = [
   {
-    title: 'ProcessId',
-    data: 'processId'
+    label: 'ProcessId',
+    path: '$.processId'
   },
   {
-    title: 'Name',
-    data: 'name'
+    label: 'Name',
+    path: '$.name'
   },
   {
-    title: 'Priority',
-    data: 'priority'
+    label: 'Priority',
+    path: '$.priority'
   },
   {
-    title: 'ProcessInstanceId',
-    data: 'processInstanceId'
+    label: 'ProcessInstanceId',
+    path: '$.processInstanceId'
   },
   {
-    title: 'State',
-    data: 'state',
-    cellTransforms: [stateColumnTransformer]
+    label: 'State',
+    path: '$.state',
+    bodyCellTransformer: stateColumnTransformer
   }
 ];
 const GET_USER_TASKS_BY_STATE = gql`

@@ -5,27 +5,25 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
   columns={
     Array [
       Object {
-        "data": "processId",
-        "title": "ProcessId",
+        "label": "ProcessId",
+        "path": "$.processId",
       },
       Object {
-        "data": "name",
-        "title": "Name",
+        "label": "Name",
+        "path": "$.name",
       },
       Object {
-        "data": "priority",
-        "title": "Priority",
+        "label": "Priority",
+        "path": "$.priority",
       },
       Object {
-        "data": "processInstanceId",
-        "title": "ProcessInstanceId",
+        "label": "ProcessInstanceId",
+        "path": "$.processInstanceId",
       },
       Object {
-        "cellTransforms": Array [
-          [Function],
-        ],
-        "data": "state",
-        "title": "State",
+        "bodyCellTransformer": [Function],
+        "label": "State",
+        "path": "$.state",
       },
     ]
   }
@@ -86,26 +84,30 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
     cells={
       Array [
         Object {
-          "data": "processId",
+          "cellTransforms": undefined,
+          "data": "$.processId",
           "title": "ProcessId",
         },
         Object {
-          "data": "name",
+          "cellTransforms": undefined,
+          "data": "$.name",
           "title": "Name",
         },
         Object {
-          "data": "priority",
+          "cellTransforms": undefined,
+          "data": "$.priority",
           "title": "Priority",
         },
         Object {
-          "data": "processInstanceId",
+          "cellTransforms": undefined,
+          "data": "$.processInstanceId",
           "title": "ProcessInstanceId",
         },
         Object {
           "cellTransforms": Array [
             [Function],
           ],
-          "data": "state",
+          "data": "$.state",
           "title": "State",
         },
       ]
@@ -142,26 +144,30 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
           "aria-label": "Data Table",
           "cells": Array [
             Object {
-              "data": "processId",
+              "cellTransforms": undefined,
+              "data": "$.processId",
               "title": "ProcessId",
             },
             Object {
-              "data": "name",
+              "cellTransforms": undefined,
+              "data": "$.name",
               "title": "Name",
             },
             Object {
-              "data": "priority",
+              "cellTransforms": undefined,
+              "data": "$.priority",
               "title": "Priority",
             },
             Object {
-              "data": "processInstanceId",
+              "cellTransforms": undefined,
+              "data": "$.processInstanceId",
               "title": "ProcessInstanceId",
             },
             Object {
               "cellTransforms": Array [
                 [Function],
               ],
-              "data": "state",
+              "data": "$.state",
               "title": "State",
             },
           ],
@@ -204,26 +210,30 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
         cells={
           Array [
             Object {
-              "data": "processId",
+              "cellTransforms": undefined,
+              "data": "$.processId",
               "title": "ProcessId",
             },
             Object {
-              "data": "name",
+              "cellTransforms": undefined,
+              "data": "$.name",
               "title": "Name",
             },
             Object {
-              "data": "priority",
+              "cellTransforms": undefined,
+              "data": "$.priority",
               "title": "Priority",
             },
             Object {
-              "data": "processInstanceId",
+              "cellTransforms": undefined,
+              "data": "$.processInstanceId",
               "title": "ProcessInstanceId",
             },
             Object {
               "cellTransforms": Array [
                 [Function],
               ],
-              "data": "state",
+              "data": "$.state",
               "title": "State",
             },
           ]
@@ -282,7 +292,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                     [Function],
                   ],
                 },
-                "data": "processId",
+                "data": "$.processId",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -325,7 +335,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                     [Function],
                   ],
                 },
-                "data": "name",
+                "data": "$.name",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -368,7 +378,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                     [Function],
                   ],
                 },
-                "data": "priority",
+                "data": "$.priority",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -411,7 +421,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                     [Function],
                   ],
                 },
-                "data": "processInstanceId",
+                "data": "$.processInstanceId",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -455,7 +465,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                     [Function],
                   ],
                 },
-                "data": "state",
+                "data": "$.state",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -531,7 +541,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                               [Function],
                             ],
                           },
-                          "data": "processId",
+                          "data": "$.processId",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -574,7 +584,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                               [Function],
                             ],
                           },
-                          "data": "name",
+                          "data": "$.name",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -617,7 +627,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                               [Function],
                             ],
                           },
-                          "data": "priority",
+                          "data": "$.priority",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -660,7 +670,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                               [Function],
                             ],
                           },
-                          "data": "processInstanceId",
+                          "data": "$.processInstanceId",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -704,7 +714,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                               [Function],
                             ],
                           },
-                          "data": "state",
+                          "data": "$.state",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -780,7 +790,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                   [Function],
                                 ],
                               },
-                              "data": "processId",
+                              "data": "$.processId",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -823,7 +833,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                   [Function],
                                 ],
                               },
-                              "data": "name",
+                              "data": "$.name",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -866,7 +876,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                   [Function],
                                 ],
                               },
-                              "data": "priority",
+                              "data": "$.priority",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -909,7 +919,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                   [Function],
                                 ],
                               },
-                              "data": "processInstanceId",
+                              "data": "$.processInstanceId",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -953,7 +963,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                   [Function],
                                 ],
                               },
-                              "data": "state",
+                              "data": "$.state",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -1090,7 +1100,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                           [Function],
                         ],
                       },
-                      "data": "processId",
+                      "data": "$.processId",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -1133,7 +1143,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                           [Function],
                         ],
                       },
-                      "data": "name",
+                      "data": "$.name",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -1176,7 +1186,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                           [Function],
                         ],
                       },
-                      "data": "priority",
+                      "data": "$.priority",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -1219,7 +1229,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                           [Function],
                         ],
                       },
-                      "data": "processInstanceId",
+                      "data": "$.processInstanceId",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -1263,7 +1273,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                           [Function],
                         ],
                       },
-                      "data": "state",
+                      "data": "$.state",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -1543,7 +1553,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                               [Function],
                             ],
                           },
-                          "data": "processId",
+                          "data": "$.processId",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -1586,7 +1596,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                               [Function],
                             ],
                           },
-                          "data": "name",
+                          "data": "$.name",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -1629,7 +1639,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                               [Function],
                             ],
                           },
-                          "data": "priority",
+                          "data": "$.priority",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -1672,7 +1682,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                               [Function],
                             ],
                           },
-                          "data": "processInstanceId",
+                          "data": "$.processInstanceId",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -1716,7 +1726,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                               [Function],
                             ],
                           },
-                          "data": "state",
+                          "data": "$.state",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -2084,7 +2094,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                     [Function],
                                   ],
                                 },
-                                "data": "processId",
+                                "data": "$.processId",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -2127,7 +2137,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                     [Function],
                                   ],
                                 },
-                                "data": "name",
+                                "data": "$.name",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -2170,7 +2180,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                     [Function],
                                   ],
                                 },
-                                "data": "priority",
+                                "data": "$.priority",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -2213,7 +2223,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                     [Function],
                                   ],
                                 },
-                                "data": "processInstanceId",
+                                "data": "$.processInstanceId",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -2257,7 +2267,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                     [Function],
                                   ],
                                 },
-                                "data": "state",
+                                "data": "$.state",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -2679,7 +2689,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                     [Function],
                                   ],
                                 },
-                                "data": "processId",
+                                "data": "$.processId",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -2722,7 +2732,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                     [Function],
                                   ],
                                 },
-                                "data": "name",
+                                "data": "$.name",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -2765,7 +2775,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                     [Function],
                                   ],
                                 },
-                                "data": "priority",
+                                "data": "$.priority",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -2808,7 +2818,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                     [Function],
                                   ],
                                 },
-                                "data": "processInstanceId",
+                                "data": "$.processInstanceId",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -2852,7 +2862,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                     [Function],
                                   ],
                                 },
-                                "data": "state",
+                                "data": "$.state",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -3335,83 +3345,83 @@ exports[`DataTable component tests Should render DataTable correctly even no col
     cells={
       Array [
         Object {
-          "data": "id",
+          "data": "$.id",
           "title": "id",
         },
         Object {
-          "data": "description",
+          "data": "$.description",
           "title": "description",
         },
         Object {
-          "data": "name",
+          "data": "$.name",
           "title": "name",
         },
         Object {
-          "data": "priority",
+          "data": "$.priority",
           "title": "priority",
         },
         Object {
-          "data": "processInstanceId",
+          "data": "$.processInstanceId",
           "title": "processInstanceId",
         },
         Object {
-          "data": "processId",
+          "data": "$.processId",
           "title": "processId",
         },
         Object {
-          "data": "rootProcessInstanceId",
+          "data": "$.rootProcessInstanceId",
           "title": "rootProcessInstanceId",
         },
         Object {
-          "data": "rootProcessId",
+          "data": "$.rootProcessId",
           "title": "rootProcessId",
         },
         Object {
-          "data": "state",
+          "data": "$.state",
           "title": "state",
         },
         Object {
-          "data": "actualOwner",
+          "data": "$.actualOwner",
           "title": "actualOwner",
         },
         Object {
-          "data": "adminGroups",
+          "data": "$.adminGroups",
           "title": "adminGroups",
         },
         Object {
-          "data": "adminUsers",
+          "data": "$.adminUsers",
           "title": "adminUsers",
         },
         Object {
-          "data": "completed",
+          "data": "$.completed",
           "title": "completed",
         },
         Object {
-          "data": "started",
+          "data": "$.started",
           "title": "started",
         },
         Object {
-          "data": "excludedUsers",
+          "data": "$.excludedUsers",
           "title": "excludedUsers",
         },
         Object {
-          "data": "potentialGroups",
+          "data": "$.potentialGroups",
           "title": "potentialGroups",
         },
         Object {
-          "data": "potentialUsers",
+          "data": "$.potentialUsers",
           "title": "potentialUsers",
         },
         Object {
-          "data": "inputs",
+          "data": "$.inputs",
           "title": "inputs",
         },
         Object {
-          "data": "outputs",
+          "data": "$.outputs",
           "title": "outputs",
         },
         Object {
-          "data": "referenceName",
+          "data": "$.referenceName",
           "title": "referenceName",
         },
       ]
@@ -3438,7 +3448,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
             "N/A",
             "N/A",
             "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}\\"",
-            "N/A",
+            "{}",
             "VisaApplication",
           ],
           "rowKey": 3,
@@ -3478,83 +3488,83 @@ exports[`DataTable component tests Should render DataTable correctly even no col
           "aria-label": "Data Table",
           "cells": Array [
             Object {
-              "data": "id",
+              "data": "$.id",
               "title": "id",
             },
             Object {
-              "data": "description",
+              "data": "$.description",
               "title": "description",
             },
             Object {
-              "data": "name",
+              "data": "$.name",
               "title": "name",
             },
             Object {
-              "data": "priority",
+              "data": "$.priority",
               "title": "priority",
             },
             Object {
-              "data": "processInstanceId",
+              "data": "$.processInstanceId",
               "title": "processInstanceId",
             },
             Object {
-              "data": "processId",
+              "data": "$.processId",
               "title": "processId",
             },
             Object {
-              "data": "rootProcessInstanceId",
+              "data": "$.rootProcessInstanceId",
               "title": "rootProcessInstanceId",
             },
             Object {
-              "data": "rootProcessId",
+              "data": "$.rootProcessId",
               "title": "rootProcessId",
             },
             Object {
-              "data": "state",
+              "data": "$.state",
               "title": "state",
             },
             Object {
-              "data": "actualOwner",
+              "data": "$.actualOwner",
               "title": "actualOwner",
             },
             Object {
-              "data": "adminGroups",
+              "data": "$.adminGroups",
               "title": "adminGroups",
             },
             Object {
-              "data": "adminUsers",
+              "data": "$.adminUsers",
               "title": "adminUsers",
             },
             Object {
-              "data": "completed",
+              "data": "$.completed",
               "title": "completed",
             },
             Object {
-              "data": "started",
+              "data": "$.started",
               "title": "started",
             },
             Object {
-              "data": "excludedUsers",
+              "data": "$.excludedUsers",
               "title": "excludedUsers",
             },
             Object {
-              "data": "potentialGroups",
+              "data": "$.potentialGroups",
               "title": "potentialGroups",
             },
             Object {
-              "data": "potentialUsers",
+              "data": "$.potentialUsers",
               "title": "potentialUsers",
             },
             Object {
-              "data": "inputs",
+              "data": "$.inputs",
               "title": "inputs",
             },
             Object {
-              "data": "outputs",
+              "data": "$.outputs",
               "title": "outputs",
             },
             Object {
-              "data": "referenceName",
+              "data": "$.referenceName",
               "title": "referenceName",
             },
           ],
@@ -3585,7 +3595,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                 "N/A",
                 "N/A",
                 "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}\\"",
-                "N/A",
+                "{}",
                 "VisaApplication",
               ],
               "rowKey": 3,
@@ -3627,83 +3637,83 @@ exports[`DataTable component tests Should render DataTable correctly even no col
         cells={
           Array [
             Object {
-              "data": "id",
+              "data": "$.id",
               "title": "id",
             },
             Object {
-              "data": "description",
+              "data": "$.description",
               "title": "description",
             },
             Object {
-              "data": "name",
+              "data": "$.name",
               "title": "name",
             },
             Object {
-              "data": "priority",
+              "data": "$.priority",
               "title": "priority",
             },
             Object {
-              "data": "processInstanceId",
+              "data": "$.processInstanceId",
               "title": "processInstanceId",
             },
             Object {
-              "data": "processId",
+              "data": "$.processId",
               "title": "processId",
             },
             Object {
-              "data": "rootProcessInstanceId",
+              "data": "$.rootProcessInstanceId",
               "title": "rootProcessInstanceId",
             },
             Object {
-              "data": "rootProcessId",
+              "data": "$.rootProcessId",
               "title": "rootProcessId",
             },
             Object {
-              "data": "state",
+              "data": "$.state",
               "title": "state",
             },
             Object {
-              "data": "actualOwner",
+              "data": "$.actualOwner",
               "title": "actualOwner",
             },
             Object {
-              "data": "adminGroups",
+              "data": "$.adminGroups",
               "title": "adminGroups",
             },
             Object {
-              "data": "adminUsers",
+              "data": "$.adminUsers",
               "title": "adminUsers",
             },
             Object {
-              "data": "completed",
+              "data": "$.completed",
               "title": "completed",
             },
             Object {
-              "data": "started",
+              "data": "$.started",
               "title": "started",
             },
             Object {
-              "data": "excludedUsers",
+              "data": "$.excludedUsers",
               "title": "excludedUsers",
             },
             Object {
-              "data": "potentialGroups",
+              "data": "$.potentialGroups",
               "title": "potentialGroups",
             },
             Object {
-              "data": "potentialUsers",
+              "data": "$.potentialUsers",
               "title": "potentialUsers",
             },
             Object {
-              "data": "inputs",
+              "data": "$.inputs",
               "title": "inputs",
             },
             Object {
-              "data": "outputs",
+              "data": "$.outputs",
               "title": "outputs",
             },
             Object {
-              "data": "referenceName",
+              "data": "$.referenceName",
               "title": "referenceName",
             },
           ]
@@ -3744,7 +3754,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                 "N/A",
                 "N/A",
                 "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}\\"",
-                "N/A",
+                "{}",
                 "VisaApplication",
               ],
               "rowKey": 3,
@@ -3792,7 +3802,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                     [Function],
                   ],
                 },
-                "data": "id",
+                "data": "$.id",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -3835,7 +3845,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                     [Function],
                   ],
                 },
-                "data": "description",
+                "data": "$.description",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -3878,7 +3888,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                     [Function],
                   ],
                 },
-                "data": "name",
+                "data": "$.name",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -3921,7 +3931,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                     [Function],
                   ],
                 },
-                "data": "priority",
+                "data": "$.priority",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -3964,7 +3974,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                     [Function],
                   ],
                 },
-                "data": "processInstanceId",
+                "data": "$.processInstanceId",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -4007,7 +4017,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                     [Function],
                   ],
                 },
-                "data": "processId",
+                "data": "$.processId",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -4050,7 +4060,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                     [Function],
                   ],
                 },
-                "data": "rootProcessInstanceId",
+                "data": "$.rootProcessInstanceId",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -4093,7 +4103,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                     [Function],
                   ],
                 },
-                "data": "rootProcessId",
+                "data": "$.rootProcessId",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -4136,7 +4146,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                     [Function],
                   ],
                 },
-                "data": "state",
+                "data": "$.state",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -4179,7 +4189,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                     [Function],
                   ],
                 },
-                "data": "actualOwner",
+                "data": "$.actualOwner",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -4222,7 +4232,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                     [Function],
                   ],
                 },
-                "data": "adminGroups",
+                "data": "$.adminGroups",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -4265,7 +4275,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                     [Function],
                   ],
                 },
-                "data": "adminUsers",
+                "data": "$.adminUsers",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -4308,7 +4318,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                     [Function],
                   ],
                 },
-                "data": "completed",
+                "data": "$.completed",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -4351,7 +4361,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                     [Function],
                   ],
                 },
-                "data": "started",
+                "data": "$.started",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -4394,7 +4404,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                     [Function],
                   ],
                 },
-                "data": "excludedUsers",
+                "data": "$.excludedUsers",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -4437,7 +4447,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                     [Function],
                   ],
                 },
-                "data": "potentialGroups",
+                "data": "$.potentialGroups",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -4480,7 +4490,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                     [Function],
                   ],
                 },
-                "data": "potentialUsers",
+                "data": "$.potentialUsers",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -4523,7 +4533,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                     [Function],
                   ],
                 },
-                "data": "inputs",
+                "data": "$.inputs",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -4566,7 +4576,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                     [Function],
                   ],
                 },
-                "data": "outputs",
+                "data": "$.outputs",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -4609,7 +4619,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                     [Function],
                   ],
                 },
-                "data": "referenceName",
+                "data": "$.referenceName",
                 "extraParams": Object {
                   "actionResolver": undefined,
                   "actions": undefined,
@@ -4685,7 +4695,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "id",
+                          "data": "$.id",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -4728,7 +4738,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "description",
+                          "data": "$.description",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -4771,7 +4781,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "name",
+                          "data": "$.name",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -4814,7 +4824,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "priority",
+                          "data": "$.priority",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -4857,7 +4867,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "processInstanceId",
+                          "data": "$.processInstanceId",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -4900,7 +4910,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "processId",
+                          "data": "$.processId",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -4943,7 +4953,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "rootProcessInstanceId",
+                          "data": "$.rootProcessInstanceId",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -4986,7 +4996,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "rootProcessId",
+                          "data": "$.rootProcessId",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -5029,7 +5039,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "state",
+                          "data": "$.state",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -5072,7 +5082,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "actualOwner",
+                          "data": "$.actualOwner",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -5115,7 +5125,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "adminGroups",
+                          "data": "$.adminGroups",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -5158,7 +5168,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "adminUsers",
+                          "data": "$.adminUsers",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -5201,7 +5211,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "completed",
+                          "data": "$.completed",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -5244,7 +5254,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "started",
+                          "data": "$.started",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -5287,7 +5297,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "excludedUsers",
+                          "data": "$.excludedUsers",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -5330,7 +5340,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "potentialGroups",
+                          "data": "$.potentialGroups",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -5373,7 +5383,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "potentialUsers",
+                          "data": "$.potentialUsers",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -5416,7 +5426,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "inputs",
+                          "data": "$.inputs",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -5459,7 +5469,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "outputs",
+                          "data": "$.outputs",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -5502,7 +5512,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "referenceName",
+                          "data": "$.referenceName",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -5578,7 +5588,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   [Function],
                                 ],
                               },
-                              "data": "id",
+                              "data": "$.id",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -5621,7 +5631,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   [Function],
                                 ],
                               },
-                              "data": "description",
+                              "data": "$.description",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -5664,7 +5674,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   [Function],
                                 ],
                               },
-                              "data": "name",
+                              "data": "$.name",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -5707,7 +5717,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   [Function],
                                 ],
                               },
-                              "data": "priority",
+                              "data": "$.priority",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -5750,7 +5760,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   [Function],
                                 ],
                               },
-                              "data": "processInstanceId",
+                              "data": "$.processInstanceId",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -5793,7 +5803,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   [Function],
                                 ],
                               },
-                              "data": "processId",
+                              "data": "$.processId",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -5836,7 +5846,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   [Function],
                                 ],
                               },
-                              "data": "rootProcessInstanceId",
+                              "data": "$.rootProcessInstanceId",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -5879,7 +5889,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   [Function],
                                 ],
                               },
-                              "data": "rootProcessId",
+                              "data": "$.rootProcessId",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -5922,7 +5932,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   [Function],
                                 ],
                               },
-                              "data": "state",
+                              "data": "$.state",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -5965,7 +5975,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   [Function],
                                 ],
                               },
-                              "data": "actualOwner",
+                              "data": "$.actualOwner",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -6008,7 +6018,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   [Function],
                                 ],
                               },
-                              "data": "adminGroups",
+                              "data": "$.adminGroups",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -6051,7 +6061,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   [Function],
                                 ],
                               },
-                              "data": "adminUsers",
+                              "data": "$.adminUsers",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -6094,7 +6104,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   [Function],
                                 ],
                               },
-                              "data": "completed",
+                              "data": "$.completed",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -6137,7 +6147,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   [Function],
                                 ],
                               },
-                              "data": "started",
+                              "data": "$.started",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -6180,7 +6190,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   [Function],
                                 ],
                               },
-                              "data": "excludedUsers",
+                              "data": "$.excludedUsers",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -6223,7 +6233,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   [Function],
                                 ],
                               },
-                              "data": "potentialGroups",
+                              "data": "$.potentialGroups",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -6266,7 +6276,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   [Function],
                                 ],
                               },
-                              "data": "potentialUsers",
+                              "data": "$.potentialUsers",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -6309,7 +6319,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   [Function],
                                 ],
                               },
-                              "data": "inputs",
+                              "data": "$.inputs",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -6352,7 +6362,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   [Function],
                                 ],
                               },
-                              "data": "outputs",
+                              "data": "$.outputs",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -6395,7 +6405,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   [Function],
                                 ],
                               },
-                              "data": "referenceName",
+                              "data": "$.referenceName",
                               "extraParams": Object {
                                 "actionResolver": undefined,
                                 "actions": undefined,
@@ -6757,7 +6767,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           [Function],
                         ],
                       },
-                      "data": "id",
+                      "data": "$.id",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -6800,7 +6810,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           [Function],
                         ],
                       },
-                      "data": "description",
+                      "data": "$.description",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -6843,7 +6853,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           [Function],
                         ],
                       },
-                      "data": "name",
+                      "data": "$.name",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -6886,7 +6896,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           [Function],
                         ],
                       },
-                      "data": "priority",
+                      "data": "$.priority",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -6929,7 +6939,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           [Function],
                         ],
                       },
-                      "data": "processInstanceId",
+                      "data": "$.processInstanceId",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -6972,7 +6982,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           [Function],
                         ],
                       },
-                      "data": "processId",
+                      "data": "$.processId",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -7015,7 +7025,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           [Function],
                         ],
                       },
-                      "data": "rootProcessInstanceId",
+                      "data": "$.rootProcessInstanceId",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -7058,7 +7068,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           [Function],
                         ],
                       },
-                      "data": "rootProcessId",
+                      "data": "$.rootProcessId",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -7101,7 +7111,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           [Function],
                         ],
                       },
-                      "data": "state",
+                      "data": "$.state",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -7144,7 +7154,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           [Function],
                         ],
                       },
-                      "data": "actualOwner",
+                      "data": "$.actualOwner",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -7187,7 +7197,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           [Function],
                         ],
                       },
-                      "data": "adminGroups",
+                      "data": "$.adminGroups",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -7230,7 +7240,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           [Function],
                         ],
                       },
-                      "data": "adminUsers",
+                      "data": "$.adminUsers",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -7273,7 +7283,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           [Function],
                         ],
                       },
-                      "data": "completed",
+                      "data": "$.completed",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -7316,7 +7326,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           [Function],
                         ],
                       },
-                      "data": "started",
+                      "data": "$.started",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -7359,7 +7369,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           [Function],
                         ],
                       },
-                      "data": "excludedUsers",
+                      "data": "$.excludedUsers",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -7402,7 +7412,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           [Function],
                         ],
                       },
-                      "data": "potentialGroups",
+                      "data": "$.potentialGroups",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -7445,7 +7455,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           [Function],
                         ],
                       },
-                      "data": "potentialUsers",
+                      "data": "$.potentialUsers",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -7488,7 +7498,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           [Function],
                         ],
                       },
-                      "data": "inputs",
+                      "data": "$.inputs",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -7531,7 +7541,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           [Function],
                         ],
                       },
-                      "data": "outputs",
+                      "data": "$.outputs",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -7574,7 +7584,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           [Function],
                         ],
                       },
-                      "data": "referenceName",
+                      "data": "$.referenceName",
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
@@ -7636,7 +7646,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                         "N/A",
                         "N/A",
                         "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}\\"",
-                        "N/A",
+                        "{}",
                         "VisaApplication",
                       ],
                       "rowKey": 3,
@@ -7712,7 +7722,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           "N/A",
                           "N/A",
                           "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}\\"",
-                          "N/A",
+                          "{}",
                           "VisaApplication",
                         ],
                         "completed": Object {
@@ -7761,7 +7771,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           "props": Object {
                             "isVisible": true,
                           },
-                          "title": "N/A",
+                          "title": "{}",
                         },
                         "potentialgroups": Object {
                           "props": Object {
@@ -8020,7 +8030,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           "N/A",
                           "N/A",
                           "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}\\"",
-                          "N/A",
+                          "{}",
                           "VisaApplication",
                         ],
                         "completed": Object {
@@ -8069,7 +8079,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                           "props": Object {
                             "isVisible": true,
                           },
-                          "title": "N/A",
+                          "title": "{}",
                         },
                         "potentialgroups": Object {
                           "props": Object {
@@ -8300,7 +8310,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "id",
+                          "data": "$.id",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -8343,7 +8353,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "description",
+                          "data": "$.description",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -8386,7 +8396,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "name",
+                          "data": "$.name",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -8429,7 +8439,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "priority",
+                          "data": "$.priority",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -8472,7 +8482,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "processInstanceId",
+                          "data": "$.processInstanceId",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -8515,7 +8525,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "processId",
+                          "data": "$.processId",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -8558,7 +8568,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "rootProcessInstanceId",
+                          "data": "$.rootProcessInstanceId",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -8601,7 +8611,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "rootProcessId",
+                          "data": "$.rootProcessId",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -8644,7 +8654,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "state",
+                          "data": "$.state",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -8687,7 +8697,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "actualOwner",
+                          "data": "$.actualOwner",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -8730,7 +8740,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "adminGroups",
+                          "data": "$.adminGroups",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -8773,7 +8783,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "adminUsers",
+                          "data": "$.adminUsers",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -8816,7 +8826,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "completed",
+                          "data": "$.completed",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -8859,7 +8869,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "started",
+                          "data": "$.started",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -8902,7 +8912,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "excludedUsers",
+                          "data": "$.excludedUsers",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -8945,7 +8955,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "potentialGroups",
+                          "data": "$.potentialGroups",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -8988,7 +8998,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "potentialUsers",
+                          "data": "$.potentialUsers",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -9031,7 +9041,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "inputs",
+                          "data": "$.inputs",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -9074,7 +9084,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "outputs",
+                          "data": "$.outputs",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -9117,7 +9127,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               [Function],
                             ],
                           },
-                          "data": "referenceName",
+                          "data": "$.referenceName",
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
@@ -9194,7 +9204,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                             "N/A",
                             "N/A",
                             "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}\\"",
-                            "N/A",
+                            "{}",
                             "VisaApplication",
                           ],
                           "completed": Object {
@@ -9243,7 +9253,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                             "props": Object {
                               "isVisible": true,
                             },
-                            "title": "N/A",
+                            "title": "{}",
                           },
                           "potentialgroups": Object {
                             "props": Object {
@@ -9517,7 +9527,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                             "N/A",
                             "N/A",
                             "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}\\"",
-                            "N/A",
+                            "{}",
                             "VisaApplication",
                           ],
                           "completed": Object {
@@ -9566,7 +9576,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                             "props": Object {
                               "isVisible": true,
                             },
-                            "title": "N/A",
+                            "title": "{}",
                           },
                           "potentialgroups": Object {
                             "props": Object {
@@ -9827,7 +9837,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               "N/A",
                               "N/A",
                               "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}\\"",
-                              "N/A",
+                              "{}",
                               "VisaApplication",
                             ],
                             "completed": Object {
@@ -9876,7 +9886,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                               "props": Object {
                                 "isVisible": true,
                               },
-                              "title": "N/A",
+                              "title": "{}",
                             },
                             "potentialgroups": Object {
                               "props": Object {
@@ -10109,7 +10119,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "id",
+                                "data": "$.id",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -10152,7 +10162,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "description",
+                                "data": "$.description",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -10195,7 +10205,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "name",
+                                "data": "$.name",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -10238,7 +10248,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "priority",
+                                "data": "$.priority",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -10281,7 +10291,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "processInstanceId",
+                                "data": "$.processInstanceId",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -10324,7 +10334,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "processId",
+                                "data": "$.processId",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -10367,7 +10377,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "rootProcessInstanceId",
+                                "data": "$.rootProcessInstanceId",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -10410,7 +10420,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "rootProcessId",
+                                "data": "$.rootProcessId",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -10453,7 +10463,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "state",
+                                "data": "$.state",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -10496,7 +10506,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "actualOwner",
+                                "data": "$.actualOwner",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -10539,7 +10549,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "adminGroups",
+                                "data": "$.adminGroups",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -10582,7 +10592,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "adminUsers",
+                                "data": "$.adminUsers",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -10625,7 +10635,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "completed",
+                                "data": "$.completed",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -10668,7 +10678,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "started",
+                                "data": "$.started",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -10711,7 +10721,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "excludedUsers",
+                                "data": "$.excludedUsers",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -10754,7 +10764,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "potentialGroups",
+                                "data": "$.potentialGroups",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -10797,7 +10807,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "potentialUsers",
+                                "data": "$.potentialUsers",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -10840,7 +10850,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "inputs",
+                                "data": "$.inputs",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -10883,7 +10893,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "outputs",
+                                "data": "$.outputs",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -10926,7 +10936,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "referenceName",
+                                "data": "$.referenceName",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -11010,7 +11020,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                 "N/A",
                                 "N/A",
                                 "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}\\"",
-                                "N/A",
+                                "{}",
                                 "VisaApplication",
                               ],
                               "completed": Object {
@@ -11059,7 +11069,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                 "props": Object {
                                   "isVisible": true,
                                 },
-                                "title": "N/A",
+                                "title": "{}",
                               },
                               "potentialgroups": Object {
                                 "props": Object {
@@ -11168,7 +11178,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   "N/A",
                                   "N/A",
                                   "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}\\"",
-                                  "N/A",
+                                  "{}",
                                   "VisaApplication",
                                 ],
                                 "completed": Object {
@@ -11217,7 +11227,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                   "props": Object {
                                     "isVisible": true,
                                   },
-                                  "title": "N/A",
+                                  "title": "{}",
                                 },
                                 "potentialgroups": Object {
                                   "props": Object {
@@ -11425,7 +11435,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                       data-label="outputs"
                                       isVisible={true}
                                     >
-                                      N/A
+                                      {}
                                     </BodyCell>,
                                     <BodyCell
                                       data-key={19}
@@ -11474,7 +11484,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                       "N/A",
                                       "N/A",
                                       "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}\\"",
-                                      "N/A",
+                                      "{}",
                                       "VisaApplication",
                                     ],
                                     "completed": Object {
@@ -11523,7 +11533,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                       "props": Object {
                                         "isVisible": true,
                                       },
-                                      "title": "N/A",
+                                      "title": "{}",
                                     },
                                     "potentialgroups": Object {
                                       "props": Object {
@@ -11648,7 +11658,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                       "N/A",
                                       "N/A",
                                       "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}\\"",
-                                      "N/A",
+                                      "{}",
                                       "VisaApplication",
                                     ],
                                     "completed": Object {
@@ -11697,7 +11707,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                       "props": Object {
                                         "isVisible": true,
                                       },
-                                      "title": "N/A",
+                                      "title": "{}",
                                     },
                                     "potentialgroups": Object {
                                       "props": Object {
@@ -12037,7 +12047,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                       data-key={18}
                                       data-label="outputs"
                                     >
-                                      N/A
+                                      {}
                                     </td>
                                   </BodyCell>
                                   <BodyCell
@@ -12071,7 +12081,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "id",
+                                "data": "$.id",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -12114,7 +12124,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "description",
+                                "data": "$.description",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -12157,7 +12167,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "name",
+                                "data": "$.name",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -12200,7 +12210,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "priority",
+                                "data": "$.priority",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -12243,7 +12253,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "processInstanceId",
+                                "data": "$.processInstanceId",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -12286,7 +12296,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "processId",
+                                "data": "$.processId",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -12329,7 +12339,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "rootProcessInstanceId",
+                                "data": "$.rootProcessInstanceId",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -12372,7 +12382,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "rootProcessId",
+                                "data": "$.rootProcessId",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -12415,7 +12425,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "state",
+                                "data": "$.state",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -12458,7 +12468,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "actualOwner",
+                                "data": "$.actualOwner",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -12501,7 +12511,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "adminGroups",
+                                "data": "$.adminGroups",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -12544,7 +12554,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "adminUsers",
+                                "data": "$.adminUsers",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -12587,7 +12597,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "completed",
+                                "data": "$.completed",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -12630,7 +12640,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "started",
+                                "data": "$.started",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -12673,7 +12683,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "excludedUsers",
+                                "data": "$.excludedUsers",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -12716,7 +12726,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "potentialGroups",
+                                "data": "$.potentialGroups",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -12759,7 +12769,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "potentialUsers",
+                                "data": "$.potentialUsers",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -12802,7 +12812,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "inputs",
+                                "data": "$.inputs",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -12845,7 +12855,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "outputs",
+                                "data": "$.outputs",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -12888,7 +12898,7 @@ exports[`DataTable component tests Should render DataTable correctly even no col
                                     [Function],
                                   ],
                                 },
-                                "data": "referenceName",
+                                "data": "$.referenceName",
                                 "extraParams": Object {
                                   "actionResolver": undefined,
                                   "actions": undefined,
@@ -14040,27 +14050,25 @@ exports[`DataTable component tests Should render ErrorComponent 1`] = `
   columns={
     Array [
       Object {
-        "data": "processId",
-        "title": "ProcessId",
+        "label": "ProcessId",
+        "path": "$.processId",
       },
       Object {
-        "data": "name",
-        "title": "Name",
+        "label": "Name",
+        "path": "$.name",
       },
       Object {
-        "data": "priority",
-        "title": "Priority",
+        "label": "Priority",
+        "path": "$.priority",
       },
       Object {
-        "data": "processInstanceId",
-        "title": "ProcessInstanceId",
+        "label": "ProcessInstanceId",
+        "path": "$.processInstanceId",
       },
       Object {
-        "cellTransforms": Array [
-          [Function],
-        ],
-        "data": "state",
-        "title": "State",
+        "bodyCellTransformer": [Function],
+        "label": "State",
+        "path": "$.state",
       },
     ]
   }
@@ -14089,27 +14097,25 @@ exports[`DataTable component tests Should render LoadingComponent 1`] = `
   columns={
     Array [
       Object {
-        "data": "processId",
-        "title": "ProcessId",
+        "label": "ProcessId",
+        "path": "$.processId",
       },
       Object {
-        "data": "name",
-        "title": "Name",
+        "label": "Name",
+        "path": "$.name",
       },
       Object {
-        "data": "priority",
-        "title": "Priority",
+        "label": "Priority",
+        "path": "$.priority",
       },
       Object {
-        "data": "processInstanceId",
-        "title": "ProcessInstanceId",
+        "label": "ProcessInstanceId",
+        "path": "$.processInstanceId",
       },
       Object {
-        "cellTransforms": Array [
-          [Function],
-        ],
-        "data": "state",
-        "title": "State",
+        "bodyCellTransformer": [Function],
+        "label": "State",
+        "path": "$.state",
       },
     ]
   }

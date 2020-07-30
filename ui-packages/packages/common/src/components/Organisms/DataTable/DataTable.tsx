@@ -4,8 +4,9 @@ import {
   Table,
   TableHeader,
   TableBody,
-  ICell,
-  IRow
+  IRow,
+  ITransform,
+  ICell
 } from '@patternfly/react-table';
 import KogitoSpinner from '../../Atoms/KogitoSpinner/KogitoSpinner';
 import {
@@ -15,11 +16,17 @@ import {
 import '@patternfly/patternfly/patternfly-addons.css';
 import _ from 'lodash';
 import uuidv4 from 'uuid';
+import jp from 'jsonpath';
 
+export interface DataTableColumn {
+  path: string;
+  label: string;
+  bodyCellTransformer?: (value: any, rowDataObj: object) => any;
+}
 interface IOwnProps {
   data: any[];
   isLoading: boolean;
-  columns?: ICell[];
+  columns?: DataTableColumn[];
   networkStatus: any;
   error: any;
   refetch: () => void;
@@ -27,13 +34,36 @@ interface IOwnProps {
   ErrorComponent?: React.ReactNode;
 }
 
-const getColumns = (data: any[], columns: ICell[]) => {
+const getCellData = (dataObj: object, path: string) => {
+  if (dataObj && path) {
+    return !_.isEmpty(jp.value(dataObj, path))
+      ? jp.value(dataObj, path)
+      : 'N/A';
+  } else {
+    return 'N/A';
+  }
+};
+
+const getColumns = (data: any[], columns: DataTableColumn[]) => {
   let columnList: ICell[] = [];
   if (data) {
     columnList = columns
-      ? _.filter(columns, column => !_.isEmpty(column.data))
+      ? _.filter(columns, column => !_.isEmpty(column.path)).map(column => {
+          return {
+            title: column.label,
+            data: column.path,
+            cellTransforms: column.bodyCellTransformer
+              ? [
+                  ((value, extra) => {
+                    const rowDataObj = data[extra.rowIndex];
+                    return column.bodyCellTransformer(value, rowDataObj);
+                  }) as ITransform
+                ]
+              : undefined
+          } as ICell;
+        })
       : _.filter(_.keys(_.sample(data)), key => key !== '__typename').map(
-          key => ({ title: key, data: key } as ICell)
+          key => ({ title: key, data: `$.${key}` } as ICell)
         );
   }
   return columnList;
@@ -47,18 +77,9 @@ const getRows = (data: any[], columns: ICell[]) => {
         cells: _.reduce(
           columns,
           (result, column: ICell) => {
-            _.forEach(rowData, (value, key) => {
-              if (
-                column.data &&
-                key.toLowerCase() === column.data.toLowerCase()
-              ) {
-                if (_.isEmpty(value) || value === '{}') {
-                  result.push('N/A');
-                } else {
-                  result.push(value);
-                }
-              }
-            });
+            if (column.data) {
+              result.push(getCellData(rowData, column.data));
+            }
             return result;
           },
           []
