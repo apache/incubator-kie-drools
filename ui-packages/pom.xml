@@ -19,14 +19,16 @@
     <sonar.sources>
       ${path.to.packages}/common/src,
       ${path.to.packages}/management-console/src,
-      ${path.to.packages}/task-console/src
+      ${path.to.packages}/task-console/src,
+      ${path.to.packages}/trusty/src
     </sonar.sources>
     <sonar.exclusions>**/__mocks__/**,**/mocks/**,**/*.stories.tsx</sonar.exclusions>
     <sonar.test.inclusions>**/*test.ts,**/*test.tsx</sonar.test.inclusions>
     <sonar.javascript.lcov.reportPaths>
       ${path.to.packages}/common/coverage/lcov.info,
       ${path.to.packages}/management-console/coverage/lcov.info,
-      ${path.to.packages}/task-console/coverage/lcov.info
+      ${path.to.packages}/task-console/coverage/lcov.info,
+      ${path.to.packages}/trusty/coverage/lcov.info
     </sonar.javascript.lcov.reportPaths>
   </properties>
   <build>
