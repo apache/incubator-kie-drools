@@ -81,8 +81,7 @@ public class DMNTypeSafeTest extends BaseVariantTest {
     @Test
     public void test() throws Exception {
 
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertValidDmnModel(dmnModel);
 
         DMNAllTypesIndex index = new DMNAllTypesIndex(new DMNTypeSafePackageName.ModelFactory(), dmnModel);
 
@@ -131,8 +130,7 @@ public class DMNTypeSafeTest extends BaseVariantTest {
     @Test
     public void testDynamic() throws Exception {
 
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertValidDmnModel(dmnModel);
 
         Map<String, Class<?>> classes = generateSourceCodeAndCreateInput(dmnModel, modelFactory, this.getClass().getClassLoader());
 
@@ -160,14 +158,25 @@ public class DMNTypeSafeTest extends BaseVariantTest {
     }
 
     @Test
-    public void testMetadata(){
-        String key = "test";
-        String value = "value";
-        DMNContext context = new DMNContextFPAImpl(null);
-        context.getMetadata().set(key, value);
+    public void testMetadata() throws Exception {
 
-        assertEquals(value, context.getMetadata().get(key));
-        assertEquals(value, context.clone().getMetadata().get(key));
+        assertValidDmnModel(dmnModel);
+
+        Map<String, Class<?>> classes = generateSourceCodeAndCreateInput(dmnModel, modelFactory, this.getClass().getClassLoader());
+        FEELPropertyAccessible feelPropertyAccessibleContext = createInstanceFromCompiledClasses(classes, packageName, "InputSet");
+
+        String metadataKey = "test";
+        String metadataValue = "value";
+        DMNContext context = new DMNContextFPAImpl(feelPropertyAccessibleContext);
+        context.getMetadata().set(metadataKey, metadataValue);
+
+        assertEquals(metadataValue, context.getMetadata().get(metadataKey));
+        assertEquals(metadataValue, context.clone().getMetadata().get(metadataKey));
+    }
+
+    private void assertValidDmnModel(DMNModel dmnModel){
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
     }
 
     private static DMNResult evaluateTyped(FEELPropertyAccessible context, DMNRuntime runtime, DMNModel dmnModel) {
