@@ -838,34 +838,34 @@
       <!-- Tracing -->
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-tracing-decision-api</artifactId>
+        <artifactId>tracing-decision-api</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-tracing-decision-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-tracing-decision-common</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-tracing-decision-common</artifactId>
+        <artifactId>tracing-decision-api</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-tracing-decision-quarkus-addon</artifactId>
+        <artifactId>tracing-decision-common</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-tracing-decision-quarkus-addon</artifactId>
+        <artifactId>tracing-decision-common</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>tracing-decision-quarkus-addon</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>tracing-decision-quarkus-addon</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>

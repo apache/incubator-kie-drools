@@ -9,7 +9,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-tracing-decision-common</artifactId>
+  <artifactId>tracing-decision-common</artifactId>
   <name>Kogito :: Add-Ons :: Tracing :: Common</name>
 
   <properties>
@@ -19,7 +19,7 @@
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-tracing-decision-api</artifactId>
+      <artifactId>tracing-decision-api</artifactId>
     </dependency>
 
     <dependency>

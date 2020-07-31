@@ -9,7 +9,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-tracing-decision-springboot-addon</artifactId>
+  <artifactId>tracing-decision-springboot-addon</artifactId>
   <name>Kogito :: Add-Ons :: Tracing :: SpringBoot Addon</name>
 
   <properties>
@@ -19,7 +19,7 @@
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-tracing-decision-common</artifactId>
+      <artifactId>tracing-decision-common</artifactId>
     </dependency>
 
     <dependency>
