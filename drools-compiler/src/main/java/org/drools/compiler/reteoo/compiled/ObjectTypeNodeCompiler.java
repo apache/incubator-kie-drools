@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
@@ -231,7 +231,7 @@ public class ObjectTypeNodeCompiler {
      * @param objectTypeNode OTN we are generating a compiled network for
      * @return CompiledNetwork
      */
-    public static CompiledNetwork compile(KnowledgeBuilderImpl kBuilder, ObjectTypeNode objectTypeNode) {
+    public static CompiledNetwork compile( InternalKnowledgeBuilder kBuilder, ObjectTypeNode objectTypeNode) {
         if (objectTypeNode == null) {
             throw new IllegalArgumentException("ObjectTypeNode cannot be null!");
         }
