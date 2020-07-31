@@ -18,6 +18,7 @@ package org.drools.modelcompiler;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import org.drools.modelcompiler.domain.Person;
@@ -289,7 +290,7 @@ public class FunctionsTest extends BaseModelTest {
     public void testVariableAccessors() {
         // DROOLS-5548
         String str =
-                "package com.sample" +
+                "package com.sample;" +
                 "global java.util.Set controlSet;\n" +
                 "import " + Measurement.class.getCanonicalName() + ";\n" +
                 "" +
@@ -301,10 +302,15 @@ public class FunctionsTest extends BaseModelTest {
                 " a: A\n" +
                 "end\n" +
                 "" +
-                "function String dummyFunction(B b) {\n" +
+                "function String dummyFunction(A b) {\n" +
                 " return \"test\";\n" +
                 "}\n" +
                 "\n" +
+                "rule \"insertB\"\n" +
+                "when\n" +
+                "then\n" +
+                    "drools.insert(new B(new A()));" +
+                "end;" +
                 "rule \"will execute per each Measurement having ID color\"\n" +
                 "no-loop\n" +
                 "when\n" +
@@ -317,12 +323,14 @@ public class FunctionsTest extends BaseModelTest {
 
         KieSession ksession = getKieSession( str );
 
+        HashSet<Object> hashSet = new HashSet<>();
+        ksession.setGlobal("controlSet", hashSet);
+
         ksession.insert(new Measurement("color", "red"));
 
-        ksession.fireAllRules();
+        int ruleFired = ksession.fireAllRules();
 
-        Collection<Result> results = getObjectsIntoList(ksession, Result.class );
-        assertEquals( 1, results.size() );
-        assertEquals( "test", results.iterator().next().getValue() );
+        assertEquals( 2, ruleFired );
+        assertEquals( "red", hashSet.iterator().next() );
     }
 }
