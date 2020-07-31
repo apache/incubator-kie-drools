@@ -30,10 +30,12 @@ import org.kie.dmn.core.impl.DMNContextImpl.ScopeReference;
 public class DMNContextFPAImpl implements DMNContext {
 
     private final FEELPropertyAccessible fpa;
-    private Deque<ScopeReference> stack    = new LinkedList<>();
+    private Deque<ScopeReference> stack = new LinkedList<>();
+    private DMNMetadataImpl metadata;
 
     public DMNContextFPAImpl(FEELPropertyAccessible bean) {
         this.fpa = bean;
+        this.metadata = new DMNMetadataImpl();
     }
 
     @Override
@@ -86,16 +88,15 @@ public class DMNContextFPAImpl implements DMNContext {
 
     @Override
     public DMNMetadata getMetadata() {
-        return new DMNMetadataImpl();
+        return this.metadata;
     }
 
     @Override
     public DMNContext clone() {
-        DMNContextImpl newCtx = new DMNContextImpl(fpa.allFEELProperties());
+        DMNContextImpl newCtx = new DMNContextImpl(fpa.allFEELProperties(), metadata.asMap());
         for (ScopeReference e : stack) {
             newCtx.pushScope(e.getName(), e.getNamespace());
         }
         return newCtx;
     }
-
 }
