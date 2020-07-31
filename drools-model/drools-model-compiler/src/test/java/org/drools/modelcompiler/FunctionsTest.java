@@ -18,7 +18,6 @@ package org.drools.modelcompiler;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 import org.drools.modelcompiler.domain.Person;
