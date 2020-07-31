@@ -155,11 +155,23 @@
         </executions>
         <configuration>
           <mainClass>org.kie.dmn.validation.bootstrap.ValidationBootstrapMain</mainClass>
-          <cleanupDaemonThreads>false</cleanupDaemonThreads> <!-- otherwise exec:java will try to shutdown common pool Thread[ForkJoinPool.commonPool-worker- threads -->
+          <cleanupDaemonThreads>false</cleanupDaemonThreads> <!-- cleanupDaemonThreads=false otherwise exec:java will try to shutdown common pool Thread[ForkJoinPool.commonPool-worker- threads -->
           <arguments>
             <argument>${project.basedir}</argument>
           </arguments>
+        <!-- the following is used to provide a SLF4j binding to the ValidationBootstrapMain and related CP. Set this logback.xml root to DEBUG for debugging -->
+          <includePluginDependencies>true</includePluginDependencies>
+           <additionalClasspathElements>
+            <additionalClasspathElement>${project.basedir}/src/test/resources/</additionalClasspathElement>
+          </additionalClasspathElements> 
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${version.ch.qos.logback}</version>
+          </dependency>
+        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
