@@ -197,7 +197,7 @@ public class InfixOpNode
                     }
                 } else {
                     Boolean rightOR = EvalHelper.getBooleanOrNull(this.right.evaluate(ctx));
-                    return rightOR == Boolean.TRUE ? rightOR : null;
+                    return Boolean.TRUE.equals(rightOR) ? Boolean.TRUE : null;
                 }
             case LTE:
                 Object leftLTE = this.left.evaluate(ctx);
