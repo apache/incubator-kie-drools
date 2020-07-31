@@ -14,7 +14,7 @@
   <properties>
     <java.module.name>org.kie.dmn.validation.bootstrap</java.module.name>
   </properties>
-  <description>Performs Drools Model generation programmatically, so that kie-dmn-validation can make use of the rules in the Executable Model form.</description>
+  <description>Performs Drools Model generation programmatically for kie-dmn-validation, so that kie-dmn-validation can make use of the rules in the Executable Model form.</description>
 
   <dependencies>
     <dependency>

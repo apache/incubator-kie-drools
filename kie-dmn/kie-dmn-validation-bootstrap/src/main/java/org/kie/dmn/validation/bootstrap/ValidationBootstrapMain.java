@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,17 +29,24 @@ import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.drools.modelcompiler.builder.ModelWriter;
 import org.kie.api.KieServices;
 import org.kie.api.builder.Results;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ValidationBootstrapMain {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ValidationBootstrapMain.class);
+
     public static void main(String[] args) throws IOException {
+        System.out.println("Invoked with:" + Arrays.asList(args));
+        File kieDmnValidationBaseDir = new File(args[0]);
         KieServices ks = KieServices.Factory.get();
-        final KieBuilderImpl kieBuilder = (KieBuilderImpl) ks.newKieBuilder(new File("."));
+        final KieBuilderImpl kieBuilder = (KieBuilderImpl) ks.newKieBuilder(kieDmnValidationBaseDir);
 
         kieBuilder.buildAll(ASD::new,
                             s -> !s.contains("src/test/java") && !s.contains("src\\test\\java") &&
                                  // temporary, decide how to break this circularity which is only caused by the KieBuilder trying to compile everything by itself.     
                                  !s.contains("DMNValidator") && !s.contains("dtanalysis"));
+
         Results results = kieBuilder.getResults();
         results.getMessages().forEach(System.out::println);
 
@@ -49,12 +57,15 @@ public class ValidationBootstrapMain {
                                                .collect(Collectors.toList());
 
         generatedFiles.forEach(System.out::println);
+        System.out.println("Invoked with:" + Arrays.asList(args));
 
         MemoryFileSystem mfs = ((MemoryKieModule) ((CanonicalKieModule) kieModule).getInternalKieModule()).getMemoryFileSystem();
-
         for (String generatedFile : generatedFiles) {
             final MemoryFile f = (MemoryFile) mfs.getFile(generatedFile);
-            final Path newFile = Paths.get(new File("./target/generated-sources/bootstrap").getAbsolutePath(),
+            final Path newFile = Paths.get(kieDmnValidationBaseDir.getAbsolutePath(),
+                                           "target",
+                                           "generated-sources",
+                                           "bootstrap",
                                            f.getPath().toPortableString());
 
             try {
@@ -85,8 +96,11 @@ public class ValidationBootstrapMain {
         vbMain = vbMain.replaceAll("\\$V1X_MODEL\\$", v1x);
         vbMain = vbMain.replaceAll("\\$V11_MODEL\\$", v11);
         vbMain = vbMain.replaceAll("\\$V12_MODEL\\$", v12);
-        final Path newFile = Paths.get(new File("./target/generated-sources/bootstrap").getAbsolutePath(),
-                                       "org/kie/dmn/validation/bootstrap/ValidationBootstrapModels.java");
+        final Path newFile = Paths.get(kieDmnValidationBaseDir.getAbsolutePath(),
+                                       "target",
+                                       "generated-sources",
+                                       "bootstrap",
+                                       "org", "kie", "dmn", "validation", "bootstrap", "ValidationBootstrapModels.java");
 
         try {
             Files.deleteIfExists(newFile);
@@ -107,6 +121,7 @@ public class ValidationBootstrapMain {
 
         @Override
         public void writeProjectOutput(MemoryFileSystem trgMfs, ResultsImpl messages) {
+            System.out.println("MM wrireProjOutput");
             MemoryFileSystem srcMfs = new MemoryFileSystem();
             List<String> modelFiles = new ArrayList<>();
             ModelWriter modelWriter = new ModelWriter();

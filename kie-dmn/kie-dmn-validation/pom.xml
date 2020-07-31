@@ -155,6 +155,10 @@
         </executions>
         <configuration>
           <mainClass>org.kie.dmn.validation.bootstrap.ValidationBootstrapMain</mainClass>
+          <cleanupDaemonThreads>false</cleanupDaemonThreads> <!-- otherwise exec:java will try to shutdown common pool Thread[ForkJoinPool.commonPool-worker- threads -->
+          <arguments>
+            <argument>${project.basedir}</argument>
+          </arguments>
         </configuration>
       </plugin>
       <plugin>
