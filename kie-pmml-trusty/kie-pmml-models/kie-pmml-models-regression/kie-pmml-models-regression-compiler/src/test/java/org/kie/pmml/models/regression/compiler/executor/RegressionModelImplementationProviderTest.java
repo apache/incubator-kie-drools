@@ -16,16 +16,22 @@
 
 package org.kie.pmml.models.regression.compiler.executor;
 
+import java.util.Map;
+
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.regression.RegressionModel;
 import org.junit.Test;
+import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionModelWithSources;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class RegressionModelImplementationProviderTest {
 
@@ -46,8 +52,33 @@ public class RegressionModelImplementationProviderTest {
         assertNotNull(pmml);
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
-        final KiePMMLRegressionModel kiePMMLModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(), pmml.getTransformationDictionary(), (RegressionModel) pmml.getModels().get(0), RELEASE_ID);
-        assertNotNull(kiePMMLModel);
+        final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(), pmml.getTransformationDictionary(), (RegressionModel) pmml.getModels().get(0), RELEASE_ID);
+        assertNotNull(retrieved);
+    }
+
+    @Test
+    public void getKiePMMLModelFromPlugin() throws Exception {
+        final PMML pmml = TestUtils.loadFromFile(SOURCE_1);
+        assertNotNull(pmml);
+        assertEquals(1, pmml.getModels().size());
+        assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
+        final String packageName = "packagename";
+        final KiePMMLRegressionModel retrieved = PROVIDER.getKiePMMLModelFromPlugin(
+                packageName,
+                pmml.getDataDictionary(),
+                pmml.getTransformationDictionary(),
+                (RegressionModel) pmml.getModels().get(0), RELEASE_ID);
+        assertNotNull(retrieved);
+        assertTrue(retrieved instanceof KiePMMLRegressionModelWithSources);
+        KiePMMLRegressionModelWithSources retrievedWithSources = (KiePMMLRegressionModelWithSources)retrieved;
+        final Map<String, String> sourcesMap = retrievedWithSources.getSourcesMap();
+        assertNotNull(sourcesMap);
+        assertFalse(sourcesMap.isEmpty());
+        try {
+            KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
     }
 
     @Test

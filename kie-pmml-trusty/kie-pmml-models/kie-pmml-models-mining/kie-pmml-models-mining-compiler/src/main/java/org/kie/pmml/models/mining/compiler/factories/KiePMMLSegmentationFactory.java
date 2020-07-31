@@ -15,19 +15,21 @@
  */
 package org.kie.pmml.models.mining.compiler.factories;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.Segmentation;
+import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.getSegments;
+import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.getSegmentsSourcesMap;
 
 public class KiePMMLSegmentationFactory {
 
@@ -36,23 +38,32 @@ public class KiePMMLSegmentationFactory {
     private KiePMMLSegmentationFactory() {
     }
 
-    public static List<KiePMMLSegmentation> getSegmentations(final DataDictionary dataDictionary,
-                                                             final TransformationDictionary transformationDictionary,
-                                                             final List<Segmentation> segmentations,
-                                                             final Object kBuilder) {
-        logger.debug("getSegmentations {}", segmentations);
-        return segmentations.stream().map(segmentation -> getSegmentation(dataDictionary, transformationDictionary, segmentation,  kBuilder)).collect(Collectors.toList());
-    }
-
     public static KiePMMLSegmentation getSegmentation(final DataDictionary dataDictionary,
                                                       final TransformationDictionary transformationDictionary,
                                                       final Segmentation segmentation,
-                                                      final Object kBuilder) {
+                                                      final String segmentationName,
+                                                      final KnowledgeBuilder kBuilder) {
         logger.debug("getSegmentation {}", segmentation);
-        return KiePMMLSegmentation.builder("PUPPA",
+        return KiePMMLSegmentation.builder(segmentationName,
                                            getKiePMMLExtensions(segmentation.getExtensions()),
                                            MULTIPLE_MODEL_METHOD.byName(segmentation.getMultipleModelMethod().value()))
-                .withSegments(getSegments(dataDictionary, transformationDictionary, segmentation.getSegments(), kBuilder))
+                .withSegments(getSegments(dataDictionary, transformationDictionary, segmentation.getSegments(),
+                                          kBuilder))
                 .build();
+    }
+
+    public static Map<String, String> getSegmentationSourcesMap(final String parentPackageName,
+                                                                final DataDictionary dataDictionary,
+                                                                final TransformationDictionary transformationDictionary,
+                                                                final Segmentation segmentation,
+                                                                final String segmentationName,
+                                                                final KnowledgeBuilder kBuilder) {
+        logger.debug("getSegmentationSourcesMap {}", segmentation);
+        final String packageName = getSanitizedPackageName(parentPackageName + "." + segmentationName);
+        return getSegmentsSourcesMap(packageName,
+                                     dataDictionary,
+                                     transformationDictionary,
+                                     segmentation.getSegments(),
+                                     kBuilder);
     }
 }

@@ -72,7 +72,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
             final Map<String, String> sourcesMap = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(dataDictionary, transformationDictionary, model, packageName);
             return new KiePMMLRegressionModelWithSources(model.getModelName(), packageName, sourcesMap);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new KiePMMLException(e);
         }
     }
 

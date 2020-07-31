@@ -79,7 +79,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
             ((KnowledgeBuilderImpl) kBuilder).addPackage(packageDescr);
             return toReturn;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new KiePMMLException(e);
         }
     }
 
