@@ -196,7 +196,7 @@ class DataUtilsTest {
     }
 
     private void assertPerturbDropNumeric(PredictionInput input, int noOfPerturbations) {
-        PredictionInput perturbedInput = DataUtils.perturbFeatures(input, 10, noOfPerturbations);
+        PredictionInput perturbedInput = DataUtils.perturbFeatures(input, noOfPerturbations);
         int changedFeatures = 0;
         for (int i = 0; i < input.getFeatures().size(); i++) {
             double v = input.getFeatures().get(i).getValue().asNumber();
@@ -209,7 +209,7 @@ class DataUtilsTest {
     }
 
     private void assertPerturbDropString(PredictionInput input, int noOfPerturbations) {
-        PredictionInput perturbedInput = DataUtils.perturbFeatures(input, 10, noOfPerturbations);
+        PredictionInput perturbedInput = DataUtils.perturbFeatures(input, noOfPerturbations);
         int changedFeatures = 0;
         for (int i = 0; i < input.getFeatures().size(); i++) {
             String v = input.getFeatures().get(i).getValue().asString();

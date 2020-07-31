@@ -51,7 +51,6 @@ class PmmlLimeExplainerTest {
 
     @BeforeAll
     static void setUpBefore() {
-        DataUtils.setSeed(4);
         logisticRegressionIris = getPMMLRuntime("LogisticRegressionIrisData");
         categoricalVariableRegression = getPMMLRuntime("categoricalVariables_Model");
         scorecardCategorical = getPMMLRuntime("SimpleScorecardCategorical");
@@ -60,36 +59,39 @@ class PmmlLimeExplainerTest {
 
     @Test
     void testPMMLRegression() {
-        List<Feature> features = new LinkedList<>();
-        features.add(FeatureFactory.newNumericalFeature("sepalLength", 6.9));
-        features.add(FeatureFactory.newNumericalFeature("sepalWidth", 3.1));
-        features.add(FeatureFactory.newNumericalFeature("petalLength", 5.1));
-        features.add(FeatureFactory.newNumericalFeature("petalWidth", 2.3));
-        PredictionInput input = new PredictionInput(features);
+        for (int seed = 0; seed < 5; seed++) {
+            DataUtils.setSeed(seed);
+            List<Feature> features = new LinkedList<>();
+            features.add(FeatureFactory.newNumericalFeature("sepalLength", 6.9));
+            features.add(FeatureFactory.newNumericalFeature("sepalWidth", 3.1));
+            features.add(FeatureFactory.newNumericalFeature("petalLength", 5.1));
+            features.add(FeatureFactory.newNumericalFeature("petalWidth", 2.3));
+            PredictionInput input = new PredictionInput(features);
 
-        LimeExplainer limeExplainer = new LimeExplainer(100, 2);
-        PredictionProvider model = inputs -> {
-            List<PredictionOutput> outputs = new LinkedList<>();
-            for (PredictionInput input1 : inputs) {
-                List<Feature> features1 = input1.getFeatures();
-                LogisticRegressionIrisDataExecutor pmmlModel = new LogisticRegressionIrisDataExecutor(
-                        features1.get(0).getValue().asNumber(), features1.get(1).getValue().asNumber(),
-                        features1.get(2).getValue().asNumber(), features1.get(3).getValue().asNumber());
-                PMML4Result result = pmmlModel.execute(logisticRegressionIris);
-                String species = result.getResultVariables().get("Species").toString();
-                PredictionOutput predictionOutput = new PredictionOutput(List.of(new Output("species", Type.TEXT, new Value<>(species), 1d)));
-                outputs.add(predictionOutput);
-            }
-            return outputs;
-        };
-        PredictionOutput output = model.predict(List.of(input)).get(0);
-        Prediction prediction = new Prediction(input, output);
-        Saliency saliency = limeExplainer.explain(prediction, model);
-        assertNotNull(saliency);
-        List<String> strings = saliency.getPositiveFeatures(2).stream().map(f -> f.getFeature().getName()).collect(Collectors.toList());
-        assertTrue(strings.contains("petalWidth"));
-        double v = ExplainabilityMetrics.saliencyImpact(model, prediction, saliency.getPositiveFeatures(2));
-        assertTrue(v > 0);
+            LimeExplainer limeExplainer = new LimeExplainer(100, 2);
+            PredictionProvider model = inputs -> {
+                List<PredictionOutput> outputs = new LinkedList<>();
+                for (PredictionInput input1 : inputs) {
+                    List<Feature> features1 = input1.getFeatures();
+                    LogisticRegressionIrisDataExecutor pmmlModel = new LogisticRegressionIrisDataExecutor(
+                            features1.get(0).getValue().asNumber(), features1.get(1).getValue().asNumber(),
+                            features1.get(2).getValue().asNumber(), features1.get(3).getValue().asNumber());
+                    PMML4Result result = pmmlModel.execute(logisticRegressionIris);
+                    String species = result.getResultVariables().get("Species").toString();
+                    PredictionOutput predictionOutput = new PredictionOutput(List.of(new Output("species", Type.TEXT, new Value<>(species), 1d)));
+                    outputs.add(predictionOutput);
+                }
+                return outputs;
+            };
+            PredictionOutput output = model.predict(List.of(input)).get(0);
+            Prediction prediction = new Prediction(input, output);
+            Saliency saliency = limeExplainer.explain(prediction, model);
+            assertNotNull(saliency);
+            List<String> strings = saliency.getPositiveFeatures(2).stream().map(f -> f.getFeature().getName()).collect(Collectors.toList());
+            assertTrue(strings.contains("petalWidth"));
+            double v = ExplainabilityMetrics.impactScore(model, prediction, saliency.getPositiveFeatures(2));
+            assertTrue(v > 0);
+        }
     }
 
     @Disabled
@@ -159,36 +161,39 @@ class PmmlLimeExplainerTest {
 
     @Test
     void testPMMLCompoundScorecard() {
-        List<Feature> features = new LinkedList<>();
-        features.add(FeatureFactory.newNumericalFeature("input1", -50));
-        features.add(FeatureFactory.newTextFeature("input2", "classB"));
-        PredictionInput input = new PredictionInput(features);
+        for (int seed = 0; seed < 5; seed++) {
+            DataUtils.setSeed(seed);
+            List<Feature> features = new LinkedList<>();
+            features.add(FeatureFactory.newNumericalFeature("input1", -50));
+            features.add(FeatureFactory.newTextFeature("input2", "classB"));
+            PredictionInput input = new PredictionInput(features);
 
-        LimeExplainer limeExplainer = new LimeExplainer(100, 2);
-        PredictionProvider model = inputs -> {
-            List<PredictionOutput> outputs = new LinkedList<>();
-            for (PredictionInput input1 : inputs) {
-                List<Feature> features1 = input1.getFeatures();
-                CompoundNestedPredicateScorecardExecutor pmmlModel = new CompoundNestedPredicateScorecardExecutor(
-                        features1.get(0).getValue().asNumber(), features1.get(1).getValue().asString());
-                PMML4Result result = pmmlModel.execute(compoundScoreCard);
-                String score = "" + result.getResultVariables().get(CompoundNestedPredicateScorecardExecutor.TARGET_FIELD);
-                String reason1 = "" + result.getResultVariables().get(CompoundNestedPredicateScorecardExecutor.REASON_CODE1_FIELD);
-                PredictionOutput predictionOutput = new PredictionOutput(List.of(
-                        new Output("score", Type.TEXT, new Value<>(score), 1d),
-                        new Output("reason1", Type.TEXT, new Value<>(reason1), 1d)
-                ));
-                outputs.add(predictionOutput);
-            }
-            return outputs;
-        };
-        PredictionOutput output = model.predict(List.of(input)).get(0);
-        Prediction prediction = new Prediction(input, output);
-        Saliency saliency = limeExplainer.explain(prediction, model);
-        assertNotNull(saliency);
-        List<String> strings = saliency.getPositiveFeatures(1).stream().map(f -> f.getFeature().getName()).collect(Collectors.toList());
-        assertTrue(strings.contains("classB (input2)"));
-        double v = ExplainabilityMetrics.saliencyImpact(model, prediction, saliency.getTopFeatures(2));
-        assertTrue(v > 0);
+            LimeExplainer limeExplainer = new LimeExplainer(100, 2);
+            PredictionProvider model = inputs -> {
+                List<PredictionOutput> outputs = new LinkedList<>();
+                for (PredictionInput input1 : inputs) {
+                    List<Feature> features1 = input1.getFeatures();
+                    CompoundNestedPredicateScorecardExecutor pmmlModel = new CompoundNestedPredicateScorecardExecutor(
+                            features1.get(0).getValue().asNumber(), features1.get(1).getValue().asString());
+                    PMML4Result result = pmmlModel.execute(compoundScoreCard);
+                    String score = "" + result.getResultVariables().get(CompoundNestedPredicateScorecardExecutor.TARGET_FIELD);
+                    String reason1 = "" + result.getResultVariables().get(CompoundNestedPredicateScorecardExecutor.REASON_CODE1_FIELD);
+                    PredictionOutput predictionOutput = new PredictionOutput(List.of(
+                            new Output("score", Type.TEXT, new Value<>(score), 1d),
+                            new Output("reason1", Type.TEXT, new Value<>(reason1), 1d)
+                    ));
+                    outputs.add(predictionOutput);
+                }
+                return outputs;
+            };
+            PredictionOutput output = model.predict(List.of(input)).get(0);
+            Prediction prediction = new Prediction(input, output);
+            Saliency saliency = limeExplainer.explain(prediction, model);
+            assertNotNull(saliency);
+            List<String> strings = saliency.getPositiveFeatures(1).stream().map(f -> f.getFeature().getName()).collect(Collectors.toList());
+            assertTrue(strings.contains("classB (input2)"));
+            double v = ExplainabilityMetrics.impactScore(model, prediction, saliency.getTopFeatures(2));
+            assertTrue(v > 0);
+        }
     }
 }

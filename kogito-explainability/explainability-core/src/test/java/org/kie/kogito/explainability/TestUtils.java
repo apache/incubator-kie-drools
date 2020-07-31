@@ -15,7 +15,6 @@
  */
 package org.kie.kogito.explainability;
 
-import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,12 +31,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class TestUtils {
-
-    private final static SecureRandom random = new SecureRandom();
-
-    static {
-        random.setSeed(4);
-    }
 
     public static PredictionProvider getFeaturePassModel(int featureIndex) {
         return inputs -> {

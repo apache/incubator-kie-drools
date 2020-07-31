@@ -213,7 +213,7 @@ public class LimeExplainer implements LocalExplainer<Saliency> {
         // as per LIME paper, the dataset size should be at least |features|^2
         double perturbedDataSize = Math.max(noOfSamples, Math.pow(2, noOfFeatures));
         for (int i = 0; i < perturbedDataSize; i++) {
-            perturbedInputs.add(DataUtils.perturbFeatures(predictionInput, noOfSamples, noOfPerturbations));
+            perturbedInputs.add(DataUtils.perturbFeatures(predictionInput, noOfPerturbations));
         }
         return perturbedInputs;
     }

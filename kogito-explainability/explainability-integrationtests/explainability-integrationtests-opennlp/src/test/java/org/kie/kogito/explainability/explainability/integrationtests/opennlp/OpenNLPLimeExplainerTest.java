@@ -23,7 +23,6 @@ import opennlp.tools.langdetect.Language;
 import opennlp.tools.langdetect.LanguageDetector;
 import opennlp.tools.langdetect.LanguageDetectorME;
 import opennlp.tools.langdetect.LanguageDetectorModel;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
 import org.kie.kogito.explainability.model.Feature;
@@ -44,48 +43,46 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class OpenNLPLimeExplainerTest {
 
-    @BeforeAll
-    static void setUpBefore() {
-        DataUtils.setSeed(4);
-    }
-
     @Test
     void testOpenNLPLangDetect() throws Exception {
-        InputStream is = getClass().getResourceAsStream("/opennlp/langdetect-183.bin");
-        LanguageDetectorModel languageDetectorModel = new LanguageDetectorModel(is);
-        String inputText = "italiani, spaghetti pizza mandolino";
-        LanguageDetector languageDetector = new LanguageDetectorME(languageDetectorModel);
-        Language bestLanguage = languageDetector.predictLanguage(inputText);
+        for (int seed = 0; seed < 5; seed++) {
+            DataUtils.setSeed(seed);
+            InputStream is = getClass().getResourceAsStream("/opennlp/langdetect-183.bin");
+            LanguageDetectorModel languageDetectorModel = new LanguageDetectorModel(is);
+            String inputText = "italiani, spaghetti pizza mandolino";
+            LanguageDetector languageDetector = new LanguageDetectorME(languageDetectorModel);
+            Language bestLanguage = languageDetector.predictLanguage(inputText);
 
-        List<Feature> features = new LinkedList<>();
-        features.add(FeatureFactory.newTextFeature("text", inputText));
-        PredictionInput input = new PredictionInput(features);
-        PredictionOutput output = new PredictionOutput(List.of(new Output("lang", Type.TEXT, new Value<>(bestLanguage.getLang()),
-                                                                          bestLanguage.getConfidence())));
-        Prediction prediction = new Prediction(input, output);
+            List<Feature> features = new LinkedList<>();
+            features.add(FeatureFactory.newTextFeature("text", inputText));
+            PredictionInput input = new PredictionInput(features);
+            PredictionOutput output = new PredictionOutput(List.of(new Output("lang", Type.TEXT, new Value<>(bestLanguage.getLang()),
+                                                                              bestLanguage.getConfidence())));
+            Prediction prediction = new Prediction(input, output);
 
-        LimeExplainer limeExplainer = new LimeExplainer(100, 2);
-        PredictionProvider model = inputs -> {
-            List<PredictionOutput> results = new LinkedList<>();
-            for (PredictionInput predictionInput : inputs) {
-                StringBuilder builder = new StringBuilder();
-                for (Feature f : predictionInput.getFeatures()) {
-                    if (Type.TEXT.equals(f.getType())) {
-                        if (builder.length() > 0) {
-                            builder.append(' ');
+            LimeExplainer limeExplainer = new LimeExplainer(100, 2);
+            PredictionProvider model = inputs -> {
+                List<PredictionOutput> results = new LinkedList<>();
+                for (PredictionInput predictionInput : inputs) {
+                    StringBuilder builder = new StringBuilder();
+                    for (Feature f : predictionInput.getFeatures()) {
+                        if (Type.TEXT.equals(f.getType())) {
+                            if (builder.length() > 0) {
+                                builder.append(' ');
+                            }
+                            builder.append(f.getValue().asString());
                         }
-                        builder.append(f.getValue().asString());
                     }
+                    Language language = languageDetector.predictLanguage(builder.toString());
+                    PredictionOutput predictionOutput = new PredictionOutput(List.of(new Output("lang", Type.TEXT, new Value<>(language.getLang()), language.getConfidence())));
+                    results.add(predictionOutput);
                 }
-                Language language = languageDetector.predictLanguage(builder.toString());
-                PredictionOutput predictionOutput = new PredictionOutput(List.of(new Output("lang", Type.TEXT, new Value<>(language.getLang()), language.getConfidence())));
-                results.add(predictionOutput);
-            }
-            return results;
-        };
-        Saliency saliency = limeExplainer.explain(prediction, model);
-        assertNotNull(saliency);
-        double i1 = ExplainabilityMetrics.saliencyImpact(model, prediction, saliency.getTopFeatures(1));
-        assertTrue(i1 > 0);
+                return results;
+            };
+            Saliency saliency = limeExplainer.explain(prediction, model);
+            assertNotNull(saliency);
+            double i1 = ExplainabilityMetrics.impactScore(model, prediction, saliency.getTopFeatures(3));
+            assertTrue(i1 > 0);
+        }
     }
 }

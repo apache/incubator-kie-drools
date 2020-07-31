@@ -15,13 +15,13 @@
  */
 package org.kie.kogito.explainability.local.lime;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.TestUtils;
 import org.kie.kogito.explainability.model.Feature;
@@ -31,15 +31,11 @@ import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
 import org.kie.kogito.explainability.utils.DataUtils;
+import org.kie.kogito.explainability.utils.ExplainabilityMetrics;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LimeStabilityTest {
-
-    @BeforeAll
-    static void setUpBefore() {
-        DataUtils.setSeed(4);
-    }
 
     @Test
     void testStabilityWithNumericData() {
@@ -51,27 +47,47 @@ class LimeStabilityTest {
         assertStable(sumSkipModel, featureList);
     }
 
-    private void assertStable(PredictionProvider sumSkipModel, List<Feature> featureList) {
-        PredictionInput input = new PredictionInput(featureList);
-        List<PredictionOutput> predictionOutputs = sumSkipModel.predict(List.of(input));
-        Prediction prediction = new Prediction(input, predictionOutputs.get(0));
-        List<Saliency> saliencies = new LinkedList<>();
-        LimeExplainer limeExplainer = new LimeExplainer(10, 1);
-        for (int i = 0; i < 100; i++) {
-            Saliency saliency = limeExplainer.explain(prediction, sumSkipModel);
-            saliencies.add(saliency);
-        }
-        List<String> names = new LinkedList<>();
-        saliencies.stream().map(s -> s.getPositiveFeatures(1)).forEach(f -> names.add(f.get(0).getFeature().getName()));
-        Map<String, Long> frequencyMap = names.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-        boolean topFeature = false;
-        for (Map.Entry<String, Long> entry : frequencyMap.entrySet()) {
-            if (entry.getValue() >= 0.9) {
-                topFeature = true;
-                break;
+    private void assertStable(PredictionProvider model, List<Feature> featureList) {
+        for (int seed = 0; seed < 5; seed++) {
+            DataUtils.setSeed(seed);
+            PredictionInput input = new PredictionInput(featureList);
+            List<PredictionOutput> predictionOutputs = model.predict(List.of(input));
+            Prediction prediction = new Prediction(input, predictionOutputs.get(0));
+            List<Saliency> saliencies = new LinkedList<>();
+            LimeExplainer limeExplainer = new LimeExplainer(10, 1);
+            for (int i = 0; i < 100; i++) {
+                Saliency saliency = limeExplainer.explain(prediction, model);
+                saliencies.add(saliency);
             }
+            // check that the topmost important feature is stable
+            List<String> names = new LinkedList<>();
+            saliencies.stream().map(s -> s.getPositiveFeatures(1)).forEach(f -> names.add(f.get(0).getFeature().getName()));
+            Map<String, Long> frequencyMap = names.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+            boolean topFeature = false;
+            for (Map.Entry<String, Long> entry : frequencyMap.entrySet()) {
+                if (entry.getValue() >= 0.9) {
+                    topFeature = true;
+                    break;
+                }
+            }
+            assertTrue(topFeature);
+
+            // check that the impact is stable
+            List<Double> impacts = new ArrayList<>(saliencies.size());
+            for (Saliency saliency : saliencies) {
+                double v = ExplainabilityMetrics.impactScore(model, prediction, saliency.getTopFeatures(2));
+                impacts.add(v);
+            }
+            Map<Double, Long> impactMap = impacts.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+            boolean topImpact = false;
+            for (Map.Entry<Double, Long> entry : impactMap.entrySet()) {
+                if (entry.getValue() >= 0.9) {
+                    topImpact = true;
+                    break;
+                }
+            }
+            assertTrue(topImpact);
         }
-        assertTrue(topFeature);
     }
 
     @Test
@@ -79,7 +95,7 @@ class LimeStabilityTest {
         PredictionProvider sumSkipModel = TestUtils.getDummyTextClassifier();
         List<Feature> featureList = new LinkedList<>();
         for (int i = 0; i < 4; i++) {
-            featureList.add(TestUtils.getMockedTextFeature("foo "+i));
+            featureList.add(TestUtils.getMockedTextFeature("foo " + i));
         }
         featureList.add(TestUtils.getMockedTextFeature("money"));
         assertStable(sumSkipModel, featureList);

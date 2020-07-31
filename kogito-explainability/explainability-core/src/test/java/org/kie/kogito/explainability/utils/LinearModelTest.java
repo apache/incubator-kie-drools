@@ -15,7 +15,6 @@
  */
 package org.kie.kogito.explainability.utils;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.stream.DoubleStream;
@@ -26,7 +25,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LinearModelTest {
 

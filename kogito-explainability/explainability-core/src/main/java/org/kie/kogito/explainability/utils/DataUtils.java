@@ -17,7 +17,6 @@ package org.kie.kogito.explainability.utils;
 
 import java.net.URI;
 import java.nio.ByteBuffer;
-import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -29,6 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 
@@ -44,7 +44,9 @@ import org.kie.kogito.explainability.model.Type;
  */
 public class DataUtils {
 
-    private final static SecureRandom random = new SecureRandom();
+    private DataUtils() {}
+
+    private static final Random random = new Random();
 
     public static void setSeed(long seed) {
         random.setSeed(seed);
@@ -156,11 +158,10 @@ public class DataUtils {
      * Which feature will be perturbed is non deterministic.
      *
      * @param input             the input whose features need to be perturbed
-     * @param noOfSamples       the no. of samples that need to be generated when perturbing numeric features
      * @param noOfPerturbations the no. of features to be perturbed
      * @return a new input with perturbed features
      */
-    public static PredictionInput perturbFeatures(PredictionInput input, int noOfSamples, int noOfPerturbations) {
+    public static PredictionInput perturbFeatures(PredictionInput input, int noOfPerturbations) {
         List<Feature> originalFeatures = input.getFeatures();
         List<Feature> newFeatures = new ArrayList<>(originalFeatures);
         PredictionInput perturbedInput = new PredictionInput(newFeatures);
@@ -353,7 +354,6 @@ public class DataUtils {
                 break;
             case CATEGORICAL:
                 if (names.contains(featureName)) {
-                    String category = feature.getValue().asString();
                     f = FeatureFactory.newCategoricalFeature(featureName, "");
                 }
                 break;

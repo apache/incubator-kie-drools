@@ -36,8 +36,16 @@ import org.kie.kogito.explainability.model.Type;
 public class ExplainabilityMetrics {
 
     /**
-     * Measure the explainability of an explanation as per paper "Towards Quantification of Explainability in Explainable
-     * Artificial Intelligence Methods" by Islam et al.
+     * Drop in confidence score threshold for impact score calculation.
+     * Confidence scores below {@code originalScore * CONFIDENCE_DROP_RATIO} are considered impactful for a model.
+     */
+    private static final double CONFIDENCE_DROP_RATIO = 0.2d;
+
+    private ExplainabilityMetrics() {}
+
+    /**
+     * Measure the explainability of an explanation.
+     * See paper: "Towards Quantification of Explainability in Explainable Artificial Intelligence Methods" by Islam et al.
      *
      * @param inputCognitiveChunks  the no. of cognitive chunks (pieces of information) required to generate the
      *                              explanation (e.g. the no. of explanation inputs)
@@ -53,13 +61,15 @@ public class ExplainabilityMetrics {
     /**
      * Calculate the impact of dropping the most important features (given by {@link Saliency#getTopFeatures(int)} from the input.
      * Highly important features would have rather high impact.
+     * See paper: Qiu Lin, Zhong, et al. "Do Explanations Reflect Decisions? A Machine-centric Strategy to Quantify the
+     * Performance of Explainability Algorithms." 2019.
      *
      * @param model       the model to be explained
      * @param prediction  a prediction
      * @param topFeatures the list of important features that should be dropped
      * @return the saliency impact
      */
-    public static double saliencyImpact(PredictionProvider model, Prediction prediction, List<FeatureImportance> topFeatures) {
+    public static double impactScore(PredictionProvider model, Prediction prediction, List<FeatureImportance> topFeatures) {
         List<String> importantFeatureNames = topFeatures.stream().map(f -> f.getFeature().getName()).collect(Collectors.toList());
 
         List<Feature> newFeatures = new LinkedList<>();
@@ -75,21 +85,15 @@ public class ExplainabilityMetrics {
         for (int i = 0; i < size; i++) {
             Output original = prediction.getOutput().getOutputs().get(i);
             Output modified = predictionOutput.getOutputs().get(i);
-            impact += 0.5 * DataUtils.euclideanDistance(new double[]{original.getScore()}, new double[]{modified.getScore()});
-            String x = original.getValue().asString();
-            String y = modified.getValue().asString();
-            if (x.length() == y.length()) {
-                impact += DataUtils.hammingDistance(x, y);
-            } else {
-                impact += 1d;
-            }
+            impact += (!original.getValue().asString().equals(modified.getValue().asString())
+                    || modified.getScore() < original.getScore() * CONFIDENCE_DROP_RATIO) ? 1d : 0d;
         }
         return impact / size;
     }
 
     /**
      * Calculate fidelity (accuracy) of boolean classification outputs using saliency predictor function = sign(sum(saliency.scores))
-     * see papers:
+     * See papers:
      * - Guidotti Riccardo, et al. "A survey of methods for explaining black box models." ACM computing surveys (2018).
      * - Bodria, Francesco, et al. "Explainability Methods for Natural Language Processing: Applications to Sentiment Analysis (Discussion Paper)."
      *

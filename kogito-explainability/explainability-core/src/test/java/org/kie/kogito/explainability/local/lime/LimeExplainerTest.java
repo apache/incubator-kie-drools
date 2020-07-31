@@ -19,7 +19,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.TestUtils;
 import org.kie.kogito.explainability.local.LocalExplanationException;
@@ -36,33 +35,34 @@ import static org.mockito.Mockito.mock;
 
 class LimeExplainerTest {
 
-    @BeforeAll
-    static void setUpBefore() {
-        DataUtils.setSeed(4);
-    }
-
     @Test
     void testEmptyPrediction() {
-        LimeExplainer limeExplainer = new LimeExplainer(10, 1);
-        PredictionOutput output = mock(PredictionOutput.class);
-        PredictionInput input = mock(PredictionInput.class);
-        Prediction prediction = new Prediction(input, output);
-        PredictionProvider model = mock(PredictionProvider.class);
-        Assertions.assertThrows(LocalExplanationException.class, () -> limeExplainer.explain(prediction, model));
+        for (int seed = 0; seed < 5; seed++) {
+            DataUtils.setSeed(seed);
+            LimeExplainer limeExplainer = new LimeExplainer(10, 1);
+            PredictionOutput output = mock(PredictionOutput.class);
+            PredictionInput input = mock(PredictionInput.class);
+            Prediction prediction = new Prediction(input, output);
+            PredictionProvider model = mock(PredictionProvider.class);
+            Assertions.assertThrows(LocalExplanationException.class, () -> limeExplainer.explain(prediction, model));
+        }
     }
 
     @Test
     void testNonEmptyInput() {
-        LimeExplainer limeExplainer = new LimeExplainer(10, 1);
-        PredictionOutput output = mock(PredictionOutput.class);
-        List<Feature> features = new LinkedList<>();
-        for (int i = 0; i < 4; i++) {
-            features.add(TestUtils.getMockedNumericFeature());
+        for (int seed = 0; seed < 5; seed++) {
+            DataUtils.setSeed(seed);
+            LimeExplainer limeExplainer = new LimeExplainer(10, 1);
+            PredictionOutput output = mock(PredictionOutput.class);
+            List<Feature> features = new LinkedList<>();
+            for (int i = 0; i < 4; i++) {
+                features.add(TestUtils.getMockedNumericFeature());
+            }
+            PredictionInput input = new PredictionInput(features);
+            Prediction prediction = new Prediction(input, output);
+            PredictionProvider model = mock(PredictionProvider.class);
+            Saliency saliency = limeExplainer.explain(prediction, model);
+            assertNotNull(saliency);
         }
-        PredictionInput input = new PredictionInput(features);
-        Prediction prediction = new Prediction(input, output);
-        PredictionProvider model = mock(PredictionProvider.class);
-        Saliency saliency = limeExplainer.explain(prediction, model);
-        assertNotNull(saliency);
     }
 }
