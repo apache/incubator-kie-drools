@@ -178,7 +178,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
             return Optional.of(indexedByDSL);
         }
 
-        if ( !hasIndex( drlxParseResult ) ) {
+        if ( !shouldCreateIndex( drlxParseResult ) ) {
             return Optional.empty();
         }
 

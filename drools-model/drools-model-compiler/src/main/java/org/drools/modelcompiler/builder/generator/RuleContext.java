@@ -103,6 +103,9 @@ public class RuleContext {
 
     private Map<String, Type> explicitCastType = new HashMap<>();
 
+    // These are used for indexing see PatternBuilder:1198
+    private Set<String> patternBindings = new HashSet<>();
+
     private int legacyAccumulateCounter = 0;
 
     public enum RuleDialect {
@@ -563,6 +566,14 @@ public class RuleContext {
     public Type getDelarationType(String variableName) {
         return getDeclarationById(variableName).map(DeclarationSpec::getBoxedType)
                                                .orElseGet(UnknownType::new);
+    }
+
+    public void addPatternBinding(String patternBinding) {
+        patternBindings.add(patternBinding);
+    }
+
+    public boolean isPatternBinding(String patternBinding) {
+        return patternBindings.contains(patternBinding);
     }
 
     @Override
