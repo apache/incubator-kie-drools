@@ -61,6 +61,7 @@ import org.kie.internal.ruleunit.RuleUnitVariable;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryArg;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
@@ -205,7 +206,7 @@ public class RuleContext {
     }
 
     public Optional<Type> explicitCastType(String field) {
-        return Optional.ofNullable(explicitCastType.get(field));
+        return ofNullable(explicitCastType.get(field));
     }
 
     public Optional<DeclarationSpec> getDeclarationById(String id) {
@@ -219,7 +220,7 @@ public class RuleContext {
                 spec = new DeclarationSpec(id, unitVarType);
             }
         }
-        return Optional.ofNullable( spec );
+        return ofNullable( spec );
     }
 
     public DeclarationSpec getDeclarationByIdWithException(String id) {
@@ -236,7 +237,23 @@ public class RuleContext {
     }
 
     public boolean hasDeclaration(String id) {
-        return scopedDeclarations.get( getDeclarationKey( id )) != null;
+        return getDeclaration( id ) != null;
+    }
+
+    private DeclarationSpec getDeclaration(String id) {
+        return scopedDeclarations.get( getDeclarationKey( id ));
+    }
+
+    public void registerBindingExpression( String boundVar, MethodCallExpr bidingExpr ) {
+        DeclarationSpec dec = getDeclaration(boundVar);
+        if (dec != null) {
+            dec.setBindingExpr( bidingExpr );
+        }
+    }
+
+    public Optional<MethodCallExpr> findBindingExpression( String boundVar ) {
+        DeclarationSpec dec = getDeclaration(boundVar);
+        return dec == null ? empty() : ofNullable( dec.getBindingExpr() );
     }
 
     public void addGlobalDeclarations(Map<String, Class<?>> globals) {

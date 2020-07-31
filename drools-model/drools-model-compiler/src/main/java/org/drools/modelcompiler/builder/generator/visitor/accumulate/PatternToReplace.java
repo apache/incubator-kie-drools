@@ -11,9 +11,8 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 
 import static java.util.stream.Collectors.toList;
+
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
-import static org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder.BIND_CALL;
-import static org.drools.modelcompiler.util.StreamUtils.optionalToStream;
 
 public class PatternToReplace {
 
@@ -33,15 +32,6 @@ public class PatternToReplace {
         return allMethodCallExpressions()
                 .filter(expr -> expr.getName().asString().equals(PATTERN_CALL))
                 .filter(this::hasBindingExprVar)
-                .map(Expression::asMethodCallExpr)
-                .findFirst();
-    }
-
-    public Optional<MethodCallExpr> findFromBinding() {
-        return allMethodCallExpressions()
-                .filter(expr -> expr.getName().asString().equals(BIND_CALL))
-                .filter(this::hasBindingExprVar)
-                .flatMap(methodCallExpr -> optionalToStream(methodCallExpr.getScope()))
                 .map(Expression::asMethodCallExpr)
                 .findFirst();
     }

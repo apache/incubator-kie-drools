@@ -2120,4 +2120,30 @@ public class AccumulateTest extends BaseModelTest {
 
         assertEquals( 2, ksession.fireAllRules() );
     }
+
+    @Test
+    public void testAccumulateWithManyBindings() {
+        // DROOLS-5546
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  accumulate (\n" +
+                "       Person($age : age, $name : name), $max : max( $name.length() ) " +
+                "         )" +
+                "then\n" +
+                "  insert($max);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Person( "Mario", 40 ) );
+        ksession.insert( new Person( "Mark", 40 ) );
+        ksession.insert( new Person( "Luca", 40 ) );
+
+        ksession.fireAllRules();
+
+        List<Number> results = getObjectsIntoList(ksession, Number.class);
+        assertEquals(1, results.size());
+        assertEquals(5, results.get(0).intValue());
+    }
 }

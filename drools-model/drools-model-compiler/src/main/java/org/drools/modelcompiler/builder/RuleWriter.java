@@ -35,6 +35,8 @@ import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrint
 
 public class RuleWriter {
 
+    public static final boolean EXTERNALIZE_LAMBDAS = true;
+
     public static final String DROOLS_CHECK_NON_EXTERNALISED_LAMBDA = "drools.check.nonExternalisedLambda";
     private static boolean checkNonExternalisedLambda = Boolean.parseBoolean(System.getProperty(DROOLS_CHECK_NON_EXTERNALISED_LAMBDA, "false"));
 
@@ -76,7 +78,7 @@ public class RuleWriter {
 
                 String addFileName = classOptional.get().getNameAsString();
 
-                if(pkgModel.getConfiguration().isExternaliseCanonicalModelLambda()) {
+                if (EXTERNALIZE_LAMBDAS && pkgModel.getConfiguration().isExternaliseCanonicalModelLambda()) {
                     CompilationUnit postProcessedCU = cu.clone();
                     if (pkgModel.getRuleUnits().isEmpty()) {
                         new ExecModelLambdaPostProcessor(pkgModel, postProcessedCU).convertLambdas();
