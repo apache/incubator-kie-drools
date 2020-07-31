@@ -82,7 +82,7 @@ public final class JaxbIO<T> {
             marshaller.marshal(root, domResult);
         } catch (JAXBException jaxbException) {
             String errMessage = String.format("Unable to marshall the %s to XML.", rootClass.getName());
-            throw new RuntimeException(errMessage, jaxbException);
+            throw new IllegalStateException(errMessage, jaxbException);
         }
 
         // See https://stackoverflow.com/questions/46708498/jaxb-marshaller-indentation.
@@ -103,7 +103,7 @@ public final class JaxbIO<T> {
             transformer.transform(new DOMSource(domResult.getNode()), new StreamResult(writer));
         } catch (TransformerException transformerException) {
             String errMessage = String.format("Unable to format %s XML.", rootClass.getName());
-            throw new RuntimeException(errMessage, transformerException);
+            throw new IllegalStateException(errMessage, transformerException);
         }
     }
 }
