@@ -736,4 +736,48 @@ public class FromTest extends BaseModelTest {
         assertEquals( 1, ruleFired );
         assertEquals( "red", hashSet.iterator().next() );
     }
+
+    public static class DummyService {
+        public String dummy(String a) {
+            return "test";
+        }
+        public String dummy(String a, String b, String c) {
+            return "test";
+        }
+    }
+
+    @Test
+    public void testMultipleFrom() {
+        // DROOLS-5542
+        String str =
+                "package com.sample;" +
+                "global java.util.Set controlSet;\n" +
+                "global " + DummyService.class.getCanonicalName() + " dummyService;\n" +
+                "import " + Measurement.class.getCanonicalName() + ";\n" +
+                "" +
+                "rule \"will execute per each Measurement having ID color\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                " Measurement( id == \"color\", $colorVal : val )\n" +
+                " $var1: String() from dummyService.dummy(\"a\");\n" +
+                " $var2: String() from dummyService.dummy(\"b\");\n" +
+                " $var3: String() from dummyService.dummy(\"c\");\n" +
+                " String() from dummyService.dummy($var1, $var2, $var3)\n" +
+                "then\n" +
+                " controlSet.add($colorVal);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        HashSet<Object> hashSet = new HashSet<>();
+        ksession.setGlobal("controlSet", hashSet);
+        ksession.setGlobal("dummyService", new DummyService());
+
+        ksession.insert(new Measurement("color", "red"));
+
+        int ruleFired = ksession.fireAllRules();
+
+        assertEquals( 1, ruleFired );
+        assertEquals( "red", hashSet.iterator().next() );
+    }
 }
