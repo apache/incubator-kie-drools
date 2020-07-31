@@ -244,13 +244,13 @@ public class RuleContext {
     public void registerBindingExpression( String boundVar, MethodCallExpr bidingExpr ) {
         DeclarationSpec dec = getDeclaration(boundVar);
         if (dec != null) {
-            dec.setBidingExpr( bidingExpr );
+            dec.setBindingExpr( bidingExpr );
         }
     }
 
     public Optional<MethodCallExpr> findBindingExpression( String boundVar ) {
         DeclarationSpec dec = getDeclaration(boundVar);
-        return dec == null ? empty() : ofNullable( dec.getBidingExpr() );
+        return dec == null ? empty() : ofNullable( dec.getBindingExpr() );
     }
 
     public void addGlobalDeclarations(Map<String, Class<?>> globals) {
