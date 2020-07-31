@@ -21,7 +21,6 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -86,18 +85,18 @@ public final class JaxbIO<T> {
             throw new RuntimeException(errMessage, jaxbException);
         }
 
-        // see https://stackoverflow.com/questions/46708498/jaxb-marshaller-indentation
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer;
-        try {
-            /*
-             * Disable usage of external entities, see:
-             * https://owasp.org/www-project-top-ten/OWASP_Top_Ten_2017/Top_10-2017_A4-XML_External_Entities_(XXE)
-             */
-            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        // See https://stackoverflow.com/questions/46708498/jaxb-marshaller-indentation.
 
-            transformer = TransformerFactory.newInstance().newTransformer();
+        /*
+         * The code is not vulnerable to XXE-based attacks as it does not process any external XML nor XSL input.
+         * Should the transformerFactory be used for such purposes, it has to be appropriately secured:
+         * https://owasp.org/www-project-top-ten/OWASP_Top_Ten_2017/Top_10-2017_A4-XML_External_Entities_(XXE)
+         */
+        @SuppressWarnings({ "java:S2755", "java:S4435" })
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        try {
+
+            Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", String.valueOf(indentation));
 
