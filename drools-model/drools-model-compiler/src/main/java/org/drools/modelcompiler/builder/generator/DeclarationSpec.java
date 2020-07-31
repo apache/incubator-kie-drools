@@ -39,6 +39,7 @@ public class DeclarationSpec {
     private final Boolean isGlobal;
 
     private MethodCallExpr bindingExpr;
+    private String boundVariable;
 
     public DeclarationSpec(String bindingId, Class<?> declarationClass) {
         this(bindingId, declarationClass, Optional.empty(), Optional.empty(), Optional.empty(), false);
@@ -110,6 +111,14 @@ public class DeclarationSpec {
 
     public void setBindingExpr( MethodCallExpr bindingExpr ) {
         this.bindingExpr = bindingExpr;
+    }
+  
+    public Optional<String> getBoundVariable() {
+        return Optional.ofNullable( boundVariable );
+    }
+
+    public void setBoundVariable( String boundVariable ) {
+        this.boundVariable = boundVariable;
     }
 
     @Override
