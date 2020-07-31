@@ -185,7 +185,7 @@ public class InfixOpNode
                     }
                 } else {
                     Boolean rightAND = EvalHelper.getBooleanOrNull(this.right.evaluate(ctx));
-                    return rightAND == Boolean.FALSE ? rightAND : null;
+                    return Boolean.FALSE.equals(rightAND) ? Boolean.FALSE : null;
                 }
             case OR:
                 Boolean leftOR = EvalHelper.getBooleanOrNull(this.left.evaluate(ctx));
