@@ -421,9 +421,16 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
                 return allSetButTraitBitMask();
             }
             int pos = settableProperties.indexOf(propertyName);
-            if (pos < 0 && Character.isUpperCase(propertyName.charAt(0))) {
-                propertyName = propertyName.substring(0, 1).toLowerCase() + propertyName.substring(1);
-                pos = settableProperties.indexOf(propertyName);
+            if (pos < 0) {
+                if (Character.isUpperCase(propertyName.charAt(0))) {
+                    propertyName = propertyName.substring( 0, 1 ).toLowerCase() + propertyName.substring( 1 );
+                    pos = settableProperties.indexOf( propertyName );
+                } else {
+                    propertyName = findBoundVariable(propertyName);
+                    if (propertyName != null) {
+                        pos = settableProperties.indexOf( propertyName );
+                    }
+                }
             }
             if (pos >= 0) {
                 mask = mask.set(pos + PropertySpecificUtil.CUSTOM_BITS_OFFSET);
@@ -434,6 +441,18 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         }
 
         return mask;
+    }
+
+    private String findBoundVariable(String variable) {
+        for (Declaration declaration : declarations) {
+            if (declaration.getIdentifier().equals( variable )) {
+                InternalReadAccessor accessor = declaration.getExtractor();
+                if (accessor instanceof ClassFieldReader) {
+                    return (( ClassFieldReader ) accessor).getFieldName();
+                }
+            }
+        }
+        return null;
     }
 
     private String getPropertyNameFromSimpleExpression(String simpleExpression) {

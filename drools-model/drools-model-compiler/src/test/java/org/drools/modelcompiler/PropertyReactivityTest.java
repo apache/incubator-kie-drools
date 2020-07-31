@@ -831,4 +831,25 @@ public class PropertyReactivityTest extends BaseModelTest {
         assertEquals(10, fired);
         assertEquals(41, p.getAge());
     }
+
+    @Test
+    public void testPropertyReactivityOnBoundVariable() {
+        // RHDM-1387
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $p : Person( $n : name, $n == \"Mario\" )\n" +
+                "then\n" +
+                "    modify($p) { setAge( $p.getAge()+1 ) };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.fireAllRules(5);
+
+        assertEquals(41, p.getAge());
+    }
 }
