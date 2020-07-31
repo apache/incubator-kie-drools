@@ -155,6 +155,10 @@ public abstract class BaseVariantTest {
         this.testConfig = testConfig;
     }
 
+    public boolean isTypeSafe() {
+        return testConfig.isTypeSafe();
+    }
+
     public DMNRuntime createRuntime(final Class testClass) {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime(testClass);
         if (testConfig.isTypeSafe()) {
@@ -182,13 +186,15 @@ public abstract class BaseVariantTest {
 
     protected Map<String, Class<?>> allCompiledClasses;
 
+    protected Map<String, String> allSources;
+
     protected String testName = "";
 
     private void createTypeSafeInput(DMNRuntime runtime) {
         String prefix = String.format("%s%s", testName, testConfig.name());
         factory = new DMNTypeSafePackageName.ModelFactory(prefix);
         DMNAllTypesIndex index = new DMNAllTypesIndex(factory, runtime.getModels().toArray(new DMNModel[]{}));
-        Map<String, String> allSources = new HashMap<>();
+        allSources = new HashMap<>();
 
         for (DMNModel m : runtime.getModels()) {
             Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, index, factory)
@@ -211,6 +217,14 @@ public abstract class BaseVariantTest {
         }
     }
 
+    protected DMNResult evaluateDecisionService(DMNRuntime runtime, DMNModel dmnModel, DMNContext context, String decisionServiceName) {
+        if (testConfig.isTypeSafe()) {
+            return evaluateDecisionServiceTypeSafe(runtime, dmnModel, context, decisionServiceName);
+        } else {
+            return runtime.evaluateDecisionService(dmnModel, context, decisionServiceName);
+        }
+    }
+
     private DMNResult evaluateTypeSafe(DMNRuntime runtime, DMNModel dmnModel, DMNContext context) {
         Map<String, Object> inputMap = context.getAll();
         FEELPropertyAccessible inputSet;
@@ -218,6 +232,30 @@ public abstract class BaseVariantTest {
             inputSet = createInstanceFromCompiledClasses(allCompiledClasses, factory.create(dmnModel), "InputSet");
             inputSet.fromMap(inputMap);
             return runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(inputSet));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private DMNResult evaluateDecisionServiceTypeSafe(DMNRuntime runtime, DMNModel dmnModel, DMNContext context, String decisionServiceName) {
+        Map<String, Object> inputMap = context.getAll();
+        FEELPropertyAccessible inputSet;
+        try {
+            inputSet = createInstanceFromCompiledClasses(allCompiledClasses, factory.create(dmnModel), "InputSet");
+            inputSet.fromMap(inputMap);
+            return runtime.evaluateDecisionService(dmnModel, new DMNContextFPAImpl(inputSet), decisionServiceName);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public FEELPropertyAccessible convertToOutputSet(DMNModel dmnModel, DMNResult dmnResult) {
+        Map<String, Object> contextMap = dmnResult.getContext().getAll();
+        FEELPropertyAccessible outputSet;
+        try {
+            outputSet = createInstanceFromCompiledClasses(allCompiledClasses, factory.create(dmnModel), "OutputSet");
+            outputSet.fromMap(contextMap);
+            return outputSet;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

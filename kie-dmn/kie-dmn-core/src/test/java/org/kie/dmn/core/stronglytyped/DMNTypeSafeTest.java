@@ -40,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -103,6 +104,14 @@ public class DMNTypeSafeTest extends BaseVariantTest {
         DMNContext result = evaluateAll.getContext();
         Map<String, Object> d = (Map<String, Object>) result.get("d");
         assertThat(d.get("Hello"), is("Hello Mr. x"));
+
+        FEELPropertyAccessible outputSet = createInstanceFromCompiledClasses(compiledClasses, packageName, "OutputSet");
+        outputSet.fromMap(result.getAll());
+
+        assertThat(outputSet.getFEELProperty("p").toOptional().get(), equalTo(tPersonInstance));
+        Map<String, Object> dContext = (Map<String, Object>)outputSet.getFEELProperty("d").toOptional().get();
+        assertThat(dContext.get("Hello"), is("Hello Mr. x"));
+        assertThat(dContext.get("the person"), equalTo(tPersonInstance));
     }
 
     private FEELPropertyAccessible tAddress(Map<String, Class<?>> compile, String streetName, int streetNumber) throws Exception {
@@ -156,6 +165,14 @@ public class DMNTypeSafeTest extends BaseVariantTest {
         DMNContext result = evaluateAll.getContext();
         Map<String, Object> d = (Map<String, Object>) result.get("d");
         assertThat(d.get("Hello"), is("Hello Mr. x"));
+
+        FEELPropertyAccessible outputSet = createInstanceFromCompiledClasses(classes, packageName, "OutputSet");
+        outputSet.fromMap(result.getAll());
+
+        assertThat(outputSet.getFEELProperty("p").toOptional().get(), equalTo(context.getFEELProperty("p").toOptional().get()));
+        Map<String, Object> dContext = (Map<String, Object>)outputSet.getFEELProperty("d").toOptional().get();
+        assertThat(dContext.get("Hello"), is("Hello Mr. x"));
+        assertThat(dContext.get("the person"), equalTo(context.getFEELProperty("p").toOptional().get()));
     }
 
     private static DMNResult evaluateTyped(FEELPropertyAccessible context, DMNRuntime runtime, DMNModel dmnModel) {
