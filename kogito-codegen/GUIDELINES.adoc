@@ -1,0 +1,309 @@
+# Codegen Guidelines
+
+.Rule of Thumb
+[TIP]
+====
+1. You should generate the code that you would write by hand, if there was no codegen step.
+2. Before you open a PR, take a look at the code you generate, and verify it follows rule 1. 
+====
+
+## Templates
+
+- A *Template* is a Java class named `<Something>Template.java`. 
+Templates are located under `src/main/resources/class-templates/`.
+- A Template class may contain *placeholders*. 
+- By convention a placeholder is a string delimited by $-marks. `$PlaceHolder$`.
+
+
+.Template Definition and Usage:
+====
+
+Consider the following template
+
+.MyClassTemplate.java: 
+[source,java]
+----
+public class $ClassName$ {
+    public void $method$() {}
+}
+----
+
+Code-generators may load templates from the resource class-path, and parse them to an AST using JavaParser. JavaParser methods
+can be used to navigate and replace placeholders. e.g.
+
+
+.GenerateMyClass.java: 
+[source,java]
+----
+String template = "/class-templates/MyClassTemplate.java";
+InputStream resource = getClass().getResourceAsStream(template);
+CompilationUnit u = parse(resource);
+
+u.findAll(
+    ClassOrInterfaceDeclaration.class, 
+        c -> c.getNameAsString().equals("$ClassName$"))
+    .forEach(c-> c.setName("MyCustomName"));
+
+u.findAll(
+    MethodDeclaration.class, 
+        c -> c.getNameAsString().equals("$method$"))
+    .forEach(c-> c.setName("myMethodName"));
+----
+
+====
+
+## Writing Effective Templates
+
+
+1. Move shared, non-dynamic code to plain classes 
+2. Specialize runtime-specific annotation/behavior (Quarkus vs. Spring) using templates if possible (inherit or call library methods) 
+3. Templates should be framework-specific
+
+### Framework-Specific Templates
+
+A framework-specific template reads like a regular class.
+There may be placeholders.
+
+
+.Framework-Specific Template
+====
+
+.SpringApplicationConfigTemplate.java: 
+[source,java]
+----
+@org.springframework.stereotype.Component
+public class ApplicationConfig extends org.kie.kogito.StaticConfig {
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public ApplicationConfig(
+            List<org.kie.kogito.process.ProcessConfig> processConfig,
+            List<org.kie.kogito.rules.RuleConfig> ruleConfig,
+            List<org.kie.kogito.decision.DecisionConfig> decisionConfig) {
+        super(orDefault(processConfig, StaticProcessConfig::new),
+              orDefault(ruleConfig, StaticRuleConfig::new),
+              orDefault(decisionConfig, StaticDecisionConfig::new));
+    }
+    ...
+----
+
+where `org.kie.kogito.StaticConfig` is a plain class. In this case there are no placeholders.
+
+There are also:
+
+- `CdiApplicationConfigTemplate` for CDI 
+- `ApplicationConfigTemplate` for non-DI cases
+
+
+TIP: If you realize your template has _no_ placeholders,
+then there may be an opportunity for **promoting it to a plain shared class**. 
+
+====
+
+
+### Framework-Agnostic Templates
+
+WARNING: We describe this technique because it is being used, but, whenever possible, you should prefer Framework-Specific Templates + Shared Code.
+
+A framework-agnostic template is "customized" using an *Annotator*. 
+We provide an Annotator for Spring and one for CDI (Quarkus). Annotators decorate methods of a template using framework-specific annotations.  
+
+These templates are used when the generated code is largely the same for all frameworks we support, and only the annotations are different. However:
+
+TIP: If a template is largely the same for all frameworks, you should consider **refactoring to a plain shared class**, and add framework-specific templates with explicit annotations. 
+
+
+
+
+.Framework-Agnostic Template
+====
+
+.MessageConsumerTemplate.java: 
+[source,java]
+----
+public class $Type$MessageConsumer {
+    
+    Process<$Type$> process;
+
+    Application application;
+    
+    Optional<Boolean> useCloudEvents = Optional.of(true);
+    
+	public void consume(String payload) {
+        ...
+    }
+	    
+}
+
+----
+
+Generator code may use annotators to decorate fields and classes with framework-specific directives. 
+
+
+.MessageConsumerGenerator.java
+[source,java]
+----
+    annotator.withApplicationComponent(template);
+    
+    template.findAll(FieldDeclaration.class,
+                        fd -> isProcessField(fd)).forEach(fd -> annotator.withNamedInjection(fd, processId));
+    template.findAll(FieldDeclaration.class,
+                        fd -> isApplicationField(fd)).forEach(fd -> annotator.withInjection(fd));
+
+----
+
+
+This is the end-result when the class is rendered:
+
+
+.TravelersMessageConsumer_3.java
+[source,java]
+----
+@javax.enterprise.context.ApplicationScoped()
+public class TravelersMessageConsumer_3 {
+
+    @javax.inject.Inject()
+    @javax.inject.Named("Travelers")
+    Process<TravelersModel> process;
+
+    @javax.inject.Inject()
+    Application application;
+
+    @org.eclipse.microprofile.config.inject.ConfigProperty(name = "kogito.messaging.as-cloudevents")
+    Optional<Boolean> useCloudEvents = Optional.of(true);
+
+    @org.eclipse.microprofile.reactive.messaging.Incoming("travellers")
+    public void consume(String payload) {
+        ...
+    }
+}
+----
+
+====
+
+
+### Conditional Logic in Codegen Procedures
+
+TIP: You should _avoid_ using conditional logic in code generation procedures.
+
+Good code-generation procedures _should not_ conditionally decide whether a piece of code should be generated "inline"; code generation should strive to push decision logic at the _beginning_, and then only instantiate the correct template.
+
+The remaining logic should only deal with selecting and replacing placeholders.
+
+.Avoiding Conditional Logic
+====
+Consider the case when you want to declare a specific type
+for a field, depending whether we are generating code for Spring or CDI.
+
+.MyClassTemplate.java: 
+[source,java]
+----
+public class MyClass {
+    $InjectTarget$ injected;
+}
+----
+
+.MyClassGenerator.java: 
+[source,java]
+----
+String template = "/class-templates/MyClassTemplate.java";
+InputStream resource = getClass().getResourceAsStream(template);
+CompilationUnit u = parse(resource);
+
+// lookup the placeholder type
+u.findAll(FieldDeclaration.class,
+                p -> p.getVariable(0).getType()
+                        .asClassOrInterfaceType()
+                        .getNameAsString().equals("$InjectTarget$"))
+    .forEach(p -> {
+        VariableDeclarator vd = p.getVariable(0);
+        if (isSpring()) {
+            vd.setType("java.util.List<WorkItemHandler>");
+        } else {
+            vd.setType("javax.enterprise.inject.Instance<WorkItemHandler>");
+        }
+    });
+----
+
+instead, write a framework-specific templates:
+
+.SpringMyClassTemplate.java: 
+[source,java]
+----
+public class MyClass {
+    List<WorkItemHandler> injected;
+}
+----
+
+.CdiMyClassTemplate.java: 
+[source,java]
+----
+public class MyClass {
+    Instance<WorkItemHandler> injected;
+}
+----
+
+use conditional logic to *choose* the template:
+
+.MyClassGenerator.java: 
+[source,java]
+----
+String template() {
+    if (isSpring()) return "/class-templates/SpringMyClassTemplate.java";
+    else if (isCdi()) return "/class-templates/CdiSpringMyClassTemplate.java";
+    else ...
+}
+
+String template = template();
+InputStream resource = getClass().getResourceAsStream(template);
+CompilationUnit u = parse(resource);
+----
+
+====
+
+### Dependency Injection
+
+- Favor Constructor Injection and avoid `@PostConstruct`. Initialization logic should go in the constructor.
+- REST endpoints are the exception:  use field injection, but avoid inheritance; you should try and avoid `@PostConstruct`
+
+
+
+.Mixed Usage of Injection
+====
+
+Consider the following example.
+
+
+[source,java]
+----
+@org.springframework.stereotype.Component("Travelers")
+public class TravelersProcess extends AbstractProcess<TravelersModel> {
+
+    // field injection
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    Collection<WorkItemHandler> handlers;
+
+    Application app;
+
+    // field injection
+    @org.springframework.beans.factory.annotation.Autowired()
+    org.kie.kogito.test.TravelersMessageProducer_7 producer_7;
+
+    // constructor injection
+    @org.springframework.beans.factory.annotation.Autowired()
+    public TravelersProcess(org.kie.kogito.app.Application app) {
+        super(app.config().process());
+        this.app = app;
+    }
+
+    // post construct method that delegates to a non-final 
+    // super-class method
+    @javax.annotation.PostConstruct()
+    public void init() {
+        this.activate();
+    }
+----
+
+====
+
+
+
