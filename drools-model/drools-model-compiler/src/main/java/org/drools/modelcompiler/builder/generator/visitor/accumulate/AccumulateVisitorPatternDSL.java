@@ -20,8 +20,6 @@ package org.drools.modelcompiler.builder.generator.visitor.accumulate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.Parameter;
@@ -63,22 +61,20 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
     @Override
     protected void processNewBinding(MethodCallExpr accumulateDSL) {
         optNewBinding.ifPresent(newBinding -> {
-            final SortedSet<String> patterBinding = new TreeSet<>(newBinding.patternBinding);
             final List<Expression> allExpressions = context.getExpressions();
             final MethodCallExpr newBindingExpression = newBinding.bindExpression;
 
-            PatternToReplace patternToReplace = new PatternToReplace(context, patterBinding);
-
-            if (patterBinding.size() == 1) {
-                patternToReplace.findFromPattern()
+            if (newBinding.patternBinding.size() == 1) {
+                new PatternToReplace(context, newBinding.patternBinding).findFromPattern()
                         .ifPresent(pattern -> addBindAsLastChainCall(newBindingExpression, pattern));
 
-                patternToReplace.findFromBinding()
-                        .ifPresent(pattern -> composeTwoBindings(newBindingExpression, pattern));
+                String binding = newBinding.patternBinding.iterator().next();
+                composeTwoBindings(binding, newBindingExpression);
 
-            } else if (patterBinding.size() == 2) {
-                patternToReplace.findFromPattern()
-                        .ifPresent(pattern -> composeTwoBindings(newBindingExpression, pattern));
+            } else if (newBinding.patternBinding.size() == 2) {
+                String binding = newBinding.patternBinding.iterator().next();
+                composeTwoBindings(binding, newBindingExpression);
+
             } else {
                 final MethodCallExpr lastPattern = DrlxParseUtil.findLastPattern(allExpressions)
                         .orElseThrow(() -> new RuntimeException("Need the last pattern to add the binding"));
@@ -88,38 +84,15 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
         });
     }
 
-    private void composeTwoBindings(MethodCallExpr newBindingExpression, MethodCallExpr pattern) {
-        Optional<Node> oldBinding = findOldBinding(pattern);
-
-        oldBinding.ifPresent(oldBindExpression -> {
-            MethodCallExpr oldBind = (MethodCallExpr) oldBindExpression;
-
+    private void composeTwoBindings(String binding, MethodCallExpr newBindingExpression) {
+        context.findBindingExpression( binding ).ifPresent(oldBind -> {
             LambdaExpr oldBindLambda = oldBind.findFirst(LambdaExpr.class).orElseThrow(RuntimeException::new);
             LambdaExpr newBindLambda = newBindingExpression.findFirst(LambdaExpr.class).orElseThrow(RuntimeException::new);
 
             Expression newComposedLambda = LambdaUtil.appendNewLambdaToOld(oldBindLambda, newBindLambda);
-
-            newBindingExpression.getArguments().removeLast();
-            newBindingExpression.addArgument(newComposedLambda);
-
-            newBindingExpression.setScope(oldBind.getScope().orElseThrow(RuntimeException::new));
-            oldBind.replace(newBindingExpression);
+            oldBind.setArgument( 0, newBindingExpression.getArgument( 0 ) );
         });
     }
-
-    // Navigate to the first parent that is a Binding Expression
-    private static Optional<Node> findOldBinding(Node pattern) {
-
-        Optional<Node> parentNodeBindExpression = pattern.getParentNode().filter(parent -> {
-            boolean isMethodCallExpr = parent instanceof MethodCallExpr;
-            return isMethodCallExpr && ((MethodCallExpr) parent).getNameAsString().equals(BIND_CALL);
-        });
-
-        return parentNodeBindExpression
-                .map(Optional::of)
-                .orElseGet(() -> pattern.getParentNode().flatMap(AccumulateVisitorPatternDSL::findOldBinding));
-    }
-
 
     private void addBindAsLastChainCall(MethodCallExpr newBindingExpression, MethodCallExpr pattern) {
         final Optional<Node> optParent = pattern.getParentNode();
