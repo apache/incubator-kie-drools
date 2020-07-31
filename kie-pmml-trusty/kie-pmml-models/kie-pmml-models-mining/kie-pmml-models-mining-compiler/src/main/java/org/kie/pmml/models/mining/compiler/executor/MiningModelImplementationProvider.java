@@ -39,7 +39,7 @@ import static org.kie.pmml.models.mining.model.KiePMMLMiningModel.PMML_MODEL_TYP
  */
 public class MiningModelImplementationProvider implements ModelImplementationProvider<MiningModel,KiePMMLMiningModel>{
 
-    static final String SEGMENTID_TEMPLATE = "%s_Segment_%s";
+    public static final String SEGMENTID_TEMPLATE = "%s_Segment_%s";
 
     @Override
     public PMML_MODEL getPMMLModelType() {
@@ -92,7 +92,6 @@ public class MiningModelImplementationProvider implements ModelImplementationPro
                 }
             }
         }
-
     }
 
 }

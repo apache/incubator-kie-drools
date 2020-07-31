@@ -18,6 +18,7 @@ package org.kie.pmml.models.mining.compiler.factories;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
@@ -25,6 +26,7 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.MiningModel;
+import org.dmg.pmml.mining.Segment;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.junit.BeforeClass;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
@@ -33,6 +35,7 @@ import org.xml.sax.SAXException;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.models.mining.compiler.executor.MiningModelImplementationProvider.SEGMENTID_TEMPLATE;
 
 public abstract class AbstractKiePMMLFactoryTest {
 
@@ -53,6 +56,26 @@ public abstract class AbstractKiePMMLFactoryTest {
         assertTrue(pmml.getModels().get(0) instanceof MiningModel);
         MINING_MODEL = (MiningModel) pmml.getModels().get(0);
         assertNotNull(MINING_MODEL);
+        populateMissingIds(MINING_MODEL);
+    }
+
+
+    /**
+     * Recursively populate <code>Segment</code>s with auto generated id
+     * if missing in original model
+     */
+    private static void populateMissingIds(final MiningModel model) {
+        final List<Segment> segments =model.getSegmentation().getSegments();
+        for (int i = 0; i < segments.size(); i ++) {
+            Segment segment = segments.get(i);
+            if (segment.getId() == null || segment.getId().isEmpty()) {
+                String toSet = String.format(SEGMENTID_TEMPLATE, model.getModelName(), i);
+                segment.setId(toSet);
+                if (segment.getModel() instanceof MiningModel) {
+                    populateMissingIds((MiningModel) segment.getModel());
+                }
+            }
+        }
     }
 
 }
