@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.compiler.lang.descr.BehaviorDescr;
 import org.drools.compiler.lang.descr.EntryPointDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
@@ -37,6 +38,7 @@ public class DeclarationSpec {
     private final Optional<String> variableName;
     private final Boolean isGlobal;
 
+    private MethodCallExpr bindingExpr;
     private String boundVariable;
 
     public DeclarationSpec(String bindingId, Class<?> declarationClass) {
@@ -103,6 +105,14 @@ public class DeclarationSpec {
         return isGlobal;
     }
 
+    public MethodCallExpr getBindingExpr() {
+        return bindingExpr;
+    }
+
+    public void setBindingExpr( MethodCallExpr bindingExpr ) {
+        this.bindingExpr = bindingExpr;
+    }
+  
     public Optional<String> getBoundVariable() {
         return Optional.ofNullable( boundVariable );
     }

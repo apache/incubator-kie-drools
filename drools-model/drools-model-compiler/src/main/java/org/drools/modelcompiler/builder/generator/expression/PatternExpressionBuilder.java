@@ -146,16 +146,16 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
     @Override
     public MethodCallExpr buildBinding(SingleDrlxParseSuccess drlxParseResult) {
         MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
-        if (drlxParseResult.hasUnificationVariable()) {
-            bindDSL.addArgument(context.getVarExpr(drlxParseResult.getUnificationVariable()));
-        } else {
-            bindDSL.addArgument(context.getVarExpr(drlxParseResult.getExprBinding()));
-        }
+        String boundVar = drlxParseResult.hasUnificationVariable() ?
+                drlxParseResult.getUnificationVariable() :
+                drlxParseResult.getExprBinding();
+        bindDSL.addArgument(context.getVarExpr(boundVar));
         final Expression constraintExpression = getConstraintExpression(drlxParseResult);
         drlxParseResult.getUsedDeclarationsOnLeft().forEach(d -> bindDSL.addArgument(context.getVar(d)));
         bindDSL.addArgument(constraintExpression);
         final Optional<MethodCallExpr> methodCallExpr = buildReactOn(drlxParseResult);
         methodCallExpr.ifPresent(bindDSL::addArgument);
+        context.registerBindingExpression(boundVar, bindDSL);
         return bindDSL;
     }
 
