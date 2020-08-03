@@ -135,6 +135,22 @@ exports[`DomainExplorerPage component Check error response for getQueryFields qu
       className="pf-c-page__main-section"
     >
       <DomainExplorer
+        defaultChip={
+          Array [
+            "metadata / processInstances / state: ACTIVE",
+          ]
+        }
+        defaultFilter={
+          Object {
+            "metadata": Object {
+              "processInstances": Object {
+                "state": Object {
+                  "equal": "ACTIVE",
+                },
+              },
+            },
+          }
+        }
         domainName="Travels"
         metaData={
           Object {
@@ -153,6 +169,8 @@ exports[`DomainExplorerPage component Check error response for getQueryFields qu
             ],
           }
         }
+        rememberedChips={Array []}
+        rememberedFilters={Array []}
         rememberedParams={
           Array [
             Object {
@@ -311,6 +329,22 @@ exports[`DomainExplorerPage component Mock query testing 1`] = `
       className="pf-c-page__main-section"
     >
       <DomainExplorer
+        defaultChip={
+          Array [
+            "metadata / processInstances / state: ACTIVE",
+          ]
+        }
+        defaultFilter={
+          Object {
+            "metadata": Object {
+              "processInstances": Object {
+                "state": Object {
+                  "equal": "ACTIVE",
+                },
+              },
+            },
+          }
+        }
         domainName="Travels"
         metaData={
           Object {
@@ -329,6 +363,8 @@ exports[`DomainExplorerPage component Mock query testing 1`] = `
             ],
           }
         }
+        rememberedChips={Array []}
+        rememberedFilters={Array []}
         rememberedParams={
           Array [
             Object {
@@ -425,6 +461,22 @@ exports[`DomainExplorerPage component Snapshot with default props 1`] = `
       className="pf-c-page__main-section"
     >
       <DomainExplorer
+        defaultChip={
+          Array [
+            "metadata / processInstances / state: ACTIVE",
+          ]
+        }
+        defaultFilter={
+          Object {
+            "metadata": Object {
+              "processInstances": Object {
+                "state": Object {
+                  "equal": "ACTIVE",
+                },
+              },
+            },
+          }
+        }
         domainName="Travels"
         metaData={
           Object {
@@ -443,6 +495,8 @@ exports[`DomainExplorerPage component Snapshot with default props 1`] = `
             ],
           }
         }
+        rememberedChips={Array []}
+        rememberedFilters={Array []}
         rememberedParams={
           Array [
             Object {
@@ -526,6 +580,22 @@ exports[`DomainExplorerPage component check assertions on rememberedParams 1`] =
       className="pf-c-page__main-section"
     >
       <DomainExplorer
+        defaultChip={
+          Array [
+            "metadata / processInstances / state: ACTIVE",
+          ]
+        }
+        defaultFilter={
+          Object {
+            "metadata": Object {
+              "processInstances": Object {
+                "state": Object {
+                  "equal": "ACTIVE",
+                },
+              },
+            },
+          }
+        }
         domainName="Travels"
         metaData={
           Object {
@@ -544,6 +614,8 @@ exports[`DomainExplorerPage component check assertions on rememberedParams 1`] =
             ],
           }
         }
+        rememberedChips={Array []}
+        rememberedFilters={Array []}
         rememberedParams={Array []}
         rememberedSelections={Array []}
       >

@@ -52,7 +52,7 @@ const checkFunc = (ele, valueObj) => {
     }
   }
 };
-
+// function that validates null data
 export const validateResponse = (obj, paramFields) => {
   let contentObj = {};
   for (const prop in obj) {
@@ -79,6 +79,7 @@ export const validateResponse = (obj, paramFields) => {
   return contentObj;
 };
 
+// function that frames object for query based on the selections
 export const filterColumnSelection = (selectionArray, objValue) => {
   let res = {};
   if (selectionArray.length === 0) {
@@ -97,4 +98,54 @@ export const filterColumnSelection = (selectionArray, objValue) => {
     }
   }
   return res;
+};
+
+// function that removes single property from object
+export const deleteKey = (testObj, pathArray) => {
+  const _obj = testObj;
+  const keys = pathArray;
+  keys.reduce((acc, key, index) => {
+    if (index === keys.length - 1) {
+      delete acc[key];
+      return true;
+    }
+    return acc[key];
+  }, _obj);
+  return _obj;
+};
+export const clearEmpties = obj => {
+  for (const key in obj) {
+    if (!obj[key] || typeof obj[key] !== 'object') {
+      continue;
+    }
+    clearEmpties(obj[key]);
+    if (Object.keys(obj[key]).length === 0) {
+      delete obj[key];
+    }
+  }
+  return obj;
+};
+
+// function adds new property to existing object
+export const set = (obj, path, val) => {
+  const keys = path.split(',');
+  const lastKey = keys.pop();
+  // tslint:disable-next-line: no-shadowed-variable
+  const lastObj = keys.reduce(
+    // tslint:disable-next-line: no-shadowed-variable
+    (_obj, key) => (_obj[key] = obj[key] || {}),
+    obj
+  );
+  lastObj[lastKey] = val;
+};
+
+// function removes duplicate objects inside array
+export const removeDuplicates = (arr, comp) => {
+  const unique = arr
+    .map(e => e[comp])
+    .map((e, i, final) => final.indexOf(e) === i && i)
+    .filter(e => arr[e])
+    .map(e => arr[e]);
+
+  return unique;
 };

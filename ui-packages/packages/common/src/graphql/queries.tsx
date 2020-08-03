@@ -238,6 +238,16 @@ const GET_INPUT_FIELDS_FROM_TYPES = gql`
         type {
           name
           kind
+          enumValues {
+            name
+          }
+          ofType {
+            kind
+            name
+            enumValues {
+              name
+            }
+          }
         }
       }
     }

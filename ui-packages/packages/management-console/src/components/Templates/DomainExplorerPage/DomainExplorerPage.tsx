@@ -13,7 +13,7 @@ import './DomainExplorerPage.css';
 import PageTitle from '../../Molecules/PageTitle/PageTitle';
 
 interface IOwnProps {
-  domains: any;
+  domains: string[];
   loadingState: boolean;
 }
 
@@ -22,8 +22,10 @@ interface MatchProps {
 }
 
 interface LocationProps {
-  parameters?: any[];
-  selected?: any[];
+  parameters?: object[];
+  selected?: string[];
+  finalFilters?: object;
+  filterChips?: string[];
 }
 
 const DomainExplorerPage: React.FC<IOwnProps &
@@ -33,6 +35,10 @@ const DomainExplorerPage: React.FC<IOwnProps &
     (props.location.state && props.location.state.parameters) || [];
   const rememberedSelections =
     (props.location.state && props.location.state.selected) || [];
+  const rememberedFilters =
+    (props.location.state && props.location.state.finalFilters) || [];
+  const rememberedChips =
+    (props.location.state && props.location.state.filterChips) || [];
   const domainName = props.match.params.domainName;
   let BreadCrumb = props.location.pathname.split('/');
   BreadCrumb = BreadCrumb.filter(item => {
@@ -56,6 +62,18 @@ const DomainExplorerPage: React.FC<IOwnProps &
         ]
       }
     ]
+  };
+
+  const defaultChip = ['metadata / processInstances / state: ACTIVE'];
+
+  const defaultFilter = {
+    metadata: {
+      processInstances: {
+        state: {
+          equal: 'ACTIVE'
+        }
+      }
+    }
   };
 
   useEffect(() => {
@@ -107,8 +125,12 @@ const DomainExplorerPage: React.FC<IOwnProps &
         <DomainExplorer
           rememberedParams={rememberedParams}
           rememberedSelections={rememberedSelections}
+          rememberedFilters={rememberedFilters}
+          rememberedChips={rememberedChips}
           domainName={domainName}
           metaData={metaData}
+          defaultChip={defaultChip}
+          defaultFilter={defaultFilter}
         />
       </PageSection>
     </>

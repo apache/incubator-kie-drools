@@ -15,7 +15,7 @@ export const defaultView = () => {
   );
   return (
     <BrowserRouter>
-      <ServerErrors error={error} />
+      <ServerErrors error={error} variant="large" />
     </BrowserRouter>
   );
 };

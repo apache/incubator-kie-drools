@@ -52,3 +52,11 @@
 .kogito-common--manage-columns__modal .pf-c-dropdown {
     margin-bottom: var(--pf-global--spacer--md);
 } 
+
+.kogito-common--filter-options__inputs {
+    margin-right: var(--pf-global--spacer--md);
+}
+
+.kogito-common--filter-options__inputs .pf-c-select__toggle-wrapper{
+    min-width: 6em;
+}

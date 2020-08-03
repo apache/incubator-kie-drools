@@ -2,6 +2,22 @@
 
 exports[`Domain Explorer component Check error response for getPicker query 1`] = `
 <DomainExplorer
+  defaultChip={
+    Array [
+      "metadata / processInstances / state: ACTIVE",
+    ]
+  }
+  defaultFilter={
+    Object {
+      "metadata": Object {
+        "processInstances": Object {
+          "state": Object {
+            "equal": "ACTIVE",
+          },
+        },
+      },
+    }
+  }
   domainName="Travels"
   domains={
     Array [
@@ -61,6 +77,12 @@ exports[`Domain Explorer component Check error response for getPicker query 1`] 
       ],
     }
   }
+  rememberedChips={
+    Array [
+      "metadata / processInstances / state: ACTIVE",
+    ]
+  }
+  rememberedFilters={Object {}}
   rememberedParams={
     Array [
       Object {
@@ -79,6 +101,7 @@ exports[`Domain Explorer component Check error response for getPicker query 1`] 
 >
   <withRouter(ServerErrors)
     error={Object {}}
+    variant="large"
   >
     <ServerErrors
       error={Object {}}
@@ -118,6 +141,7 @@ exports[`Domain Explorer component Check error response for getPicker query 1`] 
           "url": "/",
         }
       }
+      variant="large"
     >
       <PageSection
         variant="light"
@@ -294,6 +318,22 @@ exports[`Domain Explorer component Check error response for getPicker query 1`] 
 
 exports[`Domain Explorer component Check error response for getQueryFields query 1`] = `
 <DomainExplorer
+  defaultChip={
+    Array [
+      "metadata / processInstances / state: ACTIVE",
+    ]
+  }
+  defaultFilter={
+    Object {
+      "metadata": Object {
+        "processInstances": Object {
+          "state": Object {
+            "equal": "ACTIVE",
+          },
+        },
+      },
+    }
+  }
   domainName="Travels"
   domains={
     Array [
@@ -353,6 +393,12 @@ exports[`Domain Explorer component Check error response for getQueryFields query
       ],
     }
   }
+  rememberedChips={
+    Array [
+      "metadata / processInstances / state: ACTIVE",
+    ]
+  }
+  rememberedFilters={Object {}}
   rememberedParams={
     Array [
       Object {
@@ -371,6 +417,7 @@ exports[`Domain Explorer component Check error response for getQueryFields query
 >
   <withRouter(ServerErrors)
     error={Object {}}
+    variant="large"
   >
     <ServerErrors
       error={Object {}}
@@ -410,6 +457,7 @@ exports[`Domain Explorer component Check error response for getQueryFields query
           "url": "/",
         }
       }
+      variant="large"
     >
       <PageSection
         variant="light"
@@ -586,6 +634,22 @@ exports[`Domain Explorer component Check error response for getQueryFields query
 
 exports[`Domain Explorer component Check error response for getQueryTypes 1`] = `
 <DomainExplorer
+  defaultChip={
+    Array [
+      "metadata / processInstances / state: ACTIVE",
+    ]
+  }
+  defaultFilter={
+    Object {
+      "metadata": Object {
+        "processInstances": Object {
+          "state": Object {
+            "equal": "ACTIVE",
+          },
+        },
+      },
+    }
+  }
   domainName="Travels"
   domains={
     Array [
@@ -645,6 +709,12 @@ exports[`Domain Explorer component Check error response for getQueryTypes 1`] = 
       ],
     }
   }
+  rememberedChips={
+    Array [
+      "metadata / processInstances / state: ACTIVE",
+    ]
+  }
+  rememberedFilters={Object {}}
   rememberedParams={
     Array [
       Object {
@@ -663,6 +733,7 @@ exports[`Domain Explorer component Check error response for getQueryTypes 1`] = 
 >
   <withRouter(ServerErrors)
     error={Object {}}
+    variant="large"
   >
     <ServerErrors
       error={Object {}}
@@ -702,6 +773,7 @@ exports[`Domain Explorer component Check error response for getQueryTypes 1`] = 
           "url": "/",
         }
       }
+      variant="large"
     >
       <PageSection
         variant="light"
@@ -878,6 +950,22 @@ exports[`Domain Explorer component Check error response for getQueryTypes 1`] = 
 
 exports[`Domain Explorer component Mock query testing 1`] = `
 <DomainExplorer
+  defaultChip={
+    Array [
+      "metadata / processInstances / state: ACTIVE",
+    ]
+  }
+  defaultFilter={
+    Object {
+      "metadata": Object {
+        "processInstances": Object {
+          "state": Object {
+            "equal": "ACTIVE",
+          },
+        },
+      },
+    }
+  }
   domainName="Travels"
   domains={
     Array [
@@ -937,6 +1025,12 @@ exports[`Domain Explorer component Mock query testing 1`] = `
       ],
     }
   }
+  rememberedChips={
+    Array [
+      "metadata / processInstances / state: ACTIVE",
+    ]
+  }
+  rememberedFilters={Object {}}
   rememberedParams={
     Array [
       Object {
@@ -955,6 +1049,8 @@ exports[`Domain Explorer component Mock query testing 1`] = `
 >
   <DataToolbar
     className="pf-m-toggle-group-container"
+    clearAllFilters={[Function]}
+    clearFiltersButtonText="Reset to default"
     collapseListedFiltersBreakpoint="md"
     id="data-toolbar-with-chip-groups"
   >
@@ -980,6 +1076,22 @@ exports[`Domain Explorer component Mock query testing 1`] = `
 
 exports[`Domain Explorer component Snapshot test with default prop 1`] = `
 <DomainExplorer
+  defaultChip={
+    Array [
+      "metadata / processInstances / state: ACTIVE",
+    ]
+  }
+  defaultFilter={
+    Object {
+      "metadata": Object {
+        "processInstances": Object {
+          "state": Object {
+            "equal": "ACTIVE",
+          },
+        },
+      },
+    }
+  }
   domainName="Travels"
   domains={
     Array [
@@ -1039,6 +1151,12 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
       ],
     }
   }
+  rememberedChips={
+    Array [
+      "metadata / processInstances / state: ACTIVE",
+    ]
+  }
+  rememberedFilters={Object {}}
   rememberedParams={
     Array [
       Object {
@@ -1057,6 +1175,8 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
 >
   <DataToolbar
     className="pf-m-toggle-group-container"
+    clearAllFilters={[Function]}
+    clearFiltersButtonText="Reset to default"
     collapseListedFiltersBreakpoint="md"
     id="data-toolbar-with-chip-groups"
   >
@@ -1082,6 +1202,22 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
 
 exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
 <DomainExplorer
+  defaultChip={
+    Array [
+      "metadata / processInstances / state: ACTIVE",
+    ]
+  }
+  defaultFilter={
+    Object {
+      "metadata": Object {
+        "processInstances": Object {
+          "state": Object {
+            "equal": "ACTIVE",
+          },
+        },
+      },
+    }
+  }
   domainName="Travels"
   domains={
     Array [
@@ -1110,11 +1246,18 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
     }
   }
   metaData={Object {}}
+  rememberedChips={
+    Array [
+      "metadata / processInstances / state: ACTIVE",
+    ]
+  }
+  rememberedFilters={Object {}}
   rememberedParams={Array []}
   rememberedSelections={Array []}
 >
   <withRouter(ServerErrors)
     error={Object {}}
+    variant="large"
   >
     <ServerErrors
       error={Object {}}
@@ -1154,6 +1297,7 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
           "url": "/",
         }
       }
+      variant="large"
     >
       <PageSection
         variant="light"

@@ -120,10 +120,10 @@ const ProcessListTable: React.FC<IOwnProps> = ({
   if (error || error1) {
     setIsError(true);
     if (error1) {
-      return <ServerErrors error={error1} />;
+      return <ServerErrors error={error1} variant="large" />;
     }
     if (error) {
-      return <ServerErrors error={error} />;
+      return <ServerErrors error={error} variant="large" />;
     }
   }
 

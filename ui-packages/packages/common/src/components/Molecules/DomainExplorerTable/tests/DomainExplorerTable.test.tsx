@@ -3,11 +3,14 @@ import { getWrapperAsync } from '../../../../utils/OuiaUtils';
 
 import DomainExplorerTable from '../DomainExplorerTable';
 import { MockedProvider } from '@apollo/react-testing';
+import { BrowserRouter } from 'react-router-dom';
 
 global.Math.random = () => 0.7218415351930461;
 
 jest.mock('../../ItemDescriptor/ItemDescriptor');
 
+// tslint:disable: no-string-literal
+// tslint:disable: no-unexpected-multiline
 describe('Domain Explorer Table Component', () => {
   let useEffect;
   const mockUseEffect = () => {
@@ -18,102 +21,106 @@ describe('Domain Explorer Table Component', () => {
     mockUseEffect();
     mockUseEffect();
   });
-  it('Snapshot test with default props', async () => {
-    const props = {
-      columnFilters: [
-        {
-          flight: {
-            arrival: 'Hello World',
-            __typename: 'Flight',
-            departure: 'Hello World',
-            flightNumber: 'Hello World',
-            gate: 'Hello World',
-            seat: 'Hello World'
-          },
-          metadata: {
-            processInstances: [
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'ERROR'
-              },
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'ERROR'
-              }
-            ]
-          }
+  const props = {
+    columnFilters: [
+      {
+        flight: {
+          arrival: 'Hello World',
+          __typename: 'Flight',
+          departure: 'Hello World',
+          flightNumber: 'Hello World',
+          gate: 'Hello World',
+          seat: 'Hello World'
         },
-        {
-          flight: {
-            arrival: 'Hello World',
-            __typename: 'Flight',
-            departure: 'Hello World',
-            flightNumber: 'Hello World',
-            gate: 'Hello World',
-            seat: 'Hello World'
-          },
-          metadata: {
-            processInstances: [
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'ERROR'
-              },
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'ERROR'
-              }
-            ]
-          }
-        }
-      ],
-      tableLoading: false,
-      displayTable: true /*  */,
-      displayEmptyState: false,
-      parameters: [],
-      selected: [],
-      isLoadingMore: true,
-      rows: [
-        {
-          cells: [
-            'Hello World',
-            'Hello World',
-            'Hello World',
-            'Hello World',
-            'Hello World'
-          ],
-          isOpen: false,
-          rowKey: '0.008857835601127073'
-        },
-        {
-          parent: 0,
-          rowKey: '0.6632979792309541',
-          cells: [
+        metadata: {
+          processInstances: [
             {
-              title: ''
+              businessKey: 'Hello World',
+              id: 'Hello World',
+              lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
+              processName: 'Hello World',
+              start: 'Tue, 12 May 2020 12:33:58 GMT',
+              state: 'ERROR'
+            },
+            {
+              businessKey: 'Hello World',
+              id: 'Hello World',
+              lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
+              processName: 'Hello World',
+              start: 'Tue, 12 May 2020 12:33:58 GMT',
+              state: 'ERROR'
             }
           ]
         }
-      ],
-      setRows: jest.fn(),
-      offset: 10,
-      handleRetry: jest.fn()
-    };
+      },
+      {
+        flight: {
+          arrival: 'Hello World',
+          __typename: 'Flight',
+          departure: 'Hello World',
+          flightNumber: 'Hello World',
+          gate: 'Hello World',
+          seat: 'Hello World'
+        },
+        metadata: {
+          processInstances: [
+            {
+              businessKey: 'Hello World',
+              id: 'Hello World',
+              lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
+              processName: 'Hello World',
+              start: 'Tue, 12 May 2020 12:33:58 GMT',
+              state: 'ERROR'
+            },
+            {
+              businessKey: 'Hello World',
+              id: 'Hello World',
+              lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
+              processName: 'Hello World',
+              start: 'Tue, 12 May 2020 12:33:58 GMT',
+              state: 'ERROR'
+            }
+          ]
+        }
+      }
+    ],
+    tableLoading: false,
+    displayTable: true /*  */,
+    displayEmptyState: false,
+    parameters: [],
+    selected: [],
+    isLoadingMore: true,
+    rows: [
+      {
+        cells: [
+          'Hello World',
+          'Hello World',
+          'Hello World',
+          'Hello World',
+          'Hello World'
+        ],
+        isOpen: false,
+        rowKey: '0.008857835601127073'
+      },
+      {
+        parent: 0,
+        rowKey: '0.6632979792309541',
+        cells: [
+          {
+            title: ''
+          }
+        ]
+      }
+    ],
+    setRows: jest.fn(),
+    offset: 10,
+    handleRetry: jest.fn(),
+    filterError: '',
+    finalFilters: {},
+    filterChips: ['metadata / processInstances / state: ACTIVE'],
+    onDeleteChip: jest.fn()
+  };
+  it('Snapshot test with default props', async () => {
     const wrapper = await getWrapperAsync(
       <MockedProvider>
         <DomainExplorerTable {...props} />
@@ -124,240 +131,177 @@ describe('Domain Explorer Table Component', () => {
     expect(wrapper).toMatchSnapshot();
   });
   it('Test process instance state', async () => {
-    const props = {
-      columnFilters: [
-        {
-          flight: {
-            arrival: 'Hello World',
-            __typename: 'Flight',
-            departure: 'Hello World',
-            flightNumber: 'Hello World',
-            gate: 'Hello World',
-            seat: 'Hello World'
-          },
-          metadata: {
-            processInstances: [
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'ACTIVE'
-              },
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'COMPLETED'
-              }
-            ]
-          }
+    const columnFilters = [
+      {
+        flight: {
+          arrival: 'Hello World',
+          __typename: 'Flight',
+          departure: 'Hello World',
+          flightNumber: 'Hello World',
+          gate: 'Hello World',
+          seat: 'Hello World'
         },
-        {
-          flight: {
-            arrival: 'Hello World',
-            __typename: 'Flight',
-            departure: 'Hello World',
-            flightNumber: 'Hello World',
-            gate: 'Hello World',
-            seat: 'Hello World'
-          },
-          metadata: {
-            processInstances: [
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'ABORTED'
-              },
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'SUSPENDED'
-              }
-            ]
-          }
-        },
-        {
-          flight: {
-            arrival: 'Hello World',
-            __typename: 'Flight',
-            departure: 'Hello World',
-            flightNumber: 'Hello World',
-            gate: 'Hello World',
-            seat: 'Hello World'
-          },
-          metadata: {
-            processInstances: [
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'PENDING'
-              },
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'ERROR'
-              }
-            ]
-          }
-        }
-      ],
-      tableLoading: false,
-      displayTable: true,
-      displayEmptyState: false,
-      parameters: [],
-      selected: [],
-      isLoadingMore: true,
-      rows: [
-        {
-          cells: [
-            'Hello World',
-            'Hello World',
-            'Hello World',
-            'Hello World',
-            'Hello World'
-          ],
-          isOpen: false,
-          rowKey: '0.008857835601127073'
-        },
-        {
-          parent: 0,
-          rowKey: '0.6632979792309541',
-          cells: [
+        metadata: {
+          processInstances: [
             {
-              title: ''
+              businessKey: 'Hello World',
+              id: 'Hello World',
+              lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
+              processName: 'Hello World',
+              start: 'Tue, 12 May 2020 12:33:58 GMT',
+              state: 'ACTIVE'
+            },
+            {
+              businessKey: 'Hello World',
+              id: 'Hello World',
+              lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
+              processName: 'Hello World',
+              start: 'Tue, 12 May 2020 12:33:58 GMT',
+              state: 'COMPLETED'
             }
           ]
         }
-      ],
-      setRows: jest.fn(),
-      offset: 10,
-      handleRetry: jest.fn()
-    };
+      },
+      {
+        flight: {
+          arrival: 'Hello World',
+          __typename: 'Flight',
+          departure: 'Hello World',
+          flightNumber: 'Hello World',
+          gate: 'Hello World',
+          seat: 'Hello World'
+        },
+        metadata: {
+          processInstances: [
+            {
+              businessKey: 'Hello World',
+              id: 'Hello World',
+              lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
+              processName: 'Hello World',
+              start: 'Tue, 12 May 2020 12:33:58 GMT',
+              state: 'ABORTED'
+            },
+            {
+              businessKey: 'Hello World',
+              id: 'Hello World',
+              lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
+              processName: 'Hello World',
+              start: 'Tue, 12 May 2020 12:33:58 GMT',
+              state: 'SUSPENDED'
+            }
+          ]
+        }
+      },
+      {
+        flight: {
+          arrival: 'Hello World',
+          __typename: 'Flight',
+          departure: 'Hello World',
+          flightNumber: 'Hello World',
+          gate: 'Hello World',
+          seat: 'Hello World'
+        },
+        metadata: {
+          processInstances: [
+            {
+              businessKey: 'Hello World',
+              id: 'Hello World',
+              lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
+              processName: 'Hello World',
+              start: 'Tue, 12 May 2020 12:33:58 GMT',
+              state: 'PENDING'
+            },
+            {
+              businessKey: 'Hello World',
+              id: 'Hello World',
+              lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
+              processName: 'Hello World',
+              start: 'Tue, 12 May 2020 12:33:58 GMT',
+              state: 'ERROR'
+            }
+          ]
+        }
+      }
+    ];
     const wrapper = await getWrapperAsync(
       <MockedProvider>
-        <DomainExplorerTable {...props} />
+        <DomainExplorerTable {...{ ...props, columnFilters }} />
       </MockedProvider>,
       'DomainExplorerTable'
     );
     wrapper.update();
-
-    expect(wrapper.find('.kogito-common--domain-explorer__table')).toBeTruthy();
+    // tslint:disable-next-line: no-string-literal
+    expect(
+      wrapper.find('.kogito-management-console--domain-explorer__table')
+    ).toBeTruthy();
   });
   it('check zero offset', async () => {
-    const props = {
-      columnFilters: [
-        {
-          flight: {
-            arrival: 'Hello World',
-            __typename: 'Flight',
-            departure: 'Hello World',
-            flightNumber: 'Hello World',
-            gate: 'Hello World',
-            seat: 'Hello World'
-          },
-          metadata: {
-            processInstances: [
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'ACTIVE'
-              },
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'COMPLETED'
-              }
-            ]
-          }
+    const offset = 0;
+    const columnFilters = [
+      {
+        flight: {
+          arrival: 'Hello World',
+          __typename: 'Flight',
+          departure: 'Hello World',
+          flightNumber: 'Hello World',
+          gate: 'Hello World',
+          seat: 'Hello World'
         },
-        {
-          flight: {
-            arrival: 'Hello World',
-            __typename: 'Flight',
-            departure: 'Hello World',
-            flightNumber: 'Hello World',
-            gate: 'Hello World',
-            seat: 'Hello World'
-          },
-          metadata: {
-            processInstances: [
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'PENDING'
-              },
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'SUSPENDED'
-              }
-            ]
-          }
-        }
-      ],
-      tableLoading: false,
-      displayTable: true,
-      displayEmptyState: false,
-      parameters: [],
-      selected: [],
-      isLoadingMore: true,
-      rows: [
-        {
-          cells: [
-            'Hello World',
-            'Hello World',
-            'Hello World',
-            'Hello World',
-            'Hello World'
-          ],
-          isOpen: false,
-          rowKey: '0.008857835601127073'
-        },
-        {
-          parent: 0,
-          rowKey: '0.6632979792309541',
-          cells: [
+        metadata: {
+          processInstances: [
             {
-              title: ''
+              businessKey: 'Hello World',
+              id: 'Hello World',
+              lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
+              processName: 'Hello World',
+              start: 'Tue, 12 May 2020 12:33:58 GMT',
+              state: 'ACTIVE'
+            },
+            {
+              businessKey: 'Hello World',
+              id: 'Hello World',
+              lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
+              processName: 'Hello World',
+              start: 'Tue, 12 May 2020 12:33:58 GMT',
+              state: 'COMPLETED'
             }
           ]
         }
-      ],
-      setRows: jest.fn(),
-      offset: 0,
-      handleRetry: jest.fn()
-    };
+      },
+      {
+        flight: {
+          arrival: 'Hello World',
+          __typename: 'Flight',
+          departure: 'Hello World',
+          flightNumber: 'Hello World',
+          gate: 'Hello World',
+          seat: 'Hello World'
+        },
+        metadata: {
+          processInstances: [
+            {
+              businessKey: 'Hello World',
+              id: 'Hello World',
+              lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
+              processName: 'Hello World',
+              start: 'Tue, 12 May 2020 12:33:58 GMT',
+              state: 'PENDING'
+            },
+            {
+              businessKey: 'Hello World',
+              id: 'Hello World',
+              lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
+              processName: 'Hello World',
+              start: 'Tue, 12 May 2020 12:33:58 GMT',
+              state: 'SUSPENDED'
+            }
+          ]
+        }
+      }
+    ];
     const wrapper = await getWrapperAsync(
       <MockedProvider>
-        <DomainExplorerTable {...props} />
+        <DomainExplorerTable {...{ ...props, columnFilters, offset }} />
       </MockedProvider>,
       'DomainExplorerTable'
     );
@@ -365,213 +309,140 @@ describe('Domain Explorer Table Component', () => {
     expect(wrapper.find('.kogito-common--domain-explorer__table')).toBeTruthy();
   });
   it('check false value of isLoadingMore', async () => {
-    const props = {
-      columnFilters: [
-        {
-          flight: {
-            arrival: 'Hello World',
-            __typename: 'Flight',
-            departure: 'Hello World',
-            flightNumber: 'Hello World',
-            gate: 'Hello World',
-            seat: 'Hello World'
-          },
-          metadata: {
-            processInstances: [
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'ERROR'
-              },
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'ABORTED'
-              }
-            ]
-          }
-        },
-        {
-          flight: {
-            arrival: 'Hello World',
-            __typename: 'Flight',
-            departure: 'Hello World',
-            flightNumber: 'Hello World',
-            gate: 'Hello World',
-            seat: 'Hello World'
-          },
-          metadata: {
-            processInstances: [
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'ERROR'
-              },
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'ERROR'
-              }
-            ]
-          }
-        }
-      ],
-      tableLoading: true,
-      displayTable: true,
-      displayEmptyState: true,
-      parameters: [],
-      selected: [],
-      isLoadingMore: false,
-      rows: [
-        {
-          cells: [
-            'Hello World',
-            'Hello World',
-            'Hello World',
-            'Hello World',
-            'Hello World'
-          ],
-          isOpen: false,
-          rowKey: '0.008857835601127073'
-        },
-        {
-          parent: 0,
-          rowKey: '0.6632979792309541',
-          cells: [
-            {
-              title: ''
-            }
-          ]
-        }
-      ],
-      setRows: jest.fn(),
-      offset: 0,
-      handleRetry: jest.fn()
-    };
+    const isLoadingMore = false;
+    const displayEmptyState = true;
+    const displayTable = false;
     const wrapper = await getWrapperAsync(
       <MockedProvider>
-        <DomainExplorerTable {...props} />
+        <DomainExplorerTable
+          {...{ ...props, displayTable, isLoadingMore, displayEmptyState }}
+        />
       </MockedProvider>,
       'DomainExplorerTable'
     );
     wrapper.update();
-    expect(wrapper.find('h5').text()).toEqual('No data available');
+    expect(
+      wrapper
+        .find('h5')
+        .first()
+        .text()
+    ).toEqual('No data available');
   });
   it('check null value for process instance attributes', async () => {
-    const props = {
-      columnFilters: [
-        {
-          flight: {
-            arrival: 'Hello World',
-            __typename: 'Flight',
-            departure: 'Hello World',
-            flightNumber: 'Hello World',
-            gate: 'Hello World',
-            seat: 'Hello World'
-          },
-          metadata: {
-            processInstances: [
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'ERROR'
-              },
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'ABORTED'
-              }
-            ]
-          }
+    const isLoadingMore = false;
+    const displayEmptyState = true;
+    const offset = 0;
+    const columnFilters = [
+      {
+        flight: {
+          arrival: 'Hello World',
+          __typename: 'Flight',
+          departure: 'Hello World',
+          flightNumber: 'Hello World',
+          gate: 'Hello World',
+          seat: 'Hello World'
         },
-        {
-          flight: {
-            arrival: null,
-            __typename: 'Flight',
-            departure: 'Hello World',
-            flightNumber: 'Hello World',
-            gate: 'Hello World',
-            seat: 'Hello World'
-          },
-          metadata: {
-            processInstances: [
-              {
-                businessKey: null,
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'ERROR'
-              },
-              {
-                businessKey: 'Hello World',
-                id: 'Hello World',
-                lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
-                processName: 'Hello World',
-                start: 'Tue, 12 May 2020 12:33:58 GMT',
-                state: 'ERROR'
-              }
-            ]
-          }
-        }
-      ],
-      tableLoading: true,
-      displayTable: true,
-      displayEmptyState: true,
-      parameters: [],
-      selected: [],
-      isLoadingMore: false,
-      rows: [
-        {
-          cells: [
-            'Hello World',
-            'Hello World',
-            'Hello World',
-            'Hello World',
-            'Hello World'
-          ],
-          isOpen: false,
-          rowKey: '0.008857835601127073'
-        },
-        {
-          parent: 0,
-          rowKey: '0.6632979792309541',
-          cells: [
+        metadata: {
+          processInstances: [
             {
-              title: ''
+              businessKey: 'Hello World',
+              id: 'Hello World',
+              lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
+              processName: 'Hello World',
+              start: 'Tue, 12 May 2020 12:33:58 GMT',
+              state: 'ERROR'
+            },
+            {
+              businessKey: 'Hello World',
+              id: 'Hello World',
+              lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
+              processName: 'Hello World',
+              start: 'Tue, 12 May 2020 12:33:58 GMT',
+              state: 'ABORTED'
             }
           ]
         }
-      ],
-      setRows: jest.fn(),
-      offset: 0,
-      handleRetry: jest.fn()
-    };
+      },
+      {
+        flight: {
+          arrival: null,
+          __typename: 'Flight',
+          departure: 'Hello World',
+          flightNumber: 'Hello World',
+          gate: 'Hello World',
+          seat: 'Hello World'
+        },
+        metadata: {
+          processInstances: [
+            {
+              businessKey: null,
+              id: 'Hello World',
+              lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
+              processName: 'Hello World',
+              start: 'Tue, 12 May 2020 12:33:58 GMT',
+              state: 'ERROR'
+            },
+            {
+              businessKey: 'Hello World',
+              id: 'Hello World',
+              lastUpdate: 'Tue, 12 May 2020 12:33:58 GMT',
+              processName: 'Hello World',
+              start: 'Tue, 12 May 2020 12:33:58 GMT',
+              state: 'ERROR'
+            }
+          ]
+        }
+      }
+    ];
+    const tableLoading = true;
     const wrapper = await getWrapperAsync(
       <MockedProvider>
-        <DomainExplorerTable {...props} />
+        <DomainExplorerTable
+          {...{
+            ...props,
+            columnFilters,
+            isLoadingMore,
+            tableLoading,
+            offset,
+            displayEmptyState
+          }}
+        />
       </MockedProvider>,
       'DomainExplorerTable'
     );
     wrapper.update();
     expect(wrapper).toMatchSnapshot();
+  });
+  it('check filter errors', async () => {
+    const isLoadingMore = false;
+    const displayTable = false;
+    const filterError = 'some error';
+    const wrapper = await getWrapperAsync(
+      <BrowserRouter>
+        <DomainExplorerTable
+          {...{ ...props, isLoadingMore, displayTable, filterError }}
+        />
+      </BrowserRouter>,
+      'DomainExplorerTable'
+    );
+    wrapper.update();
+    expect(wrapper.find('h1').text()).toEqual('Error fetching data');
+  });
+  it('check empty filter chip', async () => {
+    const filterChips = [];
+    const displayTable = false;
+    const wrapper = await getWrapperAsync(
+      <BrowserRouter>
+        <DomainExplorerTable {...{ ...props, displayTable, filterChips }} />
+      </BrowserRouter>,
+      'DomainExplorerTable'
+    );
+    wrapper.update();
+    const event = {} as any;
+    wrapper
+      .find('button')
+      .at(0)
+      .props()
+      ['onClick'](event);
   });
 });

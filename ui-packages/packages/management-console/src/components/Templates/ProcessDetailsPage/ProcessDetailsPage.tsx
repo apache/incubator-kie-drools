@@ -270,7 +270,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, {}, {}> &
           </PageSection>
         </>
       ) : (
-        <ServerErrors error={error} />
+        <ServerErrors error={error} variant="large" />
       )}
     </>
   );

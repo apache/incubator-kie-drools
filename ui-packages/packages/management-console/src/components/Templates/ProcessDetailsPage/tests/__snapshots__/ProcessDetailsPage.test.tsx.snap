@@ -93,6 +93,7 @@ exports[`Process Details Page component tests snapshot testing for error occuran
 }
 , variables: {"id":"8035b580-6ae4-4aa8-9ec0-e18e19809e0bc"}]
     }
+    variant="large"
   >
     <MockedComponent />
   </ServerErrors>

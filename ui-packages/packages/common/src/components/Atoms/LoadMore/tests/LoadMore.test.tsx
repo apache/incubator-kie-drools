@@ -9,7 +9,8 @@ describe('LoadMore component tests with isLoading false', () => {
     getMoreItems: jest.fn(),
     pageSize: 10,
     isLoadingMore: false,
-    ouiaId: 'load-more-ouia-id'
+    ouiaId: 'load-more-ouia-id',
+    setLoadMoreClicked: jest.fn()
   };
   it('snapshot testing', () => {
     const wrapper = shallow(<LoadMore {...props} />);

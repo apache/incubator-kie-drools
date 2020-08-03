@@ -2,6 +2,7 @@
 
 exports[`Domain Explorer Manage columns component Snapshot testing with default props 1`] = `
 <DomainExplorerManageColumns
+  argument="TravelsArgument"
   columnPickerType="Travels"
   data={
     Array [
@@ -79,6 +80,8 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
     ]
   }
   enableCache={false}
+  enableRefresh={false}
+  finalFilters={Object {}}
   getPicker={
     Object {
       "data": Object {},
@@ -163,20 +166,6 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
   }
   offsetVal={0}
   pageSize={10}
-  parameters={
-    Array [
-      Object {
-        "flight": Array [
-          "arrival",
-        ],
-      },
-      Object {
-        "flight": Array [
-          "departure",
-        ],
-      },
-    ]
-  }
   rememberedParams={
     Array [
       Object {
@@ -192,39 +181,19 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
     ]
   }
   selected={Array []}
-  setColumnFilters={[MockFunction]}
   setDisplayEmptyState={[MockFunction]}
   setDisplayTable={[MockFunction]}
   setEnableCache={[MockFunction]}
+  setEnableRefresh={[MockFunction]}
   setError={[MockFunction]}
   setIsLoadingMore={[MockFunction]}
   setIsModalOpen={[MockFunction]}
   setOffsetVal={[MockFunction]}
   setPageSize={[MockFunction]}
   setParameters={[MockFunction]}
+  setRunQuery={[MockFunction]}
   setSelected={[MockFunction]}
-  setTableLoading={
-    [MockFunction] {
-      "calls": Array [
-        Array [
-          true,
-        ],
-        Array [
-          true,
-        ],
-      ],
-      "results": Array [
-        Object {
-          "type": "return",
-          "value": undefined,
-        },
-        Object {
-          "type": "return",
-          "value": undefined,
-        },
-      ],
-    }
-  }
+  setTableLoading={[MockFunction]}
 >
   <Component
     id="manage-columns-button"
@@ -2772,7 +2741,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                                   className="kogito-common--manage-columns__data-list-content"
                                   id="kie-datalist-content-hotel/Test/city"
                                   isHidden={true}
-                                  key=".1:$0.7336705311965102"
+                                  key=".1:$hotel/Test/city0"
                                   rowid="kie-datalist-item-hotel/address / location"
                                 >
                                   <section
@@ -2854,7 +2823,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                                   className="kogito-common--manage-columns__data-list-content"
                                   id="kie-datalist-content-hotel/Test/country"
                                   isHidden={true}
-                                  key=".1:$0.7336705311965102"
+                                  key=".1:$hotel/Test/country1"
                                   rowid="kie-datalist-item-hotel/address / location"
                                 >
                                   <section
@@ -3088,7 +3057,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                                   className="kogito-common--manage-columns__data-list-content"
                                   id="kie-datalist-content-hotel/Address/city"
                                   isHidden={true}
-                                  key=".1:$0.7336705311965102"
+                                  key=".1:$hotel/Address/city0"
                                   rowid="kie-datalist-item-hotel/address"
                                 >
                                   <section
@@ -3170,7 +3139,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                                   className="kogito-common--manage-columns__data-list-content"
                                   id="kie-datalist-content-hotel/Address/country"
                                   isHidden={true}
-                                  key=".1:$0.7336705311965102"
+                                  key=".1:$hotel/Address/country1"
                                   rowid="kie-datalist-item-hotel/address"
                                 >
                                   <section
@@ -3591,7 +3560,6 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
   </Modal>
   <Component
     aria-label="Refresh list"
-    className="pf-u-m-md"
     id="refresh-button"
     onClick={[Function]}
     variant="plain"
@@ -3607,7 +3575,6 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
             size="sm"
             title={null}
           />,
-          "className": "pf-u-m-md",
           "id": "refresh-button",
           "onClick": [Function],
           "variant": "plain",
@@ -3617,7 +3584,6 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
     >
       <Button
         aria-label="Refresh list"
-        className="pf-u-m-md"
         id="refresh-button"
         onClick={[Function]}
         ouiaContext={
@@ -3631,7 +3597,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
         <button
           aria-disabled={null}
           aria-label="Refresh list"
-          className="pf-c-button pf-m-plain pf-u-m-md"
+          className="pf-c-button pf-m-plain"
           disabled={false}
           id="refresh-button"
           onClick={[Function]}

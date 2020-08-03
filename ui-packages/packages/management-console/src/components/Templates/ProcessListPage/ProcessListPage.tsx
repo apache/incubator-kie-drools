@@ -213,7 +213,10 @@ const ProcessListPage: React.FC<InjectedOuiaProps &
 
   if (error || getProcessInstancesWithBK.error) {
     return (
-      <ServerErrors error={error ? error : getProcessInstancesWithBK.error} />
+      <ServerErrors
+        error={error ? error : getProcessInstancesWithBK.error}
+        variant="large"
+      />
     );
   }
   return (
