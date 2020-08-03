@@ -57,7 +57,7 @@ public class JavadocTest extends BaseVariantTest {
 
     @Test
     public void testDateAndTime() throws Exception {
-        final DMNRuntime runtime = createRuntime("0007-date-time.dmn", DMNStronglyTypedSupportTest.class);
+        final DMNRuntime runtime = createRuntime("0007-date-time.dmn", DMNRuntimeTest.class.class);
         runtime.addListener(DMNRuntimeUtil.createListener());
 
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_69430b3e-17b8-430d-b760-c505bf6469f9", "dateTime Table 58");
