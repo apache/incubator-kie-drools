@@ -78,7 +78,7 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-canonical-model</artifactId>
+      <artifactId>drools-model-compiler</artifactId> <!-- org.drools.modelcompiler.builder.KieBaseBuilder -->
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
