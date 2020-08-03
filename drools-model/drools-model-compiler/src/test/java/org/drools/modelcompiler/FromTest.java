@@ -19,6 +19,7 @@ package org.drools.modelcompiler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -709,6 +710,7 @@ public class FromTest extends BaseModelTest {
                 "package com.sample;" +
                         "global java.util.Set controlSet;\n" +
                         "import " + Measurement.class.getCanonicalName() + ";\n" +
+                        "import " + Collections.class.getCanonicalName() + ";\n" +
                         "import " + Map.class.getCanonicalName() + ";\n" +
                         "" +
                         "function String dummyFunction(Map m) {\n" +
@@ -719,7 +721,7 @@ public class FromTest extends BaseModelTest {
                         "no-loop\n" +
                         "when\n" +
                         " Measurement( id == \"color\", $colorVal : val )\n" +
-                        " $val: String() from dummyFunction(Map.of($colorVal, \"something\"))\n" +
+                        " $val: String() from dummyFunction(Collections.singletonMap($colorVal, \"something\"))\n" +
                         "then\n" +
                         " controlSet.add($colorVal);\n" +
                         "end";
