@@ -33,13 +33,10 @@ public class $Type$Resource {
     @Produces(MediaType.APPLICATION_JSON)
     public $Type$Output signal(@PathParam("id") final String id, final $signalType$ data) {
         return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-            ProcessInstance<$Type$> pi = process.instances().findById(id).orElse(null);
-            if (pi == null) {
-                return null;
-            }
-            pi.send(Sig.of("$signalName$", data));
-            return getModel(pi);
+            return process.instances().findById(id).map(pi -> {
+                pi.send(Sig.of("$signalName$", data));
+                return getModel(pi);
+            }).orElse(null);
         });
     }
-
 }

@@ -63,6 +63,8 @@ public class UserTaskModelMetaData {
     private static final String TASK_INTPUT_CLASS_SUFFIX = "TaskInput";
     private static final String TASK_OUTTPUT_CLASS_SUFFIX = "TaskOutput";
     private static final String TASK_NAME = "TaskName";
+    private static final String WORK_ITEM = "workItem";
+    private static final String PARAMS = "params";
     
     protected static final List<String> INTERNAL_FIELDS = Arrays.asList(TASK_NAME, "NodeName", "ActorId", "GroupId", "Priority", "Comment", "Skippable", "Content", "Locale");
 
@@ -191,10 +193,19 @@ public class UserTaskModelMetaData {
         staticFromMap.addStatement(new AssignExpr(itemField, new ObjectCreationExpr(null, modelType, NodeList.nodeList()), AssignExpr.Operator.ASSIGN));
         NameExpr item = new NameExpr("item");
         FieldAccessExpr idField = new FieldAccessExpr(item, "_id");
-        staticFromMap.addStatement(new AssignExpr(idField, new NameExpr("id"), AssignExpr.Operator.ASSIGN));
+        staticFromMap.addStatement(new AssignExpr(idField, new MethodCallExpr(
+                                                                              new NameExpr(WORK_ITEM), "getId"), AssignExpr.Operator.ASSIGN));
 
         FieldAccessExpr nameField = new FieldAccessExpr(item, "_name");
-        staticFromMap.addStatement(new AssignExpr(nameField, new NameExpr("name"), AssignExpr.Operator.ASSIGN));
+        staticFromMap.addStatement(new AssignExpr(nameField, new MethodCallExpr(
+                                                                                new NameExpr(WORK_ITEM), "getName"), AssignExpr.Operator.ASSIGN));
+
+        ClassOrInterfaceType toMap = new ClassOrInterfaceType(null, new SimpleName(Map.class.getSimpleName()), NodeList.nodeList(new ClassOrInterfaceType(null, String.class.getSimpleName()), new ClassOrInterfaceType(
+                                                                                                                                                                                                                        null,
+                                                                                                                                                                                                                        Object.class.getSimpleName())));
+        VariableDeclarationExpr paramsField = new VariableDeclarationExpr(toMap, PARAMS);
+        staticFromMap.addStatement(new AssignExpr(paramsField, new MethodCallExpr(
+                                                                                  new NameExpr(WORK_ITEM), "getParameters"), AssignExpr.Operator.ASSIGN));
 
         for (Entry<String, String> entry : humanTaskNode.getInMappings().entrySet()) {
 
@@ -221,11 +232,12 @@ public class UserTaskModelMetaData {
             // fromMap static method body
             FieldAccessExpr field = new FieldAccessExpr(item, entry.getKey());
 
+
             ClassOrInterfaceType type = parseClassOrInterfaceType(variable.getType().getStringType());
             staticFromMap.addStatement(new AssignExpr(field, new CastExpr(
                                                                           type,
                                                                           new MethodCallExpr(
-                                                                                             new NameExpr("params"),
+                                                                                             new NameExpr(PARAMS),
                                                                                              "get")
                                                                                                    .addArgument(new StringLiteralExpr(entry.getKey()))), AssignExpr.Operator.ASSIGN));
         }
@@ -254,7 +266,7 @@ public class UserTaskModelMetaData {
             staticFromMap.addStatement(new AssignExpr(field, new CastExpr(
                                                                           type,
                                                                           new MethodCallExpr(
-                                                                                             new NameExpr("params"),
+                                                                                             new NameExpr(PARAMS),
                                                                                              "get")
                                                                                                    .addArgument(new StringLiteralExpr(entry.getKey()))), AssignExpr.Operator.ASSIGN));
         }
@@ -289,7 +301,7 @@ public class UserTaskModelMetaData {
         ClassOrInterfaceType toMap = new ClassOrInterfaceType(null, new SimpleName(Map.class.getSimpleName()), NodeList.nodeList(new ClassOrInterfaceType(null, String.class.getSimpleName()), new ClassOrInterfaceType(
                                                                                                                                                                                                                         null,
                                                                                                                                                                                                                         Object.class.getSimpleName())));
-        VariableDeclarationExpr paramsField = new VariableDeclarationExpr(toMap, "params");
+        VariableDeclarationExpr paramsField = new VariableDeclarationExpr(toMap, PARAMS);
         toMapBody.addStatement(new AssignExpr(paramsField, new ObjectCreationExpr(null, new ClassOrInterfaceType(null, HashMap.class.getSimpleName()), NodeList.nodeList()), AssignExpr.Operator.ASSIGN));
 
         for (Entry<String, String> entry : humanTaskNode.getOutMappings().entrySet()) {
@@ -325,7 +337,7 @@ public class UserTaskModelMetaData {
             fd.createSetter();
 
             // toMap method body
-            MethodCallExpr putVariable = new MethodCallExpr(new NameExpr("params"), "put");
+            MethodCallExpr putVariable = new MethodCallExpr(new NameExpr(PARAMS), "put");
             putVariable.addArgument(new StringLiteralExpr(entry.getKey()));
             putVariable.addArgument(new FieldAccessExpr(new ThisExpr(), entry.getKey()));
             toMapBody.addStatement(putVariable);
@@ -333,7 +345,7 @@ public class UserTaskModelMetaData {
 
         Optional<MethodDeclaration> toMapMethod = modelClass.findFirst(MethodDeclaration.class, sl -> sl.getName().asString().equals("toMap"));
 
-        toMapBody.addStatement(new ReturnStmt(new NameExpr("params")));
+        toMapBody.addStatement(new ReturnStmt(new NameExpr(PARAMS)));
         toMapMethod.ifPresent(methodDeclaration -> methodDeclaration.setBody(toMapBody));
         return compilationUnit;
     }

@@ -21,18 +21,16 @@ public class $Type$Resource {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public org.springframework.http.ResponseEntity<$Type$Output> signal(@PathVariable("id") final String id) {
         return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-            ProcessInstance<$Type$> pi = process.instances().findById(id).orElse(null);
-            if (pi == null) {
-                return null;
-            }
-            pi.send(Sig.of("$taskNodeName$", java.util.Collections.emptyMap()));
-            java.util.Optional<WorkItem> task = pi.workItems().stream().filter(wi -> wi.getName().equals("$taskName$")).findFirst();
-            if(task.isPresent()) {
-                return org.springframework.http.ResponseEntity.ok()
-                        .header("Link", "</" + id + "/$taskName$/" + task.get().getId() + ">; rel='instance'")
-                        .body(getModel(pi));
-            }
-            return org.springframework.http.ResponseEntity.notFound().build();
+            return process.instances().findById(id).map(pi -> {
+                pi.send(Sig.of("$taskNodeName$", java.util.Collections.emptyMap()));
+                java.util.Optional<WorkItem> task = pi.workItems().stream().filter(wi -> wi.getName().equals("$taskName$")).findFirst();
+                if (task.isPresent()) {
+                    return javax.ws.rs.core.Response.ok(getModel(pi))
+                                                    .header("Link", "</" + id + "/$taskName$/" + task.get().getId() + ">; rel='instance'")
+                                                    .build();
+                }
+                return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.NOT_FOUND).build();
+            }).orElse(null);
         });
     }
 
@@ -44,45 +42,17 @@ public class $Type$Resource {
                                      @RequestParam(value = "user", required = false) final String user,
                                      @RequestParam(value = "group", required = false) final List<String> groups,
                                      @RequestBody final $TaskOutput$ model) {
-        try {
-            return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-                ProcessInstance<$Type$> pi = process.instances().findById(id).orElse(null);
-                if (pi == null) {
-                    return null;
-                } else {
-                    org.kie.kogito.auth.IdentityProvider identity = null;
-                    if (user != null) {
-                        identity = new org.kie.kogito.services.identity.StaticIdentityProvider(user, groups);
-                    }
-                    org.jbpm.process.instance.impl.humantask.HumanTaskTransition transition = new org.jbpm.process.instance.impl.humantask.HumanTaskTransition(phase, model.toMap(), identity);
-                    pi.transitionWorkItem(workItemId, transition);
-                    return getModel(pi);
-                }
-            });
-        } catch (WorkItemNotFoundException e) {
-            return null;
-        }
+        return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> process.instances().findById(id).map(pi -> {
+            pi.transitionWorkItem(workItemId, org.jbpm.process.instance.impl.humantask.HumanTaskTransition.withModel(phase, model.toMap(), policies(user, groups)));
+            return getModel(pi);
+        }).orElse(null));
     }
 
     @GetMapping(value = "/{id}/$taskName$/{workItemId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public $TaskInput$ getTask(@PathVariable("id") String id, @PathVariable("workItemId") String workItemId,
                                @RequestParam(value = "user", required = false) final String user,
                                @RequestParam(value = "group", required = false) final List<String> groups) {
-        try {
-            ProcessInstance<$Type$> pi = process.instances().findById(id).orElse(null);
-            if (pi == null) {
-                return null;
-            } else {
-
-                WorkItem workItem = pi.workItem(workItemId, policies(user, groups));
-                if (workItem == null) {
-                    return null;
-                }
-                return $TaskInput$.fromMap(workItem.getId(), workItem.getName(), workItem.getParameters());
-            }
-        } catch (WorkItemNotFoundException e) {
-            return null;
-        }
+        return process.instances().findById(id).map(pi ->  $TaskInput$.fromMap(pi.workItem(workItemId, policies(user, groups)))).orElse(null);
     }
 
     @GetMapping(value = "$taskName$/schema", produces = MediaType.APPLICATION_JSON)
@@ -101,25 +71,9 @@ public class $Type$Resource {
                                   @RequestParam(value = "phase", defaultValue = "abort") final String phase,
                                   @RequestParam(value = "user", required = false) final String user,
                                   @RequestParam(value = "group", required = false) final List<String> groups) {
-
-        try {
-            return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-                ProcessInstance<$Type$> pi = process.instances().findById(id).orElse(null);
-                if (pi == null) {
-                    return null;
-                } else {
-                    org.kie.kogito.auth.IdentityProvider identity = null;
-                    if (user != null) {
-                        identity = new org.kie.kogito.services.identity.StaticIdentityProvider(user, groups);
-                    }
-                    org.jbpm.process.instance.impl.humantask.HumanTaskTransition transition = new org.jbpm.process.instance.impl.humantask.HumanTaskTransition(phase, null, identity);
-                    pi.transitionWorkItem(workItemId, transition);
-
-                    return getModel(pi);
-                }
-            });
-        } catch (WorkItemNotFoundException e) {
-            return null;
-        }
+        return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> process.instances().findById(id).map(pi -> {
+            pi.transitionWorkItem(workItemId, org.jbpm.process.instance.impl.humantask.HumanTaskTransition.withoutModel(phase, policies(user, groups)));
+            return getModel(pi);
+        }).orElse(null));
     }
 }

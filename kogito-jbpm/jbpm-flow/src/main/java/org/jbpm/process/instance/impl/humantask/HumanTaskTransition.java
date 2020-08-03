@@ -16,6 +16,7 @@
 package org.jbpm.process.instance.impl.humantask;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -35,24 +36,23 @@ public class HumanTaskTransition implements Transition<Map<String, Object>> {
     private Map<String, Object> data;
     private List<Policy<?>> policies = new ArrayList<>();
     
-    public HumanTaskTransition(String phase) {
-        this(phase, null);
+    public static HumanTaskTransition withModel(String phase, Map<String, Object> data, Policy<?>... policies) {
+        return new HumanTaskTransition(phase, data, policies);
     }
-    
-    public HumanTaskTransition(String phase, Map<String, Object> data) {
-        this.phase = phase;
-        this.data = data;
+
+    public static HumanTaskTransition withoutModel(String phase, Policy<?>... policies) {
+        return new HumanTaskTransition(phase, Collections.emptyMap(), policies);
+    }
+
+    public HumanTaskTransition(String phase) {
+        this(phase, Collections.emptyMap());
     }
     
     public HumanTaskTransition(String phase, Map<String, Object> data, IdentityProvider identity) {
-        this.phase = phase;
-        this.data = data;
-        if (identity != null) {
-            this.policies.add(SecurityPolicy.of(identity));
-        }
+        this(phase, data, SecurityPolicy.of(identity));
     }
     
-    public HumanTaskTransition(String phase, Map<String, Object> data, Policy<?>...policies) {
+    public HumanTaskTransition(String phase, Map<String, Object> data, Policy<?>... policies) {
         this.phase = phase;
         this.data = data;
         for (Policy<?> policy : policies) {
@@ -74,5 +74,4 @@ public class HumanTaskTransition implements Transition<Map<String, Object>> {
     public List<Policy<?>> policies() {
         return policies;
     }
-
 }

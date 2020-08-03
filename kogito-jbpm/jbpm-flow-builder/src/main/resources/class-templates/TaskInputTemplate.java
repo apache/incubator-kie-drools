@@ -2,6 +2,7 @@ package org.jbpm.process.codegen;
 
 import java.util.Map;
 
+
 public class XXXTaskInput {
 
     private String _id;
@@ -23,7 +24,7 @@ public class XXXTaskInput {
         return this._name;
     }
 
-    public static XXXTaskInput fromMap(String id, String name,  Map<String, Object> params) {
+    public static XXXTaskInput fromMap(org.kie.kogito.process.WorkItem workItem) {
         
     }
 }

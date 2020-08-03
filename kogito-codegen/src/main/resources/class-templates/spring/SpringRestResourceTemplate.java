@@ -63,12 +63,11 @@ public class $Type$Resource {
 
         return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
             ProcessInstance<$Type$> pi = process.createInstance(businessKey, mapInput(value, new $Type$()));
-            String startFromNode = httpHeaders.getFirst("X-KOGITO-StartFromNode");
+            String startFromNode = httpHeaders.getHeaderString("X-KOGITO-StartFromNode");
 
             if (startFromNode != null) {
                 pi.startFrom(startFromNode);
             } else {
-
                 pi.start();
             }
             return getModel(pi);
@@ -92,33 +91,19 @@ public class $Type$Resource {
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public $Type$Output deleteResource_$name$(@PathVariable("id") final String id) {
-        return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-            ProcessInstance<$Type$> pi = process.instances()
-                    .findById(id)
-                    .orElse(null);
-            if (pi == null) {
-                return null;
-            } else {
-                pi.abort();
-                return getModel(pi);
-            }
-        });
+        return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> process.instances().findById(id).map(pi -> {
+            pi.abort();
+            return getModel(pi);
+        }).orElse(null));
     }
 
     @PostMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public $Type$Output updateModel_$name$(@PathVariable("id") String id, @RequestBody $Type$ resource) {
-        return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-            ProcessInstance<$Type$> pi = process.instances()
-                    .findById(id)
-                    .orElse(null);
-            if (pi == null) {
-                return null;
-            } else {
-                pi.updateVariables(resource);
-                return mapOutput(new $Type$Output(), pi.variables());
-            }
-        });
+        return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> process.instances().findById(id).map(pi -> {
+            pi.updateVariables(resource);
+            return mapOutput(new $Type$Output(), pi.variables());
+        }).orElse(null));
     }
 
     @GetMapping(value = "/{id}/tasks", produces = MediaType.APPLICATION_JSON_VALUE)
