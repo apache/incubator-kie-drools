@@ -27,7 +27,6 @@ import org.drools.core.io.impl.ClassPathResource;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.ClientIntelligence;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
-import org.infinispan.client.hotrod.impl.ConfigurationProperties;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
@@ -36,6 +35,7 @@ import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
 import org.kie.kogito.services.identity.StaticIdentityProvider;
+import org.kie.kogito.testcontainers.InfinispanContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -43,7 +43,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 public class CacheProcessInstancesIT {
 
     @Container
-    public InfinispanServerContainer container = new InfinispanServerContainer();
+    public InfinispanContainer container = new InfinispanContainer(); 
 
     @Test
     public void testBasicFlow() {
@@ -51,7 +51,7 @@ public class CacheProcessInstancesIT {
         builder
             .addServer()
                 .host("127.0.0.1")
-                .port(ConfigurationProperties.DEFAULT_HOTROD_PORT)
+                .port(container.getMappedPort())
             .security()
                 .authentication()
                 .username("admin")

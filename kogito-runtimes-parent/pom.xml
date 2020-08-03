@@ -153,6 +153,8 @@
 
     <!-- container images for testing -->
     <container.image.infinispan>quay.io/infinispan/server:${version.org.infinispan.image}</container.image.infinispan>
+    <container.image.keycloak.version>8.0.1</container.image.keycloak.version>
+    <container.image.keycloak>quay.io/keycloak/keycloak:${container.image.keycloak.version}</container.image.keycloak>
   </properties>
 
   <!-- distributionManagement section -->
@@ -230,6 +232,7 @@
   </developers>
 
   <modules>
+    <module>kogito-test-utils</module>
     <module>bom</module>
     <module>api</module>
     <module>drools</module>
@@ -266,6 +269,12 @@
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-jpmml</artifactId>
         <version>${version.org.kie7}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-test-utils</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
