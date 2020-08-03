@@ -87,7 +87,12 @@
     <!--  only needed for mocking -->
     <dependency>
       <groupId>org.infinispan</groupId>
-      <artifactId>infinispan-query</artifactId>
+      <artifactId>infinispan-remote-query-client</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-query-dsl</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
