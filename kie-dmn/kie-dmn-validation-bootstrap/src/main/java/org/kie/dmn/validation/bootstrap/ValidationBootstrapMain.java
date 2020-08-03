@@ -55,6 +55,15 @@ public class ValidationBootstrapMain {
     public static void main(String[] args) throws IOException {
         LOG.info("Invoked with: {}", Arrays.asList(args));
         File kieDmnValidationBaseDir = new File(args[0]);
+        // Pre flight checks for SonarCloud / static analysis security concern: here we check the kie-dmn-validation base dir at least contains the expected pom.xml
+        if (!kieDmnValidationBaseDir.isDirectory() ||
+            Files.lines(Paths.get(kieDmnValidationBaseDir.getAbsolutePath(),
+                                  "pom.xml"))
+                 .noneMatch(l -> l.contains("<artifactId>kie-dmn-validation</artifactId>"))) {
+            LOG.error("The supplied base directory is not valid: {}", kieDmnValidationBaseDir);
+            LOG.error("ValidationBootstrapMain terminates without generating files");
+            return;
+        }
         KieServices ks = KieServices.Factory.get();
         final KieBuilderImpl kieBuilder = (KieBuilderImpl) ks.newKieBuilder(kieDmnValidationBaseDir);
 
@@ -64,7 +73,7 @@ public class ValidationBootstrapMain {
                                  !s.contains("dtanalysis"));
 
         Results results = kieBuilder.getResults();
-        results.getMessages().forEach(System.out::println);
+        results.getMessages().forEach(m -> LOG.info("{}", m.toString()));
 
         InternalKieModule kieModule = (InternalKieModule) kieBuilder.getKieModule();
         List<String> generatedFiles = kieModule.getFileNames()
