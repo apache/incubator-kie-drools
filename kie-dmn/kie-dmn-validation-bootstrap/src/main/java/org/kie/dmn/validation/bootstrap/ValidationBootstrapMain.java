@@ -37,15 +37,15 @@ public class ValidationBootstrapMain {
     private static final Logger LOG = LoggerFactory.getLogger(ValidationBootstrapMain.class);
 
     public static void main(String[] args) throws IOException {
-        System.out.println("Invoked with:" + Arrays.asList(args));
+        LOG.info("Invoked with: {}", Arrays.asList(args));
         File kieDmnValidationBaseDir = new File(args[0]);
         KieServices ks = KieServices.Factory.get();
         final KieBuilderImpl kieBuilder = (KieBuilderImpl) ks.newKieBuilder(kieDmnValidationBaseDir);
 
-        kieBuilder.buildAll(ASD::new,
+        kieBuilder.buildAll(ValidationBootstrapProject::new,
                             s -> !s.contains("src/test/java") && !s.contains("src\\test\\java") &&
-                                 // temporary, decide how to break this circularity which is only caused by the KieBuilder trying to compile everything by itself.     
-                                 !s.contains("DMNValidator") && !s.contains("dtanalysis"));
+                                 !s.contains("DMNValidator") && // <- to break circularity which is only caused by the KieBuilder trying to early compile everything by itself  
+                                 !s.contains("dtanalysis"));
 
         Results results = kieBuilder.getResults();
         results.getMessages().forEach(System.out::println);
@@ -56,8 +56,8 @@ public class ValidationBootstrapMain {
                                                .filter(f -> f.endsWith("java"))
                                                .collect(Collectors.toList());
 
-        generatedFiles.forEach(System.out::println);
-        System.out.println("Invoked with:" + Arrays.asList(args));
+        LOG.info("Executable model will result in {} code generated files...", generatedFiles.size());
+        generatedFiles.forEach(LOG::debug);
 
         MemoryFileSystem mfs = ((MemoryKieModule) ((CanonicalKieModule) kieModule).getInternalKieModule()).getMemoryFileSystem();
         for (String generatedFile : generatedFiles) {
@@ -72,7 +72,6 @@ public class ValidationBootstrapMain {
                 Files.deleteIfExists(newFile);
                 Files.createDirectories(newFile.getParent());
                 Files.copy(f.getContents(), newFile, StandardCopyOption.REPLACE_EXISTING);
-
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new RuntimeException("Unable to write file", e);
@@ -88,7 +87,7 @@ public class ValidationBootstrapMain {
                                            .findFirst()
                                            .orElseThrow(RuntimeException::new);
         List<String> lines = new BufferedReader(new StringReader(new String(droolsModelFileContent))).lines().collect(Collectors.toList());
-        lines.forEach(System.out::println);
+        lines.forEach(LOG::debug);
         String vbMain = new String(IoUtils.readBytesFromInputStream(ValidationBootstrapMain.class.getResourceAsStream("ValidationBootstrapModels.java")));
         String v1x = lines.stream().filter(x -> x.startsWith("org.kie.dmn.validation.DMNv1x.Rules")).findFirst().orElseThrow(RuntimeException::new);
         String v11 = lines.stream().filter(x -> x.startsWith("org.kie.dmn.validation.DMNv1_1.Rules")).findFirst().orElseThrow(RuntimeException::new);
@@ -96,32 +95,34 @@ public class ValidationBootstrapMain {
         vbMain = vbMain.replaceAll("\\$V1X_MODEL\\$", v1x);
         vbMain = vbMain.replaceAll("\\$V11_MODEL\\$", v11);
         vbMain = vbMain.replaceAll("\\$V12_MODEL\\$", v12);
-        final Path newFile = Paths.get(kieDmnValidationBaseDir.getAbsolutePath(),
+        final Path validationEntryPointFile = Paths.get(kieDmnValidationBaseDir.getAbsolutePath(),
                                        "target",
                                        "generated-sources",
                                        "bootstrap",
                                        "org", "kie", "dmn", "validation", "bootstrap", "ValidationBootstrapModels.java");
 
+        LOG.info("Writing code generated ValidationBootstrapModels into: {}", validationEntryPointFile);
         try {
-            Files.deleteIfExists(newFile);
-            Files.createDirectories(newFile.getParent());
-            Files.copy(new ByteArrayInputStream(vbMain.getBytes()), newFile, StandardCopyOption.REPLACE_EXISTING);
+            Files.deleteIfExists(validationEntryPointFile);
+            Files.createDirectories(validationEntryPointFile.getParent());
+            Files.copy(new ByteArrayInputStream(vbMain.getBytes()), validationEntryPointFile, StandardCopyOption.REPLACE_EXISTING);
 
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Unable to write file", e);
         }
+
+        LOG.info("ValidationBootstrapMain finished.");
     }
     
-    public static class ASD extends CanonicalModelKieProject {
+    public static class ValidationBootstrapProject extends CanonicalModelKieProject {
 
-        public ASD(InternalKieModule kieModule, ClassLoader classLoader) {
+        public ValidationBootstrapProject(InternalKieModule kieModule, ClassLoader classLoader) {
             super(true, kieModule, classLoader);
         }
 
         @Override
         public void writeProjectOutput(MemoryFileSystem trgMfs, ResultsImpl messages) {
-            System.out.println("MM wrireProjOutput");
             MemoryFileSystem srcMfs = new MemoryFileSystem();
             List<String> modelFiles = new ArrayList<>();
             ModelWriter modelWriter = new ModelWriter();

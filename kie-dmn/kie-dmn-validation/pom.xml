@@ -32,6 +32,7 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-validation-bootstrap</artifactId>
+        <optional>true</optional>
         <version>${project.version}</version>
       </dependency>
     </dependencies>
@@ -159,7 +160,7 @@
           <arguments>
             <argument>${project.basedir}</argument>
           </arguments>
-        <!-- the following is used to provide a SLF4j binding to the ValidationBootstrapMain and related CP. Set this logback.xml root to DEBUG for debugging -->
+          <!-- the following is used to provide a SLF4j binding to the ValidationBootstrapMain and related CP. Set src/test/resources/logback.xml root to DEBUG for debugging -->
           <includePluginDependencies>true</includePluginDependencies>
            <additionalClasspathElements>
             <additionalClasspathElement>${project.basedir}/src/test/resources/</additionalClasspathElement>

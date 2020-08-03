@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -44,7 +43,6 @@ import javax.xml.validation.Validator;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.command.BatchExecutionCommand;
-import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
@@ -69,7 +67,6 @@ import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DecisionService;
 import org.kie.dmn.model.api.Definitions;
-import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
 import org.kie.dmn.validation.dtanalysis.DMNDTAnalyser;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.internal.command.CommandFactory;
@@ -121,12 +118,6 @@ public class DMNValidatorImpl implements DMNValidator {
             throw new RuntimeException("Unable to initialize correctly DMNValidator.", e);
         }
     }
-    
-    /**
-     * A KieContainer is normally available,
-     * unless at runtime some problem prevented building it correctly.
-     */
-    private Optional<KieContainer> kieContainer = Optional.empty();
 
     /**
      * Collect at init time the runtime issues which prevented to build the `kieContainer` correctly.
@@ -148,13 +139,14 @@ public class DMNValidatorImpl implements DMNValidator {
         ChainedProperties localChainedProperties = new ChainedProperties();
         this.dmnProfiles.addAll(DMNAssemblerService.getDefaultDMNProfiles(localChainedProperties));
         this.dmnProfiles.addAll(dmnProfiles);
-        final ClassLoader classLoader = this.kieContainer.isPresent() ? this.kieContainer.get().getClassLoader() : ClassLoaderUtil.findDefaultClassLoader();
+        final ClassLoader classLoader = ClassLoaderUtil.findDefaultClassLoader();
         this.dmnCompilerConfig = DMNAssemblerService.compilerConfigWithKModulePrefs(classLoader, localChainedProperties, this.dmnProfiles, (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration());
         dmnDTValidator = new DMNDTAnalyser(this.dmnProfiles);
     }
     
+    @Override
     public void dispose() {
-        kieContainer.ifPresent( KieContainer::dispose );
+        // since exec model, no more kieContainer to dispose
     }
 
     public static class ValidatorBuilderImpl implements ValidatorBuilder {
@@ -515,18 +507,7 @@ public class DMNValidatorImpl implements DMNValidator {
     }
 
     private List<DMNMessage> validateModel(Definitions dmnModel, List<Definitions> otherModel_Definitions) {
-        //        if (!kieContainer.isPresent()) {
-        //            return failedInitMsg;
-        //        }
-        
-        String kieSessionName = "ksession_DMNv1_2";
-        StatelessKieSession kieSession = kb12.newStatelessKieSession();
-        if (dmnModel instanceof KieDMNModelInstrumentedBase) {
-            kieSessionName = "ksession_DMNv1_1";
-            kieSession = kb11.newStatelessKieSession();
-        }
-
-        //        StatelessKieSession kieSession = kieContainer.get().newStatelessKieSession(kieSessionName);
+        StatelessKieSession kieSession = dmnModel instanceof org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase ? kb11.newStatelessKieSession() : kb12.newStatelessKieSession();
         MessageReporter reporter = new MessageReporter();
         kieSession.setGlobal( "reporter", reporter );
 
