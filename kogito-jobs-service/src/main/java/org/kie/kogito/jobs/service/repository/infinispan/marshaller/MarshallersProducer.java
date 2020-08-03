@@ -25,7 +25,17 @@ import org.infinispan.protostream.MessageMarshaller;
 public class MarshallersProducer {
 
     @Produces
-    public MessageMarshaller scheduledJobMarshaller() {
-        return new ScheduledJobMarshaller();
+    public MessageMarshaller jobDetailsMarshaller() {
+        return new JobDetailsMarshaller();
+    }
+
+    @Produces
+    public MessageMarshaller recipientMarshaller() {
+        return new RecipientMarshaller();
+    }
+
+    @Produces
+    public MessageMarshaller triggerMarshaller() {
+        return new TriggerMarshaller();
     }
 }

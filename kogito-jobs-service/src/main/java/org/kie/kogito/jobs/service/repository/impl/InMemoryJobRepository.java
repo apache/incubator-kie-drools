@@ -33,16 +33,17 @@ import io.vertx.core.Vertx;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.kie.kogito.jobs.service.model.JobStatus;
-import org.kie.kogito.jobs.service.model.ScheduledJob;
 import org.kie.kogito.jobs.service.qualifier.Repository;
+import org.kie.kogito.jobs.service.model.job.JobDetails;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.stream.JobStreams;
+import org.kie.kogito.jobs.service.utils.DateUtil;
 
 @ApplicationScoped
 @Repository("in-memory")
 public class InMemoryJobRepository extends BaseReactiveJobRepository implements ReactiveJobRepository {
 
-    private final Map<String, ScheduledJob> jobMap = new ConcurrentHashMap<>();
+    private final Map<String, JobDetails> jobMap = new ConcurrentHashMap<>();
 
     public InMemoryJobRepository() {
         super(null, null);
@@ -54,7 +55,7 @@ public class InMemoryJobRepository extends BaseReactiveJobRepository implements 
     }
 
     @Override
-    public CompletionStage<ScheduledJob> doSave(ScheduledJob job) {
+    public CompletionStage<JobDetails> doSave(JobDetails job) {
         return runAsync(() -> {
             jobMap.put(job.getId(), job);
             return job;
@@ -62,7 +63,7 @@ public class InMemoryJobRepository extends BaseReactiveJobRepository implements 
     }
 
     @Override
-    public CompletionStage<ScheduledJob> get(String key) {
+    public CompletionStage<JobDetails> get(String key) {
         return runAsync(() -> jobMap.get(key));
     }
 
@@ -72,25 +73,25 @@ public class InMemoryJobRepository extends BaseReactiveJobRepository implements 
     }
 
     @Override
-    public CompletionStage<ScheduledJob> delete(String key) {
+    public CompletionStage<JobDetails> delete(String key) {
         return runAsync(() -> jobMap.remove(key));
     }
 
     @Override
-    public PublisherBuilder<ScheduledJob> findAll() {
+    public PublisherBuilder<JobDetails> findAll() {
         return ReactiveStreams.fromIterable(jobMap.values());
     }
 
     @Override
-    public PublisherBuilder<ScheduledJob> findByStatusBetweenDatesOrderByPriority(ZonedDateTime from, ZonedDateTime to, JobStatus... status) {
+    public PublisherBuilder<JobDetails> findByStatusBetweenDatesOrderByPriority(ZonedDateTime from, ZonedDateTime to, JobStatus... status) {
         return ReactiveStreams.fromIterable(
                 jobMap.values()
                         .stream()
                         .filter(j -> Optional.ofNullable(j.getStatus())
                                 .filter(s -> Objects.nonNull(status))
                                 .map(s -> Stream.of(status).anyMatch(s::equals)).orElse(true))
-                        .filter(j -> j.getExpirationTime().isAfter(from) && j.getExpirationTime().isBefore(to))
-                        .sorted(Comparator.comparing(ScheduledJob::getPriority).reversed())
+                        .filter(j -> DateUtil.fromDate(j.getTrigger().hasNextFireTime()).isAfter(from) && DateUtil.fromDate(j.getTrigger().hasNextFireTime()).isBefore(to))
+                        .sorted(Comparator.comparing(JobDetails::getPriority).reversed())
                         .collect(Collectors.toList()));
     }
 }

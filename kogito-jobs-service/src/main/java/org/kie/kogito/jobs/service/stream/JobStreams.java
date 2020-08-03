@@ -20,14 +20,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import io.smallrye.reactive.messaging.annotations.Broadcast;
-import io.smallrye.reactive.messaging.annotations.Channel;
-import io.smallrye.reactive.messaging.annotations.Emitter;
-import io.smallrye.reactive.messaging.annotations.OnOverflow;
 import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.eclipse.microprofile.reactive.messaging.OnOverflow;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
-import org.kie.kogito.jobs.service.model.ScheduledJob;
+import org.kie.kogito.jobs.service.model.job.JobDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +53,6 @@ public class JobStreams {
      */
     @Inject
     @Channel(AvailableStreams.JOB_SUCCESS)
-    @OnOverflow(value = OnOverflow.Strategy.BUFFER, bufferSize = 10000)
     Emitter<JobExecutionResponse> jobSuccessEmitter;
 
     /**
@@ -61,8 +60,7 @@ public class JobStreams {
      */
     @Inject
     @Channel(AvailableStreams.JOB_STATUS_CHANGE)
-    @OnOverflow(value = OnOverflow.Strategy.BUFFER, bufferSize = 10000)
-    Emitter<ScheduledJob> jobStatusChangeEmitter;
+    Emitter<JobDetails> jobStatusChangeEmitter;
 
     public JobExecutionResponse publishJobError(JobExecutionResponse response) {
         jobErrorEmitter.send(response);
@@ -74,7 +72,7 @@ public class JobStreams {
         return response;
     }
 
-    public ScheduledJob publishJobStatusChange(ScheduledJob scheduledJob) {
+    public JobDetails publishJobStatusChange(JobDetails scheduledJob) {
         jobStatusChangeEmitter.send(scheduledJob);
         return scheduledJob;
     }
@@ -102,7 +100,7 @@ public class JobStreams {
     @Outgoing(AvailableStreams.JOB_STATUS_CHANGE_EVENTS)
     @Broadcast
     @Acknowledgment(Acknowledgment.Strategy.PRE_PROCESSING)
-    public ScheduledJob jobStatusChangeBroadcast(ScheduledJob job) {
+    public JobDetails jobStatusChangeBroadcast(JobDetails job) {
         LOGGER.debug("Status change broadcast for Job {}", job);
         return job;
     }

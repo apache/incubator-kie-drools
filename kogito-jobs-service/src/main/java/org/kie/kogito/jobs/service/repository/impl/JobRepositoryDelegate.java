@@ -29,8 +29,8 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.kie.kogito.jobs.service.model.JobStatus;
-import org.kie.kogito.jobs.service.model.ScheduledJob;
 import org.kie.kogito.jobs.service.qualifier.Repository;
+import org.kie.kogito.jobs.service.model.job.JobDetails;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.repository.infinispan.InfinispanConfiguration;
 import org.slf4j.Logger;
@@ -56,12 +56,12 @@ public class JobRepositoryDelegate implements ReactiveJobRepository {
     }
 
     @Override
-    public CompletionStage<ScheduledJob> save(ScheduledJob job) {
+    public CompletionStage<JobDetails> save(JobDetails job) {
         return delegate.save(job);
     }
 
     @Override
-    public CompletionStage<ScheduledJob> get(String id) {
+    public CompletionStage<JobDetails> get(String id) {
         return delegate.get(id);
     }
 
@@ -71,32 +71,32 @@ public class JobRepositoryDelegate implements ReactiveJobRepository {
     }
 
     @Override
-    public CompletionStage<ScheduledJob> delete(String id) {
+    public CompletionStage<JobDetails> delete(String id) {
         return delegate.delete(id);
     }
 
     @Override
-    public CompletionStage<ScheduledJob> delete(ScheduledJob job) {
+    public CompletionStage<JobDetails> delete(JobDetails job) {
         return delegate.delete(job);
     }
 
     @Override
-    public PublisherBuilder<ScheduledJob> findByStatus(JobStatus... status) {
+    public PublisherBuilder<JobDetails> findByStatus(JobStatus... status) {
         return delegate.findByStatus(status);
     }
 
     @Override
-    public PublisherBuilder<ScheduledJob> findAll() {
+    public PublisherBuilder<JobDetails> findAll() {
         return delegate.findAll();
     }
 
     @Override
-    public PublisherBuilder<ScheduledJob> findByStatusBetweenDatesOrderByPriority(ZonedDateTime from, ZonedDateTime to, JobStatus... status) {
+    public PublisherBuilder<JobDetails> findByStatusBetweenDatesOrderByPriority(ZonedDateTime from, ZonedDateTime to, JobStatus... status) {
         return delegate.findByStatusBetweenDatesOrderByPriority(from, to, status);
     }
 
     @Override
-    public CompletionStage<ScheduledJob> merge(String id, ScheduledJob job) {
+    public CompletionStage<JobDetails> merge(String id, JobDetails job) {
         return delegate.merge(id, job);
     }
 }

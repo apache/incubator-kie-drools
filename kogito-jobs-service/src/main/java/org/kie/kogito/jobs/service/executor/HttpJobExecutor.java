@@ -17,7 +17,6 @@
 package org.kie.kogito.jobs.service.executor;
 
 import java.net.URI;
-import java.net.URL;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -25,19 +24,22 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import io.vertx.axle.core.Vertx;
-import io.vertx.axle.core.buffer.Buffer;
-import io.vertx.axle.ext.web.client.HttpRequest;
-import io.vertx.axle.ext.web.client.HttpResponse;
-import io.vertx.axle.ext.web.client.WebClient;
+import io.smallrye.mutiny.Uni;
+import io.vertx.mutiny.core.Vertx;
+import io.vertx.mutiny.core.buffer.Buffer;
+import io.vertx.mutiny.ext.web.client.HttpRequest;
+import io.vertx.mutiny.ext.web.client.HttpResponse;
+import io.vertx.mutiny.ext.web.client.WebClient;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.kie.kogito.jobs.api.URIBuilder;
 import org.kie.kogito.jobs.service.converters.HttpConverters;
 import org.kie.kogito.jobs.service.model.HTTPRequestCallback;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
-import org.kie.kogito.jobs.service.model.ScheduledJob;
+import org.kie.kogito.jobs.service.model.job.JobDetails;
+import org.kie.kogito.jobs.service.model.job.Recipient.HTTPRecipient;
 import org.kie.kogito.jobs.service.stream.JobStreams;
+import org.kie.kogito.timer.impl.IntervalTrigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +64,7 @@ public class HttpJobExecutor implements JobExecutor {
         this.client = WebClient.create(vertx);
     }
 
-    private CompletionStage<HttpResponse<Buffer>> executeCallback(HTTPRequestCallback request) {
+    private Uni<HttpResponse<Buffer>> executeCallback(HTTPRequestCallback request) {
         LOGGER.debug("Executing callback {}", request);
         final URI uri = URIBuilder.toURI(request.getUrl());
         final HttpRequest<Buffer> clientRequest = client.request(httpConverters.convertHttpMethod(request.getMethod()),
@@ -105,22 +107,30 @@ public class HttpJobExecutor implements JobExecutor {
     }
 
     @Override
-    public CompletionStage<ScheduledJob> execute(CompletionStage<ScheduledJob> futureJob) {
+    public CompletionStage<JobDetails> execute(CompletionStage<JobDetails> futureJob) {
         return futureJob
                 .thenCompose(job -> {
                     //Using just POST method for now
+                    String callbackEndpoint =
+                            Optional.ofNullable(job.getRecipient())
+                                    .filter(HTTPRecipient.class::isInstance)
+                                    .map(HTTPRecipient.class::cast)
+                                    .map(HTTPRecipient::getEndpoint)
+                                    .orElse("");
+                    String limit = Optional.ofNullable(job.getTrigger())
+                            .filter(IntervalTrigger.class::isInstance)
+                            .map(interval -> getRepeatableJobCountDown(job))
+                            .map(String::valueOf)
+                            .orElse(null);
+
                     final HTTPRequestCallback callback = HTTPRequestCallback.builder()
-                            .url(job.getCallbackEndpoint())
+                            .url(callbackEndpoint)
                             .method(HTTPRequestCallback.HTTPMethod.POST)
                             //in case of repeatable jobs add the limit parameter
-                            .addQueryParam("limit", job
-                                    .hasInterval()
-                                    .map(interval -> getRepeatableJobCountDown(job))
-                                    .map(String::valueOf)
-                                    .orElse(null))
+                            .addQueryParam("limit", limit)
                             .build();
 
-                    return ReactiveStreams.fromCompletionStage(executeCallback(callback))
+                    return ReactiveStreams.fromPublisher(executeCallback(callback).convert().toPublisher())
                             .map(response -> JobExecutionResponse.builder()
                                     .message(response.statusMessage())
                                     .code(getResponseCode(response))
@@ -143,8 +153,8 @@ public class HttpJobExecutor implements JobExecutor {
                 });
     }
 
-    private int getRepeatableJobCountDown(ScheduledJob job) {
-        return job.getRepeatLimit() - (job.getExecutionCounter() + 1);
+    private int getRepeatableJobCountDown(JobDetails job) {
+        return ((IntervalTrigger) job.getTrigger()).getRepeatLimit() - (job.getExecutionCounter() + 1);
     }
 
     WebClient getClient() {

@@ -22,17 +22,17 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import io.quarkus.runtime.StartupEvent;
-import io.vertx.axle.core.Vertx;
+import io.vertx.mutiny.core.Vertx;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kie.kogito.jobs.api.JobBuilder;
 import org.kie.kogito.jobs.service.model.JobStatus;
-import org.kie.kogito.jobs.service.model.ScheduledJob;
+import org.kie.kogito.jobs.service.model.job.JobDetails;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
-import org.kie.kogito.jobs.service.scheduler.impl.VertxJobScheduler;
+import org.kie.kogito.jobs.service.scheduler.impl.TimerDelegateJobScheduler;
 import org.kie.kogito.jobs.service.utils.DateUtil;
+import org.kie.kogito.timer.impl.PointInTimeTrigger;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
@@ -54,7 +54,7 @@ class JobSchedulerManagerTest {
     public static final String JOB_ID = UUID.randomUUID().toString();
 
     @Mock
-    VertxJobScheduler scheduler;
+    TimerDelegateJobScheduler scheduler;
 
     @Mock
     ReactiveJobRepository repository;
@@ -72,17 +72,14 @@ class JobSchedulerManagerTest {
     @Captor
     private ArgumentCaptor<Consumer<Long>> captorPeriodic;
 
-    private ScheduledJob scheduledJob;
+    private JobDetails scheduledJob;
 
     @BeforeEach
     void setUp() {
-        this.scheduledJob = ScheduledJob
+        this.scheduledJob = JobDetails
                 .builder()
-                .job(JobBuilder
-                             .builder()
-                             .id(JOB_ID)
-                             .expirationTime(DateUtil.now())
-                             .build())
+                .id(JOB_ID)
+                .trigger(new PointInTimeTrigger(System.currentTimeMillis(), null, null))
                 .build();
 
         lenient().when(repository.findByStatusBetweenDatesOrderByPriority(any(ZonedDateTime.class),
@@ -114,16 +111,16 @@ class JobSchedulerManagerTest {
     }
 
     @Test
-    void testLoadScheduledJobs() {
-        tested.loadScheduledJobs();
+    void testLoadJobDetailss() {
+        tested.loadJobDetailss();
         verify(scheduler).schedule(scheduledJob);
     }
 
     @Test
-    void testLoadAlreadyScheduledJobs() {
+    void testLoadAlreadyJobDetailss() {
         when(scheduler.scheduled(JOB_ID)).thenReturn(Optional.of(DateUtil.now()));
 
-        tested.loadScheduledJobs();
+        tested.loadJobDetailss();
         verify(scheduler, never()).schedule(scheduledJob);
     }
 }

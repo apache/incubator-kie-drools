@@ -24,13 +24,13 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.quarkus.runtime.StartupEvent;
-import io.vertx.axle.core.Vertx;
+import io.vertx.mutiny.core.Vertx;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.kie.kogito.jobs.service.model.JobStatus;
-import org.kie.kogito.jobs.service.model.ScheduledJob;
+import org.kie.kogito.jobs.service.model.job.JobDetails;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
-import org.kie.kogito.jobs.service.scheduler.impl.VertxJobScheduler;
+import org.kie.kogito.jobs.service.scheduler.impl.TimerDelegateJobScheduler;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 import org.kie.kogito.jobs.service.utils.ErrorHandling;
 import org.slf4j.Logger;
@@ -62,7 +62,7 @@ public class JobSchedulerManager {
     long loadJobFromCurrentTimeIntervalInMinutes;
 
     @Inject
-    VertxJobScheduler scheduler;
+    TimerDelegateJobScheduler scheduler;
 
     @Inject
     ReactiveJobRepository repository;
@@ -81,13 +81,13 @@ public class JobSchedulerManager {
         }
 
         //first execution
-        vertx.runOnContext(v -> loadScheduledJobs());
+        vertx.runOnContext(v -> loadJobDetailss());
         //periodic execution
-        vertx.setPeriodic(TimeUnit.MINUTES.toMillis(loadJobIntervalInMinutes), id -> loadScheduledJobs());
+        vertx.setPeriodic(TimeUnit.MINUTES.toMillis(loadJobIntervalInMinutes), id -> loadJobDetailss());
     }
 
     //Runs periodically loading the jobs from the repository in chunks
-    void loadScheduledJobs() {
+    void loadJobDetailss() {
         loadJobsInCurrentChunk()
                 .filter(j -> !scheduler.scheduled(j.getId()).isPresent())//not consider already scheduled jobs
                 .flatMapRsPublisher(t -> ErrorHandling.skipErrorPublisher(scheduler::schedule, t))
@@ -105,7 +105,7 @@ public class JobSchedulerManager {
                 );
     }
 
-    private PublisherBuilder<ScheduledJob> loadJobsInCurrentChunk() {
+    private PublisherBuilder<JobDetails> loadJobsInCurrentChunk() {
         return repository.findByStatusBetweenDatesOrderByPriority(DateUtil.now().minusMinutes(loadJobFromCurrentTimeIntervalInMinutes),
                                                                   DateUtil.now().plusMinutes(schedulerChunkInMinutes),
                                                                   JobStatus.SCHEDULED, JobStatus.RETRY);

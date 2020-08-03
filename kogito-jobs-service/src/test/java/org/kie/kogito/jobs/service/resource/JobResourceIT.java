@@ -18,6 +18,7 @@ package org.kie.kogito.jobs.service.resource;
 
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -27,35 +28,35 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
-import io.vertx.core.Vertx;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.kie.kogito.jobs.api.Job;
 import org.kie.kogito.jobs.api.JobBuilder;
 import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
-import org.kie.kogito.jobs.service.scheduler.impl.VertxJobScheduler;
+import org.kie.kogito.jobs.service.scheduler.impl.TimerDelegateJobScheduler;
+import org.kie.kogito.jobs.service.scheduler.impl.VertxTimerServiceScheduler;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanServerTestResource.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class JobResourceIT {
+class JobResourceIT {
 
     @Inject
     ObjectMapper objectMapper;
 
     @Inject
-    Vertx vertx;
+    TimerDelegateJobScheduler scheduler;
 
     @Inject
-    VertxJobScheduler scheduler;
+    VertxTimerServiceScheduler timer;
 
     @Test
     void create() throws Exception {
@@ -141,20 +142,21 @@ public class JobResourceIT {
         assertGetScheduledJob(id);
 
         //guarantee the job is scheduled on vertx
-        Thread.sleep(500);
+        await().atMost(2, TimeUnit.SECONDS).untilAsserted(() -> {
 
-        //canceled the running job
-        ScheduledJob scheduledJob = assertCancelScheduledJob(id);
+            //canceled the running job
+            ScheduledJob scheduledJob = assertCancelScheduledJob(id);
 
-        //assert the job was deleted from the api perspective
-        assertJobNotFound(id);
+            //assert the job was deleted from the api perspective
+            assertJobNotFound(id);
 
-        //ensure the job was indeed canceled on vertx
-        assertJobNotScheduledOnVertx(scheduledJob);
+            //ensure the job was indeed canceled on vertx
+            assertJobNotScheduledOnVertx(scheduledJob);
+        });
     }
 
     @Test
-    @Disabled("see https://issues.redhat.com/browse/KOGITO-1941")
+        //@Disabled("see https://issues.redhat.com/browse/KOGITO-1941")
     void cancelRunningPeriodicJobTest() throws Exception {
         final String id = UUID.randomUUID().toString();
         int timeMillis = 1000;
@@ -173,22 +175,26 @@ public class JobResourceIT {
         assertGetScheduledJob(id);
 
         //guarantee the job is running
-        Thread.sleep(timeMillis + 1);
+        await().atMost(2, TimeUnit.SECONDS)
+                .untilAsserted(() -> {
+                    //assert executed at least once
+                    ScheduledJob scheduledJob = assertGetScheduledJob(id);
+                    assertThat(scheduledJob.getExecutionCounter()).isPositive();
 
-        //canceled the running job
-        ScheduledJob scheduledJob = assertCancelScheduledJob(id);
-        assertThat(scheduledJob.getExecutionCounter()).isGreaterThan(0);
+                    //canceled the running job
+                    assertCancelScheduledJob(id);
 
-        //assert the job was deleted from the api perspective
-        assertJobNotFound(id);
+                    //assert the job was deleted from the api perspective
+                    assertJobNotFound(id);
 
-        //ensure the job was indeed canceled on vertx
-        assertJobNotScheduledOnVertx(scheduledJob);
+                    //ensure the job was indeed canceled on vertx
+                    assertJobNotScheduledOnVertx(scheduledJob);
+                });
     }
 
     private void assertJobNotScheduledOnVertx(ScheduledJob scheduledJob) {
         Long scheduledId = Long.valueOf(scheduledJob.getScheduledId());
-        boolean timerCanceled = vertx.cancelTimer(scheduledId);
+        boolean timerCanceled = timer.getVertx().cancelTimer(scheduledId);
         assertThat(timerCanceled).isFalse();
     }
 

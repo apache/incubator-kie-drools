@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.Optional;
 
 public class DateUtil {
@@ -47,5 +48,13 @@ public class DateUtil {
                 .map(i -> ZonedDateTime.ofInstant(i, DateUtil.DEFAULT_ZONE))
                 .map(i -> i.truncatedTo(ChronoUnit.MILLIS))
                 .orElse(null);
+    }
+
+    public static ZonedDateTime fromDate(Date date){
+        return ZonedDateTime.ofInstant(date.toInstant(), DEFAULT_ZONE);
+    }
+
+    public static Date toDate(ZonedDateTime zonedDateTime){
+        return new Date(zonedDateTime.toInstant().toEpochMilli());
     }
 }

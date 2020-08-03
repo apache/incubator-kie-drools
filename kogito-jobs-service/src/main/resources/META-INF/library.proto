@@ -1,24 +1,30 @@
 package job.service;
 
-message ScheduledJob {
+message JobDetails {
+  optional string id = 1;
+  optional string correlationId = 2;
+  optional string status = 3;//enum
+  optional int64 lastUpdate = 4;
+  optional int32 retries = 5;
+  optional int32 priority = 6;
+  optional int32 executionCounter = 7;
+  optional string scheduledId = 8;
+  optional string payload = 9; //serialized as json to be generic
+  optional Recipient recipient = 10; //serialized as json to be generic
+  optional Trigger trigger = 11; //serialized as json to be generic
+  optional string type = 12;//enum
+}
 
-  //job attributes
-  required string id = 1;
-  optional string callbackEndpoint = 2;
-  optional int64 expirationTime = 3;
-  optional int32 priority = 4;
-  optional string processId = 5;
-  optional string processInstanceId = 6;
-  optional string rootProcessId = 7;
-  optional string rootProcessInstanceId = 8;
-  optional int64 repeatInterval = 9;
-  optional int32 repeatLimit = 10;
+message Recipient {
+  optional string endpoint = 1;
+}
 
-  //scheduled job attributes
-  optional string scheduledId = 11;
-  optional int32 retries = 12;
-  required string status = 13;
-  optional int64 lastUpdate = 14;
-  optional int32 executionCounter = 15;
-
+message Trigger {
+  optional string classType = 1;//indicates the java class to instantiate
+  optional int64 startTime = 2;
+  optional int64 endTime = 3;
+  optional int32 repeatLimit = 4;
+  optional int32 repeatCount = 5;
+  optional int64 nextFireTime = 6;
+  optional int64 period = 7;
 }

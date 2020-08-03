@@ -22,14 +22,15 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.smallrye.reactive.messaging.annotations.Channel;
-import io.smallrye.reactive.messaging.annotations.Emitter;
-import io.smallrye.reactive.messaging.annotations.OnOverflow;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.eclipse.microprofile.reactive.messaging.OnOverflow;
 import org.kie.kogito.jobs.service.events.JobDataEvent;
-import org.kie.kogito.jobs.service.model.ScheduledJob;
+import org.kie.kogito.jobs.service.model.job.JobDetails;
+import org.kie.kogito.jobs.service.model.job.ScheduledJobAdapter;
 import org.kie.kogito.jobs.service.resource.JobResource;
 import org.kie.kogito.jobs.service.utils.FunctionsUtil;
 import org.slf4j.Logger;
@@ -66,14 +67,14 @@ public class KafkaJobStreams {
 
     @Incoming(AvailableStreams.JOB_STATUS_CHANGE_EVENTS)
     @Acknowledgment(Acknowledgment.Strategy.PRE_PROCESSING)
-    public void jobStatusChangeKafkaPublisher(ScheduledJob job) {
+    public void jobStatusChangeKafkaPublisher(JobDetails job) {
         enabled
                 .map(e -> kafkaEmitter)
                 .map(emitter -> {
                     JobDataEvent event = JobDataEvent
                             .builder()
                             .source(url + JobResource.JOBS_PATH)
-                            .data(job)
+                            .data(ScheduledJobAdapter.of(job))
                             .build();
                     return emitter.send(FunctionsUtil.unchecked(objectMapper::writeValueAsString).apply(event));
                 })

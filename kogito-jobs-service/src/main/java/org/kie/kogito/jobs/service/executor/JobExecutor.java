@@ -18,9 +18,9 @@ package org.kie.kogito.jobs.service.executor;
 
 import java.util.concurrent.CompletionStage;
 
-import org.kie.kogito.jobs.service.model.ScheduledJob;
+import org.kie.kogito.jobs.service.model.job.JobDetails;
 
 public interface JobExecutor {
 
-    CompletionStage<ScheduledJob> execute(CompletionStage<ScheduledJob> job);
+    CompletionStage<JobDetails> execute(CompletionStage<JobDetails> job);
 }

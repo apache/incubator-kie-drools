@@ -34,20 +34,20 @@ import org.infinispan.client.hotrod.Search;
 import org.infinispan.query.dsl.QueryFactory;
 import org.infinispan.query.dsl.SortOrder;
 import org.kie.kogito.jobs.service.model.JobStatus;
-import org.kie.kogito.jobs.service.model.ScheduledJob;
+import org.kie.kogito.jobs.service.model.job.JobDetails;
 import org.kie.kogito.jobs.service.qualifier.Repository;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.repository.impl.BaseReactiveJobRepository;
 import org.kie.kogito.jobs.service.stream.JobStreams;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 
-import static org.kie.kogito.jobs.service.repository.infinispan.InfinispanConfiguration.Caches.SCHEDULED_JOBS;
+import static org.kie.kogito.jobs.service.repository.infinispan.InfinispanConfiguration.Caches.JOB_DETAILS;
 
 @ApplicationScoped
 @Repository("infinispan")
 public class InfinispanJobRepository extends BaseReactiveJobRepository implements ReactiveJobRepository {
 
-    private RemoteCache<String, ScheduledJob> cache;
+    private RemoteCache<String, JobDetails> cache;
     private QueryFactory queryFactory;
 
     InfinispanJobRepository() {
@@ -59,19 +59,19 @@ public class InfinispanJobRepository extends BaseReactiveJobRepository implement
                                    JobStreams jobStreams,
                                    RemoteCacheManager remoteCacheManager) {
         super(vertx, jobStreams);
-        this.cache = remoteCacheManager.administration().getOrCreateCache(SCHEDULED_JOBS, (String) null);
+        this.cache = remoteCacheManager.administration().getOrCreateCache(JOB_DETAILS, (String) null);
         this.queryFactory = Search.getQueryFactory(cache);
     }
 
     @Override
-    public CompletionStage<ScheduledJob> doSave(ScheduledJob job) {
+    public CompletionStage<JobDetails> doSave(JobDetails job) {
 
         return runAsync(() -> cache.put(job.getId(), job))
                 .thenCompose(j -> get(job.getId()));
     }
 
     @Override
-    public CompletionStage<ScheduledJob> get(String id) {
+    public CompletionStage<JobDetails> get(String id) {
         return runAsync(() -> cache.get(id));
     }
 
@@ -81,23 +81,23 @@ public class InfinispanJobRepository extends BaseReactiveJobRepository implement
     }
 
     @Override
-    public CompletionStage<ScheduledJob> delete(String id) {
+    public CompletionStage<JobDetails> delete(String id) {
         return runAsync(() -> cache
                 .withFlags(Flag.FORCE_RETURN_VALUE)
                 .remove(id));
     }
 
     @Override
-    public PublisherBuilder<ScheduledJob> findAll() {
+    public PublisherBuilder<JobDetails> findAll() {
         return ReactiveStreams
-                .fromIterable(queryFactory.from(ScheduledJob.class)
+                .fromIterable(queryFactory.from(JobDetails.class)
                                       .build()
                                       .list());
     }
 
     @Override
-    public PublisherBuilder<ScheduledJob> findByStatus(JobStatus... status) {
-        return ReactiveStreams.fromIterable(queryFactory.from(ScheduledJob.class)
+    public PublisherBuilder<JobDetails> findByStatus(JobStatus... status) {
+        return ReactiveStreams.fromIterable(queryFactory.from(JobDetails.class)
                                                     .having("status")
                                                     .in(Arrays.stream(status)
                                                                 .map(JobStatus::name)
@@ -106,15 +106,15 @@ public class InfinispanJobRepository extends BaseReactiveJobRepository implement
                                                     .list());
     }
 
-    public PublisherBuilder<ScheduledJob> findByStatusBetweenDatesOrderByPriority(ZonedDateTime from, ZonedDateTime to,
+    public PublisherBuilder<JobDetails> findByStatusBetweenDatesOrderByPriority(ZonedDateTime from, ZonedDateTime to,
                                                                                   JobStatus... status) {
-        return ReactiveStreams.fromIterable(queryFactory.from(ScheduledJob.class)
+        return ReactiveStreams.fromIterable(queryFactory.from(JobDetails.class)
                                                     .having("status")
                                                     .in(Arrays.stream(status)
                                                                 .map(JobStatus::name)
                                                                 .collect(Collectors.toList()))
                                                     .and()
-                                                    .having("expirationTime")
+                                                    .having("trigger.nextFireTime")
                                                     .between(DateUtil.zonedDateTimeToInstant(from),
                                                              DateUtil.zonedDateTimeToInstant(to))
                                                     .orderBy("priority", SortOrder.DESC)

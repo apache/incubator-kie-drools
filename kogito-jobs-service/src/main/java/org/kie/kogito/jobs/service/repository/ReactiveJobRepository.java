@@ -21,25 +21,25 @@ import java.util.concurrent.CompletionStage;
 
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.kie.kogito.jobs.service.model.JobStatus;
-import org.kie.kogito.jobs.service.model.ScheduledJob;
+import org.kie.kogito.jobs.service.model.job.JobDetails;
 
 public interface ReactiveJobRepository {
 
-    CompletionStage<ScheduledJob> save(ScheduledJob job);
+    CompletionStage<JobDetails> save(JobDetails job);
 
-    CompletionStage<ScheduledJob> merge(String id, ScheduledJob job);
+    CompletionStage<JobDetails> merge(String id, JobDetails job);
 
-    CompletionStage<ScheduledJob> get(String id);
+    CompletionStage<JobDetails> get(String id);
 
     CompletionStage<Boolean> exists(String id);
 
-    CompletionStage<ScheduledJob> delete(String id);
+    CompletionStage<JobDetails> delete(String id);
 
-    CompletionStage<ScheduledJob> delete(ScheduledJob job);
+    CompletionStage<JobDetails> delete(JobDetails job);
 
-    PublisherBuilder<ScheduledJob> findByStatus(JobStatus... status);
+    PublisherBuilder<JobDetails> findByStatus(JobStatus... status);
 
-    PublisherBuilder<ScheduledJob> findAll();
+    PublisherBuilder<JobDetails> findAll();
 
-    PublisherBuilder<ScheduledJob> findByStatusBetweenDatesOrderByPriority(ZonedDateTime from, ZonedDateTime to, JobStatus... status);
+    PublisherBuilder<JobDetails> findByStatusBetweenDatesOrderByPriority(ZonedDateTime from, ZonedDateTime to, JobStatus... status);
 }

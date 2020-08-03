@@ -27,7 +27,7 @@ import io.vertx.core.Vertx;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.kie.kogito.jobs.service.model.JobStatus;
-import org.kie.kogito.jobs.service.model.ScheduledJob;
+import org.kie.kogito.jobs.service.model.job.JobDetails;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.stream.JobStreams;
 
@@ -50,28 +50,28 @@ public abstract class BaseReactiveJobRepository implements ReactiveJobRepository
     }
 
     @Override
-    public PublisherBuilder<ScheduledJob> findByStatus(JobStatus... status) {
+    public PublisherBuilder<JobDetails> findByStatus(JobStatus... status) {
         return findAll()
                 .filter(job -> Objects.nonNull(job.getStatus()))
                 .filter(job -> Arrays.stream(status).anyMatch(job.getStatus()::equals));
     }
 
     @Override
-    public CompletionStage<ScheduledJob> save(ScheduledJob job) {
+    public CompletionStage<JobDetails> save(JobDetails job) {
         return doSave(job)
                 .thenApply(jobStreams::publishJobStatusChange);
     }
 
-    public abstract CompletionStage<ScheduledJob> doSave(ScheduledJob job);
+    public abstract CompletionStage<JobDetails> doSave(JobDetails job);
 
     @Override
-    public CompletionStage<ScheduledJob> delete(ScheduledJob job) {
+    public CompletionStage<JobDetails> delete(JobDetails job) {
         return delete(job.getId())
                 .thenApply(j -> jobStreams.publishJobStatusChange(job));
     }
 
     @Override
-    public CompletionStage<ScheduledJob> merge(String id, ScheduledJob jobToMerge) {
+    public CompletionStage<JobDetails> merge(String id, JobDetails jobToMerge) {
         return Optional.ofNullable(id)
                 //do validations
                 .filter(StringUtils::isNotBlank)
@@ -84,8 +84,8 @@ public abstract class BaseReactiveJobRepository implements ReactiveJobRepository
                 .orElseThrow(() -> new IllegalArgumentException("Id is empty or not equals to Job.id : " + id));
     }
 
-    private ScheduledJob doMerge(ScheduledJob toMerge, ScheduledJob current) {
-        return ScheduledJob.builder()
+    private JobDetails doMerge(JobDetails toMerge, JobDetails current) {
+        return JobDetails.builder()
                 .of(current)
                 .merge(toMerge)
                 .build();

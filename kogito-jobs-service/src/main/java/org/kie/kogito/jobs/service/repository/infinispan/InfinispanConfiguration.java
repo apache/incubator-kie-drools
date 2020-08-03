@@ -41,7 +41,7 @@ public class InfinispanConfiguration {
 
         }
 
-        public static final String SCHEDULED_JOBS = "SCHEDULED_JOBS";
+        public static final String JOB_DETAILS = "JOB_DETAILS";
     }
 
     @Produces
