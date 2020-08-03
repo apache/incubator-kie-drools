@@ -199,9 +199,23 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
 
         String mvelExpr = normalizeMVELLiteralExpression(vtype, field, expression, leftValue, operator, rightValue, negated, restrictionDescr);
         IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.decode(operator, negated);
+        if (constraintType == IndexUtil.ConstraintType.EQUAL && negated) {
+            mvelExpr = normalizeDoubleNegation(mvelExpr);
+        }
         MVELCompilationUnit compilationUnit = buildCompilationUnit(context, pattern, mvelExpr, aliases);
         EvaluatorWrapper[] operators = getOperators(buildOperators(context, pattern, restrictionDescr, aliases));
         return new MvelConstraint(context.getPkg().getName(), mvelExpr, compilationUnit, constraintType, field, extractor, operators);
+    }
+
+    private static String normalizeDoubleNegation(String expr) {
+        if (expr.charAt( 0 ) == '!') {
+            expr = expr.substring( 1 ).trim();
+            if (expr.charAt( 0 ) == '(') {
+                expr = expr.substring( 1, expr.lastIndexOf( ')' ) ).trim();
+            }
+            expr = expr.replace( "!=", "==" );
+        }
+        return expr;
     }
 
     protected static String resolveUnificationAmbiguity(String expr, Declaration[] declrations, String leftValue, String rightValue) {

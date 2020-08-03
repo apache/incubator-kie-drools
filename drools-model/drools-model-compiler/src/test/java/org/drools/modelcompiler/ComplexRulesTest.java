@@ -35,6 +35,7 @@ import org.drools.modelcompiler.domain.EnumFact1;
 import org.drools.modelcompiler.domain.EnumFact2;
 import org.drools.modelcompiler.domain.InterfaceAsEnum;
 import org.drools.modelcompiler.domain.ManyPropFact;
+import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.RootFact;
 import org.drools.modelcompiler.domain.SubFact;
 import org.junit.Test;
@@ -725,6 +726,21 @@ public class ComplexRulesTest extends BaseModelTest {
 
         ksession.insert( new CaseData( "OK" ) );
 
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testDoubleNegation() {
+        // DROOLS-5545
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "    $d: Person( !(name != \"Mario\") )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+        ksession.insert( new Person( "Mario", 45 ) );
         assertEquals(1, ksession.fireAllRules());
     }
 }
