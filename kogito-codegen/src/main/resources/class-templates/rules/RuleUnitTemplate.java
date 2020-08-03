@@ -6,10 +6,6 @@ import org.kie.kogito.rules.units.impl.AbstractRuleUnit;
 
 public class $Name$ extends AbstractRuleUnit<$ModelName$> {
 
-    public $Name$() {
-        this(new $Application$());
-    }
-
     public $Name$(org.kie.kogito.Application app) {
         super(app);
     }

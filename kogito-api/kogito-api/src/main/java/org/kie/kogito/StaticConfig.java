@@ -34,14 +34,10 @@ public class StaticConfig implements Config {
         this.ruleConfig = ruleConfig;
         this.decisionConfig = decisionConfig;
         this.predictionConfig = predictionConfig;
-    }
 
-    public StaticConfig(ProcessConfig processConfig, RuleConfig ruleConfig, DecisionConfig decisionConfig, PredictionConfig predictionConfig) {
-        this.addons = Addons.EMTPY;
-        this.processConfig = processConfig;
-        this.ruleConfig = ruleConfig;
-        this.decisionConfig = decisionConfig;
-        this.predictionConfig = predictionConfig;
+        if (processConfig != null) {
+            processConfig.unitOfWorkManager().eventManager().setAddons(addons);
+        }
     }
 
     @Override
@@ -68,5 +64,4 @@ public class StaticConfig implements Config {
     public Addons addons() {
         return addons;
     }
-
 }

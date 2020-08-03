@@ -201,7 +201,7 @@ public class ProcessCodegen extends AbstractGenerator {
     private String applicationCanonicalName;
     private DependencyInjectionAnnotator annotator;
 
-    private ProcessesContainerGenerator moduleGenerator;
+    private ProcessContainerGenerator moduleGenerator;
 
     private final Map<String, WorkflowProcess> processes;
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
@@ -232,7 +232,7 @@ public class ProcessCodegen extends AbstractGenerator {
     }
 
     public void setPackageName(String packageName) {
-        this.moduleGenerator = new ProcessesContainerGenerator(packageName);
+        this.moduleGenerator = new ProcessContainerGenerator(packageName);
         this.applicationCanonicalName = packageName + ".Application";
         this.packageName = packageName;
     }
@@ -242,7 +242,7 @@ public class ProcessCodegen extends AbstractGenerator {
         this.moduleGenerator.withDependencyInjection(annotator);
     }
 
-    public ProcessesContainerGenerator moduleGenerator() {
+    public ProcessContainerGenerator moduleGenerator() {
         return moduleGenerator;
     }
 

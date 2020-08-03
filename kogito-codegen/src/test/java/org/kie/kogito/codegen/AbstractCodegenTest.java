@@ -187,7 +187,7 @@ public class AbstractCodegenTest {
 
         CompilationResult result = JAVA_COMPILER.compile(sources.toArray( new String[sources.size()] ), srcMfs, trgMfs, this.getClass().getClassLoader());
         assertThat(result).isNotNull();
-        assertThat(result.getErrors()).as(Arrays.toString(result.getErrors())).hasSize(0);
+        assertThat(result.getErrors()).describedAs(String.join("\n\n", Arrays.toString(result.getErrors()))).hasSize(0);
 
         classloader = new TestClassLoader(this.getClass().getClassLoader(), trgMfs.getMap());
 
@@ -195,7 +195,6 @@ public class AbstractCodegenTest {
         Class<Application> app = (Class<Application>) Class.forName(this.getClass().getPackage().getName() + ".Application", true, classloader);
 
         Application application = app.getDeclaredConstructor().newInstance();
-        app.getMethod("setup").invoke(application);
         return application;
     }
     

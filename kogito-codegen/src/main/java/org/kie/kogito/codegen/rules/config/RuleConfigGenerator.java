@@ -15,9 +15,9 @@
 
 package org.kie.kogito.codegen.rules.config;
 
-import org.kie.kogito.codegen.AbstractConfigGenerator;
+import org.kie.kogito.codegen.TemplatedGenerator;
 
-public class RuleConfigGenerator extends AbstractConfigGenerator {
+public class RuleConfigGenerator extends TemplatedGenerator {
 
     private static final String RESOURCE_CDI = "/class-templates/config/CdiRuleConfigTemplate.java";
     private static final String RESOURCE_SPRING = "/class-templates/config/SpringRuleConfigTemplate.java";

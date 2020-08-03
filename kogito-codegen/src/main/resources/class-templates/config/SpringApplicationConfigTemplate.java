@@ -19,7 +19,8 @@ public class ApplicationConfig extends org.kie.kogito.StaticConfig {
             List<org.kie.kogito.rules.RuleConfig> ruleConfig,
             List<org.kie.kogito.decision.DecisionConfig> decisionConfig,
             List<org.kie.kogito.prediction.PredictionConfig> predictionConfig) {
-        super(orDefault(processConfig, StaticProcessConfig::new),
+        super($Addons$,
+              orDefault(processConfig, StaticProcessConfig::new),
               orDefault(ruleConfig, StaticRuleConfig::new),
               orDefault(decisionConfig, StaticDecisionConfig::new),
               orDefault(predictionConfig, StaticPredictionConfig::new));
@@ -32,8 +33,7 @@ public class ApplicationConfig extends org.kie.kogito.StaticConfig {
             case 1:
                 return instances.get(0);
             default:
-                throw new IllegalArgumentException("Found too many instances: "+instances);
+                throw new IllegalArgumentException("Found too many instances: " + instances);
         }
     }
-
 }

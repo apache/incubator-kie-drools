@@ -49,7 +49,8 @@ public abstract class AbstractProcessConfig implements ProcessConfig {
             Iterable<ProcessEventListener> processEventListeners,
             Iterable<UnitOfWorkManager> unitOfWorkManager,
             Iterable<JobsService> jobsService,
-            Iterable<EventPublisher> eventPublishers) {
+            Iterable<EventPublisher> eventPublishers,
+            String kogitoService) {
 
         this.workItemHandlerConfig = orDefault(workItemHandlerConfig, DefaultWorkItemHandlerConfig::new);
         this.processEventListenerConfig = merge(processEventListenerConfigs, processEventListeners);
@@ -59,6 +60,7 @@ public abstract class AbstractProcessConfig implements ProcessConfig {
         this.jobsService = orDefault(jobsService, () -> null);
 
         eventPublishers.forEach(publisher -> unitOfWorkManager().eventManager().addPublisher(publisher));
+        unitOfWorkManager().eventManager().setService(kogitoService);
     }
 
     @Override

@@ -20,11 +20,11 @@ import java.util.List;
 
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import org.kie.kogito.codegen.AbstractConfigGenerator;
+import org.kie.kogito.codegen.TemplatedGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.pmml.config.StaticPredictionConfig;
 
-public class PredictionConfigGenerator extends AbstractConfigGenerator  {
+public class PredictionConfigGenerator extends TemplatedGenerator {
 
 
     private DependencyInjectionAnnotator annotator;

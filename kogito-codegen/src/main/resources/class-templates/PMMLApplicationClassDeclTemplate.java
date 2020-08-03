@@ -23,7 +23,7 @@ public class PredictionModels implements org.kie.kogito.prediction.PredictionMod
         };
     }
 
-    public void init(org.kie.kogito.Application app) {
+    public PredictionModels(org.kie.kogito.Application app) {
     }
 
     public org.kie.kogito.prediction.PredictionModel getPredictionModel(java.lang.String modelName) {

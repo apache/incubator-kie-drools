@@ -21,14 +21,16 @@ public class ProcessConfig extends org.kie.kogito.process.impl.AbstractProcessCo
             Instance<JobsService> jobsService,
             Instance<ProcessEventListenerConfig> processEventListenerConfigs,
             Instance<ProcessEventListener> processEventListeners,
-            Instance<EventPublisher> eventPublishers) {
+            Instance<EventPublisher> eventPublishers,
+            ConfigBean configBean) {
 
         super(workItemHandlerConfig,
               processEventListenerConfigs,
               processEventListeners,
               unitOfWorkManager,
               jobsService,
-              eventPublishers);
+              eventPublishers,
+              configBean.getServiceUrl());
     }
 
 }

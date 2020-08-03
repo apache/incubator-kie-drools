@@ -71,22 +71,6 @@ class PredictionContainerGeneratorTest {
 
     }
 
-    @Test
-    void setupStatements() {
-        List<Statement> retrieved = predictionContainerGenerator.setupStatements();
-        assertNotNull(retrieved);
-        String expected = "[if (config().prediction() != null) {\n" +
-                "    predictionModels.init(this);\n" +
-                "}]";
-        String retrievedString = retrieved.toString();
-        assertEquals(expected, retrievedString);
-    }
-
-    @Test
-    void useApplication() {
-        assertFalse(predictionContainerGenerator.useApplication());
-    }
-
     private static List<PMMLResource> getPMMLResources() {
         return IntStream.range(0, 3)
                 .mapToObj(i -> getPMMLResource("Resource-" + i)).collect(Collectors.toList());

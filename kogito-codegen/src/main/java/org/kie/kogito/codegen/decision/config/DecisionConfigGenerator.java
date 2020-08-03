@@ -15,9 +15,9 @@
 
 package org.kie.kogito.codegen.decision.config;
 
-import org.kie.kogito.codegen.AbstractConfigGenerator;
+import org.kie.kogito.codegen.TemplatedGenerator;
 
-public class DecisionConfigGenerator extends AbstractConfigGenerator {
+public class DecisionConfigGenerator extends TemplatedGenerator {
 
     private static final String RESOURCE_CDI = "/class-templates/config/CdiDecisionConfigTemplate.java";
     private static final String RESOURCE_SPRING = "/class-templates/config/SpringDecisionConfigTemplate.java";

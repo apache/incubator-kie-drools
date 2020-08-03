@@ -8,7 +8,7 @@ public class DecisionModels implements org.kie.kogito.decision.DecisionModels {
     private final static org.kie.dmn.api.core.DMNRuntime dmnRuntime = org.kie.kogito.dmn.DMNKogito.createGenericDMNRuntime(kieRuntimeFactoryFunction);
     private final static org.kie.kogito.ExecutionIdSupplier execIdSupplier = null;
 
-    public void init(org.kie.kogito.Application app) {
+    public DecisionModels(org.kie.kogito.Application app) {
         app.config().decision().decisionEventListeners().listeners().forEach(dmnRuntime::addListener);
     }
 

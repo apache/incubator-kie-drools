@@ -15,9 +15,9 @@
 
 package org.kie.kogito.codegen.process.config;
 
-import org.kie.kogito.codegen.AbstractConfigGenerator;
+import org.kie.kogito.codegen.TemplatedGenerator;
 
-public class ProcessConfigGenerator extends AbstractConfigGenerator {
+public class ProcessConfigGenerator extends TemplatedGenerator {
 
     private static final String RESOURCE_CDI = "/class-templates/config/CdiProcessConfigTemplate.java";
     private static final String RESOURCE_SPRING = "/class-templates/config/SpringProcessConfigTemplate.java";
