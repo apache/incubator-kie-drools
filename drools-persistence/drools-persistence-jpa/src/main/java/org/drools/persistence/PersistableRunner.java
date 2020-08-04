@@ -64,7 +64,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.lang.Boolean.TRUE;
-import static org.drools.persistence.api.TransactionManager.STATUS_ACTIVE;
 
 public class PersistableRunner implements SingleSessionCommandService {
 
@@ -587,11 +586,10 @@ public class PersistableRunner implements SingleSessionCommandService {
             boolean transactionOwner = false;
 
             try {
-                if (isParentRunner && txm.getStatus() == STATUS_ACTIVE) {
+                transactionOwner = txm.begin();
+                if (isParentRunner) {
                     txm.putResource(DROOLS_PARENT_RUNNER, TRUE);
                 }
-                transactionOwner = txm.begin();
-
 
                 persistenceContext.joinTransaction();
 
