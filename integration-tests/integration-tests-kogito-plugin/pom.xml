@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.kie.kogito</groupId>
     <artifactId>integration-tests</artifactId>
-    <version>8.0.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>integration-tests-kogito-plugin</artifactId>
   <name>Kogito :: Integration Tests :: Maven Plugin</name>
