@@ -112,7 +112,6 @@ public class DecisionModelResourcesProviderGenerator {
                                           new StringLiteralExpr(getDecisionModelJarResourcePath(resource)),
                                           new StringLiteralExpr(resource.getDmnModel().getNamespace()),
                                           new StringLiteralExpr(resource.getDmnModel().getName()),
-                                          makeDMNIdentifier(resource),
                                           makeDMNType()));
             } else {
                 final ClassOrInterfaceType applicationClass = StaticJavaParser.parseClassOrInterfaceType(applicationCanonicalName);
@@ -121,7 +120,6 @@ public class DecisionModelResourcesProviderGenerator {
                                           new StringLiteralExpr(getDecisionModelRelativeResourcePath(resource)),
                                           new StringLiteralExpr(resource.getDmnModel().getNamespace()),
                                           new StringLiteralExpr(resource.getDmnModel().getName()),
-                                          makeDMNIdentifier(resource),
                                           makeDMNType(),
                                           new FieldAccessExpr(applicationClass.getNameAsExpression(), "class")));
             }
@@ -135,10 +133,6 @@ public class DecisionModelResourcesProviderGenerator {
                          new StringLiteralExpr("dummy"),
                          new StringLiteralExpr("dummy"),
                          new StringLiteralExpr("0.0"));
-    }
-
-    private StringLiteralExpr makeDMNIdentifier(final DMNResource resource) {
-        return new StringLiteralExpr(resource.getDmnModel().getNamespace() + ":" + resource.getDmnModel().getName());
     }
 
     private FieldAccessExpr makeDMNType() {

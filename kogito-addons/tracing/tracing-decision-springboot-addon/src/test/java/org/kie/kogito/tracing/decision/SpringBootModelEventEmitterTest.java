@@ -74,7 +74,6 @@ public class SpringBootModelEventEmitterTest {
         when(model.getGav()).thenReturn(new GAV("groupId", "artifactId", "version"));
         when(model.getModelName()).thenReturn("name");
         when(model.getNamespace()).thenReturn("namespace");
-        when(model.getIdentifier()).thenReturn("identifier");
         when(model.getModelType()).thenReturn(DecisionModelType.DMN);
         when(model.get()).thenReturn("model");
         return model;

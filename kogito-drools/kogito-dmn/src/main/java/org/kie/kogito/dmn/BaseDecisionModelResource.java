@@ -34,20 +34,17 @@ public abstract class BaseDecisionModelResource implements DecisionModelResource
     protected final String path;
     protected final String namespace;
     protected final String modelName;
-    protected final String identifier;
     protected final DecisionModelType type;
 
     protected BaseDecisionModelResource(GAV gav,
                                         String path,
                                         String namespace,
                                         String modelName,
-                                        String identifier,
                                         DecisionModelType type) {
         this.gav = gav;
         this.path = path;
         this.namespace = namespace;
         this.modelName = modelName;
-        this.identifier = identifier;
         this.type = type;
     }
 
@@ -69,11 +66,6 @@ public abstract class BaseDecisionModelResource implements DecisionModelResource
     @Override
     public String getModelName() {
         return modelName;
-    }
-
-    @Override
-    public String getIdentifier() {
-        return identifier;
     }
 
     @Override

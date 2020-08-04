@@ -17,12 +17,6 @@ package org.kie.kogito.decision;
 
 public enum DecisionModelType {
 
-    DMN("dmn");
-
-    private String type;
-
-    DecisionModelType(final String type) {
-        this.type = type;
-    }
+    DMN
 
 }

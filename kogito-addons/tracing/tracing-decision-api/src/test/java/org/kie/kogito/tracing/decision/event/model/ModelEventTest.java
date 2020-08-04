@@ -27,15 +27,14 @@ public class ModelEventTest {
     @Test
     public void testGetters() {
         final GAV gav = new GAV("groupID", "artifactId", "version");
-        final ModelEvent e = new ModelEvent(ModelEvent.GAV.from(gav), "name", "namespace", "identifier", DecisionModelType.DMN, "definition");
+        final ModelEvent e = new ModelEvent(ModelEvent.GAV.from(gav), "name", "namespace", DecisionModelType.DMN, "definition");
 
         assertEquals(gav.getGroupId(), e.getGav().getGroupId());
         assertEquals(gav.getArtifactId(), e.getGav().getArtifactId());
         assertEquals(gav.getVersion(), e.getGav().getVersion());
         assertEquals("name", e.getName());
         assertEquals("namespace", e.getNamespace());
-        assertEquals("identifier", e.getIdentifier());
-        assertEquals(DecisionModelType.DMN, e.getModelType());
+        assertEquals(DecisionModelType.DMN, e.getType());
         assertEquals("definition", e.getDefinition());
     }
 }

@@ -26,13 +26,11 @@ public class DecisionModelJarResource extends BaseDecisionModelResource {
                                     String path,
                                     String namespace,
                                     String modelName,
-                                    String identifier,
                                     DecisionModelType type) {
         super(gav,
               path,
               namespace,
               modelName,
-              identifier,
               type);
     }
 

@@ -27,14 +27,12 @@ public class DecisionModelRelativeResource extends BaseDecisionModelResource {
                                          String path,
                                          String namespace,
                                          String modelName,
-                                         String identifier,
                                          DecisionModelType type,
                                          Class application) {
         super(gav,
               path,
               namespace,
               modelName,
-              identifier,
               type);
         this.application = application;
     }

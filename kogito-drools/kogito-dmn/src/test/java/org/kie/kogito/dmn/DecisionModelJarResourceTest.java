@@ -31,13 +31,11 @@ public class DecisionModelJarResourceTest {
                                                                                "/resources/org/kie/kogito/dmn/profile.dmn",
                                                                                "namespace",
                                                                                "name",
-                                                                               "identifier",
                                                                                DecisionModelType.DMN);
 
         assertEquals(GAV, resource.getGav());
         assertEquals("name", resource.getModelName());
         assertEquals("namespace", resource.getNamespace());
-        assertEquals("identifier", resource.getIdentifier());
         assertEquals(DecisionModelType.DMN, resource.getModelType());
         assertEquals("/resources/org/kie/kogito/dmn/profile.dmn", resource.getPath());
     }
@@ -48,7 +46,6 @@ public class DecisionModelJarResourceTest {
                                                                                "org/kie/kogito/dmn/profile.dmn",
                                                                                "namespace",
                                                                                "name",
-                                                                               "identifier",
                                                                                DecisionModelType.DMN);
         assertNotNull(resource.get());
     }

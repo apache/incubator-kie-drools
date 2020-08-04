@@ -39,7 +39,6 @@ public abstract class BaseModelEventEmitter implements EventEmitter {
                                                               new ModelEvent(ModelEvent.GAV.from(resource.getGav()),
                                                                              resource.getModelName(),
                                                                              resource.getNamespace(),
-                                                                             resource.getIdentifier(),
                                                                              resource.getModelType(),
                                                                              resource.get()),
                                                               ModelEvent.class)));

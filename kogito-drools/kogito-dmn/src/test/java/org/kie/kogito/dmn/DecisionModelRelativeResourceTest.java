@@ -31,14 +31,12 @@ public class DecisionModelRelativeResourceTest {
                                                                                          "profile.dmn",
                                                                                          "namespace",
                                                                                          "name",
-                                                                                         "identifier",
                                                                                          DecisionModelType.DMN,
                                                                                          this.getClass());
 
         assertEquals(GAV, resource.getGav());
         assertEquals("name", resource.getModelName());
         assertEquals("namespace", resource.getNamespace());
-        assertEquals("identifier", resource.getIdentifier());
         assertEquals(DecisionModelType.DMN, resource.getModelType());
         assertEquals("profile.dmn", resource.getPath());
     }
@@ -49,7 +47,6 @@ public class DecisionModelRelativeResourceTest {
                                                                                          "profile.dmn",
                                                                                          "namespace",
                                                                                          "name",
-                                                                                         "identifier",
                                                                                          DecisionModelType.DMN,
                                                                                          this.getClass());
         assertNotNull(resource.get());

@@ -30,8 +30,6 @@ public class ModelEvent {
 
     private final String namespace;
 
-    private final String identifier;
-
     private final DecisionModelType type;
 
     private final String definition;
@@ -74,13 +72,11 @@ public class ModelEvent {
     public ModelEvent(final @JsonProperty("gav") GAV gav,
                       final @JsonProperty("name") String name,
                       final @JsonProperty("namespace") String namespace,
-                      final @JsonProperty("identifier") String identifier,
                       final @JsonProperty("type") DecisionModelType type,
                       final @JsonProperty("definition") String definition) {
         this.gav = gav;
         this.name = name;
         this.namespace = namespace;
-        this.identifier = identifier;
         this.type = type;
         this.definition = definition;
     }
@@ -97,11 +93,7 @@ public class ModelEvent {
         return namespace;
     }
 
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public DecisionModelType getModelType() {
+    public DecisionModelType getType() {
         return type;
     }
 

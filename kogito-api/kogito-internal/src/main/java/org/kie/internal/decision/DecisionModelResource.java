@@ -30,8 +30,6 @@ public interface DecisionModelResource extends Supplier<String> {
 
     String getModelName();
 
-    String getIdentifier();
-
     DecisionModelType getModelType();
 
     InputStream getInputStream();
