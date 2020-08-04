@@ -102,7 +102,7 @@ public class DMNClassloaderTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("using ignoring"), is(new BigDecimal(2)));
     }
 
-    static String getPom(final ReleaseId releaseId, final ReleaseId... dependencies) {
+    public static String getPom(final ReleaseId releaseId, final ReleaseId... dependencies) {
         final StringBuilder pom =
                 new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                                           "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +

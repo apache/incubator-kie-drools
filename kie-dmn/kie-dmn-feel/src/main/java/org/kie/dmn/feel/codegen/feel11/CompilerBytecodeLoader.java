@@ -102,7 +102,7 @@ public class CompilerBytecodeLoader {
     }
 
     public <T> T internal_makefromJP(Class<T> clazz, String templateResourcePath, String cuPackage, String cuClass, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
-        CompilationUnit cu = getCompilationUnit(clazz, templateResourcePath, cuPackage, cuClass, feelExpression, theExpression, fieldDeclarations );
+        CompilationUnit cu = getCompilationUnit(clazz, templateResourcePath, cuPackage, cuClass, feelExpression, theExpression, fieldDeclarations);
         return compileUnit(cuPackage, cuClass, cu);
     }
 
@@ -134,31 +134,29 @@ public class CompilerBytecodeLoader {
     }
 
     public String getSourceForUnaryTest(String packageName, String className, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
-        CompilationUnit cu = getCompilationUnit(CompiledFEELUnaryTests.class, "/TemplateCompiledFEELUnaryTests.java", packageName, className, feelExpression, theExpression, fieldDeclarations );
+        CompilationUnit cu = getCompilationUnit(CompiledFEELUnaryTests.class, "/TemplateCompiledFEELUnaryTests.java", packageName, className, feelExpression, theExpression, fieldDeclarations);
         ClassOrInterfaceDeclaration classSource = cu.getClassByName( className ).orElseThrow(() -> new IllegalArgumentException("Cannot find class by name " + className));
         classSource.setStatic( true );
         return classSource.toString();
     }
 
-    public <T> CompilationUnit getCompilationUnit(Class<T> clazz, String templateResourcePath, String cuPackage, String cuClass, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations ) {
+    public <T> CompilationUnit getCompilationUnit(Class<T> clazz, String templateResourcePath, String cuPackage, String cuClass, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
         CompilationUnit cu = parse(CompilerBytecodeLoader.class.getResourceAsStream(templateResourcePath));
         cu.setPackageDeclaration(cuPackage);
         final String className = templateResourcePath.substring( 1, templateResourcePath.length() - 5);
         ClassOrInterfaceDeclaration classSource = cu.getClassByName(className).orElseThrow(() -> new IllegalArgumentException("Cannot find class by name " + className));
         classSource.setName( cuClass );
 
-        List<MethodDeclaration> lookupMethodList = cu.getChildNodesByType(MethodDeclaration.class);
-        if (lookupMethodList.size() != 1) {
-            throw new RuntimeException("Something unexpected changed in the template.");
-        }
-        MethodDeclaration lookupMethod = lookupMethodList.get(0);
+        MethodDeclaration lookupMethod = cu
+                .findFirst(MethodDeclaration.class)
+                .orElseThrow(() -> new RuntimeException("Something unexpected changed in the template."));
+
         lookupMethod.setComment(new JavadocComment("   FEEL: " + feelExpression + "   "));
 
-        List<ReturnStmt> lookupReturnList = cu.getChildNodesByType(ReturnStmt.class);
-        if (lookupReturnList.size() != 1) {
-            throw new RuntimeException("Something unexpected changed in the template.");
-        }
-        ReturnStmt returnStmt = lookupReturnList.get(0);
+        ReturnStmt returnStmt =
+                lookupMethod.findFirst(ReturnStmt.class)
+                .orElseThrow(() -> new RuntimeException("Something unexpected changed in the template."));
+
         Expression expr;
         if (clazz.equals(CompiledFEELUnaryTests.class)) {
             expr = new CastExpr(StaticJavaParser.parseType("java.util.List"), new EnclosedExpr(theExpression));
@@ -167,7 +165,7 @@ public class CompilerBytecodeLoader {
         }
         returnStmt.setExpression(expr);
 
-        List<ClassOrInterfaceDeclaration> classDecls = cu.getChildNodesByType(ClassOrInterfaceDeclaration.class);
+        List<ClassOrInterfaceDeclaration> classDecls = cu.findAll(ClassOrInterfaceDeclaration.class);
         if (classDecls.size() != 1) {
             throw new RuntimeException("Something unexpected changed in the template.");
         }

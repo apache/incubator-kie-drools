@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,33 +16,77 @@
 
 package org.kie.dmn.core.compiler.alphanetbased;
 
+import java.util.Collections;
+import java.util.Map;
+
+import org.drools.ancompiler.CompiledNetwork;
+import org.drools.ancompiler.CompiledNetworkSource;
+import org.drools.ancompiler.ObjectTypeNodeCompiler;
+import org.drools.core.reteoo.ObjectTypeNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNEvaluatorCompiler;
+import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.core.compiler.execmodelbased.DTableModel;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.model.api.DecisionTable;
+import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.dmn.core.compiler.alphanetbased.CompiledAlphaNetwork.generateCompiledNetwork;
-import static org.kie.dmn.core.compiler.generators.GeneratorsUtil.getDecisionTableName;
 
 public class AlphaNetDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
-    static final Logger logger = LoggerFactory.getLogger( AlphaNetDMNEvaluatorCompiler.class);
+    static final Logger logger = LoggerFactory.getLogger(AlphaNetDMNEvaluatorCompiler.class);
 
-    public AlphaNetDMNEvaluatorCompiler( DMNCompilerImpl compiler) {
+    public AlphaNetDMNEvaluatorCompiler(DMNCompilerImpl compiler) {
         super(compiler);
     }
 
     @Override
-    protected DMNExpressionEvaluator compileDecisionTable( DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String dtName, DecisionTable dt ) {
-        String decisionName = getDecisionTableName(dtName, dt);
-        DTableModel dTableModel = new DTableModel(ctx.getFeelHelper(), model, dtName, decisionName, dt);
+    protected DMNExpressionEvaluator compileDecisionTable(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String decisionTableName, DecisionTable decisionTable) {
 
-        return new AlphaNetDMNExpressionEvaluator(generateCompiledNetwork()).initParameters(ctx.getFeelHelper(), ctx, dTableModel, node);
+        DMNFEELHelper feelHelper = ctx.getFeelHelper();
+
+        // Parse every cell in Decision Table
+        TableCell.TableCellFactory tableCellFactory = new TableCell.TableCellFactory(feelHelper, ctx);
+        DTableModel dTableModel = new DTableModel(feelHelper, model, decisionTableName, decisionTableName, decisionTable);
+        TableCellParser tableCellParser = new TableCellParser(tableCellFactory);
+        TableCells tableCells = tableCellParser.parseCells(dTableModel);
+
+        // Generate source code
+        GeneratedSources allGeneratedSources = new GeneratedSources();
+
+        Map<String, String> unaryTestClasses = tableCells.createUnaryTestClasses();
+        allGeneratedSources.addUnaryTestClasses(unaryTestClasses);
+
+        DMNAlphaNetworkCompiler dmnAlphaNetworkCompiler = new DMNAlphaNetworkCompiler();
+        GeneratedSources generatedSources = dmnAlphaNetworkCompiler.generateSourceCode(decisionTable, tableCells, decisionTableName, allGeneratedSources);
+
+        // Instantiate Alpha Network
+        Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(generatedSources.getAllClasses(), this.getClass().getClassLoader());
+        DMNCompiledAlphaNetwork dmnCompiledAlphaNetwork = generatedSources.newInstanceOfAlphaNetwork(compiledClasses);
+
+        dmnCompiledAlphaNetwork.initRete();
+        CompiledNetwork compiledAlphaNetwork = dmnCompiledAlphaNetwork.createCompiledAlphaNetwork(this);
+        dmnCompiledAlphaNetwork.setCompiledAlphaNetwork(compiledAlphaNetwork);
+
+        return new AlphaNetDMNExpressionEvaluator(dmnCompiledAlphaNetwork)
+                .initParameters(feelHelper, ctx, dTableModel, node);
     }
+
+    public CompiledNetwork createCompiledAlphaNetwork(ObjectTypeNode otn) {
+        ObjectTypeNodeCompiler objectTypeNodeCompiler = new ObjectTypeNodeCompiler(otn);
+        CompiledNetworkSource compiledNetworkSource = objectTypeNodeCompiler.generateSource();
+
+        Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(Collections.singletonMap(
+                        compiledNetworkSource.getName(), compiledNetworkSource.getSource()), this.getRootClassLoader());
+
+        Class<?> aClass = compiledClasses.get(compiledNetworkSource.getName());
+        return compiledNetworkSource.createInstanceAndSet(aClass);
+    }
+
+
 }

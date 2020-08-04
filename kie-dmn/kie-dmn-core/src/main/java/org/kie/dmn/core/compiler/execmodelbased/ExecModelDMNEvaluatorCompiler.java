@@ -17,12 +17,15 @@
 package org.kie.dmn.core.compiler.execmodelbased;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.drools.ruleunit.DataSource;
@@ -33,9 +36,9 @@ import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNEvaluatorCompiler;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
-import org.kie.dmn.core.compiler.generators.FeelExpressionSourceGenerator;
-import org.kie.dmn.core.compiler.generators.SourceGenerator;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.memorycompiler.CompilationProblem;
 import org.kie.memorycompiler.CompilationResult;
@@ -45,7 +48,7 @@ import org.slf4j.LoggerFactory;
 import static java.util.stream.Collectors.joining;
 
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
-import static org.kie.dmn.core.compiler.generators.GeneratorsUtil.getDecisionTableName;
+import static org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.replaceSimpleNameWith;
 
 public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
@@ -61,7 +64,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         super(compiler);
     }
 
-    public enum GeneratorsEnum {
+    enum GeneratorsEnum {
         EVALUATOR("Evaluator", new EvaluatorSourceGenerator()),
         UNIT("DTUnit", new UnitSourceGenerator()),
         EXEC_MODEL("ExecModel", new ExecModelSourceGenerator()),
@@ -74,10 +77,6 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         GeneratorsEnum( String type, SourceGenerator sourceGenerator) {
             this.type = type;
             this.sourceGenerator = sourceGenerator;
-        }
-
-        public String getType() {
-            return type;
         }
     }
 
@@ -92,6 +91,28 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             evaluator.initParameters(ctx.getFeelHelper(), ctx, dTableModel, node);
         }
         return evaluator;
+    }
+
+    protected static String getDecisionTableName(String dtName, DecisionTable dt) {
+        String decisionName;
+        if (dt.getParent() instanceof DRGElement) {
+            decisionName = dtName;
+        } else {
+            if (dt.getId() != null) {
+                decisionName = dt.getId();
+            } else {
+                DMNModelInstrumentedBase cursor = dt;
+                List<String> path = new ArrayList<>();
+                while (!(cursor instanceof DRGElement)) {
+                    int indexOf = cursor.getParent().getChildren().indexOf(cursor);
+                    path.add(String.valueOf(indexOf));
+                    cursor = cursor.getParent();
+                }
+                path.add(((DRGElement) cursor).getName());
+                decisionName = path.stream().sorted(Collections.reverseOrder()).collect(Collectors.joining("/"));
+            }
+        }
+        return decisionName;
     }
 
     public AbstractModelEvaluator generateEvaluator( DMNCompilerContext ctx, DTableModel dTableModel ) {
@@ -113,7 +134,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
     protected void generateSources(DMNCompilerContext ctx, DTableModel dTableModel, MemoryFileSystem srcMfs, String[] fileNames, List<GeneratedSource> generatedSources) {
         for (int i = 0; i < fileNames.length; i++) {
             GeneratorsEnum generator = getGenerators()[i];
-            String className = dTableModel.getGeneratedClassName(generator.getType());
+            String className = dTableModel.getGeneratedClassName(generator);
             String fileName = "src/main/java/" + className.replace('.', '/') + ".java";
             String javaSource = generator.sourceGenerator.generate(ctx, ctx.getFeelHelper(), dTableModel);
             fileNames[i] = fileName;
@@ -147,6 +168,10 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             Stream.of(errors).forEach(System.err::println);
             throw new RuntimeException();
         }
+    }
+
+    interface SourceGenerator {
+        String generate( DMNCompilerContext ctx, DMNFEELHelper feel, DTableModel dTableModel );
     }
 
     public static class EvaluatorSourceGenerator implements SourceGenerator {
@@ -360,11 +385,13 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
                         testClassesByInput.put(input, testClass);
                         instancesBuilder.append( "    private static final CompiledDTTest " + testClass + "_INSTANCE = new CompiledDTTest( new " + testClass + "() );\n" );
 
-                        String sourceCode = feel.generateUnaryTestsSource(
+                        ClassOrInterfaceDeclaration classOrInterfaceDeclaration = feel.generateStaticUnaryTestsSource(
                                 input,
                                 ctx,
-                                dTableModel.getColumns().get(j).getType())
-                                .setName(testClass).toString();
+                                dTableModel.getColumns().get(j).getType());
+
+                        replaceSimpleNameWith(classOrInterfaceDeclaration, "TemplateCompiledFEELUnaryTests", testClass);
+                        String sourceCode = classOrInterfaceDeclaration.setName(testClass).toString();
 
                         testsBuilder.append( "\n" );
                         testsBuilder.append( sourceCode );
