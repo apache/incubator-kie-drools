@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,42 +45,41 @@ public class AlphaNetDMNExpressionEvaluator implements DMNExpressionEvaluator {
 
     private static Logger logger = LoggerFactory.getLogger( AlphaNetDMNExpressionEvaluator.class );
 
-    private final CompiledAlphaNetwork compiledNetwork;
+    private final DMNCompiledAlphaNetwork compiledNetwork;
 
     private DMNFEELHelper feel;
     private DTableModel dTableModel;
     private DMNBaseNode node;
 
-    public AlphaNetDMNExpressionEvaluator( CompiledAlphaNetwork compiledNetwork ) {
+    public AlphaNetDMNExpressionEvaluator( DMNCompiledAlphaNetwork compiledNetwork ) {
         this.compiledNetwork = compiledNetwork;
     }
 
     @Override
     public EvaluatorResult evaluate( DMNRuntimeEventManager eventManager, DMNResult dmnResult ) {
         List<FEELEvent> events = new ArrayList<>();
-        DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable( eventManager, node.getName(), dTableModel.getDtName(), dmnResult );
+        DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable(eventManager, node.getName(), dTableModel.getDtName(), dmnResult);
 
-        EvaluationContext evalCtx = createEvaluationContext( events, eventManager, dmnResult );
+        EvaluationContext evalCtx = createEvaluationContext(events, eventManager, dmnResult);
         evalCtx.enterFrame();
 
         DMNDTExpressionEvaluator.EventResults eventResults = null;
         try {
-            Object result = compiledNetwork.evaluate( evalCtx );
+            Object result = compiledNetwork.evaluate(evalCtx);
 
-            eventResults = processEvents(events, eventManager, ( DMNResultImpl ) dmnResult, node);
+            eventResults = processEvents(events, eventManager, (DMNResultImpl) dmnResult, node);
 
             return new EvaluatorResultImpl(result,
-                    eventResults.hasErrors?
-                            EvaluatorResult.ResultType.FAILURE :
-                            EvaluatorResult.ResultType.SUCCESS );
-
+                                           eventResults.hasErrors ?
+                                                   EvaluatorResult.ResultType.FAILURE :
+                                                   EvaluatorResult.ResultType.SUCCESS);
         } catch (RuntimeException e) {
-            logger.error( e.toString(), e );
+            logger.error(e.toString(), e);
             throw e;
         } finally {
             evalCtx.exitFrame();
-            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable( eventManager, node.getName(), dTableModel.getDtName(), dmnResult,
-                    (eventResults != null ? eventResults.matchedRules : null), (eventResults != null ? eventResults.fired : null) );
+            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable(eventManager, node.getName(), dTableModel.getDtName(), dmnResult,
+                                                                       (eventResults != null ? eventResults.matchedRules : null), (eventResults != null ? eventResults.fired : null));
         }
     }
 
@@ -96,9 +95,5 @@ public class AlphaNetDMNExpressionEvaluator implements DMNExpressionEvaluator {
         this.dTableModel = dTableModel.compileAll( ctx );
         this.node = node;
         return this;
-    }
-
-    public AlphaNetDMNExpressionEvaluator initParameters( DMNCompilerContext ctx, DTableModel dTableModel, DMNBaseNode node) {
-        return initParameters(ctx.getFeelHelper(), ctx, dTableModel, node);
     }
 }

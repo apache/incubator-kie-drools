@@ -177,14 +177,14 @@ public class Expressions {
             case GTE:
                 return unaryComparison("gte", right);
             case EQ:
-                return new MethodCallExpr(null, "gracefulEq", new NodeList<>(FeelCtx.FEELCTX, right, LEFT_EXPR));
+                return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "gracefulEq", new NodeList<>(FeelCtx.FEELCTX, right, LEFT_EXPR));
             case NE:
                 return unaryComparison("ne", right);
             case IN:
                 // only used in decision tables: refactor? how?
-                return new MethodCallExpr(null, "includes", new NodeList<>(FeelCtx.FEELCTX, right, LEFT_EXPR));
+                return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "includes", new NodeList<>(FeelCtx.FEELCTX, right, LEFT_EXPR));
             case NOT:
-                return new MethodCallExpr(null, "notExists", new NodeList<>(FeelCtx.FEELCTX, right, LEFT_EXPR));
+                return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "notExists", new NodeList<>(FeelCtx.FEELCTX, right, LEFT_EXPR));
             case TEST:
                 return coerceToBoolean(right);
             default:
@@ -193,7 +193,7 @@ public class Expressions {
     }
 
     public static MethodCallExpr unaryComparison(String operator, Expression right) {
-        return new MethodCallExpr(null, operator, new NodeList<>(LEFT_EXPR, right));
+        return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), operator, new NodeList<>(LEFT_EXPR, right));
     }
 
     public static MethodCallExpr lt(Expression left, Expression right) {
@@ -263,21 +263,20 @@ public class Expressions {
                 .addArgument(returnExpr);
     }
 
+    public static NameExpr compiledFeelSemanticMappingsFQN() {
+        return new NameExpr("org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings");
+    }
+
     public static MethodCallExpr list(Expression... exprs) {
-        return new MethodCallExpr(null, "list", NodeList.nodeList(exprs));
+        return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "list", NodeList.nodeList(exprs));
     }
-
-    public static MethodCallExpr list(Collection<Expression> exprs) {
-        return new MethodCallExpr(null, "list", NodeList.nodeList(exprs));
-    }
-
 
     public static MethodCallExpr range(RangeNode.IntervalBoundary lowBoundary,
                                        Expression lowEndPoint,
                                        Expression highEndPoint,
                                        RangeNode.IntervalBoundary highBoundary) {
 
-        return new MethodCallExpr(null, "range")
+        return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "range")
                 .addArgument(FeelCtx.FEELCTX)
                 .addArgument(Constants.rangeBoundary(lowBoundary))
                 .addArgument(lowEndPoint)
@@ -286,21 +285,21 @@ public class Expressions {
     }
 
     public static MethodCallExpr includes(Expression range, Expression target) {
-        return new MethodCallExpr(null, "includes")
+        return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "includes")
                 .addArgument(FeelCtx.FEELCTX)
                 .addArgument(range)
                 .addArgument(target);
     }
 
     public static MethodCallExpr exists(Expression tests, Expression target) {
-        return new MethodCallExpr(null, "exists")
+        return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "exists")
                 .addArgument(FeelCtx.FEELCTX)
                 .addArgument(tests)
                 .addArgument(target);
     }
 
     public static MethodCallExpr notExists(Expression expr) {
-        return new MethodCallExpr(null, "notExists")
+        return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "notExists")
                 .addArgument(FeelCtx.FEELCTX)
                 .addArgument(expr)
                 .addArgument(LEFT_EXPR);
@@ -448,7 +447,7 @@ public class Expressions {
     }
 
     public static Expression coerceToBoolean(Expression expression) {
-        return new MethodCallExpr(null, "coerceToBoolean")
+        return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "coerceToBoolean")
                 .addArgument(FeelCtx.FEELCTX)
                 .addArgument(expression);
     }

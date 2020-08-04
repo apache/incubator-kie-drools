@@ -96,7 +96,8 @@ public class ProcessedExpression extends ProcessedFEELUnit {
                 TEMPLATE_CLASS,
                 expression,
                 compilerResult.getExpression(),
-                compilerResult.getFieldDeclarations());
+                compilerResult.getFieldDeclarations()
+        );
     }
 
     public InterpretedExecutableExpression getInterpreted() {
