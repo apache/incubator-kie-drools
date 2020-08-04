@@ -64,7 +64,7 @@ public class MessageConsumerGenerator {
         this.packageName = process.getPackageName();
         this.processId = process.getId();
         this.processName = processId.substring(processId.lastIndexOf('.') + 1);
-        String classPrefix = StringUtils.capitalize(processName);
+        String classPrefix = StringUtils.ucFirst(processName);
         this.resourceClazzName = classPrefix + "MessageConsumer_" + trigger.getOwnerId();
         this.relativePath = packageName.replace(".", "/") + "/" + resourceClazzName + ".java";
         this.modelfqcn = modelfqcn;
@@ -144,7 +144,7 @@ public class MessageConsumerGenerator {
     private void interpolateStrings(MethodCallExpr vv) {
         String s = vv.getNameAsString();        
         String interpolated =
-                s.replace("$ModelRef$", StringUtils.capitalize(trigger.getModelRef()));                
+                s.replace("$ModelRef$", StringUtils.ucFirst(trigger.getModelRef()));
         vv.setName(interpolated);
     }
 }

@@ -35,7 +35,6 @@
   </dependencyManagement>
 
   <modules>
-    <module>drools-core-reflective</module>
     <module>drools-core-static</module>
     <module>drools-core-dynamic</module>
     <module>drools-core</module>

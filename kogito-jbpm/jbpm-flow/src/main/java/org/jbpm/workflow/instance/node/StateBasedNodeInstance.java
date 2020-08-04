@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
-import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.KogitoInternalAgenda;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
@@ -99,7 +99,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
         if (getEventBasedNode().getBoundaryEvents() != null) {
 
             for (String name : getEventBasedNode().getBoundaryEvents()) {
-                boolean isActive = ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
+                boolean isActive = (( KogitoInternalAgenda ) getProcessInstance().getKnowledgeRuntime().getAgenda())
                         .isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", name, getProcessInstance().getId());
                 if (isActive) {
                     getProcessInstance().getKnowledgeRuntime().signalEvent(name, null);

@@ -38,11 +38,11 @@ import io.quarkus.deployment.builditem.nativeimage.RuntimeInitializedClassBuildI
 import io.quarkus.deployment.index.IndexingUtil;
 import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 import io.quarkus.runtime.LaunchMode;
+import org.drools.compiler.builder.impl.KogitoKieModuleModelImpl;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerSettings;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.base.ClassFieldAccessorFactory;
 import org.drools.modelcompiler.builder.JavaParserCompiler;
 import org.jboss.jandex.ClassInfo;
@@ -425,15 +425,15 @@ public class KogitoAssetsProcessor {
 
     private KieModuleModel findKieModuleModel( AppPaths appPaths ) throws IOException {
         for ( Path resourcePath : appPaths.getResourcePaths() ) {
-            Path moduleXmlPath = resourcePath.resolve( KieModuleModelImpl.KMODULE_JAR_PATH );
+            Path moduleXmlPath = resourcePath.resolve( KogitoKieModuleModelImpl.KMODULE_JAR_PATH );
             if ( Files.exists( moduleXmlPath ) ) {
-                return KieModuleModelImpl.fromXML(
+                return KogitoKieModuleModelImpl.fromXML(
                         new ByteArrayInputStream(
                                 Files.readAllBytes( moduleXmlPath ) ) );
             }
         }
 
-        return KieModuleModelImpl.fromXML(
+        return KogitoKieModuleModelImpl.fromXML(
                 "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>");
     }
 

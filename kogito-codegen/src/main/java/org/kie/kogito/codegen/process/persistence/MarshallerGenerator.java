@@ -15,8 +15,6 @@
 
 package org.kie.kogito.codegen.process.persistence;
 
-import static com.github.javaparser.StaticJavaParser.parse;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,17 +22,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.UUID;
-
-import org.drools.core.util.StringUtils;
-import org.infinispan.protostream.FileDescriptorSource;
-import org.infinispan.protostream.SerializationContext;
-import org.infinispan.protostream.config.Configuration;
-import org.infinispan.protostream.descriptors.Descriptor;
-import org.infinispan.protostream.descriptors.FieldDescriptor;
-import org.infinispan.protostream.descriptors.FileDescriptor;
-import org.infinispan.protostream.descriptors.Option;
-import org.infinispan.protostream.impl.SerializationContextImpl;
-import org.kie.kogito.codegen.BodyDeclarationComparator;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
@@ -50,6 +37,18 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.drools.core.util.StringUtils;
+import org.infinispan.protostream.FileDescriptorSource;
+import org.infinispan.protostream.SerializationContext;
+import org.infinispan.protostream.config.Configuration;
+import org.infinispan.protostream.descriptors.Descriptor;
+import org.infinispan.protostream.descriptors.FieldDescriptor;
+import org.infinispan.protostream.descriptors.FileDescriptor;
+import org.infinispan.protostream.descriptors.Option;
+import org.infinispan.protostream.impl.SerializationContextImpl;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
+
+import static com.github.javaparser.StaticJavaParser.parse;
 
 public class MarshallerGenerator {
 
@@ -140,7 +139,7 @@ public class MarshallerGenerator {
                         String accessor = protoStreamMethodType.equals("Boolean") ? "is" : "get";
                         write = new MethodCallExpr(new NameExpr("writer"), "write" + protoStreamMethodType)
                                 .addArgument(new StringLiteralExpr(field.getName()))
-                                .addArgument(new MethodCallExpr(new NameExpr("t"), accessor + StringUtils.capitalize(field.getName())));
+                                .addArgument(new MethodCallExpr(new NameExpr("t"), accessor + StringUtils.ucFirst(field.getName())));
                     } else {
                         // custom types 
                         String customTypeName = javaTypeForMessage(d, field.getTypeName(), serializationContext);
@@ -156,7 +155,7 @@ public class MarshallerGenerator {
                                     .addArgument(new NameExpr(customTypeName + ".class"));
                             write = new MethodCallExpr(new NameExpr("writer"), "writeCollection")
                                     .addArgument(new StringLiteralExpr(field.getName()))
-                                    .addArgument(new MethodCallExpr(new NameExpr("t"), "get" + StringUtils.capitalize(field.getName())))
+                                    .addArgument(new MethodCallExpr(new NameExpr("t"), "get" + StringUtils.ucFirst(field.getName())))
                                     .addArgument(new NameExpr(customTypeName + ".class"));
                         } else {
 
@@ -165,12 +164,12 @@ public class MarshallerGenerator {
                                     .addArgument(new NameExpr(customTypeName + ".class"));
                             write = new MethodCallExpr(new NameExpr("writer"), "writeObject")
                                     .addArgument(new StringLiteralExpr(field.getName()))
-                                    .addArgument(new MethodCallExpr(new NameExpr("t"), "get" + StringUtils.capitalize(field.getName())))
+                                    .addArgument(new MethodCallExpr(new NameExpr("t"), "get" + StringUtils.ucFirst(field.getName())))
                                     .addArgument(new NameExpr(customTypeName + ".class"));
                         }
                     }
 
-                    MethodCallExpr setter = new MethodCallExpr(new NameExpr("value"), "set" + StringUtils.capitalize(field.getName())).addArgument(read);
+                    MethodCallExpr setter = new MethodCallExpr(new NameExpr("value"), "set" + StringUtils.ucFirst(field.getName())).addArgument(read);
                     readFromMethod.getBody().ifPresent(b -> b.addStatement(setter));
 
                     // write method

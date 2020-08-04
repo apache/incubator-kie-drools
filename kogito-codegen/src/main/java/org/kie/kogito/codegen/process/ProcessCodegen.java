@@ -325,7 +325,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
         // generate Process, ProcessInstance classes and the REST resource
         for (ProcessExecutableModelGenerator execModelGen : processExecutableModelGenerators) {
-            String classPrefix = StringUtils.capitalize(execModelGen.extractedProcessId());
+            String classPrefix = StringUtils.ucFirst(execModelGen.extractedProcessId());
             WorkflowProcess workFlowProcess = execModelGen.process();
             ModelClassGenerator modelClassGenerator =
                     processIdToModelGenerator.get(execModelGen.getProcessId());

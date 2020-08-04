@@ -18,19 +18,17 @@ package org.jbpm.workflow.instance.node;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.spi.ProcessContext;
+import org.drools.core.spi.KogitoProcessContext;
 import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.ContextInstanceContainer;
 import org.jbpm.process.instance.ProcessInstance;
@@ -42,11 +40,8 @@ import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.SubProcessFactory;
 import org.jbpm.workflow.core.node.SubProcessNode;
-import org.jbpm.workflow.core.node.Transformation;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
-import org.jbpm.workflow.instance.impl.VariableScopeResolverFactory;
 import org.kie.api.definition.process.Node;
-import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
@@ -83,7 +78,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
                 "A SubProcess node only accepts default incoming connections!");
         }
 
-        ProcessContext context = new ProcessContext(getProcessInstance().getKnowledgeRuntime());
+        KogitoProcessContext context = new KogitoProcessContext(getProcessInstance().getKnowledgeRuntime());
         context.setNodeInstance(this);
         SubProcessFactory subProcessFactory = getSubProcessNode().getSubProcessFactory();
         Object o = subProcessFactory.bind(context);
@@ -198,7 +193,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
     private void handleOutMappings(ProcessInstance processInstance) {
         
         SubProcessFactory subProcessFactory = getSubProcessNode().getSubProcessFactory();
-        ProcessContext context = new ProcessContext(getProcessInstance().getKnowledgeRuntime());
+        KogitoProcessContext context = new KogitoProcessContext(getProcessInstance().getKnowledgeRuntime());
         context.setNodeInstance(this);
         org.kie.kogito.process.ProcessInstance<?> pi = ((org.kie.kogito.process.ProcessInstance<?>)processInstance.getMetaData().get("KogitoProcessInstance"));
         if (pi != null) {

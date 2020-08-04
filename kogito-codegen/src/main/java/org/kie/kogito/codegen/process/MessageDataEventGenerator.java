@@ -48,7 +48,7 @@ public class MessageDataEventGenerator {
         this.packageName = process.getPackageName();
         this.processId = process.getId();
         this.processName = processId.substring(processId.lastIndexOf('.') + 1);
-        String classPrefix = StringUtils.capitalize(processName);
+        String classPrefix = StringUtils.ucFirst(processName);
         this.resourceClazzName = classPrefix + "MessageDataEvent_" + trigger.getOwnerId();
         this.relativePath = packageName.replace(".", "/") + "/" + resourceClazzName + ".java";
     }

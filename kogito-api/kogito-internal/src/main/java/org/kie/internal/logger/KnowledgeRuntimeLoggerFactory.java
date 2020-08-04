@@ -97,10 +97,10 @@ public class KnowledgeRuntimeLoggerFactory {
     @SuppressWarnings("unchecked")
     private static void loadProvider() {
         try {
-            Class<KieLoggers> cls = (Class<KieLoggers>) Class.forName( "org.drools.core.audit.KnowledgeRuntimeLoggerProviderImpl" );
+            Class<KieLoggers> cls = (Class<KieLoggers>) Class.forName( "org.drools.core.audit.KogitoKnowledgeRuntimeLoggerProviderImpl" );
             setKnowledgeRuntimeLoggerProvider( cls.newInstance() );
         } catch ( Exception e ) {
-            throw new RuntimeException( "Provider org.drools.core.audit.KnowledgeRuntimeLoggerProviderImpl could not be set.",
+            throw new RuntimeException( "Provider org.drools.core.audit.KogitoKnowledgeRuntimeLoggerProviderImpl could not be set.",
                                                        e );
         }
     }

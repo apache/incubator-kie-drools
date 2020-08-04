@@ -63,7 +63,7 @@ import org.reflections.util.ConfigurationBuilder;
       threadSafe = true)
 public class ProcessClassesMojo extends AbstractKieMojo {
         
-    private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.getInstance().loadCompiler(JavaDialectConfiguration.CompilerType.NATIVE, "1.8");
+    private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.INSTANCE.loadCompiler(JavaDialectConfiguration.CompilerType.NATIVE, "1.8");
 
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)

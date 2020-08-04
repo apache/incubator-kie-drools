@@ -18,7 +18,7 @@ package org.jbpm.process.instance.impl.humantask;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import org.drools.core.process.instance.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemHandler;
 import org.jbpm.process.instance.impl.workitem.Abort;
 import org.jbpm.process.instance.impl.workitem.Active;
 import org.kie.api.runtime.process.WorkItem;
@@ -35,7 +35,7 @@ import org.kie.kogito.process.workitem.Transition;
  */
 public class HumanTaskWorkItemHandler implements WorkItemHandler {
 
-    private LifeCycle<Map<String, Object>> lifeCycle;
+    private final LifeCycle<Map<String, Object>> lifeCycle;
 
     public HumanTaskWorkItemHandler() {
         this(new BaseHumanTaskLifeCycle());

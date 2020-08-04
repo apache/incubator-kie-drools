@@ -111,7 +111,7 @@ class PMMLRestResourceGeneratorTest {
 
     @Test
     void className() {
-        String expected = StringUtils.capitalize(KIE_PMML_MODEL.getName()) + "Resource";
+        String expected = StringUtils.ucFirst(KIE_PMML_MODEL.getName()) + "Resource";
         assertEquals(expected, pmmlRestResourceGenerator.className());
     }
 
@@ -119,7 +119,7 @@ class PMMLRestResourceGeneratorTest {
     void generatedFilePath() {
         String retrieved = pmmlRestResourceGenerator.generatedFilePath();
         assertTrue(retrieved.startsWith("org/kie/kogito"));
-        String expected = StringUtils.capitalize(KIE_PMML_MODEL.getName()) + "Resource.java";
+        String expected = StringUtils.ucFirst(KIE_PMML_MODEL.getName()) + "Resource.java";
         assertTrue(retrieved.endsWith(expected));
     }
 
@@ -172,7 +172,7 @@ class PMMLRestResourceGeneratorTest {
         assertNotNull(retrieved);
         String expected = String.format("@Path(\"%s\")", KIE_PMML_MODEL.getName());
         assertTrue(retrieved.contains(expected));
-        expected = StringUtils.capitalize(KIE_PMML_MODEL.getName()) + "Resource";
+        expected = StringUtils.ucFirst(KIE_PMML_MODEL.getName()) + "Resource";
         expected = String.format("public class %s {", expected);
         assertTrue(retrieved.contains(expected));
         expected = String.format("org.kie.kogito.prediction.PredictionModel prediction = application.predictionModels" +

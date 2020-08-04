@@ -471,7 +471,7 @@ public class ProcessGenerator {
                 FieldDeclaration subprocessFieldDeclaration = new FieldDeclaration();                    
 
                 String fieldName = "process" + subProcess.getKey();
-                ClassOrInterfaceType modelType = new ClassOrInterfaceType(null, new SimpleName(org.kie.kogito.process.Process.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, StringUtils.capitalize(subProcess.getKey() + "Model"))));
+                ClassOrInterfaceType modelType = new ClassOrInterfaceType(null, new SimpleName(org.kie.kogito.process.Process.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, StringUtils.ucFirst(subProcess.getKey() + "Model"))));
                 if (useInjection()) {
                     subprocessFieldDeclaration
                         .addVariable(new VariableDeclarator(modelType, fieldName));

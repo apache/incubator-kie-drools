@@ -23,9 +23,10 @@ import java.util.regex.Matcher;
 
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.event.ProcessEventSupport;
+import org.drools.core.impl.KogitoStatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.process.instance.WorkItemManager;
-import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.drools.core.process.instance.KogitoWorkItemManager;
+import org.drools.core.process.instance.impl.KogitoWorkItemImpl;
 import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
@@ -87,7 +88,7 @@ public class DynamicUtils {
             KieRuntime ksession,
             String workItemName,
             Map<String, Object> parameters) {
-        final WorkItemImpl workItem = new WorkItemImpl();
+        final KogitoWorkItemImpl workItem = new KogitoWorkItemImpl();
         workItem.setState(WorkItem.ACTIVE);
         workItem.setProcessInstanceId(processInstance.getId());
         workItem.setDeploymentId((String) ksession.getEnvironment().get(EnvironmentName.DEPLOYMENT_ID));
@@ -163,13 +164,13 @@ public class DynamicUtils {
     }
 
     private static void executeWorkItem(StatefulKnowledgeSessionImpl ksession,
-                                        WorkItemImpl workItem,
+                                        KogitoWorkItemImpl workItem,
                                         WorkItemNodeInstance workItemNodeInstance) {
         ProcessEventSupport eventSupport = ((InternalProcessRuntime)
                 ksession.getProcessRuntime()).getProcessEventSupport();
         eventSupport.fireBeforeNodeTriggered(workItemNodeInstance,
                                              ksession);
-        ((WorkItemManager) ksession.getWorkItemManager()).internalExecuteWorkItem(workItem);
+        (( KogitoWorkItemManager ) ksession.getWorkItemManager()).internalExecuteWorkItem(workItem);
         workItemNodeInstance.internalSetWorkItemId(workItem.getId());
         eventSupport.fireAfterNodeTriggered(workItemNodeInstance,
                                             ksession);
@@ -290,8 +291,10 @@ public class DynamicUtils {
                                                                    processInstance.getId());
             ((ProcessInstanceImpl) subProcessInstance).setParentProcessInstanceId(processInstance.getId());
 
-            subProcessInstance = (ProcessInstance) ksession.startProcessInstance(subProcessInstance.getId());
-            subProcessNodeInstance.internalSetProcessInstanceId(subProcessInstance.getId());
+            KogitoStatefulKnowledgeSessionImpl kogitoSession = (KogitoStatefulKnowledgeSessionImpl) ksession;
+            String subProcessInstanceId = subProcessInstance.getId();
+            subProcessInstance = (ProcessInstance) kogitoSession.startProcessInstance(subProcessInstanceId);
+            subProcessNodeInstance.internalSetProcessInstanceId(subProcessInstanceId);
 
             eventSupport.fireAfterNodeTriggered(subProcessNodeInstance,
                                                 ksession);
@@ -302,7 +305,7 @@ public class DynamicUtils {
                 subProcessNodeInstance.addEventListeners();
             }
 
-            return subProcessInstance.getId();
+            return subProcessInstanceId;
         }
     }
 

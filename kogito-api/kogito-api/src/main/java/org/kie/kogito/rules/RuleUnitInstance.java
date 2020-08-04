@@ -18,7 +18,7 @@ package org.kie.kogito.rules;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.kogito.timer.SessionClock;
+import org.kie.api.time.SessionClock;
 
 public interface RuleUnitInstance<T extends RuleUnitData> {
 

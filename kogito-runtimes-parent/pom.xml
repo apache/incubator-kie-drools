@@ -156,7 +156,7 @@
     <container.image.keycloak.version>8.0.1</container.image.keycloak.version>
     <container.image.keycloak>quay.io/keycloak/keycloak:${container.image.keycloak.version}</container.image.keycloak>
   </properties>
-
+  
   <!-- distributionManagement section -->
   <distributionManagement>
     <repository>
@@ -275,6 +275,21 @@
         <artifactId>kogito-test-utils</artifactId>
         <version>${project.version}</version>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-core-reflective</artifactId>
+        <version>${version.org.kie7}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-core</artifactId>
+        <version>${version.org.kie7}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-compiler</artifactId>
+        <version>${version.org.kie7}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>

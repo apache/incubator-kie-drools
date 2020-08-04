@@ -43,7 +43,6 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
@@ -55,6 +54,7 @@ import org.kie.kogito.UserTaskParam.ParamType;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.drools.core.util.StringUtils.ucFirst;
 import static org.jbpm.ruleflow.core.Metadata.CUSTOM_AUTO_START;
 import static org.jbpm.ruleflow.core.Metadata.DATA_OUTPUTS;
 
@@ -88,10 +88,10 @@ public class UserTaskModelMetaData {
         this.humanTaskNode = humanTaskNode;
         this.processId = processId;
 
-        this.inputModelClassSimpleName = StringUtils.capitalize(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + humanTaskNode.getId() + "_" + TASK_INTPUT_CLASS_SUFFIX);
+        this.inputModelClassSimpleName = ucFirst(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + humanTaskNode.getId() + "_" + TASK_INTPUT_CLASS_SUFFIX);
         this.inputModelClassName = packageName + '.' + inputModelClassSimpleName;
 
-        this.outputModelClassSimpleName = StringUtils.capitalize(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + humanTaskNode.getId() + "_" + TASK_OUTTPUT_CLASS_SUFFIX);
+        this.outputModelClassSimpleName = ucFirst(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + humanTaskNode.getId() + "_" + TASK_OUTTPUT_CLASS_SUFFIX);
         this.outputModelClassName = packageName + '.' + outputModelClassSimpleName;
 
     }

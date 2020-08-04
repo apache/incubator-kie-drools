@@ -29,7 +29,8 @@ import java.util.stream.Collectors;
 
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.spi.ProcessContext;
+import org.drools.core.common.KogitoInternalAgenda;
+import org.drools.core.spi.KogitoProcessContext;
 import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
@@ -154,7 +155,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
 
                 if (actAsWaitState()) {
                     addRuleSetListener();
-                    ((InternalAgenda) kruntime.getAgenda())
+                    ((KogitoInternalAgenda) kruntime.getAgenda())
                             .activateRuleFlowGroup(getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId());
                 } else {
                     int fireLimit = DEFAULT_FIRE_RULE_LIMIT;
@@ -162,7 +163,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                     if (inputs.containsKey(FIRE_RULE_LIMIT_PARAMETER)) {
                         fireLimit = Integer.parseInt(inputs.get(FIRE_RULE_LIMIT_PARAMETER).toString());
                     }
-                    ((InternalAgenda) kruntime.getAgenda())
+                    ((KogitoInternalAgenda) kruntime.getAgenda())
                             .activateRuleFlowGroup(getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId());
 
                     int fired = ((KieSession) kruntime).fireAllRules(fireLimit);
@@ -177,7 +178,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                 }
             } else if (ruleType.isRuleUnit()) {
                 RuleUnitFactory<RuleUnitData> factory = ruleSetNode.getRuleUnitFactory();
-                ProcessContext context = new ProcessContext(getProcessInstance().getKnowledgeRuntime());
+                KogitoProcessContext context = new KogitoProcessContext(getProcessInstance().getKnowledgeRuntime());
                 context.setNodeInstance(this);
                 RuleUnitData model = factory.bind(context);
                 RuleUnitInstance<RuleUnitData> instance = factory.unit().createInstance(model);

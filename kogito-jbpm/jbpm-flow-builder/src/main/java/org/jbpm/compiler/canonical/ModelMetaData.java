@@ -50,7 +50,6 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.context.variable.Variable;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.internal.kogito.codegen.Generated;
@@ -58,6 +57,7 @@ import org.kie.internal.kogito.codegen.VariableInfo;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.drools.core.util.StringUtils.ucFirst;
 
 public class ModelMetaData {
 
@@ -132,7 +132,7 @@ public class ModelMetaData {
     public MethodCallExpr callSetter(String targetVar, String destField, Expression value) {
         String name = variableScope.getTypes().get(destField).getSanitizedName();
         String type = variableScope.getType(destField);
-        String setter = "set" + StringUtils.capitalize(name); // todo cache FieldDeclarations in compilationUnit()
+        String setter = "set" + ucFirst(name); // todo cache FieldDeclarations in compilationUnit()
         return new MethodCallExpr(new NameExpr(targetVar), setter).addArgument(
                 new CastExpr(
                         new ClassOrInterfaceType(null, type),
@@ -140,7 +140,7 @@ public class ModelMetaData {
     }
 
     public MethodCallExpr callGetter(String targetVar, String field) {
-        String getter = "get" + StringUtils.capitalize(field); // todo cache FieldDeclarations in compilationUnit()
+        String getter = "get" + ucFirst(field); // todo cache FieldDeclarations in compilationUnit()
         return new MethodCallExpr(new NameExpr(targetVar), getter);
     }
 
@@ -157,7 +157,7 @@ public class ModelMetaData {
         if (!WorkflowProcess.PRIVATE_VISIBILITY.equals(visibility)) {
             modelClass.addAnnotation(new NormalAnnotationExpr(new Name(Generated.class.getCanonicalName()), NodeList.nodeList(new MemberValuePair("value", new StringLiteralExpr("kogito-codegen")),
                                                                                                                               new MemberValuePair("reference", new StringLiteralExpr(processId)),
-                                                                                                                              new MemberValuePair("name", new StringLiteralExpr(StringUtils.capitalize(ProcessToExecModelGenerator.extractProcessId(processId)))),
+                                                                                                                              new MemberValuePair("name", new StringLiteralExpr(ucFirst(ProcessToExecModelGenerator.extractProcessId(processId)))),
                                                                                                                               new MemberValuePair("hidden", new BooleanLiteralExpr(hidden)))));
         }
         modelClass.setName(modelClassSimpleName);

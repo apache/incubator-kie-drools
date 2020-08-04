@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.event.ProcessEventSupport;
+import org.drools.core.event.KogitoProcessEventSupport;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ContextInstanceContainer;
@@ -97,7 +97,7 @@ public class VariableScopeInstance extends AbstractContextInstance {
         if (oldValue != null && getVariableScope().isReadOnly(name)) {
             throw new VariableViolationException(getProcessInstance().getId(), name, "Variable '" + name + "' is already set and is marked as read only");
         }
-        ProcessEventSupport processEventSupport = ((InternalProcessRuntime) getProcessInstance()
+        KogitoProcessEventSupport processEventSupport = ( KogitoProcessEventSupport ) ((InternalProcessRuntime) getProcessInstance()
     		.getKnowledgeRuntime().getProcessRuntime()).getProcessEventSupport();
     	processEventSupport.fireBeforeVariableChanged(
 			(variableIdPrefix == null ? "" : variableIdPrefix + ":") + name,

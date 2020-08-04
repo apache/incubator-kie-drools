@@ -95,17 +95,17 @@ public class InMemoryJobService implements JobsService {
     @Override
     public ZonedDateTime getScheduledTime(String id) {
         if (scheduledJobs.containsKey(id)) {
-             ScheduledFuture<?> scheduled = scheduledJobs.get(id);
-             
-             long remainingTime = scheduled.getDelay(TimeUnit.MILLISECONDS);
-             if (remainingTime > 0) {
-                 return ZonedDateTime.from(Instant.ofEpochMilli(System.currentTimeMillis() + remainingTime));
-             }
+            ScheduledFuture<?> scheduled = scheduledJobs.get(id);
+
+            long remainingTime = scheduled.getDelay(TimeUnit.MILLISECONDS);
+            if (remainingTime > 0) {
+                return ZonedDateTime.from(Instant.ofEpochMilli(System.currentTimeMillis() + remainingTime));
+            }
         }
-        
+
         return null;
     }
-    
+
     protected long calculateDelay(JobDescription description) {
         return Duration.between(ZonedDateTime.now(), description.expirationTime().get()).toMillis();
     }

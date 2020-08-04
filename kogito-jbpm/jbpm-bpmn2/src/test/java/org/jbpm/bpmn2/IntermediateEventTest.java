@@ -16,10 +16,6 @@
 
 package org.jbpm.bpmn2;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,8 +26,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.drools.core.command.runtime.process.SetProcessInstanceVariablesCommand;
-import org.drools.core.process.instance.WorkItemHandler;
+import org.drools.core.command.runtime.process.KogitoSetProcessInstanceVariablesCommand;
+import org.drools.core.process.instance.KogitoWorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.objects.Person;
@@ -64,6 +61,10 @@ import org.kie.internal.command.RegistryContext;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.process.NamedDataType;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
@@ -1073,10 +1074,10 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         WorkItem workItem = handler.getWorkItem();
         assertThat(workItem).isNotNull();
-        assertThat(workItem instanceof org.drools.core.process.instance.WorkItem).isTrue();
+        assertThat(workItem instanceof KogitoWorkItem ).isTrue();
 
-        String nodeInstanceId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeInstanceId();
-        long nodeId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeId();
+        String nodeInstanceId = (( KogitoWorkItem ) workItem).getNodeInstanceStringId();
+        long nodeId = (( KogitoWorkItem ) workItem).getNodeId();
 
         assertThat(nodeId).isNotNull();
         assertThat(nodeId > 0).isTrue();
@@ -1096,11 +1097,11 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         WorkItem workItem = handler.getWorkItem();
         assertThat(workItem).isNotNull();
-        assertThat(workItem instanceof org.drools.core.process.instance.WorkItem).isTrue();
+        assertThat(workItem instanceof KogitoWorkItem ).isTrue();
 
-        String nodeInstanceId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeInstanceId();
-        long nodeId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeId();
-        String deploymentId = ((org.drools.core.process.instance.WorkItem) workItem).getDeploymentId();
+        String nodeInstanceId = (( KogitoWorkItem ) workItem).getNodeInstanceStringId();
+        long nodeId = (( KogitoWorkItem ) workItem).getNodeId();
+        String deploymentId = (( KogitoWorkItem ) workItem).getDeploymentId();
 
         assertThat(nodeId).isNotNull();
         assertThat(nodeId > 0).isTrue();
@@ -2718,7 +2719,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         String changeProcessInstanceId = instances.remove(0);
         Map<String, Object> updatedVariables = new HashMap<>();
         updatedVariables.put("fatherId", "999");
-        ksession.execute(new SetProcessInstanceVariablesCommand(changeProcessInstanceId, updatedVariables));
+        ksession.execute(new KogitoSetProcessInstanceVariablesCommand(changeProcessInstanceId, updatedVariables));
         
         // now complete user task to signal all child instances to stop
         WorkItem workItem = handler.getWorkItem();
@@ -2776,7 +2777,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         String changeProcessInstanceId = instances.remove(0);
         Map<String, Object> updatedVariables = new HashMap<>();
         updatedVariables.put("fatherId", "999");
-        ksession.execute(new SetProcessInstanceVariablesCommand(changeProcessInstanceId, updatedVariables));
+        ksession.execute(new KogitoSetProcessInstanceVariablesCommand(changeProcessInstanceId, updatedVariables));
         
         // now complete user task to signal all child instances to stop
         WorkItem workItem = handler.getWorkItem();

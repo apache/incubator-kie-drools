@@ -16,6 +16,11 @@
 
 package org.jbpm.compiler.canonical;
 
+import java.io.InputStream;
+import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Matcher;
+
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
@@ -27,7 +32,6 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
@@ -36,12 +40,8 @@ import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.kie.api.definition.process.WorkflowProcess;
 
-import java.io.InputStream;
-import java.util.Map;
-import java.util.Optional;
-import java.util.regex.Matcher;
-
 import static com.github.javaparser.StaticJavaParser.parse;
+import static org.drools.core.util.StringUtils.ucFirst;
 import static org.jbpm.ruleflow.core.factory.SubProcessNodeFactory.METHOD_INDEPENDENT;
 import static org.jbpm.ruleflow.core.factory.SubProcessNodeFactory.METHOD_PROCESS_ID;
 import static org.jbpm.ruleflow.core.factory.SubProcessNodeFactory.METHOD_PROCESS_NAME;
@@ -201,12 +201,12 @@ public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor<SubProcessN
         for (int i = 1; i < elements.length - 1; i++) {
             scope = new MethodCallExpr()
                     .setScope(scope)
-                    .setName("get" + StringUtils.capitalize(elements[i]));
+                    .setName("get" + ucFirst(elements[i]));
         }
 
         return new MethodCallExpr()
                 .setScope(scope)
-                .setName("set" + StringUtils.capitalize(elements[elements.length - 1]))
+                .setName("set" + ucFirst(elements[elements.length - 1]))
                 .addArgument(value);
     }
 
@@ -221,7 +221,7 @@ public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor<SubProcessN
         for (int i = 1; i < elements.length; i++) {
             scope = new MethodCallExpr()
                     .setScope(scope)
-                    .setName("get" + StringUtils.capitalize(elements[i]));
+                    .setName("get" + ucFirst(elements[i]));
         }
 
         return scope;

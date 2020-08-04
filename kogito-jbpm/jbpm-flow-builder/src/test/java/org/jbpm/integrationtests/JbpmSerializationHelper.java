@@ -16,7 +16,6 @@
 
 package org.jbpm.integrationtests;
 
-import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;

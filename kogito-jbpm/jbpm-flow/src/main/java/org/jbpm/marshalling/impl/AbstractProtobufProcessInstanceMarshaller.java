@@ -28,11 +28,13 @@ import java.util.Map;
 
 import com.google.protobuf.ExtensionRegistry;
 import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.marshalling.impl.KogitoMarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufMessages.Header;
-import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.drools.core.process.instance.KogitoWorkItem;
+import org.drools.core.process.instance.impl.KogitoWorkItemImpl;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceType;
@@ -521,12 +523,12 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 .setName( workItem.getName() )
                 .setState( workItem.getState() );
 
-        if (workItem instanceof org.drools.core.process.instance.WorkItem) {
-            if (((org.drools.core.process.instance.WorkItem)workItem).getDeploymentId() != null){
-            _workItem.setDeploymentId(((org.drools.core.process.instance.WorkItem)workItem).getDeploymentId());
+        if (workItem instanceof KogitoWorkItem ) {
+            if ((( KogitoWorkItem )workItem).getDeploymentId() != null){
+            _workItem.setDeploymentId((( KogitoWorkItem )workItem).getDeploymentId());
             }
-            _workItem.setNodeId(((org.drools.core.process.instance.WorkItem)workItem).getNodeId())
-            .setNodeInstanceId(((org.drools.core.process.instance.WorkItem)workItem).getNodeInstanceId());
+            _workItem.setNodeId((( KogitoWorkItem )workItem).getNodeId())
+            .setNodeInstanceId((( KogitoWorkItem )workItem).getNodeInstanceStringId());
             
             if (workItem.getPhaseId() != null) {
                 _workItem.setPhaseId(workItem.getPhaseId());
@@ -554,7 +556,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
 
     public static WorkItem readWorkItem(MarshallerReaderContext context,
                                         JBPMMessages.WorkItem _workItem) throws IOException {
-        WorkItemImpl workItem = new WorkItemImpl();
+        KogitoWorkItemImpl workItem = new KogitoWorkItemImpl();
         workItem.setId( _workItem.getId() );
         workItem.setProcessInstanceId( _workItem.getProcessInstancesId() );
         workItem.setName( _workItem.getName() );
@@ -592,11 +594,11 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 .setState( workItem.getState() );
 
         
-        if (((org.drools.core.process.instance.WorkItem)workItem).getDeploymentId() != null){
-        _workItem.setDeploymentId(((org.drools.core.process.instance.WorkItem)workItem).getDeploymentId());
+        if ((( KogitoWorkItem )workItem).getDeploymentId() != null){
+        _workItem.setDeploymentId((( KogitoWorkItem )workItem).getDeploymentId());
         }
-        _workItem.setNodeId(((org.drools.core.process.instance.WorkItem)workItem).getNodeId())
-        .setNodeInstanceId(((org.drools.core.process.instance.WorkItem)workItem).getNodeInstanceId());
+        _workItem.setNodeId((( KogitoWorkItem )workItem).getNodeId())
+        .setNodeInstanceId((( KogitoWorkItem )workItem).getNodeInstanceStringId());
         
         if (workItem.getPhaseId() != null) {
             _workItem.setPhaseId(workItem.getPhaseId());
@@ -703,8 +705,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
     
     
     // Input methods
-    public ProcessInstance readProcessInstance(MarshallerReaderContext context) throws IOException {
-        
+    public ProcessInstance readProcessInstance(MarshallerReaderContext c) throws IOException {
+        KogitoMarshallerReaderContext context = (KogitoMarshallerReaderContext)c;
         JBPMMessages.ProcessInstance _instance = (org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance) context.parameterObject;
         if( _instance == null ) {
             // try to parse from the stream
@@ -958,7 +960,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             case HUMAN_TASK_NODE :
                 nodeInstance = new HumanTaskNodeInstance();
                 ((HumanTaskNodeInstance) nodeInstance).internalSetWorkItemId( _content.getHumanTask().getWorkItemId() );
-                ((HumanTaskNodeInstance) nodeInstance).internalSetWorkItem( (org.drools.core.process.instance.WorkItem) readHumanTaskWorkItem(context, _content.getHumanTask().getWorkitem()) );
+                ((HumanTaskNodeInstance) nodeInstance).internalSetWorkItem( ( KogitoWorkItem ) readHumanTaskWorkItem(context, _content.getHumanTask().getWorkitem()) );
                 if ( _content.getHumanTask().getTimerInstanceIdCount() > 0 ) {
                     List<String> timerInstances = new ArrayList<>();
                     for ( String _timerId : _content.getHumanTask().getTimerInstanceIdList() ) {
@@ -971,7 +973,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             case WORK_ITEM_NODE :
                 nodeInstance = new WorkItemNodeInstance();
                 ((WorkItemNodeInstance) nodeInstance).internalSetWorkItemId( _content.getWorkItem().getWorkItemId() );
-                ((WorkItemNodeInstance) nodeInstance).internalSetWorkItem( (org.drools.core.process.instance.WorkItem) readWorkItem(context, _content.getWorkItem().getWorkitem()) );
+                ((WorkItemNodeInstance) nodeInstance).internalSetWorkItem( ( KogitoWorkItem ) readWorkItem(context, _content.getWorkItem().getWorkitem()) );
                 if ( _content.getWorkItem().getTimerInstanceIdCount() > 0 ) {
                     List<String> timerInstances = new ArrayList<>();
                     for ( String _timerId : _content.getWorkItem().getTimerInstanceIdList() ) {

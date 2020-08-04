@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.timer.SessionPseudoClock;
+import org.kie.api.time.SessionPseudoClock;
 import org.kie.kogito.Application;
 import org.kie.kogito.codegen.data.Address;
 import org.kie.kogito.codegen.data.Person;

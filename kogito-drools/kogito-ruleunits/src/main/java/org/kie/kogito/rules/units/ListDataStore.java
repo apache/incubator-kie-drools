@@ -20,8 +20,8 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.kogito.factory.KogitoInternalFactHandle;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.ruleunit.InternalStoreCallback;
 import org.drools.core.spi.Activation;
@@ -77,15 +77,15 @@ public class ListDataStore<T> implements DataStore<T>,
     }
 
     @Override
-    public void update( InternalFactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
-        DataHandle dh = fh.getDataHandle();
+    public void update( KogitoInternalFactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
+        DataHandle dh = ((KogitoInternalFactHandle)fh).getDataHandle();
         entryPointSubscribers.forEach( s -> s.update( dh, obj, mask, modifiedClass, activation ) );
         subscribers.forEach( s -> s.update(dh, (T) obj) );
     }
 
     @Override
-    public void delete( InternalFactHandle fh, RuleImpl rule, TerminalNode terminalNode, FactHandle.State fhState) {
-        DataHandle dh = fh.getDataHandle();
+    public void delete( KogitoInternalFactHandle fh, RuleImpl rule, TerminalNode terminalNode, FactHandle.State fhState) {
+        DataHandle dh = ((KogitoInternalFactHandle)fh).getDataHandle();
         entryPointSubscribers.forEach( s -> s.delete( dh, rule, terminalNode, fhState ) );
         subscribers.forEach( s -> s.delete(dh) );
         store.remove( fh.getObject() );
@@ -94,8 +94,8 @@ public class ListDataStore<T> implements DataStore<T>,
     private void internalInsert( DataHandle dh, DataProcessor s ) {
         FactHandle fh = s.insert( dh, dh.getObject() );
         if (fh != null) {
-            (( InternalFactHandle ) fh).setDataStore( this );
-            (( InternalFactHandle ) fh).setDataHandle( dh );
+            (( KogitoInternalFactHandle ) fh).setDataStore( this );
+            (( KogitoInternalFactHandle ) fh).setDataHandle( dh );
         }
     }
 }

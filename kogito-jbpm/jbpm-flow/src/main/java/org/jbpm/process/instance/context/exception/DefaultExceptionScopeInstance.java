@@ -16,7 +16,7 @@
 
 package org.jbpm.process.instance.context.exception;
 
-import org.drools.core.spi.ProcessContext;
+import org.drools.core.spi.KogitoProcessContext;
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionScope;
@@ -40,7 +40,7 @@ public class DefaultExceptionScopeInstance extends ExceptionScopeInstance {
 			Action action = (Action) exceptionHandler.getAction().getMetaData("Action");
 			try {
 		    	ProcessInstance processInstance = getProcessInstance();
-			    ProcessContext processContext = new ProcessContext(processInstance.getKnowledgeRuntime());
+				KogitoProcessContext processContext = new KogitoProcessContext(processInstance.getKnowledgeRuntime());
 			    ContextInstanceContainer contextInstanceContainer = getContextInstanceContainer();
 			    if (contextInstanceContainer instanceof NodeInstance) {
 			    	processContext.setNodeInstance((NodeInstance) contextInstanceContainer);

@@ -18,7 +18,7 @@ package org.jbpm.workflow.instance.node;
 
 import java.util.Set;
 
-import org.drools.core.process.instance.WorkItem;
+import org.drools.core.process.instance.KogitoWorkItem;
 import org.jbpm.process.core.context.swimlane.SwimlaneContext;
 import org.jbpm.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
@@ -48,11 +48,11 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
     }
     
     @Override
-    protected WorkItem newWorkItem() {
+    protected KogitoWorkItem newWorkItem() {
         return new HumanTaskWorkItemImpl();
     }
 
-    protected WorkItem createWorkItem(WorkItemNode workItemNode) {
+    protected KogitoWorkItem createWorkItem( WorkItemNode workItemNode) {
         HumanTaskWorkItemImpl workItem = (HumanTaskWorkItemImpl)super.createWorkItem(workItemNode);
         String actorId = assignWorkItem(workItem);
         if (actorId != null) {
@@ -67,7 +67,7 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
         return workItem;
     }
     
-    protected String assignWorkItem(WorkItem workItem) {
+    protected String assignWorkItem( KogitoWorkItem workItem) {
         String actorId = null;
         // if this human task node is part of a swimlane, check whether an actor
         // has already been assigned to this swimlane
@@ -114,7 +114,7 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
         return this.swimlaneContextInstance;
     }
     
-    public void triggerCompleted(WorkItem workItem) {
+    public void triggerCompleted( KogitoWorkItem workItem) {
         
         String swimlaneName = getHumanTaskNode().getSwimlane();
         SwimlaneContextInstance swimlaneContextInstance = getSwimlaneContextInstance(swimlaneName);
@@ -127,7 +127,7 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
         super.triggerCompleted(workItem);
     }
     
-    protected void processAssigment(String type, WorkItem workItem, Set<String> store) {
+    protected void processAssigment( String type, KogitoWorkItem workItem, Set<String> store) {
         
         String value = (String) workItem.getParameter(type);
         

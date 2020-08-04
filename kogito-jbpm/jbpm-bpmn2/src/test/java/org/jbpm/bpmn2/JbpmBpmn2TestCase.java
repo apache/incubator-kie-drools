@@ -16,12 +16,6 @@
 
 package org.jbpm.bpmn2;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,10 +29,10 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.core.audit.WorkingMemoryInMemoryLogger;
+import org.drools.core.audit.KogitoWorkingMemoryInMemoryLogger;
+import org.drools.core.audit.event.KogitoRuleFlowLogEvent;
+import org.drools.core.audit.event.KogitoRuleFlowNodeLogEvent;
 import org.drools.core.audit.event.LogEvent;
-import org.drools.core.audit.event.RuleFlowLogEvent;
-import org.drools.core.audit.event.RuleFlowNodeLogEvent;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.util.DroolsStreamUtils;
@@ -76,6 +70,12 @@ import org.mvel2.ParserContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 /**
  * Base test case for the jbpm-bpmn2 module.
  */
@@ -90,7 +90,7 @@ public abstract class JbpmBpmn2TestCase {
      */
     protected KieSession ksession;
 
-    protected WorkingMemoryInMemoryLogger workingMemoryLogger;
+    protected KogitoWorkingMemoryInMemoryLogger workingMemoryLogger;
 
     @AfterEach
     public void disposeSession() {
@@ -241,7 +241,7 @@ public abstract class JbpmBpmn2TestCase {
         conf = SessionConfiguration.newInstance(defaultProps);
         conf.setOption(ForceEagerActivationOption.YES);
         result = (StatefulKnowledgeSession) kbase.newKieSession(conf, env);
-        workingMemoryLogger = new WorkingMemoryInMemoryLogger(result);
+        workingMemoryLogger = new KogitoWorkingMemoryInMemoryLogger(result);
         
         return result;
     }
@@ -344,8 +344,8 @@ public abstract class JbpmBpmn2TestCase {
         int counter = 0;
         
         for (LogEvent event : workingMemoryLogger.getLogEvents()) {
-            if (event instanceof RuleFlowNodeLogEvent) {
-                String nodeName = ((RuleFlowNodeLogEvent) event).getNodeName();
+            if (event instanceof KogitoRuleFlowNodeLogEvent ) {
+                String nodeName = (( KogitoRuleFlowNodeLogEvent ) event).getNodeName();
                 if (node.equals(nodeName)) {
                     counter++;
                 }
@@ -360,7 +360,7 @@ public abstract class JbpmBpmn2TestCase {
         LogEvent [] events = workingMemoryLogger.getLogEvents().toArray(new LogEvent[0]);
         for (LogEvent event : events ) { 
             if (event.getType() == LogEvent.BEFORE_RULEFLOW_CREATED) {
-                if(((RuleFlowLogEvent) event).getProcessId().equals(processId)) {
+                if((( KogitoRuleFlowLogEvent ) event).getProcessId().equals(processId)) {
                     counter++;                    
                 }
             }
@@ -382,8 +382,8 @@ public abstract class JbpmBpmn2TestCase {
         }
         
         for (LogEvent event : workingMemoryLogger.getLogEvents()) {
-            if (event instanceof RuleFlowNodeLogEvent) {
-                String nodeName = ((RuleFlowNodeLogEvent) event)
+            if (event instanceof KogitoRuleFlowNodeLogEvent ) {
+                String nodeName = (( KogitoRuleFlowNodeLogEvent ) event)
                         .getNodeName();
                 if (names.contains(nodeName)) {
                     names.remove(nodeName);
@@ -398,9 +398,9 @@ public abstract class JbpmBpmn2TestCase {
         List<String> names = new ArrayList<String>();
         
         for (LogEvent event : workingMemoryLogger.getLogEvents()) {
-            if (event instanceof RuleFlowNodeLogEvent) {
+            if (event instanceof KogitoRuleFlowNodeLogEvent ) {
                 if( event.getType() == 27 ) { 
-                    names.add(((RuleFlowNodeLogEvent) event).getNodeId());
+                    names.add((( KogitoRuleFlowNodeLogEvent ) event).getNodeId());
                 }
             }
         }

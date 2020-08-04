@@ -28,7 +28,7 @@ import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.impl.EnvironmentImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.process.instance.impl.DefaultWorkItemManager;
+import org.drools.core.process.instance.impl.KogitoDefaultWorkItemManager;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
@@ -37,6 +37,8 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.AsyncExceptionHandler;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
+import org.drools.core.time.TimerService;
+import org.drools.core.time.impl.JDKTimerService;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.KieBase;
 import org.kie.api.event.kiebase.KieBaseEventListener;
@@ -44,7 +46,7 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.logger.KieRuntimeLogger;
-import org.kie.kogito.timer.Calendars;
+import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.Globals;
@@ -57,10 +59,8 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
-import org.kie.kogito.timer.SessionClock;
+import org.kie.api.time.SessionClock;
 import org.kie.kogito.jobs.JobsService;
-import org.kie.kogito.timer.TimerService;
-import org.kie.kogito.timer.impl.JDKTimerService;
 
 /**
  * A severely limited implementation of the WorkingMemory interface.
@@ -79,7 +79,7 @@ public class DummyWorkingMemory implements InternalWorkingMemory,
         this.kieBase = kieBase;
         environment = new EnvironmentImpl();
         timerService = new JDKTimerService();
-        this.workItemManager = new DefaultWorkItemManager(this);
+        this.workItemManager = new KogitoDefaultWorkItemManager(this);
     }
 
     public void setProcessRuntime(InternalProcessRuntime processRuntime) {
@@ -519,6 +519,16 @@ public class DummyWorkingMemory implements InternalWorkingMemory,
     @Override
     public Collection<ProcessInstance> getProcessInstances() {
         return null;
+    }
+
+    @Override
+    public ProcessInstance getProcessInstance(long id) {
+        throw new UnsupportedOperationException("Do not use this in kogito");
+    }
+
+    @Override
+    public ProcessInstance getProcessInstance(long id, boolean readOnly) {
+        throw new UnsupportedOperationException("Do not use this in kogito");
     }
 
     @Override

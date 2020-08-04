@@ -66,7 +66,7 @@ public abstract class KogitoCompilationProvider extends JavaCompilationProvider 
                 }
             }
             super.compile(generatedSourceFiles, context);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new KogitoCompilerException(e);
         } finally {
             try {

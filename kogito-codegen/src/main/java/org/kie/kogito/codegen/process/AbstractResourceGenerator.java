@@ -85,7 +85,7 @@ public abstract class AbstractResourceGenerator {
         this.processId = process.getId();
         this.processName = processId.substring(processId.lastIndexOf('.') + 1);
         this.appCanonicalName = appCanonicalName;
-        String classPrefix = StringUtils.capitalize(processName);
+        String classPrefix = StringUtils.ucFirst(processName);
         this.resourceClazzName = classPrefix + "Resource";
         this.relativePath = process.getPackageName().replace(".", "/") + "/" + resourceClazzName + ".java";
         this.modelfqcn = modelfqcn + "Output";

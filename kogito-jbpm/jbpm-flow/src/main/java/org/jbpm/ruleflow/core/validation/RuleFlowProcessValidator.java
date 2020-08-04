@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import org.drools.core.time.impl.CronExpression;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.Variable;
@@ -69,7 +70,6 @@ import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
-import org.kie.kogito.timer.impl.CronExpression;
 import org.mvel2.ErrorDetail;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;

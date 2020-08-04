@@ -16,14 +16,6 @@
 
 package org.jbpm.bpmn2;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,11 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-
 import org.assertj.core.api.Assumptions;
 import org.drools.compiler.rule.builder.PackageBuildContext;
+import org.drools.core.process.instance.KogitoWorkItem;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
@@ -98,6 +89,14 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.command.RegistryContext;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ActivityTest extends JbpmBpmn2TestCase {
 
@@ -449,17 +448,17 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 ProcessInstance processInstance = ksession.getProcessInstance(pId);
                 assertNotNull(processInstance);
                 NodeInstance nodeInstance = ((WorkflowProcessInstance) processInstance)
-                        .getNodeInstance(((org.drools.core.process.instance.WorkItem) workItem).getNodeInstanceId());
+                        .getNodeInstance((( KogitoWorkItem ) workItem).getNodeInstanceStringId());
 
                 assertNotNull(nodeInstance);
                 assertTrue(nodeInstance instanceof WorkItemNodeInstance);
                 String deploymentId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getDeploymentId();
-                String nodeInstanceId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getNodeInstanceId();
+                String nodeInstanceId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getNodeInstanceStringId();
                 long nodeId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getNodeId();
 
-                assertEquals(((org.drools.core.process.instance.WorkItem) workItem).getDeploymentId(), deploymentId);
-                assertEquals(((org.drools.core.process.instance.WorkItem) workItem).getNodeId(), nodeId);
-                assertEquals(((org.drools.core.process.instance.WorkItem) workItem).getNodeInstanceId(), nodeInstanceId);
+                assertEquals((( KogitoWorkItem ) workItem).getDeploymentId(), deploymentId);
+                assertEquals((( KogitoWorkItem ) workItem).getNodeId(), nodeId);
+                assertEquals((( KogitoWorkItem ) workItem).getNodeInstanceStringId(), nodeInstanceId);
 
                 return null;
             }
@@ -1789,7 +1788,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                         assignment.setMetaData("Action", new AssignmentAction() {
 
                             @Override
-                            public void execute(org.drools.core.process.instance.WorkItem workItem, ProcessContext context) throws Exception {
+                            public void execute( KogitoWorkItem workItem, ProcessContext context) throws Exception {
                                 assertEquals("from_expression", assignment.getFrom());
                                 assertEquals("to_expression", assignment.getTo());
                             }

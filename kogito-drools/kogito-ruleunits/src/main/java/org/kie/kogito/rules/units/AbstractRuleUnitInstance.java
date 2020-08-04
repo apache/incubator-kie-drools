@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.kogito.timer.SessionClock;
+import org.kie.api.time.SessionClock;
 import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitData;

@@ -29,6 +29,7 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.kogito.rules.DataHandle;
 import org.kie.kogito.rules.DataProcessor;
+import org.drools.core.kogito.factory.KogitoInternalFactHandle;
 
 public class EntryPointDataProcessor implements DataProcessor {
     private final EntryPoint entryPoint;
@@ -67,10 +68,10 @@ public class EntryPointDataProcessor implements DataProcessor {
     }
 
     public void delete(DataHandle dh, RuleImpl rule, TerminalNode terminalNode, FactHandle.State fhState) {
-        delete( handles.get(dh), rule, terminalNode, fhState );
+        delete( (KogitoInternalFactHandle) handles.get(dh), rule, terminalNode, fhState );
     }
 
-    public void delete(InternalFactHandle fh, RuleImpl rule, TerminalNode terminalNode, FactHandle.State fhState) {
+    public void delete(KogitoInternalFactHandle fh, RuleImpl rule, TerminalNode terminalNode, FactHandle.State fhState) {
         (( WorkingMemoryEntryPoint ) entryPoint).delete( fh, rule, terminalNode, fhState );
         handles.remove( fh.getDataHandle() );
     }

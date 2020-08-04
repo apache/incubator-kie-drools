@@ -16,9 +16,9 @@
 
 package org.kie.api.builder.model;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
@@ -81,7 +81,7 @@ public interface KieBaseModel {
     /**
      * Returns all KieBases included by this one
      */
-    Collection<String> getIncludes();
+    Set<String> getIncludes();
 
     /**
      * Adds a package (pattern) to the list of the packages defining the set of resources

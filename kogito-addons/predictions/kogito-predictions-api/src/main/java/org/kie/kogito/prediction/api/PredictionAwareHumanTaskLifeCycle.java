@@ -18,6 +18,7 @@ package org.kie.kogito.prediction.api;
 import java.util.Map;
 import java.util.Objects;
 
+import org.drools.core.process.instance.KogitoWorkItemManager;
 import org.jbpm.process.instance.impl.humantask.BaseHumanTaskLifeCycle;
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
 import org.jbpm.process.instance.impl.workitem.Active;
@@ -58,7 +59,7 @@ public class PredictionAwareHumanTaskLifeCycle extends BaseHumanTaskLifeCycle {
             if (outcome.isCertain()) {
                 humanTaskWorkItem.getResults().putAll(outcome.getData());
                 logger.debug("Prediction service is certain (confidence level {}) on the outputs, completing work item {}", outcome.getConfidenceLevel(), humanTaskWorkItem.getId());                
-                ((org.drools.core.process.instance.WorkItemManager)manager).internalCompleteWorkItem(humanTaskWorkItem);
+                (( KogitoWorkItemManager )manager).internalCompleteWorkItem(humanTaskWorkItem);
                 
                 return outcome.getData();
             } else if (outcome.isPresent()) {

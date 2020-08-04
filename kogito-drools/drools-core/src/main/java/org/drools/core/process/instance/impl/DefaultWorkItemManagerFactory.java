@@ -1,9 +1,8 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -22,13 +21,13 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.process.instance.WorkItemManager;
+import org.drools.core.process.instance.KogitoWorkItemManager;
 import org.drools.core.process.instance.WorkItemManagerFactory;
 
-public class DefaultWorkItemManagerFactory implements WorkItemManagerFactory, Externalizable {
+public class DefaultWorkItemManagerFactory implements Externalizable, WorkItemManagerFactory {
 
-    public WorkItemManager createWorkItemManager(InternalKnowledgeRuntime kruntime) {
-        return new DefaultWorkItemManager(kruntime);
+    public KogitoWorkItemManager createWorkItemManager( InternalKnowledgeRuntime kruntime) {
+        return new KogitoDefaultWorkItemManager(kruntime);
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {

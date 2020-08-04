@@ -23,7 +23,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
-import org.drools.core.process.instance.WorkItem;
+import org.drools.core.process.instance.KogitoWorkItem;
 import org.jbpm.process.instance.impl.AssignmentAction;
 import org.jbpm.workflow.core.node.Assignment;
 import org.kie.api.runtime.process.ProcessContext;
@@ -47,7 +47,7 @@ public class XPATHAssignmentAction implements AssignmentAction {
 		this.isInput = isInput;
 	}
 
-	public void execute(WorkItem workItem, ProcessContext context) throws Exception {
+	public void execute( KogitoWorkItem workItem, ProcessContext context) throws Exception {
         String from = assignment.getFrom();
         String to = assignment.getTo();
         

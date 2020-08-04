@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.drools.core.process.instance.impl.KogitoWorkItemImpl;
 import org.kie.api.runtime.process.HumanTaskWorkItem;
 import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.auth.SecurityPolicy;
@@ -28,7 +28,7 @@ import org.kie.kogito.process.workitem.Policy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HumanTaskWorkItemImpl extends WorkItemImpl implements HumanTaskWorkItem {
+public class HumanTaskWorkItemImpl extends KogitoWorkItemImpl implements HumanTaskWorkItem {
 
     private static final long serialVersionUID = 6168927742199190604L;
     private static final Logger logger = LoggerFactory.getLogger(HumanTaskWorkItemImpl.class);

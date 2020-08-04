@@ -33,7 +33,7 @@ public class ModelClassGenerator {
         String pid = workFlowProcess.getId();
         String name = ProcessToExecModelGenerator.extractProcessId(pid);
         this.modelClassName = workFlowProcess.getPackageName() + "." +
-                StringUtils.capitalize(name) + "Model";
+                StringUtils.ucFirst(name) + "Model";
 
         this.context = context;
         this.workFlowProcess = workFlowProcess;

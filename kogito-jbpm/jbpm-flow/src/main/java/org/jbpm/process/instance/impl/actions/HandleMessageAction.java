@@ -17,8 +17,8 @@ package org.jbpm.process.instance.impl.actions;
 
 import java.io.Serializable;
 
-import org.drools.core.process.instance.WorkItemManager;
-import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.drools.core.process.instance.KogitoWorkItemManager;
+import org.drools.core.process.instance.impl.KogitoWorkItemImpl;
 import org.jbpm.process.core.event.EventTransformerImpl;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.util.VariableUtil;
@@ -52,7 +52,7 @@ public class HandleMessageAction implements Action, Serializable {
             variable = new EventTransformerImpl(transformation).transformEvent(variable);
         }
 
-        WorkItemImpl workItem = new WorkItemImpl();
+        KogitoWorkItemImpl workItem = new KogitoWorkItemImpl();
         workItem.setName("Send Task");
         workItem.setNodeInstanceId(context.getNodeInstance().getId());
         workItem.setProcessInstanceId(context.getProcessInstance().getId());
@@ -62,7 +62,7 @@ public class HandleMessageAction implements Action, Serializable {
             workItem.setParameter("Message", variable);
         }
 
-        ((WorkItemManager) context.getKieRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);
+        (( KogitoWorkItemManager ) context.getKieRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);
     }
 
 }

@@ -39,6 +39,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.drools.compiler.builder.impl.KogitoKieModuleModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.kogito.codegen.AddonsConfig;
@@ -285,16 +286,16 @@ public class GenerateModelMojo extends AbstractKieMojo {
         if (!project.getResources().isEmpty()) {
             Path moduleXmlPath = Paths.get(project.getResources().get(0).getDirectory()).resolve(KieModuleModelImpl.KMODULE_JAR_PATH);
             try {
-                return KieModuleModelImpl.fromXML(
+                return KogitoKieModuleModelImpl.fromXML(
                         new ByteArrayInputStream(
                                 Files.readAllBytes(moduleXmlPath)));
             } catch (NoSuchFileException e) {
                 getLog().debug("kmodule.xml is missing. Returned the default value.", e);
-                return new KieModuleModelImpl();
+                return new KogitoKieModuleModelImpl();
             }
         } else {
             getLog().debug("kmodule.xml is missing. Returned the default value.");
-            return new KieModuleModelImpl();
+            return new KogitoKieModuleModelImpl();
         }
     }
 

@@ -16,6 +16,7 @@
 
 package org.jbpm.process.instance.event;
 
+import org.drools.core.KogitoWorkingMemory;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.WorkingMemoryAction;
@@ -116,7 +117,7 @@ public class DefaultSignalManager implements SignalManager {
 		}
 		
 		public void execute(InternalWorkingMemory workingMemory) {
-			ProcessInstance processInstance = workingMemory.getProcessInstance(processInstanceId);
+			ProcessInstance processInstance = ((KogitoWorkingMemory)workingMemory).getProcessInstance(processInstanceId);
 			if (processInstance != null) {
 				processInstance.signalEvent(type, event);
 			}

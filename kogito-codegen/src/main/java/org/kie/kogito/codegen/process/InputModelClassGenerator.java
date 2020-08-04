@@ -34,7 +34,7 @@ public class InputModelClassGenerator {
 
     public InputModelClassGenerator(GeneratorContext context, WorkflowProcess workFlowProcess) {
         String pid = workFlowProcess.getId();
-        className = StringUtils.capitalize(ProcessToExecModelGenerator.extractProcessId(pid) + "ModelInput");
+        className = StringUtils.ucFirst(ProcessToExecModelGenerator.extractProcessId(pid) + "ModelInput");
         this.modelClassName = workFlowProcess.getPackageName() + "." + className;
 
         this.context = context;

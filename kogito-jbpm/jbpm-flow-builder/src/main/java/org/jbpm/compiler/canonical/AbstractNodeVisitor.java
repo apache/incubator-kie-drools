@@ -37,7 +37,6 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.UnknownType;
-import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -48,6 +47,7 @@ import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.drools.core.util.StringUtils.ucFirst;
 import static org.jbpm.ruleflow.core.Metadata.CUSTOM_AUTO_START;
 import static org.jbpm.ruleflow.core.Metadata.HIDDEN;
 import static org.jbpm.ruleflow.core.factory.MappableNodeFactory.METHOD_IN_MAPPING;
@@ -135,7 +135,7 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
                         type,
                         new MethodCallExpr(
                                 new NameExpr("model"),
-                                "get" + StringUtils.capitalize(name))),
+                                "get" + ucFirst(name))),
                 AssignExpr.Operator.ASSIGN);
 
         return new ExpressionStmt(assignExpr);

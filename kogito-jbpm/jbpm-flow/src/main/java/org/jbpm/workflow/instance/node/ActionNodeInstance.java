@@ -19,7 +19,7 @@ package org.jbpm.workflow.instance.node;
 import java.util.Date;
 import java.util.List;
 
-import org.drools.core.spi.ProcessContext;
+import org.drools.core.spi.KogitoProcessContext;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
@@ -50,7 +50,7 @@ public class ActionNodeInstance extends NodeInstanceImpl {
         }
 		Action action = (Action) getActionNode().getAction().getMetaData("Action");
 		try {
-		    ProcessContext context = new ProcessContext(getProcessInstance().getKnowledgeRuntime());
+            KogitoProcessContext context = new KogitoProcessContext(getProcessInstance().getKnowledgeRuntime());
 		    context.setNodeInstance(this);
 	        executeAction(action);
 		} catch( WorkflowRuntimeException wre) { 

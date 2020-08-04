@@ -52,7 +52,7 @@ public class PMMLRestResourceGenerator {
         this.packageName = "org.kie.kogito." + CodegenStringUtil.escapeIdentifier(model.getClass().getPackage().getName());
         this.nameURL = URLEncoder.encode(model.getName()).replaceAll("\\+", "%20");
         this.appCanonicalName = appCanonicalName;
-        String classPrefix = StringUtils.capitalize(model.getName());
+        String classPrefix = StringUtils.ucFirst(model.getName());
         this.resourceClazzName = classPrefix + "Resource";
         this.relativePath = packageName.replace(".", "/") + "/" + resourceClazzName + ".java";
     }

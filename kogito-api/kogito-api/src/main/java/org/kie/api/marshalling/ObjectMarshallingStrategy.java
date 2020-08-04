@@ -30,12 +30,12 @@ public interface ObjectMarshallingStrategy {
         return getClass().getName();
     }
     
-    public boolean accept(Object object);
+    boolean accept(Object object);
 
-    public void write(ObjectOutputStream os,
+    void write(ObjectOutputStream os,
                       Object object) throws IOException;
 
-    public Object read(ObjectInputStream os) throws IOException, ClassNotFoundException;
+    Object read(ObjectInputStream os) throws IOException, ClassNotFoundException;
 
     /**
      * This method is analogous to the write() method, but instead
@@ -47,9 +47,9 @@ public interface ObjectMarshallingStrategy {
      *
      * @return the marshalled byte[] of the input object
      */
-    public byte[] marshal( Context context,
-                           ObjectOutputStream os,
-                           Object object ) throws IOException;
+    byte[] marshal( Context context,
+                    ObjectOutputStream os,
+                    Object object ) throws IOException;
 
     /**
      * This method is analogous to the read method, but instead of reading it from an
@@ -60,31 +60,38 @@ public interface ObjectMarshallingStrategy {
      *
      * @return the unmarshalled Object
      */
-    public Object unmarshal( String dataType, 
-                             Context context,
-                             ObjectInputStream is,
-                             byte[] object,
-                             ClassLoader classloader ) throws IOException, ClassNotFoundException;
+    Object unmarshal( String dataType,
+                      Context context,
+                      ObjectInputStream is,
+                      byte[] object,
+                      ClassLoader classloader ) throws IOException, ClassNotFoundException;
+
+    default Object unmarshal( Context context,
+                              ObjectInputStream is,
+                              byte[] object,
+                              ClassLoader classloader ) throws IOException, ClassNotFoundException {
+        return unmarshal( null, context, is, object, classloader );
+    }
 
     /**
      * Creates a new marshalling context
      */
-    public Context createContext();
+    Context createContext();
     
     default String getType(Class<?> clazz) {
         return clazz.getCanonicalName();
     }
 
-    public static interface Context {
+    interface Context {
         /**
          * Loads the context from the given object input stream
          */
-        public void read(ObjectInputStream ois) throws IOException, ClassNotFoundException;
+        void read(ObjectInputStream ois) throws IOException, ClassNotFoundException;
 
         /**
          * Writes the context to the given object output stream
          */
-        public void write(ObjectOutputStream oos) throws IOException;
+        void write(ObjectOutputStream oos) throws IOException;
     }
 
 }

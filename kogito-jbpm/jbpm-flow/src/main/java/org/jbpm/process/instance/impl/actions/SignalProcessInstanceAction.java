@@ -18,7 +18,8 @@ package org.jbpm.process.instance.impl.actions;
 import java.io.Serializable;
 import java.util.function.Function;
 
-import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.drools.core.process.instance.KogitoWorkItemManager;
+import org.drools.core.process.instance.impl.KogitoWorkItemImpl;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.util.VariableUtil;
 import org.jbpm.workflow.core.node.Transformation;
@@ -89,7 +90,7 @@ public class SignalProcessInstanceAction implements Action, Serializable {
         } else if (PROCESS_INSTANCE_SCOPE.equals(scope)) {
             context.getProcessInstance().signalEvent(VariableUtil.resolveVariable(signalName, context.getNodeInstance()), variable);
         } else if (EXTERNAL_SCOPE.equals(scope)) {
-            WorkItemImpl workItem = new WorkItemImpl();
+            KogitoWorkItemImpl workItem = new KogitoWorkItemImpl();
             workItem.setName("External Send Task");
             workItem.setNodeInstanceId(context.getNodeInstance().getId());
             workItem.setProcessInstanceId(context.getProcessInstance().getId());
@@ -101,7 +102,7 @@ public class SignalProcessInstanceAction implements Action, Serializable {
             if (variable == null) {
                 workItem.setParameter("Data", variable);
             }
-            ((org.drools.core.process.instance.WorkItemManager) context.getKieRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);
+            (( KogitoWorkItemManager ) context.getKieRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);
         }
     }
 

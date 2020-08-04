@@ -19,6 +19,7 @@ package org.jbpm.process.instance.impl;
 import java.io.Serializable;
 
 import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.KogitoInternalAgenda;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.Node;
@@ -103,7 +104,7 @@ public class RuleConstraintEvaluator implements Constraint,
         	((Node) instance.getNode()).getUniqueId() + "-" + 
         	((Node) connection.getTo()).getUniqueId() + "-" + connection.getToType();
 
-        return agenda.isRuleActiveInRuleFlowGroup( "DROOLS_SYSTEM", rule, processInstance.getId() );
+        return ((KogitoInternalAgenda)agenda).isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", rule, processInstance.getId() );
     }
 
 	public Object getMetaData(String name) {

@@ -42,6 +42,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KogitoKnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.kproject.ReleaseIdImpl;
@@ -77,8 +78,9 @@ import org.kie.kogito.rules.RuleUnitConfig;
 import org.kie.kogito.rules.units.AssignableChecker;
 import org.kie.kogito.rules.units.ReflectiveRuleUnitDescription;
 
-import static com.github.javaparser.StaticJavaParser.parse;
 import static java.util.stream.Collectors.toList;
+
+import static com.github.javaparser.StaticJavaParser.parse;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.kie.api.io.ResourceType.determineResourceType;
@@ -239,7 +241,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         moduleGenerator.withDependencyInjection(annotator);
 
         KnowledgeBuilderConfigurationImpl configuration =
-                new KnowledgeBuilderConfigurationImpl(contextClassLoader);
+                new KogitoKnowledgeBuilderConfigurationImpl(contextClassLoader);
 
         ModelBuilderImpl<KogitoPackageSources> modelBuilder = new ModelBuilderImpl<>( KogitoPackageSources::dumpSources, configuration, dummyReleaseId, true, hotReloadMode );
 

@@ -17,6 +17,7 @@ package org.jbpm.process.instance;
 
 import java.util.Optional;
 
+import org.drools.core.event.KogitoProcessEventSupport;
 import org.drools.core.event.ProcessEventSupport;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManager;
 import org.kie.api.event.process.ProcessEventListener;
@@ -49,7 +50,7 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
                 id -> Optional.ofNullable(
                         processInstanceManager.getProcessInstance(id)),
                 compositeSignalManager);
-        this.eventSupport = new ProcessEventSupport(this.unitOfWorkManager);
+        this.eventSupport = new KogitoProcessEventSupport(this.unitOfWorkManager);
         this.jobsService = jobsService;
         this.workItemManager = new LightWorkItemManager(processInstanceManager, signalManager, eventSupport);
 

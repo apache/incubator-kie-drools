@@ -16,9 +16,16 @@
 
 package org.kie.kogito.rules;
 
+import java.util.Iterator;
+
 import org.kie.api.internal.utils.ServiceRegistry;
 
-public interface DataSource<T> {
+public interface DataSource<T> extends Iterable<T> {
+
+    default Iterator<T> iterator() {
+        throw new UnsupportedOperationException();
+    }
+
     void subscribe(DataProcessor<T> subscriber);
 
     interface Factory {

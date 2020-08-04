@@ -27,10 +27,12 @@ import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.api.internal.runtime.KieRuntimeService;
 import org.kie.api.internal.runtime.KieRuntimes;
 import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.weaver.KieWeavers;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
+import org.kie.internal.services.KieWeaversImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,17 +55,21 @@ public class StaticServiceRegistry implements ServiceRegistry {
         serviceMap.put(org.kie.api.marshalling.KieMarshallers.class, SimpleInstanceCreator.instance("org.drools.core.marshalling.impl.MarshallerProviderImpl"));
         serviceMap.put(org.kie.api.concurrent.KieExecutors.class, SimpleInstanceCreator.instance("org.drools.core.concurrent.ExecutorProviderImpl"));
         serviceMap.put(org.kie.api.KieServices.class, SimpleInstanceCreator.instance("org.drools.compiler.kie.builder.impl.KieServicesImpl"));
-        serviceMap.put(org.kie.internal.builder.KnowledgeBuilderFactoryService.class, SimpleInstanceCreator.instance("org.drools.compiler.builder.impl.KnowledgeBuilderFactoryServiceImpl"));
+        serviceMap.put(org.kie.internal.builder.KnowledgeBuilderFactoryService.class, SimpleInstanceCreator.instance("org.drools.compiler.builder.impl.KogitoKnowledgeBuilderFactoryServiceImpl"));
         serviceMap.put(org.kie.kogito.rules.DataSource.Factory.class, SimpleInstanceCreator.instance("org.kie.kogito.rules.units.impl.DataSourceFactoryImpl"));
         serviceMap.put(org.kie.internal.ruleunit.RuleUnitComponentFactory.class, SimpleInstanceCreator.instance("org.kie.kogito.rules.units.impl.RuleUnitComponentFactoryImpl"));
         serviceMap.put(KieAssemblers.class, new StaticKieAssemblers());
         serviceMap.put(KieRuntimes.class, SimpleInstanceCreator.instance("org.kie.internal.services.KieRuntimesImpl"));
-
+        serviceMap.put(KieWeavers.class, new KieWeaversImpl());
 
         registerService("org.drools.compiler.kie.builder.impl.InternalKieModuleProvider", "org.drools.modelcompiler.CanonicalKieModuleProvider", true);
         registerService("org.drools.compiler.compiler.DecisionTableProvider", "org.drools.decisiontable.DecisionTableProviderImpl", false);
+        registerService("org.drools.core.reteoo.KieComponentFactoryFactory", "org.drools.core.kogito.factory.KogitoComponentFactoryFactory", true);
 
-        constructorMap.put("TimerService", SimpleInstanceCreator.constructor("org.kie.kogito.timer.impl.JDKTimerService"));
+        registerService("org.drools.core.marshalling.impl.ProcessMarshallerFactoryService", "org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl", false);
+        registerService("org.drools.core.runtime.process.ProcessRuntimeFactoryService", "org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl", false);
+
+        constructorMap.put("TimerService", SimpleInstanceCreator.constructor("org.drools.core.time.impl.JDKTimerService"));
 
         registerKieRuntimeService("org.kie.pmml.evaluator.api.executor.PMMLRuntime", "org.kie.pmml.evaluator.core.service.PMMLRuntimeService");
     }

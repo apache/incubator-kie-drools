@@ -16,8 +16,6 @@
 
 package org.jbpm.process.instance.context.exception;
 
-import static org.jbpm.process.core.context.exception.CompensationScope.IMPLICIT_COMPENSATION_PREFIX;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
@@ -38,6 +36,8 @@ import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.EventNodeInstance;
 import org.jbpm.workflow.instance.node.EventSubProcessNodeInstance;
 import org.kie.api.definition.process.Node;
+
+import static org.jbpm.process.core.context.exception.CompensationScope.IMPLICIT_COMPENSATION_PREFIX;
 
 public class CompensationScopeInstance extends ExceptionScopeInstance  {
 

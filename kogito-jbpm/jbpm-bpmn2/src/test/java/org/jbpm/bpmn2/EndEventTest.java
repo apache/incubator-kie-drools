@@ -16,16 +16,12 @@
 
 package org.jbpm.bpmn2;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.core.process.instance.KogitoWorkItem;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
@@ -34,6 +30,11 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EndEventTest extends JbpmBpmn2TestCase {
 
@@ -106,11 +107,11 @@ public class EndEventTest extends JbpmBpmn2TestCase {
         
         WorkItem workItem = handler.getWorkItem();
         assertNotNull(workItem);
-        assertTrue(workItem instanceof org.drools.core.process.instance.WorkItem);
+        assertTrue(workItem instanceof KogitoWorkItem );
         
-        String nodeInstanceId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeInstanceId();
-        long nodeId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeId();
-        String deploymentId = ((org.drools.core.process.instance.WorkItem) workItem).getDeploymentId();
+        String nodeInstanceId = (( KogitoWorkItem ) workItem).getNodeInstanceStringId();
+        long nodeId = (( KogitoWorkItem ) workItem).getNodeId();
+        String deploymentId = (( KogitoWorkItem ) workItem).getDeploymentId();
         
         assertNotNull(nodeId);
         assertTrue(nodeId > 0);
@@ -125,10 +126,10 @@ public class EndEventTest extends JbpmBpmn2TestCase {
         
         workItem = handler.getWorkItem();
         assertNotNull(workItem);
-        assertTrue(workItem instanceof org.drools.core.process.instance.WorkItem);
+        assertTrue(workItem instanceof KogitoWorkItem );
         
-        nodeInstanceId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeInstanceId();
-        nodeId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeId();
+        nodeInstanceId = (( KogitoWorkItem ) workItem).getNodeInstanceStringId();
+        nodeId = (( KogitoWorkItem ) workItem).getNodeId();
         
         assertNotNull(nodeId);
         assertTrue(nodeId > 0);

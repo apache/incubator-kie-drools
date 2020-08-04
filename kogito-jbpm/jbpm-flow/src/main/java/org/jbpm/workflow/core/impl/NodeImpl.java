@@ -16,6 +16,13 @@
 
 package org.jbpm.workflow.core.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.workflow.core.Constraint;
@@ -23,13 +30,6 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.NodeContainer;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Default implementation of a node.

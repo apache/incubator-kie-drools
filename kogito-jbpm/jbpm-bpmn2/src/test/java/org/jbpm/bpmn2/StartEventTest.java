@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.drools.core.process.instance.impl.KogitoWorkItemImpl;
 import org.drools.core.util.IoUtils;
 import org.jbpm.bpmn2.objects.NotAvailableGoodsReport;
 import org.jbpm.bpmn2.objects.Person;
@@ -329,7 +329,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
         assertThat(list.size()).isEqualTo(1);
         WorkItem workItem = workItemHandler.getWorkItem();
-        String processInstanceId = ((WorkItemImpl) workItem)
+        String processInstanceId = (( KogitoWorkItemImpl ) workItem)
                 .getProcessInstanceId();
 
         ProcessInstance processInstance = ksession
@@ -362,7 +362,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
         assertThat(list.size()).isEqualTo(1);
         WorkItem workItem = workItemHandler.getWorkItem();
-        String processInstanceId = ((WorkItemImpl) workItem)
+        String processInstanceId = (( KogitoWorkItemImpl ) workItem)
                 .getProcessInstanceId();
 
         ProcessInstance processInstance = ksession
@@ -402,7 +402,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         List<WorkItem> workItems = workItemHandler.getWorkItems();
 
         for (WorkItem workItem : workItems) {
-            String processInstanceId = ((WorkItemImpl) workItem).getProcessInstanceId();
+            String processInstanceId = (( KogitoWorkItemImpl ) workItem).getProcessInstanceId();
 
             ProcessInstance processInstance = ksession
                     .getProcessInstance(processInstanceId);
@@ -434,7 +434,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
         assertThat(list.size()).isEqualTo(1);
         WorkItem workItem = workItemHandler.getWorkItem();
-        String processInstanceId = ((WorkItemImpl) workItem)
+        String processInstanceId = (( KogitoWorkItemImpl ) workItem)
                 .getProcessInstanceId();
 
         ProcessInstance processInstance = ksession

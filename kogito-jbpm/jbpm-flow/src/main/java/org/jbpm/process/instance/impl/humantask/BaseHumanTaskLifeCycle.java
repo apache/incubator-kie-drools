@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.drools.core.process.instance.KogitoWorkItemManager;
 import org.jbpm.process.instance.impl.humantask.phases.Claim;
 import org.jbpm.process.instance.impl.humantask.phases.Release;
 import org.jbpm.process.instance.impl.humantask.phases.Skip;
@@ -120,7 +121,7 @@ public class BaseHumanTaskLifeCycle implements LifeCycle<Map<String, Object>> {
         if (targetPhase.isTerminating()) {
             logger.debug("Target life cycle phase '{}' is terminiating, completing work item {}", targetPhase.id(), humanTaskWorkItem.getId());
             // since target life cycle phase is terminating completing work item
-            ((org.drools.core.process.instance.WorkItemManager)manager).internalCompleteWorkItem(humanTaskWorkItem);
+            (( KogitoWorkItemManager )manager).internalCompleteWorkItem(humanTaskWorkItem);
         }
         
         return data(humanTaskWorkItem);

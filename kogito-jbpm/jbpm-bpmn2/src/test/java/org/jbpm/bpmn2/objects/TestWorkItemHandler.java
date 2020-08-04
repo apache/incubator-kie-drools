@@ -19,6 +19,8 @@ package org.jbpm.bpmn2.objects;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.core.process.instance.KogitoWorkItem;
+import org.drools.core.process.instance.KogitoWorkItemManager;
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
 import org.jbpm.process.instance.impl.workitem.Active;
 import org.jbpm.process.instance.impl.workitem.Complete;
@@ -67,7 +69,7 @@ public class TestWorkItemHandler implements WorkItemHandler {
         
         
         if (transition.phase().equals(Complete.ID)) {
-            ((org.drools.core.process.instance.WorkItemManager)manager).internalCompleteWorkItem((org.drools.core.process.instance.WorkItem) workItem);
+            (( KogitoWorkItemManager )manager).internalCompleteWorkItem(( KogitoWorkItem ) workItem);
         }
     }
 

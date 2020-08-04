@@ -29,10 +29,10 @@ import java.util.Set;
 import java.util.regex.Matcher;
 
 import org.drools.core.WorkItemHandlerNotFoundException;
-import org.drools.core.process.instance.WorkItem;
-import org.drools.core.process.instance.WorkItemManager;
-import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.drools.core.spi.ProcessContext;
+import org.drools.core.process.instance.KogitoWorkItem;
+import org.drools.core.process.instance.KogitoWorkItemManager;
+import org.drools.core.process.instance.impl.KogitoWorkItemImpl;
+import org.drools.core.spi.KogitoProcessContext;
 import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
@@ -97,7 +97,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<>();
 
     private String workItemId;
-    private transient WorkItem workItem;
+    private transient KogitoWorkItem workItem;
     
     private String exceptionHandlingProcessInstanceId;
 
@@ -105,9 +105,9 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         return (WorkItemNode) getNode();
     }
 
-    public WorkItem getWorkItem() {
+    public KogitoWorkItem getWorkItem() {
         if (workItem == null && workItemId != null) {
-            workItem = ((WorkItemManager) getProcessInstance().getKnowledgeRuntime().getWorkItemManager()).getWorkItem(workItemId);
+            workItem = (( KogitoWorkItemManager ) getProcessInstance().getKnowledgeRuntime().getWorkItemManager()).getWorkItem(workItemId);
         }
         return workItem;
     }
@@ -120,7 +120,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         this.workItemId = workItemId;
     }
 
-    public void internalSetWorkItem(WorkItem workItem) {
+    public void internalSetWorkItem( KogitoWorkItem workItem) {
         this.workItem = workItem;
         this.workItem.setProcessInstance(getProcessInstance());
         this.workItem.setNodeInstance(this);
@@ -133,7 +133,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     }
     
     public void internalRegisterWorkItem() {
-        ((WorkItemManager) getProcessInstance().getKnowledgeRuntime().getWorkItemManager()).internalAddWorkItem(workItem);
+        (( KogitoWorkItemManager ) getProcessInstance().getKnowledgeRuntime().getWorkItemManager()).internalAddWorkItem(workItem);
     }
 
     @Override
@@ -163,7 +163,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
             getProcessInstance().getKnowledgeRuntime().update(getProcessInstance().getKnowledgeRuntime().getFactHandle(this), this);
         } else {
             try {
-                ((WorkItemManager) getProcessInstance().getKnowledgeRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);
+                (( KogitoWorkItemManager ) getProcessInstance().getKnowledgeRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);
             } catch (WorkItemHandlerNotFoundException wihnfe) {
                 getProcessInstance().setState(STATE_ABORTED);
                 throw wihnfe;
@@ -193,11 +193,11 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         exceptionScopeInstance.handleException(exceptionName, e);
     }
 
-    protected WorkItem newWorkItem() {
-        return new WorkItemImpl();
+    protected KogitoWorkItem newWorkItem() {
+        return new KogitoWorkItemImpl();
     }
 
-    protected WorkItem createWorkItem(WorkItemNode workItemNode) {
+    protected KogitoWorkItem createWorkItem( WorkItemNode workItemNode) {
         Work work = workItemNode.getWork();
         workItem = newWorkItem();
         workItem.setName(work.getName());
@@ -281,7 +281,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     private void handleAssignment(Assignment assignment) {
         AssignmentAction action = (AssignmentAction) assignment.getMetaData("Action");
         try {
-            ProcessContext context = new ProcessContext(getProcessInstance().getKnowledgeRuntime());
+            KogitoProcessContext context = new KogitoProcessContext(getProcessInstance().getKnowledgeRuntime());
             context.setNodeInstance(this);
             action.execute(getWorkItem(), context);
         } catch (Exception e) {
@@ -289,7 +289,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         }
     }
 
-    public void triggerCompleted(WorkItem workItem) {
+    public void triggerCompleted( KogitoWorkItem workItem) {
         this.workItem = workItem;
         WorkItemNode workItemNode = getWorkItemNode();
 
@@ -382,10 +382,10 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 
     @Override
     public void cancel() {
-        WorkItem item = getWorkItem();
+        KogitoWorkItem item = getWorkItem();
         if (item != null && item.getState() != COMPLETED && item.getState() != ABORTED) {
             try {
-                ((WorkItemManager) getProcessInstance().getKnowledgeRuntime().getWorkItemManager()).internalAbortWorkItem(item.getId());
+                (( KogitoWorkItemManager ) getProcessInstance().getKnowledgeRuntime().getWorkItemManager()).internalAbortWorkItem(item.getId());
             } catch (WorkItemHandlerNotFoundException wihnfe) {
                 getProcessInstance().setState(STATE_ABORTED);
                 throw wihnfe;
@@ -424,9 +424,9 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     @Override
     public void signalEvent(String type, Object event) {
         if ("workItemCompleted".equals(type)) {
-            workItemCompleted((WorkItem) event);
+            workItemCompleted(( KogitoWorkItem ) event);
         } else if ("workItemAborted".equals(type)) {
-            workItemAborted((WorkItem) event);
+            workItemAborted(( KogitoWorkItem ) event);
         } else if (("processInstanceCompleted:" + exceptionHandlingProcessInstanceId).equals(type)) {
             exceptionHandlingCompleted((ProcessInstance) event, null);
         } else if (type.equals("RuleFlow-Activate" + getProcessInstance().getProcessId() + "-" + getNode().getMetaData().get("UniqueId"))) {
@@ -445,14 +445,14 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         }
     }
 
-    public void workItemAborted(WorkItem workItem) {
+    public void workItemAborted( KogitoWorkItem workItem) {
         if (workItem.getId().equals(workItemId) || (workItemId == null && getWorkItem().getId().equals(workItem.getId()))) {
             removeEventListeners();
             triggerCompleted(workItem);
         }
     }
 
-    public void workItemCompleted(WorkItem workItem) {
+    public void workItemCompleted( KogitoWorkItem workItem) {
         if (workItem.getId().equals(workItemId) || (workItemId == null && getWorkItem().getId().equals(workItem.getId()))) {
             removeEventListeners();
             triggerCompleted(workItem);
@@ -464,7 +464,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         Node node = getNode();
         if (node == null) {
             String nodeName = "[Dynamic]";
-            WorkItem item = getWorkItem();
+            KogitoWorkItem item = getWorkItem();
             if (item != null) {
                 nodeName += " " + item.getParameter("TaskName");
             }
@@ -546,7 +546,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         return parameters;
     }
 
-    public void validateWorkItemResultVariable(String processName, List<DataAssociation> outputs, WorkItem workItem) {
+    public void validateWorkItemResultVariable(String processName, List<DataAssociation> outputs, KogitoWorkItem workItem) {
         // in case work item results are skip validation as there is no notion of mandatory data outputs
         if (!VariableScope.isVariableStrictEnabled() || workItem.getResults().isEmpty()) {
             return;
@@ -574,7 +574,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
      */
     
 
-    private void handleWorkItemHandlerException(ProcessWorkItemHandlerException handlerException, WorkItem workItem) {
+    private void handleWorkItemHandlerException(ProcessWorkItemHandlerException handlerException, KogitoWorkItem workItem) {
         Map<String, Object> parameters = new HashMap<>();
         
         parameters.put("DeploymentId", workItem.getDeploymentId());
@@ -631,7 +631,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                 
                 parameters.putAll(processInstance.getVariables());
                 
-                ((WorkItemManager) getProcessInstance()
+                (( KogitoWorkItemManager ) getProcessInstance()
                         .getKnowledgeRuntime().getWorkItemManager()).retryWorkItem(getWorkItem().getId(), parameters);
                 break;
             case COMPLETE:

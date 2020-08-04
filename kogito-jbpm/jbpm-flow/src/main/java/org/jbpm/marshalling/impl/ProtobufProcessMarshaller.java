@@ -31,8 +31,9 @@ import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProcessMarshaller;
 import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.marshalling.impl.ProtobufMessages.Header;
-import org.drools.core.process.instance.WorkItemManager;
-import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.drools.core.process.instance.KogitoWorkItem;
+import org.drools.core.process.instance.KogitoWorkItemManager;
+import org.drools.core.process.instance.impl.KogitoWorkItemImpl;
 import org.jbpm.marshalling.impl.JBPMMessages.Variable;
 import org.jbpm.marshalling.impl.JBPMMessages.VariableContainer;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
@@ -77,7 +78,7 @@ public class ProtobufProcessMarshaller
     public void writeWorkItems(MarshallerWriteContext context) throws IOException {
         ProtobufMessages.ProcessData.Builder _pdata = (ProtobufMessages.ProcessData.Builder) context.parameterObject;
 
-        List<WorkItem> workItems = new ArrayList<WorkItem>( ((WorkItemManager) context.wm.getWorkItemManager()).getWorkItems() );
+        List<WorkItem> workItems = new ArrayList<WorkItem>( (( KogitoWorkItemManager ) context.wm.getWorkItemManager()).getWorkItems() );
         Collections.sort( workItems,
                           new Comparator<WorkItem>() {
                               public int compare(WorkItem o1,
@@ -115,7 +116,7 @@ public class ProtobufProcessMarshaller
         for ( JBPMMessages.WorkItem _workItem : _pdata.getExtension( JBPMMessages.workItem ) ) {
             WorkItem workItem = readWorkItem( context,
                                               _workItem );
-            ((WorkItemManager) wm.getWorkItemManager()).internalAddWorkItem( (org.drools.core.process.instance.WorkItem) workItem );
+            (( KogitoWorkItemManager ) wm.getWorkItemManager()).internalAddWorkItem( ( KogitoWorkItem ) workItem );
         }
     }
 
@@ -128,12 +129,12 @@ public class ProtobufProcessMarshaller
                 .setName( workItem.getName() )
                 .setState( workItem.getState() );
 
-        if (workItem instanceof org.drools.core.process.instance.WorkItem) {
-        	if (((org.drools.core.process.instance.WorkItem)workItem).getDeploymentId() != null){
-        	_workItem.setDeploymentId(((org.drools.core.process.instance.WorkItem)workItem).getDeploymentId());
+        if (workItem instanceof KogitoWorkItem ) {
+        	if ((( KogitoWorkItem )workItem).getDeploymentId() != null){
+        	_workItem.setDeploymentId((( KogitoWorkItem )workItem).getDeploymentId());
         	}
-        	_workItem.setNodeId(((org.drools.core.process.instance.WorkItem)workItem).getNodeId())
-        	.setNodeInstanceId(((org.drools.core.process.instance.WorkItem)workItem).getNodeInstanceId());
+        	_workItem.setNodeId((( KogitoWorkItem )workItem).getNodeId())
+        	.setNodeInstanceId((( KogitoWorkItem )workItem).getNodeInstanceStringId());
         }
 
         if ( includeVariables ) {
@@ -155,7 +156,7 @@ public class ProtobufProcessMarshaller
     public static WorkItem readWorkItem(MarshallerReaderContext context,
                                         JBPMMessages.WorkItem _workItem,
                                         boolean includeVariables) throws IOException {
-        WorkItemImpl workItem = new WorkItemImpl();
+        KogitoWorkItemImpl workItem = new KogitoWorkItemImpl();
         workItem.setId( _workItem.getId() );
         workItem.setProcessInstanceId( _workItem.getProcessInstancesId() );
         workItem.setName( _workItem.getName() );
@@ -293,12 +294,12 @@ public class ProtobufProcessMarshaller
     }
 
     @Override
-    public org.drools.core.process.instance.WorkItem readWorkItem(MarshallerReaderContext context) {
+    public KogitoWorkItem readWorkItem( MarshallerReaderContext context) {
         try {
             ExtensionRegistry registry = PersisterHelper.buildRegistry(context, null);
             Header _header = PersisterHelper.readFromStreamWithHeaderPreloaded(context, registry);
             JBPMMessages.WorkItem _workItem = JBPMMessages.WorkItem.parseFrom(_header.getPayload(), registry);
-            return (org.drools.core.process.instance.WorkItem) readWorkItem(context, _workItem, persistWorkItemVars);
+            return ( KogitoWorkItem ) readWorkItem(context, _workItem, persistWorkItemVars);
         } catch (IOException e) {
             throw new IllegalArgumentException( "IOException while fetching work item instance : " + e.getMessage(), e );
         } catch (ClassNotFoundException e) {
@@ -306,4 +307,13 @@ public class ProtobufProcessMarshaller
         }
     }
 
+    @Override
+    public void writeProcessTimers(MarshallerWriteContext context) throws IOException {
+
+    }
+
+    @Override
+    public void readProcessTimers(MarshallerReaderContext context) throws IOException, ClassNotFoundException {
+
+    }
 }

@@ -7,9 +7,9 @@ import java.util.Objects;
 
 import org.kie.internal.ruleunit.RuleUnitVariable;
 
-import static org.drools.core.util.StringUtils.capitalize;
 import static org.drools.reflective.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.reflective.util.ClassUtils.getter2property;
+import static org.kie.kogito.rules.units.StringUtils.capitalize;
 
 public final class ReflectiveRuleUnitVariable implements RuleUnitVariable {
 
