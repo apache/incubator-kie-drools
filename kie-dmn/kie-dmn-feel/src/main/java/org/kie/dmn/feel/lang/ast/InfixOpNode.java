@@ -163,41 +163,63 @@ public class InfixOpNode
 
     @Override
     public Object evaluate(EvaluationContext ctx) {
-        if (left == null) return null;
-        Object left = this.left.evaluate( ctx );
-        Object right = this.right.evaluate( ctx );
+        if (this.left == null) return null;
         switch ( operator ) {
             case ADD:
-                return add( left, right, ctx );
+                return add(this.left.evaluate(ctx), this.right.evaluate(ctx), ctx);
             case SUB:
-                return sub( left, right, ctx );
+                return sub(this.left.evaluate(ctx), this.right.evaluate(ctx), ctx);
             case MULT:
-                return mult( left, right, ctx );
+                return mult(this.left.evaluate(ctx), this.right.evaluate(ctx), ctx);
             case DIV:
-                return div( left, right, ctx );
+                return div(this.left.evaluate(ctx), this.right.evaluate(ctx), ctx);
             case POW:
-                return math( left, right, ctx, (l, r) -> BigDecimalMath.pow( l, r, MathContext.DECIMAL128 ) );
+                return math(this.left.evaluate(ctx), this.right.evaluate(ctx), ctx, (l, r) -> BigDecimalMath.pow(l, r, MathContext.DECIMAL128));
             case AND:
-                return and( left, right, ctx );
+                Boolean leftAND = EvalHelper.getBooleanOrNull(this.left.evaluate(ctx));
+                if (leftAND != null) {
+                    if (leftAND.booleanValue()) {
+                        return EvalHelper.getBooleanOrNull(this.right.evaluate(ctx));
+                    } else {
+                        return Boolean.FALSE; //left hand operand is false, we do not need to evaluate right side
+                    }
+                } else {
+                    Boolean rightAND = EvalHelper.getBooleanOrNull(this.right.evaluate(ctx));
+                    return Boolean.FALSE.equals(rightAND) ? Boolean.FALSE : null;
+                }
             case OR:
-                return or( left, right, ctx );
+                Boolean leftOR = EvalHelper.getBooleanOrNull(this.left.evaluate(ctx));
+                if (leftOR != null) {
+                    if (!leftOR.booleanValue()) {
+                        return EvalHelper.getBooleanOrNull(this.right.evaluate(ctx));
+                    } else {
+                        return Boolean.TRUE; //left hand operand is true, we do not need to evaluate right side
+                    }
+                } else {
+                    Boolean rightOR = EvalHelper.getBooleanOrNull(this.right.evaluate(ctx));
+                    return Boolean.TRUE.equals(rightOR) ? Boolean.TRUE : null;
+                }
             case LTE:
-                return or(EvalHelper.compare(left, right, ctx, (l, r) -> l.compareTo(r) < 0),
-                          EvalHelper.isEqual(left, right, ctx),
+                Object leftLTE = this.left.evaluate(ctx);
+                Object rightLTE = this.right.evaluate(ctx);
+                return or(EvalHelper.compare(leftLTE, rightLTE, ctx, (l, r) -> l.compareTo(r) < 0),
+                          EvalHelper.isEqual(leftLTE, rightLTE, ctx),
                           ctx); // do not use Java || to avoid potential NPE due to FEEL 3vl.
             case LT:
-                return EvalHelper.compare( left, right, ctx, (l, r) -> l.compareTo( r ) < 0 );
+                return EvalHelper.compare(this.left.evaluate(ctx), this.right.evaluate(ctx), ctx, (l, r) -> l.compareTo(r) < 0);
             case GT:
-                return EvalHelper.compare( left, right, ctx, (l, r) -> l.compareTo( r ) > 0 );
+                return EvalHelper.compare(this.left.evaluate(ctx), this.right.evaluate(ctx), ctx, (l, r) -> l.compareTo(r) > 0);
             case GTE:
-                return or(EvalHelper.compare(left, right, ctx, (l, r) -> l.compareTo(r) > 0),
-                          EvalHelper.isEqual(left, right, ctx),
+                Object leftGTE = this.left.evaluate(ctx);
+                Object rightGTE = this.right.evaluate(ctx);
+                return or(EvalHelper.compare(leftGTE, rightGTE, ctx, (l, r) -> l.compareTo(r) > 0),
+                          EvalHelper.isEqual(leftGTE, rightGTE, ctx),
                           ctx); // do not use Java || to avoid potential NPE due to FEEL 3vl.
             case EQ:
-                return EvalHelper.isEqual( left, right, ctx );
+                return EvalHelper.isEqual(this.left.evaluate(ctx), this.right.evaluate(ctx), ctx);
             case NE:
-                Boolean result = EvalHelper.isEqual( left, right, ctx );
-                return result != null ? ! result : null;
+                Boolean result = EvalHelper.isEqual(this.left.evaluate(ctx), this.right.evaluate(ctx), ctx);
+                return result != null ? !result : null;
             default:
                 return null;
         }
