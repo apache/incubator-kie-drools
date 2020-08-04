@@ -29,6 +29,7 @@ import org.junit.runners.Parameterized;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.BaseVariantTest;
+import org.kie.dmn.core.DMNRuntimeTest;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +57,7 @@ public class JavadocTest extends BaseVariantTest {
 
     @Test
     public void testDateAndTime() throws Exception {
-        final DMNRuntime runtime = createRuntime("0007-date-time.dmn", getClass());
+        final DMNRuntime runtime = createRuntime("0007-date-time.dmn", DMNRuntimeTest.class);
         runtime.addListener(DMNRuntimeUtil.createListener());
 
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_69430b3e-17b8-430d-b760-c505bf6469f9", "dateTime Table 58");

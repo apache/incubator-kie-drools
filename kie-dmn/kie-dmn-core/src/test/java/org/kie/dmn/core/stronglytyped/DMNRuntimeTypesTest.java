@@ -36,8 +36,10 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.core.BaseVariantTest;
+import org.kie.dmn.core.DMNRuntimeTest;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.core.v1_2.DMNDecisionServicesTest;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.util.EvalHelper;
@@ -439,7 +441,7 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
 
     @Test
     public void testDecisionService() {
-        final DMNRuntime runtime = createRuntime("DecisionServiceABC_DMN12.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("DecisionServiceABC_DMN12.dmn", DMNDecisionServicesTest.class);
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_2443d3f5-f178-47c6-a0c9-b1fd1c933f60", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -493,7 +495,7 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
 
     @Test
     public void testBKM() {
-        final DMNRuntime runtime = createRuntime("0009-invocation-arithmetic.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("0009-invocation-arithmetic.dmn", DMNRuntimeTest.class);
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11", "literal invocation1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -644,7 +646,7 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
     @Test
     public void testCollectionType() {
         // To be fixed by DROOLS-5538
-        final DMNRuntime runtime = createRuntime("PersonListHelloBKM2.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("PersonListHelloBKM2.dmn", DMNRuntimeTest.class);
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_7e41a76e-2df6-4899-bf81-ae098757a3b6", "PersonListHelloBKM2");
         assertThat(dmnModel, notNullValue());
