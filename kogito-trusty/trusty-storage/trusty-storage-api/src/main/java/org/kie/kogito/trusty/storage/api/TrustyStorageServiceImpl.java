@@ -28,11 +28,18 @@ public class TrustyStorageServiceImpl implements TrustyStorageService {
 
     private static final String DECISIONS_STORAGE = "decisions";
 
+    private static final String MODELS_STORAGE = "models";
+
     @Inject
     StorageService storageService;
 
     @Override
     public Storage<String, Decision> getDecisionsStorage() {
         return storageService.getCache(DECISIONS_STORAGE, Decision.class);
+    }
+
+    @Override
+    public Storage<String, String> getModelStorage() {
+        return storageService.getCache(MODELS_STORAGE, String.class);
     }
 }

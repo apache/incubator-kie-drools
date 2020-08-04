@@ -27,4 +27,11 @@ public interface TrustyStorageService {
      * @return The Storage for decisions.
      */
     Storage<String, Decision> getDecisionsStorage();
+
+    /**
+     * Gets the model definition storage.
+     *
+     * @return The Storage for model definitions.
+     */
+    Storage<String, String> getModelStorage();
 }

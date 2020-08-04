@@ -24,22 +24,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.trusty.service.TrustyKafkaTestResource;
 import org.kie.kogito.trusty.service.TrustyService;
-import org.kie.kogito.trusty.storage.api.model.Decision;
 
 import static org.kie.kogito.trusty.service.TrustyServiceTestUtils.buildCloudEventJsonString;
-import static org.kie.kogito.trusty.service.TrustyServiceTestUtils.buildCorrectTraceEvent;
+import static org.kie.kogito.trusty.service.TrustyServiceTestUtils.buildCorrectModelEvent;
 import static org.kie.kogito.trusty.service.messaging.KafkaUtils.generateProducer;
 import static org.kie.kogito.trusty.service.messaging.KafkaUtils.sendToKafkaAndWaitForCompletion;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @QuarkusTest
 @QuarkusTestResource(TrustyKafkaTestResource.class)
-public class TraceEventConsumerIT {
+public class ModelEventConsumerIT {
 
     @InjectMock
     TrustyService trustyService;
@@ -53,18 +50,19 @@ public class TraceEventConsumerIT {
 
     @Test
     public void eventLoopIsNotStoppedWithException() throws Exception {
-        String executionIdException = "idException";
-        String executionIdNoException = "idNoException";
-        doThrow(new RuntimeException("Something really bad")).when(trustyService).storeDecision(eq(executionIdException), any(Decision.class));
-        doNothing().when(trustyService).storeDecision(eq(executionIdNoException), any(Decision.class));
+        doThrow(new RuntimeException("Something really bad"))
+                .doNothing()
+                .when(trustyService)
+                .storeModel(anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
 
-        sendToKafkaAndWaitForCompletion(KafkaUtils.KOGITO_TRACING_TOPIC,
-                                        buildCloudEventJsonString(buildCorrectTraceEvent(executionIdException)),
+        sendToKafkaAndWaitForCompletion(KafkaUtils.KOGITO_TRACING_MODEL_TOPIC,
+                                        buildCloudEventJsonString(buildCorrectModelEvent()),
                                         producer);
-        sendToKafkaAndWaitForCompletion(KafkaUtils.KOGITO_TRACING_TOPIC,
-                                        buildCloudEventJsonString(buildCorrectTraceEvent(executionIdNoException)),
+        sendToKafkaAndWaitForCompletion(KafkaUtils.KOGITO_TRACING_MODEL_TOPIC,
+                                        buildCloudEventJsonString(buildCorrectModelEvent()),
                                         producer);
 
-        verify(trustyService, times(2)).storeDecision(any(String.class), any(Decision.class));
+        verify(trustyService, times(2))
+                .storeModel(anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
     }
 }

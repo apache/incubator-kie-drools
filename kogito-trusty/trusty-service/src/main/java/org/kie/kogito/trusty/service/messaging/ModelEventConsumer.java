@@ -27,40 +27,40 @@ import io.cloudevents.v1.AttributesImpl;
 import io.cloudevents.v1.CloudEventImpl;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
-import org.kie.kogito.tracing.decision.event.trace.TraceEvent;
-import org.kie.kogito.tracing.decision.event.trace.TraceEventType;
+import org.kie.kogito.decision.DecisionModelType;
+import org.kie.kogito.tracing.decision.event.model.ModelEvent;
 import org.kie.kogito.trusty.service.ITrustyService;
 
 @ApplicationScoped
-public class TraceEventConsumer extends BaseEventConsumer<TraceEvent> {
+public class ModelEventConsumer extends BaseEventConsumer<ModelEvent> {
 
-    private static final TypeReference<CloudEventImpl<TraceEvent>> CLOUD_EVENT_TYPE_REF = new TypeReference<>() {
+    private static final TypeReference<CloudEventImpl<ModelEvent>> CLOUD_EVENT_TYPE_REF = new TypeReference<>() {
     };
 
-    private TraceEventConsumer() {
+    private  ModelEventConsumer() {
         //CDI proxy
     }
 
     @Inject
-    public TraceEventConsumer(ITrustyService service) {
+    public ModelEventConsumer(final ITrustyService service) {
         super(service);
     }
 
     @Override
-    @Incoming("kogito-tracing")
-    public CompletionStage<Void> handleMessage(Message<String> message) {
+    @Incoming("kogito-tracing-model")
+    public CompletionStage<Void> handleMessage(final Message<String> message) {
         return super.handleMessage(message);
     }
 
     @Override
-    protected TypeReference<CloudEventImpl<TraceEvent>> getCloudEventType() {
+    protected TypeReference<CloudEventImpl<ModelEvent>> getCloudEventType() {
         return CLOUD_EVENT_TYPE_REF;
     }
 
     @Override
-    protected void handleCloudEvent(CloudEventImpl<TraceEvent> cloudEvent) {
-        AttributesImpl attributes = cloudEvent.getAttributes();
-        Optional<TraceEvent> optData = cloudEvent.getData();
+    protected void handleCloudEvent(final CloudEventImpl<ModelEvent> cloudEvent) {
+        final AttributesImpl attributes = cloudEvent.getAttributes();
+        final Optional<ModelEvent> optData = cloudEvent.getData();
 
         if (!optData.isPresent()) {
             LOG.error("Received CloudEvent with id {} from {} with empty data", attributes.getId(), attributes.getSource());
@@ -69,13 +69,18 @@ public class TraceEventConsumer extends BaseEventConsumer<TraceEvent> {
 
         LOG.debug("Received CloudEvent with id {} from {}", attributes.getId(), attributes.getSource());
 
-        TraceEvent traceEvent = optData.get();
-        TraceEventType traceEventType = traceEvent.getHeader().getType();
+        final ModelEvent modelEvent = optData.get();
+        final DecisionModelType modelEventType = modelEvent.getType();
 
-        if (traceEventType == TraceEventType.DMN) {
-            service.storeDecision(attributes.getId(), TraceEventConverter.toDecision(traceEvent));
+        if (modelEventType == DecisionModelType.DMN) {
+            service.storeModel(modelEvent.getGav().getGroupId(),
+                               modelEvent.getGav().getArtifactId(),
+                               modelEvent.getGav().getVersion(),
+                               modelEvent.getName(),
+                               modelEvent.getNamespace(),
+                               ModelEventConverter.toModel(modelEvent));
         } else {
-            LOG.error("Unsupported TraceEvent type {}", traceEventType);
+            LOG.error("Unsupported DecisionModelType type {}", modelEventType);
         }
     }
 }

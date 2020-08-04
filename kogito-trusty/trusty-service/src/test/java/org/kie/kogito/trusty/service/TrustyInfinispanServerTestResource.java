@@ -22,6 +22,6 @@ public class TrustyInfinispanServerTestResource extends InfinispanServerTestReso
 
     @Override
     public boolean shouldCleanCache(String cacheName) {
-        return cacheName.equals("decisions");
+        return cacheName.equals("decisions") || cacheName.equals("models");
     }
 }

@@ -40,12 +40,13 @@ public class TrustyServiceTest {
     private TrustyService trustyService;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         trustyStorageServiceMock = mock(TrustyStorageService.class);
         trustyService = new TrustyService(trustyStorageServiceMock);
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void givenADecisionWhenStoreDecisionIsCalledThenNoExceptionsAreThrown() {
         Decision decision = new Decision();
         Storage storageMock = mock(Storage.class);
@@ -56,6 +57,7 @@ public class TrustyServiceTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void givenADecisionWhenADecisionIsStoredAndRetrievedThenTheOriginalObjectIsReturned() {
         String executionId = "executionId";
         Decision decision = new Decision();
@@ -83,6 +85,7 @@ public class TrustyServiceTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void givenADecisionWhenADecisionIsStoredAndRetrievedByIdThenTheOriginalObjectIsReturned() {
         String executionId = "executionId";
         Decision decision = new Decision();
@@ -97,5 +100,59 @@ public class TrustyServiceTest {
         Decision result = trustyService.getDecisionById(executionId);
 
         Assertions.assertEquals(executionId, result.getExecutionId());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void givenAModelWhenStoreModelIsCalledThenNoExceptionsAreThrown() {
+        String model = "definition";
+        Storage storageMock = mock(Storage.class);
+
+        when(storageMock.put(any(Object.class), any(Object.class))).thenReturn(model);
+        when(trustyStorageServiceMock.getModelStorage()).thenReturn(storageMock);
+
+        Assertions.assertDoesNotThrow(() -> trustyService.storeModel("groupId", "artifactId", "version", "name", "namespace", model));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void givenAModelWhenStoreModelIsCalledMoreThanOnceForSameModelThenExceptionIsThrown() {
+        String modelId = "name:namespace";
+        String model = "definition";
+        Storage storageMock = mock(Storage.class);
+
+        when(storageMock.containsKey(modelId)).thenReturn(true);
+        when(storageMock.put(any(Object.class), any(Object.class))).thenReturn(model);
+        when(trustyStorageServiceMock.getModelStorage()).thenReturn(storageMock);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> trustyService.storeModel("groupId", "artifactId", "version", "name", "namespace", model));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void givenAModelWhenAModelIsStoredAndRetrievedByIdThenTheOriginalObjectIsReturned() {
+        String modelId = "name:namespace";
+        String model = "definition";
+        Storage storageMock = new StorageImplMock(String.class);
+
+        when(trustyStorageServiceMock.getModelStorage()).thenReturn(storageMock);
+
+        trustyService.storeModel("groupId", "artifactId", "version", "name", "namespace", model);
+
+        String result = trustyService.getModelById(modelId);
+
+        Assertions.assertEquals(model, result);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void whenAModelIsNotStoredAndRetrievedByIdThenExceptionIsThrown() {
+        String modelId = "name:namespace";
+        Storage storageMock = mock(Storage.class);
+
+        when(storageMock.containsKey(modelId)).thenReturn(false);
+        when(trustyStorageServiceMock.getModelStorage()).thenReturn(storageMock);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> trustyService.getModelById(modelId));
     }
 }

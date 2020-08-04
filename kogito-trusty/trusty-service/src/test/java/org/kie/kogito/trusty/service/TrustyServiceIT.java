@@ -45,6 +45,7 @@ public class TrustyServiceIT {
     @BeforeEach
     public void setup() {
         trustyStorageService.getDecisionsStorage().clear();
+        trustyStorageService.getModelStorage().clear();
     }
 
     @Test
@@ -104,11 +105,39 @@ public class TrustyServiceIT {
         Assertions.assertThrows(IllegalArgumentException.class, () -> trustyService.getDecisionById(executionId));
     }
 
+    @Test
+    public void givenAModelWhenGetModelByIdIsCalledThenTheModelIsReturned() {
+        String model = "definition";
+        String modelId = "name:namespace";
+        storeModel(model);
+
+        String result = trustyService.getModelById(modelId);
+        Assertions.assertEquals(model, result);
+    }
+
+    @Test
+    public void givenADuplicatedModelWhenTheModelIsStoredThenAnExceptionIsRaised() {
+        String model = "definition";
+        storeModel(model);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> storeModel(model));
+    }
+
+    @Test
+    public void givenNoModelsWhenAModelIsRetrievedThenAnExceptionIsRaised() {
+        String modelId = "name:namespace";
+        Assertions.assertThrows(IllegalArgumentException.class, () -> trustyService.getModelById(modelId));
+    }
+
     private Decision storeExecution(String executionId, Long timestamp) {
         Decision decision = new Decision();
         decision.setExecutionId(executionId);
         decision.setExecutionTimestamp(timestamp);
         trustyService.storeDecision(decision.getExecutionId(), decision);
         return decision;
+    }
+
+    private String storeModel(String model) {
+        trustyService.storeModel("groupId", "artifactId", "version", "name", "namespace", model);
+        return model;
     }
 }

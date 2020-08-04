@@ -27,11 +27,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.cloudevents.json.Json;
 import io.cloudevents.v1.CloudEventImpl;
+import org.kie.kogito.decision.DecisionModelType;
 import org.kie.kogito.tracing.decision.event.CloudEventUtils;
 import org.kie.kogito.tracing.decision.event.common.Message;
 import org.kie.kogito.tracing.decision.event.common.MessageCategory;
 import org.kie.kogito.tracing.decision.event.common.MessageExceptionField;
 import org.kie.kogito.tracing.decision.event.common.MessageLevel;
+import org.kie.kogito.tracing.decision.event.model.ModelEvent;
 import org.kie.kogito.tracing.decision.event.trace.TraceEvent;
 import org.kie.kogito.tracing.decision.event.trace.TraceEventType;
 import org.kie.kogito.tracing.decision.event.trace.TraceExecutionStep;
@@ -193,7 +195,6 @@ public class TrustyServiceTestUtils {
                 )
         );
     }
-
 
     public static TraceEvent buildTraceEventWithNullType(String cloudEventId) {
         return new TraceEvent(
@@ -403,5 +404,21 @@ public class TrustyServiceTestUtils {
         } catch (JsonProcessingException e) {
             return null;
         }
+    }
+
+    public static ModelEvent buildCorrectModelEvent() {
+        final ModelEvent.GAV gav = new ModelEvent.GAV("groupId", "artifactId", "version");
+        return new ModelEvent(gav, "name", "namespace", DecisionModelType.DMN, "definition");
+    }
+
+    public static String buildCloudEventJsonString(ModelEvent modelEvent) {
+        return CloudEventUtils.encode(buildCloudEvent(modelEvent));
+    }
+
+    public static CloudEventImpl<ModelEvent> buildCloudEvent(ModelEvent modelEvent) {
+        return CloudEventUtils.build("id",
+                                     URI.create(URLEncoder.encode(ModelEvent.class.getName(), StandardCharsets.UTF_8)),
+                                     modelEvent,
+                                     ModelEvent.class);
     }
 }

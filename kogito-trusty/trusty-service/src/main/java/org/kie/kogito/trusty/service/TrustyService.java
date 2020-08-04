@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.AttributeFilter;
 import org.kie.kogito.persistence.api.query.QueryFilterFactory;
+import org.kie.kogito.trusty.service.messaging.ModelIdCreator;
 import org.kie.kogito.trusty.storage.api.TrustyStorageService;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.Execution;
@@ -75,5 +76,24 @@ public class TrustyService implements ITrustyService {
     @Override
     public void updateDecision(String executionId, Decision decision) {
         storageService.getDecisionsStorage().put(executionId, decision);
+    }
+
+    @Override
+    public void storeModel(String groupId, String artifactId, String version, String name, String namespace, String definition) {
+        final String identifier = ModelIdCreator.makeIdentifier(groupId, artifactId, version, name, namespace);
+        final Storage<String, String> storage = storageService.getModelStorage();
+        if (storage.containsKey(identifier)) {
+            throw new IllegalArgumentException(String.format("A model with ID %s is already present in the storage.", identifier));
+        }
+        storage.put(identifier, definition);
+    }
+
+    @Override
+    public String getModelById(String modelId) {
+        final Storage<String, String> storage = storageService.getModelStorage();
+        if (!storage.containsKey(modelId)) {
+            throw new IllegalArgumentException(String.format("A model with ID %s does not exist in the storage.", modelId));
+        }
+        return storage.get(modelId);
     }
 }
