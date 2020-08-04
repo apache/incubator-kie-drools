@@ -642,10 +642,8 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Ignore
     @Test
-    public void testCollectionType() {
-        // To be fixed by DROOLS-5538
+    public void testTopLevelTypeCollection() {
         final DMNRuntime runtime = createRuntime("PersonListHelloBKM2.dmn", DMNRuntimeTest.class);
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_7e41a76e-2df6-4899-bf81-ae098757a3b6", "PersonListHelloBKM2");
@@ -666,7 +664,53 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
                 contains(prototype(entry("Full Name", "Prof. John Doe"), entry("Age", EvalHelper.coerceNumber(33))),
                          prototype(entry("Full Name", "Prof. 47"), entry("Age", EvalHelper.coerceNumber(47)))));
 
-        // Add typeSafe assertion
+        if (isTypeSafe()) {
+            FEELPropertyAccessible outputSet = convertToOutputSet(dmnModel, dmnResult);
+            Map<String, Object> allProperties = outputSet.allFEELProperties();
+            List<FEELPropertyAccessible> personList = (List<FEELPropertyAccessible>) allProperties.get("My Decision");
+            FEELPropertyAccessible person1 = personList.get(0);
+            FEELPropertyAccessible person2 = personList.get(1);
+            assertThat(person1.getFEELProperty("Full Name").toOptional().get(), anyOf(is("Prof. John Doe"),is("Prof. 47")));
+            assertThat(person1.getFEELProperty("Age").toOptional().get(), anyOf(is(EvalHelper.coerceNumber(33)), is(EvalHelper.coerceNumber(47))));
+            assertThat(person2.getFEELProperty("Full Name").toOptional().get(), anyOf(is("Prof. John Doe"),is("Prof. 47")));
+            assertThat(person2.getFEELProperty("Age").toOptional().get(), anyOf(is(EvalHelper.coerceNumber(33)), is(EvalHelper.coerceNumber(47))));
+        }
+    }
+
+    @Test
+    public void testTopLevelCompositeCollection() {
+        final DMNRuntime runtime = createRuntime("topLevelCompositeCollection.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel(
+                "https://kiegroup.org/dmn/_3ED2F714-24F0-4764-88FA-04217901C05A", "topLevelCompositeCollection");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+
+        List<?> pairs = Arrays.asList(mapOf(entry("letter", "A"), entry("num", new BigDecimal(1))),
+                                      mapOf(entry("letter", "B"), entry("num", new BigDecimal(2))),
+                                      mapOf(entry("letter", "C"), entry("num", new BigDecimal(3))));
+
+        context.set("InputData-1", pairs);
+
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        assertThat(dmnResult.hasErrors(), is(false));
+
+        assertThat((List<?>) dmnResult.getContext().get("Decision-1"),
+                contains(mapOf(entry("letter", "ABC"), entry("num", EvalHelper.coerceNumber(123))),
+                         mapOf(entry("letter", "DEF"), entry("num", EvalHelper.coerceNumber(456)))));
+
+        if (isTypeSafe()) {
+            FEELPropertyAccessible outputSet = convertToOutputSet(dmnModel, dmnResult);
+            Map<String, Object> allProperties = outputSet.allFEELProperties();
+            List<FEELPropertyAccessible> pairList = (List<FEELPropertyAccessible>) allProperties.get("Decision-1");
+            FEELPropertyAccessible pair1 = pairList.get(0);
+            FEELPropertyAccessible pair2 = pairList.get(1);
+            assertThat(pair1.getFEELProperty("letter").toOptional().get(), anyOf(is("ABC"),is("DEF")));
+            assertThat(pair1.getFEELProperty("num").toOptional().get(), anyOf(is(EvalHelper.coerceNumber(123)), is(EvalHelper.coerceNumber(456))));
+            assertThat(pair2.getFEELProperty("letter").toOptional().get(), anyOf(is("ABC"),is("DEF")));
+            assertThat(pair2.getFEELProperty("num").toOptional().get(), anyOf(is(EvalHelper.coerceNumber(123)), is(EvalHelper.coerceNumber(456))));
+        }
     }
 
     @Test
