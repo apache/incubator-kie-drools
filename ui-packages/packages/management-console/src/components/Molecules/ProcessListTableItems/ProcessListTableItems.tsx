@@ -326,6 +326,7 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
         handleModalToggle={handleModalToggle}
         modalTitle={setTitle(titleType, modalTitle)}
         modalContent={modalContent}
+        processName={processInstanceData && processInstanceData.processName}
       />
       <DataListItem
         aria-labelledby={'kie-datalist-item-' + processInstanceData.id}

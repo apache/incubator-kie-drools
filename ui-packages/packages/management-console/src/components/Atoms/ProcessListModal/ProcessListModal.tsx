@@ -17,6 +17,7 @@ interface IOwnProps {
   isModalOpen: boolean;
   resetSelected?: () => void;
   operationResult?: IOperation;
+  processName?: string;
 }
 const ProcessListModal: React.FC<IOwnProps> = ({
   modalContent,
@@ -24,13 +25,29 @@ const ProcessListModal: React.FC<IOwnProps> = ({
   isModalOpen,
   handleModalToggle,
   resetSelected,
-  operationResult
+  operationResult,
+  processName
 }) => {
+
   const onOkClick = () => {
     handleModalToggle();
     operationResult && resetSelected();
   };
 
+  const createBoldText = (text: string, shouldBeBold: string): JSX.Element => {
+    const textArray = text.split(shouldBeBold);
+    return (
+      <span>
+        {textArray.map((item, index) => (
+          <React.Fragment key={index}>
+            {item}
+            {index !== textArray.length - 1 && <b>{shouldBeBold}</b>}
+          </React.Fragment>
+        ))}
+      </span>
+    );
+  };
+  
   return (
     <Modal
       isSmall={true}
@@ -54,7 +71,9 @@ const ProcessListModal: React.FC<IOwnProps> = ({
       )}
       <TextContent>
         <Text>
-          <strong>{modalContent}</strong>
+          {modalContent &&
+            processName &&
+            createBoldText(modalContent, processName)}
         </Text>
       </TextContent>
     </Modal>

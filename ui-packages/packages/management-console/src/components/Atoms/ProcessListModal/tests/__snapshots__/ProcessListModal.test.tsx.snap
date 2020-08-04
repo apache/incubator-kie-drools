@@ -45,7 +45,6 @@ exports[`ProcessBulkModal component tests snapshot testing 1`] = `
     operationResult={
       Object {
         "functions": Object {
-          "changeProcessStatus": [MockFunction],
           "perform": [MockFunction],
         },
         "messages": Object {
@@ -138,9 +137,13 @@ exports[`ProcessBulkModal component tests snapshot testing 1`] = `
   />
   <TextContent>
     <Text>
-      <strong>
-        The process travels was aborted successfully
-      </strong>
+      <span>
+        The process 
+        <b>
+          travels
+        </b>
+         was aborted successfully
+      </span>
     </Text>
   </TextContent>
 </Modal>

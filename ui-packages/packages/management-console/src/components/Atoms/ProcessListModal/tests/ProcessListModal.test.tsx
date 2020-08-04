@@ -17,7 +17,7 @@ const props = {
   ),
   isModalOpen: true,
   handleModalToggle: jest.fn(),
-  isAbortModalOpen: true,
+  processName:'travels',
   modalContent: 'The process travels was aborted successfully',
   operationResult: {
     messages: {
@@ -108,7 +108,6 @@ const props = {
     },
     functions: {
       perform: jest.fn(),
-      changeProcessStatus: jest.fn()
     }
   },
   resetSelected: jest.fn()

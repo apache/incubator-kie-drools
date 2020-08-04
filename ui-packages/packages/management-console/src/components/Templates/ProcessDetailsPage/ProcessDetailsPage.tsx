@@ -163,6 +163,11 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, {}, {}> &
               handleModalToggle={handleModalToggle}
               modalTitle={setTitle(titleType, modalTitle)}
               modalContent={modalContent}
+              processName={
+                data &&
+                data.ProcessInstances &&
+                data.ProcessInstances[0].processName
+              }
             />
             <PageTitle title="Process Details" />
             {!loading ? (
