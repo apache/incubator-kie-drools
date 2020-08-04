@@ -691,50 +691,20 @@
       <!-- infinispan -->
       <dependency>
         <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-client-hotrod</artifactId>
-        <version>${version.org.infinispan}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.infinispan.protostream</groupId>
-        <artifactId>protostream</artifactId>
-        <version>${version.org.infinispan.protostream}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-server-hotrod</artifactId>
-        <version>${version.org.infinispan}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-remote-query-server</artifactId>
-        <version>${version.org.infinispan}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-query</artifactId>
-        <version>${version.org.infinispan}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-core</artifactId>
+        <artifactId>infinispan-remote-query-client</artifactId>
         <version>${version.org.infinispan}</version>
       </dependency>
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-query-dsl</artifactId>
         <version>${version.org.infinispan}</version>
-      </dependency>
+      </dependency> 
       <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-remote-query-client</artifactId>
-        <version>${version.org.infinispan}</version>
+        <groupId>org.infinispan.protostream</groupId>
+        <artifactId>protostream</artifactId>
+        <version>${version.org.infinispan.protostream}</version>
       </dependency>
-      <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-commons</artifactId>
-        <version>${version.org.infinispan}</version>
-      </dependency>
-
+      
       <!-- spring related -->
       <dependency>
         <groupId>org.springframework.kafka</groupId>
