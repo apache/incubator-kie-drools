@@ -36,6 +36,7 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -114,6 +115,7 @@ public class DMNRuntimeImpl
             evaluateDecision(context, result, decision, performRuntimeTypeCheck);
         }
         DMNRuntimeEventManagerUtils.fireAfterEvaluateAll( eventManager, model, result );
+        convertContext(result);
         return result;
     }
 
@@ -237,13 +239,33 @@ public class DMNRuntimeImpl
     }
 
     private DMNResultImpl createResult(DMNModel model, DMNContext context) {
-        DMNResultImpl result = new DMNResultImpl(model);
-        result.setContext( context.clone() );
+        DMNResultImpl result = createResultImpl(model, context);
 
         for (DecisionNode decision : model.getDecisions().stream().filter(d -> d.getModelNamespace().equals(model.getNamespace())).collect(Collectors.toSet())) {
             result.addDecisionResult(new DMNDecisionResultImpl(decision.getId(), decision.getName()));
         }
         return result;
+    }
+
+    private DMNResultImpl createResultImpl(DMNModel model, DMNContext context) {
+        DMNResultImpl result = new DMNResultImpl(model);
+        if (context instanceof DMNContextFPAImpl) {
+            result.setStronglyTyped(true);
+            context.getMetadata().set(DMNContextFPAImpl.STRONGLY_TYPED_FPA, ((DMNContextFPAImpl)context).getFpa());
+            result.setContext(context.clone()); // DMNContextFPAImpl.clone() creates DMNContextImpl
+        } else {
+            result.setContext(context.clone());
+        }
+        return result;
+    }
+
+    private void convertContext(DMNResultImpl result) {
+        if (result.isStronglyTyped() && !(result.getContext() instanceof DMNContextFPAImpl)) {
+            FEELPropertyAccessible stronglyTypedFpa = (FEELPropertyAccessible)result.getContext().getMetadata().get(DMNContextFPAImpl.STRONGLY_TYPED_FPA);
+            stronglyTypedFpa.fromMap(result.getContext().getAll());
+            DMNContext newContext = new DMNContextFPAImpl(stronglyTypedFpa);
+            result.setContext(newContext);
+        }
     }
 
     @Override
@@ -252,8 +274,8 @@ public class DMNRuntimeImpl
         Objects.requireNonNull(context, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "context"));
         Objects.requireNonNull(decisionServiceName, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "decisionServiceName"));
         boolean typeCheck = performRuntimeTypeCheck(model);
-        DMNResultImpl result = new DMNResultImpl(model);
-        result.setContext(context.clone());
+        DMNResultImpl result = createResultImpl(model, context);
+
         // the engine should evaluate all belonging to the "local" model namespace, not imported nodes explicitly.
         Optional<DecisionServiceNode> lookupDS = ((DMNModelImpl) model).getDecisionServices().stream()
                                                                     .filter(d -> d.getModelNamespace().equals(model.getNamespace()))
@@ -318,6 +340,7 @@ public class DMNRuntimeImpl
                                   Msg.DECISION_SERVICE_NOT_FOUND_FOR_NAME,
                                   decisionServiceName);
         }
+        convertContext(result);
         return result;
     }
 

@@ -33,6 +33,8 @@ public class DMNContextFPAImpl implements DMNContext {
     private Deque<ScopeReference> stack = new LinkedList<>();
     private DMNMetadataImpl metadata;
 
+    public static final String STRONGLY_TYPED_FPA = "STRONGLY_TYPED_FPA"; // metadata key
+
     public DMNContextFPAImpl(FEELPropertyAccessible bean) {
         this.fpa = bean;
         this.metadata = new DMNMetadataImpl();
@@ -46,6 +48,15 @@ public class DMNContextFPAImpl implements DMNContext {
     @Override
     public Object get(String name) {
         return fpa.getFEELProperty(name).toOptional().orElse(null);
+    }
+
+    /**
+     * Internal utility method
+     * 
+     * @return FEELPropertyAccessible which represents strongly typed context
+     */
+    public FEELPropertyAccessible getFpa() {
+        return fpa;
     }
 
     private Map<String, Object> getCurrentEntries() {

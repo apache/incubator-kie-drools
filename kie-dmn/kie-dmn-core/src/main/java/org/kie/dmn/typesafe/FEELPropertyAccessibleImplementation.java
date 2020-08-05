@@ -40,6 +40,7 @@ import com.github.javaparser.ast.stmt.SwitchStmt;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodWithStringBody;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.kie.dmn.feel.util.EvalHelper;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
@@ -58,8 +59,11 @@ public class FEELPropertyAccessibleImplementation {
 
     List<DMNDeclaredField> fields;
 
-    public FEELPropertyAccessibleImplementation(List<DMNDeclaredField> fields) {
+    TypeDefinition typeDefinition;
+
+    public FEELPropertyAccessibleImplementation(List<DMNDeclaredField> fields, TypeDefinition typeDefinition) {
         this.fields = fields;
+        this.typeDefinition = typeDefinition;
     }
 
     public List<MethodDefinition> getMethods() {
@@ -138,9 +142,13 @@ public class FEELPropertyAccessibleImplementation {
 
         firstSwitch.setEntries(nodeList(collect));
 
-        String body = setFEELProperty.getBody().orElseThrow(() -> new InvalidTemplateException("Empty body in setFEELProperty")).toString();
+        BlockStmt body = setFEELProperty.getBody().orElseThrow(() -> new InvalidTemplateException("Empty body in setFEELProperty"));
 
-        MethodWithStringBody setFeelPropertyDefinition = new MethodWithStringBody("setFEELProperty", "void", body)
+        if (typeDefinition instanceof AbstractDMNSetType) {
+            body.addStatement(0, new ExpressionStmt(StaticJavaParser.parseExpression("definedKeySet.add(property)")));
+        }
+
+        MethodWithStringBody setFeelPropertyDefinition = new MethodWithStringBody("setFEELProperty", "void", body.toString())
                 .addParameter(String.class.getCanonicalName(), "property")
                 .addParameter(Object.class.getCanonicalName(), "value");
 
@@ -183,6 +191,10 @@ public class FEELPropertyAccessibleImplementation {
 
         BlockStmt body = new BlockStmt(nodeList(allStatements));
 
+        if (typeDefinition instanceof AbstractDMNSetType) {
+            body.addStatement("values.keySet().stream().forEach(key -> definedKeySet.add(key));");
+        }
+
         MethodWithStringBody setFeelProperty = new MethodWithStringBody("fromMap", "void", body.toString());
         setFeelProperty.addParameter("java.util.Map<String, Object>", "values");
 
@@ -206,17 +218,21 @@ public class FEELPropertyAccessibleImplementation {
                 .orElseThrow(() -> new InvalidTemplateException("Missing put method in allFEELProperties"));
 
         List<Statement> collect = fields.stream().map(fieldDefinition -> toResultPut(putExpression, fieldDefinition)).collect(Collectors.toList());
+
+        if (typeDefinition instanceof AbstractDMNSetType) {
+            collect.add(new ExpressionStmt(StaticJavaParser.parseExpression("result.entrySet().removeIf(entry -> java.util.Objects.isNull(entry.getValue()) && !definedKeySet.contains(entry.getKey()))")));
+        }
+
         BlockStmt newBlockStatement = new BlockStmt(nodeList(collect));
 
         putExpression.getParentNode().ifPresent(p -> p.replace(newBlockStatement));
 
-        String body = allFeelProperties.getBody().orElseThrow(() -> new InvalidTemplateException("Missing body in generated method"))
-                .toString();
+        BlockStmt body = allFeelProperties.getBody().orElseThrow(() -> new InvalidTemplateException("Missing body in generated method"));
 
         MethodWithStringBody allFEELProperties = new MethodWithStringBody(
                 "allFEELProperties",
                 "java.util.Map<String, Object>",
-                body
+                body.toString()
         );
 
         addOverrideAnnotation(allFEELProperties);

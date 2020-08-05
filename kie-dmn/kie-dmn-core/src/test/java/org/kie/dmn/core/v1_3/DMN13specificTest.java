@@ -27,6 +27,7 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.core.BaseVariantTest;
 import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +64,7 @@ public class DMN13specificTest extends BaseVariantTest {
         assertThat(result.get("salutation"), is("Hello, John"));
 
         if (isTypeSafe()) {
-            FEELPropertyAccessible outputSet = convertToOutputSet(dmnModel, dmnResult);
+            FEELPropertyAccessible outputSet = ((DMNContextFPAImpl)dmnResult.getContext()).getFpa();
             Map<String, Object> allProperties = outputSet.allFEELProperties();
             assertThat(allProperties.get("salutation"), is("Hello, John"));
         }
@@ -102,7 +103,7 @@ public class DMN13specificTest extends BaseVariantTest {
         assertThat(result.get("Routing"), is("ACCEPT"));
 
         if (isTypeSafe()) {
-            FEELPropertyAccessible outputSet = convertToOutputSet(dmnModel, dmnResult);
+            FEELPropertyAccessible outputSet = ((DMNContextFPAImpl)dmnResult.getContext()).getFpa();
             Map<String, Object> allProperties = outputSet.allFEELProperties();
             assertThat(allProperties.get("Strategy"), is("THROUGH"));
             assertThat(allProperties.get("Routing"), is("ACCEPT"));
@@ -141,7 +142,7 @@ public class DMN13specificTest extends BaseVariantTest {
         assertThat(result.get("Routing"), is("ACCEPT"));
 
         if (isTypeSafe()) {
-            FEELPropertyAccessible outputSet = convertToOutputSet(dmnModel, dmnResult);
+            FEELPropertyAccessible outputSet = ((DMNContextFPAImpl)dmnResult.getContext()).getFpa();
             Map<String, Object> allProperties = outputSet.allFEELProperties();
             assertThat(allProperties.get("Strategy"), is("THROUGH"));
             assertThat(allProperties.get("Routing"), is("ACCEPT"));
