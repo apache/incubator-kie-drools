@@ -797,6 +797,14 @@ public class DSL {
         }
     }
 
+    public static <R> DynamicValueSupplier<R> supply( R value ) {
+        return new DynamicValueSupplier._0( () -> value );
+    }
+
+    public static <R> DynamicValueSupplier<R> supply( Function0<R> f ) {
+        return new DynamicValueSupplier._0( f );
+    }
+
     public static <A, R> DynamicValueSupplier<R> supply( Variable<A> var1, Function1<A, R> f ) {
         return new DynamicValueSupplier._1( var1, f );
     }

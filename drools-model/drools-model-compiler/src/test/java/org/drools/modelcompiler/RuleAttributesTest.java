@@ -400,7 +400,6 @@ public class RuleAttributesTest extends BaseModelTest {
         Assertions.assertThat(metadata.get(RULE_KEY)).isEqualTo("\"" + RULE_VALUE + "\"");
     }
 
-
     @Test
     public void testDynamicSalience() {
         String str =
@@ -428,5 +427,36 @@ public class RuleAttributesTest extends BaseModelTest {
 
         ksession.fireAllRules();
         assertEquals(list, Arrays.asList("test", 3, "ok", 1));
+    }
+
+    public static final int CONST_SALIENCE = 1;
+
+    @Test
+    public void testSalienceFromConstant() {
+        // DROOLS-5550
+        String str =
+                "import " + RuleAttributesTest.class.getCanonicalName() + "\n;" +
+                "global java.util.List list;\n" +
+                "rule R1 when\n" +
+                "    $s : String()\n" +
+                "then\n" +
+                "    list.add($s);" +
+                "end\n" +
+                "rule R2 salience RuleAttributesTest.CONST_SALIENCE when\n" +
+                "    $i : Integer()\n" +
+                "then\n" +
+                "    list.add($i);" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( "ok" );
+        ksession.insert( 1 );
+
+        ksession.fireAllRules();
+        assertEquals(list, Arrays.asList(1, "ok"));
     }
 }
