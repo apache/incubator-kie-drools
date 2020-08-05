@@ -39,6 +39,7 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
     private final SubSingleBenchmarkResult subSingleBenchmarkResult;
     private final boolean warmUp;
 
+    private Long randomSeed = null;
     private Throwable failureThrowable = null;
 
     /**
@@ -51,6 +52,10 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
 
     public SubSingleBenchmarkResult getSubSingleBenchmarkResult() {
         return subSingleBenchmarkResult;
+    }
+
+    public Long getRandomSeed() {
+        return randomSeed;
     }
 
     public Throwable getFailureThrowable() {
@@ -85,6 +90,7 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
             solverConfig = new SolverConfig(solverConfig);
             solverConfig.offerRandomSeedFromSubSingleIndex(subSingleBenchmarkResult.getSubSingleBenchmarkIndex());
         }
+        randomSeed = solverConfig.getRandomSeed();
         // Defensive copy of solverConfig for every SingleBenchmarkResult to reset Random, tabu lists, ...
         DefaultSolverFactory<Solution_> solverFactory = new DefaultSolverFactory<>(new SolverConfig(solverConfig));
         DefaultSolver<Solution_> solver = (DefaultSolver<Solution_>) solverFactory.buildSolver();
