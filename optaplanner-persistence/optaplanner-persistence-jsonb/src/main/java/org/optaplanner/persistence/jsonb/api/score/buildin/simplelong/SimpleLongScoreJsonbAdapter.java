@@ -19,7 +19,6 @@ package org.optaplanner.persistence.jsonb.api.score.buildin.simplelong;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.persistence.jsonb.api.score.AbstractScoreJsonbAdapter;
 
-@SuppressWarnings("checkstyle:javadocstyle")
 /**
  * {@inheritDoc}
  */

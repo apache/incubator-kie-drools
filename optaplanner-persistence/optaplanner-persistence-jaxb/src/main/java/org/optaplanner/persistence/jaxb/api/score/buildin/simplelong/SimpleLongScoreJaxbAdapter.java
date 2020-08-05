@@ -19,7 +19,6 @@ package org.optaplanner.persistence.jaxb.api.score.buildin.simplelong;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbAdapter;
 
-@SuppressWarnings("checkstyle:javadocstyle")
 /**
  * {@inheritDoc}
  */

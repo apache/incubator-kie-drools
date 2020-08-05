@@ -19,7 +19,6 @@ package org.optaplanner.persistence.jsonb.api.score.buildin.hardsoftbigdecimal;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 import org.optaplanner.persistence.jsonb.api.score.AbstractScoreJsonbAdapter;
 
-@SuppressWarnings("checkstyle:javadocstyle")
 /**
  * {@inheritDoc}
  */

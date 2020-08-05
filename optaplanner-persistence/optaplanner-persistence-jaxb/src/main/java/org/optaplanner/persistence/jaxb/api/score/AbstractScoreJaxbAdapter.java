@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.optaplanner.core.api.score.Score;
 
-@SuppressWarnings("checkstyle:javadocstyle") // due to XML tags inside {@code}
 /**
  * JAXB binding support for a {@link Score} type.
  * <p>

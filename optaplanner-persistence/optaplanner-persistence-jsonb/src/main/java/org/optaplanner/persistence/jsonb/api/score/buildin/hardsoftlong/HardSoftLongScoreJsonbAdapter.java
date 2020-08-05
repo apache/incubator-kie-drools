@@ -19,7 +19,6 @@ package org.optaplanner.persistence.jsonb.api.score.buildin.hardsoftlong;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.persistence.jsonb.api.score.AbstractScoreJsonbAdapter;
 
-@SuppressWarnings("checkstyle:javadocstyle")
 /**
  * {@inheritDoc}
  */

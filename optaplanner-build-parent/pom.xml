@@ -907,9 +907,6 @@
         <!--        </executions>-->
       </plugin>
       <plugin>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-      </plugin>
-      <plugin>
         <!-- Entry needed to provide parsed version properties -->
         <!-- also adds generated sources to -source artifact -->
         <groupId>org.codehaus.mojo</groupId>
