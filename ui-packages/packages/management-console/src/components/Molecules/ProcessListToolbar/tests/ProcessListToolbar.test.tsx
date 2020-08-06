@@ -446,8 +446,8 @@ describe('ProcessListToolbar component tests', () => {
   });
 
   describe('multi Abort click tests', () => {
-    const handleMultiAbortSpyOn = jest.spyOn(Utils, 'performMultipleAbort');
-    it('multi a cbortlick success', async () => {
+    const handleMultiAbortSpyOn = jest.spyOn(Utils, 'performMultipleAction');
+    it('multi abort click success', async () => {
       props.selectedInstances = {
         '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': initData.ProcessInstances[0],
         'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e':
@@ -455,9 +455,7 @@ describe('ProcessListToolbar component tests', () => {
         'ceebdeb-b975-46e2-a9a0-6a86bf7ac21e':
           initData.ProcessInstances[0].childDataList[1]
       };
-      mockedAxios.all.mockResolvedValue([
-        mockedAxios.delete.mockResolvedValue({})
-      ]);
+      mockedAxios.delete.mockResolvedValue({});
       let wrapper = getWrapper(
         <ProcessListToolbar {...props} />,
         'ProcessListToolbar'
@@ -490,9 +488,7 @@ describe('ProcessListToolbar component tests', () => {
         'ceebdeb-b975-46e2-a9a0-6a86bf7ac21e':
           initData.ProcessInstances[0].childDataList[1]
       };
-      mockedAxios.all.mockRejectedValue([
-        mockedAxios.delete.mockRejectedValue({})
-      ]);
+      mockedAxios.delete.mockRejectedValue({});
       let wrapper = getWrapper(
         <ProcessListToolbar {...props} />,
         'ProcessListToolbar'
@@ -516,6 +512,146 @@ describe('ProcessListToolbar component tests', () => {
         await wait(0);
       });
       expect(handleMultiAbortSpyOn).toHaveBeenCalled();
+    });
+  });
+
+  describe('multi Skip click tests', () => {
+    const handleMultiSkipSpyOn = jest.spyOn(Utils, 'performMultipleAction');
+    it('multi skip click success', async () => {
+      props.selectedInstances = {
+        '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': initData.ProcessInstances[0],
+        'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e':
+          initData.ProcessInstances[0].childDataList[0],
+        'ceebdeb-b975-46e2-a9a0-6a86bf7ac21e':
+          initData.ProcessInstances[0].childDataList[1]
+      };
+      mockedAxios.post.mockResolvedValue({});
+      let wrapper = getWrapper(
+        <ProcessListToolbar {...props} />,
+        'ProcessListToolbar'
+      );
+      await act(async () => {
+        wrapper
+          .find('#process-management-buttons')
+          .at(0)
+          .find(Dropdown)
+          .find(KebabToggle)
+          .find('button')
+          .simulate('click');
+        await wait(0);
+        wrapper = wrapper.update();
+        wrapper
+          .find('#process-management-buttons')
+          .at(0)
+          .find(DropdownItem)
+          .at(1)
+          .simulate('click');
+        await wait(0);
+      });
+      expect(handleMultiSkipSpyOn).toHaveBeenCalled();
+    });
+    it('multi skip click fail', async () => {
+      props.selectedInstances = {
+        '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': initData.ProcessInstances[0],
+        'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e':
+          initData.ProcessInstances[0].childDataList[0],
+        'ceebdeb-b975-46e2-a9a0-6a86bf7ac21e':
+          initData.ProcessInstances[0].childDataList[1]
+      };
+      mockedAxios.post.mockRejectedValue({});
+      let wrapper = getWrapper(
+        <ProcessListToolbar {...props} />,
+        'ProcessListToolbar'
+      );
+      await act(async () => {
+        wrapper
+          .find('#process-management-buttons')
+          .at(0)
+          .find(Dropdown)
+          .find(KebabToggle)
+          .find('button')
+          .simulate('click');
+        await wait(0);
+        wrapper = wrapper.update();
+        wrapper
+          .find('#process-management-buttons')
+          .at(0)
+          .find(DropdownItem)
+          .at(1)
+          .simulate('click');
+        await wait(0);
+      });
+      expect(handleMultiSkipSpyOn).toHaveBeenCalled();
+    });
+  });
+
+  describe('multi Retry click tests', () => {
+    const handleMultiRetrySpyOn = jest.spyOn(Utils, 'performMultipleAction');
+    it('multi retry click success', async () => {
+      props.selectedInstances = {
+        '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': initData.ProcessInstances[0],
+        'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e':
+          initData.ProcessInstances[0].childDataList[0],
+        'ceebdeb-b975-46e2-a9a0-6a86bf7ac21e':
+          initData.ProcessInstances[0].childDataList[1]
+      };
+      mockedAxios.post.mockResolvedValue({});
+      let wrapper = getWrapper(
+        <ProcessListToolbar {...props} />,
+        'ProcessListToolbar'
+      );
+      await act(async () => {
+        wrapper
+          .find('#process-management-buttons')
+          .at(0)
+          .find(Dropdown)
+          .find(KebabToggle)
+          .find('button')
+          .simulate('click');
+        await wait(0);
+        wrapper = wrapper.update();
+        wrapper
+          .find('#process-management-buttons')
+          .at(0)
+          .find(DropdownItem)
+          .at(2)
+          .simulate('click');
+        await wait(0);
+      });
+      expect(handleMultiRetrySpyOn).toHaveBeenCalled();
+    });
+    it('multi retry click fail', async () => {
+      props.selectedInstances = {
+        '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': initData.ProcessInstances[0],
+        'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e':
+          initData.ProcessInstances[0].childDataList[0],
+        'ceebdeb-b975-46e2-a9a0-6a86bf7ac21e':
+          initData.ProcessInstances[0].childDataList[1]
+      };
+      mockedAxios.post.mockRejectedValue({});
+      let wrapper = getWrapper(
+        <ProcessListToolbar {...props} />,
+        'ProcessListToolbar'
+      );
+      await act(async () => {
+        wrapper
+          .find('#process-management-buttons')
+          .at(0)
+          .find(Dropdown)
+          .find(KebabToggle)
+          .find('button')
+          .simulate('click');
+        await wait(0);
+        wrapper = wrapper.update();
+        wrapper
+          .find('#process-management-buttons')
+          .at(0)
+          .find(DropdownItem)
+          .at(2)
+          .simulate('click');
+        await wait(0);
+      });
+      expect(handleMultiRetrySpyOn).toHaveBeenCalled();
     });
   });
 

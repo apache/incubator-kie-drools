@@ -6,12 +6,13 @@ import {
   handleAbort,
   handleNodeInstanceRetrigger,
   handleNodeInstanceCancel,
-  performMultipleAbort
+  performMultipleAction
 } from '../Utils';
 import { GraphQL } from '@kogito-apps/common';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
 import axios from 'axios';
 import wait from 'waait';
+import { OperationType } from '../../components/Molecules/ProcessListToolbar/ProcessListToolbar';
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 const children = 'children';
@@ -52,7 +53,7 @@ describe('uitility function testing', () => {
       mockedAxios.post.mockResolvedValue({});
       const onSkipSuccess = jest.fn();
       const onSkipFailure = jest.fn();
-      handleSkip(processInstanceData, onSkipSuccess, onSkipFailure);
+      await handleSkip(processInstanceData, onSkipSuccess, onSkipFailure);
       await wait(0);
       expect(onSkipSuccess).toHaveBeenCalled();
     });
@@ -60,7 +61,7 @@ describe('uitility function testing', () => {
       const onSkipSuccess = jest.fn();
       const onSkipFailure = jest.fn();
       mockedAxios.post.mockRejectedValue({ message: '403 error' });
-      handleSkip(processInstanceData, onSkipSuccess, onSkipFailure);
+      await handleSkip(processInstanceData, onSkipSuccess, onSkipFailure);
       await wait(0);
       expect(onSkipFailure.mock.calls[0][0]).toEqual('"403 error"');
       expect(onSkipFailure).toHaveBeenCalled();
@@ -79,7 +80,7 @@ describe('uitility function testing', () => {
       const onRetrySuccess = jest.fn();
       const onRetryFailure = jest.fn();
       mockedAxios.post.mockResolvedValue({});
-      handleRetry(processInstanceData, onRetrySuccess, onRetryFailure);
+      await handleRetry(processInstanceData, onRetrySuccess, onRetryFailure);
       await wait(0);
       expect(onRetrySuccess).toHaveBeenCalled();
     });
@@ -87,7 +88,7 @@ describe('uitility function testing', () => {
       const onRetrySuccess = jest.fn();
       const onRetryFailure = jest.fn();
       mockedAxios.post.mockRejectedValue({ message: '403 error' });
-      handleRetry(processInstanceData, onRetrySuccess, onRetryFailure);
+      await handleRetry(processInstanceData, onRetrySuccess, onRetryFailure);
       await wait(0);
       expect(onRetryFailure.mock.calls[0][0]).toEqual('"403 error"');
       expect(onRetryFailure).toHaveBeenCalled();
@@ -233,7 +234,7 @@ describe('uitility function testing', () => {
   });
 
   describe('handle multiple abort click tests', () => {
-    const requiredInstances = {
+    const instanceToBeActioned = {
       '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': {
         id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
         processId: 'trav',
@@ -241,22 +242,102 @@ describe('uitility function testing', () => {
       }
     } as any;
     it('executes multi-abort process successfully', async () => {
-      const onAbortMultiAction = jest.fn();
-      mockedAxios.all.mockResolvedValue([
-        mockedAxios.delete.mockResolvedValue({})
-      ]);
-      await performMultipleAbort(requiredInstances, onAbortMultiAction);
+      const onMultiActionResult = jest.fn();
+      mockedAxios.delete.mockResolvedValue({});
+      await performMultipleAction(
+        instanceToBeActioned,
+        onMultiActionResult,
+        OperationType.ABORT
+      );
       await wait(0);
-      expect(onAbortMultiAction.mock.calls[0][0]).toBeDefined();
-      expect(onAbortMultiAction).toHaveBeenCalled();
+      expect(onMultiActionResult.mock.calls[0][0]).toBeDefined();
+      expect(onMultiActionResult).toHaveBeenCalled();
     });
-    it('catched an error in the instance', async () => {
-      const onAbortMultiAction = jest.fn();
+    it('catched an error in the instance(abort)', async () => {
+      const onMultiActionResult = jest.fn();
       mockedAxios.delete.mockRejectedValue({ message: '404 error' });
-      await performMultipleAbort(requiredInstances, onAbortMultiAction);
+      await performMultipleAction(
+        instanceToBeActioned,
+        onMultiActionResult,
+        OperationType.ABORT
+      );
       await wait(0);
       expect(
-        onAbortMultiAction.mock.calls[0][1][
+        onMultiActionResult.mock.calls[0][1][
+          '8035b580-6ae4-4aa8-9ec0-e18e19809e0b'
+        ]['errorMessage']
+      ).toEqual('"404 error"');
+    });
+  });
+
+  describe('handle multiple skip click tests', () => {
+    const instanceToBeActioned = {
+      '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': {
+        id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+        processId: 'trav',
+        serviceUrl: 'http://localhost:4000'
+      }
+    } as any;
+    it('executes multi-skip process successfully', async () => {
+      const onMultiActionResult = jest.fn();
+      mockedAxios.post.mockResolvedValue({});
+      await performMultipleAction(
+        instanceToBeActioned,
+        onMultiActionResult,
+        OperationType.SKIP
+      );
+      await wait(0);
+      expect(onMultiActionResult.mock.calls[0][0]).toBeDefined();
+      expect(onMultiActionResult).toHaveBeenCalled();
+    });
+    it('catched an error in the instance(skip)', async () => {
+      const onMultiActionResult = jest.fn();
+      mockedAxios.post.mockRejectedValue({ message: '404 error' });
+      await performMultipleAction(
+        instanceToBeActioned,
+        onMultiActionResult,
+        OperationType.SKIP
+      );
+      await wait(0);
+      expect(
+        onMultiActionResult.mock.calls[0][1][
+          '8035b580-6ae4-4aa8-9ec0-e18e19809e0b'
+        ]['errorMessage']
+      ).toEqual('"404 error"');
+    });
+  });
+
+  describe('handle multiple retry click tests', () => {
+    const instanceToBeActioned = {
+      '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': {
+        id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+        processId: 'trav',
+        serviceUrl: 'http://localhost:4000'
+      }
+    } as any;
+    it('executes multi-retry process successfully', async () => {
+      const onMultiActionResult = jest.fn();
+      mockedAxios.post.mockResolvedValue({});
+      await performMultipleAction(
+        instanceToBeActioned,
+        onMultiActionResult,
+        OperationType.RETRY
+      );
+      await wait(0);
+      expect(onMultiActionResult.mock.calls[0][0]).toBeDefined();
+      expect(onMultiActionResult).toHaveBeenCalled();
+    });
+    it('catched an error in the instance(retry)', async () => {
+      const onMultiActionResult = jest.fn();
+      mockedAxios.post.mockRejectedValue({ message: '404 error' });
+      await performMultipleAction(
+        instanceToBeActioned,
+        onMultiActionResult,
+        OperationType.RETRY
+      );
+      await wait(0);
+      expect(
+        onMultiActionResult.mock.calls[0][1][
           '8035b580-6ae4-4aa8-9ec0-e18e19809e0b'
         ]['errorMessage']
       ).toEqual('"404 error"');

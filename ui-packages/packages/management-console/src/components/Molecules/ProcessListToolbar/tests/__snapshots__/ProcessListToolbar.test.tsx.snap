@@ -2835,6 +2835,18 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
                                 >
                                   Abort selected
                                 </DropdownItem>,
+                                <DropdownItem
+                                  isDisabled={true}
+                                  onClick={[Function]}
+                                >
+                                  Skip selected
+                                </DropdownItem>,
+                                <DropdownItem
+                                  isDisabled={true}
+                                  onClick={[Function]}
+                                >
+                                  Retry selected
+                                </DropdownItem>,
                               ]
                             }
                             isOpen={false}
@@ -2854,6 +2866,18 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
                                     onClick={[Function]}
                                   >
                                     Abort selected
+                                  </DropdownItem>,
+                                  <DropdownItem
+                                    isDisabled={true}
+                                    onClick={[Function]}
+                                  >
+                                    Skip selected
+                                  </DropdownItem>,
+                                  <DropdownItem
+                                    isDisabled={true}
+                                    onClick={[Function]}
+                                  >
+                                    Retry selected
                                   </DropdownItem>,
                                 ]
                               }
@@ -2876,6 +2900,18 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
                                       >
                                         Abort selected
                                       </DropdownItem>,
+                                      <DropdownItem
+                                        isDisabled={true}
+                                        onClick={[Function]}
+                                      >
+                                        Skip selected
+                                      </DropdownItem>,
+                                      <DropdownItem
+                                        isDisabled={true}
+                                        onClick={[Function]}
+                                      >
+                                        Retry selected
+                                      </DropdownItem>,
                                     ],
                                     "isOpen": false,
                                     "isPlain": true,
@@ -2897,6 +2933,18 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
                                         onClick={[Function]}
                                       >
                                         Abort selected
+                                      </DropdownItem>,
+                                      <DropdownItem
+                                        isDisabled={true}
+                                        onClick={[Function]}
+                                      >
+                                        Skip selected
+                                      </DropdownItem>,
+                                      <DropdownItem
+                                        isDisabled={true}
+                                        onClick={[Function]}
+                                      >
+                                        Retry selected
                                       </DropdownItem>,
                                     ]
                                   }

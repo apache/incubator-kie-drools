@@ -20,7 +20,6 @@ module.exports = controller = {
     const error = processId[0].instances.filter(err => {
       return err.processInstanceId === req.params.processInstanceId;
     });
-    // res.send(error[0].retrigger)
     switch (error[0].retrigger) {
       case 'success':
         res.send(error[0].retrigger);

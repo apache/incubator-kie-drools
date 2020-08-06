@@ -113,8 +113,8 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
     setModalContent(content);
     handleModalToggle();
   };
-  const onSkipClick = () => {
-    handleSkip(
+  const onSkipClick = async () => {
+    await handleSkip(
       processInstanceData,
       () =>
         onShowMessage(
@@ -130,8 +130,8 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
         )
     );
   };
-  const onRetryClick = () => {
-    handleRetry(
+  const onRetryClick = async () => {
+    await handleRetry(
       processInstanceData,
       () =>
         onShowMessage(

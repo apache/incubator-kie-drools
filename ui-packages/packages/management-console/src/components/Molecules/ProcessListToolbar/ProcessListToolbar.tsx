@@ -28,7 +28,7 @@ import _ from 'lodash';
 import './ProcessListToolbar.css';
 import { GraphQL } from '@kogito-apps/common';
 import ProcessListModal from '../../Atoms/ProcessListModal/ProcessListModal';
-import { performMultipleAbort, setTitle } from '../../../utils/Utils';
+import { performMultipleAction, setTitle } from '../../../utils/Utils';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
 /* tslint:disable:no-string-literal */
 interface IOwnProps {
@@ -55,8 +55,10 @@ type filterType = {
   businessKey: string[];
 };
 
-enum OperationType {
-  ABORT = 'ABORT'
+export enum OperationType {
+  ABORT = 'ABORT',
+  SKIP = 'SKIP',
+  RETRY = 'RETRY'
 }
 
 export interface ProcessInstanceBulkList {
@@ -126,8 +128,19 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
       successInstances: {},
       failedInstances: {},
       ignoredInstances: {}
+    },
+    SKIP: {
+      successInstances: {},
+      failedInstances: {},
+      ignoredInstances: {}
+    },
+    RETRY: {
+      successInstances: {},
+      failedInstances: {},
+      ignoredInstances: {}
     }
   });
+
   const operations: IOperations = {
     ABORT: {
       results: operationResults[OperationType.ABORT],
@@ -156,7 +169,7 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
               delete selectedInstances[id];
             }
           }
-          await performMultipleAbort(
+          await performMultipleAction(
             selectedInstances,
             (successInstances, failedInstances) => {
               onShowMessage(
@@ -166,12 +179,84 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
                 instancesToBeIgnored,
                 OperationType.ABORT
               );
+            },
+            OperationType.ABORT
+          );
+        }
+      }
+    },
+    SKIP: {
+      results: operationResults[OperationType.SKIP],
+      messages: {
+        successMessage: 'Skipped process: ',
+        noProcessMessage: 'No processes were skipped',
+        ignoredMessage:
+          'These processes were ignored because they were not in error state.'
+      },
+      functions: {
+        perform: async () => {
+          const instancesToBeIgnored = {};
+          for (const [id, processInstance] of Object.entries(
+            selectedInstances
+          )) {
+            if (processInstance['state'] !== ProcessInstanceState.Error) {
+              instancesToBeIgnored[id] = processInstance;
+              delete selectedInstances[id];
             }
+          }
+          await performMultipleAction(
+            selectedInstances,
+            (successInstances, failedInstances) => {
+              onShowMessage(
+                'Skip operation',
+                successInstances,
+                failedInstances,
+                instancesToBeIgnored,
+                OperationType.SKIP
+              );
+            },
+            OperationType.SKIP
+          );
+        }
+      }
+    },
+    RETRY: {
+      results: operationResults[OperationType.RETRY],
+      messages: {
+        successMessage: 'Retried process: ',
+        noProcessMessage: 'No processes were retried',
+        ignoredMessage:
+          'These processes were ignored because they were not in error state.'
+      },
+      functions: {
+        perform: async () => {
+          const instancesToBeIgnored = {};
+          for (const [id, processInstance] of Object.entries(
+            selectedInstances
+          )) {
+            if (processInstance['state'] !== ProcessInstanceState.Error) {
+              instancesToBeIgnored[id] = processInstance;
+              delete selectedInstances[id];
+            }
+          }
+          await performMultipleAction(
+            selectedInstances,
+            (successInstances, failedInstances) => {
+              onShowMessage(
+                'Retry operation',
+                successInstances,
+                failedInstances,
+                instancesToBeIgnored,
+                OperationType.RETRY
+              );
+            },
+            OperationType.RETRY
           );
         }
       }
     }
   };
+
   const onProcessManagementButtonSelect = () => {
     setIsKebabOpen(!isKebabOpen);
   };
@@ -487,6 +572,20 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
         isDisabled={Object.keys(selectedInstances).length === 0}
       >
         Abort selected
+      </DropdownItem>,
+      <DropdownItem
+        key="skip"
+        onClick={operations[OperationType.SKIP].functions.perform}
+        isDisabled={Object.keys(selectedInstances).length === 0}
+      >
+        Skip selected
+      </DropdownItem>,
+      <DropdownItem
+        key="retry"
+        onClick={operations[OperationType.RETRY].functions.perform}
+        isDisabled={Object.keys(selectedInstances).length === 0}
+      >
+        Retry selected
       </DropdownItem>
     ];
   };
@@ -501,6 +600,24 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
             isDisabled={Object.keys(selectedInstances).length === 0}
           >
             Abort selected
+          </Button>
+        </OverflowMenuItem>
+        <OverflowMenuItem>
+          <Button
+            variant="secondary"
+            onClick={operations[OperationType.SKIP].functions.perform}
+            isDisabled={Object.keys(selectedInstances).length === 0}
+          >
+            Skip selected
+          </Button>
+        </OverflowMenuItem>
+        <OverflowMenuItem>
+          <Button
+            variant="secondary"
+            onClick={operations[OperationType.RETRY].functions.perform}
+            isDisabled={Object.keys(selectedInstances).length === 0}
+          >
+            Retry selected
           </Button>
         </OverflowMenuItem>
       </OverflowMenuContent>

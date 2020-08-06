@@ -62,7 +62,19 @@ module.exports = restData = {
             skip: 'success',
             retrigger: 'Authentication failed',
             aborted: 'Internal server error'
-          }
+          },
+          {
+            processInstanceId: 'tEE12-fo54-l665-mp112-akou112345566',
+            skip: 'Authentication failed',
+            retrigger: 'success',
+            aborted: 'Internal server error'
+          },
+          {
+            processInstanceId: 'RZ11-tu77-hj321-bnfhe1-xdr2134',
+            skip: 'success',
+            retrigger: 'Authentication failed',
+            aborted: 'Internal server error'
+          },
         ]
       }
     ]

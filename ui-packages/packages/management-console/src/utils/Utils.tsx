@@ -11,7 +11,10 @@ import {
 import { GraphQL } from '@kogito-apps/common';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
 import ProcessInstance = GraphQL.ProcessInstance;
-import { ProcessInstanceBulkList } from '../components/Molecules/ProcessListToolbar/ProcessListToolbar';
+import {
+  ProcessInstanceBulkList,
+  OperationType
+} from '../components/Molecules/ProcessListToolbar/ProcessListToolbar';
 
 export const stateIconCreator = (state: ProcessInstanceState): JSX.Element => {
   switch (state) {
@@ -87,38 +90,34 @@ export const setTitle = (
   }
 };
 
-export const handleSkip = (
+export const handleSkip = async (
   processInstance: Pick<ProcessInstance, 'id' | 'processId' | 'serviceUrl'>,
   onSkipSuccess: () => void,
   onSkipFailure: (errorMessage: string) => void
-): void => {
-  axios
-    .post(
+) => {
+  try {
+    await axios.post(
       `${processInstance.serviceUrl}/management/processes/${processInstance.processId}/instances/${processInstance.id}/skip`
-    )
-    .then(() => {
-      onSkipSuccess();
-    })
-    .catch(error => {
-      onSkipFailure(JSON.stringify(error.message));
-    });
+    );
+    onSkipSuccess();
+  } catch (error) {
+    onSkipFailure(JSON.stringify(error.message));
+  }
 };
 
-export const handleRetry = (
+export const handleRetry = async (
   processInstance: Pick<ProcessInstance, 'id' | 'processId' | 'serviceUrl'>,
   onRetrySuccess: () => void,
   onRetryFailure: (errorMessage: string) => void
-): void => {
-  axios
-    .post(
+) => {
+  try {
+    await axios.post(
       `${processInstance.serviceUrl}/management/processes/${processInstance.processId}/instances/${processInstance.id}/retrigger`
-    )
-    .then(() => {
-      onRetrySuccess();
-    })
-    .catch(error => {
-      onRetryFailure(JSON.stringify(error.message));
-    });
+    );
+    onRetrySuccess();
+  } catch (error) {
+    onRetryFailure(JSON.stringify(error.message));
+  }
 };
 
 export const handleAbort = async (
@@ -176,28 +175,53 @@ export const handleNodeInstanceCancel = (
     });
 };
 
-export const performMultipleAbort = async (
-  instancesToBeAborted: ProcessInstanceBulkList,
-  multiAbortAction: (
+export const performMultipleAction = async (
+  instanceToBeActioned: ProcessInstanceBulkList,
+  multiActionResult: (
     successInstances: ProcessInstanceBulkList,
     failedInstances: ProcessInstanceBulkList
-  ) => void
+  ) => void,
+  processType: OperationType
 ) => {
   const successInstances = {};
   const failedInstances = {};
-  for (const id of Object.keys(instancesToBeAborted)) {
-    await handleAbort(
-      instancesToBeAborted[id],
-      () => {
-        successInstances[id] = instancesToBeAborted[id];
-      },
-      errorMessage => {
-        failedInstances[id] = instancesToBeAborted[id];
-        failedInstances[id].errorMessage = errorMessage;
-      }
-    );
+  for (const id of Object.keys(instanceToBeActioned)) {
+    if (processType === OperationType.ABORT) {
+      await handleAbort(
+        instanceToBeActioned[id],
+        () => {
+          successInstances[id] = instanceToBeActioned[id];
+        },
+        errorMessage => {
+          failedInstances[id] = instanceToBeActioned[id];
+          failedInstances[id].errorMessage = errorMessage;
+        }
+      );
+    } else if (processType === OperationType.SKIP) {
+      await handleSkip(
+        instanceToBeActioned[id],
+        () => {
+          successInstances[id] = instanceToBeActioned[id];
+        },
+        errorMessage => {
+          failedInstances[id] = instanceToBeActioned[id];
+          failedInstances[id].errorMessage = errorMessage;
+        }
+      );
+    } else if (processType === OperationType.RETRY) {
+      await handleRetry(
+        instanceToBeActioned[id],
+        () => {
+          successInstances[id] = instanceToBeActioned[id];
+        },
+        errorMessage => {
+          failedInstances[id] = instanceToBeActioned[id];
+          failedInstances[id].errorMessage = errorMessage;
+        }
+      );
+    }
   }
-  multiAbortAction(successInstances, failedInstances);
+  multiActionResult(successInstances, failedInstances);
 };
 
 export const getProcessInstanceDescription = (
