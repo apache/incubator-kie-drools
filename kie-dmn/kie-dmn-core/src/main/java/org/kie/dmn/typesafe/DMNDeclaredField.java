@@ -26,7 +26,6 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.core.util.StringUtils;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.SimpleAnnotationDefinition;
@@ -35,7 +34,6 @@ import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.dmn.feel.runtime.UnaryTestImpl;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static org.drools.core.util.StringUtils.ucFirst;
 
 public class DMNDeclaredField implements FieldDefinition {
 
@@ -49,7 +47,7 @@ public class DMNDeclaredField implements FieldDefinition {
 
     DMNDeclaredField(DMNAllTypesIndex index, Map.Entry<String, DMNType> dmnField, DMNStronglyCodeGenConfig codeGenConfig) {
         this.index = index;
-        this.fieldName = CodegenStringUtil.escapeIdentifier(StringUtils.lcFirst(dmnField.getKey()));
+        this.fieldName = CodegenStringUtil.escapeIdentifier(dmnField.getKey()); // don't lower case DROOLS-5518
         this.originalMapKey = dmnField.getKey();
         this.fieldDMNType = dmnField.getValue();
         this.codeGenConfig = codeGenConfig;
@@ -188,7 +186,7 @@ public class DMNDeclaredField implements FieldDefinition {
 
     @Override
     public Optional<String> overriddenGetterName() {
-        String value = "get" + CodegenStringUtil.escapeIdentifier(ucFirst(originalMapKey));
+        String value = "get" + fieldName; // don't capitalize DROOLS-5518
         if (value.equals("getClass")) { // see Object#getClass() exists
             value = "get_class";
         }
@@ -197,7 +195,7 @@ public class DMNDeclaredField implements FieldDefinition {
 
     @Override
     public Optional<String> overriddenSetterName() {
-        return Optional.of("set" + CodegenStringUtil.escapeIdentifier(ucFirst(originalMapKey)));
+        return Optional.of("set" + fieldName); // don't capitalize DROOLS-5518
     }
 
     @Override
