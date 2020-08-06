@@ -81,7 +81,6 @@ public class GenerateModel {
         MemoryFileSystem mfs = ((MemoryKieModule) ((CanonicalKieModule) kieModule).getInternalKieModule()).getMemoryFileSystem();
         for (String generatedFile : generatedFiles) {
             final MemoryFile f = (MemoryFile) mfs.getFile(generatedFile);
-            @SuppressWarnings({"javasecurity:S2083"}) // base dir kieDmnValidationBaseDir is provided as configuration by design
             final Path newFile = Paths.get(kieDmnValidationBaseDir.getAbsolutePath(),
                                            "target",
                                            "generated-sources",
@@ -89,9 +88,9 @@ public class GenerateModel {
                                            f.getPath().toPortableString());
 
             try {
-                Files.deleteIfExists(newFile);
-                Files.createDirectories(newFile.getParent());
-                Files.copy(f.getContents(), newFile, StandardCopyOption.REPLACE_EXISTING);
+                Files.deleteIfExists(newFile); //NOSONAR
+                Files.createDirectories(newFile.getParent()); //NOSONAR
+                Files.copy(f.getContents(), newFile, StandardCopyOption.REPLACE_EXISTING); //NOSONAR
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new RuntimeException("Unable to write file", e);
@@ -115,7 +114,6 @@ public class GenerateModel {
         vbMain = vbMain.replaceAll("\\$V1X_MODEL\\$", v1x);
         vbMain = vbMain.replaceAll("\\$V11_MODEL\\$", v11);
         vbMain = vbMain.replaceAll("\\$V12_MODEL\\$", v12);
-        @SuppressWarnings({"javasecurity:S2083"}) // base dir kieDmnValidationBaseDir is provided as configuration by design
         final Path validationEntryPointFile = Paths.get(kieDmnValidationBaseDir.getAbsolutePath(),
                                                         "target",
                                                         "generated-sources",
@@ -124,9 +122,9 @@ public class GenerateModel {
 
         LOG.info("Writing code generated ValidationBootstrapModels class into: {}", validationEntryPointFile);
         try {
-            Files.deleteIfExists(validationEntryPointFile);
-            Files.createDirectories(validationEntryPointFile.getParent());
-            Files.copy(new ByteArrayInputStream(vbMain.getBytes()), validationEntryPointFile, StandardCopyOption.REPLACE_EXISTING);
+            Files.deleteIfExists(validationEntryPointFile); //NOSONAR
+            Files.createDirectories(validationEntryPointFile.getParent()); //NOSONAR
+            Files.copy(new ByteArrayInputStream(vbMain.getBytes()), validationEntryPointFile, StandardCopyOption.REPLACE_EXISTING); //NOSONAR
 
         } catch (IOException e) {
             e.printStackTrace();
