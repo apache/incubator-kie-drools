@@ -57,7 +57,6 @@ public class GenerateModel {
         this.kieDmnValidationBaseDir = kieDmnValidationBaseDir;
     }
 
-    @SuppressWarnings({"javasecurity:S2083"}) // base dir kieDmnValidationBaseDir is provided as configuration by design
     public void generate() throws IOException {
         KieServices ks = KieServices.Factory.get();
         final KieBuilderImpl kieBuilder = (KieBuilderImpl) ks.newKieBuilder(kieDmnValidationBaseDir);
@@ -82,6 +81,7 @@ public class GenerateModel {
         MemoryFileSystem mfs = ((MemoryKieModule) ((CanonicalKieModule) kieModule).getInternalKieModule()).getMemoryFileSystem();
         for (String generatedFile : generatedFiles) {
             final MemoryFile f = (MemoryFile) mfs.getFile(generatedFile);
+            @SuppressWarnings({"javasecurity:S2083"}) // base dir kieDmnValidationBaseDir is provided as configuration by design
             final Path newFile = Paths.get(kieDmnValidationBaseDir.getAbsolutePath(),
                                            "target",
                                            "generated-sources",
@@ -115,6 +115,7 @@ public class GenerateModel {
         vbMain = vbMain.replaceAll("\\$V1X_MODEL\\$", v1x);
         vbMain = vbMain.replaceAll("\\$V11_MODEL\\$", v11);
         vbMain = vbMain.replaceAll("\\$V12_MODEL\\$", v12);
+        @SuppressWarnings({"javasecurity:S2083"}) // base dir kieDmnValidationBaseDir is provided as configuration by design
         final Path validationEntryPointFile = Paths.get(kieDmnValidationBaseDir.getAbsolutePath(),
                                                         "target",
                                                         "generated-sources",
