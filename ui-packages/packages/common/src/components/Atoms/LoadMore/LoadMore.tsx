@@ -29,25 +29,22 @@ const LoadMore: React.FC<IOwnProps & OUIAProps> = ({
   ouiaSafe
 }) => {
   const loadMore = newPageSize => {
+    setLoadMoreClicked && setLoadMoreClicked(true);
     const newOffset = offset + pageSize;
     setOffset(newOffset);
     getMoreItems(newOffset, newPageSize);
   };
 
   const load10More = () => {
-    setLoadMoreClicked(true);
     loadMore(10);
   };
   const load20More = () => {
-    setLoadMoreClicked(true);
     loadMore(20);
   };
   const load50More = () => {
-    setLoadMoreClicked(true);
     loadMore(50);
   };
   const load100More = () => {
-    setLoadMoreClicked(true);
     loadMore(100);
   };
 

@@ -305,48 +305,47 @@ const DomainExplorer: React.FC<IOwnProps> = ({
   return (
     <>
       {renderToolbar()}
-
-      {!tableLoading || isLoadingMore ? (
-        <div className="kogito-common--domain-explorer__table-OverFlow">
-          <DomainExplorerTable
-            columnFilters={columnFilters}
-            tableLoading={tableLoading}
-            displayTable={displayTable}
-            displayEmptyState={displayEmptyState}
-            parameters={parameters}
-            selected={selected}
-            offset={offset}
-            setRows={setRows}
-            rows={rows}
-            isLoadingMore={isLoadingMore}
-            handleRetry={handleRetry}
-            filterError={filterError}
-            finalFilters={finalFilters}
-            filterChips={filterChips}
-            onDeleteChip={onDeleteChip}
-          />
-          {displayTable &&
-            !displayEmptyState &&
-            !filterError &&
-            filterChips.length > 0 &&
-            (limit === pageSize || isLoadingMore) && (
-              <LoadMore
-                offset={offset}
-                setOffset={setOffset}
-                getMoreItems={onGetMoreInstances}
-                pageSize={pageSize}
-                isLoadingMore={isLoadingMore}
-                setLoadMoreClicked={setLoadMoreClicked}
-              />
-            )}
-        </div>
-      ) : (
-        <Card>
+      <Card className="kogito-common--domain-explorer__table-OverFlow">
+        {!tableLoading || isLoadingMore ? (
+          <>
+            <DomainExplorerTable
+              columnFilters={columnFilters}
+              tableLoading={tableLoading}
+              displayTable={displayTable}
+              displayEmptyState={displayEmptyState}
+              parameters={parameters}
+              selected={selected}
+              offset={offset}
+              setRows={setRows}
+              rows={rows}
+              isLoadingMore={isLoadingMore}
+              handleRetry={handleRetry}
+              filterError={filterError}
+              finalFilters={finalFilters}
+              filterChips={filterChips}
+              onDeleteChip={onDeleteChip}
+            />
+            {displayTable &&
+              !displayEmptyState &&
+              !filterError &&
+              filterChips.length > 0 &&
+              (limit === pageSize || isLoadingMore) && (
+                <LoadMore
+                  offset={offset}
+                  setOffset={setOffset}
+                  getMoreItems={onGetMoreInstances}
+                  pageSize={pageSize}
+                  isLoadingMore={isLoadingMore}
+                  setLoadMoreClicked={setLoadMoreClicked}
+                />
+              )}
+          </>
+        ) : (
           <Bullseye>
             <KogitoSpinner spinnerText="Loading domain data..." />
           </Bullseye>
-        </Card>
-      )}
+        )}
+      </Card>
     </>
   );
 };

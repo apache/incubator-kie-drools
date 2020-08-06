@@ -1056,9 +1056,11 @@ exports[`Domain Explorer component Mock query testing 1`] = `
   >
     <MockedDataToolbar />
   </DataToolbar>
-  <Card>
+  <Card
+    className="kogito-common--domain-explorer__table-OverFlow"
+  >
     <article
-      className="pf-c-card"
+      className="pf-c-card kogito-common--domain-explorer__table-OverFlow"
     >
       <Bullseye>
         <div
@@ -1182,9 +1184,11 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
   >
     <MockedDataToolbar />
   </DataToolbar>
-  <Card>
+  <Card
+    className="kogito-common--domain-explorer__table-OverFlow"
+  >
     <article
-      className="pf-c-card"
+      className="pf-c-card kogito-common--domain-explorer__table-OverFlow"
     >
       <Bullseye>
         <div
