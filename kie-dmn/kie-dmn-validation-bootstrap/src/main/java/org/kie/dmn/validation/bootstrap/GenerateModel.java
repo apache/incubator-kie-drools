@@ -57,6 +57,7 @@ public class GenerateModel {
         this.kieDmnValidationBaseDir = kieDmnValidationBaseDir;
     }
 
+    @SuppressWarnings({"javasecurity:S2083"}) // base dir kieDmnValidationBaseDir is provided as configuration by design
     public void generate() throws IOException {
         KieServices ks = KieServices.Factory.get();
         final KieBuilderImpl kieBuilder = (KieBuilderImpl) ks.newKieBuilder(kieDmnValidationBaseDir);
