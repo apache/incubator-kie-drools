@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.drools.core.WorkItemNotFoundException;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.impl.Sig;
 
@@ -48,7 +49,7 @@ public class $Type$Resource {
     @Path("/{id}/$taskName$/{workItemId}")
     @Produces(MediaType.APPLICATION_JSON)
     public $TaskInput$ getTask(@PathParam("id") String id, @PathParam("workItemId") String workItemId, @QueryParam("user") final String user, @QueryParam("group") final List<String> groups) {
-        return process.instances().findById(id).map(pi ->  $TaskInput$.fromMap(pi.workItem(workItemId, policies(user, groups)))).orElse(null);
+        return process.instances().findById(id, ProcessInstanceReadMode.READ_ONLY).map(pi ->  $TaskInput$.fromMap(pi.workItem(workItemId, policies(user, groups)))).orElse(null);
     }
 
     @GET()

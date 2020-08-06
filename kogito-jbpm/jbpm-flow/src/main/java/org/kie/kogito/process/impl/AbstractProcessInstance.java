@@ -66,7 +66,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     protected final T variables;
     protected final AbstractProcess<T> process;
-    protected final ProcessRuntime rt;
+    protected ProcessRuntime rt;
     protected WorkflowProcessInstance processInstance;
 
     protected Integer status;
@@ -96,6 +96,19 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         syncProcessInstance((WorkflowProcessInstance) ((CorrelationAwareProcessRuntime) rt).createProcessInstance(processId, correlationKey, map));
     }
 
+    /**
+     * Without providing a ProcessRuntime the ProcessInstance can only be used as read-only
+     * @param process
+     * @param variables
+     * @param wpi
+     */
+    public AbstractProcessInstance(AbstractProcess<T> process, T variables, org.kie.api.runtime.process.WorkflowProcessInstance wpi) {
+        this.process = process;
+        this.variables = variables;
+        syncProcessInstance((WorkflowProcessInstance) wpi);
+        unbind(variables, processInstance.getVariables());
+    }
+
     public AbstractProcessInstance(AbstractProcess<T> process, T variables, ProcessRuntime rt, org.kie.api.runtime.process.WorkflowProcessInstance wpi) {
         this.process = process;
         this.rt = rt;
@@ -106,7 +119,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     protected void reconnect() {
         if (processInstance.getKnowledgeRuntime() == null) {
-            processInstance.setKnowledgeRuntime(((InternalProcessRuntime) rt).getInternalKieRuntime());
+            processInstance.setKnowledgeRuntime(((InternalProcessRuntime) getProcessRuntime()).getInternalKieRuntime());
         }
         processInstance.reconnect();
         processInstance.setMetaData("KogitoProcessInstance", this);
@@ -189,14 +202,14 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             processInstance.setReferenceId(referenceId);
         }
 
-        ((InternalProcessRuntime) rt).getProcessInstanceManager().addProcessInstance(this.processInstance, this.correlationKey);
+        ((InternalProcessRuntime) getProcessRuntime()).getProcessInstanceManager().addProcessInstance(this.processInstance, this.correlationKey);
         this.id = processInstance.getId();
         // this applies to business keys only as non business keys process instances id are always unique
         if (correlationKey != null && process.instances.exists(id)) {
             throw new ProcessInstanceDuplicatedException(correlationKey.getName());
         }
         addCompletionEventListener();
-        org.kie.api.runtime.process.ProcessInstance processInstance = this.rt.startProcessInstance(this.id, trigger);
+        org.kie.api.runtime.process.ProcessInstance processInstance = getProcessRuntime().startProcessInstance(this.id, trigger);
         addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).create(pi.id(), pi));
         unbind(variables, processInstance.getVariables());
         if (this.processInstance != null) {
@@ -206,15 +219,23 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected void addToUnitOfWork(Consumer<ProcessInstance<T>> action) {
-        ((InternalProcessRuntime) rt).getUnitOfWorkManager().currentUnitOfWork().intercept(new ProcessInstanceWorkUnit(this, action));
+        ((InternalProcessRuntime) getProcessRuntime()).getUnitOfWorkManager().currentUnitOfWork().intercept(new ProcessInstanceWorkUnit(this, action));
     }
 
     public void abort() {
         String pid = processInstance().getId();
         unbind(variables, processInstance().getVariables());
-        this.rt.abortProcessInstance(pid);
+        getProcessRuntime().abortProcessInstance(pid);
         this.status = processInstance.getState();
         addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).remove(pi.id()));
+    }
+
+    private ProcessRuntime getProcessRuntime() {
+        if (rt == null) {
+            throw new UnsupportedOperationException("Process instance is not connected to a Process Runtime");
+        } else {
+            return rt;
+        }
     }
 
     @Override
@@ -289,7 +310,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     public void startFrom(String nodeId, String referenceId) {
         processInstance.setStartDate(new Date());
         processInstance.setState(STATE_ACTIVE);
-        ((InternalProcessRuntime) rt).getProcessInstanceManager().addProcessInstance(this.processInstance, this.correlationKey);
+        ((InternalProcessRuntime) getProcessRuntime()).getProcessInstanceManager().addProcessInstance(this.processInstance, this.correlationKey);
         this.id = processInstance.getId();
         addCompletionEventListener();
         if (referenceId != null) {
@@ -350,7 +371,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             this.processInstance = reloadSupplier.get();
             if (this.processInstance == null) {
                 throw new ProcessInstanceNotFoundException(id);
-            } else {
+            } else if(getProcessRuntime() != null) {
                 reconnect();
             }
         }
@@ -393,19 +414,19 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public void completeWorkItem(String id, Map<String, Object> variables, Policy<?>... policies) {
-        this.rt.getWorkItemManager().completeWorkItem(id, variables, policies);
+        getProcessRuntime().getWorkItemManager().completeWorkItem(id, variables, policies);
         removeOnFinish();
     }
 
     @Override
     public void abortWorkItem(String id, Policy<?>... policies) {
-        this.rt.getWorkItemManager().abortWorkItem(id, policies);
+        getProcessRuntime().getWorkItemManager().abortWorkItem(id, policies);
         removeOnFinish();
     }
 
     @Override
     public void transitionWorkItem(String id, Transition<?> transition) {
-        this.rt.getWorkItemManager().transitionWorkItem(id, transition);
+        getProcessRuntime().getWorkItemManager().transitionWorkItem(id, transition);
         removeOnFinish();
     }
 
@@ -456,6 +477,9 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     protected void unbind(T variables, Map<String, Object> vmap) {
+        if (vmap == null) {
+            return;
+        }
         try {
             for (Field f : variables.getClass().getDeclaredFields()) {
                 f.setAccessible(true);

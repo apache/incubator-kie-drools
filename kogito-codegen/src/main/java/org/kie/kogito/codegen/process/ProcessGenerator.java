@@ -73,6 +73,8 @@ import org.kie.kogito.process.impl.AbstractProcess;
 public class ProcessGenerator {
     
     private static final String BUSINESS_KEY = "businessKey";
+    private static final String CREATE_MODEL = "createModel";
+    private static final String WPI = "wpi";
 
     private final String packageName;
     private final WorkflowProcess process;
@@ -219,13 +221,32 @@ public class ProcessGenerator {
                         .setType(processInstanceFQCN)
                         .setArguments(NodeList.nodeList(
                                 new ThisExpr(),
-                                new MethodCallExpr(new ThisExpr(), "createModel"),
+                                new MethodCallExpr(new ThisExpr(), CREATE_MODEL),
                                 createProcessRuntime(),
-                                new NameExpr("wpi"))));
+                                new NameExpr(WPI))));
 
         methodDeclaration.setName("createInstance")
                 .addModifier(Modifier.Keyword.PUBLIC)
-                .addParameter(WorkflowProcessInstance.class.getCanonicalName(), "wpi")
+                .addParameter(WorkflowProcessInstance.class.getCanonicalName(), WPI)
+                .setType(processInstanceFQCN)
+                .setBody(new BlockStmt().addStatement(returnStmt));
+        return methodDeclaration;
+    }
+
+    private MethodDeclaration createReadOnlyInstanceGenericWithWorkflowInstanceMethod(String processInstanceFQCN) {
+        MethodDeclaration methodDeclaration = new MethodDeclaration();
+
+        ReturnStmt returnStmt = new ReturnStmt(
+                new ObjectCreationExpr()
+                        .setType(processInstanceFQCN)
+                        .setArguments(NodeList.nodeList(
+                                new ThisExpr(),
+                                new MethodCallExpr(new ThisExpr(), CREATE_MODEL),
+                                new NameExpr(WPI))));
+
+        methodDeclaration.setName("createReadOnlyInstance")
+                .addModifier(Modifier.Keyword.PUBLIC)
+                .addParameter(WorkflowProcessInstance.class.getCanonicalName(), WPI)
                 .setType(processInstanceFQCN)
                 .setBody(new BlockStmt().addStatement(returnStmt));
         return methodDeclaration;
@@ -407,7 +428,7 @@ public class ProcessGenerator {
         
         MethodDeclaration createModelMethod = new MethodDeclaration()
                 .addModifier(Keyword.PUBLIC)
-                .setName("createModel")
+                .setName(CREATE_MODEL)
                 .setType(modelTypeName)
                 .setBody(new BlockStmt()
                          .addStatement(new ReturnStmt(new ObjectCreationExpr(null, 
@@ -426,6 +447,7 @@ public class ProcessGenerator {
                 .addMember(createInstanceGenericMethod(processInstanceFQCN))
                 .addMember(createInstanceGenericWithBusinessKeyMethod(processInstanceFQCN))
                 .addMember(createInstanceGenericWithWorkflowInstanceMethod(processInstanceFQCN))
+                .addMember(createReadOnlyInstanceGenericWithWorkflowInstanceMethod(processInstanceFQCN))
                 .addMember(internalConfigure(processMetaData))
                 .addMember(internalRegisterListeners(processMetaData))
                 .addMember(process(processMetaData));

@@ -22,21 +22,27 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceDuplicatedException;
+import org.kie.kogito.process.ProcessInstanceReadMode;
 
 class MapProcessInstances<T> implements MutableProcessInstances<T> {
 
     private final ConcurrentHashMap<String, ProcessInstance<T>> instances = new ConcurrentHashMap<>();
 
     @Override
-    public Optional<? extends ProcessInstance<T>> findById(String id) {
-        return Optional.ofNullable(instances.get(resolveId(id)));      
+    public Integer size() {
+        return instances.size();
     }
 
     @Override
-    public Collection<? extends ProcessInstance<T>> values() {
+    public Optional<ProcessInstance<T>> findById(String id, ProcessInstanceReadMode mode) {
+        return Optional.ofNullable(instances.get(resolveId(id)));
+    }
+
+    @Override
+    public Collection<ProcessInstance<T>> values(ProcessInstanceReadMode mode) {
         return instances.values();
     }
-    
+
     @Override
     public void create(String id, ProcessInstance<T> instance) {
         if (isActive(instance)) {
@@ -50,7 +56,7 @@ class MapProcessInstances<T> implements MutableProcessInstances<T> {
     @Override
     public void update(String id, ProcessInstance<T> instance) {
         if (isActive(instance)) {
-            instances.put(resolveId(id), instance);            
+            instances.put(resolveId(id), instance);
         }
     }
 
@@ -63,5 +69,4 @@ class MapProcessInstances<T> implements MutableProcessInstances<T> {
     public boolean exists(String id) {
         return instances.containsKey(id);
     }
-
 }

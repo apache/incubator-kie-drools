@@ -70,8 +70,13 @@ public class BpmnProcess extends AbstractProcess<BpmnVariables> {
     }
 
     @Override
-    public ProcessInstance<? extends Model> createInstance(WorkflowProcessInstance wpi) {
+    public ProcessInstance<BpmnVariables> createInstance(WorkflowProcessInstance wpi) {
         return new BpmnProcessInstance(this, createModel(), this.createProcessRuntime(), wpi);
+    }
+
+    @Override
+    public ProcessInstance<BpmnVariables> createReadOnlyInstance(WorkflowProcessInstance wpi) {
+        return new BpmnProcessInstance(this, createModel(), wpi);
     }
 
     @Override

@@ -15,8 +15,6 @@
 
 package org.kie.kogito.codegen.tests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,189 +27,189 @@ import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
+import org.kie.kogito.process.ProcessInstanceReadMode;
 
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TimerEventTest extends AbstractCodegenTest {
-    
-    
+
     @Test
-    public void testIntermediateCycleTimerEvent() throws Exception {
-        
-        Application app = generateCodeProcessesOnly("timer/IntermediateCatchEventTimerCycleISO.bpmn2");        
+    void testIntermediateCycleTimerEvent() throws Exception {
+
+        Application app = generateCodeProcessesOnly("timer/IntermediateCatchEventTimerCycleISO.bpmn2");
         assertThat(app).isNotNull();
-        
+
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("timer", 3);
         app.config().process().processEventListeners().listeners().add(listener);
-                
+
         Process<? extends Model> p = app.processes().processById("IntermediateCatchEvent");
-        
+
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
         m.fromMap(parameters);
-        
+
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
-        
+
         boolean completed = listener.waitTillCompleted(5000);
         assertThat(completed).isTrue();
-        
-        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);        
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         processInstance.abort();
-        
+
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
     }
-    
+
     @Test
-    public void testIntermediateDurationTimerEvent() throws Exception {
-        
-        Application app = generateCodeProcessesOnly("timer/IntermediateCatchEventTimerDurationISO.bpmn2");        
+    void testIntermediateDurationTimerEvent() throws Exception {
+
+        Application app = generateCodeProcessesOnly("timer/IntermediateCatchEventTimerDurationISO.bpmn2");
         assertThat(app).isNotNull();
-        
+
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("timer", 1);
         app.config().process().processEventListeners().listeners().add(listener);
-                
+
         Process<? extends Model> p = app.processes().processById("IntermediateCatchEvent");
-        
+
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
         m.fromMap(parameters);
-        
+
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
-        
+
         boolean completed = listener.waitTillCompleted(5000);
         assertThat(completed).isTrue();
-     
-        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-    }
-    
-    @Test
-    public void testIntermediateDateTimerEvent() throws Exception {
-        
-        Application app = generateCodeProcessesOnly("timer/IntermediateCatchEventTimerDateISO.bpmn2");        
-        assertThat(app).isNotNull();
-        
-        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("timer", 1);
-        app.config().process().processEventListeners().listeners().add(listener);
-                
-        Process<? extends Model> p = app.processes().processById("IntermediateCatchEvent");
-        
-        Model m = p.createModel();
-        Map<String, Object> parameters = new HashMap<>();
-        OffsetDateTime plusTwoSeconds = OffsetDateTime.now().plusSeconds(2);
-        parameters.put("date", plusTwoSeconds.toString());
-        m.fromMap(parameters);
-        
-        ProcessInstance<?> processInstance = p.createInstance(m);
-        processInstance.start();
-        
-        boolean completed = listener.waitTillCompleted(5000);
-        assertThat(completed).isTrue();
-     
-        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-    }
-    
-    @Test
-    public void testBoundaryDurationTimerEventOnTask() throws Exception {
-        
-        Application app = generateCodeProcessesOnly("timer/TimerBoundaryEventDurationISOOnTask.bpmn2");        
-        assertThat(app).isNotNull();
-        
-        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
-        app.config().process().processEventListeners().listeners().add(listener);
-                
-        Process<? extends Model> p = app.processes().processById("TimerBoundaryEvent");
-        
-        Model m = p.createModel();
-        Map<String, Object> parameters = new HashMap<>();
-        m.fromMap(parameters);
-        
-        ProcessInstance<?> processInstance = p.createInstance(m);
-        processInstance.start();
-        
-        boolean completed = listener.waitTillCompleted(5000);
-        assertThat(completed).isTrue();
-     
-        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-    }
-    
-    @Test
-    public void testBoundaryCycleTimerEventOnTask() throws Exception {
-        
-        Application app = generateCodeProcessesOnly("timer/TimerBoundaryEventCycleISOOnTask.bpmn2");        
-        assertThat(app).isNotNull();
-        
-        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
-        app.config().process().processEventListeners().listeners().add(listener);
-                
-        Process<? extends Model> p = app.processes().processById("TimerBoundaryEvent");
-        
-        Model m = p.createModel();
-        Map<String, Object> parameters = new HashMap<>();
-        m.fromMap(parameters);
-        
-        ProcessInstance<?> processInstance = p.createInstance(m);
-        processInstance.start();
-        
-        boolean completed = listener.waitTillCompleted(5000);
-        assertThat(completed).isTrue();
-     
-        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-    }
-    
-    @Test
-    public void testBoundaryDateTimerEventOnTask() throws Exception {
-        
-        Application app = generateCodeProcessesOnly("timer/TimerBoundaryEventDateISOOnTask.bpmn2");        
-        assertThat(app).isNotNull();
-        
-        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
-        app.config().process().processEventListeners().listeners().add(listener);
-                
-        Process<? extends Model> p = app.processes().processById("TimerBoundaryEvent");
-        
-        Model m = p.createModel();
-        Map<String, Object> parameters = new HashMap<>();
-        OffsetDateTime plusTwoSeconds = OffsetDateTime.now().plusSeconds(2);
-        parameters.put("date", plusTwoSeconds.toString());
-        m.fromMap(parameters);
-        
-        ProcessInstance<?> processInstance = p.createInstance(m);
-        processInstance.start();
-        
-        boolean completed = listener.waitTillCompleted(5000);
-        assertThat(completed).isTrue();
-     
-        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-    }
-    
-    @Test
-    public void testBoundaryDurationTimerEventOnSubprocess() throws Exception {
-        
-        Application app = generateCodeProcessesOnly("timer/TimerBoundaryEventDurationISO.bpmn2");        
-        assertThat(app).isNotNull();
-        
-        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
-        app.config().process().processEventListeners().listeners().add(listener);
-                
-        Process<? extends Model> p = app.processes().processById("TimerBoundaryEvent");
-        
-        Model m = p.createModel();
-        Map<String, Object> parameters = new HashMap<>();
-        m.fromMap(parameters);
-        
-        ProcessInstance<?> processInstance = p.createInstance(m);
-        processInstance.start();
-        
-        boolean completed = listener.waitTillCompleted(5000);
-        assertThat(completed).isTrue();
-     
+
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
-    public void testStartTimerEvent() throws Exception {
+    void testIntermediateDateTimerEvent() throws Exception {
+
+        Application app = generateCodeProcessesOnly("timer/IntermediateCatchEventTimerDateISO.bpmn2");
+        assertThat(app).isNotNull();
+
+        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("timer", 1);
+        app.config().process().processEventListeners().listeners().add(listener);
+
+        Process<? extends Model> p = app.processes().processById("IntermediateCatchEvent");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        OffsetDateTime plusTwoSeconds = OffsetDateTime.now().plusSeconds(2);
+        parameters.put("date", plusTwoSeconds.toString());
+        m.fromMap(parameters);
+
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+
+        boolean completed = listener.waitTillCompleted(5000);
+        assertThat(completed).isTrue();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    void testBoundaryDurationTimerEventOnTask() throws Exception {
+
+        Application app = generateCodeProcessesOnly("timer/TimerBoundaryEventDurationISOOnTask.bpmn2");
+        assertThat(app).isNotNull();
+
+        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
+        app.config().process().processEventListeners().listeners().add(listener);
+
+        Process<? extends Model> p = app.processes().processById("TimerBoundaryEvent");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        m.fromMap(parameters);
+
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+
+        boolean completed = listener.waitTillCompleted(5000);
+        assertThat(completed).isTrue();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    void testBoundaryCycleTimerEventOnTask() throws Exception {
+
+        Application app = generateCodeProcessesOnly("timer/TimerBoundaryEventCycleISOOnTask.bpmn2");
+        assertThat(app).isNotNull();
+
+        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
+        app.config().process().processEventListeners().listeners().add(listener);
+
+        Process<? extends Model> p = app.processes().processById("TimerBoundaryEvent");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        m.fromMap(parameters);
+
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+
+        boolean completed = listener.waitTillCompleted(5000);
+        assertThat(completed).isTrue();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    void testBoundaryDateTimerEventOnTask() throws Exception {
+
+        Application app = generateCodeProcessesOnly("timer/TimerBoundaryEventDateISOOnTask.bpmn2");
+        assertThat(app).isNotNull();
+
+        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
+        app.config().process().processEventListeners().listeners().add(listener);
+
+        Process<? extends Model> p = app.processes().processById("TimerBoundaryEvent");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        OffsetDateTime plusTwoSeconds = OffsetDateTime.now().plusSeconds(2);
+        parameters.put("date", plusTwoSeconds.toString());
+        m.fromMap(parameters);
+
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+
+        boolean completed = listener.waitTillCompleted(5000);
+        assertThat(completed).isTrue();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    void testBoundaryDurationTimerEventOnSubProcess() throws Exception {
+
+        Application app = generateCodeProcessesOnly("timer/TimerBoundaryEventDurationISO.bpmn2");
+        assertThat(app).isNotNull();
+
+        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
+        app.config().process().processEventListeners().listeners().add(listener);
+
+        Process<? extends Model> p = app.processes().processById("TimerBoundaryEvent");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        m.fromMap(parameters);
+
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+
+        boolean completed = listener.waitTillCompleted(5000);
+        assertThat(completed).isTrue();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    void testStartTimerEvent() throws Exception {
 
         Application app = generateCodeProcessesOnly("timer/StartTimerDuration.bpmn2");
         assertThat(app).isNotNull();
@@ -226,7 +224,7 @@ public class TimerEventTest extends AbstractCodegenTest {
         boolean completed = listener.waitTillCompleted(5000);
         assertThat(completed).isTrue();
 
-        Collection<?> instances = p.instances().values();
+        Collection<?> instances = p.instances().values(ProcessInstanceReadMode.MUTABLE);
         assertThat(instances).hasSize(1);
 
         ProcessInstance<?> processInstance = (ProcessInstance<?>) instances.iterator().next();
@@ -237,14 +235,11 @@ public class TimerEventTest extends AbstractCodegenTest {
         processInstance.abort();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
 
-        instances = p.instances().values();
-        assertThat(instances).hasSize(0);
-
+        assertThat(p.instances().size()).isZero();
     }
 
     @Test
-    public void testStartTimerEventTimeCycle() throws Exception {
-
+    void testStartTimerEventTimeCycle() throws Exception {
         Application app = generateCodeProcessesOnly("timer/StartTimerCycle.bpmn2");
         assertThat(app).isNotNull();
 
@@ -258,7 +253,7 @@ public class TimerEventTest extends AbstractCodegenTest {
         boolean completed = listener.waitTillCompleted(5000);
         assertThat(completed).isTrue();
 
-        Collection<?> instances = p.instances().values();
+        Collection<?> instances = p.instances().values(ProcessInstanceReadMode.MUTABLE);
         assertThat(instances).hasSize(2);
 
         ProcessInstance<?> processInstance = (ProcessInstance<?>) instances.iterator().next();
@@ -273,12 +268,10 @@ public class TimerEventTest extends AbstractCodegenTest {
         completed = listener.waitTillCompleted(3000);
         assertThat(completed).isFalse();
         // same amount of instances should be active as before deactivation
-        instances = p.instances().values();
+        instances = p.instances().values(ProcessInstanceReadMode.MUTABLE);
         assertThat(instances).hasSize(2);
         // clean up by aborting all instances
         instances.forEach(i -> ((ProcessInstance<?>) i).abort());
-        instances = p.instances().values();
-        assertThat(instances).hasSize(0);
-
+        assertThat(p.instances().size()).isZero();
     }
 }

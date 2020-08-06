@@ -26,6 +26,7 @@ import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceExecutionException;
+import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.workitem.Policy;
 
@@ -79,7 +80,7 @@ public class $Type$ReactiveResource {
     public CompletionStage<$Type$Output> getResource_$name$(@PathParam("id") String id) {
         return CompletableFuture.supplyAsync(() -> {
             return process.instances()
-                    .findById(id)
+                    .findById(id, ProcessInstanceReadMode.READ_ONLY)
                     .map(pi -> mapOutput(new $Type$Output(), pi.variables()))
                     .orElse(null);
         });
@@ -130,7 +131,7 @@ public class $Type$ReactiveResource {
     public CompletionStage<Map<String, String>> getTasks_$name$(@PathParam("id") String id, @QueryParam("user") final String user, @QueryParam("group") final List<String> groups) {
         return CompletableFuture.supplyAsync(() -> {
             return process.instances()
-                    .findById(id)
+                    .findById(id, ProcessInstanceReadMode.READ_ONLY)
                     .map(pi -> pi.workItems(policies(user, groups)))
                     .map(l -> l.stream().collect(Collectors.toMap(WorkItem::getId, WorkItem::getName)))
                     .orElse(null);

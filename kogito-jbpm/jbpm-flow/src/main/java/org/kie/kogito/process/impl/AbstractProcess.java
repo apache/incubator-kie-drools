@@ -39,6 +39,7 @@ import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.ProcessInstances;
 import org.kie.kogito.process.ProcessInstancesFactory;
 import org.kie.kogito.process.Signal;
@@ -87,7 +88,9 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
         return createInstance(businessKey, m);
     }
 
-    public abstract ProcessInstance<? extends Model> createInstance(WorkflowProcessInstance wpi);
+    public abstract ProcessInstance<T> createInstance(WorkflowProcessInstance wpi);
+
+    public abstract ProcessInstance<T> createReadOnlyInstance(WorkflowProcessInstance wpi);
     
     @Override
     public ProcessInstances<T> instances() {
@@ -96,7 +99,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
 
     @Override
     public <S> void send(Signal<S> signal) {
-        instances().values().forEach(pi -> pi.send(signal));
+        instances().values(ProcessInstanceReadMode.MUTABLE).forEach(pi -> pi.send(signal));
     }
 
     public Process<T> configure() {

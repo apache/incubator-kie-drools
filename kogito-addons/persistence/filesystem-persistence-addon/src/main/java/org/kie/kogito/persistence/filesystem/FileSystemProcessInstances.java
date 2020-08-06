@@ -25,15 +25,19 @@ import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceDuplicatedException;
+import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.process.impl.marshalling.ProcessInstanceMarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.kie.kogito.process.ProcessInstanceReadMode.MUTABLE;
 
 @SuppressWarnings({"rawtypes"})
 public class FileSystemProcessInstances implements MutableProcessInstances {
@@ -42,6 +46,7 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
 
     public static final String PI_DESCRIPTION = "ProcessInstanceDescription";
     public static final String PI_STATUS = "ProcessInstanceStatus";
+
     private Process<?> process;
     private Path storage;
 
@@ -64,24 +69,40 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
     }
 
     @Override
-    public Optional findById(String id) {
+    public Integer size() {
+        try (Stream<Path> stream = Files.walk(storage)) {
+            Long count = stream.filter(file -> !Files.isDirectory(file)).count();
+            return count.intValue();
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to count process instances ", e);
+        }
+    }
+
+    @Override
+    public Optional findById(String id, ProcessInstanceReadMode mode) {
         String resolvedId = resolveId(id);
         Path processInstanceStorage = Paths.get(storage.toString(), resolvedId);
 
         if (Files.notExists(processInstanceStorage)) {
             return Optional.empty();
         }
-        return Optional.of(marshaller.unmarshallProcessInstance(readBytesFromFile(processInstanceStorage), process));
-
+        byte[] data = readBytesFromFile(processInstanceStorage);
+        return Optional.of(mode == MUTABLE ?
+                                   marshaller.unmarshallProcessInstance(data, process) :
+                                   marshaller.unmarshallReadOnlyProcessInstance(data, process)
+        );
     }
 
     @Override
-    public Collection values() {
-        try {
-            return Files.walk(storage)
-                        .filter(file -> !Files.isDirectory(file))
-                        .map(f -> marshaller.unmarshallProcessInstance(readBytesFromFile(f), process))
-                        .collect(Collectors.toList());
+    public Collection values(ProcessInstanceReadMode mode) {
+        try (Stream<Path> stream = Files.walk(storage)) {
+            return stream
+                    .filter(file -> !Files.isDirectory(file))
+                    .map(this::readBytesFromFile)
+                    .map(b -> mode == MUTABLE ?
+                            marshaller.unmarshallProcessInstance(b, process) :
+                            marshaller.unmarshallReadOnlyProcessInstance(b, process))
+                    .collect(Collectors.toList());
         } catch (IOException e) {
             throw new RuntimeException("Unable to read process instances ", e);
         }
@@ -128,7 +149,6 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
         } catch (IOException e) {
             throw new RuntimeException("Unable to remove process instance with id " + id, e);
         }
-
     }
 
     protected void storeProcessInstance(Path processInstanceStorage, ProcessInstance<?> instance) {
@@ -166,7 +186,7 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
     }
 
     public String getMetadata(Path file, String key) {
-        
+
         if (supportsUserDefinedAttributes(file)) {
             UserDefinedFileAttributeView view = Files.getFileAttributeView(file, UserDefinedFileAttributeView.class);
             try {
@@ -198,7 +218,7 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
         }
         return false;
     }
-    
+
     protected boolean supportsUserDefinedAttributes(Path file) {
         try {
             return Files.getFileStore(file).supportsFileAttributeView(UserDefinedFileAttributeView.class);
@@ -206,5 +226,4 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
             return false;
         }
     }
-
 }

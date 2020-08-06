@@ -28,6 +28,10 @@ public class BpmnProcessInstance extends AbstractProcessInstance<BpmnVariables> 
         super(process, variables, rt);
     }
 
+    public BpmnProcessInstance(AbstractProcess<BpmnVariables> process, BpmnVariables variables, WorkflowProcessInstance wpi) {
+        super(process, variables, wpi);
+    }
+
     public BpmnProcessInstance(AbstractProcess<BpmnVariables> process, BpmnVariables variables, ProcessRuntime rt, WorkflowProcessInstance wpi) {
         super(process, variables, rt, wpi);
     }
@@ -38,7 +42,6 @@ public class BpmnProcessInstance extends AbstractProcessInstance<BpmnVariables> 
 
     @Override
     protected Map<String, Object> bind(BpmnVariables variables) {
-        
         if (variables == null) {
             return null;
         }
@@ -47,8 +50,7 @@ public class BpmnProcessInstance extends AbstractProcessInstance<BpmnVariables> 
 
     @Override
     protected void unbind(BpmnVariables variables, Map<String, Object> vmap) {
-        
-        if (variables == null) {
+        if (variables == null || vmap == null) {
             return;
         }
         variables.fromMap(vmap);

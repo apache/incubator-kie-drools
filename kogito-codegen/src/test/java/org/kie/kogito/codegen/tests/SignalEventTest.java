@@ -86,7 +86,7 @@ public class SignalEventTest extends AbstractCodegenTest {
         assertThat(result.toMap()).hasSize(2).containsKey("x");
         assertThat(result.toMap().get("x")).isEqualTo("test");
                 
-        assertThat(p.instances().values()).hasSize(0);
+        assertThat(p.instances().size()).isZero();
     }
     
     @Test
@@ -125,7 +125,7 @@ public class SignalEventTest extends AbstractCodegenTest {
         assertThat(result.toMap()).hasSize(1).containsKey("x");
         assertThat(result.toMap().get("x")).isEqualTo("test");
         
-        assertThat(p.instances().values()).hasSize(0);
+        assertThat(p.instances().size()).isZero();
     }
     
     @Test
@@ -153,7 +153,7 @@ public class SignalEventTest extends AbstractCodegenTest {
         assertThat(result.toMap()).hasSize(1).containsKey("x");
         assertThat(result.toMap().get("x")).isEqualTo("test");
         
-        assertThat(p.instances().values()).hasSize(0);
+        assertThat(p.instances().size()).isZero();
     }
     
     @Test
@@ -177,10 +177,10 @@ public class SignalEventTest extends AbstractCodegenTest {
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
         // since unit of work is not ended yet there are no instance added
-        assertThat(p.instances().values()).hasSize(0);
+        assertThat(p.instances().size()).isZero();
         uow.end();
         // after the unit of work is ended process instance shows up in the list
-        assertThat(p.instances().values()).hasSize(1);
+        assertThat(p.instances().size()).isEqualTo(1);
         
         uow = app.unitOfWorkManager().newUnitOfWork();                        
         uow.start();
@@ -203,9 +203,9 @@ public class SignalEventTest extends AbstractCodegenTest {
         assertThat(result.toMap().get("x")).isEqualTo("test");
                 
         // since the unit of work is not ended yet there is still instance visible
-        assertThat(p.instances().values()).hasSize(1);
+        assertThat(p.instances().size()).isEqualTo(1);
         uow.end();
         // after unit of work is ended instance is gone from the list
-        assertThat(p.instances().values()).hasSize(0);
+        assertThat(p.instances().size()).isZero();
     }
 }

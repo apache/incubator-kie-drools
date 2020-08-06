@@ -15,6 +15,7 @@ import org.kie.kogito.Config;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.ProcessInstances;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.WorkItemHandlerConfig;
@@ -93,7 +94,7 @@ public class JsonSchemaUtilTest {
         ProcessInstances<T> processInstances = mock(ProcessInstances.class);
         when(process.instances()).thenReturn(processInstances);
         ProcessInstance<T> processInstance = mock(ProcessInstance.class);
-        when(processInstances.findById("pepe")).thenReturn((Optional) Optional.of(processInstance));
+        when(processInstances.findById("pepe", ProcessInstanceReadMode.READ_ONLY)).thenReturn((Optional) Optional.of(processInstance));
         WorkItem task = mock(WorkItem.class);
         when(processInstance.workItem("task", policies)).thenReturn(task);
         when(task.getPhase()).thenReturn("active");

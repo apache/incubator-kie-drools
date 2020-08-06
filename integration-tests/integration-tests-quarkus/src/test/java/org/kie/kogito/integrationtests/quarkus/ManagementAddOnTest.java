@@ -24,6 +24,8 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.emptyOrNullString;
 
 @QuarkusTest
 class ManagementAddOnTest {
@@ -41,6 +43,51 @@ class ManagementAddOnTest {
                 .then()
                 .statusCode(404)
                 .body(equalTo("Process with id aprocess not found"));
+    }
+
+    @Test
+    void testAbortProcessInstance() {
+        String pid = given()
+                .contentType(ContentType.JSON)
+                .when()
+                .post("/greetings")
+                .then()
+                .statusCode(200)
+                .body("id", not(emptyOrNullString()))
+                .body("test", emptyOrNullString())
+                .extract().path("id");
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .delete("/management/processes/{processId}/instances/{processInstanceId}", "greetings", pid)
+                .then()
+                .statusCode(200);
+    }
+
+    @Test
+    void testGetNodeInstances() {
+        String pid = given()
+                .contentType(ContentType.JSON)
+                .when()
+                .post("/greetings")
+                .then()
+                .statusCode(200)
+                .body("id", not(emptyOrNullString()))
+                .body("test", emptyOrNullString())
+                .extract().path("id");
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances", "greetings", pid)
+                .then()
+                .statusCode(200)
+                .body("$.size", is(2))
+                .body("[0].name", is("Task"))
+                .body("[0].state", is(0))
+                .body("[1].name", is("Task"))
+                .body("[1].state", is(0));
     }
 
     @Test

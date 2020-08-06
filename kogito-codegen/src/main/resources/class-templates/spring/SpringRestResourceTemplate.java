@@ -26,6 +26,7 @@ import org.kie.kogito.Application;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.Sig;
 import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.WorkItem;
@@ -84,7 +85,7 @@ public class $Type$Resource {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public $Type$Output getResource_$name$(@PathVariable("id") String id) {
         return process.instances()
-                .findById(id)
+                .findById(id, ProcessInstanceReadMode.READ_ONLY)
                 .map(pi -> mapOutput(new $Type$Output(), pi.variables()))
                 .orElse(null);
     }
@@ -111,7 +112,7 @@ public class $Type$Resource {
                                                @RequestParam(value = "user", required = false) final String user,
                                                @RequestParam(value = "group", required = false) final List<String> groups) {
         return process.instances()
-                .findById(id)
+                .findById(id, ProcessInstanceReadMode.READ_ONLY)
                 .map(pi -> pi.workItems(policies(user, groups)))
                 .map(l -> l.stream().collect(Collectors.toMap(WorkItem::getId, WorkItem::getName)))
                 .orElse(null);

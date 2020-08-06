@@ -113,7 +113,11 @@ public class ProcessInstanceMarshaller {
         }
     }
 
-    public ProcessInstance<?> unmarshallProcessInstance(byte[] data, Process<?> process) {
-        return ((AbstractProcess<?>) process).createInstance(unmarshallWorkflowProcessInstance(data, process));
+    public ProcessInstance unmarshallProcessInstance(byte[] data, Process process) {
+        return ((AbstractProcess) process).createInstance(unmarshallWorkflowProcessInstance(data, process));
+    }
+
+    public ProcessInstance unmarshallReadOnlyProcessInstance(byte[] data, Process process) {
+        return ((AbstractProcess) process).createReadOnlyInstance(unmarshallWorkflowProcessInstance(data, process));
     }
 }
