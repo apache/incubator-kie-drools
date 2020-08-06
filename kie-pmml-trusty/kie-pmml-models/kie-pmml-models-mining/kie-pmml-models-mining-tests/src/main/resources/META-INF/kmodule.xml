@@ -19,7 +19,12 @@
   <kbase name="SegmentationMaxMining" packages="segmentationmaxmining">
     <ksession name="SegmentationMaxMiningSession" type="stateless"/>
   </kbase>
+
   <kbase name="SegmentationSelectFirstMining" packages="segmentationselectfirstmining">
     <ksession name="SegmentationSelectFirstMiningSession" type="stateless"/>
+  </kbase>
+
+  <kbase name="SegmentationClassificationSelectFirst" packages="segmentationclassificationselectfirst">
+    <ksession name="SegmentationClassificationSelectFirstSession" type="stateless"/>
   </kbase>
 </kmodule>
