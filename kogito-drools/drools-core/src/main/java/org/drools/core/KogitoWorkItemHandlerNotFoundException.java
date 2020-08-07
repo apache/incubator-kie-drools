@@ -15,10 +15,9 @@
 
 package org.drools.core;
 
+public class KogitoWorkItemHandlerNotFoundException extends WorkItemHandlerNotFoundException {
 
-public class WorkItemHandlerNotFoundException extends RuntimeException {
-
-    public WorkItemHandlerNotFoundException(String workItemName) {
-        super("Could not find work item handler for " + workItemName);
+    public KogitoWorkItemHandlerNotFoundException(String workItemName) {
+        super("Could not find work item handler for " + workItemName, workItemName);
     }
 }

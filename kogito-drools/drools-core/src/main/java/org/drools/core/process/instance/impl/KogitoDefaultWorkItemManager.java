@@ -26,7 +26,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.core.WorkItemHandlerNotFoundException;
+import org.drools.core.KogitoWorkItemHandlerNotFoundException;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.process.instance.KogitoWorkItem;
 import org.drools.core.process.instance.KogitoWorkItemManager;
@@ -56,7 +56,7 @@ public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager, Exte
     }
 
     @SuppressWarnings("unchecked")
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {        
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         workItems = (Map<String, KogitoWorkItem>) in.readObject();
         kruntime = (InternalKnowledgeRuntime) in.readObject();
         workItemHandlers = (Map<String, WorkItemHandler>) in.readObject();
@@ -74,7 +74,7 @@ public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager, Exte
         WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
         if (handler != null) {
             handler.executeWorkItem(workItem, this);
-        } else throw new WorkItemHandlerNotFoundException(workItem.getName() );
+        } else throw new KogitoWorkItemHandlerNotFoundException(workItem.getName() );
     }
 
     public void internalAddWorkItem( KogitoWorkItem workItem) {
@@ -90,7 +90,7 @@ public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager, Exte
                 handler.abortWorkItem(workItem, this);
             } else {
                 workItems.remove( workItem.getId() );
-                throw new WorkItemHandlerNotFoundException(workItem.getName() );
+                throw new KogitoWorkItemHandlerNotFoundException(workItem.getName() );
             }
             workItems.remove(workItem.getId());
         }
@@ -103,23 +103,23 @@ public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager, Exte
 
     public void retryWorkItemWithParams(String workItemId,Map<String,Object> map) {
         KogitoWorkItem workItem = workItems.get(workItemId);
-        
+
         if ( workItem != null ) {
             workItem.setParameters( map );
-            
+
             retryWorkItem( workItem );
         }
     }
-    
+
     private void retryWorkItem( KogitoWorkItem workItem) {
         if (workItem != null) {
             WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
             if (handler != null) {
                 handler.executeWorkItem(workItem, this);
-            } else throw new WorkItemHandlerNotFoundException(workItem.getName() );
+            } else throw new KogitoWorkItemHandlerNotFoundException(workItem.getName() );
         }
     }
-    
+
     public KogitoWorkItem getWorkItem( String id) {
         return workItems.get(id);
     }
@@ -171,8 +171,8 @@ public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager, Exte
     public void clear() {
         this.workItems.clear();
     }
-    
-    public void signalEvent(String type, Object event) { 
+
+    public void signalEvent(String type, Object event) {
         this.kruntime.signalEvent(type, event);
     }
 
@@ -208,7 +208,7 @@ public class KogitoDefaultWorkItemManager implements KogitoWorkItemManager, Exte
 
     @Override
     public void internalCompleteWorkItem( KogitoWorkItem workItem) {
-        
+
     }
 
     @Override

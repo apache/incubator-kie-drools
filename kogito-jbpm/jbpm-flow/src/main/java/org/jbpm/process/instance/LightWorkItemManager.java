@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.core.WorkItemHandlerNotFoundException;
+import org.drools.core.KogitoWorkItemHandlerNotFoundException;
 import org.drools.core.event.KogitoProcessEventSupport;
 import org.drools.core.event.ProcessEventSupport;
 import org.drools.core.process.instance.KogitoWorkItem;
@@ -79,7 +79,7 @@ public class LightWorkItemManager implements KogitoWorkItemManager {
             handler.executeWorkItem(workItem, this);
 
             eventSupport.fireAfterWorkItemTransition(processInstance, workItem, transition, null);
-        } else throw new WorkItemHandlerNotFoundException(workItem.getName() );
+        } else throw new KogitoWorkItemHandlerNotFoundException(workItem.getName() );
     }    
 
     public void internalAddWorkItem( KogitoWorkItem workItem) {
@@ -104,7 +104,7 @@ public class LightWorkItemManager implements KogitoWorkItemManager {
                 eventSupport.fireAfterWorkItemTransition(processInstance, workItem, transition, null);
             } else {
                 workItems.remove( workItem.getId() );
-                throw new WorkItemHandlerNotFoundException(workItem.getName() );
+                throw new KogitoWorkItemHandlerNotFoundException(workItem.getName() );
             }
             workItems.remove(workItem.getId());
         }
@@ -130,7 +130,7 @@ public class LightWorkItemManager implements KogitoWorkItemManager {
             WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
             if (handler != null) {
                 handler.executeWorkItem(workItem, this);
-            } else throw new WorkItemHandlerNotFoundException(workItem.getName() );
+            } else throw new KogitoWorkItemHandlerNotFoundException(workItem.getName() );
         }
     }
     
@@ -179,7 +179,7 @@ public class LightWorkItemManager implements KogitoWorkItemManager {
 
                 eventSupport.fireAfterWorkItemTransition(processInstance, workItem, transition, null);
             } else {
-                throw new WorkItemHandlerNotFoundException(workItem.getName() );
+                throw new KogitoWorkItemHandlerNotFoundException(workItem.getName() );
             }
                 
         } else {
