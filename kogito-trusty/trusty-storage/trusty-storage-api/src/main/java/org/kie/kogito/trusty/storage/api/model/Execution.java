@@ -30,6 +30,7 @@ public class Execution {
     public final static String HAS_SUCCEEDED_FIELD = "hasSucceeded";
     public final static String EXECUTOR_NAME_FIELD = "executorName";
     public final static String EXECUTED_MODEL_NAME_FIELD = "executedModelName";
+    public final static String EXECUTED_MODEL_NAMESPACE_FIELD = "executedModelNamespace";
     public final static String EXECUTION_TYPE_FIELD = "executionType";
 
     @JsonProperty(EXECUTION_ID_FIELD)
@@ -47,6 +48,9 @@ public class Execution {
     @JsonProperty(EXECUTED_MODEL_NAME_FIELD)
     private String executedModelName;
 
+    @JsonProperty(EXECUTED_MODEL_NAMESPACE_FIELD)
+    private String executedModelNamespace;
+
     @JsonProperty(EXECUTION_TYPE_FIELD)
     private ExecutionTypeEnum executionType;
 
@@ -58,12 +62,14 @@ public class Execution {
     }
 
     public Execution(String executionId, Long executionTimestamp, Boolean hasSucceeded,
-                     String executorName, String executedModelName, ExecutionTypeEnum executionType) {
+                     String executorName, String executedModelName, String executedModelNamespace,
+                     ExecutionTypeEnum executionType) {
         this.executionId = executionId;
         this.executionTimestamp = executionTimestamp;
         this.hasSucceeded = hasSucceeded;
         this.executorName = executorName;
         this.executedModelName = executedModelName;
+        this.executedModelNamespace = executedModelNamespace;
         this.executionType = executionType;
     }
 
@@ -146,6 +152,24 @@ public class Execution {
      */
     public void setExecutedModelName(String executedModelName) {
         this.executedModelName = executedModelName;
+    }
+
+    /**
+     * Gets the namespace of the executed model.
+     *
+     * @return The namespace of the executed model.
+     */
+    public String getExecutedModelNamespace() {
+        return executedModelNamespace;
+    }
+
+    /**
+     * Sets the executed model namespace.
+     *
+     * @param executedModelNamespace The executed model namespace.
+     */
+    public void setExecutedModelNamespace(String executedModelNamespace) {
+        this.executedModelNamespace = executedModelNamespace;
     }
 
     /**

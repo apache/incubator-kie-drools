@@ -34,6 +34,7 @@ import org.kie.kogito.trusty.storage.infinispan.testfield.StringTestField;
 
 import static org.kie.kogito.trusty.storage.api.model.Decision.INPUTS_FIELD;
 import static org.kie.kogito.trusty.storage.api.model.Decision.OUTCOMES_FIELD;
+import static org.kie.kogito.trusty.storage.api.model.Execution.EXECUTED_MODEL_NAMESPACE_FIELD;
 import static org.kie.kogito.trusty.storage.api.model.Execution.EXECUTED_MODEL_NAME_FIELD;
 import static org.kie.kogito.trusty.storage.api.model.Execution.EXECUTION_ID_FIELD;
 import static org.kie.kogito.trusty.storage.api.model.Execution.EXECUTION_TIMESTAMP_FIELD;
@@ -47,7 +48,8 @@ public class DecisionMarshallerTest extends MarshallerTestTemplate<Decision> {
             new StringTestField<>(EXECUTION_ID_FIELD, "test", Decision::getExecutionId, Decision::setExecutionId),
             new LongTestField<>(EXECUTION_TIMESTAMP_FIELD, 0L, Decision::getExecutionTimestamp, Decision::setExecutionTimestamp),
             new StringTestField<>(EXECUTOR_NAME_FIELD, "jack", Decision::getExecutorName, Decision::setExecutorName),
-            new StringTestField<>(EXECUTED_MODEL_NAME_FIELD, "model", Decision::getExecutedModelName, Decision::setExecutedModelName),
+            new StringTestField<>(EXECUTED_MODEL_NAME_FIELD, "modelName", Decision::getExecutedModelName, Decision::setExecutedModelName),
+            new StringTestField<>(EXECUTED_MODEL_NAMESPACE_FIELD, "modelNamespace", Decision::getExecutedModelNamespace, Decision::setExecutedModelNamespace),
             new BooleanTestField<>(HAS_SUCCEEDED_FIELD, Boolean.TRUE, Decision::hasSucceeded, Decision::setSuccess),
             new EnumTestField<>(EXECUTION_TYPE_FIELD, ExecutionTypeEnum.DECISION, Decision::getExecutionType, Decision::setExecutionType, ExecutionTypeEnum.class),
             new CollectionTestField<>(INPUTS_FIELD, Collections.emptyList(), Decision::getInputs, Decision::setInputs, TypedValue.class),

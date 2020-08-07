@@ -46,24 +46,40 @@ public class ExecutionHeaderResponse {
     @JsonProperty("executedModelName")
     private String executedModelName;
 
+    @JsonProperty("executedModelNamespace")
+    private String executedModelNamespace;
+
     @JsonProperty("executionType")
     private ExecutionTypeEnum executionType;
 
     private ExecutionHeaderResponse() {
     }
 
-    public ExecutionHeaderResponse(String executionId, OffsetDateTime executionDate, Boolean hasSucceeded, String executorName, String executedModelName, ExecutionTypeEnum executionType) {
+    public ExecutionHeaderResponse(String executionId,
+                                   OffsetDateTime executionDate,
+                                   Boolean hasSucceeded,
+                                   String executorName,
+                                   String executedModelName,
+                                   String executedModelNamespace,
+                                   ExecutionTypeEnum executionType) {
         this.executionId = executionId;
         this.executionDate = executionDate;
         this.hasSucceeded = hasSucceeded;
         this.executorName = executorName;
         this.executedModelName = executedModelName;
+        this.executedModelNamespace = executedModelNamespace;
         this.executionType = executionType;
     }
 
     public static ExecutionHeaderResponse fromExecution(Execution execution) {
         OffsetDateTime ldt = OffsetDateTime.ofInstant((Instant.ofEpochMilli(execution.getExecutionTimestamp())), ZoneOffset.UTC);
-        return new ExecutionHeaderResponse(execution.getExecutionId(), ldt, execution.hasSucceeded(), execution.getExecutorName(), execution.getExecutedModelName(), execution.getExecutionType());
+        return new ExecutionHeaderResponse(execution.getExecutionId(),
+                                           ldt,
+                                           execution.hasSucceeded(),
+                                           execution.getExecutorName(),
+                                           execution.getExecutedModelName(),
+                                           execution.getExecutedModelNamespace(),
+                                           execution.getExecutionType());
     }
 
     /**
@@ -109,6 +125,15 @@ public class ExecutionHeaderResponse {
      */
     public String getExecutedModelName() {
         return executedModelName;
+    }
+
+    /**
+     * Gets the namespace of the executed model.
+     *
+     * @return The namespace of the executed model.
+     */
+    public String getExecutedModelNamespace() {
+        return executedModelNamespace;
     }
 
     /**

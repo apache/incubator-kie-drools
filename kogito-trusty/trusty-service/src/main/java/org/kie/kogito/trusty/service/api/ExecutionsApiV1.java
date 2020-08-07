@@ -23,6 +23,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
@@ -39,10 +40,13 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 import org.kie.kogito.trusty.service.TrustyService;
+import org.kie.kogito.trusty.service.messaging.incoming.ModelIdCreator;
 import org.kie.kogito.trusty.service.responses.ExecutionHeaderResponse;
 import org.kie.kogito.trusty.service.responses.ExecutionsResponse;
+import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.Execution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,5 +145,54 @@ public class ExecutionsApiV1 {
         }
 
         return ZonedDateTime.parse(date, DateTimeFormatter.ISO_OFFSET_DATE_TIME).toOffsetDateTime();
+    }
+
+    /**
+     * Gets the model associated with an execution.
+     *
+     * @param executionId The execution ID.
+     * @return The model associated with the execution.
+     */
+    @GET
+    @Path("/{executionId}/model")
+    @APIResponses(value = {
+            @APIResponse(description = "Gets the model associated with an execution.", responseCode = "200", content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(type = SchemaType.STRING))),
+            @APIResponse(description = "Bad Request", responseCode = "400", content = @Content(mediaType = MediaType.TEXT_PLAIN))
+    }
+    )
+    @Operation(summary = "Gets the model associated with an execution.")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response getModel(
+            @Parameter(
+                    name = "executionId",
+                    description = "The execution ID.",
+                    required = true,
+                    schema = @Schema(implementation = String.class)
+            ) @PathParam("executionId") String executionId) {
+        return handleModelRequest(executionId);
+    }
+
+    private Response handleModelRequest(String executionId) {
+        return retrieveModel(executionId)
+                .map(definition -> Response.ok(definition).build())
+                .orElseGet(() -> Response.status(Response.Status.BAD_REQUEST.getStatusCode()).build());
+    }
+
+    private Optional<String> retrieveModel(String executionId) {
+        try {
+            Optional<Decision> decision = retrieveDecision(executionId);
+            //TODO GAV components are provided but unused. See https://issues.redhat.com/browse/FAI-239
+            return decision.map(d -> executionService.getModelById(ModelIdCreator.makeIdentifier(null, null, null, d.getExecutedModelName(), d.getExecutedModelNamespace())));
+        } catch (IllegalArgumentException ex) {
+            return Optional.empty();
+        }
+    }
+
+    private Optional<Decision> retrieveDecision(String executionId) {
+        try {
+            return Optional.ofNullable(executionService.getDecisionById(executionId));
+        } catch (IllegalArgumentException ex) {
+            return Optional.empty();
+        }
     }
 }

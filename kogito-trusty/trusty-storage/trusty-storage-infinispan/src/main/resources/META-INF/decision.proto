@@ -28,6 +28,9 @@ message Decision {
 
     /* @Field(store = Store.YES) */
     repeated DecisionOutcome outcomes = 8;
+
+    /* @Field(store = Store.YES) */
+    optional string executedModelNamespace = 9;
 }
 
 /* @Indexed */

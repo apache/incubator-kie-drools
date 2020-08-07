@@ -49,6 +49,7 @@ public class TraceEventConverter {
                 null,
                 null,
                 event.getHeader().getResourceId().getModelName(),
+                event.getHeader().getResourceId().getModelNamespace(),
                 inputs,
                 outcomes
         );

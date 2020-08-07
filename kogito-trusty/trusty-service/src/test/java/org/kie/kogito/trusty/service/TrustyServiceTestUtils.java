@@ -207,7 +207,7 @@ public class TrustyServiceTestUtils {
 
     public static Decision buildCorrectDecision(String cloudEventId) {
         return new Decision(
-                cloudEventId, CORRECT_CLOUDEVENT_START_TS, null, null, MODEL_NAME,
+                cloudEventId, CORRECT_CLOUDEVENT_START_TS, null, null, MODEL_NAME, MODEL_NAMESPACE,
                 List.of(
                         new TypedValue(INPUT_VIOLATION_NODE_NAME, TYPE_VIOLATION_NODE_ID, toJsonNode(INPUT_VIOLATION_JSON)),
                         new TypedValue(INPUT_DRIVER_NODE_NAME, TYPE_DRIVER_NODE_ID, toJsonNode(INPUT_DRIVER_JSON))
@@ -315,7 +315,7 @@ public class TrustyServiceTestUtils {
 
     public static Decision buildDecisionWithErrors() {
         return new Decision(
-                CLOUDEVENT_WITH_ERRORS_ID, CLOUDEVENT_WITH_ERRORS_START_TS, null, null, MODEL_NAME,
+                CLOUDEVENT_WITH_ERRORS_ID, CLOUDEVENT_WITH_ERRORS_START_TS, null, null, MODEL_NAME, MODEL_NAMESPACE,
                 List.of(
                         new TypedValue(INPUT_VIOLATION_NODE_NAME, TYPE_VIOLATION_NODE_ID, toJsonNode(INPUT_VIOLATION_JSON)),
                         new TypedValue(INPUT_DRIVER_NODE_NAME, TYPE_DRIVER_NODE_ID, null)
@@ -368,7 +368,7 @@ public class TrustyServiceTestUtils {
     }
 
     public static Decision buildDecisionWithNullFields() {
-        return new Decision(CLOUDEVENT_WITH_NULL_FIELDS_ID, CLOUDEVENT_WITH_NULL_FIELDS_START_TS, null, null, MODEL_NAME, null, null);
+        return new Decision(CLOUDEVENT_WITH_NULL_FIELDS_ID, CLOUDEVENT_WITH_NULL_FIELDS_START_TS, null, null, MODEL_NAME, MODEL_NAMESPACE, null, null);
     }
 
     private static TraceHeader buildNullTypeHeader(String executionId, Long startTs, Long endTs, Long duration, List<Message> messages) {

@@ -44,6 +44,7 @@ public class DecisionMarshaller extends AbstractModelMarshaller<Decision> {
                 reader.readBoolean(Execution.HAS_SUCCEEDED_FIELD),
                 reader.readString(Execution.EXECUTOR_NAME_FIELD),
                 reader.readString(Execution.EXECUTED_MODEL_NAME_FIELD),
+                reader.readString(Execution.EXECUTED_MODEL_NAMESPACE_FIELD),
                 reader.readCollection(Decision.INPUTS_FIELD, new ArrayList<>(), TypedValue.class),
                 reader.readCollection(Decision.OUTCOMES_FIELD, new ArrayList<>(), DecisionOutcome.class)
         );
@@ -57,6 +58,7 @@ public class DecisionMarshaller extends AbstractModelMarshaller<Decision> {
         writer.writeBoolean(Execution.HAS_SUCCEEDED_FIELD, input.hasSucceeded());
         writer.writeString(Execution.EXECUTOR_NAME_FIELD, input.getExecutorName());
         writer.writeString(Execution.EXECUTED_MODEL_NAME_FIELD, input.getExecutedModelName());
+        writer.writeString(Execution.EXECUTED_MODEL_NAMESPACE_FIELD, input.getExecutedModelNamespace());
         writer.writeCollection(Decision.INPUTS_FIELD, input.getInputs(), TypedValue.class);
         writer.writeCollection(Decision.OUTCOMES_FIELD, input.getOutcomes(), DecisionOutcome.class);
     }
