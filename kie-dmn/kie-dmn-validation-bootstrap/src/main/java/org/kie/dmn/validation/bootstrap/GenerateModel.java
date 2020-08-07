@@ -88,7 +88,7 @@ public class GenerateModel {
                                            f.getPath().toPortableString());
 
             try {
-                Files.deleteIfExists(newFile); //NOSONAR
+                Files.deleteIfExists(newFile); //NOSONAR javasecurity:S2083 base dir kieDmnValidationBaseDir is provided as configuration by design, static analysis exclusion applies to these 3 lines
                 Files.createDirectories(newFile.getParent()); //NOSONAR
                 Files.copy(f.getContents(), newFile, StandardCopyOption.REPLACE_EXISTING); //NOSONAR
             } catch (IOException e) {
@@ -122,7 +122,7 @@ public class GenerateModel {
 
         LOG.info("Writing code generated ValidationBootstrapModels class into: {}", validationEntryPointFile);
         try {
-            Files.deleteIfExists(validationEntryPointFile); //NOSONAR
+            Files.deleteIfExists(validationEntryPointFile); //NOSONAR javasecurity:S2083 base dir kieDmnValidationBaseDir is provided as configuration by design, static analysis exclusion applies to these 3 lines
             Files.createDirectories(validationEntryPointFile.getParent()); //NOSONAR
             Files.copy(new ByteArrayInputStream(vbMain.getBytes()), validationEntryPointFile, StandardCopyOption.REPLACE_EXISTING); //NOSONAR
 
