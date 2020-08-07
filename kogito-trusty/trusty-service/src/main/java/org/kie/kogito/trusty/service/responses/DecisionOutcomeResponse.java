@@ -59,6 +59,22 @@ public class DecisionOutcomeResponse {
         this.hasErrors = hasErrors;
     }
 
+    public static DecisionOutcomeResponse from(DecisionOutcome outcome) {
+        return outcome == null ? null : new DecisionOutcomeResponse(
+                outcome.getOutcomeId(),
+                outcome.getOutcomeName(),
+                outcome.getEvaluationStatus(),
+                TypedValueResponse.from(outcome.getOutcomeResult()),
+                from(outcome.getOutcomeInputs(), TypedValueResponse::from),
+                from(outcome.getMessages(), MessageResponse::from),
+                outcome.hasErrors()
+        );
+    }
+
+    public static <T, U> Collection<U> from(Collection<T> input, Function<T, U> mapper) {
+        return input == null ? null : input.stream().map(mapper).collect(Collectors.toList());
+    }
+
     public String getOutcomeId() {
         return outcomeId;
     }
@@ -85,21 +101,5 @@ public class DecisionOutcomeResponse {
 
     public boolean isHasErrors() {
         return hasErrors;
-    }
-
-    public static DecisionOutcomeResponse from(DecisionOutcome outcome) {
-        return outcome == null ? null : new DecisionOutcomeResponse(
-                outcome.getOutcomeId(),
-                outcome.getOutcomeName(),
-                outcome.getEvaluationStatus(),
-                TypedValueResponse.from(outcome.getOutcomeResult()),
-                from(outcome.getOutcomeInputs(), TypedValueResponse::from),
-                from(outcome.getMessages(), MessageResponse::from),
-                outcome.hasErrors()
-        );
-    }
-
-    public static <T, U> Collection<U> from(Collection<T> input, Function<T, U> mapper) {
-        return input == null ? null : input.stream().map(mapper).collect(Collectors.toList());
     }
 }

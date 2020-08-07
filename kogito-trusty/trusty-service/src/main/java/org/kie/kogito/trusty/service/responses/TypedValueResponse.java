@@ -40,6 +40,10 @@ public class TypedValueResponse {
         this.value = value;
     }
 
+    public static TypedValueResponse from(TypedValue value) {
+        return value == null ? null : new TypedValueResponse(value.getName(), value.getTypeRef(), value.getValue());
+    }
+
     public String getName() {
         return name;
     }
@@ -50,9 +54,5 @@ public class TypedValueResponse {
 
     public JsonNode getValue() {
         return value;
-    }
-
-    public static TypedValueResponse from(TypedValue value) {
-        return value == null ? null : new TypedValueResponse(value.getName(), value.getTypeRef(), value.getValue());
     }
 }

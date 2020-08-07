@@ -38,14 +38,6 @@ public class DecisionOutcomesResponse {
         this.outcomes = outcomes;
     }
 
-    public ExecutionHeaderResponse getHeader() {
-        return header;
-    }
-
-    public Collection<DecisionOutcomeResponse> getOutcomes() {
-        return outcomes;
-    }
-
     public static DecisionOutcomesResponse from(Decision decision) {
         if (decision == null) {
             return null;
@@ -54,5 +46,13 @@ public class DecisionOutcomesResponse {
                 .map(DecisionOutcomeResponse::from)
                 .collect(Collectors.toList());
         return new DecisionOutcomesResponse(ExecutionHeaderResponse.fromExecution(decision), outcomes);
+    }
+
+    public ExecutionHeaderResponse getHeader() {
+        return header;
+    }
+
+    public Collection<DecisionOutcomeResponse> getOutcomes() {
+        return outcomes;
     }
 }

@@ -26,7 +26,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.tracing.decision.event.common.MessageLevel;
-import org.kie.kogito.trusty.service.ITrustyService;
+import org.kie.kogito.trusty.service.TrustyService;
 import org.kie.kogito.trusty.service.responses.DecisionOutcomeResponse;
 import org.kie.kogito.trusty.service.responses.DecisionOutcomesResponse;
 import org.kie.kogito.trusty.service.responses.DecisionStructuredInputsResponse;
@@ -54,7 +54,7 @@ public class DecisionsApiV1Test {
     private static final String TEST_OUTCOME_ID = "FirstOutcome";
 
     @InjectMock
-    ITrustyService executionService;
+    TrustyService executionService;
 
     @Test
     void testGetExecutionById() throws Exception {
@@ -204,7 +204,7 @@ public class DecisionsApiV1Test {
                                 List.of(new Message(
                                         MessageLevel.WARNING, "INTERNAL", "TEST", "testSrc", "Test message",
                                         new MessageExceptionField("TestException", "Test exception message",
-                                                new MessageExceptionField("TestExceptionCause", "Test exception cause message", null)
+                                                                  new MessageExceptionField("TestExceptionCause", "Test exception cause message", null)
                                         )
                                 ))
                         )

@@ -22,7 +22,7 @@ import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.trusty.service.ITrustyService;
+import org.kie.kogito.trusty.service.TrustyService;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,7 +35,7 @@ public class ModelsApiV1Test {
     private static final String MODEL_DEFINITION = "definition";
 
     @InjectMock
-    ITrustyService trustyService;
+    TrustyService trustyService;
 
     @Test
     void testGetModelById() {

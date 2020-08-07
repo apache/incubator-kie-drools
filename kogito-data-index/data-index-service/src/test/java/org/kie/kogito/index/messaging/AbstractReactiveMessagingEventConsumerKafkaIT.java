@@ -17,24 +17,21 @@
 package org.kie.kogito.index.messaging;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import io.restassured.http.ContentType;
-import io.vertx.core.Vertx;
-import io.vertx.kafka.client.producer.KafkaProducer;
-import io.vertx.kafka.client.producer.KafkaProducerRecord;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.index.KafkaTestResource;
+import org.kie.kogito.kafka.KafkaClient;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
+import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
 import static io.restassured.RestAssured.given;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.isA;
@@ -42,32 +39,29 @@ import static org.kie.kogito.index.TestUtils.readFileContent;
 
 public abstract class AbstractReactiveMessagingEventConsumerKafkaIT {
 
+    @ConfigProperty(name = KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY)
+    private String kafkaBootstrapServers;
+
     @Inject
     ProtobufService protobufService;
 
-    KafkaProducer<String, String> producer;
+    KafkaClient kafkaClient;
 
     @BeforeEach
     void setup() {
-        String kafka = System.getProperty(KafkaTestResource.KAFKA_BOOTSTRAP_SERVERS, "localhost:9092");
-        Map<String, String> config = new HashMap<>();
-        config.put("bootstrap.servers", kafka);
-        config.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        config.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        config.put("acks", "all");
-        producer = KafkaProducer.create(Vertx.vertx(), config);
+        kafkaClient = new KafkaClient(kafkaBootstrapServers);
     }
 
     @AfterEach
     void close() {
-        if (producer != null) {
-            producer.close();
+        if (kafkaClient != null) {
+            kafkaClient.shutdown();
         }
     }
 
     @Test
     void testProcessInstanceEvent() throws Exception {
-        sendProcessInstanceEvent().get(1, TimeUnit.MINUTES);
+        sendProcessInstanceEvent();
 
         String processInstanceId = "c2fa5c5e-3002-44c7-aef7-bce82297e3fe";
 
@@ -78,37 +72,45 @@ public abstract class AbstractReactiveMessagingEventConsumerKafkaIT {
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.Travels", isA(Collection.class));
 
-        sendProcessInstanceEvent().get(1, TimeUnit.MINUTES);
+        sendProcessInstanceEvent();
 
-        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id } }\" }")
-                .when().post("/graphql")
-                .then().log().ifValidationFails().statusCode(200)
-                .body("data.ProcessInstances.size()", is(1))
-                .body("data.ProcessInstances[0].id", is(processInstanceId));
+        await()
+                .atMost(5, SECONDS)
+                .untilAsserted(() -> {
+                                   given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id } }\" }")
+                                           .when().post("/graphql")
+                                           .then().log().ifValidationFails().statusCode(200)
+                                           .body("data.ProcessInstances.size()", is(1))
+                                           .body("data.ProcessInstances[0].id", is(processInstanceId));
+                               }
+                );
 
-        given().contentType(ContentType.JSON).body("{ \"query\" : \"{Travels{ id } }\" }")
-                .when().post("/graphql")
-                .then().log().ifValidationFails().statusCode(200)
-                .body("data.Travels[0].id", is("f8868a2e-1bbb-47eb-93cf-fa46ff9dbfee"));
+        await()
+                .atMost(5, SECONDS)
+                .untilAsserted(() -> {
+                                   given().contentType(ContentType.JSON).body("{ \"query\" : \"{Travels{ id } }\" }")
+                                           .when().post("/graphql")
+                                           .then().log().ifValidationFails().statusCode(200)
+                                           .body("data.Travels[0].id", is("f8868a2e-1bbb-47eb-93cf-fa46ff9dbfee"));
+                               }
+                );
 
-        given()
-                .when().get("/metrics")
-                .then().log().ifValidationFails().statusCode(200)
-                .body(containsString("application_mp_messaging_message_count_total{channel=\"kogito-processdomain-events\"} 2.0"),
-                      containsString("application_mp_messaging_message_count_total{channel=\"kogito-processinstances-events\"} 2.0"));
+        await()
+                .atMost(5, SECONDS)
+                .untilAsserted(() -> {
+                                   given()
+                                           .when().get("/metrics")
+                                           .then().log().ifValidationFails().statusCode(200)
+                                           .body(containsString("application_mp_messaging_message_count_total{channel=\"kogito-processdomain-events\"} 2.0"),
+                                                 containsString("application_mp_messaging_message_count_total{channel=\"kogito-processinstances-events\"} 2.0"));
+                               }
+                );
     }
 
-    private CompletableFuture<Void> sendProcessInstanceEvent() throws Exception {
+    private void sendProcessInstanceEvent() throws Exception {
         String json = readFileContent("process_instance_event.json");
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        producer.write(KafkaProducerRecord.create("kogito-processinstances-events", json), event -> {
-            if (event.succeeded()) {
-                future.complete(null);
-            } else {
-                future.completeExceptionally(event.cause());
-            }
-        });
-        return future;
+        kafkaClient.produce(json, "kogito-processinstances-events");
+        return;
     }
 
     protected abstract String getTestProtobufFileContent() throws Exception;

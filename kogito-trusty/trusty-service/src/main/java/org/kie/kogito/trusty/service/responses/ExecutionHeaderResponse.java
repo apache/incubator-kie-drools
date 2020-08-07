@@ -38,7 +38,7 @@ public class ExecutionHeaderResponse {
     private OffsetDateTime executionDate;
 
     @JsonProperty("hasSucceeded")
-    private boolean hasSucceeded;
+    private Boolean hasSucceeded;
 
     @JsonProperty("executorName")
     private String executorName;
@@ -52,7 +52,7 @@ public class ExecutionHeaderResponse {
     private ExecutionHeaderResponse() {
     }
 
-    public ExecutionHeaderResponse(String executionId, OffsetDateTime executionDate, boolean hasSucceeded, String executorName, String executedModelName, ExecutionTypeEnum executionType) {
+    public ExecutionHeaderResponse(String executionId, OffsetDateTime executionDate, Boolean hasSucceeded, String executorName, String executedModelName, ExecutionTypeEnum executionType) {
         this.executionId = executionId;
         this.executionDate = executionDate;
         this.hasSucceeded = hasSucceeded;

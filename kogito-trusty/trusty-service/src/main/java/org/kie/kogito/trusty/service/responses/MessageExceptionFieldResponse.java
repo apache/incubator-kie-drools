@@ -39,6 +39,14 @@ public class MessageExceptionFieldResponse {
         this.cause = cause;
     }
 
+    public static MessageExceptionFieldResponse from(MessageExceptionField field) {
+        return field == null ? null : new MessageExceptionFieldResponse(
+                field.getClassName(),
+                field.getMessage(),
+                MessageExceptionFieldResponse.from(field.getCause())
+        );
+    }
+
     public String getClassName() {
         return className;
     }
@@ -49,13 +57,5 @@ public class MessageExceptionFieldResponse {
 
     public MessageExceptionFieldResponse getCause() {
         return cause;
-    }
-
-    public static MessageExceptionFieldResponse from(MessageExceptionField field) {
-        return field == null ? null : new MessageExceptionFieldResponse(
-                field.getClassName(),
-                field.getMessage(),
-                MessageExceptionFieldResponse.from(field.getCause())
-        );
     }
 }

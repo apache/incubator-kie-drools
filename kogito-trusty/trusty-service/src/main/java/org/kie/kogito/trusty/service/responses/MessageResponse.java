@@ -51,6 +51,21 @@ public class MessageResponse {
         this.exception = exception;
     }
 
+    public static MessageResponse from(Message message) {
+        if (message == null) {
+            return null;
+        }
+        String level = message.getLevel() == null ? null : message.getLevel().name();
+        return new MessageResponse(
+                level,
+                message.getCategory(),
+                message.getType(),
+                message.getSourceId(),
+                message.getText(),
+                MessageExceptionFieldResponse.from(message.getException())
+        );
+    }
+
     public String getLevel() {
         return level;
     }
@@ -73,20 +88,5 @@ public class MessageResponse {
 
     public MessageExceptionFieldResponse getException() {
         return exception;
-    }
-
-    public static MessageResponse from(Message message) {
-        if (message == null) {
-            return null;
-        }
-        String level = message.getLevel() == null ? null : message.getLevel().name();
-        return new MessageResponse(
-                level,
-                message.getCategory(),
-                message.getType(),
-                message.getSourceId(),
-                message.getText(),
-                MessageExceptionFieldResponse.from(message.getException())
-        );
     }
 }

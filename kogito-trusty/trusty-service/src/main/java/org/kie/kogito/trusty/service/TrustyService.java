@@ -17,83 +17,91 @@
 package org.kie.kogito.trusty.service;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.kie.kogito.persistence.api.Storage;
-import org.kie.kogito.persistence.api.query.AttributeFilter;
-import org.kie.kogito.persistence.api.query.QueryFilterFactory;
-import org.kie.kogito.trusty.service.messaging.ModelIdCreator;
-import org.kie.kogito.trusty.storage.api.TrustyStorageService;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.Execution;
+import org.kie.kogito.trusty.storage.api.model.ExplainabilityResult;
 
-@ApplicationScoped
-public class TrustyService implements ITrustyService {
+/**
+ * The trusty service interface.
+ * <p>
+ * The service exposes the api to CRUD the executions.
+ */
+public interface TrustyService {
 
-    private TrustyStorageService storageService;
+    /**
+     * Gets all the headers of the executions that were evaluated within a specified time range.
+     *
+     * @param from   The start datetime.
+     * @param to     The end datetime.
+     * @param limit  The maximum (non-negative) number of items to be returned.
+     * @param offset The non-negative pagination offset.
+     * @param prefix The executionId prefix to be matched in the search.
+     * @return The execution headers that satisfy the time range, pagination and prefix conditions.
+     */
+    List<Execution> getExecutionHeaders(OffsetDateTime from, OffsetDateTime to, int limit, int offset, String prefix);
 
-    TrustyService() {
-        // dummy constructor needed
-    }
+    /**
+     * Gets a decision by execution ID.
+     *
+     * @param executionId The execution ID.
+     * @return The decision.
+     * @throws IllegalArgumentException Throws IllegalArgumentException in case the executionId is not present in the system.
+     */
+    Decision getDecisionById(String executionId);
 
-    @Inject
-    public TrustyService(TrustyStorageService storageService) {
-        this.storageService = storageService;
-    }
+    /**
+     * Stores a decision.
+     *
+     * @param executionId The unique execution ID
+     * @param decision    The decision object.
+     * @throws IllegalArgumentException Throws IllegalArgumentException in case the executionId is already present in the system.
+     */
+    void storeDecision(String executionId, Decision decision);
 
-    @Override
-    public List<Execution> getExecutionHeaders(OffsetDateTime from, OffsetDateTime to, int limit, int offset, String prefix) {
-        Storage<String, Decision> storage = storageService.getDecisionsStorage();
-        List<AttributeFilter<?>> filters = new ArrayList<>();
-        filters.add(QueryFilterFactory.like(Execution.EXECUTION_ID_FIELD, prefix + "*"));
-        filters.add(QueryFilterFactory.greaterThanEqual(Execution.EXECUTION_TIMESTAMP_FIELD, from.toInstant().toEpochMilli()));
-        filters.add(QueryFilterFactory.lessThanEqual(Execution.EXECUTION_TIMESTAMP_FIELD, to.toInstant().toEpochMilli()));
-        return new ArrayList<>(storage.query().limit(limit).offset(offset).filter(filters).execute());
-    }
+    /**
+     * Updates a decision. If the decision is not present in the storage, then it is created.
+     *
+     * @param executionId The execution ID
+     * @param decision    The decision object.
+     */
+    void updateDecision(String executionId, Decision decision);
 
-    @Override
-    public Decision getDecisionById(String executionId) {
-        Storage<String, Decision> storage = storageService.getDecisionsStorage();
-        if (!storage.containsKey(executionId)) {
-            throw new IllegalArgumentException(String.format("A decision with ID %s does not exist in the storage.", executionId));
-        }
-        return storage.get(executionId);
-    }
+    /**
+     * Process a decision. Stores the decision and then send an explainability request if it is enabled.
+     *
+     * @param executionId The execution ID
+     * @param decision    The decision object.
+     */
+    void processDecision(String executionId, Decision decision);
 
-    @Override
-    public void storeDecision(String executionId, Decision decision) {
-        Storage<String, Decision> storage = storageService.getDecisionsStorage();
-        if (storage.containsKey(executionId)) {
-            throw new IllegalArgumentException(String.format("A decision with ID %s is already present in the storage.", executionId));
-        }
-        storage.put(executionId, decision);
-    }
+    /**
+     * Store the explainability result.
+     *
+     * @param executionId The execution ID.
+     */
+    void storeExplainability(String executionId, ExplainabilityResult result);
 
-    @Override
-    public void updateDecision(String executionId, Decision decision) {
-        storageService.getDecisionsStorage().put(executionId, decision);
-    }
+    /**
+     * Stores a Model definition.
+     *
+     * @param groupId    The Maven Group Id coordinate of the model.
+     * @param artifactId The Maven Artifact Id coordinate of the model.
+     * @param version    The Maven version coordinate of the model.
+     * @param name       The name of the model of the model.
+     * @param namespace  The namespace of the model.
+     * @param definition The definition of the model.
+     * @throws IllegalArgumentException Throws IllegalArgumentException in case the model is already present in the system.
+     */
+    void storeModel(String groupId, String artifactId, String version, String name, String namespace, String definition);
 
-    @Override
-    public void storeModel(String groupId, String artifactId, String version, String name, String namespace, String definition) {
-        final String identifier = ModelIdCreator.makeIdentifier(groupId, artifactId, version, name, namespace);
-        final Storage<String, String> storage = storageService.getModelStorage();
-        if (storage.containsKey(identifier)) {
-            throw new IllegalArgumentException(String.format("A model with ID %s is already present in the storage.", identifier));
-        }
-        storage.put(identifier, definition);
-    }
-
-    @Override
-    public String getModelById(String modelId) {
-        final Storage<String, String> storage = storageService.getModelStorage();
-        if (!storage.containsKey(modelId)) {
-            throw new IllegalArgumentException(String.format("A model with ID %s does not exist in the storage.", modelId));
-        }
-        return storage.get(modelId);
-    }
+    /**
+     * Gets a model by model ID.
+     *
+     * @param modelId The model ID.
+     * @return The model definition.
+     * @throws IllegalArgumentException Throws IllegalArgumentException in case the modelId is not present in the system.
+     */
+    String getModelById(String modelId);
 }

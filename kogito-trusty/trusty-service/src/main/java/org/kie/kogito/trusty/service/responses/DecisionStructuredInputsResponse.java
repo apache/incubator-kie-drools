@@ -35,15 +35,15 @@ public class DecisionStructuredInputsResponse {
         this.inputs = inputs;
     }
 
-    public Collection<TypedValueResponse> getInputs() {
-        return inputs;
-    }
-
     public static DecisionStructuredInputsResponse from(Collection<TypedValue> inputs) {
         return inputs == null ? null : new DecisionStructuredInputsResponse(inputs.stream().map(TypedValueResponse::from).collect(Collectors.toList()));
     }
 
     public static DecisionStructuredInputsResponse from(Decision decision) {
         return from(decision.getInputs());
+    }
+
+    public Collection<TypedValueResponse> getInputs() {
+        return inputs;
     }
 }

@@ -27,7 +27,7 @@ import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.trusty.service.ITrustyService;
+import org.kie.kogito.trusty.service.TrustyService;
 import org.kie.kogito.trusty.service.responses.ExecutionsResponse;
 import org.kie.kogito.trusty.storage.api.model.Execution;
 import org.kie.kogito.trusty.storage.api.model.ExecutionTypeEnum;
@@ -40,7 +40,7 @@ import static org.mockito.ArgumentMatchers.any;
 class ExecutionsApiV1Test {
 
     @InjectMock
-    ITrustyService executionService;
+    TrustyService executionService;
 
     @Test
     void givenRequestWithoutLimitAndOffsetParametersWhenExecutionEndpointIsCalledThenTheDefaultValuesAreCorrect() {

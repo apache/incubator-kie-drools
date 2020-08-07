@@ -33,13 +33,13 @@ import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
-import org.kie.kogito.trusty.service.ITrustyService;
+import org.kie.kogito.trusty.service.TrustyService;
 
 @Path("v1/models")
 public class ModelsApiV1 {
 
     @Inject
-    ITrustyService trustyService;
+    TrustyService trustyService;
 
     /**
      * Gets a model definition by ID.

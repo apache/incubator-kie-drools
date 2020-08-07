@@ -23,7 +23,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import io.cloudevents.v1.CloudEventImpl;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.tracing.decision.event.CloudEventUtils;
-import org.kie.kogito.trusty.service.ITrustyService;
+import org.kie.kogito.trusty.service.TrustyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,13 +31,13 @@ public abstract class BaseEventConsumer<E> {
 
     protected static final Logger LOG = LoggerFactory.getLogger(BaseEventConsumer.class);
 
-    protected final ITrustyService service;
+    protected final TrustyService service;
 
     protected BaseEventConsumer() {
         this(null);
     }
 
-    public BaseEventConsumer(final ITrustyService service) {
+    public BaseEventConsumer(final TrustyService service) {
         this.service = service;
     }
 
