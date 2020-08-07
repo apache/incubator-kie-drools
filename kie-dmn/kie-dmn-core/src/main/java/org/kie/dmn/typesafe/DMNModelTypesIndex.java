@@ -61,7 +61,8 @@ class DMNModelTypesIndex {
     }
 
     private boolean shouldIndex(DMNType dmnType) {
-        return !dmnType.getNamespace().equals(model.getDefinitions().getURIFEEL()) && dmnType.isComposite();
+        // Don't index a collection type of a declared type. e.g. tPersonList which is a collection of tPerson
+        return !dmnType.getNamespace().equals(model.getDefinitions().getURIFEEL()) && dmnType.isComposite() && !(dmnType.isCollection() && dmnType.getBaseType() != null);
     }
 
     private void index(DMNType innerType) {
