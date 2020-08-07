@@ -14,7 +14,7 @@ pipeline {
     }
     options {
         buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '10', numToKeepStr: '')
-        timeout(time: 120, unit: 'MINUTES')
+        timeout(time: 360, unit: 'MINUTES')
     }
     environment {
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
