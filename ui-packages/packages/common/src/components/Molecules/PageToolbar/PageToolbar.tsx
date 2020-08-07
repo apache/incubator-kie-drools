@@ -11,27 +11,13 @@ import {
 import accessibleStyles from '@patternfly/react-styles/css/utilities/Accessibility/accessibility';
 import { css } from '@patternfly/react-styles';
 import AboutModalBox from '../AboutModalBox/AboutModalBox';
-import Keycloak from 'keycloak-js';
+import {
+  getUserName,
+  handleLogout,
+  isAuthEnabled
+} from '../../../utils/KeycloakClient';
 
 const PageToolbar: React.FunctionComponent = () => {
-  let userName = 'Anonymous';
-  let kcInfo;
-
-  if (process.env.KOGITO_AUTH_ENABLED) {
-    kcInfo = JSON.parse(localStorage.getItem('keycloakData') || '{}');
-    userName = kcInfo.tokenParsed.preferred_username;
-  }
-
-  const handleLogout = () => {
-    const keycloakConf = {
-      realm: process.env.KOGITO_KEYCLOAK_REALM || '',
-      url: process.env.KOGITO_KEYCLOAK_URL || '' + '/auth',
-      clientId: process.env.KOGITO_KEYCLOAK_CLIENT_ID || ''
-    };
-    const kcInstance = Keycloak(keycloakConf);
-    kcInstance.init(kcInfo).success(kcInstance.logout);
-  };
-
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [modalToggle, setmodalToggle] = useState(false);
 
@@ -52,7 +38,7 @@ const PageToolbar: React.FunctionComponent = () => {
     </DropdownItem>
   ];
 
-  if (process.env.KOGITO_AUTH_ENABLED) {
+  if (isAuthEnabled()) {
     userDropdownItems.push(
       <DropdownSeparator key={2} />,
       <DropdownItem component="button" key={3} onClick={handleLogout}>
@@ -82,7 +68,7 @@ const PageToolbar: React.FunctionComponent = () => {
               isOpen={isDropdownOpen}
               toggle={
                 <DropdownToggle onToggle={onDropdownToggle}>
-                  {userName}
+                  {getUserName()}
                 </DropdownToggle>
               }
               dropdownItems={userDropdownItems}

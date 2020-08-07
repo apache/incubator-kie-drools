@@ -231,3 +231,30 @@ To check the list of processes, you may have to expand each row of the table by 
 To get to know more about a process, you can always click on any process instance to direct to process details page and there you can see details about the process as well as the timeline and process variables.
 
 ![navigate](./docs/navigate.gif "navigate")
+
+
+## Enabling Keycloak security
+
+### Starting and Configuring the Keycloak Server
+
+To start a Keycloak Server you can use Docker and just run the following command:
+
+```
+docker run -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -e KEYCLOAK_IMPORT=/tmp/kogito-realm.json -v {absolute_path}/kogito-apps/config/kogito-realm.json:/tmp/kogito-realm.json -p 8280:8080 jboss/keycloak
+```
+
+You should be able to access your Keycloak Server at [localhost:8280/auth](http://localhost:8280)
+and verify keycloak server is running properly: log in as the admin user to access the Keycloak Administration Console. 
+Username should be admin and password admin.
+
+To change any of this client configuration access to http://localhost:8280/auth/admin/master/console/#/realms/kogito.
+
+### Starting Kogito Management Console in dev mode
+
+Start the management console at port 8380, (the keycloak client 'kogito-console-quarkus' is configured to use that port )
+and enabling auth:
+
+```
+mvn clean compile quarkus:dev -Dquarkus.http.port=8380 -Dkogito.auth.enabled=true
+```
+

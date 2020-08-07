@@ -75,7 +75,7 @@ exports[`PageToolbar component tests snapshot testing with kogito-auth_enabled a
             <DropdownToggle
               onToggle={[Function]}
             >
-              Anonymous
+              Ajay
             </DropdownToggle>
           }
         />

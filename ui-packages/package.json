@@ -33,6 +33,7 @@
     "@patternfly/react-table": "2.28.39",
     "@patternfly/react-tokens": "2.8.13",
     "apollo-boost": "^0.4.4",
+    "apollo-link-context": "^1.0.20",
     "axios": "^0.19.0",
     "camel-case": "^3.0.0",
     "graphql": "^14.6.0",
