@@ -90,7 +90,7 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
 
     @Override
     public <T extends NodeWithAnnotations<?>> T withOutgoingMessage(T node, String channel) {
-        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("io.smallrye.reactive.messaging.annotations.Channel"), new StringLiteralExpr(channel)));
+        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.eclipse.microprofile.reactive.messaging.Channel"), new StringLiteralExpr(channel)));
         return node;
     }
 
@@ -154,7 +154,7 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
 
     @Override
     public String emitterType(String dataType) {
-        return "io.smallrye.reactive.messaging.annotations.Emitter<" + dataType + ">";
+        return "org.eclipse.microprofile.reactive.messaging.Emitter<" + dataType + ">";
     }
 
     @Override

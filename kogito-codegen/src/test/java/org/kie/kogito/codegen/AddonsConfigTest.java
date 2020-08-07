@@ -41,5 +41,8 @@ public class AddonsConfigTest {
 
         assertThat(addonsConfig.usePersistence()).isFalse();
         assertThat(addonsConfig.withPersistence(true).usePersistence()).isTrue();
+
+        assertThat(addonsConfig.useKnativeEventing()).isFalse();
+        assertThat(addonsConfig.withKnativeEventing(true).useKnativeEventing()).isTrue();
     }
 }

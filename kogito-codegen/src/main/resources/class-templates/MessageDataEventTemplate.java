@@ -38,6 +38,27 @@ public class $TypeName$ extends AbstractProcessDataEvent<$Type$> {
               null);
     }
 
+    public $TypeName$(String type,
+                      String source,
+                      $Type$ body,
+                      String kogitoProcessinstanceId,
+                      String kogitoParentProcessinstanceId,
+                      String kogitoRootProcessinstanceId,
+                      String kogitoProcessId,
+                      String kogitoRootProcessId,
+                      String kogitoProcessinstanceState) {
+        super(type,
+                source,
+                body,
+                kogitoProcessinstanceId,
+                kogitoParentProcessinstanceId,
+                kogitoRootProcessinstanceId,
+                kogitoProcessId,
+                kogitoRootProcessId,
+                kogitoProcessinstanceState,
+                null);
+    }
+
     
     public void setKogitoStartFromNode(String kogitoStartFromNode) {
         this.kogitoStartFromNode = kogitoStartFromNode;

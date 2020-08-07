@@ -15,15 +15,6 @@
 
 package org.kie.kogito.codegen.process;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.NodeList;
@@ -48,6 +39,15 @@ import org.kie.kogito.codegen.GeneratorContext;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
 import static com.github.javaparser.StaticJavaParser.parse;
 import static org.kie.kogito.codegen.CodegenUtils.interpolateTypes;
 
@@ -59,14 +59,14 @@ public abstract class AbstractResourceGenerator {
     private final String relativePath;
 
     private final GeneratorContext context;
-    private WorkflowProcess process;
     private final String resourceClazzName;
     private final String processClazzName;
+    private final String processName;
+    private final String appCanonicalName;
+    private WorkflowProcess process;
     private String processId;
     private String dataClazzName;
     private String modelfqcn;
-    private final String processName;
-    private final String appCanonicalName;
     private DependencyInjectionAnnotator annotator;
 
     private boolean startable;
@@ -119,6 +119,8 @@ public abstract class AbstractResourceGenerator {
     }
 
     protected abstract String getResourceTemplate();
+
+    public abstract List<String> getRestAnnotations();
 
     public String generate() {
         CompilationUnit clazz = parse(
@@ -210,7 +212,7 @@ public abstract class AbstractResourceGenerator {
                 template.findAll(StringLiteralExpr.class).forEach(s -> interpolateUserTaskStrings(s, userTask));
                 template.findAll(ClassOrInterfaceType.class).forEach(c -> interpolateUserTaskTypes(c, userTask.getInputModelClassSimpleName(), userTask.getOutputModelClassSimpleName()));
                 template.findAll(NameExpr.class).forEach(c -> interpolateUserTaskNameExp(c, userTask));
-                if(!userTask.isAdHoc()) {
+                if (!userTask.isAdHoc()) {
                     template.findAll(MethodDeclaration.class)
                             .stream()
                             .filter(md -> md.getNameAsString().equals("signal_" + methodSuffix))
@@ -228,16 +230,16 @@ public abstract class AbstractResourceGenerator {
 
         if (useInjection()) {
             template.findAll(FieldDeclaration.class,
-                             CodegenUtils::isProcessField).forEach(fd -> annotator.withNamedInjection(fd, processId));
+                    CodegenUtils::isProcessField).forEach(fd -> annotator.withNamedInjection(fd, processId));
 
             template.findAll(FieldDeclaration.class,
-                             CodegenUtils::isApplicationField).forEach(fd -> annotator.withInjection(fd));
+                    CodegenUtils::isApplicationField).forEach(fd -> annotator.withInjection(fd));
         } else {
             template.findAll(FieldDeclaration.class,
-                             CodegenUtils::isProcessField).forEach(this::initializeProcessField);
+                    CodegenUtils::isProcessField).forEach(this::initializeProcessField);
 
             template.findAll(FieldDeclaration.class,
-                             CodegenUtils::isApplicationField).forEach(this::initializeApplicationField);
+                    CodegenUtils::isApplicationField).forEach(this::initializeApplicationField);
         }
 
         // if triggers are not empty remove createResource method as there is another trigger to start process instances
@@ -274,8 +276,6 @@ public abstract class AbstractResourceGenerator {
                 .map(md::getAnnotationByName)
                 .anyMatch(Optional::isPresent);
     }
-
-    public abstract List<String> getRestAnnotations();
 
     private void enableValidation(ClassOrInterfaceDeclaration template) {
         Optional.ofNullable(context)

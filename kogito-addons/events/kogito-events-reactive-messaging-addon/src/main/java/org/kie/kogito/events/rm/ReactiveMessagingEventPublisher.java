@@ -32,8 +32,8 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 
-import io.smallrye.reactive.messaging.annotations.Channel;
-import io.smallrye.reactive.messaging.annotations.Emitter;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
 
 @Singleton
 public class ReactiveMessagingEventPublisher implements EventPublisher {
@@ -99,7 +99,7 @@ public class ReactiveMessagingEventPublisher implements EventPublisher {
 
     
     protected void publishToTopic(DataEvent<?> event, Emitter<String> emitter, String topic) {
-        if (emitter.isRequested()) {
+        if (emitter.hasRequests()) {
             logger.debug("Emitter {} is not ready to send messages", topic);
         }
         

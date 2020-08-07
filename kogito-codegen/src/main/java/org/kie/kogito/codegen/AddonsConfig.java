@@ -20,11 +20,13 @@ public class AddonsConfig {
     public static final AddonsConfig DEFAULT = new AddonsConfig()
             .withPersistence(false)
             .withTracing(false)
-            .withMonitoring(false);
+            .withMonitoring(false)
+            .withKnativeEventing(false);
 
     private boolean usePersistence;
     private boolean useTracing;
     private boolean useMonitoring;
+    private boolean useKnativeEventing;
 
     public AddonsConfig withPersistence(boolean usePersistence) {
         this.usePersistence = usePersistence;
@@ -41,6 +43,11 @@ public class AddonsConfig {
         return this;
     }
 
+    public AddonsConfig withKnativeEventing(boolean useKnativeEventing) {
+        this.useKnativeEventing = useKnativeEventing;
+        return this;
+    }
+
     public boolean usePersistence() {
         return usePersistence;
     }
@@ -51,5 +58,9 @@ public class AddonsConfig {
 
     public boolean useMonitoring() {
         return useMonitoring;
+    }
+
+    public boolean useKnativeEventing() {
+        return useKnativeEventing;
     }
 }
