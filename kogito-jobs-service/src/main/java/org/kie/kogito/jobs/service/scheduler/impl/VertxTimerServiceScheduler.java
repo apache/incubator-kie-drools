@@ -114,12 +114,9 @@ public class VertxTimerServiceScheduler implements TimerService<ManageableJobHan
         final ZonedDateTime now = DateUtil.now();
         final long delay = calculateDelay(then, now);
         final ManageableJobHandle handle = (ManageableJobHandle) timerJobInstance.getJobHandle();
-        long scheduledId = vertx.setTimer(delay, i -> {
-            timerJobInstance.getJob().execute(timerJobInstance.getJobContext());
-            if (handle.isCancel()) {
-                return;
-            }
-        });
+        long scheduledId = vertx.setTimer(delay, i ->
+            timerJobInstance.getJob().execute(timerJobInstance.getJobContext())
+        );
         handle.setId(scheduledId);
         handle.setScheduledTime(now);
     }
