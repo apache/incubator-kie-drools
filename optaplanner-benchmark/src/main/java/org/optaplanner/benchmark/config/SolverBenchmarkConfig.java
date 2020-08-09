@@ -26,6 +26,7 @@ import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 
 public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBenchmarkConfig> {
 
@@ -89,7 +90,8 @@ public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBench
             solverConfig.setClassLoader(classLoader);
         }
         solverBenchmarkResult.setSolverConfig(solverConfig);
-        SolutionDescriptor<Object> solutionDescriptor = solverConfig.buildSolutionDescriptor();
+        DefaultSolverFactory<Solution_> defaultSolverFactory = new DefaultSolverFactory<>(solverConfig);
+        SolutionDescriptor<Solution_> solutionDescriptor = defaultSolverFactory.buildSolutionDescriptor();
         for (Solution_ extraProblem : extraProblems) {
             if (!solutionDescriptor.getSolutionClass().isInstance(extraProblem)) {
                 throw new IllegalArgumentException("The solverBenchmark name (" + name

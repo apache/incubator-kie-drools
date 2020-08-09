@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.config.phase.custom;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -26,15 +25,9 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.optaplanner.core.config.phase.PhaseConfig;
-import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.io.jaxb.JaxbCustomPropertiesAdapter;
-import org.optaplanner.core.impl.phase.custom.CustomPhase;
 import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
-import org.optaplanner.core.impl.phase.custom.DefaultCustomPhase;
-import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
-import org.optaplanner.core.impl.solver.termination.Termination;
 
 public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
 
@@ -102,45 +95,6 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
     public CustomPhaseConfig withCustomPhaseCommands(CustomPhaseCommand<?>... customPhaseCommands) {
         this.customPhaseCommandList = Arrays.asList(customPhaseCommands);
         return this;
-    }
-
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    @Override
-    public CustomPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
-            BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
-        HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
-        DefaultCustomPhase phase = new DefaultCustomPhase(
-                phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
-                buildPhaseTermination(phaseConfigPolicy, solverTermination));
-        if (ConfigUtils.isEmptyCollection(customPhaseCommandClassList)
-                && ConfigUtils.isEmptyCollection(customPhaseCommandList)) {
-            throw new IllegalArgumentException(
-                    "Configure at least 1 <customPhaseCommandClass> in the <customPhase> configuration.");
-        }
-        List<CustomPhaseCommand<?>> customPhaseCommandList_ = new ArrayList<>(
-                (customPhaseCommandClassList == null ? 0 : customPhaseCommandClassList.size())
-                        + (customPhaseCommandList == null ? 0 : customPhaseCommandList.size()));
-        if (customPhaseCommandClassList != null) {
-            for (Class<? extends CustomPhaseCommand> customPhaseCommandClass : customPhaseCommandClassList) {
-                CustomPhaseCommand customPhaseCommand = ConfigUtils.newInstance(this,
-                        "customPhaseCommandClass", customPhaseCommandClass);
-                ConfigUtils.applyCustomProperties(customPhaseCommand, "customPhaseCommandClass",
-                        customProperties, "customProperties");
-                customPhaseCommandList_.add(customPhaseCommand);
-            }
-        }
-        if (customPhaseCommandList != null) {
-            customPhaseCommandList_.addAll(customPhaseCommandList);
-        }
-        phase.setCustomPhaseCommandList(customPhaseCommandList_);
-        EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
-        if (environmentMode.isNonIntrusiveFullAsserted()) {
-            phase.setAssertStepScoreFromScratch(true);
-        }
-        return phase;
     }
 
     @Override

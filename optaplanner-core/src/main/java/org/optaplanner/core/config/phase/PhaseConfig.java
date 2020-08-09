@@ -28,8 +28,6 @@ import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.phase.Phase;
-import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.PhaseToSolverTerminationBridge;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -64,9 +62,6 @@ public abstract class PhaseConfig<C extends PhaseConfig> extends AbstractConfig<
     // ************************************************************************
     // Builder methods
     // ************************************************************************
-
-    public abstract Phase buildPhase(int phaseIndex,
-            HeuristicConfigPolicy solverConfigPolicy, BestSolutionRecaller bestSolutionRecaller, Termination solverTermination);
 
     protected Termination buildPhaseTermination(HeuristicConfigPolicy configPolicy, Termination solverTermination) {
         TerminationConfig terminationConfig_ = terminationConfig == null ? new TerminationConfig()

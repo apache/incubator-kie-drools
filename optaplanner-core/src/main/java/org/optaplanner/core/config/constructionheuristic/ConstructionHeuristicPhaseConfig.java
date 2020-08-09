@@ -16,10 +16,7 @@
 
 package org.optaplanner.core.config.constructionheuristic;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import java.util.List;
-import java.util.concurrent.ThreadFactory;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
@@ -45,18 +42,7 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubCh
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 import org.optaplanner.core.config.phase.PhaseConfig;
-import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.constructionheuristic.ConstructionHeuristicPhase;
-import org.optaplanner.core.impl.constructionheuristic.DefaultConstructionHeuristicPhase;
-import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
-import org.optaplanner.core.impl.constructionheuristic.decider.MultiThreadedConstructionHeuristicDecider;
-import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
-import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
-import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
-import org.optaplanner.core.impl.solver.termination.Termination;
-import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
 public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHeuristicPhaseConfig> {
 
@@ -185,140 +171,6 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
     public ConstructionHeuristicPhaseConfig withForagerConfig(ConstructionHeuristicForagerConfig foragerConfig) {
         this.foragerConfig = foragerConfig;
         return this;
-    }
-
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    @Override
-    public ConstructionHeuristicPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
-            BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
-        HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
-        DefaultConstructionHeuristicPhase phase = new DefaultConstructionHeuristicPhase(
-                phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
-                buildPhaseTermination(phaseConfigPolicy, solverTermination));
-        phase.setDecider(buildDecider(phaseConfigPolicy, phase.getTermination()));
-        ConstructionHeuristicType constructionHeuristicType_ = defaultIfNull(
-                constructionHeuristicType, ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE);
-        phaseConfigPolicy.setEntitySorterManner(entitySorterManner != null ? entitySorterManner
-                : constructionHeuristicType_.getDefaultEntitySorterManner());
-        phaseConfigPolicy.setValueSorterManner(valueSorterManner != null ? valueSorterManner
-                : constructionHeuristicType_.getDefaultValueSorterManner());
-        EntityPlacerConfig entityPlacerConfig_;
-        if (entityPlacerConfig == null) {
-            entityPlacerConfig_ = buildUnfoldedEntityPlacerConfig(phaseConfigPolicy, constructionHeuristicType_);
-        } else {
-            entityPlacerConfig_ = entityPlacerConfig;
-            if (constructionHeuristicType != null) {
-                throw new IllegalArgumentException("The constructionHeuristicType (" + constructionHeuristicType
-                        + ") must not be configured if the entityPlacerConfig (" + entityPlacerConfig_
-                        + ") is explicitly configured.");
-            }
-            if (moveSelectorConfigList != null) {
-                throw new IllegalArgumentException("The moveSelectorConfigList (" + moveSelectorConfigList
-                        + ") cannot be configured if the entityPlacerConfig (" + entityPlacerConfig_
-                        + ") is explicitly configured.");
-            }
-        }
-        EntityPlacer entityPlacer = entityPlacerConfig_.buildEntityPlacer(phaseConfigPolicy);
-        phase.setEntityPlacer(entityPlacer);
-        EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
-        if (environmentMode.isNonIntrusiveFullAsserted()) {
-            phase.setAssertStepScoreFromScratch(true);
-        }
-        if (environmentMode.isIntrusiveFastAsserted()) {
-            phase.setAssertExpectedStepScore(true);
-            phase.setAssertShadowVariablesAreNotStaleAfterStep(true);
-        }
-        return phase;
-    }
-
-    private ConstructionHeuristicDecider buildDecider(HeuristicConfigPolicy configPolicy, Termination termination) {
-        ConstructionHeuristicForagerConfig foragerConfig_ = foragerConfig == null
-                ? new ConstructionHeuristicForagerConfig()
-                : foragerConfig;
-        ConstructionHeuristicForager forager = foragerConfig_.buildForager(configPolicy);
-        EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
-        ConstructionHeuristicDecider decider;
-        Integer moveThreadCount = configPolicy.getMoveThreadCount();
-        if (moveThreadCount == null) {
-            decider = new ConstructionHeuristicDecider(
-                    configPolicy.getLogIndentation(), termination, forager);
-        } else {
-            Integer moveThreadBufferSize = configPolicy.getMoveThreadBufferSize();
-            if (moveThreadBufferSize == null) {
-                // TODO Verify this is a good default by more meticulous benchmarking on multiple machines and JDK's
-                // If it's too low, move threads will need to wait on the buffer, which hurts performance
-                // If it's too high, more moves are selected that aren't foraged
-                moveThreadBufferSize = 10;
-            }
-            ThreadFactory threadFactory = configPolicy.buildThreadFactory(ChildThreadType.MOVE_THREAD);
-            int selectedMoveBufferSize = moveThreadCount * moveThreadBufferSize;
-            MultiThreadedConstructionHeuristicDecider multiThreadedDecider = new MultiThreadedConstructionHeuristicDecider(
-                    configPolicy.getLogIndentation(), termination, forager,
-                    threadFactory, moveThreadCount, selectedMoveBufferSize);
-            if (environmentMode.isNonIntrusiveFullAsserted()) {
-                multiThreadedDecider.setAssertStepScoreFromScratch(true);
-            }
-            if (environmentMode.isIntrusiveFastAsserted()) {
-                multiThreadedDecider.setAssertExpectedStepScore(true);
-                multiThreadedDecider.setAssertShadowVariablesAreNotStaleAfterStep(true);
-            }
-            decider = multiThreadedDecider;
-        }
-        if (environmentMode.isNonIntrusiveFullAsserted()) {
-            decider.setAssertMoveScoreFromScratch(true);
-        }
-        if (environmentMode.isIntrusiveFastAsserted()) {
-            decider.setAssertExpectedUndoMoveScore(true);
-        }
-        return decider;
-    }
-
-    private EntityPlacerConfig buildUnfoldedEntityPlacerConfig(
-            HeuristicConfigPolicy phaseConfigPolicy, ConstructionHeuristicType constructionHeuristicType) {
-        switch (constructionHeuristicType) {
-            case FIRST_FIT:
-            case FIRST_FIT_DECREASING:
-            case WEAKEST_FIT:
-            case WEAKEST_FIT_DECREASING:
-            case STRONGEST_FIT:
-            case STRONGEST_FIT_DECREASING:
-            case ALLOCATE_ENTITY_FROM_QUEUE:
-                if (!ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
-                    return QueuedEntityPlacerConfig.unfoldNew(phaseConfigPolicy, moveSelectorConfigList);
-                }
-                return new QueuedEntityPlacerConfig();
-            case ALLOCATE_TO_VALUE_FROM_QUEUE:
-                if (!ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
-                    if (moveSelectorConfigList.size() != 1) {
-                        throw new IllegalArgumentException("For the constructionHeuristicType ("
-                                + constructionHeuristicType + "), the moveSelectorConfigList (" + moveSelectorConfigList
-                                + ") must be a singleton. Use a single " + UnionMoveSelectorConfig.class.getSimpleName()
-                                + " or " + CartesianProductMoveSelectorConfig.class.getSimpleName()
-                                + " element to nest multiple MoveSelectors.");
-                    }
-                    return QueuedValuePlacerConfig.unfoldNew(phaseConfigPolicy, moveSelectorConfigList.get(0));
-                }
-                return new QueuedValuePlacerConfig();
-            case CHEAPEST_INSERTION:
-            case ALLOCATE_FROM_POOL:
-                if (!ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
-                    if (moveSelectorConfigList.size() != 1) {
-                        throw new IllegalArgumentException("For the constructionHeuristicType ("
-                                + constructionHeuristicType + "), the moveSelectorConfigList (" + moveSelectorConfigList
-                                + ") must be a singleton. Use a single " + UnionMoveSelectorConfig.class.getSimpleName()
-                                + " or " + CartesianProductMoveSelectorConfig.class.getSimpleName()
-                                + " element to nest multiple MoveSelectors.");
-                    }
-                    return PooledEntityPlacerConfig.unfoldNew(phaseConfigPolicy, moveSelectorConfigList.get(0));
-                }
-                return new PooledEntityPlacerConfig();
-            default:
-                throw new IllegalStateException(
-                        "The constructionHeuristicType (" + constructionHeuristicType + ") is not implemented.");
-        }
     }
 
     @Override

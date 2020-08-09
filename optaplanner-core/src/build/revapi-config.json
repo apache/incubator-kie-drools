@@ -8265,6 +8265,15 @@
           "methodName": "explainScore",
           "elementKind": "method",
           "justification": "ScoreManager is implemented now."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method int org.optaplanner.core.config.solver.SolverConfig::getAvailableProcessors()",
+          "package": "org.optaplanner.core.config.solver",
+          "classSimpleName": "SolverConfig",
+          "methodName": "getAvailableProcessors",
+          "elementKind": "method",
+          "justification": "Build methods were externalized (PLANNER-1688)"
         }
       ]
     }

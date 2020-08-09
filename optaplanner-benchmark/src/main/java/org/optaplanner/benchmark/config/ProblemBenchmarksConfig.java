@@ -39,6 +39,7 @@ import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksConfig> {
@@ -147,8 +148,9 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
         }
         List<ProblemProvider<Solution_>> problemProviderList = new ArrayList<>(
                 extraProblems.length + (inputSolutionFileList == null ? 0 : inputSolutionFileList.size()));
-        SolutionDescriptor<Solution_> solutionDescriptor = solverBenchmarkResult.getSolverConfig()
-                .buildSolutionDescriptor();
+        DefaultSolverFactory<Solution_> defaultSolverFactory =
+                new DefaultSolverFactory<>(solverBenchmarkResult.getSolverConfig());
+        SolutionDescriptor<Solution_> solutionDescriptor = defaultSolverFactory.buildSolutionDescriptor();
         int extraProblemIndex = 0;
         for (Solution_ extraProblem : extraProblems) {
             if (extraProblem == null) {

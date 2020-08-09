@@ -17,9 +17,6 @@
 package org.optaplanner.core.config.solver;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,47 +32,6 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 public class SolverConfigMultiThreadedTest {
-
-    @Test
-    public void moveThreadCountAutoIsCorrectlyResolvedWhenCpuCountIsPositive() {
-        final int cpuCount = 16;
-        assertThat(mockSolverConfigForMoveThreadCountAuto(cpuCount).resolveMoveThreadCount())
-                .isEqualTo(Integer.valueOf(cpuCount - 2));
-    }
-
-    @Test
-    public void moveThreadCountAutoIsResolvedToNullWhenCpuCountIsNegative() {
-        final int cpuCount = -2;
-        assertThat(mockSolverConfigForMoveThreadCountAuto(cpuCount).resolveMoveThreadCount()).isNull();
-    }
-
-    private SolverConfig mockSolverConfigForMoveThreadCountAuto(int mockCpuCount) {
-        SolverConfig solverConfig = spy(SolverConfig.class);
-        when(solverConfig.getAvailableProcessors()).thenReturn(mockCpuCount);
-        solverConfig.setMoveThreadCount(SolverConfig.MOVE_THREAD_COUNT_AUTO);
-        return solverConfig;
-    }
-
-    @Test
-    public void moveThreadCountIsCorrectlyResolvedWhenValueIsPositive() {
-        SolverConfig solverConfig = new SolverConfig();
-        solverConfig.setMoveThreadCount("2");
-        assertThat(solverConfig.resolveMoveThreadCount()).isEqualTo(Integer.valueOf(2));
-    }
-
-    @Test
-    public void moveThreadCountThrowsExceptionWhenValueIsNegative() {
-        SolverConfig solverConfig = new SolverConfig();
-        solverConfig.setMoveThreadCount("-6");
-        assertThatIllegalArgumentException().isThrownBy(solverConfig::resolveMoveThreadCount);
-    }
-
-    @Test
-    public void moveThreadCountIsResolvedToNullWhenValueIsNone() {
-        SolverConfig solverConfig = new SolverConfig();
-        solverConfig.setMoveThreadCount(SolverConfig.MOVE_THREAD_COUNT_NONE);
-        assertThat(solverConfig.resolveMoveThreadCount()).isNull();
-    }
 
     @Test
     @Timeout(5)

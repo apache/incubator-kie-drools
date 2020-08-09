@@ -14,21 +14,9 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.config.phase;
+package org.optaplanner.core.impl.score.director;
+dialect "java"
 
-public class NoChangePhaseConfig extends PhaseConfig<NoChangePhaseConfig> {
+import org.optaplanner.core.api.score.buildin.simple.SimpleScoreHolder;
 
-    public static final String XML_ELEMENT_NAME = "noChangePhase";
-
-    @Override
-    public NoChangePhaseConfig inherit(NoChangePhaseConfig inheritedConfig) {
-        super.inherit(inheritedConfig);
-        return this;
-    }
-
-    @Override
-    public NoChangePhaseConfig copyConfig() {
-        return new NoChangePhaseConfig().inherit(this);
-    }
-
-}
+global SimpleScoreHolder scoreHolder;

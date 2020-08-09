@@ -27,6 +27,7 @@ import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.SolverConfig;
 
 public abstract class AbstractBenchmarkConfigTest {
@@ -56,7 +57,7 @@ public abstract class AbstractBenchmarkConfigTest {
                 .getPlannerBenchmarkResult();
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             SolverConfig solverConfig = solverBenchmarkResult.getSolverConfig();
-            solverConfig.buildSolver();
+            SolverFactory.create(solverConfig).buildSolver();
         }
     }
 }

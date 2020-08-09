@@ -27,7 +27,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
@@ -37,7 +36,6 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.AbstractConfig;
@@ -50,24 +48,11 @@ import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.random.RandomType;
-import org.optaplanner.core.config.solver.recaller.BestSolutionRecallerConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.io.XmlUnmarshallingException;
 import org.optaplanner.core.impl.io.jaxb.JaxbIO;
-import org.optaplanner.core.impl.phase.Phase;
-import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
-import org.optaplanner.core.impl.solver.DefaultSolver;
-import org.optaplanner.core.impl.solver.random.DefaultRandomFactory;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
-import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
-import org.optaplanner.core.impl.solver.scope.SolverScope;
-import org.optaplanner.core.impl.solver.termination.BasicPlumbingTermination;
-import org.optaplanner.core.impl.solver.termination.Termination;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * To read it from XML, use {@link #createFromXmlResource(String)}.
@@ -211,9 +196,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     public static final String MOVE_THREAD_COUNT_NONE = "NONE";
     public static final String MOVE_THREAD_COUNT_AUTO = "AUTO";
-    protected static final long DEFAULT_RANDOM_SEED = 0L;
-
-    private static final Logger logger = LoggerFactory.getLogger(SolverConfig.class);
+    public static final long DEFAULT_RANDOM_SEED = 0L;
 
     @XmlTransient
     private ClassLoader classLoader = null;
@@ -489,158 +472,6 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                 randomSeed = subSingleIndex;
             }
         }
-    }
-
-    // TODO https://issues.redhat.com/browse/PLANNER-1688
-    /**
-     * Do not use this method, it is an internal method.
-     * Use {@link SolverFactory#buildSolver()} instead.
-     * <p>
-     * Will be removed in 8.0 (by putting it in an InnerSolverConfig).
-     *
-     * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
-     * @return never null
-     */
-    public <Solution_> Solver<Solution_> buildSolver() {
-        EnvironmentMode environmentMode_ = determineEnvironmentMode();
-        boolean daemon_ = defaultIfNull(daemon, false);
-
-        RandomFactory randomFactory = buildRandomFactory(environmentMode_);
-        Integer moveThreadCount_ = resolveMoveThreadCount();
-        InnerScoreDirectorFactory<Solution_> scoreDirectorFactory = buildScoreDirectorFactory(environmentMode_);
-        boolean constraintMatchEnabledPreference = environmentMode_.isAsserted();
-        SolverScope<Solution_> solverScope = new SolverScope<>();
-        solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(true, constraintMatchEnabledPreference));
-
-        BestSolutionRecaller<Solution_> bestSolutionRecaller = new BestSolutionRecallerConfig()
-                .buildBestSolutionRecaller(environmentMode_);
-        HeuristicConfigPolicy configPolicy = new HeuristicConfigPolicy(environmentMode_,
-                moveThreadCount_, moveThreadBufferSize, threadFactoryClass,
-                scoreDirectorFactory);
-        TerminationConfig terminationConfig_ = terminationConfig == null ? new TerminationConfig()
-                : terminationConfig;
-        BasicPlumbingTermination basicPlumbingTermination = new BasicPlumbingTermination(daemon_);
-        Termination termination = terminationConfig_.buildTermination(configPolicy, basicPlumbingTermination);
-        List<Phase<Solution_>> phaseList = buildPhaseList(configPolicy, bestSolutionRecaller, termination);
-        return new DefaultSolver<>(environmentMode_, randomFactory,
-                bestSolutionRecaller, basicPlumbingTermination, termination, phaseList, solverScope);
-    }
-
-    protected RandomFactory buildRandomFactory(EnvironmentMode environmentMode_) {
-        RandomFactory randomFactory;
-        if (randomFactoryClass != null) {
-            if (randomType != null || randomSeed != null) {
-                throw new IllegalArgumentException(
-                        "The solverConfig with randomFactoryClass (" + randomFactoryClass
-                                + ") has a non-null randomType (" + randomType
-                                + ") or a non-null randomSeed (" + randomSeed + ").");
-            }
-            randomFactory = ConfigUtils.newInstance(this, "randomFactoryClass", randomFactoryClass);
-        } else {
-            RandomType randomType_ = defaultIfNull(randomType, RandomType.JDK);
-            Long randomSeed_ = randomSeed;
-            if (randomSeed == null && environmentMode_ != EnvironmentMode.NON_REPRODUCIBLE) {
-                randomSeed_ = DEFAULT_RANDOM_SEED;
-            }
-            randomFactory = new DefaultRandomFactory(randomType_, randomSeed_);
-        }
-        return randomFactory;
-    }
-
-    protected int getAvailableProcessors() {
-        return Runtime.getRuntime().availableProcessors();
-    }
-
-    protected Integer resolveMoveThreadCount() {
-        int availableProcessorCount = getAvailableProcessors();
-        Integer resolvedMoveThreadCount;
-        if (moveThreadCount == null || moveThreadCount.equals(MOVE_THREAD_COUNT_NONE)) {
-            return null;
-        } else if (moveThreadCount.equals(MOVE_THREAD_COUNT_AUTO)) {
-            // Leave one for the Operating System and 1 for the solver thread, take the rest
-            resolvedMoveThreadCount = (availableProcessorCount - 2);
-            if (resolvedMoveThreadCount <= 1) {
-                // Fall back to single threaded solving with no move threads.
-                // To deliberately enforce 1 moveThread, set the moveThreadCount explicitly to 1.
-                return null;
-            }
-        } else {
-            resolvedMoveThreadCount = ConfigUtils.resolveThreadPoolSizeScript(
-                    "moveThreadCount", moveThreadCount, MOVE_THREAD_COUNT_NONE, MOVE_THREAD_COUNT_AUTO);
-        }
-        if (resolvedMoveThreadCount < 1) {
-            throw new IllegalArgumentException("The moveThreadCount (" + moveThreadCount
-                    + ") resulted in a resolvedMoveThreadCount (" + resolvedMoveThreadCount
-                    + ") that is lower than 1.");
-        }
-        if (resolvedMoveThreadCount > availableProcessorCount) {
-            logger.warn("The resolvedMoveThreadCount ({}) is higher "
-                    + "than the availableProcessorCount ({}), which is counter-efficient.",
-                    resolvedMoveThreadCount, availableProcessorCount);
-            // Still allow it, to reproduce issues of a high-end server machine on a low-end developer machine
-        }
-        return resolvedMoveThreadCount;
-    }
-
-    // TODO https://issues.redhat.com/browse/PLANNER-1688
-    /**
-     * Do not use this method, it is an internal method.
-     * <p>
-     * Will be removed in 8.0 (by putting it in an InnerSolverConfig).
-     *
-     * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
-     * @param environmentMode never null
-     * @return never null
-     */
-    public <Solution_> InnerScoreDirectorFactory<Solution_> buildScoreDirectorFactory(EnvironmentMode environmentMode) {
-        SolutionDescriptor<Solution_> solutionDescriptor = buildSolutionDescriptor();
-        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_ = scoreDirectorFactoryConfig == null
-                ? new ScoreDirectorFactoryConfig()
-                : scoreDirectorFactoryConfig;
-        return scoreDirectorFactoryConfig_.buildScoreDirectorFactory(
-                classLoader, environmentMode, solutionDescriptor);
-    }
-
-    // TODO https://issues.redhat.com/browse/PLANNER-1688
-    /**
-     * Do not use this method, it is an internal method.
-     * <p>
-     * Will be removed in 8.0 (by putting it in an InnerSolverConfig).
-     *
-     * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
-     * @return never null
-     */
-    public <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor() {
-        if (solutionClass == null) {
-            throw new IllegalArgumentException("The solver configuration must have a solutionClass (" + solutionClass +
-                    "). If you're using the Quarkus extension or Spring Boot starter, it should have been filled in " +
-                    "already.");
-        }
-        if (ConfigUtils.isEmptyCollection(entityClassList)) {
-            throw new IllegalArgumentException("The solver configuration must have at least 1 entityClass (" +
-                    entityClassList + "). If you're using the Quarkus extension or Spring Boot starter, " +
-                    "it should have been filled in already.");
-        }
-        return SolutionDescriptor.buildSolutionDescriptor((Class<Solution_>) solutionClass, entityClassList);
-    }
-
-    protected <Solution_> List<Phase<Solution_>> buildPhaseList(HeuristicConfigPolicy configPolicy,
-            BestSolutionRecaller bestSolutionRecaller, Termination termination) {
-        List<PhaseConfig> phaseConfigList_ = phaseConfigList;
-        if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {
-            phaseConfigList_ = Arrays.asList(
-                    new ConstructionHeuristicPhaseConfig(),
-                    new LocalSearchPhaseConfig());
-        }
-        List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList_.size());
-        int phaseIndex = 0;
-        for (PhaseConfig phaseConfig : phaseConfigList_) {
-            Phase<Solution_> phase = phaseConfig.buildPhase(phaseIndex, configPolicy,
-                    bestSolutionRecaller, termination);
-            phaseList.add(phase);
-            phaseIndex++;
-        }
-        return phaseList;
     }
 
     /**

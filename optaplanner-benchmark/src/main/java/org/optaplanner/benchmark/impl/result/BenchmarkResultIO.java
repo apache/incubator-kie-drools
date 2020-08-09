@@ -35,6 +35,7 @@ import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.io.XmlUnmarshallingException;
 import org.optaplanner.core.impl.io.jaxb.JaxbIO;
+import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -141,7 +142,8 @@ public class BenchmarkResultIO {
     private void restoreOtherOmittedFields(PlannerBenchmarkResult plannerBenchmarkResult) {
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             SolverConfig solverConfig = solverBenchmarkResult.getSolverConfig();
-            solverBenchmarkResult.setScoreDefinition(solverConfig.buildSolutionDescriptor().getScoreDefinition());
+            DefaultSolverFactory<?> defaultSolverFactory = new DefaultSolverFactory<>(solverConfig);
+            solverBenchmarkResult.setScoreDefinition(defaultSolverFactory.buildSolutionDescriptor().getScoreDefinition());
         }
     }
 
