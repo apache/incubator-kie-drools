@@ -60,6 +60,13 @@ public abstract class AbstractGraphQLQueryOrderByIT {
     }
 
     @Test
+    void testProcessInstancesSortUsingVariable() {
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"query ($sort: ProcessInstanceOrderBy) { ProcessInstances(orderBy: $sort){ id } }\", \"variables\" : { \"sort\" : { \"start\": \"ASC\", \"processId\": \"DESC\" } } }")
+                .when().post("/graphql")
+                .then().log().ifValidationFails().statusCode(200).body("data.ProcessInstances", isA(Collection.class));
+    }
+
+    @Test
     void testUserTaskInstancesSort() {
         testSortBy("UserTaskInstances");
     }
@@ -76,6 +83,15 @@ public abstract class AbstractGraphQLQueryOrderByIT {
         testSortBy("Travels");
     }
 
+    @Test
+    void testTravelsSortUsingVariable() throws Exception {
+        protobufService.registerProtoBufferType(getTestProtobufFileContent());
+
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"query ($sort: TravelsOrderBy) { Travels(orderBy: $sort){ id } }\", \"variables\" : { \"sort\" : { \"flight\": { \"arrival\" : \"ASC\" }, \"metadata\" : { \"lastUpdate\" : \"DESC\" } } } }")
+                .when().post("/graphql")
+                .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
+    }
+    
     private void testSortBy(String root) {
         GraphQLObjectType queryType = manager.getGraphQLSchema().getQueryType();
 

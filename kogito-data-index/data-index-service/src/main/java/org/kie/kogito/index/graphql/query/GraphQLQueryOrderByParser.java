@@ -17,6 +17,7 @@
 package org.kie.kogito.index.graphql.query;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -25,6 +26,7 @@ import graphql.language.Argument;
 import graphql.language.EnumValue;
 import graphql.language.ObjectField;
 import graphql.language.ObjectValue;
+import graphql.language.Value;
 import graphql.language.VariableReference;
 import graphql.schema.DataFetchingEnvironment;
 import org.kie.kogito.persistence.api.query.AttributeSort;
@@ -43,11 +45,30 @@ public class GraphQLQueryOrderByParser implements Function<DataFetchingEnvironme
         }
         Optional<Argument> sortByArgument = env.getMergedField().getArguments().stream().filter(a -> "orderBy".equals(a.getName())).findFirst();
         if (sortByArgument.isPresent()) {
-            ObjectValue value = (ObjectValue) sortByArgument.get().getValue();
-            return value.getObjectFields().stream().flatMap(mapSortBy(env)).collect(toList());
-        } else {
-            return emptyList();
+            Value value = sortByArgument.get().getValue();
+            if (value instanceof ObjectValue) {
+                return ((ObjectValue) value).getObjectFields().stream().flatMap(mapSortBy(env)).collect(toList());
+            }
+            if (value instanceof VariableReference) {
+                VariableReference variable = (VariableReference) value;
+                Map<String, Object> sort = (Map<String, Object>) env.getVariables().get(variable.getName());
+                return sort.entrySet().stream().flatMap(mapSortBy()).collect(toList());
+            }
         }
+        return emptyList();
+    }
+
+    private Function<Map.Entry<String, Object>, Stream<AttributeSort>> mapSortBy() {
+        return entry -> {
+            if (entry.getValue() instanceof Map) {
+                return ((Map<String, Object>) entry.getValue()).entrySet().stream().flatMap(mapSortBy()).map(sort -> {
+                    sort.setAttribute(entry.getKey() + "." + sort.getAttribute());
+                    return sort;
+                });
+            } else {
+                return Stream.of(orderBy(entry.getKey(), SortDirection.valueOf(entry.getValue().toString())));
+            }
+        };
     }
 
     private Function<ObjectField, Stream<AttributeSort>> mapSortBy(DataFetchingEnvironment env) {
