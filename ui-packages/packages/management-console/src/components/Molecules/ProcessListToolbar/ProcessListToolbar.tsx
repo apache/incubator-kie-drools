@@ -39,7 +39,6 @@ interface IOwnProps {
   setInitData: (initData) => void;
   selectedInstances: ProcessInstanceBulkList;
   setSelectedInstances: (selectedInstances: ProcessInstanceBulkList) => void;
-  getProcessInstances: (options: any) => void;
   setSearchWord: (searchWord: string) => void;
   searchWord: string;
   isAllChecked: boolean;
@@ -100,7 +99,6 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
   filters,
   setFilters,
   selectedInstances,
-  getProcessInstances,
   setSearchWord,
   searchWord,
   isAllChecked,
@@ -326,13 +324,6 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
     setStatusArray([ProcessInstanceState.Active]);
     filters.businessKey = [];
     filterClick([ProcessInstanceState.Active]);
-    getProcessInstances({
-      variables: {
-        state: ProcessInstanceState.Active,
-        offset: 0,
-        limit: 10
-      }
-    });
   };
 
   const onRefreshClick = (): void => {

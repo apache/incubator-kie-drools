@@ -44,78 +44,6 @@ exports[`ProcessListTable component tests Snapshot testing initial empty data 1`
               "nodeId": "17",
               "type": "SubProcessNode",
             },
-            Object {
-              "definitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
-              "enter": "2020-05-07T06:50:18.443Z",
-              "exit": null,
-              "id": "1d3d7ebe-79ec-4848-b1d6-d7c5a371b4dd",
-              "name": "Confirm travel",
-              "nodeId": "8",
-              "type": "HumanTaskNode",
-            },
-            Object {
-              "definitionId": "_5D0733B5-53FE-40E9-9900-4CC13419C67A",
-              "enter": "2020-05-07T06:50:18.442Z",
-              "exit": "2020-05-07T06:50:18.443Z",
-              "id": "4fc774f5-c429-4b97-8981-bd60d1f59954",
-              "name": "Join",
-              "nodeId": "7",
-              "type": "Join",
-            },
-            Object {
-              "definitionId": "_F543B3F0-AB44-4A5B-BF17-8D9DEB505815",
-              "enter": "2020-05-07T06:50:18.439Z",
-              "exit": "2020-05-07T06:50:18.442Z",
-              "id": "60309b28-1dbe-49c3-b0d8-8cefb86be8b4",
-              "name": "Book Flight",
-              "nodeId": "10",
-              "type": "SubProcessNode",
-            },
-            Object {
-              "definitionId": "_175DC79D-C2F1-4B28-BE2D-B583DFABF70D",
-              "enter": "2020-05-07T06:50:18.428Z",
-              "exit": "2020-05-07T06:50:18.439Z",
-              "id": "efa5a6c0-9470-4405-8609-620bdbfbb6d9",
-              "name": "Book",
-              "nodeId": "2",
-              "type": "Split",
-            },
-            Object {
-              "definitionId": "_B34ADDEE-DEA5-47C5-A913-F8B85ED5641F",
-              "enter": "2020-05-07T06:50:18.428Z",
-              "exit": "2020-05-07T06:50:18.428Z",
-              "id": "acc87f1f-e436-4364-b4d3-9069ddb359c9",
-              "name": "Join",
-              "nodeId": "14",
-              "type": "Join",
-            },
-            Object {
-              "definitionId": "_5EA95D17-59A6-4567-92DF-74D36CE7F35A",
-              "enter": "2020-05-07T06:50:18.427Z",
-              "exit": "2020-05-07T06:50:18.428Z",
-              "id": "6c20729a-3e2b-44c5-af5c-8554f21a7ebf",
-              "name": "is visa required",
-              "nodeId": "15",
-              "type": "Split",
-            },
-            Object {
-              "definitionId": "_54ABE1ED-61BE-45F9-812C-795A5D4ED35E",
-              "enter": "2020-05-07T06:50:18.278Z",
-              "exit": "2020-05-07T06:50:18.427Z",
-              "id": "3fb92a0a-e88b-45a4-a48b-65f11a679b96",
-              "name": "Visa check",
-              "nodeId": "5",
-              "type": "RuleSetNode",
-            },
-            Object {
-              "definitionId": "_1B11BEC9-402A-4E73-959A-296BD334CAB0",
-              "enter": "2020-05-07T06:50:18.276Z",
-              "exit": "2020-05-07T06:50:18.278Z",
-              "id": "2860e474-dffc-498c-8731-e6b6f0b5d4d4",
-              "name": "StartProcess",
-              "nodeId": "16",
-              "type": "StartNode",
-            },
           ],
           "parentProcessInstance": null,
           "parentProcessInstanceId": null,
@@ -163,9 +91,6 @@ exports[`ProcessListTable component tests Snapshot testing initial empty data 1`
           undefined,
         ],
         Array [
-          undefined,
-        ],
-        Array [
           Object {
             "ProcessInstances": Array [
               Object {
@@ -194,10 +119,6 @@ exports[`ProcessListTable component tests Snapshot testing initial empty data 1`
         ],
       ],
       "results": Array [
-        Object {
-          "type": "return",
-          "value": undefined,
-        },
         Object {
           "type": "return",
           "value": undefined,
@@ -335,78 +256,6 @@ exports[`ProcessListTable component tests Snapshot testing with no data 1`] = `
               "nodeId": "17",
               "type": "SubProcessNode",
             },
-            Object {
-              "definitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
-              "enter": "2020-05-07T06:50:18.443Z",
-              "exit": null,
-              "id": "1d3d7ebe-79ec-4848-b1d6-d7c5a371b4dd",
-              "name": "Confirm travel",
-              "nodeId": "8",
-              "type": "HumanTaskNode",
-            },
-            Object {
-              "definitionId": "_5D0733B5-53FE-40E9-9900-4CC13419C67A",
-              "enter": "2020-05-07T06:50:18.442Z",
-              "exit": "2020-05-07T06:50:18.443Z",
-              "id": "4fc774f5-c429-4b97-8981-bd60d1f59954",
-              "name": "Join",
-              "nodeId": "7",
-              "type": "Join",
-            },
-            Object {
-              "definitionId": "_F543B3F0-AB44-4A5B-BF17-8D9DEB505815",
-              "enter": "2020-05-07T06:50:18.439Z",
-              "exit": "2020-05-07T06:50:18.442Z",
-              "id": "60309b28-1dbe-49c3-b0d8-8cefb86be8b4",
-              "name": "Book Flight",
-              "nodeId": "10",
-              "type": "SubProcessNode",
-            },
-            Object {
-              "definitionId": "_175DC79D-C2F1-4B28-BE2D-B583DFABF70D",
-              "enter": "2020-05-07T06:50:18.428Z",
-              "exit": "2020-05-07T06:50:18.439Z",
-              "id": "efa5a6c0-9470-4405-8609-620bdbfbb6d9",
-              "name": "Book",
-              "nodeId": "2",
-              "type": "Split",
-            },
-            Object {
-              "definitionId": "_B34ADDEE-DEA5-47C5-A913-F8B85ED5641F",
-              "enter": "2020-05-07T06:50:18.428Z",
-              "exit": "2020-05-07T06:50:18.428Z",
-              "id": "acc87f1f-e436-4364-b4d3-9069ddb359c9",
-              "name": "Join",
-              "nodeId": "14",
-              "type": "Join",
-            },
-            Object {
-              "definitionId": "_5EA95D17-59A6-4567-92DF-74D36CE7F35A",
-              "enter": "2020-05-07T06:50:18.427Z",
-              "exit": "2020-05-07T06:50:18.428Z",
-              "id": "6c20729a-3e2b-44c5-af5c-8554f21a7ebf",
-              "name": "is visa required",
-              "nodeId": "15",
-              "type": "Split",
-            },
-            Object {
-              "definitionId": "_54ABE1ED-61BE-45F9-812C-795A5D4ED35E",
-              "enter": "2020-05-07T06:50:18.278Z",
-              "exit": "2020-05-07T06:50:18.427Z",
-              "id": "3fb92a0a-e88b-45a4-a48b-65f11a679b96",
-              "name": "Visa check",
-              "nodeId": "5",
-              "type": "RuleSetNode",
-            },
-            Object {
-              "definitionId": "_1B11BEC9-402A-4E73-959A-296BD334CAB0",
-              "enter": "2020-05-07T06:50:18.276Z",
-              "exit": "2020-05-07T06:50:18.278Z",
-              "id": "2860e474-dffc-498c-8731-e6b6f0b5d4d4",
-              "name": "StartProcess",
-              "nodeId": "16",
-              "type": "StartNode",
-            },
           ],
           "parentProcessInstance": null,
           "parentProcessInstanceId": null,
@@ -454,19 +303,12 @@ exports[`ProcessListTable component tests Snapshot testing with no data 1`] = `
           undefined,
         ],
         Array [
-          undefined,
-        ],
-        Array [
           Object {
             "ProcessInstances": Array [],
           },
         ],
       ],
       "results": Array [
-        Object {
-          "type": "return",
-          "value": undefined,
-        },
         Object {
           "type": "return",
           "value": undefined,
@@ -604,78 +446,6 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
               "nodeId": "17",
               "type": "SubProcessNode",
             },
-            Object {
-              "definitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
-              "enter": "2020-05-07T06:50:18.443Z",
-              "exit": null,
-              "id": "1d3d7ebe-79ec-4848-b1d6-d7c5a371b4dd",
-              "name": "Confirm travel",
-              "nodeId": "8",
-              "type": "HumanTaskNode",
-            },
-            Object {
-              "definitionId": "_5D0733B5-53FE-40E9-9900-4CC13419C67A",
-              "enter": "2020-05-07T06:50:18.442Z",
-              "exit": "2020-05-07T06:50:18.443Z",
-              "id": "4fc774f5-c429-4b97-8981-bd60d1f59954",
-              "name": "Join",
-              "nodeId": "7",
-              "type": "Join",
-            },
-            Object {
-              "definitionId": "_F543B3F0-AB44-4A5B-BF17-8D9DEB505815",
-              "enter": "2020-05-07T06:50:18.439Z",
-              "exit": "2020-05-07T06:50:18.442Z",
-              "id": "60309b28-1dbe-49c3-b0d8-8cefb86be8b4",
-              "name": "Book Flight",
-              "nodeId": "10",
-              "type": "SubProcessNode",
-            },
-            Object {
-              "definitionId": "_175DC79D-C2F1-4B28-BE2D-B583DFABF70D",
-              "enter": "2020-05-07T06:50:18.428Z",
-              "exit": "2020-05-07T06:50:18.439Z",
-              "id": "efa5a6c0-9470-4405-8609-620bdbfbb6d9",
-              "name": "Book",
-              "nodeId": "2",
-              "type": "Split",
-            },
-            Object {
-              "definitionId": "_B34ADDEE-DEA5-47C5-A913-F8B85ED5641F",
-              "enter": "2020-05-07T06:50:18.428Z",
-              "exit": "2020-05-07T06:50:18.428Z",
-              "id": "acc87f1f-e436-4364-b4d3-9069ddb359c9",
-              "name": "Join",
-              "nodeId": "14",
-              "type": "Join",
-            },
-            Object {
-              "definitionId": "_5EA95D17-59A6-4567-92DF-74D36CE7F35A",
-              "enter": "2020-05-07T06:50:18.427Z",
-              "exit": "2020-05-07T06:50:18.428Z",
-              "id": "6c20729a-3e2b-44c5-af5c-8554f21a7ebf",
-              "name": "is visa required",
-              "nodeId": "15",
-              "type": "Split",
-            },
-            Object {
-              "definitionId": "_54ABE1ED-61BE-45F9-812C-795A5D4ED35E",
-              "enter": "2020-05-07T06:50:18.278Z",
-              "exit": "2020-05-07T06:50:18.427Z",
-              "id": "3fb92a0a-e88b-45a4-a48b-65f11a679b96",
-              "name": "Visa check",
-              "nodeId": "5",
-              "type": "RuleSetNode",
-            },
-            Object {
-              "definitionId": "_1B11BEC9-402A-4E73-959A-296BD334CAB0",
-              "enter": "2020-05-07T06:50:18.276Z",
-              "exit": "2020-05-07T06:50:18.278Z",
-              "id": "2860e474-dffc-498c-8731-e6b6f0b5d4d4",
-              "name": "StartProcess",
-              "nodeId": "16",
-              "type": "StartNode",
-            },
           ],
           "parentProcessInstance": null,
           "parentProcessInstanceId": null,
@@ -735,78 +505,6 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
               "nodeId": "17",
               "type": "SubProcessNode",
             },
-            Object {
-              "definitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
-              "enter": "2020-05-07T06:50:18.443Z",
-              "exit": null,
-              "id": "1d3d7ebe-79ec-4848-b1d6-d7c5a371b4dd",
-              "name": "Confirm travel",
-              "nodeId": "8",
-              "type": "HumanTaskNode",
-            },
-            Object {
-              "definitionId": "_5D0733B5-53FE-40E9-9900-4CC13419C67A",
-              "enter": "2020-05-07T06:50:18.442Z",
-              "exit": "2020-05-07T06:50:18.443Z",
-              "id": "4fc774f5-c429-4b97-8981-bd60d1f59954",
-              "name": "Join",
-              "nodeId": "7",
-              "type": "Join",
-            },
-            Object {
-              "definitionId": "_F543B3F0-AB44-4A5B-BF17-8D9DEB505815",
-              "enter": "2020-05-07T06:50:18.439Z",
-              "exit": "2020-05-07T06:50:18.442Z",
-              "id": "60309b28-1dbe-49c3-b0d8-8cefb86be8b4",
-              "name": "Book Flight",
-              "nodeId": "10",
-              "type": "SubProcessNode",
-            },
-            Object {
-              "definitionId": "_175DC79D-C2F1-4B28-BE2D-B583DFABF70D",
-              "enter": "2020-05-07T06:50:18.428Z",
-              "exit": "2020-05-07T06:50:18.439Z",
-              "id": "efa5a6c0-9470-4405-8609-620bdbfbb6d9",
-              "name": "Book",
-              "nodeId": "2",
-              "type": "Split",
-            },
-            Object {
-              "definitionId": "_B34ADDEE-DEA5-47C5-A913-F8B85ED5641F",
-              "enter": "2020-05-07T06:50:18.428Z",
-              "exit": "2020-05-07T06:50:18.428Z",
-              "id": "acc87f1f-e436-4364-b4d3-9069ddb359c9",
-              "name": "Join",
-              "nodeId": "14",
-              "type": "Join",
-            },
-            Object {
-              "definitionId": "_5EA95D17-59A6-4567-92DF-74D36CE7F35A",
-              "enter": "2020-05-07T06:50:18.427Z",
-              "exit": "2020-05-07T06:50:18.428Z",
-              "id": "6c20729a-3e2b-44c5-af5c-8554f21a7ebf",
-              "name": "is visa required",
-              "nodeId": "15",
-              "type": "Split",
-            },
-            Object {
-              "definitionId": "_54ABE1ED-61BE-45F9-812C-795A5D4ED35E",
-              "enter": "2020-05-07T06:50:18.278Z",
-              "exit": "2020-05-07T06:50:18.427Z",
-              "id": "3fb92a0a-e88b-45a4-a48b-65f11a679b96",
-              "name": "Visa check",
-              "nodeId": "5",
-              "type": "RuleSetNode",
-            },
-            Object {
-              "definitionId": "_1B11BEC9-402A-4E73-959A-296BD334CAB0",
-              "enter": "2020-05-07T06:50:18.276Z",
-              "exit": "2020-05-07T06:50:18.278Z",
-              "id": "2860e474-dffc-498c-8731-e6b6f0b5d4d4",
-              "name": "StartProcess",
-              "nodeId": "16",
-              "type": "StartNode",
-            },
           ],
           "parentProcessInstance": null,
           "parentProcessInstanceId": null,
@@ -841,9 +539,6 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
           undefined,
         ],
         Array [
-          undefined,
-        ],
-        Array [
           Object {
             "ProcessInstances": Array [
               Object {
@@ -872,10 +567,6 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
         ],
       ],
       "results": Array [
-        Object {
-          "type": "return",
-          "value": undefined,
-        },
         Object {
           "type": "return",
           "value": undefined,
@@ -1004,78 +695,6 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
                     "nodeId": "17",
                     "type": "SubProcessNode",
                   },
-                  Object {
-                    "definitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
-                    "enter": "2020-05-07T06:50:18.443Z",
-                    "exit": null,
-                    "id": "1d3d7ebe-79ec-4848-b1d6-d7c5a371b4dd",
-                    "name": "Confirm travel",
-                    "nodeId": "8",
-                    "type": "HumanTaskNode",
-                  },
-                  Object {
-                    "definitionId": "_5D0733B5-53FE-40E9-9900-4CC13419C67A",
-                    "enter": "2020-05-07T06:50:18.442Z",
-                    "exit": "2020-05-07T06:50:18.443Z",
-                    "id": "4fc774f5-c429-4b97-8981-bd60d1f59954",
-                    "name": "Join",
-                    "nodeId": "7",
-                    "type": "Join",
-                  },
-                  Object {
-                    "definitionId": "_F543B3F0-AB44-4A5B-BF17-8D9DEB505815",
-                    "enter": "2020-05-07T06:50:18.439Z",
-                    "exit": "2020-05-07T06:50:18.442Z",
-                    "id": "60309b28-1dbe-49c3-b0d8-8cefb86be8b4",
-                    "name": "Book Flight",
-                    "nodeId": "10",
-                    "type": "SubProcessNode",
-                  },
-                  Object {
-                    "definitionId": "_175DC79D-C2F1-4B28-BE2D-B583DFABF70D",
-                    "enter": "2020-05-07T06:50:18.428Z",
-                    "exit": "2020-05-07T06:50:18.439Z",
-                    "id": "efa5a6c0-9470-4405-8609-620bdbfbb6d9",
-                    "name": "Book",
-                    "nodeId": "2",
-                    "type": "Split",
-                  },
-                  Object {
-                    "definitionId": "_B34ADDEE-DEA5-47C5-A913-F8B85ED5641F",
-                    "enter": "2020-05-07T06:50:18.428Z",
-                    "exit": "2020-05-07T06:50:18.428Z",
-                    "id": "acc87f1f-e436-4364-b4d3-9069ddb359c9",
-                    "name": "Join",
-                    "nodeId": "14",
-                    "type": "Join",
-                  },
-                  Object {
-                    "definitionId": "_5EA95D17-59A6-4567-92DF-74D36CE7F35A",
-                    "enter": "2020-05-07T06:50:18.427Z",
-                    "exit": "2020-05-07T06:50:18.428Z",
-                    "id": "6c20729a-3e2b-44c5-af5c-8554f21a7ebf",
-                    "name": "is visa required",
-                    "nodeId": "15",
-                    "type": "Split",
-                  },
-                  Object {
-                    "definitionId": "_54ABE1ED-61BE-45F9-812C-795A5D4ED35E",
-                    "enter": "2020-05-07T06:50:18.278Z",
-                    "exit": "2020-05-07T06:50:18.427Z",
-                    "id": "3fb92a0a-e88b-45a4-a48b-65f11a679b96",
-                    "name": "Visa check",
-                    "nodeId": "5",
-                    "type": "RuleSetNode",
-                  },
-                  Object {
-                    "definitionId": "_1B11BEC9-402A-4E73-959A-296BD334CAB0",
-                    "enter": "2020-05-07T06:50:18.276Z",
-                    "exit": "2020-05-07T06:50:18.278Z",
-                    "id": "2860e474-dffc-498c-8731-e6b6f0b5d4d4",
-                    "name": "StartProcess",
-                    "nodeId": "16",
-                    "type": "StartNode",
-                  },
                 ],
                 "parentProcessInstance": null,
                 "parentProcessInstanceId": null,
@@ -1127,78 +746,6 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
                 "nodeId": "17",
                 "type": "SubProcessNode",
               },
-              Object {
-                "definitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
-                "enter": "2020-05-07T06:50:18.443Z",
-                "exit": null,
-                "id": "1d3d7ebe-79ec-4848-b1d6-d7c5a371b4dd",
-                "name": "Confirm travel",
-                "nodeId": "8",
-                "type": "HumanTaskNode",
-              },
-              Object {
-                "definitionId": "_5D0733B5-53FE-40E9-9900-4CC13419C67A",
-                "enter": "2020-05-07T06:50:18.442Z",
-                "exit": "2020-05-07T06:50:18.443Z",
-                "id": "4fc774f5-c429-4b97-8981-bd60d1f59954",
-                "name": "Join",
-                "nodeId": "7",
-                "type": "Join",
-              },
-              Object {
-                "definitionId": "_F543B3F0-AB44-4A5B-BF17-8D9DEB505815",
-                "enter": "2020-05-07T06:50:18.439Z",
-                "exit": "2020-05-07T06:50:18.442Z",
-                "id": "60309b28-1dbe-49c3-b0d8-8cefb86be8b4",
-                "name": "Book Flight",
-                "nodeId": "10",
-                "type": "SubProcessNode",
-              },
-              Object {
-                "definitionId": "_175DC79D-C2F1-4B28-BE2D-B583DFABF70D",
-                "enter": "2020-05-07T06:50:18.428Z",
-                "exit": "2020-05-07T06:50:18.439Z",
-                "id": "efa5a6c0-9470-4405-8609-620bdbfbb6d9",
-                "name": "Book",
-                "nodeId": "2",
-                "type": "Split",
-              },
-              Object {
-                "definitionId": "_B34ADDEE-DEA5-47C5-A913-F8B85ED5641F",
-                "enter": "2020-05-07T06:50:18.428Z",
-                "exit": "2020-05-07T06:50:18.428Z",
-                "id": "acc87f1f-e436-4364-b4d3-9069ddb359c9",
-                "name": "Join",
-                "nodeId": "14",
-                "type": "Join",
-              },
-              Object {
-                "definitionId": "_5EA95D17-59A6-4567-92DF-74D36CE7F35A",
-                "enter": "2020-05-07T06:50:18.427Z",
-                "exit": "2020-05-07T06:50:18.428Z",
-                "id": "6c20729a-3e2b-44c5-af5c-8554f21a7ebf",
-                "name": "is visa required",
-                "nodeId": "15",
-                "type": "Split",
-              },
-              Object {
-                "definitionId": "_54ABE1ED-61BE-45F9-812C-795A5D4ED35E",
-                "enter": "2020-05-07T06:50:18.278Z",
-                "exit": "2020-05-07T06:50:18.427Z",
-                "id": "3fb92a0a-e88b-45a4-a48b-65f11a679b96",
-                "name": "Visa check",
-                "nodeId": "5",
-                "type": "RuleSetNode",
-              },
-              Object {
-                "definitionId": "_1B11BEC9-402A-4E73-959A-296BD334CAB0",
-                "enter": "2020-05-07T06:50:18.276Z",
-                "exit": "2020-05-07T06:50:18.278Z",
-                "id": "2860e474-dffc-498c-8731-e6b6f0b5d4d4",
-                "name": "StartProcess",
-                "nodeId": "16",
-                "type": "StartNode",
-              },
             ],
             "parentProcessInstance": null,
             "parentProcessInstanceId": null,
@@ -1222,9 +769,6 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
         setInitData={
           [MockFunction] {
             "calls": Array [
-              Array [
-                undefined,
-              ],
               Array [
                 undefined,
               ],
@@ -1257,10 +801,6 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
               ],
             ],
             "results": Array [
-              Object {
-                "type": "return",
-                "value": undefined,
-              },
               Object {
                 "type": "return",
                 "value": undefined,
@@ -1341,78 +881,6 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
               "nodeId": "17",
               "type": "SubProcessNode",
             },
-            Object {
-              "definitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
-              "enter": "2020-05-07T06:50:18.443Z",
-              "exit": null,
-              "id": "1d3d7ebe-79ec-4848-b1d6-d7c5a371b4dd",
-              "name": "Confirm travel",
-              "nodeId": "8",
-              "type": "HumanTaskNode",
-            },
-            Object {
-              "definitionId": "_5D0733B5-53FE-40E9-9900-4CC13419C67A",
-              "enter": "2020-05-07T06:50:18.442Z",
-              "exit": "2020-05-07T06:50:18.443Z",
-              "id": "4fc774f5-c429-4b97-8981-bd60d1f59954",
-              "name": "Join",
-              "nodeId": "7",
-              "type": "Join",
-            },
-            Object {
-              "definitionId": "_F543B3F0-AB44-4A5B-BF17-8D9DEB505815",
-              "enter": "2020-05-07T06:50:18.439Z",
-              "exit": "2020-05-07T06:50:18.442Z",
-              "id": "60309b28-1dbe-49c3-b0d8-8cefb86be8b4",
-              "name": "Book Flight",
-              "nodeId": "10",
-              "type": "SubProcessNode",
-            },
-            Object {
-              "definitionId": "_175DC79D-C2F1-4B28-BE2D-B583DFABF70D",
-              "enter": "2020-05-07T06:50:18.428Z",
-              "exit": "2020-05-07T06:50:18.439Z",
-              "id": "efa5a6c0-9470-4405-8609-620bdbfbb6d9",
-              "name": "Book",
-              "nodeId": "2",
-              "type": "Split",
-            },
-            Object {
-              "definitionId": "_B34ADDEE-DEA5-47C5-A913-F8B85ED5641F",
-              "enter": "2020-05-07T06:50:18.428Z",
-              "exit": "2020-05-07T06:50:18.428Z",
-              "id": "acc87f1f-e436-4364-b4d3-9069ddb359c9",
-              "name": "Join",
-              "nodeId": "14",
-              "type": "Join",
-            },
-            Object {
-              "definitionId": "_5EA95D17-59A6-4567-92DF-74D36CE7F35A",
-              "enter": "2020-05-07T06:50:18.427Z",
-              "exit": "2020-05-07T06:50:18.428Z",
-              "id": "6c20729a-3e2b-44c5-af5c-8554f21a7ebf",
-              "name": "is visa required",
-              "nodeId": "15",
-              "type": "Split",
-            },
-            Object {
-              "definitionId": "_54ABE1ED-61BE-45F9-812C-795A5D4ED35E",
-              "enter": "2020-05-07T06:50:18.278Z",
-              "exit": "2020-05-07T06:50:18.427Z",
-              "id": "3fb92a0a-e88b-45a4-a48b-65f11a679b96",
-              "name": "Visa check",
-              "nodeId": "5",
-              "type": "RuleSetNode",
-            },
-            Object {
-              "definitionId": "_1B11BEC9-402A-4E73-959A-296BD334CAB0",
-              "enter": "2020-05-07T06:50:18.276Z",
-              "exit": "2020-05-07T06:50:18.278Z",
-              "id": "2860e474-dffc-498c-8731-e6b6f0b5d4d4",
-              "name": "StartProcess",
-              "nodeId": "16",
-              "type": "StartNode",
-            },
           ],
           "parentProcessInstance": null,
           "parentProcessInstanceId": null,
@@ -1474,78 +942,6 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
               "nodeId": "17",
               "type": "SubProcessNode",
             },
-            Object {
-              "definitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
-              "enter": "2020-05-07T06:50:18.443Z",
-              "exit": null,
-              "id": "1d3d7ebe-79ec-4848-b1d6-d7c5a371b4dd",
-              "name": "Confirm travel",
-              "nodeId": "8",
-              "type": "HumanTaskNode",
-            },
-            Object {
-              "definitionId": "_5D0733B5-53FE-40E9-9900-4CC13419C67A",
-              "enter": "2020-05-07T06:50:18.442Z",
-              "exit": "2020-05-07T06:50:18.443Z",
-              "id": "4fc774f5-c429-4b97-8981-bd60d1f59954",
-              "name": "Join",
-              "nodeId": "7",
-              "type": "Join",
-            },
-            Object {
-              "definitionId": "_F543B3F0-AB44-4A5B-BF17-8D9DEB505815",
-              "enter": "2020-05-07T06:50:18.439Z",
-              "exit": "2020-05-07T06:50:18.442Z",
-              "id": "60309b28-1dbe-49c3-b0d8-8cefb86be8b4",
-              "name": "Book Flight",
-              "nodeId": "10",
-              "type": "SubProcessNode",
-            },
-            Object {
-              "definitionId": "_175DC79D-C2F1-4B28-BE2D-B583DFABF70D",
-              "enter": "2020-05-07T06:50:18.428Z",
-              "exit": "2020-05-07T06:50:18.439Z",
-              "id": "efa5a6c0-9470-4405-8609-620bdbfbb6d9",
-              "name": "Book",
-              "nodeId": "2",
-              "type": "Split",
-            },
-            Object {
-              "definitionId": "_B34ADDEE-DEA5-47C5-A913-F8B85ED5641F",
-              "enter": "2020-05-07T06:50:18.428Z",
-              "exit": "2020-05-07T06:50:18.428Z",
-              "id": "acc87f1f-e436-4364-b4d3-9069ddb359c9",
-              "name": "Join",
-              "nodeId": "14",
-              "type": "Join",
-            },
-            Object {
-              "definitionId": "_5EA95D17-59A6-4567-92DF-74D36CE7F35A",
-              "enter": "2020-05-07T06:50:18.427Z",
-              "exit": "2020-05-07T06:50:18.428Z",
-              "id": "6c20729a-3e2b-44c5-af5c-8554f21a7ebf",
-              "name": "is visa required",
-              "nodeId": "15",
-              "type": "Split",
-            },
-            Object {
-              "definitionId": "_54ABE1ED-61BE-45F9-812C-795A5D4ED35E",
-              "enter": "2020-05-07T06:50:18.278Z",
-              "exit": "2020-05-07T06:50:18.427Z",
-              "id": "3fb92a0a-e88b-45a4-a48b-65f11a679b96",
-              "name": "Visa check",
-              "nodeId": "5",
-              "type": "RuleSetNode",
-            },
-            Object {
-              "definitionId": "_1B11BEC9-402A-4E73-959A-296BD334CAB0",
-              "enter": "2020-05-07T06:50:18.276Z",
-              "exit": "2020-05-07T06:50:18.278Z",
-              "id": "2860e474-dffc-498c-8731-e6b6f0b5d4d4",
-              "name": "StartProcess",
-              "nodeId": "16",
-              "type": "StartNode",
-            },
           ],
           "parentProcessInstance": null,
           "parentProcessInstanceId": null,
@@ -1576,9 +972,6 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
   setInitData={
     [MockFunction] {
       "calls": Array [
-        Array [
-          undefined,
-        ],
         Array [
           undefined,
         ],
@@ -1619,10 +1012,6 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
           "type": "return",
           "value": undefined,
         },
-        Object {
-          "type": "return",
-          "value": undefined,
-        },
       ],
     }
   }
@@ -1633,6 +1022,29 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
         Array [
           false,
         ],
+        Array [
+          false,
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    }
+  }
+  setIsLoading={[MockFunction]}
+  setLimit={
+    [MockFunction] {
+      "calls": Array [
+        Array [
+          1,
+        ],
       ],
       "results": Array [
         Object {
@@ -1642,16 +1054,21 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
       ],
     }
   }
-  setIsLoading={[MockFunction]}
-  setLimit={[MockFunction]}
   setSelectedInstances={
     [MockFunction] {
       "calls": Array [
         Array [
           Object {},
         ],
+        Array [
+          Object {},
+        ],
       ],
       "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
         Object {
           "type": "return",
           "value": undefined,
@@ -1717,78 +1134,6 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
                     "nodeId": "17",
                     "type": "SubProcessNode",
                   },
-                  Object {
-                    "definitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
-                    "enter": "2020-05-07T06:50:18.443Z",
-                    "exit": null,
-                    "id": "1d3d7ebe-79ec-4848-b1d6-d7c5a371b4dd",
-                    "name": "Confirm travel",
-                    "nodeId": "8",
-                    "type": "HumanTaskNode",
-                  },
-                  Object {
-                    "definitionId": "_5D0733B5-53FE-40E9-9900-4CC13419C67A",
-                    "enter": "2020-05-07T06:50:18.442Z",
-                    "exit": "2020-05-07T06:50:18.443Z",
-                    "id": "4fc774f5-c429-4b97-8981-bd60d1f59954",
-                    "name": "Join",
-                    "nodeId": "7",
-                    "type": "Join",
-                  },
-                  Object {
-                    "definitionId": "_F543B3F0-AB44-4A5B-BF17-8D9DEB505815",
-                    "enter": "2020-05-07T06:50:18.439Z",
-                    "exit": "2020-05-07T06:50:18.442Z",
-                    "id": "60309b28-1dbe-49c3-b0d8-8cefb86be8b4",
-                    "name": "Book Flight",
-                    "nodeId": "10",
-                    "type": "SubProcessNode",
-                  },
-                  Object {
-                    "definitionId": "_175DC79D-C2F1-4B28-BE2D-B583DFABF70D",
-                    "enter": "2020-05-07T06:50:18.428Z",
-                    "exit": "2020-05-07T06:50:18.439Z",
-                    "id": "efa5a6c0-9470-4405-8609-620bdbfbb6d9",
-                    "name": "Book",
-                    "nodeId": "2",
-                    "type": "Split",
-                  },
-                  Object {
-                    "definitionId": "_B34ADDEE-DEA5-47C5-A913-F8B85ED5641F",
-                    "enter": "2020-05-07T06:50:18.428Z",
-                    "exit": "2020-05-07T06:50:18.428Z",
-                    "id": "acc87f1f-e436-4364-b4d3-9069ddb359c9",
-                    "name": "Join",
-                    "nodeId": "14",
-                    "type": "Join",
-                  },
-                  Object {
-                    "definitionId": "_5EA95D17-59A6-4567-92DF-74D36CE7F35A",
-                    "enter": "2020-05-07T06:50:18.427Z",
-                    "exit": "2020-05-07T06:50:18.428Z",
-                    "id": "6c20729a-3e2b-44c5-af5c-8554f21a7ebf",
-                    "name": "is visa required",
-                    "nodeId": "15",
-                    "type": "Split",
-                  },
-                  Object {
-                    "definitionId": "_54ABE1ED-61BE-45F9-812C-795A5D4ED35E",
-                    "enter": "2020-05-07T06:50:18.278Z",
-                    "exit": "2020-05-07T06:50:18.427Z",
-                    "id": "3fb92a0a-e88b-45a4-a48b-65f11a679b96",
-                    "name": "Visa check",
-                    "nodeId": "5",
-                    "type": "RuleSetNode",
-                  },
-                  Object {
-                    "definitionId": "_1B11BEC9-402A-4E73-959A-296BD334CAB0",
-                    "enter": "2020-05-07T06:50:18.276Z",
-                    "exit": "2020-05-07T06:50:18.278Z",
-                    "id": "2860e474-dffc-498c-8731-e6b6f0b5d4d4",
-                    "name": "StartProcess",
-                    "nodeId": "16",
-                    "type": "StartNode",
-                  },
                 ],
                 "parentProcessInstance": null,
                 "parentProcessInstanceId": null,
@@ -1840,78 +1185,6 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
                 "nodeId": "17",
                 "type": "SubProcessNode",
               },
-              Object {
-                "definitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
-                "enter": "2020-05-07T06:50:18.443Z",
-                "exit": null,
-                "id": "1d3d7ebe-79ec-4848-b1d6-d7c5a371b4dd",
-                "name": "Confirm travel",
-                "nodeId": "8",
-                "type": "HumanTaskNode",
-              },
-              Object {
-                "definitionId": "_5D0733B5-53FE-40E9-9900-4CC13419C67A",
-                "enter": "2020-05-07T06:50:18.442Z",
-                "exit": "2020-05-07T06:50:18.443Z",
-                "id": "4fc774f5-c429-4b97-8981-bd60d1f59954",
-                "name": "Join",
-                "nodeId": "7",
-                "type": "Join",
-              },
-              Object {
-                "definitionId": "_F543B3F0-AB44-4A5B-BF17-8D9DEB505815",
-                "enter": "2020-05-07T06:50:18.439Z",
-                "exit": "2020-05-07T06:50:18.442Z",
-                "id": "60309b28-1dbe-49c3-b0d8-8cefb86be8b4",
-                "name": "Book Flight",
-                "nodeId": "10",
-                "type": "SubProcessNode",
-              },
-              Object {
-                "definitionId": "_175DC79D-C2F1-4B28-BE2D-B583DFABF70D",
-                "enter": "2020-05-07T06:50:18.428Z",
-                "exit": "2020-05-07T06:50:18.439Z",
-                "id": "efa5a6c0-9470-4405-8609-620bdbfbb6d9",
-                "name": "Book",
-                "nodeId": "2",
-                "type": "Split",
-              },
-              Object {
-                "definitionId": "_B34ADDEE-DEA5-47C5-A913-F8B85ED5641F",
-                "enter": "2020-05-07T06:50:18.428Z",
-                "exit": "2020-05-07T06:50:18.428Z",
-                "id": "acc87f1f-e436-4364-b4d3-9069ddb359c9",
-                "name": "Join",
-                "nodeId": "14",
-                "type": "Join",
-              },
-              Object {
-                "definitionId": "_5EA95D17-59A6-4567-92DF-74D36CE7F35A",
-                "enter": "2020-05-07T06:50:18.427Z",
-                "exit": "2020-05-07T06:50:18.428Z",
-                "id": "6c20729a-3e2b-44c5-af5c-8554f21a7ebf",
-                "name": "is visa required",
-                "nodeId": "15",
-                "type": "Split",
-              },
-              Object {
-                "definitionId": "_54ABE1ED-61BE-45F9-812C-795A5D4ED35E",
-                "enter": "2020-05-07T06:50:18.278Z",
-                "exit": "2020-05-07T06:50:18.427Z",
-                "id": "3fb92a0a-e88b-45a4-a48b-65f11a679b96",
-                "name": "Visa check",
-                "nodeId": "5",
-                "type": "RuleSetNode",
-              },
-              Object {
-                "definitionId": "_1B11BEC9-402A-4E73-959A-296BD334CAB0",
-                "enter": "2020-05-07T06:50:18.276Z",
-                "exit": "2020-05-07T06:50:18.278Z",
-                "id": "2860e474-dffc-498c-8731-e6b6f0b5d4d4",
-                "name": "StartProcess",
-                "nodeId": "16",
-                "type": "StartNode",
-              },
             ],
             "parentProcessInstance": null,
             "parentProcessInstanceId": null,
@@ -1935,9 +1208,6 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
         setInitData={
           [MockFunction] {
             "calls": Array [
-              Array [
-                undefined,
-              ],
               Array [
                 undefined,
               ],
@@ -1978,10 +1248,6 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
                 "type": "return",
                 "value": undefined,
               },
-              Object {
-                "type": "return",
-                "value": undefined,
-              },
             ],
           }
         }
@@ -1992,8 +1258,15 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
               Array [
                 Object {},
               ],
+              Array [
+                Object {},
+              ],
             ],
             "results": Array [
+              Object {
+                "type": "return",
+                "value": undefined,
+              },
               Object {
                 "type": "return",
                 "value": undefined,
@@ -2052,78 +1325,6 @@ exports[`ProcessListTable component tests Snapshot testing with wrong query para
               "nodeId": "17",
               "type": "SubProcessNode",
             },
-            Object {
-              "definitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
-              "enter": "2020-05-07T06:50:18.443Z",
-              "exit": null,
-              "id": "1d3d7ebe-79ec-4848-b1d6-d7c5a371b4dd",
-              "name": "Confirm travel",
-              "nodeId": "8",
-              "type": "HumanTaskNode",
-            },
-            Object {
-              "definitionId": "_5D0733B5-53FE-40E9-9900-4CC13419C67A",
-              "enter": "2020-05-07T06:50:18.442Z",
-              "exit": "2020-05-07T06:50:18.443Z",
-              "id": "4fc774f5-c429-4b97-8981-bd60d1f59954",
-              "name": "Join",
-              "nodeId": "7",
-              "type": "Join",
-            },
-            Object {
-              "definitionId": "_F543B3F0-AB44-4A5B-BF17-8D9DEB505815",
-              "enter": "2020-05-07T06:50:18.439Z",
-              "exit": "2020-05-07T06:50:18.442Z",
-              "id": "60309b28-1dbe-49c3-b0d8-8cefb86be8b4",
-              "name": "Book Flight",
-              "nodeId": "10",
-              "type": "SubProcessNode",
-            },
-            Object {
-              "definitionId": "_175DC79D-C2F1-4B28-BE2D-B583DFABF70D",
-              "enter": "2020-05-07T06:50:18.428Z",
-              "exit": "2020-05-07T06:50:18.439Z",
-              "id": "efa5a6c0-9470-4405-8609-620bdbfbb6d9",
-              "name": "Book",
-              "nodeId": "2",
-              "type": "Split",
-            },
-            Object {
-              "definitionId": "_B34ADDEE-DEA5-47C5-A913-F8B85ED5641F",
-              "enter": "2020-05-07T06:50:18.428Z",
-              "exit": "2020-05-07T06:50:18.428Z",
-              "id": "acc87f1f-e436-4364-b4d3-9069ddb359c9",
-              "name": "Join",
-              "nodeId": "14",
-              "type": "Join",
-            },
-            Object {
-              "definitionId": "_5EA95D17-59A6-4567-92DF-74D36CE7F35A",
-              "enter": "2020-05-07T06:50:18.427Z",
-              "exit": "2020-05-07T06:50:18.428Z",
-              "id": "6c20729a-3e2b-44c5-af5c-8554f21a7ebf",
-              "name": "is visa required",
-              "nodeId": "15",
-              "type": "Split",
-            },
-            Object {
-              "definitionId": "_54ABE1ED-61BE-45F9-812C-795A5D4ED35E",
-              "enter": "2020-05-07T06:50:18.278Z",
-              "exit": "2020-05-07T06:50:18.427Z",
-              "id": "3fb92a0a-e88b-45a4-a48b-65f11a679b96",
-              "name": "Visa check",
-              "nodeId": "5",
-              "type": "RuleSetNode",
-            },
-            Object {
-              "definitionId": "_1B11BEC9-402A-4E73-959A-296BD334CAB0",
-              "enter": "2020-05-07T06:50:18.276Z",
-              "exit": "2020-05-07T06:50:18.278Z",
-              "id": "2860e474-dffc-498c-8731-e6b6f0b5d4d4",
-              "name": "StartProcess",
-              "nodeId": "16",
-              "type": "StartNode",
-            },
           ],
           "parentProcessInstance": null,
           "parentProcessInstanceId": null,
@@ -2171,9 +1372,6 @@ exports[`ProcessListTable component tests Snapshot testing with wrong query para
           undefined,
         ],
         Array [
-          undefined,
-        ],
-        Array [
           Object {
             "ProcessInstances": Array [],
           },
@@ -2181,19 +1379,8 @@ exports[`ProcessListTable component tests Snapshot testing with wrong query para
         Array [
           undefined,
         ],
-        Array [
-          undefined,
-        ],
       ],
       "results": Array [
-        Object {
-          "type": "return",
-          "value": undefined,
-        },
-        Object {
-          "type": "return",
-          "value": undefined,
-        },
         Object {
           "type": "return",
           "value": undefined,
@@ -2295,8 +1482,8 @@ exports[`ProcessListTable component tests Snapshot testing with wrong query para
 >
   <withRouter(ServerErrors)
     error={
-      [Error: Network error: No more mocked responses for the query: query getProcessInstances($state: [ProcessInstanceState!], $offset: Int, $limit: Int) {
-  ProcessInstances(where: {parentProcessInstanceId: {isNull: true}, state: {in: $state}}, pagination: {offset: $offset, limit: $limit}) {
+      [Error: Network error: No more mocked responses for the query: query getProcessInstances($where: ProcessInstanceArgument, $offset: Int, $limit: Int) {
+  ProcessInstances(where: $where, pagination: {offset: $offset, limit: $limit}) {
     id
     processId
     processName
@@ -2315,14 +1502,14 @@ exports[`ProcessListTable component tests Snapshot testing with wrong query para
     }
   }
 }
-, variables: {"state":["ACTIVE"],"offset":0,"limit":10}]
+, variables: {"where":{"state":{"in":["ACTIVE"]},"parentProcessInstanceId":{"isNull":true}},"offset":0,"limit":10}]
     }
     variant="large"
   >
     <ServerErrors
       error={
-        [Error: Network error: No more mocked responses for the query: query getProcessInstances($state: [ProcessInstanceState!], $offset: Int, $limit: Int) {
-  ProcessInstances(where: {parentProcessInstanceId: {isNull: true}, state: {in: $state}}, pagination: {offset: $offset, limit: $limit}) {
+        [Error: Network error: No more mocked responses for the query: query getProcessInstances($where: ProcessInstanceArgument, $offset: Int, $limit: Int) {
+  ProcessInstances(where: $where, pagination: {offset: $offset, limit: $limit}) {
     id
     processId
     processName
@@ -2341,7 +1528,7 @@ exports[`ProcessListTable component tests Snapshot testing with wrong query para
     }
   }
 }
-, variables: {"state":["ACTIVE"],"offset":0,"limit":10}]
+, variables: {"where":{"state":{"in":["ACTIVE"]},"parentProcessInstanceId":{"isNull":true}},"offset":0,"limit":10}]
       }
       history={
         Object {

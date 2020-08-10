@@ -1195,7 +1195,7 @@ module.exports = data = [
   {
     id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
     processId: 'flightBooking',
-    businessKey: null,
+    businessKey: "Trrr",
     parentProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
     parentProcessInstance: {
       id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
@@ -1319,7 +1319,7 @@ module.exports = data = [
   {
     id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eajabbcc',
     processId: 'flightBooking test2',
-    businessKey: null,
+    businessKey: "TP444",
     parentProcessInstanceId: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eaccd',
     parentProcessInstance: {
       id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eaccd',
@@ -1375,7 +1375,7 @@ module.exports = data = [
   {
     id: '2d962eef-45b8-48a9-ad4e-9cde0ad6af88',
     processId: 'hotelBooking',
-    businessKey: null,
+    businessKey: "TM111",
     parentProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
     parentProcessInstance: {
       id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
@@ -1436,7 +1436,7 @@ module.exports = data = [
     processName: 'travels',
     roles: [],
     state: 'ABORTED',
-    businessKey: null,
+    businessKey: 'TL111',
     rootProcessInstanceId: null,
     serviceUrl: 'http://localhost:4000',
     endpoint: 'http://localhost:4000',
@@ -1719,7 +1719,7 @@ module.exports = data = [
   {
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b2',
     processId: 'travels',
-    businessKey: null,
+    businessKey: 'Tp111',
     parentProcessInstanceId: null,
     parentProcessInstance: null,
     processName: 'travels2',
@@ -1955,7 +1955,7 @@ module.exports = data = [
   {
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b4',
     processId: 'travels',
-    businessKey: null,
+    businessKey: "TTTTT",
     parentProcessInstanceId: null,
     parentProcessInstance: null,
     processName: 'travels4',
@@ -2073,7 +2073,7 @@ module.exports = data = [
   {
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b5',
     processId: 'travels',
-    businessKey: null,
+    businessKey: 'Tr11111111',
     parentProcessInstanceId: null,
     parentProcessInstance: null,
     processName: 'travels5',

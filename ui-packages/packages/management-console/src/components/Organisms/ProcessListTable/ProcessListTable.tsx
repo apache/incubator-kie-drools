@@ -13,7 +13,7 @@ import '@patternfly/patternfly/patternfly-addons.css';
 import './ProcessListTable.css';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
 import { ProcessInstanceBulkList } from '../../Molecules/ProcessListToolbar/ProcessListToolbar';
-
+/* tslint:disable:no-string-literal */
 type filterType = {
   status: GraphQL.ProcessInstanceState[];
   businessKey: string[];
@@ -54,47 +54,27 @@ const ProcessListTable: React.FC<IOwnProps> = ({
     setCheckedArray(filters.status);
   }, [filters]);
 
+  const queryVariables = {
+    state: { in: checkedArray },
+    parentProcessInstanceId: { isNull: true }
+  };
+
   const searchWordsArray = [];
   if (filters.businessKey.length > 0) {
     filters.businessKey.forEach((word: string) =>
       searchWordsArray.push({ businessKey: { like: word } })
     );
+    queryVariables['or'] = searchWordsArray;
   }
 
   const { loading, error, data } = GraphQL.useGetProcessInstancesQuery({
     variables: {
-      state: checkedArray,
+      where: queryVariables,
       offset: 0,
       limit: pageSize
     },
-    skip: filters.businessKey.length > 0,
     fetchPolicy: 'network-only'
   });
-
-  const {
-    loading: loading1,
-    data: data1,
-    error: error1
-  } = GraphQL.useGetProcessInstancesWithBusinessKeyQuery({
-    variables: {
-      state: checkedArray,
-      offset: 0,
-      limit: pageSize,
-      businessKeys: searchWordsArray
-    },
-    skip: filters.businessKey.length === 0,
-    fetchPolicy: 'network-only'
-  });
-
-  useEffect(() => {
-    if (!loading1 && data1 !== undefined) {
-      data1.ProcessInstances.forEach((instance: any) => {
-        instance.isChecked = false;
-        instance.isOpen = false;
-      });
-    }
-    setInitData(data1);
-  }, [data1]);
 
   useEffect(() => {
     setIsError(false);
@@ -109,7 +89,7 @@ const ProcessListTable: React.FC<IOwnProps> = ({
     setInitData(data);
   }, [data]);
 
-  if (loading || isLoading || loading1) {
+  if (loading || isLoading) {
     return (
       <Bullseye>
         <KogitoSpinner spinnerText="Loading process instances..." />
@@ -117,19 +97,14 @@ const ProcessListTable: React.FC<IOwnProps> = ({
     );
   }
 
-  if (error || error1) {
+  if (error) {
     setIsError(true);
-    if (error1) {
-      return <ServerErrors error={error1} variant="large" />;
-    }
-    if (error) {
-      return <ServerErrors error={error} variant="large" />;
-    }
+    return <ServerErrors error={error} variant="large" />;
   }
 
   return (
     <DataList aria-label="Process instance list">
-      {(!loading || !loading1) &&
+      {!loading &&
         initData !== undefined &&
         initData.ProcessInstances.map((item, index) => {
           return (

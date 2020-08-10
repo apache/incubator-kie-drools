@@ -5,7 +5,7 @@ import * as ApolloReactHooks from '@apollo/react-hooks';
 
 export namespace GraphQL {
   export type Maybe<T> = T | null;
-  export type Exact<T extends { [key: string]: any }> = {
+  export type Exact<T extends { [key: string]: unknown }> = {
     [K in keyof T]: T[K];
   };
 
@@ -653,52 +653,12 @@ export namespace GraphQL {
   }
 
   export type GetProcessInstancesQueryVariables = Exact<{
-    state?: Maybe<Array<ProcessInstanceState>>;
+    where?: Maybe<ProcessInstanceArgument>;
     offset?: Maybe<Scalars['Int']>;
     limit?: Maybe<Scalars['Int']>;
   }>;
 
   export type GetProcessInstancesQuery = { __typename?: 'Query' } & {
-    ProcessInstances?: Maybe<
-      Array<
-        Maybe<
-          { __typename?: 'ProcessInstance' } & Pick<
-            ProcessInstance,
-            | 'id'
-            | 'processId'
-            | 'processName'
-            | 'parentProcessInstanceId'
-            | 'rootProcessInstanceId'
-            | 'roles'
-            | 'state'
-            | 'start'
-            | 'lastUpdate'
-            | 'addons'
-            | 'businessKey'
-            | 'serviceUrl'
-          > & {
-              error?: Maybe<
-                { __typename?: 'ProcessInstanceError' } & Pick<
-                  ProcessInstanceError,
-                  'nodeDefinitionId' | 'message'
-                >
-              >;
-            }
-        >
-      >
-    >;
-  };
-
-  export type GetProcessInstancesWithBusinessKeyQueryVariables = Exact<{
-    state?: Maybe<Array<ProcessInstanceState>>;
-    offset?: Maybe<Scalars['Int']>;
-    limit?: Maybe<Scalars['Int']>;
-    businessKeys?: Maybe<Array<ProcessInstanceArgument>>;
-  }>;
-
-  export type GetProcessInstancesWithBusinessKeyQuery = {
-    __typename?: 'Query';
-  } & {
     ProcessInstances?: Maybe<
       Array<
         Maybe<
@@ -970,7 +930,7 @@ export namespace GraphQL {
                     __Type,
                     'name' | 'kind'
                   > & {
-                      enumValues: Maybe<
+                      enumValues?: Maybe<
                         Array<
                           { __typename?: '__EnumValue' } & Pick<
                             __EnumValue,
@@ -978,12 +938,12 @@ export namespace GraphQL {
                           >
                         >
                       >;
-                      ofType: Maybe<
+                      ofType?: Maybe<
                         { __typename?: '__Type' } & Pick<
                           __Type,
                           'kind' | 'name'
                         > & {
-                            enumValues: Maybe<
+                            enumValues?: Maybe<
                               Array<
                                 { __typename?: '__EnumValue' } & Pick<
                                   __EnumValue,
@@ -1077,15 +1037,12 @@ export namespace GraphQL {
 
   export const GetProcessInstancesDocument = gql`
     query getProcessInstances(
-      $state: [ProcessInstanceState!]
+      $where: ProcessInstanceArgument
       $offset: Int
       $limit: Int
     ) {
       ProcessInstances(
-        where: {
-          parentProcessInstanceId: { isNull: true }
-          state: { in: $state }
-        }
+        where: $where
         pagination: { offset: $offset, limit: $limit }
       ) {
         id
@@ -1120,7 +1077,7 @@ export namespace GraphQL {
    * @example
    * const { data, loading, error } = useGetProcessInstancesQuery({
    *   variables: {
-   *      state: // value for 'state'
+   *      where: // value for 'where'
    *      offset: // value for 'offset'
    *      limit: // value for 'limit'
    *   },
@@ -1157,92 +1114,6 @@ export namespace GraphQL {
   export type GetProcessInstancesQueryResult = ApolloReactCommon.QueryResult<
     GetProcessInstancesQuery,
     GetProcessInstancesQueryVariables
-  >;
-  export const GetProcessInstancesWithBusinessKeyDocument = gql`
-    query getProcessInstancesWithBusinessKey(
-      $state: [ProcessInstanceState!]
-      $offset: Int
-      $limit: Int
-      $businessKeys: [ProcessInstanceArgument!]
-    ) {
-      ProcessInstances(
-        where: {
-          parentProcessInstanceId: { isNull: true }
-          state: { in: $state }
-          or: $businessKeys
-        }
-        pagination: { offset: $offset, limit: $limit }
-      ) {
-        id
-        processId
-        processName
-        parentProcessInstanceId
-        rootProcessInstanceId
-        roles
-        state
-        start
-        lastUpdate
-        addons
-        businessKey
-        serviceUrl
-        error {
-          nodeDefinitionId
-          message
-        }
-      }
-    }
-  `;
-
-  /**
-   * __useGetProcessInstancesWithBusinessKeyQuery__
-   *
-   * To run a query within a React component, call `useGetProcessInstancesWithBusinessKeyQuery` and pass it any options that fit your needs.
-   * When your component renders, `useGetProcessInstancesWithBusinessKeyQuery` returns an object from Apollo Client that contains loading, error, and data properties
-   * you can use to render your UI.
-   *
-   * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
-   *
-   * @example
-   * const { data, loading, error } = useGetProcessInstancesWithBusinessKeyQuery({
-   *   variables: {
-   *      state: // value for 'state'
-   *      offset: // value for 'offset'
-   *      limit: // value for 'limit'
-   *      businessKeys: // value for 'businessKeys'
-   *   },
-   * });
-   */
-  export function useGetProcessInstancesWithBusinessKeyQuery(
-    baseOptions?: ApolloReactHooks.QueryHookOptions<
-      GetProcessInstancesWithBusinessKeyQuery,
-      GetProcessInstancesWithBusinessKeyQueryVariables
-    >
-  ) {
-    return ApolloReactHooks.useQuery<
-      GetProcessInstancesWithBusinessKeyQuery,
-      GetProcessInstancesWithBusinessKeyQueryVariables
-    >(GetProcessInstancesWithBusinessKeyDocument, baseOptions);
-  }
-  export function useGetProcessInstancesWithBusinessKeyLazyQuery(
-    baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-      GetProcessInstancesWithBusinessKeyQuery,
-      GetProcessInstancesWithBusinessKeyQueryVariables
-    >
-  ) {
-    return ApolloReactHooks.useLazyQuery<
-      GetProcessInstancesWithBusinessKeyQuery,
-      GetProcessInstancesWithBusinessKeyQueryVariables
-    >(GetProcessInstancesWithBusinessKeyDocument, baseOptions);
-  }
-  export type GetProcessInstancesWithBusinessKeyQueryHookResult = ReturnType<
-    typeof useGetProcessInstancesWithBusinessKeyQuery
-  >;
-  export type GetProcessInstancesWithBusinessKeyLazyQueryHookResult = ReturnType<
-    typeof useGetProcessInstancesWithBusinessKeyLazyQuery
-  >;
-  export type GetProcessInstancesWithBusinessKeyQueryResult = ApolloReactCommon.QueryResult<
-    GetProcessInstancesWithBusinessKeyQuery,
-    GetProcessInstancesWithBusinessKeyQueryVariables
   >;
   export const GetChildInstancesDocument = gql`
     query getChildInstances($rootProcessInstanceId: String) {

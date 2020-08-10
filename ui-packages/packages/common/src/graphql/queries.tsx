@@ -2,50 +2,12 @@ import gql from 'graphql-tag';
 
 const GET_PROCESS_INSTANCES = gql`
   query getProcessInstances(
-    $state: [ProcessInstanceState!]
+    $where: ProcessInstanceArgument
     $offset: Int
     $limit: Int
   ) {
     ProcessInstances(
-      where: {
-        parentProcessInstanceId: { isNull: true }
-        state: { in: $state }
-      }
-      pagination: { offset: $offset, limit: $limit }
-    ) {
-      id
-      processId
-      processName
-      parentProcessInstanceId
-      rootProcessInstanceId
-      roles
-      state
-      start
-      lastUpdate
-      addons
-      businessKey
-      serviceUrl
-      error {
-        nodeDefinitionId
-        message
-      }
-    }
-  }
-`;
-
-const GET_PROCESS_INSTANCES_WITH_BUSINESSKEY = gql`
-  query getProcessInstancesWithBusinessKey(
-    $state: [ProcessInstanceState!]
-    $offset: Int
-    $limit: Int
-    $businessKeys: [ProcessInstanceArgument!]
-  ) {
-    ProcessInstances(
-      where: {
-        parentProcessInstanceId: { isNull: true }
-        state: { in: $state }
-        or: $businessKeys
-      }
+      where: $where
       pagination: { offset: $offset, limit: $limit }
     ) {
       id
