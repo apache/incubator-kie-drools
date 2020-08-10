@@ -17,12 +17,14 @@
 package org.kie.dmn.core.v1_3;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.core.BaseVariantTest;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
@@ -59,6 +61,12 @@ public class DMN13specificTest extends BaseVariantTest {
 
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("salutation"), is("Hello, John"));
+
+        if (isTypeSafe()) {
+            FEELPropertyAccessible outputSet = convertToOutputSet(dmnModel, dmnResult);
+            Map<String, Object> allProperties = outputSet.allFEELProperties();
+            assertThat(allProperties.get("salutation"), is("Hello, John"));
+        }
     }
 
     @Test
@@ -92,6 +100,13 @@ public class DMN13specificTest extends BaseVariantTest {
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("Strategy"), is("THROUGH"));
         assertThat(result.get("Routing"), is("ACCEPT"));
+
+        if (isTypeSafe()) {
+            FEELPropertyAccessible outputSet = convertToOutputSet(dmnModel, dmnResult);
+            Map<String, Object> allProperties = outputSet.allFEELProperties();
+            assertThat(allProperties.get("Strategy"), is("THROUGH"));
+            assertThat(allProperties.get("Routing"), is("ACCEPT"));
+        }
     }
 
     @Test
@@ -124,5 +139,12 @@ public class DMN13specificTest extends BaseVariantTest {
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("Strategy"), is("THROUGH"));
         assertThat(result.get("Routing"), is("ACCEPT"));
+
+        if (isTypeSafe()) {
+            FEELPropertyAccessible outputSet = convertToOutputSet(dmnModel, dmnResult);
+            Map<String, Object> allProperties = outputSet.allFEELProperties();
+            assertThat(allProperties.get("Strategy"), is("THROUGH"));
+            assertThat(allProperties.get("Routing"), is("ACCEPT"));
+        }
     }
 }

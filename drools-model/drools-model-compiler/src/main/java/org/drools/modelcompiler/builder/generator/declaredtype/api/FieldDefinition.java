@@ -49,4 +49,8 @@ public interface FieldDefinition {
     default Optional<String> overriddenSetterName() {
         return Optional.empty();
     }
+
+    default Optional<String> getJavadocComment() {
+        return Optional.empty();
+    }
 }

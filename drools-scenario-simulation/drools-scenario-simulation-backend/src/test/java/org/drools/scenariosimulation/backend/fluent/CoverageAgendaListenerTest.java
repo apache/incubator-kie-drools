@@ -26,18 +26,20 @@ import static org.junit.Assert.assertTrue;
 
 public class CoverageAgendaListenerTest extends AbstractRuleCoverageTest {
 
+    private final static String RULE_NAME = "rule1";
+
     @Test
     public void beforeMatchFired() {
         CoverageAgendaListener coverageAgendaListener = new CoverageAgendaListener();
         assertTrue(coverageAgendaListener.getRuleExecuted().isEmpty());
         assertTrue(coverageAgendaListener.getAuditsMessages().isEmpty());
-        BeforeMatchFiredEvent beforeMatchFiredEvent = createBeforeMatchFiredEventMock("rule1");
+        BeforeMatchFiredEvent beforeMatchFiredEvent = createBeforeMatchFiredEventMock(RULE_NAME);
         coverageAgendaListener.beforeMatchFired(beforeMatchFiredEvent);
         Map<String, Integer> ruleExecuted = coverageAgendaListener.getRuleExecuted();
         assertEquals(1, ruleExecuted.size());
-        assertEquals((Integer) 1, ruleExecuted.get("rule1"));
+        assertEquals((Integer) 1, ruleExecuted.get(RULE_NAME));
         List<String> auditMessages = coverageAgendaListener.getAuditsMessages();
         assertEquals(1, auditMessages.size());
-        assertEquals(auditMessages.get(0), CoverageAgendaListener.generateAuditMessage("rule1"));
+        assertEquals(RULE_NAME, auditMessages.get(0));
     }
 }

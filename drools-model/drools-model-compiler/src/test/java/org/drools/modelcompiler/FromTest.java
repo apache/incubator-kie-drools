@@ -19,19 +19,15 @@ package org.drools.modelcompiler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.FunctionsTest.Pojo;
-import org.drools.modelcompiler.domain.Adult;
-import org.drools.modelcompiler.domain.Child;
-import org.drools.modelcompiler.domain.Man;
-import org.drools.modelcompiler.domain.Person;
-import org.drools.modelcompiler.domain.Pet;
-import org.drools.modelcompiler.domain.PetPerson;
-import org.drools.modelcompiler.domain.Woman;
+import org.drools.modelcompiler.domain.*;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -586,5 +582,204 @@ public class FromTest extends BaseModelTest {
         ksession.fireAllRules();
 
         assertEquals(1, list.size());
+    }
+
+    @Test
+    public void TestFromOr() {
+        String str =
+                "package org.drools.compiler.test  \n" +
+                     "import " + Person.class.getCanonicalName() + "\n" +
+                     "import " + Address.class.getCanonicalName() + "\n" +
+                     "import " + Toy.class.getCanonicalName() + "\n" +
+                     "import " + ToysStore.class.getCanonicalName() + "\n" +
+                     "global java.util.List list;\n" +
+                     "rule R\n" +
+                     "when\n" +
+                     "    Person($age : age)\n" +
+                     "    Address($c : city)\n" +
+                     "    $store : ToysStore(cityName == $c)\n" +
+                     "    (or Toy( targetAge == $age ) from $store.firstFloorToys \n" +
+                     "               Toy( targetAge == $age ) from $store.secondFloorToys\n" +
+                        "        )\n" +
+                     "then\n" +
+                     "    list.add($store.getStoreName());\n" +
+                     "end \n";
+
+        KieSession ksession = getKieSession(str);
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(new Person("Leonardo", 3));
+        ksession.insert(new Address("Milan"));
+
+        Toy car = new Toy("Car", 3);
+        Toy bicycle = new Toy("Bicycle", 3);
+        Toy computer = new Toy("Computer", 7);
+        ksession.insert(car);
+        ksession.insert(bicycle);
+        ksession.insert(computer);
+
+        ToysStore ts = new ToysStore( "Milan", "Toystore1");
+        ts.getFirstFloorToys().add(car);
+        ts.getSecondFloorToys().addAll(Arrays.asList(bicycle, computer));
+        ksession.insert(ts);
+
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).contains("Toystore1");
+    }
+
+    public static class Measurement {
+        private String id;
+        private String val;
+
+        public Measurement(String id, String val) {
+            this.id = id;
+            this.val = val;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getVal() {
+            return val;
+        }
+
+        public void setVal(String val) {
+            this.val = val;
+        }
+    }
+
+    @Test
+    public void testFromFunctionCall() {
+        // DROOLS-5548
+        String str =
+                "package com.sample;" +
+                        "global java.util.Set controlSet;\n" +
+                        "import " + Measurement.class.getCanonicalName() + ";\n" +
+                        "" +
+                        "declare A\n" +
+                        " x: String\n" +
+                        "end\n" +
+                        "" +
+                        "declare B\n" +
+                        " a: A\n" +
+                        "end\n" +
+                        "" +
+                        "function String dummyFunction(A b) {\n" +
+                        " return \"test\";\n" +
+                        "}\n" +
+                        "\n" +
+                        "rule \"insertB\"\n" +
+                        "when\n" +
+                        "then\n" +
+                        "drools.insert(new B(new A()));" +
+                        "end;" +
+                        "rule \"will execute per each Measurement having ID color\"\n" +
+                        "no-loop\n" +
+                        "when\n" +
+                        " Measurement( id == \"color\", $colorVal : val )\n" +
+                        " $b: B()\n" +
+                        " $val: String() from dummyFunction($b.a)\n" +
+                        "then\n" +
+                        " controlSet.add($colorVal);\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        HashSet<Object> hashSet = new HashSet<>();
+        ksession.setGlobal("controlSet", hashSet);
+
+        ksession.insert(new Measurement("color", "red"));
+
+        int ruleFired = ksession.fireAllRules();
+
+        assertEquals( 2, ruleFired );
+        assertEquals( "red", hashSet.iterator().next() );
+    }
+
+    @Test
+    public void testFromMap() {
+        // DROOLS-5549
+        String str =
+                "package com.sample;" +
+                        "global java.util.Set controlSet;\n" +
+                        "import " + Measurement.class.getCanonicalName() + ";\n" +
+                        "import " + Collections.class.getCanonicalName() + ";\n" +
+                        "import " + Map.class.getCanonicalName() + ";\n" +
+                        "" +
+                        "function String dummyFunction(Map m) {\n" +
+                        " return \"test\";\n" +
+                        "}" +
+                        "\n" +
+                        "rule \"will execute per each Measurement having ID color\"\n" +
+                        "no-loop\n" +
+                        "when\n" +
+                        " Measurement( id == \"color\", $colorVal : val )\n" +
+                        " $val: String() from dummyFunction(Collections.singletonMap($colorVal, \"something\"))\n" +
+                        "then\n" +
+                        " controlSet.add($colorVal);\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        HashSet<Object> hashSet = new HashSet<>();
+        ksession.setGlobal("controlSet", hashSet);
+
+        ksession.insert(new Measurement("color", "red"));
+
+        int ruleFired = ksession.fireAllRules();
+
+        assertEquals( 1, ruleFired );
+        assertEquals( "red", hashSet.iterator().next() );
+    }
+
+    public static class DummyService {
+        public String dummy(String a) {
+            return "test";
+        }
+        public String dummy(String a, String b, String c) {
+            return "test";
+        }
+    }
+
+    @Test
+    public void testMultipleFrom() {
+        // DROOLS-5542
+        String str =
+                "package com.sample;" +
+                "global java.util.Set controlSet;\n" +
+                "global " + DummyService.class.getCanonicalName() + " dummyService;\n" +
+                "import " + Measurement.class.getCanonicalName() + ";\n" +
+                "" +
+                "rule \"will execute per each Measurement having ID color\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                " Measurement( id == \"color\", $colorVal : val )\n" +
+                " $var1: String() from dummyService.dummy(\"a\");\n" +
+                " $var2: String() from dummyService.dummy(\"b\");\n" +
+                " $var3: String() from dummyService.dummy(\"c\");\n" +
+                " String() from dummyService.dummy($var1, $var2, $var3)\n" +
+                "then\n" +
+                " controlSet.add($colorVal);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        HashSet<Object> hashSet = new HashSet<>();
+        ksession.setGlobal("controlSet", hashSet);
+        ksession.setGlobal("dummyService", new DummyService());
+
+        ksession.insert(new Measurement("color", "red"));
+
+        int ruleFired = ksession.fireAllRules();
+
+        assertEquals( 1, ruleFired );
+        assertEquals( "red", hashSet.iterator().next() );
     }
 }

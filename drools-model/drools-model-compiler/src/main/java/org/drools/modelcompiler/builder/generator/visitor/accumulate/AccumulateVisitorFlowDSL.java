@@ -116,7 +116,13 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
 
     private void replaceBindWithInput(MethodCallExpr newBindingExpression, MethodCallExpr accumulateDSL, String inputName) {
         Expression input = new MethodCallExpr(null, INPUT_CALL, NodeList.nodeList(new NameExpr(inputName)));
-        findBind(accumulateDSL).forEach(m -> m.replace(input));
+        List<MethodCallExpr> binds = findBind(accumulateDSL);
+        if (!binds.isEmpty()) {
+            binds.get(0).replace( input );
+        }
+        for (MethodCallExpr bind : findBind(accumulateDSL)) {
+            bind.remove();
+        }
         newBindingsConcatenated.add(newBindingExpression);
     }
 

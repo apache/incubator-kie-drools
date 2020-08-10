@@ -32,6 +32,7 @@ import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Settings;
+import org.drools.scenariosimulation.api.utils.ConstantsHolder;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.fluent.CoverageAgendaListener;
@@ -99,8 +100,8 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
         scenarioResultMetadata.addAllAvailable(availableRules);
         scenarioResultMetadata.addAllExecuted(ruleExecuted);
         final AtomicInteger counter = new AtomicInteger(0);
-        coverageAgendaListener
-                .getAuditsMessages().forEach(auditMessage -> scenarioResultMetadata.addAuditMessage(counter.addAndGet(1), auditMessage, "INFO"));
+        coverageAgendaListener.getAuditsMessages().forEach(auditMessage ->
+                scenarioResultMetadata.addAuditMessage(counter.addAndGet(1), auditMessage, ConstantsHolder.EXECUTED));
         return scenarioResultMetadata;
     }
 

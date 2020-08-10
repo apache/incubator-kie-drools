@@ -24,7 +24,7 @@ import static java.util.stream.Collectors.toList;
 public class MvelCompiler {
 
     private final MvelCompilerContext mvelCompilerContext;
-    private PreprocessPhase preprocessPhase = new PreprocessPhase();
+    private final PreprocessPhase preprocessPhase = new PreprocessPhase();
 
     public MvelCompiler(MvelCompilerContext mvelCompilerContext) {
         this.mvelCompilerContext = mvelCompilerContext;

@@ -186,6 +186,8 @@ public class FEELPropertyAccessibleImplementation {
         MethodWithStringBody setFeelProperty = new MethodWithStringBody("fromMap", "void", body.toString());
         setFeelProperty.addParameter("java.util.Map<String, Object>", "values");
 
+        addOverrideAnnotation(setFeelProperty);
+
         return setFeelProperty;
     }
 

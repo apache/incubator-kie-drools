@@ -40,8 +40,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK_TYPESAFE;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
@@ -80,8 +82,7 @@ public class DMNTypeSafeTest extends BaseVariantTest {
     @Test
     public void test() throws Exception {
 
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertValidDmnModel(dmnModel);
 
         DMNAllTypesIndex index = new DMNAllTypesIndex(new DMNTypeSafePackageName.ModelFactory(), dmnModel);
 
@@ -103,6 +104,14 @@ public class DMNTypeSafeTest extends BaseVariantTest {
         DMNContext result = evaluateAll.getContext();
         Map<String, Object> d = (Map<String, Object>) result.get("d");
         assertThat(d.get("Hello"), is("Hello Mr. x"));
+
+        FEELPropertyAccessible outputSet = createInstanceFromCompiledClasses(compiledClasses, packageName, "OutputSet");
+        outputSet.fromMap(result.getAll());
+
+        assertThat(outputSet.getFEELProperty("p").toOptional().get(), equalTo(tPersonInstance));
+        Map<String, Object> dContext = (Map<String, Object>)outputSet.getFEELProperty("d").toOptional().get();
+        assertThat(dContext.get("Hello"), is("Hello Mr. x"));
+        assertThat(dContext.get("the person"), equalTo(tPersonInstance));
     }
 
     private FEELPropertyAccessible tAddress(Map<String, Class<?>> compile, String streetName, int streetNumber) throws Exception {
@@ -130,8 +139,7 @@ public class DMNTypeSafeTest extends BaseVariantTest {
     @Test
     public void testDynamic() throws Exception {
 
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        assertValidDmnModel(dmnModel);
 
         Map<String, Class<?>> classes = generateSourceCodeAndCreateInput(dmnModel, modelFactory, this.getClass().getClassLoader());
 
@@ -156,6 +164,36 @@ public class DMNTypeSafeTest extends BaseVariantTest {
         DMNContext result = evaluateAll.getContext();
         Map<String, Object> d = (Map<String, Object>) result.get("d");
         assertThat(d.get("Hello"), is("Hello Mr. x"));
+
+        FEELPropertyAccessible outputSet = createInstanceFromCompiledClasses(classes, packageName, "OutputSet");
+        outputSet.fromMap(result.getAll());
+
+        assertThat(outputSet.getFEELProperty("p").toOptional().get(), equalTo(context.getFEELProperty("p").toOptional().get()));
+        Map<String, Object> dContext = (Map<String, Object>)outputSet.getFEELProperty("d").toOptional().get();
+        assertThat(dContext.get("Hello"), is("Hello Mr. x"));
+        assertThat(dContext.get("the person"), equalTo(context.getFEELProperty("p").toOptional().get()));
+    }
+
+    @Test
+    public void testMetadata() throws Exception {
+
+        assertValidDmnModel(dmnModel);
+
+        Map<String, Class<?>> classes = generateSourceCodeAndCreateInput(dmnModel, modelFactory, this.getClass().getClassLoader());
+        FEELPropertyAccessible feelPropertyAccessibleContext = createInstanceFromCompiledClasses(classes, packageName, "InputSet");
+
+        String metadataKey = "test";
+        String metadataValue = "value";
+        DMNContext context = new DMNContextFPAImpl(feelPropertyAccessibleContext);
+        context.getMetadata().set(metadataKey, metadataValue);
+
+        assertEquals(metadataValue, context.getMetadata().get(metadataKey));
+        assertEquals(metadataValue, context.clone().getMetadata().get(metadataKey));
+    }
+
+    private void assertValidDmnModel(DMNModel dmnModel){
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
     }
 
     private static DMNResult evaluateTyped(FEELPropertyAccessible context, DMNRuntime runtime, DMNModel dmnModel) {

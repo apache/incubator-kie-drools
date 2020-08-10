@@ -17,6 +17,7 @@
 
 package org.drools.model;
 
+import org.drools.model.functions.Function0;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
 
@@ -25,6 +26,24 @@ public interface DynamicValueSupplier<T> {
     Variable[] getVariables();
 
     T supply(Object[] args);
+
+    class _0<R> implements DynamicValueSupplier<R> {
+        private final Function0<R> f;
+
+        public _0( Function0<R> f ) {
+            this.f = f;
+        }
+
+        @Override
+        public Variable[] getVariables() {
+            return new Variable[0];
+        }
+
+        @Override
+        public R supply( Object[] args ) {
+            return f.apply();
+        }
+    }
 
     class _1<A, R> implements DynamicValueSupplier<R> {
         private final Variable<A> var1;

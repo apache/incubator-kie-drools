@@ -18,6 +18,7 @@ package org.kie.dmn.typesafe;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +31,9 @@ import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinitio
 import org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
+import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.slf4j.Logger;
@@ -44,7 +48,7 @@ public class DMNTypeSafeTypeGenerator {
     private DMNModelImpl dmnModel;
     private final String disclaimerMarker;
 
-    private boolean withJacksonAnnotation = false;
+    private DMNStronglyCodeGenConfig codeGenConfig = new DMNStronglyCodeGenConfig();
 
     private List<TypeDefinition> types = new ArrayList<>();
 
@@ -61,7 +65,13 @@ public class DMNTypeSafeTypeGenerator {
 
     // So far it's used in Kogito DMN
     public DMNTypeSafeTypeGenerator withJacksonAnnotation() {
-        this.withJacksonAnnotation = true;
+        codeGenConfig.setWithJacksonAnnotation(true);
+        return this;
+    }
+
+    // So far it's used in Kogito DMN
+    public DMNTypeSafeTypeGenerator withMPAnnotation() {
+        codeGenConfig.setWithMPOpenApiAnnotation(true);
         return this;
     }
 
@@ -88,7 +98,7 @@ public class DMNTypeSafeTypeGenerator {
 
     public DMNTypeSafeTypeGenerator processTypes() {
         Set<InputDataNode> inputs = dmnModel.getInputs();
-        DMNInputSetType inputSetType = new DMNInputSetType(index, withJacksonAnnotation);
+        DMNInputSetType inputSetType = new DMNInputSetType(index, codeGenConfig);
         for (InputDataNode i : inputs) {
             inputSetType.addField(i.getName(), i.getType());
         }
@@ -97,8 +107,31 @@ public class DMNTypeSafeTypeGenerator {
 
         types.add(inputSetType);
 
+        Set<DecisionNode> decisions = dmnModel.getDecisions();
+        Collection<DecisionServiceNode> decisionServices = dmnModel.getDecisionServices();
+        Set<BusinessKnowledgeModelNode> bkms = dmnModel.getBusinessKnowledgeModels();
+
+        DMNOutputSetType outputSetType = new DMNOutputSetType(index, codeGenConfig);
+        for (InputDataNode i : inputs) {
+            outputSetType.addField(i.getName(), i.getType()); // OutputSet also contains inputs
+        }
+        for (DecisionNode d : decisions) {
+            outputSetType.addField(d.getName(), d.getResultType());
+        }
+        for (DecisionServiceNode ds : decisionServices) {
+            outputSetType.addField(ds.getName(), dmnModel.getTypeRegistry().unknown());
+        }
+        for (BusinessKnowledgeModelNode bkm : bkms) {
+            outputSetType.addField(bkm.getName(), dmnModel.getTypeRegistry().unknown());
+        }
+
+        outputSetType.initFields();
+        outputSetType.setJavadoc(postfixToJavadoc(new StringBuilder("A representation of all the OutputData of the whole DMN '").append(dmnModel.getName()).append("' outputs.").toString(), dmnModel));
+
+        types.add(outputSetType);
+
         for (DMNType type : index.typesToGenerateByNS(dmnModel.getNamespace())) { // this generator shall only be concerned with the types belonging to this generator dmnModel.
-            DMNDeclaredType dmnDeclaredType = new DMNDeclaredType(index, type, withJacksonAnnotation);
+            DMNDeclaredType dmnDeclaredType = new DMNDeclaredType(index, type, codeGenConfig);
             dmnDeclaredType.setJavadoc(postfixToJavadoc(new StringBuilder("A representation of the DMN defined ItemDefinition type '").append(type.getName()).append("'.").toString(), dmnModel));
             types.add(dmnDeclaredType);
         }
@@ -122,4 +155,5 @@ public class DMNTypeSafeTypeGenerator {
         }
         return allSources;
     }
+
 }

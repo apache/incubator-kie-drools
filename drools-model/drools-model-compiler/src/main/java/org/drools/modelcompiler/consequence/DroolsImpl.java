@@ -20,14 +20,17 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemoryActions;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.model.BitMask;
 import org.drools.model.Channel;
 import org.drools.model.Drools;
 import org.drools.model.DroolsEntryPoint;
-import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
@@ -50,16 +53,17 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
 
     @Override
     public void insert(Object object) {
-        workingMemory.insert(object);
+        insert( object, false );
     }
 
     @Override
     public void insert(Object object, boolean dynamic) {
-        workingMemory.insert(object, dynamic);
+        TerminalNode terminalNode = (( AgendaItem )getMatch()).getTerminalNode();
+        ((InternalWorkingMemoryActions)workingMemory).insert(object, dynamic, getRule(), terminalNode);
     }
 
     @Override
-    public Rule getRule() {
+    public RuleImpl getRule() {
         return knowledgeHelper.getRule();
     }
 

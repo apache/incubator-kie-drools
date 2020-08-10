@@ -37,6 +37,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
@@ -56,10 +57,7 @@ import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import static java.util.Optional.ofNullable;
 
 import static org.drools.model.bitmask.BitMaskUtil.isAccessibleProperties;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExpression;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.*;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CALL;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
@@ -158,18 +156,40 @@ public abstract class AbstractExpressionBuilder {
                                                 drlxParseResult.isSkipThisAsParam(), ofNullable(drlxParseResult.getPatternType()), context);
     }
 
-    boolean hasIndex( SingleDrlxParseSuccess drlxParseResult ) {
+    boolean shouldCreateIndex(SingleDrlxParseSuccess drlxParseResult ) {
         if ( drlxParseResult.getDecodeConstraintType() == Index.ConstraintType.FORALL_SELF_JOIN ) {
             return true;
         }
 
         TypedExpression left = drlxParseResult.getLeft();
+
+        if(!shouldIndexConstraintWithRightScopePatternBinding(drlxParseResult)) {
+            return false;
+        }
+
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
 
         return left != null && left.getFieldName() != null &&
                 drlxParseResult.getDecodeConstraintType() != null &&
                 !isThisExpression( left.getExpression() ) &&
                 ( isAlphaIndex( usedDeclarations ) || isBetaIndex( usedDeclarations, drlxParseResult.getRight() ) );
+    }
+
+    // See PatternBuilder:1198 (buildConstraintForPattern) Pattern are indexed only when the root of the right part
+    // (i.e. $p in address.street == $p.name) is a Pattern binding.
+    // See also IndexingTest and ExistentialTest
+    protected boolean shouldIndexConstraintWithRightScopePatternBinding(SingleDrlxParseSuccess result) {
+        TypedExpression right = result.getRight();
+
+        if(right != null && right.getExpression() != null && right.getExpression() instanceof NodeWithOptionalScope) {
+            NodeWithOptionalScope<?> e = (NodeWithOptionalScope<?>) (right.getExpression());
+            return e.getScope()
+                    .map(Object::toString)
+                    .filter(context::isPatternBinding)
+                    .isPresent();
+        }
+
+        return true;
     }
 
     boolean isAlphaIndex( Collection<String> usedDeclarations ) {

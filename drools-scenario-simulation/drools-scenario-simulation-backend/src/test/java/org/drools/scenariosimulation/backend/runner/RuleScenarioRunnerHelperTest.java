@@ -42,6 +42,7 @@ import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
+import org.drools.scenariosimulation.api.utils.ConstantsHolder;
 import org.drools.scenariosimulation.backend.expression.BaseExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
@@ -60,6 +61,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.runtime.KieContainer;
+import org.kie.dmn.feel.codegen.feel11.Constants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -556,7 +558,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         final List<AuditLogLine> auditLogLines = scenarioResultMetadata.getAuditLogLines();
         assertEquals(expectedMessages.size(), auditLogLines.size());
         for (int i = 0; i < expectedMessages.size(); i++) {
-            commonCheckAuditLogLine(auditLogLines.get(i), expectedMessages.get(i), "INFO");
+            commonCheckAuditLogLine(auditLogLines.get(i), expectedMessages.get(i), ConstantsHolder.EXECUTED, null);
         }
     }
 
@@ -652,6 +654,6 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
 
     private void commonAddMessageString(List<String> ruleNames, List<String> expectedMessages) {
         ruleNames.forEach(ruleName ->
-                                  IntStream.range(1, 3).forEach(index -> expectedMessages.add(CoverageAgendaListener.generateAuditMessage(ruleName))));
+                                  IntStream.range(1, 3).forEach(index -> expectedMessages.add(ruleName)));
     }
 }

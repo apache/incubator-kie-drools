@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.Expression;
@@ -205,18 +206,22 @@ public class FromVisitor {
     }
 
     private String addFromArgument( MethodCallExpr methodCallExpr, MethodCallExpr fromCall ) {
-        String bindingId = null;
+        List<String> args = methodCallExpr
+                .getArguments()
+                .stream()
+                .flatMap(a -> a.findAll(NameExpr.class).stream())
+                .map(Object::toString)
+                .filter(context::hasDeclaration)
+                .collect(Collectors.toList());
 
-        for (Expression argument : methodCallExpr.getArguments()) {
-            final String argumentName = PrintUtil.printConstraint(argument);
-            if (contextHasDeclaration(argumentName)) {
-                if (bindingId == null) {
-                    bindingId = argumentName;
-                }
-                fromCall.addArgument( context.getVarExpr(argumentName));
-            }
-        }
-        return bindingId;
+        args.stream()
+                .map(context::getVarExpr)
+                .forEach(fromCall::addArgument);
+
+        return args
+                .stream()
+                .findFirst()
+                .orElse(null);
     }
 
     private Optional<Expression> fromExpressionViaScope(String expression, MethodCallExpr methodCallExpr) {

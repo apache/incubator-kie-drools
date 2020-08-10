@@ -28,6 +28,7 @@ public class Person extends AbstractReactiveObject {
 
     private List<Address> addresses = new ArrayList<>();
 
+    private Integer salary;
 
     private BigDecimal money;
 
@@ -162,7 +163,15 @@ public class Person extends AbstractReactiveObject {
         return this;
     }
 
-    public void setItems(Map<Integer, Integer> items) {
+    public Integer getSalary() {
+        return salary;
+    }
+
+    public void setSalary( Integer salary ) {
+        this.salary = salary;
+    }
+
+    public void setItems( Map<Integer, Integer> items) {
         this.items = items;
     }
 

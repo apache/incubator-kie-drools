@@ -99,56 +99,56 @@ public class UnmarshalMarshalTest {
 
     @Test
     public void testDish() throws Exception {
-        testRoundTrip("", "dish-decision.xml");
+        testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "dish-decision.xml");
     }
 
     @Ignore("failing to compare over a xsi:type=\"tImport\" attribute, but why content generated 'control' need to explicit it ?")
     @Test
     public void testDummyDefinitions() throws Exception {
-        testRoundTrip("", "dummy-definitions.xml");
+        testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "dummy-definitions.xml");
     }
 
     @Test
     public void testDummyRelation() throws Exception {
-        testRoundTrip("", "dummy-relation.xml");
+        testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "dummy-relation.xml");
     }
 
     @Test
     public void testCh11() throws Exception {
-        testRoundTrip("", "ch11example.xml");
+        testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "ch11example.xml");
     }
 
     @Test
     public void testHello_World_semantic_namespace() throws Exception {
-        testRoundTrip("", "Hello_World_semantic_namespace.dmn");
+        testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "Hello_World_semantic_namespace.dmn");
     }
 
     @Test
     public void testHello_World_semantic_namespace_with_extensions() throws Exception {
         DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new MyTestRegister()));
-        testRoundTrip("", "Hello_World_semantic_namespace_with_extensions.dmn", marshaller);
+        testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "Hello_World_semantic_namespace_with_extensions.dmn", marshaller);
     }
 
     @Test
     public void testHello_World_semantic_namespace_with_extensions_other_ns_location() throws Exception {
         DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new MyTestRegister()));
-        testRoundTrip("", "Hello_World_semantic_namespace_with_extensions_other_ns_location.dmn", marshaller);
+        testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "Hello_World_semantic_namespace_with_extensions_other_ns_location.dmn", marshaller);
     }
 
     @Test
     public void testSemanticNamespace() throws Exception {
-        testRoundTrip("", "semantic-namespace.xml");
+        testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "semantic-namespace.xml");
     }
 
     @Ignore("The current file cannot marshal back extension elements because they don't provide converters.")
     @Test
     public void test20161014() throws Exception {
-        testRoundTrip("", "test20161014.xml");
+        testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "test20161014.xml");
     }
 
     @Test
     public void testQNameSerialization() throws Exception {
-        testRoundTrip("", "hardcoded_function_definition.dmn");
+        testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "hardcoded_function_definition.dmn");
     }
 
     @Ignore("A problem with the StaxDriver has still to be resolved.")
@@ -174,7 +174,7 @@ public class UnmarshalMarshalTest {
         Definitions unmarshal = marshaller.unmarshal(new InputStreamReader(fis));
 
         Validator v = Validator.forLanguage(Languages.W3C_XML_SCHEMA_NS_URI);
-        v.setSchemaSource(new StreamSource(this.getClass().getResource("/dmn.xsd").getFile()));
+        v.setSchemaSource(new StreamSource(this.getClass().getResource("/DMN11.xsd").getFile()));
         ValidationResult validateInputResult = v.validateInstance(new StreamSource(inputXMLFile));
         if (!validateInputResult.isValid()) {
             for (ValidationProblem p : validateInputResult.getProblems()) {

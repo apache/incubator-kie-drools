@@ -665,7 +665,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( ctx.get("cSecond"), is( BigDecimal.valueOf( 1 ) ) );
         assertThat( ctx.get("cTimezone"), is( "GMT-01:00" ) );
         assertThat( ctx.get("years"), is( BigDecimal.valueOf( 1 ) ) );
-        assertThat( ctx.get("seconds"), is( BigDecimal.valueOf( 14 ) ) );
+        assertThat( ctx.get("d1seconds"), is( BigDecimal.valueOf( 14 ) ) );
 
     }
 

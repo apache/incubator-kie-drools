@@ -42,7 +42,6 @@ import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -51,7 +50,6 @@ import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
@@ -75,7 +73,6 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
@@ -697,7 +694,7 @@ public class PackageModel {
         }
 
         BodyDeclaration<?> rulesList = requiresMultipleRulesLists ?
-                parseBodyDeclaration("java.util.List<org.drools.model.Rule> rules = new ArrayList<>(" + ruleCount + ");") :
+                parseBodyDeclaration("java.util.List<org.drools.model.Rule> rules = new java.util.ArrayList<>(" + ruleCount + ");") :
                 parseBodyDeclaration("java.util.List<org.drools.model.Rule> rules = getRulesList();");
         rulesClass.addMember(rulesList);
     }

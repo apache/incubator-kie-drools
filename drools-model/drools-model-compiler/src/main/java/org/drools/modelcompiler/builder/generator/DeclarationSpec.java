@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.compiler.lang.descr.BehaviorDescr;
 import org.drools.compiler.lang.descr.EntryPointDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
@@ -38,6 +39,7 @@ public class DeclarationSpec {
     private final Boolean isGlobal;
 
     private String boundVariable;
+    private MethodCallExpr bindingExpr;
 
     public DeclarationSpec(String bindingId, Class<?> declarationClass) {
         this(bindingId, declarationClass, Optional.empty(), Optional.empty(), Optional.empty(), false);
@@ -109,6 +111,14 @@ public class DeclarationSpec {
 
     public void setBoundVariable( String boundVariable ) {
         this.boundVariable = boundVariable;
+    }
+
+    public MethodCallExpr getBindingExpr() {
+        return bindingExpr;
+    }
+
+    public void setBindingExpr( MethodCallExpr bindingExpr ) {
+        this.bindingExpr = bindingExpr;
     }
 
     @Override

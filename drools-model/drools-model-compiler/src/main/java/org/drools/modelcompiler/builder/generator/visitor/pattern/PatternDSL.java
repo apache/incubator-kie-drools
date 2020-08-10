@@ -79,6 +79,7 @@ public abstract class PatternDSL implements DSLNode {
 
     public DeclarationSpec initPattern() {
         generatePatternIdentifierIfMissing();
+        context.addPatternBinding(pattern.getIdentifier());
         final Optional<Expression> declarationSource = buildFromDeclaration(pattern);
         return context.addDeclaration(pattern.getIdentifier(), patternType, Optional.of(pattern), declarationSource);
     }

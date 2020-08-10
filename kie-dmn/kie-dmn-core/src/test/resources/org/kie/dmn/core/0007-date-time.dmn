@@ -291,8 +291,8 @@
       <text>ymDuration2.years</text>
     </literalExpression>
   </decision>
-  <decision id="_c2f1a1ae-1403-43a2-b176-dedf3da51e6b" name="seconds">
-    <variable name="seconds" typeRef="feel:number"/>
+  <decision id="_c2f1a1ae-1403-43a2-b176-dedf3da51e6b" name="d1seconds">
+    <variable name="d1seconds" typeRef="feel:number"/>
     <informationRequirement>
       <requiredDecision href="#_972ecd98-1c70-4f0c-909c-786f23c61dbb"/>
     </informationRequirement>

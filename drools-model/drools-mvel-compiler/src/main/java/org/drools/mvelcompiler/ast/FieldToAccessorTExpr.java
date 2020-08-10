@@ -32,6 +32,10 @@ public class FieldToAccessorTExpr implements TypedExpression {
         this(scope, accessor, Collections.emptyList());
     }
 
+    public FieldToAccessorTExpr withArguments(List<TypedExpression> arguments) {
+        return new FieldToAccessorTExpr( this.scope, this.accessor, arguments );
+    }
+
     @Override
     public Optional<Type> getType() {
         return Optional.of(type);

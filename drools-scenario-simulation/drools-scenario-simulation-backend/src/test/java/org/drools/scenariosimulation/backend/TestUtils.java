@@ -29,6 +29,7 @@ import org.kie.api.builder.Message;
 import org.kie.dmn.api.core.DMNMessage;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -58,10 +59,15 @@ public class TestUtils {
         }).collect(Collectors.toList());
     }
 
-    public static void commonCheckAuditLogLine(AuditLogLine toCheck, String expectedMessage, String expectedLevel) {
+    public static void commonCheckAuditLogLine(AuditLogLine toCheck, String expectedDecisionOrRuleName, String expectedResult, String expectedMessage) {
         assertNotNull(toCheck);
-        assertEquals(expectedMessage, toCheck.getMessage());
-        assertEquals(expectedLevel, toCheck.getLevel());
+        assertEquals(expectedDecisionOrRuleName, toCheck.getDecisionOrRuleName());
+        assertEquals(expectedResult, toCheck.getResult());
+        if (expectedMessage == null) {
+            assertFalse(toCheck.getMessage().isPresent());
+        } else {
+            assertEquals(expectedMessage, toCheck.getMessage().get());
+        }
     }
 
     private static DMNMessage createDMNMessageMock(String text, Message.Level level) {

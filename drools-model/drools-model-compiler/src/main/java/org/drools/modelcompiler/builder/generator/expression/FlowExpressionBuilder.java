@@ -210,7 +210,7 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
             return indexedByDSL;
         }
 
-        if ( !hasIndex( drlxParseResult ) ) {
+        if ( !shouldCreateIndex( drlxParseResult ) ) {
             return exprDSL;
         }
 

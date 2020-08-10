@@ -330,7 +330,10 @@ public abstract class AccumulateVisitor {
                 ids.add( singleResult.getPatternBinding() );
             }
             if (input instanceof PatternDescr) {
-                ids.add(((PatternDescr) input).getIdentifier());
+                String patternId = ((PatternDescr) input).getIdentifier();
+                if (!ids.contains( patternId )) {
+                    ids.add( patternId );
+                }
             }
             return Optional.of(new NewBinding(ids, binding));
         }

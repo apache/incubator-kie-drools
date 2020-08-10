@@ -19,6 +19,7 @@ package org.drools.modelcompiler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -86,6 +87,7 @@ import org.drools.model.From0;
 import org.drools.model.From1;
 import org.drools.model.From2;
 import org.drools.model.From3;
+import org.drools.model.From4;
 import org.drools.model.Global;
 import org.drools.model.Index;
 import org.drools.model.Model;
@@ -118,7 +120,6 @@ import org.drools.model.patterns.QueryCallPattern;
 import org.drools.modelcompiler.attributes.LambdaEnabled;
 import org.drools.modelcompiler.attributes.LambdaSalience;
 import org.drools.modelcompiler.consequence.LambdaConsequence;
-import org.drools.modelcompiler.consequence.MVELConsequence;
 import org.drools.modelcompiler.constraints.AbstractConstraint;
 import org.drools.modelcompiler.constraints.BindingEvaluator;
 import org.drools.modelcompiler.constraints.BindingInnerObjectEvaluator;
@@ -367,8 +368,6 @@ public class KiePackagesBuilder {
         if ( name.equals( RuleImpl.DEFAULT_CONSEQUENCE_NAME ) ) {
             if ("java".equals(consequence.getLanguage())) {
                 ctx.getRule().setConsequence( new LambdaConsequence( consequence ) );
-            } else if ("mvel".equals(consequence.getLanguage())) {
-                ctx.getRule().setConsequence( new MVELConsequence( consequence, ctx ) );
             } else {
                 throw new UnsupportedOperationException("Unknown script language for consequence: " + consequence.getLanguage());
             }
@@ -445,18 +444,10 @@ public class KiePackagesBuilder {
 
                 PatternImpl<?> sourcePattern = (PatternImpl<?>) accumulatePattern.getPattern();
                 Set<String> usedVariableName = new LinkedHashSet<>();
-                Binding binding = null;
 
                 if (sourcePattern != null) {
                     for (Variable v : sourcePattern.getInputVariables()) {
                         usedVariableName.add( v.getName() );
-                    }
-
-                    if ( !sourcePattern.getBindings().isEmpty() ) {
-                        binding = sourcePattern.getBindings().iterator().next();
-                        for (Variable var: binding.getInputVariables()) {
-                            usedVariableName.add(var.getName());
-                        }
                     }
                 }
 
@@ -472,7 +463,7 @@ public class KiePackagesBuilder {
                     source = buildPattern(ctx, group, condition );
                 }
 
-                pattern.setSource(buildAccumulate(ctx, accumulatePattern, source, pattern, new ArrayList<>(usedVariableName), binding) );
+                pattern.setSource(buildAccumulate(ctx, accumulatePattern, source, pattern, new ArrayList<>(usedVariableName), sourcePattern != null ? sourcePattern.getBindings() : Collections.emptyList()) );
 
                 for(Variable v : accumulatePattern.getBoundVariables()) {
                     if(source instanceof Pattern) {
@@ -680,14 +671,22 @@ public class KiePackagesBuilder {
 
     private Accumulate buildAccumulate(RuleContext ctx, AccumulatePattern accPattern,
                                        RuleConditionElement source, Pattern pattern,
-                                       List<String> usedVariableName, Binding binding) {
+                                       List<String> usedVariableName, Collection<Binding> bindings) {
 
         AccumulateFunction[] accFunctions = accPattern.getAccumulateFunctions();
-        BindingEvaluator bindingEvaluator = createBindingEvaluator(ctx, binding);
         Accumulate accumulate;
 
         if (accFunctions.length == 1) {
             final AccumulateFunction accFunction = accFunctions[0];
+
+            Binding binding = findBindingForAccumulate( bindings, accFunction );
+            if (binding != null) {
+                for (Variable var : binding.getInputVariables()) {
+                    usedVariableName.add( var.getName() );
+                }
+            }
+            final BindingEvaluator bindingEvaluator = createBindingEvaluator(ctx, binding);
+
             final Accumulator accumulator = createAccumulator(usedVariableName, bindingEvaluator, accFunction);
             final Variable boundVar = accPattern.getBoundVariables()[0];
             final Declaration declaration = new Declaration(boundVar.getName(),
@@ -714,6 +713,7 @@ public class KiePackagesBuilder {
             accumulate = new SingleAccumulate(source, requiredDeclarations, accumulator);
 
         } else {
+            final BindingEvaluator bindingEvaluator = createBindingEvaluator(ctx, bindings.isEmpty() ? null : bindings.iterator().next());
             InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
             Accumulator[] accumulators = new Accumulator[accFunctions.length];
             for (int i = 0; i < accFunctions.length; i++) {
@@ -736,6 +736,11 @@ public class KiePackagesBuilder {
         }
 
         return accumulate;
+    }
+
+    private Binding findBindingForAccumulate( Collection<Binding> bindings, AccumulateFunction accFunction ) {
+        return bindings.stream().filter( b -> b.getBoundVariable() == accFunction.getSource() ).findFirst()
+                .orElse( bindings.isEmpty() ? null : bindings.iterator().next() );
     }
 
     private Declaration[] getRequiredDeclarationsForAccumulate( RuleContext ctx, Binding binding, AccumulateFunction accFunction ) {
@@ -879,6 +884,9 @@ public class KiePackagesBuilder {
         }
         if (from instanceof From3 ) {
             return new LambdaDataProvider( toFunctionN( (( From3 ) from).getProvider() ), from.isReactive(), ctx.getDeclaration( from.getVariable() ), ctx.getDeclaration( (( From3 ) from).getVariable2() ), ctx.getDeclaration( (( From3 ) from).getVariable3() ) );
+        }
+        if (from instanceof From4) {
+            return new LambdaDataProvider( toFunctionN( (( From4 ) from).getProvider() ), from.isReactive(), ctx.getDeclaration( from.getVariable() ), ctx.getDeclaration( (( From4 ) from).getVariable2() ), ctx.getDeclaration( (( From4 ) from).getVariable3() ), ctx.getDeclaration( (( From4 ) from).getVariable4() ) );
         }
         throw new UnsupportedOperationException( "Unknown from type " + from );
     }

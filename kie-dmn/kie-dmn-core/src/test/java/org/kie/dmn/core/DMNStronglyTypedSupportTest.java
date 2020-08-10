@@ -35,6 +35,7 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.model.Person;
@@ -126,6 +127,7 @@ public class DMNStronglyTypedSupportTest extends BaseVariantTest {
         context.set("Hours", 12);
         context.set("Minutes", 59);
         context.set("Seconds", new BigDecimal("1.3"));
+
         context.set("Timezone", "PT-1H");
         context.set("Year", 1999);
         context.set("Month", 11);
@@ -159,7 +161,36 @@ public class DMNStronglyTypedSupportTest extends BaseVariantTest {
         assertThat(ctx.get("cSecond"), is(BigDecimal.valueOf(1)));
         assertThat(ctx.get("cTimezone"), is("GMT-01:00"));
         assertThat(ctx.get("years"), is(BigDecimal.valueOf(1)));
-        assertThat(ctx.get("seconds"), is(BigDecimal.valueOf(14)));
+        assertThat(ctx.get("d1seconds"), is(BigDecimal.valueOf(14)));
+
+        if (isTypeSafe()) {
+            FEELPropertyAccessible outputSet = convertToOutputSet(dmnModel, dmnResult);
+            Map<String, Object> allProperties = outputSet.allFEELProperties();
+            assertThat(allProperties.get("Date-Time"), is(ZonedDateTime.of(2016, 12, 24, 23, 59, 0, 0, ZoneOffset.ofHours(-5))));
+            FEELPropertyAccessible resultDate = (FEELPropertyAccessible)allProperties.get("Date");
+            assertThat(resultDate.getClass().getSimpleName(), is("TDateVariants"));
+            assertThat(resultDate.getFEELProperty("fromString").toOptional().get(), is(LocalDate.of(2015, 12, 24)));
+            assertThat(resultDate.getFEELProperty("fromDateTime").toOptional().get(), is(LocalDate.of(2016, 12, 24)));
+            assertThat(resultDate.getFEELProperty("fromYearMonthDay").toOptional().get(), is(LocalDate.of(1999, 11, 22)));
+            assertThat(allProperties.get("Time"), is(OffsetTime.of(0, 0, 1, 0, ZoneOffset.ofHours(-1))));
+            assertThat(allProperties.get("Date-Time2"), is(ZonedDateTime.of(2015, 12, 24, 0, 0, 1, 0, ZoneOffset.ofHours(-1))));
+            assertThat(allProperties.get("Time2"), is(OffsetTime.of(0, 0, 1, 0, ZoneOffset.ofHours(-1))));
+            assertThat(allProperties.get("Time3"), is(OffsetTime.of(12, 59, 1, 300000000, ZoneOffset.ofHours(-1))));
+            assertThat(allProperties.get("dtDuration1"), is(Duration.parse("P13DT2H14S")));
+            assertThat(allProperties.get("dtDuration2"), is(Duration.parse("P367DT3H58M59S")));
+            assertThat(allProperties.get("hoursInDuration"), is(new BigDecimal("3")));
+            assertThat(allProperties.get("sumDurations"), is(Duration.parse("PT9125H59M13S")));
+            assertThat(allProperties.get("ymDuration2"), is(ComparablePeriod.parse("P1Y")));
+            assertThat(allProperties.get("cDay"), is(BigDecimal.valueOf(24)));
+            assertThat(allProperties.get("cYear"), is(BigDecimal.valueOf(2015)));
+            assertThat(allProperties.get("cMonth"), is(BigDecimal.valueOf(12)));
+            assertThat(allProperties.get("cHour"), is(BigDecimal.valueOf(0)));
+            assertThat(allProperties.get("cMinute"), is(BigDecimal.valueOf(0)));
+            assertThat(allProperties.get("cSecond"), is(BigDecimal.valueOf(1)));
+            assertThat(allProperties.get("cTimezone"), is("GMT-01:00"));
+            assertThat(allProperties.get("years"), is(BigDecimal.valueOf(1)));
+            assertThat(allProperties.get("d1seconds"), is(BigDecimal.valueOf(14)));
+        }
     }
 
     @Test
@@ -175,6 +206,12 @@ public class DMNStronglyTypedSupportTest extends BaseVariantTest {
         context.set("datetimestring", "2016-07-29T05:48:23");
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getContext().get("time"), is(LocalTime.of(5, 48, 23)));
+
+        if (isTypeSafe()) {
+            FEELPropertyAccessible outputSet = convertToOutputSet(dmnModel, dmnResult);
+            Map<String, Object> allProperties = outputSet.allFEELProperties();
+            assertThat(allProperties.get("time"), is(LocalTime.of(5, 48, 23)));
+        }
     }
 
     @Test
@@ -197,6 +234,16 @@ public class DMNStronglyTypedSupportTest extends BaseVariantTest {
         assertThat((Map<?, ?>) result.get("DecisionNumberInList"), hasEntry(is("Result_2_OK"), is(true)));
         assertThat((Map<?, ?>) result.get("DecisionNumberInList"), hasEntry(is("Result_3"), is(true)));
         assertThat((Map<?, ?>) result.get("DecisionNumberInList"), hasEntry(is("Result_4"), is(true)));
+
+        if (isTypeSafe()) {
+            FEELPropertyAccessible outputSet = convertToOutputSet(dmnModel, dmnResult);
+            Map<String, Object> allProperties = outputSet.allFEELProperties();
+            Map<?, ?> resultMap = (Map<?, ?>) allProperties.get("DecisionNumberInList");
+            assertThat(resultMap, hasEntry(is("Result_1_OK"), is(true)));
+            assertThat(resultMap, hasEntry(is("Result_2_OK"), is(true)));
+            assertThat(resultMap, hasEntry(is("Result_3"), is(true)));
+            assertThat(resultMap, hasEntry(is("Result_4"), is(true)));
+        }
     }
 
     @Test
@@ -215,6 +262,13 @@ public class DMNStronglyTypedSupportTest extends BaseVariantTest {
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("D4"), is("Contains r1"));
         assertThat((List<?>) result.get("D5"), contains(is("r1"), is("r2")));
+
+        if (isTypeSafe()) {
+            FEELPropertyAccessible outputSet = convertToOutputSet(dmnModel, dmnResult);
+            Map<String, Object> allProperties = outputSet.allFEELProperties();
+            assertThat(allProperties.get("D4"), is("Contains r1"));
+            assertThat((List<?>) allProperties.get("D5"), contains(is("r1"), is("r2")));
+        }
     }
 
     @Test(timeout = 30_000L)
