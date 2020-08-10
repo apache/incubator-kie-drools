@@ -42,7 +42,7 @@ public class InfinispanServerTestResource implements QuarkusTestResourceLifecycl
         infinispan = new FixedHostPortGenericContainer(INFINISPAN_IMAGE)
                 .withFixedExposedPort(11232, 11222)
                 //wait for the server to be  fully started
-                .waitingFor(Wait.forLogMessage(".*\\bstarted\\b.*", 1))
+                .waitingFor(Wait.forHttp("/"))
                 .withEnv("USER", "admin")
                 .withEnv("PASS", "admin")
                 .withLogConsumer(new Slf4jLogConsumer(LOGGER));

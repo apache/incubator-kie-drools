@@ -57,7 +57,7 @@ public abstract class InfinispanServerTestResource implements QuarkusTestResourc
                 .withEnv("USER", ADMIN)
                 .withEnv("PASS", ADMIN)
                 .withLogConsumer(new Slf4jLogConsumer(LOGGER))
-                .waitingFor(Wait.forLogMessage(".*ISPN080001.*", 1));
+                .waitingFor(Wait.forHttp("/"));
         infinispan.start();
         return Collections.emptyMap();
     }
