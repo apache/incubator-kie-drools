@@ -16,8 +16,11 @@
 
 package org.optaplanner.test.impl.score.stream;
 
+import static java.util.Objects.requireNonNull;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,7 +28,9 @@ import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
@@ -35,12 +40,17 @@ public final class DefaultSingleConstraintAssertion<Solution_>
         implements SingleConstraintAssertion {
 
     private final ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory;
-    private final Map<String, ConstraintMatchTotal> constraintMatchTotalMap;
+    private final Score score;
+    private final Collection<ConstraintMatchTotal> constraintMatchTotalCollection;
+    private final Collection<Indictment> indictmentCollection;
 
     protected DefaultSingleConstraintAssertion(ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory,
-            Map<String, ConstraintMatchTotal> constraintMatchTotalMap) {
-        this.scoreDirectorFactory = scoreDirectorFactory;
-        this.constraintMatchTotalMap = constraintMatchTotalMap;
+            Score score, Map<String, ConstraintMatchTotal> constraintMatchTotalMap,
+            Map<Object, Indictment> indictmentMap) {
+        this.scoreDirectorFactory = requireNonNull(scoreDirectorFactory);
+        this.score = requireNonNull(score);
+        this.constraintMatchTotalCollection = requireNonNull(constraintMatchTotalMap).values();
+        this.indictmentCollection = requireNonNull(indictmentMap).values();
     }
 
     @Override
@@ -105,13 +115,13 @@ public final class DefaultSingleConstraintAssertion<Solution_>
         ScoreDefinition scoreDefinition = scoreDirectorFactory.getScoreDefinition();
         Score zeroScore = scoreDefinition.getZeroScore();
         Number zero = zeroScore.toLevelNumbers()[0]; // Zero in the exact numeric type expected by the caller.
-        if (constraintMatchTotalMap.isEmpty()) {
+        if (constraintMatchTotalCollection.isEmpty()) {
             return zero;
         }
         // We do not know the matchWeight, so we need to deduce it.
         // Constraint matches give us a score, whose levels are in the form of (matchWeight * constraintWeight).
         // Here, we strip the constraintWeight.
-        Score totalMatchWeightedScore = constraintMatchTotalMap.values().stream()
+        Score totalMatchWeightedScore = constraintMatchTotalCollection.stream()
                 .map(matchScore -> scoreDefinition.divideBySanitizedDivisor(matchScore.getScore(),
                         matchScore.getConstraintWeight()))
                 .reduce(zeroScore, Score::add);
@@ -136,14 +146,16 @@ public final class DefaultSingleConstraintAssertion<Solution_>
         String preformattedMessage = "%s%n" +
                 "%18s: %s%n" +
                 "%18s: %s (%s)%n" +
-                "%18s: %s (%s)";
+                "%18s: %s (%s)%n%n" +
+                "  %s";
         String expectedImpactLabel = "Expected " + getImpactTypeLabel(expectedImpactType);
         String actualImpactLabel = "Actual " + getImpactTypeLabel(actualImpactType);
         return String.format(preformattedMessage,
                 expectation,
                 "Constraint", constraintId,
                 expectedImpactLabel, expectedImpact, expectedImpact.getClass(),
-                actualImpactLabel, actualImpact, actualImpact.getClass());
+                actualImpactLabel, actualImpact, actualImpact.getClass(),
+                AbstractScoreDirector.explainScore(score, constraintMatchTotalCollection, indictmentCollection));
     }
 
     private String getImpactTypeLabel(ScoreImpactType scoreImpactType) {

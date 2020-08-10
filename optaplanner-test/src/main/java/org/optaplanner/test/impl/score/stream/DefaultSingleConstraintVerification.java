@@ -17,10 +17,8 @@
 package org.optaplanner.test.impl.score.stream;
 
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Objects;
 
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
@@ -39,8 +37,8 @@ public final class DefaultSingleConstraintVerification<Solution_>
     public final DefaultSingleConstraintAssertion given(Object... facts) {
         try (ConstraintSession<Solution_> constraintSession = scoreDirectorFactory.newConstraintStreamingSession(true, null)) {
             Arrays.stream(facts).forEach(constraintSession::insert);
-            Map<String, ConstraintMatchTotal> constraintMatchTotalMap = constraintSession.getConstraintMatchTotalMap();
-            return new DefaultSingleConstraintAssertion<>(scoreDirectorFactory, constraintMatchTotalMap);
+            return new DefaultSingleConstraintAssertion<>(scoreDirectorFactory, constraintSession.calculateScore(0),
+                    constraintSession.getConstraintMatchTotalMap(), constraintSession.getIndictmentMap());
         }
     }
 
@@ -48,8 +46,8 @@ public final class DefaultSingleConstraintVerification<Solution_>
     public final DefaultSingleConstraintAssertion givenSolution(Solution_ solution) {
         try (InnerScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector(true, true)) {
             scoreDirector.setWorkingSolution(Objects.requireNonNull(solution));
-            Map<String, ConstraintMatchTotal> constraintMatchTotalMap = scoreDirector.getConstraintMatchTotalMap();
-            return new DefaultSingleConstraintAssertion<>(scoreDirectorFactory, constraintMatchTotalMap);
+            return new DefaultSingleConstraintAssertion<>(scoreDirectorFactory, scoreDirector.calculateScore(),
+                    scoreDirector.getConstraintMatchTotalMap(), scoreDirector.getIndictmentMap());
         }
     }
 
