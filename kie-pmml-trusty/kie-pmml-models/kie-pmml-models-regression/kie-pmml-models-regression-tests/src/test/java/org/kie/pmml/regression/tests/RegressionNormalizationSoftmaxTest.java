@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.mining.tests;
+package org.kie.pmml.regression.tests;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,16 +30,16 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
 @RunWith(Parameterized.class)
-public class CategoricalVariablesRegressionTest extends AbstractPMMLRegressionTest {
+public class RegressionNormalizationSoftmaxTest extends AbstractPMMLRegressionTest {
 
-    private static final String MODEL_NAME = "CategoricalVariablesRegression";
+    private static final String MODEL_NAME = "RegressionNormalizationSoftmax";
     private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;
 
-    private String x;
-    private String y;
+    private double x;
+    private double y;
 
-    public CategoricalVariablesRegressionTest(String x, String y) {
+    public RegressionNormalizationSoftmaxTest(double x, double y) {
         this.x = x;
         this.y = y;
     }
@@ -52,30 +52,18 @@ public class CategoricalVariablesRegressionTest extends AbstractPMMLRegressionTe
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {"red", "classA"}, {"green", "classA"}, {"blue", "classA"}, {"orange", "classA"}, {"yellow", "classA"},
-                {"red", "classB"}, {"green", "classB"}, {"blue", "classB"}, {"orange", "classB"}, {"yellow", "classB"},
-                {"red", "classC"}, {"green", "classC"}, {"blue", "classC"}, {"orange", "classC"}, {"yellow", "classC"}
+                {0, 0}, {-1, 2}, {0.5, -2.5}, {3, 1}, {25, 50},
+                {-100, 250}, {-100.1, 800}, {-8, 12.5}, {-1001.1, -500.2}, {-1701, 508},
         });
     }
 
-    private static double regressionFunction(String x, String y) {
-        final Map<String, Double> categoriesMapX = new HashMap<>();
-        categoriesMapX.put("red", 5.5);
-        categoriesMapX.put("green", 15.0);
-        categoriesMapX.put("blue", 12.0);
-        categoriesMapX.put("orange", 5.5);
-        categoriesMapX.put("yellow", -100.25);
-
-        final Map<String, Double> categoriesMapY = new HashMap<>();
-        categoriesMapY.put("classA", 0.0);
-        categoriesMapY.put("classB", 20.0);
-        categoriesMapY.put("classC", 40.0);
-
-        return categoriesMapX.get(x) + categoriesMapY.get(y) - 22.1;
+    private static double normalizedRegressionFunction(double x, double y) {
+        final double regressionValue = 2 * x + y + 5;
+        return 1 / (1 + Math.exp(-regressionValue));
     }
 
     @Test
-    public void testCategoricalVariablesRegression() throws Exception {
+    public void testNormalizationMethodsRegression() throws Exception {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);
@@ -84,6 +72,6 @@ public class CategoricalVariablesRegressionTest extends AbstractPMMLRegressionTe
         Assertions.assertThat(pmml4Result).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);
         Assertions.assertThat((Double) pmml4Result.getResultVariables().get(TARGET_FIELD))
-                .isEqualTo(regressionFunction(x, y));
+                .isEqualTo(normalizedRegressionFunction(x, y/*, normalizationMethod*/));
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.mining.tests;
+package org.kie.pmml.regression.tests;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -30,18 +31,21 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
 @RunWith(Parameterized.class)
-public class NumericVariablesLinearRegressionTest extends AbstractPMMLRegressionTest {
+@Ignore("DROOLS-5209")
+public class MissingDataRegressionTest extends AbstractPMMLRegressionTest {
 
-    private static final String MODEL_NAME = "NumericVariablesLinearRegression";
+    private static final String MODEL_NAME = "MissingDataRegression";
     private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;
 
-    private double x;
-    private double y;
+    private Double x;
+    private String y;
+    private double expectedResult;
 
-    public NumericVariablesLinearRegressionTest(double x, double y) {
+    public MissingDataRegressionTest(Double x, String y, double expectedResult) {
         this.x = x;
         this.y = y;
+        this.expectedResult = expectedResult;
     }
 
     @BeforeClass
@@ -52,25 +56,26 @@ public class NumericVariablesLinearRegressionTest extends AbstractPMMLRegression
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {0, 0}, {-1, 2}, {0.5, -2.5}, {3, 1}, {25, 50},
-                {-100, 250}, {-100.1, 800}, {-8, 12.5}, {-1001.1, -500.2}, {-1701, 508}
+                {Double.valueOf(0), "classA", 22}, {Double.valueOf(25), "classB", 92},
+                {Double.valueOf(25), null, 92}, {null, "classC", 72},
+                {null, null, 52}
         });
     }
 
-    private static double regressionFunction(double x, double y) {
-        return 2 * x + y + 5;
-    }
-
     @Test
-    public void testNumericVariableLinearRegression() throws Exception {
+    public void testMissingValuesRegression() {
         final Map<String, Object> inputData = new HashMap<>();
-        inputData.put("x", x);
-        inputData.put("y", y);
+        if (x != null) {
+            inputData.put("x", x.doubleValue());
+        }
+        if (y != null) {
+            inputData.put("y", y);
+        }
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         Assertions.assertThat(pmml4Result).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);
         Assertions.assertThat((Double) pmml4Result.getResultVariables().get(TARGET_FIELD))
-                .isEqualTo(regressionFunction(x, y));
+                .isEqualTo(expectedResult);
     }
 }

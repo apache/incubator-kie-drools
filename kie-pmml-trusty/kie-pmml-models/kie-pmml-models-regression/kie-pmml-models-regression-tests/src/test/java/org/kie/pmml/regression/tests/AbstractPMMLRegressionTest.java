@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.mining.tests;
+package org.kie.pmml.regression.tests;
 
 import java.util.Map;
 

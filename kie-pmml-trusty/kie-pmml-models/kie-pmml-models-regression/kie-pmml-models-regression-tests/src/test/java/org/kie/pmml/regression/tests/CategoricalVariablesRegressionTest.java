@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.mining.tests;
+package org.kie.pmml.regression.tests;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,16 +30,16 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
 @RunWith(Parameterized.class)
-public class MixedVariablesRegressionTest extends AbstractPMMLRegressionTest {
+public class CategoricalVariablesRegressionTest extends AbstractPMMLRegressionTest {
 
-    private static final String MODEL_NAME = "MixedVariablesRegression";
+    private static final String MODEL_NAME = "CategoricalVariablesRegression";
     private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;
 
-    private double x;
+    private String x;
     private String y;
 
-    public MixedVariablesRegressionTest(double x, String y) {
+    public CategoricalVariablesRegressionTest(String x, String y) {
         this.x = x;
         this.y = y;
     }
@@ -52,22 +52,30 @@ public class MixedVariablesRegressionTest extends AbstractPMMLRegressionTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {0, "classA"}, {-1, "classA"}, {0.5, "classA"}, {3, "classA"}, {25, "classB"},
-                {-100, "classB"}, {-100.1, "classB"}, {-8, "classC"}, {-1001.1, "classC"}, {-1701, "classC"}
+                {"red", "classA"}, {"green", "classA"}, {"blue", "classA"}, {"orange", "classA"}, {"yellow", "classA"},
+                {"red", "classB"}, {"green", "classB"}, {"blue", "classB"}, {"orange", "classB"}, {"yellow", "classB"},
+                {"red", "classC"}, {"green", "classC"}, {"blue", "classC"}, {"orange", "classC"}, {"yellow", "classC"}
         });
     }
 
-    private static double regressionFunction(double x, String y) {
-        final Map<String, Double> categoriesMap = new HashMap<>();
-        categoriesMap.put("classA", 0.0);
-        categoriesMap.put("classB", 20.0);
-        categoriesMap.put("classC", 40.0);
+    private static double regressionFunction(String x, String y) {
+        final Map<String, Double> categoriesMapX = new HashMap<>();
+        categoriesMapX.put("red", 5.5);
+        categoriesMapX.put("green", 15.0);
+        categoriesMapX.put("blue", 12.0);
+        categoriesMapX.put("orange", 5.5);
+        categoriesMapX.put("yellow", -100.25);
 
-        return 2 * x + categoriesMap.get(y) + 22;
+        final Map<String, Double> categoriesMapY = new HashMap<>();
+        categoriesMapY.put("classA", 0.0);
+        categoriesMapY.put("classB", 20.0);
+        categoriesMapY.put("classC", 40.0);
+
+        return categoriesMapX.get(x) + categoriesMapY.get(y) - 22.1;
     }
 
     @Test
-    public void testMixedVariablesRegression() throws Exception {
+    public void testCategoricalVariablesRegression() throws Exception {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);

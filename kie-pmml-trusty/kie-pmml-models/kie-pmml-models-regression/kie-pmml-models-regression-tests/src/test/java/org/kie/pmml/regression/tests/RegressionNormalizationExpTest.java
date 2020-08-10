@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.mining.tests;
+package org.kie.pmml.regression.tests;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,16 +30,16 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
 @RunWith(Parameterized.class)
-public class NumericVariablesPolynomialRegressionTest extends AbstractPMMLRegressionTest {
+public class RegressionNormalizationExpTest extends AbstractPMMLRegressionTest {
 
-    private static final String MODEL_NAME = "NumericVariablesPolynomialRegression";
+    private static final String MODEL_NAME = "RegressionNormalizationExp";
     private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;
 
     private double x;
     private double y;
 
-    public NumericVariablesPolynomialRegressionTest(double x, double y) {
+    public RegressionNormalizationExpTest(double x, double y) {
         this.x = x;
         this.y = y;
     }
@@ -53,16 +53,17 @@ public class NumericVariablesPolynomialRegressionTest extends AbstractPMMLRegres
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {0, 0}, {-1, 2}, {0.5, -2.5}, {3, 1}, {25, 50},
-                {-100, 250}, {-100.1, 800}, {-8, 12.5}, {-1001.1, -500.2}, {-1701, 508}
+                {-100, 250}, {-100.1, 800}, {-8, 12.5}, {-1001.1, -500.2}, {-1701, 508},
         });
     }
 
-    private static double regressionFunction(double x, double y) {
-        return 3 * Math.pow(x, 5) + 2 * Math.pow(y, 2) + 5;
+    private static double normalizedRegressionFunction(double x, double y) {
+        final double regressionValue = 2 * x + y + 5;
+        return Math.exp(regressionValue);
     }
 
     @Test
-    public void testNumericVariablePolynomialRegression() throws Exception {
+    public void testNormalizationMethodsRegression() throws Exception {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);
@@ -71,6 +72,6 @@ public class NumericVariablesPolynomialRegressionTest extends AbstractPMMLRegres
         Assertions.assertThat(pmml4Result).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);
         Assertions.assertThat((Double) pmml4Result.getResultVariables().get(TARGET_FIELD))
-                .isEqualTo(regressionFunction(x, y));
+                .isEqualTo(normalizedRegressionFunction(x, y));
     }
 }

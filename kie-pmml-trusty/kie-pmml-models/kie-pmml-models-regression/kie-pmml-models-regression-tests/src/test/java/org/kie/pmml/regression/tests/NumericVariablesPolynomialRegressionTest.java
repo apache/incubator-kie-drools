@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.mining.tests;
+package org.kie.pmml.regression.tests;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,16 +30,16 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
 @RunWith(Parameterized.class)
-public class RegressionNormalizationLogitTest extends AbstractPMMLRegressionTest {
+public class NumericVariablesPolynomialRegressionTest extends AbstractPMMLRegressionTest {
 
-    private static final String MODEL_NAME = "RegressionNormalizationLogit";
+    private static final String MODEL_NAME = "NumericVariablesPolynomialRegression";
     private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;
 
     private double x;
     private double y;
 
-    public RegressionNormalizationLogitTest(double x, double y) {
+    public NumericVariablesPolynomialRegressionTest(double x, double y) {
         this.x = x;
         this.y = y;
     }
@@ -57,13 +57,12 @@ public class RegressionNormalizationLogitTest extends AbstractPMMLRegressionTest
         });
     }
 
-    private static double normalizedRegressionFunction(double x, double y) {
-        final double regressionValue = 2 * x + y + 5;
-        return 1 / (1 + Math.exp(-regressionValue));
+    private static double regressionFunction(double x, double y) {
+        return 3 * Math.pow(x, 5) + 2 * Math.pow(y, 2) + 5;
     }
 
     @Test
-    public void testNormalizationMethodsRegression() throws Exception {
+    public void testNumericVariablePolynomialRegression() throws Exception {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);
@@ -72,6 +71,6 @@ public class RegressionNormalizationLogitTest extends AbstractPMMLRegressionTest
         Assertions.assertThat(pmml4Result).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);
         Assertions.assertThat((Double) pmml4Result.getResultVariables().get(TARGET_FIELD))
-                .isEqualTo(normalizedRegressionFunction(x, y));
+                .isEqualTo(regressionFunction(x, y));
     }
 }

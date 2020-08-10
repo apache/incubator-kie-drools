@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.mining.tests;
+package org.kie.pmml.regression.tests;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -31,21 +30,18 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
 @RunWith(Parameterized.class)
-@Ignore("DROOLS-5209")
-public class MissingDataRegressionTest extends AbstractPMMLRegressionTest {
+public class NumericVariablesDecimalAndNegativeCoefsTest extends AbstractPMMLRegressionTest {
 
-    private static final String MODEL_NAME = "MissingDataRegression";
+    private static final String MODEL_NAME = "NumericVariablesDecimalAndNegativeCoefs";
     private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;
 
-    private Double x;
-    private String y;
-    private double expectedResult;
+    private double x;
+    private double y;
 
-    public MissingDataRegressionTest(Double x, String y, double expectedResult) {
+    public NumericVariablesDecimalAndNegativeCoefsTest(double x, double y) {
         this.x = x;
         this.y = y;
-        this.expectedResult = expectedResult;
     }
 
     @BeforeClass
@@ -56,26 +52,25 @@ public class MissingDataRegressionTest extends AbstractPMMLRegressionTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {Double.valueOf(0), "classA", 22}, {Double.valueOf(25), "classB", 92},
-                {Double.valueOf(25), null, 92}, {null, "classC", 72},
-                {null, null, 52}
+                {0, 0}, {-1, 2}, {0.5, -2.5}, {3, 1}, {25, 50},
+                {-100, 250}, {-100.1, 800}, {-8, 12.5}, {-1001.1, -500.2}, {-1701, 508}
         });
     }
 
+    private static double regressionFunction(double x, double y) {
+        return 3.5 * Math.pow(x, -2) - 5 * Math.pow(y, 3) - 15.5;
+    }
+
     @Test
-    public void testMissingValuesRegression() {
+    public void testNumericVariablesDecimalAndNegative() {
         final Map<String, Object> inputData = new HashMap<>();
-        if (x != null) {
-            inputData.put("x", x.doubleValue());
-        }
-        if (y != null) {
-            inputData.put("y", y);
-        }
+        inputData.put("x", x);
+        inputData.put("y", y);
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         Assertions.assertThat(pmml4Result).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);
         Assertions.assertThat((Double) pmml4Result.getResultVariables().get(TARGET_FIELD))
-                .isEqualTo(expectedResult);
+                .isEqualTo(regressionFunction(x, y));
     }
 }

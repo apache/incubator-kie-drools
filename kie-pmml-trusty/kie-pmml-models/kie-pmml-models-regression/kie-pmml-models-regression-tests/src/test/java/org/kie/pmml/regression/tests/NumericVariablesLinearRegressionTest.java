@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.mining.tests;
+package org.kie.pmml.regression.tests;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,16 +30,16 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
 @RunWith(Parameterized.class)
-public class NumericVariablesDecimalAndNegativeCoefsTest extends AbstractPMMLRegressionTest {
+public class NumericVariablesLinearRegressionTest extends AbstractPMMLRegressionTest {
 
-    private static final String MODEL_NAME = "NumericVariablesDecimalAndNegativeCoefs";
+    private static final String MODEL_NAME = "NumericVariablesLinearRegression";
     private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;
 
     private double x;
     private double y;
 
-    public NumericVariablesDecimalAndNegativeCoefsTest(double x, double y) {
+    public NumericVariablesLinearRegressionTest(double x, double y) {
         this.x = x;
         this.y = y;
     }
@@ -58,11 +58,11 @@ public class NumericVariablesDecimalAndNegativeCoefsTest extends AbstractPMMLReg
     }
 
     private static double regressionFunction(double x, double y) {
-        return 3.5 * Math.pow(x, -2) - 5 * Math.pow(y, 3) - 15.5;
+        return 2 * x + y + 5;
     }
 
     @Test
-    public void testNumericVariablesDecimalAndNegative() {
+    public void testNumericVariableLinearRegression() throws Exception {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.mining.tests;
+package org.kie.pmml.regression.tests;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,9 +31,9 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
 @RunWith(Parameterized.class)
-public class LogisticRegressionSoftmaxNormalizationTest extends AbstractPMMLRegressionTest {
+public class LogisticRegressionNoneNormalizationTest extends AbstractPMMLRegressionTest {
 
-    private static final String MODEL_NAME = "LogisticRegressionSoftmaxNormalization";
+    private static final String MODEL_NAME = "LogisticRegressionNoneNormalization";
     private static final String TARGET_FIELD = "Species";
     private static final String PROBABILITY_SETOSA_FIELD = "Probability_setosa";
     private static final String PROBABILITY_VERSICOLOR_FIELD = "Probability_versicolor";
@@ -51,10 +51,10 @@ public class LogisticRegressionSoftmaxNormalizationTest extends AbstractPMMLRegr
     private double expectedVersicolorProbability;
     private double expectedVirginicaProbability;
 
-    public LogisticRegressionSoftmaxNormalizationTest(double sepalLength, double sepalWidth, double petalLength,
-                                                      double petalWidth, String expectedResult, double expectedSetosaProbability,
-                                                      double expectedVersicolorProbability,
-                                                      double expectedVirginicaProbability) {
+    public LogisticRegressionNoneNormalizationTest(double sepalLength, double sepalWidth, double petalLength,
+                                                   double petalWidth, String expectedResult, double expectedSetosaProbability,
+                                                   double expectedVersicolorProbability,
+                                                   double expectedVirginicaProbability) {
         this.sepalLength = sepalLength;
         this.sepalWidth = sepalWidth;
         this.petalLength = petalLength;
@@ -73,9 +73,9 @@ public class LogisticRegressionSoftmaxNormalizationTest extends AbstractPMMLRegr
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {6.9, 3.1, 5.1, 2.3, "virginica", 0.22969661966054, 0.228866116406123, 0.541437263933338},
-                {5.8, 2.6, 4.0, 1.2, "versicolor", 0.276752056446685, 0.423770468651362, 0.299477474901954},
-                {5.4, 3.9, 1.3, 0.4, "setosa", 0.612792897443624, 0.169127526544678, 0.218079576011698},
+                {6.9, 3.1, 5.1, 2.3, "virginica", 0.04871813160275851, 0.04509592640753013, 0.9061859419897114},
+                {5.8, 2.6, 4.0, 1.2, "versicolor", 0.16500427922560845, 0.5910742380929204, 0.24392148268147118},
+                {5.4, 3.9, 1.3, 0.4, "setosa", 1.1068470023312305, -0.18052700039608738, 0.07367999806485692},
         });
     }
 
