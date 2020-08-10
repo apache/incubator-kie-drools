@@ -29,6 +29,12 @@
         <classifier>tests</classifier>
         <version>${project.version}</version>
       </dependency>
+      <dependency> <!-- this is not an user dependency, hence is not added to the boms. -->
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-validation-bootstrap</artifactId>
+        <optional>true</optional>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -55,6 +61,11 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-validation-bootstrap</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
     </dependency>
     <dependency>
@@ -67,7 +78,7 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
+      <artifactId>drools-model-compiler</artifactId> <!-- org.drools.modelcompiler.builder.KieBaseBuilder -->
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -128,5 +139,59 @@
     </dependency>
 
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>validation-bootstrap</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <mainClass>org.kie.dmn.validation.bootstrap.ValidationBootstrapMain</mainClass>
+          <cleanupDaemonThreads>false</cleanupDaemonThreads> <!-- cleanupDaemonThreads=false otherwise exec:java will try to shutdown common pool Thread[ForkJoinPool.commonPool-worker- threads -->
+          <arguments>
+            <argument>${project.basedir}</argument>
+          </arguments>
+          <!-- the following is used to provide a SLF4j binding to the ValidationBootstrapMain and related CP. Set src/test/resources/logback.xml root to DEBUG for debugging -->
+          <includePluginDependencies>true</includePluginDependencies>
+           <additionalClasspathElements>
+            <additionalClasspathElement>${project.basedir}/src/test/resources/</additionalClasspathElement>
+          </additionalClasspathElements> 
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${version.ch.qos.logback}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/generated-sources/bootstrap</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
   
 </project>

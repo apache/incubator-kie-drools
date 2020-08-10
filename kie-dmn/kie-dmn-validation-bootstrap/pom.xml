@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-dmn</artifactId>
+    <version>7.42.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>kie-dmn-validation-bootstrap</artifactId>
+
+  <name>KIE :: Decision Model Notation :: Internal utils for Validation bootstrap</name>
+
+  <properties>
+    <java.module.name>org.kie.dmn.validation.bootstrap</java.module.name>
+  </properties>
+  <description>Performs Drools Model generation programmatically for kie-dmn-validation, so that kie-dmn-validation can make use of the rules in the Executable Model form.
+This is not an user dependency, hence is not added to the boms</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-internal</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-model-compiler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+  </dependencies>
+</project>
