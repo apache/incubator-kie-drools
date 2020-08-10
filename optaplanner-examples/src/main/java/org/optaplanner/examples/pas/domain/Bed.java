@@ -27,6 +27,14 @@ public class Bed extends AbstractPersistable implements Labeled {
     private Room room;
     private int indexInRoom;
 
+    public Bed() {
+    }
+
+    public Bed(Room room, int indexInRoom) {
+        this.room = room;
+        this.indexInRoom = indexInRoom;
+    }
+
     public Room getRoom() {
         return room;
     }

@@ -31,6 +31,20 @@ public class BedDesignation extends AbstractPersistable {
     private AdmissionPart admissionPart;
     private Bed bed;
 
+    public BedDesignation(long id, AdmissionPart admissionPart, Bed bed) {
+        super(id);
+        this.admissionPart = admissionPart;
+        this.bed = bed;
+    }
+
+    public BedDesignation() {
+    }
+
+    public BedDesignation(AdmissionPart admissionPart, Bed bed) {
+        this.admissionPart = admissionPart;
+        this.bed = bed;
+    }
+
     public AdmissionPart getAdmissionPart() {
         return admissionPart;
     }

@@ -57,7 +57,7 @@ rule "sameBedInSameNight"
                 id > $leftId)
     then
         scoreHolder.addHardConstraintMatch(kcontext,
-                -1000 * (1 + Math.max($leftLast, $rightLast) - Math.max($leftFirst, $rightFirst)));
+                -1000 * (1 + Math.min($leftLast, $rightLast) - Math.max($leftFirst, $rightFirst)));
 end
 
 // Not yet applicable: RoomMaintenance constraint
@@ -94,10 +94,10 @@ rule "differentGenderInSameGenderRoomInSameNight"
                 id > $leftId)
     then
         scoreHolder.addHardConstraintMatch(kcontext,
-                -1000 * (1 + Math.max($leftLast, $rightLast) - Math.max($leftFirst, $rightFirst)));
+                -1000 * (1 + Math.min($leftLast, $rightLast) - Math.max($leftFirst, $rightFirst)));
 end
 
-// Department's minimumAge constraint
+// Department's minimumAge constraint: penalize if patient is younger then allowed in the department
 rule "departmentMinimumAge"
     when
         $department : Department(minimumAge != null, $minimumAge : minimumAge)
@@ -106,7 +106,7 @@ rule "departmentMinimumAge"
         // Note: the original spec classified this as a soft constraint
         scoreHolder.addHardConstraintMatch(kcontext, -100 * $bedDesignation.getAdmissionPartNightCount());
 end
-// Department's maximumAge constraint
+// Department's maximumAge constraint: penalize if patient is elder then allowed in the department
 rule "departmentMaximumAge"
     when
         $department : Department(maximumAge != null, $maximumAge : maximumAge)
@@ -115,10 +115,10 @@ rule "departmentMaximumAge"
         // Note: the original spec classified this as a soft constraint
         scoreHolder.addHardConstraintMatch(kcontext, -100 * $bedDesignation.getAdmissionPartNightCount());
 end
-
-// Not yet applicable: Patient requiredMaximumRoomCapacity constraint
-
-// RequiredPatientEquipment constraint
+//
+//// Not yet applicable: Patient requiredMaximumRoomCapacity constraint
+//
+// Penalize if patient's required equipment is not provided by assigned room
 rule "requiredPatientEquipment"
     when
         $requiredPatientEquipment : RequiredPatientEquipment($patient : patient, $equipment : equipment)
@@ -145,7 +145,7 @@ end
 // Soft constraints
 // ############################################################################
 
-// Patient preferredMaximumRoomCapacity
+// Penalize if patient is assigned in the room with more beds then he/she prefer
 rule "preferredMaximumRoomCapacity"
     when
         $bedDesignation : BedDesignation(patientPreferredMaximumRoomCapacity != null,
@@ -157,7 +157,7 @@ rule "preferredMaximumRoomCapacity"
         scoreHolder.addSoftConstraintMatch(kcontext, -8 * $bedDesignation.getAdmissionPartNightCount());
 end
 
-// DepartmentSpecialism constraint
+// DepartmentSpecialism constraint: penalize all designations where picked department does not have all specialisms
 rule "departmentSpecialism"
     when
         $bedDesignation : BedDesignation($specialism : admissionPartSpecialism, $department : department, bed != null)
@@ -166,7 +166,7 @@ rule "departmentSpecialism"
         scoreHolder.addSoftConstraintMatch(kcontext, -10 * $bedDesignation.getAdmissionPartNightCount());
 end
 
-// RoomSpecialism constraint
+// Penalize if patient needs specialism that is not provided in the room
 rule "roomSpecialismNotExists"
     when
         $bedDesignation : BedDesignation(admissionPartSpecialism != null, $specialism : admissionPartSpecialism,
@@ -175,6 +175,7 @@ rule "roomSpecialismNotExists"
     then
         scoreHolder.addSoftConstraintMatch(kcontext, -20 * $bedDesignation.getAdmissionPartNightCount());
 end
+// Penalize designation for each non fist priority specialism
 rule "roomSpecialismNotFirstPriority"
     when
         $bedDesignation : BedDesignation(admissionPartSpecialism != null, $specialism : admissionPartSpecialism,
@@ -185,7 +186,7 @@ rule "roomSpecialismNotFirstPriority"
                 -10 * ($priority - 1) * $bedDesignation.getAdmissionPartNightCount());
 end
 
-// PreferredPatientEquipment constraint
+// Penalize if patient prefer equipment that is not provided by the assigned room: be careful with data, if equip is required, then it is preferred automatically
 rule "preferredPatientEquipment"
     when
         $preferredPatientEquipment : PreferredPatientEquipment($patient : patient, $equipment : equipment)
