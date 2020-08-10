@@ -15,19 +15,48 @@
  */
 package  org.kie.pmml.models.mining.evaluator;
 
+import java.util.AbstractMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.util.StringUtils;
 import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieRuntimeFactory;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
+import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
+import org.kie.pmml.commons.model.tuples.KiePMMLValueWeight;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
+import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
+import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.kie.pmml.commons.enums.ResultCode.OK;
+import static org.kie.pmml.evaluator.core.utils.Converter.getUnwrappedParametersMap;
 
 /**
  * Default <code>PMMLModelExecutor</code> for <b>Mining</b>
  */
 public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
+
+    private static final Logger logger = LoggerFactory.getLogger(PMMLMiningModelEvaluator.class.getName());
+    private static final String EXPECTED_A_KIE_PMMLMINING_MODEL_RECEIVED = "Expected a KiePMMLMiningModel, received %s ";
+    private static final String TARGET_FIELD_REQUIRED_RETRIEVED = "TargetField required, retrieved %s";
+
 
     @Override
     public PMML_MODEL getPMMLModelType(){
@@ -38,10 +67,118 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
     public PMML4Result evaluate(final KieBase knowledgeBase,
                                 final KiePMMLModel model,
                                 final PMMLContext pmmlContext) {
+        validate(model);
         if(!(model instanceof KiePMMLMiningModel)){
             throw new KiePMMLModelException("Expected a KiePMMLMiningModel, received a "+ model.getClass().getName());
         }
-        // TODO
-        throw new UnsupportedOperationException();
+        return evaluateMiningModel((KiePMMLMiningModel) model, pmmlContext, knowledgeBase);
+    }
+
+    private PMML4Result evaluateMiningModel(final KiePMMLMiningModel toEvaluate,
+                                            final PMMLContext pmmlContext,
+                                            final KieBase knowledgeBase)  {
+        final MULTIPLE_MODEL_METHOD multipleModelMethod = toEvaluate.getSegmentation().getMultipleModelMethod();
+        final List<KiePMMLSegment> segments = toEvaluate.getSegmentation().getSegments();
+        final LinkedHashMap<String, KiePMMLNameValue> inputData = segments.stream()
+                .map(segment ->
+                             new AbstractMap.SimpleImmutableEntry<>(segment, evaluateSegment(segment, pmmlContext, knowledgeBase)))
+                .filter(entry -> entry.getValue().isPresent())
+                .map(entry -> new AbstractMap.SimpleImmutableEntry<>(entry.getKey(),
+                                                                     getKiePMMLNameValue(entry.getValue().get(), multipleModelMethod, entry.getKey().getWeight())))
+                .collect(Collectors.toMap(entry -> entry.getKey().getId(),
+                                          AbstractMap.SimpleImmutableEntry::getValue,
+                                          (o1, o2) -> o1,
+                                          LinkedHashMap::new));
+        final Object prediction = multipleModelMethod.apply(inputData);
+        PMML4Result toReturn = new PMML4Result();
+        toReturn.addResultVariable(toEvaluate.getTargetField(), prediction);
+        toReturn.setResultObjectName(toEvaluate.getTargetField());
+        toReturn.setResultCode(OK.getName());
+        toEvaluate.getOutputFieldsMap().forEach(toReturn::addResultVariable);
+        return toReturn;
+    }
+
+    private Optional<PMML4Result> evaluateSegment(final KiePMMLSegment toEvaluate, final  PMMLContext pmmlContext, final KieBase knowledgeBase) {
+        logger.info("evaluateSegment {}", toEvaluate.getId());
+        final KiePMMLPredicate kiePMMLPredicate = toEvaluate.getKiePMMLPredicate();
+        Optional<PMML4Result> toReturn = Optional.empty();
+        Map<String, Object> values = getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
+        String modelName = toEvaluate.getModel().getName();
+        final PMMLRuntime pmmlRuntime = getPMMLRuntime(modelName, knowledgeBase);
+        if (kiePMMLPredicate != null && kiePMMLPredicate.evaluate(values)) {
+            logger.info("{}: matching predicate, evaluating... ", toEvaluate.getId());
+            toReturn = Optional.of(pmmlRuntime.evaluate(modelName, pmmlContext));
+        }
+        return toReturn;
+    }
+
+    private PMMLRuntime getPMMLRuntime(final String kbaseName, final KieBase knowledgeBase) {
+        KieContainer kieContainer = ((KnowledgeBaseImpl) knowledgeBase).getKieContainer();
+        KieBase kieBase = kieContainer.getKieBase(kbaseName);
+        KieRuntimeFactory kieRuntimeFactory = KieRuntimeFactory.of(kieBase);
+        return kieRuntimeFactory.get(PMMLRuntime.class);
+    }
+
+    /**
+     * Returns a <code>KiePMMLNameValue</code> representation of the <code>PMML4Result</code>.
+     * <b>It is based on the assumption there is only one result to be considered, defined as</b>
+     * {@link PMML4Result#getResultObjectName() }
+     * @param result
+     * @param multipleModelMethod
+     * @param weight
+     * @return
+     * @throws KiePMMLException
+     */
+    private KiePMMLNameValue getKiePMMLNameValue(PMML4Result result, MULTIPLE_MODEL_METHOD multipleModelMethod, double weight) {
+        String fieldName = result.getResultObjectName();
+        Object retrieved = getEventuallyWeightedResult(result.getResultVariables().get(fieldName), multipleModelMethod, weight);
+        return new KiePMMLNameValue(fieldName, retrieved);
+    }
+
+    /**
+     * Returns a <code>KiePMMLValueWeight</code> if the given <code>MULTIPLE_MODEL_METHOD</code> expect it;
+     * the original <b>rawObject</b>, otherwise
+     * @param rawObject
+     * @param multipleModelMethod
+     * @param weight
+     * @return
+     * @throws KiePMMLException
+     */
+    private Object getEventuallyWeightedResult(Object rawObject, MULTIPLE_MODEL_METHOD multipleModelMethod, double weight) {
+        switch (multipleModelMethod) {
+            case MAX:
+            case SUM:
+            case MEDIAN:
+            case AVERAGE:
+            case SELECT_ALL:
+            case MODEL_CHAIN:
+            case SELECT_FIRST:
+            case MAJORITY_VOTE:
+                return rawObject;
+            case WEIGHTED_SUM:
+            case WEIGHTED_MEDIAN:
+            case WEIGHTED_AVERAGE:
+                if (!(rawObject instanceof Number)) {
+                    throw new KiePMMLException("Expected a number, retrieved " + rawObject.getClass().getName());
+                }
+                return new KiePMMLValueWeight(((Number) rawObject).doubleValue(), weight);
+            case WEIGHTED_MAJORITY_VOTE:
+                throw new KiePMMLException("WEIGHTED_MAJORITY_VOTE not implemented, yet");
+            default:
+                throw new KiePMMLException("Unrecognized MULTIPLE_MODEL_METHOD " + multipleModelMethod);
+        }
+    }
+
+    private void validate(final KiePMMLModel toValidate) {
+        if (!(toValidate instanceof KiePMMLMiningModel)) {
+            throw new KiePMMLModelException(String.format(EXPECTED_A_KIE_PMMLMINING_MODEL_RECEIVED, toValidate.getClass().getName()));
+        }
+        validateMining((KiePMMLMiningModel) toValidate);
+    }
+
+    private void validateMining(final KiePMMLMiningModel toValidate) {
+        if (toValidate.getTargetField() == null || StringUtils.isEmpty(toValidate.getTargetField().trim())) {
+            throw new KiePMMLInternalException(String.format(TARGET_FIELD_REQUIRED_RETRIEVED, toValidate.getTargetField()));
+        }
     }
 }

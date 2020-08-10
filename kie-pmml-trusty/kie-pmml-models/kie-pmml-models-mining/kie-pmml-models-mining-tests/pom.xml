@@ -34,6 +34,49 @@
       <artifactId>kie-pmml-evaluator-assembler</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- TEST -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-compiler-api</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-compiler-commons</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-regression-compiler</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-regression-evaluator</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-drools-scorecard-compiler</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-drools-scorecard-evaluator</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-test-util</artifactId>
@@ -52,12 +95,6 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-compiler-api</artifactId>
-      <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
