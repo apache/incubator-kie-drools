@@ -94,7 +94,7 @@ public interface ProcessInstance<T> {
     /**
      * Updates process variables of this process instance
      */
-    void updateVariables(T updates);
+    T updateVariables(T updates);
 
     /**
      * Returns current status of this process instance
@@ -181,6 +181,14 @@ public interface ProcessInstance<T> {
      * @return returns process error
      */
     Optional<ProcessError> error();
+
+    default ProcessInstance<T> checkError() {
+        Optional<ProcessError> error = error();
+        if (error.isPresent()) {
+            throw new ProcessInstanceExecutionException(id(), error.get().failedNodeId(), error.get().errorMessage());
+        }
+        return this;
+    }
 
     void triggerNode(String nodeId);
 

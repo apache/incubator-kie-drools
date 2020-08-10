@@ -24,7 +24,7 @@ public class XXXTaskInput {
         return this._name;
     }
 
-    public static XXXTaskInput fromMap(org.kie.kogito.process.WorkItem workItem) {
+    public static XXXTaskInput from(org.kie.kogito.process.WorkItem workItem) {
         
     }
 }

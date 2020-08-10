@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -69,6 +70,7 @@ public class ModelMetaData {
     private String visibility;
     private boolean hidden;
     private String templateName;
+    private Consumer<CompilationUnit> customGenerator;
 
     private boolean supportsValidation;
 
@@ -77,6 +79,12 @@ public class ModelMetaData {
     }
 
     public ModelMetaData(String processId, String packageName, String modelClassSimpleName, String visibility, VariableDeclarations variableScope, boolean hidden, String templateName) {
+        this(processId, packageName, modelClassSimpleName, visibility, variableScope, hidden, templateName, c -> {
+        });
+    }
+
+    public ModelMetaData(String processId, String packageName, String modelClassSimpleName, String visibility, VariableDeclarations variableScope, boolean hidden, String templateName,
+                         Consumer<CompilationUnit> customGenerator) {
         this.processId = processId;
         this.packageName = packageName;
         this.modelClassSimpleName = modelClassSimpleName;
@@ -85,10 +93,12 @@ public class ModelMetaData {
         this.visibility = visibility;
         this.hidden = hidden;
         this.templateName = templateName;
+        this.customGenerator = customGenerator;
     }
 
     public String generate() {
         CompilationUnit modelClass = compilationUnit();
+        customGenerator.accept(modelClass);
         return modelClass.toString();
     }
 

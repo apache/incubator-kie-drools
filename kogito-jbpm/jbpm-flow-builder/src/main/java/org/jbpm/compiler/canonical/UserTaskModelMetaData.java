@@ -186,7 +186,7 @@ public class UserTaskModelMetaData {
         
         modelClass.setName(inputModelClassSimpleName);
 
-        // setup of static fromMap method body
+        // setup of static from method body
         ClassOrInterfaceType modelType = new ClassOrInterfaceType(null, modelClass.getNameAsString());
         BlockStmt staticFromMap = new BlockStmt();
         VariableDeclarationExpr itemField = new VariableDeclarationExpr(modelType, "item");
@@ -229,7 +229,7 @@ public class UserTaskModelMetaData {
             fd.createGetter();
             fd.createSetter();
 
-            // fromMap static method body
+            // from static method body
             FieldAccessExpr field = new FieldAccessExpr(item, entry.getKey());
 
 
@@ -259,7 +259,7 @@ public class UserTaskModelMetaData {
             fd.createGetter();
             fd.createSetter();
 
-            // fromMap static method body
+            // from static method body
             FieldAccessExpr field = new FieldAccessExpr(item, entry.getKey());
 
             ClassOrInterfaceType type = parseClassOrInterfaceType(entry.getValue().getClass().getCanonicalName());
@@ -270,13 +270,13 @@ public class UserTaskModelMetaData {
                                                                                              "get")
                                                                                                    .addArgument(new StringLiteralExpr(entry.getKey()))), AssignExpr.Operator.ASSIGN));
         }
-        Optional<MethodDeclaration> staticFromMapMethod = modelClass.findFirst(
-                                                                               MethodDeclaration.class, sl -> sl.getName().asString().equals("fromMap") && sl.isStatic());
-        if (staticFromMapMethod.isPresent()) {
-            MethodDeclaration fromMap = staticFromMapMethod.get();
-            fromMap.setType(modelClass.getNameAsString());
+        Optional<MethodDeclaration> staticFromMethod = modelClass.findFirst(
+                                                                               MethodDeclaration.class, sl -> sl.getName().asString().equals("from") && sl.isStatic());
+        if (staticFromMethod.isPresent()) {
+            MethodDeclaration from = staticFromMethod.get();
+            from.setType(modelClass.getNameAsString());
             staticFromMap.addStatement(new ReturnStmt(new NameExpr("item")));
-            fromMap.setBody(staticFromMap);
+            from.setBody(staticFromMap);
         }
         return compilationUnit;
     }

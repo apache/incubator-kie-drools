@@ -19,7 +19,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
-
 import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.kie.kogito.Application;
 import org.kie.kogito.auth.SecurityPolicy;
@@ -29,7 +28,9 @@ import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.workitem.Policy;
-
+import org.kie.kogito.services.uow.UnitOfWorkExecutor;
+import org.kie.kogito.services.identity.StaticIdentityProvider;
+import org.kie.kogito.auth.IdentityProvider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,134 +39,100 @@ import org.slf4j.LoggerFactory;
 public class $Type$ReactiveResource {
 
     Process<$Type$> process;
-    
+
     Application application;
 
     @POST()
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)    
-    public CompletionStage<$Type$Output> createResource_$name$(@Context HttpHeaders httpHeaders, @QueryParam("businessKey") String businessKey, $Type$Input resource) {
-        if (resource == null) {
-            resource = new $Type$Input();
-        }
-        final $Type$Input value = resource;
-        return CompletableFuture.supplyAsync(() -> {
-            return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-                ProcessInstance<$Type$> pi = process.createInstance(businessKey, mapInput(value, new $Type$()));
+    @Consumes(MediaType.APPLICATION_JSON)
+    public CompletionStage<$Type$Output> createResource_$name$(@Context HttpHeaders httpHeaders,
+                                                               @QueryParam("businessKey") String businessKey,
+                                                               $Type$Input resource) {
+        return CompletableFuture.supplyAsync(() -> UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(),
+            () -> {
+                $Type$Input inputModel = resource != null ? resource : new $Type$Input();
+                ProcessInstance<$Type$> pi = process.createInstance(businessKey, inputModel.toModel());
                 String startFromNode = httpHeaders.getHeaderString("X-KOGITO-StartFromNode");
-                
                 if (startFromNode != null) {
                     pi.startFrom(startFromNode);
                 } else {
                     pi.start();
                 }
-                return getModel(pi);
-            });
-        });
+                return pi.checkError().variables().toOutput();
+            })
+        ); 
     }
 
     @GET()
     @Produces(MediaType.APPLICATION_JSON)
     public CompletionStage<List<$Type$Output>> getResources_$name$() {
-        return CompletableFuture.supplyAsync(() -> {
-            return process.instances().values().stream()
-                    .map(pi -> mapOutput(new $Type$Output(), pi.variables()))
-                 .collect(Collectors.toList());
-        });   
+        return CompletableFuture.supplyAsync(() -> process.instances().values().stream()
+                                                          .map(pi -> pi.variables().toOutput())
+                                                          .collect(Collectors.toList()));
     }
 
     @GET()
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public CompletionStage<$Type$Output> getResource_$name$(@PathParam("id") String id) {
-        return CompletableFuture.supplyAsync(() -> {
-            return process.instances()
-                    .findById(id, ProcessInstanceReadMode.READ_ONLY)
-                    .map(pi -> mapOutput(new $Type$Output(), pi.variables()))
-                    .orElse(null);
-        });
+        return CompletableFuture.supplyAsync(() -> process.instances()
+                                                          .findById(id, ProcessInstanceReadMode.READ_ONLY)
+                                                          .map(pi -> pi.variables().toOutput())
+                                                          .orElse(null));
     }
-    
+
     @DELETE()
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public CompletionStage<$Type$Output> deleteResource_$name$(@PathParam("id") final String id) {
-        return CompletableFuture.supplyAsync(() -> {
-            return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-                ProcessInstance<$Type$> pi = process.instances()
-                        .findById(id)
-                        .orElse(null);
-                if (pi == null) {
-                    return null;
-                } else {
-                    pi.abort();
-                    return getModel(pi);
-                }
-            });
-        });
+        return CompletableFuture.supplyAsync(() -> UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(),
+            () -> process
+                    .instances()
+                    .findById(id)
+                    .map(pi -> {
+                        pi.abort();
+                        return pi.checkError().variables().toOutput();
+                    })
+                    .orElse(null))
+        );
     }
-    
+
     @POST()
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public CompletionStage<$Type$Output> updateModel_$name$(@PathParam("id") String id, $Type$ resource) {
-        return CompletableFuture.supplyAsync(() -> {
-            return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-                ProcessInstance<$Type$> pi = process.instances()
-                        .findById(id)
-                        .orElse(null);
-                if (pi == null) {
-                    return null;
-                } else {
-                    pi.updateVariables(resource);
-                    return mapOutput(new $Type$Output(), pi.variables());
-                }
-            });
-        });
+        return CompletableFuture.supplyAsync(() -> UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(),
+            () -> process
+                    .instances()
+                    .findById(id)
+                    .map(pi -> pi.updateVariables(resource).toOutput())
+                    .orElse(null))
+        );
     }
-    
+
     @GET()
     @Path("/{id}/tasks")
     @Produces(MediaType.APPLICATION_JSON)
-    public CompletionStage<Map<String, String>> getTasks_$name$(@PathParam("id") String id, @QueryParam("user") final String user, @QueryParam("group") final List<String> groups) {
-        return CompletableFuture.supplyAsync(() -> {
-            return process.instances()
-                    .findById(id, ProcessInstanceReadMode.READ_ONLY)
-                    .map(pi -> pi.workItems(policies(user, groups)))
-                    .map(l -> l.stream().collect(Collectors.toMap(WorkItem::getId, WorkItem::getName)))
-                    .orElse(null);
-        });
+    public CompletionStage<Map<String, String>> getTasks_$name$(@PathParam("id") String id,
+                                                                @QueryParam("user") final String user,
+                                                                @QueryParam("group") final List<String> groups) {
+        return CompletableFuture.supplyAsync(() -> process.instances()
+                                                          .findById(id, ProcessInstanceReadMode.READ_ONLY)
+                                                          .map(pi -> pi.workItems(policies(user, groups)))
+                                                          .map(l -> l.stream().collect(Collectors.toMap(WorkItem::getId,
+                                                                                                        WorkItem::getName)))
+                                                          .orElse(null));
     }
-    
-    protected $Type$Output getModel(ProcessInstance<$Type$> pi) {
-        if (pi.status() == ProcessInstance.STATE_ERROR && pi.error().isPresent()) {
-            throw new ProcessInstanceExecutionException(pi.id(), pi.error().get().failedNodeId(), pi.error().get().errorMessage());
-        }
-        
-        return mapOutput(new $Type$Output(), pi.variables());
-    }
-    
+
     protected Policy[] policies(String user, List<String> groups) {
         if (user == null) {
             return new Policy[0];
-        } 
-        org.kie.kogito.auth.IdentityProvider identity = null;
-        if (user != null) {
-            identity = new org.kie.kogito.services.identity.StaticIdentityProvider(user, groups);
         }
-        return new Policy[] {SecurityPolicy.of(identity)};
-    }
-    
-    protected $Type$ mapInput($Type$Input input, $Type$ resource) {
-        resource.fromMap(input.toMap());
-        
-        return resource;
-    }
-    
-    protected $Type$Output mapOutput($Type$Output output, $Type$ resource) {
-        output.fromMap(resource.toMap());
-        
-        return output;
+        IdentityProvider identity = null;
+        if (user != null) {
+            identity = new StaticIdentityProvider(user, groups);
+        }
+        return new Policy[]{SecurityPolicy.of(identity)};
     }
 }

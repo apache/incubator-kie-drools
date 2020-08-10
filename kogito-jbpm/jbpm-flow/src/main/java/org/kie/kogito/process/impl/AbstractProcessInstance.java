@@ -283,13 +283,14 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     @Override
-    public void updateVariables(T updates) {
+    public T updateVariables(T updates) {
         Map<String, Object> map = bind(updates);
 
         for (Entry<String, Object> entry : map.entrySet()) {
             processInstance().setVariable(entry.getKey(), entry.getValue());
         }
         addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).update(pi.id(), pi));
+        return variables;
     }
 
     @Override

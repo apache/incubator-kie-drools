@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.kogito.MapOutput;
 import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.process.workitem.Policy;
@@ -36,8 +37,8 @@ public class HumanTaskTransition implements Transition<Map<String, Object>> {
     private Map<String, Object> data;
     private List<Policy<?>> policies = new ArrayList<>();
     
-    public static HumanTaskTransition withModel(String phase, Map<String, Object> data, Policy<?>... policies) {
-        return new HumanTaskTransition(phase, data, policies);
+    public static HumanTaskTransition withModel(String phase, MapOutput data, Policy<?>... policies) {
+        return new HumanTaskTransition(phase, data.toMap(), policies);
     }
 
     public static HumanTaskTransition withoutModel(String phase, Policy<?>... policies) {
