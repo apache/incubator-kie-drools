@@ -21,7 +21,7 @@ exports[`NoData component tests snapshot tests with location object 1`] = `
         <EmptyStateBody>
           No data to display
         </EmptyStateBody>
-        <Component
+        <Button
           onClick={[Function]}
           variant="primary"
         />
@@ -52,12 +52,12 @@ exports[`NoData component tests snapshot tests without location object 1`] = `
         <EmptyStateBody>
           some description
         </EmptyStateBody>
-        <Component
+        <Button
           onClick={[Function]}
           variant="primary"
         >
           button
-        </Component>
+        </Button>
       </EmptyState>
     </Bullseye>
   </PageSection>

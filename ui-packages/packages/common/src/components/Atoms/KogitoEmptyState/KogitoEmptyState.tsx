@@ -42,20 +42,18 @@ export const KogitoEmptyState: React.FC<IOwnProps & OUIAProps> = ({
     <Bullseye {...componentOuiaProps(ouiaId, 'kogito-empty-state', ouiaSafe)}>
       <EmptyState variant={EmptyStateVariant.full}>
         {type === KogitoEmptyStateType.Search && (
-          <EmptyStateIcon icon={SearchIcon} size="sm" />
+          <EmptyStateIcon icon={SearchIcon}/>
         )}
         {(type === KogitoEmptyStateType.Refresh ||
           type === KogitoEmptyStateType.Reset) && (
           <EmptyStateIcon
             icon={ExclamationTriangleIcon}
-            size="sm"
             color="var(--pf-global--warning-color--100)"
           />
         )}
         {type === KogitoEmptyStateType.Info && (
           <EmptyStateIcon
             icon={InfoCircleIcon}
-            size="sm"
             color="var(--pf-global--info-color--100)"
           />
         )}

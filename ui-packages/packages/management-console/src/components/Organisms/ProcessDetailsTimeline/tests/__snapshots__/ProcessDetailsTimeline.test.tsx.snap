@@ -18,51 +18,22 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for completed s
   <CardBody>
     <Stack
       className="kogito-management-console--timeline"
-      gutter="md"
+      hasGutter={true}
     >
       <Split
         className="kogito-management-console--timeline-item"
-        gutter="sm"
+        hasGutter={true}
         key="7244ba1b-75ec-4789-8c65-499a0c5b1a6f"
       >
         <SplitItem>
           <Tooltip
-            appendTo={[Function]}
-            aria="describedby"
-            boundary="window"
-            className=""
             content="Something went wrong"
-            distance={15}
-            enableFlip={true}
-            entryDelay={500}
-            exitDelay={500}
-            flipBehavior={
-              Array [
-                "top",
-                "right",
-                "bottom",
-                "left",
-                "top",
-                "right",
-                "bottom",
-              ]
-            }
-            id=""
-            isAppLauncher={false}
-            isContentLeftAligned={false}
-            isVisible={false}
-            maxWidth="18.75rem"
-            position="top"
-            tippyProps={Object {}}
-            trigger="mouseenter focus"
-            zIndex={9999}
           >
             <ErrorCircleOIcon
               className="kogito-management-console--timeline-status"
               color="var(--pf-global--danger-color--100)"
               noVerticalAlign={false}
               size="sm"
-              title={null}
             />
           </Tooltip>
         </SplitItem>
@@ -76,42 +47,13 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for completed s
               End Event 1
               <span>
                 <Tooltip
-                  appendTo={[Function]}
-                  aria="describedby"
-                  boundary="window"
-                  className=""
                   content="Human task"
-                  distance={15}
-                  enableFlip={true}
-                  entryDelay={500}
-                  exitDelay={500}
-                  flipBehavior={
-                    Array [
-                      "top",
-                      "right",
-                      "bottom",
-                      "left",
-                      "top",
-                      "right",
-                      "bottom",
-                    ]
-                  }
-                  id=""
-                  isAppLauncher={false}
-                  isContentLeftAligned={false}
-                  isVisible={false}
-                  maxWidth="18.75rem"
-                  position="top"
-                  tippyProps={Object {}}
-                  trigger="mouseenter focus"
-                  zIndex={9999}
                 >
                   <UserIcon
                     className="pf-u-ml-sm"
                     color="var(--pf-global--icon--Color--light)"
                     noVerticalAlign={false}
                     size="sm"
-                    title={null}
                   />
                 </Tooltip>
               </span>
@@ -127,47 +69,18 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for completed s
       </Split>
       <Split
         className="kogito-management-console--timeline-item"
-        gutter="sm"
+        hasGutter={true}
         key="2f588da5-a323-4111-9017-3093ef9319d1"
       >
         <SplitItem>
           <Tooltip
-            appendTo={[Function]}
-            aria="describedby"
-            boundary="window"
-            className=""
             content="Active"
-            distance={15}
-            enableFlip={true}
-            entryDelay={500}
-            exitDelay={500}
-            flipBehavior={
-              Array [
-                "top",
-                "right",
-                "bottom",
-                "left",
-                "top",
-                "right",
-                "bottom",
-              ]
-            }
-            id=""
-            isAppLauncher={false}
-            isContentLeftAligned={false}
-            isVisible={false}
-            maxWidth="18.75rem"
-            position="top"
-            tippyProps={Object {}}
-            trigger="mouseenter focus"
-            zIndex={9999}
           >
             <OnRunningIcon
               className="kogito-management-console--timeline-status"
               color="currentColor"
               noVerticalAlign={false}
               size="sm"
-              title={null}
             />
           </Tooltip>
         </SplitItem>
@@ -192,47 +105,18 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for completed s
       </Split>
       <Split
         className="kogito-management-console--timeline-item"
-        gutter="sm"
+        hasGutter={true}
         key="6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2"
       >
         <SplitItem>
           <Tooltip
-            appendTo={[Function]}
-            aria="describedby"
-            boundary="window"
-            className=""
             content="Active"
-            distance={15}
-            enableFlip={true}
-            entryDelay={500}
-            exitDelay={500}
-            flipBehavior={
-              Array [
-                "top",
-                "right",
-                "bottom",
-                "left",
-                "top",
-                "right",
-                "bottom",
-              ]
-            }
-            id=""
-            isAppLauncher={false}
-            isContentLeftAligned={false}
-            isVisible={false}
-            maxWidth="18.75rem"
-            position="top"
-            tippyProps={Object {}}
-            trigger="mouseenter focus"
-            zIndex={9999}
           >
             <OnRunningIcon
               className="kogito-management-console--timeline-status"
               color="currentColor"
               noVerticalAlign={false}
               size="sm"
-              title={null}
             />
           </Tooltip>
         </SplitItem>
@@ -246,42 +130,13 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for completed s
               StartProcess
               <span>
                 <Tooltip
-                  appendTo={[Function]}
-                  aria="describedby"
-                  boundary="window"
-                  className=""
                   content="Human task"
-                  distance={15}
-                  enableFlip={true}
-                  entryDelay={500}
-                  exitDelay={500}
-                  flipBehavior={
-                    Array [
-                      "top",
-                      "right",
-                      "bottom",
-                      "left",
-                      "top",
-                      "right",
-                      "bottom",
-                    ]
-                  }
-                  id=""
-                  isAppLauncher={false}
-                  isContentLeftAligned={false}
-                  isVisible={false}
-                  maxWidth="18.75rem"
-                  position="top"
-                  tippyProps={Object {}}
-                  trigger="mouseenter focus"
-                  zIndex={9999}
                 >
                   <UserIcon
                     className="pf-u-ml-sm"
                     color="var(--pf-global--icon--Color--light)"
                     noVerticalAlign={false}
                     size="sm"
-                    title={null}
                   />
                 </Tooltip>
               </span>
@@ -318,51 +173,22 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for no service 
   <CardBody>
     <Stack
       className="kogito-management-console--timeline"
-      gutter="md"
+      hasGutter={true}
     >
       <Split
         className="kogito-management-console--timeline-item"
-        gutter="sm"
+        hasGutter={true}
         key="7244ba1b-75ec-4789-8c65-499a0c5b1a6f"
       >
         <SplitItem>
           <Tooltip
-            appendTo={[Function]}
-            aria="describedby"
-            boundary="window"
-            className=""
             content="Something went wrong"
-            distance={15}
-            enableFlip={true}
-            entryDelay={500}
-            exitDelay={500}
-            flipBehavior={
-              Array [
-                "top",
-                "right",
-                "bottom",
-                "left",
-                "top",
-                "right",
-                "bottom",
-              ]
-            }
-            id=""
-            isAppLauncher={false}
-            isContentLeftAligned={false}
-            isVisible={false}
-            maxWidth="18.75rem"
-            position="top"
-            tippyProps={Object {}}
-            trigger="mouseenter focus"
-            zIndex={9999}
           >
             <ErrorCircleOIcon
               className="kogito-management-console--timeline-status"
               color="var(--pf-global--danger-color--100)"
               noVerticalAlign={false}
               size="sm"
-              title={null}
             />
           </Tooltip>
         </SplitItem>
@@ -376,42 +202,13 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for no service 
               End Event 1
               <span>
                 <Tooltip
-                  appendTo={[Function]}
-                  aria="describedby"
-                  boundary="window"
-                  className=""
                   content="Human task"
-                  distance={15}
-                  enableFlip={true}
-                  entryDelay={500}
-                  exitDelay={500}
-                  flipBehavior={
-                    Array [
-                      "top",
-                      "right",
-                      "bottom",
-                      "left",
-                      "top",
-                      "right",
-                      "bottom",
-                    ]
-                  }
-                  id=""
-                  isAppLauncher={false}
-                  isContentLeftAligned={false}
-                  isVisible={false}
-                  maxWidth="18.75rem"
-                  position="top"
-                  tippyProps={Object {}}
-                  trigger="mouseenter focus"
-                  zIndex={9999}
                 >
                   <UserIcon
                     className="pf-u-ml-sm"
                     color="var(--pf-global--icon--Color--light)"
                     noVerticalAlign={false}
                     size="sm"
-                    title={null}
                   />
                 </Tooltip>
               </span>
@@ -427,47 +224,18 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for no service 
       </Split>
       <Split
         className="kogito-management-console--timeline-item"
-        gutter="sm"
+        hasGutter={true}
         key="2f588da5-a323-4111-9017-3093ef9319d1"
       >
         <SplitItem>
           <Tooltip
-            appendTo={[Function]}
-            aria="describedby"
-            boundary="window"
-            className=""
             content="Active"
-            distance={15}
-            enableFlip={true}
-            entryDelay={500}
-            exitDelay={500}
-            flipBehavior={
-              Array [
-                "top",
-                "right",
-                "bottom",
-                "left",
-                "top",
-                "right",
-                "bottom",
-              ]
-            }
-            id=""
-            isAppLauncher={false}
-            isContentLeftAligned={false}
-            isVisible={false}
-            maxWidth="18.75rem"
-            position="top"
-            tippyProps={Object {}}
-            trigger="mouseenter focus"
-            zIndex={9999}
           >
             <OnRunningIcon
               className="kogito-management-console--timeline-status"
               color="currentColor"
               noVerticalAlign={false}
               size="sm"
-              title={null}
             />
           </Tooltip>
         </SplitItem>
@@ -492,47 +260,18 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for no service 
       </Split>
       <Split
         className="kogito-management-console--timeline-item"
-        gutter="sm"
+        hasGutter={true}
         key="6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2"
       >
         <SplitItem>
           <Tooltip
-            appendTo={[Function]}
-            aria="describedby"
-            boundary="window"
-            className=""
             content="Active"
-            distance={15}
-            enableFlip={true}
-            entryDelay={500}
-            exitDelay={500}
-            flipBehavior={
-              Array [
-                "top",
-                "right",
-                "bottom",
-                "left",
-                "top",
-                "right",
-                "bottom",
-              ]
-            }
-            id=""
-            isAppLauncher={false}
-            isContentLeftAligned={false}
-            isVisible={false}
-            maxWidth="18.75rem"
-            position="top"
-            tippyProps={Object {}}
-            trigger="mouseenter focus"
-            zIndex={9999}
           >
             <OnRunningIcon
               className="kogito-management-console--timeline-status"
               color="currentColor"
               noVerticalAlign={false}
               size="sm"
-              title={null}
             />
           </Tooltip>
         </SplitItem>
@@ -546,42 +285,13 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for no service 
               StartProcess
               <span>
                 <Tooltip
-                  appendTo={[Function]}
-                  aria="describedby"
-                  boundary="window"
-                  className=""
                   content="Human task"
-                  distance={15}
-                  enableFlip={true}
-                  entryDelay={500}
-                  exitDelay={500}
-                  flipBehavior={
-                    Array [
-                      "top",
-                      "right",
-                      "bottom",
-                      "left",
-                      "top",
-                      "right",
-                      "bottom",
-                    ]
-                  }
-                  id=""
-                  isAppLauncher={false}
-                  isContentLeftAligned={false}
-                  isVisible={false}
-                  maxWidth="18.75rem"
-                  position="top"
-                  tippyProps={Object {}}
-                  trigger="mouseenter focus"
-                  zIndex={9999}
                 >
                   <UserIcon
                     className="pf-u-ml-sm"
                     color="var(--pf-global--icon--Color--light)"
                     noVerticalAlign={false}
                     size="sm"
-                    title={null}
                   />
                 </Tooltip>
               </span>
@@ -618,51 +328,22 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for service url
   <CardBody>
     <Stack
       className="kogito-management-console--timeline"
-      gutter="md"
+      hasGutter={true}
     >
       <Split
         className="kogito-management-console--timeline-item"
-        gutter="sm"
+        hasGutter={true}
         key="69e0a0f5-2360-4174-a8f8-a892a31fc2f9r25e"
       >
         <SplitItem>
           <Tooltip
-            appendTo={[Function]}
-            aria="describedby"
-            boundary="window"
-            className=""
             content="Something went wrong"
-            distance={15}
-            enableFlip={true}
-            entryDelay={500}
-            exitDelay={500}
-            flipBehavior={
-              Array [
-                "top",
-                "right",
-                "bottom",
-                "left",
-                "top",
-                "right",
-                "bottom",
-              ]
-            }
-            id=""
-            isAppLauncher={false}
-            isContentLeftAligned={false}
-            isVisible={false}
-            maxWidth="18.75rem"
-            position="top"
-            tippyProps={Object {}}
-            trigger="mouseenter focus"
-            zIndex={9999}
           >
             <ErrorCircleOIcon
               className="kogito-management-console--timeline-status"
               color="var(--pf-global--danger-color--100)"
               noVerticalAlign={false}
               size="sm"
-              title={null}
             />
           </Tooltip>
         </SplitItem>
@@ -676,42 +357,13 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for service url
               Confirm travel
               <span>
                 <Tooltip
-                  appendTo={[Function]}
-                  aria="describedby"
-                  boundary="window"
-                  className=""
                   content="Human task"
-                  distance={15}
-                  enableFlip={true}
-                  entryDelay={500}
-                  exitDelay={500}
-                  flipBehavior={
-                    Array [
-                      "top",
-                      "right",
-                      "bottom",
-                      "left",
-                      "top",
-                      "right",
-                      "bottom",
-                    ]
-                  }
-                  id=""
-                  isAppLauncher={false}
-                  isContentLeftAligned={false}
-                  isVisible={false}
-                  maxWidth="18.75rem"
-                  position="top"
-                  tippyProps={Object {}}
-                  trigger="mouseenter focus"
-                  zIndex={9999}
                 >
                   <UserIcon
                     className="pf-u-ml-sm"
                     color="var(--pf-global--icon--Color--light)"
                     noVerticalAlign={false}
                     size="sm"
-                    title={null}
                   />
                 </Tooltip>
               </span>
@@ -756,47 +408,18 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for service url
       </Split>
       <Split
         className="kogito-management-console--timeline-item"
-        gutter="sm"
+        hasGutter={true}
         key="69e0a0f5-2360-4174-a8f8-a892a31fc2f9"
       >
         <SplitItem>
           <Tooltip
-            appendTo={[Function]}
-            aria="describedby"
-            boundary="window"
-            className=""
             content="Active"
-            distance={15}
-            enableFlip={true}
-            entryDelay={500}
-            exitDelay={500}
-            flipBehavior={
-              Array [
-                "top",
-                "right",
-                "bottom",
-                "left",
-                "top",
-                "right",
-                "bottom",
-              ]
-            }
-            id=""
-            isAppLauncher={false}
-            isContentLeftAligned={false}
-            isVisible={false}
-            maxWidth="18.75rem"
-            position="top"
-            tippyProps={Object {}}
-            trigger="mouseenter focus"
-            zIndex={9999}
           >
             <OnRunningIcon
               className="kogito-management-console--timeline-status"
               color="currentColor"
               noVerticalAlign={false}
               size="sm"
-              title={null}
             />
           </Tooltip>
         </SplitItem>
@@ -810,42 +433,13 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for service url
               Confirm travel
               <span>
                 <Tooltip
-                  appendTo={[Function]}
-                  aria="describedby"
-                  boundary="window"
-                  className=""
                   content="Human task"
-                  distance={15}
-                  enableFlip={true}
-                  entryDelay={500}
-                  exitDelay={500}
-                  flipBehavior={
-                    Array [
-                      "top",
-                      "right",
-                      "bottom",
-                      "left",
-                      "top",
-                      "right",
-                      "bottom",
-                    ]
-                  }
-                  id=""
-                  isAppLauncher={false}
-                  isContentLeftAligned={false}
-                  isVisible={false}
-                  maxWidth="18.75rem"
-                  position="top"
-                  tippyProps={Object {}}
-                  trigger="mouseenter focus"
-                  zIndex={9999}
                 >
                   <UserIcon
                     className="pf-u-ml-sm"
                     color="var(--pf-global--icon--Color--light)"
                     noVerticalAlign={false}
                     size="sm"
-                    title={null}
                   />
                 </Tooltip>
               </span>
@@ -890,47 +484,18 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for service url
       </Split>
       <Split
         className="kogito-management-console--timeline-item"
-        gutter="sm"
+        hasGutter={true}
         key="7244ba1b-75ec-4789-8c65-499a0c5b1a6f"
       >
         <SplitItem>
           <Tooltip
-            appendTo={[Function]}
-            aria="describedby"
-            boundary="window"
-            className=""
             content="Completed"
-            distance={15}
-            enableFlip={true}
-            entryDelay={500}
-            exitDelay={500}
-            flipBehavior={
-              Array [
-                "top",
-                "right",
-                "bottom",
-                "left",
-                "top",
-                "right",
-                "bottom",
-              ]
-            }
-            id=""
-            isAppLauncher={false}
-            isContentLeftAligned={false}
-            isVisible={false}
-            maxWidth="18.75rem"
-            position="top"
-            tippyProps={Object {}}
-            trigger="mouseenter focus"
-            zIndex={9999}
           >
             <CheckCircleIcon
               className="kogito-management-console--timeline-status"
               color="var(--pf-global--success-color--100)"
               noVerticalAlign={false}
               size="sm"
-              title={null}
             />
           </Tooltip>
         </SplitItem>
@@ -973,47 +538,18 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for service url
       </Split>
       <Split
         className="kogito-management-console--timeline-item"
-        gutter="sm"
+        hasGutter={true}
         key="2f588da5-a323-4111-9017-3093ef9319d1"
       >
         <SplitItem>
           <Tooltip
-            appendTo={[Function]}
-            aria="describedby"
-            boundary="window"
-            className=""
             content="Completed"
-            distance={15}
-            enableFlip={true}
-            entryDelay={500}
-            exitDelay={500}
-            flipBehavior={
-              Array [
-                "top",
-                "right",
-                "bottom",
-                "left",
-                "top",
-                "right",
-                "bottom",
-              ]
-            }
-            id=""
-            isAppLauncher={false}
-            isContentLeftAligned={false}
-            isVisible={false}
-            maxWidth="18.75rem"
-            position="top"
-            tippyProps={Object {}}
-            trigger="mouseenter focus"
-            zIndex={9999}
           >
             <CheckCircleIcon
               className="kogito-management-console--timeline-status"
               color="var(--pf-global--success-color--100)"
               noVerticalAlign={false}
               size="sm"
-              title={null}
             />
           </Tooltip>
         </SplitItem>
@@ -1056,47 +592,18 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for service url
       </Split>
       <Split
         className="kogito-management-console--timeline-item"
-        gutter="sm"
+        hasGutter={true}
         key="6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2"
       >
         <SplitItem>
           <Tooltip
-            appendTo={[Function]}
-            aria="describedby"
-            boundary="window"
-            className=""
             content="Completed"
-            distance={15}
-            enableFlip={true}
-            entryDelay={500}
-            exitDelay={500}
-            flipBehavior={
-              Array [
-                "top",
-                "right",
-                "bottom",
-                "left",
-                "top",
-                "right",
-                "bottom",
-              ]
-            }
-            id=""
-            isAppLauncher={false}
-            isContentLeftAligned={false}
-            isVisible={false}
-            maxWidth="18.75rem"
-            position="top"
-            tippyProps={Object {}}
-            trigger="mouseenter focus"
-            zIndex={9999}
           >
             <CheckCircleIcon
               className="kogito-management-console--timeline-status"
               color="var(--pf-global--success-color--100)"
               noVerticalAlign={false}
               size="sm"
-              title={null}
             />
           </Tooltip>
         </SplitItem>

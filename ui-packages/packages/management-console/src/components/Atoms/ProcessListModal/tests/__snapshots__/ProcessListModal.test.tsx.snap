@@ -4,17 +4,20 @@ exports[`ProcessBulkModal component tests snapshot testing 1`] = `
 <Modal
   actions={
     Array [
-      <Unknown
+      <Button
         onClick={[Function]}
         variant="primary"
       >
         OK
-      </Unknown>,
+      </Button>,
     ]
   }
   appendTo={<body />}
-  ariaDescribedById=""
+  aria-describedby=""
+  aria-label=""
+  aria-labelledby=""
   className=""
+  hasNoBodyWrapper={false}
   header={
     <Title
       headingLevel="h1"
@@ -26,20 +29,17 @@ exports[`ProcessBulkModal component tests snapshot testing 1`] = `
           color="var(--pf-global--info-color--100)"
           noVerticalAlign={false}
           size="sm"
-          title={null}
         />
         Abort operation
       </React.Fragment>
     </Title>
   }
-  hideTitle={false}
-  isFooterLeftAligned={false}
-  isLarge={false}
   isOpen={true}
-  isSmall={true}
   onClose={[Function]}
+  ouiaSafe={true}
   showClose={true}
   title=""
+  variant="small"
 >
   <ProcessListBulkInstances
     operationResult={

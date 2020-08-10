@@ -16,13 +16,12 @@
 
 import React from 'react';
 import {
-  BaseSizes,
   Button,
   Modal,
   Text,
   TextContent,
   Title,
-  TitleLevel
+  TitleSizes
 } from '@patternfly/react-core';
 
 interface IOwnProps {
@@ -33,10 +32,10 @@ interface IOwnProps {
 const FormNotification: React.FC<IOwnProps> = ({ message, closeAction }) => {
   return (
     <Modal
-      isSmall={true}
+      variant="small"
       title=""
       header={
-        <Title headingLevel={TitleLevel.h1} size={BaseSizes['2xl']}>
+        <Title headingLevel="h1" size={TitleSizes['2xl']}>
           Executing Task
         </Title>
       }
@@ -47,7 +46,6 @@ const FormNotification: React.FC<IOwnProps> = ({ message, closeAction }) => {
           OK
         </Button>
       ]}
-      isFooterLeftAligned={false}
     >
       <TextContent>
         <Text>{message}</Text>

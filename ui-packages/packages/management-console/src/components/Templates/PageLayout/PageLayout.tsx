@@ -1,9 +1,7 @@
 import {
   Nav,
   NavList,
-  NavItem,
-  withOuiaContext,
-  InjectedOuiaProps
+  NavItem, OUIAProps
 } from '@patternfly/react-core';
 import React from 'react';
 import { Redirect, Route, Link, Switch } from 'react-router-dom';
@@ -27,8 +25,8 @@ interface IOwnProps {
   history: History;
 }
 
-const PageLayout: React.FC<IOwnProps & InjectedOuiaProps> = ({
-  ouiaContext,
+const PageLayout: React.FC<IOwnProps & OUIAProps> = ({
+  ouiaId,
   ...props
 }) => {
   const { pathname } = props.location;
@@ -40,7 +38,6 @@ const PageLayout: React.FC<IOwnProps & InjectedOuiaProps> = ({
           <Link
             to="/ProcessInstances"
             {...ouiaAttribute(
-              ouiaContext,
               'data-ouia-navigation-name',
               'process-instances'
             )}
@@ -52,7 +49,6 @@ const PageLayout: React.FC<IOwnProps & InjectedOuiaProps> = ({
           <Link
             to="/DomainExplorer"
             {...ouiaAttribute(
-              ouiaContext,
               'data-ouia-navigation-name',
               'domain-explorer'
             )}
@@ -134,4 +130,4 @@ const PageLayout: React.FC<IOwnProps & InjectedOuiaProps> = ({
   );
 };
 
-export default withOuiaContext(PageLayout);
+export default PageLayout;

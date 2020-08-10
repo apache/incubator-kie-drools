@@ -4,16 +4,22 @@ exports[`ServerUnavailable component tests snapshot testing  1`] = `
 <Fragment>
   <BrowserRouter>
     <Page
-      breadcrumb={null}
       className="kogito-common--PageLayout"
       defaultManagedSidebarIsOpen={true}
       header={
         <PageHeader
-          avatar={
-            <Avatar
-              alt="Kogito Logo"
-              src="avatar.svg"
-            />
+          headerTools={
+            <PageHeaderTools>
+              <Context.Provider
+                value=".../../../../static/logo.png"
+              >
+                <PageToolbar />
+              </Context.Provider>
+              <Avatar
+                alt="Kogito Logo"
+                src="avatar.svg"
+              />
+            </PageHeaderTools>
           }
           isNavOpen={true}
           logo={
@@ -24,17 +30,11 @@ exports[`ServerUnavailable component tests snapshot testing  1`] = `
           }
           onNavToggle={[Function]}
           showNavToggle={true}
-          toolbar={
-            <Context.Provider
-              value=".../../../../static/logo.png"
-            >
-              <PageToolbar />
-            </Context.Provider>
-          }
         />
       }
       isManagedSidebar={true}
       mainContainerId="main-content-page-layout-default-nav"
+      mainTabIndex={-1}
       onPageResize={[Function]}
       sidebar={
         <PageSidebar
@@ -42,7 +42,6 @@ exports[`ServerUnavailable component tests snapshot testing  1`] = `
           theme="dark"
         />
       }
-      skipToContent={null}
     >
       <PageSection
         variant="light"
@@ -54,7 +53,6 @@ exports[`ServerUnavailable component tests snapshot testing  1`] = `
             <EmptyStateIcon
               color="var(--pf-global--danger-color--100)"
               icon={[Function]}
-              size="md"
             />
             <Title
               headingLevel="h1"
@@ -68,12 +66,12 @@ exports[`ServerUnavailable component tests snapshot testing  1`] = `
             <EmptyStateBody>
               Try reloading the page, or contact your administrator for more information.
             </EmptyStateBody>
-            <Component
+            <Button
               onClick={[Function]}
               variant="primary"
             >
               Refresh
-            </Component>
+            </Button>
           </EmptyState>
         </Bullseye>
       </PageSection>

@@ -161,7 +161,6 @@ exports[`TaskListItem test Snapshot test 1`] = `
           <DataListAction
             aria-label="Actions"
             aria-labelledby="kie-datalist-item kie-datalist-action"
-            className=""
             id="kie-datalist-action"
             key=".1"
             rowid="kie-datalist-item"

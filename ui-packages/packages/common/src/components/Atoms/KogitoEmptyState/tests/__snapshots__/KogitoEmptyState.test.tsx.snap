@@ -24,37 +24,39 @@ exports[`KogitoEmptyState component tests Info test 1`] = `
         <div
           className="pf-c-empty-state"
         >
-          <EmptyStateIcon
-            color="var(--pf-global--info-color--100)"
-            icon={[Function]}
-            size="sm"
+          <div
+            className="pf-c-empty-state__content"
           >
-            <InfoCircleIcon
-              aria-hidden="true"
-              className="pf-c-empty-state__icon"
+            <EmptyStateIcon
               color="var(--pf-global--info-color--100)"
-              size="sm"
+              icon={[Function]}
             >
-              <MockedComponent />
-            </InfoCircleIcon>
-          </EmptyStateIcon>
-          <Title
-            headingLevel="h5"
-            size="lg"
-          >
-            <h5
-              className="pf-c-title pf-m-lg"
+              <InfoCircleIcon
+                aria-hidden="true"
+                className="pf-c-empty-state__icon"
+                color="var(--pf-global--info-color--100)"
+              >
+                <MockedComponent />
+              </InfoCircleIcon>
+            </EmptyStateIcon>
+            <Title
+              headingLevel="h5"
+              size="lg"
             >
-              No child process instances
-            </h5>
-          </Title>
-          <EmptyStateBody>
-            <div
-              className="pf-c-empty-state__body"
-            >
-              This process has no related sub processes
-            </div>
-          </EmptyStateBody>
+              <h5
+                className="pf-c-title pf-m-lg"
+              >
+                No child process instances
+              </h5>
+            </Title>
+            <EmptyStateBody>
+              <div
+                className="pf-c-empty-state__body"
+              >
+                This process has no related sub processes
+              </div>
+            </EmptyStateBody>
+          </div>
         </div>
       </EmptyState>
     </div>
@@ -87,76 +89,57 @@ exports[`KogitoEmptyState component tests Refresh test 1`] = `
         <div
           className="pf-c-empty-state"
         >
-          <EmptyStateIcon
-            color="var(--pf-global--warning-color--100)"
-            icon={[Function]}
-            size="sm"
+          <div
+            className="pf-c-empty-state__content"
           >
-            <ExclamationTriangleIcon
-              aria-hidden="true"
-              className="pf-c-empty-state__icon"
+            <EmptyStateIcon
               color="var(--pf-global--warning-color--100)"
-              size="sm"
+              icon={[Function]}
             >
-              <MockedComponent />
-            </ExclamationTriangleIcon>
-          </EmptyStateIcon>
-          <Title
-            headingLevel="h5"
-            size="lg"
-          >
-            <h5
-              className="pf-c-title pf-m-lg"
-            >
-              No child process instances
-            </h5>
-          </Title>
-          <EmptyStateBody>
-            <div
-              className="pf-c-empty-state__body"
-            >
-              This process has no related sub processes
-            </div>
-          </EmptyStateBody>
-          <Component
-            onClick={[MockFunction]}
-            variant="primary"
-          >
-            <ComponentWithOuia
-              component={[Function]}
-              componentProps={
-                Object {
-                  "children": "Refresh",
-                  "onClick": [MockFunction],
-                  "variant": "primary",
-                }
-              }
-              consumerContext={null}
-            >
-              <Button
-                onClick={[MockFunction]}
-                ouiaContext={
-                  Object {
-                    "isOuia": false,
-                    "ouiaId": null,
-                  }
-                }
-                variant="primary"
+              <ExclamationTriangleIcon
+                aria-hidden="true"
+                className="pf-c-empty-state__icon"
+                color="var(--pf-global--warning-color--100)"
               >
-                <button
-                  aria-disabled={null}
-                  aria-label={null}
-                  className="pf-c-button pf-m-primary"
-                  disabled={false}
-                  onClick={[MockFunction]}
-                  tabIndex={null}
-                  type="button"
-                >
-                  Refresh
-                </button>
-              </Button>
-            </ComponentWithOuia>
-          </Component>
+                <MockedComponent />
+              </ExclamationTriangleIcon>
+            </EmptyStateIcon>
+            <Title
+              headingLevel="h5"
+              size="lg"
+            >
+              <h5
+                className="pf-c-title pf-m-lg"
+              >
+                No child process instances
+              </h5>
+            </Title>
+            <EmptyStateBody>
+              <div
+                className="pf-c-empty-state__body"
+              >
+                This process has no related sub processes
+              </div>
+            </EmptyStateBody>
+            <Button
+              onClick={[MockFunction]}
+              variant="primary"
+            >
+              <button
+                aria-disabled={false}
+                aria-label={null}
+                className="pf-c-button pf-m-primary"
+                data-ouia-component-id={1}
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe={true}
+                disabled={false}
+                onClick={[MockFunction]}
+                type="button"
+              >
+                Refresh
+              </button>
+            </Button>
+          </div>
         </div>
       </EmptyState>
     </div>
@@ -189,80 +172,57 @@ exports[`KogitoEmptyState component tests Reset test 1`] = `
         <div
           className="pf-c-empty-state"
         >
-          <EmptyStateIcon
-            color="var(--pf-global--warning-color--100)"
-            icon={[Function]}
-            size="sm"
+          <div
+            className="pf-c-empty-state__content"
           >
-            <ExclamationTriangleIcon
-              aria-hidden="true"
-              className="pf-c-empty-state__icon"
+            <EmptyStateIcon
               color="var(--pf-global--warning-color--100)"
-              size="sm"
+              icon={[Function]}
             >
-              <MockedComponent />
-            </ExclamationTriangleIcon>
-          </EmptyStateIcon>
-          <Title
-            headingLevel="h5"
-            size="lg"
-          >
-            <h5
-              className="pf-c-title pf-m-lg"
-            >
-              No child process instances
-            </h5>
-          </Title>
-          <EmptyStateBody>
-            <div
-              className="pf-c-empty-state__body"
-            >
-              This process has no related sub processes
-            </div>
-          </EmptyStateBody>
-          <Component
-            onClick={[MockFunction]}
-            variant="link"
-          >
-            <ComponentWithOuia
-              component={[Function]}
-              componentProps={
-                Object {
-                  "children": "Reset to default",
-                  "onClick": [MockFunction],
-                  "variant": "link",
-                }
-              }
-              consumerContext={null}
-            >
-              <Button
-                onClick={[MockFunction]}
-                ouiaContext={
-                  Object {
-                    "isOuia": false,
-                    "ouiaId": null,
-                  }
-                }
-                variant="link"
+              <ExclamationTriangleIcon
+                aria-hidden="true"
+                className="pf-c-empty-state__icon"
+                color="var(--pf-global--warning-color--100)"
               >
-                <button
-                  aria-disabled={null}
-                  aria-label={null}
-                  className="pf-c-button pf-m-link"
-                  disabled={false}
-                  onClick={[MockFunction]}
-                  tabIndex={null}
-                  type="button"
-                >
-                  <span
-                    className="pf-c-button__text"
-                  >
-                    Reset to default
-                  </span>
-                </button>
-              </Button>
-            </ComponentWithOuia>
-          </Component>
+                <MockedComponent />
+              </ExclamationTriangleIcon>
+            </EmptyStateIcon>
+            <Title
+              headingLevel="h5"
+              size="lg"
+            >
+              <h5
+                className="pf-c-title pf-m-lg"
+              >
+                No child process instances
+              </h5>
+            </Title>
+            <EmptyStateBody>
+              <div
+                className="pf-c-empty-state__body"
+              >
+                This process has no related sub processes
+              </div>
+            </EmptyStateBody>
+            <Button
+              onClick={[MockFunction]}
+              variant="link"
+            >
+              <button
+                aria-disabled={false}
+                aria-label={null}
+                className="pf-c-button pf-m-link"
+                data-ouia-component-id={0}
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe={true}
+                disabled={false}
+                onClick={[MockFunction]}
+                type="button"
+              >
+                Reset to default
+              </button>
+            </Button>
+          </div>
         </div>
       </EmptyState>
     </div>
@@ -294,35 +254,37 @@ exports[`KogitoEmptyState component tests Search test 1`] = `
         <div
           className="pf-c-empty-state"
         >
-          <EmptyStateIcon
-            icon={[Function]}
-            size="sm"
+          <div
+            className="pf-c-empty-state__content"
           >
-            <SearchIcon
-              aria-hidden="true"
-              className="pf-c-empty-state__icon"
-              size="sm"
+            <EmptyStateIcon
+              icon={[Function]}
             >
-              <MockedComponent />
-            </SearchIcon>
-          </EmptyStateIcon>
-          <Title
-            headingLevel="h5"
-            size="lg"
-          >
-            <h5
-              className="pf-c-title pf-m-lg"
+              <SearchIcon
+                aria-hidden="true"
+                className="pf-c-empty-state__icon"
+              >
+                <MockedComponent />
+              </SearchIcon>
+            </EmptyStateIcon>
+            <Title
+              headingLevel="h5"
+              size="lg"
             >
-              No child process instances
-            </h5>
-          </Title>
-          <EmptyStateBody>
-            <div
-              className="pf-c-empty-state__body"
-            >
-              This process has no related sub processes
-            </div>
-          </EmptyStateBody>
+              <h5
+                className="pf-c-title pf-m-lg"
+              >
+                No child process instances
+              </h5>
+            </Title>
+            <EmptyStateBody>
+              <div
+                className="pf-c-empty-state__body"
+              >
+                This process has no related sub processes
+              </div>
+            </EmptyStateBody>
+          </div>
         </div>
       </EmptyState>
     </div>

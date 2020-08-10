@@ -2,7 +2,7 @@
 
 exports[`EndpointLink component tests snapshot testing for link hidden 1`] = `
 <Fragment>
-  <Component
+  <Button
     component="a"
     data-ouia-component-id="endpoint-link-2"
     data-ouia-component-type="endpoint-link"
@@ -18,15 +18,14 @@ exports[`EndpointLink component tests snapshot testing for link hidden 1`] = `
       color="currentColor"
       noVerticalAlign={false}
       size="sm"
-      title={null}
     />
-  </Component>
+  </Button>
 </Fragment>
 `;
 
 exports[`EndpointLink component tests snapshot testing for link shown 1`] = `
 <Fragment>
-  <Component
+  <Button
     component="a"
     data-ouia-component-id="endpoint-link-1"
     data-ouia-component-type="endpoint-link"
@@ -42,9 +41,8 @@ exports[`EndpointLink component tests snapshot testing for link shown 1`] = `
       color="currentColor"
       noVerticalAlign={false}
       size="sm"
-      title={null}
     />
-  </Component>
+  </Button>
 </Fragment>
 `;
 

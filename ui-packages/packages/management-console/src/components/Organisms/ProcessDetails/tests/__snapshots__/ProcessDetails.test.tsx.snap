@@ -42,7 +42,6 @@ exports[`ProcessDetails component tests Snapshot testing with basic data loaded 
             color="currentColor"
             noVerticalAlign={false}
             size="sm"
-            title={null}
           />
           Active
         </Text>

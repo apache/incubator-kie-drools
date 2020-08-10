@@ -3,10 +3,8 @@ import {
   Grid,
   GridItem,
   PageSection,
-  InjectedOuiaProps,
-  withOuiaContext,
   Bullseye,
-  Label
+  Label,
 } from '@patternfly/react-core';
 import React, { useEffect } from 'react';
 import UserTaskPageHeader from '../../Molecules/UserTaskPageHeader/UserTaskPageHeader';
@@ -16,7 +14,9 @@ import {
   KogitoSpinner,
   DataTableColumn,
   DataTable,
-  GraphQL
+  GraphQL,
+  OUIAProps,
+  componentOuiaProps
 } from '@kogito-apps/common';
 
 const UserTaskLoadingComponent = (
@@ -36,8 +36,9 @@ const stateColumnTransformer = (value, rowDataObj) => {
   };
 };
 
-const UserTaskDataTableContainer: React.FC<InjectedOuiaProps> = ({
-  ouiaContext
+const UserTaskDataTableContainer: React.FC<OUIAProps> = ({
+  ouiaId,
+  ouiaSafe
 }) => {
   const {
     loading,
@@ -78,14 +79,17 @@ const UserTaskDataTableContainer: React.FC<InjectedOuiaProps> = ({
   ];
 
   useEffect(() => {
-    return ouiaPageTypeAndObjectId(ouiaContext, 'user-tasks');
+    return ouiaPageTypeAndObjectId( 'user-tasks');
   });
 
   return (
     <React.Fragment>
+      <div
+        {...componentOuiaProps(ouiaId, 'UserTaskDataTableContainer', ouiaSafe)}
+      >
       <UserTaskPageHeader />
       <PageSection>
-        <Grid gutter="md">
+        <Grid hasGutter md={1}>
           <GridItem span={12}>
             <Card className="kogito-task-console--user-task_table-OverFlow">
               <DataTable
@@ -101,8 +105,9 @@ const UserTaskDataTableContainer: React.FC<InjectedOuiaProps> = ({
           </GridItem>
         </Grid>
       </PageSection>
+      </div>
     </React.Fragment>
   );
 };
 
-export default withOuiaContext(UserTaskDataTableContainer);
+export default UserTaskDataTableContainer;

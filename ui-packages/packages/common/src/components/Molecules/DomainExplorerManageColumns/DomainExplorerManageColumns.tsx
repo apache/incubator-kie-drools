@@ -410,7 +410,7 @@ const DomainExplorerManageColumns: React.FC<IOwnProps> = ({
       <Modal
         title="Manage columns"
         isOpen={isModalOpen}
-        isSmall
+        variant="small"
         description={
           <TextContent>
             <Text component={TextVariants.p}>

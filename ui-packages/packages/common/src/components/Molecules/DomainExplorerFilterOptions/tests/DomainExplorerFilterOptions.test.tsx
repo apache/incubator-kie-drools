@@ -731,16 +731,16 @@ describe('Domain explorer filter options component tests', () => {
     act(() => {
       wrapper
         .find('#button-with-string')
-        .at(2)
+        .at(0)
         .props()['isDisabled'] = false;
       wrapper
         .find('#button-with-string')
-        .at(2)
+        .at(0)
         .props()['disabled'] = false;
       const event = {} as React.MouseEvent<HTMLButtonElement, MouseEvent>;
       wrapper
         .find('#button-with-string')
-        .at(2)
+        .at(0)
         .props()
         ['onClick'](event);
     });
@@ -860,11 +860,11 @@ describe('Domain explorer filter options component tests', () => {
     // trigger button click after setting isDisable false on button
     wrapper
       .find('#button-with-arrayInput')
-      .at(2)
+      .at(0)
       .props()['isDisabled'] = false;
     wrapper
       .find('#button-with-arrayInput')
-      .at(2)
+      .at(0)
       .props()['disabled'] = false;
     const event = {} as React.MouseEvent<HTMLButtonElement, MouseEvent>;
     act(() => {
@@ -1654,16 +1654,16 @@ describe('Domain explorer filter options component tests', () => {
     act(() => {
       wrapper
         .find('#button-with-string')
-        .at(2)
+        .at(0)
         .props()['isDisabled'] = false;
       wrapper
         .find('#button-with-string')
-        .at(2)
+        .at(0)
         .props()['disabled'] = false;
       const event = {} as React.MouseEvent<HTMLButtonElement, MouseEvent>;
       wrapper
         .find('#button-with-string')
-        .at(2)
+        .at(0)
         .props()
         ['onClick'](event);
     });
@@ -1922,16 +1922,16 @@ describe('Domain explorer filter options component tests', () => {
     act(() => {
       wrapper
         .find('#button-with-string')
-        .at(2)
+        .at(0)
         .props()['isDisabled'] = false;
       wrapper
         .find('#button-with-string')
-        .at(2)
+        .at(0)
         .props()['disabled'] = false;
       const event = {} as React.MouseEvent<HTMLButtonElement, MouseEvent>;
       wrapper
         .find('#button-with-string')
-        .at(2)
+        .at(0)
         .props()
         ['onClick'](event);
     });

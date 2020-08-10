@@ -4,12 +4,12 @@ import {
   Select,
   SelectOption,
   SelectVariant,
-  DataToolbarFilter,
-  DataToolbarGroup,
-  DataToolbarItem,
-  DataToolbarToggleGroup,
-  DataToolbar,
-  DataToolbarContent
+  ToolbarFilter,
+  ToolbarGroup,
+  ToolbarItem,
+  ToolbarToggleGroup,
+  Toolbar,
+  ToolbarContent
 } from '@patternfly/react-core';
 import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
 import _ from 'lodash';
@@ -111,8 +111,8 @@ const DataToolbarWithFilter: React.FC<IOwnProps> = ({
 
   const toggleGroupItems = (
     <React.Fragment>
-      <DataToolbarGroup variant="filter-group">
-        <DataToolbarFilter
+      <ToolbarGroup variant="filter-group">
+        <ToolbarFilter
           chips={filters}
           deleteChip={onDelete}
           categoryName="Status"
@@ -123,46 +123,46 @@ const DataToolbarWithFilter: React.FC<IOwnProps> = ({
             onToggle={onStatusToggle}
             onSelect={onSelect}
             selections={checkedArray}
-            isExpanded={isExpanded}
+            isOpen={isExpanded}
             placeholderText="Status"
           >
             {statusMenuItems}
           </Select>
-        </DataToolbarFilter>
-        <DataToolbarItem>
+        </ToolbarFilter>
+        <ToolbarItem>
           <Button variant="primary" onClick={onFilterClick}>
             Apply Filter
           </Button>
-        </DataToolbarItem>
-      </DataToolbarGroup>
+        </ToolbarItem>
+      </ToolbarGroup>
     </React.Fragment>
   );
 
   const toolbarItems = (
     <React.Fragment>
-      <DataToolbarToggleGroup toggleIcon={<FilterIcon />} breakpoint="xl">
+      <ToolbarToggleGroup toggleIcon={<FilterIcon />} breakpoint="xl">
         {toggleGroupItems}
-      </DataToolbarToggleGroup>
-      <DataToolbarGroup variant="icon-button-group">
-        <DataToolbarItem>
+      </ToolbarToggleGroup>
+      <ToolbarGroup variant="icon-button-group">
+        <ToolbarItem>
           <Button variant="plain" onClick={onRefreshClick}>
             <SyncIcon />
           </Button>
-        </DataToolbarItem>
-      </DataToolbarGroup>
+        </ToolbarItem>
+      </ToolbarGroup>
     </React.Fragment>
   );
 
   return (
-    <DataToolbar
+    <Toolbar
       id="data-toolbar-with-filter"
       className="pf-m-toggle-group-container"
       collapseListedFiltersBreakpoint="xl"
       clearAllFilters={() => clearAll()}
       clearFiltersButtonText="Reset to default"
     >
-      <DataToolbarContent>{toolbarItems}</DataToolbarContent>
-    </DataToolbar>
+      <ToolbarContent>{toolbarItems}</ToolbarContent>
+    </Toolbar>
   );
 };
 

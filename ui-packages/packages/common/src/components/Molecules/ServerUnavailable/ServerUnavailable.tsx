@@ -11,6 +11,7 @@ import {
   Page,
   PageSidebar,
   PageHeader,
+  PageHeaderTools,
   Avatar,
   Brand
 } from '@patternfly/react-core';
@@ -30,12 +31,14 @@ const ServerUnavailable = props => {
   const Header = (
     <PageHeader
       logo={<Brand src={props.src} alt={props.alt} />}
-      toolbar={
-        <aboutLogoContext.Provider value={props.src}>
-          <PageToolbar />
-        </aboutLogoContext.Provider>
+      headerTools={
+        <PageHeaderTools>
+          <aboutLogoContext.Provider value={props.src}>
+              <PageToolbar />
+          </aboutLogoContext.Provider>
+        <Avatar src={userImage} alt="Kogito Logo" />
+        </PageHeaderTools>
       }
-      avatar={<Avatar src={userImage} alt="Kogito Logo" />}
       showNavToggle
       isNavOpen={isNavOpen}
       onNavToggle={onNavToggle}
@@ -63,7 +66,6 @@ const ServerUnavailable = props => {
               <EmptyState variant={EmptyStateVariant.full}>
                 <EmptyStateIcon
                   icon={ExclamationCircleIcon}
-                  size="md"
                   color="var(--pf-global--danger-color--100)"
                 />
                 <Title headingLevel="h1" size="4xl">

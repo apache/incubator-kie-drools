@@ -20,13 +20,13 @@ jest.mock(
 jest.mock('../../../Molecules/DomainExplorerTable/DomainExplorerTable');
 jest.mock('../../../Atoms/LoadMore/LoadMore');
 
-const MockedDataToolbar = (): React.ReactElement => {
+const MockedToolbar = (): React.ReactElement => {
   return <></>;
 };
 
 jest.mock('@patternfly/react-core', () => ({
   ...jest.requireActual('@patternfly/react-core'),
-  DataToolbar: () => <MockedDataToolbar />
+  Toolbar: () => <MockedToolbar />
 }));
 jest.mock('../../../Atoms/KogitoSpinner/KogitoSpinner');
 // tslint:disable: no-string-literal
@@ -208,7 +208,7 @@ describe('Domain Explorer component', () => {
     );
     act(() => {
       wrapper
-        .find('DataToolbar')
+        .find('Toolbar')
         .props()
         ['clearAllFilters']();
     });
@@ -323,7 +323,7 @@ describe('Domain Explorer component', () => {
     act(() => {
       // tslint:disable-next-line: no-string-literal
       wrapper
-        .find('DataToolbar')
+        .find('Toolbar')
         .props()
         ['clearAllFilters']('Filters', 'hotel/address / country: like s');
     });

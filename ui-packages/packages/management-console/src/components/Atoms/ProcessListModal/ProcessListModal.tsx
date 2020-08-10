@@ -2,11 +2,10 @@ import React from 'react';
 import {
   Modal,
   Title,
-  TitleLevel,
-  BaseSizes,
   Button,
   TextContent,
-  Text
+  Text,
+  TitleSizes
 } from '@patternfly/react-core';
 import ProcessListBulkInstances from '../ProcessListBulkInstances/ProcessListBulkInstances';
 import { IOperation } from '../../Molecules/ProcessListToolbar/ProcessListToolbar';
@@ -50,10 +49,10 @@ const ProcessListModal: React.FC<IOwnProps> = ({
   
   return (
     <Modal
-      isSmall={true}
+      variant="small"
       title=""
       header={
-        <Title headingLevel={TitleLevel.h1} size={BaseSizes['2xl']}>
+        <Title headingLevel="h1" size={TitleSizes['2xl']}>
           {modalTitle}
         </Title>
       }
@@ -64,7 +63,6 @@ const ProcessListModal: React.FC<IOwnProps> = ({
           OK
         </Button>
       ]}
-      isFooterLeftAligned={false}
     >
       {operationResult !== undefined && (
         <ProcessListBulkInstances operationResult={operationResult} />

@@ -2,9 +2,7 @@ import React from 'react';
 import {
   Nav,
   NavList,
-  NavItem,
-  InjectedOuiaProps,
-  withOuiaContext
+  NavItem, OUIAProps,
 } from '@patternfly/react-core';
 import { KogitoPageLayout, ouiaAttribute } from '@kogito-apps/common';
 import { Redirect, Route, Link, Switch } from 'react-router-dom';
@@ -20,20 +18,19 @@ interface IOwnProps {
   location: Location;
   history: History;
 }
-const PageLayout: React.FC<IOwnProps & InjectedOuiaProps> = ({
-  ouiaContext,
+const PageLayout: React.FC<IOwnProps & OUIAProps> = ({
+  ouiaId,
   ...props
 }) => {
   const { pathname } = props.location;
 
   const PageNav = (
-    <Nav aria-label="Nav" theme="dark" css="">
+    <Nav aria-label="Nav" theme="dark">
       <NavList>
         <NavItem isActive={pathname === '/UserTasks'}>
           <Link
             to="/UserTasks"
             {...ouiaAttribute(
-              ouiaContext,
               'data-ouia-navigation-name',
               'user-tasks'
             )}
@@ -45,7 +42,6 @@ const PageLayout: React.FC<IOwnProps & InjectedOuiaProps> = ({
           <Link
             to="/UserTasksFilters"
             {...ouiaAttribute(
-              ouiaContext,
               'data-ouia-navigation-name',
               'user-tasks-filters'
             )}
@@ -91,4 +87,4 @@ const PageLayout: React.FC<IOwnProps & InjectedOuiaProps> = ({
   );
 };
 
-export default withOuiaContext(PageLayout);
+export default PageLayout;

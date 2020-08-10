@@ -3,8 +3,6 @@ import {
   Grid,
   GridItem,
   PageSection,
-  InjectedOuiaProps,
-  withOuiaContext
 } from '@patternfly/react-core';
 import React, { useState, useEffect } from 'react';
 import UserTaskPageHeader from '../../Molecules/UserTaskPageHeader/UserTaskPageHeader';
@@ -15,10 +13,12 @@ import {
   ouiaPageTypeAndObjectId,
   KogitoEmptyState,
   KogitoEmptyStateType,
-  GraphQL
+  GraphQL,
+  OUIAProps,
+  componentOuiaProps,
 } from '@kogito-apps/common';
 
-const DataListContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
+const DataListContainer: React.FC<OUIAProps> = ({ ouiaId,  ouiaSafe}) => {
   const [initData, setInitData] = useState<any>([]);
   const [checkedArray, setCheckedArray] = useState<any>(['Ready']);
   const [isLoading, setIsLoading] = useState(false);
@@ -44,7 +44,7 @@ const DataListContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
   }, [data]);
 
   useEffect(() => {
-    return ouiaPageTypeAndObjectId(ouiaContext, 'user-tasks');
+    return ouiaPageTypeAndObjectId('user-tasks', 'true');
   });
 
   const resetClick = () => {
@@ -55,9 +55,12 @@ const DataListContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
 
   return (
     <React.Fragment>
+      <div
+        {...componentOuiaProps(ouiaId, 'DataListContainer', ouiaSafe)}
+      >
       <UserTaskPageHeader />
       <PageSection>
-        <Grid gutter="md">
+        <Grid hasGutter md={1}>
           <GridItem span={12}>
             <Card className="dataList">
               {!isError && (
@@ -90,8 +93,9 @@ const DataListContainer: React.FC<InjectedOuiaProps> = ({ ouiaContext }) => {
           </GridItem>
         </Grid>
       </PageSection>
+      </div>
     </React.Fragment>
   );
 };
 
-export default withOuiaContext(DataListContainer);
+export default DataListContainer;

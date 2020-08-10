@@ -3056,51 +3056,32 @@ exports[`FormRenderer test Render form with actions 1`] = `
               className="pf-c-form__group pf-m-action"
             >
               <div
-                className="pf-c-form__actions"
+                className="pf-c-form__group-control"
               >
-                <Component
-                  key="submit-complete"
-                  onClick={[Function]}
-                  type="submit"
-                  variant="secondary"
+                <div
+                  className="pf-c-form__actions"
                 >
-                  <ComponentWithOuia
-                    component={[Function]}
-                    componentProps={
-                      Object {
-                        "children": "Complete",
-                        "onClick": [Function],
-                        "type": "submit",
-                        "variant": "secondary",
-                      }
-                    }
-                    consumerContext={null}
+                  <Button
+                    key="submit-complete"
+                    onClick={[Function]}
+                    type="submit"
+                    variant="secondary"
                   >
-                    <Button
+                    <button
+                      aria-disabled={false}
+                      aria-label={null}
+                      className="pf-c-button pf-m-secondary"
+                      data-ouia-component-id={0}
+                      data-ouia-component-type="PF4/Button"
+                      data-ouia-safe={true}
+                      disabled={false}
                       onClick={[Function]}
-                      ouiaContext={
-                        Object {
-                          "isOuia": false,
-                          "ouiaId": null,
-                        }
-                      }
                       type="submit"
-                      variant="secondary"
                     >
-                      <button
-                        aria-disabled={null}
-                        aria-label={null}
-                        className="pf-c-button pf-m-secondary"
-                        disabled={false}
-                        onClick={[Function]}
-                        tabIndex={null}
-                        type="submit"
-                      >
-                        Complete
-                      </button>
-                    </Button>
-                  </ComponentWithOuia>
-                </Component>
+                      Complete
+                    </button>
+                  </Button>
+                </div>
               </div>
             </div>
           </ActionGroup>

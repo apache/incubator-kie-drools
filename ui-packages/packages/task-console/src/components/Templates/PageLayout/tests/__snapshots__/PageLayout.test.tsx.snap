@@ -8,33 +8,28 @@ exports[`PageLayout tests test TaskDetails route 1`] = `
       "pathname": "/Task/taskID",
     }
   }
-  ouiaContext={
-    Object {
-      "isOuia": false,
-      "ouiaId": null,
-    }
-  }
 >
   <KogitoPageLayout
     BrandAltText="Task Console Logo"
     BrandClick={[Function]}
     BrandSrc="taskConsoleLogo.svg"
     PageNav={
-      <Unknown
+      <Nav
         aria-label="Nav"
-        css=""
+        onSelect={[Function]}
+        onToggle={[Function]}
+        ouiaSafe={true}
         theme="dark"
       >
         <NavList
           ariaLeftScroll="Scroll left"
           ariaRightScroll="Scroll right"
-          className=""
-          variant="default"
         >
           <NavItem
             isActive={false}
           >
             <Link
+              data-ouia-navigation-name="user-tasks"
               to="/UserTasks"
             >
               User Tasks
@@ -44,13 +39,14 @@ exports[`PageLayout tests test TaskDetails route 1`] = `
             isActive={false}
           >
             <Link
+              data-ouia-navigation-name="user-tasks-filters"
               to="/UserTasksFilters"
             >
               User tasks with filters
             </Link>
           </NavItem>
         </NavList>
-      </Unknown>
+      </Nav>
     }
   >
     <MockedComponent />
@@ -66,33 +62,28 @@ exports[`PageLayout tests test UserTasks route 1`] = `
       "pathname": "/UserTasks",
     }
   }
-  ouiaContext={
-    Object {
-      "isOuia": false,
-      "ouiaId": null,
-    }
-  }
 >
   <KogitoPageLayout
     BrandAltText="Task Console Logo"
     BrandClick={[Function]}
     BrandSrc="taskConsoleLogo.svg"
     PageNav={
-      <Unknown
+      <Nav
         aria-label="Nav"
-        css=""
+        onSelect={[Function]}
+        onToggle={[Function]}
+        ouiaSafe={true}
         theme="dark"
       >
         <NavList
           ariaLeftScroll="Scroll left"
           ariaRightScroll="Scroll right"
-          className=""
-          variant="default"
         >
           <NavItem
             isActive={true}
           >
             <Link
+              data-ouia-navigation-name="user-tasks"
               to="/UserTasks"
             >
               User Tasks
@@ -102,13 +93,14 @@ exports[`PageLayout tests test UserTasks route 1`] = `
             isActive={false}
           >
             <Link
+              data-ouia-navigation-name="user-tasks-filters"
               to="/UserTasksFilters"
             >
               User tasks with filters
             </Link>
           </NavItem>
         </NavList>
-      </Unknown>
+      </Nav>
     }
   >
     <MockedComponent />
@@ -124,33 +116,28 @@ exports[`PageLayout tests test UserTasksFilters route 1`] = `
       "pathname": "/UserTasksFilters",
     }
   }
-  ouiaContext={
-    Object {
-      "isOuia": false,
-      "ouiaId": null,
-    }
-  }
 >
   <KogitoPageLayout
     BrandAltText="Task Console Logo"
     BrandClick={[Function]}
     BrandSrc="taskConsoleLogo.svg"
     PageNav={
-      <Unknown
+      <Nav
         aria-label="Nav"
-        css=""
+        onSelect={[Function]}
+        onToggle={[Function]}
+        ouiaSafe={true}
         theme="dark"
       >
         <NavList
           ariaLeftScroll="Scroll left"
           ariaRightScroll="Scroll right"
-          className=""
-          variant="default"
         >
           <NavItem
             isActive={false}
           >
             <Link
+              data-ouia-navigation-name="user-tasks"
               to="/UserTasks"
             >
               User Tasks
@@ -160,13 +147,14 @@ exports[`PageLayout tests test UserTasksFilters route 1`] = `
             isActive={true}
           >
             <Link
+              data-ouia-navigation-name="user-tasks-filters"
               to="/UserTasksFilters"
             >
               User tasks with filters
             </Link>
           </NavItem>
         </NavList>
-      </Unknown>
+      </Nav>
     }
   >
     <MockedComponent />
@@ -182,33 +170,28 @@ exports[`PageLayout tests test UserTasksTable route 1`] = `
       "pathname": "/UserTasksTable",
     }
   }
-  ouiaContext={
-    Object {
-      "isOuia": false,
-      "ouiaId": null,
-    }
-  }
 >
   <KogitoPageLayout
     BrandAltText="Task Console Logo"
     BrandClick={[Function]}
     BrandSrc="taskConsoleLogo.svg"
     PageNav={
-      <Unknown
+      <Nav
         aria-label="Nav"
-        css=""
+        onSelect={[Function]}
+        onToggle={[Function]}
+        ouiaSafe={true}
         theme="dark"
       >
         <NavList
           ariaLeftScroll="Scroll left"
           ariaRightScroll="Scroll right"
-          className=""
-          variant="default"
         >
           <NavItem
             isActive={false}
           >
             <Link
+              data-ouia-navigation-name="user-tasks"
               to="/UserTasks"
             >
               User Tasks
@@ -218,13 +201,14 @@ exports[`PageLayout tests test UserTasksTable route 1`] = `
             isActive={false}
           >
             <Link
+              data-ouia-navigation-name="user-tasks-filters"
               to="/UserTasksFilters"
             >
               User tasks with filters
             </Link>
           </NavItem>
         </NavList>
-      </Unknown>
+      </Nav>
     }
   >
     <MockedComponent />
@@ -240,33 +224,28 @@ exports[`PageLayout tests test default route 1`] = `
       "pathname": "/",
     }
   }
-  ouiaContext={
-    Object {
-      "isOuia": false,
-      "ouiaId": null,
-    }
-  }
 >
   <KogitoPageLayout
     BrandAltText="Task Console Logo"
     BrandClick={[Function]}
     BrandSrc="taskConsoleLogo.svg"
     PageNav={
-      <Unknown
+      <Nav
         aria-label="Nav"
-        css=""
+        onSelect={[Function]}
+        onToggle={[Function]}
+        ouiaSafe={true}
         theme="dark"
       >
         <NavList
           ariaLeftScroll="Scroll left"
           ariaRightScroll="Scroll right"
-          className=""
-          variant="default"
         >
           <NavItem
             isActive={false}
           >
             <Link
+              data-ouia-navigation-name="user-tasks"
               to="/UserTasks"
             >
               User Tasks
@@ -276,13 +255,14 @@ exports[`PageLayout tests test default route 1`] = `
             isActive={false}
           >
             <Link
+              data-ouia-navigation-name="user-tasks-filters"
               to="/UserTasksFilters"
             >
               User tasks with filters
             </Link>
           </NavItem>
         </NavList>
-      </Unknown>
+      </Nav>
     }
   >
     <MockedComponent />

@@ -10,20 +10,12 @@ import {
 } from '../OuiaUtils';
 
 describe('test function ouiaAttribute', () => {
-  it('isOuia=false', () => {
-    const attribute = ouiaAttribute({ isOuia: false }, 'attribute', 'value');
-    expect(attribute).not.toHaveProperty('attribute');
-  });
-  it('isOuia=true', () => {
-    const attribute = ouiaAttribute({ isOuia: true }, 'attribute', 'value');
-    expect(attribute).toHaveProperty('attribute', 'value');
-  });
   it('no value', () => {
-    const attribute = ouiaAttribute({ isOuia: true }, 'attribute', undefined);
+    const attribute = ouiaAttribute('attribute', undefined);
     expect(attribute).not.toHaveProperty('attribute');
   });
   it('int value', () => {
-    const attribute = ouiaAttribute({ isOuia: true }, 'attribute', 3);
+    const attribute = ouiaAttribute( 'attribute', 3);
     expect(attribute).toHaveProperty('attribute', 3);
   });
 });
@@ -78,22 +70,15 @@ describe('test function componentOuiaProps', () => {
     expect(spread).toHaveProperty('data-ouia-safe', false);
   });
 });
-const TestComponentSettingOuiaFalse = (): React.ReactElement => {
-  useEffect(() => {
-    return ouiaPageTypeAndObjectId({ isOuia: false }, 'test-page-type');
-  });
-  return <div />;
-};
 const TestComponentSettingPageType = (): React.ReactElement => {
   useEffect(() => {
-    return ouiaPageTypeAndObjectId({ isOuia: true }, 'test-page-type');
+    return ouiaPageTypeAndObjectId( 'test-page-type');
   });
   return <div />;
 };
 const TestComponentSettingPageTypeAndId = (): React.ReactElement => {
   useEffect(() => {
     return ouiaPageTypeAndObjectId(
-      { isOuia: true },
       'test-page-type',
       'test-object-id'
     );
@@ -103,17 +88,6 @@ const TestComponentSettingPageTypeAndId = (): React.ReactElement => {
 describe('test ouiaPageTypeAndObjectId', () => {
   document.body.setAttribute = jest.fn();
   document.body.removeAttribute = jest.fn();
-  it('isOuia false', () => {
-    const wrapper = mount(<TestComponentSettingOuiaFalse />);
-    expect(document.body.setAttribute).not.toBeCalledWith(
-      'data-ouia-page-type',
-      'test-page-type'
-    );
-    wrapper.unmount();
-    expect(document.body.removeAttribute).not.toBeCalledWith(
-      'data-ouia-page-type'
-    );
-  });
   it('page type only', () => {
     const wrapper = mount(<TestComponentSettingPageType />);
     expect(document.body.setAttribute).toBeCalledWith(

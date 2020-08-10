@@ -3,35 +3,7 @@
 exports[`ItemDescriptor component tests snapshot testing for buisness key null 1`] = `
 <Fragment>
   <Tooltip
-    appendTo={[Function]}
-    aria="describedby"
-    boundary="window"
-    className=""
     content="a1e139d5-4e77-48c9-84ae-34578e904e5a"
-    distance={15}
-    enableFlip={true}
-    entryDelay={500}
-    exitDelay={500}
-    flipBehavior={
-      Array [
-        "top",
-        "right",
-        "bottom",
-        "left",
-        "top",
-        "right",
-        "bottom",
-      ]
-    }
-    id=""
-    isAppLauncher={false}
-    isContentLeftAligned={false}
-    isVisible={false}
-    maxWidth="18.75rem"
-    position="top"
-    tippyProps={Object {}}
-    trigger="mouseenter focus"
-    zIndex={9999}
   >
     <span>
       HotelBooking
@@ -54,35 +26,7 @@ exports[`ItemDescriptor component tests snapshot testing for buisness key null 1
 exports[`ItemDescriptor component tests snapshot testing for business key available 1`] = `
 <Fragment>
   <Tooltip
-    appendTo={[Function]}
-    aria="describedby"
-    boundary="window"
-    className=""
     content="a1e139d5-4e77-48c9-84ae-34578e904e5a"
-    distance={15}
-    enableFlip={true}
-    entryDelay={500}
-    exitDelay={500}
-    flipBehavior={
-      Array [
-        "top",
-        "right",
-        "bottom",
-        "left",
-        "top",
-        "right",
-        "bottom",
-      ]
-    }
-    id=""
-    isAppLauncher={false}
-    isContentLeftAligned={false}
-    isVisible={false}
-    maxWidth="18.75rem"
-    position="top"
-    tippyProps={Object {}}
-    trigger="mouseenter focus"
-    zIndex={9999}
   >
     <span>
       HotelBooking

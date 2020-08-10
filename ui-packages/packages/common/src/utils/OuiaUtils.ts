@@ -60,13 +60,9 @@ export const getWrapper = (
  * @param objectId string value to be set as Page Object Id
  */
 export const ouiaPageTypeAndObjectId = (
-  ouiaContext,
   type: string,
   objectId?: string
 ): (() => void) => {
-  if (!ouiaContext.isOuia) {
-    return;
-  }
   document.body.setAttribute('data-ouia-page-type', type);
   if (objectId) {
     document.body.setAttribute('data-ouia-page-object-id', objectId);
@@ -94,12 +90,13 @@ export interface OUIAProps {
  * <div
  *   {...ouiaAttribute(ouiaContext,'name','value')}
  * />
- * @param ouiaContext OUIAContext of the component wrapped with patternfly's withOuiaContext function.
+ *
  * @param name name of the attribute
  * @param value value of the attribute
  */
-export const ouiaAttribute = (ouiaContext, name: string, value: any) => {
-  if (ouiaContext.isOuia && value) {
+export const ouiaAttribute = (name: string, value: any) => {
+  // if (ouiaContext.isOuia && value) {
+  if( value ) {
     return { [name]: value };
   }
   return {};
@@ -149,5 +146,5 @@ export const componentOuiaProps = (
  * @param ouiaId id string value to be set as an id
  */
 export const attributeOuiaId = (ouiaId: OuiaId) => {
-  return ouiaAttribute({ isOuia: true }, 'data-ouia-component-id', ouiaId);
+  return ouiaAttribute( 'data-ouia-component-id', ouiaId);
 };

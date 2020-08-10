@@ -1,7 +1,6 @@
 import React from 'react';
 
-const MockedDomainExplorerManageColumns = ({ setTableLoading }) => {
-  setTableLoading(false);
+const MockedDomainExplorerManageColumns = () => {
   return <></>;
 };
 

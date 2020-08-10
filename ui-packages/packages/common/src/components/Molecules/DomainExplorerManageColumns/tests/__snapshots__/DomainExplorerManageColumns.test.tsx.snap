@@ -195,69 +195,42 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
   setSelected={[MockFunction]}
   setTableLoading={[MockFunction]}
 >
-  <Component
+  <Button
     id="manage-columns-button"
     onClick={[Function]}
     variant="link"
   >
-    <ComponentWithOuia
-      component={[Function]}
-      componentProps={
-        Object {
-          "children": "Manage columns",
-          "id": "manage-columns-button",
-          "onClick": [Function],
-          "variant": "link",
-        }
-      }
-      consumerContext={null}
+    <button
+      aria-disabled={false}
+      aria-label={null}
+      className="pf-c-button pf-m-link"
+      data-ouia-component-id={11}
+      data-ouia-component-type="PF4/Button"
+      data-ouia-safe={true}
+      disabled={false}
+      id="manage-columns-button"
+      onClick={[Function]}
+      type="button"
     >
-      <Button
-        id="manage-columns-button"
-        onClick={[Function]}
-        ouiaContext={
-          Object {
-            "isOuia": false,
-            "ouiaId": null,
-          }
-        }
-        variant="link"
-      >
-        <button
-          aria-disabled={null}
-          aria-label={null}
-          className="pf-c-button pf-m-link"
-          disabled={false}
-          id="manage-columns-button"
-          onClick={[Function]}
-          tabIndex={null}
-          type="button"
-        >
-          <span
-            className="pf-c-button__text"
-          >
-            Manage columns
-          </span>
-        </button>
-      </Button>
-    </ComponentWithOuia>
-  </Component>
+      Manage columns
+    </button>
+  </Button>
   <Modal
     actions={
       Array [
-        <Unknown
+        <Button
           id="save-columns"
           onClick={[Function]}
           variant="primary"
         >
           Save
-        </Unknown>,
-        <Unknown
+        </Button>,
+        <Button
           onClick={[Function]}
           variant="secondary"
         >
           Cancel
-        </Unknown>,
+        </Button>,
       ]
     }
     appendTo={
@@ -272,15 +245,23 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
               class="pf-l-bullseye"
             >
               <div
-                aria-describedby="pf-modal-0"
-                aria-label="Manage columns"
+                aria-describedby="pf-modal-part-2"
+                aria-labelledby="pf-modal-part-1"
                 aria-modal="true"
                 class="pf-c-modal-box kogito-common--manage-columns__modal pf-m-sm"
+                data-ouia-component-id="12"
+                data-ouia-component-type="PF4/ModalContent"
+                data-ouia-safe="true"
+                id="pf-modal-part-0"
                 role="dialog"
               >
                 <button
+                  aria-disabled="false"
                   aria-label="Close"
                   class="pf-c-button pf-m-plain"
+                  data-ouia-component-id="13"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe="true"
                   type="button"
                 >
                   <svg
@@ -298,33 +279,39 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                     />
                   </svg>
                 </button>
-                <h1
-                  class="pf-c-title pf-m-2xl"
+                <header
+                  class="pf-c-modal-box__header"
                 >
-                   
-                  Manage columns
-                   
-                </h1>
-                <div
-                  class="pf-c-modal-box__description"
-                  id="pf-modal-0"
-                >
-                  <div
-                    class="pf-c-content"
+                  <h1
+                    class="pf-c-modal-box__title pf-c-modal-box__title"
+                    id="pf-modal-part-1"
                   >
-                    <p
-                      class=""
-                      data-pf-content="true"
+                    Manage columns
+                  </h1>
+                  <div
+                    class="pf-c-modal-box__description"
+                    id="pf-modal-part-2"
+                  >
+                    <div
+                      class="pf-c-content"
                     >
-                      Selected categories will be displayed in the table.
-                    </p>
+                      <p
+                        class=""
+                        data-pf-content="true"
+                      >
+                        Selected categories will be displayed in the table.
+                      </p>
+                    </div>
                   </div>
-                </div>
+                </header>
                 <div
                   class="pf-c-modal-box__body"
                 >
                   <div
                     class="pf-c-dropdown"
+                    data-ouia-component-id="14"
+                    data-ouia-component-type="PF4/Dropdown"
+                    data-ouia-safe="true"
                     id="selectAll-dropdown"
                   >
                     <div
@@ -346,24 +333,27 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                         aria-haspopup="true"
                         aria-label="Select"
                         class="pf-c-dropdown__toggle-button"
-                        id="pf-toggle-id-1"
+                        id="pf-dropdown-toggle-id-1"
                         type="button"
                       >
-                        <svg
-                          aria-hidden="true"
+                        <span
                           class=""
-                          fill="currentColor"
-                          height="1em"
-                          role="img"
-                          style="vertical-align: -0.125em;"
-                          viewBox="0 0 320 512"
-                          width="1em"
                         >
-                          <path
-                            d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                            transform=""
-                          />
-                        </svg>
+                          <svg
+                            aria-hidden="true"
+                            fill="currentColor"
+                            height="1em"
+                            role="img"
+                            style="vertical-align: -0.125em;"
+                            viewBox="0 0 320 512"
+                            width="1em"
+                          >
+                            <path
+                              d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                              transform=""
+                            />
+                          </svg>
+                        </span>
                       </button>
                     </div>
                   </div>
@@ -423,27 +413,35 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                           >
                             <button
                               aria-controls="kie-datalist-toggle-flight"
+                              aria-disabled="false"
                               aria-expanded="false"
                               aria-label="Details"
                               aria-labelledby="kie-datalist-item-flight kie-datalist-toggle-flight"
                               class="pf-c-button pf-m-plain"
+                              data-ouia-component-id="15"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe="true"
                               id="kie-datalist-toggle-flight"
                               type="button"
                             >
-                              <svg
-                                aria-hidden="true"
-                                fill="currentColor"
-                                height="1em"
-                                role="img"
-                                style="vertical-align: -0.125em;"
-                                viewBox="0 0 256 512"
-                                width="1em"
+                              <div
+                                class="pf-c-data-list__toggle-icon"
                               >
-                                <path
-                                  d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-                                  transform=""
-                                />
-                              </svg>
+                                <svg
+                                  aria-hidden="true"
+                                  fill="currentColor"
+                                  height="1em"
+                                  role="img"
+                                  style="vertical-align: -0.125em;"
+                                  viewBox="0 0 256 512"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                                    transform=""
+                                  />
+                                </svg>
+                              </div>
                             </button>
                           </div>
                         </div>
@@ -555,27 +553,35 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                           >
                             <button
                               aria-controls="kie-datalist-toggle-hotel/address / location"
+                              aria-disabled="false"
                               aria-expanded="false"
                               aria-label="Details"
                               aria-labelledby="kie-datalist-item-hotel/address / location kie-datalist-toggle-hotel/address / location"
                               class="pf-c-button pf-m-plain"
+                              data-ouia-component-id="16"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe="true"
                               id="kie-datalist-toggle-hotel/address / location"
                               type="button"
                             >
-                              <svg
-                                aria-hidden="true"
-                                fill="currentColor"
-                                height="1em"
-                                role="img"
-                                style="vertical-align: -0.125em;"
-                                viewBox="0 0 256 512"
-                                width="1em"
+                              <div
+                                class="pf-c-data-list__toggle-icon"
                               >
-                                <path
-                                  d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-                                  transform=""
-                                />
-                              </svg>
+                                <svg
+                                  aria-hidden="true"
+                                  fill="currentColor"
+                                  height="1em"
+                                  role="img"
+                                  style="vertical-align: -0.125em;"
+                                  viewBox="0 0 256 512"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                                    transform=""
+                                  />
+                                </svg>
+                              </div>
                             </button>
                           </div>
                         </div>
@@ -687,27 +693,35 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                           >
                             <button
                               aria-controls="kie-datalist-toggle-hotel/address"
+                              aria-disabled="false"
                               aria-expanded="false"
                               aria-label="Details"
                               aria-labelledby="kie-datalist-item-hotel/address kie-datalist-toggle-hotel/address"
                               class="pf-c-button pf-m-plain"
+                              data-ouia-component-id="17"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe="true"
                               id="kie-datalist-toggle-hotel/address"
                               type="button"
                             >
-                              <svg
-                                aria-hidden="true"
-                                fill="currentColor"
-                                height="1em"
-                                role="img"
-                                style="vertical-align: -0.125em;"
-                                viewBox="0 0 256 512"
-                                width="1em"
+                              <div
+                                class="pf-c-data-list__toggle-icon"
                               >
-                                <path
-                                  d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-                                  transform=""
-                                />
-                              </svg>
+                                <svg
+                                  aria-hidden="true"
+                                  fill="currentColor"
+                                  height="1em"
+                                  role="img"
+                                  style="vertical-align: -0.125em;"
+                                  viewBox="0 0 256 512"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                                    transform=""
+                                  />
+                                </svg>
+                              </div>
                             </button>
                           </div>
                         </div>
@@ -819,27 +833,35 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                           >
                             <button
                               aria-controls="kie-datalist-toggle-hotel"
+                              aria-disabled="false"
                               aria-expanded="false"
                               aria-label="Details"
                               aria-labelledby="kie-datalist-item-hotel kie-datalist-toggle-hotel"
                               class="pf-c-button pf-m-plain"
+                              data-ouia-component-id="18"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe="true"
                               id="kie-datalist-toggle-hotel"
                               type="button"
                             >
-                              <svg
-                                aria-hidden="true"
-                                fill="currentColor"
-                                height="1em"
-                                role="img"
-                                style="vertical-align: -0.125em;"
-                                viewBox="0 0 256 512"
-                                width="1em"
+                              <div
+                                class="pf-c-data-list__toggle-icon"
                               >
-                                <path
-                                  d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-                                  transform=""
-                                />
-                              </svg>
+                                <svg
+                                  aria-hidden="true"
+                                  fill="currentColor"
+                                  height="1em"
+                                  role="img"
+                                  style="vertical-align: -0.125em;"
+                                  viewBox="0 0 256 512"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                                    transform=""
+                                  />
+                                </svg>
+                              </div>
                             </button>
                           </div>
                         </div>
@@ -897,30 +919,40 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                     </li>
                   </ul>
                 </div>
-                <div
+                <footer
                   class="pf-c-modal-box__footer"
                 >
                   <button
+                    aria-disabled="false"
                     class="pf-c-button pf-m-primary"
+                    data-ouia-component-id="19"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe="true"
                     id="save-columns"
                     type="button"
                   >
                     Save
                   </button>
                   <button
+                    aria-disabled="false"
                     class="pf-c-button pf-m-secondary"
+                    data-ouia-component-id="20"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe="true"
                     type="button"
                   >
                     Cancel
                   </button>
-                </div>
+                </footer>
               </div>
             </div>
           </div>
         </div>
       </body>
     }
-    ariaDescribedById=""
+    aria-describedby=""
+    aria-label=""
+    aria-labelledby=""
     className="kogito-common--manage-columns__modal"
     description={
       <TextContent>
@@ -931,14 +963,13 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
         </Text>
       </TextContent>
     }
-    hideTitle={false}
-    isFooterLeftAligned={false}
-    isLarge={false}
+    hasNoBodyWrapper={false}
     isOpen={true}
-    isSmall={true}
     onClose={[Function]}
+    ouiaSafe={true}
     showClose={true}
     title="Manage columns"
+    variant="small"
   >
     <Portal
       containerInfo={
@@ -950,15 +981,23 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
               class="pf-l-bullseye"
             >
               <div
-                aria-describedby="pf-modal-0"
-                aria-label="Manage columns"
+                aria-describedby="pf-modal-part-2"
+                aria-labelledby="pf-modal-part-1"
                 aria-modal="true"
                 class="pf-c-modal-box kogito-common--manage-columns__modal pf-m-sm"
+                data-ouia-component-id="12"
+                data-ouia-component-type="PF4/ModalContent"
+                data-ouia-safe="true"
+                id="pf-modal-part-0"
                 role="dialog"
               >
                 <button
+                  aria-disabled="false"
                   aria-label="Close"
                   class="pf-c-button pf-m-plain"
+                  data-ouia-component-id="13"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe="true"
                   type="button"
                 >
                   <svg
@@ -976,33 +1015,39 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                     />
                   </svg>
                 </button>
-                <h1
-                  class="pf-c-title pf-m-2xl"
+                <header
+                  class="pf-c-modal-box__header"
                 >
-                   
-                  Manage columns
-                   
-                </h1>
-                <div
-                  class="pf-c-modal-box__description"
-                  id="pf-modal-0"
-                >
-                  <div
-                    class="pf-c-content"
+                  <h1
+                    class="pf-c-modal-box__title pf-c-modal-box__title"
+                    id="pf-modal-part-1"
                   >
-                    <p
-                      class=""
-                      data-pf-content="true"
+                    Manage columns
+                  </h1>
+                  <div
+                    class="pf-c-modal-box__description"
+                    id="pf-modal-part-2"
+                  >
+                    <div
+                      class="pf-c-content"
                     >
-                      Selected categories will be displayed in the table.
-                    </p>
+                      <p
+                        class=""
+                        data-pf-content="true"
+                      >
+                        Selected categories will be displayed in the table.
+                      </p>
+                    </div>
                   </div>
-                </div>
+                </header>
                 <div
                   class="pf-c-modal-box__body"
                 >
                   <div
                     class="pf-c-dropdown"
+                    data-ouia-component-id="14"
+                    data-ouia-component-type="PF4/Dropdown"
+                    data-ouia-safe="true"
                     id="selectAll-dropdown"
                   >
                     <div
@@ -1024,24 +1069,27 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                         aria-haspopup="true"
                         aria-label="Select"
                         class="pf-c-dropdown__toggle-button"
-                        id="pf-toggle-id-1"
+                        id="pf-dropdown-toggle-id-1"
                         type="button"
                       >
-                        <svg
-                          aria-hidden="true"
+                        <span
                           class=""
-                          fill="currentColor"
-                          height="1em"
-                          role="img"
-                          style="vertical-align: -0.125em;"
-                          viewBox="0 0 320 512"
-                          width="1em"
                         >
-                          <path
-                            d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                            transform=""
-                          />
-                        </svg>
+                          <svg
+                            aria-hidden="true"
+                            fill="currentColor"
+                            height="1em"
+                            role="img"
+                            style="vertical-align: -0.125em;"
+                            viewBox="0 0 320 512"
+                            width="1em"
+                          >
+                            <path
+                              d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                              transform=""
+                            />
+                          </svg>
+                        </span>
                       </button>
                     </div>
                   </div>
@@ -1101,27 +1149,35 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                           >
                             <button
                               aria-controls="kie-datalist-toggle-flight"
+                              aria-disabled="false"
                               aria-expanded="false"
                               aria-label="Details"
                               aria-labelledby="kie-datalist-item-flight kie-datalist-toggle-flight"
                               class="pf-c-button pf-m-plain"
+                              data-ouia-component-id="15"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe="true"
                               id="kie-datalist-toggle-flight"
                               type="button"
                             >
-                              <svg
-                                aria-hidden="true"
-                                fill="currentColor"
-                                height="1em"
-                                role="img"
-                                style="vertical-align: -0.125em;"
-                                viewBox="0 0 256 512"
-                                width="1em"
+                              <div
+                                class="pf-c-data-list__toggle-icon"
                               >
-                                <path
-                                  d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-                                  transform=""
-                                />
-                              </svg>
+                                <svg
+                                  aria-hidden="true"
+                                  fill="currentColor"
+                                  height="1em"
+                                  role="img"
+                                  style="vertical-align: -0.125em;"
+                                  viewBox="0 0 256 512"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                                    transform=""
+                                  />
+                                </svg>
+                              </div>
                             </button>
                           </div>
                         </div>
@@ -1233,27 +1289,35 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                           >
                             <button
                               aria-controls="kie-datalist-toggle-hotel/address / location"
+                              aria-disabled="false"
                               aria-expanded="false"
                               aria-label="Details"
                               aria-labelledby="kie-datalist-item-hotel/address / location kie-datalist-toggle-hotel/address / location"
                               class="pf-c-button pf-m-plain"
+                              data-ouia-component-id="16"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe="true"
                               id="kie-datalist-toggle-hotel/address / location"
                               type="button"
                             >
-                              <svg
-                                aria-hidden="true"
-                                fill="currentColor"
-                                height="1em"
-                                role="img"
-                                style="vertical-align: -0.125em;"
-                                viewBox="0 0 256 512"
-                                width="1em"
+                              <div
+                                class="pf-c-data-list__toggle-icon"
                               >
-                                <path
-                                  d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-                                  transform=""
-                                />
-                              </svg>
+                                <svg
+                                  aria-hidden="true"
+                                  fill="currentColor"
+                                  height="1em"
+                                  role="img"
+                                  style="vertical-align: -0.125em;"
+                                  viewBox="0 0 256 512"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                                    transform=""
+                                  />
+                                </svg>
+                              </div>
                             </button>
                           </div>
                         </div>
@@ -1365,27 +1429,35 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                           >
                             <button
                               aria-controls="kie-datalist-toggle-hotel/address"
+                              aria-disabled="false"
                               aria-expanded="false"
                               aria-label="Details"
                               aria-labelledby="kie-datalist-item-hotel/address kie-datalist-toggle-hotel/address"
                               class="pf-c-button pf-m-plain"
+                              data-ouia-component-id="17"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe="true"
                               id="kie-datalist-toggle-hotel/address"
                               type="button"
                             >
-                              <svg
-                                aria-hidden="true"
-                                fill="currentColor"
-                                height="1em"
-                                role="img"
-                                style="vertical-align: -0.125em;"
-                                viewBox="0 0 256 512"
-                                width="1em"
+                              <div
+                                class="pf-c-data-list__toggle-icon"
                               >
-                                <path
-                                  d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-                                  transform=""
-                                />
-                              </svg>
+                                <svg
+                                  aria-hidden="true"
+                                  fill="currentColor"
+                                  height="1em"
+                                  role="img"
+                                  style="vertical-align: -0.125em;"
+                                  viewBox="0 0 256 512"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                                    transform=""
+                                  />
+                                </svg>
+                              </div>
                             </button>
                           </div>
                         </div>
@@ -1497,27 +1569,35 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                           >
                             <button
                               aria-controls="kie-datalist-toggle-hotel"
+                              aria-disabled="false"
                               aria-expanded="false"
                               aria-label="Details"
                               aria-labelledby="kie-datalist-item-hotel kie-datalist-toggle-hotel"
                               class="pf-c-button pf-m-plain"
+                              data-ouia-component-id="18"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe="true"
                               id="kie-datalist-toggle-hotel"
                               type="button"
                             >
-                              <svg
-                                aria-hidden="true"
-                                fill="currentColor"
-                                height="1em"
-                                role="img"
-                                style="vertical-align: -0.125em;"
-                                viewBox="0 0 256 512"
-                                width="1em"
+                              <div
+                                class="pf-c-data-list__toggle-icon"
                               >
-                                <path
-                                  d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-                                  transform=""
-                                />
-                              </svg>
+                                <svg
+                                  aria-hidden="true"
+                                  fill="currentColor"
+                                  height="1em"
+                                  role="img"
+                                  style="vertical-align: -0.125em;"
+                                  viewBox="0 0 256 512"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                                    transform=""
+                                  />
+                                </svg>
+                              </div>
                             </button>
                           </div>
                         </div>
@@ -1575,23 +1655,31 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                     </li>
                   </ul>
                 </div>
-                <div
+                <footer
                   class="pf-c-modal-box__footer"
                 >
                   <button
+                    aria-disabled="false"
                     class="pf-c-button pf-m-primary"
+                    data-ouia-component-id="19"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe="true"
                     id="save-columns"
                     type="button"
                   >
                     Save
                   </button>
                   <button
+                    aria-disabled="false"
                     class="pf-c-button pf-m-secondary"
+                    data-ouia-component-id="20"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe="true"
                     type="button"
                   >
                     Cancel
                   </button>
-                </div>
+                </footer>
               </div>
             </div>
           </div>
@@ -1601,22 +1689,25 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
       <ModalContent
         actions={
           Array [
-            <Unknown
+            <Button
               id="save-columns"
               onClick={[Function]}
               variant="primary"
             >
               Save
-            </Unknown>,
-            <Unknown
+            </Button>,
+            <Button
               onClick={[Function]}
               variant="secondary"
             >
               Cancel
-            </Unknown>,
+            </Button>,
           ]
         }
-        ariaDescribedById=""
+        aria-describedby=""
+        aria-label=""
+        aria-labelledby=""
+        boxId="pf-modal-part-0"
         className="kogito-common--manage-columns__modal"
         description={
           <TextContent>
@@ -1627,15 +1718,15 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
             </Text>
           </TextContent>
         }
-        hideTitle={false}
-        id="pf-modal-0"
-        isFooterLeftAligned={false}
-        isLarge={false}
+        descriptorId="pf-modal-part-2"
+        hasNoBodyWrapper={false}
         isOpen={true}
-        isSmall={true}
+        labelId="pf-modal-part-1"
         onClose={[Function]}
+        ouiaSafe={true}
         showClose={true}
         title="Manage columns"
+        variant="small"
       >
         <Backdrop>
           <div
@@ -1655,142 +1746,121 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                 className="pf-l-bullseye"
               >
                 <ModalBox
+                  aria-describedby="pf-modal-part-2"
+                  aria-label=""
+                  aria-labelledby="pf-modal-part-1"
                   className="kogito-common--manage-columns__modal"
-                  id="pf-modal-0"
-                  isLarge={false}
-                  isSmall={true}
+                  data-ouia-component-id={12}
+                  data-ouia-component-type="PF4/ModalContent"
+                  data-ouia-safe={true}
+                  id="pf-modal-part-0"
                   style={Object {}}
-                  title="Manage columns"
+                  variant="small"
                 >
                   <div
-                    aria-describedby="pf-modal-0"
-                    aria-label="Manage columns"
+                    aria-describedby="pf-modal-part-2"
+                    aria-label={null}
+                    aria-labelledby="pf-modal-part-1"
                     aria-modal="true"
                     className="pf-c-modal-box kogito-common--manage-columns__modal pf-m-sm"
+                    data-ouia-component-id={12}
+                    data-ouia-component-type="PF4/ModalContent"
+                    data-ouia-safe={true}
+                    id="pf-modal-part-0"
                     role="dialog"
                     style={Object {}}
                   >
                     <ModalBoxCloseButton
                       onClose={[Function]}
                     >
-                      <Component
+                      <Button
                         aria-label="Close"
                         className=""
                         onClick={[Function]}
                         variant="plain"
                       >
-                        <ComponentWithOuia
-                          component={[Function]}
-                          componentProps={
-                            Object {
-                              "aria-label": "Close",
-                              "children": <TimesIcon
-                                color="currentColor"
-                                noVerticalAlign={false}
-                                size="sm"
-                                title={null}
-                              />,
-                              "className": "",
-                              "onClick": [Function],
-                              "variant": "plain",
-                            }
-                          }
-                          consumerContext={null}
+                        <button
+                          aria-disabled={false}
+                          aria-label="Close"
+                          className="pf-c-button pf-m-plain"
+                          data-ouia-component-id={13}
+                          data-ouia-component-type="PF4/Button"
+                          data-ouia-safe={true}
+                          disabled={false}
+                          onClick={[Function]}
+                          type="button"
                         >
-                          <Button
-                            aria-label="Close"
-                            className=""
-                            onClick={[Function]}
-                            ouiaContext={
-                              Object {
-                                "isOuia": false,
-                                "ouiaId": null,
+                          <TimesIcon
+                            color="currentColor"
+                            noVerticalAlign={false}
+                            size="sm"
+                          >
+                            <svg
+                              aria-hidden={true}
+                              aria-labelledby={null}
+                              fill="currentColor"
+                              height="1em"
+                              role="img"
+                              style={
+                                Object {
+                                  "verticalAlign": "-0.125em",
+                                }
                               }
-                            }
-                            variant="plain"
-                          >
-                            <button
-                              aria-disabled={null}
-                              aria-label="Close"
-                              className="pf-c-button pf-m-plain"
-                              disabled={false}
-                              onClick={[Function]}
-                              tabIndex={null}
-                              type="button"
+                              viewBox="0 0 352 512"
+                              width="1em"
                             >
-                              <TimesIcon
-                                color="currentColor"
-                                noVerticalAlign={false}
-                                size="sm"
-                                title={null}
-                              >
-                                <svg
-                                  aria-hidden={true}
-                                  aria-labelledby={null}
-                                  fill="currentColor"
-                                  height="1em"
-                                  role="img"
-                                  style={
-                                    Object {
-                                      "verticalAlign": "-0.125em",
-                                    }
-                                  }
-                                  viewBox="0 0 352 512"
-                                  width="1em"
-                                >
-                                  <path
-                                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                                    transform=""
-                                  />
-                                </svg>
-                              </TimesIcon>
-                            </button>
-                          </Button>
-                        </ComponentWithOuia>
-                      </Component>
+                              <path
+                                d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                transform=""
+                              />
+                            </svg>
+                          </TimesIcon>
+                        </button>
+                      </Button>
                     </ModalBoxCloseButton>
-                    <ModalBoxHeader
-                      hideTitle={false}
-                    >
-                      <Title
-                        className=""
-                        headingLevel="h1"
-                        size="2xl"
+                    <ModalBoxHeader>
+                      <header
+                        className="pf-c-modal-box__header"
                       >
-                        <h1
-                          className="pf-c-title pf-m-2xl"
+                        <ModalBoxTitle
+                          className="pf-c-modal-box__title"
+                          id="pf-modal-part-1"
+                          title="Manage columns"
                         >
-                           
-                          Manage columns
-                           
-                        </h1>
-                      </Title>
-                    </ModalBoxHeader>
-                    <ModalBoxDescription
-                      id="pf-modal-0"
-                    >
-                      <div
-                        className="pf-c-modal-box__description"
-                        id="pf-modal-0"
-                      >
-                        <TextContent>
-                          <div
-                            className="pf-c-content"
+                          <h1
+                            className="pf-c-modal-box__title pf-c-modal-box__title"
+                            id="pf-modal-part-1"
                           >
-                            <Text
-                              component="p"
-                            >
-                              <p
-                                className=""
-                                data-pf-content={true}
+                            Manage columns
+                          </h1>
+                        </ModalBoxTitle>
+                        <ModalBoxDescription
+                          id="pf-modal-part-2"
+                        >
+                          <div
+                            className="pf-c-modal-box__description"
+                            id="pf-modal-part-2"
+                          >
+                            <TextContent>
+                              <div
+                                className="pf-c-content"
                               >
-                                Selected categories will be displayed in the table.
-                              </p>
-                            </Text>
+                                <Text
+                                  component="p"
+                                >
+                                  <p
+                                    className=""
+                                    data-pf-content={true}
+                                  >
+                                    Selected categories will be displayed in the table.
+                                  </p>
+                                </Text>
+                              </div>
+                            </TextContent>
                           </div>
-                        </TextContent>
-                      </div>
-                    </ModalBoxDescription>
+                        </ModalBoxDescription>
+                      </header>
+                    </ModalBoxHeader>
                     <ModalBoxBody>
                       <div
                         className="pf-c-modal-box__body"
@@ -1834,7 +1904,10 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                             />
                           }
                         >
-                          <Component
+                          <DropdownWithContext
+                            autoFocus={true}
+                            className=""
+                            direction="down"
                             dropdownItems={
                               Array [
                                 <DropdownItem
@@ -1850,7 +1923,11 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                               ]
                             }
                             id="selectAll-dropdown"
+                            isGrouped={false}
                             isOpen={false}
+                            isPlain={false}
+                            menuAppendTo="inline"
+                            onSelect={[Function]}
                             position="left"
                             toggle={
                               <DropdownToggle
@@ -1872,113 +1949,143 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                               />
                             }
                           >
-                            <ComponentWithOuia
-                              component={[Function]}
-                              componentProps={
-                                Object {
-                                  "dropdownItems": Array [
-                                    <DropdownItem
-                                      onClick={[Function]}
-                                    >
-                                      Select none
-                                    </DropdownItem>,
-                                    <DropdownItem
-                                      onClick={[Function]}
-                                    >
-                                      Select all
-                                    </DropdownItem>,
-                                  ],
-                                  "id": "selectAll-dropdown",
-                                  "isOpen": false,
-                                  "position": "left",
-                                  "toggle": <DropdownToggle
-                                    onToggle={[Function]}
-                                    splitButtonItems={
-                                      Array [
-                                        <DropdownToggleCheckbox
-                                          aria-label="Select all"
-                                          className=""
-                                          id="selectAll-dropdown-checkbox"
-                                          isChecked={false}
-                                          isDisabled={false}
-                                          isValid={true}
-                                          onChange={[Function]}
-                                          onClick={[Function]}
-                                        />,
-                                      ]
-                                    }
-                                  />,
-                                }
-                              }
-                              consumerContext={null}
+                            <div
+                              className="pf-c-dropdown"
+                              data-ouia-component-id={14}
+                              data-ouia-component-type="PF4/Dropdown"
+                              data-ouia-safe={true}
+                              id="selectAll-dropdown"
                             >
-                              <DropdownWithContext
-                                autoFocus={true}
-                                className=""
-                                direction="down"
-                                dropdownItems={
-                                  Array [
-                                    <DropdownItem
-                                      onClick={[Function]}
-                                    >
-                                      Select none
-                                    </DropdownItem>,
-                                    <DropdownItem
-                                      onClick={[Function]}
-                                    >
-                                      Select all
-                                    </DropdownItem>,
-                                  ]
-                                }
-                                id="selectAll-dropdown"
-                                isGrouped={false}
+                              <DropdownToggle
+                                aria-haspopup={true}
+                                getMenuRef={[Function]}
+                                id="pf-dropdown-toggle-id-1"
                                 isOpen={false}
                                 isPlain={false}
-                                onSelect={[Function]}
-                                ouiaComponentType="Dropdown"
-                                ouiaContext={
+                                key=".0"
+                                onEnter={[Function]}
+                                onToggle={[Function]}
+                                parentRef={
                                   Object {
-                                    "isOuia": false,
-                                    "ouiaId": null,
+                                    "current": <div
+                                      class="pf-c-dropdown"
+                                      data-ouia-component-id="14"
+                                      data-ouia-component-type="PF4/Dropdown"
+                                      data-ouia-safe="true"
+                                      id="selectAll-dropdown"
+                                    >
+                                      <div
+                                        class="pf-c-dropdown__toggle pf-m-split-button"
+                                      >
+                                        <label
+                                          class="pf-c-dropdown__toggle-check"
+                                          for="selectAll-dropdown-checkbox"
+                                        >
+                                          <input
+                                            aria-invalid="false"
+                                            aria-label="Select all"
+                                            id="selectAll-dropdown-checkbox"
+                                            type="checkbox"
+                                          />
+                                        </label>
+                                        <button
+                                          aria-expanded="false"
+                                          aria-haspopup="true"
+                                          aria-label="Select"
+                                          class="pf-c-dropdown__toggle-button"
+                                          id="pf-dropdown-toggle-id-1"
+                                          type="button"
+                                        >
+                                          <span
+                                            class=""
+                                          >
+                                            <svg
+                                              aria-hidden="true"
+                                              fill="currentColor"
+                                              height="1em"
+                                              role="img"
+                                              style="vertical-align: -0.125em;"
+                                              viewBox="0 0 320 512"
+                                              width="1em"
+                                            >
+                                              <path
+                                                d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                                transform=""
+                                              />
+                                            </svg>
+                                          </span>
+                                        </button>
+                                      </div>
+                                    </div>,
                                   }
                                 }
-                                position="left"
-                                toggle={
-                                  <DropdownToggle
-                                    onToggle={[Function]}
-                                    splitButtonItems={
-                                      Array [
-                                        <DropdownToggleCheckbox
-                                          aria-label="Select all"
-                                          className=""
-                                          id="selectAll-dropdown-checkbox"
-                                          isChecked={false}
-                                          isDisabled={false}
-                                          isValid={true}
-                                          onChange={[Function]}
-                                          onClick={[Function]}
-                                        />,
-                                      ]
-                                    }
-                                  />
+                                splitButtonItems={
+                                  Array [
+                                    <DropdownToggleCheckbox
+                                      aria-label="Select all"
+                                      className=""
+                                      id="selectAll-dropdown-checkbox"
+                                      isChecked={false}
+                                      isDisabled={false}
+                                      isValid={true}
+                                      onChange={[Function]}
+                                      onClick={[Function]}
+                                    />,
+                                  ]
                                 }
                               >
                                 <div
-                                  className="pf-c-dropdown"
-                                  id="selectAll-dropdown"
+                                  className="pf-c-dropdown__toggle pf-m-split-button"
                                 >
-                                  <DropdownToggle
-                                    ariaHasPopup={true}
-                                    id="pf-toggle-id-1"
+                                  <DropdownToggleCheckbox
+                                    aria-label="Select all"
+                                    className=""
+                                    id="selectAll-dropdown-checkbox"
+                                    isChecked={false}
+                                    isDisabled={false}
+                                    isValid={true}
+                                    key="1"
+                                    onChange={[Function]}
+                                    onClick={[Function]}
+                                  >
+                                    <label
+                                      className="pf-c-dropdown__toggle-check"
+                                      htmlFor="selectAll-dropdown-checkbox"
+                                    >
+                                      <input
+                                        aria-invalid={false}
+                                        aria-label="Select all"
+                                        checked={false}
+                                        disabled={false}
+                                        id="selectAll-dropdown-checkbox"
+                                        onChange={[Function]}
+                                        onClick={[Function]}
+                                        type="checkbox"
+                                      />
+                                    </label>
+                                  </DropdownToggleCheckbox>
+                                  <Toggle
+                                    aria-haspopup={true}
+                                    aria-label="Select"
+                                    bubbleEvent={false}
+                                    className=""
+                                    getMenuRef={[Function]}
+                                    id="pf-dropdown-toggle-id-1"
+                                    isActive={false}
+                                    isDisabled={false}
                                     isOpen={false}
                                     isPlain={false}
-                                    key=".0"
+                                    isPrimary={false}
+                                    isSplitButton={true}
                                     onEnter={[Function]}
                                     onToggle={[Function]}
                                     parentRef={
                                       Object {
                                         "current": <div
                                           class="pf-c-dropdown"
+                                          data-ouia-component-id="14"
+                                          data-ouia-component-type="PF4/Dropdown"
+                                          data-ouia-safe="true"
                                           id="selectAll-dropdown"
                                         >
                                           <div
@@ -2000,186 +2107,79 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                                               aria-haspopup="true"
                                               aria-label="Select"
                                               class="pf-c-dropdown__toggle-button"
-                                              id="pf-toggle-id-1"
+                                              id="pf-dropdown-toggle-id-1"
                                               type="button"
                                             >
-                                              <svg
-                                                aria-hidden="true"
+                                              <span
                                                 class=""
-                                                fill="currentColor"
-                                                height="1em"
-                                                role="img"
-                                                style="vertical-align: -0.125em;"
-                                                viewBox="0 0 320 512"
-                                                width="1em"
                                               >
-                                                <path
-                                                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                                  transform=""
-                                                />
-                                              </svg>
+                                                <svg
+                                                  aria-hidden="true"
+                                                  fill="currentColor"
+                                                  height="1em"
+                                                  role="img"
+                                                  style="vertical-align: -0.125em;"
+                                                  viewBox="0 0 320 512"
+                                                  width="1em"
+                                                >
+                                                  <path
+                                                    d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                                    transform=""
+                                                  />
+                                                </svg>
+                                              </span>
                                             </button>
                                           </div>
                                         </div>,
                                       }
                                     }
-                                    splitButtonItems={
-                                      Array [
-                                        <DropdownToggleCheckbox
-                                          aria-label="Select all"
-                                          className=""
-                                          id="selectAll-dropdown-checkbox"
-                                          isChecked={false}
-                                          isDisabled={false}
-                                          isValid={true}
-                                          onChange={[Function]}
-                                          onClick={[Function]}
-                                        />,
-                                      ]
-                                    }
                                   >
-                                    <div
-                                      className="pf-c-dropdown__toggle pf-m-split-button"
+                                    <button
+                                      aria-expanded={false}
+                                      aria-haspopup={true}
+                                      aria-label="Select"
+                                      className="pf-c-dropdown__toggle-button"
+                                      disabled={false}
+                                      id="pf-dropdown-toggle-id-1"
+                                      onClick={[Function]}
+                                      onKeyDown={[Function]}
+                                      type="button"
                                     >
-                                      <DropdownToggleCheckbox
-                                        aria-label="Select all"
+                                      <span
                                         className=""
-                                        id="selectAll-dropdown-checkbox"
-                                        isChecked={false}
-                                        isDisabled={false}
-                                        isValid={true}
-                                        key="1"
-                                        onChange={[Function]}
-                                        onClick={[Function]}
                                       >
-                                        <label
-                                          className="pf-c-dropdown__toggle-check"
-                                          htmlFor="selectAll-dropdown-checkbox"
+                                        <CaretDownIcon
+                                          color="currentColor"
+                                          noVerticalAlign={false}
+                                          size="sm"
                                         >
-                                          <input
-                                            aria-invalid={false}
-                                            aria-label="Select all"
-                                            checked={false}
-                                            disabled={false}
-                                            id="selectAll-dropdown-checkbox"
-                                            onChange={[Function]}
-                                            onClick={[Function]}
-                                            type="checkbox"
-                                          />
-                                        </label>
-                                      </DropdownToggleCheckbox>
-                                      <Toggle
-                                        aria-label="Select"
-                                        ariaHasPopup={true}
-                                        bubbleEvent={false}
-                                        className=""
-                                        id="pf-toggle-id-1"
-                                        isActive={false}
-                                        isDisabled={false}
-                                        isFocused={false}
-                                        isHovered={false}
-                                        isOpen={false}
-                                        isPlain={false}
-                                        isPrimary={false}
-                                        isSplitButton={true}
-                                        onEnter={[Function]}
-                                        onToggle={[Function]}
-                                        parentRef={
-                                          Object {
-                                            "current": <div
-                                              class="pf-c-dropdown"
-                                              id="selectAll-dropdown"
-                                            >
-                                              <div
-                                                class="pf-c-dropdown__toggle pf-m-split-button"
-                                              >
-                                                <label
-                                                  class="pf-c-dropdown__toggle-check"
-                                                  for="selectAll-dropdown-checkbox"
-                                                >
-                                                  <input
-                                                    aria-invalid="false"
-                                                    aria-label="Select all"
-                                                    id="selectAll-dropdown-checkbox"
-                                                    type="checkbox"
-                                                  />
-                                                </label>
-                                                <button
-                                                  aria-expanded="false"
-                                                  aria-haspopup="true"
-                                                  aria-label="Select"
-                                                  class="pf-c-dropdown__toggle-button"
-                                                  id="pf-toggle-id-1"
-                                                  type="button"
-                                                >
-                                                  <svg
-                                                    aria-hidden="true"
-                                                    class=""
-                                                    fill="currentColor"
-                                                    height="1em"
-                                                    role="img"
-                                                    style="vertical-align: -0.125em;"
-                                                    viewBox="0 0 320 512"
-                                                    width="1em"
-                                                  >
-                                                    <path
-                                                      d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                                      transform=""
-                                                    />
-                                                  </svg>
-                                                </button>
-                                              </div>
-                                            </div>,
-                                          }
-                                        }
-                                      >
-                                        <button
-                                          aria-expanded={false}
-                                          aria-haspopup={true}
-                                          aria-label="Select"
-                                          className="pf-c-dropdown__toggle-button"
-                                          disabled={false}
-                                          id="pf-toggle-id-1"
-                                          onClick={[Function]}
-                                          onKeyDown={[Function]}
-                                          type="button"
-                                        >
-                                          <CaretDownIcon
-                                            className=""
-                                            color="currentColor"
-                                            noVerticalAlign={false}
-                                            size="sm"
-                                            title={null}
-                                          >
-                                            <svg
-                                              aria-hidden={true}
-                                              aria-labelledby={null}
-                                              className=""
-                                              fill="currentColor"
-                                              height="1em"
-                                              role="img"
-                                              style={
-                                                Object {
-                                                  "verticalAlign": "-0.125em",
-                                                }
+                                          <svg
+                                            aria-hidden={true}
+                                            aria-labelledby={null}
+                                            fill="currentColor"
+                                            height="1em"
+                                            role="img"
+                                            style={
+                                              Object {
+                                                "verticalAlign": "-0.125em",
                                               }
-                                              viewBox="0 0 320 512"
-                                              width="1em"
-                                            >
-                                              <path
-                                                d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                                transform=""
-                                              />
-                                            </svg>
-                                          </CaretDownIcon>
-                                        </button>
-                                      </Toggle>
-                                    </div>
-                                  </DropdownToggle>
+                                            }
+                                            viewBox="0 0 320 512"
+                                            width="1em"
+                                          >
+                                            <path
+                                              d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                              transform=""
+                                            />
+                                          </svg>
+                                        </CaretDownIcon>
+                                      </span>
+                                    </button>
+                                  </Toggle>
                                 </div>
-                              </DropdownWithContext>
-                            </ComponentWithOuia>
-                          </Component>
+                              </DropdownToggle>
+                            </div>
+                          </DropdownWithContext>
                         </Dropdown>
                         <DataList
                           aria-label="Table column management"
@@ -2302,7 +2302,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                                         <div
                                           className="pf-c-data-list__toggle"
                                         >
-                                          <Component
+                                          <Button
                                             aria-controls="kie-datalist-toggle-flight"
                                             aria-expanded={false}
                                             aria-label="Details"
@@ -2310,82 +2310,51 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                                             id="kie-datalist-toggle-flight"
                                             variant="plain"
                                           >
-                                            <ComponentWithOuia
-                                              component={[Function]}
-                                              componentProps={
-                                                Object {
-                                                  "aria-controls": "kie-datalist-toggle-flight",
-                                                  "aria-expanded": false,
-                                                  "aria-label": "Details",
-                                                  "aria-labelledby": "kie-datalist-item-flight kie-datalist-toggle-flight",
-                                                  "children": <AngleRightIcon
-                                                    color="currentColor"
-                                                    noVerticalAlign={false}
-                                                    size="sm"
-                                                    title={null}
-                                                  />,
-                                                  "id": "kie-datalist-toggle-flight",
-                                                  "variant": "plain",
-                                                }
-                                              }
-                                              consumerContext={null}
+                                            <button
+                                              aria-controls="kie-datalist-toggle-flight"
+                                              aria-disabled={false}
+                                              aria-expanded={false}
+                                              aria-label="Details"
+                                              aria-labelledby="kie-datalist-item-flight kie-datalist-toggle-flight"
+                                              className="pf-c-button pf-m-plain"
+                                              data-ouia-component-id={15}
+                                              data-ouia-component-type="PF4/Button"
+                                              data-ouia-safe={true}
+                                              disabled={false}
+                                              id="kie-datalist-toggle-flight"
+                                              type="button"
                                             >
-                                              <Button
-                                                aria-controls="kie-datalist-toggle-flight"
-                                                aria-expanded={false}
-                                                aria-label="Details"
-                                                aria-labelledby="kie-datalist-item-flight kie-datalist-toggle-flight"
-                                                id="kie-datalist-toggle-flight"
-                                                ouiaContext={
-                                                  Object {
-                                                    "isOuia": false,
-                                                    "ouiaId": null,
-                                                  }
-                                                }
-                                                variant="plain"
+                                              <div
+                                                className="pf-c-data-list__toggle-icon"
                                               >
-                                                <button
-                                                  aria-controls="kie-datalist-toggle-flight"
-                                                  aria-disabled={null}
-                                                  aria-expanded={false}
-                                                  aria-label="Details"
-                                                  aria-labelledby="kie-datalist-item-flight kie-datalist-toggle-flight"
-                                                  className="pf-c-button pf-m-plain"
-                                                  disabled={false}
-                                                  id="kie-datalist-toggle-flight"
-                                                  tabIndex={null}
-                                                  type="button"
+                                                <AngleRightIcon
+                                                  color="currentColor"
+                                                  noVerticalAlign={false}
+                                                  size="sm"
                                                 >
-                                                  <AngleRightIcon
-                                                    color="currentColor"
-                                                    noVerticalAlign={false}
-                                                    size="sm"
-                                                    title={null}
-                                                  >
-                                                    <svg
-                                                      aria-hidden={true}
-                                                      aria-labelledby={null}
-                                                      fill="currentColor"
-                                                      height="1em"
-                                                      role="img"
-                                                      style={
-                                                        Object {
-                                                          "verticalAlign": "-0.125em",
-                                                        }
+                                                  <svg
+                                                    aria-hidden={true}
+                                                    aria-labelledby={null}
+                                                    fill="currentColor"
+                                                    height="1em"
+                                                    role="img"
+                                                    style={
+                                                      Object {
+                                                        "verticalAlign": "-0.125em",
                                                       }
-                                                      viewBox="0 0 256 512"
-                                                      width="1em"
-                                                    >
-                                                      <path
-                                                        d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-                                                        transform=""
-                                                      />
-                                                    </svg>
-                                                  </AngleRightIcon>
-                                                </button>
-                                              </Button>
-                                            </ComponentWithOuia>
-                                          </Component>
+                                                    }
+                                                    viewBox="0 0 256 512"
+                                                    width="1em"
+                                                  >
+                                                    <path
+                                                      d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                                                      transform=""
+                                                    />
+                                                  </svg>
+                                                </AngleRightIcon>
+                                              </div>
+                                            </button>
+                                          </Button>
                                         </div>
                                       </div>
                                     </DataListToggle>
@@ -2618,7 +2587,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                                         <div
                                           className="pf-c-data-list__toggle"
                                         >
-                                          <Component
+                                          <Button
                                             aria-controls="kie-datalist-toggle-hotel/address / location"
                                             aria-expanded={false}
                                             aria-label="Details"
@@ -2626,82 +2595,51 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                                             id="kie-datalist-toggle-hotel/address / location"
                                             variant="plain"
                                           >
-                                            <ComponentWithOuia
-                                              component={[Function]}
-                                              componentProps={
-                                                Object {
-                                                  "aria-controls": "kie-datalist-toggle-hotel/address / location",
-                                                  "aria-expanded": false,
-                                                  "aria-label": "Details",
-                                                  "aria-labelledby": "kie-datalist-item-hotel/address / location kie-datalist-toggle-hotel/address / location",
-                                                  "children": <AngleRightIcon
-                                                    color="currentColor"
-                                                    noVerticalAlign={false}
-                                                    size="sm"
-                                                    title={null}
-                                                  />,
-                                                  "id": "kie-datalist-toggle-hotel/address / location",
-                                                  "variant": "plain",
-                                                }
-                                              }
-                                              consumerContext={null}
+                                            <button
+                                              aria-controls="kie-datalist-toggle-hotel/address / location"
+                                              aria-disabled={false}
+                                              aria-expanded={false}
+                                              aria-label="Details"
+                                              aria-labelledby="kie-datalist-item-hotel/address / location kie-datalist-toggle-hotel/address / location"
+                                              className="pf-c-button pf-m-plain"
+                                              data-ouia-component-id={16}
+                                              data-ouia-component-type="PF4/Button"
+                                              data-ouia-safe={true}
+                                              disabled={false}
+                                              id="kie-datalist-toggle-hotel/address / location"
+                                              type="button"
                                             >
-                                              <Button
-                                                aria-controls="kie-datalist-toggle-hotel/address / location"
-                                                aria-expanded={false}
-                                                aria-label="Details"
-                                                aria-labelledby="kie-datalist-item-hotel/address / location kie-datalist-toggle-hotel/address / location"
-                                                id="kie-datalist-toggle-hotel/address / location"
-                                                ouiaContext={
-                                                  Object {
-                                                    "isOuia": false,
-                                                    "ouiaId": null,
-                                                  }
-                                                }
-                                                variant="plain"
+                                              <div
+                                                className="pf-c-data-list__toggle-icon"
                                               >
-                                                <button
-                                                  aria-controls="kie-datalist-toggle-hotel/address / location"
-                                                  aria-disabled={null}
-                                                  aria-expanded={false}
-                                                  aria-label="Details"
-                                                  aria-labelledby="kie-datalist-item-hotel/address / location kie-datalist-toggle-hotel/address / location"
-                                                  className="pf-c-button pf-m-plain"
-                                                  disabled={false}
-                                                  id="kie-datalist-toggle-hotel/address / location"
-                                                  tabIndex={null}
-                                                  type="button"
+                                                <AngleRightIcon
+                                                  color="currentColor"
+                                                  noVerticalAlign={false}
+                                                  size="sm"
                                                 >
-                                                  <AngleRightIcon
-                                                    color="currentColor"
-                                                    noVerticalAlign={false}
-                                                    size="sm"
-                                                    title={null}
-                                                  >
-                                                    <svg
-                                                      aria-hidden={true}
-                                                      aria-labelledby={null}
-                                                      fill="currentColor"
-                                                      height="1em"
-                                                      role="img"
-                                                      style={
-                                                        Object {
-                                                          "verticalAlign": "-0.125em",
-                                                        }
+                                                  <svg
+                                                    aria-hidden={true}
+                                                    aria-labelledby={null}
+                                                    fill="currentColor"
+                                                    height="1em"
+                                                    role="img"
+                                                    style={
+                                                      Object {
+                                                        "verticalAlign": "-0.125em",
                                                       }
-                                                      viewBox="0 0 256 512"
-                                                      width="1em"
-                                                    >
-                                                      <path
-                                                        d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-                                                        transform=""
-                                                      />
-                                                    </svg>
-                                                  </AngleRightIcon>
-                                                </button>
-                                              </Button>
-                                            </ComponentWithOuia>
-                                          </Component>
+                                                    }
+                                                    viewBox="0 0 256 512"
+                                                    width="1em"
+                                                  >
+                                                    <path
+                                                      d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                                                      transform=""
+                                                    />
+                                                  </svg>
+                                                </AngleRightIcon>
+                                              </div>
+                                            </button>
+                                          </Button>
                                         </div>
                                       </div>
                                     </DataListToggle>
@@ -2934,7 +2872,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                                         <div
                                           className="pf-c-data-list__toggle"
                                         >
-                                          <Component
+                                          <Button
                                             aria-controls="kie-datalist-toggle-hotel/address"
                                             aria-expanded={false}
                                             aria-label="Details"
@@ -2942,82 +2880,51 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                                             id="kie-datalist-toggle-hotel/address"
                                             variant="plain"
                                           >
-                                            <ComponentWithOuia
-                                              component={[Function]}
-                                              componentProps={
-                                                Object {
-                                                  "aria-controls": "kie-datalist-toggle-hotel/address",
-                                                  "aria-expanded": false,
-                                                  "aria-label": "Details",
-                                                  "aria-labelledby": "kie-datalist-item-hotel/address kie-datalist-toggle-hotel/address",
-                                                  "children": <AngleRightIcon
-                                                    color="currentColor"
-                                                    noVerticalAlign={false}
-                                                    size="sm"
-                                                    title={null}
-                                                  />,
-                                                  "id": "kie-datalist-toggle-hotel/address",
-                                                  "variant": "plain",
-                                                }
-                                              }
-                                              consumerContext={null}
+                                            <button
+                                              aria-controls="kie-datalist-toggle-hotel/address"
+                                              aria-disabled={false}
+                                              aria-expanded={false}
+                                              aria-label="Details"
+                                              aria-labelledby="kie-datalist-item-hotel/address kie-datalist-toggle-hotel/address"
+                                              className="pf-c-button pf-m-plain"
+                                              data-ouia-component-id={17}
+                                              data-ouia-component-type="PF4/Button"
+                                              data-ouia-safe={true}
+                                              disabled={false}
+                                              id="kie-datalist-toggle-hotel/address"
+                                              type="button"
                                             >
-                                              <Button
-                                                aria-controls="kie-datalist-toggle-hotel/address"
-                                                aria-expanded={false}
-                                                aria-label="Details"
-                                                aria-labelledby="kie-datalist-item-hotel/address kie-datalist-toggle-hotel/address"
-                                                id="kie-datalist-toggle-hotel/address"
-                                                ouiaContext={
-                                                  Object {
-                                                    "isOuia": false,
-                                                    "ouiaId": null,
-                                                  }
-                                                }
-                                                variant="plain"
+                                              <div
+                                                className="pf-c-data-list__toggle-icon"
                                               >
-                                                <button
-                                                  aria-controls="kie-datalist-toggle-hotel/address"
-                                                  aria-disabled={null}
-                                                  aria-expanded={false}
-                                                  aria-label="Details"
-                                                  aria-labelledby="kie-datalist-item-hotel/address kie-datalist-toggle-hotel/address"
-                                                  className="pf-c-button pf-m-plain"
-                                                  disabled={false}
-                                                  id="kie-datalist-toggle-hotel/address"
-                                                  tabIndex={null}
-                                                  type="button"
+                                                <AngleRightIcon
+                                                  color="currentColor"
+                                                  noVerticalAlign={false}
+                                                  size="sm"
                                                 >
-                                                  <AngleRightIcon
-                                                    color="currentColor"
-                                                    noVerticalAlign={false}
-                                                    size="sm"
-                                                    title={null}
-                                                  >
-                                                    <svg
-                                                      aria-hidden={true}
-                                                      aria-labelledby={null}
-                                                      fill="currentColor"
-                                                      height="1em"
-                                                      role="img"
-                                                      style={
-                                                        Object {
-                                                          "verticalAlign": "-0.125em",
-                                                        }
+                                                  <svg
+                                                    aria-hidden={true}
+                                                    aria-labelledby={null}
+                                                    fill="currentColor"
+                                                    height="1em"
+                                                    role="img"
+                                                    style={
+                                                      Object {
+                                                        "verticalAlign": "-0.125em",
                                                       }
-                                                      viewBox="0 0 256 512"
-                                                      width="1em"
-                                                    >
-                                                      <path
-                                                        d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-                                                        transform=""
-                                                      />
-                                                    </svg>
-                                                  </AngleRightIcon>
-                                                </button>
-                                              </Button>
-                                            </ComponentWithOuia>
-                                          </Component>
+                                                    }
+                                                    viewBox="0 0 256 512"
+                                                    width="1em"
+                                                  >
+                                                    <path
+                                                      d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                                                      transform=""
+                                                    />
+                                                  </svg>
+                                                </AngleRightIcon>
+                                              </div>
+                                            </button>
+                                          </Button>
                                         </div>
                                       </div>
                                     </DataListToggle>
@@ -3251,7 +3158,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                                         <div
                                           className="pf-c-data-list__toggle"
                                         >
-                                          <Component
+                                          <Button
                                             aria-controls="kie-datalist-toggle-hotel"
                                             aria-expanded={false}
                                             aria-label="Details"
@@ -3259,82 +3166,51 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                                             id="kie-datalist-toggle-hotel"
                                             variant="plain"
                                           >
-                                            <ComponentWithOuia
-                                              component={[Function]}
-                                              componentProps={
-                                                Object {
-                                                  "aria-controls": "kie-datalist-toggle-hotel",
-                                                  "aria-expanded": false,
-                                                  "aria-label": "Details",
-                                                  "aria-labelledby": "kie-datalist-item-hotel kie-datalist-toggle-hotel",
-                                                  "children": <AngleRightIcon
-                                                    color="currentColor"
-                                                    noVerticalAlign={false}
-                                                    size="sm"
-                                                    title={null}
-                                                  />,
-                                                  "id": "kie-datalist-toggle-hotel",
-                                                  "variant": "plain",
-                                                }
-                                              }
-                                              consumerContext={null}
+                                            <button
+                                              aria-controls="kie-datalist-toggle-hotel"
+                                              aria-disabled={false}
+                                              aria-expanded={false}
+                                              aria-label="Details"
+                                              aria-labelledby="kie-datalist-item-hotel kie-datalist-toggle-hotel"
+                                              className="pf-c-button pf-m-plain"
+                                              data-ouia-component-id={18}
+                                              data-ouia-component-type="PF4/Button"
+                                              data-ouia-safe={true}
+                                              disabled={false}
+                                              id="kie-datalist-toggle-hotel"
+                                              type="button"
                                             >
-                                              <Button
-                                                aria-controls="kie-datalist-toggle-hotel"
-                                                aria-expanded={false}
-                                                aria-label="Details"
-                                                aria-labelledby="kie-datalist-item-hotel kie-datalist-toggle-hotel"
-                                                id="kie-datalist-toggle-hotel"
-                                                ouiaContext={
-                                                  Object {
-                                                    "isOuia": false,
-                                                    "ouiaId": null,
-                                                  }
-                                                }
-                                                variant="plain"
+                                              <div
+                                                className="pf-c-data-list__toggle-icon"
                                               >
-                                                <button
-                                                  aria-controls="kie-datalist-toggle-hotel"
-                                                  aria-disabled={null}
-                                                  aria-expanded={false}
-                                                  aria-label="Details"
-                                                  aria-labelledby="kie-datalist-item-hotel kie-datalist-toggle-hotel"
-                                                  className="pf-c-button pf-m-plain"
-                                                  disabled={false}
-                                                  id="kie-datalist-toggle-hotel"
-                                                  tabIndex={null}
-                                                  type="button"
+                                                <AngleRightIcon
+                                                  color="currentColor"
+                                                  noVerticalAlign={false}
+                                                  size="sm"
                                                 >
-                                                  <AngleRightIcon
-                                                    color="currentColor"
-                                                    noVerticalAlign={false}
-                                                    size="sm"
-                                                    title={null}
-                                                  >
-                                                    <svg
-                                                      aria-hidden={true}
-                                                      aria-labelledby={null}
-                                                      fill="currentColor"
-                                                      height="1em"
-                                                      role="img"
-                                                      style={
-                                                        Object {
-                                                          "verticalAlign": "-0.125em",
-                                                        }
+                                                  <svg
+                                                    aria-hidden={true}
+                                                    aria-labelledby={null}
+                                                    fill="currentColor"
+                                                    height="1em"
+                                                    role="img"
+                                                    style={
+                                                      Object {
+                                                        "verticalAlign": "-0.125em",
                                                       }
-                                                      viewBox="0 0 256 512"
-                                                      width="1em"
-                                                    >
-                                                      <path
-                                                        d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-                                                        transform=""
-                                                      />
-                                                    </svg>
-                                                  </AngleRightIcon>
-                                                </button>
-                                              </Button>
-                                            </ComponentWithOuia>
-                                          </Component>
+                                                    }
+                                                    viewBox="0 0 256 512"
+                                                    width="1em"
+                                                  >
+                                                    <path
+                                                      d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                                                      transform=""
+                                                    />
+                                                  </svg>
+                                                </AngleRightIcon>
+                                              </div>
+                                            </button>
+                                          </Button>
                                         </div>
                                       </div>
                                     </DataListToggle>
@@ -3457,97 +3333,51 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                         </DataList>
                       </div>
                     </ModalBoxBody>
-                    <ModalBoxFooter
-                      isLeftAligned={false}
-                    >
-                      <div
+                    <ModalBoxFooter>
+                      <footer
                         className="pf-c-modal-box__footer"
                       >
-                        <Component
+                        <Button
                           id="save-columns"
                           key="save"
                           onClick={[Function]}
                           variant="primary"
                         >
-                          <ComponentWithOuia
-                            component={[Function]}
-                            componentProps={
-                              Object {
-                                "children": "Save",
-                                "id": "save-columns",
-                                "onClick": [Function],
-                                "variant": "primary",
-                              }
-                            }
-                            consumerContext={null}
+                          <button
+                            aria-disabled={false}
+                            aria-label={null}
+                            className="pf-c-button pf-m-primary"
+                            data-ouia-component-id={19}
+                            data-ouia-component-type="PF4/Button"
+                            data-ouia-safe={true}
+                            disabled={false}
+                            id="save-columns"
+                            onClick={[Function]}
+                            type="button"
                           >
-                            <Button
-                              id="save-columns"
-                              onClick={[Function]}
-                              ouiaContext={
-                                Object {
-                                  "isOuia": false,
-                                  "ouiaId": null,
-                                }
-                              }
-                              variant="primary"
-                            >
-                              <button
-                                aria-disabled={null}
-                                aria-label={null}
-                                className="pf-c-button pf-m-primary"
-                                disabled={false}
-                                id="save-columns"
-                                onClick={[Function]}
-                                tabIndex={null}
-                                type="button"
-                              >
-                                Save
-                              </button>
-                            </Button>
-                          </ComponentWithOuia>
-                        </Component>
-                        <Component
+                            Save
+                          </button>
+                        </Button>
+                        <Button
                           key="cancel"
                           onClick={[Function]}
                           variant="secondary"
                         >
-                          <ComponentWithOuia
-                            component={[Function]}
-                            componentProps={
-                              Object {
-                                "children": "Cancel",
-                                "onClick": [Function],
-                                "variant": "secondary",
-                              }
-                            }
-                            consumerContext={null}
+                          <button
+                            aria-disabled={false}
+                            aria-label={null}
+                            className="pf-c-button pf-m-secondary"
+                            data-ouia-component-id={20}
+                            data-ouia-component-type="PF4/Button"
+                            data-ouia-safe={true}
+                            disabled={false}
+                            onClick={[Function]}
+                            type="button"
                           >
-                            <Button
-                              onClick={[Function]}
-                              ouiaContext={
-                                Object {
-                                  "isOuia": false,
-                                  "ouiaId": null,
-                                }
-                              }
-                              variant="secondary"
-                            >
-                              <button
-                                aria-disabled={null}
-                                aria-label={null}
-                                className="pf-c-button pf-m-secondary"
-                                disabled={false}
-                                onClick={[Function]}
-                                tabIndex={null}
-                                type="button"
-                              >
-                                Cancel
-                              </button>
-                            </Button>
-                          </ComponentWithOuia>
-                        </Component>
-                      </div>
+                            Cancel
+                          </button>
+                        </Button>
+                      </footer>
                     </ModalBoxFooter>
                   </div>
                 </ModalBox>
@@ -3558,81 +3388,50 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
       </ModalContent>
     </Portal>
   </Modal>
-  <Component
+  <Button
     aria-label="Refresh list"
     id="refresh-button"
     onClick={[Function]}
     variant="plain"
   >
-    <ComponentWithOuia
-      component={[Function]}
-      componentProps={
-        Object {
-          "aria-label": "Refresh list",
-          "children": <SyncIcon
-            color="currentColor"
-            noVerticalAlign={false}
-            size="sm"
-            title={null}
-          />,
-          "id": "refresh-button",
-          "onClick": [Function],
-          "variant": "plain",
-        }
-      }
-      consumerContext={null}
+    <button
+      aria-disabled={false}
+      aria-label="Refresh list"
+      className="pf-c-button pf-m-plain"
+      data-ouia-component-id={21}
+      data-ouia-component-type="PF4/Button"
+      data-ouia-safe={true}
+      disabled={false}
+      id="refresh-button"
+      onClick={[Function]}
+      type="button"
     >
-      <Button
-        aria-label="Refresh list"
-        id="refresh-button"
-        onClick={[Function]}
-        ouiaContext={
-          Object {
-            "isOuia": false,
-            "ouiaId": null,
-          }
-        }
-        variant="plain"
+      <SyncIcon
+        color="currentColor"
+        noVerticalAlign={false}
+        size="sm"
       >
-        <button
-          aria-disabled={null}
-          aria-label="Refresh list"
-          className="pf-c-button pf-m-plain"
-          disabled={false}
-          id="refresh-button"
-          onClick={[Function]}
-          tabIndex={null}
-          type="button"
+        <svg
+          aria-hidden={true}
+          aria-labelledby={null}
+          fill="currentColor"
+          height="1em"
+          role="img"
+          style={
+            Object {
+              "verticalAlign": "-0.125em",
+            }
+          }
+          viewBox="0 0 512 512"
+          width="1em"
         >
-          <SyncIcon
-            color="currentColor"
-            noVerticalAlign={false}
-            size="sm"
-            title={null}
-          >
-            <svg
-              aria-hidden={true}
-              aria-labelledby={null}
-              fill="currentColor"
-              height="1em"
-              role="img"
-              style={
-                Object {
-                  "verticalAlign": "-0.125em",
-                }
-              }
-              viewBox="0 0 512 512"
-              width="1em"
-            >
-              <path
-                d="M440.65 12.57l4 82.77A247.16 247.16 0 0 0 255.83 8C134.73 8 33.91 94.92 12.29 209.82A12 12 0 0 0 24.09 224h49.05a12 12 0 0 0 11.67-9.26 175.91 175.91 0 0 1 317-56.94l-101.46-4.86a12 12 0 0 0-12.57 12v47.41a12 12 0 0 0 12 12H500a12 12 0 0 0 12-12V12a12 12 0 0 0-12-12h-47.37a12 12 0 0 0-11.98 12.57zM255.83 432a175.61 175.61 0 0 1-146-77.8l101.8 4.87a12 12 0 0 0 12.57-12v-47.4a12 12 0 0 0-12-12H12a12 12 0 0 0-12 12V500a12 12 0 0 0 12 12h47.35a12 12 0 0 0 12-12.6l-4.15-82.57A247.17 247.17 0 0 0 255.83 504c121.11 0 221.93-86.92 243.55-201.82a12 12 0 0 0-11.8-14.18h-49.05a12 12 0 0 0-11.67 9.26A175.86 175.86 0 0 1 255.83 432z"
-                transform=""
-              />
-            </svg>
-          </SyncIcon>
-        </button>
-      </Button>
-    </ComponentWithOuia>
-  </Component>
+          <path
+            d="M440.65 12.57l4 82.77A247.16 247.16 0 0 0 255.83 8C134.73 8 33.91 94.92 12.29 209.82A12 12 0 0 0 24.09 224h49.05a12 12 0 0 0 11.67-9.26 175.91 175.91 0 0 1 317-56.94l-101.46-4.86a12 12 0 0 0-12.57 12v47.41a12 12 0 0 0 12 12H500a12 12 0 0 0 12-12V12a12 12 0 0 0-12-12h-47.37a12 12 0 0 0-11.98 12.57zM255.83 432a175.61 175.61 0 0 1-146-77.8l101.8 4.87a12 12 0 0 0 12.57-12v-47.4a12 12 0 0 0-12-12H12a12 12 0 0 0-12 12V500a12 12 0 0 0 12 12h47.35a12 12 0 0 0 12-12.6l-4.15-82.57A247.17 247.17 0 0 0 255.83 504c121.11 0 221.93-86.92 243.55-201.82a12 12 0 0 0-11.8-14.18h-49.05a12 12 0 0 0-11.67 9.26A175.86 175.86 0 0 1 255.83 432z"
+            transform=""
+          />
+        </svg>
+      </SyncIcon>
+    </button>
+  </Button>
 </DomainExplorerManageColumns>
 `;

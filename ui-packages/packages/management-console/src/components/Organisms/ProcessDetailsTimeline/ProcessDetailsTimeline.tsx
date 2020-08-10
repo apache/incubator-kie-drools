@@ -230,12 +230,12 @@ const ProcessDetailsTimeline: React.FC<IOwnProps> = ({ data }) => {
         </Title>
       </CardHeader>
       <CardBody>
-        <Stack gutter="md" className="kogito-management-console--timeline">
+        <Stack hasGutter className="kogito-management-console--timeline">
           {data.nodes &&
             data.nodes.map((content, idx) => {
               return (
                 <Split
-                  gutter={'sm'}
+                  hasGutter
                   className={'kogito-management-console--timeline-item'}
                   key={content.id}
                 >

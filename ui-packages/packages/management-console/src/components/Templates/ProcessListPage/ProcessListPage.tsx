@@ -4,9 +4,7 @@ import {
   Card,
   Grid,
   GridItem,
-  InjectedOuiaProps,
-  PageSection,
-  withOuiaContext
+  PageSection
 } from '@patternfly/react-core';
 import {
   GraphQL,
@@ -14,7 +12,8 @@ import {
   KogitoEmptyStateType,
   ouiaPageTypeAndObjectId,
   ServerErrors,
-  LoadMore
+  LoadMore,
+  componentOuiaProps, OUIAProps
 } from '@kogito-apps/common';
 import React, { useEffect, useState } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
@@ -22,6 +21,7 @@ import PageTitle from '../../Molecules/PageTitle/PageTitle';
 import ProcessListToolbar from '../../Molecules/ProcessListToolbar/ProcessListToolbar';
 import './ProcessListPage.css';
 import ProcessListTable from '../../Organisms/ProcessListTable/ProcessListTable';
+
 
 type filterType = {
   status: GraphQL.ProcessInstanceState[];
@@ -35,9 +35,10 @@ interface LocationProps {
   filters?: filterType;
 }
 
-const ProcessListPage: React.FC<InjectedOuiaProps &
+const ProcessListPage: React.FC<OUIAProps &
   RouteComponentProps<MatchProps, {}, LocationProps>> = ({
-  ouiaContext,
+  ouiaId,
+  ouiaSafe,
   ...props
 }) => {
   const [defaultPageSize] = useState<number>(10);
@@ -93,7 +94,7 @@ const ProcessListPage: React.FC<InjectedOuiaProps &
   };
 
   useEffect(() => {
-    return ouiaPageTypeAndObjectId(ouiaContext, 'process-instances');
+    return ouiaPageTypeAndObjectId('process-instances');
   });
 
   const queryVariableGenerator = (_searchWordsArray, _statusArray) => {
@@ -194,6 +195,7 @@ const ProcessListPage: React.FC<InjectedOuiaProps &
   }
   return (
     <React.Fragment>
+      <div {...componentOuiaProps(ouiaId, 'ProcessListPage', ouiaSafe)}>
       <PageSection variant="light">
         <PageTitle title="Process Instances" />
         <Breadcrumb>
@@ -204,7 +206,7 @@ const ProcessListPage: React.FC<InjectedOuiaProps &
         </Breadcrumb>
       </PageSection>
       <PageSection>
-        <Grid gutter="md">
+        <Grid hasGutter md={1}>
           <GridItem span={12}>
             <Card className="dataList">
               {!isError && (
@@ -269,8 +271,9 @@ const ProcessListPage: React.FC<InjectedOuiaProps &
           </GridItem>
         </Grid>
       </PageSection>
+      </div>
     </React.Fragment>
   );
 };
 
-export default withOuiaContext(ProcessListPage);
+export default ProcessListPage;

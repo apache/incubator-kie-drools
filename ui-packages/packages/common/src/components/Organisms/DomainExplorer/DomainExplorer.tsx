@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
-  DataToolbar,
-  DataToolbarContent,
-  DataToolbarToggleGroup,
-  DataToolbarGroup,
   Card,
   Bullseye,
-  DataToolbarItem,
-  DataToolbarFilter
+  ToolbarGroup,
+  ToolbarContent,
+  ToolbarToggleGroup,
+  Toolbar,
+  ToolbarItem,
+  ToolbarFilter
 } from '@patternfly/react-core';
 import { FilterIcon } from '@patternfly/react-icons';
 import DomainExplorerFilterOptions from '../../Molecules/DomainExplorerFilterOptions/DomainExplorerFilterOptions';
@@ -203,27 +203,27 @@ const DomainExplorer: React.FC<IOwnProps> = ({
 
   const renderToolbar = () => {
     return (
-      <DataToolbar
+      <Toolbar
         id="data-toolbar-with-chip-groups"
         className="pf-m-toggle-group-container"
         collapseListedFiltersBreakpoint="md"
         clearAllFilters={onDeleteChip}
         clearFiltersButtonText="Reset to default"
       >
-        <DataToolbarContent>
+        <ToolbarContent>
           {!getPicker.loading && (
             <>
-              <DataToolbarToggleGroup
+              <ToolbarToggleGroup
                 toggleIcon={<FilterIcon />}
                 breakpoint="xl"
               >
                 {!getQuery.loading && !getQueryTypes.loading && (
-                  <DataToolbarFilter
+                  <ToolbarFilter
                     categoryName="Filters"
                     chips={filterChips}
                     deleteChip={onDeleteChip}
                   >
-                    <DataToolbarItem>
+                    <ToolbarItem>
                       <DomainExplorerFilterOptions
                         enableCache={enableCache}
                         filterChips={filterChips}
@@ -249,12 +249,12 @@ const DomainExplorer: React.FC<IOwnProps> = ({
                         setEnableRefresh={setEnableRefresh}
                         setIsLoadingMore={setIsLoadingMore}
                       />
-                    </DataToolbarItem>
-                  </DataToolbarFilter>
+                    </ToolbarItem>
+                  </ToolbarFilter>
                 )}
-              </DataToolbarToggleGroup>
-              <DataToolbarGroup>
-                <DataToolbarItem>
+              </ToolbarToggleGroup>
+              <ToolbarGroup>
+                <ToolbarItem>
                   <DomainExplorerManageColumns
                     columnPickerType={columnPickerType}
                     getQueryTypes={getQueryTypes}
@@ -272,12 +272,12 @@ const DomainExplorer: React.FC<IOwnProps> = ({
                     enableRefresh={enableRefresh}
                     setEnableRefresh={setEnableRefresh}
                   />
-                </DataToolbarItem>
-              </DataToolbarGroup>
+                </ToolbarItem>
+              </ToolbarGroup>
             </>
           )}
-        </DataToolbarContent>
-      </DataToolbar>
+        </ToolbarContent>
+      </Toolbar>
     );
   };
 

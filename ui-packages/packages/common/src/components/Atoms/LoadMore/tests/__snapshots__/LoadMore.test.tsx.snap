@@ -13,37 +13,37 @@ exports[`LoadMore component tests with isLoading false snapshot testing 1`] = `
     <DataListCell
       className="kogito-common__load-more"
     >
-      <Component
+      <Button
         id="load10"
         onClick={[Function]}
         variant="secondary"
       >
         Load 10 more
-      </Component>
+      </Button>
        
-      <Component
+      <Button
         id="load20"
         onClick={[Function]}
         variant="secondary"
       >
         Load 20 more
-      </Component>
+      </Button>
        
-      <Component
+      <Button
         id="load50"
         onClick={[Function]}
         variant="secondary"
       >
         Load 50 more
-      </Component>
+      </Button>
        
-      <Component
+      <Button
         id="load100"
         onClick={[Function]}
         variant="secondary"
       >
         Load 100 more
-      </Component>
+      </Button>
     </DataListCell>
   </DataListItem>
 </DataList>
@@ -62,7 +62,7 @@ exports[`LoadMore component tests with isLoading true snapshot testing 1`] = `
     <DataListCell
       className="kogito-common__load-more"
     >
-      <Component
+      <Button
         id="loading"
         variant="secondary"
       >
@@ -70,7 +70,7 @@ exports[`LoadMore component tests with isLoading true snapshot testing 1`] = `
         <Spinner
           size="md"
         />
-      </Component>
+      </Button>
     </DataListCell>
   </DataListItem>
 </DataList>

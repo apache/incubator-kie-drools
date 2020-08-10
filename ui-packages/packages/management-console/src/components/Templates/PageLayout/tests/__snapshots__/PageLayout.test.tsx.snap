@@ -12,32 +12,28 @@ exports[`PageLayout tests snapshot testing 1`] = `
       "pathname": "/ProcessInstances",
     }
   }
-  ouiaContext={
-    Object {
-      "isOuia": false,
-      "ouiaId": null,
-    }
-  }
 >
   <KogitoPageLayout
     BrandAltText="Management Console Logo"
     BrandClick={[Function]}
     BrandSrc="managementConsoleLogo.svg"
     PageNav={
-      <Unknown
+      <Nav
         aria-label="Nav"
+        onSelect={[Function]}
+        onToggle={[Function]}
+        ouiaSafe={true}
         theme="dark"
       >
         <NavList
           ariaLeftScroll="Scroll left"
           ariaRightScroll="Scroll right"
-          className=""
-          variant="default"
         >
           <NavItem
             isActive={true}
           >
             <Link
+              data-ouia-navigation-name="process-instances"
               to="/ProcessInstances"
             >
               Process Instances
@@ -47,13 +43,14 @@ exports[`PageLayout tests snapshot testing 1`] = `
             isActive={false}
           >
             <Link
+              data-ouia-navigation-name="domain-explorer"
               to="/DomainExplorer"
             >
               Domain Explorer
             </Link>
           </NavItem>
         </NavList>
-      </Unknown>
+      </Nav>
     }
   >
     <MockedComponent />

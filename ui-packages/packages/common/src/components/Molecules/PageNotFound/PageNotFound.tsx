@@ -41,7 +41,6 @@ const PageNotFound: React.FC<IOwnProps> = props => {
           <EmptyState variant={EmptyStateVariant.full}>
             <EmptyStateIcon
               icon={ExclamationCircleIcon}
-              size="md"
               color="var(--pf-global--danger-color--100)"
             />
             <Title headingLevel="h1" size="4xl">

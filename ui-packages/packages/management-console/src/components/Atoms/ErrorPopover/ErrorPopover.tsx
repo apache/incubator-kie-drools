@@ -17,6 +17,7 @@ const ErrorPopover: React.FC<IOwnProps> = ({
   return (
     <Popover
       zIndex={300}
+      id={processInstanceData.id}
       headerContent={<div>Process error</div>}
       bodyContent={
         <div>

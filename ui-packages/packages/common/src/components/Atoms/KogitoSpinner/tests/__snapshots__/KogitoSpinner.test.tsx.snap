@@ -11,6 +11,7 @@ exports[`KogitoSpinner component tests snapshot testing with loading test 1`] = 
     variant="container"
   />
   <Title
+    headingLevel="h3"
     size="lg"
   >
     loading...

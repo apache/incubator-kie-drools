@@ -7,7 +7,9 @@ import {
   Dropdown,
   KebabToggle,
   DropdownItem,
-  DataToolbarItem
+  ToolbarItem,
+  SelectOption,
+  Select
 } from '@patternfly/react-core';
 import { act } from 'react-dom/test-utils';
 import wait from 'waait';
@@ -236,7 +238,7 @@ describe('ProcessListToolbar component tests', () => {
       />,
       'ProcessListToolbar'
     );
-    wrapper = wrapper.find(DataToolbarItem);
+    wrapper = wrapper.find(ToolbarItem);
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -266,8 +268,8 @@ describe('ProcessListToolbar component tests', () => {
     ]);
   });
 
-  it('onSelect tests', () => {
-    const wrapper = shallow(
+  it('onSelect tests', async () => {
+    let wrapper = getWrapper(
       <ProcessListToolbar
         {...{
           ...props,
@@ -285,19 +287,22 @@ describe('ProcessListToolbar component tests', () => {
             businessKey: ['tra']
           }
         }}
-      />
+      />,
+      'ProcessListToolbar'
     );
     expect(wrapper.find('#status-select').exists()).toBeTruthy();
-    wrapper
-      .find('#status-select')
-      .simulate('select', { target: { id: 'COMPLETED' } });
-    wrapper
-      .find('#status-select')
-      .simulate('select', { target: { id: 'SUSPENDED' } });
-    expect(props.setStatusArray.mock.calls).toEqual([
-      [['ACTIVE', 'ERROR']],
-      [['ACTIVE', 'COMPLETED', 'ERROR', 'SUSPENDED']]
-    ]);
+    await act(async()=>{
+      wrapper.find(Select).find('button').simulate('click');
+    })
+    wrapper = wrapper.update();
+    await act(async()=>{
+      wrapper.find(SelectOption).at(1).find('input').simulate('change')
+    });
+    expect(props.setStatusArray.mock.calls[0][0]).toEqual(['ACTIVE','ERROR'])
+    await act(async()=>{
+      wrapper.find(SelectOption).at(4).find('input').simulate('change')
+    });
+    expect(props.setStatusArray.mock.calls[1][0]).toEqual([ 'ACTIVE', 'COMPLETED', 'ERROR', 'SUSPENDED' ])
   });
 
   it('onDelete tests - for status', () => {

@@ -7,7 +7,7 @@ exports[`PageToolbar component tests snapshot testing with kogito_auth_enabled p
     isOpenProp={false}
   />
   <Toolbar>
-    <ToolbarGroup>
+    <ForwardRef>
       <ToolbarItem
         className="pf-u-screen-reader pf-u-visible-on-md"
       >
@@ -41,7 +41,7 @@ exports[`PageToolbar component tests snapshot testing with kogito_auth_enabled p
           }
         />
       </ToolbarItem>
-    </ToolbarGroup>
+    </ForwardRef>
   </Toolbar>
 </Fragment>
 `;
@@ -53,7 +53,7 @@ exports[`PageToolbar component tests snapshot testing with kogito-auth_enabled a
     isOpenProp={false}
   />
   <Toolbar>
-    <ToolbarGroup>
+    <ForwardRef>
       <ToolbarItem
         className="pf-u-screen-reader pf-u-visible-on-md"
       >
@@ -80,7 +80,7 @@ exports[`PageToolbar component tests snapshot testing with kogito-auth_enabled a
           }
         />
       </ToolbarItem>
-    </ToolbarGroup>
+    </ForwardRef>
   </Toolbar>
 </Fragment>
 `;

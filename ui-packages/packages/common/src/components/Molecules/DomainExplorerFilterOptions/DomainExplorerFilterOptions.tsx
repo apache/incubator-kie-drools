@@ -625,10 +625,10 @@ const DomainExplorerFilterOptions = ({
           onToggle={onFieldToggle}
           onSelect={onChange}
           selections={selected}
-          isExpanded={isExpanded}
+          isOpen={isExpanded}
           id="select-field"
           placeholderText="Select a field"
-          ariaLabelledBy="Select a field"
+          aria-labelledby="Select a field"
           maxHeight="60vh"
           isGrouped
         >
@@ -641,7 +641,7 @@ const DomainExplorerFilterOptions = ({
           onToggle={onToggle}
           onSelect={onSelect}
           selections={selectTypes}
-          isExpanded={isFilterDropdownOpen}
+          isOpen={isFilterDropdownOpen}
           id="select-operator"
           placeholderText="operator"
         >
@@ -736,7 +736,7 @@ const DomainExplorerFilterOptions = ({
             onSelect={onStateSelect}
             id="enumSingleSelection"
             selections={selectedState}
-            isExpanded={stateToggle}
+            isOpen={stateToggle}
             placeholderText="value"
             className="kogito-common--filter-options__inputs"
           >
@@ -763,7 +763,7 @@ const DomainExplorerFilterOptions = ({
             onSelect={onMultiStateSelect}
             id="enumMultiSelection"
             selections={multiState}
-            isExpanded={multiStateToggle}
+            isOpen={multiStateToggle}
             placeholderText="value"
             className="kogito-common--filter-options__inputs"
           >

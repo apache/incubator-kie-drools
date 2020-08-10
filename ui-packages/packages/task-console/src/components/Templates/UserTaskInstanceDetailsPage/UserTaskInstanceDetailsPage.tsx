@@ -7,11 +7,13 @@ import {
   CardBody,
   Grid,
   GridItem,
-  InjectedOuiaProps,
-  PageSection,
-  withOuiaContext
+  PageSection
 } from '@patternfly/react-core';
-import { ouiaPageTypeAndObjectId, GraphQL } from '@kogito-apps/common';
+import {
+  ouiaPageTypeAndObjectId,
+  GraphQL,
+  componentOuiaProps, OUIAProps
+} from '@kogito-apps/common';
 import PageTitle from '../../Molecules/PageTitle/PageTitle';
 import TaskForm from '../../Organisms/TaskForm/TaskForm';
 import TaskConsoleContext, {
@@ -28,7 +30,11 @@ const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<
   {},
   {}
 > &
-  InjectedOuiaProps> = ({ ouiaContext, ...props }) => {
+  OUIAProps> = ({
+    ouiaId,
+    ouiaSafe,
+    ...props
+  }) => {
   const id = props.match.params.taskID;
 
   const context: IContext<UserTaskInstance> = useContext(TaskConsoleContext);
@@ -40,13 +46,16 @@ const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<
   });
 
   useEffect(() => {
-    return ouiaPageTypeAndObjectId(ouiaContext, 'user-tasks', id);
+    return ouiaPageTypeAndObjectId( 'user-tasks', id);
   });
 
   const activeUserTask = context.getActiveItem();
 
   return (
     <React.Fragment>
+      <div
+        {...componentOuiaProps(ouiaId, 'UserTaskInstanceDetails', ouiaSafe)}
+      >
       <PageSection variant="light">
         <PageTitle title="Task Details" />
         <Breadcrumb>
@@ -56,7 +65,7 @@ const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<
         </Breadcrumb>
       </PageSection>
       <PageSection>
-        <Grid gutter="md" className="pf-u-h-100">
+        <Grid hasGutter md={1} className="pf-u-h-100">
           <GridItem span={12} className="pf-u-h-100">
             <Card className="pf-u-h-100">
               <CardBody className="pf-u-h-100">
@@ -70,8 +79,9 @@ const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<
           </GridItem>
         </Grid>
       </PageSection>
+      </div>
     </React.Fragment>
   );
 };
 
-export default withOuiaContext(UserTaskInstanceDetailsPage);
+export default UserTaskInstanceDetailsPage;

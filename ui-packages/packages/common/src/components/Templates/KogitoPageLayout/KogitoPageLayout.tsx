@@ -4,8 +4,8 @@ import {
   PageHeader,
   Avatar,
   Brand,
-  InjectedOuiaProps,
-  withOuiaContext
+  PageHeaderTools,
+  OUIAProps
 } from '@patternfly/react-core';
 import React, { useState, useEffect } from 'react';
 import PageToolbar from '../../Molecules/PageToolbar/PageToolbar';
@@ -23,8 +23,8 @@ interface IOwnProps {
   BrandClick: () => void;
 }
 
-const KogitoPageLayout: React.FC<IOwnProps & InjectedOuiaProps> = ({
-  ouiaContext,
+const KogitoPageLayout: React.FC<IOwnProps & OUIAProps> = ({
+  ouiaId,
   ...props
 }) => {
   const pageId = 'main-content-page-layout-default-nav';
@@ -34,9 +34,9 @@ const KogitoPageLayout: React.FC<IOwnProps & InjectedOuiaProps> = ({
   };
 
   useEffect(() => {
-    // set OUIA:Page attribute
-    ouiaContext.isOuia &&
+    if(document.getElementById(pageId)) {
       document.getElementById(pageId).setAttribute('data-ouia-main', 'true');
+    }
   });
 
   const Header = (
@@ -48,16 +48,18 @@ const KogitoPageLayout: React.FC<IOwnProps & InjectedOuiaProps> = ({
           onClick={props.BrandClick}
         />
       }
-      toolbar={
-        <aboutLogoContext.Provider value={props.BrandSrc}>
-          <PageToolbar />
-        </aboutLogoContext.Provider>
+      headerTools={
+        <PageHeaderTools>
+          <aboutLogoContext.Provider value={props.BrandSrc}>
+            <PageToolbar />
+          </aboutLogoContext.Provider>
+          <Avatar src={userImage} alt="Kogito Logo" />
+        </PageHeaderTools>
       }
-      avatar={<Avatar src={userImage} alt="Kogito Logo" />}
       showNavToggle
       isNavOpen={isNavOpen}
       onNavToggle={onNavToggle}
-      {...ouiaAttribute(ouiaContext, 'data-ouia-header', 'true')}
+      {...ouiaAttribute('data-ouia-header', 'true')}
     />
   );
 
@@ -66,7 +68,7 @@ const KogitoPageLayout: React.FC<IOwnProps & InjectedOuiaProps> = ({
       nav={props.PageNav}
       isNavOpen={isNavOpen}
       theme="dark"
-      {...ouiaAttribute(ouiaContext, 'data-ouia-navigation', 'true')}
+      {...ouiaAttribute('data-ouia-navigation', 'true')}
     />
   );
 
@@ -84,4 +86,4 @@ const KogitoPageLayout: React.FC<IOwnProps & InjectedOuiaProps> = ({
   );
 };
 
-export default withOuiaContext(KogitoPageLayout);
+export default KogitoPageLayout;

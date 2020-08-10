@@ -1584,152 +1584,102 @@ exports[`ProcessListTable component tests Snapshot testing with wrong query para
                 <div
                   className="pf-c-empty-state"
                 >
-                  <EmptyStateIcon
-                    color="var(--pf-global--danger-color--100)"
-                    icon={[Function]}
-                    size="md"
+                  <div
+                    className="pf-c-empty-state__content"
                   >
-                    <ExclamationCircleIcon
-                      aria-hidden="true"
-                      className="pf-c-empty-state__icon"
+                    <EmptyStateIcon
                       color="var(--pf-global--danger-color--100)"
-                      noVerticalAlign={false}
-                      size="md"
-                      title={null}
+                      icon={[Function]}
                     >
-                      <svg
+                      <ExclamationCircleIcon
                         aria-hidden="true"
-                        aria-labelledby={null}
                         className="pf-c-empty-state__icon"
-                        fill="var(--pf-global--danger-color--100)"
-                        height="1.5em"
-                        role="img"
-                        style={
-                          Object {
-                            "verticalAlign": "-0.1875em",
-                          }
-                        }
-                        viewBox="0 0 512 512"
-                        width="1.5em"
+                        color="var(--pf-global--danger-color--100)"
+                        noVerticalAlign={false}
+                        size="sm"
                       >
-                        <path
-                          d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"
-                          transform=""
-                        />
-                      </svg>
-                    </ExclamationCircleIcon>
-                  </EmptyStateIcon>
-                  <Title
-                    headingLevel="h1"
-                    size="4xl"
-                  >
-                    <h1
-                      className="pf-c-title pf-m-4xl"
-                    >
-                      Error fetching data
-                    </h1>
-                  </Title>
-                  <EmptyStateBody>
-                    <div
-                      className="pf-c-empty-state__body"
-                    >
-                      An error occurred while accessing data.
-                       
-                      <Component
-                        id="display-error"
-                        isInline={true}
-                        onClick={[Function]}
-                        variant="link"
-                      >
-                        <ComponentWithOuia
-                          component={[Function]}
-                          componentProps={
+                        <svg
+                          aria-hidden="true"
+                          aria-labelledby={null}
+                          className="pf-c-empty-state__icon"
+                          fill="var(--pf-global--danger-color--100)"
+                          height="1em"
+                          role="img"
+                          style={
                             Object {
-                              "children": "See more details",
-                              "id": "display-error",
-                              "isInline": true,
-                              "onClick": [Function],
-                              "variant": "link",
+                              "verticalAlign": "-0.125em",
                             }
                           }
-                          consumerContext={null}
+                          viewBox="0 0 512 512"
+                          width="1em"
                         >
-                          <Button
-                            id="display-error"
-                            isInline={true}
-                            onClick={[Function]}
-                            ouiaContext={
-                              Object {
-                                "isOuia": false,
-                                "ouiaId": null,
-                              }
-                            }
-                            variant="link"
-                          >
-                            <button
-                              aria-disabled={null}
-                              aria-label={null}
-                              className="pf-c-button pf-m-link pf-m-inline"
-                              disabled={false}
-                              id="display-error"
-                              onClick={[Function]}
-                              tabIndex={null}
-                              type="button"
-                            >
-                              <span
-                                className="pf-c-button__text"
-                              >
-                                See more details
-                              </span>
-                            </button>
-                          </Button>
-                        </ComponentWithOuia>
-                      </Component>
-                    </div>
-                  </EmptyStateBody>
-                  <Component
-                    id="goback-button"
-                    onClick={[Function]}
-                    variant="primary"
-                  >
-                    <ComponentWithOuia
-                      component={[Function]}
-                      componentProps={
-                        Object {
-                          "children": "Go back",
-                          "id": "goback-button",
-                          "onClick": [Function],
-                          "variant": "primary",
-                        }
-                      }
-                      consumerContext={null}
+                          <path
+                            d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"
+                            transform=""
+                          />
+                        </svg>
+                      </ExclamationCircleIcon>
+                    </EmptyStateIcon>
+                    <Title
+                      headingLevel="h1"
+                      size="4xl"
                     >
-                      <Button
+                      <h1
+                        className="pf-c-title pf-m-4xl"
+                      >
+                        Error fetching data
+                      </h1>
+                    </Title>
+                    <EmptyStateBody>
+                      <div
+                        className="pf-c-empty-state__body"
+                      >
+                        An error occurred while accessing data.
+                         
+                        <Button
+                          id="display-error"
+                          isInline={true}
+                          onClick={[Function]}
+                          variant="link"
+                        >
+                          <button
+                            aria-disabled={false}
+                            aria-label={null}
+                            className="pf-c-button pf-m-link pf-m-inline"
+                            data-ouia-component-id={0}
+                            data-ouia-component-type="PF4/Button"
+                            data-ouia-safe={true}
+                            disabled={false}
+                            id="display-error"
+                            onClick={[Function]}
+                            type="button"
+                          >
+                            See more details
+                          </button>
+                        </Button>
+                      </div>
+                    </EmptyStateBody>
+                    <Button
+                      id="goback-button"
+                      onClick={[Function]}
+                      variant="primary"
+                    >
+                      <button
+                        aria-disabled={false}
+                        aria-label={null}
+                        className="pf-c-button pf-m-primary"
+                        data-ouia-component-id={1}
+                        data-ouia-component-type="PF4/Button"
+                        data-ouia-safe={true}
+                        disabled={false}
                         id="goback-button"
                         onClick={[Function]}
-                        ouiaContext={
-                          Object {
-                            "isOuia": false,
-                            "ouiaId": null,
-                          }
-                        }
-                        variant="primary"
+                        type="button"
                       >
-                        <button
-                          aria-disabled={null}
-                          aria-label={null}
-                          className="pf-c-button pf-m-primary"
-                          disabled={false}
-                          id="goback-button"
-                          onClick={[Function]}
-                          tabIndex={null}
-                          type="button"
-                        >
-                          Go back
-                        </button>
-                      </Button>
-                    </ComponentWithOuia>
-                  </Component>
+                        Go back
+                      </button>
+                    </Button>
+                  </div>
                 </div>
               </EmptyState>
             </div>
