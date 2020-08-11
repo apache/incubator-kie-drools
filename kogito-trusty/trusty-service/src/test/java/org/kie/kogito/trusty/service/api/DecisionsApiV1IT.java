@@ -48,7 +48,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @QuarkusTest
-public class DecisionsApiV1Test {
+public class DecisionsApiV1IT {
 
     private static final String TEST_EXECUTION_ID = "executionId";
     private static final String TEST_OUTCOME_ID = "FirstOutcome";

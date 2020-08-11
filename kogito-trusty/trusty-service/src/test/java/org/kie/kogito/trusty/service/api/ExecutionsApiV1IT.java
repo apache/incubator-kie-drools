@@ -43,7 +43,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @QuarkusTest
-class ExecutionsApiV1Test {
+class ExecutionsApiV1IT {
 
     private static final String MODEL_DEFINITION = "definition";
 
