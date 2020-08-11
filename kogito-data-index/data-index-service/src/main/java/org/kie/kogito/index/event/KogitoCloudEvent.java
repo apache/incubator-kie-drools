@@ -32,6 +32,7 @@ public abstract class KogitoCloudEvent<T> {
     private ZonedDateTime time;
     private URI schemaURL;
     private String contentType;
+    private String subject;
     private T data;
 
     //Extensions
@@ -160,6 +161,14 @@ public abstract class KogitoCloudEvent<T> {
         this.kogitoAddons = kogitoAddons;
     }
 
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
     @Override
     public String toString() {
         return "KogitoCloudEvent{" +
@@ -170,11 +179,14 @@ public abstract class KogitoCloudEvent<T> {
                 ", time=" + time +
                 ", schemaURL=" + schemaURL +
                 ", contentType='" + contentType + '\'' +
+                ", subject='" + subject + '\'' +
                 ", data=" + data +
                 ", processInstanceId='" + processInstanceId + '\'' +
                 ", processId='" + processId + '\'' +
                 ", rootProcessInstanceId='" + rootProcessInstanceId + '\'' +
                 ", rootProcessId='" + rootProcessId + '\'' +
+                ", kogitoReferenceId='" + kogitoReferenceId + '\'' +
+                ", kogitoAddons='" + kogitoAddons + '\'' +
                 '}';
     }
 }

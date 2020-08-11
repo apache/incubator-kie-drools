@@ -26,5 +26,6 @@
   "kogitoRootProcessinstanceId": null,
   "kogitoProcessId": "timerscycle",
   "kogitoRootProcessId": null,
-  "kogitoAddons": null
+  "kogitoAddons": null,
+  "subject": null
 }

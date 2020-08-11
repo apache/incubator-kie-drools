@@ -67,5 +67,6 @@
   "specversion": "0.3",
   "time": "2019-08-30T13:48:37.857915+02:00[Europe/Warsaw]",
   "type": "UserTaskInstanceEvent",
-  "source": "http://localhost:8080/travels"
+  "source": "http://localhost:8080/travels",
+  "subject": null
 }
