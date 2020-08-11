@@ -24,11 +24,13 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
+import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.api.container.PMMLPackage;
 import org.kie.pmml.evaluator.assembler.container.PMMLPackageImpl;
@@ -132,6 +134,9 @@ public class PMMLAssemblerService implements KieAssemblerService {
             ResourceTypePackageRegistry rpkg = kpkgs.getResourceTypePackages();
             PMMLPackage pmmlPkg = rpkg.computeIfAbsent(ResourceType.PMML, rtp -> new PMMLPackageImpl());
             pmmlPkg.addAll(Collections.singletonList(kiePMMLModel));
+            if (kiePMMLModel instanceof HasNestedModels) {
+                addModels(kbuilderImpl, ((HasNestedModels)kiePMMLModel).getNestedModels());
+            }
         }
     }
 }

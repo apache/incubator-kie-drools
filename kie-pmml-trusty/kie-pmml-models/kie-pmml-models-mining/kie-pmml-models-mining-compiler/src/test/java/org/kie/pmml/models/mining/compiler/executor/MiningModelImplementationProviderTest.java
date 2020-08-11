@@ -45,6 +45,7 @@ public class MiningModelImplementationProviderTest {
     private static final String SOURCE_SCORECARD = "MiningModel_Scorecard.pmml";
     private static final String SOURCE_MIXED = "MiningModel_Mixed.pmml";
     private static final String SOURCE_NO_SEGMENT_ID = "MiningModel_NoSegmentId.pmml";
+    private static final String SOURCE_SEGMENT_ID = "MiningModel_SegmentId.pmml";
 
     @Test
     public void getPMMLModelType() {
@@ -93,22 +94,21 @@ public class MiningModelImplementationProviderTest {
 
     @Test
     public void populateMissingIds() throws Exception {
-        final PMML pmml = getPMML(SOURCE_NO_SEGMENT_ID);
-        final MiningModel miningModel = (MiningModel) pmml.getModels().get(0);
-        commonVerifySegmentId(miningModel.getSegmentation().getSegments(), true);
-        PROVIDER.populateMissingIds(miningModel);
-        commonVerifySegmentId(miningModel.getSegmentation().getSegments(), false);
+        commonVerifySegmentId(SOURCE_NO_SEGMENT_ID);
+        commonVerifySegmentId(SOURCE_SEGMENT_ID);
     }
 
-    private void commonVerifySegmentId(final List<Segment> segments, final boolean idIsNull) {
+    private void commonVerifySegmentId(final String source) throws Exception{
+        final PMML pmml = getPMML(source);
+        final MiningModel miningModel = (MiningModel) pmml.getModels().get(0);
+        commonVerifySegmentId(miningModel.getSegmentation().getSegments());
+    }
+
+    private void commonVerifySegmentId(final List<Segment> segments) {
         for (Segment segment : segments) {
-            if (idIsNull) {
-                assertNull(segment.getId());
-            } else {
-                assertNotNull(segment.getId());
-            }
+            assertNotNull(segment.getId());
             if (segment.getModel() instanceof MiningModel) {
-                commonVerifySegmentId(((MiningModel) segment.getModel()).getSegmentation().getSegments(), idIsNull);
+                commonVerifySegmentId(((MiningModel) segment.getModel()).getSegmentation().getSegments());
             }
         }
     }

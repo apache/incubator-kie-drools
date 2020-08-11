@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.regression.tests;
+package org.kie.pmml.mining.tests;
 
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;

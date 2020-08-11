@@ -23,6 +23,8 @@ import javax.xml.bind.JAXBException;
 
 import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
+import org.dmg.pmml.mining.MiningModel;
+import org.dmg.pmml.mining.Segment;
 import org.xml.sax.SAXException;
 
 /**
@@ -32,6 +34,9 @@ import org.xml.sax.SAXException;
 public class KiePMMLUtil {
 
     static final String MODELNAME_TEMPLATE = "%s%s%s";
+    static final String SEGMENTID_TEMPLATE = "%sSegment%s";
+    static final String SEGMENTMODELNAME_TEMPLATE = "Segment%s%s";
+
     private KiePMMLUtil() {
         // Avoid instantiation
     }
@@ -56,7 +61,7 @@ public class KiePMMLUtil {
     public static PMML load(final InputStream is, final String fileName) throws SAXException, JAXBException {
         PMML toReturn = org.jpmml.model.PMMLUtil.unmarshal(is);
         String cleanedFileName = fileName.contains(".") ? fileName.substring(0, fileName.indexOf('.')) : fileName;
-        populateMissingModelNames(toReturn, cleanedFileName);
+        populateMissingNames(toReturn, cleanedFileName);
         return toReturn;
     }
 
@@ -70,7 +75,7 @@ public class KiePMMLUtil {
      * @param toPopulate
      * @param fileName
      */
-    static void populateMissingModelNames(final PMML toPopulate, final String fileName) {
+    static void populateMissingNames(final PMML toPopulate, final String fileName) {
         final List<Model> models = toPopulate.getModels();
         for (int i = 0; i < models.size(); i ++) {
             Model model = models.get(i);
@@ -80,6 +85,39 @@ public class KiePMMLUtil {
                                                  model.getClass().getSimpleName(),
                                                  i);
                 model.setModelName(modelName);
+
+            }
+            if (model instanceof MiningModel) {
+                populateMissingIds((MiningModel) model);
+            }
+        }
+    }
+
+    /**
+     * Recursively populate <code>Segment</code>s with auto generated id
+     * if missing in original model
+     *
+     * @param miningModel
+     */
+    static void populateMissingIds(final MiningModel miningModel) {
+        final List<Segment> segments =miningModel.getSegmentation().getSegments();
+        for (int i = 0; i < segments.size(); i ++) {
+            Segment segment = segments.get(i);
+            if (segment.getId() == null || segment.getId().isEmpty()) {
+                String toSet = String.format(SEGMENTID_TEMPLATE,
+                                             miningModel.getModelName(),
+                                             i);
+                segment.setId(toSet);
+            }
+            Model model = segment.getModel();
+            if (model.getModelName() == null || model.getModelName().isEmpty()) {
+                String modelName = String.format(SEGMENTMODELNAME_TEMPLATE,
+                                                 segment.getId(),
+                                                 model.getClass().getSimpleName());
+                model.setModelName(modelName);
+            }
+            if (segment.getModel() instanceof MiningModel) {
+                populateMissingIds((MiningModel) segment.getModel());
             }
         }
     }

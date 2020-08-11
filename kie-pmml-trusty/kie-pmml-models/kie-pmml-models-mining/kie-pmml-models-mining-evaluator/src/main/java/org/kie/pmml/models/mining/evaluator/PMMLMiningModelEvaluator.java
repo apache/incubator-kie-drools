@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package  org.kie.pmml.models.mining.evaluator;
+package org.kie.pmml.models.mining.evaluator;
 
-import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.util.StringUtils;
 import org.kie.api.KieBase;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
@@ -56,6 +57,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
     private static final Logger logger = LoggerFactory.getLogger(PMMLMiningModelEvaluator.class.getName());
     private static final String EXPECTED_A_KIE_PMMLMINING_MODEL_RECEIVED = "Expected a KiePMMLMiningModel, received %s ";
     private static final String TARGET_FIELD_REQUIRED_RETRIEVED = "TargetField required, retrieved %s";
+    private static final Map<String, InternalKnowledgeBase> MAPPED_KIEBASES = new HashMap<>();
 
 
     @Override
@@ -79,16 +81,16 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
                                             final KieBase knowledgeBase)  {
         final MULTIPLE_MODEL_METHOD multipleModelMethod = toEvaluate.getSegmentation().getMultipleModelMethod();
         final List<KiePMMLSegment> segments = toEvaluate.getSegmentation().getSegments();
-        final LinkedHashMap<String, KiePMMLNameValue> inputData = segments.stream()
-                .map(segment ->
-                             new AbstractMap.SimpleImmutableEntry<>(segment, evaluateSegment(segment, pmmlContext, knowledgeBase)))
-                .filter(entry -> entry.getValue().isPresent())
-                .map(entry -> new AbstractMap.SimpleImmutableEntry<>(entry.getKey(),
-                                                                     getKiePMMLNameValue(entry.getValue().get(), multipleModelMethod, entry.getKey().getWeight())))
-                .collect(Collectors.toMap(entry -> entry.getKey().getId(),
-                                          AbstractMap.SimpleImmutableEntry::getValue,
-                                          (o1, o2) -> o1,
-                                          LinkedHashMap::new));
+
+        final LinkedHashMap<String, KiePMMLNameValue> inputData = new LinkedHashMap<>();
+
+        for (KiePMMLSegment segment : segments) {
+            Optional<PMML4Result> segmentResult = evaluateSegment(segment, pmmlContext, knowledgeBase);
+            segmentResult.ifPresent(pmml4Result -> {
+                KiePMMLNameValue kiePMMLNameValue = getKiePMMLNameValue(pmml4Result, multipleModelMethod, segment.getWeight());
+                inputData.put(segment.getId(), kiePMMLNameValue);
+            });
+        }
         final Object prediction = multipleModelMethod.apply(inputData);
         PMML4Result toReturn = new PMML4Result();
         toReturn.addResultVariable(toEvaluate.getTargetField(), prediction);
@@ -104,17 +106,21 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
         Optional<PMML4Result> toReturn = Optional.empty();
         Map<String, Object> values = getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
         String modelName = toEvaluate.getModel().getName();
-        final PMMLRuntime pmmlRuntime = getPMMLRuntime(modelName, knowledgeBase);
         if (kiePMMLPredicate != null && kiePMMLPredicate.evaluate(values)) {
+            final PMMLRuntime pmmlRuntime = getPMMLRuntime(toEvaluate.getModel().getKModulePackageName(), knowledgeBase);
             logger.info("{}: matching predicate, evaluating... ", toEvaluate.getId());
             toReturn = Optional.of(pmmlRuntime.evaluate(modelName, pmmlContext));
         }
         return toReturn;
     }
 
-    private PMMLRuntime getPMMLRuntime(final String kbaseName, final KieBase knowledgeBase) {
-        KieContainer kieContainer = ((KnowledgeBaseImpl) knowledgeBase).getKieContainer();
-        KieBase kieBase = kieContainer.getKieBase(kbaseName);
+    private PMMLRuntime getPMMLRuntime(final String kModulePackageName, final KieBase knowledgeBase) {
+        InternalKnowledgeBase kieBase = MAPPED_KIEBASES.computeIfAbsent(kModulePackageName, s -> {
+            List<KiePackage> packages = Collections.singletonList(knowledgeBase.getKiePackage(kModulePackageName));
+            InternalKnowledgeBase toReturn = KnowledgeBaseFactory.newKnowledgeBase(kModulePackageName);
+            toReturn.addPackages(packages);
+            return toReturn;
+        });
         KieRuntimeFactory kieRuntimeFactory = KieRuntimeFactory.of(kieBase);
         return kieRuntimeFactory.get(PMMLRuntime.class);
     }

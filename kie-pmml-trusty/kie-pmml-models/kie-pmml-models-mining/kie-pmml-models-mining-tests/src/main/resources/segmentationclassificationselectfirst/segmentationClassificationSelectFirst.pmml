@@ -10,7 +10,7 @@
     <DataField name="input2" optype="continuous" dataType="double"/>
     <DataField name="input3" optype="continuous" dataType="double"/>
   </DataDictionary>
-  <MiningModel functionName="classification">
+  <MiningModel functionName="classification" modelName="SegmentationClassificationSelectFirst">
     <MiningSchema>
       <MiningField name="result" usageType="predicted" invalidValueTreatment="returnInvalid"/>
       <MiningField name="input1" usageType="active" invalidValueTreatment="returnInvalid"/>
@@ -27,12 +27,12 @@
             <MiningField name="input2" usageType="active" invalidValueTreatment="returnInvalid"/>
             <MiningField name="input3" usageType="active" invalidValueTreatment="returnInvalid"/>
           </MiningSchema>
-          <Node id="1" score="classA">
+          <Node id="1" score="classA1">
             <True/>
-            <Node id="2" score="classB">
+            <Node id="2" score="classB1">
               <SimplePredicate field="input2" operator="lessThan" value="15"/>
             </Node>
-            <Node id="3" score="classC">
+            <Node id="3" score="classC1">
               <SimplePredicate field="input3" operator="greaterThan" value="85"/>
             </Node>
           </Node>
@@ -50,12 +50,12 @@
             <MiningField name="input2" usageType="active" invalidValueTreatment="returnInvalid"/>
             <MiningField name="input3" usageType="active" invalidValueTreatment="returnInvalid"/>
           </MiningSchema>
-          <Node id="1" score="classB">
+          <Node id="1" score="classB2">
             <True/>
-            <Node id="2" score="classC">
+            <Node id="2" score="classC2">
               <SimplePredicate field="input2" operator="lessThan" value="15"/>
             </Node>
-            <Node id="3" score="classA">
+            <Node id="3" score="classA2">
               <SimplePredicate field="input3" operator="greaterThan" value="85"/>
             </Node>
           </Node>
@@ -70,12 +70,12 @@
             <MiningField name="input2" usageType="active" invalidValueTreatment="returnInvalid"/>
             <MiningField name="input3" usageType="active" invalidValueTreatment="returnInvalid"/>
           </MiningSchema>
-          <Node id="1" score="classC">
+          <Node id="1" score="classC3">
             <True/>
-            <Node id="2" score="classA">
+            <Node id="2" score="classA3">
               <SimplePredicate field="input2" operator="lessThan" value="15"/>
             </Node>
-            <Node id="3" score="classB">
+            <Node id="3" score="classB3">
               <SimplePredicate field="input3" operator="greaterThan" value="85"/>
             </Node>
           </Node>

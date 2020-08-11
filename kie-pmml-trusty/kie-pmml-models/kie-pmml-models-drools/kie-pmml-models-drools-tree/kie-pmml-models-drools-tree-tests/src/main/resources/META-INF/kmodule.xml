@@ -26,4 +26,8 @@
     <ksession name="SimpleSetPredicateTreeModelSession" type="stateless"/>
   </kbase>
 
+  <kbase name="TestingModel" packages="testingmodel">
+    <ksession name="TestingModelSession" type="stateless"/>
+  </kbase>
+
 </kmodule>

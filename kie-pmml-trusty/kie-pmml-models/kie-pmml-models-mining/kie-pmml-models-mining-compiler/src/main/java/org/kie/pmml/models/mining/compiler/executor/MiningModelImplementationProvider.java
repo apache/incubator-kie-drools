@@ -15,14 +15,14 @@
 */
 package org.kie.pmml.models.mining.compiler.executor;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.MiningModel;
-import org.dmg.pmml.mining.Segment;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
@@ -54,7 +54,13 @@ public class MiningModelImplementationProvider implements ModelImplementationPro
         if (!(kBuilder instanceof KnowledgeBuilder)) {
             throw new KiePMMLException(String.format("Expecting KnowledgeBuilder, received %s", kBuilder.getClass().getName()));
         }
-        populateMissingIds(model);
+        File dumpDir = new File("target/dumpDir");
+        if (!dumpDir.exists()) {
+            dumpDir.mkdir();
+        }
+        ((KnowledgeBuilderImpl)kBuilder)
+                .getBuilderConfiguration()
+                .setDumpDir(dumpDir);
         return getKiePMMLMiningModel(dataDictionary, transformationDictionary, model, (KnowledgeBuilder) kBuilder);
     }
 
@@ -67,30 +73,11 @@ public class MiningModelImplementationProvider implements ModelImplementationPro
         if (!(kBuilder instanceof KnowledgeBuilder)) {
             throw new KiePMMLException(String.format("Expecting KnowledgeBuilder, received %s", kBuilder.getClass().getName()));
         }
-        populateMissingIds(model);
         try {
             final Map<String, String> sourcesMap = KiePMMLMiningModelFactory.getKiePMMLMiningModelSourcesMap(dataDictionary, transformationDictionary, model, packageName, (KnowledgeBuilder) kBuilder);
             return new KiePMMLMiningModelWithSources(model.getModelName(), packageName, sourcesMap);
         } catch (IOException e) {
             throw new KiePMMLException(e);
-        }
-    }
-
-    /**
-     * Recursively populate <code>Segment</code>s with auto generated id
-     * if missing in original model
-     */
-    protected void populateMissingIds(final MiningModel model) {
-        final List<Segment> segments =model.getSegmentation().getSegments();
-        for (int i = 0; i < segments.size(); i ++) {
-            Segment segment = segments.get(i);
-            if (segment.getId() == null || segment.getId().isEmpty()) {
-                String toSet = String.format(SEGMENTID_TEMPLATE, model.getModelName(), i);
-                segment.setId(toSet);
-                if (segment.getModel() instanceof MiningModel) {
-                    populateMissingIds((MiningModel) segment.getModel());
-                }
-            }
         }
     }
 

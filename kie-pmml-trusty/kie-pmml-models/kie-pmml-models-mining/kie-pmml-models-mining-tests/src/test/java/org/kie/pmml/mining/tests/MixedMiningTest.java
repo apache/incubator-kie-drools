@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.regression.tests;
+package org.kie.pmml.mining.tests;
 
 import java.util.Arrays;
 import java.util.Collection;

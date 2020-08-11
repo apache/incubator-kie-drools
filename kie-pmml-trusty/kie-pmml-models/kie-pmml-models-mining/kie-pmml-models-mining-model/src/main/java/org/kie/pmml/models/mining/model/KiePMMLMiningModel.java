@@ -18,17 +18,20 @@ package org.kie.pmml.models.mining.model;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-3/MultipleModels.html>MiningModel</a>
  */
-public class KiePMMLMiningModel extends KiePMMLModel {
+public class KiePMMLMiningModel extends KiePMMLModel implements HasNestedModels {
 
     public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.MINING_MODEL;
 
@@ -47,6 +50,11 @@ public class KiePMMLMiningModel extends KiePMMLModel {
     @Override
     public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
         return null;
+    }
+
+    @Override
+    public List<KiePMMLModel> getNestedModels() {
+        return getSegmentation().getSegments().stream().map(KiePMMLSegment::getModel).collect(Collectors.toList());
     }
 
     public String getAlgorithmName() {
