@@ -147,7 +147,7 @@
                 </goals>
                 <configuration>
                   <npmRegistryURL>${env.NPM_REGISTRY_URL}</npmRegistryURL>
-                  <arguments>install --fetch-retry-mintimeout=100000 --fetch-retries=10</arguments>
+                  <arguments>install --fetch-retry-mintimeout=100000 --fetch-retries=10 --frozen-lockfile</arguments>
                 </configuration>
               </execution>
             </executions>
