@@ -40,7 +40,6 @@ import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -89,14 +88,6 @@ public class KafkaClientTest {
         thenConsumerIsClosed();
     }
 
-    @Test
-    public void shouldNotConsumeMessageIfShutdown() {
-        givenKafkaClient();
-        whenShutdown();
-        whenConsume();
-        thenMessageIsNotReceived();
-    }
-
     private void givenKafkaClient() {
         client = new KafkaClient(producer, consumer);
     }
@@ -143,10 +134,6 @@ public class KafkaClientTest {
         waiter.await(5000, TimeUnit.MILLISECONDS);
         verify(consumer, Mockito.atLeastOnce()).commitSync();
         assertTrue(messages.contains(MESSAGE_TO_CONSUME));
-    }
-
-    private void thenMessageIsNotReceived() {
-        verify(consumer, never()).commitSync();
     }
 
 }
