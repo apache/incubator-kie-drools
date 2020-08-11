@@ -53,11 +53,11 @@ public class SegmentationSelectFirstMiningTest extends AbstractPMMLMiningTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                { 0, 0, 44},
-                { 1, 1, 78},
-                { 20, 30, 242514},
-                { 25, 31, 335556},
-                { 5, 5, 2134}
+                { 0, 0, -10},
+                { 1, 1, 3},
+                { 20, 30, 121004},
+                { 25, 31, 167502},
+                { 5, 5, 55}
         });
     }
 
