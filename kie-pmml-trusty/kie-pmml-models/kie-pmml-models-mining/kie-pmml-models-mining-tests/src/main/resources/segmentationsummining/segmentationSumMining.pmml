@@ -5,7 +5,7 @@
     <DataField name="x" optype="continuous" dataType="double"/>
     <DataField name="y" optype="continuous" dataType="double"/>
   </DataDictionary>
-  <MiningModel functionName="regression">
+  <MiningModel functionName="regression" modelName="SegmentationSumMining">
     <MiningSchema>
       <MiningField name="result" usageType="predicted" invalidValueTreatment="returnInvalid"/>
       <MiningField name="x" usageType="active" invalidValueTreatment="returnInvalid"/>
@@ -56,7 +56,7 @@
       </Segment>
       <Segment id="4">
         <True/>
-        <RegressionModel modelName="segment3Model" functionName="regression">
+        <RegressionModel modelName="segment4Model" functionName="regression">
           <MiningSchema>
             <MiningField name="result" usageType="target" invalidValueTreatment="returnInvalid"/>
             <MiningField name="x" usageType="active" invalidValueTreatment="returnInvalid"/>
