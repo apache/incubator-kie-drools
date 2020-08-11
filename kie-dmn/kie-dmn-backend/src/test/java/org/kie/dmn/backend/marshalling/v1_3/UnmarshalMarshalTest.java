@@ -57,7 +57,7 @@ public class UnmarshalMarshalTest {
 
     private static final StreamSource DMN13_SCHEMA_SOURCE = new StreamSource(UnmarshalMarshalTest.class.getResource("/DMN13.xsd").getFile());
     private static final DMNMarshaller MARSHALLER = new org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller();
-    protected static final Logger logger = LoggerFactory.getLogger(UnmarshalMarshalTest.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(UnmarshalMarshalTest.class);
 
     @Test
     public void testV13_simple() throws Exception {
@@ -125,14 +125,14 @@ public class UnmarshalMarshalTest {
         ValidationResult validateInputResult = v.validateInstance(new StreamSource(inputXMLFile));
         if (!validateInputResult.isValid()) {
             for (ValidationProblem p : validateInputResult.getProblems()) {
-                System.err.println(p);
+                LOG.error("{}", p);
             }
         }
         assertTrue(validateInputResult.isValid());
 
         final File subdirFile = new File(baseOutputDir, subdir);
         if (!subdirFile.mkdirs()) {
-            logger.warn("mkdirs() failed for File: " + subdirFile.getAbsolutePath() + "!");
+            LOG.warn("mkdirs() failed for File: ", subdirFile.getAbsolutePath());
         }
         FileOutputStream sourceFos = new FileOutputStream(new File(baseOutputDir, subdir + "a." + xmlfile));
         Files.copy(
@@ -142,7 +142,7 @@ public class UnmarshalMarshalTest {
         sourceFos.flush();
         sourceFos.close();
 
-        System.out.println(marshaller.marshal(unmarshal));
+        LOG.debug("{}", marshaller.marshal(unmarshal));
         File outputXMLFile = new File(baseOutputDir, subdir + "b." + xmlfile);
         try (FileWriter targetFos = new FileWriter(outputXMLFile)) {
             marshaller.marshal(unmarshal, targetFos);
@@ -152,21 +152,21 @@ public class UnmarshalMarshalTest {
         ValidationResult validateOutputResult = v.validateInstance(new StreamSource(outputXMLFile));
         if (!validateOutputResult.isValid()) {
             for (ValidationProblem p : validateOutputResult.getProblems()) {
-                System.err.println(p);
+                LOG.error("{}", p);
             }
         }
         assertTrue(validateOutputResult.isValid());
 
-        System.out.println("\n---\nDefault XMLUnit comparison:");
+        LOG.debug("\n---\nDefault XMLUnit comparison:");
         Source control = Input.fromFile(inputXMLFile).build();
         Source test = Input.fromFile(outputXMLFile).build();
         Diff allDiffsSimilarAndDifferent = DiffBuilder
                 .compare(control)
                 .withTest(test)
                 .build();
-        allDiffsSimilarAndDifferent.getDifferences().forEach(System.out::println);
+        allDiffsSimilarAndDifferent.getDifferences().forEach(m -> LOG.debug("{}", m));
 
-        System.out.println("XMLUnit comparison with customized similarity for defaults:");
+        LOG.info("XMLUnit comparison with customized similarity for defaults:");
         // in the following a manual DifferenceEvaluator is needed until XMLUnit is configured for properly parsing the XSD linked inside the XML,
         // in order to detect the optional+defaultvalue attributes of xml element which might be implicit in source-test, and explicit in test-serialized.
         /*
@@ -242,9 +242,9 @@ DMNDIv1.2:
                 .ignoreWhitespace()
                 .checkForSimilar()
                 .build();
-        checkSimilar.getDifferences().forEach(System.err::println);
+        checkSimilar.getDifferences().forEach(m -> LOG.error("{}", m));
         if (!checkSimilar.getDifferences().iterator().hasNext()) {
-            System.out.println("[ EMPTY - no diffs using customized similarity ]");
+            LOG.info("[ EMPTY - no diffs using customized similarity ]");
         }
         assertFalse("XML are NOT similar: " + checkSimilar.toString(), checkSimilar.hasDifferences());
     }
