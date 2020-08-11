@@ -31,9 +31,11 @@ interface ResponseType {
 export interface IOwnProps {
   columnPickerType: string;
   getQueryTypes: ResponseType;
-  setParameters: (object) => void;
+  setParameters: (
+    parameters: ((parameter: object[]) => object[]) | object[]
+  ) => void;
   selected: string[];
-  setSelected: (selected) => void;
+  setSelected: (selected: ((selected: string[]) => string[]) | []) => void;
   data: object[];
   getPicker: ResponseType;
   setOffsetVal: (offsetVal: number) => void;
@@ -67,7 +69,7 @@ const DomainExplorerManageColumns: React.FC<IOwnProps> = ({
   // tslint:disable: no-floating-promises
   const [expanded, setExpanded] = useState([]);
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
-  const allSelections = [];
+  const allSelections: any = [];
 
   const nullTypes = [null, 'String', 'Boolean', 'Int', 'DateTime'];
 
@@ -406,6 +408,7 @@ const DomainExplorerManageColumns: React.FC<IOwnProps> = ({
         dropdownItems={items}
       />
     );
+
     return (
       <Modal
         title="Manage columns"

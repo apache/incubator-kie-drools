@@ -38,22 +38,45 @@ import {
   KogitoEmptyStateType
 } from '../../Atoms/KogitoEmptyState/KogitoEmptyState';
 
-const DomainExplorerTable = ({
+interface RowContent {
+  cells: string[] | object[];
+  parent?: number;
+  isOpen?: boolean;
+  rowKey: string;
+}
+interface IOwnProps {
+  columnFilters: any[];
+  displayTable: boolean;
+  displayEmptyState: boolean;
+  filterError: string;
+  finalFilters: object;
+  filterChips: string[];
+  handleRetry: () => void;
+  isLoadingMore: boolean;
+  offset: number;
+  onDeleteChip: (type: string) => void;
+  parameters: object[];
+  rows: RowContent[];
+  selected: string[];
+  setRows: (rows: ((row: object[]) => object[]) | object[]) => void;
+  tableLoading: boolean;
+}
+const DomainExplorerTable: React.FC<IOwnProps> = ({
   columnFilters,
-  tableLoading,
   displayTable,
   displayEmptyState,
-  parameters,
-  selected,
-  offset,
-  setRows,
-  rows,
-  isLoadingMore,
-  handleRetry,
   filterError,
   finalFilters,
   filterChips,
-  onDeleteChip
+  handleRetry,
+  isLoadingMore,
+  offset,
+  onDeleteChip,
+  parameters,
+  rows,
+  selected,
+  setRows,
+  tableLoading
 }) => {
   // tslint:disable: forin
   const [columns, setColumns] = useState([]);
@@ -346,27 +369,30 @@ const DomainExplorerTable = ({
       {!displayTable && (
         <Card component={'div'}>
           <CardBody>
-            {!displayEmptyState && !filterError && filterChips.length > 0 && (
-              <Bullseye>
-                <EmptyState>
-                  <EmptyStateIcon icon={SearchIcon} />
-                  <Title headingLevel="h5" size="lg">
-                    No columns selected
-                  </Title>
-                  <EmptyStateBody>
-                    <Button
-                      variant="link"
-                      id="retry-columns-button"
-                      onClick={handleRetry}
-                      isInline
-                    >
-                      Manage columns
-                    </Button>{' '}
-                    to see content
-                  </EmptyStateBody>
-                </EmptyState>
-              </Bullseye>
-            )}
+            {!displayEmptyState &&
+              !filterError &&
+              filterChips.length > 0 &&
+              selected.length === 0 && (
+                <Bullseye>
+                  <EmptyState>
+                    <EmptyStateIcon icon={SearchIcon} />
+                    <Title headingLevel="h5" size="lg">
+                      No columns selected
+                    </Title>
+                    <EmptyStateBody>
+                      <Button
+                        variant="link"
+                        id="retry-columns-button"
+                        onClick={handleRetry}
+                        isInline
+                      >
+                        Manage columns
+                      </Button>{' '}
+                      to see content
+                    </EmptyStateBody>
+                  </EmptyState>
+                </Bullseye>
+              )}
             {displayEmptyState && (
               <Bullseye>
                 <EmptyState>

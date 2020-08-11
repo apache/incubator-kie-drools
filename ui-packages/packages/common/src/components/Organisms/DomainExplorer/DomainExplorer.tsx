@@ -10,6 +10,7 @@ import {
   ToolbarFilter
 } from '@patternfly/react-core';
 import { FilterIcon } from '@patternfly/react-icons';
+import { useApolloClient } from 'react-apollo';
 import DomainExplorerFilterOptions from '../../Molecules/DomainExplorerFilterOptions/DomainExplorerFilterOptions';
 import DomainExplorerManageColumns from '../../Molecules/DomainExplorerManageColumns/DomainExplorerManageColumns';
 import DomainExplorerTable from '../../Molecules/DomainExplorerTable/DomainExplorerTable';
@@ -17,8 +18,12 @@ import KogitoSpinner from '../../Atoms/KogitoSpinner/KogitoSpinner';
 import LoadMore from '../../Atoms/LoadMore/LoadMore';
 import ServerErrors from '../../Molecules/ServerErrors/ServerErrors';
 import '../../styles.css';
-
-import { deleteKey, clearEmpties } from '../../../utils/Utils';
+import gql from 'graphql-tag';
+import {
+  validateResponse,
+  deleteKey,
+  clearEmpties
+} from '../../../utils/Utils';
 import { query } from 'gql-query-builder';
 import { GraphQL } from '../../../graphql/types';
 import useGetQueryTypesQuery = GraphQL.useGetQueryTypesQuery;
@@ -46,8 +51,9 @@ const DomainExplorer: React.FC<IOwnProps> = ({
   defaultChip,
   defaultFilter
 }) => {
+  const client = useApolloClient();
   const [columnPickerType, setColumnPickerType] = useState('');
-  const [columnFilters, setColumnFilters] = useState({});
+  const [columnFilters, setColumnFilters] = useState([]);
   const [tableLoading, setTableLoading] = useState(true);
   const [displayTable, setDisplayTable] = useState(false);
   const [displayEmptyState, setDisplayEmptyState] = useState(false);
@@ -183,7 +189,7 @@ const DomainExplorer: React.FC<IOwnProps> = ({
       setRunQuery(true);
     } else {
       setOffset(0);
-      setFinalFilters(defaultFilter);
+      setFinalFilters({ ...defaultFilter });
       setFilterChips(defaultChip);
       setReset(true);
     }
@@ -200,6 +206,68 @@ const DomainExplorer: React.FC<IOwnProps> = ({
     },
     fields: parameters
   });
+
+  async function generateFilterQuery() {
+    setTableLoading(true);
+    setEnableRefresh(true);
+    // parameters(selected columns) length must always above 1 and filters length must be above zero else empty state is displayed
+    if (
+      parameters.length > 1 &&
+      finalFilters &&
+      Object.keys(finalFilters).length > 0
+    ) {
+      try {
+        const response = await client.query({
+          query: gql`
+            ${domainQuery.query}
+          `,
+          variables: domainQuery.variables,
+          fetchPolicy: enableCache ? 'cache-first' : 'network-only'
+        });
+        const firstKey = Object.keys(response.data)[0];
+        if (
+          Object.keys(response.data).length === 1 &&
+          response.data[firstKey].length > 0
+        ) {
+          setFilterError('');
+          const resp = response.data;
+          const respKeys = Object.keys(resp)[0];
+          const tableContent = resp[respKeys];
+          const finalResp = [];
+          tableContent.map(content => {
+            const finalObject = validateResponse(content, parameters);
+            finalResp.push(finalObject);
+          });
+          onAddColumnFilters(finalResp);
+          setDisplayTable(true);
+          setTableLoading(false);
+          setDisplayEmptyState(false);
+        } else {
+          if (loadMoreClicked) {
+            setDisplayTable(true);
+            setTableLoading(false);
+            setLoadMoreClicked(false);
+          } else {
+            setDisplayEmptyState(true);
+            setDisplayTable(false);
+            setTableLoading(false);
+          }
+        }
+      } catch (error) {
+        setFilterError(error);
+        setTableLoading(false);
+        setDisplayTable(false);
+        setDisplayEmptyState(false);
+      }
+    } else {
+      setTableLoading(false);
+      setDisplayEmptyState(false);
+      setDisplayTable(false);
+    }
+    setRunQuery(false);
+    setReset(false);
+    setIsLoadingMore(false);
+  }
 
   const renderToolbar = () => {
     return (
@@ -225,29 +293,18 @@ const DomainExplorer: React.FC<IOwnProps> = ({
                   >
                     <ToolbarItem>
                       <DomainExplorerFilterOptions
-                        enableCache={enableCache}
                         filterChips={filterChips}
                         finalFilters={finalFilters}
                         getQueryTypes={getQueryTypes}
                         getSchema={getSchema}
-                        loadMoreClicked={loadMoreClicked}
-                        parameters={parameters}
-                        Query={domainQuery}
                         reset={reset}
                         runQuery={runQuery}
-                        setColumnFilters={onAddColumnFilters}
-                        setDisplayTable={setDisplayTable}
-                        setDisplayEmptyState={setDisplayEmptyState}
-                        setFilterError={setFilterError}
                         setFilterChips={setFilterChips}
                         setFinalFilters={setFinalFilters}
-                        setLoadMoreClicked={setLoadMoreClicked}
                         setOffset={setOffset}
-                        setRunQuery={setRunQuery}
                         setReset={setReset}
-                        setTableLoading={setTableLoading}
-                        setEnableRefresh={setEnableRefresh}
-                        setIsLoadingMore={setIsLoadingMore}
+                        setRunQuery={setRunQuery}
+                        generateFilterQuery={generateFilterQuery}
                       />
                     </ToolbarItem>
                   </ToolbarFilter>

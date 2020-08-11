@@ -15,40 +15,44 @@ import {
 } from '@patternfly/react-core';
 import { GraphQL } from '../../../graphql/types';
 import useGetInputFieldsFromTypeQuery = GraphQL.useGetInputFieldsFromTypeQuery;
-import gql from 'graphql-tag';
-import { useApolloClient } from 'react-apollo';
 import { QuestionCircleIcon } from '@patternfly/react-icons';
-import { validateResponse, set, removeDuplicates } from '../../../utils/Utils';
+import { set, removeDuplicates } from '../../../utils/Utils';
 import '../../styles.css';
 
-const DomainExplorerFilterOptions = ({
-  enableCache,
+interface ResponseType {
+  loading?: boolean;
+  data: any;
+}
+interface IOwnProps {
+  filterChips: string[];
+  finalFilters: object;
+  generateFilterQuery: () => void;
+  getQueryTypes: ResponseType;
+  getSchema: ResponseType;
+  reset: boolean;
+  runQuery: boolean;
+  setFilterChips: (filterChips: (chips: string[]) => string[]) => void;
+  setFinalFilters: (finalFilters: (filters: object) => void) => void;
+  setOffset: (offset: number) => void;
+  setReset: (reset: boolean) => void;
+  setRunQuery: (runQuery: boolean) => void;
+}
+const DomainExplorerFilterOptions: React.FC<IOwnProps> = ({
   filterChips,
   finalFilters,
+  generateFilterQuery,
   getQueryTypes,
   getSchema,
-  loadMoreClicked,
-  parameters,
-  Query,
-  runQuery,
   reset,
-  setColumnFilters,
-  setDisplayTable,
-  setDisplayEmptyState,
-  setEnableRefresh,
-  setFinalFilters,
-  setFilterError,
+  runQuery,
   setFilterChips,
-  setIsLoadingMore,
-  setLoadMoreClicked,
+  setFinalFilters,
   setOffset,
   setReset,
-  setRunQuery,
-  setTableLoading
+  setRunQuery
 }) => {
   // tslint:disable: forin
   // tslint:disable: no-floating-promises
-  const client = useApolloClient();
   const [initData2, setInitData2] = useState<any>({
     __schema: { queryType: [] }
   });
@@ -424,13 +428,26 @@ const DomainExplorerFilterOptions = ({
   !getSchema.loading && selectionItems();
   finalResult = finalResult.flat();
 
+  const setPlaceHolders = () => {
+    currentArgumentScalar === 'String' && setTextValue('');
+    currentArgumentScalar === 'Boolean' && setCurrentBoolean('boolean');
+    currentArgumentScalar === 'ArrayString' && setInputArray('');
+    currentArgumentScalar === 'enumSingleSelection' && setSelectedState('');
+    currentArgumentScalar === 'enumMultiSelection' && setMultiState([]);
+    setSelectTypes('');
+    setSelected('');
+  };
+  const HandleQuery = () => {
+    reset !== true && setPlaceHolders();
+    generateFilterQuery();
+  };
+  useEffect(() => {
+    runQuery && HandleQuery();
+  }, [runQuery]);
+
   useEffect(() => {
     setReset(true);
   }, []);
-
-  useEffect(() => {
-    runQuery && generateFilterQuery();
-  }, [runQuery]);
 
   useEffect(() => {
     if (reset === true) {
@@ -442,69 +459,6 @@ const DomainExplorerFilterOptions = ({
     }
   }, [reset]);
   const obj: any = {};
-  const setPlaceHolders = () => {
-    currentArgumentScalar === 'String' && setTextValue('');
-    currentArgumentScalar === 'Boolean' && setCurrentBoolean('boolean');
-    currentArgumentScalar === 'ArrayString' && setInputArray('');
-    currentArgumentScalar === 'enumSingleSelection' && setSelectedState('');
-    currentArgumentScalar === 'enumMultiSelection' && setMultiState([]);
-    setSelectTypes('');
-    setSelected('');
-  };
-  async function generateFilterQuery() {
-    reset !== true && setPlaceHolders();
-    setTableLoading(true);
-    setEnableRefresh(true);
-    if (parameters.length > 1 && Object.keys(finalFilters).length > 0) {
-      try {
-        const response = await client.query({
-          query: gql`
-            ${Query.query}
-          `,
-          variables: Query.variables,
-          fetchPolicy: enableCache ? 'cache-first' : 'network-only'
-        });
-        const firstKey = Object.keys(response.data)[0];
-        if (response.data[firstKey].length > 0) {
-          setFilterError('');
-          const resp = response.data;
-          const respKeys = Object.keys(resp)[0];
-          const tableContent = resp[respKeys];
-          const finalResp = [];
-          tableContent.map(content => {
-            const finalObject = validateResponse(content, parameters);
-            finalResp.push(finalObject);
-          });
-          setColumnFilters(finalResp);
-          setDisplayTable(true);
-          setTableLoading(false);
-          setDisplayEmptyState(false);
-        } else {
-          if (loadMoreClicked) {
-            setDisplayTable(true);
-            setTableLoading(false);
-            setLoadMoreClicked(false);
-          } else {
-            setDisplayEmptyState(true);
-            setDisplayTable(false);
-            setTableLoading(false);
-          }
-        }
-      } catch (error) {
-        setFilterError(error);
-        setTableLoading(false);
-        setDisplayTable(false);
-        setDisplayEmptyState(false);
-      }
-    } else {
-      setTableLoading(false);
-      setDisplayEmptyState(false);
-      setDisplayTable(false);
-    }
-    setRunQuery(false);
-    setReset(false);
-    setIsLoadingMore(false);
-  }
 
   const validateChip = (parentString, _selected, _selectTypes, value) => {
     if (_selectTypes === 'equal') {
