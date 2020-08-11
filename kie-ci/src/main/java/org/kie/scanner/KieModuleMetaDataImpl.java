@@ -15,12 +15,14 @@
 
 package org.kie.scanner;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -30,25 +32,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 import org.appformer.maven.integration.ArtifactResolver;
-import org.appformer.maven.integration.DependencyDescriptor;
+import org.appformer.maven.integration.ArtifactResolver.ArtifactLocation;
 import org.appformer.maven.support.AFReleaseId;
 import org.appformer.maven.support.DependencyFilter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
+import org.drools.reflective.ResourceProvider;
 import org.drools.reflective.classloader.ProjectClassLoader;
-import org.eclipse.aether.artifact.Artifact;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import static java.util.Collections.enumeration;
+import static java.util.stream.Collectors.toList;
 import static org.appformer.maven.integration.ArtifactResolver.getResolverFor;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 import static org.drools.core.util.IoUtils.UTF8_CHARSET;
-import static org.drools.core.util.IoUtils.readBytesFromZipEntry;
 
 public class KieModuleMetaDataImpl implements KieModuleMetaData {
+
+    public interface ResetAwareClassLoader {
+
+        void reset(AFReleaseId releaseId);
+    }
+
+    private static final Logger log = LoggerFactory.getLogger(KieModuleMetaDataImpl.class);
 
     private final Map<String, Collection<String>> classes = new HashMap<>();
 
@@ -56,7 +68,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
 
     private final Map<String, String> forms = new HashMap<>();
 
-    private final Map<URI, File> jars = new HashMap<>();
+    private final Set<URL> jars = new HashSet<>();
 
     private final Map<String, TypeMetaInfo> typeMetaInfos = new HashMap<>();
     private final Map<String, Set<String>> rulesByPackage = new HashMap<>();
@@ -64,16 +76,19 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
 
     private final DependencyFilter dependencyFilter;
 
-    private ProjectClassLoader classLoader;
+    private ProjectClassLoader projectClassLoader;
 
     private AFReleaseId releaseId;
 
     private InternalKieModule kieModule;
 
+    private Map<String, byte[]> classesMap;
+
     public KieModuleMetaDataImpl(AFReleaseId releaseId, DependencyFilter dependencyFilter) {
+        log.info("Artifact metadata {}", releaseId);
         this.releaseId = releaseId;
         this.dependencyFilter = dependencyFilter;
-        init(getResolverFor(releaseId, false));
+        init(getResolverFor(getClassLoader(), releaseId, false));
     }
 
     public KieModuleMetaDataImpl(File pomFile, DependencyFilter dependencyFilter) {
@@ -85,7 +100,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
         this.kieModule = kieModule;
         this.dependencyFilter = dependencyFilter;
         indexKieModule( kieModule );
-        init(getResolverFor( kieModule.getPomModel() ));
+        init(getResolverFor(kieModule.getPomModel()));
     }
 
     public KieModuleMetaDataImpl( InternalKieModule kieModule, List<URI> dependencies ) {
@@ -133,95 +148,205 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
 		return rulesPerPackage != null ? rulesPerPackage : Collections.emptyList();
     }
 
-    public ClassLoader getClassLoader() {
-        if (classLoader == null) {
-            URL[] urls = new URL[jars.size()];
-            int i = 0;
-            for (File jar : jars.values()) {
-                try {
-                    urls[i++] = jar.toURI().toURL();
-                } catch (MalformedURLException e) {
-                    throw new RuntimeException(e);
-                }
+    private class KieJarClassLoader extends ClassLoader implements ResetAwareClassLoader {
+
+        public KieJarClassLoader(ClassLoader parentCL) {
+            super(parentCL);
+        }
+
+        @Override
+        public URL getResource(String name) {
+            URL url = super.getResource(name);
+            if (url != null) {
+                return url;
+            }
+            List<URL> inJarURL = getJarResources(name);
+            return !inJarURL.isEmpty() ? inJarURL.get(0) : null;
+        }
+
+        @Override
+        public Enumeration<URL> getResources(String name) throws IOException {
+            Enumeration<URL> url = super.getResources(name);
+            if (url.hasMoreElements()) {
+                return url;
+            }
+            List<URL> inJarURL = getJarResources(name);
+            return enumeration(inJarURL);
+        }
+
+        @Override
+        public void reset(AFReleaseId releaseId) {
+            jars.clear();
+            init(getResolverFor(getClassLoader(), releaseId, false));
+        }
+    }
+
+    private void initClassLoader() {
+
+        KieJarClassLoader kieParentCL = new KieJarClassLoader(getClass().getClassLoader());
+        ResourceProvider resourceProvider = new ResourceProvider() {
+
+            @Override
+            public URL getResource(String name) {
+                List<URL> resources = getJarResources(name);
+                return !resources.isEmpty() ? resources.get(0) : null;
             }
 
-            classLoader = ProjectClassLoader.createProjectClassLoader(new URLClassLoader(urls, getClass().getClassLoader()));
+            @Override
+            public InputStream getResourceAsStream(String name) throws IOException {
+                List<URL> resources = getJarResources(name);
+                return !resources.isEmpty() ? resources.get(0).openStream() : null;
+            }
 
-            if (kieModule != null) {
-                Map<String, byte[]> classes = kieModule.getClassesMap();
-                for (Map.Entry<String, byte[]> entry : classes.entrySet()) {
-                    classLoader.storeClass(convertResourceToClassName(entry.getKey()), entry.getKey(), entry.getValue());
+        };
+        projectClassLoader = ProjectClassLoader.createProjectClassLoader(kieParentCL, resourceProvider);
+
+    }
+
+    private List<URL> getJarResources(String name) {
+        List<URL> result = new ArrayList<>();
+        for (URL url : jars) {
+            try {
+                String urlToString = url.toString();
+                if (!urlToString.endsWith(".jar")) {
+                    continue;
                 }
+                URL tmp = null;
+                if (!urlToString.startsWith("jar:")) {
+                    tmp = new URL("jar:" + urlToString + "!/" + name);
+                } else {
+                    tmp = new URL(urlToString + "!/" + name);
+                }
+
+                tmp.getContent();
+                log.info("found {} in {}", tmp, jars);
+                result.add(tmp);
+            } catch (IOException e) {
+                log.trace("Failed to load resource {} in {}", name, url);
             }
         }
-        return classLoader;
+        return result;
+    }
+
+    public ClassLoader getClassLoader() {
+        if (projectClassLoader == null) {
+            initClassLoader();
+        }
+        return projectClassLoader;
     }
 
     private void init(ArtifactResolver artifactResolver) {
         if (artifactResolver == null) {
             return;
         }
+        initClassLoader();
 
+        List<AFReleaseId> releasesId = new ArrayList<>();
         if (releaseId != null) {
-            addArtifact(artifactResolver.resolveArtifact(releaseId));
+            releasesId.add(releaseId);
         }
         if ( kieModule != null && kieModule.getPomModel() != null ) {
-            for ( AFReleaseId releaseId : kieModule.getPomModel().getDependencies(dependencyFilter) ) {
-                addArtifact( artifactResolver.resolveArtifact( releaseId ) );
-            }
+            releasesId.addAll(kieModule.getPomModel().getDependencies(dependencyFilter));
+
         } else {
-            for ( DependencyDescriptor dep : artifactResolver.getAllDependecies( dependencyFilter ) ) {
-                addArtifact( artifactResolver.resolveArtifact( dep.getReleaseId() ) );
+            List<AFReleaseId> dependencies = artifactResolver.getAllDependecies(dependencyFilter).stream().map(e -> e.getReleaseId()).collect(toList());
+            releasesId.addAll(dependencies);
+
+        }
+
+        classesMap = new HashMap<>();
+        for (AFReleaseId rId : releasesId) {
+            ArtifactLocation artifactLocation = artifactResolver.resolveArtifactLocation(rId);
+            if (artifactLocation != null && artifactLocation.isClassPath()) {
+                log.info("Artifact {} is local", artifactLocation.getArtifact());
             }
+            addArtifact(artifactLocation);
+        }
+
+        for (Map.Entry<String, byte[]> entry : classesMap.entrySet()) {
+            projectClassLoader.storeClass(convertResourceToClassName(entry.getKey()), entry.getKey(), entry.getValue());
         }
 
         packages.addAll(classes.keySet());
         packages.addAll(rulesByPackage.keySet());
+
+        if (kieModule != null) {
+            Map<String, byte[]> classes = kieModule.getClassesMap();
+            for (Map.Entry<String, byte[]> entry : classes.entrySet()) {
+                projectClassLoader.storeClass(convertResourceToClassName(entry.getKey()), entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     private void init(List<URI> dependencies) {
         for (URI uri : dependencies) {
-            addJar( new File(uri), uri );
+            try {
+                addJar(uri.toURL());
+            } catch (MalformedURLException e) {
+                log.error("Cannot add URL resource", e);
+            }
         }
         packages.addAll(classes.keySet());
         packages.addAll(rulesByPackage.keySet());
     }
 
-    private void addArtifact(Artifact artifact) {
-        if (artifact != null && artifact.getExtension() != null && artifact.getExtension().equals("jar")) {
-            File jarFile = artifact.getFile();
-            addJar( jarFile, jarFile.toURI() );
+    private void addArtifact(ArtifactLocation artifactLocation) {
+        if (artifactLocation != null && artifactLocation.getArtifact().getExtension() != null && artifactLocation.getArtifact().getExtension().equals("jar")) {
+            addJar(artifactLocation.toURL());
         }
     }
 
-    private void addJar( File jarFile, URI uri ) {
-        if (!jars.containsKey(uri)) {
-            jars.put(uri, jarFile);
-            scanJar(jarFile);
+    private void addJar(URL location) {
+        log.debug("Add artifact {} to {}", location, jars);
+        if (!jars.contains(location)) {
+            log.info("Artifact location {} ", location);
+            jars.add(location);
+            scanJar(location);
         }
     }
 
-    private void scanJar(File jarFile) {
-        try (ZipFile zipFile = new ZipFile( jarFile )) {
-            Enumeration< ? extends ZipEntry> entries = zipFile.entries();
-            while ( entries.hasMoreElements() ) {
-                ZipEntry entry = entries.nextElement();
+    private void scanJar(URL jarFile) {
+        try (ZipInputStream zipFile = new ZipInputStream(jarFile.openStream())) {
+
+            ZipEntry entry = null;
+            while ( (entry = zipFile.getNextEntry()) != null) {
+                int available = zipFile.available();
+                if (available <= 0) {
+                    continue;
+                }
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                byte[] buffer = new byte[1024];
+
+                int read = 0;
+                while ((read = zipFile.read(buffer)) > 0) {
+                    out.write(buffer, 0, read);
+                }
+
+                byte[] blob = out.toByteArray();
+                if (blob.length == 0) {
+                    continue;
+                }
                 String pathName = entry.getName();
                 if(isProcessFile(pathName)){
-                    processes.put(pathName, new String(readBytesFromZipEntry(jarFile, entry), UTF8_CHARSET));
+                    processes.put(pathName, new String(blob, UTF8_CHARSET));
                 } else if (isFormFile(pathName)) {
-                    forms.put(pathName, new String(readBytesFromZipEntry(jarFile, entry), UTF8_CHARSET));
+                    forms.put(pathName, new String(blob, UTF8_CHARSET));
+                } else if(isClassFile(pathName)) {
+                    classesMap.put(pathName, blob);
                 }
-                if (!indexClass(pathName)) {
-                    if (pathName.endsWith(KieModuleModelImpl.KMODULE_INFO_JAR_PATH)) {
-                        indexMetaInfo(readBytesFromZipEntry(jarFile, entry));
-                    }
+                if (!indexClass(pathName) && pathName.endsWith(KieModuleModelImpl.KMODULE_INFO_JAR_PATH)) {
+                    indexMetaInfo(blob);
                 }
             }
         } catch ( IOException e ) {
             throw new RuntimeException( e );
         }
     }
+
+    private boolean isClassFile(String pathName) {
+        return pathName.endsWith(".class");
+    }
+
 
     private boolean indexClass(String pathName) {
         if (!pathName.endsWith(".class")) {
