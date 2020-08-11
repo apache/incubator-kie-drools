@@ -152,15 +152,14 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
      */
     private Object getEventuallyWeightedResult(Object rawObject, MULTIPLE_MODEL_METHOD multipleModelMethod, double weight) {
         switch (multipleModelMethod) {
+            case MAJORITY_VOTE:
+            case SELECT_ALL:
+            case SELECT_FIRST:
+                return rawObject;
             case MAX:
             case SUM:
             case MEDIAN:
             case AVERAGE:
-            case SELECT_ALL:
-            case MODEL_CHAIN:
-            case SELECT_FIRST:
-            case MAJORITY_VOTE:
-                return rawObject;
             case WEIGHTED_SUM:
             case WEIGHTED_MEDIAN:
             case WEIGHTED_AVERAGE:
@@ -168,8 +167,9 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
                     throw new KiePMMLException("Expected a number, retrieved " + rawObject.getClass().getName());
                 }
                 return new KiePMMLValueWeight(((Number) rawObject).doubleValue(), weight);
+            case MODEL_CHAIN:
             case WEIGHTED_MAJORITY_VOTE:
-                throw new KiePMMLException("WEIGHTED_MAJORITY_VOTE not implemented, yet");
+                throw new KiePMMLException(multipleModelMethod + " not implemented, yet");
             default:
                 throw new KiePMMLException("Unrecognized MULTIPLE_MODEL_METHOD " + multipleModelMethod);
         }
