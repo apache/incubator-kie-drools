@@ -27,6 +27,7 @@ pipeline {
                     mailer.buildLogScriptPR()
 
                     checkoutRepo("kogito-runtimes")
+                    checkoutRepo("kogito-runtimes", "integration-tests")
                     checkoutRepo("kogito-apps")
                     checkoutRepo("kogito-examples")
                     checkoutRepo("kogito-examples", "kogito-examples-persistence")
@@ -38,6 +39,11 @@ pipeline {
             steps {
                 mavenCleanInstall("kogito-runtimes", false, ["run-code-coverage"])
                 runMaven("validate", "kogito-runtimes", false, ["sonarcloud-analysis"], "-e -nsu")
+            }
+        }
+        stage('Build integration-tests with persistence') {
+            steps {
+                mavenCleanInstall("integration-tests", false, ["persistence"])
             }
         }
         stage('Build kogito-apps') {

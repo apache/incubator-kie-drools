@@ -17,23 +17,39 @@ package org.kie.kogito.integrationtests.springboot;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.ContextConfiguration;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = KogitoSpringbootApplication.class)
-public class ElementAtIndexTest {
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
+@ContextConfiguration(initializers = InfinispanSpringBootTestResource.Conditional.class)
+class ElementAtIndexTest {
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
+    @LocalServerPort
+    int randomServerPort;
+
+    @BeforeEach
+    void setPort() {
+        RestAssured.port = randomServerPort;
+    }
+
     @Test
-    public void testHeaderEmpty() {
+    void testHeaderEmpty() {
         given().body(" { \"a list\" : [\"a\", \"b\", \"c\"], \"an index\" : 1 }")
                .contentType(ContentType.JSON)
                .when()
@@ -45,7 +61,7 @@ public class ElementAtIndexTest {
     }
 
     @Test
-    public void testHeaderPopulated() {
+    void testHeaderPopulated() {
         given().body(" { \"a list\" : [\"a\", \"b\", \"c\"], \"an index\" : 47 }")
                .contentType(ContentType.JSON)
                .when()
@@ -57,7 +73,7 @@ public class ElementAtIndexTest {
     }
 
     @Test
-    public void testGET() {
+    void testGET() {
         given().accept(ContentType.XML)
                .when()
                .get("/ElementAtIndex")

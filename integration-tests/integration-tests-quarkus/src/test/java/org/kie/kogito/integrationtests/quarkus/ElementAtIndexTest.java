@@ -15,10 +15,12 @@
  */
 package org.kie.kogito.integrationtests.quarkus;
 
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
@@ -26,14 +28,15 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
 @QuarkusTest
-public class ElementAtIndexTest {
+@QuarkusTestResource(InfinispanQuarkusTestResource.Conditional.class)
+class ElementAtIndexTest {
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
     @Test
-    public void testHeaderEmpty() {
+    void testHeaderEmpty() {
         given().body(" { \"a list\" : [\"a\", \"b\", \"c\"], \"an index\" : 1 }")
                .contentType(ContentType.JSON)
                .when()
@@ -45,7 +48,7 @@ public class ElementAtIndexTest {
     }
 
     @Test
-    public void testHeaderPopulated() {
+    void testHeaderPopulated() {
         given().body(" { \"a list\" : [\"a\", \"b\", \"c\"], \"an index\" : 47 }")
                .contentType(ContentType.JSON)
                .when()
@@ -57,7 +60,7 @@ public class ElementAtIndexTest {
     }
 
     @Test
-    public void testGET() {
+    void testGET() {
         given().accept(ContentType.XML)
                .when()
                .get("/ElementAtIndex")

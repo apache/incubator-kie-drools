@@ -15,23 +15,26 @@
  */
 package org.kie.kogito.integrationtests.quarkus;
 
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 
 @QuarkusTest
-public class BasicAddTest {
+@QuarkusTestResource(InfinispanQuarkusTestResource.Conditional.class)
+class BasicAddTest {
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
     @Test
-    public void testWholeModel() {
+    void testWholeModel() {
         given().body("{ \"a\": \"v1\", \"b\": \"v2\" }")
                .contentType(ContentType.JSON)
            .when()
@@ -42,7 +45,7 @@ public class BasicAddTest {
     }
     
     @Test
-    public void testWholeModel_dmnresult() {
+    void testWholeModel_dmnresult() {
         given().body("{ \"a\": \"v1\", \"b\": \"v2\" }")
                .contentType(ContentType.JSON)
            .when()
@@ -53,7 +56,7 @@ public class BasicAddTest {
     }
     
     @Test
-    public void testDs1() {
+    void testDs1() {
         given().body("{ \"a\": \"v1\", \"b\": \"v2\" }")
                .contentType(ContentType.JSON)
            .when()
@@ -64,7 +67,7 @@ public class BasicAddTest {
     }
     
     @Test
-    public void testDs1_dmnresult() {
+    void testDs1_dmnresult() {
         given().body("{ \"a\": \"v1\", \"b\": \"v2\" }")
                .contentType(ContentType.JSON)
            .when()

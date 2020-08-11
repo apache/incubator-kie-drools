@@ -22,6 +22,7 @@ import org.drools.core.io.impl.ClassPathResource;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.ClientIntelligence;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
+import org.infinispan.protostream.BaseMarshaller;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.WorkflowProcess;
@@ -184,7 +185,7 @@ class CacheProcessInstancesIT {
         }
 
         @Override
-        public List<?> marshallers() {
+        public List<BaseMarshaller<?>> marshallers() {
             return Collections.emptyList();
         }
     }

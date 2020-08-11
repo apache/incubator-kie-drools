@@ -23,25 +23,41 @@ import java.time.Period;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = KogitoSpringbootApplication.class)
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
+@ContextConfiguration(initializers = InfinispanSpringBootTestResource.Conditional.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class BasicAddTest {
+class BasicAddTest {
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
+    @LocalServerPort
+    int randomServerPort;
+
+    @BeforeEach
+    void setPort() {
+        RestAssured.port = randomServerPort;
+    }
+
     @Test
-    public void testWholeModel() {
+    void testWholeModel() {
         given().body("{ \"a\": \"v1\", \"b\": \"v2\" }")
                .contentType(ContentType.JSON)
            .when()
@@ -52,7 +68,7 @@ public class BasicAddTest {
     }
     
     @Test
-    public void testWholeModel_dmnresult() {
+    void testWholeModel_dmnresult() {
         given().body("{ \"a\": \"v1\", \"b\": \"v2\" }")
                .contentType(ContentType.JSON)
            .when()
@@ -63,7 +79,7 @@ public class BasicAddTest {
     }
     
     @Test
-    public void testDs1() {
+    void testDs1() {
         given().body("{ \"a\": \"v1\", \"b\": \"v2\" }")
                .contentType(ContentType.JSON)
            .when()
@@ -74,7 +90,7 @@ public class BasicAddTest {
     }
     
     @Test
-    public void testDs1_dmnresult() {
+    void testDs1_dmnresult() {
         given().body("{ \"a\": \"v1\", \"b\": \"v2\" }")
                .contentType(ContentType.JSON)
            .when()

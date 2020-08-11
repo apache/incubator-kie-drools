@@ -11,7 +11,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.infinispan.protostream.annotations.ProtoEnumValue;
 import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.AnnotationValue;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.FieldInfo;
@@ -19,11 +21,13 @@ import org.jboss.jandex.IndexView;
 import org.jboss.jandex.Type;
 import org.jboss.jandex.Type.Kind;
 import org.kie.kogito.codegen.process.persistence.proto.Proto;
+import org.kie.kogito.codegen.process.persistence.proto.ProtoEnum;
 import org.kie.kogito.codegen.process.persistence.proto.ProtoGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.ProtoMessage;
 
 public class JandexProtoGenerator implements ProtoGenerator<ClassInfo> {
 
+    private static final DotName ENUM_VALUE_ANNOTATION = DotName.createSimple(ProtoEnumValue.class.getName());
     private final IndexView index;
     private final DotName generatedAnnotation;
     private final DotName variableInfoAnnotation;
@@ -39,7 +43,11 @@ public class JandexProtoGenerator implements ProtoGenerator<ClassInfo> {
             Proto proto = new Proto(packageName, headers);
 
             for (ClassInfo clazz : dataModel) {
-                messageFromClass(proto, clazz, index, null, null, null);
+                if (clazz.superName() != null && Enum.class.getName().equals(clazz.superName().toString())) {
+                    enumFromClass(proto, clazz, null);
+                } else {
+                    messageFromClass(proto, clazz, index, null, null, null);
+                }
             }
             return proto;
         } catch (Exception e) {
@@ -52,8 +60,11 @@ public class JandexProtoGenerator implements ProtoGenerator<ClassInfo> {
             String... headers) {
         try {
             Proto proto = new Proto(packageName, headers);
-
-            messageFromClass(proto, dataModel, index, packageName, messageComment, fieldComment);
+            if (dataModel.superName() != null && Enum.class.getName().equals(dataModel.superName().toString())) {
+                enumFromClass(proto, dataModel, null);
+            } else {
+                messageFromClass(proto, dataModel, index, packageName, messageComment, fieldComment);
+            }
             return proto;
         } catch (Exception e) {
             throw new RuntimeException("Error while generating proto for data model", e);
@@ -61,8 +72,7 @@ public class JandexProtoGenerator implements ProtoGenerator<ClassInfo> {
     }
 
     protected ProtoMessage messageFromClass(Proto proto, ClassInfo clazz, IndexView index, String packageName,
-            String messageComment, String fieldComment)
-            throws Exception {
+            String messageComment, String fieldComment) {
 
         if (isHidden(clazz)) {
             // since class is marked as hidden skip processing of that class
@@ -76,7 +86,6 @@ public class JandexProtoGenerator implements ProtoGenerator<ClassInfo> {
             name = altName;
         }
         ProtoMessage message = new ProtoMessage(name, packageName == null ? clazz.name().prefix().toString() : packageName);
-
         for (FieldInfo pd : clazz.fields()) {
             String completeFieldComment = fieldComment;
             // ignore static and/or transient fields
@@ -114,9 +123,16 @@ public class JandexProtoGenerator implements ProtoGenerator<ClassInfo> {
                 if (classInfo == null) {
                     throw new IllegalStateException("Cannot find class info in jandex index for " + fieldType);
                 }
-                ProtoMessage another = messageFromClass(proto, classInfo, index, packageName,
-                        messageComment, fieldComment);
-                protoType = another.getName();
+                if(!isHidden(classInfo)) {
+                    if (classInfo.superName() != null && Enum.class.getName().equals(classInfo.superName().toString())) {
+                        ProtoEnum another = enumFromClass(proto, classInfo, packageName);
+                        protoType = another.getName();
+                    } else {
+                        ProtoMessage another = messageFromClass(proto, classInfo, index, packageName,
+                                messageComment, fieldComment);
+                        protoType = another.getName();
+                    }
+                }
             }
 
             message.addField(applicabilityByType(fieldTypeString), protoType, pd.name()).setComment(completeFieldComment);
@@ -124,6 +140,41 @@ public class JandexProtoGenerator implements ProtoGenerator<ClassInfo> {
         message.setComment(messageComment);
         proto.addMessage(message);
         return message;
+    }
+
+    protected ProtoEnum enumFromClass(Proto proto, ClassInfo clazz, String packageName) {
+        String name = clazz.simpleName();
+        String altName = getReferenceOfModel(clazz, "name");
+        if (altName != null) {
+            name = altName;
+        }
+
+        ProtoEnum modelEnum = new ProtoEnum(name, packageName == null ? clazz.name().prefix().toString() : packageName);
+        clazz.fields().stream()
+                .filter(f -> !f.name().startsWith("$"))
+                .forEach(f -> addEnumField(f, modelEnum));
+        proto.addEnum(modelEnum);
+        return modelEnum;
+    }
+
+    private void addEnumField(FieldInfo field, ProtoEnum pEnum) {
+        AnnotationInstance annotation = field.annotation(ENUM_VALUE_ANNOTATION);
+        Integer ordinal = null;
+        if(annotation != null) {
+            AnnotationValue number = annotation.value("number");
+            if(number != null) {
+                ordinal = number.asInt();
+            }
+        }
+        if(ordinal == null) {
+            ordinal = pEnum.getFields()
+                    .values()
+                    .stream()
+                    .mapToInt(Integer::intValue)
+                    .max()
+                    .orElse(-1) + 1;
+        }
+        pEnum.addField(field.name(), ordinal);
     }
 
     @Override

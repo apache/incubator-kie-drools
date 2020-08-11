@@ -16,23 +16,26 @@
 
 package org.kie.kogito.integrationtests.quarkus;
 
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 
 @QuarkusTest
-public class JsonSchemaTest {
+@QuarkusTestResource(InfinispanQuarkusTestResource.Conditional.class)
+class JsonSchemaTest {
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
     @Test
-    public void testJsonSchema() {
+    void testJsonSchema() {
         given().contentType(ContentType.JSON).when().get("/approvals/firstLineApproval/schema").then().statusCode(200).body(matchesJsonSchemaInClasspath("approvals_firstLineApproval.json"));
     }
 }

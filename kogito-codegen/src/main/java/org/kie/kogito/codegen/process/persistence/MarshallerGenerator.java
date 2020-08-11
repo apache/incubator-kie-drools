@@ -28,20 +28,30 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.ClassExpr;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.stmt.SwitchEntry;
+import com.github.javaparser.ast.stmt.SwitchStmt;
+import com.github.javaparser.ast.stmt.ThrowStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.util.StringUtils;
+import org.infinispan.protostream.EnumMarshaller;
 import org.infinispan.protostream.FileDescriptorSource;
 import org.infinispan.protostream.SerializationContext;
 import org.infinispan.protostream.config.Configuration;
 import org.infinispan.protostream.descriptors.Descriptor;
+import org.infinispan.protostream.descriptors.EnumDescriptor;
 import org.infinispan.protostream.descriptors.FieldDescriptor;
 import org.infinispan.protostream.descriptors.FileDescriptor;
 import org.infinispan.protostream.descriptors.Option;
@@ -49,9 +59,13 @@ import org.infinispan.protostream.impl.SerializationContextImpl;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 
 import static com.github.javaparser.StaticJavaParser.parse;
+import static com.github.javaparser.ast.Modifier.Keyword.PUBLIC;
+import static com.github.javaparser.ast.expr.BinaryExpr.Operator.EQUALS;
 
 public class MarshallerGenerator {
 
+    private static final String JAVA_PACKAGE_OPTION = "java_package";
+    private static final String STATE_PARAM = "state";
     private ClassLoader classLoader;
 
     public MarshallerGenerator(ClassLoader classLoader) {
@@ -66,7 +80,6 @@ public class MarshallerGenerator {
 
     public List<CompilationUnit> generate(String content) throws IOException {
         FileDescriptorSource proto = FileDescriptorSource.fromString(UUID.randomUUID().toString(), content);
-
         return generate(proto);
     }
 
@@ -182,18 +195,66 @@ public class MarshallerGenerator {
                 readFromMethod.getBody().ifPresent(b -> b.addStatement(new ReturnStmt(new NameExpr("value"))));
                 clazz.getMembers().sort(new BodyDeclarationComparator());
             }
+
+            for(EnumDescriptor msg : d.getEnumTypes()) {
+                CompilationUnit compilationUnit = new CompilationUnit();
+                units.add(compilationUnit);
+
+                String javaType = packageFromOption(d, msg) + "." + msg.getName();
+
+                ClassOrInterfaceDeclaration classDeclaration = compilationUnit.setPackageDeclaration(d.getPackage())
+                        .addClass(msg.getName() + "EnumMarshaller").setPublic(true);
+                classDeclaration.addImplementedType(EnumMarshaller.class).getImplementedTypes(0)
+                        .setTypeArguments(NodeList.nodeList(new ClassOrInterfaceType(null, javaType)));
+                classDeclaration.addMethod("getTypeName", PUBLIC)
+                        .setType(String.class)
+                        .setBody(new BlockStmt().addStatement(new ReturnStmt(new StringLiteralExpr(msg.getFullName()))));
+                classDeclaration.addMethod("getJavaClass", PUBLIC)
+                        .setType(new ClassOrInterfaceType(null, new SimpleName(Class.class.getName()), NodeList.nodeList(new ClassOrInterfaceType(null, javaType))))
+                        .setBody(new BlockStmt().addStatement(new ReturnStmt(new ClassExpr(new ClassOrInterfaceType(null, javaType)))));
+
+                BlockStmt encodeBlock = new BlockStmt().addStatement(
+                        new IfStmt(
+                                new BinaryExpr(new NullLiteralExpr(), new NameExpr(STATE_PARAM), EQUALS),
+                                new ThrowStmt(new ObjectCreationExpr(
+                                        null,
+                                        new ClassOrInterfaceType(null, IllegalArgumentException.class.getName()),
+                                        NodeList.nodeList(new StringLiteralExpr("Invalid value provided to enum")))),
+                                null))
+                        .addStatement(new ReturnStmt(new MethodCallExpr(new NameExpr(STATE_PARAM), "ordinal")));
+                classDeclaration.addMethod("encode", PUBLIC)
+                        .setType("int")
+                        .addParameter(javaType, STATE_PARAM)
+                        .setBody(encodeBlock);
+
+                MethodDeclaration decode = classDeclaration.addMethod("decode", PUBLIC)
+                        .setType(javaType)
+                        .addParameter("int", "value");
+                SwitchStmt decodeSwitch = new SwitchStmt().setSelector(new NameExpr("value"));
+                msg.getValues().forEach(v -> {
+                    SwitchEntry dEntry = new SwitchEntry();
+                    dEntry.getLabels().add(new IntegerLiteralExpr(v.getNumber()));
+                    dEntry.addStatement(new ReturnStmt(new NameExpr(javaType + "." + v.getName())));
+                    decodeSwitch.getEntries().add(dEntry);
+                });
+                decodeSwitch.getEntries()
+                        .add(new SwitchEntry().addStatement(
+                                new ThrowStmt(new ObjectCreationExpr(
+                                        null,
+                                        new ClassOrInterfaceType(null, IllegalArgumentException.class.getName()),
+                                        NodeList.nodeList(new StringLiteralExpr("Invalid value provided to enum"))))));
+                decode.setBody(new BlockStmt().addStatement(decodeSwitch));
+            }
         }
 
         return units;
     }
 
     protected String packageNameForMessage(FileDescriptor d, String messageName) {
-
         List<Descriptor> messages = d.getMessageTypes();
 
         for (Descriptor msg : messages) {
             if (messageName.equals(msg.getName())) {
-
                 return packageFromOption(d, msg) + "." + messageName;
             }
         }
@@ -202,8 +263,14 @@ public class MarshallerGenerator {
     }
 
     protected String packageFromOption(FileDescriptor d, Descriptor msg) {
-        Option customPackage = msg.getOption("java_package");
+        return packageFromOption(d, msg.getOption(JAVA_PACKAGE_OPTION));
+    }
 
+    protected String packageFromOption(FileDescriptor d, EnumDescriptor msg) {
+        return packageFromOption(d, msg.getOption(JAVA_PACKAGE_OPTION));
+    }
+
+    private String packageFromOption(FileDescriptor d, Option customPackage) {
         return (customPackage == null ? d.getPackage() : customPackage.getValue().toString());
     }
 
@@ -216,7 +283,14 @@ public class MarshallerGenerator {
 
             for (Descriptor msg : messages) {
                 if (messageName.equals(msg.getName())) {
-
+                    return packageFromOption(d, msg) + "." + messageName;
+                } else if (messageName.equals(msg.getFullName())) {
+                    return packageFromOption(d, msg) + "." + msg.getName();
+                }
+            }
+            List<EnumDescriptor> enums = entry.getValue().getEnumTypes();
+            for(EnumDescriptor msg : enums) {
+                if(messageName.equals(msg.getName())) {
                     return packageFromOption(d, msg) + "." + messageName;
                 } else if (messageName.equals(msg.getFullName())) {
                     return packageFromOption(d, msg) + "." + msg.getName();

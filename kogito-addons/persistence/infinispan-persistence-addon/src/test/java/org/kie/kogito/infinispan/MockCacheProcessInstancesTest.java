@@ -25,6 +25,7 @@ import org.drools.core.io.impl.ClassPathResource;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.RemoteCacheManagerAdmin;
+import org.infinispan.protostream.BaseMarshaller;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.WorkflowProcess;
@@ -258,7 +259,7 @@ public class MockCacheProcessInstancesTest {
         }
 
         @Override
-        public List<?> marshallers() {
+        public List<BaseMarshaller<?>> marshallers() {
             return Collections.emptyList();
         }
     }

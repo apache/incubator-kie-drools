@@ -23,22 +23,38 @@ import java.time.Period;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.ContextConfiguration;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = KogitoSpringbootApplication.class)
-public class DSCoercionTest {
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
+@ContextConfiguration(initializers = InfinispanSpringBootTestResource.Conditional.class)
+class DSCoercionTest {
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
+    @LocalServerPort
+    int randomServerPort;
+
+    @BeforeEach
+    void setPort() {
+        RestAssured.port = randomServerPort;
+    }
+
     @Test
-    public void testWholeModel() {
+    void testWholeModel() {
         given()
                .contentType(ContentType.JSON)
            .when()
@@ -56,7 +72,7 @@ public class DSCoercionTest {
     }
 
     @Test
-    public void testDSn() {
+    void testDSn() {
         Number DSn = given().contentType(ContentType.JSON)
                             .when()
                             .post("/DScoercion/DSn")
@@ -65,7 +81,7 @@ public class DSCoercionTest {
     }
 
     @Test
-    public void testDSs() {
+    void testDSs() {
         String DSs = given().contentType(ContentType.JSON)
                             .when()
                             .post("/DScoercion/DSs")
@@ -74,7 +90,7 @@ public class DSCoercionTest {
     }
 
     @Test
-    public void testDSb() {
+    void testDSb() {
         Boolean DSb = given().contentType(ContentType.JSON)
                             .when()
                              .post("/DScoercion/DSb")
@@ -83,7 +99,7 @@ public class DSCoercionTest {
     }
 
     @Test
-    public void testDSd() {
+    void testDSd() {
         LocalDate DSd = given().contentType(ContentType.JSON)
                                .when()
                                .post("/DScoercion/DSd")
@@ -92,7 +108,7 @@ public class DSCoercionTest {
     }
 
     @Test
-    public void testDSt() {
+    void testDSt() {
         LocalTime DSt = given().contentType(ContentType.JSON)
                                .when()
                                .post("/DScoercion/DSt")
@@ -101,7 +117,7 @@ public class DSCoercionTest {
     }
 
     @Test
-    public void testDSdt() {
+    void testDSdt() {
         LocalDateTime DSdt = given().contentType(ContentType.JSON)
                                     .when()
                                     .post("/DScoercion/DSdt")
@@ -110,7 +126,7 @@ public class DSCoercionTest {
     }
 
     @Test
-    public void testDSdtd() {
+    void testDSdtd() {
         Duration DSdtd = given().contentType(ContentType.JSON)
                                 .when()
                                 .post("/DScoercion/DSdtd")
@@ -119,7 +135,7 @@ public class DSCoercionTest {
     }
 
     @Test
-    public void testDSymd() {
+    void testDSymd() {
         Period DSymd = given().contentType(ContentType.JSON)
                               .when()
                               .post("/DScoercion/DSymd")

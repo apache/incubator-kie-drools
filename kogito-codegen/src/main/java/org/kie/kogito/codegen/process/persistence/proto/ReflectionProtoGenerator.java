@@ -1,6 +1,22 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.kie.kogito.codegen.process.persistence.proto;
 
 import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
@@ -15,7 +31,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
+import org.infinispan.protostream.annotations.ProtoEnumValue;
 import org.kie.internal.kogito.codegen.Generated;
 import org.kie.internal.kogito.codegen.VariableInfo;
 
@@ -25,7 +43,11 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
         try {
             Proto proto = new Proto(packageName, headers);
             for (Class<?> clazz : dataModel) {
-                messageFromClass(proto, clazz, null, null, null);
+                if(clazz.isEnum()) {
+                    enumFromClass(proto, clazz, null);
+                } else {
+                    messageFromClass(proto, clazz, null, null, null);
+                }
             }
             return proto;
         } catch (Exception e) {
@@ -38,7 +60,11 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
     public Proto generate(String messageComment, String fieldComment, String packageName, Class<?> dataModel, String... headers) {
         try {
             Proto proto = new Proto(packageName, headers);
-            messageFromClass(proto, dataModel, packageName, messageComment, fieldComment);        
+            if(dataModel.isEnum()) {
+                enumFromClass(proto, dataModel, null);
+            } else {
+                messageFromClass(proto, dataModel, packageName, messageComment, fieldComment);
+            }
             return proto;
         } catch (Exception e) {
             throw new RuntimeException("Error while generating proto for model class " + dataModel, e);
@@ -83,8 +109,6 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
             }
         }
         
-        
-
         ProtoMessage message = new ProtoMessage(name, packageName == null ? clazz.getPackage().getName() : packageName);
 
         for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
@@ -122,8 +146,11 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
             }
 
             if (protoType == null) {
-                ProtoMessage another = messageFromClass(proto, fieldType, packageName, messageComment, fieldComment);
-                protoType = another.getName();
+                if (fieldType.isEnum()) {
+                    protoType = enumFromClass(proto, fieldType, packageName).getName();
+                } else {
+                    protoType = messageFromClass(proto, fieldType, packageName, messageComment, fieldComment).getName();
+                }
             }
 
             message.addField(applicabilityByType(fieldTypeString), protoType, pd.getName()).setComment(completeFieldComment);
@@ -131,6 +158,44 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
         message.setComment(messageComment);
         proto.addMessage(message);
         return message;
+    }
+
+    protected ProtoEnum enumFromClass(Proto proto, Class<?> clazz, String packageName) throws IntrospectionException {
+        BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
+        String name = beanInfo.getBeanDescriptor().getBeanClass().getSimpleName();
+
+        Generated generatedData = clazz.getAnnotation(Generated.class);
+        if (generatedData != null) {
+            name = generatedData.name().isEmpty() ? name : generatedData.name();
+            if (generatedData.hidden()) {
+                // since class is marked as hidden skip processing of that class
+                return null;
+            }
+        }
+
+        ProtoEnum modelEnum = new ProtoEnum(name, packageName == null ? clazz.getPackage().getName() : packageName);
+        Stream.of(clazz.getDeclaredFields())
+                .filter(f -> !f.getName().startsWith("$"))
+                .forEach(f -> addEnumField(f, modelEnum));
+        proto.addEnum(modelEnum);
+        return modelEnum;
+    }
+
+    private void addEnumField(Field field, ProtoEnum pEnum) {
+        ProtoEnumValue protoEnumValue = field.getAnnotation(ProtoEnumValue.class);
+        Integer ordinal = null;
+        if(protoEnumValue != null) {
+            ordinal = protoEnumValue.number();
+        }
+        if(ordinal == null) {
+            ordinal = pEnum.getFields()
+                    .values()
+                    .stream()
+                    .mapToInt(Integer::intValue)
+                    .max()
+                    .orElse(-1) + 1;
+        }
+        pEnum.addField(field.getName(), ordinal);
     }
     
     protected void generateModelClassProto(Class<?> modelClazz, String targetDirectory) throws Exception {

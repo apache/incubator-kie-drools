@@ -24,9 +24,6 @@ public class ProcessEndpointTest {
                             "src/main/resources/test-process.bpmn")
                     .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml"));
 
-    @Inject
-    Application application;
-
     @Test
     public void testProcessRestEndpoint() {
 

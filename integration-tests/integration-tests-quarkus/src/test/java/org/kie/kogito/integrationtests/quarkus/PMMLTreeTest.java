@@ -17,27 +17,31 @@ package org.kie.kogito.integrationtests.quarkus;
 
 import java.util.Map;
 
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
-public class PMMLTreeTest {
+@QuarkusTestResource(InfinispanQuarkusTestResource.Conditional.class)
+class PMMLTreeTest {
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
     @Test
-    public void testWholeModel() {
+    @SuppressWarnings("unchecked")
+    void testWholeModel() {
         String inputData = "{\"temperature\":30.0, \"humidity\":10.0}";
         Object resultVariables =  given()
                 .contentType(ContentType.JSON)
@@ -46,9 +50,9 @@ public class PMMLTreeTest {
                 .post("/SampleMine")
                 .then()
                 .statusCode(200)
-                .body("correlationId", is(new IsNull()))
-                .body("segmentationId", is(new IsNull()))
-                .body("segmentId", is(new IsNull()))
+                .body("correlationId", nullValue())
+                .body("segmentationId", nullValue())
+                .body("segmentId", nullValue())
                 .body("segmentIndex", is(0)) // as JSON is not schema aware, here we assert the RAW string
                 .body("resultCode", is("OK"))
                 .body("resultObjectName", is("decision"))

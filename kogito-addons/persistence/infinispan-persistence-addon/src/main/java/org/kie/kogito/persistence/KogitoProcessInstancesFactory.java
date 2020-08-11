@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.infinispan.client.hotrod.RemoteCacheManager;
-import org.infinispan.protostream.MessageMarshaller;
+import org.infinispan.protostream.BaseMarshaller;
 import org.kie.kogito.infinispan.CacheProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstancesFactory;
@@ -37,15 +37,15 @@ public abstract class KogitoProcessInstancesFactory implements ProcessInstancesF
     }
     
     public CacheProcessInstances createProcessInstances(Process<?> process) {
-        List<?> marshallers = marshallers();
-        return new CacheProcessInstances(process, cacheManager, template(), proto(), marshallers.toArray(new MessageMarshaller<?>[marshallers.size()]));
+        List<BaseMarshaller<?>> marshallers = marshallers();
+        return new CacheProcessInstances(process, cacheManager, template(), proto(), marshallers.toArray(new BaseMarshaller<?>[0]));
     }
     
     public String proto() {
         return null;
     }
     
-    public List<?> marshallers() {
+    public List<BaseMarshaller<?>> marshallers() {
         return Collections.emptyList();
     }
     

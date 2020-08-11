@@ -82,6 +82,12 @@
             </version> <!-- Manually override to 3.3.0 because Spring boot uses rest-assured-common internally -->
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-test-utils</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -106,7 +112,86 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                            <systemProperties>
+                                <container.image.infinispan>@container.image.infinispan@</container.image.infinispan>
+                            </systemProperties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
+    <profiles>
+        <profile>
+            <id>persistence</id>
+            <activation>
+                <property>
+                    <name>persistence</name>
+                </property>
+            </activation>
+            <properties>
+                <version.infinispan.starter>@version.org.infinispan.starter@</version.infinispan.starter>
+                <version.infinispan>@version.org.infinispan@</version.infinispan>
+            </properties>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.infinispan</groupId>
+                        <artifactId>infinispan-bom</artifactId>
+                        <version>${version.infinispan}</version>
+                        <type>pom</type>
+                        <scope>import</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.infinispan</groupId>
+                        <artifactId>infinispan-spring-boot-starter</artifactId>
+                        <version>${version.infinispan.starter}</version>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+            <dependencies>
+                <dependency>
+                    <groupId>org.infinispan</groupId>
+                    <artifactId>infinispan-spring-boot-starter-remote</artifactId>
+                    <version>${version.infinispan.starter}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.kie.kogito</groupId>
+                    <artifactId>infinispan-persistence-addon</artifactId>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <configuration>
+                                    <systemProperties>
+                                        <enable.resource.infinispan>true</enable.resource.infinispan>
+                                    </systemProperties>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+                <testResources>
+                    <testResource>
+                        <directory>src/test/extra-resources/persistence</directory>
+                    </testResource>
+                </testResources>
+            </build>
+        </profile>
+    </profiles>
 </project>

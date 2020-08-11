@@ -16,10 +16,13 @@
 
 package org.kie.kogito.integrationtests.quarkus;
 
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.NativeImageTest;
+import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 @NativeImageTest
-public class NativeJavaFNctxIT extends JavaFNctxTest {
+@QuarkusTestResource(InfinispanQuarkusTestResource.Conditional.class)
+class NativeJavaFNctxIT extends JavaFNctxTest {
 
     // Execute the same tests but in native mode.
 }

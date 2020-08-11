@@ -9,7 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.infinispan.protostream.BaseMarshaller;
 import org.infinispan.protostream.FileDescriptorSource;
-import org.infinispan.protostream.MessageMarshaller;
 import org.infinispan.protostream.ProtobufUtil;
 import org.infinispan.protostream.SerializationContext;
 import org.infinispan.protostream.config.Configuration;
@@ -29,7 +28,7 @@ public class ProtoStreamObjectMarshallingStrategy implements ObjectMarshallingSt
     private SerializationContext serializationContext;
     private Map<String, Class<?>> typeToClassMapping = new ConcurrentHashMap<>();
     
-    public ProtoStreamObjectMarshallingStrategy(String proto, MessageMarshaller<?>...marshallers) {
+    public ProtoStreamObjectMarshallingStrategy(String proto, BaseMarshaller<?>...marshallers) {
         serializationContext = new SerializationContextImpl(Configuration.builder().build());        
         
         try {
@@ -84,8 +83,8 @@ public class ProtoStreamObjectMarshallingStrategy implements ObjectMarshallingSt
         return marshaller.getTypeName();
     }
     
-    public void registerMarshaller(MessageMarshaller<?>... marshallers) {
-        for (MessageMarshaller<?> marshaller : marshallers) {
+    public void registerMarshaller(BaseMarshaller<?>... marshallers) {
+        for (BaseMarshaller<?> marshaller : marshallers) {
             serializationContext.registerMarshaller(marshaller);
             
             typeToClassMapping.putIfAbsent(marshaller.getTypeName(), marshaller.getJavaClass());
