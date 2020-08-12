@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.solver.DefaultSolverFactory;
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public abstract class SolverFactory<Solution_> {
+public interface SolverFactory<Solution_> {
 
     // ************************************************************************
     // Static creation methods: XML
@@ -51,7 +51,7 @@ public abstract class SolverFactory<Solution_> {
      * @return never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
-    public static <Solution_> SolverFactory<Solution_> createFromXmlResource(String solverConfigResource) {
+    static <Solution_> SolverFactory<Solution_> createFromXmlResource(String solverConfigResource) {
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
         return new DefaultSolverFactory<>(solverConfig);
     }
@@ -66,7 +66,7 @@ public abstract class SolverFactory<Solution_> {
      * @return never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
-    public static <Solution_> SolverFactory<Solution_> createFromXmlResource(String solverConfigResource,
+    static <Solution_> SolverFactory<Solution_> createFromXmlResource(String solverConfigResource,
             ClassLoader classLoader) {
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource, classLoader);
         return new DefaultSolverFactory<>(solverConfig);
@@ -83,7 +83,7 @@ public abstract class SolverFactory<Solution_> {
      * @return never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
-    public static <Solution_> SolverFactory<Solution_> createFromXmlFile(File solverConfigFile) {
+    static <Solution_> SolverFactory<Solution_> createFromXmlFile(File solverConfigFile) {
         SolverConfig solverConfig = SolverConfig.createFromXmlFile(solverConfigFile);
         return new DefaultSolverFactory<>(solverConfig);
     }
@@ -97,7 +97,7 @@ public abstract class SolverFactory<Solution_> {
      * @return never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
-    public static <Solution_> SolverFactory<Solution_> createFromXmlFile(File solverConfigFile, ClassLoader classLoader) {
+    static <Solution_> SolverFactory<Solution_> createFromXmlFile(File solverConfigFile, ClassLoader classLoader) {
         SolverConfig solverConfig = SolverConfig.createFromXmlFile(solverConfigFile, classLoader);
         return new DefaultSolverFactory<>(solverConfig);
     }
@@ -115,7 +115,7 @@ public abstract class SolverFactory<Solution_> {
      * @return never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
-    public static <Solution_> SolverFactory<Solution_> create(SolverConfig solverConfig) {
+    static <Solution_> SolverFactory<Solution_> create(SolverConfig solverConfig) {
         Objects.requireNonNull(solverConfig);
         // Defensive copy of solverConfig, because the DefaultSolverFactory doesn't internalize it yet
         solverConfig = new SolverConfig(solverConfig);
@@ -131,6 +131,6 @@ public abstract class SolverFactory<Solution_> {
      *
      * @return never null
      */
-    public abstract Solver<Solution_> buildSolver();
+    Solver<Solution_> buildSolver();
 
 }

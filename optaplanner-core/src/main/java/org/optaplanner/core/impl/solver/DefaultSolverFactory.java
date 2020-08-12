@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see SolverFactory
  */
-public final class DefaultSolverFactory<Solution_> extends SolverFactory<Solution_> {
+public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solution_> {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultSolverFactory.class);
     private final SolverConfig solverConfig;
