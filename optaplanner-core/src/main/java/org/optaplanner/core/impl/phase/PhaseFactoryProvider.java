@@ -29,21 +29,26 @@ import org.optaplanner.core.impl.localsearch.DefaultLocalSearchPhaseFactory;
 import org.optaplanner.core.impl.partitionedsearch.DefaultPartitionedSearchPhaseFactory;
 import org.optaplanner.core.impl.phase.custom.DefaultCustomPhaseFactory;
 
-public class PhaseFactoryProvider<Solution_> {
+public class PhaseFactoryProvider {
 
-    public AbstractPhaseFactory createPhaseFactory(PhaseConfig<?> phaseConfig) {
+    private PhaseFactoryProvider() {
+        throw new UnsupportedOperationException(
+                String.format("The class (%s) should not be instantiated.", PhaseFactoryProvider.class));
+    }
+
+    public static <Solution_> PhaseFactory<Solution_> createPhaseFactory(PhaseConfig<?> phaseConfig) {
         if (LocalSearchPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
-            return new DefaultLocalSearchPhaseFactory<Solution_>((LocalSearchPhaseConfig) phaseConfig);
+            return new DefaultLocalSearchPhaseFactory<>((LocalSearchPhaseConfig) phaseConfig);
         } else if (ConstructionHeuristicPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
-            return new DefaultConstructionHeuristicPhaseFactory<Solution_>((ConstructionHeuristicPhaseConfig) phaseConfig);
+            return new DefaultConstructionHeuristicPhaseFactory<>((ConstructionHeuristicPhaseConfig) phaseConfig);
         } else if (PartitionedSearchPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
-            return new DefaultPartitionedSearchPhaseFactory<Solution_>((PartitionedSearchPhaseConfig) phaseConfig);
+            return new DefaultPartitionedSearchPhaseFactory<>((PartitionedSearchPhaseConfig) phaseConfig);
         } else if (CustomPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
-            return new DefaultCustomPhaseFactory<Solution_>((CustomPhaseConfig) phaseConfig);
+            return new DefaultCustomPhaseFactory<>((CustomPhaseConfig) phaseConfig);
         } else if (ExhaustiveSearchPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
-            return new DefaultExhaustiveSearchPhaseFactory<Solution_>((ExhaustiveSearchPhaseConfig) phaseConfig);
+            return new DefaultExhaustiveSearchPhaseFactory<>((ExhaustiveSearchPhaseConfig) phaseConfig);
         } else if (NoChangePhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
-            return new NoChangePhaseFactory<Solution_>((NoChangePhaseConfig) phaseConfig);
+            return new NoChangePhaseFactory<>((NoChangePhaseConfig) phaseConfig);
         } else {
             throw new IllegalArgumentException(
                     String.format("Unknown PhaseConfig type: (%s).", phaseConfig.getClass().getName()));

@@ -19,20 +19,17 @@ package org.optaplanner.core.impl.phase;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.PhaseToSolverTerminationBridge;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
-public abstract class AbstractPhaseFactory<Solution_, Phase_ extends Phase<Solution_>, PhaseConfig_ extends PhaseConfig<PhaseConfig_>> {
+public abstract class AbstractPhaseFactory<Solution_, PhaseConfig_ extends PhaseConfig<PhaseConfig_>>
+        implements PhaseFactory<Solution_> {
 
     protected final PhaseConfig_ phaseConfig;
 
     public AbstractPhaseFactory(PhaseConfig_ phaseConfig) {
         this.phaseConfig = phaseConfig;
     }
-
-    public abstract Phase_ buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination solverTermination);
 
     protected Termination buildPhaseTermination(HeuristicConfigPolicy configPolicy, Termination solverTermination) {
         TerminationConfig terminationConfig_ = phaseConfig.getTerminationConfig() == null ? new TerminationConfig()

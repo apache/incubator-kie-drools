@@ -48,7 +48,7 @@ import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 public class DefaultExhaustiveSearchPhaseFactory<Solution_>
-        extends AbstractPhaseFactory<Solution_, ExhaustiveSearchPhase<Solution_>, ExhaustiveSearchPhaseConfig> {
+        extends AbstractPhaseFactory<Solution_, ExhaustiveSearchPhaseConfig> {
 
     public DefaultExhaustiveSearchPhaseFactory(ExhaustiveSearchPhaseConfig phaseConfig) {
         super(phaseConfig);

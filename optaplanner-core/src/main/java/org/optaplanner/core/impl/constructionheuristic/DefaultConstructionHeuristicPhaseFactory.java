@@ -43,7 +43,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
 public class DefaultConstructionHeuristicPhaseFactory<Solution_>
-        extends AbstractPhaseFactory<Solution_, ConstructionHeuristicPhase<Solution_>, ConstructionHeuristicPhaseConfig> {
+        extends AbstractPhaseFactory<Solution_, ConstructionHeuristicPhaseConfig> {
 
     public DefaultConstructionHeuristicPhaseFactory(ConstructionHeuristicPhaseConfig phaseConfig) {
         super(phaseConfig);
@@ -54,9 +54,9 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
 
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
-        DefaultConstructionHeuristicPhase phase = new DefaultConstructionHeuristicPhase(
-                phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
-                buildPhaseTermination(phaseConfigPolicy, solverTermination));
+        DefaultConstructionHeuristicPhase phase =
+                new DefaultConstructionHeuristicPhase(phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
+                        buildPhaseTermination(phaseConfigPolicy, solverTermination));
         phase.setDecider(buildDecider(phaseConfigPolicy, phase.getTermination()));
         ConstructionHeuristicType constructionHeuristicType_ = defaultIfNull(
                 phaseConfig.getConstructionHeuristicType(), ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE);
@@ -104,8 +104,7 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         ConstructionHeuristicDecider decider;
         Integer moveThreadCount = configPolicy.getMoveThreadCount();
         if (moveThreadCount == null) {
-            decider = new ConstructionHeuristicDecider(
-                    configPolicy.getLogIndentation(), termination, forager);
+            decider = new ConstructionHeuristicDecider(configPolicy.getLogIndentation(), termination, forager);
         } else {
             Integer moveThreadBufferSize = configPolicy.getMoveThreadBufferSize();
             if (moveThreadBufferSize == null) {

@@ -45,8 +45,7 @@ import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
-public class DefaultLocalSearchPhaseFactory<Solution_>
-        extends AbstractPhaseFactory<Solution_, LocalSearchPhase<Solution_>, LocalSearchPhaseConfig> {
+public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFactory<Solution_, LocalSearchPhaseConfig> {
 
     public DefaultLocalSearchPhaseFactory(LocalSearchPhaseConfig phaseConfig) {
         super(phaseConfig);

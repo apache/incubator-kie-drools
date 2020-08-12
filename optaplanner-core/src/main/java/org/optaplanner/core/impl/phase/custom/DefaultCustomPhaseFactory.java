@@ -27,8 +27,7 @@ import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
-public class DefaultCustomPhaseFactory<Solution_>
-        extends AbstractPhaseFactory<Solution_, CustomPhase<Solution_>, CustomPhaseConfig> {
+public class DefaultCustomPhaseFactory<Solution_> extends AbstractPhaseFactory<Solution_, CustomPhaseConfig> {
 
     public DefaultCustomPhaseFactory(CustomPhaseConfig phaseConfig) {
         super(phaseConfig);

@@ -38,6 +38,7 @@ import org.optaplanner.core.impl.partitionedsearch.scope.PartitionedSearchPhaseS
 import org.optaplanner.core.impl.partitionedsearch.scope.PartitionedSearchStepScope;
 import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.phase.Phase;
+import org.optaplanner.core.impl.phase.PhaseFactory;
 import org.optaplanner.core.impl.phase.PhaseFactoryProvider;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
@@ -173,12 +174,11 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         Termination partTermination = new OrCompositeTermination(childThreadPlumbingTermination,
                 termination.createChildThreadTermination(solverScope, ChildThreadType.PART_THREAD));
         List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList.size());
-        PhaseFactoryProvider<Solution_> phaseFactoryProvider = new PhaseFactoryProvider();
         int partPhaseIndex = 0;
         for (PhaseConfig phaseConfig : phaseConfigList) {
+            PhaseFactory<Solution_> phaseFactory = PhaseFactoryProvider.createPhaseFactory(phaseConfig);
             Phase<Solution_> phase =
-                    phaseFactoryProvider.createPhaseFactory(phaseConfig).buildPhase(partPhaseIndex, configPolicy,
-                            bestSolutionRecaller, partTermination);
+                    phaseFactory.buildPhase(partPhaseIndex, configPolicy, bestSolutionRecaller, partTermination);
             phaseList.add(phase);
             partPhaseIndex++;
         }

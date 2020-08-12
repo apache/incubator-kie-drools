@@ -39,7 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DefaultPartitionedSearchPhaseFactory<Solution_>
-        extends AbstractPhaseFactory<Solution_, PartitionedSearchPhase<Solution_>, PartitionedSearchPhaseConfig> {
+        extends AbstractPhaseFactory<Solution_, PartitionedSearchPhaseConfig> {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultPartitionedSearchPhaseFactory.class);
 
