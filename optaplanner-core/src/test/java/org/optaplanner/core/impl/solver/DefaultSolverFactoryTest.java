@@ -18,8 +18,6 @@ package org.optaplanner.core.impl.solver;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -38,11 +36,15 @@ class DefaultSolverFactoryTest {
     }
 
     private Integer mockMoveThreadCountResolverAuto(int mockCpuCount) {
-        DefaultSolverFactory.MoveThreadCountResolver moveThreadCountResolver =
-                spy(new DefaultSolverFactory.MoveThreadCountResolver());
-        when(moveThreadCountResolver.getAvailableProcessors()).thenReturn(mockCpuCount);
+        DefaultSolverFactory.MoveThreadCountResolver moveThreadCountResolverMock =
+                new DefaultSolverFactory.MoveThreadCountResolver() {
+                    @Override
+                    protected int getAvailableProcessors() {
+                        return mockCpuCount;
+                    }
+                };
 
-        return moveThreadCountResolver.resolveMoveThreadCount(SolverConfig.MOVE_THREAD_COUNT_AUTO);
+        return moveThreadCountResolverMock.resolveMoveThreadCount(SolverConfig.MOVE_THREAD_COUNT_AUTO);
     }
 
     @Test
