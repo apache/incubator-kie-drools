@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.management.ObjectName;
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kie.builder.MaterializedLambda;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;

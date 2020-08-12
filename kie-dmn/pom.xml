@@ -22,6 +22,7 @@
     <module>kie-dmn-feel</module>
     <module>kie-dmn-backend</module>
     <module>kie-dmn-core</module>
+    <module>kie-dmn-validation-bootstrap</module>
     <module>kie-dmn-validation</module>
     <module>kie-dmn-tck</module>
     <module>kie-dmn-signavio</module>
