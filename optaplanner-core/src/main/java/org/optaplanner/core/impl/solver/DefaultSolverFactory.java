@@ -39,7 +39,6 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.phase.PhaseFactory;
-import org.optaplanner.core.impl.phase.PhaseFactoryProvider;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryFactory;
 import org.optaplanner.core.impl.solver.random.DefaultRandomFactory;
@@ -164,7 +163,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList_.size());
         int phaseIndex = 0;
         for (PhaseConfig<?> phaseConfig : phaseConfigList_) {
-            PhaseFactory<Solution_> phaseFactory = PhaseFactoryProvider.createPhaseFactory(phaseConfig);
+            PhaseFactory<Solution_> phaseFactory = PhaseFactory.createPhaseFactory(phaseConfig);
             Phase<Solution_> phase = phaseFactory.buildPhase(phaseIndex, configPolicy, bestSolutionRecaller, termination);
             phaseList.add(phase);
             phaseIndex++;
