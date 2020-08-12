@@ -17,20 +17,14 @@ package org.kie.kogito.it.jobs;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.resources.JobServiceQuarkusTestResource;
+import org.kie.kogito.resources.KogitoServiceRandomPortQuarkusTestResource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @QuarkusTest
+@QuarkusTestResource(KogitoServiceRandomPortQuarkusTestResource.class)
 @QuarkusTestResource(JobServiceQuarkusTestResource.class)
 @ExtendWith(MockitoExtension.class)
 public class ProcessTimerIT extends BaseProcessTimerIT {
-
-    @BeforeAll
-    public static void beforeAll() {
-        beforeAll(() -> ConfigProvider.getConfig().getValue("quarkus.http.test-port",
-                                                            Integer.class));
-    }
 }

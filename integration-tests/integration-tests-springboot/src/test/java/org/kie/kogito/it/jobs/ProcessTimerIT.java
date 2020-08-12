@@ -15,22 +15,26 @@
  */
 package org.kie.kogito.it.jobs;
 
-import org.junit.jupiter.api.BeforeAll;
+import io.restassured.RestAssured;
+import org.junit.jupiter.api.BeforeEach;
 import org.kie.kogito.KogitoApplication;
 import org.kie.kogito.resources.JobServiceSpringBootTestResource;
+import org.kie.kogito.resources.KogitoServiceRandomPortSpringBootTestResource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.util.SocketUtils;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = {KogitoApplication.class})
-@ContextConfiguration(initializers = JobServiceSpringBootTestResource.class)
+@ContextConfiguration(initializers = {KogitoServiceRandomPortSpringBootTestResource.class, JobServiceSpringBootTestResource.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class ProcessTimerIT extends BaseProcessTimerIT {
 
-    @BeforeAll
-    public static void beforeAll() {
-        beforeAll(() -> SocketUtils.findAvailableTcpPort());
-        System.setProperty("server.port", String.valueOf(httpPort));
+    @Value("${server.port}")
+    private int httpPort;
+
+    @BeforeEach
+    public void setup() {
+        RestAssured.port = httpPort;
     }
 }

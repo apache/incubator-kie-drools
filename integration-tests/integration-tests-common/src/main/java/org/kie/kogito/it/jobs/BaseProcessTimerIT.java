@@ -15,20 +15,15 @@
  */
 package org.kie.kogito.it.jobs;
 
-import java.util.function.IntSupplier;
-
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.Testcontainers;
 
 import static io.restassured.RestAssured.given;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.with;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.kie.kogito.testcontainers.JobServiceContainer.KOGITO_SERVICE_PORT;
 
 public abstract class BaseProcessTimerIT {
 
@@ -36,19 +31,6 @@ public abstract class BaseProcessTimerIT {
     public static final String TIMERS_CYCLE = "timerscycle";
     public static final String TIMERS_ON_TASK = "timersOnTask";
     public static final String KOGITO_SERVICE_URL = "kogito.service.url";
-    static Integer httpPort;
-
-    public static void beforeAll(IntSupplier httpPortSupplier) {
-        httpPort = httpPortSupplier.getAsInt();
-        //Container should have access the host port where the test is running
-        //It should be called be fore the container is instantiated
-        Testcontainers.exposeHostPorts(httpPort);
-        //the hostname for the container to access the host is "host.testcontainers.internal"
-        //https://www.testcontainers.org/features/networking/#exposing-host-ports-to-the-container
-        System.setProperty(KOGITO_SERVICE_URL, "http://host.testcontainers.internal:" + httpPort);
-        System.setProperty(KOGITO_SERVICE_PORT, String.valueOf(httpPort));
-        RestAssured.port = httpPort;
-    }
 
     //Timers Tests
     @Test
