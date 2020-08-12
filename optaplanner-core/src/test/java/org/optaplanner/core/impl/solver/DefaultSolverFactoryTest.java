@@ -29,7 +29,7 @@ class DefaultSolverFactoryTest {
     @Test
     void moveThreadCountAutoIsCorrectlyResolvedWhenCpuCountIsPositive() {
         final int cpuCount = 16;
-        assertThat(mockMoveThreadCountResolverAuto(cpuCount)).isEqualTo(Integer.valueOf(cpuCount - 2));
+        assertThat(mockMoveThreadCountResolverAuto(cpuCount)).isEqualTo(cpuCount - 2);
     }
 
     @Test
@@ -47,7 +47,7 @@ class DefaultSolverFactoryTest {
 
     @Test
     void moveThreadCountIsCorrectlyResolvedWhenValueIsPositive() {
-        assertThat(resolveMoveThreadCount("2")).isEqualTo(Integer.valueOf(2));
+        assertThat(resolveMoveThreadCount("2")).isEqualTo(2);
     }
 
     @Test
