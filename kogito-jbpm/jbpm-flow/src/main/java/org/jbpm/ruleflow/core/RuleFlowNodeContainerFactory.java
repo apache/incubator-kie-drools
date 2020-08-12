@@ -18,6 +18,7 @@ package org.jbpm.ruleflow.core;
 
 import org.jbpm.ruleflow.core.factory.ActionNodeFactory;
 import org.jbpm.ruleflow.core.factory.BoundaryEventNodeFactory;
+import org.jbpm.ruleflow.core.factory.CatchLinkNodeFactory;
 import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.DynamicNodeFactory;
 import org.jbpm.ruleflow.core.factory.EndNodeFactory;
@@ -33,6 +34,7 @@ import org.jbpm.ruleflow.core.factory.SplitFactory;
 import org.jbpm.ruleflow.core.factory.StartNodeFactory;
 import org.jbpm.ruleflow.core.factory.StateNodeFactory;
 import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
+import org.jbpm.ruleflow.core.factory.ThrowLinkNodeFactory;
 import org.jbpm.ruleflow.core.factory.TimerNodeFactory;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
 import org.jbpm.workflow.core.NodeContainer;
@@ -59,6 +61,14 @@ public abstract class RuleFlowNodeContainerFactory {
 
     public EndNodeFactory endNode(long id) {
         return new EndNodeFactory(this, nodeContainer, id);
+    }
+
+    public CatchLinkNodeFactory catchLinkNode(long id) {
+        return new CatchLinkNodeFactory(this, nodeContainer, id);
+    }
+
+    public ThrowLinkNodeFactory throwLinkNode(long id) {
+        return new ThrowLinkNodeFactory(this, nodeContainer, id);
     }
 
     public ActionNodeFactory actionNode(long id) {
