@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-runtimes</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>kogito-runtimes-jenkins-tests</artifactId>
+    <name>Kogito :: Jenkins Spock Tests</name>
+    <packaging>jar</packaging>
+
+    <repositories>
+        <repository>
+            <id>jenkins-releases</id>
+            <name>Jenkins Releases</name>
+            <url>http://repo.jenkins-ci.org/releases</url>
+        </repository>
+    </repositories>
+
+    <properties>
+        <!-- Do not deploy this artifact -->
+        <maven.deploy.skip>true</maven.deploy.skip>
+
+        <groovy.core.version>2.4.11</groovy.core.version>
+        <groovy.gmaven.pluginVersion>1.6.1</groovy.gmaven.pluginVersion>
+        <google.guava.version>20.0</google.guava.version>
+
+        <jenkins-spock.version>2.0.0</jenkins-spock.version>
+        <jenkins.version>2.150.2</jenkins.version>
+        <jenkins.servlet.version>3.1.0</jenkins.servlet.version>
+        <jenkins.workflow.cps.version>2.36</jenkins.workflow.cps.version>
+        <jenkins.workflow.basic.steps.version>2.6</jenkins.workflow.basic.steps.version>
+
+        <junit.version>4.12</junit.version>
+        <junit.plugin.version>1.24</junit.plugin.version>
+        <surefire.pluginVersion>2.22.0</surefire.pluginVersion>
+
+        <logback.configration>logback-test.xml</logback.configration>
+        <logdir>${project.build.directory}/log</logdir>
+        <test.loglevel>ERROR</test.loglevel>
+        <log.logback.version>1.2.3</log.logback.version>
+        <log.slf4j.version>1.7.25</log.slf4j.version>
+        <build-helper-maven-plugin.version>1.9.1</build-helper-maven-plugin.version>
+
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
+    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <!-- Transitive Dependencies that need Managing -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${google.guava.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>com.homeaway.devtools.jenkins</groupId>
+            <artifactId>jenkins-spock</artifactId>
+            <version>${jenkins-spock.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${log.logback.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${log.logback.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.main</groupId>
+            <artifactId>jenkins-core</artifactId>
+            <version>${jenkins.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-basic-steps</artifactId>
+            <version>${jenkins.workflow.basic.steps.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-cps</artifactId>
+            <version>${jenkins.workflow.cps.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${jenkins.servlet.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.plugin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>${groovy.core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${log.slf4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>${log.slf4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- Needed for pmebuild -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.21</version>
+        </dependency>
+
+        <!-- Tools -->
+        <dependency>
+            <!-- provides sh() step -->
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-durable-task-step</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- provides stage() step -->
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>pipeline-stage-step</artifactId>
+            <version>2.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- provides git() step -->
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>git</artifactId>
+            <version>3.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- provides configFileProvider() and configFile() steps -->
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>config-file-provider</artifactId>
+            <version>3.6.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- provides withCredentials() step -->
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>credentials-binding</artifactId>
+            <version>1.19</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- needed by withCredentials() step -->
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-step-api</artifactId>
+            <version>2.21</version>
+        </dependency>
+        <dependency>
+            <!-- provides readPropertes() step -->
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>pipeline-utility-steps</artifactId>
+            <version>2.3.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- provides emailText() step -->
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>email-ext</artifactId>
+            <version>2.66</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- provides @Library() step -->
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-cps-global-lib</artifactId>
+            <version>2.13</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${surefire.pluginVersion}</version>
+                    <executions>
+                        <execution>
+                            <id>default-test</id>
+                            <goals>
+                                <goal>test</goal>
+                            </goals>
+                            <configuration>
+                                <forkCount>1</forkCount>
+                                <includes>
+                                    <include>${test.pattern}</include>
+                                </includes>
+                                <useManifestOnlyJar>false</useManifestOnlyJar>
+                                <systemPropertyVariables>
+                                    <root.loglevel>${test.loglevel}</root.loglevel>
+                                    <root.appender>Stdout</root.appender>
+                                    <test.loglevel>${test.loglevel}</test.loglevel>
+                                    <logdir>${logdir}</logdir>
+                                </systemPropertyVariables>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.gmavenplus</groupId>
+                    <artifactId>gmavenplus-plugin</artifactId>
+                    <version>${groovy.gmaven.pluginVersion}</version>
+                    <executions>
+                        <execution>
+                            <id>groovy</id>
+                            <goals>
+                                <goal>addSources</goal>
+                                <goal>addTestSources</goal>
+                                <goal>generateStubs</goal>
+                                <goal>generateTestStubs</goal>
+                                <goal>compile</goal>
+                                <goal>compileTests</goal>
+                                <goal>removeStubs</goal>
+                                <goal>removeTestStubs</goal>
+                            </goals>
+                            <configuration>
+                                <testSources>
+                                    <testSource>
+                                        <directory>${project.basedir}/src/test/vars</directory>
+                                        <includes>
+                                            <include>**/*.groovy</include>
+                                        </includes>
+                                    </testSource>
+                                </testSources>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+        </plugins>
+        <testResources>
+            <testResource>
+                <directory>${project.basedir}/..</directory>
+                <includes>
+                    <include>Jenkinsfile.*</include>
+                </includes>
+            </testResource>
+        </testResources>
+    </build>
+</project>
