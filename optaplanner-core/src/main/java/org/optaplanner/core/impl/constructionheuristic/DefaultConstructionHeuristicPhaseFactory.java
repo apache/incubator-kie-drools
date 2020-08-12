@@ -51,12 +51,12 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
 
     @Override
     public ConstructionHeuristicPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
-            BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination solverTermination) {
 
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
-        DefaultConstructionHeuristicPhase phase =
-                new DefaultConstructionHeuristicPhase(phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
-                        buildPhaseTermination(phaseConfigPolicy, solverTermination));
+        DefaultConstructionHeuristicPhase<Solution_> phase =
+                new DefaultConstructionHeuristicPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(),
+                        bestSolutionRecaller, buildPhaseTermination(phaseConfigPolicy, solverTermination));
         phase.setDecider(buildDecider(phaseConfigPolicy, phase.getTermination()));
         ConstructionHeuristicType constructionHeuristicType_ = defaultIfNull(
                 phaseConfig.getConstructionHeuristicType(), ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE);
@@ -95,16 +95,16 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         return phase;
     }
 
-    private ConstructionHeuristicDecider buildDecider(HeuristicConfigPolicy configPolicy, Termination termination) {
+    private ConstructionHeuristicDecider<Solution_> buildDecider(HeuristicConfigPolicy configPolicy, Termination termination) {
         ConstructionHeuristicForagerConfig foragerConfig_ = phaseConfig.getForagerConfig() == null
                 ? new ConstructionHeuristicForagerConfig()
                 : phaseConfig.getForagerConfig();
         ConstructionHeuristicForager forager = foragerConfig_.buildForager(configPolicy);
         EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
-        ConstructionHeuristicDecider decider;
+        ConstructionHeuristicDecider<Solution_> decider;
         Integer moveThreadCount = configPolicy.getMoveThreadCount();
         if (moveThreadCount == null) {
-            decider = new ConstructionHeuristicDecider(configPolicy.getLogIndentation(), termination, forager);
+            decider = new ConstructionHeuristicDecider<>(configPolicy.getLogIndentation(), termination, forager);
         } else {
             Integer moveThreadBufferSize = configPolicy.getMoveThreadBufferSize();
             if (moveThreadBufferSize == null) {
@@ -115,9 +115,9 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
             }
             ThreadFactory threadFactory = configPolicy.buildThreadFactory(ChildThreadType.MOVE_THREAD);
             int selectedMoveBufferSize = moveThreadCount * moveThreadBufferSize;
-            MultiThreadedConstructionHeuristicDecider multiThreadedDecider = new MultiThreadedConstructionHeuristicDecider(
-                    configPolicy.getLogIndentation(), termination, forager,
-                    threadFactory, moveThreadCount, selectedMoveBufferSize);
+            MultiThreadedConstructionHeuristicDecider<Solution_> multiThreadedDecider =
+                    new MultiThreadedConstructionHeuristicDecider<>(configPolicy.getLogIndentation(), termination, forager,
+                            threadFactory, moveThreadCount, selectedMoveBufferSize);
             if (environmentMode.isNonIntrusiveFullAsserted()) {
                 multiThreadedDecider.setAssertStepScoreFromScratch(true);
             }

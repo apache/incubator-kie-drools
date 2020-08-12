@@ -53,12 +53,11 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
 
     @Override
     public LocalSearchPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
-            BestSolutionRecaller bestSolutionRecaller,
-            Termination solverTermination) {
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
-        DefaultLocalSearchPhase phase = new DefaultLocalSearchPhase(
-                phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
-                buildPhaseTermination(phaseConfigPolicy, solverTermination));
+        DefaultLocalSearchPhase<Solution_> phase =
+                new DefaultLocalSearchPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
+                        buildPhaseTermination(phaseConfigPolicy, solverTermination));
         phase.setDecider(buildDecider(phaseConfigPolicy,
                 phase.getTermination()));
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
@@ -72,7 +71,7 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
         return phase;
     }
 
-    private LocalSearchDecider buildDecider(HeuristicConfigPolicy configPolicy, Termination termination) {
+    private LocalSearchDecider<Solution_> buildDecider(HeuristicConfigPolicy configPolicy, Termination termination) {
         MoveSelector moveSelector = buildMoveSelector(configPolicy);
         Acceptor acceptor = buildAcceptor(configPolicy);
         LocalSearchForager forager = buildForager(configPolicy);
@@ -85,10 +84,9 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
         }
         Integer moveThreadCount = configPolicy.getMoveThreadCount();
         EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
-        LocalSearchDecider decider;
+        LocalSearchDecider<Solution_> decider;
         if (moveThreadCount == null) {
-            decider = new LocalSearchDecider(configPolicy.getLogIndentation(),
-                    termination, moveSelector, acceptor, forager);
+            decider = new LocalSearchDecider<>(configPolicy.getLogIndentation(), termination, moveSelector, acceptor, forager);
         } else {
             Integer moveThreadBufferSize = configPolicy.getMoveThreadBufferSize();
             if (moveThreadBufferSize == null) {
@@ -99,7 +97,7 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
             }
             ThreadFactory threadFactory = configPolicy.buildThreadFactory(ChildThreadType.MOVE_THREAD);
             int selectedMoveBufferSize = moveThreadCount * moveThreadBufferSize;
-            MultiThreadedLocalSearchDecider multiThreadedDecider = new MultiThreadedLocalSearchDecider(
+            MultiThreadedLocalSearchDecider<Solution_> multiThreadedDecider = new MultiThreadedLocalSearchDecider<>(
                     configPolicy.getLogIndentation(), termination, moveSelector, acceptor, forager,
                     threadFactory, moveThreadCount, selectedMoveBufferSize);
             if (environmentMode.isNonIntrusiveFullAsserted()) {

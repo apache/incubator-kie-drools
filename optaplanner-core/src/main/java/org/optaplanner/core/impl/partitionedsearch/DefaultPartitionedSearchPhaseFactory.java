@@ -53,10 +53,11 @@ public class DefaultPartitionedSearchPhaseFactory<Solution_>
             BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         ThreadFactory threadFactory = solverConfigPolicy.buildThreadFactory(ChildThreadType.PART_THREAD);
-        DefaultPartitionedSearchPhase phase = new DefaultPartitionedSearchPhase(
-                phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
-                buildPhaseTermination(phaseConfigPolicy, solverTermination),
-                buildSolutionPartitioner(), threadFactory, resolvedActiveThreadCount(phaseConfig.getRunnablePartThreadLimit()));
+        Termination phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
+        Integer resolvedActiveThreadCount = resolveActiveThreadCount(phaseConfig.getRunnablePartThreadLimit());
+        DefaultPartitionedSearchPhase<Solution_> phase =
+                new DefaultPartitionedSearchPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
+                        phaseTermination, buildSolutionPartitioner(), threadFactory, resolvedActiveThreadCount);
         List<PhaseConfig> phaseConfigList_ = phaseConfig.getPhaseConfigList();
         if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {
             phaseConfigList_ = Arrays.asList(
@@ -76,13 +77,13 @@ public class DefaultPartitionedSearchPhaseFactory<Solution_>
         return phase;
     }
 
-    private SolutionPartitioner buildSolutionPartitioner() {
+    private SolutionPartitioner<Solution_> buildSolutionPartitioner() {
         if (phaseConfig.getSolutionPartitionerClass() != null) {
-            SolutionPartitioner<?> solutionPartitioner = ConfigUtils.newInstance(this,
-                    "solutionPartitionerClass", phaseConfig.getSolutionPartitionerClass());
+            SolutionPartitioner<?> solutionPartitioner =
+                    ConfigUtils.newInstance(phaseConfig, "solutionPartitionerClass", phaseConfig.getSolutionPartitionerClass());
             ConfigUtils.applyCustomProperties(solutionPartitioner, "solutionPartitionerClass",
                     phaseConfig.getSolutionPartitionerCustomProperties(), "solutionPartitionerCustomProperties");
-            return solutionPartitioner;
+            return (SolutionPartitioner<Solution_>) solutionPartitioner;
         } else {
             if (phaseConfig.getSolutionPartitionerCustomProperties() != null) {
                 throw new IllegalStateException(
@@ -95,7 +96,7 @@ public class DefaultPartitionedSearchPhaseFactory<Solution_>
         }
     }
 
-    protected Integer resolvedActiveThreadCount(String runnablePartThreadLimit) {
+    protected Integer resolveActiveThreadCount(String runnablePartThreadLimit) {
         int availableProcessorCount = getAvailableProcessors();
         Integer resolvedActiveThreadCount;
         final boolean threadLimitNullOrAuto =

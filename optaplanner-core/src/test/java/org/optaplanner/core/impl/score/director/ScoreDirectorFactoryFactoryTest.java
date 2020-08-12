@@ -116,7 +116,7 @@ class ScoreDirectorFactoryFactoryTest {
         kieBaseConfigurationProperties.put(secondPropertyName, secondPropertyValue);
 
         config.setKieBaseConfigurationProperties(kieBaseConfigurationProperties);
-        ScoreDirectorFactoryFactory scoreDirectorFactoryFactory = new ScoreDirectorFactoryFactory(config);
+        ScoreDirectorFactoryFactory<TestdataSolution> scoreDirectorFactoryFactory = new ScoreDirectorFactoryFactory<>(config);
         KieBaseConfiguration kieBaseConfiguration =
                 scoreDirectorFactoryFactory.buildKieBaseConfiguration(KieServices.Factory.get());
 
@@ -152,9 +152,8 @@ class ScoreDirectorFactoryFactoryTest {
 
     private ScoreDirectorFactory<TestdataSolution> buildTestdataScoreDirectoryFactory(ScoreDirectorFactoryConfig config,
             EnvironmentMode environmentMode) {
-        return new ScoreDirectorFactoryFactory(config)
-                .buildScoreDirectorFactory(getClass().getClassLoader(), environmentMode,
-                        TestdataSolution.buildSolutionDescriptor());
+        return new ScoreDirectorFactoryFactory<TestdataSolution>(config).buildScoreDirectorFactory(getClass().getClassLoader(),
+                environmentMode, TestdataSolution.buildSolutionDescriptor());
     }
 
     private ScoreDirectorFactory<TestdataSolution> buildTestdataScoreDirectoryFactory(ScoreDirectorFactoryConfig config) {

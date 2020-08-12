@@ -107,9 +107,10 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_ = solverConfig.getScoreDirectorFactoryConfig() == null
                 ? new ScoreDirectorFactoryConfig()
                 : solverConfig.getScoreDirectorFactoryConfig();
-        ScoreDirectorFactoryFactory scoreDirectorFactoryFactory = new ScoreDirectorFactoryFactory(scoreDirectorFactoryConfig_);
-        return scoreDirectorFactoryFactory.buildScoreDirectorFactory(
-                solverConfig.getClassLoader(), environmentMode, solutionDescriptor);
+        ScoreDirectorFactoryFactory<Solution_> scoreDirectorFactoryFactory =
+                new ScoreDirectorFactoryFactory<>(scoreDirectorFactoryConfig_);
+        return scoreDirectorFactoryFactory.buildScoreDirectorFactory(solverConfig.getClassLoader(), environmentMode,
+                solutionDescriptor);
     }
 
     /**
@@ -153,7 +154,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
     }
 
     protected List<Phase<Solution_>> buildPhaseList(HeuristicConfigPolicy configPolicy,
-            BestSolutionRecaller bestSolutionRecaller, Termination termination) {
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination) {
         List<PhaseConfig> phaseConfigList_ = solverConfig.getPhaseConfigList();
         if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {
             phaseConfigList_ = Arrays.asList(
