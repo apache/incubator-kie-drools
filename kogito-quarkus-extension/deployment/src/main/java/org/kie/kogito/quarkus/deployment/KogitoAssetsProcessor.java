@@ -249,12 +249,10 @@ public class KogitoAssetsProcessor {
             reflectiveClass.produce(
                     new ReflectiveClassBuildItem(true, true, "org.kie.kogito.services.event.impl.UserTaskInstanceEventBody"));
 
-            Collection<ClassInfo> dataEvents = index
-                    .getAllKnownSubclasses(createDotName("org.kie.kogito.event.AbstractDataEvent"));
-
-            dataEvents.forEach(c -> reflectiveClass.produce(
-                    new ReflectiveClassBuildItem(true, true, c.name().toString())));
-
+            addChildrenClasses(index, org.kie.kogito.services.event.AbstractProcessDataEvent.class, reflectiveClass);
+            // not sure there is any generated class directly inheriting from AbstractDataEvent, keeping just in case
+            addChildrenClasses(index, org.kie.kogito.event.AbstractDataEvent.class, reflectiveClass);
+            
             Collection<GeneratedFile> jsonFiles = getJsonSchemaFiles(index, trgMfs);
             Path relativePath = JsonSchemaUtil.getJsonDir();
             Path jsonSchemaPath = appPaths.getFirstProjectPath().resolve("target").resolve("classes").resolve(relativePath);
@@ -265,6 +263,16 @@ public class KogitoAssetsProcessor {
                 resource.produce(new NativeImageResourceBuildItem(relativePath.resolve(jsonFile.relativePath()).toString()));
             }
         }
+    }
+    
+    private void addChildrenClasses(Index index,
+                                    Class<?> superClass,
+                                    BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
+        index.getAllKnownSubclasses(createDotName(superClass.getName()))
+             .forEach(c -> reflectiveClass.produce(
+                                                   new ReflectiveClassBuildItem(true,
+                                                                                true,
+                                                                                c.name().toString())));
     }
 
     private void writeGeneratedFiles(AppPaths appPaths, Collection<GeneratedFile> resourceFiles, BuildProducer<NativeImageResourceBuildItem> niResBI, BuildProducer<GeneratedResourceBuildItem> genResBI) {
