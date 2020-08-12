@@ -8274,7 +8274,136 @@
           "methodName": "getAvailableProcessors",
           "elementKind": "method",
           "justification": "Build methods were externalized (PLANNER-1688)"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method void org.optaplanner.core.api.solver.SolverFactory<Solution_>::<init>()",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverFactory",
+          "methodName": "<init>",
+          "elementKind": "constructor",
+          "justification": "SolverFactory is now an interface."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method java.lang.Object java.lang.Object::clone() throws java.lang.CloneNotSupportedException @ org.optaplanner.core.api.solver.SolverFactory<Solution_>",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverFactory",
+          "methodName": "clone",
+          "elementKind": "method",
+          "justification": "SolverFactory is now an interface."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method boolean java.lang.Object::equals(java.lang.Object) @ org.optaplanner.core.api.solver.SolverFactory<Solution_>",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverFactory",
+          "methodName": "equals",
+          "elementKind": "method",
+          "justification": "SolverFactory is now an interface."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method void java.lang.Object::finalize() throws java.lang.Throwable @ org.optaplanner.core.api.solver.SolverFactory<Solution_>",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverFactory",
+          "methodName": "finalize",
+          "elementKind": "method",
+          "justification": "SolverFactory is now an interface."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method java.lang.Class<?> java.lang.Object::getClass() @ org.optaplanner.core.api.solver.SolverFactory<Solution_>",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverFactory",
+          "methodName": "getClass",
+          "elementKind": "method",
+          "justification": "SolverFactory is now an interface."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method int java.lang.Object::hashCode() @ org.optaplanner.core.api.solver.SolverFactory<Solution_>",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverFactory",
+          "methodName": "hashCode",
+          "elementKind": "method",
+          "justification": "SolverFactory is now an interface."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method void java.lang.Object::notify() @ org.optaplanner.core.api.solver.SolverFactory<Solution_>",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverFactory",
+          "methodName": "notify",
+          "elementKind": "method",
+          "justification": "SolverFactory is now an interface."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method void java.lang.Object::notifyAll() @ org.optaplanner.core.api.solver.SolverFactory<Solution_>",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverFactory",
+          "methodName": "notifyAll",
+          "elementKind": "method",
+          "justification": "SolverFactory is now an interface."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method java.lang.String java.lang.Object::toString() @ org.optaplanner.core.api.solver.SolverFactory<Solution_>",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverFactory",
+          "methodName": "toString",
+          "elementKind": "method",
+          "justification": "SolverFactory is now an interface."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method void java.lang.Object::wait() throws java.lang.InterruptedException @ org.optaplanner.core.api.solver.SolverFactory<Solution_>",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverFactory",
+          "methodName": "wait",
+          "elementKind": "method",
+          "justification": "SolverFactory is now an interface."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method void java.lang.Object::wait(long) throws java.lang.InterruptedException @ org.optaplanner.core.api.solver.SolverFactory<Solution_>",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverFactory",
+          "methodName": "wait",
+          "elementKind": "method",
+          "justification": "SolverFactory is now an interface."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method void java.lang.Object::wait(long, int) throws java.lang.InterruptedException @ org.optaplanner.core.api.solver.SolverFactory<Solution_>",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverFactory",
+          "methodName": "wait",
+          "elementKind": "method",
+          "justification": "SolverFactory is now an interface."
+        },
+        {
+          "code": "java.class.kindChanged",
+          "old": "class org.optaplanner.core.api.solver.SolverFactory<Solution_ extends java.lang.Object>",
+          "new": "interface org.optaplanner.core.api.solver.SolverFactory<Solution_ extends java.lang.Object>",
+          "oldKind": "class",
+          "newKind": "interface",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverFactory",
+          "elementKind": "class",
+          "justification": "SolverFactory is now an interface."
+        },
+        {
+          "code": "java.field.removedWithConstant",
+          "old": "field org.optaplanner.core.config.solver.SolverConfig.DEFAULT_RANDOM_SEED",
+          "package": "org.optaplanner.core.config.solver",
+          "classSimpleName": "SolverConfig",
+          "fieldName": "DEFAULT_RANDOM_SEED",
+          "elementKind": "field",
+          "justification": "DEFAULT_RANDOM_SEED constant moved to the DefaultSolverFactory."
         }
+
       ]
     }
   }
