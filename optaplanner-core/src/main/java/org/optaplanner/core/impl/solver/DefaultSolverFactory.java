@@ -57,6 +57,8 @@ import org.slf4j.LoggerFactory;
 public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solution_> {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultSolverFactory.class);
+    private static final long DEFAULT_RANDOM_SEED = 0L;
+
     private final SolverConfig solverConfig;
 
     public DefaultSolverFactory(SolverConfig solverConfig) {
@@ -143,7 +145,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
             RandomType randomType_ = defaultIfNull(solverConfig.getRandomType(), RandomType.JDK);
             Long randomSeed_ = solverConfig.getRandomSeed();
             if (solverConfig.getRandomSeed() == null && environmentMode_ != EnvironmentMode.NON_REPRODUCIBLE) {
-                randomSeed_ = SolverConfig.DEFAULT_RANDOM_SEED;
+                randomSeed_ = DEFAULT_RANDOM_SEED;
             }
             randomFactory = new DefaultRandomFactory(randomType_, randomSeed_);
         }

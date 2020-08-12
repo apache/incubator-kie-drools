@@ -196,7 +196,6 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     public static final String MOVE_THREAD_COUNT_NONE = "NONE";
     public static final String MOVE_THREAD_COUNT_AUTO = "AUTO";
-    public static final long DEFAULT_RANDOM_SEED = 0L;
 
     @XmlTransient
     private ClassLoader classLoader = null;
