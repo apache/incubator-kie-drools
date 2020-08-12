@@ -132,6 +132,8 @@ exports[`Errorpopover component tests snapshot testing with error object 1`] = `
         Something went wrong
       </div>
     }
+    data-ouia-component-type="error-popover"
+    data-ouia-safe={true}
     footerContent={
       Array [
         <Button
@@ -190,6 +192,8 @@ exports[`Errorpopover component tests snapshot testing with error object 1`] = `
           aria-labelledby="popover-e4448857-fa0c-403b-ad69-f0a353458b9d-header"
           aria-modal="true"
           className="pf-c-popover"
+          data-ouia-component-type="error-popover"
+          data-ouia-safe={true}
           focusTrapOptions={
             Object {
               "clickOutsideDeactivates": true,
@@ -460,6 +464,8 @@ exports[`Errorpopover component tests snapshot testing without error object 1`] 
         No error message found
       </div>
     }
+    data-ouia-component-type="error-popover"
+    data-ouia-safe={true}
     footerContent={
       Array [
         <Button
@@ -518,6 +524,8 @@ exports[`Errorpopover component tests snapshot testing without error object 1`] 
           aria-labelledby="popover-e4448857-fa0c-403b-ad69-f0a353458b9d-header"
           aria-modal="true"
           className="pf-c-popover"
+          data-ouia-component-type="error-popover"
+          data-ouia-safe={true}
           focusTrapOptions={
             Object {
               "clickOutsideDeactivates": true,

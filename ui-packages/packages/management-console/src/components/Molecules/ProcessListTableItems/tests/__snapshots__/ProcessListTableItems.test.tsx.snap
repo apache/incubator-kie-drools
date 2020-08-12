@@ -80,6 +80,8 @@ exports[`ProcessListTableItems component tests snapshot tests with an error(stat
         Something went wrong
       </div>
     }
+    data-ouia-component-type="error-popover"
+    data-ouia-safe={true}
     footerContent={
       Array [
         <Button
@@ -138,6 +140,8 @@ exports[`ProcessListTableItems component tests snapshot tests with an error(stat
           aria-labelledby="popover-8035b580-6ae4-4aa8-9ec0-e18e19809e0b1-header"
           aria-modal="true"
           className="pf-c-popover"
+          data-ouia-component-type="error-popover"
+          data-ouia-safe={true}
           focusTrapOptions={
             Object {
               "clickOutsideDeactivates": true,

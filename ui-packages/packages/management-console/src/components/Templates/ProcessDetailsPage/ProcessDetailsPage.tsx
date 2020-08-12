@@ -238,7 +238,6 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, {}, {}> &
                             description: data.ProcessInstances[0].businessKey
                           }}
                         />
-
                       </Title>
                     </SplitItem>
                     <SplitItem>

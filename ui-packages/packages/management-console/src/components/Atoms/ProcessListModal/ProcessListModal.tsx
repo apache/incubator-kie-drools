@@ -9,6 +9,7 @@ import {
 } from '@patternfly/react-core';
 import ProcessListBulkInstances from '../ProcessListBulkInstances/ProcessListBulkInstances';
 import { IOperation } from '../../Molecules/ProcessListToolbar/ProcessListToolbar';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/common';
 interface IOwnProps {
   modalTitle: JSX.Element;
   modalContent?: string;
@@ -18,14 +19,16 @@ interface IOwnProps {
   operationResult?: IOperation;
   processName?: string;
 }
-const ProcessListModal: React.FC<IOwnProps> = ({
+const ProcessListModal: React.FC<IOwnProps & OUIAProps> = ({
   modalContent,
   modalTitle,
   isModalOpen,
   handleModalToggle,
   resetSelected,
   operationResult,
-  processName
+  processName,
+  ouiaId,
+  ouiaSafe
 }) => {
 
   const onOkClick = () => {
@@ -46,7 +49,7 @@ const ProcessListModal: React.FC<IOwnProps> = ({
       </span>
     );
   };
-  
+
   return (
     <Modal
       variant="small"
@@ -63,6 +66,7 @@ const ProcessListModal: React.FC<IOwnProps> = ({
           OK
         </Button>
       ]}
+      {...componentOuiaProps(ouiaId, 'process-list-modal', ouiaSafe)}
     >
       {operationResult !== undefined && (
         <ProcessListBulkInstances operationResult={operationResult} />

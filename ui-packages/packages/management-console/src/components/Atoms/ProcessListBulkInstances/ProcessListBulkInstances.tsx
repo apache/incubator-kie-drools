@@ -7,16 +7,26 @@ import {
   TextList,
   TextListItem
 } from '@patternfly/react-core';
-import { ItemDescriptor } from '@kogito-apps/common';
+import {
+  ItemDescriptor,
+  OUIAProps,
+  componentOuiaProps
+} from '@kogito-apps/common';
 import { IOperation } from '../../Molecules/ProcessListToolbar/ProcessListToolbar';
 import { getProcessInstanceDescription } from '../../../utils/Utils';
 
 interface IOwnProps {
   operationResult: IOperation;
 }
-const ProcessListBulkInstances: React.FC<IOwnProps> = ({ operationResult }) => {
+const ProcessListBulkInstances: React.FC<IOwnProps & OUIAProps> = ({
+  operationResult,
+  ouiaId,
+  ouiaSafe
+}) => {
   return (
-    <>
+    <div
+      {...componentOuiaProps(ouiaId, 'process-list-bulk-instances', ouiaSafe)}
+    >
       {Object.keys(operationResult.results.successInstances).length > 0 ? (
         <>
           <TextContent>
@@ -113,7 +123,7 @@ const ProcessListBulkInstances: React.FC<IOwnProps> = ({ operationResult }) => {
           </TextContent>
         </>
       )}
-    </>
+    </div>
   );
 };
 

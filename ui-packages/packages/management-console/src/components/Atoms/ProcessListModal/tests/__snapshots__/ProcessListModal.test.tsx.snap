@@ -17,6 +17,8 @@ exports[`ProcessBulkModal component tests snapshot testing 1`] = `
   aria-label=""
   aria-labelledby=""
   className=""
+  data-ouia-component-type="process-list-modal"
+  data-ouia-safe={true}
   hasNoBodyWrapper={false}
   header={
     <Title

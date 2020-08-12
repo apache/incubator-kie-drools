@@ -1,7 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ProcessBulkList component tests snapshot testing for a single abort instance 1`] = `
-<Fragment>
+<div
+  data-ouia-component-type="process-list-bulk-instances"
+  data-ouia-safe={true}
+>
   <TextContent>
     <Text
       component="h2"
@@ -80,11 +83,14 @@ exports[`ProcessBulkList component tests snapshot testing for a single abort ins
       </TextListItem>
     </TextList>
   </TextContent>
-</Fragment>
+</div>
 `;
 
 exports[`ProcessBulkList component tests snapshot testing multi-abort with aborted and skipped instances  1`] = `
-<Fragment>
+<div
+  data-ouia-component-type="process-list-bulk-instances"
+  data-ouia-safe={true}
+>
   <TextContent>
     <Text
       component="h2"
@@ -147,11 +153,14 @@ exports[`ProcessBulkList component tests snapshot testing multi-abort with abort
       </TextListItem>
     </TextList>
   </TextContent>
-</Fragment>
+</div>
 `;
 
 exports[`ProcessBulkList component tests snapshot testing multi-abort with no aborted instances and only skipped instances 1`] = `
-<Fragment>
+<div
+  data-ouia-component-type="process-list-bulk-instances"
+  data-ouia-safe={true}
+>
   <TextContent>
     <Text
       component="h2"
@@ -197,11 +206,14 @@ exports[`ProcessBulkList component tests snapshot testing multi-abort with no ab
       </TextListItem>
     </TextList>
   </TextContent>
-</Fragment>
+</div>
 `;
 
 exports[`ProcessBulkList component tests snapshot testing multi-abort with no skipped instances 1`] = `
-<Fragment>
+<div
+  data-ouia-component-type="process-list-bulk-instances"
+  data-ouia-safe={true}
+>
   <TextContent>
     <Text
       component="h2"
@@ -226,5 +238,5 @@ exports[`ProcessBulkList component tests snapshot testing multi-abort with no sk
       </TextListItem>
     </TextList>
   </TextContent>
-</Fragment>
+</div>
 `;
