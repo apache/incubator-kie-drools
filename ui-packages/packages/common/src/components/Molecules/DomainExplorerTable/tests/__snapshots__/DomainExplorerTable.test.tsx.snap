@@ -105,6 +105,7 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
     ]
   }
   selected={Array []}
+  setOrderByObj={[MockFunction]}
   setRows={
     [MockFunction] {
       "calls": Array [
@@ -120,6 +121,14 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
       ],
     }
   }
+  setRunQuery={[MockFunction]}
+  setSortBy={[MockFunction]}
+  sortBy={
+    Object {
+      "direction": "asc",
+      "index": 6,
+    }
+  }
   tableLoading={false}
 >
   <Table
@@ -128,11 +137,36 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
     canSelectAll={true}
     cells={
       Array [
-        "flight / arrival",
-        "flight / departure",
-        "flight / flightNumber",
-        "flight / gate",
-        "flight / seat",
+        Object {
+          "title": "flight / arrival",
+          "transforms": Array [
+            [Function],
+          ],
+        },
+        Object {
+          "title": "flight / departure",
+          "transforms": Array [
+            [Function],
+          ],
+        },
+        Object {
+          "title": "flight / flightNumber",
+          "transforms": Array [
+            [Function],
+          ],
+        },
+        Object {
+          "title": "flight / gate",
+          "transforms": Array [
+            [Function],
+          ],
+        },
+        Object {
+          "title": "flight / seat",
+          "transforms": Array [
+            [Function],
+          ],
+        },
       ]
     }
     className="kogito-common--domain-explorer__table"
@@ -143,6 +177,7 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
     gridBreakPoint="grid-md"
     isStickyHeader={false}
     onCollapse={[Function]}
+    onSort={[Function]}
     ouiaSafe={true}
     role="grid"
     rowLabeledBy="simple-node"
@@ -169,6 +204,12 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
           "rowKey": "0.6632979792309541",
         },
       ]
+    }
+    sortBy={
+      Object {
+        "direction": "asc",
+        "index": 6,
+      }
     }
     variant={null}
   >
@@ -203,9 +244,12 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
               "onExpand": undefined,
               "onRowEdit": undefined,
               "onSelect": undefined,
-              "onSort": undefined,
+              "onSort": [Function],
               "rowLabeledBy": "simple-node",
-              "sortBy": undefined,
+              "sortBy": Object {
+                "direction": "asc",
+                "index": 6,
+              },
             },
             "header": Object {
               "formatters": Array [],
@@ -249,14 +293,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
               "onExpand": undefined,
               "onRowEdit": undefined,
               "onSelect": undefined,
-              "onSort": undefined,
+              "onSort": [Function],
               "rowLabeledBy": "simple-node",
-              "sortBy": undefined,
+              "sortBy": Object {
+                "direction": "asc",
+                "index": 6,
+              },
             },
             "header": Object {
               "formatters": Array [],
               "label": "flight / arrival",
               "transforms": Array [
+                [Function],
                 [Function],
                 [Function],
               ],
@@ -293,14 +341,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
               "onExpand": undefined,
               "onRowEdit": undefined,
               "onSelect": undefined,
-              "onSort": undefined,
+              "onSort": [Function],
               "rowLabeledBy": "simple-node",
-              "sortBy": undefined,
+              "sortBy": Object {
+                "direction": "asc",
+                "index": 6,
+              },
             },
             "header": Object {
               "formatters": Array [],
               "label": "flight / departure",
               "transforms": Array [
+                [Function],
                 [Function],
                 [Function],
               ],
@@ -337,14 +389,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
               "onExpand": undefined,
               "onRowEdit": undefined,
               "onSelect": undefined,
-              "onSort": undefined,
+              "onSort": [Function],
               "rowLabeledBy": "simple-node",
-              "sortBy": undefined,
+              "sortBy": Object {
+                "direction": "asc",
+                "index": 6,
+              },
             },
             "header": Object {
               "formatters": Array [],
               "label": "flight / flightNumber",
               "transforms": Array [
+                [Function],
                 [Function],
                 [Function],
               ],
@@ -381,14 +437,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
               "onExpand": undefined,
               "onRowEdit": undefined,
               "onSelect": undefined,
-              "onSort": undefined,
+              "onSort": [Function],
               "rowLabeledBy": "simple-node",
-              "sortBy": undefined,
+              "sortBy": Object {
+                "direction": "asc",
+                "index": 6,
+              },
             },
             "header": Object {
               "formatters": Array [],
               "label": "flight / gate",
               "transforms": Array [
+                [Function],
                 [Function],
                 [Function],
               ],
@@ -425,14 +485,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
               "onExpand": undefined,
               "onRowEdit": undefined,
               "onSelect": undefined,
-              "onSort": undefined,
+              "onSort": [Function],
               "rowLabeledBy": "simple-node",
-              "sortBy": undefined,
+              "sortBy": Object {
+                "direction": "asc",
+                "index": 6,
+              },
             },
             "header": Object {
               "formatters": Array [],
               "label": "flight / seat",
               "transforms": Array [
+                [Function],
                 [Function],
                 [Function],
               ],
@@ -508,9 +572,12 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": undefined,
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {
+                          "direction": "asc",
+                          "index": 6,
+                        },
                       },
                       "header": Object {
                         "formatters": Array [],
@@ -554,14 +621,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": undefined,
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {
+                          "direction": "asc",
+                          "index": 6,
+                        },
                       },
                       "header": Object {
                         "formatters": Array [],
                         "label": "flight / arrival",
                         "transforms": Array [
+                          [Function],
                           [Function],
                           [Function],
                         ],
@@ -598,14 +669,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": undefined,
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {
+                          "direction": "asc",
+                          "index": 6,
+                        },
                       },
                       "header": Object {
                         "formatters": Array [],
                         "label": "flight / departure",
                         "transforms": Array [
+                          [Function],
                           [Function],
                           [Function],
                         ],
@@ -642,14 +717,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": undefined,
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {
+                          "direction": "asc",
+                          "index": 6,
+                        },
                       },
                       "header": Object {
                         "formatters": Array [],
                         "label": "flight / flightNumber",
                         "transforms": Array [
+                          [Function],
                           [Function],
                           [Function],
                         ],
@@ -686,14 +765,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": undefined,
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {
+                          "direction": "asc",
+                          "index": 6,
+                        },
                       },
                       "header": Object {
                         "formatters": Array [],
                         "label": "flight / gate",
                         "transforms": Array [
+                          [Function],
                           [Function],
                           [Function],
                         ],
@@ -730,14 +813,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": undefined,
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {
+                          "direction": "asc",
+                          "index": 6,
+                        },
                       },
                       "header": Object {
                         "formatters": Array [],
                         "label": "flight / seat",
                         "transforms": Array [
+                          [Function],
                           [Function],
                           [Function],
                         ],
@@ -807,9 +894,12 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                             "onExpand": undefined,
                             "onRowEdit": undefined,
                             "onSelect": undefined,
-                            "onSort": undefined,
+                            "onSort": [Function],
                             "rowLabeledBy": "simple-node",
-                            "sortBy": undefined,
+                            "sortBy": Object {
+                              "direction": "asc",
+                              "index": 6,
+                            },
                           },
                           "header": Object {
                             "formatters": Array [],
@@ -853,14 +943,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                             "onExpand": undefined,
                             "onRowEdit": undefined,
                             "onSelect": undefined,
-                            "onSort": undefined,
+                            "onSort": [Function],
                             "rowLabeledBy": "simple-node",
-                            "sortBy": undefined,
+                            "sortBy": Object {
+                              "direction": "asc",
+                              "index": 6,
+                            },
                           },
                           "header": Object {
                             "formatters": Array [],
                             "label": "flight / arrival",
                             "transforms": Array [
+                              [Function],
                               [Function],
                               [Function],
                             ],
@@ -897,14 +991,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                             "onExpand": undefined,
                             "onRowEdit": undefined,
                             "onSelect": undefined,
-                            "onSort": undefined,
+                            "onSort": [Function],
                             "rowLabeledBy": "simple-node",
-                            "sortBy": undefined,
+                            "sortBy": Object {
+                              "direction": "asc",
+                              "index": 6,
+                            },
                           },
                           "header": Object {
                             "formatters": Array [],
                             "label": "flight / departure",
                             "transforms": Array [
+                              [Function],
                               [Function],
                               [Function],
                             ],
@@ -941,14 +1039,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                             "onExpand": undefined,
                             "onRowEdit": undefined,
                             "onSelect": undefined,
-                            "onSort": undefined,
+                            "onSort": [Function],
                             "rowLabeledBy": "simple-node",
-                            "sortBy": undefined,
+                            "sortBy": Object {
+                              "direction": "asc",
+                              "index": 6,
+                            },
                           },
                           "header": Object {
                             "formatters": Array [],
                             "label": "flight / flightNumber",
                             "transforms": Array [
+                              [Function],
                               [Function],
                               [Function],
                             ],
@@ -985,14 +1087,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                             "onExpand": undefined,
                             "onRowEdit": undefined,
                             "onSelect": undefined,
-                            "onSort": undefined,
+                            "onSort": [Function],
                             "rowLabeledBy": "simple-node",
-                            "sortBy": undefined,
+                            "sortBy": Object {
+                              "direction": "asc",
+                              "index": 6,
+                            },
                           },
                           "header": Object {
                             "formatters": Array [],
                             "label": "flight / gate",
                             "transforms": Array [
+                              [Function],
                               [Function],
                               [Function],
                             ],
@@ -1029,14 +1135,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                             "onExpand": undefined,
                             "onRowEdit": undefined,
                             "onSelect": undefined,
-                            "onSort": undefined,
+                            "onSort": [Function],
                             "rowLabeledBy": "simple-node",
-                            "sortBy": undefined,
+                            "sortBy": Object {
+                              "direction": "asc",
+                              "index": 6,
+                            },
                           },
                           "header": Object {
                             "formatters": Array [],
                             "label": "flight / seat",
                             "transforms": Array [
+                              [Function],
                               [Function],
                               [Function],
                             ],
@@ -1067,83 +1177,358 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                         />
                       </HeaderCell>
                       <HeaderCell
+                        aria-sort="none"
+                        className="pf-c-table__sort"
                         data-key={1}
                         data-label="flight / arrival"
                         key="1-header"
                         scope="col"
                       >
                         <th
-                          className=""
+                          aria-sort="none"
+                          className="pf-c-table__sort"
                           data-key={1}
                           data-label="flight / arrival"
                           onMouseEnter={[Function]}
                           scope="col"
                         >
-                          flight / arrival
+                          <SortColumn
+                            isSortedBy={false}
+                            onSort={[Function]}
+                            sortDirection=""
+                          >
+                            <button
+                              className="pf-c-table__button"
+                              onClick={[Function]}
+                              type="button"
+                            >
+                              <div
+                                className="pf-c-table__button-content"
+                              >
+                                <TableText>
+                                  <span
+                                    className="pf-c-table__text"
+                                    onMouseEnter={[Function]}
+                                  >
+                                    flight / arrival
+                                  </span>
+                                </TableText>
+                                <span
+                                  className="pf-c-table__sort-indicator"
+                                >
+                                  <ArrowsAltVIcon
+                                    color="currentColor"
+                                    noVerticalAlign={false}
+                                    size="sm"
+                                  >
+                                    <svg
+                                      aria-hidden={true}
+                                      aria-labelledby={null}
+                                      fill="currentColor"
+                                      height="1em"
+                                      role="img"
+                                      style={
+                                        Object {
+                                          "verticalAlign": "-0.125em",
+                                        }
+                                      }
+                                      viewBox="0 0 256 512"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M214.059 377.941H168V134.059h46.059c21.382 0 32.09-25.851 16.971-40.971L144.971 7.029c-9.373-9.373-24.568-9.373-33.941 0L24.971 93.088c-15.119 15.119-4.411 40.971 16.971 40.971H88v243.882H41.941c-21.382 0-32.09 25.851-16.971 40.971l86.059 86.059c9.373 9.373 24.568 9.373 33.941 0l86.059-86.059c15.12-15.119 4.412-40.971-16.97-40.971z"
+                                        transform=""
+                                      />
+                                    </svg>
+                                  </ArrowsAltVIcon>
+                                </span>
+                              </div>
+                            </button>
+                          </SortColumn>
                         </th>
                       </HeaderCell>
                       <HeaderCell
+                        aria-sort="none"
+                        className="pf-c-table__sort"
                         data-key={2}
                         data-label="flight / departure"
                         key="2-header"
                         scope="col"
                       >
                         <th
-                          className=""
+                          aria-sort="none"
+                          className="pf-c-table__sort"
                           data-key={2}
                           data-label="flight / departure"
                           onMouseEnter={[Function]}
                           scope="col"
                         >
-                          flight / departure
+                          <SortColumn
+                            isSortedBy={false}
+                            onSort={[Function]}
+                            sortDirection=""
+                          >
+                            <button
+                              className="pf-c-table__button"
+                              onClick={[Function]}
+                              type="button"
+                            >
+                              <div
+                                className="pf-c-table__button-content"
+                              >
+                                <TableText>
+                                  <span
+                                    className="pf-c-table__text"
+                                    onMouseEnter={[Function]}
+                                  >
+                                    flight / departure
+                                  </span>
+                                </TableText>
+                                <span
+                                  className="pf-c-table__sort-indicator"
+                                >
+                                  <ArrowsAltVIcon
+                                    color="currentColor"
+                                    noVerticalAlign={false}
+                                    size="sm"
+                                  >
+                                    <svg
+                                      aria-hidden={true}
+                                      aria-labelledby={null}
+                                      fill="currentColor"
+                                      height="1em"
+                                      role="img"
+                                      style={
+                                        Object {
+                                          "verticalAlign": "-0.125em",
+                                        }
+                                      }
+                                      viewBox="0 0 256 512"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M214.059 377.941H168V134.059h46.059c21.382 0 32.09-25.851 16.971-40.971L144.971 7.029c-9.373-9.373-24.568-9.373-33.941 0L24.971 93.088c-15.119 15.119-4.411 40.971 16.971 40.971H88v243.882H41.941c-21.382 0-32.09 25.851-16.971 40.971l86.059 86.059c9.373 9.373 24.568 9.373 33.941 0l86.059-86.059c15.12-15.119 4.412-40.971-16.97-40.971z"
+                                        transform=""
+                                      />
+                                    </svg>
+                                  </ArrowsAltVIcon>
+                                </span>
+                              </div>
+                            </button>
+                          </SortColumn>
                         </th>
                       </HeaderCell>
                       <HeaderCell
+                        aria-sort="none"
+                        className="pf-c-table__sort"
                         data-key={3}
                         data-label="flight / flightNumber"
                         key="3-header"
                         scope="col"
                       >
                         <th
-                          className=""
+                          aria-sort="none"
+                          className="pf-c-table__sort"
                           data-key={3}
                           data-label="flight / flightNumber"
                           onMouseEnter={[Function]}
                           scope="col"
                         >
-                          flight / flightNumber
+                          <SortColumn
+                            isSortedBy={false}
+                            onSort={[Function]}
+                            sortDirection=""
+                          >
+                            <button
+                              className="pf-c-table__button"
+                              onClick={[Function]}
+                              type="button"
+                            >
+                              <div
+                                className="pf-c-table__button-content"
+                              >
+                                <TableText>
+                                  <span
+                                    className="pf-c-table__text"
+                                    onMouseEnter={[Function]}
+                                  >
+                                    flight / flightNumber
+                                  </span>
+                                </TableText>
+                                <span
+                                  className="pf-c-table__sort-indicator"
+                                >
+                                  <ArrowsAltVIcon
+                                    color="currentColor"
+                                    noVerticalAlign={false}
+                                    size="sm"
+                                  >
+                                    <svg
+                                      aria-hidden={true}
+                                      aria-labelledby={null}
+                                      fill="currentColor"
+                                      height="1em"
+                                      role="img"
+                                      style={
+                                        Object {
+                                          "verticalAlign": "-0.125em",
+                                        }
+                                      }
+                                      viewBox="0 0 256 512"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M214.059 377.941H168V134.059h46.059c21.382 0 32.09-25.851 16.971-40.971L144.971 7.029c-9.373-9.373-24.568-9.373-33.941 0L24.971 93.088c-15.119 15.119-4.411 40.971 16.971 40.971H88v243.882H41.941c-21.382 0-32.09 25.851-16.971 40.971l86.059 86.059c9.373 9.373 24.568 9.373 33.941 0l86.059-86.059c15.12-15.119 4.412-40.971-16.97-40.971z"
+                                        transform=""
+                                      />
+                                    </svg>
+                                  </ArrowsAltVIcon>
+                                </span>
+                              </div>
+                            </button>
+                          </SortColumn>
                         </th>
                       </HeaderCell>
                       <HeaderCell
+                        aria-sort="none"
+                        className="pf-c-table__sort"
                         data-key={4}
                         data-label="flight / gate"
                         key="4-header"
                         scope="col"
                       >
                         <th
-                          className=""
+                          aria-sort="none"
+                          className="pf-c-table__sort"
                           data-key={4}
                           data-label="flight / gate"
                           onMouseEnter={[Function]}
                           scope="col"
                         >
-                          flight / gate
+                          <SortColumn
+                            isSortedBy={false}
+                            onSort={[Function]}
+                            sortDirection=""
+                          >
+                            <button
+                              className="pf-c-table__button"
+                              onClick={[Function]}
+                              type="button"
+                            >
+                              <div
+                                className="pf-c-table__button-content"
+                              >
+                                <TableText>
+                                  <span
+                                    className="pf-c-table__text"
+                                    onMouseEnter={[Function]}
+                                  >
+                                    flight / gate
+                                  </span>
+                                </TableText>
+                                <span
+                                  className="pf-c-table__sort-indicator"
+                                >
+                                  <ArrowsAltVIcon
+                                    color="currentColor"
+                                    noVerticalAlign={false}
+                                    size="sm"
+                                  >
+                                    <svg
+                                      aria-hidden={true}
+                                      aria-labelledby={null}
+                                      fill="currentColor"
+                                      height="1em"
+                                      role="img"
+                                      style={
+                                        Object {
+                                          "verticalAlign": "-0.125em",
+                                        }
+                                      }
+                                      viewBox="0 0 256 512"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M214.059 377.941H168V134.059h46.059c21.382 0 32.09-25.851 16.971-40.971L144.971 7.029c-9.373-9.373-24.568-9.373-33.941 0L24.971 93.088c-15.119 15.119-4.411 40.971 16.971 40.971H88v243.882H41.941c-21.382 0-32.09 25.851-16.971 40.971l86.059 86.059c9.373 9.373 24.568 9.373 33.941 0l86.059-86.059c15.12-15.119 4.412-40.971-16.97-40.971z"
+                                        transform=""
+                                      />
+                                    </svg>
+                                  </ArrowsAltVIcon>
+                                </span>
+                              </div>
+                            </button>
+                          </SortColumn>
                         </th>
                       </HeaderCell>
                       <HeaderCell
+                        aria-sort="none"
+                        className="pf-c-table__sort"
                         data-key={5}
                         data-label="flight / seat"
                         key="5-header"
                         scope="col"
                       >
                         <th
-                          className=""
+                          aria-sort="none"
+                          className="pf-c-table__sort"
                           data-key={5}
                           data-label="flight / seat"
                           onMouseEnter={[Function]}
                           scope="col"
                         >
-                          flight / seat
+                          <SortColumn
+                            isSortedBy={false}
+                            onSort={[Function]}
+                            sortDirection=""
+                          >
+                            <button
+                              className="pf-c-table__button"
+                              onClick={[Function]}
+                              type="button"
+                            >
+                              <div
+                                className="pf-c-table__button-content"
+                              >
+                                <TableText>
+                                  <span
+                                    className="pf-c-table__text"
+                                    onMouseEnter={[Function]}
+                                  >
+                                    flight / seat
+                                  </span>
+                                </TableText>
+                                <span
+                                  className="pf-c-table__sort-indicator"
+                                >
+                                  <ArrowsAltVIcon
+                                    color="currentColor"
+                                    noVerticalAlign={false}
+                                    size="sm"
+                                  >
+                                    <svg
+                                      aria-hidden={true}
+                                      aria-labelledby={null}
+                                      fill="currentColor"
+                                      height="1em"
+                                      role="img"
+                                      style={
+                                        Object {
+                                          "verticalAlign": "-0.125em",
+                                        }
+                                      }
+                                      viewBox="0 0 256 512"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M214.059 377.941H168V134.059h46.059c21.382 0 32.09-25.851 16.971-40.971L144.971 7.029c-9.373-9.373-24.568-9.373-33.941 0L24.971 93.088c-15.119 15.119-4.411 40.971 16.971 40.971H88v243.882H41.941c-21.382 0-32.09 25.851-16.971 40.971l86.059 86.059c9.373 9.373 24.568 9.373 33.941 0l86.059-86.059c15.12-15.119 4.412-40.971-16.97-40.971z"
+                                        transform=""
+                                      />
+                                    </svg>
+                                  </ArrowsAltVIcon>
+                                </span>
+                              </div>
+                            </button>
+                          </SortColumn>
                         </th>
                       </HeaderCell>
                     </tr>
@@ -1186,9 +1571,12 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                     "onExpand": undefined,
                     "onRowEdit": undefined,
                     "onSelect": undefined,
-                    "onSort": undefined,
+                    "onSort": [Function],
                     "rowLabeledBy": "simple-node",
-                    "sortBy": undefined,
+                    "sortBy": Object {
+                      "direction": "asc",
+                      "index": 6,
+                    },
                   },
                   "header": Object {
                     "formatters": Array [],
@@ -1232,14 +1620,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                     "onExpand": undefined,
                     "onRowEdit": undefined,
                     "onSelect": undefined,
-                    "onSort": undefined,
+                    "onSort": [Function],
                     "rowLabeledBy": "simple-node",
-                    "sortBy": undefined,
+                    "sortBy": Object {
+                      "direction": "asc",
+                      "index": 6,
+                    },
                   },
                   "header": Object {
                     "formatters": Array [],
                     "label": "flight / arrival",
                     "transforms": Array [
+                      [Function],
                       [Function],
                       [Function],
                     ],
@@ -1276,14 +1668,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                     "onExpand": undefined,
                     "onRowEdit": undefined,
                     "onSelect": undefined,
-                    "onSort": undefined,
+                    "onSort": [Function],
                     "rowLabeledBy": "simple-node",
-                    "sortBy": undefined,
+                    "sortBy": Object {
+                      "direction": "asc",
+                      "index": 6,
+                    },
                   },
                   "header": Object {
                     "formatters": Array [],
                     "label": "flight / departure",
                     "transforms": Array [
+                      [Function],
                       [Function],
                       [Function],
                     ],
@@ -1320,14 +1716,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                     "onExpand": undefined,
                     "onRowEdit": undefined,
                     "onSelect": undefined,
-                    "onSort": undefined,
+                    "onSort": [Function],
                     "rowLabeledBy": "simple-node",
-                    "sortBy": undefined,
+                    "sortBy": Object {
+                      "direction": "asc",
+                      "index": 6,
+                    },
                   },
                   "header": Object {
                     "formatters": Array [],
                     "label": "flight / flightNumber",
                     "transforms": Array [
+                      [Function],
                       [Function],
                       [Function],
                     ],
@@ -1364,14 +1764,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                     "onExpand": undefined,
                     "onRowEdit": undefined,
                     "onSelect": undefined,
-                    "onSort": undefined,
+                    "onSort": [Function],
                     "rowLabeledBy": "simple-node",
-                    "sortBy": undefined,
+                    "sortBy": Object {
+                      "direction": "asc",
+                      "index": 6,
+                    },
                   },
                   "header": Object {
                     "formatters": Array [],
                     "label": "flight / gate",
                     "transforms": Array [
+                      [Function],
                       [Function],
                       [Function],
                     ],
@@ -1408,14 +1812,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                     "onExpand": undefined,
                     "onRowEdit": undefined,
                     "onSelect": undefined,
-                    "onSort": undefined,
+                    "onSort": [Function],
                     "rowLabeledBy": "simple-node",
-                    "sortBy": undefined,
+                    "sortBy": Object {
+                      "direction": "asc",
+                      "index": 6,
+                    },
                   },
                   "header": Object {
                     "formatters": Array [],
                     "label": "flight / seat",
                     "transforms": Array [
+                      [Function],
                       [Function],
                       [Function],
                     ],
@@ -1641,9 +2049,12 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": undefined,
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {
+                          "direction": "asc",
+                          "index": 6,
+                        },
                       },
                       "header": Object {
                         "formatters": Array [],
@@ -1687,14 +2098,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": undefined,
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {
+                          "direction": "asc",
+                          "index": 6,
+                        },
                       },
                       "header": Object {
                         "formatters": Array [],
                         "label": "flight / arrival",
                         "transforms": Array [
+                          [Function],
                           [Function],
                           [Function],
                         ],
@@ -1731,14 +2146,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": undefined,
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {
+                          "direction": "asc",
+                          "index": 6,
+                        },
                       },
                       "header": Object {
                         "formatters": Array [],
                         "label": "flight / departure",
                         "transforms": Array [
+                          [Function],
                           [Function],
                           [Function],
                         ],
@@ -1775,14 +2194,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": undefined,
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {
+                          "direction": "asc",
+                          "index": 6,
+                        },
                       },
                       "header": Object {
                         "formatters": Array [],
                         "label": "flight / flightNumber",
                         "transforms": Array [
+                          [Function],
                           [Function],
                           [Function],
                         ],
@@ -1819,14 +2242,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": undefined,
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {
+                          "direction": "asc",
+                          "index": 6,
+                        },
                       },
                       "header": Object {
                         "formatters": Array [],
                         "label": "flight / gate",
                         "transforms": Array [
+                          [Function],
                           [Function],
                           [Function],
                         ],
@@ -1863,14 +2290,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                         "onExpand": undefined,
                         "onRowEdit": undefined,
                         "onSelect": undefined,
-                        "onSort": undefined,
+                        "onSort": [Function],
                         "rowLabeledBy": "simple-node",
-                        "sortBy": undefined,
+                        "sortBy": Object {
+                          "direction": "asc",
+                          "index": 6,
+                        },
                       },
                       "header": Object {
                         "formatters": Array [],
                         "label": "flight / seat",
                         "transforms": Array [
+                          [Function],
                           [Function],
                           [Function],
                         ],
@@ -2161,9 +2592,12 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": undefined,
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {
+                                "direction": "asc",
+                                "index": 6,
+                              },
                             },
                             "header": Object {
                               "formatters": Array [],
@@ -2207,14 +2641,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": undefined,
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {
+                                "direction": "asc",
+                                "index": 6,
+                              },
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "flight / arrival",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -2251,14 +2689,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": undefined,
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {
+                                "direction": "asc",
+                                "index": 6,
+                              },
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "flight / departure",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -2295,14 +2737,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": undefined,
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {
+                                "direction": "asc",
+                                "index": 6,
+                              },
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "flight / flightNumber",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -2339,14 +2785,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": undefined,
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {
+                                "direction": "asc",
+                                "index": 6,
+                              },
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "flight / gate",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -2383,14 +2833,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": undefined,
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {
+                                "direction": "asc",
+                                "index": 6,
+                              },
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "flight / seat",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -2715,9 +3169,12 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": undefined,
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {
+                                "direction": "asc",
+                                "index": 6,
+                              },
                             },
                             "header": Object {
                               "formatters": Array [],
@@ -2761,14 +3218,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": undefined,
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {
+                                "direction": "asc",
+                                "index": 6,
+                              },
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "flight / arrival",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -2805,14 +3266,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": undefined,
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {
+                                "direction": "asc",
+                                "index": 6,
+                              },
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "flight / departure",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -2849,14 +3314,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": undefined,
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {
+                                "direction": "asc",
+                                "index": 6,
+                              },
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "flight / flightNumber",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -2893,14 +3362,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": undefined,
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {
+                                "direction": "asc",
+                                "index": 6,
+                              },
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "flight / gate",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -2937,14 +3410,18 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
                               "onExpand": undefined,
                               "onRowEdit": undefined,
                               "onSelect": undefined,
-                              "onSort": undefined,
+                              "onSort": [Function],
                               "rowLabeledBy": "simple-node",
-                              "sortBy": undefined,
+                              "sortBy": Object {
+                                "direction": "asc",
+                                "index": 6,
+                              },
                             },
                             "header": Object {
                               "formatters": Array [],
                               "label": "flight / seat",
                               "transforms": Array [
+                                [Function],
                                 [Function],
                                 [Function],
                               ],
@@ -3217,6 +3694,7 @@ exports[`Domain Explorer Table Component check null value for process instance a
     ]
   }
   selected={Array []}
+  setOrderByObj={[MockFunction]}
   setRows={
     [MockFunction] {
       "calls": Array [
@@ -4306,6 +4784,14 @@ exports[`Domain Explorer Table Component check null value for process instance a
           "value": undefined,
         },
       ],
+    }
+  }
+  setRunQuery={[MockFunction]}
+  setSortBy={[MockFunction]}
+  sortBy={
+    Object {
+      "direction": "asc",
+      "index": 6,
     }
   }
   tableLoading={true}

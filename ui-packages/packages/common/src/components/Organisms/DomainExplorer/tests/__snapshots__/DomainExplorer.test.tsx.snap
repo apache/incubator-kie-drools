@@ -1735,7 +1735,11 @@ exports[`Domain Explorer component Mock query testing 1`] = `
         }
         rows={Array []}
         selected={Array []}
+        setOrderByObj={[Function]}
         setRows={[Function]}
+        setRunQuery={[Function]}
+        setSortBy={[Function]}
+        sortBy={Object {}}
         tableLoading={false}
       />
     </article>
@@ -3188,7 +3192,11 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
         }
         rows={Array []}
         selected={Array []}
+        setOrderByObj={[Function]}
         setRows={[Function]}
+        setRunQuery={[Function]}
+        setSortBy={[Function]}
+        sortBy={Object {}}
         tableLoading={false}
       />
     </article>
@@ -4641,7 +4649,11 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
         }
         rows={Array []}
         selected={Array []}
+        setOrderByObj={[Function]}
         setRows={[Function]}
+        setRunQuery={[Function]}
+        setSortBy={[Function]}
+        sortBy={Object {}}
         tableLoading={false}
       />
     </article>

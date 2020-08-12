@@ -118,7 +118,14 @@ describe('Domain Explorer Table Component', () => {
     filterError: '',
     finalFilters: {},
     filterChips: ['metadata / processInstances / state: ACTIVE'],
-    onDeleteChip: jest.fn()
+    onDeleteChip: jest.fn(),
+    setOrderByObj: jest.fn(),
+    setRunQuery: jest.fn(),
+    setSortBy: jest.fn(),
+    sortBy: {
+      direction: 'asc',
+      index: 6
+    }
   };
   it('Snapshot test with default props', async () => {
     const wrapper = await getWrapperAsync(
@@ -444,5 +451,25 @@ describe('Domain Explorer Table Component', () => {
       .at(0)
       .props()
       ['onClick'](event);
+  });
+  it('check sort functionality', async () => {
+    const wrapper = await getWrapperAsync(
+      <MockedProvider>
+        <DomainExplorerTable {...props} />
+      </MockedProvider>,
+      'DomainExplorerTable'
+    );
+    wrapper.update();
+    const obj = {
+      target: {
+        innerText: 'Traveller / firstName'
+      }
+    };
+    // tslint:disable-next-line: no-unused-expression
+    wrapper
+      .find('.kogito-common--domain-explorer__table')
+      .at(0)
+      .props()
+      ['onSort'](obj, 1, 'asc');
   });
 });

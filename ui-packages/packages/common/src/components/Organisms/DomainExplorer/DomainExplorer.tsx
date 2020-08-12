@@ -73,6 +73,8 @@ const DomainExplorer: React.FC<IOwnProps> = ({
   const [reset, setReset] = useState(false);
   const [enableRefresh, setEnableRefresh] = useState(true);
   const [loadMoreClicked, setLoadMoreClicked] = useState(false);
+  const [orderByObj, setOrderByObj] = useState({});
+  const [sortBy, setSortBy] = useState({});
   useEffect(() => {
     /* istanbul ignore else */
     if (domainName) {
@@ -115,11 +117,18 @@ const DomainExplorer: React.FC<IOwnProps> = ({
         return item;
       }
     });
+  let filterArgument;
+  let orderByArgument;
+  let paginationArgument;
+  if (domainArg) {
+    filterArgument = domainArg.args[0].type.name;
+    orderByArgument = domainArg.args[1].type.name;
+    paginationArgument = domainArg.args[2].type.name;
+  }
 
-  const argument = domainArg && domainArg.args[0].type.name;
   const getSchema = useGetInputFieldsFromQueryQuery({
     variables: {
-      currentQuery: argument
+      currentQuery: filterArgument
     }
   });
 
@@ -200,9 +209,10 @@ const DomainExplorer: React.FC<IOwnProps> = ({
     variables: {
       pagination: {
         value: { offset, limit: pageSize },
-        type: 'Pagination'
+        type: paginationArgument
       },
-      where: { value: finalFilters, type: argument }
+      where: { value: finalFilters, type: filterArgument },
+      orderBy: { value: orderByObj, type: orderByArgument }
     },
     fields: parameters
   });
@@ -281,10 +291,7 @@ const DomainExplorer: React.FC<IOwnProps> = ({
         <ToolbarContent>
           {!getPicker.loading && (
             <>
-              <ToolbarToggleGroup
-                toggleIcon={<FilterIcon />}
-                breakpoint="xl"
-              >
+              <ToolbarToggleGroup toggleIcon={<FilterIcon />} breakpoint="xl">
                 {!getQuery.loading && !getQueryTypes.loading && (
                   <ToolbarFilter
                     categoryName="Filters"
@@ -367,20 +374,24 @@ const DomainExplorer: React.FC<IOwnProps> = ({
           <>
             <DomainExplorerTable
               columnFilters={columnFilters}
-              tableLoading={tableLoading}
               displayTable={displayTable}
               displayEmptyState={displayEmptyState}
-              parameters={parameters}
-              selected={selected}
-              offset={offset}
-              setRows={setRows}
-              rows={rows}
-              isLoadingMore={isLoadingMore}
-              handleRetry={handleRetry}
               filterError={filterError}
-              finalFilters={finalFilters}
               filterChips={filterChips}
+              finalFilters={finalFilters}
+              handleRetry={handleRetry}
+              isLoadingMore={isLoadingMore}
+              offset={offset}
               onDeleteChip={onDeleteChip}
+              parameters={parameters}
+              rows={rows}
+              selected={selected}
+              setOrderByObj={setOrderByObj}
+              setRows={setRows}
+              setRunQuery={setRunQuery}
+              setSortBy={setSortBy}
+              sortBy={sortBy}
+              tableLoading={tableLoading}
             />
             {displayTable &&
               !displayEmptyState &&
