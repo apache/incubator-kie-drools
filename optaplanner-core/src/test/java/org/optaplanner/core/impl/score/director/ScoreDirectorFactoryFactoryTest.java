@@ -38,12 +38,12 @@ import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalc
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-class ScoreDirectorFactoryCreatorTest {
+class ScoreDirectorFactoryFactoryTest {
 
     @Test
     void easyScoreCalculatorWithCustomProperties() {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig();
-        config.setEasyScoreCalculatorClass(ScoreDirectorFactoryCreatorTest.TestCustomPropertiesEasyScoreCalculator.class);
+        config.setEasyScoreCalculatorClass(ScoreDirectorFactoryFactoryTest.TestCustomPropertiesEasyScoreCalculator.class);
         HashMap<String, String> customProperties = new HashMap<>();
         customProperties.put("stringProperty", "string 1");
         customProperties.put("intProperty", "7");
@@ -51,8 +51,8 @@ class ScoreDirectorFactoryCreatorTest {
 
         EasyScoreDirector<TestdataSolution> scoreDirector =
                 (EasyScoreDirector<TestdataSolution>) buildTestdataScoreDirectoryFactory(config).buildScoreDirector();
-        ScoreDirectorFactoryCreatorTest.TestCustomPropertiesEasyScoreCalculator scoreCalculator =
-                (ScoreDirectorFactoryCreatorTest.TestCustomPropertiesEasyScoreCalculator) scoreDirector
+        ScoreDirectorFactoryFactoryTest.TestCustomPropertiesEasyScoreCalculator scoreCalculator =
+                (ScoreDirectorFactoryFactoryTest.TestCustomPropertiesEasyScoreCalculator) scoreDirector
                         .getEasyScoreCalculator();
         assertThat(scoreCalculator.getStringProperty()).isEqualTo("string 1");
         assertThat(scoreCalculator.getIntProperty()).isEqualTo(7);
@@ -62,7 +62,7 @@ class ScoreDirectorFactoryCreatorTest {
     void incrementalScoreCalculatorWithCustomProperties() {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig();
         config.setIncrementalScoreCalculatorClass(
-                ScoreDirectorFactoryCreatorTest.TestCustomPropertiesIncrementalScoreCalculator.class);
+                ScoreDirectorFactoryFactoryTest.TestCustomPropertiesIncrementalScoreCalculator.class);
         HashMap<String, String> customProperties = new HashMap<>();
         customProperties.put("stringProperty", "string 1");
         customProperties.put("intProperty", "7");
@@ -71,8 +71,8 @@ class ScoreDirectorFactoryCreatorTest {
         ScoreDirectorFactory<TestdataSolution> scoreDirectorFactory = buildTestdataScoreDirectoryFactory(config);
         IncrementalScoreDirector<TestdataSolution> scoreDirector =
                 (IncrementalScoreDirector<TestdataSolution>) scoreDirectorFactory.buildScoreDirector();
-        ScoreDirectorFactoryCreatorTest.TestCustomPropertiesIncrementalScoreCalculator scoreCalculator =
-                (ScoreDirectorFactoryCreatorTest.TestCustomPropertiesIncrementalScoreCalculator) scoreDirector
+        ScoreDirectorFactoryFactoryTest.TestCustomPropertiesIncrementalScoreCalculator scoreCalculator =
+                (ScoreDirectorFactoryFactoryTest.TestCustomPropertiesIncrementalScoreCalculator) scoreDirector
                         .getIncrementalScoreCalculator();
         assertThat(scoreCalculator.getStringProperty()).isEqualTo("string 1");
         assertThat(scoreCalculator.getIntProperty()).isEqualTo(7);
@@ -116,9 +116,9 @@ class ScoreDirectorFactoryCreatorTest {
         kieBaseConfigurationProperties.put(secondPropertyName, secondPropertyValue);
 
         config.setKieBaseConfigurationProperties(kieBaseConfigurationProperties);
-        ScoreDirectorFactoryCreator scoreDirectorFactoryCreator = new ScoreDirectorFactoryCreator(config);
+        ScoreDirectorFactoryFactory scoreDirectorFactoryFactory = new ScoreDirectorFactoryFactory(config);
         KieBaseConfiguration kieBaseConfiguration =
-                scoreDirectorFactoryCreator.buildKieBaseConfiguration(KieServices.Factory.get());
+                scoreDirectorFactoryFactory.buildKieBaseConfiguration(KieServices.Factory.get());
 
         assertThat(kieBaseConfiguration.getProperty(firstPropertyName)).isEqualTo(firstPropertyValue);
         assertThat(kieBaseConfiguration.getProperty(secondPropertyName)).isEqualTo(secondPropertyValue);
@@ -152,7 +152,7 @@ class ScoreDirectorFactoryCreatorTest {
 
     private ScoreDirectorFactory<TestdataSolution> buildTestdataScoreDirectoryFactory(ScoreDirectorFactoryConfig config,
             EnvironmentMode environmentMode) {
-        return new ScoreDirectorFactoryCreator(config)
+        return new ScoreDirectorFactoryFactory(config)
                 .buildScoreDirectorFactory(getClass().getClassLoader(), environmentMode,
                         TestdataSolution.buildSolutionDescriptor());
     }

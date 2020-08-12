@@ -40,7 +40,7 @@ import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.phase.PhaseFactoryProvider;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryCreator;
+import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryFactory;
 import org.optaplanner.core.impl.solver.random.DefaultRandomFactory;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
@@ -107,8 +107,8 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_ = solverConfig.getScoreDirectorFactoryConfig() == null
                 ? new ScoreDirectorFactoryConfig()
                 : solverConfig.getScoreDirectorFactoryConfig();
-        ScoreDirectorFactoryCreator scoreDirectorFactoryCreator = new ScoreDirectorFactoryCreator(scoreDirectorFactoryConfig_);
-        return scoreDirectorFactoryCreator.buildScoreDirectorFactory(
+        ScoreDirectorFactoryFactory scoreDirectorFactoryFactory = new ScoreDirectorFactoryFactory(scoreDirectorFactoryConfig_);
+        return scoreDirectorFactoryFactory.buildScoreDirectorFactory(
                 solverConfig.getClassLoader(), environmentMode, solutionDescriptor);
     }
 

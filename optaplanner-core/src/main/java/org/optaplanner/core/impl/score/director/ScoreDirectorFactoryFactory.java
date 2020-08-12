@@ -55,14 +55,14 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ScoreDirectorFactoryCreator<Solution_> {
+public class ScoreDirectorFactoryFactory<Solution_> {
 
     private static final String GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME = "optaplanner.drools.generateTestOnError";
-    private static final Logger logger = LoggerFactory.getLogger(ScoreDirectorFactoryCreator.class);
+    private static final Logger logger = LoggerFactory.getLogger(ScoreDirectorFactoryFactory.class);
 
     private final ScoreDirectorFactoryConfig config;
 
-    public ScoreDirectorFactoryCreator(ScoreDirectorFactoryConfig config) {
+    public ScoreDirectorFactoryFactory(ScoreDirectorFactoryConfig config) {
         this.config = config;
     }
 
@@ -81,9 +81,9 @@ public class ScoreDirectorFactoryCreator<Solution_> {
                         + config.getAssertionScoreDirectorFactory() + ") requires an environmentMode ("
                         + environmentMode + ") of " + EnvironmentMode.FAST_ASSERT + " or lower.");
             }
-            ScoreDirectorFactoryCreator<Solution_> assertionScoreDirectorFactoryCreator =
-                    new ScoreDirectorFactoryCreator<>(config.getAssertionScoreDirectorFactory());
-            scoreDirectorFactory.setAssertionScoreDirectorFactory(assertionScoreDirectorFactoryCreator
+            ScoreDirectorFactoryFactory<Solution_> assertionScoreDirectorFactoryFactory =
+                    new ScoreDirectorFactoryFactory<>(config.getAssertionScoreDirectorFactory());
+            scoreDirectorFactory.setAssertionScoreDirectorFactory(assertionScoreDirectorFactoryFactory
                     .buildScoreDirectorFactory(classLoader, EnvironmentMode.NON_REPRODUCIBLE, solutionDescriptor));
         }
         scoreDirectorFactory.setInitializingScoreTrend(InitializingScoreTrend.parseTrend(
