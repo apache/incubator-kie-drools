@@ -108,6 +108,7 @@ public final class TestUtils {
             pi.setError(new ProcessInstanceError("StartEvent_1", "Something went wrong"));
         }
         pi.setMilestones(getMilestones());
+        pi.setBusinessKey(RandomStringUtils.randomAlphabetic(10));
         return pi;
     }
 

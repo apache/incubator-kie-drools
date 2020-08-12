@@ -19,11 +19,14 @@ package org.kie.kogito.index.graphql.query;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import graphql.schema.GraphQLScalarType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.kogito.index.DataIndexStorageService;
 import org.kie.kogito.index.graphql.GraphQLScalarTypeProducer;
 import org.kie.kogito.index.graphql.GraphQLSchemaManager;
@@ -35,6 +38,8 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.persistence.api.query.FilterCondition.AND;
@@ -61,6 +66,7 @@ public class GraphQLQueryMapperTest {
     GraphQLScalarType qlDateTimeScalarType = new GraphQLScalarTypeProducer().dateTimeScalar();
 
     GraphQLQueryParser processInstanceParser;
+    GraphQLQueryParser jobParser;
 
     private static void assertAttributeFilter(String attribute, FilterCondition condition, AttributeFilter filter, String... values) {
         assertThat(filter.getCondition()).isEqualTo(condition);
@@ -72,10 +78,51 @@ public class GraphQLQueryMapperTest {
         }
     }
 
+    static Stream<Map<String, Object>> processInstanceProvider() {
+        return Stream.of(
+                //String mapper
+                singletonMap("businessKey", null),
+                singletonMap("businessKey", emptyMap()),
+                singletonMap("businessKey", singletonMap("like", null)),
+                singletonMap("businessKey", singletonMap("in", emptyList())),
+                //String Array mapper
+                singletonMap("roles", null),
+                singletonMap("roles", emptyMap()),
+                singletonMap("roles", singletonMap("contains", null)),
+                singletonMap("roles", singletonMap("containsAll", emptyList())),
+                // Date mapper
+                singletonMap("start", null),
+                singletonMap("start", emptyMap()),
+                singletonMap("start", singletonMap("equal", null)),
+                singletonMap("start", singletonMap("between", null)),
+                singletonMap("start", singletonMap("between", emptyMap())),
+                //Enum mapper
+                singletonMap("state", null),
+                singletonMap("state", singletonMap("equal", null))
+        );
+    }
+
+    static Stream<Map<String, Object>> jobProvider() {
+        return Stream.of(
+                //Numeric mapper
+                singletonMap("priority", null),
+                singletonMap("priority", emptyMap()),
+                singletonMap("priority", singletonMap("equal", null)),
+                singletonMap("priority", singletonMap("between", null)),
+                singletonMap("priority", singletonMap("between", emptyMap())),
+                //Id mapper
+                singletonMap("id", null),
+                singletonMap("id", emptyMap()),
+                singletonMap("id", singletonMap("equal", null)),
+                singletonMap("id", singletonMap("in", emptyList()))
+        );
+    }
+
     @BeforeEach
     public void setup() {
         manager.setup();
         processInstanceParser = GraphQLQueryParserRegistry.get().getParser("ProcessInstanceArgument");
+        jobParser = GraphQLQueryParserRegistry.get().getParser("JobArgument");
     }
 
     @Test
@@ -153,5 +200,19 @@ public class GraphQLQueryMapperTest {
                 containsAll("roles", asList("kogito", "admin")),
                 containsAny("roles", asList("admin", "kogito"))
         );
+    }
+
+    @ParameterizedTest
+    @MethodSource("processInstanceProvider")
+    void testProcessInstanceNullQuery(Map<String, Object> where) {
+        List<AttributeFilter<?>> filters = processInstanceParser.apply(where);
+        assertThat(filters).isEmpty();
+    }
+
+    @ParameterizedTest
+    @MethodSource("jobProvider")
+    void testJobNullQuery(Map<String, Object> where) {
+        List<AttributeFilter<?>> filters = jobParser.apply(where);
+        assertThat(filters).isEmpty();
     }
 }

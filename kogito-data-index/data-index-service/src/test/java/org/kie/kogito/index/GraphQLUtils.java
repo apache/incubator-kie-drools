@@ -122,6 +122,10 @@ public class GraphQLUtils {
         return getProcessInstanceQuery("ProcessInstanceByIdAndMilestoneStatus", id, status);
     }
 
+    public static String getProcessInstanceByBusinessKey(String businessKeys) {
+        return getProcessInstanceQuery("ProcessInstanceByBusinessKey", businessKeys);
+    }
+
     public static String getUserTaskInstanceById(String id) {
         return getUserTaskInstanceQuery("UserTaskInstanceById", id);
     }

@@ -19,6 +19,7 @@ package org.kie.kogito.index.graphql.query;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -37,7 +38,11 @@ public class GraphQLQueryParser implements Function<Object, List<AttributeFilter
 
     @Override
     public List<AttributeFilter<?>> apply(Object where) {
-        return where == null ? emptyList() : ((Map<String, Object>) where).entrySet().stream().filter(entry -> mapper.containsKey(entry.getKey())).flatMap(entry -> mapper.get(entry.getKey()).apply(entry.getValue())).collect(toList());
+        return where == null ? emptyList() : ((Map<String, Object>) where).entrySet().stream()
+                .filter(entry -> mapper.containsKey(entry.getKey()) && entry.getValue() != null)
+                .flatMap(entry -> mapper.get(entry.getKey()).apply(entry.getValue()))
+                .filter(Objects::nonNull)
+                .collect(toList());
     }
 
     @Override

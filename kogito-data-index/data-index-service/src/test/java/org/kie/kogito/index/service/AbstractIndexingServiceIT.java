@@ -57,6 +57,7 @@ import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.kie.kogito.index.GraphQLUtils.getDealsByTaskId;
 import static org.kie.kogito.index.GraphQLUtils.getJobById;
+import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceByBusinessKey;
 import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceById;
 import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceByIdAndAddon;
 import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceByIdAndErrorNode;
@@ -653,6 +654,7 @@ public abstract class AbstractIndexingServiceIT {
         validateProcessInstance(getProcessInstanceByIdAndAddon(processInstanceId, "process-management"), startEvent);
         validateProcessInstance(getProcessInstanceByIdAndMilestoneName(processInstanceId, "SimpleMilestone"), startEvent);
         validateProcessInstance(getProcessInstanceByIdAndMilestoneStatus(processInstanceId, MilestoneStatus.AVAILABLE.name()), startEvent);
+        validateProcessInstance(getProcessInstanceByBusinessKey(startEvent.getData().getBusinessKey()), startEvent);
 
         given().contentType(ContentType.JSON)
                 .body(getTravelsByProcessInstanceId(processInstanceId))

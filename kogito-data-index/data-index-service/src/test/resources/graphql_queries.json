@@ -87,6 +87,12 @@
       "node": "%s"
     }
   },
+  "ProcessInstanceByBusinessKey": {
+    "query": "query ( $bk: [String!] ) { ProcessInstances(where: { businessKey : { in : $bk } }) { %s } }",
+    "variables": {
+      "bk": "%s"
+    }
+  },
   "UserTaskInstanceById": {
     "query": "query ( $id: String ) { UserTaskInstances( where: {  id: {  equal : $id } } ){ %s } }",
     "variables": {

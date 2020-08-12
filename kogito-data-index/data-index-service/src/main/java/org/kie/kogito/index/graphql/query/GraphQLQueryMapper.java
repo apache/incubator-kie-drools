@@ -54,6 +54,14 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GraphQLQueryMapper.class);
 
+    private static AttributeFilter filterValueList(Object value, Function<List, AttributeFilter> filter) {
+        return (value instanceof List && ((List) value).isEmpty() == false) ? filter.apply((List) value) : null;
+    }
+
+    private static AttributeFilter filterValueMap(Object value, Function<Map<String, Object>, AttributeFilter> filter) {
+        return (value instanceof Map && ((Map) value).isEmpty() == false) ? filter.apply((Map) value) : null;
+    }
+
     @Override
     public GraphQLQueryParser apply(GraphQLInputObjectType type) {
         GraphQLQueryParser parser = new GraphQLQueryParser();
@@ -137,7 +145,7 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
     }
 
     private Function<Object, Stream<AttributeFilter<?>>> mapSubEntityArgument(String joining, GraphQLQueryParser parser) {
-        return argument -> parser.apply((Map<String, Object>) argument).stream().map(f -> {
+        return argument -> parser.apply(argument).stream().map(f -> {
             f.setAttribute(joining + "." + f.getAttribute());
             return f;
         });
@@ -147,9 +155,12 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
         return argument ->
                 ((Map<String, Object>) argument).entrySet().stream().map(entry -> {
                     FilterCondition condition = FilterCondition.fromLabel(entry.getKey());
+                    if (entry.getValue() == null) {
+                        return null;
+                    }
                     switch (condition) {
                         case IN:
-                            return in(attribute, (List) entry.getValue());
+                            return filterValueList(entry.getValue(), value -> in(attribute, value));
                         case EQUAL:
                             return equalTo(attribute, entry.getValue().toString());
                         case IS_NULL:
@@ -161,28 +172,33 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
     }
 
     private Function<Object, Stream<AttributeFilter<?>>> mapStringArgument(String attribute) {
-        return argument ->
-                ((Map<String, Object>) argument).entrySet().stream().map(entry -> {
-                    FilterCondition condition = FilterCondition.fromLabel(entry.getKey());
-                    switch (condition) {
-                        case IN:
-                            return in(attribute, (List) entry.getValue());
-                        case LIKE:
-                            return like(attribute, entry.getValue().toString());
-                        case IS_NULL:
-                            return Boolean.TRUE.equals(entry.getValue()) ? isNull(attribute) : notNull(attribute);
-                        case EQUAL:
-                            return equalTo(attribute, entry.getValue().toString());
-                        default:
-                            return null;
-                    }
-                });
+        return argument -> ((Map<String, Object>) argument).entrySet().stream().map(entry -> {
+            FilterCondition condition = FilterCondition.fromLabel(entry.getKey());
+            if (entry.getValue() == null) {
+                return null;
+            }
+            switch (condition) {
+                case IN:
+                    return filterValueList(entry.getValue(), value -> in(attribute, value));
+                case LIKE:
+                    return like(attribute, entry.getValue().toString());
+                case IS_NULL:
+                    return Boolean.TRUE.equals(entry.getValue()) ? isNull(attribute) : notNull(attribute);
+                case EQUAL:
+                    return equalTo(attribute, entry.getValue().toString());
+                default:
+                    return null;
+            }
+        });
     }
 
     private Function<Object, Stream<AttributeFilter<?>>> mapDateArgument(String attribute) {
         return argument ->
                 ((Map<String, Object>) argument).entrySet().stream().map(entry -> {
                     FilterCondition condition = FilterCondition.fromLabel(entry.getKey());
+                    if (entry.getValue() == null) {
+                        return null;
+                    }
                     switch (condition) {
                         case IS_NULL:
                             return Boolean.TRUE.equals(entry.getValue()) ? isNull(attribute) : notNull(attribute);
@@ -197,8 +213,7 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
                         case LTE:
                             return lessThanEqual(attribute, entry.getValue());
                         case BETWEEN:
-                            Map<String, Object> value = (Map<String, Object>) entry.getValue();
-                            return between(attribute, value.get("from"), value.get("to"));
+                            return filterValueMap(entry.getValue(), value -> between(attribute, value.get("from"), value.get("to")));
                         default:
                             return null;
                     }
@@ -209,13 +224,16 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
         return argument ->
                 ((Map<String, Object>) argument).entrySet().stream().map(entry -> {
                     FilterCondition condition = FilterCondition.fromLabel(entry.getKey());
+                    if (entry.getValue() == null) {
+                        return null;
+                    }
                     switch (condition) {
                         case CONTAINS:
                             return contains(attribute, entry.getValue().toString());
                         case CONTAINS_ALL:
-                            return containsAll(attribute, (List) entry.getValue());
+                            return filterValueList(entry.getValue(), value -> containsAll(attribute, value));
                         case CONTAINS_ANY:
-                            return containsAny(attribute, (List) entry.getValue());
+                            return filterValueList(entry.getValue(), value -> containsAny(attribute, value));
                         case IS_NULL:
                             return Boolean.TRUE.equals(entry.getValue()) ? isNull(attribute) : notNull(attribute);
                         default:
@@ -227,6 +245,9 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
     private Function<Object, Stream<AttributeFilter<?>>> mapBooleanArgument(String attribute) {
         return argument -> ((Map<String, Object>) argument).entrySet().stream().map(entry -> {
             FilterCondition condition = FilterCondition.fromLabel(entry.getKey());
+            if (entry.getValue() == null) {
+                return null;
+            }
             switch (condition) {
                 case IS_NULL:
                     return Boolean.TRUE.equals(entry.getValue()) ? isNull(attribute) : notNull(attribute);
@@ -241,9 +262,12 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
     private Function<Object, Stream<AttributeFilter<?>>> mapNumericArgument(String attribute) {
         return argument -> ((Map<String, Object>) argument).entrySet().stream().map(entry -> {
             FilterCondition condition = FilterCondition.fromLabel(entry.getKey());
+            if (entry.getValue() == null) {
+                return null;
+            }
             switch (condition) {
                 case IN:
-                    return in(attribute, (List) entry.getValue());
+                    return filterValueList(entry.getValue(), value -> in(attribute, value));
                 case IS_NULL:
                     return Boolean.TRUE.equals(entry.getValue()) ? isNull(attribute) : notNull(attribute);
                 case EQUAL:
@@ -257,8 +281,7 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
                 case LTE:
                     return lessThanEqual(attribute, entry.getValue());
                 case BETWEEN:
-                    Map<String, Object> value = (Map<String, Object>) entry.getValue();
-                    return between(attribute, value.get("from"), value.get("to"));
+                    return filterValueMap(entry.getValue(), value -> between(attribute, value.get("from"), value.get("to")));
                 default:
                     return null;
             }
@@ -268,9 +291,12 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
     private Function<Object, Stream<AttributeFilter<?>>> mapEnumArgument(String attribute) {
         return argument -> ((Map<String, Object>) argument).entrySet().stream().map(entry -> {
             FilterCondition condition = FilterCondition.fromLabel(entry.getKey());
+            if (entry.getValue() == null) {
+                return null;
+            }
             switch (condition) {
                 case IN:
-                    return in(attribute, (List) entry.getValue());
+                    return filterValueList(entry.getValue(), value -> in(attribute, value));
                 case EQUAL:
                     return equalTo(attribute, entry.getValue());
                 default:
