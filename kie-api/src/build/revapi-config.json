@@ -32,7 +32,17 @@
                   "methodName": "getProcessType",
                   "elementKind": "method",
                   "justification":"https://issues.redhat.com/browse/JBPM-9195"
+                },
+                {
+                  "code": "java.method.addedToInterface",
+                  "new": "method java.util.Map<java.lang.String, java.lang.Object> org.kie.api.task.TaskEvent::getMetadata()",
+                  "package": "org.kie.api.task",
+                  "classSimpleName": "TaskEvent",
+                  "methodName": "getMetadata",
+                  "elementKind": "method",
+                  "justification": "required metadata in the event for passing data among listeners"
                 }
+
             ]
         }
     }
