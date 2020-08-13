@@ -22,8 +22,6 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.HasSourcesMap;
 
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
-
 /**
  * KIE representation of PMML model that use <b>Drools</b> for implementation
  */

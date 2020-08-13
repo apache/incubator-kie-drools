@@ -17,9 +17,8 @@ package org.kie.pmml.models.regression.evaluator;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+
 import org.kie.pmml.models.regression.model.KiePMMLRegressionClassificationTable;
 
 public class KiePMMLRegressionTableClassification1 extends KiePMMLRegressionClassificationTable {

@@ -40,10 +40,8 @@ public enum MULTIPLE_MODEL_METHOD {
     WEIGHTED_MAJORITY_VOTE("weightedMajorityVote", inputData -> {
         throw new KieEnumException("WEIGHTED_MAJORITY_VOTE not implemented, yet");
     }),
-    AVERAGE("average", inputData -> {
-        return doubleStream(inputData.values().stream(), "AVERAGE")
-                .average().orElseThrow(() -> new KieEnumException("Failed to get AVERAGE"));
-    }),
+    AVERAGE("average", inputData -> doubleStream(inputData.values().stream(), "AVERAGE")
+                .average().orElseThrow(() -> new KieEnumException("Failed to get AVERAGE"))),
     WEIGHTED_AVERAGE("weightedAverage", inputData -> {
         AtomicReference<Double> weightedSum = new AtomicReference<>(0.0);
         AtomicReference<Double> weights = new AtomicReference<>(0.0);
@@ -87,16 +85,11 @@ public enum MULTIPLE_MODEL_METHOD {
         }
         throw new KieEnumException("Failed to get WEIGHTED_MEDIAN");
     }),
-    MAX("max", inputData -> {
-        return doubleStream(inputData.values().stream(), "MAX").max().orElseThrow(() -> new KieEnumException("Failed to get MAX"));
-    }),
-    SUM("sum", inputData -> {
-        return doubleStream(inputData.values().stream(), "SUM").sum();
-    }),
-    WEIGHTED_SUM("x-weightedSum", inputData -> {
-        return valueWeightStream(inputData.values().stream(), "WEIGHTED_SUM")
-                .mapToDouble(KiePMMLValueWeight::weightedValue).sum();
-    }),
+    MAX("max", inputData -> doubleStream(inputData.values().stream(), "MAX").max()
+            .orElseThrow(() -> new KieEnumException("Failed to get MAX"))),
+    SUM("sum", inputData -> doubleStream(inputData.values().stream(), "SUM").sum()),
+    WEIGHTED_SUM("x-weightedSum", inputData ->  valueWeightStream(inputData.values().stream(), "WEIGHTED_SUM")
+                .mapToDouble(KiePMMLValueWeight::weightedValue).sum()),
     SELECT_FIRST("selectFirst", inputData -> {
         if (inputData.entrySet().iterator().hasNext()) {
             Object toReturn = inputData.entrySet().iterator().next().getValue().getValue();

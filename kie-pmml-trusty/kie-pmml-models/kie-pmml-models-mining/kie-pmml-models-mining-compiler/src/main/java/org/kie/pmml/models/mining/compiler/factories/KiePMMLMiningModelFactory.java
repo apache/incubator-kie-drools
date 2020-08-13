@@ -18,22 +18,15 @@ package org.kie.pmml.models.mining.compiler.factories;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
@@ -45,21 +38,22 @@ import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
-import org.kie.pmml.commons.model.enums.RESULT_FEATURE;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.getOutputFields;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
-import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
+import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.addOutputFieldsPopulation;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.addTransformationsInClassOrInterfaceDeclaration;
+import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentationFactory.getSegmentation;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentationFactory.getSegmentationSourcesMap;
@@ -120,7 +114,7 @@ public class KiePMMLMiningModelFactory {
         String modelName = model.getModelName();
         String targetFieldName = getTargetFieldName(dataDictionary, model).orElse(null);
         List<KiePMMLOutputField> outputFields = getOutputFields(model);
-        final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing default constructor in ClassOrInterfaceDeclaration %s ", modelTemplate.getName())));
+        final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         setConstructor(className,
                        constructorDeclaration,
                        targetFieldName,
@@ -139,15 +133,8 @@ public class KiePMMLMiningModelFactory {
                                final MINING_FUNCTION miningFunction,
                                final String modelName,
                                final String segmentationClass) {
-        constructorDeclaration.setName(generatedClassName);
+        setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, modelName);
         final BlockStmt body = constructorDeclaration.getBody();
-        body.getStatements().iterator().forEachRemaining(statement -> {
-            if (statement instanceof ExplicitConstructorInvocationStmt) {
-                ExplicitConstructorInvocationStmt superStatement = (ExplicitConstructorInvocationStmt) statement;
-                NameExpr modelNameExpr = (NameExpr) superStatement.getArgument(0);
-                modelNameExpr.setName(String.format("\"%s\"", modelName));
-            }
-        });
         final List<AssignExpr> assignExprs = body.findAll(AssignExpr.class);
         assignExprs.forEach(assignExpr -> {
             final String assignExprName = assignExpr.getTarget().asNameExpr().getNameAsString();
@@ -172,38 +159,5 @@ public class KiePMMLMiningModelFactory {
             }
         });
     }
-
-    /**
-     * Populate the <b>outputFields</b> <code>List&lt;KiePMMLOutputField&gt;</code>
-     * @param body
-     * @param outputFields
-     */
-    static void addOutputFieldsPopulation(final BlockStmt body, final List<KiePMMLOutputField> outputFields) {
-        for (KiePMMLOutputField outputField : outputFields) {
-            NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(outputField.getName()), new NameExpr("Collections.emptyList()"));
-            MethodCallExpr builder = new MethodCallExpr(new NameExpr("KiePMMLOutputField"), "builder", expressions);
-            if (outputField.getRank() != null) {
-                expressions = NodeList.nodeList(new IntegerLiteralExpr(outputField.getRank()));
-                builder = new MethodCallExpr(builder, "withRank", expressions);
-            }
-            if (outputField.getValue() != null) {
-                expressions = NodeList.nodeList(new StringLiteralExpr(outputField.getValue().toString()));
-                builder = new MethodCallExpr(builder, "withValue", expressions);
-            }
-            String targetField = outputField.getTargetField().orElse(null);
-            if (targetField != null) {
-                expressions = NodeList.nodeList(new StringLiteralExpr(targetField));
-                builder = new MethodCallExpr(builder, "withTargetField", expressions);
-            }
-            if (outputField.getResultFeature() != null) {
-                expressions = NodeList.nodeList(new NameExpr(RESULT_FEATURE.class.getName() + "." + outputField.getResultFeature().toString()));
-                builder = new MethodCallExpr(builder, "withResultFeature", expressions);
-            }
-            Expression newOutputField = new MethodCallExpr(builder, "build");
-            expressions = NodeList.nodeList(newOutputField);
-            body.addStatement(new MethodCallExpr(new NameExpr("outputFields"), "add", expressions));
-        }
-    }
-
 
 }

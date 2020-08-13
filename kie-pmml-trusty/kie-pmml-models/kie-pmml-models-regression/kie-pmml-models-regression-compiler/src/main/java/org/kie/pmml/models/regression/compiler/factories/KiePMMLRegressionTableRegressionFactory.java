@@ -54,6 +54,7 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.groupingBy;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
+import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulation;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
@@ -96,7 +97,7 @@ public class KiePMMLRegressionTableRegressionFactory {
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName, KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE_JAVA, KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE);
         ClassOrInterfaceDeclaration tableTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
-        final ConstructorDeclaration constructorDeclaration = tableTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing default constructor in ClassOrInterfaceDeclaration %s ", tableTemplate.getName())));
+        final ConstructorDeclaration constructorDeclaration = tableTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, tableTemplate.getName())));
         setConstructor(regressionTable, constructorDeclaration, tableTemplate.getName(), targetField);
         final Map<String, MethodDeclaration> numericPredictorsMap = addNumericPredictors(regressionTable.getNumericPredictors(), tableTemplate);
         final Map<String, MethodDeclaration> categoricalPredictorsMap = addCategoricalPredictors(regressionTable.getCategoricalPredictors(), tableTemplate);

@@ -16,12 +16,9 @@
 
 package org.kie.pmml.models.drools.utils;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Collectors;
@@ -35,7 +32,6 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
@@ -56,10 +52,8 @@ import org.dmg.pmml.OpType;
 import org.dmg.pmml.tree.TreeModel;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
-import org.kie.pmml.commons.model.enums.RESULT_FEATURE;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.junit.Assert.assertEquals;
@@ -131,28 +125,6 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
     }
 
     @Test
-    public void addOutputFieldsPopulation() {
-        BlockStmt blockStmt = new BlockStmt();
-        List<KiePMMLOutputField> outputFields = IntStream.range(0, 3)
-                .mapToObj(index -> KiePMMLOutputField.builder("OUTPUTFIELD-" + index, Collections.emptyList())
-                        .withRank(new Random().nextInt(3))
-                        .withValue("VALUE-" + index)
-                        .withTargetField("TARGETFIELD-" + index)
-                        .build())
-                .collect(Collectors.toList());
-        KiePMMLDroolsModelFactoryUtils.addOutputFieldsPopulation(blockStmt, outputFields);
-        List<MethodCallExpr> retrieved = getMethodCallExprList(blockStmt, outputFields.size(), "outputFields", "add");
-        for (KiePMMLOutputField outputField : outputFields) {
-            assertTrue(retrieved.stream()
-                               .filter(methodCallExpr -> methodCallExpr.getArguments().size() == 1)
-                               .map(methodCallExpr -> methodCallExpr.getArgument(0))
-                               .filter(Expression::isMethodCallExpr)
-                               .map(expressionArgument -> (MethodCallExpr) expressionArgument)
-                               .anyMatch(methodCallExpr -> evaluateOutputFieldPopulation(methodCallExpr, outputField)));
-        }
-    }
-
-    @Test
     public void addFieldTypeMapPopulation() {
         BlockStmt blockStmt = new BlockStmt();
         Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
@@ -163,28 +135,6 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         });
         KiePMMLDroolsModelFactoryUtils.addFieldTypeMapPopulation(blockStmt, fieldTypeMap);
         commonEvaluateFieldTypeMap(blockStmt, fieldTypeMap, fieldTypeMap.size());
-    }
-
-    private boolean evaluateOutputFieldPopulation(MethodCallExpr methodCallExpr, KiePMMLOutputField outputField) {
-        boolean toReturn = commonEvaluateMethodCallExpr(methodCallExpr, "build", new NodeList<>(), MethodCallExpr.class);
-        MethodCallExpr resultFeatureScopeExpr = (MethodCallExpr) methodCallExpr.getScope().get();
-        NodeList<Expression> expectedArguments = NodeList.nodeList(new NameExpr(RESULT_FEATURE.class.getName() + "." + outputField.getResultFeature().toString()));
-        toReturn &= commonEvaluateMethodCallExpr(resultFeatureScopeExpr, "withResultFeature", expectedArguments, MethodCallExpr.class);
-        MethodCallExpr targetFieldScopeExpr = (MethodCallExpr) resultFeatureScopeExpr.getScope().get();
-        expectedArguments = NodeList.nodeList(new StringLiteralExpr(outputField.getTargetField().get()));
-        toReturn &= commonEvaluateMethodCallExpr(targetFieldScopeExpr, "withTargetField", expectedArguments, MethodCallExpr.class);
-        MethodCallExpr valueScopeExpr = (MethodCallExpr) targetFieldScopeExpr.getScope().get();
-        expectedArguments = NodeList.nodeList(new StringLiteralExpr(outputField.getValue().toString()));
-        toReturn &= commonEvaluateMethodCallExpr(valueScopeExpr, "withValue", expectedArguments, MethodCallExpr.class);
-        MethodCallExpr rankScopeExpr = (MethodCallExpr) valueScopeExpr.getScope().get();
-        expectedArguments = NodeList.nodeList(new IntegerLiteralExpr(outputField.getRank()));
-        toReturn &= commonEvaluateMethodCallExpr(rankScopeExpr, "withRank", expectedArguments, MethodCallExpr.class);
-        MethodCallExpr builderScopeExpr = (MethodCallExpr) rankScopeExpr.getScope().get();
-        expectedArguments = NodeList.nodeList(new StringLiteralExpr(outputField.getName()), new NameExpr("Collections.emptyList()"));
-        toReturn &= commonEvaluateMethodCallExpr(builderScopeExpr, "builder", expectedArguments, NameExpr.class);
-        toReturn &= builderScopeExpr.getName().equals(new SimpleName("builder"));
-        toReturn &= builderScopeExpr.getScope().get().equals(new NameExpr("KiePMMLOutputField"));
-        return toReturn;
     }
 
     private void commonEvaluateAssignExpr(BlockStmt blockStmt, Map<String, Expression> assignExpressionMap) {
@@ -215,18 +165,6 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
                 ((StringLiteralExpr) ((ObjectCreationExpr) secondArgument).getArgument(0)).getValue().equals(entry.getValue().getOriginalType()) &&
                 ((ObjectCreationExpr) secondArgument).getArgument(1).isStringLiteralExpr() &&
                 ((StringLiteralExpr) ((ObjectCreationExpr) secondArgument).getArgument(1)).getValue().equals(entry.getValue().getGeneratedType());
-        return toReturn;
-    }
-
-    private boolean commonEvaluateMethodCallExpr(MethodCallExpr toEvaluate, String name, NodeList<Expression> expectedArguments, Class<? extends Expression> expectedScopeType) {
-        boolean toReturn = Objects.equals(new SimpleName(name), toEvaluate.getName());
-        toReturn &= expectedArguments.size() == toEvaluate.getArguments().size();
-        for (int i = 0; i < expectedArguments.size(); i++) {
-            toReturn &= expectedArguments.get(i).equals(toEvaluate.getArgument(i));
-        }
-        if (expectedScopeType != null) {
-            toReturn &= toEvaluate.getScope().isPresent() && toEvaluate.getScope().get().getClass().equals(expectedScopeType);
-        }
         return toReturn;
     }
 

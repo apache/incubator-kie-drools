@@ -18,16 +18,9 @@ package org.kie.pmml.models.mining.model.segmentation;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.enums.OPERATOR;
-import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
-import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
 import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
 
 import static org.junit.Assert.assertEquals;

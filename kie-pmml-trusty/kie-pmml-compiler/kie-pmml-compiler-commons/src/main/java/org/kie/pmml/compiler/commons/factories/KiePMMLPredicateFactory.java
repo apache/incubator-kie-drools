@@ -15,9 +15,6 @@
  */
 package org.kie.pmml.compiler.commons.factories;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +36,6 @@ import org.dmg.pmml.False;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.True;
-import org.kie.pmml.commons.exceptions.KieDataFieldException;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR;
@@ -54,9 +50,11 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
+import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
 
 public class KiePMMLPredicateFactory {
 
@@ -72,7 +70,7 @@ public class KiePMMLPredicateFactory {
     private KiePMMLPredicateFactory() {
     }
 
-    public static List<KiePMMLPredicate> getPredicates(List<Predicate> predicates, DataDictionary dataDictionary) throws KiePMMLException {
+    public static List<KiePMMLPredicate> getPredicates(List<Predicate> predicates, DataDictionary dataDictionary) {
         logger.info("getPredicates {}", predicates);
         return predicates.stream().map(predicate -> getPredicate(predicate, dataDictionary)).collect(Collectors.toList());
     }
@@ -89,9 +87,9 @@ public class KiePMMLPredicateFactory {
         } else if (predicate instanceof CompoundPredicate) {
             return getKiePMMLCompoundPredicate((CompoundPredicate) predicate, dataDictionary);
         } else if (predicate instanceof True) {
-            return getKiePMMLTruePredicate((True) predicate);
+            return getKiePMMLTruePredicate();
         } else if (predicate instanceof False) {
-            return getKiePMMLFalsePredicate((False) predicate);
+            return getKiePMMLFalsePredicate();
         } else {
             throw new KiePMMLException("Predicate of type " + predicate.getClass().getName() + " not managed, yet");
         }
@@ -109,12 +107,12 @@ public class KiePMMLPredicateFactory {
                 .build();
     }
 
-    public static KiePMMLTruePredicate getKiePMMLTruePredicate(True predicate) throws KiePMMLException {
+    public static KiePMMLTruePredicate getKiePMMLTruePredicate() {
         return KiePMMLTruePredicate.builder(Collections.emptyList())
                 .build();
     }
 
-    public static KiePMMLFalsePredicate getKiePMMLFalsePredicate(False predicate) throws KiePMMLException {
+    public static KiePMMLFalsePredicate getKiePMMLFalsePredicate() {
         return KiePMMLFalsePredicate.builder(Collections.emptyList())
                 .build();
     }
@@ -141,7 +139,7 @@ public class KiePMMLPredicateFactory {
         ClassOrInterfaceDeclaration predicateTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         final ConstructorDeclaration constructorDeclaration = predicateTemplate.getDefaultConstructor()
-                .orElseThrow(() -> new KiePMMLInternalException(String.format("Missing default constructor in ClassOrInterfaceDeclaration %s ", predicateTemplate.getName())));
+                .orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, predicateTemplate.getName())));
         setSimplePredicateConstructor(className,
                                       kiePMMLSimplePredicate.getName(),
                                       constructorDeclaration,
@@ -157,7 +155,7 @@ public class KiePMMLPredicateFactory {
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         final ConstructorDeclaration constructorDeclaration = predicateTemplate.getDefaultConstructor()
                 .orElseThrow(() -> new KiePMMLInternalException(String.format(
-                        "Missing default constructor in ClassOrInterfaceDeclaration %s ", predicateTemplate.getName())));
+                        MISSING_DEFAULT_CONSTRUCTOR, predicateTemplate.getName())));
         setTrueFalsePredicateConstructor(className,
                                          kiePMMLTruePredicate.getName(),
                                       constructorDeclaration);
@@ -171,7 +169,7 @@ public class KiePMMLPredicateFactory {
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         final ConstructorDeclaration constructorDeclaration = predicateTemplate.getDefaultConstructor()
                 .orElseThrow(() -> new KiePMMLInternalException(String.format(
-                        "Missing default constructor in ClassOrInterfaceDeclaration %s ", predicateTemplate.getName())));
+                        MISSING_DEFAULT_CONSTRUCTOR, predicateTemplate.getName())));
         setTrueFalsePredicateConstructor(className,
                                          kiePMMLFalsePredicate.getName(),
                                          constructorDeclaration);
@@ -183,14 +181,12 @@ public class KiePMMLPredicateFactory {
                                               final ConstructorDeclaration constructorDeclaration,
                                               final OPERATOR operator,
                                               final Object value) {
-        constructorDeclaration.setName(generatedClassName);
+        setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, predicateName);
         final BlockStmt body = constructorDeclaration.getBody();
         body.getStatements().iterator().forEachRemaining(statement -> {
             if (statement instanceof ExplicitConstructorInvocationStmt) {
                 ExplicitConstructorInvocationStmt superStatement = (ExplicitConstructorInvocationStmt) statement;
-                NameExpr nameExpr = (NameExpr) superStatement.getArgument(0);
-                nameExpr.setName(String.format("\"%s\"", predicateName));
-                nameExpr = (NameExpr) superStatement.getArgument(2);
+                NameExpr nameExpr = (NameExpr) superStatement.getArgument(2);
                 nameExpr.setName(operator.getClass().getSimpleName() + "." + operator.name());
             }
         });
@@ -205,59 +201,11 @@ public class KiePMMLPredicateFactory {
     static void setTrueFalsePredicateConstructor(final String generatedClassName,
                                               final String predicateName,
                                               final ConstructorDeclaration constructorDeclaration) {
-        constructorDeclaration.setName(generatedClassName);
-        final BlockStmt body = constructorDeclaration.getBody();
-        body.getStatements().iterator().forEachRemaining(statement -> {
-            if (statement instanceof ExplicitConstructorInvocationStmt) {
-                ExplicitConstructorInvocationStmt superStatement = (ExplicitConstructorInvocationStmt) statement;
-                NameExpr nameExpr = (NameExpr) superStatement.getArgument(0);
-                nameExpr.setName(String.format("\"%s\"", predicateName));
-            }
-        });
+        setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, predicateName);
     }
 
-    private static Object getActualValue(Object rawValue, DataType dataType) throws KiePMMLException {
-        DATA_TYPE data_type = DATA_TYPE.byName(dataType.value());
-        final Class<?> mappedClass = data_type.getMappedClass();
-        if (mappedClass.isAssignableFrom(rawValue.getClass())) {
-            // No cast/transformation needed
-            return rawValue;
-        }
-        if (rawValue instanceof String) {
-            String stringValue = (String) rawValue;
-            try {
-                switch (data_type) {
-                    case STRING:
-                        return stringValue;
-                    case INTEGER:
-                        return Integer.parseInt(stringValue);
-                    case FLOAT:
-                        return Float.parseFloat(stringValue);
-                    case DOUBLE:
-                        return Double.parseDouble(stringValue);
-                    case BOOLEAN:
-                        return Boolean.parseBoolean(stringValue);
-                    case DATE:
-                        return LocalDate.parse(stringValue);
-                    case TIME:
-                        return LocalTime.parse(stringValue);
-                    case DATE_TIME:
-                        return LocalDateTime.parse(stringValue);
-                    case DATE_DAYS_SINCE_0:
-                    case DATE_DAYS_SINCE_1960:
-                    case DATE_DAYS_SINCE_1970:
-                    case DATE_DAYS_SINCE_1980:
-                    case TIME_SECONDS:
-                    case DATE_TIME_SECONDS_SINCE_0:
-                    case DATE_TIME_SECONDS_SINCE_1960:
-                    case DATE_TIME_SECONDS_SINCE_1970:
-                    case DATE_TIME_SECONDS_SINCE_1980:
-                        return Long.parseLong(stringValue);
-                }
-            } catch (Exception e) {
-                throw new KieDataFieldException("Fail to convert " + rawValue + "[" + rawValue.getClass().getName() + "] to expected class " + mappedClass.getName(), e);
-            }
-        }
-        throw new KieDataFieldException("Unexpected " + rawValue + "[" + rawValue.getClass().getName() + "] to convert");
-    }
+    private static Object getActualValue(Object rawValue, DataType dataType) {
+        DATA_TYPE dataTypePmml = DATA_TYPE.byName(dataType.value());
+        return dataTypePmml.getActualValue(rawValue);
+   }
 }

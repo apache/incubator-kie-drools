@@ -18,12 +18,10 @@ package org.kie.pmml.models.mining.model;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-3/MultipleModels.html>MiningModel</a>

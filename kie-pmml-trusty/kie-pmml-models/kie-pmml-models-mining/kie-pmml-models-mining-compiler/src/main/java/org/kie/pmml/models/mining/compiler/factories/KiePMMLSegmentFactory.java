@@ -39,7 +39,6 @@ import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
@@ -47,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
@@ -55,8 +55,8 @@ import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.ge
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModel;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelFromPlugin;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
-import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
+import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
 
 public class KiePMMLSegmentFactory {
 
@@ -135,7 +135,7 @@ public class KiePMMLSegmentFactory {
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName, KIE_PMML_SEGMENT_TEMPLATE_JAVA, KIE_PMML_SEGMENT_TEMPLATE);
         ClassOrInterfaceDeclaration segmentTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
-        final ConstructorDeclaration constructorDeclaration = segmentTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing default constructor in ClassOrInterfaceDeclaration %s ", segmentTemplate.getName())));
+        final ConstructorDeclaration constructorDeclaration = segmentTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, segmentTemplate.getName())));
         KiePMMLPredicate predicate = getPredicate(segment.getPredicate(), dataDictionary);
         toReturn.putAll(getPredicateSourcesMap(predicate, packageName));
         String predicateClassName = packageName + "." + predicate.getName();
@@ -150,14 +150,12 @@ public class KiePMMLSegmentFactory {
                                final String predicateClassName,
                                final String kiePMMLModelClass,
                                final double weight) {
-        constructorDeclaration.setName(generatedClassName);
+        setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, segmentName);
         final BlockStmt body = constructorDeclaration.getBody();
         body.getStatements().iterator().forEachRemaining(statement -> {
             if (statement instanceof ExplicitConstructorInvocationStmt) {
                 ExplicitConstructorInvocationStmt superStatement = (ExplicitConstructorInvocationStmt) statement;
-                NameExpr nameExprs = (NameExpr) superStatement.getArgument(0);
-                nameExprs.setName(String.format("\"%s\"", segmentName));
-                nameExprs = (NameExpr) superStatement.getArgument(2);
+                NameExpr nameExprs = (NameExpr) superStatement.getArgument(2);
                 ClassOrInterfaceType classOrInterfaceType = parseClassOrInterfaceType(predicateClassName);
                 ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
                 objectCreationExpr.setType(classOrInterfaceType);

@@ -28,8 +28,6 @@ import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 
-import static org.junit.Assert.assertNotNull;
-
 public abstract class AbstractKiePMMLMiningModelTest {
 
     public static KiePMMLSegmentation getKiePMMLSegmentation(String segmentationName) {

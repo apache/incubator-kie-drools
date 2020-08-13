@@ -106,9 +106,9 @@ public class KiePMMLScorecardModelFactoryTest {
     public void setSuperInvocation() {
         ConstructorDeclaration constructorDeclaration = classOrInterfaceDeclaration.getDefaultConstructor().get();
         SimpleName simpleName = new SimpleName("SIMPLENAME");
-        KiePMMLScorecardModelFactory.setSuperInvocation(scorecardModel,
-                                                        constructorDeclaration,
-                                                        simpleName);
+        KiePMMLScorecardModelFactory.setConstructor(scorecardModel,
+                                                    constructorDeclaration,
+                                                    simpleName);
         String expected = String.format("public %s() {\n" +
                                                 "    super(\"%s\", Collections.emptyList());\n" +
                                                 "    targetField = targetField;\n" +

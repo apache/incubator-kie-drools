@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+
 import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
 
 public class KiePMMLRegressionTableRegression1 extends KiePMMLRegressionTable {

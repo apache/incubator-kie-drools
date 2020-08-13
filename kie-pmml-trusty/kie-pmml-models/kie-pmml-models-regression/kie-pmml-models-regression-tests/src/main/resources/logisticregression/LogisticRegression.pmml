@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<PMML xmlns="http://www.dmg.org/PMML-4_4" xmlns:data="http://jpmml.org/jpmml-model/InlineTable" version="4.4">
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
 	<Header>
 		<Application name="JPMML-SkLearn" version="1.6.1"/>
 		<Timestamp>2020-06-14T13:10:31Z</Timestamp>

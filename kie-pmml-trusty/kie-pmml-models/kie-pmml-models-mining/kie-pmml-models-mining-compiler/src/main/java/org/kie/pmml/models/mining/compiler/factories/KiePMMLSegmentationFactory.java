@@ -29,7 +29,6 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
@@ -40,20 +39,20 @@ import org.dmg.pmml.mining.Segmentation;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
-import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
+import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.getSegments;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.getSegmentsSourcesMap;
 
@@ -97,7 +96,7 @@ public class KiePMMLSegmentationFactory {
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName, KIE_PMML_SEGMENTATION_TEMPLATE_JAVA, KIE_PMML_SEGMENTATION_TEMPLATE);
         ClassOrInterfaceDeclaration segmentationTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
-        final ConstructorDeclaration constructorDeclaration = segmentationTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing default constructor in ClassOrInterfaceDeclaration %s ", segmentationName)));
+        final ConstructorDeclaration constructorDeclaration = segmentationTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, segmentationName)));
         Set<String> segmentsClasses = segmentation.getSegments().stream()
                 .map(segment ->  getSanitizedPackageName(packageName + "." + segment.getId()) + "." + getSanitizedClassName(segment.getId()))
                 .collect(Collectors.toSet());
@@ -119,14 +118,12 @@ public class KiePMMLSegmentationFactory {
                                final ConstructorDeclaration constructorDeclaration,
                                final MULTIPLE_MODEL_METHOD multipleModelMethod,
                                final Set<String> segmentsClasses) {
-        constructorDeclaration.setName(generatedClassName);
+        setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, segmentationName);
         final BlockStmt body = constructorDeclaration.getBody();
         body.getStatements().iterator().forEachRemaining(statement -> {
             if (statement instanceof ExplicitConstructorInvocationStmt) {
                 ExplicitConstructorInvocationStmt superStatement = (ExplicitConstructorInvocationStmt) statement;
-                NameExpr modelNameExpr = (NameExpr) superStatement.getArgument(0);
-                modelNameExpr.setName(String.format("\"%s\"", segmentationName));
-                modelNameExpr = (NameExpr) superStatement.getArgument(2);
+                NameExpr modelNameExpr = (NameExpr) superStatement.getArgument(2);
                 modelNameExpr.setName(multipleModelMethod.getClass().getName() + "." + multipleModelMethod.name());
             }
         });

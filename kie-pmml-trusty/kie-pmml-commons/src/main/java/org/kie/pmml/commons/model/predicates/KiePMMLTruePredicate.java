@@ -31,7 +31,7 @@ public class KiePMMLTruePredicate extends KiePMMLPredicate {
     private static final long serialVersionUID = -1996390505352151403L;
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLTruePredicate.class);
 
-    private final String name = "True";
+    private static final String TRUE = "True";
 
     protected KiePMMLTruePredicate(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
@@ -45,8 +45,10 @@ public class KiePMMLTruePredicate extends KiePMMLPredicate {
         return new Builder(extensions);
     }
 
+
+    @Override
     public String getName() {
-        return name;
+        return TRUE;
     }
 
     @Override

@@ -21,12 +21,10 @@ import java.util.Optional;
 import org.dmg.pmml.PMML;
 import org.junit.Test;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.compiler.commons.mocks.KiePMMLTestingModel;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModel;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelFromPlugin;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;

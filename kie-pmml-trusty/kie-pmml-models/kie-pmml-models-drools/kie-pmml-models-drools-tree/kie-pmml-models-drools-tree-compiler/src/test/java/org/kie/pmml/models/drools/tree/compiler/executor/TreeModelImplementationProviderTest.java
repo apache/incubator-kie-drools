@@ -16,25 +16,21 @@
 package org.kie.pmml.models.drools.tree.compiler.executor;
 
 import java.io.FileInputStream;
-import java.util.Map;
 
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
-import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModelWithSources;
+import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;
 import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
 import org.kie.test.util.filesystem.FileUtils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class TreeModelImplementationProviderTest {
 
@@ -54,12 +50,11 @@ public class TreeModelImplementationProviderTest {
         assertNotNull(kiePMMLModel);
     }
 
-    @Ignore
     @Test
     public void getKiePMMLModelFromPlugin() throws Exception {
         final PMML pmml = getPMML(SOURCE_1);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-        final KiePMMLTreeModel retrieved = PROVIDER.getKiePMMLModelFromPlugin("PACKAGE_NAME",
+        final KiePMMLDroolsModel retrieved = PROVIDER.getKiePMMLModelFromPlugin("PACKAGE_NAME",
                                                                                 pmml.getDataDictionary(),
                                                                                 pmml.getTransformationDictionary(),
                                                                                 (TreeModel) pmml.getModels().get(0),

@@ -16,6 +16,11 @@
 
 package org.kie.pmml.mining.tests;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,11 +28,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @RunWith(Parameterized.class)
 public class SegmentationClassificationSelectFirstTest extends AbstractPMMLMiningTest {

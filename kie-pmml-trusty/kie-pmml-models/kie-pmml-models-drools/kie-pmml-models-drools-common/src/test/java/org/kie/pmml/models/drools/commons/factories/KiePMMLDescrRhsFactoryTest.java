@@ -33,13 +33,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.DONE;
+import static org.kie.pmml.commons.model.enums.RESULT_FEATURE.PREDICTED_VALUE;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRhsFactory.ADD_PMML4_OUTPUT_FIELD;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRhsFactory.ADD_PMML4_RESULT_VARIABLE;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRhsFactory.FOCUS_AGENDA_GROUP;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRhsFactory.SET_PMML4_RESULT_CODE;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRhsFactory.UPDATE_STATUS_HOLDER_STATUS;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRulesFactory.BREAK_LABEL;
-import static org.kie.pmml.commons.model.enums.RESULT_FEATURE.PREDICTED_VALUE;
 
 public class KiePMMLDescrRhsFactoryTest {
 

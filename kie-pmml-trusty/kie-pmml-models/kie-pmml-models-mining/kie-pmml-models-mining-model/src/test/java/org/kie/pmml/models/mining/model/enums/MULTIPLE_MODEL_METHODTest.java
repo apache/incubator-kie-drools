@@ -34,7 +34,6 @@ import org.kie.pmml.commons.exceptions.KieEnumException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import org.kie.pmml.commons.model.tuples.KiePMMLValueWeight;
 
-import static java.util.Arrays.sort;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;

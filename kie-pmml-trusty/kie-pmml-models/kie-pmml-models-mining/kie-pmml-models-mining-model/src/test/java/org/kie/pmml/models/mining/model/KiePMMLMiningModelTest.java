@@ -23,7 +23,11 @@ import org.junit.Test;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.models.mining.model.AbstractKiePMMLMiningModelTest.getKiePMMLSegmentation;
 
 public class KiePMMLMiningModelTest {

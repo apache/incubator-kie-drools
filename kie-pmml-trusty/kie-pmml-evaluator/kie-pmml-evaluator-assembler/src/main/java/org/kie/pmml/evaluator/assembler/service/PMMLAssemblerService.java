@@ -24,7 +24,6 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;

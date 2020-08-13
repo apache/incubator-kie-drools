@@ -17,16 +17,11 @@
 package org.kie.pmml.models.mining.model.segmentation;
 
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.enums.OPERATOR;
 import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
-import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

@@ -52,7 +52,6 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.LAMBDA_PARAMETER_NAME;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.PARAMETER_NAME_TEMPLATE;
 
 public class CommonCodegenUtilsTest {
 

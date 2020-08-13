@@ -23,6 +23,7 @@ public class Constants {
     public static final String UNEXPECTED_NORMALIZATION_METHOD = "Unexpected Normalization Method %s";
     public static final String DONE = "DONE";
     public static final String MISSING_BODY_TEMPLATE = "Missing body in %s";
+    public static final String MISSING_DEFAULT_CONSTRUCTOR = "Missing default constructor in ClassOrInterfaceDeclaration %s ";
 
     private Constants() {
         // Avoid instantiation

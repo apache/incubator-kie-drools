@@ -19,7 +19,6 @@ import java.io.InputStream;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;

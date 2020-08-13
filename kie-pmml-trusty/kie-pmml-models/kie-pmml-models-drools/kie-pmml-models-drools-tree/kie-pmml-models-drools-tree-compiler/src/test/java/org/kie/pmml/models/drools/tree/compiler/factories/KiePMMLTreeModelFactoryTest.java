@@ -106,9 +106,9 @@ public class KiePMMLTreeModelFactoryTest {
     public void setSuperInvocation() {
         ConstructorDeclaration constructorDeclaration = classOrInterfaceDeclaration.getDefaultConstructor().get();
         SimpleName simpleName = new SimpleName("SIMPLENAME");
-        KiePMMLTreeModelFactory.setSuperInvocation(treeModel,
-                                                        constructorDeclaration,
-                                                        simpleName);
+        KiePMMLTreeModelFactory.setConstructor(treeModel,
+                                               constructorDeclaration,
+                                               simpleName);
         String expected = String.format("public %s() {\n" +
                                                 "    super(\"%s\", Collections.emptyList(), \"%s\");\n" +
                                                 "    targetField = targetField;\n" +

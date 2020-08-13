@@ -16,6 +16,8 @@
 
 package org.kie.pmml.mining.tests;
 
+import java.util.Map;
+
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.pmml.PMML4Result;
@@ -25,8 +27,6 @@ import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
-
-import java.util.Map;
 
 public class AbstractPMMLMiningTest {
 

@@ -21,7 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -29,7 +28,6 @@ import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.util.StringUtils;
 import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.KieRuntimeFactory;

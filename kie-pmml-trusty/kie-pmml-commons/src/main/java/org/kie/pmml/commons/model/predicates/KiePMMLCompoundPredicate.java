@@ -52,15 +52,14 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
 
     @Override
     public boolean evaluate(Map<String, Object> values) {
-        logger.info("{} valuate {}", this, values);
         Boolean toReturn = null;
         for (KiePMMLPredicate kiePMMLPredicate : kiePMMLPredicates) {
             toReturn = operatorFunction.apply(toReturn, kiePMMLPredicate.evaluate(values));
         }
-        logger.info("return {}", toReturn);
-        return toReturn != null ? toReturn : false;
+        return toReturn != null && toReturn;
     }
 
+    @Override
     public String getId() {
         return id;
     }

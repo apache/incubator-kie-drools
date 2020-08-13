@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.dmg.pmml.Array;
-import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
