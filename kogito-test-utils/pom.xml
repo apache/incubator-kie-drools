@@ -6,8 +6,9 @@
 
   <parent>
     <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-runtimes</artifactId>
+    <artifactId>kogito-build-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../kogito-build-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>kogito-test-utils</artifactId>

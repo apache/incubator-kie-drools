@@ -15,7 +15,7 @@
         <repository>
             <id>jenkins-releases</id>
             <name>Jenkins Releases</name>
-            <url>http://repo.jenkins-ci.org/releases</url>
+            <url>https://repo.jenkins-ci.org/releases</url>
         </repository>
     </repositories>
 

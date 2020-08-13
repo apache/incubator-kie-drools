@@ -6,8 +6,9 @@
 
   <parent>
     <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-runtimes</artifactId>
+    <artifactId>kogito-build-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../kogito-build-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>kogito-bom</artifactId>
@@ -51,6 +52,7 @@
         <version>${project.version}</version>
         <classifier>javadoc</classifier>
       </dependency>
+
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-services</artifactId>
@@ -68,6 +70,7 @@
         <version>${project.version}</version>
         <classifier>javadoc</classifier>
       </dependency>
+
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-timer</artifactId>
@@ -85,6 +88,7 @@
         <version>${project.version}</version>
         <classifier>javadoc</classifier>
       </dependency>
+
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-maven-plugin</artifactId>
