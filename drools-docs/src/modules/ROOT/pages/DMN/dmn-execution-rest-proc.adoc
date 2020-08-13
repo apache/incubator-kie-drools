@@ -5,7 +5,7 @@ Directly interacting with the REST endpoints of {KIE_SERVER} provides the most s
 
 For more information about the {KIE_SERVER} REST API, see
 ifdef::DM,PAM[]
-{URL_KIE_APIS}[_{KIE_APIS}_].
+{URL_DEPLOYING_AND_MANAGING_SERVICES}#assembly-kie-apis[_{KIE_APIS}_].
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 xref:kie-server-rest-api-con_kie-apis[].
@@ -14,7 +14,7 @@ endif::[]
 .Prerequisites
 * {KIE_SERVER} is installed and configured, including a known user name and credentials for a user with the `kie-server` role. For installation options, see
 ifdef::DM,PAM[]
-{URL_PLANNING_INSTALL}[_{PLANNING_INSTALL}_].
+{URL_INSTALLING_AND_CONFIGURING}#assembly-planning[_{PLANNING_INSTALL}_].
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 <<_installationandsetup>>.
@@ -29,7 +29,7 @@ mvn clean install -DgenerateDMNModel=yes
 
 For more information about project packaging and deployment and executable models, see
 ifdef::DM,PAM[]
-{URL_PACKAGING_DEPLOYING_PROJECT}[_{PACKAGING_DEPLOYING_PROJECT}_].
+{URL_DEPLOYING_AND_MANAGING_SERVICES}#assembly-packaging-deploying[_{PACKAGING_DEPLOYING_PROJECT}_].
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 <<_builddeployutilizeandrunsection>>.
@@ -52,7 +52,7 @@ Example base URL in local deployment:
 `\http://localhost:8080/kie-server/services/rest/`
 endif::[]
 
-ifeval::["{context}" == "decision-service-getting-started"]
+ifeval::["{context}" == "getting-started-decision-services"]
 Example base URL in local deployment for the traffic violations project:
 
 `\http://localhost:8080/kie-server/services/rest/server/containers/traffic-violation_1.0.0`
@@ -149,7 +149,7 @@ Sample JSON output:
 ----
 --
 endif::[]
-ifeval::["{context}" == "decision-service-getting-started"]
+ifeval::["{context}" == "getting-started-decision-services"]
 [source]
 ----
 curl -u wbadmin:wbadmin -H "accept: application/xml" -X GET "http://localhost:8080/kie-server/services/rest/server/containers/traffic-violation_1.0.0/dmn"
@@ -662,7 +662,7 @@ Example XML (JAXB format) response:
 ----
 --
 endif::[]
-ifeval::["{context}" == "decision-service-getting-started"]
+ifeval::["{context}" == "getting-started-decision-services"]
 +
 --
 *[POST]* `server/containers/{containerId}/dmn`

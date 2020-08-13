@@ -11,7 +11,7 @@ In addition to all DMN conformance level 3 requirements, {PRODUCT} also includes
 
 For more information about including external DMN files with your {PRODUCT} project packaging and deployment method, see
 ifdef::DM,PAM[]
-{URL_PACKAGING_DEPLOYING_PROJECT}[_{PACKAGING_DEPLOYING_PROJECT}_].
+{URL_DEPLOYING_AND_MANAGING_SERVICES}#assembly-packaging-deploying[_{PACKAGING_DEPLOYING_PROJECT}_].
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 <<_builddeployutilizeandrunsection>>.

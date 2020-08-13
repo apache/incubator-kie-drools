@@ -22,7 +22,7 @@ Decision tables are a popular way of modeling rules and decision logic, and are 
 
 IMPORTANT: {PRODUCT} supports both DMN decision tables and Drools-native decision tables, but they are different types of assets with different syntax requirements and are not interchangeable. For more information about Drools-native decision tables in {PRODUCT}, see
 ifdef::DM,PAM[]
-{URL_SPREADSHEET_DECISION_TABLES}[_{SPREADSHEET_DECISION_TABLES}_].
+{URL_DEVELOPING_DECISION_SERVICES}#assembly-decision-tables[_{SPREADSHEET_DECISION_TABLES}_].
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 xref:decision-tables-con_decision-tables[].
