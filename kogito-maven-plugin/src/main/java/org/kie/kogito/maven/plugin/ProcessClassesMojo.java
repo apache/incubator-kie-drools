@@ -157,11 +157,14 @@ public class ProcessClassesMojo extends AbstractKieMojo {
             throw new MojoExecutionException("Error during processing model classes", e);
         }
     }
-    
+
     private void generateJsonSchema(Path path, Reflections reflections) throws MojoFailureException {
         try {
-            Collection<GeneratedFile> files = new JsonSchemaGenerator.Builder(reflections.getTypesAnnotatedWith(UserTask.class).stream()).withGenSchemaPredicate(x -> true).withSchemaVersion(schemaVersion).build()
-                                                                                                                                         .generate();
+            Collection<GeneratedFile> files =
+                    new JsonSchemaGenerator.ClassBuilder(reflections.getTypesAnnotatedWith(UserTask.class).stream())
+                            .withGenSchemaPredicate(x -> true)
+                            .withSchemaVersion(schemaVersion).build()
+                            .generate();
             if (!files.isEmpty()) {
                 Path parentPath = path.resolve(JsonSchemaUtil.getJsonDir());
                 Files.createDirectories(parentPath);

@@ -28,6 +28,8 @@ import org.drools.compiler.commons.jci.compilers.JavaCompilerSettings;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.base.ClassFieldAccessorFactory;
 import org.drools.modelcompiler.builder.JavaParserCompiler;
+import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.AnnotationValue;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.CompositeIndex;
 import org.jboss.jandex.DotName;
@@ -80,7 +82,6 @@ public class KogitoAssetsProcessor {
     private static final String generatedSourcesDir = "target/generated-sources/kogito/";
     private static final String generatedCustomizableSourcesDir = System.getProperty("kogito.codegen.sources.directory", "target/generated-sources/kogito/");
     private static final Logger logger = LoggerFactory.getLogger(KogitoAssetsProcessor.class);
-    private final transient String generatedClassesDir = System.getProperty("quarkus.debug.generated-classes-dir");
     private final transient String appPackageName = "org.kie.kogito.app";
     private final transient String persistenceFactoryClass = "org.kie.kogito.persistence.KogitoProcessInstancesFactory";
     private final transient String metricsClass = "org.kie.kogito.monitoring.rest.MetricsResource";
@@ -153,17 +154,22 @@ public class KogitoAssetsProcessor {
         return generatedFiles;
     }
 
-
     private Collection<GeneratedFile> getJsonSchemaFiles(Index index, MemoryFileSystem trgMfs) throws IOException {
         MemoryClassLoader cl = new MemoryClassLoader(trgMfs, Thread.currentThread().getContextClassLoader());
-        return new JsonSchemaGenerator.Builder(index.getAnnotations(createDotName(UserTask.class.getCanonicalName())).stream().map(instance -> {
-            try {
-                return cl.loadClass(instance.target().toString());
-            } catch (ClassNotFoundException e) {
-                throw new IllegalStateException(e);
-            }
-        })).withGenSchemaPredicate(x -> true).withSchemaVersion(System.getProperty("kogito.jsonSchema.version")).build().generate();
+        List<AnnotationInstance> annotations =
+                index.getAnnotations(createDotName(UserTask.class.getCanonicalName()));
 
+        JsonSchemaGenerator.SimpleBuilder simpleBuilder =
+                new JsonSchemaGenerator.SimpleBuilder(cl)
+                        .withSchemaVersion(System.getProperty("kogito.jsonSchema.version"));
+
+        for (AnnotationInstance ann : annotations) {
+            String processName = ann.value("processName").asString();
+            String taskName = ann.value("taskName").asString();
+            simpleBuilder.addSchemaName(ann.target().asClass().name().toString(), processName, taskName);
+        }
+
+        return simpleBuilder.build().generate();
     }
 
     @BuildStep
@@ -279,7 +285,7 @@ public class KogitoAssetsProcessor {
         for (Path projectPath : appPaths.projectPaths) {
             String restResourcePath = projectPath.resolve( generatedCustomizableSourcesDir ).toString();
             String resourcePath = projectPath.resolve( generatedResourcesDir ).toString();
-            String sourcePath = projectPath.resolve( generatedSourcesDir ).toString(); 
+            String sourcePath = projectPath.resolve( generatedSourcesDir ).toString();
 
             for (GeneratedFile f : resourceFiles) {
                 try {
@@ -330,6 +336,7 @@ public class KogitoAssetsProcessor {
 
         String[] sources = new String[generatedFiles.size()];
         int index = 0;
+        String location = appPaths.getFirstProjectPath().resolve("target").resolve("classes").toString();
         for (GeneratedFile entry : generatedFiles) {
             String generatedClassFile = entry.relativePath().replace("src/main/java/", "");
             String fileName = toRuntimeSource(toClassName(generatedClassFile));
@@ -337,10 +344,6 @@ public class KogitoAssetsProcessor {
 
             srcMfs.write(fileName, entry.contents());
 
-            String location = generatedClassesDir;
-            if (launchMode == LaunchMode.DEVELOPMENT) {
-                location = Paths.get(appPaths.getFirstClassesPath().toString()).toString();
-            }
 
             writeGeneratedFile(entry, location);
         }
@@ -369,16 +372,20 @@ public class KogitoAssetsProcessor {
             byte[] data = trgMfs.getBytes(fileName);
             String className = toClassName(fileName);
             generatedBeans.produce(bif.apply(className, data));
+        }
 
-            if (launchMode == LaunchMode.DEVELOPMENT) {
-                Path path = writeFile(Paths.get(appPaths.getFirstClassesPath().toString(), fileName).toString(), data);
+        if (appPaths.isJar) {
+            return;
+        }
+        for (String fileName : trgMfs.getFileNames()) {
+            byte[] data = trgMfs.getBytes(fileName);
+            Path path = writeFile(Paths.get(appPaths.getFirstClassesPath().toString(), fileName).toString(), data);
 
-                String sourceFile = path.toString().replaceFirst("\\.class", ".java");
-                if (sourceFile.contains("$")) {
-                    sourceFile = sourceFile.substring(0, sourceFile.indexOf("$")) + ".java";
-                }
-                KogitoCompilationProvider.classToSource.put(path, Paths.get(sourceFile));
+            String sourceFile = path.toString().replaceFirst("\\.class", ".java");
+            if (sourceFile.contains("$")) {
+                sourceFile = sourceFile.substring(0, sourceFile.indexOf("$")) + ".java";
             }
+            KogitoCompilationProvider.classToSource.put(path, Paths.get(sourceFile));
         }
     }
 

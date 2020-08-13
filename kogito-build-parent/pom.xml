@@ -1197,6 +1197,9 @@
                               <!-- To avoid a complaint about duplicate classes created by code generation in IT tests. -->
                               <exclude name="**/it/integration-tests-springboot-it/target/classes/**/*.class"/>
                               <exclude name="**/it/integration-tests-kogito-plugin-it/target/classes/**/*.class"/>
+                              <exclude name="**/integration-tests/**/target/classes/**/*.class"/>
+                              <exclude name="**/integration-test/**/target/classes/**/*.class"/>
+                              <exclude name="**/integration-test-legacy/**/target/classes/**/*.class"/>
                             </fileset>
                           </classfiles>
                           <sourcefiles encoding="UTF-8">

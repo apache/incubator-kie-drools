@@ -112,24 +112,42 @@ public class ProcessCodegen extends AbstractGenerator {
         List<Process> processes = new ArrayList<>();
 
         for (Path jarPath : jarPaths) {
-            try (ZipFile zipFile = new ZipFile( jarPath.toFile() )) {
+            try (ZipFile zipFile = new ZipFile(jarPath.toFile())) {
                 Enumeration<? extends ZipEntry> entries = zipFile.entries();
                 while (entries.hasMoreElements()) {
                     ZipEntry entry = entries.nextElement();
-                    ResourceType resourceType = determineResourceType( entry.getName() );
-                    if ( SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch( entry.getName()::endsWith ) ) {
-                        InternalResource resource = new ByteArrayResource( readBytesFromInputStream( zipFile.getInputStream( entry ) ) );
-                        resource.setResourceType( resourceType );
-                        resource.setSourcePath( entry.getName() );
-                        processes.addAll( parseProcessFile( resource ) );
+                    ResourceType resourceType = determineResourceType(entry.getName());
+                    if (SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch(entry.getName()::endsWith)) {
+                        InternalResource resource = makeResourceFromZipEntry(zipFile, entry, resourceType);
+                        processes.addAll(parseProcessFile(resource));
+                    } else {
+                        SUPPORTED_SW_EXTENSIONS.entrySet()
+                                .stream()
+                                .filter(e -> entry.getName().endsWith(e.getKey()))
+                                .forEach(e -> {
+                                    InternalResource r = makeResourceFromZipEntry(zipFile, entry, resourceType);
+                                    processes.add(parseWorkflowFile(r, e.getValue()));
+                                });
                     }
                 }
             } catch (IOException e) {
-                throw new UncheckedIOException( e );
+                throw new UncheckedIOException(e);
             }
         }
 
         return ofProcesses(processes);
+    }
+
+    private static InternalResource makeResourceFromZipEntry(ZipFile zipFile, ZipEntry entry, ResourceType resourceType) {
+        try {
+            InternalResource resource = null;
+            resource = new ByteArrayResource(readBytesFromInputStream(zipFile.getInputStream(entry)));
+            resource.setResourceType(resourceType);
+            resource.setSourcePath(entry.getName());
+            return resource;
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     public static ProcessCodegen ofPath(Path... paths) throws IOException {
