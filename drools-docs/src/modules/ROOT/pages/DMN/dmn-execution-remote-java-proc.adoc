@@ -5,7 +5,7 @@ The {KIE_SERVER} Java client API provides a lightweight approach to invoking a r
 
 For more information about the {KIE_SERVER} Java client API, see
 ifdef::DM,PAM[]
-{URL_KIE_APIS}[_{KIE_APIS}_].
+{URL_DEPLOYING_AND_MANAGING_SERVICES}#assembly-kie-apis[_{KIE_APIS}_].
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 xref:kie-server-java-api-con_kie-apis[].
@@ -14,7 +14,7 @@ endif::[]
 .Prerequisites
 * {KIE_SERVER} is installed and configured, including a known user name and credentials for a user with the `kie-server` role. For installation options, see
 ifdef::DM,PAM[]
-{URL_PLANNING_INSTALL}[_{PLANNING_INSTALL}_].
+{URL_INSTALLING_AND_CONFIGURING}#assembly-planning[_{PLANNING_INSTALL}_].
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 <<_installationandsetup>>.
@@ -29,7 +29,7 @@ mvn clean install -DgenerateDMNModel=yes
 
 For more information about project packaging and deployment and executable models, see
 ifdef::DM,PAM[]
-{URL_PACKAGING_DEPLOYING_PROJECT}[_{PACKAGING_DEPLOYING_PROJECT}_].
+{URL_DEPLOYING_AND_MANAGING_SERVICES}#assembly-packaging-deploying[_{PACKAGING_DEPLOYING_PROJECT}_].
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 <<_builddeployutilizeandrunsection>>.
