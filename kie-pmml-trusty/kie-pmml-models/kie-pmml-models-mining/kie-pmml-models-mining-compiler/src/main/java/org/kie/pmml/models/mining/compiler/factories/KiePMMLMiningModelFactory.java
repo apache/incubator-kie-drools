@@ -190,8 +190,9 @@ public class KiePMMLMiningModelFactory {
                 expressions = NodeList.nodeList(new StringLiteralExpr(outputField.getValue().toString()));
                 builder = new MethodCallExpr(builder, "withValue", expressions);
             }
-            if (outputField.getTargetField().isPresent()) {
-                expressions = NodeList.nodeList(new StringLiteralExpr(outputField.getTargetField().get()));
+            String targetField = outputField.getTargetField().orElse(null);
+            if (targetField != null) {
+                expressions = NodeList.nodeList(new StringLiteralExpr(targetField));
                 builder = new MethodCallExpr(builder, "withTargetField", expressions);
             }
             if (outputField.getResultFeature() != null) {

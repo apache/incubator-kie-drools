@@ -57,7 +57,7 @@ public enum MULTIPLE_MODEL_METHOD {
     MEDIAN("median", inputData -> {
         DoubleStream sortedValues = doubleStream(inputData.values().stream(), "MEDIAN").sorted();
         OptionalDouble toReturn = inputData.size() % 2 == 0 ?
-                sortedValues.skip(inputData.size() / 2 - 1).limit(2).average() :
+                sortedValues.skip(inputData.size() / 2 - (long)1).limit(2).average() :
                 sortedValues.skip(inputData.size() / 2).findFirst();
         return toReturn.orElseThrow(() -> new KieEnumException("Failed to get MEDIAN"));
     }),
