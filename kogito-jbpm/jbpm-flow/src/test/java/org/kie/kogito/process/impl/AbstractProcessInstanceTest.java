@@ -16,16 +16,26 @@
 
 package org.kie.kogito.process.impl;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstanceManager;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.kogito.Model;
+import org.kie.kogito.uow.UnitOfWork;
+import org.kie.kogito.uow.UnitOfWorkManager;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,27 +46,81 @@ import static org.mockito.Mockito.when;
 
 public class AbstractProcessInstanceTest {
 
-    @Test
-    public void testCreteProcessInstance() {
-        AbstractProcess process = mock(AbstractProcess.class);
+    private static final String NODE_ID = "my_node_id";
+
+    @Mock
+    private ProcessInstanceManager pim;
+
+    @Mock
+    private WorkflowProcessInstanceImpl wpi;
+
+    @Mock
+    private UnitOfWork unitOfWork;
+
+    private AbstractProcessInstance<TestModel> processInstance;
+
+    @SuppressWarnings("unchecked")
+    @BeforeEach
+    private void setup() {
+        MockitoAnnotations.initMocks(this);
+
+        AbstractProcess<TestModel> process = mock(AbstractProcess.class);
         when(process.process()).thenReturn(mock(Process.class));
         InternalProcessRuntime pr = mock(InternalProcessRuntime.class);
-        WorkflowProcessInstanceImpl wpi = mock(WorkflowProcessInstanceImpl.class);
         when(pr.createProcessInstance(any(), any(), any())).thenReturn(wpi);
-        ProcessInstanceManager pim = mock(ProcessInstanceManager.class);
         when(pr.getProcessInstanceManager()).thenReturn(pim);
-        AbstractProcessInstance pi = new TestProcessInstance(process, new TestModel(), pr);
+        UnitOfWorkManager unitOfWorkManager = mock(UnitOfWorkManager.class);
+        when(pr.getUnitOfWorkManager()).thenReturn(unitOfWorkManager);
+        when(unitOfWorkManager.currentUnitOfWork()).thenReturn(unitOfWork);
 
-        assertThat(pi.status()).isEqualTo(ProcessInstance.STATE_PENDING);
-        assertThat(pi.id()).isNull();
-        assertThat(pi.businessKey()).isNull();
+        processInstance = new TestProcessInstance(process, new TestModel(), pr);
+    }
+
+    @Test
+    public void testCreateProcessInstance() {
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_PENDING);
+        assertThat(processInstance.id()).isNull();
+        assertThat(processInstance.businessKey()).isNull();
 
         verify(pim, never()).addProcessInstance(any(), any());
     }
 
+    @Test
+    public void shouldTriggerNodeWhenStartFrom() {
+        NodeInstance nodeInstance = givenExistingNode(NODE_ID);
+
+        processInstance.startFrom(NODE_ID);
+
+        verify(nodeInstance).trigger(null, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+        verify(unitOfWork).intercept(any());
+    }
+
+    @Test
+    public void shouldTriggerNodeWhenTrigger() {
+        NodeInstance nodeInstance = givenExistingNode(NODE_ID);
+
+        processInstance.triggerNode(NODE_ID);
+
+        verify(nodeInstance).trigger(null, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+        verify(unitOfWork).intercept(any());
+    }
+
+    private NodeInstance givenExistingNode(String nodeId) {
+        RuleFlowProcess process = mock(RuleFlowProcess.class);
+        when(wpi.getProcess()).thenReturn(process);
+        Node node = mock(Node.class);
+        when(node.getMetaData()).thenReturn(Collections.singletonMap("UniqueId", nodeId));
+        when(process.getNodesRecursively()).thenReturn(Arrays.asList(node));
+
+        NodeInstance nodeInstance = mock(NodeInstance.class);
+        when(wpi.getNodeInstance(node)).thenReturn(nodeInstance);
+        return nodeInstance;
+    }
+
     static class TestProcessInstance extends AbstractProcessInstance<TestModel> {
 
-        public TestProcessInstance(AbstractProcess process, TestModel variables, ProcessRuntime rt) {
+        public TestProcessInstance(AbstractProcess<TestModel> process, TestModel variables, ProcessRuntime rt) {
             super(process, variables, rt);
         }
     }

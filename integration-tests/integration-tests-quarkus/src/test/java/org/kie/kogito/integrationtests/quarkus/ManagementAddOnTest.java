@@ -16,14 +16,18 @@
 
 package org.kie.kogito.integrationtests.quarkus;
 
+import java.util.List;
+
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -33,82 +37,117 @@ import static org.hamcrest.Matchers.emptyOrNullString;
 @QuarkusTestResource(InfinispanQuarkusTestResource.Conditional.class)
 class ManagementAddOnTest {
 
-    static {
+    private static final String HELLO1_NODE = "_3CDC6E61-DCC5-4831-8BBB-417CFF517CB0";
+    private static final String GREETINGS = "greetings";
+
+    @BeforeAll
+    public static void beforeAll() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
     @Test
     void testGetProcessNodesWithInvalidProcessId() {
-        given()
-                .contentType(ContentType.JSON)
-                .when()
-                .get("/management/processes/{processId}/nodes", "aprocess")
-                .then()
-                .statusCode(404)
-                .body(equalTo("Process with id aprocess not found"));
+        given().contentType(ContentType.JSON)
+               .when()
+               .get("/management/processes/{processId}/nodes", "aprocess")
+               .then()
+               .statusCode(404)
+               .body(equalTo("Process with id aprocess not found"));
     }
 
     @Test
     void testAbortProcessInstance() {
-        String pid = given()
-                .contentType(ContentType.JSON)
-                .when()
-                .post("/greetings")
-                .then()
-                .statusCode(200)
-                .body("id", not(emptyOrNullString()))
-                .body("test", emptyOrNullString())
-                .extract().path("id");
+        String pid = givenGreetingsProcess();
 
-        given()
-                .contentType(ContentType.JSON)
-                .when()
-                .delete("/management/processes/{processId}/instances/{processInstanceId}", "greetings", pid)
-                .then()
-                .statusCode(200);
+        given().contentType(ContentType.JSON)
+               .when()
+               .delete("/management/processes/{processId}/instances/{processInstanceId}", GREETINGS, pid)
+               .then()
+               .statusCode(200);
     }
 
     @Test
     void testGetNodeInstances() {
-        String pid = given()
-                .contentType(ContentType.JSON)
-                .when()
-                .post("/greetings")
-                .then()
-                .statusCode(200)
-                .body("id", not(emptyOrNullString()))
-                .body("test", emptyOrNullString())
-                .extract().path("id");
+        String pid = givenGreetingsProcess();
 
-        given()
-                .contentType(ContentType.JSON)
-                .when()
-                .get("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances", "greetings", pid)
-                .then()
-                .statusCode(200)
-                .body("$.size", is(2))
-                .body("[0].name", is("Task"))
-                .body("[0].state", is(0))
-                .body("[1].name", is("Task"))
-                .body("[1].state", is(0));
+        given().contentType(ContentType.JSON)
+               .when()
+               .get("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances", GREETINGS, pid)
+               .then()
+               .statusCode(200)
+               .body("$.size", is(2))
+               .body("[0].name", is("Task"))
+               .body("[0].state", is(0))
+               .body("[1].name", is("Task"))
+               .body("[1].state", is(0));
     }
 
     @Test
     void testGetProcessNodes() {
-        given()
-                .contentType(ContentType.JSON)
-                .when()
-                .get("/management/processes/{processId}/nodes", "greetings")
-                .then()
-                .statusCode(200)
-                .body("$.size", is(10))
-                .body("[0].id", is(1))
-                .body("[0].name", is("End"))
-                .body("[0].type", is("EndNode"))
-                .body("[0].uniqueId", is("1"))
-                .body("[9].id", is(10))
-                .body("[9].name", is("BoundaryEvent"))
-                .body("[9].type", is("BoundaryEventNode"))
-                .body("[9].uniqueId", is("10"));
+        given().contentType(ContentType.JSON)
+               .when()
+               .get("/management/processes/{processId}/nodes", GREETINGS)
+               .then()
+               .statusCode(200)
+               .body("$.size", is(10))
+               .body("[0].id", is(1))
+               .body("[0].name", is("End"))
+               .body("[0].type", is("EndNode"))
+               .body("[0].uniqueId", is("1"))
+               .body("[9].id", is(10))
+               .body("[9].name", is("BoundaryEvent"))
+               .body("[9].type", is("BoundaryEventNode"))
+               .body("[9].uniqueId", is("10"));
+    }
+
+    @Test
+    void testReTriggerNode() {
+        String pid = givenGreetingsProcess();
+
+        List<String> nodeInstanceIds = whenGetNodeInstances(pid);
+        assertThat(nodeInstanceIds).isNotEmpty();
+
+        // cancel node instance
+        nodeInstanceIds.forEach(nodeInstanceId -> whenCancelNodeInstance(pid, nodeInstanceId));
+
+        // then trigger new node instance via management interface
+        given().contentType(ContentType.JSON)
+               .when()
+               .post("/management/processes/{processId}/instances/{processInstanceId}/nodes/{node}", GREETINGS, pid, HELLO1_NODE)
+               .then()
+               .statusCode(200);
+
+        // since node instance was retriggered it must have different ids
+        List<String> newNodeInstanceIds = whenGetNodeInstances(pid);
+        assertThat(newNodeInstanceIds).isNotEmpty();
+        assertThat(newNodeInstanceIds).doesNotContainAnyElementsOf(nodeInstanceIds);
+    }
+
+    private String givenGreetingsProcess() {
+        return given().contentType(ContentType.JSON)
+                      .when()
+                      .post("/greetings")
+                      .then()
+                      .statusCode(200)
+                      .body("id", not(emptyOrNullString()))
+                      .body("test", emptyOrNullString())
+                      .extract().path("id");
+    }
+
+    private void whenCancelNodeInstance(String pid, String nodeInstanceId) {
+        given().contentType(ContentType.JSON)
+               .when()
+               .delete("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances/{nodeInstanceId}", GREETINGS, pid, nodeInstanceId)
+               .then()
+               .statusCode(200);
+    }
+
+    private List<String> whenGetNodeInstances(String pid) {
+        return given().contentType(ContentType.JSON)
+                      .when()
+                      .get("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances", GREETINGS, pid)
+                      .then()
+                      .statusCode(200)
+                      .extract().response().jsonPath().getList("nodeInstanceId");
     }
 }

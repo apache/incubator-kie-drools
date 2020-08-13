@@ -170,7 +170,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             correlationKey = new StringCorrelationKey(businessKey);
         }
     }
-    
+
     public WorkflowProcessInstance internalGetProcessInstance() {
         return processInstance;
     }
@@ -188,10 +188,12 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         processInstance = null;
     }
 
+    @Override
     public void start() {
         start(null, null);
     }
 
+    @Override
     public void start(String trigger, String referenceId) {
         if (this.status != ProcessInstance.STATE_PENDING) {
             throw new IllegalStateException("Impossible to start process instance that already was started");
@@ -222,6 +224,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         ((InternalProcessRuntime) getProcessRuntime()).getUnitOfWorkManager().currentUnitOfWork().intercept(new ProcessInstanceWorkUnit(this, action));
     }
 
+    @Override
     public void abort() {
         String pid = processInstance().getId();
         unbind(variables, processInstance().getVariables());
@@ -318,7 +321,6 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             processInstance.setReferenceId(referenceId);
         }
         triggerNode(nodeId);
-        addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).update(pi.id(), pi));
         unbind(variables, processInstance.getVariables());
         if (processInstance != null) {
             this.status = processInstance.getState();
@@ -339,6 +341,8 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         NodeInstanceContainer nodeInstanceContainerNode = parentNode == null ? wfpi : ((NodeInstanceContainer) wfpi.getNodeInstance(parentNode));
 
         nodeInstanceContainerNode.getNodeInstance(node).trigger(null, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+
+        addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).update(pi.id(), pi));
     }
 
     @Override
@@ -438,12 +442,12 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public Collection<Milestone> milestones() {
-        return ((WorkflowProcessInstance) processInstance).milestones();
+        return processInstance.milestones();
     }
 
     @Override
     public Collection<AdHocFragment> adHocFragments() {
-        return ((WorkflowProcessInstance) processInstance).adHocFragments();
+        return processInstance.adHocFragments();
     }
 
     protected void removeOnFinish() {
