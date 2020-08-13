@@ -72,9 +72,6 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
                                 final KiePMMLModel model,
                                 final PMMLContext pmmlContext) {
         validate(model);
-        if (!(model instanceof KiePMMLMiningModel)) {
-            throw new KiePMMLModelException("Expected a KiePMMLMiningModel, received a " + model.getClass().getName());
-        }
         return evaluateMiningModel((KiePMMLMiningModel) model, pmmlContext, knowledgeBase);
     }
 

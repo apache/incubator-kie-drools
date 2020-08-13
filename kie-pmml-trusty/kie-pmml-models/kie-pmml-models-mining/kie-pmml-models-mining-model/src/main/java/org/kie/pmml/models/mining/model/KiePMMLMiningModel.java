@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -49,7 +50,7 @@ public class KiePMMLMiningModel extends KiePMMLModel implements HasNestedModels 
 
     @Override
     public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
-        return null;
+        throw new KiePMMLException("KiePMMLMiningModel is not meant to be used for actual evaluation");
     }
 
     @Override

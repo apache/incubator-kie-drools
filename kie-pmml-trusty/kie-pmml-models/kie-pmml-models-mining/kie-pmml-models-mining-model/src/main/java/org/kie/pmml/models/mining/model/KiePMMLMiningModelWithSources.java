@@ -39,12 +39,12 @@ public class KiePMMLMiningModelWithSources extends KiePMMLMiningModel implements
 
     @Override
     public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData) {
-        throw new KiePMMLException("KiePMMLMiningModelWithSources. is not meant to be used for actual evaluation");
+        throw new KiePMMLException("KiePMMLMiningModelWithSources is not meant to be used for actual evaluation");
     }
 
     @Override
     public Map<String, Object> getOutputFieldsMap() {
-        throw new KiePMMLException("KiePMMLMiningModelWithSources. is not meant to be used for actual usage");
+        throw new KiePMMLException("KiePMMLMiningModelWithSources is not meant to be used for actual usage");
     }
 
     @Override

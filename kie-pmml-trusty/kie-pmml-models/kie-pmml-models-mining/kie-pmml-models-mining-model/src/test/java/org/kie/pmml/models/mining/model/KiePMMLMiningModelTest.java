@@ -20,6 +20,7 @@ import java.util.Collections;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 
@@ -45,9 +46,9 @@ public class KiePMMLMiningModelTest {
         assertNotNull(KIE_PMML_MINING_MODEL);
     }
 
-    @Test
+    @Test(expected = KiePMMLException.class)
     public void evaluate() {
-        assertNull(KIE_PMML_MINING_MODEL.evaluate("KB", Collections.EMPTY_MAP));
+        KIE_PMML_MINING_MODEL.evaluate("KB", Collections.EMPTY_MAP);
     }
 
     @Test

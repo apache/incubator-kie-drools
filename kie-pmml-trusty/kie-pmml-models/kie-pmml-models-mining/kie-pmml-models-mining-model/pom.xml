@@ -28,17 +28,4 @@
     </dependency>
   </dependencies>
 
-<!--  <dependencyManagement>-->
-<!--    &lt;!&ndash; TODO MOVE TO kie-pmml-new/pom.xml &ndash;&gt;-->
-<!--    <dependencies>-->
-<!--      <dependency>-->
-<!--        <groupId>org.kie</groupId>-->
-<!--        <artifactId>kie-pmml-commons</artifactId>-->
-<!--        <classifier>tests</classifier>-->
-<!--        <version>${version.org.kie}</version>-->
-<!--      </dependency>-->
-<!--    </dependencies>-->
-<!--  </dependencyManagement>-->
-
-
 </project>

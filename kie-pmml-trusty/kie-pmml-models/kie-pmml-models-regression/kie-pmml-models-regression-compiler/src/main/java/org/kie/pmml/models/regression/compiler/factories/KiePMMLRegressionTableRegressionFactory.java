@@ -108,7 +108,6 @@ public class KiePMMLRegressionTableRegressionFactory {
         addMapPopulation(predictorTermsMap, body, "predictorTermsFunctionMap");
         populateGetTargetCategory(tableTemplate, regressionTable.getTargetCategory());
         populateUpdateResult(tableTemplate, normalizationMethod);
-//        return new AbstractMap.SimpleEntry<>(className, cloneCU.toString());
         return new AbstractMap.SimpleEntry<>(getFullClassName(cloneCU), cloneCU.toString());
     }
 
