@@ -34,7 +34,7 @@ endif::[]
 |{CENTRAL} or other DMN-compliant editor
 a|
 ifdef::DM,PAM[]
-{URL_DMN_MODELS}[_{DMN_MODELS}_]
+{URL_DEVELOPING_DECISION_SERVICES}#assembly-dmn-models[_{DMN_MODELS}_]
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 xref:dmn-con_dmn-models[]
@@ -51,7 +51,7 @@ a|
 |{CENTRAL}
 a|
 ifdef::DM,PAM[]
-{URL_GUIDED_DECISION_TABLES}[_{GUIDED_DECISION_TABLES}_]
+{URL_DEVELOPING_DECISION_SERVICES}#assembly-guided-decision-tables[_{GUIDED_DECISION_TABLES}_]
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 xref:guided-decision-tables-con[]
@@ -66,7 +66,7 @@ a|
 |Spreadsheet editor
 a|
 ifdef::DM,PAM[]
-{URL_SPREADSHEET_DECISION_TABLES}[_{SPREADSHEET_DECISION_TABLES}_]
+{URL_DEVELOPING_DECISION_SERVICES}#assembly-decision-tables[_{SPREADSHEET_DECISION_TABLES}_]
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 xref:decision-tables-con_decision-tables[]
@@ -80,7 +80,7 @@ a|
 |{CENTRAL}
 a|
 ifdef::DM,PAM[]
-{URL_GUIDED_RULES}[_{GUIDED_RULES}_]
+{URL_DEVELOPING_DECISION_SERVICES}#assembly-guided-rules[_{GUIDED_RULES}_]
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 xref:guided-rules-con_kie-apis[]
@@ -95,7 +95,7 @@ a|
 |{CENTRAL}
 a|
 ifdef::DM,PAM[]
-{URL_GUIDED_RULE_TEMPLATES}[_{GUIDED_RULE_TEMPLATES}_]
+{URL_DEVELOPING_DECISION_SERVICES}#assembly-guided-rule-templates[_{GUIDED_RULE_TEMPLATES}_]
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 xref:guided-rule-templates-con[]
@@ -111,7 +111,7 @@ a|
 |{CENTRAL} or integrated development environment (IDE)
 a|
 ifdef::DM,PAM[]
-{URL_DRL_RULES}[_{DRL_RULES}_]
+{URL_DEVELOPING_DECISION_SERVICES}#assembly-drl-rules[_{DRL_RULES}_]
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 xref:drl-rules-con_decision-tables[]
@@ -127,7 +127,7 @@ a|
 |PMML or XML editor
 a|
 ifdef::DM,PAM[]
-{URL_PMML_MODELS}[_{PMML_MODELS}_]
+{URL_DEVELOPING_DECISION_SERVICES}#assembly-pmml-models[_{PMML_MODELS}_]
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 xref:pmml-con_pmml-models[]

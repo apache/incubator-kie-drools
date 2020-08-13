@@ -75,7 +75,7 @@ After the KIE scanner starts polling, if the KIE scanner detects an updated vers
 
 For information about starting or stopping a KIE scanner using {KIE_SERVER} APIs, see
 ifdef::DM,PAM[]
-{URL_KIE_APIS}#kie-server-commands-con_kie-apis[_{KIE_APIS}_].
+{URL_DEPLOYING_AND_MANAGING_SERVICES}#kie-server-commands-con_kie-apis[_{KIE_APIS}_].
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 xref:kie-server-commands-con_kie-apis[].
