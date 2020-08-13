@@ -99,7 +99,7 @@ public class KiePMMLSegmentationFactory {
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         final ConstructorDeclaration constructorDeclaration = segmentationTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing default constructor in ClassOrInterfaceDeclaration %s ", segmentationName)));
         Set<String> segmentsClasses = segmentation.getSegments().stream()
-                .map(segment ->  getSanitizedPackageName(packageName + "." + segment.getId()) + "." + segment.getId())
+                .map(segment ->  getSanitizedPackageName(packageName + "." + segment.getId()) + "." + getSanitizedClassName(segment.getId()))
                 .collect(Collectors.toSet());
         if (!toReturn.keySet().containsAll(segmentsClasses)) {
             String missingClasses = String.join(", ", segmentsClasses);
