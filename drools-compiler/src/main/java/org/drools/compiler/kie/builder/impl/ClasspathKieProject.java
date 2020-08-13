@@ -29,10 +29,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -79,17 +76,10 @@ public class ClasspathKieProject extends AbstractKieProject {
 
     private final WeakReference<KieServicesEventListerner> listener;
 
-    private ReleaseId classPathreleaseId;
-
-    ClasspathKieProject(ClassLoader parentCL, WeakReference<KieServicesEventListerner> listener, ReleaseId classPathreleaseId) {
+    ClasspathKieProject(ClassLoader parentCL, WeakReference<KieServicesEventListerner> listener) {
         this.kieRepository = KieServices.Factory.get().getRepository();
         this.listener = listener;
         this.parentCL = parentCL;
-        this.classPathreleaseId = classPathreleaseId;
-    }
-
-    ClasspathKieProject(ClassLoader parentCL, WeakReference<KieServicesEventListerner> listener) {
-        this(parentCL, listener, null);
     }
 
     public void init() {
@@ -99,7 +89,7 @@ public class ClasspathKieProject extends AbstractKieProject {
     }
 
     public ReleaseId getGAV() {
-        return classPathreleaseId;
+        return null;
     }
 
     public long getCreationTimestamp() {
@@ -109,25 +99,17 @@ public class ClasspathKieProject extends AbstractKieProject {
     public void discoverKieModules() {
         String[] configFiles = {KieModuleModelImpl.KMODULE_JAR_PATH, KieModuleModelImpl.KMODULE_SPRING_JAR_PATH};
         for ( String configFile : configFiles) {
-            final Set<URL> resources = new HashSet<>();
+            final Enumeration<URL> e;
             try {
-                ClassLoader currentClassLoader = classLoader;
-                while (currentClassLoader != null) {
-                    Enumeration<URL> list = currentClassLoader.getResources(configFile);
-                    while (list.hasMoreElements()) {
-                        resources.add(list.nextElement());
-                    }
-                    currentClassLoader = currentClassLoader.getParent();
-                }
+                e = classLoader.getResources(configFile );
             } catch ( IOException exc ) {
                 log.error( "Unable to find and build index of "+configFile+"." + exc.getMessage() );
                 return;
             }
 
             // Map of kmodule urls
-            Iterator<URL> e = resources.iterator();
-            while (e.hasNext()) {
-                URL url = e.next();
+            while ( e.hasMoreElements() ) {
+                URL url = e.nextElement();
                 notifyKieModuleFound(url);
                 try {
                     InternalKieModule kModule = fetchKModule(url);

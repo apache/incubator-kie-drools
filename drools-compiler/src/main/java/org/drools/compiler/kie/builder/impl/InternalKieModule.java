@@ -148,7 +148,6 @@ public interface InternalKieModule extends KieModule, Serializable {
             }
             parent = resolver.getClassLoader( this );
         }
-
         return createProjectClassLoader( parent, createResourceProvider() );
     }
 
