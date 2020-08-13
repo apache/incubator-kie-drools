@@ -19,7 +19,7 @@ For process definitions, you can use {CENTRAL} directly to execute process insta
 endif::[]
 a|
 ifdef::DM,PAM[]
-{URL_KIE_APIS}[_{KIE_APIS}_]
+{URL_DEPLOYING_AND_MANAGING_SERVICES}#assembly-kie-apis[_{KIE_APIS}_]
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 xref:#_ch.kie.server[]
@@ -42,7 +42,7 @@ endif::[]
 |As part of your development cycle, you can execute assets locally to ensure that the assets you have created in {PRODUCT} function as intended. You can use local execution in addition to or instead of executing assets after deployment.
 a|
 ifdef::DM,PAM[]
-{URL_DRL_RULES}#assets-executing-proc_drl-rules["Executing rules" in _{DRL_RULES}_]
+{URL_DEVELOPING_DECISION_SERVICES}#assets-executing-proc_drl-rules["Executing rules" in _{DRL_RULES}_]
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 xref:decision-examples-IDE-proc_drools-examples[]
@@ -54,7 +54,7 @@ endif::[]
 ====
 Depending on your deployment and execution environment, you can use a Smart Router to aggregate multiple independent {KIE_SERVER} instances as though they are a single server. Smart Router is a single endpoint that can receive calls from client applications to any of your services and route each call automatically to the {KIE_SERVER} that runs the service. For more information about Smart Router, see
 ifdef::DM,PAM[]
-{URL_INSTALLING_ON_EAP_CLUSTER}#clustering-smartrouter-install-proc[_{INSTALLING_ON_EAP_CLUSTER}_].
+{URL_INSTALLING_AND_CONFIGURING}#clustering-smartrouter-install-proc_clustering-runtime-standalone[_{INSTALLING_ON_EAP_CLUSTER}_].
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 link:http://mswiderski.blogspot.com/2016/12/kie-server-router-even-more-flexibility.html[{KIE_SERVER} router].

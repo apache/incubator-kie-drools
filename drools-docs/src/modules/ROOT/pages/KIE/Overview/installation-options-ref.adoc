@@ -21,7 +21,7 @@ endif::[]
 ifeval::["{context}" != "planning"]
 .Additional resources
 ifdef::DM,PAM[]
-* {URL_PLANNING_INSTALL}[_{PLANNING_INSTALL}_]
+* {URL_INSTALLING_AND_CONFIGURING}#assembly-planning[_{PLANNING_INSTALL}_]
 ifdef::PAM[]
 * https://access.redhat.com/articles/3405381[{PRODUCT} 7 Supported Configurations]
 * https://access.redhat.com/articles/3463751[{PRODUCT} 7 Component Details]

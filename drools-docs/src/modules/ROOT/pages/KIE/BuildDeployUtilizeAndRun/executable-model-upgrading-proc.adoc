@@ -14,7 +14,7 @@ When you install {PRODUCT} {PRODUCT_VERSION}, this default executable model beha
 
 For more information about executable rule models, see
 ifdef::DM,PAM[]
-{URL_PACKAGING_DEPLOYING_PROJECT}#executable-model-con_packaging-deploying[_{PACKAGING_DEPLOYING_PROJECT}_].
+{URL_DEPLOYING_AND_MANAGING_SERVICES}#executable-model-con_packaging-deploying[_{PACKAGING_DEPLOYING_PROJECT}_].
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 xref:executable-model-con_packaging-deploying[].
