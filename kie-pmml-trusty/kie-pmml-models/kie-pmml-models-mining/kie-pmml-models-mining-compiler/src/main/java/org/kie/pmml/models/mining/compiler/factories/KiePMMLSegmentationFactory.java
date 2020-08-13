@@ -15,25 +15,53 @@
  */
 package org.kie.pmml.models.mining.compiler.factories;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.Segmentation;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
+import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
+import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
+import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.getSegments;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.getSegmentsSourcesMap;
 
 public class KiePMMLSegmentationFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLSegmentationFactory.class.getName());
+    static final String KIE_PMML_SEGMENTATION_TEMPLATE_JAVA = "KiePMMLSegmentationTemplate.tmpl";
+    static final String KIE_PMML_SEGMENTATION_TEMPLATE = "KiePMMLSegmentationTemplate";
 
     private KiePMMLSegmentationFactory() {
     }
@@ -60,10 +88,65 @@ public class KiePMMLSegmentationFactory {
                                                                 final KnowledgeBuilder kBuilder) {
         logger.debug("getSegmentationSourcesMap {}", segmentation);
         final String packageName = getSanitizedPackageName(parentPackageName + "." + segmentationName);
-        return getSegmentsSourcesMap(packageName,
-                                     dataDictionary,
-                                     transformationDictionary,
-                                     segmentation.getSegments(),
-                                     kBuilder);
+        final Map<String, String> toReturn = getSegmentsSourcesMap(packageName,
+                                                                  dataDictionary,
+                                                                  transformationDictionary,
+                                                                  segmentation.getSegments(),
+                                                                  kBuilder);
+        String className = getSanitizedClassName(segmentationName);
+        CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName, KIE_PMML_SEGMENTATION_TEMPLATE_JAVA, KIE_PMML_SEGMENTATION_TEMPLATE);
+        ClassOrInterfaceDeclaration segmentationTemplate = cloneCU.getClassByName(className)
+                .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
+        final ConstructorDeclaration constructorDeclaration = segmentationTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing default constructor in ClassOrInterfaceDeclaration %s ", segmentationName)));
+        Set<String> segmentsClasses = segmentation.getSegments().stream()
+                .map(segment ->  getSanitizedPackageName(packageName + "." + segment.getId()) + "." + segment.getId())
+                .collect(Collectors.toSet());
+        if (!toReturn.keySet().containsAll(segmentsClasses)) {
+            String missingClasses = String.join(", ", segmentsClasses);
+            throw new KiePMMLException("Expected generated class " + missingClasses + " not found");
+        }
+        setConstructor(className,
+                       segmentationName,
+                       constructorDeclaration,
+                       MULTIPLE_MODEL_METHOD.byName(segmentation.getMultipleModelMethod().value()),
+                       segmentsClasses);
+        toReturn.put(getFullClassName(cloneCU), cloneCU.toString());
+        return toReturn;
+    }
+
+    static void setConstructor(final String generatedClassName,
+                               final String segmentationName,
+                               final ConstructorDeclaration constructorDeclaration,
+                               final MULTIPLE_MODEL_METHOD multipleModelMethod,
+                               final Set<String> segmentsClasses) {
+        constructorDeclaration.setName(generatedClassName);
+        final BlockStmt body = constructorDeclaration.getBody();
+        body.getStatements().iterator().forEachRemaining(statement -> {
+            if (statement instanceof ExplicitConstructorInvocationStmt) {
+                ExplicitConstructorInvocationStmt superStatement = (ExplicitConstructorInvocationStmt) statement;
+                NameExpr modelNameExpr = (NameExpr) superStatement.getArgument(0);
+                modelNameExpr.setName(String.format("\"%s\"", segmentationName));
+                modelNameExpr = (NameExpr) superStatement.getArgument(2);
+                modelNameExpr.setName(multipleModelMethod.getClass().getName() + "." + multipleModelMethod.name());
+            }
+        });
+        final List<AssignExpr> assignExprs = body.findAll(AssignExpr.class);
+        assignExprs.forEach(assignExpr -> {
+            if (assignExpr.getTarget().asNameExpr().getNameAsString().equals("segments")) {
+                for (String segmentClass: segmentsClasses) {
+                    ClassOrInterfaceType kiePMMLSegmentClass = parseClassOrInterfaceType(segmentClass);
+                    ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
+                    objectCreationExpr.setType(kiePMMLSegmentClass);
+                    NodeList<Expression> arguments = NodeList.nodeList(objectCreationExpr);
+                    MethodCallExpr methodCallExpr = new MethodCallExpr();
+                    methodCallExpr.setScope(assignExpr.getTarget().asNameExpr());
+                    methodCallExpr.setName("add");
+                    methodCallExpr.setArguments(arguments);
+                    ExpressionStmt expressionStmt = new ExpressionStmt();
+                    expressionStmt.setExpression(methodCallExpr);
+                    body.addStatement(expressionStmt);
+                }
+            }
+        });
     }
 }

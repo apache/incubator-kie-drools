@@ -106,7 +106,7 @@ public class KiePMMLSimplePredicate extends KiePMMLPredicate {
         return Objects.hash(super.hashCode(), operator, name, value);
     }
 
-    private boolean evaluation(Object inputValue) {
+    protected boolean evaluation(Object inputValue) {
         logger.info("evaluation {}", inputValue);
         switch (operator) {
             case EQUAL:

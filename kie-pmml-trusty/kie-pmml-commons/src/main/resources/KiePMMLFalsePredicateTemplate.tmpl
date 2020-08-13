@@ -13,25 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.drools.tree.model;
+package org.kie.pmml.commons.model.predicates;
 
 import java.util.Collections;
 
-import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
-import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
+import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
 
+public class KiePMMLFalsePredicateTemplate extends KiePMMLFalsePredicate {
 
-public class KiePMMLTreeModelTemplate extends KiePMMLTreeModel {
-
-    public KiePMMLTreeModelTemplate() {
-        super(modelName, Collections.emptyList(), algorithmName);
-        targetField = targetField;
-        pmmlMODEL = null;
-    }
-
-    @Override
-    public String getKModulePackageName() {
-        return null;
+    public KiePMMLFalsePredicateTemplate() {
+        super(name, Collections.emptyList());
     }
 }

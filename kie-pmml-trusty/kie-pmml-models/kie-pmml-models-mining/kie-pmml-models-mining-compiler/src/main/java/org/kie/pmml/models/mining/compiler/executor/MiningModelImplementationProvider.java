@@ -15,13 +15,11 @@
  */
 package org.kie.pmml.models.mining.compiler.executor;
 
-import java.io.File;
 import java.util.Map;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.MiningModel;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
@@ -54,13 +52,6 @@ public class MiningModelImplementationProvider implements ModelImplementationPro
             throw new KiePMMLException(String.format("Expecting KnowledgeBuilder, received %s",
                                                      kBuilder.getClass().getName()));
         }
-        File dumpDir = new File("target/dumpDir");
-        if (!dumpDir.exists()) {
-            dumpDir.mkdir();
-        }
-        ((KnowledgeBuilderImpl) kBuilder)
-                .getBuilderConfiguration()
-                .setDumpDir(dumpDir);
         return getKiePMMLMiningModel(dataDictionary, transformationDictionary, model, (KnowledgeBuilder) kBuilder);
     }
 

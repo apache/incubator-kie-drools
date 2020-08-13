@@ -113,4 +113,6 @@ public class KiePMMLScorecardModelFactory {
             }
         });
     }
+
+
 }

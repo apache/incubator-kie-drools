@@ -27,9 +27,9 @@ public class KiePMMLSegment extends AbstractKiePMMLBase {
 
     private final KiePMMLPredicate kiePMMLPredicate;
     private final KiePMMLModel model;
-    private double weight = 1;
+    protected double weight = 1;
 
-    private KiePMMLSegment(String name, List<KiePMMLExtension> extensions, KiePMMLPredicate kiePMMLPredicate, KiePMMLModel model) {
+    protected KiePMMLSegment(String name, List<KiePMMLExtension> extensions, KiePMMLPredicate kiePMMLPredicate, KiePMMLModel model) {
         super(name, extensions);
         this.kiePMMLPredicate = kiePMMLPredicate;
         this.model = model;

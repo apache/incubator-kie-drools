@@ -35,9 +35,9 @@ public class KiePMMLMiningModel extends KiePMMLModel implements HasNestedModels 
 
     public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.MINING_MODEL;
 
-    private String algorithmName;
-    private boolean scorable = true;
-    private KiePMMLSegmentation segmentation;
+    protected String algorithmName;
+    protected boolean scorable = true;
+    protected KiePMMLSegmentation segmentation;
 
     protected KiePMMLMiningModel(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);

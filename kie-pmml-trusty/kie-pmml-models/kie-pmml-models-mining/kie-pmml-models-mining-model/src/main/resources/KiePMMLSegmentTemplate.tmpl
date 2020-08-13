@@ -13,25 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.drools.tree.model;
+package org.kie.pmml.models.mining.model.segmentation;
 
 import java.util.Collections;
 
-import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
-import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
+import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
 
+public class KiePMMLSegmentTemplate extends KiePMMLSegment {
 
-public class KiePMMLTreeModelTemplate extends KiePMMLTreeModel {
-
-    public KiePMMLTreeModelTemplate() {
-        super(modelName, Collections.emptyList(), algorithmName);
-        targetField = targetField;
-        pmmlMODEL = null;
+    public KiePMMLSegmentTemplate() {
+        super(name, Collections.emptyList(), kiePMMLPredicate, model);
+        weight = 1;
+        id = null;
     }
 
-    @Override
-    public String getKModulePackageName() {
-        return null;
-    }
 }

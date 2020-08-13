@@ -45,7 +45,9 @@ import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +56,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulation;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
+import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
 
 public class KiePMMLRegressionTableRegressionFactory {
 
@@ -78,24 +81,21 @@ public class KiePMMLRegressionTableRegressionFactory {
 
     public static Map<String, KiePMMLTableSourceCategory> getRegressionTables(final List<RegressionTable> regressionTables, final RegressionModel.NormalizationMethod normalizationMethod, final String targetField, final String packageName) throws IOException {
         logger.trace("getRegressionTables {}", regressionTables);
-        CompilationUnit templateCU = getFromFileName(KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE_JAVA);
         Map<String, KiePMMLTableSourceCategory> toReturn = new HashMap<>();
         for (RegressionTable regressionTable : regressionTables) {
-            final Map.Entry<String, String> regressionTableEntry = getRegressionTable(templateCU, regressionTable, normalizationMethod, targetField, packageName);
+            final Map.Entry<String, String> regressionTableEntry = getRegressionTable(regressionTable, normalizationMethod, targetField, packageName);
             String targetCategory = regressionTable.getTargetCategory() != null ? regressionTable.getTargetCategory().toString() : "";
             toReturn.put(regressionTableEntry.getKey(), new KiePMMLTableSourceCategory(regressionTableEntry.getValue(), targetCategory));
         }
         return toReturn;
     }
 
-    public static Map.Entry<String, String> getRegressionTable(final CompilationUnit templateCU, final RegressionTable regressionTable, final RegressionModel.NormalizationMethod normalizationMethod, final String targetField, final String packageName) {
+    public static Map.Entry<String, String> getRegressionTable(final RegressionTable regressionTable, final RegressionModel.NormalizationMethod normalizationMethod, final String targetField, final String packageName) {
         logger.trace("getRegressionTable {}", regressionTable);
-        CompilationUnit cloneCU = templateCU.clone();
-        cloneCU.setPackageDeclaration(packageName);
-        ClassOrInterfaceDeclaration tableTemplate = cloneCU.getClassByName(KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE)
-                .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
         String className = "KiePMMLRegressionTableRegression" + classArity.addAndGet(1);
-        tableTemplate.setName(className);
+        CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName, KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE_JAVA, KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE);
+        ClassOrInterfaceDeclaration tableTemplate = cloneCU.getClassByName(className)
+                .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         final ConstructorDeclaration constructorDeclaration = tableTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing default constructor in ClassOrInterfaceDeclaration %s ", tableTemplate.getName())));
         setConstructor(regressionTable, constructorDeclaration, tableTemplate.getName(), targetField);
         final Map<String, MethodDeclaration> numericPredictorsMap = addNumericPredictors(regressionTable.getNumericPredictors(), tableTemplate);
@@ -107,7 +107,8 @@ public class KiePMMLRegressionTableRegressionFactory {
         addMapPopulation(predictorTermsMap, body, "predictorTermsFunctionMap");
         populateGetTargetCategory(tableTemplate, regressionTable.getTargetCategory());
         populateUpdateResult(tableTemplate, normalizationMethod);
-        return new AbstractMap.SimpleEntry<>(className, cloneCU.toString());
+//        return new AbstractMap.SimpleEntry<>(className, cloneCU.toString());
+        return new AbstractMap.SimpleEntry<>(getFullClassName(cloneCU), cloneCU.toString());
     }
 
     /**

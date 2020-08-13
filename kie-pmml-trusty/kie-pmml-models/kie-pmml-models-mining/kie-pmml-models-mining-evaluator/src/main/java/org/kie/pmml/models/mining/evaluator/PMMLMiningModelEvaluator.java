@@ -23,10 +23,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.util.StringUtils;
 import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.KieRuntimeFactory;
@@ -123,7 +126,9 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
         final String key = containerModelName + "_" + kModulePackageName;
         InternalKnowledgeBase kieBase = MAPPED_KIEBASES.computeIfAbsent(key, s -> {
             List<KiePackage> packages = Collections.singletonList(knowledgeBase.getKiePackage(kModulePackageName));
-            InternalKnowledgeBase toReturn = KnowledgeBaseFactory.newKnowledgeBase(kModulePackageName);
+            RuleBaseConfiguration conf = new RuleBaseConfiguration();
+            conf.setClassLoader(((KnowledgeBaseImpl) knowledgeBase).getRootClassLoader());
+            InternalKnowledgeBase toReturn = KnowledgeBaseFactory.newKnowledgeBase(kModulePackageName, conf);
             toReturn.addPackages(packages);
             return toReturn;
         });

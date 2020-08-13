@@ -20,33 +20,49 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.DoubleLiteralExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.Segment;
-import org.drools.compiler.kproject.ReleaseIdImpl;
-import org.kie.api.KieBase;
-import org.kie.api.KieServices;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
+import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.getPredicate;
+import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.getPredicateSourcesMap;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModel;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelFromPlugin;
+import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
+import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
+import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
 
 public class KiePMMLSegmentFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLSegmentFactory.class.getName());
+    static final String KIE_PMML_SEGMENT_TEMPLATE_JAVA = "KiePMMLSegmentTemplate.tmpl";
+    static final String KIE_PMML_SEGMENT_TEMPLATE = "KiePMMLSegmentTemplate";
 
     private KiePMMLSegmentFactory() {
     }
@@ -110,6 +126,62 @@ public class KiePMMLSegmentFactory {
             throw new KiePMMLException("Retrieved KiePMMLModel for segment " + segment.getModel().getModelName() + " " +
                                                "does not implement HasSources");
         }
-        return ((HasSourcesMap) kiePmmlModel).getSourcesMap();
+        final Map<String, String> toReturn = new HashMap<>(((HasSourcesMap) kiePmmlModel).getSourcesMap());
+        String kiePMMLModelClass = packageName + "." + getSanitizedClassName(segment.getModel().getModelName());
+        if (!toReturn.containsKey(kiePMMLModelClass)) {
+            throw new KiePMMLException("Expected generated class " + kiePMMLModelClass + " not found");
+        }
+        final String className = getSanitizedClassName(segment.getId());
+        CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName, KIE_PMML_SEGMENT_TEMPLATE_JAVA, KIE_PMML_SEGMENT_TEMPLATE);
+        ClassOrInterfaceDeclaration segmentTemplate = cloneCU.getClassByName(className)
+                .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
+        final ConstructorDeclaration constructorDeclaration = segmentTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing default constructor in ClassOrInterfaceDeclaration %s ", segmentTemplate.getName())));
+        KiePMMLPredicate predicate = getPredicate(segment.getPredicate(), dataDictionary);
+        toReturn.putAll(getPredicateSourcesMap(predicate, packageName));
+        String predicateClassName = packageName + "." + predicate.getName();
+        setConstructor(segment.getId(), className, constructorDeclaration, predicateClassName,  kiePMMLModelClass, segment.getWeight().doubleValue());
+        toReturn.put(getFullClassName(cloneCU), cloneCU.toString());
+        return toReturn;
+    }
+
+    static void setConstructor(final String segmentName,
+                               final String generatedClassName,
+                               final ConstructorDeclaration constructorDeclaration,
+                               final String predicateClassName,
+                               final String kiePMMLModelClass,
+                               final double weight) {
+        constructorDeclaration.setName(generatedClassName);
+        final BlockStmt body = constructorDeclaration.getBody();
+        body.getStatements().iterator().forEachRemaining(statement -> {
+            if (statement instanceof ExplicitConstructorInvocationStmt) {
+                ExplicitConstructorInvocationStmt superStatement = (ExplicitConstructorInvocationStmt) statement;
+                NameExpr nameExprs = (NameExpr) superStatement.getArgument(0);
+                nameExprs.setName(String.format("\"%s\"", segmentName));
+                nameExprs = (NameExpr) superStatement.getArgument(2);
+                ClassOrInterfaceType classOrInterfaceType = parseClassOrInterfaceType(predicateClassName);
+                ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
+                objectCreationExpr.setType(classOrInterfaceType);
+                nameExprs.setName(objectCreationExpr.toString());
+                nameExprs = (NameExpr) superStatement.getArgument(3);
+                classOrInterfaceType = parseClassOrInterfaceType(kiePMMLModelClass);
+                objectCreationExpr = new ObjectCreationExpr();
+                objectCreationExpr.setType(classOrInterfaceType);
+                nameExprs.setName(objectCreationExpr.toString());
+            }
+        });
+        final List<AssignExpr> assignExprs = body.findAll(AssignExpr.class);
+        assignExprs.forEach(assignExpr -> {
+            final String assignExprName = assignExpr.getTarget().asNameExpr().getNameAsString();
+            switch (assignExprName) {
+                case "weight":
+                    assignExpr.setValue(new DoubleLiteralExpr(weight));
+                    break;
+                case "id":
+                    assignExpr.setValue(new StringLiteralExpr(segmentName));
+                    break;
+                default:
+                    // NOOP
+            }
+        });
     }
 }

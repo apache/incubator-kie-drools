@@ -38,10 +38,12 @@ import org.dmg.pmml.OpType;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.regression.RegressionModel;
 import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 import org.slf4j.Logger;
@@ -52,6 +54,7 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageNa
 import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.getOutputFields;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
+import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.addTransformationsInClassOrInterfaceDeclaration;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 
@@ -81,26 +84,30 @@ public class KiePMMLRegressionModelFactory {
                                                                           final RegressionModel model,
                                                                           final String packageName) throws IOException {
         logger.trace("getKiePMMLRegressionModelSourcesMap {} {} {}", dataDictionary, model, packageName);
+
+
         String className = getSanitizedClassName(model.getModelName());
+        CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName, KIE_PMML_REGRESSION_MODEL_TEMPLATE_JAVA, KIE_PMML_REGRESSION_MODEL_TEMPLATE);
+        ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(className)
+                .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         String modelName = model.getModelName();
         String targetFieldName = getTargetFieldName(dataDictionary, model).orElse(null);
         List<KiePMMLOutputField> outputFields = getOutputFields(model);
         Map<String, KiePMMLTableSourceCategory> tablesSourceMap = getRegressionTablesMap(dataDictionary, model, targetFieldName, outputFields, packageName);
-        CompilationUnit templateCU = getFromFileName(KIE_PMML_REGRESSION_MODEL_TEMPLATE_JAVA);
-        CompilationUnit cloneCU = templateCU.clone();
-        cloneCU.setPackageDeclaration(packageName);
-        ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(KIE_PMML_REGRESSION_MODEL_TEMPLATE)
-                .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
-        modelTemplate.setName(className);
         String nestedTable = tablesSourceMap.size() == 1 ? tablesSourceMap.keySet().iterator().next() :
-                tablesSourceMap.keySet().stream().filter(tableName -> tableName.startsWith("KiePMMLRegressionTableClassification"))
-                        .findFirst().orElseThrow(() -> new RuntimeException("Failed to find expected KiePMMLRegressionTableClassification"));
+                tablesSourceMap
+                        .keySet()
+                        .stream()
+                        .filter(tableName -> tableName.startsWith(packageName + ".KiePMMLRegressionTableClassification"))
+                        .findFirst()
+                        .orElseThrow(() -> new KiePMMLException("Failed to find expected KiePMMLRegressionTableClassification"));
         final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing default constructor in ClassOrInterfaceDeclaration %s ", modelTemplate.getName())));
         populateConstructor(className, nestedTable, constructorDeclaration, targetFieldName, MINING_FUNCTION.byName(model.getMiningFunction().value()), modelName);
         addTransformationsInClassOrInterfaceDeclaration(modelTemplate, transformationDictionary, model.getLocalTransformations());
-        Map<String, String> toReturn = tablesSourceMap.entrySet().stream().collect(Collectors.toMap(entry -> packageName + "." + entry.getKey(), entry -> entry.getValue().getSource()));
-        String fullClassName = packageName + "." + className;
-        toReturn.put(fullClassName, cloneCU.toString());
+        Map<String, String> toReturn = tablesSourceMap.entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getSource()));
+        toReturn.put(getFullClassName(cloneCU), cloneCU.toString());
         return toReturn;
     }
 

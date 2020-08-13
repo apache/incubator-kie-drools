@@ -28,9 +28,9 @@ import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
 public class KiePMMLSegmentation extends AbstractKiePMMLBase {
 
     private final MULTIPLE_MODEL_METHOD multipleModelMethod;
-    private List<KiePMMLSegment> segments;
+    protected List<KiePMMLSegment> segments;
 
-    private KiePMMLSegmentation(String name, List<KiePMMLExtension> extensions, MULTIPLE_MODEL_METHOD multipleModelMethod) {
+    protected KiePMMLSegmentation(String name, List<KiePMMLExtension> extensions, MULTIPLE_MODEL_METHOD multipleModelMethod) {
         super(name, extensions);
         this.multipleModelMethod = multipleModelMethod;
     }
