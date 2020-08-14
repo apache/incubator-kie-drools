@@ -127,12 +127,17 @@ public class KieServicesImpl implements InternalKieServices {
     }
 
     public KieContainer newKieClasspathContainer(String containerId, ClassLoader classLoader) {
+        return newKieClasspathContainer(containerId, classLoader, null);
+    }
+
+    @Override
+    public KieContainer newKieClasspathContainer(String containerId, ClassLoader classLoader, ReleaseId releaseId) {
     	if (containerId == null) {
-    	    KieContainerImpl newContainer = new KieContainerImpl(UUID.randomUUID().toString(), new ClasspathKieProject(classLoader, listener), null);
+            KieContainerImpl newContainer = new KieContainerImpl(UUID.randomUUID().toString(), new ClasspathKieProject(classLoader, listener, releaseId), null);
     	    return newContainer;
     	}
     	if ( kContainers.get(containerId) == null ) {
-            KieContainerImpl newContainer = new KieContainerImpl(containerId, new ClasspathKieProject(classLoader, listener), null);
+            KieContainerImpl newContainer = new KieContainerImpl(containerId, new ClasspathKieProject(classLoader, listener, releaseId), null, releaseId);
             KieContainer check = kContainers.putIfAbsent(containerId, newContainer);
             if (check == null) {
 				return newContainer;

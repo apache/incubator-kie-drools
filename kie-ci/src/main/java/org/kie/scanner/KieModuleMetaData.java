@@ -73,6 +73,10 @@ public interface KieModuleMetaData {
         public static KieModuleMetaData newKieModuleMetaData( File pomFile, DependencyFilter dependencyFilter ) {
             return new KieModuleMetaDataImpl( pomFile, dependencyFilter );
         }
+
+        public static KieModuleMetaData newInJarKieModuleMetaData(ReleaseId releaseId, DependencyFilter compileFilter) {
+            return new KieInJarModuleMetaDataImpl(releaseId, compileFilter);
+        }
     }
 }
 
