@@ -270,6 +270,40 @@ public class MarshallerTest {
     }
 
     @Test
+    public void testMultiAccumulate() throws Exception {
+        // DROOLS-5579
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  accumulate ( Person ( getName().startsWith(\"M\"), $age : age ); \n" +
+                        "                $sum : sum( $age ), $max : max( $age )  \n" +
+                        "              )                          \n" +
+                        "then\n" +
+                        "  insert($sum);\n" +
+                        "end";
+
+        KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
+        KieSession ksession = null;
+        try {
+            ksession = kbase.newKieSession(null, env);
+
+            ksession.insert(new Person("Mark", 37));
+            ksession.insert(new Person("Edson", 35));
+            ksession.insert(new Person("Mario", 40));
+
+            assertEquals(1, ksession.fireAllRules());
+
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+
+            assertEquals(0, ksession.fireAllRules());
+        } finally {
+            if (ksession != null) {
+                ksession.dispose();
+            }
+        }
+    }
+
+    @Test
     public void testSubnetwork() throws Exception {
         final String str =
                 "rule R1 when\n" +

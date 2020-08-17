@@ -858,7 +858,7 @@ public class ProtobufInputMarshaller {
             int result = 1;
             result = prime * result + ((pkgName == null) ? 0 : pkgName.hashCode());
             result = prime * result + ((ruleName == null) ? 0 : ruleName.hashCode());
-            result = prime * result + Arrays.hashCode( tuple );
+            result = prime * result + Arrays.deepHashCode( tuple );
             return result;
         }
 
@@ -874,8 +874,7 @@ public class ProtobufInputMarshaller {
             if ( ruleName == null ) {
                 if ( other.ruleName != null ) return false;
             } else if ( !ruleName.equals( other.ruleName ) ) return false;
-            if ( !Arrays.equals( tuple, other.tuple ) ) return false;
-            return true;
+            return Arrays.deepEquals( tuple, other.tuple );
         }
     }
 
