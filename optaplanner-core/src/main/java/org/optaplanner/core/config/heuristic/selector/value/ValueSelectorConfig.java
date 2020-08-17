@@ -278,7 +278,7 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
             return valueSelector;
         }
         entityDescriptor = downcastEntityDescriptor(configPolicy, entityDescriptor);
-        GenuineVariableDescriptor variableDescriptor = deduceVariableDescriptor(entityDescriptor, variableName);
+        GenuineVariableDescriptor variableDescriptor = entityDescriptor.deduceVariableDescriptor(variableName);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
                 inheritedSelectionOrder);

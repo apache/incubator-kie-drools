@@ -43,6 +43,7 @@ import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.ManualEntityMimicRecorder;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
@@ -145,8 +146,8 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
         configPolicy.addEntityMimicRecorder(mimicSelectorId, manualEntityMimicRecorder);
         MoveSelectorConfig moveSelectorConfig_ = buildMoveSelectorConfig(configPolicy,
                 sourceEntitySelector, mimicSelectorId);
-        MoveSelector moveSelector = moveSelectorConfig_.buildMoveSelector(configPolicy,
-                SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
+        MoveSelector moveSelector = MoveSelectorFactory.create(moveSelectorConfig_)
+                .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
         ScoreBounder scoreBounder = scoreBounderEnabled
                 ? new TrendBasedScoreBounder(configPolicy.getScoreDirectorFactory())
                 : null;

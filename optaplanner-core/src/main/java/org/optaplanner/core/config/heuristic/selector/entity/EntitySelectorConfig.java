@@ -248,8 +248,7 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
         if (mimicSelectorRef != null) {
             return buildMimicReplaying(configPolicy);
         }
-        EntityDescriptor entityDescriptor = deduceEntityDescriptor(
-                configPolicy.getSolutionDescriptor(), entityClass);
+        EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor().deduceEntityDescriptor(entityClass);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
 

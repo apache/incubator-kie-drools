@@ -8402,8 +8402,16 @@
           "fieldName": "DEFAULT_RANDOM_SEED",
           "elementKind": "field",
           "justification": "DEFAULT_RANDOM_SEED constant moved to the DefaultSolverFactory."
+        },
+        {
+          "code": "java.field.removedWithConstant",
+          "old": "field org.optaplanner.core.config.heuristic.selector.move.generic.chained.KOptMoveSelectorConfig.K",
+          "package": "org.optaplanner.core.config.heuristic.selector.move.generic.chained",
+          "classSimpleName": "KOptMoveSelectorConfig",
+          "fieldName": "K",
+          "elementKind": "field",
+          "justification": "K constant move to the KOptMoveSelectorFactory."
         }
-
       ]
     }
   }

@@ -516,6 +516,58 @@ public class EntityDescriptor<Solution_> {
         return false;
     }
 
+    public GenuineVariableDescriptor deduceVariableDescriptor(String variableName) {
+        GenuineVariableDescriptor<Solution_> variableDescriptor;
+        if (variableName != null) {
+            variableDescriptor = getGenuineVariableDescriptor(variableName);
+            if (variableDescriptor == null) {
+                throw new IllegalArgumentException("The config (" + this
+                        + ") has a variableName (" + variableName
+                        + ") which is not a valid planning variable on entityClass ("
+                        + getEntityClass() + ").\n"
+                        + buildInvalidVariableNameExceptionMessage(variableName));
+            }
+        } else {
+            Collection<GenuineVariableDescriptor<Solution_>> variableDescriptors = getGenuineVariableDescriptors();
+            if (variableDescriptors.size() != 1) {
+                throw new IllegalArgumentException("The config (" + this
+                        + ") has no configured variableName (" + variableName
+                        + ") for entityClass (" + getEntityClass()
+                        + ") and because there are multiple variableNames ("
+                        + getGenuineVariableNameSet()
+                        + "), it cannot be deduced automatically.");
+            }
+            variableDescriptor = variableDescriptors.iterator().next();
+        }
+        return variableDescriptor;
+    }
+
+    public List<GenuineVariableDescriptor<Solution_>> deduceVariableDescriptorList(List<String> variableNameIncludeList) {
+        List<GenuineVariableDescriptor<Solution_>> variableDescriptorList = getGenuineVariableDescriptorList();
+        if (variableNameIncludeList == null) {
+            return variableDescriptorList;
+        }
+        List<GenuineVariableDescriptor<Solution_>> resolvedVariableDescriptorList =
+                new ArrayList<>(variableDescriptorList.size());
+        for (String variableNameInclude : variableNameIncludeList) {
+            boolean found = false;
+            for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
+                if (variableDescriptor.getVariableName().equals(variableNameInclude)) {
+                    resolvedVariableDescriptorList.add(variableDescriptor);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                throw new IllegalArgumentException("The config (" + this
+                        + ") has a variableNameInclude (" + variableNameInclude
+                        + ") which does not exist in the entity (" + getEntityClass()
+                        + ")'s variableDescriptorList (" + variableDescriptorList + ").");
+            }
+        }
+        return resolvedVariableDescriptorList;
+    }
+
     // ************************************************************************
     // Extraction methods
     // ************************************************************************

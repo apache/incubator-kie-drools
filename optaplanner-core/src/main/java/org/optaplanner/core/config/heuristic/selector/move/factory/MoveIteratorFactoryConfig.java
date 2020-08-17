@@ -20,13 +20,9 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactory;
-import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactoryToMoveSelectorBridge;
 import org.optaplanner.core.impl.io.jaxb.JaxbCustomPropertiesAdapter;
 
 public class MoveIteratorFactoryConfig extends MoveSelectorConfig<MoveIteratorFactoryConfig> {
@@ -52,24 +48,6 @@ public class MoveIteratorFactoryConfig extends MoveSelectorConfig<MoveIteratorFa
 
     public void setMoveIteratorFactoryCustomProperties(Map<String, String> moveIteratorFactoryCustomProperties) {
         this.moveIteratorFactoryCustomProperties = moveIteratorFactoryCustomProperties;
-    }
-
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
-        if (moveIteratorFactoryClass == null) {
-            throw new IllegalArgumentException("The moveIteratorFactoryConfig (" + this
-                    + ") lacks a moveListFactoryClass (" + moveIteratorFactoryClass + ").");
-        }
-        MoveIteratorFactory moveIteratorFactory = ConfigUtils.newInstance(this,
-                "moveIteratorFactoryClass", moveIteratorFactoryClass);
-        ConfigUtils.applyCustomProperties(moveIteratorFactory, "moveIteratorFactoryClass",
-                moveIteratorFactoryCustomProperties, "moveIteratorFactoryCustomProperties");
-        return new MoveIteratorFactoryToMoveSelectorBridge(moveIteratorFactory, randomSelection);
     }
 
     @Override

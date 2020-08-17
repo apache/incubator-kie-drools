@@ -175,7 +175,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList.size());
         int partPhaseIndex = 0;
         for (PhaseConfig phaseConfig : phaseConfigList) {
-            PhaseFactory<Solution_> phaseFactory = PhaseFactory.createPhaseFactory(phaseConfig);
+            PhaseFactory<Solution_> phaseFactory = PhaseFactory.create(phaseConfig);
             Phase<Solution_> phase =
                     phaseFactory.buildPhase(partPhaseIndex, configPolicy, bestSolutionRecaller, partTermination);
             phaseList.add(phase);

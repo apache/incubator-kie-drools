@@ -16,16 +16,11 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.composite;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 
-import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig;
 import org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig;
@@ -38,9 +33,6 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubCh
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.composite.CartesianProductMoveSelector;
 
 public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<CartesianProductMoveSelectorConfig> {
 
@@ -90,23 +82,6 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
 
     public void setIgnoreEmptyChildIterators(Boolean ignoreEmptyChildIterators) {
         this.ignoreEmptyChildIterators = ignoreEmptyChildIterators;
-    }
-
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
-        List<MoveSelector> moveSelectorList = new ArrayList<>(moveSelectorConfigList.size());
-        for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList) {
-            moveSelectorList.add(
-                    moveSelectorConfig.buildMoveSelector(configPolicy,
-                            minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection)));
-        }
-        boolean ignoreEmptyChildIterators_ = defaultIfNull(ignoreEmptyChildIterators, true);
-        return new CartesianProductMoveSelector(moveSelectorList, ignoreEmptyChildIterators_, randomSelection);
     }
 
     @Override

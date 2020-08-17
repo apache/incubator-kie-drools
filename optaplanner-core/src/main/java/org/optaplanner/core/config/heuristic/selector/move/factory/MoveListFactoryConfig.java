@@ -20,13 +20,9 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
-import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactoryToMoveSelectorBridge;
 import org.optaplanner.core.impl.io.jaxb.JaxbCustomPropertiesAdapter;
 
 public class MoveListFactoryConfig extends MoveSelectorConfig<MoveListFactoryConfig> {
@@ -57,30 +53,6 @@ public class MoveListFactoryConfig extends MoveSelectorConfig<MoveListFactoryCon
     // ************************************************************************
     // Builder methods
     // ************************************************************************
-
-    @Override
-    protected boolean isBaseInherentlyCached() {
-        return true;
-    }
-
-    @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
-        if (moveListFactoryClass == null) {
-            throw new IllegalArgumentException("The moveListFactoryConfig (" + this
-                    + ") lacks a moveListFactoryClass (" + moveListFactoryClass + ").");
-        }
-        MoveListFactory moveListFactory = ConfigUtils.newInstance(this,
-                "moveListFactoryClass", moveListFactoryClass);
-        ConfigUtils.applyCustomProperties(moveListFactory, "moveListFactoryClass",
-                moveListFactoryCustomProperties, "moveListFactoryCustomProperties");
-        // MoveListFactoryToMoveSelectorBridge caches by design, so it uses the minimumCacheType
-        if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {
-            // cacheType upgrades to SelectionCacheType.STEP (without shuffling) because JIT is not supported
-            minimumCacheType = SelectionCacheType.STEP;
-        }
-        return new MoveListFactoryToMoveSelectorBridge(moveListFactory, minimumCacheType, randomSelection);
-    }
 
     @Override
     public MoveListFactoryConfig inherit(MoveListFactoryConfig inheritedConfig) {

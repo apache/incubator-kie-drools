@@ -16,16 +16,11 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.composite;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 
-import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig;
 import org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig;
@@ -38,11 +33,7 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubCh
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.FixedSelectorProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
-import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.composite.UnionMoveSelector;
 
 public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelectorConfig> {
 
@@ -93,50 +84,6 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelecto
     public void setSelectorProbabilityWeightFactoryClass(
             Class<? extends SelectionProbabilityWeightFactory> selectorProbabilityWeightFactoryClass) {
         this.selectorProbabilityWeightFactoryClass = selectorProbabilityWeightFactoryClass;
-    }
-
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
-        List<MoveSelector> moveSelectorList = new ArrayList<>(moveSelectorConfigList.size());
-        for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList) {
-            moveSelectorList.add(
-                    moveSelectorConfig.buildMoveSelector(configPolicy,
-                            minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection)));
-        }
-
-        SelectionProbabilityWeightFactory selectorProbabilityWeightFactory;
-        if (selectorProbabilityWeightFactoryClass != null) {
-            if (!randomSelection) {
-                throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                        + ") with selectorProbabilityWeightFactoryClass (" + selectorProbabilityWeightFactoryClass
-                        + ") has non-random randomSelection (" + randomSelection + ").");
-            }
-            selectorProbabilityWeightFactory = ConfigUtils.newInstance(this,
-                    "selectorProbabilityWeightFactoryClass", selectorProbabilityWeightFactoryClass);
-        } else if (randomSelection) {
-            Map<MoveSelector, Double> fixedProbabilityWeightMap = new HashMap<>(
-                    moveSelectorConfigList.size());
-            for (int i = 0; i < moveSelectorConfigList.size(); i++) {
-                MoveSelectorConfig moveSelectorConfig = moveSelectorConfigList.get(i);
-                MoveSelector moveSelector = moveSelectorList.get(i);
-                Double fixedProbabilityWeight = moveSelectorConfig.getFixedProbabilityWeight();
-                if (fixedProbabilityWeight == null) {
-                    // Default to equal probability for each move type => unequal probability for each move instance
-                    fixedProbabilityWeight = 1.0;
-                }
-                fixedProbabilityWeightMap.put(moveSelector, fixedProbabilityWeight);
-            }
-            selectorProbabilityWeightFactory = new FixedSelectorProbabilityWeightFactory(fixedProbabilityWeightMap);
-        } else {
-            selectorProbabilityWeightFactory = null;
-        }
-        return new UnionMoveSelector(moveSelectorList, randomSelection,
-                selectorProbabilityWeightFactory);
     }
 
     @Override

@@ -18,17 +18,10 @@ package org.optaplanner.core.config.heuristic.selector.move.generic.chained;
 
 import javax.xml.bind.annotation.XmlElement;
 
-import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.KOptMoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
 /**
  * THIS IS VERY EXPERIMENTAL. It's NOT DOCUMENTED because we'll only document it when it actually works in more than 1 use case.
@@ -40,8 +33,6 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 public class KOptMoveSelectorConfig extends MoveSelectorConfig<KOptMoveSelectorConfig> {
 
     public static final String XML_ELEMENT_NAME = "kOptMoveSelector";
-
-    public static final int K = 3;
 
     @XmlElement(name = "entitySelector")
     private EntitySelectorConfig entitySelectorConfig = null;
@@ -65,29 +56,6 @@ public class KOptMoveSelectorConfig extends MoveSelectorConfig<KOptMoveSelectorC
 
     public void setValueSelectorConfig(ValueSelectorConfig valueSelectorConfig) {
         this.valueSelectorConfig = valueSelectorConfig;
-    }
-
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
-        EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
-                : entitySelectorConfig;
-        EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(configPolicy,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        ValueSelectorConfig valueSelectorConfig_ = valueSelectorConfig == null ? new ValueSelectorConfig()
-                : valueSelectorConfig;
-        ValueSelector[] valueSelectors = new ValueSelector[K - 1];
-        for (int i = 0; i < valueSelectors.length; i++) {
-            valueSelectors[i] = valueSelectorConfig_.buildValueSelector(configPolicy,
-                    entitySelector.getEntityDescriptor(),
-                    minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-
-        }
-        return new KOptMoveSelector(entitySelector, valueSelectors, randomSelection);
     }
 
     @Override

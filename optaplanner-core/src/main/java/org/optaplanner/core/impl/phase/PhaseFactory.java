@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 
 public interface PhaseFactory<Solution_> {
 
-    static <Solution_> PhaseFactory<Solution_> createPhaseFactory(PhaseConfig<?> phaseConfig) {
+    static <Solution_> PhaseFactory<Solution_> create(PhaseConfig<?> phaseConfig) {
         if (LocalSearchPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
             return new DefaultLocalSearchPhaseFactory<>((LocalSearchPhaseConfig) phaseConfig);
         } else if (ConstructionHeuristicPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {

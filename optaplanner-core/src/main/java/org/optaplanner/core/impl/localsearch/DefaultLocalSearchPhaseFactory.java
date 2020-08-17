@@ -36,6 +36,8 @@ import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchPickEa
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
+import org.optaplanner.core.impl.heuristic.selector.move.composite.UnionMoveSelectorFactory;
 import org.optaplanner.core.impl.localsearch.decider.LocalSearchDecider;
 import org.optaplanner.core.impl.localsearch.decider.MultiThreadedLocalSearchDecider;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
@@ -208,11 +210,11 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
             UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig();
             unionMoveSelectorConfig.setMoveSelectorConfigList(Arrays.asList(
                     new ChangeMoveSelectorConfig(), new SwapMoveSelectorConfig()));
-            moveSelector = unionMoveSelectorConfig.buildMoveSelector(configPolicy,
+            moveSelector = new UnionMoveSelectorFactory(unionMoveSelectorConfig).buildMoveSelector(configPolicy,
                     defaultCacheType, defaultSelectionOrder);
         } else {
-            moveSelector = phaseConfig.getMoveSelectorConfig().buildMoveSelector(configPolicy, defaultCacheType,
-                    defaultSelectionOrder);
+            moveSelector = MoveSelectorFactory.create(phaseConfig.getMoveSelectorConfig())
+                    .buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder);
         }
         return moveSelector;
     }

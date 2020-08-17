@@ -3,9 +3,12 @@
     "revapi": {
       "filter": {
         "elements": {
+          "comment": "We check only getters and setters of the config classes excluding those inherited from optaplanner-core.",
           "exclude": [
             "method .* org\\.optaplanner\\.benchmark\\.config.*::(?!(set|get)).*",
-            "parameter .* org\\.optaplanner\\.benchmark\\.config.*::(?!(set|get)).*"
+            "parameter .* org\\.optaplanner\\.benchmark\\.config.*::(?!(set|get)).*",
+            "method .* org\\.optaplanner\\.core\\.config.*",
+            "parameter .* org\\.optaplanner\\.core\\.config.*"
           ]
         }
       },
