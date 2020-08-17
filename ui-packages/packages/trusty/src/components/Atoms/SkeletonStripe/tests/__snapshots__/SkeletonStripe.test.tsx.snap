@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SkeletonStripe renders a small stripe 1`] = `
+<span
+  className="skeleton__stripe"
+  style={Object {}}
+/>
+`;

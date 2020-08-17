@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Execution status renders a negative outcome 1`] = `
+<Fragment>
+  <ErrorCircleOIcon
+    className="execution-status-badge execution-status-badge--error"
+    color="currentColor"
+    noVerticalAlign={false}
+    size="sm"
+  />
+  <span>
+    Error
+  </span>
+</Fragment>
+`;
+
+exports[`Execution status renders a positive outcome 1`] = `
+<Fragment>
+  <CheckCircleIcon
+    className="execution-status-badge execution-status-badge--success"
+    color="currentColor"
+    noVerticalAlign={false}
+    size="sm"
+  />
+  <span>
+    Completed
+  </span>
+</Fragment>
+`;

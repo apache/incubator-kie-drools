@@ -15,28 +15,29 @@ module.exports = {
     }),
     new webpack.EnvironmentPlugin({
       KOGITO_APP_VERSION: 'DEV',
-      KOGITO_APP_NAME: 'Trusty'
+      KOGITO_APP_NAME: 'Trusty',
+      KOGITO_TRUSTY_API_HTTP_URL: 'http://localhost:1336'
     })
   ],
   module: {
     rules: [
       {
         test: /\.(tsx|ts)?$/,
-        include: [
-          path.resolve(__dirname, 'src')
-        ],
+        include: [path.resolve(__dirname, 'src')],
         use: [
           {
             loader: 'ts-loader',
             options: {
               configFile: path.resolve('./tsconfig.json'),
-              allowTsInNodeModules: true
+              allowTsInNodeModules: true,
+              onlyCompileBundledFiles: true
             }
           }
         ]
       },
       {
         test: /\.(svg|ttf|eot|woff|woff2)$/,
+        include: [/fonts|pficon/],
         use: {
           loader: 'file-loader',
           options: {
@@ -49,7 +50,6 @@ module.exports = {
       },
       {
         test: /\.svg$/,
-        include: input => input.indexOf('background-filter.svg') > 1,
         use: [
           {
             loader: 'url-loader',

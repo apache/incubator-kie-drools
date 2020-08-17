@@ -1,0 +1,889 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Execution table renders a list of executions 1`] = `
+<Table
+  aria-label="Executions list"
+  borders={true}
+  canSelectAll={true}
+  cells={
+    Array [
+      "ID",
+      "Description",
+      "Executor",
+      "Date",
+      "Execution Status",
+    ]
+  }
+  className=""
+  contentId="expanded-content"
+  dropdownDirection="down"
+  dropdownPosition="right"
+  expandId="expandable-toggle"
+  gridBreakPoint="grid-md"
+  isStickyHeader={false}
+  ouiaSafe={true}
+  role="grid"
+  rowLabeledBy="simple-node"
+  rows={
+    Array [
+      Object {
+        "cells": Array [
+          Object {
+            "title": <Link
+              to="/audit/decision/b2b0ed8d-c1e2-46b5-ad4f-3ac54ff4beae"
+            >
+              #B2B0ED8D-C1E2-46B5-AD4F-3AC54FF4BEAE
+            </Link>,
+          },
+          "LoanEligibility",
+          "testUser",
+          Object {
+            "title": <FormattedDate
+              date="2020-06-01T12:33:57+0000"
+            />,
+          },
+          Object {
+            "title": <ExecutionStatus
+              result="success"
+            />,
+          },
+        ],
+        "executionKey": "key-b2b0ed8d-c1e2-46b5-ad4f-3ac54ff4beae",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": <Link
+              to="/audit/decision/b2b0ed8d-c1e2-46b5-ad4f-3hd83kidi4u74"
+            >
+              #B2B0ED8D-C1E2-46B5-AD4F-3HD83KIDI4U74
+            </Link>,
+          },
+          "LoanEligibility",
+          "testUser",
+          Object {
+            "title": <FormattedDate
+              date="2020-06-01T12:33:57+0000"
+            />,
+          },
+          Object {
+            "title": <ExecutionStatus
+              result="success"
+            />,
+          },
+        ],
+        "executionKey": "key-b2b0ed8d-c1e2-46b5-ad4f-3hd83kidi4u74",
+      },
+    ]
+  }
+  variant={null}
+>
+  <TableHeader />
+  <Component
+    rowKey="executionKey"
+  />
+</Table>
+`;
+
+exports[`Execution table renders a loading error message when data loading fails 1`] = `
+<Table
+  aria-label="Executions list"
+  borders={true}
+  canSelectAll={true}
+  cells={
+    Array [
+      "ID",
+      "Description",
+      "Executor",
+      "Date",
+      "Execution Status",
+    ]
+  }
+  className=""
+  contentId="expanded-content"
+  dropdownDirection="down"
+  dropdownPosition="right"
+  expandId="expandable-toggle"
+  gridBreakPoint="grid-md"
+  isStickyHeader={false}
+  ouiaSafe={true}
+  role="grid"
+  rowLabeledBy="simple-node"
+  rows={
+    Array [
+      Object {
+        "cells": Array [
+          Object {
+            "props": Object {
+              "colSpan": 5,
+            },
+            "title": <Bullseye>
+              <EmptyState>
+                <EmptyStateIcon
+                  color="#C9190B"
+                  icon={[Function]}
+                />
+                <Title
+                  headingLevel="h5"
+                  size="lg"
+                >
+                  Loading Error
+                </Title>
+                <EmptyStateBody>
+                  We are unable to load data right now. Try again later.
+                </EmptyStateBody>
+              </EmptyState>
+            </Bullseye>,
+          },
+        ],
+        "executionKey": "no-results",
+        "heightAuto": true,
+      },
+    ]
+  }
+  variant={null}
+>
+  <TableHeader />
+  <Component
+    rowKey="executionKey"
+  />
+</Table>
+`;
+
+exports[`Execution table renders loading skeletons when the data is loading 1`] = `
+<Table
+  aria-label="Executions list"
+  borders={true}
+  canSelectAll={true}
+  cells={
+    Array [
+      "ID",
+      "Description",
+      "Executor",
+      "Date",
+      "Execution Status",
+    ]
+  }
+  className=""
+  contentId="expanded-content"
+  dropdownDirection="down"
+  dropdownPosition="right"
+  expandId="expandable-toggle"
+  gridBreakPoint="grid-md"
+  isStickyHeader={false}
+  ouiaSafe={true}
+  role="grid"
+  rowLabeledBy="simple-node"
+  rows={
+    Array [
+      Object {
+        "cells": Array [
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+        ],
+        "executionKey": "skeleton-0",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+        ],
+        "executionKey": "skeleton-1",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+        ],
+        "executionKey": "skeleton-2",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+        ],
+        "executionKey": "skeleton-3",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+        ],
+        "executionKey": "skeleton-4",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+        ],
+        "executionKey": "skeleton-5",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+        ],
+        "executionKey": "skeleton-6",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+        ],
+        "executionKey": "skeleton-7",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+        ],
+        "executionKey": "skeleton-8",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+        ],
+        "executionKey": "skeleton-9",
+      },
+    ]
+  }
+  variant={null}
+>
+  <TableHeader />
+  <Component
+    rowKey="executionKey"
+  />
+</Table>
+`;
+
+exports[`Execution table renders loading skeletons when the data is not yet fetching 1`] = `
+<Table
+  aria-label="Executions list"
+  borders={true}
+  canSelectAll={true}
+  cells={
+    Array [
+      "ID",
+      "Description",
+      "Executor",
+      "Date",
+      "Execution Status",
+    ]
+  }
+  className=""
+  contentId="expanded-content"
+  dropdownDirection="down"
+  dropdownPosition="right"
+  expandId="expandable-toggle"
+  gridBreakPoint="grid-md"
+  isStickyHeader={false}
+  ouiaSafe={true}
+  role="grid"
+  rowLabeledBy="simple-node"
+  rows={
+    Array [
+      Object {
+        "cells": Array [
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+        ],
+        "executionKey": "skeleton-0",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+        ],
+        "executionKey": "skeleton-1",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+        ],
+        "executionKey": "skeleton-2",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+        ],
+        "executionKey": "skeleton-3",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+        ],
+        "executionKey": "skeleton-4",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+        ],
+        "executionKey": "skeleton-5",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+        ],
+        "executionKey": "skeleton-6",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+        ],
+        "executionKey": "skeleton-7",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+        ],
+        "executionKey": "skeleton-8",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="md"
+            />,
+          },
+          Object {
+            "title": <SkeletonStripe
+              size="lg"
+            />,
+          },
+        ],
+        "executionKey": "skeleton-9",
+      },
+    ]
+  }
+  variant={null}
+>
+  <TableHeader />
+  <Component
+    rowKey="executionKey"
+  />
+</Table>
+`;
+
+exports[`Execution table renders no result message if no executions are found 1`] = `
+<Table
+  aria-label="Executions list"
+  borders={true}
+  canSelectAll={true}
+  cells={
+    Array [
+      "ID",
+      "Description",
+      "Executor",
+      "Date",
+      "Execution Status",
+    ]
+  }
+  className=""
+  contentId="expanded-content"
+  dropdownDirection="down"
+  dropdownPosition="right"
+  expandId="expandable-toggle"
+  gridBreakPoint="grid-md"
+  isStickyHeader={false}
+  ouiaSafe={true}
+  role="grid"
+  rowLabeledBy="simple-node"
+  rows={
+    Array [
+      Object {
+        "cells": Array [
+          Object {
+            "props": Object {
+              "colSpan": 5,
+            },
+            "title": <Bullseye>
+              <EmptyState>
+                <EmptyStateIcon
+                  icon={[Function]}
+                />
+                <Title
+                  headingLevel="h5"
+                  size="lg"
+                >
+                  No executions found
+                </Title>
+                <EmptyStateBody>
+                  No results match the filter criteria. Try removing all filters.
+                </EmptyStateBody>
+              </EmptyState>
+            </Bullseye>,
+          },
+        ],
+        "executionKey": "no-results",
+        "heightAuto": true,
+      },
+    ]
+  }
+  variant={null}
+>
+  <TableHeader />
+  <Component
+    rowKey="executionKey"
+  />
+</Table>
+`;

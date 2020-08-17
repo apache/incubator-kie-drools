@@ -1,0 +1,36 @@
+.skeleton {
+  &__stripe {
+    width: 50%;
+    height: 1.5em;
+    display: block;
+    background: #f6f7f8;
+    background: linear-gradient(to right, #f5f5f5 8%, #eeeeee 18%, #f5f5f5 33%);
+    background-size: 800px 104px;
+    animation: linear 1.3s placeHolderShimmer infinite;
+    border-radius: 4px;
+    &--md {
+      width: 80%;
+    }
+    &--lg {
+      width: 60%;
+    }
+    &--inline {
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 1em;
+      line-height: inherit;
+      height: 1em;
+      width: 200px;
+      margin: 0 10px;
+    }
+  }
+}
+
+@keyframes placeHolderShimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}

@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Audit bottom toolbar renders correctly 1`] = `
+<Toolbar
+  id="audit-overview-bottom-toolbar"
+>
+  <ToolbarContent
+    isExpanded={false}
+    showClearFiltersButton={false}
+  >
+    <ToolbarItem
+      variant="pagination"
+    >
+      <PaginationContainer
+        onSetPage={[MockFunction]}
+        onSetPageSize={[MockFunction]}
+        page={1}
+        pageSize={10}
+        paginationId="audit-overview-bottom-pagination"
+        total={20}
+      />
+    </ToolbarItem>
+  </ToolbarContent>
+</Toolbar>
+`;

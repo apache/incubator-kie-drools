@@ -1,0 +1,9 @@
+.execution-status-badge {
+  margin-right: 0.5em;
+  &--success {
+    color: var(--pf-global--success-color--100);
+  }
+  &--failure {
+    color: var(--pf-global--danger-color--100);
+  }
+}

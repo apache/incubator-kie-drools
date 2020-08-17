@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DatePicker renders correctly 1`] = `
+<DatePicker
+  id="datepicker"
+  onDateUpdate={[MockFunction]}
+>
+  <InputGroup>
+    <div
+      className="pf-c-input-group"
+    >
+      <ForwardRef
+        id="datepicker"
+        name="datepicker"
+        type="date"
+      >
+        <TextInputBase
+          aria-label={null}
+          className=""
+          id="datepicker"
+          innerRef={
+            Object {
+              "current": <input
+                aria-invalid="false"
+                class="pf-c-form-control flatpickr-input"
+                id="datepicker"
+                name="datepicker"
+                type="hidden"
+                value=""
+              />,
+            }
+          }
+          isDisabled={false}
+          isReadOnly={false}
+          isRequired={false}
+          name="datepicker"
+          onChange={[Function]}
+          type="date"
+          validated="default"
+        >
+          <input
+            aria-invalid={false}
+            aria-label={null}
+            className="pf-c-form-control"
+            disabled={false}
+            id="datepicker"
+            name="datepicker"
+            onChange={[Function]}
+            readOnly={false}
+            required={false}
+            type="date"
+          />
+        </TextInputBase>
+      </ForwardRef>
+    </div>
+  </InputGroup>
+</DatePicker>
+`;

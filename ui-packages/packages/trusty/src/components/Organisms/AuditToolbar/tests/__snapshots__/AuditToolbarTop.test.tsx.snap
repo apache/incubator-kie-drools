@@ -1,0 +1,100 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Audit top toolbar renders correctly 1`] = `
+<Toolbar
+  id="audit-overview-top-toolbar"
+>
+  <ToolbarContent
+    isExpanded={false}
+    showClearFiltersButton={false}
+  >
+    <ToolbarItem
+      variant="label"
+    >
+      Search
+    </ToolbarItem>
+    <ToolbarItem>
+      <InputGroup>
+        <ForwardRef
+          aria-label="search executions"
+          id="audit-search-input"
+          name="audit-search-input"
+          onKeyDown={[Function]}
+          placeholder="Search by ID"
+          type="search"
+        />
+        <Button
+          aria-label="search button for search input"
+          id="audit-search"
+          onClick={[Function]}
+          variant="control"
+        >
+          <SearchIcon
+            color="currentColor"
+            noVerticalAlign={false}
+            size="sm"
+          />
+        </Button>
+      </InputGroup>
+    </ToolbarItem>
+    <ToolbarItem
+      variant="label"
+    >
+      From
+    </ToolbarItem>
+    <ToolbarItem>
+      <DatePicker
+        fromDate="2020-01-01"
+        id="audit-from-date"
+        label="Starting date"
+        maxDate="2020-02-01"
+        onDateUpdate={[MockFunction]}
+        value="2020-01-01"
+      />
+    </ToolbarItem>
+    <ToolbarItem
+      variant="label"
+    >
+      To
+    </ToolbarItem>
+    <ToolbarItem>
+      <DatePicker
+        id="audit-to-date"
+        label="Ending date"
+        minDate="2020-01-01"
+        onDateUpdate={[MockFunction]}
+        value="2020-02-01"
+      />
+    </ToolbarItem>
+    <ToolbarItem>
+      <ToolbarItem>
+        <Button
+          aria-label="Refresh"
+          id="executions-refresh"
+          onClick={[Function]}
+          title="Refresh"
+          variant="plain"
+        >
+          <SyncIcon
+            color="currentColor"
+            noVerticalAlign={false}
+            size="sm"
+          />
+        </Button>
+      </ToolbarItem>
+    </ToolbarItem>
+    <ToolbarItem
+      variant="pagination"
+    >
+      <PaginationContainer
+        onSetPage={[MockFunction]}
+        onSetPageSize={[MockFunction]}
+        page={1}
+        pageSize={10}
+        paginationId="audit-overview-top-pagination"
+        total={20}
+      />
+    </ToolbarItem>
+  </ToolbarContent>
+</Toolbar>
+`;
