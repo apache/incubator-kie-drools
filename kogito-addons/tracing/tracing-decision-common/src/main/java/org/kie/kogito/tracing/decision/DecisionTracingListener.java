@@ -16,10 +16,14 @@
 
 package org.kie.kogito.tracing.decision;
 
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
+import org.kie.dmn.api.core.DMNMetadata;
 import org.kie.dmn.api.core.event.AfterEvaluateBKMEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateBKMEvent;
+import org.kie.dmn.api.core.event.DMNEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 
@@ -29,6 +33,7 @@ import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
  */
 public class DecisionTracingListener implements DMNRuntimeEventListener {
 
+    public final static String SKIP_TRACING = "skipTracing";
     private Consumer<EvaluateEvent> eventConsumer;
 
     public DecisionTracingListener(Consumer<EvaluateEvent> eventConsumer) {
@@ -44,62 +49,74 @@ public class DecisionTracingListener implements DMNRuntimeEventListener {
 
     @Override
     public void beforeEvaluateAll(org.kie.dmn.api.core.event.BeforeEvaluateAllEvent event) {
-        eventConsumer.accept(EvaluateEvent.from(event));
+        commonHandleEvent(EvaluateEvent::from, event);
     }
 
     @Override
     public void afterEvaluateAll(org.kie.dmn.api.core.event.AfterEvaluateAllEvent event) {
-        eventConsumer.accept(EvaluateEvent.from(event));
+        commonHandleEvent(EvaluateEvent::from, event);
     }
 
     @Override
     public void beforeEvaluateDecision(org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent event) {
-        eventConsumer.accept(EvaluateEvent.from(event));
+        commonHandleEvent(EvaluateEvent::from, event);
     }
 
     @Override
     public void afterEvaluateDecision(org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent event) {
-        eventConsumer.accept(EvaluateEvent.from(event));
+        commonHandleEvent(EvaluateEvent::from, event);
     }
 
     @Override
     public void beforeEvaluateContextEntry(org.kie.dmn.api.core.event.BeforeEvaluateContextEntryEvent event) {
-        eventConsumer.accept(EvaluateEvent.from(event));
+        commonHandleEvent(EvaluateEvent::from, event);
     }
 
     @Override
     public void afterEvaluateContextEntry(org.kie.dmn.api.core.event.AfterEvaluateContextEntryEvent event) {
-        eventConsumer.accept(EvaluateEvent.from(event));
+        commonHandleEvent(EvaluateEvent::from, event);
     }
 
     @Override
     public void beforeEvaluateDecisionTable(org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent event) {
-        eventConsumer.accept(EvaluateEvent.from(event));
+        commonHandleEvent(EvaluateEvent::from, event);
     }
 
     @Override
     public void afterEvaluateDecisionTable(org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent event) {
-        eventConsumer.accept(EvaluateEvent.from(event));
+        commonHandleEvent(EvaluateEvent::from, event);
     }
 
     @Override
     public void beforeEvaluateDecisionService(org.kie.dmn.api.core.event.BeforeEvaluateDecisionServiceEvent event) {
-        eventConsumer.accept(EvaluateEvent.from(event));
+        commonHandleEvent(EvaluateEvent::from, event);
     }
 
     @Override
     public void afterEvaluateDecisionService(org.kie.dmn.api.core.event.AfterEvaluateDecisionServiceEvent event) {
-        eventConsumer.accept(EvaluateEvent.from(event));
+        commonHandleEvent(EvaluateEvent::from, event);
     }
 
     @Override
     public void beforeEvaluateBKM(BeforeEvaluateBKMEvent event) {
-        eventConsumer.accept(EvaluateEvent.from(event));
+        commonHandleEvent(EvaluateEvent::from, event);
     }
 
     @Override
     public void afterEvaluateBKM(AfterEvaluateBKMEvent event) {
-        eventConsumer.accept(EvaluateEvent.from(event));
+        commonHandleEvent(EvaluateEvent::from, event);
     }
+
+    private <T extends DMNEvent> void commonHandleEvent(Function<T, EvaluateEvent> factory, T event) {
+        if (!isTracingEnabled(event.getResult().getContext().getMetadata())) {
+            eventConsumer.accept(factory.apply(event));
+        }
+    }
+
+    private <T extends DMNEvent> boolean isTracingEnabled(DMNMetadata metadata) {
+        Optional<Boolean> skipTracing = Optional.ofNullable((Boolean) metadata.get(SKIP_TRACING));
+        return skipTracing.orElse(false);
+    }
+
 
 }

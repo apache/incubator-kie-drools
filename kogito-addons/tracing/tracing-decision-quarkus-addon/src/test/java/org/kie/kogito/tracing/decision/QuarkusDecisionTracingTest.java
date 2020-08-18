@@ -36,11 +36,15 @@ import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 import org.mockito.ArgumentCaptor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.kie.kogito.tracing.decision.Constants.MODEL_NAME;
+import static org.kie.kogito.tracing.decision.Constants.MODEL_NAMESPACE;
+import static org.kie.kogito.tracing.decision.Constants.MODEL_RESOURCE;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 
 public class QuarkusDecisionTracingTest {
 
@@ -48,12 +52,8 @@ public class QuarkusDecisionTracingTest {
 
     @Test
     public void test_ListenerAndCollector_UseRealEvents_Working() {
-        final String modelResource = "/Traffic Violation.dmn";
-        final String modelNamespace = "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF";
-        final String modelName = "Traffic Violation";
-
         final DMNRuntime runtime = DMNKogito.createGenericDMNRuntime(new java.io.InputStreamReader(
-                QuarkusDecisionTracingTest.class.getResourceAsStream(modelResource)
+                QuarkusDecisionTracingTest.class.getResourceAsStream(MODEL_RESOURCE)
         ));
 
         EventBus eventBus = mock(EventBus.class);
@@ -72,7 +72,7 @@ public class QuarkusDecisionTracingTest {
         contextVariables.put("Driver", driver);
         contextVariables.put("Violation", violation);
 
-        final DecisionModel model = new DmnDecisionModel(runtime, modelNamespace, modelName, () -> TEST_EXECUTION_ID);
+        final DecisionModel model = new DmnDecisionModel(runtime, MODEL_NAMESPACE, MODEL_NAME, () -> TEST_EXECUTION_ID);
         final DMNContext context = model.newContext(contextVariables);
         model.evaluateAll(context);
 
@@ -83,7 +83,7 @@ public class QuarkusDecisionTracingTest {
         TestSubscriber<String> subscriber = new TestSubscriber<>();
 
         final DecisionModels mockedDecisionModels = mock(DecisionModels.class);
-        when(mockedDecisionModels.getDecisionModel(modelNamespace, modelName)).thenReturn(model);
+        when(mockedDecisionModels.getDecisionModel(MODEL_NAMESPACE, MODEL_NAME)).thenReturn(model);
         final Application mockedApplication = mock(Application.class);
         when(mockedApplication.decisionModels()).thenReturn(mockedDecisionModels);
 
