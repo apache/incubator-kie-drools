@@ -152,9 +152,6 @@ public class IncrementalCompilationTest extends BaseModelTest {
         // try to update the container to version 1.1.0
         kc.updateToVersion( releaseId2 );
 
-        // continue working with the session
-        assertEquals( 1, ksession.fireAllRules() );
-
         // try with a new session
         KieSession ksession2 = kc.newKieSession();
         assertEquals( 3, ksession2.fireAllRules() );
