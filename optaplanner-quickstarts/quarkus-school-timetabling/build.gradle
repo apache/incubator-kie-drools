@@ -1,5 +1,5 @@
 plugins {
-    id "io.quarkus" version "1.4.2.Final"
+    id "io.quarkus" version "1.7.0.Final"
     id "java"
 }
 
@@ -14,9 +14,10 @@ repositories {
 }
 
 dependencies {
-    implementation enforcedPlatform("io.quarkus:quarkus-universe-bom:1.4.2.Final")
-    implementation 'io.quarkus:quarkus-optaplanner'
-    implementation 'io.quarkus:quarkus-optaplanner-jackson'
+    implementation platform("io.quarkus:quarkus-universe-bom:1.7.0.Final")
+    implementation "org.optaplanner:optaplanner-quarkus:${optaplannerVersion}"
+    implementation "org.optaplanner:optaplanner-quarkus-jackson:${optaplannerVersion}"
+    implementation "org.optaplanner:optaplanner-test:${optaplannerVersion}"
     implementation 'io.quarkus:quarkus-resteasy'
     implementation 'io.quarkus:quarkus-resteasy-jackson'
     implementation 'io.quarkus:quarkus-hibernate-orm-panache'

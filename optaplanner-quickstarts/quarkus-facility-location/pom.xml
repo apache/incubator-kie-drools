@@ -9,7 +9,7 @@
 
   <properties>
     <version.org.optaplanner>8.0.0-SNAPSHOT</version.org.optaplanner>
-    <version.io.quarkus>1.6.0.Final</version.io.quarkus>
+    <version.io.quarkus>1.7.0.Final</version.io.quarkus>
 
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
     <maven.compiler.parameters>true</maven.compiler.parameters>
