@@ -16,7 +16,7 @@
 package org.kie.kogito.testcontainers.springboot;
 
 import org.kie.kogito.resources.ConditionalSpringBootTestResource;
-import org.kie.kogito.testcontainers.KeycloakContainer;
+import org.kie.kogito.testcontainers.KogitoKeycloakContainer;
 
 /**
  * Keycloak spring boot resource that works within the test lifecycle.
@@ -27,7 +27,7 @@ public class KeycloakSpringBootTestResource extends ConditionalSpringBootTestRes
     public static final String KOGITO_KEYCLOAK_PROPERTY = "keycloak.auth-server-url";
 
     public KeycloakSpringBootTestResource() {
-        super(new KeycloakContainer());
+        super(new KogitoKeycloakContainer());
     }
 
     @Override

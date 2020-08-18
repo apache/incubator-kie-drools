@@ -17,7 +17,7 @@ package org.kie.kogito.testcontainers.quarkus;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.testcontainers.InfinispanContainer;
+import org.kie.kogito.testcontainers.KogitoInfinispanContainer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -32,7 +32,7 @@ public class InfinispanQuarkusTestResourceTest {
 
     @BeforeEach
     public void setup() {
-        System.setProperty(InfinispanContainer.INFINISPAN_PROPERTY, IMAGE);
+        System.setProperty(KogitoInfinispanContainer.INFINISPAN_PROPERTY, IMAGE);
     }
 
     @Test

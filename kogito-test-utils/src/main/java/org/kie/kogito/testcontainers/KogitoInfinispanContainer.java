@@ -26,18 +26,20 @@ import org.testcontainers.containers.wait.strategy.Wait;
  * This container wraps Infinispan container
  *
  */
-public class InfinispanContainer extends GenericContainer<InfinispanContainer> implements TestResource {
+public class KogitoInfinispanContainer extends GenericContainer<KogitoInfinispanContainer> implements TestResource {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(KogitoInfinispanContainer.class);
 
     public static final String NAME = "infinispan";
     public static final int PORT = 11222;
     public static final String INFINISPAN_PROPERTY = "container.image." + NAME;
+    public static final String USER = "admin";
+    public static final String PASS = "admin";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(InfinispanContainer.class);
-
-    public InfinispanContainer() {
+    public KogitoInfinispanContainer() {
         addExposedPort(PORT);
-        withEnv("USER", "admin");
-        withEnv("PASS", "admin");
+        withEnv("USER", USER);
+        withEnv("PASS", PASS);
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
         waitingFor(Wait.forLogMessage(".*ISPN080001.*", 1));
         setDockerImageName(System.getProperty(INFINISPAN_PROPERTY));
@@ -52,4 +54,5 @@ public class InfinispanContainer extends GenericContainer<InfinispanContainer> i
     public String getResourceName() {
         return NAME;
     }
+
 }

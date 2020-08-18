@@ -16,7 +16,7 @@
 package org.kie.kogito.testcontainers.springboot;
 
 import org.kie.kogito.resources.ConditionalSpringBootTestResource;
-import org.kie.kogito.testcontainers.InfinispanContainer;
+import org.kie.kogito.testcontainers.KogitoInfinispanContainer;
 
 /**
  * Infinispan spring boot resource that works within the test lifecycle.
@@ -27,7 +27,7 @@ public class InfinispanSpringBootTestResource extends ConditionalSpringBootTestR
     public static final String KOGITO_INFINISPAN_PROPERTY = "infinispan.remote.server-list";
 
     public InfinispanSpringBootTestResource() {
-        super(new InfinispanContainer());
+        super(new KogitoInfinispanContainer());
     }
 
     @Override

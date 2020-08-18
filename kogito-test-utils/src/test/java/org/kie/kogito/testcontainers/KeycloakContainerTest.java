@@ -29,31 +29,31 @@ public class KeycloakContainerTest {
     private static final int MAPPED_PORT = 11112;
     private static final String IMAGE = "my-keycloak-image";
 
-    private KeycloakContainer container;
+    private KogitoKeycloakContainer container;
 
     @BeforeEach
     public void setup() {
-        System.setProperty(KeycloakContainer.KEYCLOAK_PROPERTY, IMAGE);
-        container = spy(new KeycloakContainer());
+        System.setProperty(KogitoKeycloakContainer.KEYCLOAK_PROPERTY, IMAGE);
+        container = spy(new KogitoKeycloakContainer());
         doNothing().when(container).start();
         doNothing().when(container).setDockerImageName(IMAGE);
     }
 
     @Test
     public void shouldAddDefaultSettings() {
-        assertTrue(container.getExposedPorts().contains(KeycloakContainer.PORT));
+        assertTrue(container.getExposedPorts().contains(KogitoKeycloakContainer.PORT));
         assertEquals("admin", container.getEnvMap().get("KEYCLOAK_USER"));
         assertEquals("admin", container.getEnvMap().get("KEYCLOAK_PASSWORD"));
     }
 
     @Test
     public void shouldGetResourceName() {
-        assertEquals(KeycloakContainer.NAME, container.getResourceName());
+        assertEquals(KogitoKeycloakContainer.NAME, container.getResourceName());
     }
 
     @Test
     public void shouldGetMapperPort() {
-        doReturn(MAPPED_PORT).when(container).getMappedPort(KeycloakContainer.PORT);
+        doReturn(MAPPED_PORT).when(container).getMappedPort(KogitoKeycloakContainer.PORT);
         assertEquals(MAPPED_PORT, container.getMappedPort());
     }
 

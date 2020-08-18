@@ -29,31 +29,31 @@ public class InfinispanContainerTest {
     private static final int MAPPED_PORT = 11111;
     private static final String IMAGE = "my-infinispan-image";
 
-    private InfinispanContainer container;
+    private KogitoInfinispanContainer container;
 
     @BeforeEach
     public void setup() {
-        System.setProperty(InfinispanContainer.INFINISPAN_PROPERTY, IMAGE);
-        container = spy(new InfinispanContainer());
+        System.setProperty(KogitoInfinispanContainer.INFINISPAN_PROPERTY, IMAGE);
+        container = spy(new KogitoInfinispanContainer());
         doNothing().when(container).start();
         doNothing().when(container).setDockerImageName(IMAGE);
     }
 
     @Test
     public void shouldAddDefaultSettings() {
-        assertTrue(container.getExposedPorts().contains(InfinispanContainer.PORT));
+        assertTrue(container.getExposedPorts().contains(KogitoInfinispanContainer.PORT));
         assertEquals("admin", container.getEnvMap().get("USER"));
         assertEquals("admin", container.getEnvMap().get("PASS"));
     }
 
     @Test
     public void shouldGetResourceName() {
-        assertEquals(InfinispanContainer.NAME, container.getResourceName());
+        assertEquals(KogitoInfinispanContainer.NAME, container.getResourceName());
     }
 
     @Test
     public void shouldGetMapperPort() {
-        doReturn(MAPPED_PORT).when(container).getMappedPort(InfinispanContainer.PORT);
+        doReturn(MAPPED_PORT).when(container).getMappedPort(KogitoInfinispanContainer.PORT);
         assertEquals(MAPPED_PORT, container.getMappedPort());
     }
 

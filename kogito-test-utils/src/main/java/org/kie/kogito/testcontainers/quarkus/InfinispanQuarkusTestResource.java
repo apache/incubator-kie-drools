@@ -16,7 +16,7 @@
 package org.kie.kogito.testcontainers.quarkus;
 
 import org.kie.kogito.resources.ConditionalQuarkusTestResource;
-import org.kie.kogito.testcontainers.InfinispanContainer;
+import org.kie.kogito.testcontainers.KogitoInfinispanContainer;
 
 /**
  * Infinispan quarkus resource that works within the test lifecycle.
@@ -27,7 +27,7 @@ public class InfinispanQuarkusTestResource extends ConditionalQuarkusTestResourc
     public static final String KOGITO_INFINISPAN_PROPERTY = "quarkus.infinispan-client.server-list";
 
     public InfinispanQuarkusTestResource() {
-        super(new InfinispanContainer());
+        super(new KogitoInfinispanContainer());
     }
 
     @Override

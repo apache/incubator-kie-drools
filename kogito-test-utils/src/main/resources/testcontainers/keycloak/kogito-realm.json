@@ -561,7 +561,7 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "secret",
       "redirectUris": [
-        "http://localhost:8080/*"
+        "*"
       ],
       "webOrigins": [
         "*"

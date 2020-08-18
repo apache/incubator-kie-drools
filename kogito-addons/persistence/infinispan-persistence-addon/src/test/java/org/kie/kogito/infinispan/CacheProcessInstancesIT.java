@@ -40,7 +40,7 @@ import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
 import org.kie.kogito.services.identity.StaticIdentityProvider;
-import org.kie.kogito.testcontainers.InfinispanContainer;
+import org.kie.kogito.testcontainers.KogitoInfinispanContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -56,7 +56,7 @@ import static org.kie.api.runtime.process.ProcessInstance.STATE_ERROR;
 class CacheProcessInstancesIT {
 
     @Container
-    public InfinispanContainer container = new InfinispanContainer();
+    public KogitoInfinispanContainer container = new KogitoInfinispanContainer();
     private RemoteCacheManager cacheManager;
 
     @BeforeEach

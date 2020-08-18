@@ -15,19 +15,39 @@
  */
 package org.kie.kogito.testcontainers.quarkus;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
 import org.kie.kogito.resources.ConditionalQuarkusTestResource;
-import org.kie.kogito.testcontainers.KeycloakContainer;
+import org.kie.kogito.testcontainers.KogitoKeycloakContainer;
+
+import static java.lang.String.format;
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * Keycloak quarkus resource that works within the test lifecycle.
- *
  */
 public class KeycloakQuarkusTestResource extends ConditionalQuarkusTestResource {
 
     public static final String KOGITO_KEYCLOAK_PROPERTY = "quarkus.oidc.auth-server-url";
+    public static final String KOGITO_OIDC_TENANTS = "kogito.test.tenants";
+
+    private List<String> tenants = emptyList();
 
     public KeycloakQuarkusTestResource() {
-        super(new KeycloakContainer());
+        super(new KogitoKeycloakContainer());
+    }
+
+    @Override
+    public void init(Map<String, String> initArgs) {
+        if (initArgs.containsKey(KOGITO_OIDC_TENANTS)) {
+            tenants = Arrays.stream(initArgs.getOrDefault(KOGITO_OIDC_TENANTS, "").split(",")).collect(toList());
+        }
     }
 
     @Override
@@ -37,7 +57,20 @@ public class KeycloakQuarkusTestResource extends ConditionalQuarkusTestResource 
 
     @Override
     protected String getKogitoPropertyValue() {
-        return String.format("http://localhost:%s/auth/realms/kogito", getTestResource().getMappedPort());
+        return format("http://localhost:%s/auth/realms/kogito", getTestResource().getMappedPort());
+    }
+
+    @Override
+    public Map<String, String> start() {
+        Map<String, String> start = super.start();
+        if (start.isEmpty() || tenants.isEmpty()) {
+            return start;
+        }
+
+        start = new HashMap<>(start);
+        String url = start.get(getKogitoProperty());
+        start.putAll(tenants.stream().map(tenant -> format("quarkus.oidc.%s.auth-server-url", tenant)).collect(toMap(Function.identity(), s -> url)));
+        return start;
     }
 
     public static class Conditional extends KeycloakQuarkusTestResource {

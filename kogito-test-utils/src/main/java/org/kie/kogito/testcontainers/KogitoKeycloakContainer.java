@@ -29,19 +29,24 @@ import org.testcontainers.containers.wait.strategy.Wait;
  * This container wraps Keycloak container
  *
  */
-public class KeycloakContainer extends GenericContainer<KeycloakContainer> implements TestResource {
+public class KogitoKeycloakContainer extends GenericContainer<KogitoKeycloakContainer> implements TestResource {
 
     public static final String NAME = "keycloak";
+    public static final String USER = "admin";
+    public static final String PASSWORD = "admin";
+    public static final String REALM = "kogito";
+    public static final String CLIENT_ID = "kogito-app";
+    public static final String CLIENT_SECRET = "secret";
     public static final String KEYCLOAK_PROPERTY = "container.image." + NAME;
     public static final int PORT = 8080;
 
     private static final String REALM_FILE = "/tmp/realm.json";
-    private static final Logger LOGGER = LoggerFactory.getLogger(KeycloakContainer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KogitoKeycloakContainer.class);
 
-    public KeycloakContainer() {
+    public KogitoKeycloakContainer() {
         addExposedPort(PORT);
-        withEnv("KEYCLOAK_USER", "admin");
-        withEnv("KEYCLOAK_PASSWORD", "admin");
+        withEnv("KEYCLOAK_USER", USER);
+        withEnv("KEYCLOAK_PASSWORD", PASSWORD);
         withEnv("KEYCLOAK_IMPORT", REALM_FILE);
         withClasspathResourceMapping("testcontainers/keycloak/kogito-realm.json", REALM_FILE, BindMode.READ_ONLY);
         withLogConsumer(new Slf4jLogConsumer(LOGGER));

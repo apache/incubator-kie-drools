@@ -37,7 +37,6 @@ public class KogitoKafkaContainer extends KafkaContainer implements TestResource
     @Override
     public void start() {
         super.start();
-
         LOGGER.info("Kafka servers: {}", getBootstrapServers());
     }
 
