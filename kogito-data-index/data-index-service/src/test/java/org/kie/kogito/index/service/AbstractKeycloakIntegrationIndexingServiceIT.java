@@ -18,17 +18,19 @@ package org.kie.kogito.index.service;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.Test;
 import org.keycloak.representations.AccessTokenResponse;
+import org.kie.kogito.testcontainers.KogitoKeycloakContainer;
+import org.kie.kogito.testcontainers.quarkus.KeycloakQuarkusTestResource;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractKeycloakIntegrationIndexingServiceIT {
 
-    private static final String KEYCLOAK_SERVER_URL = System.getProperty("quarkus.oidc.auth-server-url", "http://localhost:8281/auth/realms/kogito");
-    private static final String KEYCLOAK_CLIENT_ID = System.getProperty("quarkus.oidc.client-id", "kogito-service");
-    private static final String KEYCLOAK_CLIENT_SECRET = System.getProperty("quarkus.oidc.credentials.secret", "secret");
+    @ConfigProperty(name = KeycloakQuarkusTestResource.KOGITO_KEYCLOAK_PROPERTY)
+    String keycloakURL;
 
     @Test
     void testUnauthorizedUserAccess() {
@@ -88,10 +90,10 @@ public abstract class AbstractKeycloakIntegrationIndexingServiceIT {
                 .param("grant_type", "password")
                 .param("username", userName)
                 .param("password", userName)
-                .param("client_id", KEYCLOAK_CLIENT_ID)
-                .param("client_secret", KEYCLOAK_CLIENT_SECRET)
+                .param("client_id", KogitoKeycloakContainer.CLIENT_ID)
+                .param("client_secret", KogitoKeycloakContainer.CLIENT_SECRET)
                 .when()
-                .post(KEYCLOAK_SERVER_URL + "/protocol/openid-connect/token")
+                .post(keycloakURL + "/protocol/openid-connect/token")
                 .as(AccessTokenResponse.class).getToken();
     }
 }

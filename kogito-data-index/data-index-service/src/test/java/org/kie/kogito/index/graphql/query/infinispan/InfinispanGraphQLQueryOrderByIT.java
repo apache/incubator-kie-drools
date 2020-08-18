@@ -18,13 +18,13 @@ package org.kie.kogito.index.graphql.query.infinispan;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import org.kie.kogito.index.DataIndexInfinispanServerTestResource;
 import org.kie.kogito.index.graphql.query.AbstractGraphQLQueryOrderByIT;
+import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 import static org.kie.kogito.index.TestUtils.getTravelsProtoBufferFile;
 
 @QuarkusTest
-@QuarkusTestResource(DataIndexInfinispanServerTestResource.class)
+@QuarkusTestResource(InfinispanQuarkusTestResource.class)
 class InfinispanGraphQLQueryOrderByIT extends AbstractGraphQLQueryOrderByIT {
 
     @Override

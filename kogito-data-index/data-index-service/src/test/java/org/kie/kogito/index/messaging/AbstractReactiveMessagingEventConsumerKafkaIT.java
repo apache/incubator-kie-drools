@@ -40,7 +40,7 @@ import static org.kie.kogito.index.TestUtils.readFileContent;
 public abstract class AbstractReactiveMessagingEventConsumerKafkaIT {
 
     @ConfigProperty(name = KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY)
-    private String kafkaBootstrapServers;
+    String kafkaBootstrapServers;
 
     @Inject
     ProtobufService protobufService;

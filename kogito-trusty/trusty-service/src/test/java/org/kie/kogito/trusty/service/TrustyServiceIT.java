@@ -28,12 +28,13 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 import org.kie.kogito.trusty.storage.api.TrustyStorageService;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.Execution;
 
 @QuarkusTest
-@QuarkusTestResource(TrustyInfinispanServerTestResource.class)
+@QuarkusTestResource(InfinispanQuarkusTestResource.class)
 public class TrustyServiceIT {
 
     @Inject

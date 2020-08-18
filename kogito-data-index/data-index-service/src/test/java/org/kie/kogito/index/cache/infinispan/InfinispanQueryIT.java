@@ -18,11 +18,11 @@ package org.kie.kogito.index.cache.infinispan;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import org.kie.kogito.index.DataIndexInfinispanServerTestResource;
 import org.kie.kogito.index.cache.AbstractQueryIT;
+import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 @QuarkusTest
-@QuarkusTestResource(DataIndexInfinispanServerTestResource.class)
+@QuarkusTestResource(InfinispanQuarkusTestResource.class)
 class InfinispanQueryIT extends AbstractQueryIT {
 
 }

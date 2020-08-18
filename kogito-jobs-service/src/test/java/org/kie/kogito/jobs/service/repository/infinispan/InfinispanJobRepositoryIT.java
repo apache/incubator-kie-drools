@@ -25,10 +25,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.repository.impl.BaseJobRepositoryTest;
-import org.kie.kogito.jobs.service.resource.InfinispanServerTestResource;
+import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 @QuarkusTest
-@QuarkusTestResource(InfinispanServerTestResource.class)
+@QuarkusTestResource(InfinispanQuarkusTestResource.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class InfinispanJobRepositoryIT extends BaseJobRepositoryTest {
 

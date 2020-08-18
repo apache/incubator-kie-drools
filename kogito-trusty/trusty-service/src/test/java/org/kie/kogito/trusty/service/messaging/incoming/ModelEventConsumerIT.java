@@ -37,7 +37,7 @@ import static org.mockito.Mockito.verify;
 public class ModelEventConsumerIT {
 
     @ConfigProperty(name = KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY)
-    private String kafkaBootstrapServers;
+    String kafkaBootstrapServers;
 
     @InjectMock
     TrustyService trustyService;

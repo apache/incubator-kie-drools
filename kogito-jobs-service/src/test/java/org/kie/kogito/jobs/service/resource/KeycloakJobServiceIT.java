@@ -27,6 +27,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -36,24 +37,26 @@ import org.kie.kogito.jobs.api.JobBuilder;
 import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
 import org.kie.kogito.jobs.service.utils.DateUtil;
+import org.kie.kogito.testcontainers.KogitoKeycloakContainer;
+import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
+import org.kie.kogito.testcontainers.quarkus.KeycloakQuarkusTestResource;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @QuarkusTest
-@QuarkusTestResource(KeycloakServerTestResource.class)
-@QuarkusTestResource(InfinispanServerTestResource.class)
+@QuarkusTestResource(KeycloakQuarkusTestResource.class)
+@QuarkusTestResource(InfinispanQuarkusTestResource.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class KeycloakJobServiceIT {
-
-    private static final String KEYCLOAK_SERVER_URL = System.getProperty("keycloak.url", "http://localhost:8281/auth");
-    private static final String KEYCLOAK_REALM = "kogito";
-    private static final String KEYCLOAK_CLIENT_ID = "kogito-jobs-service";
 
     public static final int OK_CODE = 200;
     public static final int UNAUTHORIZED_CODE = 403;
     public static final int FORBIDDEN_CODE = 401;
+    
+    @ConfigProperty(name = KeycloakQuarkusTestResource.KOGITO_KEYCLOAK_PROPERTY)
+    String keycloakURL;
 
     @BeforeAll
     public static void setup() {
@@ -201,10 +204,10 @@ class KeycloakJobServiceIT {
                 .param("grant_type", "password")
                 .param("username", userName)
                 .param("password", userName)
-                .param("client_id", KEYCLOAK_CLIENT_ID)
-                .param("client_secret", "secret")
+                .param("client_id", KogitoKeycloakContainer.CLIENT_ID)
+                .param("client_secret", KogitoKeycloakContainer.CLIENT_SECRET)
                 .when()
-                .post(KEYCLOAK_SERVER_URL + "/realms/" + KEYCLOAK_REALM + "/protocol/openid-connect/token")
+                .post(keycloakURL + "/protocol/openid-connect/token")
                 .as(AccessTokenResponse.class).getToken();
     }
 }

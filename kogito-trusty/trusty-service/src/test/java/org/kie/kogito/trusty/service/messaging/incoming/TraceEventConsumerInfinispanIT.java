@@ -24,8 +24,8 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.kafka.KafkaClient;
+import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
-import org.kie.kogito.trusty.service.TrustyInfinispanServerTestResource;
 import org.kie.kogito.trusty.service.TrustyService;
 import org.kie.kogito.trusty.storage.api.TrustyStorageService;
 import org.kie.kogito.trusty.storage.api.model.Decision;
@@ -43,12 +43,12 @@ import static org.kie.kogito.trusty.service.TrustyServiceTestUtils.buildDecision
 import static org.kie.kogito.trusty.service.TrustyServiceTestUtils.buildTraceEventWithErrors;
 
 @QuarkusTest
-@QuarkusTestResource(TrustyInfinispanServerTestResource.class)
+@QuarkusTestResource(InfinispanQuarkusTestResource.class)
 @QuarkusTestResource(KafkaQuarkusTestResource.class)
 class TraceEventConsumerInfinispanIT {
 
     @ConfigProperty(name = KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY)
-    private String kafkaBootstrapServers;
+    String kafkaBootstrapServers;
 
     @Inject
     TrustyService trustyService;

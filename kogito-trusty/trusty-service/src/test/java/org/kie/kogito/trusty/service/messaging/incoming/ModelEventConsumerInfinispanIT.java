@@ -24,8 +24,8 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.kafka.KafkaClient;
+import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
-import org.kie.kogito.trusty.service.TrustyInfinispanServerTestResource;
 import org.kie.kogito.trusty.service.TrustyService;
 import org.kie.kogito.trusty.storage.api.TrustyStorageService;
 
@@ -38,7 +38,7 @@ import static org.kie.kogito.trusty.service.TrustyServiceTestUtils.buildCloudEve
 import static org.kie.kogito.trusty.service.TrustyServiceTestUtils.buildCorrectModelEvent;
 
 @QuarkusTest
-@QuarkusTestResource(TrustyInfinispanServerTestResource.class)
+@QuarkusTestResource(InfinispanQuarkusTestResource.class)
 @QuarkusTestResource(KafkaQuarkusTestResource.class)
 class ModelEventConsumerInfinispanIT {
 

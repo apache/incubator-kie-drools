@@ -42,7 +42,7 @@ import static org.mockito.Mockito.verify;
 public class ExplainabilityResultConsumerIT {
 
     @ConfigProperty(name = KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY)
-    private String kafkaBootstrapServers;
+    String kafkaBootstrapServers;
 
     @InjectMock
     TrustyService trustyService;
