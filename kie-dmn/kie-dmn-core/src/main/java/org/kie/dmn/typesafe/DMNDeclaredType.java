@@ -68,8 +68,9 @@ class DMNDeclaredType implements TypeDefinition {
 
     private void initFields() {
         Map<String, DMNType> dmnFields = dmnType.getFields();
+        FieldGenStrategy fieldGenStrategy = FieldGenStrategy.getFieldGenStrategy(dmnFields.keySet(), getTypeName());
         for (Map.Entry<String, DMNType> field : dmnFields.entrySet()) {
-            DMNDeclaredField dmnDeclaredField = new DMNDeclaredField(index, field, codeGenConfig);
+            DMNDeclaredField dmnDeclaredField = new DMNDeclaredField(index, field, codeGenConfig, fieldGenStrategy);
             fields.add(dmnDeclaredField);
         }
     }

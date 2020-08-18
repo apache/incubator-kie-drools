@@ -30,7 +30,6 @@ import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDef
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.SimpleAnnotationDefinition;
 import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.dmn.feel.runtime.UnaryTestImpl;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -44,13 +43,15 @@ public class DMNDeclaredField implements FieldDefinition {
     private String originalMapKey;
     private DMNType fieldDMNType;
     private DMNStronglyCodeGenConfig codeGenConfig;
+    private FieldGenStrategy fieldGenStrategy;
 
-    DMNDeclaredField(DMNAllTypesIndex index, Map.Entry<String, DMNType> dmnField, DMNStronglyCodeGenConfig codeGenConfig) {
+    DMNDeclaredField(DMNAllTypesIndex index, Map.Entry<String, DMNType> dmnField, DMNStronglyCodeGenConfig codeGenConfig, FieldGenStrategy fieldGenStrategy) {
         this.index = index;
-        this.fieldName = CodegenStringUtil.escapeIdentifier(dmnField.getKey()); // don't lower case DROOLS-5518
+        this.fieldName = fieldGenStrategy.generateFieldName(dmnField.getKey());
         this.originalMapKey = dmnField.getKey();
         this.fieldDMNType = dmnField.getValue();
         this.codeGenConfig = codeGenConfig;
+        this.fieldGenStrategy = fieldGenStrategy;
     }
 
     @Override
@@ -186,7 +187,7 @@ public class DMNDeclaredField implements FieldDefinition {
 
     @Override
     public Optional<String> overriddenGetterName() {
-        String value = "get" + fieldName; // don't capitalize DROOLS-5518
+        String value = fieldGenStrategy.generateGetterName(fieldName);
         if (value.equals("getClass")) { // see Object#getClass() exists
             value = "get_class";
         }
@@ -195,7 +196,7 @@ public class DMNDeclaredField implements FieldDefinition {
 
     @Override
     public Optional<String> overriddenSetterName() {
-        return Optional.of("set" + fieldName); // don't capitalize DROOLS-5518
+        return Optional.of(fieldGenStrategy.generateSetterName(fieldName));
     }
 
     @Override

@@ -61,7 +61,7 @@ public class AnnotationsTest extends BaseVariantTest {
 
         if (strongly) {
             Class<?> inputSetClass = getStronglyClassByName(dmnModel, "InputSet");
-            Method getDirection = inputSetClass.getMethod("getdirection");
+            Method getDirection = inputSetClass.getMethod("getDirection");
             org.eclipse.microprofile.openapi.annotations.media.Schema ann = getDirection.getDeclaredAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
             Assertions.assertThat(ann).isNotNull();
             Assertions.assertThat(ann.enumeration()).isNotNull().contains("North", "South", "East", "West");

@@ -24,6 +24,8 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.comments.JavadocComment;
+
+import org.drools.core.util.StringUtils;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 import org.kie.dmn.api.core.DMNModel;
@@ -134,7 +136,8 @@ public class JavadocTest extends BaseVariantTest {
     }
 
     private void assertJavadoc(CompilationUnit cu, String field, String expectedJavadocComment) {
-        Optional<FieldDeclaration> opt = cu.findFirst(FieldDeclaration.class, fd -> fd.asFieldDeclaration().getVariable(0).getNameAsString().equals(field));
+        String lcField = StringUtils.lcFirst(field);
+        Optional<FieldDeclaration> opt = cu.findFirst(FieldDeclaration.class, fd -> fd.asFieldDeclaration().getVariable(0).getNameAsString().equals(lcField));
         assertTrue(opt.isPresent());
         Optional<JavadocComment> actual = opt.get().getJavadocComment();
         assertTrue(actual.isPresent());
