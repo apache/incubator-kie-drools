@@ -6,18 +6,20 @@
 
 **referenced Pull Requests**: _(please edit the URLs of referenced pullrequests if they exist)_
 
-paste the link(s) from GitHub here
+* paste the link(s) from GitHub here
+* link 2
+* link 3 etc.
 
-**How to retest or run**:
+<pre>
+How to retest a PR or trigger a specific build:
 
-* a pull request please add comment: regex **[.\*[j|J]enkins,?.\*(retest|test) this.\*]**
+* <b>a pull request</b> please add comment: <b>Jenkins retest this</b>
+ 
+* <b>a full downstream build</b> please add comment: <b>Jenkins run fdb</b>
+  
+* <b>a compile downstream build</b> please  add comment: <b>Jenkins run cdb</b>
 
-* a full downstream build please add comment: regex **[.*\[j|J]enkins,?.\*(execute|run|trigger|start|do) fdb.\*]**
+* <b>a full production downstream build</b> please add comment: <b>Jenkins execute product fdb</b>
 
-* a compile downstream build please  add comment: regex **[.\*[j|J]enkins,?.\*(execute|run|trigger|start|do) cdb.\*]**
-
-* a full production downstream please add comment: regex **[.\*[j|J]enkins,?.\*(execute|run|trigger|start|do) product fdb.\*]**
-
-* an upstream build please add comment: regex **[.\*[j|J]enkins,?.\*(execute|run|trigger|start|do) upstream.\*]**
-
-i.e for running a full downstream build =  **Jenkins do fdb**
+* <b>an upstream build</b> please add comment: <b>Jenkins run upstream</b>
+</pre>
