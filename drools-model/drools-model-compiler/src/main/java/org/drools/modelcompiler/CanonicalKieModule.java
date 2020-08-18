@@ -49,6 +49,7 @@ import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.factmodel.GeneratedFact;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.io.internal.InternalResource;
 import org.drools.core.util.Drools;
@@ -437,8 +438,7 @@ public class CanonicalKieModule implements InternalKieModule {
 
     @Override
     public KieJarChangeSet getChanges(InternalKieModule newKieModule) {
-        KieJarChangeSet result = new KieJarChangeSet();
-        findChanges(result, newKieModule);
+        KieJarChangeSet result = findChanges(newKieModule);
 
         Map<String, Model> oldModels = getModels();
         Map<String, Model> newModels = ((CanonicalKieModule) newKieModule).getModels();
@@ -486,7 +486,8 @@ public class CanonicalKieModule implements InternalKieModule {
         return changeSet;
     }
 
-    private void findChanges(KieJarChangeSet result, InternalKieModule newKieModule) {
+    private KieJarChangeSet findChanges(InternalKieModule newKieModule) {
+        KieJarChangeSet result = new KieJarChangeSet();
         Collection<String> oldFiles = getFileNames();
         Collection<String> newFiles = newKieModule.getFileNames();
 
@@ -503,9 +504,7 @@ public class CanonicalKieModule implements InternalKieModule {
         for (String file : newFiles) {
             if (oldFiles.contains(file) && isChange(file, this)) {
                 // check for modification
-                byte[] oldBytes = getBytes(file);
-                byte[] newBytes = newKieModule.getBytes(file);
-                if (!Arrays.equals(oldBytes, newBytes)) {
+                if (isClassChanged( newKieModule, file )) {
                     // parse the file to figure out the difference
                     result.registerChanges(file, new ResourceChangeSet(file, ChangeType.UPDATED));
                 }
@@ -514,12 +513,19 @@ public class CanonicalKieModule implements InternalKieModule {
                 result.addFile(file);
             }
         }
+        return result;
     }
 
     private boolean isChange(String fileName, CanonicalKieModule module) {
         return fileName.endsWith(".class") &&
                 !fileName.equals(PROJECT_MODEL_RESOURCE_CLASS) &&
                 module.getRuleClassNames().stream().noneMatch(fileNameToClass(fileName)::startsWith);
+    }
+
+    private static final String GENERATED_FACT_MARKER = GeneratedFact.class.getCanonicalName().replace( '.', '/' );
+    private boolean isClassChanged( InternalKieModule newKieModule, String file ) {
+        byte[] oldBytes = getBytes( file );
+        return new String(oldBytes).contains(GENERATED_FACT_MARKER) || !Arrays.equals(oldBytes, newKieModule.getBytes( file ));
     }
 
     private Collection<ResourceChangeSet> calculateResourceChangeSet(Model oldModel, Model newModel) {
