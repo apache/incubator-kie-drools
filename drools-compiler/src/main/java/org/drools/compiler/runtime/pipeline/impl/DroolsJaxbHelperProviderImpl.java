@@ -45,6 +45,7 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.ProjectJavaCompiler;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
+import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.command.runtime.GetGlobalCommand;
 import org.drools.core.command.runtime.SetGlobalCommand;
@@ -69,6 +70,7 @@ import org.drools.core.xml.jaxb.util.JaxbListWrapper;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.help.DroolsJaxbHelperProvider;
@@ -99,6 +101,21 @@ public class DroolsJaxbHelperProviderImpl
             FlatQueryResults.class.getName(),
             CompleteWorkItemCommand.class.getName(),
             GetObjectsCommand.class.getName()};
+
+    public static void addPackageFromXSD(KnowledgeBuilder kBuilder,
+                                         Resource resource,
+                                         ResourceConfiguration configuration) throws IOException {
+        if (configuration instanceof JaxbConfigurationImpl) {
+            JaxbConfigurationImpl jaxbConf = (JaxbConfigurationImpl) configuration;
+            String[] classes = DroolsJaxbHelperProviderImpl.addXsdModel(resource,
+                                                                        (KnowledgeBuilderImpl) kBuilder,
+                                                                        jaxbConf.getXjcOpts(),
+                                                                        jaxbConf.getSystemId());
+            for (String cls : classes) {
+                jaxbConf.getClasses().add(cls);
+            }
+        }
+    }
 
     public static String[] addXsdModel(Resource resource,
                                        KnowledgeBuilderImpl kBuilder,

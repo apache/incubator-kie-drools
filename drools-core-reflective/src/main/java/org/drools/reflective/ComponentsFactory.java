@@ -16,8 +16,13 @@
 
 package org.drools.reflective;
 
+import java.io.IOException;
+
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.drools.reflective.util.ByteArrayClassLoader;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
+import org.kie.internal.builder.KnowledgeBuilder;
 
 import static org.kie.api.internal.utils.ServiceUtil.instanceFromNames;
 
@@ -42,6 +47,10 @@ public class ComponentsFactory {
 
     public static Object createTimerService( String className ) {
         return getComponentsSupplier().createTimerService( className );
+    }
+
+    public static void addPackageFromXSD( KnowledgeBuilder kBuilder, Resource resource, ResourceConfiguration configuration) throws IOException {
+        getComponentsSupplier().addPackageFromXSD(kBuilder, resource, configuration);
     }
 
     public static void setComponentsSupplier( ComponentsSupplier supplier ) {

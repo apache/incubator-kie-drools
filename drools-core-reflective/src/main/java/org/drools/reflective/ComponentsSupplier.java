@@ -16,8 +16,13 @@
 
 package org.drools.reflective;
 
+import java.io.IOException;
+
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.drools.reflective.util.ByteArrayClassLoader;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
+import org.kie.internal.builder.KnowledgeBuilder;
 
 public interface ComponentsSupplier {
     ProjectClassLoader createProjectClassLoader( ClassLoader parent, ResourceProvider resourceProvider );
@@ -26,4 +31,6 @@ public interface ComponentsSupplier {
     Object createConsequenceExceptionHandler(String className, ClassLoader classLoader);
 
     Object createTimerService( String className );
+
+    default void addPackageFromXSD(KnowledgeBuilder kBuilder, Resource resource, ResourceConfiguration configuration) throws IOException { }
 }

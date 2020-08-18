@@ -109,11 +109,9 @@ import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleBuilder;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.dialect.DialectError;
-import org.drools.compiler.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
-import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -134,6 +132,7 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.xml.XmlChangeSetReader;
+import org.drools.reflective.ComponentsFactory;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -749,7 +748,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
             } else if (ResourceType.CHANGE_SET.equals(type)) {
                 addPackageFromChangeSet(resource);
             } else if (ResourceType.XSD.equals(type)) {
-                addPackageFromXSD(resource, (JaxbConfigurationImpl) configuration);
+                addPackageFromXSD(resource, configuration);
             } else if (ResourceType.SCARD.equals(type)) {
                 addPackageFromScoreCard(resource, configuration);
             } else if (ResourceType.TDRL.equals(type)) {
@@ -789,16 +788,9 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         assemblers.addResources(this, resources, type);
     }
 
-    void addPackageFromXSD(Resource resource,
-                           JaxbConfigurationImpl configuration) throws IOException {
+    void addPackageFromXSD(Resource resource, ResourceConfiguration configuration) throws IOException {
         if (configuration != null) {
-            String[] classes = DroolsJaxbHelperProviderImpl.addXsdModel(resource,
-                                                                        this,
-                                                                        configuration.getXjcOpts(),
-                                                                        configuration.getSystemId());
-            for (String cls : classes) {
-                configuration.getClasses().add(cls);
-            }
+            ComponentsFactory.addPackageFromXSD( this, resource, configuration );
         }
     }
 
