@@ -18,7 +18,7 @@ package org.kie.kogito.trusty.storage.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.kie.kogito.tracing.decision.event.common.MessageLevel;
+import org.kie.kogito.tracing.decision.event.message.MessageLevel;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Message {

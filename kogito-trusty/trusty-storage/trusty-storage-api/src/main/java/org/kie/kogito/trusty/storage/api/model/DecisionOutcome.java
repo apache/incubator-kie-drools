@@ -20,7 +20,7 @@ import java.util.Collection;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.kie.kogito.tracing.decision.event.common.MessageLevel;
+import org.kie.kogito.tracing.decision.event.message.MessageLevel;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DecisionOutcome {
@@ -42,10 +42,10 @@ public class DecisionOutcome {
     private String evaluationStatus;
 
     @JsonProperty(OUTCOME_RESULT_FIELD)
-    private TypedValue outcomeResult;
+    private TypedVariable outcomeResult;
 
     @JsonProperty(OUTCOME_INPUTS_FIELD)
-    private Collection<TypedValue> outcomeInputs;
+    private Collection<TypedVariable> outcomeInputs;
 
     @JsonProperty(MESSAGES_FIELD)
     private Collection<Message> messages;
@@ -53,7 +53,7 @@ public class DecisionOutcome {
     public DecisionOutcome() {
     }
 
-    public DecisionOutcome(String outcomeId, String outcomeName, String evaluationStatus, TypedValue outcomeResult, Collection<TypedValue> outcomeInputs, Collection<Message> messages) {
+    public DecisionOutcome(String outcomeId, String outcomeName, String evaluationStatus, TypedVariable outcomeResult, Collection<TypedVariable> outcomeInputs, Collection<Message> messages) {
         this.outcomeId = outcomeId;
         this.outcomeName = outcomeName;
         this.evaluationStatus = evaluationStatus;
@@ -86,19 +86,19 @@ public class DecisionOutcome {
         this.evaluationStatus = evaluationStatus;
     }
 
-    public TypedValue getOutcomeResult() {
+    public TypedVariable getOutcomeResult() {
         return outcomeResult;
     }
 
-    public void setOutcomeResult(TypedValue outcomeResult) {
+    public void setOutcomeResult(TypedVariable outcomeResult) {
         this.outcomeResult = outcomeResult;
     }
 
-    public Collection<TypedValue> getOutcomeInputs() {
+    public Collection<TypedVariable> getOutcomeInputs() {
         return outcomeInputs;
     }
 
-    public void setOutcomeInputs(Collection<TypedValue> outcomeInputs) {
+    public void setOutcomeInputs(Collection<TypedVariable> outcomeInputs) {
         this.outcomeInputs = outcomeInputs;
     }
 

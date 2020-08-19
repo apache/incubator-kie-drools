@@ -12,25 +12,28 @@ message Decision {
     optional string executionId = 2;
 
     /* @Field(store = Store.YES) */
-    optional int64 executionTimestamp = 3;
+    optional string sourceUrl = 3;
 
     /* @Field(store = Store.YES) */
-    optional bool hasSucceeded = 4;
+    optional int64 executionTimestamp = 4;
 
     /* @Field(store = Store.YES) */
-    optional string executorName = 5;
+    optional bool hasSucceeded = 5;
 
     /* @Field(store = Store.YES) */
-    optional string executedModelName = 6;
+    optional string executorName = 6;
 
     /* @Field(store = Store.YES) */
-    repeated TypedValue inputs = 7;
+    optional string executedModelName = 7;
 
     /* @Field(store = Store.YES) */
-    repeated DecisionOutcome outcomes = 8;
+    optional string executedModelNamespace = 8;
 
     /* @Field(store = Store.YES) */
-    optional string executedModelNamespace = 9;
+    repeated TypedVariable inputs = 9;
+
+    /* @Field(store = Store.YES) */
+    repeated DecisionOutcome outcomes = 10;
 }
 
 /* @Indexed */
@@ -45,10 +48,10 @@ message DecisionOutcome {
     optional string evaluationStatus = 3;
 
     /* @Field(store = Store.YES) */
-    optional TypedValue outcomeResult = 4;
+    optional TypedVariable outcomeResult = 4;
 
     /* @Field(store = Store.YES) */
-    repeated TypedValue outcomeInputs = 5;
+    repeated TypedVariable outcomeInputs = 5;
 
     /* @Field(store = Store.YES) */
     repeated ExecutionMessage messages = 6;
@@ -93,13 +96,19 @@ message MessageExceptionField {
 }
 
 /* @Indexed */
-message TypedValue {
+message TypedVariable {
     /* @Field(store = Store.YES) */
-    optional string name = 1;
+    optional string kind = 1;
 
     /* @Field(store = Store.YES) */
-    optional string typeRef = 2;
+    optional string name = 2;
 
     /* @Field(store = Store.YES) */
-    optional string value = 3;
+    optional string typeRef = 3;
+
+    /* @Field(store = Store.YES) */
+    optional string value = 4;
+
+    /* @Field(store = Store.YES) */
+    repeated TypedVariable components = 5;
 }

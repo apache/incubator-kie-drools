@@ -16,7 +16,9 @@
 
 package org.kie.kogito.trusty.service.api;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -54,7 +56,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The trusty api resource.
  */
-@Path("v1/executions")
+@Path("executions")
 public class ExecutionsApiV1 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionsApiV1.class);
@@ -122,8 +124,8 @@ public class ExecutionsApiV1 {
         OffsetDateTime fromDate;
         OffsetDateTime toDate;
         try {
-            fromDate = parseParameterDate(from);
-            toDate = parseParameterDate(to);
+            fromDate = parseParameterDate(from, true);
+            toDate = parseParameterDate(to, false);
         } catch (DateTimeParseException e) {
             LOGGER.warn("Invalid date", e);
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), "Date format should be yyyy-MM-dd'T'HH:mm:ssZ").build();
@@ -136,7 +138,7 @@ public class ExecutionsApiV1 {
         return Response.ok(new ExecutionsResponse(headersResponses.size(), limit, offset, headersResponses)).build();
     }
 
-    private OffsetDateTime parseParameterDate(String date) {
+    private OffsetDateTime parseParameterDate(String date, boolean localDateAtStartOfDay) {
         if (date.equals("yesterday")) {
             return OffsetDateTime.now(ZoneOffset.UTC).minusDays(1);
         }
@@ -144,7 +146,14 @@ public class ExecutionsApiV1 {
             return OffsetDateTime.now(ZoneOffset.UTC);
         }
 
-        return ZonedDateTime.parse(date, DateTimeFormatter.ISO_OFFSET_DATE_TIME).toOffsetDateTime();
+        try {
+            return ZonedDateTime.parse(date, DateTimeFormatter.ISO_OFFSET_DATE_TIME).toOffsetDateTime();
+        } catch (DateTimeParseException e) {
+            ZonedDateTime zonedDateTime = LocalDate.parse(date, DateTimeFormatter.ISO_DATE).atStartOfDay(ZoneId.systemDefault());
+            return localDateAtStartOfDay
+                    ? zonedDateTime.toOffsetDateTime()
+                    : zonedDateTime.toOffsetDateTime().plusDays(1).minusNanos(1);
+        }
     }
 
     /**

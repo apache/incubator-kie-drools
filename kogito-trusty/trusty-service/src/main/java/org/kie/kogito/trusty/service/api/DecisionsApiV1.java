@@ -41,7 +41,7 @@ import org.kie.kogito.trusty.service.responses.DecisionStructuredInputsResponse;
 import org.kie.kogito.trusty.service.responses.ExecutionHeaderResponse;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 
-@Path("v1/executions/decisions")
+@Path("executions/decisions")
 public class DecisionsApiV1 {
 
     @Inject

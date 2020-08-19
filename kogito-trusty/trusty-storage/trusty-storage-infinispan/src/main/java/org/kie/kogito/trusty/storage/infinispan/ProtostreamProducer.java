@@ -60,6 +60,6 @@ public class ProtostreamProducer {
 
     @Produces
     org.infinispan.protostream.MessageMarshaller typedValueModelMarshaller() {
-        return new TypedValueMarshaller(mapper);
+        return new TypedVariableMarshaller(mapper);
     }
 }

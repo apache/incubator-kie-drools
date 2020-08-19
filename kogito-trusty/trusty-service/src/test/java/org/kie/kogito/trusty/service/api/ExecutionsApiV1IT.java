@@ -53,7 +53,7 @@ class ExecutionsApiV1IT {
     @Test
     void givenRequestWithoutLimitAndOffsetParametersWhenExecutionEndpointIsCalledThenTheDefaultValuesAreCorrect() {
         Mockito.when(executionService.getExecutionHeaders(any(OffsetDateTime.class), any(OffsetDateTime.class), any(Integer.class), any(Integer.class), any(String.class))).thenReturn(new ArrayList<>());
-        ExecutionsResponse response = given().contentType(ContentType.JSON).when().get("/v1/executions?from=2000-01-01T00:00:00Z&to=2021-01-01T00:00:00Z").as(ExecutionsResponse.class);
+        ExecutionsResponse response = given().contentType(ContentType.JSON).when().get("/executions?from=2000-01-01T00:00:00Z&to=2021-01-01T00:00:00Z").as(ExecutionsResponse.class);
 
         Assertions.assertEquals(100, response.getLimit());
         Assertions.assertEquals(0, response.getOffset());
@@ -62,38 +62,38 @@ class ExecutionsApiV1IT {
 
     @Test
     void givenARequestWithoutTimeRangeParametersWhenExecutionEndpointIsCalledThenTheDefaultValuesAreUsed() {
-        given().when().get("/v1/executions").then().statusCode(200);
-        given().when().get("/v1/executions?from=2000-01-01T00:00:00Z").then().statusCode(200);
-        given().when().get("/v1/executions?to=2000-01-01T00:00:00Z").then().statusCode(200);
+        given().when().get("/executions").then().statusCode(200);
+        given().when().get("/executions?from=2000-01-01T00:00:00Z").then().statusCode(200);
+        given().when().get("/executions?to=2000-01-01T00:00:00Z").then().statusCode(200);
     }
 
     @Test
     void givenARequestWithoutTimeZoneInformationWhenExecutionEndpointIsCalledThenBadRequestIsReturned() {
-        given().when().get("/v1/executions?to=2000-01-01T00:00:00&from=2000-01-01T00:00:00Z").then().statusCode(400);
+        given().when().get("/executions?to=2000-01-01T00:00:00&from=2000-01-01T00:00:00Z").then().statusCode(400);
     }
 
     @Test
     void givenARequestWithInvalidPaginationParametersWhenExecutionEndpointIsCalledThenBadRequestIsReturned() {
-        given().when().get("/v1/executions?from=2000-01-01T00:00:00Z&to=2021-01-01T00:00:00Z&offset=-1").then().statusCode(400);
-        given().when().get("/v1/executions?from=2000-01-01T00:00:00Z&to=2021-01-01T00:00:00Z&limit=-1").then().statusCode(400);
+        given().when().get("/executions?from=2000-01-01T00:00:00Z&to=2021-01-01T00:00:00Z&offset=-1").then().statusCode(400);
+        given().when().get("/executions?from=2000-01-01T00:00:00Z&to=2021-01-01T00:00:00Z&limit=-1").then().statusCode(400);
     }
 
     @Test
     void givenARequestWithMalformedTimeRangeWhenExecutionEndpointIsCalledThenBadRequestIsReturned() {
-        given().contentType(ContentType.JSON).when().get("/v1/executions?from=2000-01-01&to=2021-01-01T00:00:00Z").then().statusCode(400);
-        given().contentType(ContentType.JSON).when().get("/v1/executions?from=2000-01-01T00:00:00Z&to=2021-01-01").then().statusCode(400);
-        given().contentType(ContentType.JSON).when().get("/v1/executions?from=2000-01-01T00:00:00&to=2021-01-01T00:00:00Z").then().statusCode(400);
-        given().contentType(ContentType.JSON).when().get("/v1/executions?from=2000-01-01T00:00:00Z&to=2021-01-01T00:00:00").then().statusCode(400);
+        given().contentType(ContentType.JSON).when().get("/executions?from=2000-13-01&to=2021-01-01T00:00:00Z").then().statusCode(400);
+        given().contentType(ContentType.JSON).when().get("/executions?from=2000-01-01T00:00:00Z&to=2021-13-01").then().statusCode(400);
+        given().contentType(ContentType.JSON).when().get("/executions?from=NotADate&to=2021-01-01T00:00:00Z").then().statusCode(400);
+        given().contentType(ContentType.JSON).when().get("/executions?from=2000-13-01T00:00:00Z&to=NotADate").then().statusCode(400);
     }
 
     @Test
     void givenARequestWhenExecutionEndpointIsCalledThenTheExecutionHeaderIsReturned() throws ParseException {
-        Execution execution = new Execution("test1",
+        Execution execution = new Execution("test1", "http://localhost:8081/model",
                                             OffsetDateTime.parse("2020-01-01T00:00:00Z", DateTimeFormatter.ISO_OFFSET_DATE_TIME).toInstant().toEpochMilli(),
                                             true, "name", "model", "namespace", ExecutionTypeEnum.DECISION);
         Mockito.when(executionService.getExecutionHeaders(any(OffsetDateTime.class), any(OffsetDateTime.class), any(Integer.class), any(Integer.class), any(String.class))).thenReturn(List.of(execution));
 
-        ExecutionsResponse response = given().contentType(ContentType.JSON).when().get("/v1/executions?from=2000-01-01T00:00:00Z&to=2021-01-01T00:00:00Z").as(ExecutionsResponse.class);
+        ExecutionsResponse response = given().contentType(ContentType.JSON).when().get("/executions?from=2000-01-01T00:00:00Z&to=2021-01-01T00:00:00Z").as(ExecutionsResponse.class);
 
         Assertions.assertEquals(1, response.getHeaders().size());
     }
@@ -106,7 +106,7 @@ class ExecutionsApiV1IT {
         when(executionService.getDecisionById(anyString())).thenReturn(decision);
         when(executionService.getModelById("name:namespace")).thenReturn(MODEL_DEFINITION);
 
-        final Response response = given().contentType(ContentType.TEXT).when().get("/v1/executions/123/model");
+        final Response response = given().contentType(ContentType.TEXT).when().get("/executions/123/model");
         final String definition = response.getBody().print();
         assertEquals(MODEL_DEFINITION, definition);
     }
@@ -115,13 +115,13 @@ class ExecutionsApiV1IT {
     void givenARequestWithoutExistingDecisionWhenModelEndpointIsCalledThenBadRequestIsReturned() {
         when(executionService.getDecisionById(anyString())).thenThrow(new IllegalArgumentException("Execution does not exist."));
 
-        given().contentType(ContentType.TEXT).when().get("/v1/executions/123/model").then().statusCode(400);
+        given().contentType(ContentType.TEXT).when().get("/executions/123/model").then().statusCode(400);
     }
 
     @Test
     void givenARequestWithoutExistingModelWhenModelEndpointIsCalledThenBadRequestIsReturned() {
         when(executionService.getModelById(anyString())).thenThrow(new IllegalArgumentException("Model does not exist."));
 
-        given().contentType(ContentType.TEXT).when().get("/v1/executions/123/model").then().statusCode(400);
+        given().contentType(ContentType.TEXT).when().get("/executions/123/model").then().statusCode(400);
     }
 }
