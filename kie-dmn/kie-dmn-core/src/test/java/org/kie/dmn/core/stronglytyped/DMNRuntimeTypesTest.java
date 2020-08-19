@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
@@ -38,6 +40,7 @@ import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.core.BaseVariantTest;
 import org.kie.dmn.core.DMNRuntimeTest;
 import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.core.v1_2.DMNDecisionServicesTest;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
@@ -69,21 +72,40 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
     }
 
     @Test
-    public void testOneOfEachType() {
+    public void testOneOfEachType() throws Exception {
         final DMNRuntime runtime = createRuntime("OneOfEachType.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_4f5608e9-4d74-4c22-a47e-ab657257fc9c", "OneOfEachType");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        final DMNContext context = DMNFactory.newContext();
-        context.set("InputString", "John Doe");
-        context.set("InputNumber", BigDecimal.ONE);
-        context.set("InputBoolean", true);
-        context.set("InputDTDuration", Duration.parse("P1D"));
-        context.set("InputYMDuration", Period.parse("P1M"));
-        context.set("InputDateAndTime", LocalDateTime.of(2020, 4, 2, 9, 0));
-        context.set("InputDate", LocalDate.of(2020, 4, 2));
-        context.set("InputTime", LocalTime.of(9, 0));
+        DMNContext context = DMNFactory.newContext();
+        if (!isTypeSafe()) {
+            context.set("InputString", "John Doe");
+            context.set("InputNumber", BigDecimal.ONE);
+            context.set("InputBoolean", true);
+            context.set("InputDTDuration", Duration.parse("P1D"));
+            context.set("InputYMDuration", Period.parse("P1M"));
+            context.set("InputDateAndTime", LocalDateTime.of(2020, 4, 2, 9, 0));
+            context.set("InputDate", LocalDate.of(2020, 4, 2));
+            context.set("InputTime", LocalTime.of(9, 0));
+        } else {
+            JsonMapper mapper = JsonMapper.builder()
+                                          .addModule(new JavaTimeModule())
+                                          .build();
+            final String JSON = "{\n" +
+                                "    \"InputBoolean\": true,\n" +
+                                "    \"InputDTDuration\": \"P1D\",\n" +
+                                "    \"InputDate\": \"2020-04-02\",\n" +
+                                "    \"InputDateAndTime\": \"2020-04-02T09:00:00\",\n" +
+                                "    \"InputNumber\": 1,\n" +
+                                "    \"InputString\": \"John Doe\",\n" +
+                                "    \"InputTime\": \"09:00\",\n" +
+                                "    \"InputYMDuration\": \"P1M\"\n" +
+                                "}";
+            Class<?> inputSetClass = getStronglyClassByName(dmnModel, "InputSet");
+            FEELPropertyAccessible inputSet = (FEELPropertyAccessible) mapper.readValue(JSON, inputSetClass);
+            context = new DMNContextFPAImpl(inputSet);
+        }
 
         final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
