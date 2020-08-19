@@ -53,7 +53,6 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.KieBaseEventSupport;
 import org.drools.core.factmodel.ClassDefinition;
@@ -971,11 +970,7 @@ public class KnowledgeBaseImpl
                     break;
                 }
             }
-            try {
-                processTypeDeclaration( newDecl, newPkg );
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException( "unable to resolve Type Declaration class '" + newDecl.getTypeClassName() + "'", e );
-            }
+            processTypeDeclaration( newDecl, newPkg );
         }
     }
 
@@ -1041,7 +1036,7 @@ public class KnowledgeBaseImpl
         this.classTypeDeclaration.put( newDecl.getTypeClassName(), newDecl );
     }
 
-    protected void processTypeDeclaration( TypeDeclaration newDecl, InternalKnowledgePackage newPkg ) throws ClassNotFoundException {
+    protected void processTypeDeclaration( TypeDeclaration newDecl, InternalKnowledgePackage newPkg ) {
         JavaDialectRuntimeData runtime = ((JavaDialectRuntimeData) newPkg.getDialectRuntimeRegistry().getDialectData( "java" ));
 
         TypeDeclaration typeDeclaration = this.classTypeDeclaration.get( newDecl.getTypeClassName() );
@@ -1049,16 +1044,18 @@ public class KnowledgeBaseImpl
             String className = newDecl.getTypeClassName();
 
             byte [] def = runtime != null ? runtime.getClassDefinition(convertClassToResourcePath(className)) : null;
-            Class<?> definedKlass = registerAndLoadTypeDefinition( className, def );
+            try {
+                Class<?> definedKlass = registerAndLoadTypeDefinition( className, def );
 
-            if ( definedKlass == null && newDecl.isNovel() ) {
-                throw new RuntimeException( "Registering null bytes for class " + className );
+                if (newDecl.getTypeClassDef() == null) {
+                    newDecl.setTypeClassDef( new ClassDefinition() );
+                }
+                newDecl.setTypeClass( definedKlass );
+            } catch (ClassNotFoundException e) {
+                if (newDecl.isNovel()) {
+                    throw new RuntimeException( "unable to resolve Type Declaration class '" + className + "'", e );
+                }
             }
-
-            if (newDecl.getTypeClassDef() == null) {
-                newDecl.setTypeClassDef( new ClassDefinition() );
-            }
-            newDecl.setTypeClass( definedKlass );
 
             this.classTypeDeclaration.put( className, newDecl );
             typeDeclaration = newDecl;
@@ -1069,7 +1066,7 @@ public class KnowledgeBaseImpl
             newDecl.setTypeClass( definedKlass );
 
             mergeTypeDeclarations( typeDeclaration,
-                                   newDecl );
+                    newDecl );
         }
 
         // update existing OTNs
