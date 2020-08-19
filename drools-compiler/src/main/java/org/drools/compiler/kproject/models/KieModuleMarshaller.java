@@ -23,17 +23,6 @@ import java.net.URL;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.converters.basic.BooleanConverter;
-import com.thoughtworks.xstream.converters.basic.ByteConverter;
-import com.thoughtworks.xstream.converters.basic.DoubleConverter;
-import com.thoughtworks.xstream.converters.basic.FloatConverter;
-import com.thoughtworks.xstream.converters.basic.IntConverter;
-import com.thoughtworks.xstream.converters.basic.LongConverter;
-import com.thoughtworks.xstream.converters.basic.NullConverter;
-import com.thoughtworks.xstream.converters.basic.ShortConverter;
-import com.thoughtworks.xstream.converters.basic.StringConverter;
-import com.thoughtworks.xstream.converters.collections.CollectionConverter;
-import com.thoughtworks.xstream.converters.reflection.ReflectionConverter;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -41,8 +30,6 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-
-import com.thoughtworks.xstream.security.AnyTypePermission;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.drools.core.util.IoUtils;
 import org.kie.api.builder.model.KieBaseModel;
@@ -50,40 +37,23 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.xml.sax.SAXException;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import static org.kie.soup.xstream.XStreamUtils.createTrustingXStream;
 
 public class KieModuleMarshaller {
 
     static final KieModuleMarshaller MARSHALLER = new KieModuleMarshaller();
 
-    private final XStream xStream;
+    private final XStream xStream = createTrustingXStream(new DomDriver());
 
     private KieModuleMarshaller() {
-        xStream = new XStream(new DomDriver()) {
-            @Override
-            protected void setupConverters() {
-                registerConverter(new NullConverter(), PRIORITY_VERY_HIGH);
-                registerConverter(new IntConverter(), PRIORITY_NORMAL);
-                registerConverter(new FloatConverter(), PRIORITY_NORMAL);
-                registerConverter(new DoubleConverter(), PRIORITY_NORMAL);
-                registerConverter(new LongConverter(), PRIORITY_NORMAL);
-                registerConverter(new ShortConverter(), PRIORITY_NORMAL);
-                registerConverter(new BooleanConverter(), PRIORITY_NORMAL);
-                registerConverter(new ByteConverter(), PRIORITY_NORMAL);
-                registerConverter(new StringConverter(), PRIORITY_NORMAL);
-                registerConverter(new CollectionConverter(getMapper()), PRIORITY_NORMAL);
-                registerConverter(new ReflectionConverter(getMapper(), getReflectionProvider()), PRIORITY_VERY_LOW);
-                registerConverter(new KieModuleConverter());
-                registerConverter(new KieBaseModelImpl.KBaseConverter());
-                registerConverter(new KieSessionModelImpl.KSessionConverter());
-                registerConverter(new ListenerModelImpl.ListenerConverter());
-                registerConverter(new QualifierModelImpl.QualifierConverter());
-                registerConverter(new WorkItemHandlerModelImpl.WorkItemHandelerConverter());
-                registerConverter(new ChannelModelImpl.ChannelConverter());
-                registerConverter(new RuleTemplateModelImpl.RuleTemplateConverter());
-            }
-        };
-        XStream.setupDefaultSecurity(xStream);
-        xStream.addPermission(new AnyTypePermission());
+        xStream.registerConverter(new KieModuleConverter());
+        xStream.registerConverter(new KieBaseModelImpl.KBaseConverter());
+        xStream.registerConverter(new KieSessionModelImpl.KSessionConverter());
+        xStream.registerConverter(new ListenerModelImpl.ListenerConverter());
+        xStream.registerConverter(new QualifierModelImpl.QualifierConverter());
+        xStream.registerConverter(new WorkItemHandlerModelImpl.WorkItemHandelerConverter());
+        xStream.registerConverter(new ChannelModelImpl.ChannelConverter());
+        xStream.registerConverter(new RuleTemplateModelImpl.RuleTemplateConverter());
         xStream.alias("kmodule", KieModuleModelImpl.class);
         xStream.alias("kbase", KieBaseModelImpl.class);
         xStream.alias("ksession", KieSessionModelImpl.class);
