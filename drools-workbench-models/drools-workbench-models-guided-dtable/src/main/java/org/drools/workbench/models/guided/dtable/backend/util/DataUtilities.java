@@ -15,10 +15,10 @@
  */
 package org.drools.workbench.models.guided.dtable.backend.util;
 
-import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 
 /**
  * Utilities

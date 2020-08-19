@@ -19,8 +19,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 
-import org.kie.soup.project.datamodel.oracle.DataType.DataTypes;
 import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.DataType.DataTypes;
 
 /**
  * Holder for cell value and other attributes. This is serialised by GWT RPC and
@@ -57,6 +57,10 @@ public class DTCellValue52 {
             case DATE:
                 setDateValue(sourceCell.getDateValue());
                 this.dataType = DataTypes.DATE;
+                break;
+            case LOCAL_DATE:
+                setLocalDateValue(sourceCell.getLocalDateValue());
+                this.dataType = DataTypes.LOCAL_DATE;
                 break;
             case NUMERIC:
                 setNumericValue(sourceCell.getNumericValue());
@@ -100,8 +104,14 @@ public class DTCellValue52 {
         }
     }
 
+    /**
+     * @param type
+     * @param emptyValue
+     * @param localDateDefaultValue - is taken into account just in case {type:LOCAL_DATE, emptyValue:false}
+     */
     public DTCellValue52(final DataTypes type,
-                         final boolean emptyValue) {
+                         final boolean emptyValue,
+                         final String localDateDefaultValue) {
         switch (type) {
             case BOOLEAN:
                 if (!emptyValue) {
@@ -114,6 +124,12 @@ public class DTCellValue52 {
                     setDateValue(new Date());
                 }
                 this.dataType = DataType.DataTypes.DATE;
+                break;
+            case LOCAL_DATE:
+                if (!emptyValue) {
+                    setLocalDateValue(localDateDefaultValue);
+                }
+                this.dataType = DataTypes.LOCAL_DATE;
                 break;
             case NUMERIC:
                 if (!emptyValue) {
@@ -309,6 +325,13 @@ public class DTCellValue52 {
         return valueDate;
     }
 
+    public String getLocalDateValue() {
+        if (!this.getDataType().equals(DataTypes.LOCAL_DATE)) {
+            valueString = null;
+        }
+        return valueString;
+    }
+
     public Number getNumericValue() {
         if (!isNumeric()) {
             valueNumeric = null;
@@ -337,6 +360,12 @@ public class DTCellValue52 {
         clearValues();
         this.valueDate = value;
         this.dataType = DataType.DataTypes.DATE;
+    }
+
+    public void setLocalDateValue(final String value) {
+        clearValues();
+        this.valueString = value;
+        this.dataType = DataTypes.LOCAL_DATE;
     }
 
     public void setNumericValue(final Number value) {
@@ -486,7 +515,6 @@ public class DTCellValue52 {
 
     /**
      * Clones this default value instance.
-     *
      * @return The cloned instance.
      */
     public DTCellValue52 cloneDefaultValueCell() {

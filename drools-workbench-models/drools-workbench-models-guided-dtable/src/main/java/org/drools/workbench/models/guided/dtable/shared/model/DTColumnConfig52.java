@@ -23,7 +23,7 @@ public class DTColumnConfig52
         implements BaseColumn,
                    DiffColumn {
 
-    private static final long serialVersionUID = 729l;
+    private static final long serialVersionUID = 743l;
 
     /**
      * Available fields for this type of column.
@@ -130,6 +130,8 @@ public class DTColumnConfig52
                 return dcv.getBooleanValue();
             case DATE:
                 return dcv.getDateValue();
+            case LOCAL_DATE:
+                return dcv.getLocalDateValue();
             case NUMERIC:
             case NUMERIC_BIGDECIMAL:
             case NUMERIC_BIGINTEGER:

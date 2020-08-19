@@ -17,6 +17,7 @@ package org.drools.workbench.models.guided.dtable.shared.model;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class BaseColumnFieldDiffImpl implements BaseColumnFieldDiff {
 
@@ -154,6 +155,8 @@ public class BaseColumnFieldDiffImpl implements BaseColumnFieldDiff {
                     } else {
                         return dcv1.getDateValue().equals( dcv2.getDateValue() );
                     }
+                case LOCAL_DATE:
+                    return Objects.equals(dcv1.getLocalDateValue(), dcv2.getLocalDateValue());
                 case NUMERIC:
                 case NUMERIC_BIGDECIMAL:
                 case NUMERIC_BIGINTEGER:

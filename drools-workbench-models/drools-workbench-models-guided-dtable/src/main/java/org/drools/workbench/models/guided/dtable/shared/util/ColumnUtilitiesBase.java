@@ -259,6 +259,8 @@ public abstract class ColumnUtilitiesBase {
             return DataType.DataTypes.BOOLEAN;
         } else if (DataType.TYPE_DATE.equals(type)) {
             return DataType.DataTypes.DATE;
+        } else if (DataType.TYPE_LOCAL_DATE.equals(type)) {
+            return DataType.DataTypes.LOCAL_DATE;
         }
         return DataType.DataTypes.STRING;
     }

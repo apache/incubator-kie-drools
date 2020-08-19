@@ -21,6 +21,7 @@ import java.util.Objects;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 import static org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52.FIELD_DEFAULT_VALUE;
 import static org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52.FIELD_HEADER;
@@ -79,6 +80,18 @@ public class DTColumnConfig52Test extends ColumnTestBase {
         column2.setDefaultValue(new DTCellValue52(7));
 
         checkSingleDiff(FIELD_DEFAULT_VALUE, "default1", 7, column1, column2);
+    }
+
+    @Test
+    public void testDiffDefaultValueLocalDate() {
+        final DTCellValue52 dateOne = new DTCellValue52(DataType.DataTypes.LOCAL_DATE);
+        final DTCellValue52 dateTwo = new DTCellValue52(DataType.DataTypes.LOCAL_DATE);
+        dateOne.setLocalDateValue("1-Aug-2020");
+        dateTwo.setLocalDateValue("2-Aug-2020");
+        column1.setDefaultValue(dateOne);
+        column2.setDefaultValue(dateTwo);
+
+        checkSingleDiff(FIELD_DEFAULT_VALUE, "1-Aug-2020", "2-Aug-2020", column1, column2);
     }
 
     @Test

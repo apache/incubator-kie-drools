@@ -40,6 +40,8 @@ public class GuidedDTDRLUtilities {
             case DATE:
                 Date dateValue = dcv.getDateValue();
                 return ( dateValue == null ? null : DateUtils.format( dcv.getDateValue() ) );
+            case LOCAL_DATE:
+                return dcv.getLocalDateValue();
             case NUMERIC:
                 BigDecimal numericValue = (BigDecimal) dcv.getNumericValue();
                 return ( numericValue == null ? null : numericValue.toPlainString() );

@@ -21,9 +21,13 @@ import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.DataType.DataTypes;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 // These tests check legacy (pre-6.4.CR1) objects that have been de-serialized can be correctly read.
 // DTCellValue52.valueString was set to an empty String statically and hence when the object was de-serialized
@@ -66,7 +70,7 @@ public class DTCellValue52Test {
                          1L);
         fieldString.set(dcv,
                         "woot");
-        assertEquals(DataType.DataTypes.BOOLEAN,
+        assertEquals(DataTypes.BOOLEAN,
                      dcv.getDataType());
         assertTrue(dcv.getBooleanValue());
         assertNull(dcv.getDateValue());
@@ -83,13 +87,29 @@ public class DTCellValue52Test {
                          1L);
         fieldString.set(dcv,
                         "woot");
-        assertEquals(DataType.DataTypes.DATE,
+        assertEquals(DataTypes.DATE,
                      dcv.getDataType());
         assertNull(dcv.getBooleanValue());
         assertEquals(now,
                      dcv.getDateValue());
         assertNull(dcv.getNumericValue());
         assertNull(dcv.getStringValue());
+    }
+
+    @Test
+    public void testGetLocalDateValue() throws Exception {
+        fieldBoolean.set(dcv,
+                         true);
+        dcv.setLocalDateValue("2020-Aug-19");
+        fieldNumeric.set(dcv,
+                         1L);
+        assertEquals(DataTypes.LOCAL_DATE,
+                     dcv.getDataType());
+        assertNull(dcv.getBooleanValue());
+        assertEquals("2020-Aug-19",
+                     dcv.getLocalDateValue());
+        assertNull(dcv.getDateValue());
+        assertNull(dcv.getNumericValue());
     }
 
     @Test
@@ -101,7 +121,7 @@ public class DTCellValue52Test {
         dcv.setNumericValue(1L);
         fieldString.set(dcv,
                         "woot");
-        assertEquals(DataType.DataTypes.NUMERIC_LONG,
+        assertEquals(DataTypes.NUMERIC_LONG,
                      dcv.getDataType());
         assertNull(dcv.getBooleanValue());
         assertNull(dcv.getDateValue());
@@ -119,7 +139,7 @@ public class DTCellValue52Test {
         fieldNumeric.set(dcv,
                          1L);
         dcv.setStringValue("woot");
-        assertEquals(DataType.DataTypes.STRING,
+        assertEquals(DataTypes.STRING,
                      dcv.getDataType());
         assertNull(dcv.getBooleanValue());
         assertNull(dcv.getDateValue());
@@ -132,7 +152,7 @@ public class DTCellValue52Test {
     public void testDefaultValue() throws Exception {
         final DTCellValue52 defaultValue = new DTCellValue52(1);
         final DTCellValue52 clone = new DTCellValue52(defaultValue);
-        assertEquals(DataType.DataTypes.NUMERIC_INTEGER,
+        assertEquals(DataTypes.NUMERIC_INTEGER,
                      clone.getDataType());
         assertNull(clone.getBooleanValue());
         assertNull(clone.getDateValue());
@@ -145,11 +165,28 @@ public class DTCellValue52Test {
     public void testDefaultValueNull() throws Exception {
         final DTCellValue52 defaultValue = null;
         final DTCellValue52 clone = new DTCellValue52(defaultValue);
-        assertEquals(DataType.DataTypes.STRING,
+        assertEquals(DataTypes.STRING,
                      clone.getDataType());
         assertNull(clone.getBooleanValue());
         assertNull(clone.getDateValue());
         assertNull(clone.getNumericValue());
         assertNull(clone.getStringValue());
+    }
+
+    @Test
+    public void testNonEmptyDefaultValue() {
+        final String localDateDefaultValue = new DTCellValue52(DataTypes.LOCAL_DATE,
+                                                               false,
+                                                               "1-AUG-2020").getLocalDateValue();
+        assertNotNull(localDateDefaultValue);
+        assertFalse(localDateDefaultValue.isEmpty());
+    }
+
+    @Test
+    public void testEmptyDefaultValue() {
+        final String localDateDefaultValue = new DTCellValue52(DataTypes.LOCAL_DATE,
+                                                               true,
+                                                               "1-AUG-2020").getLocalDateValue();
+        assertNull(localDateDefaultValue);
     }
 }

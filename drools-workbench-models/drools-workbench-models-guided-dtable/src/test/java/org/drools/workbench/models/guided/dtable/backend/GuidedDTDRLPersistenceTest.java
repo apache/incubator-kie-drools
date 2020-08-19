@@ -16,6 +16,8 @@
 
 package org.drools.workbench.models.guided.dtable.backend;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -2230,6 +2232,43 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue(index > -1);
 
         index = drl.indexOf("Smurf( name == \"Pupa\" )",
+                            index + 1);
+        assertFalse(index > -1);
+    }
+
+    @Test
+    public void testLimitedEntryConditionsLocalDateConstraints() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat(GuidedDecisionTable52.TableFormat.LIMITED_ENTRY);
+        dt.setTableName("limited-entry");
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName("p1");
+        p1.setFactType("Smurf");
+        dt.getConditions().add(p1);
+
+        LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
+        cc1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        cc1.setFieldType(DataType.TYPE_LOCAL_DATE);
+        cc1.setFactField("born");
+        cc1.setOperator("==");
+        DTCellValue52 defValue = new DTCellValue52(DataType.DataTypes.LOCAL_DATE);
+        defValue.setLocalDateValue("10-Aug-2020");
+        cc1.setValue(defValue);
+        p1.getChildColumns().add(cc1);
+
+        dt.setData(DataUtilities.makeDataLists(new Object[][]{
+                new Object[]{1l, "", "desc", true},
+                new Object[]{2l, "", "desc", false}
+        }));
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal(dt);
+
+        int index = drl.indexOf("Smurf( born == \"10-Aug-2020\" )");
+        assertTrue(index > -1);
+
+        index = drl.indexOf("Smurf( born == \"10-Aug-2020\" )",
                             index + 1);
         assertFalse(index > -1);
     }
