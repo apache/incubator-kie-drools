@@ -33,11 +33,7 @@ interface LocationProps {
 
 const DomainExplorerPage: React.FC<IOwnProps &
   RouteComponentProps<MatchProps, {}, LocationProps> &
-  OUIAProps> = ({
-    ouiaId,
-    ouiaSafe,
-    ...props
-  }) => {
+  OUIAProps> = ({ ouiaId, ouiaSafe, ...props }) => {
   const rememberedParams =
     (props.location.state && props.location.state.parameters) || [];
   const rememberedSelections =
@@ -87,9 +83,7 @@ const DomainExplorerPage: React.FC<IOwnProps &
     return ouiaPageTypeAndObjectId('domain-explorer', domainName);
   });
   return (
-    <div
-      {...componentOuiaProps(ouiaId, 'DataExplorerPage', ouiaSafe)}
-    >
+    <div {...componentOuiaProps(ouiaId, 'DataExplorerPage', ouiaSafe)}>
       {!props.loadingState &&
         !props.domains.includes(domainName) &&
         !props.domains.includes(pathName) && (

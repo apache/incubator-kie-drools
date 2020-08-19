@@ -169,11 +169,15 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
           title="Process Details"
         >
           <Title
+            data-ouia-component-type="page-title"
+            data-ouia-safe={true}
             headingLevel="h1"
             size="4xl"
           >
             <h1
               className="pf-c-title pf-m-4xl"
+              data-ouia-component-type="page-title"
+              data-ouia-safe={true}
             >
               Process Details
             </h1>
@@ -751,11 +755,15 @@ exports[`Process Details Page component tests snapshot testing in Error state 1`
           title="Process Details"
         >
           <Title
+            data-ouia-component-type="page-title"
+            data-ouia-safe={true}
             headingLevel="h1"
             size="4xl"
           >
             <h1
               className="pf-c-title pf-m-4xl"
+              data-ouia-component-type="page-title"
+              data-ouia-safe={true}
             >
               Process Details
             </h1>
@@ -1325,11 +1333,15 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
           title="Process Details"
         >
           <Title
+            data-ouia-component-type="page-title"
+            data-ouia-safe={true}
             headingLevel="h1"
             size="4xl"
           >
             <h1
               className="pf-c-title pf-m-4xl"
+              data-ouia-component-type="page-title"
+              data-ouia-safe={true}
             >
               Process Details
             </h1>

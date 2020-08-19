@@ -25,8 +25,8 @@ jest.mock('@patternfly/react-core', () => ({
 
 describe('Domain Explorer Landing Page Component', () => {
   const props = {
-    ouiaId:null,
-    ouiaSafe:true
+    ouiaId: null,
+    ouiaSafe: true
   };
   it('Snapshot test with default props', () => {
     const wrapper = getWrapper(

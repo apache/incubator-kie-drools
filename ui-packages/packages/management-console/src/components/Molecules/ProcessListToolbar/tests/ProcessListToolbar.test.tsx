@@ -291,18 +291,34 @@ describe('ProcessListToolbar component tests', () => {
       'ProcessListToolbar'
     );
     expect(wrapper.find('#status-select').exists()).toBeTruthy();
-    await act(async()=>{
-      wrapper.find(Select).find('button').simulate('click');
-    })
+    await act(async () => {
+      wrapper
+        .find(Select)
+        .find('button')
+        .simulate('click');
+    });
     wrapper = wrapper.update();
-    await act(async()=>{
-      wrapper.find(SelectOption).at(1).find('input').simulate('change')
+    await act(async () => {
+      wrapper
+        .find(SelectOption)
+        .at(1)
+        .find('input')
+        .simulate('change');
     });
-    expect(props.setStatusArray.mock.calls[0][0]).toEqual(['ACTIVE','ERROR'])
-    await act(async()=>{
-      wrapper.find(SelectOption).at(4).find('input').simulate('change')
+    expect(props.setStatusArray.mock.calls[0][0]).toEqual(['ACTIVE', 'ERROR']);
+    await act(async () => {
+      wrapper
+        .find(SelectOption)
+        .at(4)
+        .find('input')
+        .simulate('change');
     });
-    expect(props.setStatusArray.mock.calls[1][0]).toEqual([ 'ACTIVE', 'COMPLETED', 'ERROR', 'SUSPENDED' ])
+    expect(props.setStatusArray.mock.calls[1][0]).toEqual([
+      'ACTIVE',
+      'COMPLETED',
+      'ERROR',
+      'SUSPENDED'
+    ]);
   });
 
   it('onDelete tests - for status', () => {

@@ -1,8 +1,4 @@
-import {
-  Nav,
-  NavList,
-  NavItem, OUIAProps
-} from '@patternfly/react-core';
+import { Nav, NavList, NavItem } from '@patternfly/react-core';
 import React from 'react';
 import { Redirect, Route, Link, Switch } from 'react-router-dom';
 import {
@@ -10,7 +6,8 @@ import {
   PageNotFound,
   NoData,
   ouiaAttribute,
-  GraphQL
+  GraphQL,
+  OUIAProps
 } from '@kogito-apps/common';
 import ProcessListPage from '../ProcessListPage/ProcessListPage';
 import ProcessDetailsPage from '../ProcessDetailsPage/ProcessDetailsPage';
@@ -25,10 +22,7 @@ interface IOwnProps {
   history: History;
 }
 
-const PageLayout: React.FC<IOwnProps & OUIAProps> = ({
-  ouiaId,
-  ...props
-}) => {
+const PageLayout: React.FC<IOwnProps & OUIAProps> = ({ ouiaId, ...props }) => {
   const { pathname } = props.location;
 
   const PageNav = (
@@ -37,10 +31,7 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({
         <NavItem isActive={pathname === '/ProcessInstances'}>
           <Link
             to="/ProcessInstances"
-            {...ouiaAttribute(
-              'data-ouia-navigation-name',
-              'process-instances'
-            )}
+            {...ouiaAttribute('data-ouia-navigation-name', 'process-instances')}
           >
             Process Instances
           </Link>
@@ -48,10 +39,7 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({
         <NavItem isActive={pathname === '/DomainExplorer'}>
           <Link
             to="/DomainExplorer"
-            {...ouiaAttribute(
-              'data-ouia-navigation-name',
-              'domain-explorer'
-            )}
+            {...ouiaAttribute('data-ouia-navigation-name', 'domain-explorer')}
           >
             Domain Explorer
           </Link>

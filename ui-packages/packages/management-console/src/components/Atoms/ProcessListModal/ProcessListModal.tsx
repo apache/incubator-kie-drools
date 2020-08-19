@@ -30,7 +30,6 @@ const ProcessListModal: React.FC<IOwnProps & OUIAProps> = ({
   ouiaId,
   ouiaSafe
 }) => {
-
   const onOkClick = () => {
     handleModalToggle();
     operationResult && resetSelected();

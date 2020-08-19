@@ -13,7 +13,8 @@ import {
   ouiaPageTypeAndObjectId,
   ServerErrors,
   LoadMore,
-  componentOuiaProps, OUIAProps
+  componentOuiaProps,
+  OUIAProps
 } from '@kogito-apps/common';
 import React, { useEffect, useState } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
@@ -21,7 +22,6 @@ import PageTitle from '../../Molecules/PageTitle/PageTitle';
 import ProcessListToolbar from '../../Molecules/ProcessListToolbar/ProcessListToolbar';
 import './ProcessListPage.css';
 import ProcessListTable from '../../Organisms/ProcessListTable/ProcessListTable';
-
 
 type filterType = {
   status: GraphQL.ProcessInstanceState[];
@@ -196,81 +196,81 @@ const ProcessListPage: React.FC<OUIAProps &
   return (
     <React.Fragment>
       <div {...componentOuiaProps(ouiaId, 'ProcessListPage', ouiaSafe)}>
-      <PageSection variant="light">
-        <PageTitle title="Process Instances" />
-        <Breadcrumb>
-          <BreadcrumbItem>
-            <Link to={'/'}>Home</Link>
-          </BreadcrumbItem>
-          <BreadcrumbItem isActive>Process instances</BreadcrumbItem>
-        </Breadcrumb>
-      </PageSection>
-      <PageSection>
-        <Grid hasGutter md={1}>
-          <GridItem span={12}>
-            <Card className="dataList">
-              {!isError && (
-                <>
-                  {' '}
-                  <ProcessListToolbar
-                    filterClick={onFilterClick}
-                    filters={filters}
-                    setFilters={setFilters}
+        <PageSection variant="light">
+          <PageTitle title="Process Instances" />
+          <Breadcrumb>
+            <BreadcrumbItem>
+              <Link to={'/'}>Home</Link>
+            </BreadcrumbItem>
+            <BreadcrumbItem isActive>Process instances</BreadcrumbItem>
+          </Breadcrumb>
+        </PageSection>
+        <PageSection>
+          <Grid hasGutter md={1}>
+            <GridItem span={12}>
+              <Card className="dataList">
+                {!isError && (
+                  <>
+                    {' '}
+                    <ProcessListToolbar
+                      filterClick={onFilterClick}
+                      filters={filters}
+                      setFilters={setFilters}
+                      initData={initData}
+                      setInitData={setInitData}
+                      selectedInstances={selectedInstances}
+                      setSelectedInstances={setSelectedInstances}
+                      setSearchWord={setSearchWord}
+                      searchWord={searchWord}
+                      isAllChecked={isAllChecked}
+                      setIsAllChecked={setIsAllChecked}
+                      selectedNumber={selectedNumber}
+                      setSelectedNumber={setSelectedNumber}
+                      statusArray={statusArray}
+                      setStatusArray={setStatusArray}
+                    />
+                  </>
+                )}
+                {filters.status.length > 0 ? (
+                  <ProcessListTable
                     initData={initData}
                     setInitData={setInitData}
+                    setLimit={setLimit}
+                    isLoading={isLoading}
+                    setIsError={setIsError}
+                    pageSize={defaultPageSize}
                     selectedInstances={selectedInstances}
                     setSelectedInstances={setSelectedInstances}
-                    setSearchWord={setSearchWord}
-                    searchWord={searchWord}
-                    isAllChecked={isAllChecked}
+                    filters={filters}
                     setIsAllChecked={setIsAllChecked}
-                    selectedNumber={selectedNumber}
                     setSelectedNumber={setSelectedNumber}
-                    statusArray={statusArray}
-                    setStatusArray={setStatusArray}
+                    selectedNumber={selectedNumber}
                   />
-                </>
-              )}
-              {filters.status.length > 0 ? (
-                <ProcessListTable
-                  initData={initData}
-                  setInitData={setInitData}
-                  setLimit={setLimit}
-                  isLoading={isLoading}
-                  setIsError={setIsError}
-                  pageSize={defaultPageSize}
-                  selectedInstances={selectedInstances}
-                  setSelectedInstances={setSelectedInstances}
-                  filters={filters}
-                  setIsAllChecked={setIsAllChecked}
-                  setSelectedNumber={setSelectedNumber}
-                  selectedNumber={selectedNumber}
-                />
-              ) : (
-                <KogitoEmptyState
-                  type={KogitoEmptyStateType.Reset}
-                  title="No status is selected"
-                  body="Try selecting at least one status to see results"
-                  onClick={resetClick}
-                />
-              )}
-              {(!loading || isLoadingMore) &&
-                !isLoading &&
-                initData !== undefined &&
-                (limit === pageSize || isLoadingMore) &&
-                filters.status.length > 0 && (
-                  <LoadMore
-                    offset={offset}
-                    setOffset={setOffset}
-                    getMoreItems={onGetMoreInstances}
-                    pageSize={pageSize}
-                    isLoadingMore={isLoadingMore}
+                ) : (
+                  <KogitoEmptyState
+                    type={KogitoEmptyStateType.Reset}
+                    title="No status is selected"
+                    body="Try selecting at least one status to see results"
+                    onClick={resetClick}
                   />
                 )}
-            </Card>
-          </GridItem>
-        </Grid>
-      </PageSection>
+                {(!loading || isLoadingMore) &&
+                  !isLoading &&
+                  initData !== undefined &&
+                  (limit === pageSize || isLoadingMore) &&
+                  filters.status.length > 0 && (
+                    <LoadMore
+                      offset={offset}
+                      setOffset={setOffset}
+                      getMoreItems={onGetMoreInstances}
+                      pageSize={pageSize}
+                      isLoadingMore={isLoadingMore}
+                    />
+                  )}
+              </Card>
+            </GridItem>
+          </Grid>
+        </PageSection>
       </div>
     </React.Fragment>
   );

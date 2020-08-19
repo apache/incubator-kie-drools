@@ -202,6 +202,7 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
   <MockedProcessListModal
     handleModalToggle={[Function]}
     isModalOpen={false}
+    ouiaId="operation-result"
     resetSelected={[Function]}
   />
   <Toolbar
@@ -209,10 +210,14 @@ exports[`ProcessListToolbar component tests Snapshot tests 1`] = `
     clearAllFilters={[Function]}
     clearFiltersButtonText="Reset to default"
     collapseListedFiltersBreakpoint="xl"
+    data-ouia-component-type="process-list-toolbar"
+    data-ouia-safe={true}
     id="data-toolbar-with-filter"
   >
     <div
       className="pf-c-toolbar pf-m-toggle-group-container kogito-management-console__state-dropdown-list"
+      data-ouia-component-type="process-list-toolbar"
+      data-ouia-safe={true}
       id="data-toolbar-with-filter"
     >
       <ToolbarContent

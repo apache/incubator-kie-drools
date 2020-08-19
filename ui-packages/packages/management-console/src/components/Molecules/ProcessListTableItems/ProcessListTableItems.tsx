@@ -22,7 +22,9 @@ import {
   KogitoSpinner,
   ItemDescriptor,
   ServerErrors,
-  EndpointLink
+  EndpointLink,
+  OUIAProps,
+  componentOuiaProps
 } from '@kogito-apps/common';
 import { Link } from 'react-router-dom';
 import { HistoryIcon } from '@patternfly/react-icons';
@@ -63,7 +65,7 @@ enum TitleType {
   SUCCESS = 'success',
   FAILURE = 'failure'
 }
-const ProcessListTableItems: React.FC<IOwnProps> = ({
+const ProcessListTableItems: React.FC<IOwnProps & OUIAProps> = ({
   processInstanceData,
   initData,
   setInitData,
@@ -73,7 +75,9 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
   setIsAllChecked,
   selectedNumber,
   setSelectedNumber,
-  filters
+  filters,
+  ouiaId,
+  ouiaSafe
 }) => {
   const [expanded, setexpanded] = useState([]);
   const [isOpen, setisOpen] = useState(false);
@@ -327,10 +331,16 @@ const ProcessListTableItems: React.FC<IOwnProps> = ({
         modalTitle={setTitle(titleType, modalTitle)}
         modalContent={modalContent}
         processName={processInstanceData && processInstanceData.processName}
+        ouiaId={'process-' + processInstanceData.id}
       />
       <DataListItem
         aria-labelledby={'kie-datalist-item-' + processInstanceData.id}
         isExpanded={expanded.includes('kie-datalist-toggle')}
+        {...componentOuiaProps(
+          ouiaId ? ouiaId : 'process-' + processInstanceData.id,
+          'process-list-table-item',
+          ouiaSafe
+        )}
       >
         <DataListItemRow>
           {processInstanceData.parentProcessInstanceId === null && (

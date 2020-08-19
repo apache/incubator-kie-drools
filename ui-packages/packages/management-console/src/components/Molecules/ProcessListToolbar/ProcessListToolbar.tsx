@@ -26,7 +26,7 @@ import {
 import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
 import _ from 'lodash';
 import './ProcessListToolbar.css';
-import { GraphQL } from '@kogito-apps/common';
+import { GraphQL, OUIAProps, componentOuiaProps } from '@kogito-apps/common';
 import ProcessListModal from '../../Atoms/ProcessListModal/ProcessListModal';
 import { performMultipleAction, setTitle } from '../../../utils/Utils';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
@@ -94,7 +94,7 @@ interface IOperations {
   [key: string]: IOperation;
 }
 
-const ProcessListToolbar: React.FC<IOwnProps> = ({
+const ProcessListToolbar: React.FC<IOwnProps & OUIAProps> = ({
   filterClick,
   filters,
   setFilters,
@@ -109,7 +109,9 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
   selectedNumber,
   setSelectedNumber,
   statusArray,
-  setStatusArray
+  setStatusArray,
+  ouiaId,
+  ouiaSafe
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [isCheckboxDropdownOpen, setisCheckboxDropdownOpen] = useState<boolean>(
@@ -279,7 +281,7 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
     filterClick(statusArray);
   };
 
-  const onSelect = (event,selection): void => {
+  const onSelect = (event, selection): void => {
     setShouldRefresh(false);
     if (selection) {
       const index = statusArray.indexOf(selection);
@@ -739,6 +741,7 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
         operationResult={operations[operationType] && operations[operationType]}
         handleModalToggle={handleModalToggle}
         resetSelected={resetSelected}
+        ouiaId="operation-result"
       />
       <Toolbar
         id="data-toolbar-with-filter"
@@ -746,6 +749,7 @@ const ProcessListToolbar: React.FC<IOwnProps> = ({
         collapseListedFiltersBreakpoint="xl"
         clearAllFilters={() => clearAll()}
         clearFiltersButtonText="Reset to default"
+        {...componentOuiaProps(ouiaId, 'process-list-toolbar', ouiaSafe)}
       >
         <ToolbarContent>{toolbarItems}</ToolbarContent>
       </Toolbar>

@@ -4,7 +4,7 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   Card,
-  CardBody,
+  CardBody
 } from '@patternfly/react-core';
 import {
   componentOuiaProps,
@@ -23,9 +23,7 @@ const DomainExplorerLandingPage: React.FC<OUIAProps> = ({
     return ouiaPageTypeAndObjectId('domain-explorer');
   });
   return (
-    <div
-        {...componentOuiaProps(ouiaId, 'DomainExplorerLandingPage', ouiaSafe)}
-      >
+    <div {...componentOuiaProps(ouiaId, 'DomainExplorerLandingPage', ouiaSafe)}>
       <PageSection variant="light">
         <PageTitle title="Domain Explorer" />
         <Breadcrumb>
