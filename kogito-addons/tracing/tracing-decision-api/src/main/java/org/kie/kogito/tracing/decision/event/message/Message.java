@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.kie.kogito.tracing.decision.event.common;
+package org.kie.kogito.tracing.decision.event.message;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

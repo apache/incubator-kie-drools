@@ -21,8 +21,8 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
-import org.kie.kogito.tracing.decision.event.common.Message;
+import org.kie.kogito.tracing.decision.event.message.Message;
+import org.kie.kogito.tracing.decision.event.variable.TypedVariable;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
@@ -37,11 +37,8 @@ public class TraceInputValue {
     @JsonProperty("name")
     private String name;
 
-    @JsonProperty("type")
-    private TraceType type;
-
     @JsonProperty("value")
-    private JsonNode value;
+    private TypedVariable value;
 
     @JsonProperty("messages")
     @JsonInclude(NON_EMPTY)
@@ -50,10 +47,9 @@ public class TraceInputValue {
     private TraceInputValue() {
     }
 
-    public TraceInputValue(String id, String name, TraceType type, JsonNode value, List<Message> messages) {
+    public TraceInputValue(String id, String name, TypedVariable value, List<Message> messages) {
         this.id = id;
         this.name = name;
-        this.type = type;
         this.value = value;
         this.messages = messages;
     }
@@ -66,11 +62,7 @@ public class TraceInputValue {
         return name;
     }
 
-    public TraceType getType() {
-        return type;
-    }
-
-    public JsonNode getValue() {
+    public TypedVariable getValue() {
         return value;
     }
 

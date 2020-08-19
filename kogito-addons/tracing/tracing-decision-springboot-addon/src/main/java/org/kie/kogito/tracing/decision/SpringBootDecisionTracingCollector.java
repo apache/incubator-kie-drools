@@ -16,10 +16,9 @@
 
 package org.kie.kogito.tracing.decision;
 
-import java.util.function.BiFunction;
-
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.kogito.Application;
+import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 import org.kie.kogito.tracing.decision.modelsupplier.ApplicationModelSupplier;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,20 +26,24 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.util.function.BiFunction;
+
 @Component
 public class SpringBootDecisionTracingCollector {
 
     private final DecisionTracingCollector collector;
 
     public SpringBootDecisionTracingCollector(final SpringBootTraceEventEmitter eventEmitter,
-                                              final BiFunction<String, String, DMNModel> modelSupplier) {
-        this.collector = new DecisionTracingCollector(eventEmitter::emit, modelSupplier);
+                                              final BiFunction<String, String, DMNModel> modelSupplier,
+                                              final ConfigBean configBean) {
+        this.collector = new DecisionTracingCollector(eventEmitter::emit, modelSupplier, configBean);
     }
 
     @Autowired
     public SpringBootDecisionTracingCollector(final Application application,
-                                              final SpringBootTraceEventEmitter eventEmitter) {
-        this(eventEmitter, new ApplicationModelSupplier(application));
+                                              final SpringBootTraceEventEmitter eventEmitter,
+                                              final ConfigBean configBean) {
+        this(eventEmitter, new ApplicationModelSupplier(application), configBean);
     }
 
     @Async("kogitoTracingDecisionAddonTaskExecutor")

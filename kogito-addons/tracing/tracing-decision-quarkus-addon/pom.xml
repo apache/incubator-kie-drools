@@ -12,10 +12,6 @@
   <artifactId>tracing-decision-quarkus-addon</artifactId>
   <name>Kogito :: Add-Ons :: Tracing :: Quarkus Addon</name>
 
-  <properties>
-    <maven.compiler.release>11</maven.compiler.release>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

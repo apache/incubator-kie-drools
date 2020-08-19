@@ -26,6 +26,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.feel.util.Pair;
+import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.conf.StaticConfigBean;
 import org.kie.kogito.tracing.decision.event.CloudEventUtils;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 import org.kie.kogito.tracing.decision.event.trace.TraceEvent;
@@ -50,10 +52,12 @@ import static org.mockito.Mockito.verify;
 class DecisionTracingCollectorTest {
 
     private static DMNModel model;
+    private static ConfigBean configBean;
 
     @BeforeAll
     static void initModel() {
         model = createDMNModel();
+        configBean = new StaticConfigBean();
     }
 
     @Test
@@ -74,7 +78,8 @@ class DecisionTracingCollectorTest {
                 aggregator,
                 payloadConsumer,
                 (namespace, name) -> model,
-                terminationDetectorSupplier
+                terminationDetectorSupplier,
+                configBean
         );
 
         List<EvaluateEvent> evaluateAllEvents = readEvaluateEventsFromJsonResource(EVALUATE_ALL_JSON_RESOURCE);

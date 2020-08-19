@@ -16,7 +16,10 @@
 
 package org.kie.kogito.tracing.decision.event;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import io.cloudevents.json.Json;
@@ -43,6 +46,18 @@ public class CloudEventUtils {
 
     public static <E> CloudEventImpl<E> decode(String json, TypeReference<CloudEventImpl<E>> ref) {
         return Json.decodeValue(json, ref);
+    }
+
+    public static URI uriFromString(String input) {
+        return URI.create(urlEncode(input));
+    }
+
+    public static String urlEncode(String input) {
+        try {
+            return URLEncoder.encode(input, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private CloudEventUtils() {

@@ -39,7 +39,7 @@ import static org.mockito.Mockito.when;
 
 public class SpringBootModelEventEmitterTest {
 
-    private static final TypeReference<CloudEventImpl<ModelEvent>> CLOUD_EVENT_TYPE_REF = new TypeReference<>() {
+    private static final TypeReference<CloudEventImpl<ModelEvent>> CLOUD_EVENT_TYPE_REF = new TypeReference<CloudEventImpl<ModelEvent>>() {
     };
 
     private static final String TEST_TOPIC = "test-topic";

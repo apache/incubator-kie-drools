@@ -25,6 +25,9 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TraceResourceId {
 
+    @JsonProperty("serviceUrl")
+    private String serviceUrl;
+
     @JsonProperty("modelNamespace")
     private String modelNamespace;
 
@@ -42,15 +45,20 @@ public class TraceResourceId {
     private TraceResourceId() {
     }
 
-    public TraceResourceId(String modelNamespace, String modelName) {
-        this(modelNamespace, modelName, null, null);
+    public TraceResourceId(String serviceUrl, String modelNamespace, String modelName) {
+        this(serviceUrl, modelNamespace, modelName, null, null);
     }
 
-    public TraceResourceId(String modelNamespace, String modelName, String decisionServiceId, String decisionServiceName) {
+    public TraceResourceId(String serviceUrl, String modelNamespace, String modelName, String decisionServiceId, String decisionServiceName) {
+        this.serviceUrl = serviceUrl;
         this.modelNamespace = modelNamespace;
         this.modelName = modelName;
         this.decisionServiceId = decisionServiceId;
         this.decisionServiceName = decisionServiceName;
+    }
+
+    public String getServiceUrl() {
+        return serviceUrl;
     }
 
     public String getModelNamespace() {

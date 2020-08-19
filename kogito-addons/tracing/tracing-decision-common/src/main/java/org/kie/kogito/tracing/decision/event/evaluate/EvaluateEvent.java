@@ -157,10 +157,10 @@ public class EvaluateEvent {
         return decisionTableResult;
     }
 
-    public TraceResourceId toTraceResourceId() {
+    public TraceResourceId toTraceResourceId(String serviceUrl) {
         return getType() == BEFORE_EVALUATE_DECISION_SERVICE || getType() == AFTER_EVALUATE_DECISION_SERVICE
-               ? new TraceResourceId(getModelNamespace(), getModelName(), getNodeId(), getNodeName())
-               : new TraceResourceId(getModelNamespace(), getModelName());
+               ? new TraceResourceId(serviceUrl, getModelNamespace(), getModelName(), getNodeId(), getNodeName())
+               : new TraceResourceId(serviceUrl, getModelNamespace(), getModelName());
     }
 
     public static EvaluateEvent from(BeforeEvaluateAllEvent event) {
@@ -219,7 +219,7 @@ public class EvaluateEvent {
         return new EvaluateEvent(EvaluateEventType.AFTER_INVOKE_BKM, System.currentTimeMillis(), System.nanoTime(), event.getResult(), event.getBusinessKnowledgeModel());
     }
 
-    private static Map<String, Object> extractContext(DMNContext context) {
+    public static Map<String, Object> extractContext(DMNContext context) {
         return context.getAll().entrySet().stream()
                 .filter(e -> !(e.getValue() instanceof FEELFunction))
                 // This collect method avoids this bug (https://bugs.openjdk.java.net/browse/JDK-8148463) on variables with null value

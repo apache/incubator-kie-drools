@@ -16,6 +16,7 @@
 
 package org.kie.kogito.tracing.decision;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +45,7 @@ public class DecisionTestUtils {
     public static final String EVALUATE_DECISION_SERVICE_EXECUTION_ID = "77408667-f218-40b0-a355-1bab047a3e9e";
     public static final String EVALUATE_DECISION_SERVICE_JSON_RESOURCE = "/Traffic Violation_EvaluateEvents_evaluateDecisionService.json";
 
-    private static final TypeReference<List<EvaluateEvent>> EVALUATE_EVENT_LIST_TYPE = new TypeReference<>() {
+    private static final TypeReference<List<EvaluateEvent>> EVALUATE_EVENT_LIST_TYPE = new TypeReference<List<EvaluateEvent>>() {
     };
 
     public static DMNRuntime createDMNRuntime() {
@@ -58,43 +59,50 @@ public class DecisionTestUtils {
     }
 
     public static Map<String, Object> getEvaluateAllContext() {
-        return Map.of(
-                "Driver", getDriver(25, 10),
-                "Violation", getViolation("speed", 115, 100)
-        );
+        return new HashMap<String, Object>() {{
+            put("Driver", getDriver(25, 10));
+            put("Violation", getViolation("speed", 115, 100));
+        }};
     }
 
     public static Map<String, Object> getEvaluateAllContextForWarning() {
-        return Map.of(
-                "Driver", getDriver(25, 10),
-                "Violation", getViolation("speed", 95, 100)
-        );
+        return new HashMap<String, Object>() {{
+            put("Driver", getDriver(25, 10));
+            put("Violation", getViolation("speed", 95, 100));
+        }};
     }
 
     public static Map<String, Object> getEvaluateAllContextForError() {
-        return Map.of(
-                "Violation", getViolation("speed", 115, 100)
-        );
+        return new HashMap<String, Object>() {{
+            put("Violation", getViolation("speed", 115, 100));
+        }};
     }
 
     public static Map<String, Object> getEvaluateDecisionServiceContext() {
-        return Map.of(
-                "Violation", getViolation("speed", 115, 100)
-        );
+        return new HashMap<String, Object>() {{
+            put("Violation", getViolation("speed", 115, 100));
+        }};
     }
 
     public static Map<String, Object> getEvaluateDecisionServiceContextForWarning() {
-        return Map.of(
-                "Violation", getViolation("speed", 95, 100)
-        );
+        return new HashMap<String, Object>() {{
+            put("Violation", getViolation("speed", 95, 100));
+        }};
     }
 
     public static Map<String, Object> getDriver(int age, int points) {
-        return Map.of("Age", age, "Points", points);
+        return new HashMap<String, Object>() {{
+            put("Age", age);
+            put("Points", points);
+        }};
     }
 
     public static Map<String, Object> getViolation(String type, int actualSpeed, int speedLimit) {
-        return Map.of("Type", type, "Actual Speed", actualSpeed, "Speed Limit", speedLimit);
+        return new HashMap<String, Object>() {{
+            put("Type", type);
+            put("Actual Speed", actualSpeed);
+            put("Speed Limit", speedLimit);
+        }};
     }
 
     public static List<EvaluateEvent> readEvaluateEventsFromJsonResource(String resourceName) {

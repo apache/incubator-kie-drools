@@ -20,11 +20,12 @@ import java.util.List;
 
 import io.cloudevents.v1.CloudEventImpl;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 import org.kie.kogito.tracing.decision.event.trace.TraceEvent;
 
 @FunctionalInterface
 public interface Aggregator {
 
-    CloudEventImpl<TraceEvent> aggregate(DMNModel model, String executionId, List<EvaluateEvent> events);
+    CloudEventImpl<TraceEvent> aggregate(DMNModel model, String executionId, List<EvaluateEvent> events, ConfigBean configBean);
 }

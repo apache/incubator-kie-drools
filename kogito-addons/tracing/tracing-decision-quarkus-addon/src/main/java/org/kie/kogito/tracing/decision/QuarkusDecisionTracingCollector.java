@@ -23,6 +23,7 @@ import javax.inject.Singleton;
 
 import io.quarkus.vertx.ConsumeEvent;
 import org.kie.kogito.Application;
+import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 import org.kie.kogito.tracing.decision.modelsupplier.ApplicationModelSupplier;
 
@@ -32,14 +33,16 @@ public class QuarkusDecisionTracingCollector {
     private final DecisionTracingCollector collector;
 
     public QuarkusDecisionTracingCollector(final QuarkusTraceEventEmitter eventEmitter,
-                                           final BiFunction<String, String, org.kie.dmn.api.core.DMNModel> modelSupplier) {
-        this.collector = new DecisionTracingCollector(eventEmitter::emit, modelSupplier);
+                                           final BiFunction<String, String, org.kie.dmn.api.core.DMNModel> modelSupplier,
+                                           final ConfigBean configBean) {
+        this.collector = new DecisionTracingCollector(eventEmitter::emit, modelSupplier, configBean);
     }
 
     @Inject
     public QuarkusDecisionTracingCollector(final Application application,
-                                           final QuarkusTraceEventEmitter eventEmitter) {
-        this(eventEmitter, new ApplicationModelSupplier(application));
+                                           final QuarkusTraceEventEmitter eventEmitter,
+                                           final ConfigBean configBean) {
+        this(eventEmitter, new ApplicationModelSupplier(application), configBean);
     }
 
     @ConsumeEvent("kogito-tracing-decision_EvaluateEvent")

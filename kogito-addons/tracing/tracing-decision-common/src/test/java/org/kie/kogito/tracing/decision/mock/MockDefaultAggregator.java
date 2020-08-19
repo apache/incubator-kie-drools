@@ -23,6 +23,7 @@ import java.util.Map;
 import io.cloudevents.v1.CloudEventImpl;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.feel.util.Pair;
+import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.tracing.decision.aggregator.DefaultAggregator;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 import org.kie.kogito.tracing.decision.event.trace.TraceEvent;
@@ -36,8 +37,8 @@ public class MockDefaultAggregator extends DefaultAggregator {
     }
 
     @Override
-    public CloudEventImpl<TraceEvent> aggregate(DMNModel model, String executionId, List<EvaluateEvent> events) {
-        CloudEventImpl<TraceEvent> result = super.aggregate(model, executionId, events);
+    public CloudEventImpl<TraceEvent> aggregate(DMNModel model, String executionId, List<EvaluateEvent> events, ConfigBean configBean) {
+        CloudEventImpl<TraceEvent> result = super.aggregate(model, executionId, events, configBean);
         calls.put(executionId, new Pair<>(events, result));
         return result;
     }

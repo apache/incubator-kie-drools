@@ -16,6 +16,7 @@
 
 package org.kie.kogito.tracing.decision;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.quarkus.test.Mock;
@@ -42,6 +43,6 @@ public class DecisionModelResourcesProviderMock implements DecisionModelResource
                 DecisionModelType.DMN,
                 this.getClass()
                 );
-        return List.of(resource);
+        return Collections.singletonList(resource);
     }
 }

@@ -17,10 +17,10 @@
 package org.kie.kogito.tracing.decision.aggregator;
 
 import java.net.URI;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
@@ -33,20 +33,23 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.cloudevents.json.Json;
 import io.cloudevents.v1.CloudEventImpl;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
+import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.feel.util.Pair;
+import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.tracing.decision.event.CloudEventUtils;
 import org.kie.kogito.tracing.decision.event.EventUtils;
-import org.kie.kogito.tracing.decision.event.common.InternalMessageType;
-import org.kie.kogito.tracing.decision.event.common.Message;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateDecisionResult;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEventType;
+import org.kie.kogito.tracing.decision.event.message.InternalMessageType;
+import org.kie.kogito.tracing.decision.event.message.Message;
 import org.kie.kogito.tracing.decision.event.trace.TraceEvent;
 import org.kie.kogito.tracing.decision.event.trace.TraceEventType;
 import org.kie.kogito.tracing.decision.event.trace.TraceExecutionStep;
@@ -54,7 +57,7 @@ import org.kie.kogito.tracing.decision.event.trace.TraceExecutionStepType;
 import org.kie.kogito.tracing.decision.event.trace.TraceHeader;
 import org.kie.kogito.tracing.decision.event.trace.TraceInputValue;
 import org.kie.kogito.tracing.decision.event.trace.TraceOutputValue;
-import org.kie.kogito.tracing.decision.event.trace.TraceType;
+import org.kie.kogito.tracing.decision.event.variable.TypedVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,20 +78,20 @@ public class DefaultAggregator implements Aggregator {
     private static final String VARIABLE_ID_KEY = "variableId";
 
     @Override
-    public CloudEventImpl<TraceEvent> aggregate(DMNModel model, String executionId, List<EvaluateEvent> events) {
+    public CloudEventImpl<TraceEvent> aggregate(DMNModel model, String executionId, List<EvaluateEvent> events, ConfigBean configBean) {
         return events == null || events.isEmpty()
-                ? buildNotEnoughDataCloudEvent(model, executionId)
-                : buildDefaultCloudEvent(model, executionId, events);
+                ? buildNotEnoughDataCloudEvent(model, executionId, configBean)
+                : buildDefaultCloudEvent(model, executionId, events, configBean);
     }
 
-    private static CloudEventImpl<TraceEvent> buildNotEnoughDataCloudEvent(DMNModel model, String executionId) {
+    private static CloudEventImpl<TraceEvent> buildNotEnoughDataCloudEvent(DMNModel model, String executionId, ConfigBean configBean) {
         TraceHeader header = new TraceHeader(
                 TraceEventType.DMN,
                 executionId,
                 null,
                 null,
                 null,
-                EventUtils.traceResourceIdFrom(model),
+                EventUtils.traceResourceIdFrom(configBean.getServiceUrl(), model),
                 Stream.of(
                         EventUtils.messageFrom(InternalMessageType.NOT_ENOUGH_DATA),
                         model == null ? EventUtils.messageFrom(InternalMessageType.DMN_MODEL_NOT_FOUND) : null
@@ -97,10 +100,10 @@ public class DefaultAggregator implements Aggregator {
 
         TraceEvent event = new TraceEvent(header, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
 
-        return CloudEventUtils.build(executionId, URI.create(URLEncoder.encode(UNKNOWN_SOURCE_URL, StandardCharsets.UTF_8)), event, TraceEvent.class);
+        return CloudEventUtils.build(executionId, buildSource(configBean.getServiceUrl(), null), event, TraceEvent.class);
     }
 
-    private static CloudEventImpl<TraceEvent> buildDefaultCloudEvent(DMNModel model, String executionId, List<EvaluateEvent> events) {
+    private static CloudEventImpl<TraceEvent> buildDefaultCloudEvent(DMNModel model, String executionId, List<EvaluateEvent> events, ConfigBean configBean) {
         EvaluateEvent firstEvent = events.get(0);
         EvaluateEvent lastEvent = events.get(events.size() - 1);
 
@@ -116,32 +119,50 @@ public class DefaultAggregator implements Aggregator {
                 firstEvent.getTimestamp(),
                 lastEvent.getTimestamp(),
                 computeDurationMillis(firstEvent, lastEvent),
-                firstEvent.toTraceResourceId(),
+                firstEvent.toTraceResourceId(configBean.getServiceUrl()),
                 Stream.of(
                         model == null ? Stream.of(EventUtils.messageFrom(InternalMessageType.DMN_MODEL_NOT_FOUND)) : Stream.<Message>empty(),
                         executionStepsPair.getRight().stream(),
                         lastEvent.getResult().getMessages().stream()
-                                .filter(m -> m.getSourceId() == null || m.getSourceId().isBlank())
+                                .filter(m -> m.getSourceId() == null || m.getSourceId().isEmpty())
                 ).flatMap(Function.identity()).collect(Collectors.toList())
         );
 
         // complete event
         TraceEvent event = new TraceEvent(header, inputs, outputs, executionStepsPair.getLeft());
 
-        return CloudEventUtils.build(executionId, buildSource(firstEvent), event, TraceEvent.class);
+        return CloudEventUtils.build(executionId, buildSource(configBean.getServiceUrl(), firstEvent), event, TraceEvent.class);
     }
 
-    private static URI buildSource(EvaluateEvent event) {
-        return event.getType() == BEFORE_EVALUATE_DECISION_SERVICE || event.getType() == AFTER_EVALUATE_DECISION_SERVICE
-                ? URI.create(String.format("%s/%s", urlEncode(event.getModelName()), urlEncode(event.getNodeName())))
-                : URI.create(urlEncode(event.getModelName()));
+    private static URI buildSource(String serviceUrl, EvaluateEvent event) {
+        String modelChunk = event != null
+                ? CloudEventUtils.urlEncode(event.getModelName())
+                : null;
+        String decisionChunk = event != null && (event.getType() == BEFORE_EVALUATE_DECISION_SERVICE || event.getType() == AFTER_EVALUATE_DECISION_SERVICE)
+                ? CloudEventUtils.urlEncode(event.getNodeName())
+                : null;
+        String fullUrl = Stream.of(serviceUrl, modelChunk, decisionChunk)
+                .filter(s -> s != null && !s.isEmpty())
+                .collect(Collectors.joining("/"));
+        return URI.create(Optional.of(fullUrl)
+                .filter(s -> !s.isEmpty())
+                .orElseGet(() -> CloudEventUtils.urlEncode(UNKNOWN_SOURCE_URL))
+        );
     }
 
     private static List<TraceInputValue> buildTraceInputValues(DMNModel model, EvaluateEvent firstEvent) {
-        if (model == null) {
-            return firstEvent.getContext().entrySet().stream()
-                    .map(DefaultAggregator::traceInputFrom)
-                    .collect(Collectors.toList());
+        Map<String, InputDataNode> inputNodesMap = inputDataNodesFromFirstEvent(model, firstEvent).stream()
+                .collect(Collectors.toMap(DMNNode::getName, Function.identity()));
+
+        return Stream.concat(
+                streamInputsFromInitialContext(firstEvent, inputNodesMap),
+                streamKnownInputsNotInInitialContext(firstEvent, inputNodesMap)
+        ).collect(Collectors.toList());
+    }
+
+    private static Collection<InputDataNode> inputDataNodesFromFirstEvent(DMNModel model, EvaluateEvent firstEvent) {
+        if (model == null || firstEvent == null) {
+            return Collections.emptyList();
         }
         if (firstEvent.getType() == EvaluateEventType.BEFORE_EVALUATE_DECISION_SERVICE) {
             // cast to DecisionServiceNodeImpl here is required to have access to getInputParameters method
@@ -155,18 +176,32 @@ public class DefaultAggregator implements Aggregator {
                 return optNode.get().getInputParameters().values().stream()
                         .filter(InputDataNode.class::isInstance)
                         .map(InputDataNode.class::cast)
-                        .map(i -> traceInputFrom(i, firstEvent.getContext()))
                         .collect(Collectors.toList());
             }
         }
-        return model.getInputs().stream()
-                .map(i -> traceInputFrom(i, firstEvent.getContext()))
-                .collect(Collectors.toList());
+        return model.getInputs();
+    }
+
+    private static Stream<TraceInputValue> streamInputsFromInitialContext(EvaluateEvent firstEvent, Map<String, InputDataNode> inputNodesMap) {
+        return firstEvent.getContext().entrySet().stream()
+                .map(entry -> buildTraceInputValue(entry.getKey(), entry.getValue(), inputNodesMap));
+    }
+
+    private static TraceInputValue buildTraceInputValue(String name, Object value, Map<String, InputDataNode> inputNodesMap) {
+        return inputNodesMap.containsKey(name)
+                ? traceInputFrom(inputNodesMap.get(name), value)
+                : traceInputFrom(name, value);
+    }
+
+    private static Stream<TraceInputValue> streamKnownInputsNotInInitialContext(EvaluateEvent firstEvent, Map<String, InputDataNode> inputNodesMap) {
+        return inputNodesMap.entrySet().stream()
+                .filter(entry -> !firstEvent.getContext().containsKey(entry.getKey()))
+                .map(entry -> traceInputFrom(entry.getValue(), null));
     }
 
     private static List<TraceOutputValue> buildTraceOutputValues(DMNModel model, EvaluateEvent lastEvent) {
         return lastEvent.getResult().getDecisionResults().stream()
-                .map(dr -> traceOutputFrom(dr, model))
+                .map(dr -> traceOutputFrom(dr, model, lastEvent.getContext()))
                 .collect(Collectors.toList());
     }
 
@@ -175,7 +210,7 @@ public class DefaultAggregator implements Aggregator {
             return new Pair<>(buildTraceExecutionStepsHierarchy(model, events), Collections.emptyList());
         } catch (IllegalStateException e) {
             LOG.error(String.format("IllegalStateException during aggregation of evaluation %s", executionId), e);
-            return new Pair<>(buildTraceExecutionStepsList(model, events), List.of(EventUtils.messageFrom(InternalMessageType.NO_EXECUTION_STEP_HIERARCHY, e)));
+            return new Pair<>(buildTraceExecutionStepsList(model, events), Arrays.asList(EventUtils.messageFrom(InternalMessageType.NO_EXECUTION_STEP_HIERARCHY, e)));
         }
     }
 
@@ -260,18 +295,21 @@ public class DefaultAggregator implements Aggregator {
     }
 
     private static TraceExecutionStep buildDmnContextEntryTraceExecutionStep(long duration, EvaluateEvent afterEvent, List<TraceExecutionStep> children, DMNModel model) {
-        JsonNode result = Json.MAPPER.valueToTree(afterEvent.getContextEntryResult().getExpressionResult());
+        JsonNode result = EventUtils.jsonNodeFrom(afterEvent.getContextEntryResult().getExpressionResult());
 
         Map<String, String> additionalData = new HashMap<>();
         additionalData.put(EXPRESSION_ID_KEY, afterEvent.getContextEntryResult().getExpressionId());
         additionalData.put(VARIABLE_ID_KEY, afterEvent.getContextEntryResult().getVariableId());
-        Optional.ofNullable(model)
+
+        Optional<String> optDecisionNodeId = Optional.ofNullable(model)
                 .map(m -> m.getDecisionByName(afterEvent.getNodeName()))
-                .map(DecisionNode::getId)
-                .ifPresentOrElse(
-                        id -> additionalData.put(NODE_ID_KEY, id),
-                        () -> additionalData.put(NODE_NAME_KEY, afterEvent.getNodeName())
-                );
+                .map(DecisionNode::getId);
+
+        if (optDecisionNodeId.isPresent()) {
+            additionalData.put(NODE_ID_KEY, optDecisionNodeId.get());
+        } else {
+            additionalData.put(NODE_NAME_KEY, afterEvent.getNodeName());
+        }
 
         return new TraceExecutionStep(TraceExecutionStepType.DMN_CONTEXT_ENTRY, duration, afterEvent.getContextEntryResult().getVariableName(), result, Collections.emptyList(), additionalData, children);
     }
@@ -285,7 +323,7 @@ public class DefaultAggregator implements Aggregator {
                 .filter(dr -> dr.getDecisionId().equals(afterEvent.getNodeId()))
                 .findFirst()
                 .map(EvaluateDecisionResult::getResult)
-                .<JsonNode>map(Json.MAPPER::valueToTree)
+                .<JsonNode>map(EventUtils::jsonNodeFrom)
                 .orElse(null);
 
         Map<String, String> additionalData = new HashMap<>();
@@ -298,13 +336,16 @@ public class DefaultAggregator implements Aggregator {
         Map<String, String> additionalData = new HashMap<>();
         additionalData.put(MATCHES_KEY, afterEvent.getDecisionTableResult().getMatches().stream().map(Object::toString).collect(Collectors.joining(",")));
         additionalData.put(SELECTED_KEY, afterEvent.getDecisionTableResult().getSelected().stream().map(Object::toString).collect(Collectors.joining(",")));
-        Optional.ofNullable(model)
+
+        Optional<String> optDecisionNodeId = Optional.ofNullable(model)
                 .map(m -> m.getDecisionByName(afterEvent.getNodeName()))
-                .map(DecisionNode::getId)
-                .ifPresentOrElse(
-                        id -> additionalData.put(NODE_ID_KEY, id),
-                        () -> additionalData.put(NODE_NAME_KEY, afterEvent.getNodeName())
-                );
+                .map(DecisionNode::getId);
+
+        if (optDecisionNodeId.isPresent()) {
+            additionalData.put(NODE_ID_KEY, optDecisionNodeId.get());
+        } else {
+            additionalData.put(NODE_NAME_KEY, afterEvent.getNodeName());
+        }
 
         return new TraceExecutionStep(TraceExecutionStepType.DMN_DECISION_TABLE, duration, afterEvent.getDecisionTableResult().getDecisionTableName(), null, Collections.emptyList(), additionalData, children);
     }
@@ -313,52 +354,62 @@ public class DefaultAggregator implements Aggregator {
         return Math.round((endEvent.getNanoTime() - beginEvent.getNanoTime()) / 1000000.0);
     }
 
-    private static TraceInputValue traceInputFrom(InputDataNode node, Map<String, Object> context) {
-        JsonNode value = Optional.ofNullable(context.get(node.getName()))
-                .<JsonNode>map(Json.MAPPER::valueToTree)
-                .orElse(null);
+    private static TraceInputValue traceInputFrom(String name, Object value) {
+        return new TraceInputValue(null, name, EventUtils.typedVariableFrom(value), Collections.emptyList());
+    }
 
+    private static TraceInputValue traceInputFrom(InputDataNode node, Object value) {
         return new TraceInputValue(
                 node.getId(),
                 node.getName(),
-                EventUtils.traceTypeFrom(node.getType()),
-                value,
+                EventUtils.typedVariableFrom(node.getType(), value),
                 Collections.emptyList()
         );
     }
 
-    private static TraceInputValue traceInputFrom(Map.Entry<String, Object> contextEntry) {
-        return new TraceInputValue(
-                null,
-                contextEntry.getKey(),
-                null,
-                Json.MAPPER.valueToTree(contextEntry.getValue()),
-                Collections.emptyList()
-        );
-    }
-
-    private static TraceOutputValue traceOutputFrom(EvaluateDecisionResult decisionResult, DMNModel model) {
-        TraceType type = Optional.ofNullable(model)
+    private static TraceOutputValue traceOutputFrom(EvaluateDecisionResult decisionResult, DMNModel model, Map<String, Object> context) {
+        DMNType type = Optional.ofNullable(model)
                 .map(m -> m.getDecisionById(decisionResult.getDecisionId()))
                 .map(DecisionNode::getResultType)
-                .map(EventUtils::traceTypeFrom)
                 .orElse(null);
 
-        JsonNode value = Optional.ofNullable(decisionResult.getResult())
-                .<JsonNode>map(Json.MAPPER::valueToTree)
-                .orElse(null);
+        // cast to DMNBaseNode here is required to have access to getDependencies method
+        Map<String, DMNType> decisionInputTypes = Optional.ofNullable(model)
+                .map(m -> m.getDecisionById(decisionResult.getDecisionId()))
+                .filter(DMNBaseNode.class::isInstance)
+                .map(DMNBaseNode.class::cast)
+                .map(DMNBaseNode::getDependencies)
+                .map(deps -> deps.values().stream().map(DMNNode::getId).collect(Collectors.toList()))
+                .map(ids -> ids.stream()
+                        .map(id -> typeAndNameOf(id, model))
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toMap(Pair::getRight, Pair::getLeft))
+                )
+                .orElseGet(HashMap::new);
+
+        Map<String, TypedVariable> decisionInputs = decisionInputTypes.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> EventUtils.typedVariableFrom(e.getValue(), context.get(e.getKey()))));
 
         return new TraceOutputValue(
                 decisionResult.getDecisionId(),
                 decisionResult.getDecisionName(),
                 decisionResult.getEvaluationStatus().name(),
-                type,
-                value,
+                EventUtils.typedVariableFrom(type, decisionResult.getResult()),
+                decisionInputs,
                 decisionResult.getMessages()
         );
     }
 
-    private static String urlEncode(String input) {
-        return URLEncoder.encode(input, StandardCharsets.UTF_8);
+    private static Pair<DMNType, String> typeAndNameOf(String nodeId, DMNModel model) {
+        InputDataNode input = model.getInputById(nodeId);
+        if (input != null) {
+            return new Pair<>(input.getType(), input.getName());
+        }
+        DecisionNode decision = model.getDecisionById(nodeId);
+        if (decision != null) {
+            return new Pair<>(decision.getResultType(), decision.getName());
+        }
+        return null;
     }
+
 }

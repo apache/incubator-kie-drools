@@ -17,12 +17,13 @@
 package org.kie.kogito.tracing.decision.event.trace;
 
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
-import org.kie.kogito.tracing.decision.event.common.Message;
+import org.kie.kogito.tracing.decision.event.message.Message;
+import org.kie.kogito.tracing.decision.event.variable.TypedVariable;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 
@@ -38,11 +39,12 @@ public class TraceOutputValue {
     @JsonProperty("status")
     private String status;
 
-    @JsonProperty("type")
-    private TraceType type;
-
     @JsonProperty("value")
-    private JsonNode value;
+    private TypedVariable value;
+
+    @JsonProperty("inputs")
+    @JsonInclude(NON_EMPTY)
+    private Map<String, TypedVariable> inputs;
 
     @JsonProperty("messages")
     @JsonInclude(NON_EMPTY)
@@ -51,12 +53,12 @@ public class TraceOutputValue {
     private TraceOutputValue() {
     }
 
-    public TraceOutputValue(String id, String name, String status, TraceType type, JsonNode value, List<Message> messages) {
+    public TraceOutputValue(String id, String name, String status, TypedVariable value, Map<String, TypedVariable> inputs, List<Message> messages) {
         this.id = id;
         this.name = name;
         this.status = status;
-        this.type = type;
         this.value = value;
+        this.inputs = inputs;
         this.messages = messages;
     }
 
@@ -72,12 +74,12 @@ public class TraceOutputValue {
         return status;
     }
 
-    public TraceType getType() {
-        return type;
+    public TypedVariable getValue() {
+        return value;
     }
 
-    public JsonNode getValue() {
-        return value;
+    public Map<String, TypedVariable> getInputs() {
+        return inputs;
     }
 
     public List<Message> getMessages() {

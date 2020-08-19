@@ -19,11 +19,16 @@ package org.kie.kogito.tracing.decision;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Singleton;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.conf.StaticConfigBean;
 import org.kie.kogito.tracing.decision.event.explainability.PredictOutput;
 
 import static io.restassured.RestAssured.given;
@@ -32,6 +37,11 @@ import static org.kie.kogito.tracing.decision.Constants.MODEL_NAMESPACE;
 
 @QuarkusTest
 public class QuarkusExplainableResourceIT {
+
+    @Singleton
+    public static ConfigBean configBeanProducer() {
+        return new StaticConfigBean("http://localhost:8081");
+    }
 
     @Test
     @SuppressWarnings("unchecked")

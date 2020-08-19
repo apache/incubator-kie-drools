@@ -12,10 +12,6 @@
   <artifactId>tracing-decision-springboot-addon</artifactId>
   <name>Kogito :: Add-Ons :: Tracing :: SpringBoot Addon</name>
 
-  <properties>
-    <maven.compiler.release>11</maven.compiler.release>
-  </properties>
-
   <dependencyManagement>
     <dependencies>
       <dependency>

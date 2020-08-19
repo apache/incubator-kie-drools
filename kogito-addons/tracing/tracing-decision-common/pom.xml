@@ -12,10 +12,6 @@
   <artifactId>tracing-decision-common</artifactId>
   <name>Kogito :: Add-Ons :: Tracing :: Common</name>
 
-  <properties>
-    <maven.compiler.release>11</maven.compiler.release>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

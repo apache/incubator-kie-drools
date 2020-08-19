@@ -21,7 +21,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.kie.kogito.tracing.decision.event.common.Message;
+import org.kie.kogito.tracing.decision.event.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

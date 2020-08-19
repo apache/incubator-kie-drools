@@ -25,6 +25,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.tracing.decision.aggregator.Aggregator;
 import org.kie.kogito.tracing.decision.aggregator.DefaultAggregator;
 import org.kie.kogito.tracing.decision.event.CloudEventUtils;
@@ -44,16 +45,18 @@ public class DecisionTracingCollector {
     private final Consumer<String> payloadConsumer;
     private final BiFunction<String, String, DMNModel> modelSupplier;
     private final Supplier<TerminationDetector> terminationDetectorSupplier;
+    private final ConfigBean configBean;
 
-    public DecisionTracingCollector(Consumer<String> payloadConsumer, BiFunction<String, String, DMNModel> modelSupplier) {
-        this(new DefaultAggregator(), payloadConsumer, modelSupplier, CounterTerminationDetector::new);
+    public DecisionTracingCollector(Consumer<String> payloadConsumer, BiFunction<String, String, DMNModel> modelSupplier, ConfigBean configBean) {
+        this(new DefaultAggregator(), payloadConsumer, modelSupplier, CounterTerminationDetector::new, configBean);
     }
 
     public DecisionTracingCollector(
             Aggregator aggregator,
             Consumer<String> payloadConsumer,
             BiFunction<String, String, DMNModel> modelSupplier,
-            Supplier<TerminationDetector> terminationDetectorSupplier
+            Supplier<TerminationDetector> terminationDetectorSupplier,
+            ConfigBean configBean
     ) {
         this.cacheMap = new HashMap<>();
         this.terminationDetectorMap = new HashMap<>();
@@ -61,6 +64,7 @@ public class DecisionTracingCollector {
         this.payloadConsumer = payloadConsumer;
         this.modelSupplier = modelSupplier;
         this.terminationDetectorSupplier = terminationDetectorSupplier;
+        this.configBean = configBean;
     }
 
     public void addEvent(EvaluateEvent event) {
@@ -88,6 +92,6 @@ public class DecisionTracingCollector {
     }
 
     private String aggregate(DMNModel model, String executionId, List<EvaluateEvent> events) {
-        return CloudEventUtils.encode(aggregator.aggregate(model, executionId, events));
+        return CloudEventUtils.encode(aggregator.aggregate(model, executionId, events, configBean));
     }
 }

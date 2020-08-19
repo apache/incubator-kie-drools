@@ -15,10 +15,6 @@
  */
 package org.kie.kogito.tracing.decision;
 
-import java.net.URI;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-
 import org.kie.internal.decision.DecisionModelResourcesProvider;
 import org.kie.kogito.tracing.decision.event.CloudEventUtils;
 import org.kie.kogito.tracing.decision.event.model.ModelEvent;
@@ -35,13 +31,13 @@ public abstract class BaseModelEventEmitter implements EventEmitter {
         decisionModelResourcesProvider.get().forEach(resource -> {
             //Fire a new ModelEvent containing the model, name and namespace
             emit(CloudEventUtils.encode(CloudEventUtils.build("id",
-                                                              URI.create(URLEncoder.encode(ModelEvent.class.getName(), StandardCharsets.UTF_8)),
-                                                              new ModelEvent(ModelEvent.GAV.from(resource.getGav()),
-                                                                             resource.getModelName(),
-                                                                             resource.getNamespace(),
-                                                                             resource.getModelType(),
-                                                                             resource.get()),
-                                                              ModelEvent.class)));
+                    CloudEventUtils.uriFromString(ModelEvent.class.getName()),
+                    new ModelEvent(ModelEvent.GAV.from(resource.getGav()),
+                            resource.getModelName(),
+                            resource.getNamespace(),
+                            resource.getModelType(),
+                            resource.get()),
+                    ModelEvent.class)));
         });
     }
 }

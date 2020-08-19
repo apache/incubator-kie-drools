@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class EvaluateEventTypeTest {
 
-    private static final Map<EvaluateEventType, Pair<String, Class<?>>> CHECK_MAP = new HashMap<>() {{
+    private static final Map<EvaluateEventType, Pair<String, Class<?>>> CHECK_MAP = new HashMap<EvaluateEventType, Pair<String, Class<?>>>() {{
         put(EvaluateEventType.BEFORE_EVALUATE_ALL, new Pair<>("beforeEvaluateAll", BeforeEvaluateAllEvent.class));
         put(EvaluateEventType.AFTER_EVALUATE_ALL, new Pair<>("afterEvaluateAll", AfterEvaluateAllEvent.class));
         put(EvaluateEventType.BEFORE_EVALUATE_BKM, new Pair<>("beforeEvaluateBKM", BeforeEvaluateBKMEvent.class));
