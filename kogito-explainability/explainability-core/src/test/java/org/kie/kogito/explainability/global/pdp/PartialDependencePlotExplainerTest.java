@@ -18,6 +18,7 @@ package org.kie.kogito.explainability.global.pdp;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.TestUtils;
@@ -46,7 +47,7 @@ class PartialDependencePlotExplainerTest {
         PredictionProviderMetadata metadata = new PredictionProviderMetadata() {
             @Override
             public DataDistribution getDataDistribution() {
-                return DataUtils.generateRandomDataDistribution(10, 100);
+                return DataUtils.generateRandomDataDistribution(10, 100, new Random());
             }
 
             @Override

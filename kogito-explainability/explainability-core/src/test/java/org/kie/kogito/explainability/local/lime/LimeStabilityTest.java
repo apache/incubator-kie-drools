@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -30,7 +31,6 @@ import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
-import org.kie.kogito.explainability.utils.DataUtils;
 import org.kie.kogito.explainability.utils.ExplainabilityMetrics;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -48,13 +48,14 @@ class LimeStabilityTest {
     }
 
     private void assertStable(PredictionProvider model, List<Feature> featureList) {
+        Random random = new Random();
         for (int seed = 0; seed < 5; seed++) {
-            DataUtils.setSeed(seed);
+            random.setSeed(seed);
+            LimeExplainer limeExplainer = new LimeExplainer(10, 1, random);
             PredictionInput input = new PredictionInput(featureList);
             List<PredictionOutput> predictionOutputs = model.predict(List.of(input));
             Prediction prediction = new Prediction(input, predictionOutputs.get(0));
             List<Saliency> saliencies = new LinkedList<>();
-            LimeExplainer limeExplainer = new LimeExplainer(10, 1);
             for (int i = 0; i < 100; i++) {
                 Saliency saliency = limeExplainer.explain(prediction, model);
                 saliencies.add(saliency);

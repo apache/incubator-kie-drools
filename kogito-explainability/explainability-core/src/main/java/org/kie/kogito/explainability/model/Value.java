@@ -16,7 +16,9 @@
 package org.kie.kogito.explainability.model;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -34,6 +36,13 @@ public class Value<S> {
     }
 
     public String asString() {
+        if (underlyingObject instanceof List) {
+            try {
+                List<Feature> composite = (List<Feature>) underlyingObject;
+                return composite.stream().map(f -> f.getValue().asString()).collect(Collectors.joining(" "));
+            } catch (ClassCastException ignored) {
+            }
+        }
         return ArrayUtils.toString(underlyingObject);
     }
 

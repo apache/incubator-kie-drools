@@ -15,12 +15,14 @@
  */
 package org.kie.kogito.explainability.local.lime;
 
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -29,6 +31,7 @@ import org.kie.kogito.explainability.local.LocalExplanationException;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureImportance;
 import org.kie.kogito.explainability.model.Output;
+import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
@@ -54,6 +57,7 @@ public class LimeExplainer implements LocalExplainer<Saliency> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LimeExplainer.class);
     private static final double SEPARABLE_DATASET_RATIO = 0.99;
+    private static final int DEFAULT_NO_OF_RETRIES = 3;
 
     /**
      * No. of samples to be generated for the local linear model training
@@ -61,25 +65,37 @@ public class LimeExplainer implements LocalExplainer<Saliency> {
     private final int noOfSamples;
 
     /**
-     * No. of perturbations to perform on a prediction
-     */
-    private final int noOfPerturbations;
-
-    /**
      * No. of retries while trying to find a (linearly) separable dataset
      */
     private final int noOfRetries;
 
-    public LimeExplainer(int noOfSamples, int noOfPerturbations, int noOfRetries) {
+    /**
+     * Context object for perturbing features
+     */
+    private final PerturbationContext perturbationContext;
+
+    public LimeExplainer(int noOfSamples, int noOfPerturbations) {
+        this(noOfSamples, new PerturbationContext(new SecureRandom(), noOfPerturbations));
+    }
+
+    public LimeExplainer(int noOfSamples, int noOfPerturbations, Random random) {
+        this(noOfSamples, new PerturbationContext(random, noOfPerturbations));
+    }
+
+    public LimeExplainer(int noOfSamples, PerturbationContext perturbationContext) {
+        this(noOfSamples, perturbationContext, DEFAULT_NO_OF_RETRIES);
+    }
+
+    public LimeExplainer(int noOfSamples, PerturbationContext perturbationContext, int noOfRetries) {
         this.noOfSamples = noOfSamples;
-        this.noOfPerturbations = noOfPerturbations;
+        this.perturbationContext = perturbationContext;
         this.noOfRetries = noOfRetries;
     }
 
-    public LimeExplainer(int noOfSamples, int noOfPerturbations) {
+    public LimeExplainer(int noOfSamples, int noOfPerturbations, int noOfRetries, Random random) {
         this.noOfSamples = noOfSamples;
-        this.noOfPerturbations = noOfPerturbations;
-        this.noOfRetries = 3;
+        this.perturbationContext = new PerturbationContext(random, noOfPerturbations);
+        this.noOfRetries = noOfRetries;
     }
 
     @Override
@@ -213,7 +229,7 @@ public class LimeExplainer implements LocalExplainer<Saliency> {
         // as per LIME paper, the dataset size should be at least |features|^2
         double perturbedDataSize = Math.max(noOfSamples, Math.pow(2, noOfFeatures));
         for (int i = 0; i < perturbedDataSize; i++) {
-            perturbedInputs.add(DataUtils.perturbFeatures(predictionInput, noOfPerturbations));
+            perturbedInputs.add(DataUtils.perturbFeatures(predictionInput, perturbationContext));
         }
         return perturbedInputs;
     }

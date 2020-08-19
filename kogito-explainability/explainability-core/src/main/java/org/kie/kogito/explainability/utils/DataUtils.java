@@ -15,19 +15,9 @@
  */
 package org.kie.kogito.explainability.utils;
 
-import java.net.URI;
-import java.nio.ByteBuffer;
-import java.time.Duration;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Currency;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
@@ -36,20 +26,17 @@ import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureDistribution;
 import org.kie.kogito.explainability.model.FeatureFactory;
+import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.Type;
+import org.kie.kogito.explainability.model.Value;
 
 /**
  * Utility methods to handle and manipulate data.
  */
 public class DataUtils {
 
-    private DataUtils() {}
-
-    private static final Random random = new Random();
-
-    public static void setSeed(long seed) {
-        random.setSeed(seed);
+    private DataUtils() {
     }
 
     /**
@@ -67,7 +54,7 @@ public class DataUtils {
      * @param size         size of the array
      * @return the generated data
      */
-    public static double[] generateData(double mean, double stdDeviation, int size) {
+    public static double[] generateData(double mean, double stdDeviation, int size, Random random) {
 
         // generate random data from a normal (gaussian) distribution
         double[] data = new double[size];
@@ -157,239 +144,62 @@ public class DataUtils {
      * Perform perturbations on a fixed number of features in the given input.
      * Which feature will be perturbed is non deterministic.
      *
-     * @param input             the input whose features need to be perturbed
-     * @param noOfPerturbations the no. of features to be perturbed
+     * @param input               the input whose features need to be perturbed
+     * @param perturbationContext the perturbation context
      * @return a new input with perturbed features
      */
-    public static PredictionInput perturbFeatures(PredictionInput input, int noOfPerturbations) {
+    public static PredictionInput perturbFeatures(PredictionInput input, PerturbationContext perturbationContext) {
         List<Feature> originalFeatures = input.getFeatures();
         List<Feature> newFeatures = new ArrayList<>(originalFeatures);
         PredictionInput perturbedInput = new PredictionInput(newFeatures);
-        int perturbationSize = Math.min(noOfPerturbations, originalFeatures.size());
-        int[] indexesToBePerturbed = random.ints(0, perturbedInput.getFeatures().size()).distinct().limit(perturbationSize).toArray();
-        // TODO : perturbing a composite / nested feature must be done by considering to only perturb #noOfPerturbations features
-        for (int value : indexesToBePerturbed) {
-            perturbedInput.getFeatures().set(value, perturbFeature(
-                    perturbedInput.getFeatures().get(value)));
+        int perturbationSize = Math.min(perturbationContext.getNoOfPerturbations(), originalFeatures.size());
+        int[] indexesToBePerturbed = perturbationContext.getRandom().ints(0, perturbedInput.getFeatures().size()).distinct().limit(perturbationSize).toArray();
+        for (int index : indexesToBePerturbed) {
+            Feature feature = perturbedInput.getFeatures().get(index);
+            Feature perturbedFeature = FeatureFactory.copyOf(feature, feature.getType().perturb(feature.getValue(), perturbationContext));
+            perturbedInput.getFeatures().set(index, perturbedFeature);
         }
         return perturbedInput;
     }
 
-    private static Feature perturbFeature(Feature feature) {
-        Type type = feature.getType();
-        Feature f;
-        String featureName = feature.getName();
-        switch (type) {
-            case COMPOSITE:
-                List<Feature> composite = (List<Feature>) feature.getValue().getUnderlyingObject();
-                Map<String, Object> featuresMap = new HashMap<>();
-                for (Feature cf : composite) {
-                    if (random.nextBoolean()) {
-                        featuresMap.put(cf.getName(), perturbFeature(cf));
-                    } else {
-                        featuresMap.put(cf.getName(), cf);
-                    }
-                }
-                f = FeatureFactory.newCompositeFeature(featureName, featuresMap);
-                break;
-            case TEXT:
-                String newStringValue = "";
-                // randomly drop entire string or parts of it
-                if (random.nextBoolean()) {
-                    String stringValue = feature.getValue().asString();
-                    if (stringValue.indexOf(' ') != -1) {
-                        List<String> words = new ArrayList<>(Arrays.asList(stringValue.split(" ")));
-                        if (!words.isEmpty()) {
-                            int featuresToDrop = random.nextInt(Math.min(2, words.size() / 2));
-                            for (int i = 0; i < 1 + featuresToDrop; i++) {
-                                int dropIdx = random.nextInt(words.size());
-                                words.remove(dropIdx);
-                            }
-                        }
-                        newStringValue = String.join(" ", words);
-                    }
-                }
-                f = FeatureFactory.newTextFeature(featureName, newStringValue);
-                break;
-            case NUMBER:
-                double originalFeatureValue = feature.getValue().asNumber();
-                boolean intValue = originalFeatureValue % 1 == 0;
-
-                // sample from a standard normal distribution and center around feature value
-                double normalDistributionSample = random.nextGaussian();
-                if (originalFeatureValue != 0d) {
-                    normalDistributionSample = normalDistributionSample * originalFeatureValue + originalFeatureValue;
-                }
-                if (intValue) {
-                    normalDistributionSample = (int) normalDistributionSample;
-                    if (normalDistributionSample == originalFeatureValue) {
-                        normalDistributionSample = (int) normalDistributionSample * 10d;
-                    }
-                }
-                f = FeatureFactory.newNumericalFeature(featureName, normalDistributionSample);
-                break;
-            case BOOLEAN:
-                // flip the boolean value
-                f = FeatureFactory.newBooleanFeature(featureName, !Boolean.getBoolean(feature.getValue().asString()));
-                break;
-            case TIME:
-                LocalTime featureValue = (LocalTime) feature.getValue().getUnderlyingObject();
-                f = FeatureFactory.newTimeFeature(featureName, featureValue.minusHours(random.nextInt(24)));
-                break;
-            case DURATION:
-                // set the duration to 0
-                f = FeatureFactory.newDurationFeature(featureName, Duration.of(0, ChronoUnit.SECONDS));
-                break;
-            case CURRENCY:
-                // set the currency to machine default locale
-                f = FeatureFactory.newCurrencyFeature(featureName, Currency.getInstance(Locale.getDefault()));
-                break;
-            case CATEGORICAL:
-                String category = feature.getValue().asString();
-                if (!"0".equals(category)) {
-                    category = "0";
-                } else {
-                    category = "1";
-                }
-                f = FeatureFactory.newCategoricalFeature(featureName, category);
-                break;
-            case BINARY:
-                // set an empty buffer
-                ByteBuffer byteBuffer = ByteBuffer.allocate(0);
-                f = FeatureFactory.newBinaryFeature(featureName, byteBuffer);
-                break;
-            case URI:
-                // set an empty URI
-                f = FeatureFactory.newURIFeature(featureName, URI.create(""));
-                break;
-            case VECTOR:
-                // randomly set a non zero value to zero (or decrease it by 1)
-                double[] values = feature.getValue().asVector();
-                if (values.length > 1) {
-                    int idx = random.nextInt(values.length - 1);
-                    if (values[idx] != 0) {
-                        values[idx] = 0;
-                    } else {
-                        values[idx]--;
-                    }
-                }
-                f = FeatureFactory.newVectorFeature(featureName, values);
-                break;
-            case UNDEFINED:
-                if (feature.getValue().getUnderlyingObject() instanceof Feature) {
-                    f = perturbFeature((Feature) feature.getValue().getUnderlyingObject());
-                } else {
-                    f = feature;
-                }
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + type);
-        }
-        return f;
-    }
-
     /**
-     * Drop the value of a given feature if its name matches any of the given names.
+     * Drop a given feature by a list of existing feature.
      *
-     * @param feature an input feature
-     * @param names   a list of feature names
-     * @return the same feature or its copy with the 'dropped' value
+     * @param features the existing features
+     * @param target   the feature to drop
+     * @return a new list of features having the target feature dropped
      */
-    public static Feature dropFeature(Feature feature, List<String> names) {
-        Type type = feature.getType();
-        Feature f = feature;
-        String featureName = feature.getName();
-        switch (type) {
-            case COMPOSITE:
-                List<Feature> composite = (List<Feature>) feature.getValue().getUnderlyingObject();
-                Map<String, Object> featuresMap = new HashMap<>();
-                for (Feature cf : composite) {
-                    featuresMap.put(cf.getName(), dropFeature(cf, names));
-                }
-                f = FeatureFactory.newCompositeFeature(featureName, featuresMap);
-                break;
-            case TEXT:
-                if (names.contains(featureName)) {
-                    f = FeatureFactory.newTextFeature(featureName, "");
+    public static List<Feature> dropFeature(List<Feature> features, Feature target) {
+        String name = target.getName();
+        Value<?> value = target.getValue();
+        Feature droppedFeature = null;
+        for (Feature feature : features) {
+            if (name.equals(feature.getName())) {
+                if (value.equals(feature.getValue())) {
+                    droppedFeature = FeatureFactory.copyOf(feature, feature.getType().drop(value));
                 } else {
-                    String stringValue = feature.getValue().asString();
-                    if (stringValue.indexOf(' ') != -1) {
-                        List<String> words = new ArrayList<>(Arrays.asList(stringValue.split(" ")));
-                        List<String> matchingWords = names.stream().map(n -> n.contains(" (") ? n.substring(0, n.indexOf(" (")) : "").filter(words::contains).collect(Collectors.toList());
-                        if (words.removeAll(matchingWords)) {
-                            stringValue = String.join(" ", words);
+                    List<Feature> linearizedFeatures = DataUtils.getLinearizedFeatures(List.of(feature));
+                    int i = 0;
+                    for (Feature linearizedFeature : linearizedFeatures) {
+                        if (value.equals(linearizedFeature.getValue())) {
+                            Feature e = linearizedFeatures.get(i);
+                            linearizedFeatures.set(i, FeatureFactory.copyOf(e, e.getType().drop(value)));
+                            droppedFeature = FeatureFactory.newCompositeFeature(name, linearizedFeatures);
+                            break;
+                        } else {
+                            i++;
                         }
                     }
-                    f = FeatureFactory.newTextFeature(featureName, stringValue);
                 }
                 break;
-            case NUMBER:
-                if (names.contains(featureName)) {
-                    if (feature.getValue().asNumber() == 0) {
-                        f = FeatureFactory.newNumericalFeature(featureName, Double.NaN);
-                    } else {
-                        f = FeatureFactory.newNumericalFeature(featureName, 0);
-                    }
-                }
-                break;
-            case BOOLEAN:
-                if (names.contains(featureName)) {
-                    f = FeatureFactory.newBooleanFeature(featureName, null);
-                }
-                break;
-            case TIME:
-                if (names.contains(featureName)) {
-                    f = FeatureFactory.newTimeFeature(featureName, null);
-                }
-                break;
-            case DURATION:
-                if (names.contains(featureName)) {
-                    f = FeatureFactory.newDurationFeature(featureName, null);
-                }
-                break;
-            case CURRENCY:
-                if (names.contains(featureName)) {
-                    f = FeatureFactory.newCurrencyFeature(featureName, null);
-                }
-                break;
-            case CATEGORICAL:
-                if (names.contains(featureName)) {
-                    f = FeatureFactory.newCategoricalFeature(featureName, "");
-                }
-                break;
-            case BINARY:
-                if (names.contains(featureName)) {
-                    // set an empty buffer
-                    ByteBuffer byteBuffer = ByteBuffer.allocate(0);
-                    f = FeatureFactory.newBinaryFeature(featureName, byteBuffer);
-                }
-                break;
-            case URI:
-                if (names.contains(featureName)) {
-                    // set an empty URI
-                    f = FeatureFactory.newURIFeature(featureName, URI.create(""));
-                }
-                break;
-            case VECTOR:
-                if (names.contains(featureName)) {
-                    double[] values = feature.getValue().asVector();
-                    if (values.length > 0) {
-                        Arrays.fill(values, 0);
-                    }
-                    f = FeatureFactory.newVectorFeature(featureName, values);
-                }
-                break;
-            case UNDEFINED:
-                if (feature.getValue().getUnderlyingObject() instanceof Feature) {
-                    f = dropFeature((Feature) feature.getValue().getUnderlyingObject(), names);
-                } else {
-                    f = FeatureFactory.newObjectFeature(featureName, null);
-                }
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + type);
+            }
         }
-        return f;
+        List<Feature> copy = List.copyOf(features);
+        if (droppedFeature != null) {
+            Feature finalDroppedFeature = droppedFeature;
+            copy = copy.stream().map(f -> f.getName().equals(finalDroppedFeature.getName()) ? finalDroppedFeature : f).collect(Collectors.toList());
+        }
+        return copy;
     }
 
     /**
@@ -501,10 +311,10 @@ public class DataUtils {
      * @param distributionSize number of samples for each feature
      * @return a data distribution
      */
-    public static DataDistribution generateRandomDataDistribution(int noOfFeatures, int distributionSize) {
+    public static DataDistribution generateRandomDataDistribution(int noOfFeatures, int distributionSize, Random random) {
         List<FeatureDistribution> featureDistributions = new LinkedList<>();
         for (int i = 0; i < noOfFeatures; i++) {
-            double[] doubles = generateData(random.nextDouble(), random.nextDouble(), distributionSize);
+            double[] doubles = generateData(random.nextDouble(), random.nextDouble(), distributionSize, random);
             FeatureDistribution featureDistribution = DataUtils.getFeatureDistribution(doubles);
             featureDistributions.add(featureDistribution);
         }
@@ -554,14 +364,7 @@ public class DataUtils {
                 linearizeFeature(flattenedFeatures, feature);
             }
         } else {
-            if (Type.TEXT.equals(f.getType())) {
-                for (String w : f.getValue().asString().split(" ")) {
-                    Feature outputFeature = FeatureFactory.newTextFeature(w + " (" + f.getName() + ")", w);
-                    flattenedFeatures.add(outputFeature);
-                }
-            } else {
-                flattenedFeatures.add(f);
-            }
+            flattenedFeatures.add(f);
         }
     }
 }

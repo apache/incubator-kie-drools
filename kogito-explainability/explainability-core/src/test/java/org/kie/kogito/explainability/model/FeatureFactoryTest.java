@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class FeatureFactoryTest {
@@ -148,7 +149,7 @@ class FeatureFactoryTest {
         List<Feature> features = new LinkedList<>();
         features.add(FeatureFactory.newObjectFeature("f1", new Object()));
         features.add(FeatureFactory.newTextFeature("f2", "hola"));
-        features.add(FeatureFactory.newTextFeature("f3", "foo bar"));
+        features.add(FeatureFactory.newFulltextFeature("f3", "foo bar"));
         features.add(FeatureFactory.newNumericalFeature("f4", 131));
         features.add(FeatureFactory.newBooleanFeature("f5", false));
         features.add(FeatureFactory.newDurationFeature("f6", Duration.ofDays(2)));
@@ -162,5 +163,25 @@ class FeatureFactoryTest {
         String name = "some-name";
         Feature feature = FeatureFactory.newCompositeFeature(name, map);
         assertFeature(Type.COMPOSITE, features, feature);
+    }
+
+    @Test
+    void testCopySame() {
+        for (Type type : Type.values()) {
+            Value<?> v = new Value<>("1");
+            Feature feature = new Feature("name", type, v);
+            Feature copy = FeatureFactory.copyOf(feature, v);
+            assertEquals(feature, copy);
+        }
+    }
+
+    @Test
+    void testCopyDifferent() {
+        for (Type type : Type.values()) {
+            Value<?> v = new Value<>("1");
+            Feature feature = new Feature("name", type, v);
+            Feature copy = FeatureFactory.copyOf(feature, new Value<>("2"));
+            assertNotEquals(feature, copy);
+        }
     }
 }

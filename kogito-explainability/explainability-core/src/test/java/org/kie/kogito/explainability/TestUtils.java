@@ -110,7 +110,7 @@ public class TestUtils {
                 for (PredictionInput input : inputs) {
                     boolean spam = false;
                     for (Feature f : input.getFeatures()) {
-                        if (!spam && Type.TEXT.equals(f.getType())) {
+                        if (!spam) {
                             String s = f.getValue().asString();
                             String[] words = s.split(" ");
                             for (String w : words) {

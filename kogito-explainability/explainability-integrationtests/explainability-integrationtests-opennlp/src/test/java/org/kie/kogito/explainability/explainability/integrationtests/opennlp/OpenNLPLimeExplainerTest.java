@@ -18,6 +18,7 @@ package org.kie.kogito.explainability.explainability.integrationtests.opennlp;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import opennlp.tools.langdetect.Language;
 import opennlp.tools.langdetect.LanguageDetector;
@@ -35,18 +36,19 @@ import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
-import org.kie.kogito.explainability.utils.DataUtils;
 import org.kie.kogito.explainability.utils.ExplainabilityMetrics;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class OpenNLPLimeExplainerTest {
 
     @Test
     void testOpenNLPLangDetect() throws Exception {
+        Random random = new Random();
         for (int seed = 0; seed < 5; seed++) {
-            DataUtils.setSeed(seed);
+            random.setSeed(seed);
+            LimeExplainer limeExplainer = new LimeExplainer(100, 2, random);
             InputStream is = getClass().getResourceAsStream("/opennlp/langdetect-183.bin");
             LanguageDetectorModel languageDetectorModel = new LanguageDetectorModel(is);
             String inputText = "italiani, spaghetti pizza mandolino";
@@ -54,24 +56,21 @@ class OpenNLPLimeExplainerTest {
             Language bestLanguage = languageDetector.predictLanguage(inputText);
 
             List<Feature> features = new LinkedList<>();
-            features.add(FeatureFactory.newTextFeature("text", inputText));
+            features.add(FeatureFactory.newFulltextFeature("text", inputText));
             PredictionInput input = new PredictionInput(features);
             PredictionOutput output = new PredictionOutput(List.of(new Output("lang", Type.TEXT, new Value<>(bestLanguage.getLang()),
                                                                               bestLanguage.getConfidence())));
             Prediction prediction = new Prediction(input, output);
 
-            LimeExplainer limeExplainer = new LimeExplainer(100, 2);
             PredictionProvider model = inputs -> {
                 List<PredictionOutput> results = new LinkedList<>();
                 for (PredictionInput predictionInput : inputs) {
                     StringBuilder builder = new StringBuilder();
                     for (Feature f : predictionInput.getFeatures()) {
-                        if (Type.TEXT.equals(f.getType())) {
-                            if (builder.length() > 0) {
-                                builder.append(' ');
-                            }
-                            builder.append(f.getValue().asString());
+                        if (builder.length() > 0) {
+                            builder.append(' ');
                         }
+                        builder.append(f.getValue().asString());
                     }
                     Language language = languageDetector.predictLanguage(builder.toString());
                     PredictionOutput predictionOutput = new PredictionOutput(List.of(new Output("lang", Type.TEXT, new Value<>(language.getLang()), language.getConfidence())));
@@ -81,8 +80,8 @@ class OpenNLPLimeExplainerTest {
             };
             Saliency saliency = limeExplainer.explain(prediction, model);
             assertNotNull(saliency);
-            double i1 = ExplainabilityMetrics.impactScore(model, prediction, saliency.getTopFeatures(3));
-            assertTrue(i1 > 0);
+            double i1 = ExplainabilityMetrics.impactScore(model, prediction, saliency.getPositiveFeatures(3));
+            assertEquals( 1d, i1);
         }
     }
 }

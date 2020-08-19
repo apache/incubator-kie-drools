@@ -17,6 +17,7 @@ package org.kie.kogito.explainability.explainability.integrationtests.pmml;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -34,10 +35,10 @@ import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
-import org.kie.kogito.explainability.utils.DataUtils;
 import org.kie.kogito.explainability.utils.ExplainabilityMetrics;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.kogito.explainability.explainability.integrationtests.pmml.AbstractPMMLTest.getPMMLRuntime;
@@ -59,8 +60,10 @@ class PmmlLimeExplainerTest {
 
     @Test
     void testPMMLRegression() {
+        Random random = new Random();
         for (int seed = 0; seed < 5; seed++) {
-            DataUtils.setSeed(seed);
+            random.setSeed(seed);
+            LimeExplainer limeExplainer = new LimeExplainer(100, 1, random);
             List<Feature> features = new LinkedList<>();
             features.add(FeatureFactory.newNumericalFeature("sepalLength", 6.9));
             features.add(FeatureFactory.newNumericalFeature("sepalWidth", 3.1));
@@ -68,7 +71,6 @@ class PmmlLimeExplainerTest {
             features.add(FeatureFactory.newNumericalFeature("petalWidth", 2.3));
             PredictionInput input = new PredictionInput(features);
 
-            LimeExplainer limeExplainer = new LimeExplainer(100, 2);
             PredictionProvider model = inputs -> {
                 List<PredictionOutput> outputs = new LinkedList<>();
                 for (PredictionInput input1 : inputs) {
@@ -87,10 +89,8 @@ class PmmlLimeExplainerTest {
             Prediction prediction = new Prediction(input, output);
             Saliency saliency = limeExplainer.explain(prediction, model);
             assertNotNull(saliency);
-            List<String> strings = saliency.getPositiveFeatures(2).stream().map(f -> f.getFeature().getName()).collect(Collectors.toList());
-            assertTrue(strings.contains("petalWidth"));
             double v = ExplainabilityMetrics.impactScore(model, prediction, saliency.getPositiveFeatures(2));
-            assertTrue(v > 0);
+            assertEquals( 1d, v);
         }
     }
 
@@ -120,7 +120,7 @@ class PmmlLimeExplainerTest {
         Saliency saliency = limeExplainer.explain(prediction, model);
         assertNotNull(saliency);
         List<String> strings = saliency.getPositiveFeatures(1).stream().map(f -> f.getFeature().getName()).collect(Collectors.toList());
-        assertTrue(strings.contains("red (mapX)"));
+        assertTrue(strings.contains("red"));
     }
 
     @Disabled()
@@ -156,19 +156,20 @@ class PmmlLimeExplainerTest {
         Saliency saliency = limeExplainer.explain(prediction, model);
         assertNotNull(saliency);
         List<String> strings = saliency.getPositiveFeatures(1).stream().map(f -> f.getFeature().getName()).collect(Collectors.toList());
-        assertTrue(strings.contains("classA (input1)"));
+        assertTrue(strings.contains("classA"));
     }
 
     @Test
     void testPMMLCompoundScorecard() {
+        Random random = new Random();
         for (int seed = 0; seed < 5; seed++) {
-            DataUtils.setSeed(seed);
+            random.setSeed(seed);
+            LimeExplainer limeExplainer = new LimeExplainer(100, 2, random);
             List<Feature> features = new LinkedList<>();
             features.add(FeatureFactory.newNumericalFeature("input1", -50));
             features.add(FeatureFactory.newTextFeature("input2", "classB"));
             PredictionInput input = new PredictionInput(features);
 
-            LimeExplainer limeExplainer = new LimeExplainer(100, 2);
             PredictionProvider model = inputs -> {
                 List<PredictionOutput> outputs = new LinkedList<>();
                 for (PredictionInput input1 : inputs) {
@@ -190,10 +191,8 @@ class PmmlLimeExplainerTest {
             Prediction prediction = new Prediction(input, output);
             Saliency saliency = limeExplainer.explain(prediction, model);
             assertNotNull(saliency);
-            List<String> strings = saliency.getPositiveFeatures(1).stream().map(f -> f.getFeature().getName()).collect(Collectors.toList());
-            assertTrue(strings.contains("classB (input2)"));
             double v = ExplainabilityMetrics.impactScore(model, prediction, saliency.getTopFeatures(2));
-            assertTrue(v > 0);
+            assertEquals( 1d, v);
         }
     }
 }

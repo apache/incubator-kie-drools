@@ -15,9 +15,11 @@
  */
 package org.kie.kogito.explainability.global.pdp;
 
+import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import org.kie.kogito.explainability.global.GlobalExplainer;
 import org.kie.kogito.explainability.model.DataDistribution;
@@ -37,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * While a strict PD implementation would need the whole training set used to train the model, this implementation seeks
  * to reproduce an approximate version of the training data by means of data distribution information (min, max, mean,
  * stdDev).
- *
+ * <p>
  * see also https://christophm.github.io/interpretable-ml-book/pdp.html
  */
 public class PartialDependencePlotExplainer implements GlobalExplainer<Collection<PartialDependenceGraph>> {
@@ -46,23 +48,26 @@ public class PartialDependencePlotExplainer implements GlobalExplainer<Collectio
     private static final int DEFAULT_SERIES_LENGTH = 100;
 
     private final int seriesLength;
+    private final Random random;
 
     /**
      * Create a PDP provider.
      *
      * @param seriesLength the no. of data points sampled for each given feature.
+     * @param random       random number generator
      */
-    public PartialDependencePlotExplainer(int seriesLength) {
+    public PartialDependencePlotExplainer(int seriesLength, Random random) {
         this.seriesLength = seriesLength;
+        this.random = random;
     }
 
     /**
      * Create a PDP provider.
-     * <p>
+     *
      * Each feature is sampled {@code DEFAULT_SERIES_LENGTH} times.
      */
     public PartialDependencePlotExplainer() {
-        this(DEFAULT_SERIES_LENGTH);
+        this(DEFAULT_SERIES_LENGTH, new SecureRandom());
     }
 
     @Override
@@ -82,7 +87,8 @@ public class PartialDependencePlotExplainer implements GlobalExplainer<Collectio
                 double[][] trainingData = new double[noOfFeatures][seriesLength];
                 for (int i = 0; i < noOfFeatures; i++) {
                     double[] featureData = DataUtils.generateData(featureDistributions.get(i).getMean(),
-                                                                  featureDistributions.get(i).getStdDev(), seriesLength);
+                                                                  featureDistributions.get(i).getStdDev(), seriesLength,
+                                                                  random);
                     trainingData[i] = featureData;
                 }
 

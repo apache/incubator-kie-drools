@@ -19,10 +19,13 @@ import java.net.URI;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Currency;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Factory class for {@link Feature}s
@@ -34,6 +37,19 @@ public class FeatureFactory {
 
     public static Feature newTextFeature(String name, String text) {
         return new Feature(name, Type.TEXT, new Value<>(text));
+    }
+
+    public static Feature newFulltextFeature(String name, String text, Function<String, List<String>> tokenizer) {
+        List<String> tokens = tokenizer.apply(text);
+        List<Feature> tokenFeatures = new ArrayList<>(tokens.size());
+        for (String token : tokens) {
+            tokenFeatures.add(FeatureFactory.newTextFeature(name, token));
+        }
+        return FeatureFactory.newCompositeFeature(name, tokenFeatures);
+    }
+
+    public static Feature newFulltextFeature(String name, String text) {
+        return FeatureFactory.newFulltextFeature(name, text, s -> Arrays.asList(s.split(" ")));
     }
 
     public static Feature newCategoricalFeature(String name, String category) {
@@ -125,5 +141,16 @@ public class FeatureFactory {
             feature = newObjectFeature(featureName, value);
         }
         features.add(feature);
+    }
+
+    /**
+     * Create a copy of a {@code Feature} but with a different {@code Value}.
+     *
+     * @param feature the Feature to copy
+     * @param value   the Value to inject
+     * @return a copy of the input Feature but having the given Value
+     */
+    public static Feature copyOf(Feature feature, Value<?> value) {
+        return new Feature(feature.getName(), feature.getType(), value);
     }
 }

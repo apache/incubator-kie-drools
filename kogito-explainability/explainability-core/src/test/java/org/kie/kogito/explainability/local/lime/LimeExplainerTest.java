@@ -17,6 +17,7 @@ package org.kie.kogito.explainability.local.lime;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,6 @@ import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
-import org.kie.kogito.explainability.utils.DataUtils;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
@@ -37,9 +37,10 @@ class LimeExplainerTest {
 
     @Test
     void testEmptyPrediction() {
+        Random random = new Random();
         for (int seed = 0; seed < 5; seed++) {
-            DataUtils.setSeed(seed);
-            LimeExplainer limeExplainer = new LimeExplainer(10, 1);
+            random.setSeed(seed);
+            LimeExplainer limeExplainer = new LimeExplainer(10, 1, random);
             PredictionOutput output = mock(PredictionOutput.class);
             PredictionInput input = mock(PredictionInput.class);
             Prediction prediction = new Prediction(input, output);
@@ -50,9 +51,10 @@ class LimeExplainerTest {
 
     @Test
     void testNonEmptyInput() {
+        Random random = new Random();
         for (int seed = 0; seed < 5; seed++) {
-            DataUtils.setSeed(seed);
-            LimeExplainer limeExplainer = new LimeExplainer(10, 1);
+            random.setSeed(seed);
+            LimeExplainer limeExplainer = new LimeExplainer(10, 1, random);
             PredictionOutput output = mock(PredictionOutput.class);
             List<Feature> features = new LinkedList<>();
             for (int i = 0; i < 4; i++) {

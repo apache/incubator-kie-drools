@@ -15,9 +15,7 @@
  */
 package org.kie.kogito.explainability.utils;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.kie.kogito.explainability.model.Feature;
@@ -41,7 +39,8 @@ public class ExplainabilityMetrics {
      */
     private static final double CONFIDENCE_DROP_RATIO = 0.2d;
 
-    private ExplainabilityMetrics() {}
+    private ExplainabilityMetrics() {
+    }
 
     /**
      * Measure the explainability of an explanation.
@@ -70,14 +69,12 @@ public class ExplainabilityMetrics {
      * @return the saliency impact
      */
     public static double impactScore(PredictionProvider model, Prediction prediction, List<FeatureImportance> topFeatures) {
-        List<String> importantFeatureNames = topFeatures.stream().map(f -> f.getFeature().getName()).collect(Collectors.toList());
-
-        List<Feature> newFeatures = new LinkedList<>();
-        for (Feature feature : prediction.getInput().getFeatures()) {
-            Feature newFeature = DataUtils.dropFeature(feature, importantFeatureNames);
-            newFeatures.add(newFeature);
+        List<Feature> copy = List.copyOf(prediction.getInput().getFeatures());
+        for (FeatureImportance featureImportance : topFeatures) {
+            copy = DataUtils.dropFeature(copy, featureImportance.getFeature());
         }
-        PredictionInput predictionInput = new PredictionInput(newFeatures);
+
+        PredictionInput predictionInput = new PredictionInput(copy);
         List<PredictionOutput> predictionOutputs = model.predict(List.of(predictionInput));
         PredictionOutput predictionOutput = predictionOutputs.get(0);
         double impact = 0d;

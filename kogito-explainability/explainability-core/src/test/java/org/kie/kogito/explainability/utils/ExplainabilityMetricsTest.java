@@ -15,12 +15,12 @@
  */
 package org.kie.kogito.explainability.utils;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.TestUtils;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
@@ -36,11 +36,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class ExplainabilityMetricsTest {
-
-    @BeforeAll
-    static void setUpBefore() {
-        DataUtils.setSeed(4);
-    }
 
     @Test
     void testExplainabilityNoExplanation() {
@@ -90,7 +85,7 @@ class ExplainabilityMetricsTest {
         LimeExplainer limeExplainer = new LimeExplainer(10, 1);
         PredictionProvider model = TestUtils.getDummyTextClassifier();
         List<Feature> features = new LinkedList<>();
-        features.add(FeatureFactory.newTextFeature("f-0", "brown fox"));
+        features.add(FeatureFactory.newFulltextFeature("f-0", "brown fox", s -> Arrays.asList(s.split(" "))));
         features.add(FeatureFactory.newTextFeature("f-1", "money"));
         PredictionInput input = new PredictionInput(features);
         Prediction prediction = new Prediction(input, model.predict(List.of(input)).get(0));

@@ -15,18 +15,18 @@
  */
 package org.kie.kogito.explainability.local.lime;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.kie.kogito.explainability.local.LocalExplanationException;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.Output;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.Type;
+import org.kie.kogito.explainability.model.Value;
 import org.kie.kogito.explainability.utils.DataUtils;
 import org.kie.kogito.explainability.utils.LinearModel;
 
@@ -36,8 +36,6 @@ import org.kie.kogito.explainability.utils.LinearModel;
  * is close to the one of the prediction to be explained.
  */
 class DatasetEncoder {
-
-    private static final double CLUSTER_THRESHOLD = 1e-3;
 
     private final List<PredictionInput> perturbedInputs;
     private final List<Output> predictedOutputs;
@@ -59,18 +57,17 @@ class DatasetEncoder {
      */
     List<Pair<double[], Double>> getEncodedTrainingSet() {
         List<Pair<double[], Double>> trainingSet = new LinkedList<>();
-        List<List<Double>> columnData;
+        List<List<double[]>> columnData;
         List<PredictionInput> flatInputs = DataUtils.linearizeInputs(perturbedInputs);
         if (!flatInputs.isEmpty() && !predictedOutputs.isEmpty() && !targetInput.getFeatures().isEmpty() && originalOutput != null) {
             columnData = getColumnData(flatInputs);
 
             int pi = 0;
             for (Output output : predictedOutputs) {
-                double[] x = new double[columnData.size()];
-                int i = 0;
-                for (List<Double> column : columnData) {
-                    x[i] = column.get(pi);
-                    i++;
+                List<Double> x = new LinkedList<>();
+                for (List<double[]> column : columnData) {
+                    double[] doubles = column.get(pi);
+                    x.addAll(Arrays.asList(ArrayUtils.toObject(doubles)));
                 }
                 double y;
                 if (Type.NUMBER.equals(originalOutput.getType()) || Type.BOOLEAN.equals(originalOutput.getType())) {
@@ -84,7 +81,13 @@ class DatasetEncoder {
                         y = originalObject.equals(outputObject) ? 1d : 0d;
                     }
                 }
-                Pair<double[], Double> sample = new ImmutablePair<>(x, y);
+                double[] input = new double[x.size()];
+                int i = 0;
+                for (Double d : x) {
+                    input[i] = d;
+                    i++;
+                }
+                Pair<double[], Double> sample = new ImmutablePair<>(input, y);
                 trainingSet.add(sample);
 
                 pi++;
@@ -93,99 +96,17 @@ class DatasetEncoder {
         return trainingSet;
     }
 
-    private List<List<Double>> getColumnData(List<PredictionInput> perturbedInputs) {
-        List<List<Double>> columnData = new LinkedList<>();
+    private List<List<double[]>> getColumnData(List<PredictionInput> perturbedInputs) {
+        List<List<double[]>> columnData = new LinkedList<>();
 
         for (int t = 0; t < targetInput.getFeatures().size(); t++) {
-            Feature originalFeature = targetInput.getFeatures().get(t);
-            switch (originalFeature.getType()) {
-                case NUMBER:
-                    encodeNumbers(perturbedInputs, targetInput, columnData, t);
-                    break;
-                case TEXT:
-                    encodeText(perturbedInputs, columnData, originalFeature);
-                    break;
-                case CATEGORICAL:
-                case BINARY:
-                case TIME:
-                case URI:
-                case DURATION:
-                case VECTOR:
-                case CURRENCY:
-                case UNDEFINED:
-                    encodeEquals(perturbedInputs, columnData, t, originalFeature);
-                    break;
-                case BOOLEAN:
-                    // boolean are automatically encoded as 1s or 0s
-                    List<Double> featureValues = new LinkedList<>();
-                    for (PredictionInput pi : perturbedInputs) {
-                        featureValues.add(pi.getFeatures().get(t).getValue().asNumber());
-                    }
-                    columnData.add(featureValues);
-                    break;
-                default:
-                    throw new LocalExplanationException("could not encoded features of type " + originalFeature.getType());
-            }
+            Feature targetFeature = targetInput.getFeatures().get(t);
+            int finalT = t;
+            // encode all inputs with respect to the target, based on their type
+            List<double[]> encode = targetFeature.getType().encode(targetFeature.getValue(), perturbedInputs
+                    .stream().map(predictionInput -> predictionInput.getFeatures().get(finalT).getValue()).toArray(Value<?>[]::new));
+            columnData.add(encode);
         }
         return columnData;
-    }
-
-    private static void encodeNumbers(List<PredictionInput> predictionInputs, PredictionInput originalInputs, List<List<Double>> columnData, int t) {
-        // find maximum and minimum values
-        double[] doubles = new double[predictionInputs.size() + 1];
-        int i = 0;
-        for (PredictionInput pi : predictionInputs) {
-            Feature feature = pi.getFeatures().get(t);
-            doubles[i] = feature.getValue().asNumber();
-            i++;
-        }
-        Feature feature = originalInputs.getFeatures().get(t);
-        double originalValue = feature.getValue().asNumber();
-        doubles[i] = originalValue;
-        double min = DoubleStream.of(doubles).min().getAsDouble();
-        double max = DoubleStream.of(doubles).max().getAsDouble();
-        // feature scaling + kernel based clustering
-        double threshold = DataUtils.gaussianKernel((originalValue - min) / (max - min), 0, 1);
-        List<Double> featureValues = DoubleStream.of(doubles).map(d -> (d - min) / (max - min))
-                .map(d -> Double.isNaN(d) ? 1 : d).boxed().map(d -> DataUtils.gaussianKernel(d, 0, 1))
-                .map(d -> (d - threshold < CLUSTER_THRESHOLD) ? 1d : 0d).collect(Collectors.toList());
-        columnData.add(featureValues);
-    }
-
-    private static void encodeText(List<PredictionInput> predictionInputs, List<List<Double>> columnData, Feature originalFeature) {
-        String originalString = originalFeature.getValue().asString();
-        String[] words = originalString.split(" ");
-        for (String word : words) {
-            List<Double> featureValues = new LinkedList<>();
-            for (PredictionInput pi : predictionInputs) {
-                Feature feature = pi.getFeatures().stream().filter(f -> f.getName().equals(originalFeature.getName())).findFirst().orElse(null);
-                double featureValue;
-                if (feature != null && feature.getName().equals(originalFeature.getName())) {
-                    String perturbedString = feature.getValue().asString();
-                    String[] perturbedWords = perturbedString.split(" ");
-                    featureValue = 0d;
-                    for (String w : perturbedWords) {
-                        if (w.equals(word)) {
-                            featureValue = 1d;
-                            break;
-                        }
-                    }
-                } else {
-                    featureValue = 0d;
-                }
-                featureValues.add(featureValue);
-            }
-            columnData.add(featureValues);
-        }
-    }
-
-    private static void encodeEquals(List<PredictionInput> predictionInputs, List<List<Double>> columnData, int t, Feature originalFeature) {
-        Object originalObject = originalFeature.getValue().getUnderlyingObject();
-        List<Double> featureValues = new LinkedList<>();
-        for (PredictionInput pi : predictionInputs) {
-            double featureValue = originalObject.equals(pi.getFeatures().get(t).getValue().getUnderlyingObject()) ? 1d : 0d;
-            featureValues.add(featureValue);
-        }
-        columnData.add(featureValues);
     }
 }
