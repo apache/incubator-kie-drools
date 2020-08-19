@@ -19,11 +19,18 @@ package org.optaplanner.quarkus.deployment;
 import org.jboss.jandex.DotName;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
+import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
 
 public final class DotNames {
 
     static final DotName PLANNING_SOLUTION = DotName.createSimple(PlanningSolution.class.getName());
     static final DotName PLANNING_ENTITY = DotName.createSimple(PlanningEntity.class.getName());
+    static final DotName EASY_SCORE_CALCULATOR = DotName.createSimple(EasyScoreCalculator.class.getName());
+    static final DotName CONSTRAINT_PROVIDER = DotName.createSimple(ConstraintProvider.class.getName());
+    static final DotName INCREMENTAL_SCORE_CALCULATOR =
+            DotName.createSimple(IncrementalScoreCalculator.class.getName());
 
     private DotNames() {
     }

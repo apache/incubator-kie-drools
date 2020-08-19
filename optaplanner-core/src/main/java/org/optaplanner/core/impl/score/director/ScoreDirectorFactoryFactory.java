@@ -270,7 +270,8 @@ public class ScoreDirectorFactoryFactory<Solution_> {
     private void writeScoreDrlListToKieFileSystem(KieFileSystem kieFileSystem, KieResources kieResources,
             ClassLoader classLoader) {
         if (!ConfigUtils.isEmptyCollection(config.getScoreDrlList())) {
-            ClassLoader actualClassLoader = (classLoader != null) ? classLoader : getClass().getClassLoader();
+            ClassLoader actualClassLoader =
+                    (classLoader != null) ? classLoader : Thread.currentThread().getContextClassLoader();
             for (String scoreDrl : config.getScoreDrlList()) {
                 if (scoreDrl == null) {
                     throw new IllegalArgumentException("The scoreDrl (" + scoreDrl + ") cannot be null.");

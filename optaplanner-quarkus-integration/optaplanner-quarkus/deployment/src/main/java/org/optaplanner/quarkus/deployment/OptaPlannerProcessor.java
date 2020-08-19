@@ -33,6 +33,7 @@ import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.Type;
+import org.jboss.logging.Logger;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
@@ -61,6 +62,8 @@ import io.quarkus.runtime.configuration.ConfigurationException;
 
 class OptaPlannerProcessor {
 
+    private static final Logger log = Logger.getLogger(OptaPlannerProcessor.class.getName());
+
     OptaPlannerBuildTimeConfig optaPlannerBuildTimeConfig;
 
     @BuildStep
@@ -81,18 +84,25 @@ class OptaPlannerProcessor {
     }
 
     @BuildStep
-    void registerAdditionalBeans(BuildProducer<AdditionalBeanBuildItem> additionalBeans) {
-        // The bean encapsulating the SolverFactory
-        additionalBeans.produce(new AdditionalBeanBuildItem(OptaPlannerBeanProvider.class));
-    }
-
-    @BuildStep
     @Record(STATIC_INIT)
-    void recordSolverFactory(OptaPlannerRecorder recorder, RecorderContext recorderContext,
+    void recordAndRegisterBeans(OptaPlannerRecorder recorder, RecorderContext recorderContext,
             CombinedIndexBuildItem combinedIndex,
             BuildProducer<ReflectiveHierarchyBuildItem> reflectiveHierarchyClass,
             BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
-            BuildProducer<SyntheticBeanBuildItem> syntheticBeanBuildItemBuildProducer) {
+            BuildProducer<SyntheticBeanBuildItem> syntheticBeanBuildItemBuildProducer,
+            BuildProducer<AdditionalBeanBuildItem> additionalBeans) {
+        IndexView indexView = combinedIndex.getIndex();
+
+        // Only skip this extension if everything is missing. Otherwise, if some parts are missing, fail fast later.
+        if (indexView.getAnnotations(DotNames.PLANNING_SOLUTION).isEmpty()
+                && indexView.getAnnotations(DotNames.PLANNING_ENTITY).isEmpty()) {
+            log.warn("Skipping OptaPlanner extension because there are no " + PlanningSolution.class.getSimpleName()
+                    + " or " + PlanningEntity.class.getSimpleName() + " annotated classes.");
+            return;
+        }
+
+        // Quarkus extensions must always use getContextClassLoader()
+        // Internally, OptaPlanner defaults the ClassLoader to getContextClassLoader() too
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         SolverConfig solverConfig;
         if (optaPlannerBuildTimeConfig.solverConfigXml.isPresent()) {
@@ -101,17 +111,16 @@ class OptaPlannerProcessor {
                 throw new ConfigurationException("Invalid quarkus.optaplanner.solverConfigXML property ("
                         + solverConfigXML + "): that classpath resource does not exist.");
             }
-            solverConfig = SolverConfig.createFromXmlResource(solverConfigXML, classLoader);
+            solverConfig = SolverConfig.createFromXmlResource(solverConfigXML);
         } else if (classLoader.getResource(OptaPlannerBuildTimeConfig.DEFAULT_SOLVER_CONFIG_URL) != null) {
             solverConfig = SolverConfig.createFromXmlResource(
-                    OptaPlannerBuildTimeConfig.DEFAULT_SOLVER_CONFIG_URL, classLoader);
+                    OptaPlannerBuildTimeConfig.DEFAULT_SOLVER_CONFIG_URL);
         } else {
-            solverConfig = new SolverConfig(classLoader);
+            solverConfig = new SolverConfig();
         }
         // The deployment classLoader must not escape to runtime
         solverConfig.setClassLoader(null);
 
-        IndexView indexView = combinedIndex.getIndex();
         applySolverProperties(recorderContext, indexView, solverConfig);
 
         if (solverConfig.getSolutionClass() != null) {
@@ -147,7 +156,7 @@ class OptaPlannerProcessor {
                 .scope(Singleton.class)
                 .defaultBean()
                 .supplier(recorder.solverManagerConfig(solverManagerConfig)).done());
-
+        additionalBeans.produce(new AdditionalBeanBuildItem(OptaPlannerBeanProvider.class));
     }
 
     private void applySolverProperties(RecorderContext recorderContext,
@@ -179,8 +188,7 @@ class OptaPlannerProcessor {
             throw new IllegalStateException("A target (" + solutionTarget
                     + ") with a @" + PlanningSolution.class.getSimpleName() + " must be a class.");
         }
-
-        return recorderContext.classProxy(solutionTarget.asClass().name().toString());
+        return convertClassInfoToClass(solutionTarget.asClass());
     }
 
     private List<Class<?>> findEntityClassList(RecorderContext recorderContext, IndexView indexView) {
@@ -197,7 +205,7 @@ class OptaPlannerProcessor {
                     + ") with a @" + PlanningEntity.class.getSimpleName() + " must be a class.");
         }
         return targetList.stream()
-                .map(target -> recorderContext.classProxy(target.asClass().name().toString()))
+                .map(target -> (Class<?>) convertClassInfoToClass(target.asClass()))
                 .collect(Collectors.toList());
     }
 
@@ -205,11 +213,11 @@ class OptaPlannerProcessor {
         if (solverConfig.getScoreDirectorFactoryConfig() == null) {
             ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
             scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(
-                    findImplementingClass(EasyScoreCalculator.class, indexView));
+                    findImplementingClass(DotNames.EASY_SCORE_CALCULATOR, indexView));
             scoreDirectorFactoryConfig.setConstraintProviderClass(
-                    findImplementingClass(ConstraintProvider.class, indexView));
+                    findImplementingClass(DotNames.CONSTRAINT_PROVIDER, indexView));
             scoreDirectorFactoryConfig.setIncrementalScoreCalculatorClass(
-                    findImplementingClass(IncrementalScoreCalculator.class, indexView));
+                    findImplementingClass(DotNames.INCREMENTAL_SCORE_CALCULATOR, indexView));
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             if (classLoader.getResource(SolverBuildTimeConfig.DEFAULT_SCORE_DRL_URL) != null) {
                 scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(
@@ -229,26 +237,17 @@ class OptaPlannerProcessor {
         }
     }
 
-    private <T> Class<? extends T> findImplementingClass(Class<T> targetClass, IndexView indexView) {
-        Collection<ClassInfo> classInfos = indexView.getAllKnownImplementors(
-                DotName.createSimple(targetClass.getName()));
+    private <T> Class<? extends T> findImplementingClass(DotName targetDotName, IndexView indexView) {
+        Collection<ClassInfo> classInfos = indexView.getAllKnownImplementors(targetDotName);
         if (classInfos.size() > 1) {
             throw new IllegalStateException("Multiple classes (" + convertClassInfosToString(classInfos)
-                    + ") found that implement the interface " + targetClass.getSimpleName() + ".");
+                    + ") found that implement the interface " + targetDotName + ".");
         }
         if (classInfos.isEmpty()) {
             return null;
         }
-        String className = classInfos.iterator().next().name().toString();
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        try {
-            // Don't use recorderContext.classProxy(className)
-            // because ReflectiveClassBuildItem cannot cope with a class proxy
-            return (Class<? extends T>) classLoader.loadClass(className);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("The class (" + className
-                    + ") cannot be created during deployment.", e);
-        }
+        ClassInfo classInfo = classInfos.iterator().next();
+        return convertClassInfoToClass(classInfo);
     }
 
     private void applyTerminationProperties(SolverConfig solverConfig) {
@@ -271,6 +270,17 @@ class OptaPlannerProcessor {
     private String convertClassInfosToString(Collection<ClassInfo> classInfos) {
         return "[" + classInfos.stream().map(instance -> instance.name().toString())
                 .collect(Collectors.joining(", ")) + "]";
+    }
+
+    private <T> Class<? extends T> convertClassInfoToClass(ClassInfo classInfo) {
+        String className = classInfo.name().toString();
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            return (Class<? extends T>) classLoader.loadClass(className);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException("The class (" + className
+                    + ") cannot be created during deployment.", e);
+        }
     }
 
     @BuildStep

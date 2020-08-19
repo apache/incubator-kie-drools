@@ -82,7 +82,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * @return never null
      */
     public static SolverConfig createFromXmlResource(String solverConfigResource, ClassLoader classLoader) {
-        ClassLoader actualClassLoader = classLoader != null ? classLoader : SolverConfig.class.getClassLoader();
+        ClassLoader actualClassLoader = classLoader != null ? classLoader : Thread.currentThread().getContextClassLoader();
         try (InputStream in = actualClassLoader.getResourceAsStream(solverConfigResource)) {
             if (in == null) {
                 String errorMessage = "The solverConfigResource (" + solverConfigResource

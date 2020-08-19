@@ -125,7 +125,7 @@ public class PlannerBenchmarkConfig {
      * @return never null
      */
     public static PlannerBenchmarkConfig createFromXmlResource(String benchmarkConfigResource, ClassLoader classLoader) {
-        ClassLoader actualClassLoader = classLoader != null ? classLoader : PlannerBenchmarkConfig.class.getClassLoader();
+        ClassLoader actualClassLoader = classLoader != null ? classLoader : Thread.currentThread().getContextClassLoader();
         try (InputStream in = actualClassLoader.getResourceAsStream(benchmarkConfigResource)) {
             if (in == null) {
                 String errorMessage = "The benchmarkConfigResource (" + benchmarkConfigResource
@@ -282,7 +282,7 @@ public class PlannerBenchmarkConfig {
      */
     public static PlannerBenchmarkConfig createFromFreemarkerXmlResource(String templateResource, Object model,
             ClassLoader classLoader) {
-        ClassLoader actualClassLoader = classLoader != null ? classLoader : PlannerBenchmarkConfig.class.getClassLoader();
+        ClassLoader actualClassLoader = classLoader != null ? classLoader : Thread.currentThread().getContextClassLoader();
         try (InputStream templateIn = actualClassLoader.getResourceAsStream(templateResource)) {
             if (templateIn == null) {
                 String errorMessage = "The templateResource (" + templateResource
