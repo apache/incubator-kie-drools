@@ -57,8 +57,9 @@ abstract class AbstractDMNSetType implements TypeDefinition {
     }
 
     public void initFields() {
+        FieldGenStrategy fieldGenStrategy = FieldGenStrategy.getFieldGenStrategy(fieldsKey.keySet(), getTypeName());
         for (Map.Entry<String, DMNType> f : fieldsKey.entrySet()) {
-            DMNDeclaredField dmnDeclaredField = new DMNDeclaredField(index, f, codeGenConfig);
+            DMNDeclaredField dmnDeclaredField = new DMNDeclaredField(index, f, codeGenConfig, fieldGenStrategy);
             fields.add(dmnDeclaredField);
         }
     }

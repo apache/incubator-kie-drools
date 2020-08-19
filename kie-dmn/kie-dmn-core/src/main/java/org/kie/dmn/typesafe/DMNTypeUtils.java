@@ -70,5 +70,4 @@ public class DMNTypeUtils {
     public static DMNType getBelongingType(DMNType dmnType) {
         return ((BaseDMNTypeImpl) dmnType).getBelongingType();
     }
-
 }
