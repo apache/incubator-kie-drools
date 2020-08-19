@@ -520,6 +520,20 @@ public class DSL {
         };
     }
 
+    // -- GroupBy --
+
+    public static <T, A, K> ExprViewItem<T> groupBy(ViewItem<?> viewItem,
+                                                    Variable<A> var1, Variable<K> varKey, Function1<A, K> groupingFunction,
+                                                    AccumulateFunction firstFunction, AccumulateFunction... otherFunctions) {
+        return null;
+    }
+
+    public static <T, A, B, K> ExprViewItem<T> groupBy(ViewItem<?> viewItem,
+                                                       Variable<A> var1, Variable<B> var2, Variable<K> varKey, Function2<A, B, K> groupingFunction,
+                                                       AccumulateFunction firstFunction, AccumulateFunction... otherFunctions) {
+        return null;
+    }
+
     // -- Temporal Constraints --
 
     public static TemporalPredicate not(TemporalPredicate predicate) {
