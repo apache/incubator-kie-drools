@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,14 +24,15 @@ import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistance
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
-public class NearEntityNearbyValueSelector extends AbstractValueSelector {
+public final class NearEntityNearbyValueSelector extends AbstractValueSelector {
 
     protected final ValueSelector childValueSelector;
-    protected final EntitySelector originEntitySelector;
+    protected final EntitySelector replayingOriginEntitySelector;
     protected final NearbyDistanceMeter nearbyDistanceMeter;
     protected final NearbyRandom nearbyRandom;
     protected final boolean randomSelection;
@@ -42,7 +43,12 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
     public NearEntityNearbyValueSelector(ValueSelector childValueSelector, EntitySelector originEntitySelector,
             NearbyDistanceMeter nearbyDistanceMeter, NearbyRandom nearbyRandom, boolean randomSelection) {
         this.childValueSelector = childValueSelector;
-        this.originEntitySelector = originEntitySelector;
+        if (!(originEntitySelector instanceof MimicReplayingEntitySelector)) {
+            // In order to select a nearby value, we must first have something to be near by.
+            throw new IllegalStateException("Impossible state: Nearby value selector (" + this +
+                    ") did not receive a replaying entity selector (" + originEntitySelector + ").");
+        }
+        this.replayingOriginEntitySelector = originEntitySelector;
         this.nearbyDistanceMeter = nearbyDistanceMeter;
         this.nearbyRandom = nearbyRandom;
         this.randomSelection = randomSelection;
@@ -65,14 +71,14 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
     public void phaseStarted(AbstractPhaseScope phaseScope) {
         // Cannot be done during solverStarted because
         super.phaseStarted(phaseScope);
-        long originSize = originEntitySelector.getSize();
+        long originSize = replayingOriginEntitySelector.getSize();
         if (originSize > (long) Integer.MAX_VALUE) {
-            throw new IllegalStateException("The originEntitySelector (" + originEntitySelector
+            throw new IllegalStateException("The originEntitySelector (" + replayingOriginEntitySelector
                     + ") has an entitySize (" + originSize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
         nearbyDistanceMatrix = new NearbyDistanceMatrix(nearbyDistanceMeter, (int) originSize);
-        for (Iterator originIt = originEntitySelector.endingIterator(); originIt.hasNext();) {
+        for (Iterator originIt = replayingOriginEntitySelector.endingIterator(); originIt.hasNext();) {
             final Object origin = originIt.next();
             long childSize = childValueSelector.getSize(origin);
             if (childSize > (long) Integer.MAX_VALUE) {
@@ -122,12 +128,11 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
 
     @Override
     public Iterator<Object> iterator(Object entity) {
+        Iterator<Object> replayingOriginEntityIterator = replayingOriginEntitySelector.iterator();
         if (!randomSelection) {
-            return new OriginalEntityNearbyValueIterator(
-                    originEntitySelector.iterator(), childValueSelector.getSize(entity));
+            return new OriginalEntityNearbyValueIterator(replayingOriginEntityIterator, childValueSelector.getSize(entity));
         } else {
-            return new RandomEntityNearbyValueIterator(
-                    originEntitySelector.iterator(), childValueSelector.getSize(entity));
+            return new RandomEntityNearbyValueIterator(replayingOriginEntityIterator, childValueSelector.getSize(entity));
         }
     }
 
@@ -138,9 +143,9 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
         return childValueSelector.endingIterator(entity);
     }
 
-    private class OriginalEntityNearbyValueIterator extends SelectionIterator<Object> {
+    private final class OriginalEntityNearbyValueIterator extends SelectionIterator<Object> {
 
-        private final Iterator<Object> originEntityIterator;
+        private final Iterator<Object> replayingOriginEntityIterator;
         private final long childSize;
 
         private boolean originSelected = false;
@@ -149,8 +154,8 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
 
         private int nextNearbyIndex;
 
-        public OriginalEntityNearbyValueIterator(Iterator<Object> originEntityIterator, long childSize) {
-            this.originEntityIterator = originEntityIterator;
+        public OriginalEntityNearbyValueIterator(Iterator<Object> replayingOriginEntityIterator, long childSize) {
+            this.replayingOriginEntityIterator = replayingOriginEntityIterator;
             this.childSize = childSize;
             nextNearbyIndex = discardNearbyIndexZero ? 1 : 0;
         }
@@ -159,8 +164,15 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
             if (originSelected) {
                 return;
             }
-            originIsNotEmpty = originEntityIterator.hasNext();
-            origin = originEntityIterator.next();
+            /*
+             * The origin iterator is guaranteed to be a replaying iterator.
+             * Therefore next() will point to whatever that the related recording iterator was pointing to at the time
+             * when its next() was called.
+             * As a result, origin here will be constant unless next() on the original recording iterator is called
+             * first.
+             */
+            originIsNotEmpty = replayingOriginEntityIterator.hasNext();
+            origin = replayingOriginEntityIterator.next();
             originSelected = true;
         }
 
@@ -180,13 +192,13 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
 
     }
 
-    private class RandomEntityNearbyValueIterator extends SelectionIterator<Object> {
+    private final class RandomEntityNearbyValueIterator extends SelectionIterator<Object> {
 
-        private final Iterator<Object> originEntityIterator;
+        private final Iterator<Object> replayingOriginEntityIterator;
         private final int nearbySize;
 
-        public RandomEntityNearbyValueIterator(Iterator<Object> originEntityIterator, long childSize) {
-            this.originEntityIterator = originEntityIterator;
+        public RandomEntityNearbyValueIterator(Iterator<Object> replayingOriginEntityIterator, long childSize) {
+            this.replayingOriginEntityIterator = replayingOriginEntityIterator;
             if (childSize > (long) Integer.MAX_VALUE) {
                 throw new IllegalStateException("The valueSelector (" + this
                         + ") has an entitySize (" + childSize
@@ -197,12 +209,19 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
 
         @Override
         public boolean hasNext() {
-            return originEntityIterator.hasNext() && nearbySize > 0;
+            return replayingOriginEntityIterator.hasNext() && nearbySize > 0;
         }
 
         @Override
         public Object next() {
-            Object origin = originEntityIterator.next();
+            /*
+             * The origin iterator is guaranteed to be a replaying iterator.
+             * Therefore next() will point to whatever that the related recording iterator was pointing to at the time
+             * when its next() was called.
+             * As a result, origin here will be constant unless next() on the original recording iterator is called
+             * first.
+             */
+            Object origin = replayingOriginEntityIterator.next();
             int nearbyIndex = nearbyRandom.nextInt(workingRandom, nearbySize);
             if (discardNearbyIndexZero) {
                 nearbyIndex++;
@@ -214,7 +233,7 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + originEntitySelector + ", " + childValueSelector + ")";
+        return getClass().getSimpleName() + "(" + replayingOriginEntitySelector + ", " + childValueSelector + ")";
     }
 
 }
