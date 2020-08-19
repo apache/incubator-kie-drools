@@ -30,14 +30,17 @@ pipeline {
         stage("Initialize"){
             steps {
                 script {
-                    // query mvn to get the latest version
-                    env.DROOLS_VERSION = """${sh (
-                            script: 'mvn versions:display-property-updates -DincludeProperties=version.org.kie7 -DallowSnapshots -N  | grep version.org.kie7 | cut -d " " -f8',
-                            returnStdout: true
-                        ).trim()}"""
-                    echo "Latest kie7 version is: ${env.DROOLS_VERSION}"
+                    dir('kogito-build-parent'){
+                        // query mvn to get the latest version
+                        env.DROOLS_VERSION = """${sh (
+                                script: 'mvn versions:display-property-updates -DincludeProperties=version.org.kie7 -DallowSnapshots -N  | grep version.org.kie7 | cut -d " " -f8',
+                                returnStdout: true
+                            ).trim()}"""
+                        assert env.DROOLS_VERSION != ""
+                        echo "Latest kie7 version is: ${env.DROOLS_VERSION}"
 
-                    env.MAVEN_EXTRA_ARGS="-Dversion.org.kie7=${DROOLS_VERSION}"
+                        env.MAVEN_EXTRA_ARGS="-Dversion.org.kie7=${DROOLS_VERSION}"
+                    }
                 }
             }
         }
