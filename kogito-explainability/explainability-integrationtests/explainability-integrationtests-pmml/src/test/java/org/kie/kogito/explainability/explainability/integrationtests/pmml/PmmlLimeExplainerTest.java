@@ -17,6 +17,7 @@ package org.kie.kogito.explainability.explainability.integrationtests.pmml;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -87,10 +88,12 @@ class PmmlLimeExplainerTest {
             };
             PredictionOutput output = model.predict(List.of(input)).get(0);
             Prediction prediction = new Prediction(input, output);
-            Saliency saliency = limeExplainer.explain(prediction, model);
-            assertNotNull(saliency);
-            double v = ExplainabilityMetrics.impactScore(model, prediction, saliency.getPositiveFeatures(2));
-            assertEquals( 1d, v);
+            Map<String, Saliency> saliencyMap = limeExplainer.explain(prediction, model);
+            for (Saliency saliency : saliencyMap.values()) {
+                assertNotNull(saliency);
+                double v = ExplainabilityMetrics.impactScore(model, prediction, saliency.getPositiveFeatures(2));
+                assertEquals(1d, v);
+            }
         }
     }
 
@@ -117,10 +120,12 @@ class PmmlLimeExplainerTest {
         };
         PredictionOutput output = model.predict(List.of(input)).get(0);
         Prediction prediction = new Prediction(input, output);
-        Saliency saliency = limeExplainer.explain(prediction, model);
-        assertNotNull(saliency);
-        List<String> strings = saliency.getPositiveFeatures(1).stream().map(f -> f.getFeature().getName()).collect(Collectors.toList());
-        assertTrue(strings.contains("red"));
+        Map<String, Saliency> saliencyMap = limeExplainer.explain(prediction, model);
+        for (Saliency saliency : saliencyMap.values()) {
+            assertNotNull(saliency);
+            List<String> strings = saliency.getPositiveFeatures(1).stream().map(f -> f.getFeature().getName()).collect(Collectors.toList());
+            assertTrue(strings.contains("red"));
+        }
     }
 
     @Disabled()
@@ -153,10 +158,12 @@ class PmmlLimeExplainerTest {
 
         PredictionOutput output = model.predict(List.of(input)).get(0);
         Prediction prediction = new Prediction(input, output);
-        Saliency saliency = limeExplainer.explain(prediction, model);
-        assertNotNull(saliency);
-        List<String> strings = saliency.getPositiveFeatures(1).stream().map(f -> f.getFeature().getName()).collect(Collectors.toList());
-        assertTrue(strings.contains("classA"));
+        Map<String, Saliency> saliencyMap = limeExplainer.explain(prediction, model);
+        for (Saliency saliency : saliencyMap.values()) {
+            assertNotNull(saliency);
+            List<String> strings = saliency.getPositiveFeatures(1).stream().map(f -> f.getFeature().getName()).collect(Collectors.toList());
+            assertTrue(strings.contains("classA"));
+        }
     }
 
     @Test
@@ -189,10 +196,12 @@ class PmmlLimeExplainerTest {
             };
             PredictionOutput output = model.predict(List.of(input)).get(0);
             Prediction prediction = new Prediction(input, output);
-            Saliency saliency = limeExplainer.explain(prediction, model);
-            assertNotNull(saliency);
-            double v = ExplainabilityMetrics.impactScore(model, prediction, saliency.getTopFeatures(2));
-            assertEquals( 1d, v);
+            Map<String, Saliency> saliencyMap = limeExplainer.explain(prediction, model);
+            for (Saliency saliency : saliencyMap.values()) {
+                assertNotNull(saliency);
+                double v = ExplainabilityMetrics.impactScore(model, prediction, saliency.getTopFeatures(2));
+                assertEquals(1d, v);
+            }
         }
     }
 }

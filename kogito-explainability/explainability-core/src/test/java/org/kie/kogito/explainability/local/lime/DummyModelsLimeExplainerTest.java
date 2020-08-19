@@ -18,6 +18,7 @@ package org.kie.kogito.explainability.local.lime;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
 
@@ -54,12 +55,13 @@ class DummyModelsLimeExplainerTest {
             Prediction prediction = new Prediction(input, outputs.get(0));
 
             LimeExplainer limeExplainer = new LimeExplainer(100, 1, random);
-            Saliency saliency = limeExplainer.explain(prediction, model);
-
-            assertNotNull(saliency);
-            List<FeatureImportance> topFeatures = saliency.getTopFeatures(3);
-            assertEquals(3, topFeatures.size());
-            assertEquals(1d, ExplainabilityMetrics.impactScore(model, prediction, topFeatures));
+            Map<String, Saliency> saliencyMap = limeExplainer.explain(prediction, model);
+            for (Saliency saliency : saliencyMap.values()) {
+                assertNotNull(saliency);
+                List<FeatureImportance> topFeatures = saliency.getTopFeatures(3);
+                assertEquals(3, topFeatures.size());
+                assertEquals(1d, ExplainabilityMetrics.impactScore(model, prediction, topFeatures));
+            }
         }
     }
 
@@ -78,12 +80,13 @@ class DummyModelsLimeExplainerTest {
             List<PredictionOutput> outputs = model.predict(List.of(input));
             Prediction prediction = new Prediction(input, outputs.get(0));
             LimeExplainer limeExplainer = new LimeExplainer(1000, 1, random);
-            Saliency saliency = limeExplainer.explain(prediction, model);
-
-            assertNotNull(saliency);
-            List<FeatureImportance> topFeatures = saliency.getTopFeatures(3);
-            assertEquals(3, topFeatures.size());
-            assertEquals(1d, ExplainabilityMetrics.impactScore(model, prediction, topFeatures));
+            Map<String, Saliency> saliencyMap = limeExplainer.explain(prediction, model);
+            for (Saliency saliency : saliencyMap.values()) {
+                assertNotNull(saliency);
+                List<FeatureImportance> topFeatures = saliency.getTopFeatures(3);
+                assertEquals(3, topFeatures.size());
+                assertEquals(1d, ExplainabilityMetrics.impactScore(model, prediction, topFeatures));
+            }
         }
     }
 
@@ -103,12 +106,13 @@ class DummyModelsLimeExplainerTest {
             Prediction prediction = new Prediction(input, outputs.get(0));
 
             LimeExplainer limeExplainer = new LimeExplainer(1000, 2, random);
-            Saliency saliency = limeExplainer.explain(prediction, model);
-
-            assertNotNull(saliency);
-            List<FeatureImportance> topFeatures = saliency.getTopFeatures(3);
-            assertEquals(3, topFeatures.size());
-            assertEquals(1d, ExplainabilityMetrics.impactScore(model, prediction, topFeatures));
+            Map<String, Saliency> saliencyMap = limeExplainer.explain(prediction, model);
+            for (Saliency saliency : saliencyMap.values()) {
+                assertNotNull(saliency);
+                List<FeatureImportance> topFeatures = saliency.getTopFeatures(3);
+                assertEquals(3, topFeatures.size());
+                assertEquals(1d, ExplainabilityMetrics.impactScore(model, prediction, topFeatures));
+            }
         }
     }
 
@@ -128,12 +132,13 @@ class DummyModelsLimeExplainerTest {
             Prediction prediction = new Prediction(input, outputs.get(0));
 
             LimeExplainer limeExplainer = new LimeExplainer(1000, 1, random);
-            Saliency saliency = limeExplainer.explain(prediction, model);
-
-            assertNotNull(saliency);
-            List<FeatureImportance> topFeatures = saliency.getPositiveFeatures(1);
-            assertEquals(1, topFeatures.size());
-            assertEquals(1d, ExplainabilityMetrics.impactScore(model, prediction, topFeatures));
+            Map<String, Saliency> saliencyMap = limeExplainer.explain(prediction, model);
+            for (Saliency saliency : saliencyMap.values()) {
+                assertNotNull(saliency);
+                List<FeatureImportance> topFeatures = saliency.getPositiveFeatures(1);
+                assertEquals(1, topFeatures.size());
+                assertEquals(1d, ExplainabilityMetrics.impactScore(model, prediction, topFeatures));
+            }
         }
     }
 
@@ -152,12 +157,13 @@ class DummyModelsLimeExplainerTest {
             List<PredictionOutput> outputs = model.predict(List.of(input));
             Prediction prediction = new Prediction(input, outputs.get(0));
             LimeExplainer limeExplainer = new LimeExplainer(1000, 1, random);
-            Saliency saliency = limeExplainer.explain(prediction, model);
-
-            assertNotNull(saliency);
-            List<FeatureImportance> topFeatures = saliency.getTopFeatures(3);
-            assertEquals(3, topFeatures.size());
-            assertEquals(1d, ExplainabilityMetrics.impactScore(model, prediction, topFeatures));
+            Map<String, Saliency> saliencyMap = limeExplainer.explain(prediction, model);
+            for (Saliency saliency : saliencyMap.values()) {
+                assertNotNull(saliency);
+                List<FeatureImportance> topFeatures = saliency.getTopFeatures(3);
+                assertEquals(3, topFeatures.size());
+                assertEquals(1d, ExplainabilityMetrics.impactScore(model, prediction, topFeatures));
+            }
         }
     }
 }

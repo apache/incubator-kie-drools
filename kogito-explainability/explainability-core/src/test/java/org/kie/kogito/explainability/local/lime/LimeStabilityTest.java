@@ -57,8 +57,8 @@ class LimeStabilityTest {
             Prediction prediction = new Prediction(input, predictionOutputs.get(0));
             List<Saliency> saliencies = new LinkedList<>();
             for (int i = 0; i < 100; i++) {
-                Saliency saliency = limeExplainer.explain(prediction, model);
-                saliencies.add(saliency);
+                Map<String, Saliency> saliencyMap = limeExplainer.explain(prediction, model);
+                saliencies.addAll(saliencyMap.values());
             }
             // check that the topmost important feature is stable
             List<String> names = new LinkedList<>();

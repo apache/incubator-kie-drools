@@ -67,10 +67,11 @@ class TrafficViolationDmnLimeExplainerTest {
         List<PredictionOutput> predictionOutputs = model.predict(List.of(predictionInput));
         Prediction prediction = new Prediction(predictionInput, predictionOutputs.get(0));
         LimeExplainer limeExplainer = new LimeExplainer(100, 1);
-        Saliency saliency = limeExplainer.explain(prediction, model);
-
-        assertNotNull(saliency);
-        List<String> strings = saliency.getTopFeatures(3).stream().map(f -> f.getFeature().getName()).collect(Collectors.toList());
-        assertTrue(strings.contains("Actual Speed") || strings.contains("Speed Limit"));
+        Map<String, Saliency> saliencyMap = limeExplainer.explain(prediction, model);
+        for (Saliency saliency : saliencyMap.values()) {
+            assertNotNull(saliency);
+            List<String> strings = saliency.getTopFeatures(3).stream().map(f -> f.getFeature().getName()).collect(Collectors.toList());
+            assertTrue(strings.contains("Actual Speed") || strings.contains("Speed Limit"));
+        }
     }
 }

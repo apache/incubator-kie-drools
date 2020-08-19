@@ -16,7 +16,6 @@
 package org.kie.kogito.explainability.local.lime;
 
 import java.security.SecureRandom;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -53,7 +52,7 @@ import org.slf4j.LoggerFactory;
  * - perturbing numerical features is done by sampling from a standard normal distribution centered around the value of the feature value associated with the prediction to be explained
  * - numerical features are max-min scaled and clustered via a gaussian kernel
  */
-public class LimeExplainer implements LocalExplainer<Saliency> {
+public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LimeExplainer.class);
     private static final double SEPARABLE_DATASET_RATIO = 0.99;
@@ -99,14 +98,13 @@ public class LimeExplainer implements LocalExplainer<Saliency> {
     }
 
     @Override
-    public Saliency explain(Prediction prediction, PredictionProvider model) {
+    public Map<String, Saliency> explain(Prediction prediction, PredictionProvider model) {
 
         long start = System.currentTimeMillis();
 
-        List<FeatureImportance> saliencies = new LinkedList<>();
         PredictionInput originalInput = prediction.getInput();
         List<Feature> inputFeatures = originalInput.getFeatures();
-
+        Map<String, Saliency> result = new HashMap<>();
         if (inputFeatures.size() > 0) {
             // in case of composite / nested features, "linearize" the features
             List<PredictionInput> linearizedInputs = DataUtils.linearizeInputs(List.of(originalInput));
@@ -121,6 +119,7 @@ public class LimeExplainer implements LocalExplainer<Saliency> {
 
                 // iterate through the different outputs in the prediction and explain each one separately
                 for (int o = 0; o < actualOutputs.size(); o++) {
+                    List<FeatureImportance> featureImportanceList = new LinkedList<>();
                     boolean separableDataset = false;
 
                     List<PredictionInput> trainingInputs = new LinkedList<>();
@@ -200,18 +199,18 @@ public class LimeExplainer implements LocalExplainer<Saliency> {
                         double loss = linearModel.fit(trainingSet, sampleWeights);
 
                         if (!Double.isNaN(loss)) {
-                            // update (and average) the weights of each feature using the corresponding linear model weight
-                            weights = Arrays.stream(linearModel.getWeights()).map(x -> x / actualOutputs.size()).toArray();
-                            LOGGER.debug("weights updated for output {}", currentOutput);
+                            // create the output saliency
+                            for (int i = 0; i < weights.length; i++) {
+                                FeatureImportance featureImportance = new FeatureImportance(linearizedTargetInputFeatures.get(i), linearModel.getWeights()[i]);
+                                featureImportanceList.add(featureImportance);
+                            }
+                            Saliency saliency = new Saliency(currentOutput, featureImportanceList);
+                            result.put(currentOutput.getName(), saliency);
+                            LOGGER.debug("weights added for output {}", currentOutput);
                         }
                     } else {
                         LOGGER.debug("skipping explanation of empty output {}", currentOutput);
                     }
-                }
-                // create the output saliency
-                for (int i = 0; i < weights.length; i++) {
-                    FeatureImportance featureImportance = new FeatureImportance(linearizedTargetInputFeatures.get(i), weights[i]);
-                    saliencies.add(featureImportance);
                 }
             } else {
                 throw new LocalExplanationException("input features linearization failed");
@@ -221,7 +220,7 @@ public class LimeExplainer implements LocalExplainer<Saliency> {
         }
         long end = System.currentTimeMillis();
         LOGGER.debug("explanation time: {}ms", (end - start));
-        return new Saliency(saliencies);
+        return result;
     }
 
     private List<PredictionInput> getPerturbedInputs(PredictionInput predictionInput, int noOfFeatures) {

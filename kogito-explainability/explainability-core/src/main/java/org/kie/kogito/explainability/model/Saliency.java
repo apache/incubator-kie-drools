@@ -24,14 +24,20 @@ import java.util.stream.Collectors;
  */
 public class Saliency {
 
+    private final Output output;
     private final List<FeatureImportance> perFeatureImportance;
 
-    public Saliency(List<FeatureImportance> perFeatureImportance) {
+    public Saliency(Output output, List<FeatureImportance> perFeatureImportance) {
+        this.output = output;
         this.perFeatureImportance = perFeatureImportance;
     }
 
     public List<FeatureImportance> getPerFeatureImportance() {
         return perFeatureImportance;
+    }
+
+    public Output getOutput() {
+        return output;
     }
 
     public List<FeatureImportance> getTopFeatures(int k) {

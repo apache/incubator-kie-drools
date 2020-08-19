@@ -18,6 +18,7 @@ package org.kie.kogito.explainability.utils;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Assertions;
@@ -89,7 +90,10 @@ class ExplainabilityMetricsTest {
         features.add(FeatureFactory.newTextFeature("f-1", "money"));
         PredictionInput input = new PredictionInput(features);
         Prediction prediction = new Prediction(input, model.predict(List.of(input)).get(0));
-        pairs.add(Pair.of(limeExplainer.explain(prediction, model), prediction));
+        Map<String, Saliency> saliencyMap = limeExplainer.explain(prediction, model);
+        for (Saliency saliency : saliencyMap.values()) {
+            pairs.add(Pair.of(saliency, prediction));
+        }
         Assertions.assertDoesNotThrow(() -> {
             ExplainabilityMetrics.classificationFidelity(pairs);
         });
@@ -106,7 +110,10 @@ class ExplainabilityMetricsTest {
         features.add(FeatureFactory.newNumericalFeature("f-3", 3));
         PredictionInput input = new PredictionInput(features);
         Prediction prediction = new Prediction(input, model.predict(List.of(input)).get(0));
-        pairs.add(Pair.of(limeExplainer.explain(prediction, model), prediction));
+        Map<String, Saliency> saliencyMap = limeExplainer.explain(prediction, model);
+        for (Saliency saliency : saliencyMap.values()) {
+            pairs.add(Pair.of(saliency, prediction));
+        }
         Assertions.assertDoesNotThrow(() -> {
             ExplainabilityMetrics.classificationFidelity(pairs);
         });

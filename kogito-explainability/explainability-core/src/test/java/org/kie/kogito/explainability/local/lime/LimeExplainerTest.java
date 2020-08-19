@@ -17,6 +17,7 @@ package org.kie.kogito.explainability.local.lime;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.junit.jupiter.api.Assertions;
@@ -30,6 +31,7 @@ import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 
@@ -63,8 +65,8 @@ class LimeExplainerTest {
             PredictionInput input = new PredictionInput(features);
             Prediction prediction = new Prediction(input, output);
             PredictionProvider model = mock(PredictionProvider.class);
-            Saliency saliency = limeExplainer.explain(prediction, model);
-            assertNotNull(saliency);
+            Map<String, Saliency> saliencyMap = limeExplainer.explain(prediction, model);
+            assertNotNull(saliencyMap);
         }
     }
 }
