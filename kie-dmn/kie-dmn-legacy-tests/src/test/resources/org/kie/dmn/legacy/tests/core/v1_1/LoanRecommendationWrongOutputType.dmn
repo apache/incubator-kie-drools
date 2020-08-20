@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+xmlns="http://www.trisotech.com/dmn/definitions/_591d49d0-26e1-4a1c-9f72-b65bec09964a" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" 
+xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+exporter="DMN Modeler" exporterVersion="5.1.9.201704041157" id="_c636dddb-121f-4ec6-8356-182904dd2779" name="Loan Recommendation Multi-step"
+namespace="http://www.trisotech.com/dmn/definitions/_591d49d0-26e1-4a1c-9f72-b65bec09964a" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition isCollection="false" label="tCollateralRisk" name="tCollateralRiskCategory">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>"Very low","Low","Medium","High"</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tCreditRisk" name="tCreditRiskCategory">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>"A","B","C","D","E"</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tAffordability" name="tAffordabilityCategory">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>"Affordable","Marginal","Not affordable"</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tLoanRecommendation" name="tLoanRecommendation">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>"Approve","Decline"</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tLoan" name="tLoan">
+    <semantic:itemComponent id="_559a9874-6acf-4ce7-be7c-3f64cbc90dc3" name="Amount">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_faf3ed69-3f1d-4aaa-bd23-881632425d74" name="Rate">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_ae467e15-d8b4-4f77-ac0d-1c4138a1b675" name="Term">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tAge" name="tAge">
+    <semantic:typeRef>feel:number</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="simple">
+      <semantic:text>&gt;=18</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tEmploymentStatus" name="temploementStatus">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>"Employed","Self-employed","Retired","Unemployed"</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tCreditScore" name="tCreditScore">
+    <semantic:typeRef>feel:number</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="simple">
+      <semantic:text>[300..850]</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tRiskCategory" name="tRiskCategory">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>"High","Medium","Low"</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tIncomeRisk" name="tIncomeRisk">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>"Low","Medium","High"</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tBorrower" name="tBorrowe">
+    <semantic:itemComponent id="_9dd862e1-05d1-4563-b361-49daf1dadcb1" name="Age">
+      <semantic:typeRef>tAge</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_308e0a0f-c6f0-42cc-9940-207cf04b1666" name="EmploymentStatus">
+      <semantic:typeRef>temploementStatus</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_abf6732d-dbc8-4a1b-ad5e-a68c2882ed32" name="YearsAtCurrentEmployer">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_7c41c419-fe3d-4a8b-ae22-04235acd3ec5" name="TotalAnnualIncome">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_cfea2f20-fe02-43c2-96d9-69d3e0376da8" name="NonSalaryIncome">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_ce957999-301f-4ae5-a28d-65b6be962d25" name="MonthlyDebtPmtAmt">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_08108b3d-3656-4d38-b4d2-269e45e25113" name="LiquidAssetsAmt">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tPrequalification" name="tPrequalification">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>"Decline","Need credit score"</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:decision id="_5c05c833-cbd8-4346-864a-54aec7b66f8a" name="Reserves Months" triso:displayName="Reserves Months">
+    <semantic:variable id="_812594d7-799e-405e-a7e8-40f40268ecc3" name="Reserves Months" typeRef="feel:number"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_19af4d40-1aaf-4615-8038-b2470b6c014b"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_93062144-ebc7-4ef7-a156-c342aeffac49"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_7a828a6c-ff23-44e0-91c8-898a33587a28">
+      <semantic:text>Borrower.LiquidAssetsAmt / Loan Payment</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:inputData id="_19af4d40-1aaf-4615-8038-b2470b6c014b" name="Borrower" triso:displayName="Borrower">
+    <semantic:variable id="_c452ee2f-283d-43a3-b70c-cd5ba13274ab" name="Borrower" typeRef="tBorrowe"/>
+  </semantic:inputData>
+  <semantic:decision id="_93062144-ebc7-4ef7-a156-c342aeffac49" name="Loan Payment" triso:displayName="Loan Payment">
+    <semantic:variable id="_1b058750-0c2d-46cf-8d6a-06e0acd6b262" name="Loan Payment" typeRef="tLoan"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_d8c8d124-7069-4d66-9015-282e857b72fc"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_229c1eda-11e7-4310-8555-6e4eb6f38b78" triso:unparsed="false">
+      <semantic:text>Loan.Amount * Loan.Rate/12/(1 - (1 + Loan.Rate/12) ** - Loan.Term)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:inputData id="_d8c8d124-7069-4d66-9015-282e857b72fc" name="Loan" triso:displayName="Loan">
+    <semantic:variable id="_a24c2e72-a4c4-443d-9fd8-375b813eb893" name="Loan" typeRef="tLoan"/>
+  </semantic:inputData>
+</semantic:definitions>

@@ -1,0 +1,23 @@
+$ grep --include=\*.java --exclude-dir=./src/test/java/org/kie/dmn/core/fluent -rl -f filenames . 
+
+OK ./src/test/java/org/kie/dmn/core/DMNDecisionTableRuntimeTest.java
+no ./src/test/java/org/kie/dmn/core/incrementalcompilation/DMNIncrementalCompilationTest.java
+OK ./src/test/java/org/kie/dmn/core/VacationDaysTest.java
+OK ./src/test/java/org/kie/dmn/core/DMNCompilerTest.java
+OK ./src/test/java/org/kie/dmn/core/DMNDecisionTableWithSymbolsTest.java
+OK ./src/test/java/org/kie/dmn/core/OnlineDatingTest.java
+no ./src/test/java/org/kie/dmn/core/stronglytyped/DMNRuntimeTypesTest.java
+no ./src/test/java/org/kie/dmn/core/stronglytyped/JavadocTest.java
+OK ./src/test/java/org/kie/dmn/core/imports/ImportsTest.java
+no ./src/test/java/org/kie/dmn/core/classloader/DMNRuntimeListenerTest.java
+OK./src/test/java/org/kie/dmn/core/DMNAssemblerTest.java
+no ./src/test/java/org/kie/dmn/core/DMNMessagesAPITest.java
+OK ./src/test/java/org/kie/dmn/core/decisionservices/DMNDecisionServicesTest.java
+OK ./src/test/java/org/kie/dmn/core/DMNInputRuntimeTest.java
+./src/test/java/org/kie/dmn/core/DMNRuntimeTest.java
+no ./src/test/java/org/kie/dmn/core/v1_2/DMN12specificTest.java
+no ./src/test/java/org/kie/dmn/core/DMNRuntimeTypeCheckTest.java
+OK ./src/test/java/org/kie/dmn/core/FlightRebookingTest.java
+OK ./src/test/java/org/kie/dmn/core/DMNDecisionTableHitPolicyTest.java
+no ./src/test/java/org/kie/dmn/core/DMNUpdateTest.java
+no ./src/test/java/org/kie/dmn/core/DMNStronglyTypedSupportTest.java

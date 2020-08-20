@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_98436ebb-7c42-48c0-8d11-d693e2a817c9" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:rss="http://purl.org/rss/2.0/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      exporter="DMN Modeler" exporterVersion="5.0.35.201611211744" id="_98436ebb-7c42-48c0-8d11-d693e2a817c9"
+                      name="Simple Not" namespace="http://www.trisotech.com/definitions/_98436ebb-7c42-48c0-8d11-d693e2a817c9"
+                      triso:logoChoice="Default">
+  <semantic:extensionElements>
+    <rss:rss version="2.0">
+      <rss:channel/>
+    </rss:rss>
+  </semantic:extensionElements>
+  <semantic:decision id="_70432d10-ee06-4558-93f0-0dc194b31ee5" name="a">
+    <semantic:variable id="_41b2b422-a6c6-4a2d-b30f-87d5e5177e8e" name="a" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_789d092f-c2c7-48e2-a2aa-e1b8bf9526f6"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="a">
+      <semantic:input id="_e14d5ec3-3633-4447-94d5-580a13d1751b" label="Occupation">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Occupation</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_f1f63bc2-798b-4e44-aefe-7de346c6eeb9"/>
+      <semantic:rule id="_e5264cdd-c28b-4fa6-a211-e92132cd0c60">
+        <semantic:inputEntry id="_e5264cdd-c28b-4fa6-a211-e92132cd0c60-0">
+          <semantic:text>"Student"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_e5264cdd-c28b-4fa6-a211-e92132cd0c60-1">
+          <semantic:text>"Is Student"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_7000e1c6-a218-49c6-854b-e9df218aeeac">
+        <semantic:inputEntry id="_7000e1c6-a218-49c6-854b-e9df218aeeac-0">
+          <semantic:text>not("Student")</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_7000e1c6-a218-49c6-854b-e9df218aeeac-1">
+          <semantic:text>"Is not a Student"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:inputData id="_789d092f-c2c7-48e2-a2aa-e1b8bf9526f6" name="Occupation">
+    <semantic:variable id="_9663cb5f-6653-476c-921d-047fe9a288be" name="Occupation" typeRef="feel:string"/>
+  </semantic:inputData>
+</semantic:definitions>

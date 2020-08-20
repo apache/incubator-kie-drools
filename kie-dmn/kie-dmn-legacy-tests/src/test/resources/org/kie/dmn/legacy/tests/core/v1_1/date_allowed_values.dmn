@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_fbf002a3-615b-4f02-98e4-c28d4676225a"
+                      xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler"
+                      exporterVersion="5.1.14.201706011158" id="_fbf002a3-615b-4f02-98e4-c28d4676225a"
+                      name="Error with constraints verification" namespace="http://www.trisotech.com/definitions/_fbf002a3-615b-4f02-98e4-c28d4676225a" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition isCollection="false" label="tYearsMonths" name="tYearsMonths">
+    <semantic:typeRef>feel:yearMonthDuration</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="simple">
+      <semantic:text>[duration("P1Y")..duration("P25Y")]</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tDateTime" name="tDateTime">
+    <semantic:typeRef>feel:dateTime</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="simple">
+      <semantic:text>(date and time("2017-05-01T14:03")..date and time("2017-05-31T14:03"))</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:decision id="_4b66ccd6-d4e4-4154-aab1-1fd77d161ac4" name="Decision Logic 1" triso:displayName="Decision Logic 1">
+    <semantic:variable id="_f336da21-d029-48eb-bf72-e50442affef9" name="Decision Logic 1"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_4e46c19b-8208-47b6-8ccb-6188a9f80227"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_5cc7172e-d283-4f97-adfe-f16963de42f3"/>
+    </semantic:informationRequirement>
+    <semantic:context id="_717d9362-123e-47a5-a696-929270f9ed3f">
+      <semantic:contextEntry>
+        <semantic:variable id="_d7dddf1d-5101-42b5-94c8-22b327cec728" name="years and months"/>
+        <semantic:literalExpression id="_f65434e7-928d-479e-9569-5b5a7d5be3a3">
+          <semantic:text>yearsMonth</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_f649e71f-6739-49ef-aab8-d6a0eb1f53b3" name="Date Time"/>
+        <semantic:literalExpression id="_95e69c26-11f3-47de-947e-0397678d8975">
+          <semantic:text>dateTime</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+    </semantic:context>
+  </semantic:decision>
+  <semantic:inputData id="_4e46c19b-8208-47b6-8ccb-6188a9f80227" name="yearsMonth" triso:displayName="yearsMonth">
+    <semantic:variable id="_9bd27740-d76a-4383-ad72-9ad17fdf88ef" name="yearsMonth" typeRef="tYearsMonths"/>
+  </semantic:inputData>
+  <semantic:inputData id="_5cc7172e-d283-4f97-adfe-f16963de42f3" name="dateTime" triso:displayName="dateTime">
+    <semantic:variable id="_51fb6ece-6758-4908-9469-4fde3aca9d35" name="dateTime" typeRef="tDateTime"/>
+  </semantic:inputData>
+</semantic:definitions>

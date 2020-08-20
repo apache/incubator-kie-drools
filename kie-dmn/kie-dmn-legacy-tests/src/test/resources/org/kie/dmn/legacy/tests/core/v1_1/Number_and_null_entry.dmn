@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_a293b9f9-c912-41ee-8147-eae59ba86ac5" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      exporter="DMN Modeler" exporterVersion="5.1.6.201703021507" id="_a293b9f9-c912-41ee-8147-eae59ba86ac5"
+                      name="Number and null entry" namespace="http://www.trisotech.com/definitions/_a293b9f9-c912-41ee-8147-eae59ba86ac5"
+                      triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:decision id="_d7c63472-9442-418b-a7fc-7b17dfa6daf3" name="Decision Logic 1" triso:displayName="Decision Logic 1">
+    <semantic:variable id="_2632863e-f6c2-4a0c-b610-35b35a550847" name="Decision Logic 1" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_26dbea0d-c176-4d5f-a932-d3a19dd297f7"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" id="_21d87493-6987-4814-9176-44980f73869b" outputLabel="Decision Logic 1">
+      <semantic:input id="_8126b68a-2bd8-426e-90b6-81587b9bac58" label="num">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>num</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_b01251ac-2f99-42c4-8575-3c77d898d037"/>
+      <semantic:rule id="_578d4d96-9441-4158-9677-f8684d003d67">
+        <semantic:inputEntry id="_9bde7e43-ed9a-4cc3-a282-07997fcf76f4">
+          <semantic:text>&lt;0</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_52d46ad2-216b-44ed-85a4-98738de06a95">
+          <semantic:text>"Negative number"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_1377d869-b2e3-4acb-ad57-ec9a2897c163">
+        <semantic:inputEntry id="_54a00d20-aa00-4cba-83c8-a18c0d61063d">
+          <semantic:text>0</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_6284ba5d-bfe5-4db3-b66b-626e7433245d">
+          <semantic:text>"Zero"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_73cad92f-73eb-42a0-9e45-065960089900">
+        <semantic:inputEntry id="_d3ee2415-d427-4cc0-82cb-b4f6c544f4d2">
+          <semantic:text>&gt;0</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_a7aa011f-8cf7-4b59-a4d9-784d8a958bc2">
+          <semantic:text>"Positive number"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_c98e6cdf-90fa-4a7c-a9ed-a9f0b9a5209c">
+        <semantic:inputEntry id="_c4268d28-1c43-4f25-9916-3d2a524bd94d">
+          <semantic:text>null</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_24a6aa74-d34f-45d9-b3a4-7e312aa4c94a">
+          <semantic:text>"Null"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:inputData id="_26dbea0d-c176-4d5f-a932-d3a19dd297f7" name="num" triso:displayName="num">
+    <semantic:variable id="_e21d3064-ee88-4ccc-9577-201b98b546ec" name="num" typeRef="feel:number"/>
+  </semantic:inputData>
+</semantic:definitions>

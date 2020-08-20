@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+                      xmlns="http://www.trisotech.com/definitions/_b77219ee-ec28-48e3-b240-8e0dbbabefeb"
+                      xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      exporter="DMN Modeler" exporterVersion="5.2.4" id="_b77219ee-ec28-48e3-b240-8e0dbbabefeb"
+                      name="built in function invocation"
+                      namespace="http://www.trisotech.com/definitions/_b77219ee-ec28-48e3-b240-8e0dbbabefeb"
+                      triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:decision id="_b459d12a-f00f-4846-a12e-2883455f7d7b" name="calc min" triso:displayName="calc min">
+    <semantic:variable id="_e2be00de-3280-4ca8-a6e6-6804876c045b" name="calc min" typeRef="feel:number"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_38863c23-d5e1-4af3-aeef-fc84706ee46b"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_29fb05e4-387f-4180-aad7-8680787bb45a"/>
+    </semantic:informationRequirement>
+    <semantic:invocation id="_4c49828b-117c-4c90-a766-2128684b643b">
+      <semantic:literalExpression id="literal__4c49828b-117c-4c90-a766-2128684b643b">
+        <semantic:text>min</semantic:text>
+      </semantic:literalExpression>
+      <semantic:binding>
+        <semantic:parameter id="_be9ec212-bdde-4667-ab7a-9d495b5247fe" name="c1"/>
+        <semantic:literalExpression id="_7be37b2e-11fc-40d9-b475-258d3fdf7847">
+          <semantic:text>a</semantic:text>
+        </semantic:literalExpression>
+      </semantic:binding>
+      <semantic:binding>
+        <semantic:parameter id="_5ddf0b86-b233-4106-8864-81ba706f78ba" name="c2"/>
+        <semantic:literalExpression id="_8ab5063b-f207-402c-9afc-e6d611e8abd8">
+          <semantic:text>b</semantic:text>
+        </semantic:literalExpression>
+      </semantic:binding>
+    </semantic:invocation>
+  </semantic:decision>
+  <semantic:decision id="_b459d12a-f00f-4846-a12e-2883455f7d11" name="fixed params" triso:displayName="fixed params">
+    <semantic:variable id="_e2be00de-3280-4ca8-a6e6-6804876c0422" name="fixed params" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_29fb05e4-387f-4180-aad7-8680787bb411"/>
+    </semantic:informationRequirement>
+    <semantic:invocation id="_4c49828b-117c-4c90-a766-2128684b6433">
+      <semantic:literalExpression id="literal__4c49828b-117c-4c90-a766-2128684b6444">
+        <semantic:text>substring</semantic:text>
+      </semantic:literalExpression>
+      <semantic:binding>
+        <semantic:parameter id="_be9ec212-bdde-4667-ab7a-9d495b524744" name="string"/>
+        <semantic:literalExpression id="_7be37b2e-11fc-40d9-b475-258d3fdf7855">
+          <semantic:text>x</semantic:text>
+        </semantic:literalExpression>
+      </semantic:binding>
+      <semantic:binding>
+        <semantic:parameter id="_5ddf0b86-b233-4106-8864-81ba706f7866" name="start position"/>
+        <semantic:literalExpression id="_8ab5063b-f207-402c-9afc-e6d611e8ab77">
+          <semantic:text>8</semantic:text>
+        </semantic:literalExpression>
+      </semantic:binding>
+    </semantic:invocation>
+  </semantic:decision>
+  <semantic:decision id="_b459d12a-f00f-4846-a12e-2883455f7d00" name="out of order" triso:displayName="out of order">
+    <semantic:variable id="_e2be00de-3280-4ca8-a6e6-6804876c0499" name="out of order" typeRef="feel:number"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_38863c23-d5e1-4af3-aeef-fc84706ee46b"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_29fb05e4-387f-4180-aad7-8680787bb45a"/>
+    </semantic:informationRequirement>
+    <semantic:invocation id="_4c49828b-117c-4c90-a766-2128684b6488">
+      <semantic:literalExpression id="literal__4c49828b-117c-4c90-a766-2128684b6477">
+        <semantic:text>min</semantic:text>
+      </semantic:literalExpression>
+      <semantic:binding>
+        <semantic:parameter id="_be9ec212-bdde-4667-ab7a-9d495b524766" name="c2"/>
+        <semantic:literalExpression id="_7be37b2e-11fc-40d9-b475-258d3fdf7899">
+          <semantic:text>a</semantic:text>
+        </semantic:literalExpression>
+      </semantic:binding>
+      <semantic:binding>
+        <semantic:parameter id="_5ddf0b86-b233-4106-8864-81ba706f7844" name="c1"/>
+        <semantic:literalExpression id="_8ab5063b-f207-402c-9afc-e6d611e8ab33">
+          <semantic:text>b</semantic:text>
+        </semantic:literalExpression>
+      </semantic:binding>
+    </semantic:invocation>
+  </semantic:decision>
+  <semantic:inputData id="_38863c23-d5e1-4af3-aeef-fc84706ee46b" name="a" triso:displayName="a">
+    <semantic:variable id="_102502ce-b714-4d1b-ad8f-82635b9fd2f1" name="a" typeRef="feel:number"/>
+  </semantic:inputData>
+  <semantic:inputData id="_29fb05e4-387f-4180-aad7-8680787bb45a" name="b" triso:displayName="b">
+    <semantic:variable id="_e876cfa3-f9dc-4f59-b3fe-bbab5b8a450e" name="b" typeRef="feel:number"/>
+  </semantic:inputData>
+  <semantic:inputData id="_29fb05e4-387f-4180-aad7-8680787bb411" name="x" triso:displayName="b">
+    <semantic:variable id="_e876cfa3-f9dc-4f59-b3fe-bbab5b8a4522" name="x" typeRef="feel:string"/>
+  </semantic:inputData>
+</semantic:definitions>

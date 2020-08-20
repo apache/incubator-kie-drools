@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_5f1269c8-1e6f-4748-9eca-26aa1b1278ef" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.1.11" id="_5f1269c8-1e6f-4748-9eca-26aa1b1278ef" name="Ex 6-1" namespace="http://www.trisotech.com/definitions/_5f1269c8-1e6f-4748-9eca-26aa1b1278ef" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition label="tTeam" name="tTeam">
+    <semantic:itemComponent id="_d21eda69-d641-4aff-a382-389321685ff9" name="city">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_fa0a9f27-88f0-4961-b4df-39ecaae2d9d0" name="name">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_ba5da676-717d-4f64-a782-25d057ea5384" name="wins">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_a232344f-1313-43c9-97fd-9d09a5683ccd" name="losses">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_bonuspoints" name="bonus points">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="true" label="tTeamList" name="tTeamList">
+    <semantic:typeRef>tTeam</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="true" label="tNumberList" name="tNumberList">
+    <semantic:typeRef>feel:number</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:inputData id="_093cfe34-1f7e-40f6-9389-2ee0a86ba490" name="NBA Pacific" triso:displayName="NBA Pacific">
+    <semantic:variable id="_2f47baf9-7e68-4006-89ad-3d9872622630" name="NBA Pacific" typeRef="tTeamList"/>
+  </semantic:inputData>
+  <semantic:decision id="_cd939866-5a4c-496c-87ca-0a4c86af4c89" name="Number of teams" triso:displayName="Number of teams">
+    <semantic:variable id="_7b5a2d4c-a7c3-4fd4-936a-772c12f95e96" name="Number of teams" typeRef="feel:number"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_093cfe34-1f7e-40f6-9389-2ee0a86ba490"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_9d1dc433-ed04-478f-9a0d-871db05ff972">
+      <semantic:text>count(NBA Pacific)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:decision id="_3468568b-d55e-41a3-ac3c-4c2a5d6b7070" name="Max wins" triso:displayName="Max wins">
+    <semantic:variable id="_d376fa16-9761-4c59-b6a4-aea14b24de17" name="Max wins" typeRef="feel:number"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_093cfe34-1f7e-40f6-9389-2ee0a86ba490"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_58c611f2-71b8-450f-924e-9c07d35345ac">
+      <semantic:text>max(NBA Pacific.wins)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:decision id="_8a64e3f3-6925-4cc7-a415-eadba5a532c3" name="Mean wins" triso:displayName="Mean wins">
+    <semantic:variable id="_dcfb9f1f-84e8-497d-8f2e-de329ee4db16" name="Mean wins" typeRef="feel:number"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_093cfe34-1f7e-40f6-9389-2ee0a86ba490"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_5d95b79e-1500-4206-95c3-123831f7aabe">
+      <semantic:text>mean(NBA Pacific.wins)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:decision id="_d6ce6209-61b2-428f-8bb0-fa5f0cbe2b9e" name="Second place losses" triso:displayName="Second place losses">
+    <semantic:variable id="_3e292e00-b46d-4aa6-89da-d535b5c3a808" name="Second place losses" typeRef="feel:number"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_093cfe34-1f7e-40f6-9389-2ee0a86ba490"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_6a63abd9-7295-4320-8265-b8bbf140ae2c" triso:unparsed="true">
+      <semantic:text>NBA Pacific[2].losses</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:decision id="_3ed20b4e-0014-4190-a954-63a28064ae7b" name="Positions of Los Angeles teams" triso:displayName="Positions of Los Angeles teams">
+    <semantic:variable id="_d0a91547-91af-4fd7-b414-12d2cf5524eb" name="Positions of Los Angeles teams" typeRef="tNumberList"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_093cfe34-1f7e-40f6-9389-2ee0a86ba490"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_05743555-db22-4563-8333-290c845e1a13">
+      <semantic:text>index of(NBA Pacific.city, "Los Angeles")</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:decision id="_194ab62c-66ea-4f0f-81c3-c7cfc5de52d4" name="Number of distinct cities" triso:displayName="Number of distinct cities">
+    <semantic:variable id="_44a3341b-93e4-448b-95ff-7c1fcebabf69" name="Number of distinct cities" typeRef="feel:number"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_093cfe34-1f7e-40f6-9389-2ee0a86ba490"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_a99a174f-33dd-4c6d-801f-3a224183b1ed">
+      <semantic:text>count(distinct values(NBA Pacific.city))</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:decision id="_decisionbonuspoints" name="Sum of bonus points" triso:displayName="Sum of bonus points">
+    <semantic:variable id="_decisionbonuspointsvariable" name="Sum of bonus points" typeRef="feel:number"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_093cfe34-1f7e-40f6-9389-2ee0a86ba490"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_decisionbonuspointsliteralexpression">
+      <semantic:text>sum(NBA Pacific.bonus points)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+</semantic:definitions>

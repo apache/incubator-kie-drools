@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_76362694-41e8-400c-8dea-e5f033d4f405" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.1.10.201705011622" id="_76362694-41e8-400c-8dea-e5f033d4f405" name="Union of letters" namespace="http://www.trisotech.com/definitions/_76362694-41e8-400c-8dea-e5f033d4f405" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition isCollection="false" label="tData" name="tData">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>"a","b","c","d","e","f","g"</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="true" label="tDataCollection" name="tDataCollection">
+    <semantic:typeRef>tData</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:decision id="_b96ad847-529c-49fd-a788-37f9b229020b" name="D1" triso:displayName="D1">
+    <semantic:variable id="_c1656852-f8ca-4855-89ff-44146aa6fbf8" name="D1" typeRef="tDataCollection"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_778593cc-efd0-4c0f-9524-bb9c2ea30791"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_87524f8a-7ab4-4864-a540-376d3ebbed9f"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_2c4550b2-6706-439d-9c5e-db711bb5ac48">
+      <semantic:text>union(A1,A2)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:inputData id="_778593cc-efd0-4c0f-9524-bb9c2ea30791" name="A1" triso:displayName="A1">
+    <semantic:variable id="_be0123b9-237f-4375-a880-9497ec7c5556" name="A1" typeRef="tDataCollection"/>
+  </semantic:inputData>
+  <semantic:inputData id="_87524f8a-7ab4-4864-a540-376d3ebbed9f" name="A2" triso:displayName="A2">
+    <semantic:variable id="_de6648e6-6505-4f98-b30a-abb0a831db5f" name="A2" typeRef="tDataCollection"/>
+  </semantic:inputData>
+</semantic:definitions>

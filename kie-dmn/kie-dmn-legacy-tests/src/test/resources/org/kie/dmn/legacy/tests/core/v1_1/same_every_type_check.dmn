@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_09a13244-114d-43fb-9e00-cda89a2000dd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.1.13" id="_09a13244-114d-43fb-9e00-cda89a2000dd" name="same every type check" namespace="http://www.trisotech.com/definitions/_09a13244-114d-43fb-9e00-cda89a2000dd" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition label="tNaturalNum" name="tNaturalNum">
+    <semantic:itemComponent id="_6c72be0d-e448-4c72-9906-e3e7649d5c18" name="val">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_6b29b488-fc1f-4879-8a4f-b8a43d0b4a9a" name="description">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="true" label="tListOfNaturalNum" name="tListOfNaturalNum">
+    <semantic:typeRef>tNaturalNum</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:decision id="_e8ec39a7-70e3-4fa9-bbf3-4ad1dce29c6b" name="Some are even" triso:displayName="Some are even">
+    <semantic:variable id="_c65d6f98-53be-43c6-9086-6acfa2662a5f" name="Some are even" typeRef="feel:boolean"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_a26c1f57-1e5d-42ed-b4d1-f9f41b94e193"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_3f9590ab-eaa0-44fb-910c-32124fb68bde">
+      <semantic:text>if some num in Hard coded list 123 satisfies (num.val / 2) - floor(num.val / 2) = 0 then true else false</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:decision id="_5bfbf6a7-30f0-4fe3-a40a-34621fa53f8d" name="Every are even" triso:displayName="Every are even">
+    <semantic:variable id="_1ee5e558-f406-477d-85d7-71f3e3b3c6da" name="Every are even" typeRef="feel:boolean"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_a26c1f57-1e5d-42ed-b4d1-f9f41b94e193"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_3f9590ab-eaa0-44fb-910c-32124fb68bde">
+      <semantic:text>if every num in Hard coded list 123 satisfies (num.val / 2) - floor(num.val / 2) = 0 then true else false</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:decision id="_a26c1f57-1e5d-42ed-b4d1-f9f41b94e193" name="Hard coded list 123" triso:displayName="Hard coded list 123">
+    <semantic:variable id="_9ba5d65b-e7dd-4cfd-8a3e-1ee1d02fa2d7" name="Hard coded list 123" typeRef="tListOfNaturalNum"/>
+    <semantic:context id="_dedcb936-2e21-4a41-b5e5-63c7c4924090">
+      <semantic:contextEntry>
+        <semantic:variable id="_4123c290-4c91-4aae-89fb-65036939ba91" name="e1" typeRef="tNaturalNum"/>
+        <semantic:context id="_7ddefb84-ca7b-4872-8349-01231c83ac57">
+          <semantic:contextEntry>
+            <semantic:variable id="_0d6e90be-d4d9-46cd-b8ae-98e9cc0b720b" name="val"/>
+            <semantic:literalExpression id="_8771e101-137a-4530-8d03-91b3b7a45ecd">
+              <semantic:text>1</semantic:text>
+            </semantic:literalExpression>
+          </semantic:contextEntry>
+          <semantic:contextEntry>
+            <semantic:variable id="_42336425-0fec-457b-a7c5-cf370886ea3d" name="description"/>
+            <semantic:literalExpression id="_d210d5fe-b094-4292-bb08-55ae5b69c1c5">
+              <semantic:text>"one"</semantic:text>
+            </semantic:literalExpression>
+          </semantic:contextEntry>
+        </semantic:context>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_a3ccdf20-916b-4ccb-9bee-ce9f72be30c6" name="e2" typeRef="tNaturalNum"/>
+        <semantic:context id="_b6b5e324-3a79-4683-8df4-38334687b6e6">
+          <semantic:contextEntry>
+            <semantic:variable id="_aa0008b9-e885-4ce1-a1fa-aba1f13f52f8" name="val"/>
+            <semantic:literalExpression id="_87369bb1-4167-4d43-8554-cdc206b6ce7e">
+              <semantic:text>2</semantic:text>
+            </semantic:literalExpression>
+          </semantic:contextEntry>
+          <semantic:contextEntry>
+            <semantic:variable id="_1ae9a499-6104-483c-9f40-bca1c2cea3f3" name="description"/>
+            <semantic:literalExpression id="_b5dc6784-8bb9-4542-a582-5124ee5532d2">
+              <semantic:text>"two"</semantic:text>
+            </semantic:literalExpression>
+          </semantic:contextEntry>
+        </semantic:context>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_950bf877-960f-478b-95b5-cc4aa2ce6fe5" name="e3" typeRef="tNaturalNum"/>
+        <semantic:context id="_bd9feb75-b3b9-4888-af8c-2c6182743488">
+          <semantic:contextEntry>
+            <semantic:variable id="_87a22b67-3e8c-4663-907c-1bcbeee11703" name="val"/>
+            <semantic:literalExpression id="_a665623a-d2eb-4e21-bab0-49546aac586c">
+              <semantic:text>3</semantic:text>
+            </semantic:literalExpression>
+          </semantic:contextEntry>
+          <semantic:contextEntry>
+            <semantic:variable id="_fe9c9a30-ecb3-4ced-95ef-1ab38bbddb83" name="description"/>
+            <semantic:literalExpression id="_9edde952-23c8-49f2-993d-52104b65f9d7">
+              <semantic:text>"three"</semantic:text>
+            </semantic:literalExpression>
+          </semantic:contextEntry>
+        </semantic:context>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:literalExpression id="_ee39b72e-91ce-4e4a-8d9a-2a169da47a28">
+          <semantic:text>[e1, e2, e3]</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+    </semantic:context>
+  </semantic:decision>
+  <semantic:decision id="_55d17e94-837a-473c-ae41-7222cc47a1ed" name="Some are positive" triso:displayName="Some are positive">
+    <semantic:variable id="_8209a5e6-ccc9-4e47-aa34-e05172bd27c6" name="Some are positive" typeRef="feel:boolean"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_a26c1f57-1e5d-42ed-b4d1-f9f41b94e193"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_3f9590ab-eaa0-44fb-910c-32124fb68bde">
+      <semantic:text>if some num in Hard coded list 123 satisfies num.val &gt; 0 then true else false</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:decision id="_8c7bda83-9e01-4766-8c9e-1185efd89cc9" name="Every are positive" triso:displayName="Every are positive">
+    <semantic:variable id="_4e414982-6de1-4d60-9d1d-80a31953db13" name="Every are positive" typeRef="feel:boolean"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_a26c1f57-1e5d-42ed-b4d1-f9f41b94e193"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_3f9590ab-eaa0-44fb-910c-32124fb68bde">
+      <semantic:text>if every num in Hard coded list 123 satisfies num.val &gt; 0 then true else false</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:decision id="_6e58e613-6fcb-4fc0-acb5-ea213f7cba9e" name="Some are negative" triso:displayName="Some are negative">
+    <semantic:variable id="_79faadae-28c2-4296-803a-b96128f7d7e9" name="Some are negative" typeRef="feel:boolean"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_a26c1f57-1e5d-42ed-b4d1-f9f41b94e193"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_3f9590ab-eaa0-44fb-910c-32124fb68bde">
+      <semantic:text>if some num in Hard coded list 123 satisfies num.val &lt; 0 then true else false</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:decision id="_910114db-7d67-4b85-bd6b-fd1d3441ab0a" name="Every are negative" triso:displayName="Every are negative">
+    <semantic:variable id="_5f19f8b3-9045-482c-ba6a-be2aaa6a93c2" name="Every are negative" typeRef="feel:boolean"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_a26c1f57-1e5d-42ed-b4d1-f9f41b94e193"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_3f9590ab-eaa0-44fb-910c-32124fb68bde">
+      <semantic:text>if every num in Hard coded list 123 satisfies num.val &lt; 0 then true else false</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+</semantic:definitions>

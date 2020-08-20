@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_2374ee6d-75ed-4e9d-95d3-a88c135e1c43"
+xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.1.9.1" id="_2374ee6d-75ed-4e9d-95d3-a88c135e1c43" name="Drawing 1a" namespace="http://www.trisotech.com/definitions/_2374ee6d-75ed-4e9d-95d3-a88c135e1c43" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition label="Person" name="Person">
+    <semantic:itemComponent id="_84e4ccfd-5d21-480e-829b-42e860874d6c" name="Full Name">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_c112ac76-2198-44fc-9a29-e6b3e3054d20" name="Address">
+      <semantic:typeRef>Address</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition label="Address" name="Address">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:inputData id="_e2a4a2c2-8633-4fbd-86df-9b89df839719" name="Input Person" triso:displayName="Input Person">
+    <semantic:variable id="_46e01563-41a7-4b43-b72a-b88d20db1a4f" name="Input Person" typeRef="Person"/>
+  </semantic:inputData>
+  <semantic:decision id="_7c8a56f1-92ff-4c35-a8b7-a5a1c5c23797" name="My Decision" triso:displayName="My Decision">
+    <semantic:variable id="_1508e908-b234-46cd-b83b-b89253c84194" name="My Decision" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_e2a4a2c2-8633-4fbd-86df-9b89df839719"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_ae9b5a82-f29d-40b8-b708-394c5c4a527d">
+      <semantic:text>"The person " + Input Person.Full Name + " is located at " + Input Person.Address</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+</semantic:definitions>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_71af58db-e1df-4b0f-aee2-48e0e8d89672" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.1.11" id="_71af58db-e1df-4b0f-aee2-48e0e8d89672" name="SingleDecisionWithContext" namespace="http://www.trisotech.com/definitions/_71af58db-e1df-4b0f-aee2-48e0e8d89672" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:decision id="_2ac4745e-6141-48ab-954a-2e5ed65d889e" name="MyDecision" triso:displayName="MyDecision">
+    <semantic:variable id="_86f590fd-3323-4227-820c-73134879d90e" name="MyDecision" typeRef="feel:string"/>
+    <semantic:context id="_73a9d419-641a-48c8-9d55-7d94e3ed7a15">
+      <semantic:contextEntry>
+        <semantic:variable id="_23fedcc5-b464-4adf-83fc-4702a129c1f3" name="MyPerson"/>
+        <semantic:context id="_7cc32ad5-7d10-4551-ba4f-f548df851563">
+          <semantic:contextEntry>
+            <semantic:variable id="_32fe1d12-5112-476e-957d-04d06fe9192e" name="FirstName"/>
+            <semantic:literalExpression id="_a27d192d-ee15-4b30-b3c6-b7a6050902b7">
+              <semantic:text>"John"</semantic:text>
+            </semantic:literalExpression>
+          </semantic:contextEntry>
+          <semantic:contextEntry>
+            <semantic:variable id="_bd51b6b5-f677-4c92-809f-facc9ce7b946" name="LastName"/>
+            <semantic:literalExpression id="_87e82b4a-d1a5-419c-b7cd-50e867962e8e">
+              <semantic:text>"Doe"</semantic:text>
+            </semantic:literalExpression>
+          </semantic:contextEntry>
+        </semantic:context>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:literalExpression id="_d2288ecc-f992-488b-b8a7-33c53a23ecf3">
+          <semantic:text>"Hello " + MyPerson.FirstName + " " + MyPerson.LastName</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+    </semantic:context>
+  </semantic:decision>
+</semantic:definitions>

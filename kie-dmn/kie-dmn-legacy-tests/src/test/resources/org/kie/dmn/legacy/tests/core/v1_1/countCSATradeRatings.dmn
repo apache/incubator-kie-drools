@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_1a7d184c-2e38-4462-ae28-15591ef6d534" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.1.13" id="_1a7d184c-2e38-4462-ae28-15591ef6d534" name="countCSATradeRatings" namespace="http://www.trisotech.com/definitions/_1a7d184c-2e38-4462-ae28-15591ef6d534" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition label="tAmount" name="tAmount">
+    <semantic:typeRef>feel:number</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="expression">
+      <semantic:text>&gt;0</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition label="tAgency" name="tAgency">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>"FITCH","MOODY","STANDARDPOOR"</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition label="tRating" name="tRating">
+    <semantic:itemComponent id="_96ed168e-77fc-4d7e-8ccb-14af5f4ccb1d" name="Agency">
+      <semantic:typeRef>tAgency</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_2d6d8654-6a9f-4f44-9091-f7d84dfb2b74" name="Value">
+      <semantic:typeRef>tRatingValue</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition label="tRatingValue" name="tRatingValue">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="true" label="tRatings" name="tRatings">
+    <semantic:typeRef>tRating</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:inputData id="_29f3d888-73c0-4d92-a22c-607d565716a6" name="CSA Trade Ratings" triso:displayName="CSA Trade Ratings">
+    <semantic:variable id="_46821156-0971-475f-a94e-2f02d5e5eea1" name="CSA Trade Ratings" typeRef="tRatings"/>
+  </semantic:inputData>
+  <semantic:decision id="_41e678ab-fafa-45d3-b0c1-fa8ca08995eb" name="Trade Ratings" triso:displayName="Trade Ratings">
+    <semantic:variable id="_72048bf2-6e79-4fd6-b0de-3da7b5367c25" name="Trade Ratings"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_29f3d888-73c0-4d92-a22c-607d565716a6"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_7f46eef7-5774-4c5a-9e85-661982a9804b">
+      <semantic:text>count(CSA Trade Ratings)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+</semantic:definitions>

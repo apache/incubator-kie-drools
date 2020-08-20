@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_4047acf3-fce2-42f3-abf2-fb06282c1ea0" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:rss="http://purl.org/rss/2.0/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      exporter="DMN Modeler" exporterVersion="5.1.0.201612081607" id="_4047acf3-fce2-42f3-abf2-fb06282c1ea0"
+                      name="Upgrade Based On Promotions" namespace="http://www.trisotech.com/definitions/_4047acf3-fce2-42f3-abf2-fb06282c1ea0"
+                      triso:logoChoice="Default">
+  <semantic:extensionElements>
+    <rss:rss version="2.0">
+      <rss:channel/>
+    </rss:rss>
+  </semantic:extensionElements>
+  <semantic:knowledgeSource id="_601981b2-d94d-41c9-bb31-d6069751f6e8" name="Member Reservation System">
+    <semantic:authorityRequirement>
+      <semantic:requiredInput href="#_65c86ddb-155e-4133-80b7-7f393b3fe10e"/>
+    </semantic:authorityRequirement>
+  </semantic:knowledgeSource>
+  <semantic:decision id="_d06e5b70-796f-4e64-ae05-b983c11eda46" name="Upgrade Based On Promotion Code">
+    <semantic:variable id="_004949bb-b95d-4620-8383-bbeeecdd43e0" name="Upgrade Based On Promotion Code" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_a396d1ca-dfc1-4ed6-bef1-e696ec1967a0"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_51953267-fb76-41e5-a0e3-86e934e931ce"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="PRIORITY" outputLabel="Upgrade Based On Promotion Code">
+      <semantic:input id="_d9ff3c9f-187b-48d9-8a25-1ef1c9ed4c16" label="Requested Vehicle Class ">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Requested Vehicle Class</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues>
+          <semantic:text>"Economy", "Compact", "Full Size"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:input id="_a0d39076-55a3-490a-925e-380a71910472" label="Membership Level">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Membership Level</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues>
+          <semantic:text>"Gold", "Silver", "None"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:input id="_2a6bd9bd-a899-4b5f-831b-57a0837a876a" label="Promotion Code">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Promotion Code</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues>
+          <semantic:text>"Promo A", "Promo B", "None"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:output id="_faf6a7de-5bd5-4dff-acf2-c698f17d7327">
+        <semantic:outputValues>
+          <semantic:text>"Compact", "Economy", "Full Size"</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:rule id="_beb765ce-7680-44a5-83ed-7c825e699f36">
+        <semantic:inputEntry id="_beb765ce-7680-44a5-83ed-7c825e699f36-0">
+          <semantic:text>"Economy"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_beb765ce-7680-44a5-83ed-7c825e699f36-1">
+          <semantic:text>"Gold"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_beb765ce-7680-44a5-83ed-7c825e699f36-2">
+          <semantic:text>"Promo A"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_beb765ce-7680-44a5-83ed-7c825e699f36-3">
+          <semantic:text>"Compact"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_7baae38e-87d6-4b3a-854a-72b5c792482f">
+        <semantic:inputEntry id="_7baae38e-87d6-4b3a-854a-72b5c792482f-0">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_7baae38e-87d6-4b3a-854a-72b5c792482f-1">
+          <semantic:text>"Gold"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_7baae38e-87d6-4b3a-854a-72b5c792482f-2">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_7baae38e-87d6-4b3a-854a-72b5c792482f-3">
+          <semantic:text>"Full Size"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_6275fb48-81c4-4c64-8645-244be4c3ce5e">
+        <semantic:inputEntry id="_6275fb48-81c4-4c64-8645-244be4c3ce5e-0">
+          <semantic:text>"Economy"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_6275fb48-81c4-4c64-8645-244be4c3ce5e-1">
+          <semantic:text>"Silver"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_6275fb48-81c4-4c64-8645-244be4c3ce5e-2">
+          <semantic:text>"Promo A"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_6275fb48-81c4-4c64-8645-244be4c3ce5e-3">
+          <semantic:text>"Compact"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_e1c37a02-58a3-4b43-9aaa-1797f54a6326">
+        <semantic:inputEntry id="_e1c37a02-58a3-4b43-9aaa-1797f54a6326-0">
+          <semantic:text>"Compact"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_e1c37a02-58a3-4b43-9aaa-1797f54a6326-1">
+          <semantic:text>"Silver"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_e1c37a02-58a3-4b43-9aaa-1797f54a6326-2">
+          <semantic:text>"Promo A"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_e1c37a02-58a3-4b43-9aaa-1797f54a6326-3">
+          <semantic:text>"Compact"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_e8f8f533-602c-48ca-8d6b-6808bca3c5fc">
+        <semantic:inputEntry id="_e8f8f533-602c-48ca-8d6b-6808bca3c5fc-0">
+          <semantic:text>"Full Size"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_e8f8f533-602c-48ca-8d6b-6808bca3c5fc-1">
+          <semantic:text>"Silver"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_e8f8f533-602c-48ca-8d6b-6808bca3c5fc-2">
+          <semantic:text>"Promo A"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_e8f8f533-602c-48ca-8d6b-6808bca3c5fc-3">
+          <semantic:text>"Full Size"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_84685b12-10c5-4e55-8f79-381b2334ceaf">
+        <semantic:inputEntry id="_84685b12-10c5-4e55-8f79-381b2334ceaf-0">
+          <semantic:text>"Economy"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_84685b12-10c5-4e55-8f79-381b2334ceaf-1">
+          <semantic:text>"Silver"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_84685b12-10c5-4e55-8f79-381b2334ceaf-2">
+          <semantic:text>"Promo B"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_84685b12-10c5-4e55-8f79-381b2334ceaf-3">
+          <semantic:text>"Compact"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_c56d604d-898f-4d4d-95da-2c338c8582c2">
+        <semantic:inputEntry id="_c56d604d-898f-4d4d-95da-2c338c8582c2-0">
+          <semantic:text>"Compact"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c56d604d-898f-4d4d-95da-2c338c8582c2-1">
+          <semantic:text>"Silver"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c56d604d-898f-4d4d-95da-2c338c8582c2-2">
+          <semantic:text>"Promo B"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_c56d604d-898f-4d4d-95da-2c338c8582c2-3">
+          <semantic:text>"Full Size"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_e38e4c6f-3d7e-49d3-99a7-3433335be2bd">
+        <semantic:inputEntry id="_e38e4c6f-3d7e-49d3-99a7-3433335be2bd-0">
+          <semantic:text>"Full Size"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_e38e4c6f-3d7e-49d3-99a7-3433335be2bd-1">
+          <semantic:text>"Silver"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_e38e4c6f-3d7e-49d3-99a7-3433335be2bd-2">
+          <semantic:text>"Promo B"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_e38e4c6f-3d7e-49d3-99a7-3433335be2bd-3">
+          <semantic:text>"Full Size"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_c64f5c3b-4fd6-41dd-a673-6f035e84c8e2">
+        <semantic:inputEntry id="_c64f5c3b-4fd6-41dd-a673-6f035e84c8e2-0">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c64f5c3b-4fd6-41dd-a673-6f035e84c8e2-1">
+          <semantic:text>"None"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c64f5c3b-4fd6-41dd-a673-6f035e84c8e2-2">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_c64f5c3b-4fd6-41dd-a673-6f035e84c8e2-3">
+          <semantic:text>Requested Vehicle Class</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:inputData id="_a396d1ca-dfc1-4ed6-bef1-e696ec1967a0" name="Membership Level">
+    <semantic:variable id="_ee33693f-8cd3-40d6-aec9-2e67fd51ff7e" name="Membership Level"/>
+  </semantic:inputData>
+  <semantic:knowledgeSource id="_4c5a456d-a8fd-43b9-966d-e85b91adb394" name="Member Database">
+    <semantic:authorityRequirement>
+      <semantic:requiredInput href="#_a396d1ca-dfc1-4ed6-bef1-e696ec1967a0"/>
+    </semantic:authorityRequirement>
+  </semantic:knowledgeSource>
+  <semantic:inputData id="_65c86ddb-155e-4133-80b7-7f393b3fe10e" name="Calendar Promotion">
+    <semantic:variable id="_524cf7a8-3f4d-4525-bbc7-f06a975c0bf5" name="Calendar Promotion"/>
+  </semantic:inputData>
+  <semantic:decision id="_89b59ab0-43d0-450d-90b8-7d97afaba1be" name="Upgrade Base on Calendar Promotion">
+    <semantic:variable id="_0f46f02a-1d66-46a2-9358-f9d6a1b8f368" name="Upgrade Base on Calendar Promotion" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_a396d1ca-dfc1-4ed6-bef1-e696ec1967a0"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_65c86ddb-155e-4133-80b7-7f393b3fe10e"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_51953267-fb76-41e5-a0e3-86e934e931ce"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="PRIORITY" outputLabel="Upgrade Base on Calendar Promotion">
+      <semantic:input id="_47d646e6-4386-4794-8c95-e9573c1a0592" label="Requested Vehicle Class">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Requested Vehicle Class</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues>
+          <semantic:text>"Compact", "Economy", "Full Size"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:input id="_da15ce04-481e-4c22-9e9e-120e93a69698" label="Calendar Promotion">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Calendar Promotion</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues>
+          <semantic:text>"Canada Day", "Christmas", "Victoria Day", "None"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:output id="_d76fa989-d85b-4573-b8b3-2450ad57f363">
+        <semantic:outputValues>
+          <semantic:text>"Economy", "Compact", "Full Size"</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:rule id="_3016c170-f42c-4085-b5f3-ec0bf921cbf0">
+        <semantic:inputEntry id="_3016c170-f42c-4085-b5f3-ec0bf921cbf0-0">
+          <semantic:text>"Economy"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_3016c170-f42c-4085-b5f3-ec0bf921cbf0-1">
+          <semantic:text>"Victoria Day"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_3016c170-f42c-4085-b5f3-ec0bf921cbf0-2">
+          <semantic:text>"Compact"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_297cda2e-f463-4197-96ed-28322e60fbe8">
+        <semantic:inputEntry id="_297cda2e-f463-4197-96ed-28322e60fbe8-0">
+          <semantic:text>"Economy"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_297cda2e-f463-4197-96ed-28322e60fbe8-1">
+          <semantic:text>"Christmas"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_297cda2e-f463-4197-96ed-28322e60fbe8-2">
+          <semantic:text>"Full Size"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_4a60c528-4895-4f63-ae34-d31fbaee366e">
+        <semantic:inputEntry id="_4a60c528-4895-4f63-ae34-d31fbaee366e-0">
+          <semantic:text>"Economy"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_4a60c528-4895-4f63-ae34-d31fbaee366e-1">
+          <semantic:text>"Canada Day"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_4a60c528-4895-4f63-ae34-d31fbaee366e-2">
+          <semantic:text>"Full Size"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_c05c68fa-d99c-4d70-88cc-4f7227bc78f2">
+        <semantic:inputEntry id="_c05c68fa-d99c-4d70-88cc-4f7227bc78f2-0">
+          <semantic:text>"Compact"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c05c68fa-d99c-4d70-88cc-4f7227bc78f2-1">
+          <semantic:text>"Victoria Day"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_c05c68fa-d99c-4d70-88cc-4f7227bc78f2-2">
+          <semantic:text>"Compact"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_fa2572b5-2585-4e68-a98f-32e3b2e66f4c">
+        <semantic:inputEntry id="_fa2572b5-2585-4e68-a98f-32e3b2e66f4c-0">
+          <semantic:text>"Compact"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_fa2572b5-2585-4e68-a98f-32e3b2e66f4c-1">
+          <semantic:text>"Canada Day","Christmas"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_fa2572b5-2585-4e68-a98f-32e3b2e66f4c-2">
+          <semantic:text>"Full Size"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_6a46bc9d-68e1-4814-86c2-ae17563e4bdf">
+        <semantic:inputEntry id="_6a46bc9d-68e1-4814-86c2-ae17563e4bdf-0">
+          <semantic:text>"Full Size"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_6a46bc9d-68e1-4814-86c2-ae17563e4bdf-1">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_6a46bc9d-68e1-4814-86c2-ae17563e4bdf-2">
+          <semantic:text>"Full Size"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_2bd55e59-3d66-4ef8-a578-9aff08b99509">
+        <semantic:inputEntry id="_2bd55e59-3d66-4ef8-a578-9aff08b99509-0">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_2bd55e59-3d66-4ef8-a578-9aff08b99509-1">
+          <semantic:text>"None"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_2bd55e59-3d66-4ef8-a578-9aff08b99509-2">
+          <semantic:text>Requested Vehicle Class</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:decision id="_60e11f1c-98af-4d53-8872-7ff8c13a07ca" name="Upgrade Based On Promotions">
+    <semantic:variable id="_ec934b45-ee77-4578-b074-69ae27db29e2" name="Upgrade Based On Promotions" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_89b59ab0-43d0-450d-90b8-7d97afaba1be"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_d06e5b70-796f-4e64-ae05-b983c11eda46"/>
+    </semantic:informationRequirement>
+    <semantic:decisionMaker href="#_d762b9c5-c2ef-4729-8c4e-7ae46286a0a0"/>
+    <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Upgrade Based On Promotions">
+      <semantic:input id="_ddf49d4f-61c5-477b-b9b8-29ffe464921f" label="Upgrade Based On Promotion Code">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Upgrade Based On Promotion Code</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues>
+          <semantic:text>"Economy", "Compact", "Full Size"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:input id="_e2c77782-ba4c-4751-b408-d81754ed7a0e" label="Upgrade Base on Calendar Promotion">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Upgrade Base on Calendar Promotion</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues>
+          <semantic:text>"Economy", "Compact", "Full Size"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:output id="_af6a9738-7cfd-4cdb-a101-59380d908e8d">
+        <semantic:outputValues>
+          <semantic:text>"Economy", "Compact", "Full Size"</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:rule id="_4d9b47ed-2720-4d16-a261-ac11b18315eb">
+        <semantic:inputEntry id="_4d9b47ed-2720-4d16-a261-ac11b18315eb-0">
+          <semantic:text>"Economy"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_4d9b47ed-2720-4d16-a261-ac11b18315eb-1">
+          <semantic:text>"Economy"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_4d9b47ed-2720-4d16-a261-ac11b18315eb-2">
+          <semantic:text>"Economy"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_b6650203-a69a-489e-899e-3d9ba7048908">
+        <semantic:inputEntry id="_b6650203-a69a-489e-899e-3d9ba7048908-0">
+          <semantic:text>"Compact"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b6650203-a69a-489e-899e-3d9ba7048908-1">
+          <semantic:text>"Economy"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_b6650203-a69a-489e-899e-3d9ba7048908-2">
+          <semantic:text>"Compact"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_74a6adb3-c3c4-4304-bfa4-922d6e6a64cd">
+        <semantic:inputEntry id="_74a6adb3-c3c4-4304-bfa4-922d6e6a64cd-0">
+          <semantic:text>"Full Size"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_74a6adb3-c3c4-4304-bfa4-922d6e6a64cd-1">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_74a6adb3-c3c4-4304-bfa4-922d6e6a64cd-2">
+          <semantic:text>"Full Size"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_96c98e9c-2764-41af-a63d-164bb20ef8db">
+        <semantic:inputEntry id="_96c98e9c-2764-41af-a63d-164bb20ef8db-0">
+          <semantic:text>"Economy"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_96c98e9c-2764-41af-a63d-164bb20ef8db-1">
+          <semantic:text>"Compact"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_96c98e9c-2764-41af-a63d-164bb20ef8db-2">
+          <semantic:text>"Compact"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_bb8df790-30aa-4aa2-bc0f-73bde54e5176">
+        <semantic:inputEntry id="_bb8df790-30aa-4aa2-bc0f-73bde54e5176-0">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_bb8df790-30aa-4aa2-bc0f-73bde54e5176-1">
+          <semantic:text>"Full Size"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_bb8df790-30aa-4aa2-bc0f-73bde54e5176-2">
+          <semantic:text>"Full Size"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:inputData id="_51953267-fb76-41e5-a0e3-86e934e931ce" name="Requested Vehicle Class">
+    <semantic:variable id="_1cfc7b10-6199-4311-9414-52a0b015d897" name="Requested Vehicle Class"/>
+  </semantic:inputData>
+  <semantic:textAnnotation id="_ea85f603-20b9-418b-9c7e-0f5be4ba0a99">
+    <semantic:text>Question: Which Car Category to Offer?
+      Answers: Economy, Compact, Full Size
+    </semantic:text>
+  </semantic:textAnnotation>
+  <semantic:association id="_b30b8298-d459-4614-bf07-a5ce32c896df" label="">
+    <semantic:sourceRef href="#_60e11f1c-98af-4d53-8872-7ff8c13a07ca"/>
+    <semantic:targetRef href="#_ea85f603-20b9-418b-9c7e-0f5be4ba0a99"/>
+  </semantic:association>
+  <semantic:organizationUnit id="_d762b9c5-c2ef-4729-8c4e-7ae46286a0a0" name="Simon">
+    <semantic:decisionMade href="#_60e11f1c-98af-4d53-8872-7ff8c13a07ca"/>
+  </semantic:organizationUnit>
+</semantic:definitions>

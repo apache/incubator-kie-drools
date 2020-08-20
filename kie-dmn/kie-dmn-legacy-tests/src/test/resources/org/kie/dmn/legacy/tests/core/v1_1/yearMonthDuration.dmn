@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_6eda1490-21ca-441e-8a26-ab3ca800e43c" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      exporter="DMN Modeler" exporterVersion="5.1.5.201702231111" id="_6eda1490-21ca-441e-8a26-ab3ca800e43c" name="Drawing 1"
+                      namespace="http://www.trisotech.com/dmn/definitions/_6eda1490-21ca-441e-8a26-ab3ca800e43c"
+                      triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:decision id="_f9b720b4-5609-4efa-bf6f-f7fc892f5fb6" name="How long" triso:displayName="How long">
+    <semantic:variable id="_9889446c-7ed5-4e2a-9ffa-2c8dc71f1249" name="How long" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_4fdd7732-851d-4479-9f15-db0d171ec7d3"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" id="_ab8356eb-e0d4-4778-a8ee-56ade3cb3a33" outputLabel="How long">
+      <semantic:input id="_1b363369-f2e1-4ee7-9223-8a2aab4ea32e" label="iDuration">
+        <semantic:inputExpression typeRef="feel:yearMonthDuration">
+          <semantic:text>iDuration</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_7aaf3533-5ced-4149-ba49-4bbe0201125c"/>
+      <semantic:rule id="_42e5a68c-d6ff-4cd1-a398-c1e1decc88b5">
+        <semantic:inputEntry id="_f5311e70-07f7-419f-a8dd-d0cafe05c431">
+          <semantic:text>&lt;duration("P1Y")</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_2b0a3add-dde4-48b2-bf7b-1a6e155cf72e">
+          <semantic:text>"Shorter than a year"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_90ce1332-4966-4e1a-85d6-cb6fe1166d1d">
+        <semantic:inputEntry id="_02d1d1ae-f5ca-4aa3-8f64-dd1098d87239">
+          <semantic:text>duration("P1Y")</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_c07ca8a2-9084-4827-9e05-f2de3f505fc2">
+          <semantic:text>"A year"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_272d4c38-e4eb-4fc5-b91f-751e195592bc">
+        <semantic:inputEntry id="_1d17aa0a-087d-4b4b-a6ba-c05ee162e08e">
+          <semantic:text>&gt;duration("P1Y")</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_7441b633-52dc-4c88-abc6-1e884afa65d8">
+          <semantic:text>"Longer than a year"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:inputData id="_4fdd7732-851d-4479-9f15-db0d171ec7d3" name="iDuration" triso:displayName="iDuration">
+    <semantic:variable id="_fea8cd70-5087-41f7-ba0b-9a9bbb7fbf94" name="iDuration" typeRef="feel:yearMonthDuration"/>
+  </semantic:inputData>
+</semantic:definitions>

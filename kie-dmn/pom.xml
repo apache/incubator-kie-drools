@@ -28,6 +28,7 @@
     <module>kie-dmn-signavio</module>
     <module>kie-dmn-core-osgi</module>
     <module>kie-dmn-pmml-tests-parent</module>
+    <module>kie-dmn-legacy-tests</module>
   </modules>
 
   <dependencyManagement>

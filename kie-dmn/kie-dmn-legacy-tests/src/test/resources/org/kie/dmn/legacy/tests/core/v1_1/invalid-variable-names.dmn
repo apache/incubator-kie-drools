@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<definitions id="0001-input-data-string" name="0001-input-data-string"
+	namespace="https://github.com/kiegroup/kie-dmn"
+	xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+	xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
+	<itemDefinition name="Person)" id="_person">
+		<itemComponent name="not old">
+			<typeRef>feel:boolean</typeRef>
+		</itemComponent>
+	</itemDefinition>
+	<decision name="Monkeys in the jungle" id="d_NameWithInKeyword">
+		<variable name="Monkeys in the jungle" typeRef="feel:string"/>
+		<informationRequirement>
+			<requiredInput href="#i_FullName"/>
+		</informationRequirement>
+		<context>
+			<contextEntry>
+				<variable name="# foo bar"/>
+				<literalExpression>
+					<text>"Hello " + Full Name</text>
+				</literalExpression>
+			</contextEntry>
+			<contextEntry>
+				<variable name="my ^ function" typeRef="feel:number"/>
+				<functionDefinition id="_mf">
+					<formalParameter name="some number" id="_some_param"/>
+					<literalExpression><text>some number</text></literalExpression>
+				</functionDefinition>
+			</contextEntry>
+		</context>
+	</decision>
+	<decision name="Relation with invalid names" id="_relation">
+		<variable name="Relation with invalid names"/>
+		<relation>
+			<column name="Foo # bar" typeRef="feel:string" id="_fff"/>
+			<column name="Baz - this is valid" typeRef="feel:number"/>
+			<row>
+				<literalExpression><text>"x"</text></literalExpression>
+				<literalExpression><text>100</text></literalExpression>
+			</row>
+		</relation>
+	</decision>
+	<inputData name="Full Name" id="i_FullName">
+		<variable name="Full Name" typeRef="feel:string"/>
+	</inputData>
+	<inputData name="Sales (%)" id="i_InvalidSymbol">
+		<variable name="Sales (%)" typeRef="feel:string"/>
+	</inputData>
+	<inputData name="some people" id="i_somekeyword">
+		<variable name="some people" typeRef="feel:string"/>
+	</inputData>
+</definitions>
