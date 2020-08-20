@@ -27,9 +27,6 @@ import org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfi
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.solver.termination.PhaseToSolverTerminationBridge;
-import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XmlSeeAlso({
         ConstructionHeuristicPhaseConfig.class,
@@ -57,19 +54,6 @@ public abstract class PhaseConfig<C extends PhaseConfig> extends AbstractConfig<
 
     public void setTerminationConfig(TerminationConfig terminationConfig) {
         this.terminationConfig = terminationConfig;
-    }
-
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    protected Termination buildPhaseTermination(HeuristicConfigPolicy configPolicy, Termination solverTermination) {
-        TerminationConfig terminationConfig_ = terminationConfig == null ? new TerminationConfig()
-                : terminationConfig;
-        // In case of childThread PART_THREAD, the solverTermination is actually the parent phase's phaseTermination
-        // with the bridge removed, so it's ok to add it again
-        Termination phaseTermination = new PhaseToSolverTerminationBridge(solverTermination);
-        return terminationConfig_.buildTermination(configPolicy, phaseTermination);
     }
 
     @Override

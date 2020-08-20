@@ -35,7 +35,12 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
 import org.optaplanner.core.impl.constructionheuristic.decider.MultiThreadedConstructionHeuristicDecider;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
+import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForagerFactory;
 import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
+import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacerFactory;
+import org.optaplanner.core.impl.constructionheuristic.placer.PooledEntityPlacerFactory;
+import org.optaplanner.core.impl.constructionheuristic.placer.QueuedEntityPlacerFactory;
+import org.optaplanner.core.impl.constructionheuristic.placer.QueuedValuePlacerFactory;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
@@ -82,7 +87,7 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
                         + ") is explicitly configured.");
             }
         }
-        EntityPlacer entityPlacer = entityPlacerConfig_.buildEntityPlacer(phaseConfigPolicy);
+        EntityPlacer entityPlacer = EntityPlacerFactory.create(entityPlacerConfig_).buildEntityPlacer(phaseConfigPolicy);
         phase.setEntityPlacer(entityPlacer);
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
@@ -99,7 +104,8 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         ConstructionHeuristicForagerConfig foragerConfig_ = phaseConfig.getForagerConfig() == null
                 ? new ConstructionHeuristicForagerConfig()
                 : phaseConfig.getForagerConfig();
-        ConstructionHeuristicForager forager = foragerConfig_.buildForager(configPolicy);
+        ConstructionHeuristicForager forager =
+                ConstructionHeuristicForagerFactory.create(foragerConfig_).buildForager(configPolicy);
         EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
         ConstructionHeuristicDecider<Solution_> decider;
         Integer moveThreadCount = configPolicy.getMoveThreadCount();
@@ -147,18 +153,18 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
             case STRONGEST_FIT_DECREASING:
             case ALLOCATE_ENTITY_FROM_QUEUE:
                 if (!ConfigUtils.isEmptyCollection(phaseConfig.getMoveSelectorConfigList())) {
-                    return QueuedEntityPlacerConfig.unfoldNew(phaseConfigPolicy, phaseConfig.getMoveSelectorConfigList());
+                    return QueuedEntityPlacerFactory.unfoldNew(phaseConfigPolicy, phaseConfig.getMoveSelectorConfigList());
                 }
                 return new QueuedEntityPlacerConfig();
             case ALLOCATE_TO_VALUE_FROM_QUEUE:
                 if (!ConfigUtils.isEmptyCollection(phaseConfig.getMoveSelectorConfigList())) {
-                    return QueuedValuePlacerConfig.unfoldNew(phaseConfigPolicy, checkSingleMoveSelectorConfig());
+                    return QueuedValuePlacerFactory.unfoldNew(checkSingleMoveSelectorConfig());
                 }
                 return new QueuedValuePlacerConfig();
             case CHEAPEST_INSERTION:
             case ALLOCATE_FROM_POOL:
                 if (!ConfigUtils.isEmptyCollection(phaseConfig.getMoveSelectorConfigList())) {
-                    return PooledEntityPlacerConfig.unfoldNew(phaseConfigPolicy, checkSingleMoveSelectorConfig());
+                    return PooledEntityPlacerFactory.unfoldNew(phaseConfigPolicy, checkSingleMoveSelectorConfig());
                 }
                 return new PooledEntityPlacerConfig();
             default:

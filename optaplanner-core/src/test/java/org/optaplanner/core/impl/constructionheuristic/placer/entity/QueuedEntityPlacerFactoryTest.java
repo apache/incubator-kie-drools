@@ -1,0 +1,109 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.optaplanner.core.impl.constructionheuristic.placer.entity;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.Iterator;
+
+import org.junit.jupiter.api.Test;
+import org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
+import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
+import org.optaplanner.core.impl.constructionheuristic.placer.QueuedEntityPlacer;
+import org.optaplanner.core.impl.constructionheuristic.placer.QueuedEntityPlacerFactory;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarEntity;
+import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarSolution;
+
+public class QueuedEntityPlacerFactoryTest extends AbstractEntityPlacerTest {
+
+    @Test
+    public void buildFromUnfoldNew() {
+        SolutionDescriptor<TestdataMultiVarSolution> solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
+
+        ChangeMoveSelectorConfig primaryMoveSelectorConfig = new ChangeMoveSelectorConfig();
+        primaryMoveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig("primaryValue"));
+        ChangeMoveSelectorConfig secondaryMoveSelectorConfig = new ChangeMoveSelectorConfig();
+        secondaryMoveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig("secondaryValue"));
+
+        HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy(solutionDescriptor);
+        QueuedEntityPlacerConfig placerConfig = QueuedEntityPlacerFactory.unfoldNew(configPolicy,
+                Arrays.asList(primaryMoveSelectorConfig, secondaryMoveSelectorConfig));
+
+        assertThat(placerConfig.getEntitySelectorConfig().getEntityClass()).isAssignableFrom(TestdataMultiVarEntity.class);
+        assertThat(placerConfig.getMoveSelectorConfigList())
+                .hasSize(2)
+                .hasOnlyElementsOfType(ChangeMoveSelectorConfig.class);
+
+        QueuedEntityPlacer entityPlacer = new QueuedEntityPlacerFactory(placerConfig).buildEntityPlacer(configPolicy);
+
+        SolverScope solverScope = mock(SolverScope.class);
+        entityPlacer.solvingStarted(solverScope);
+        AbstractPhaseScope phaseScope = mock(AbstractPhaseScope.class);
+        when(phaseScope.getSolverScope()).thenReturn(solverScope);
+        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
+        when(phaseScope.getScoreDirector()).thenReturn(scoreDirector);
+        when(scoreDirector.getWorkingSolution()).thenReturn(generateTestdataSolution());
+        entityPlacer.phaseStarted(phaseScope);
+        Iterator<Placement> placementIterator = entityPlacer.iterator();
+        assertThat(placementIterator.hasNext()).isTrue();
+
+        AbstractStepScope stepScope = mock(AbstractStepScope.class);
+        when(stepScope.getPhaseScope()).thenReturn(phaseScope);
+        when(stepScope.getScoreDirector()).thenReturn(scoreDirector);
+        entityPlacer.stepStarted(stepScope);
+        Placement placement = placementIterator.next();
+
+        assertEntityPlacement(placement, "e1", "e1v1", "e1v2", "e2v1", "e2v2");
+    }
+
+    public HeuristicConfigPolicy buildHeuristicConfigPolicy(SolutionDescriptor solutionDescriptor) {
+        InnerScoreDirectorFactory scoreDirectorFactory = mock(InnerScoreDirectorFactory.class);
+        when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);
+        when(scoreDirectorFactory.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
+        return new HeuristicConfigPolicy(EnvironmentMode.REPRODUCIBLE, null, null, null, scoreDirectorFactory);
+    }
+
+    private TestdataMultiVarSolution generateTestdataSolution() {
+        TestdataMultiVarEntity entity1 = new TestdataMultiVarEntity("e1");
+        entity1.setPrimaryValue(new TestdataValue("e1v1"));
+        entity1.setSecondaryValue(new TestdataValue("e1v2"));
+        TestdataMultiVarEntity entity2 = new TestdataMultiVarEntity("e2");
+        entity2.setPrimaryValue(new TestdataValue("e2v1"));
+        entity2.setSecondaryValue(new TestdataValue("e2v2"));
+
+        TestdataMultiVarSolution solution = new TestdataMultiVarSolution("s");
+        solution.setMultiVarEntityList(Arrays.asList(entity1, entity2));
+        solution.setValueList(Arrays.asList(entity1.getPrimaryValue(), entity1.getSecondaryValue(), entity2.getPrimaryValue(),
+                entity2.getSecondaryValue()));
+        return solution;
+    }
+}

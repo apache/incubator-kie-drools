@@ -47,6 +47,7 @@ import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.BasicPlumbingTermination;
 import org.optaplanner.core.impl.solver.termination.Termination;
+import org.optaplanner.core.impl.solver.termination.TerminationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,7 +93,8 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         TerminationConfig terminationConfig_ = solverConfig.getTerminationConfig() == null ? new TerminationConfig()
                 : solverConfig.getTerminationConfig();
         BasicPlumbingTermination basicPlumbingTermination = new BasicPlumbingTermination(daemon_);
-        Termination termination = terminationConfig_.buildTermination(configPolicy, basicPlumbingTermination);
+        Termination termination =
+                TerminationFactory.create(terminationConfig_).buildTermination(configPolicy, basicPlumbingTermination);
         List<Phase<Solution_>> phaseList = buildPhaseList(configPolicy, bestSolutionRecaller, termination);
         return new DefaultSolver<>(environmentMode_, randomFactory,
                 bestSolutionRecaller, basicPlumbingTermination, termination, phaseList, solverScope);

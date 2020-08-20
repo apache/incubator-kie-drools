@@ -16,46 +16,47 @@
 
 package org.optaplanner.core.config.constructionheuristic.placer;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.core.impl.constructionheuristic.placer.QueuedEntityPlacer;
+import org.optaplanner.core.impl.constructionheuristic.placer.PooledEntityPlacerFactory;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
-import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarSolution;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public class QueuedEntityPlacerConfigTest {
+public class PooledEntityPlacerFactoryTest {
 
     @Test
-    public void unfoldNewSequential() {
-        SolutionDescriptor<TestdataMultiVarSolution> solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
+    public void unfoldNew() {
+        SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
 
-        ChangeMoveSelectorConfig primaryMoveSelectorConfig = new ChangeMoveSelectorConfig();
-        primaryMoveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig("primaryValue"));
-        ChangeMoveSelectorConfig secondaryMoveSelectorConfig = new ChangeMoveSelectorConfig();
-        secondaryMoveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig("secondaryValue"));
+        ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig();
+        moveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig("value"));
 
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy(solutionDescriptor);
-        QueuedEntityPlacerConfig placerConfig = QueuedEntityPlacerConfig.unfoldNew(configPolicy,
-                Arrays.asList(primaryMoveSelectorConfig, secondaryMoveSelectorConfig));
+        PooledEntityPlacerConfig placerConfig = PooledEntityPlacerFactory.unfoldNew(configPolicy, moveSelectorConfig);
 
-        QueuedEntityPlacer entityPlacer = placerConfig.buildEntityPlacer(configPolicy);
-        // TODO assert placements. See also AbstractEntityPlacerTest.assertEntityPlacement()
+        assertThat(placerConfig.getMoveSelectorConfig())
+                .isNotNull()
+                .isExactlyInstanceOf(ChangeMoveSelectorConfig.class);
+
+        ChangeMoveSelectorConfig changeMoveSelectorConfig = (ChangeMoveSelectorConfig) placerConfig.getMoveSelectorConfig();
+        assertThat(changeMoveSelectorConfig.getEntitySelectorConfig().getEntityClass()).isNull();
+        assertThat(changeMoveSelectorConfig.getEntitySelectorConfig().getMimicSelectorRef())
+                .isEqualTo(TestdataEntity.class.getName());
+        assertThat(changeMoveSelectorConfig.getValueSelectorConfig().getVariableName()).isEqualTo("value");
     }
 
     public HeuristicConfigPolicy buildHeuristicConfigPolicy(SolutionDescriptor solutionDescriptor) {
         InnerScoreDirectorFactory scoreDirectorFactory = mock(InnerScoreDirectorFactory.class);
         when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);
-        when(scoreDirectorFactory.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
         return new HeuristicConfigPolicy(EnvironmentMode.REPRODUCIBLE, null, null, null, scoreDirectorFactory);
     }
-
 }

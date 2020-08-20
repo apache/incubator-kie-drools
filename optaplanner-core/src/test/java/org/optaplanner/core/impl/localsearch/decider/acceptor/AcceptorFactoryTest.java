@@ -1,0 +1,94 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.optaplanner.core.impl.localsearch.decider.acceptor;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+
+import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType;
+import org.optaplanner.core.config.localsearch.decider.acceptor.LocalSearchAcceptorConfig;
+import org.optaplanner.core.config.localsearch.decider.acceptor.stepcountinghillclimbing.StepCountingHillClimbingType;
+import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.greatdeluge.GreatDelugeAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.hillclimbing.HillClimbingAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.lateacceptance.LateAcceptanceAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.stepcountinghillclimbing.StepCountingHillClimbingAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.EntityTabuAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.MoveTabuAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.ValueTabuAcceptor;
+import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+
+class AcceptorFactoryTest {
+
+    @Test
+    void buildCompositeAcceptor() {
+        LocalSearchAcceptorConfig localSearchAcceptorConfig = new LocalSearchAcceptorConfig()
+                .withAcceptorTypeList(Arrays.asList(AcceptorType.values()))
+                .withEntityTabuSize(1)
+                .withFadingEntityTabuSize(1)
+                .withMoveTabuSize(1)
+                .withFadingMoveTabuSize(1)
+                .withUndoMoveTabuSize(1)
+                .withValueTabuSize(1)
+                .withFadingValueTabuSize(1)
+                .withLateAcceptanceSize(10)
+                .withSimulatedAnnealingStartingTemperature("-10hard/-10soft")
+                .withStepCountingHillClimbingSize(1)
+                .withStepCountingHillClimbingType(StepCountingHillClimbingType.IMPROVING_STEP);
+
+        HeuristicConfigPolicy heuristicConfigPolicy = mock(HeuristicConfigPolicy.class);
+        ScoreDefinition<HardSoftScore> scoreDefinition = new HardSoftScoreDefinition();
+        when(heuristicConfigPolicy.getEnvironmentMode()).thenReturn(EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT);
+        when(heuristicConfigPolicy.getScoreDefinition()).thenReturn(scoreDefinition);
+
+        AcceptorFactory acceptorFactory = AcceptorFactory.create(localSearchAcceptorConfig);
+        Acceptor acceptor = acceptorFactory.buildAcceptor(heuristicConfigPolicy);
+        assertThat(acceptor).isExactlyInstanceOf(CompositeAcceptor.class);
+        CompositeAcceptor compositeAcceptor = (CompositeAcceptor) acceptor;
+        assertThat(compositeAcceptor.acceptorList).hasSize(AcceptorType.values().length);
+        assertAcceptorTypeAtPosition(compositeAcceptor, 0, HillClimbingAcceptor.class);
+        assertAcceptorTypeAtPosition(compositeAcceptor, 1, StepCountingHillClimbingAcceptor.class);
+        assertAcceptorTypeAtPosition(compositeAcceptor, 2, EntityTabuAcceptor.class);
+        assertAcceptorTypeAtPosition(compositeAcceptor, 3, ValueTabuAcceptor.class);
+        assertAcceptorTypeAtPosition(compositeAcceptor, 4, MoveTabuAcceptor.class);
+        assertAcceptorTypeAtPosition(compositeAcceptor, 5, MoveTabuAcceptor.class);
+        assertAcceptorTypeAtPosition(compositeAcceptor, 6, SimulatedAnnealingAcceptor.class);
+        assertAcceptorTypeAtPosition(compositeAcceptor, 7, LateAcceptanceAcceptor.class);
+        assertAcceptorTypeAtPosition(compositeAcceptor, 8, GreatDelugeAcceptor.class);
+    }
+
+    private void assertAcceptorTypeAtPosition(CompositeAcceptor compositeAcceptor, int position,
+            Class<? extends Acceptor> expectedAcceptorType) {
+        assertThat(compositeAcceptor.acceptorList.get(position)).isExactlyInstanceOf(expectedAcceptorType);
+    }
+
+    @Test
+    void noAcceptorConfigured_throwsException() {
+        AcceptorFactory acceptorFactory = AcceptorFactory.create(new LocalSearchAcceptorConfig());
+        assertThatIllegalArgumentException().isThrownBy(() -> acceptorFactory.buildAcceptor(mock(HeuristicConfigPolicy.class)))
+                .withMessageContaining("The acceptor does not specify any acceptorType");
+    }
+}

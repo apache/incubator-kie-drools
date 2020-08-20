@@ -19,8 +19,6 @@ package org.optaplanner.core.config.constructionheuristic.placer;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.optaplanner.core.config.AbstractConfig;
-import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
-import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 
 /**
  * General superclass for {@link QueuedEntityPlacerConfig} and {@link PooledEntityPlacerConfig}.
@@ -32,11 +30,5 @@ import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
         PooledEntityPlacerConfig.class
 })
 public abstract class EntityPlacerConfig<C extends EntityPlacerConfig> extends AbstractConfig<C> {
-
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    public abstract EntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy);
 
 }

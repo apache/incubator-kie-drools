@@ -18,9 +18,6 @@ package org.optaplanner.core.config.constructionheuristic.decider.forager;
 
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
-import org.optaplanner.core.impl.constructionheuristic.decider.forager.DefaultConstructionHeuristicForager;
-import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 
 public class ConstructionHeuristicForagerConfig extends AbstractConfig<ConstructionHeuristicForagerConfig> {
 
@@ -32,22 +29,6 @@ public class ConstructionHeuristicForagerConfig extends AbstractConfig<Construct
 
     public void setPickEarlyType(ConstructionHeuristicPickEarlyType pickEarlyType) {
         this.pickEarlyType = pickEarlyType;
-    }
-
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    public ConstructionHeuristicForager buildForager(HeuristicConfigPolicy configPolicy) {
-        ConstructionHeuristicPickEarlyType pickEarlyType_;
-        if (pickEarlyType == null) {
-            pickEarlyType_ = configPolicy.getScoreDirectorFactory().getInitializingScoreTrend().isOnlyDown()
-                    ? ConstructionHeuristicPickEarlyType.FIRST_NON_DETERIORATING_SCORE
-                    : ConstructionHeuristicPickEarlyType.NEVER;
-        } else {
-            pickEarlyType_ = pickEarlyType;
-        }
-        return new DefaultConstructionHeuristicForager(pickEarlyType_);
     }
 
     @Override

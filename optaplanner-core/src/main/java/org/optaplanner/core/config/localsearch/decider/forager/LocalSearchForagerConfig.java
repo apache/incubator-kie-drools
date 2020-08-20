@@ -16,13 +16,8 @@
 
 package org.optaplanner.core.config.localsearch.decider.forager;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.localsearch.decider.forager.AcceptedLocalSearchForager;
-import org.optaplanner.core.impl.localsearch.decider.forager.LocalSearchForager;
 
 public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerConfig> {
 
@@ -85,20 +80,6 @@ public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerC
     public LocalSearchForagerConfig withBreakTieRandomly(boolean breakTieRandomly) {
         this.breakTieRandomly = breakTieRandomly;
         return this;
-    }
-
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
-    public LocalSearchForager buildForager(HeuristicConfigPolicy configPolicy) {
-        LocalSearchPickEarlyType pickEarlyType_ = defaultIfNull(pickEarlyType, LocalSearchPickEarlyType.NEVER);
-        int acceptedCountLimit_ = defaultIfNull(acceptedCountLimit, Integer.MAX_VALUE);
-        FinalistPodiumType finalistPodiumType_ = defaultIfNull(finalistPodiumType, FinalistPodiumType.HIGHEST_SCORE);
-        // Breaking ties randomly leads statistically to much better results
-        boolean breakTieRandomly_ = defaultIfNull(breakTieRandomly, true);
-        return new AcceptedLocalSearchForager(finalistPodiumType_.buildFinalistPodium(), pickEarlyType_,
-                acceptedCountLimit_, breakTieRandomly_);
     }
 
     @Override
