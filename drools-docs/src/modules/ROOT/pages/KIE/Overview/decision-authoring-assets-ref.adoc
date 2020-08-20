@@ -54,7 +54,7 @@ ifdef::DM,PAM[]
 {URL_DEVELOPING_DECISION_SERVICES}#assembly-guided-decision-tables[_{GUIDED_DECISION_TABLES}_]
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
-xref:guided-decision-tables-con[]
+xref:guided-decision-tables-con_{context}[]
 endif::[]
 
 |Spreadsheet decision tables
