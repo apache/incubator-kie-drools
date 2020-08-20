@@ -108,6 +108,16 @@ public class DMNDeclaredField implements FieldDefinition {
     }
 
     @Override
+    public List<AnnotationDefinition> getFieldAnnotations() {
+        List<AnnotationDefinition> annotations = new ArrayList<>();
+        if (codeGenConfig.isWithJacksonAnnotation()) {
+            Optional<Class<?>> as = index.getJacksonDeserializeAs(fieldDMNType);
+            as.ifPresent(asClass -> annotations.add(new SimpleAnnotationDefinition("com.fasterxml.jackson.databind.annotation.JsonDeserialize").addValue("as", asClass.getCanonicalName() + ".class")));
+        }
+        return annotations;
+    }
+
+    @Override
     public boolean isKeyField() {
         return false;
     }
