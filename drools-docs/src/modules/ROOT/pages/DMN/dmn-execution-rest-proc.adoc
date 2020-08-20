@@ -1,4 +1,4 @@
-[id='dmn-execution-rest-proc']
+[id='dmn-execution-rest-proc_{context}']
 = Executing a DMN service using the {KIE_SERVER} REST API
 
 Directly interacting with the REST endpoints of {KIE_SERVER} provides the most separation between the calling code and the decision logic definition. The calling code is completely free of direct dependencies, and you can implement it in an entirely different development platform such as `Node.js` or `.NET`. The examples in this section demonstrate Nix-style curl commands but provide relevant information to adapt to any REST client.
