@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.domain.solution.cloner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 
 import java.util.Arrays;
@@ -37,6 +38,8 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.backlinked.TestdataBacklinkedEntity;
+import org.optaplanner.core.impl.testdata.domain.backlinked.TestdataBacklinkedSolution;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
@@ -772,6 +775,25 @@ public abstract class AbstractSolutionClonerTest {
         assertThat(b.getShadowVariableMap().get("shadow key b1")).isEqualTo("other shadow value b1");
         // Clone remains unchanged
         assertThat(cloneB.getShadowVariableMap().get("shadow key b1")).isEqualTo("shadow value b1");
+    }
+
+    @Test
+    public void supportsEntityToSolutionBacklinking() {
+        int entityCount = 2;
+        SolutionCloner<TestdataBacklinkedSolution> cloner =
+                createSolutionCloner(TestdataBacklinkedSolution.buildSolutionDescriptor());
+        TestdataBacklinkedSolution solution = TestdataBacklinkedSolution.generateSolution(2, entityCount);
+
+        TestdataBacklinkedSolution clonedSolution = cloner.cloneSolution(solution);
+        assertThat(clonedSolution).isNotSameAs(solution);
+        for (int i = 0; i < entityCount; i++) {
+            TestdataBacklinkedEntity originalEntity = solution.getEntityList().get(i);
+            TestdataBacklinkedEntity clonedEntity = clonedSolution.getEntityList().get(i);
+            assertSoftly(softly -> {
+                softly.assertThat(clonedEntity).isNotSameAs(originalEntity);
+                softly.assertThat(clonedEntity.getSolution()).isSameAs(clonedSolution);
+            });
+        }
     }
 
     private void assertDeepCloningEntityClone(TestdataFieldAnnotatedDeepCloningEntity originalEntity,
