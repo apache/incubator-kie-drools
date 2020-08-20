@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
 <semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_1a7d184c-2e38-4462-ae28-15591ef6d534" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.1.13" id="_1a7d184c-2e38-4462-ae28-15591ef6d534" name="countCSATradeRatings" namespace="http://www.trisotech.com/definitions/_1a7d184c-2e38-4462-ae28-15591ef6d534" triso:logoChoice="Default">
   <semantic:extensionElements/>
   <semantic:itemDefinition label="tAmount" name="tAmount">

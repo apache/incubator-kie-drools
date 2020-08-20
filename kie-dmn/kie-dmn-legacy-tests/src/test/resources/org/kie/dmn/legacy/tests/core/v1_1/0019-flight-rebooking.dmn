@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
 <definitions id="_0019_flight_rebooking" 
 	name="0019-flight-rebooking"
 	namespace="https://www.drools.org/kie-dmn"

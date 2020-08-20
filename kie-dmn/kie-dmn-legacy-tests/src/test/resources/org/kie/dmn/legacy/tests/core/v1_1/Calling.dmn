@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
 <semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_88156d21-3acc-43b6-8b81-385caf0bb6ca" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.2.4.1" id="_88156d21-3acc-43b6-8b81-385caf0bb6ca" name="Calling" namespace="http://www.trisotech.com/definitions/_88156d21-3acc-43b6-8b81-385caf0bb6ca" triso:logoChoice="Default">
   <semantic:extensionElements/>
   <semantic:inputData id="_8d5c3681-9616-4834-ad63-2a466eb91c5d" name="Caller name" triso:displayName="Caller name">

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
 <dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_79b16a68-013b-484c-98f5-49ff77808800" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.3" id="_79b16a68-013b-484c-98f5-49ff77808800" name="Decide with symbols" namespace="http://www.trisotech.com/dmn/definitions/_79b16a68-013b-484c-98f5-49ff77808800" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
   <dmn11:extensionElements/>
   <dmn11:inputData id="_4a990535-4682-4bd7-84f2-39a40a53f36a" name="Person age">

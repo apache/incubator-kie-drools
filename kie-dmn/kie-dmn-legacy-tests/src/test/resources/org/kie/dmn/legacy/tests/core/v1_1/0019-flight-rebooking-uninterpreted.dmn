@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
 <semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_188d6caf-a355-49b5-a692-bd6ce713da08" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
                       xmlns:rss="http://purl.org/rss/2.0/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
                       exporter="DMN Modeler" exporterVersion="5.1.0.201612161330" id="_0019_flight_rebooking"

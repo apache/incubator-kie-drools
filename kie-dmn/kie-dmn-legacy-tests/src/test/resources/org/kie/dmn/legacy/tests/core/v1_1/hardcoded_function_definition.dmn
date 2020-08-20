@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
 <semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_99854980-65c8-4e9b-b365-bd30ded69f40" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.2.14" id="_99854980-65c8-4e9b-b365-bd30ded69f40" name="hardcoded_function_definition" namespace="http://www.trisotech.com/definitions/_99854980-65c8-4e9b-b365-bd30ded69f40" triso:logoChoice="Default">
   <semantic:extensionElements/>
   <semantic:businessKnowledgeModel id="_b535940d-70b2-4ffd-9b37-26ab390a374e" name="hardcoded max">
