@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Copyright 2018 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,69 +14,96 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_88a36f38-4494-4fd8-aaea-f7a6b4c91825" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.6" id="_88a36f38-4494-4fd8-aaea-f7a6b4c91825" name="Enabling question marks" namespace="http://www.trisotech.com/definitions/_88a36f38-4494-4fd8-aaea-f7a6b4c91825" triso:logoChoice="Default">
-  <semantic:extensionElements/>
-  <semantic:itemDefinition isCollection="false" label="tPerson" name="tPerson">
-    <semantic:itemComponent id="_78c42778-75e0-4ded-a73b-af6939c9e12a" isCollection="false" name="Name">
-      <semantic:typeRef>feel:string</semantic:typeRef>
-    </semantic:itemComponent>
-    <semantic:itemComponent id="_b653b29d-926f-440c-a647-aea8bd451654" isCollection="false" name="Age">
-      <semantic:typeRef>feel:number</semantic:typeRef>
-    </semantic:itemComponent>
-  </semantic:itemDefinition>
-  <semantic:decision id="_9859d5f1-9ac6-4614-b0ef-895539be58bd" name="Person">
-    <semantic:variable id="_e1dbc36d-ebc7-4c02-805d-34c32d18789b" name="Person" typeRef="tPerson"/>
-    <semantic:context id="_3e38f6bf-2374-49e0-bc32-63441ffa4f17">
-      <semantic:contextEntry>
-        <semantic:variable id="undefined" name="Name" typeRef="feel:string"/>
-        <semantic:literalExpression id="_546e33a1-6752-4adb-96c5-7350ef416ed4">
-          <semantic:text>"Mike"</semantic:text>
-        </semantic:literalExpression>
-      </semantic:contextEntry>
-      <semantic:contextEntry>
-        <semantic:variable id="undefined" name="Age" typeRef="feel:number"/>
-        <semantic:literalExpression id="_a144815e-5516-4ff9-a64d-0229ae709697">
-          <semantic:text>45</semantic:text>
-        </semantic:literalExpression>
-      </semantic:contextEntry>
-    </semantic:context>
-  </semantic:decision>
-  <semantic:decision id="_49937006-6fcf-4aef-bd0a-ec85e9ab10fa" name="Result">
-    <semantic:variable id="_e69e2465-0fcf-4b9e-b1e2-0a36b92131a0" name="Result" typeRef="feel:string"/>
-    <semantic:informationRequirement>
-      <semantic:requiredDecision href="#_9859d5f1-9ac6-4614-b0ef-895539be58bd"/>
-    </semantic:informationRequirement>
-    <semantic:decisionTable hitPolicy="UNIQUE" id="_addfd8f4-f1ff-4cbb-9de2-91930967e7f4" outputLabel="Result">
-      <semantic:input id="_5e6967f1-4621-4b69-a9bf-47faa470b16b">
-        <semantic:inputExpression typeRef="feel:string">
-          <semantic:text>Person.Name</semantic:text>
-        </semantic:inputExpression>
-      </semantic:input>
-      <semantic:input id="_ff5b5317-7aa7-46a1-b758-bfbe7f98f4d4">
-        <semantic:inputExpression typeRef="feel:number">
-          <semantic:text>Person.Age</semantic:text>
-        </semantic:inputExpression>
-      </semantic:input>
-      <semantic:output id="_6f98152c-abe6-4e2f-ab60-475f4e79eb53">
-        <semantic:outputValues triso:constraintsType="enumeration">
-          <semantic:text>"OK","NOT OK"</semantic:text>
-        </semantic:outputValues>
-        <semantic:defaultOutputEntry>
-          <semantic:text>"NOT OK"</semantic:text>
-        </semantic:defaultOutputEntry>
-      </semantic:output>
-      <semantic:rule id="_dcaf1dea-e6c4-4f0a-a66d-46a488dcf221">
-        <semantic:inputEntry expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_23d3cc58-a574-4088-9117-0e68786c1994" triso:unparsed="true">
-          <semantic:text>starts with( ?, "M")</semantic:text>
-        </semantic:inputEntry>
-        <semantic:inputEntry expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_c3295dcd-699c-49a4-8168-bb1fd3502e81" triso:unparsed="true">
-          <semantic:text>? in [30..50)</semantic:text>
-        </semantic:inputEntry>
-        <semantic:outputEntry id="_2f57e116-79c3-4b43-af37-cae939475133">
-          <semantic:text>"OK"</semantic:text>
-        </semantic:outputEntry>
-      </semantic:rule>
-    </semantic:decisionTable>
-  </semantic:decision>
+<semantic:definitions xmlns="http://www.trisotech.com/definitions/_88a36f38-4494-4fd8-aaea-f7a6b4c91825"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.0.6"
+                      id="_88a36f38-4494-4fd8-aaea-f7a6b4c91825"
+                      name="Enabling question marks"
+                      namespace="http://www.trisotech.com/definitions/_88a36f38-4494-4fd8-aaea-f7a6b4c91825">
+   <semantic:extensionElements/>
+   <semantic:itemDefinition isCollection="false" label="tPerson" name="tPerson">
+      <semantic:itemComponent id="_78c42778-75e0-4ded-a73b-af6939c9e12a"
+                              isCollection="false"
+                              name="Name">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_b653b29d-926f-440c-a647-aea8bd451654"
+                              isCollection="false"
+                              name="Age">
+         <semantic:typeRef>number</semantic:typeRef>
+      </semantic:itemComponent>
+   </semantic:itemDefinition>
+   <semantic:decision id="_9859d5f1-9ac6-4614-b0ef-895539be58bd" name="Person">
+      <semantic:variable id="_e1dbc36d-ebc7-4c02-805d-34c32d18789b"
+                         name="Person"
+                         typeRef="tPerson"/>
+      <semantic:context id="_3e38f6bf-2374-49e0-bc32-63441ffa4f17">
+         <semantic:contextEntry>
+            <semantic:variable id="undefined" name="Name" typeRef="string"/>
+            <semantic:literalExpression id="_546e33a1-6752-4adb-96c5-7350ef416ed4">
+               <semantic:text>"Mike"</semantic:text>
+            </semantic:literalExpression>
+         </semantic:contextEntry>
+         <semantic:contextEntry>
+            <semantic:variable id="undefined" name="Age" typeRef="number"/>
+            <semantic:literalExpression id="_a144815e-5516-4ff9-a64d-0229ae709697">
+               <semantic:text>45</semantic:text>
+            </semantic:literalExpression>
+         </semantic:contextEntry>
+      </semantic:context>
+   </semantic:decision>
+   <semantic:decision id="_49937006-6fcf-4aef-bd0a-ec85e9ab10fa" name="Result">
+      <semantic:variable id="_e69e2465-0fcf-4b9e-b1e2-0a36b92131a0"
+                         name="Result"
+                         typeRef="string"/>
+      <semantic:informationRequirement>
+         <semantic:requiredDecision href="#_9859d5f1-9ac6-4614-b0ef-895539be58bd"/>
+      </semantic:informationRequirement>
+      <semantic:decisionTable hitPolicy="UNIQUE"
+                              id="_addfd8f4-f1ff-4cbb-9de2-91930967e7f4"
+                              outputLabel="Result">
+         <semantic:input id="_5e6967f1-4621-4b69-a9bf-47faa470b16b">
+            <semantic:inputExpression typeRef="string">
+               <semantic:text>Person.Name</semantic:text>
+            </semantic:inputExpression>
+         </semantic:input>
+         <semantic:input id="_ff5b5317-7aa7-46a1-b758-bfbe7f98f4d4">
+            <semantic:inputExpression typeRef="number">
+               <semantic:text>Person.Age</semantic:text>
+            </semantic:inputExpression>
+         </semantic:input>
+         <semantic:output id="_6f98152c-abe6-4e2f-ab60-475f4e79eb53">
+            <semantic:outputValues xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                                   triso:constraintsType="enumeration">
+               <semantic:text>"OK","NOT OK"</semantic:text>
+            </semantic:outputValues>
+            <semantic:defaultOutputEntry>
+               <semantic:text>"NOT OK"</semantic:text>
+            </semantic:defaultOutputEntry>
+         </semantic:output>
+         <semantic:rule id="_dcaf1dea-e6c4-4f0a-a66d-46a488dcf221">
+            <semantic:inputEntry xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                                 id="_23d3cc58-a574-4088-9117-0e68786c1994"
+                                 triso:unparsed="true">
+               <semantic:text>starts with( ?, "M")</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                                 id="_c3295dcd-699c-49a4-8168-bb1fd3502e81"
+                                 triso:unparsed="true">
+               <semantic:text>? in [30..50)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_2f57e116-79c3-4b43-af37-cae939475133">
+               <semantic:text>"OK"</semantic:text>
+            </semantic:outputEntry>
+         </semantic:rule>
+      </semantic:decisionTable>
+   </semantic:decision>
 </semantic:definitions>
