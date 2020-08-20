@@ -33,6 +33,7 @@ pipeline {
         string(name: 'PROJECT_VERSION', defaultValue: '', description: 'Override `deployment.properties`. Optional if not RELEASE. If RELEASE, cannot be empty.')
         string(name: 'STAGING_REPO_URL', defaultValue: '', description: 'Override `deployment.properties`.')
         string(name: 'GIT_TAG', defaultValue: '', description: 'Git tag to set, if different from PROJECT_VERSION')
+        booleanParam(name: 'UPDATE_STABLE_BRANCH', defaultValue: false, description: 'Set to true if you want to update the `stable` branch to new created Git tag.')
     }
 
     environment {
@@ -124,8 +125,10 @@ pipeline {
                         mergeAndPush('kogito-examples', getDeployPrLink('kogito-examples'))
                         tagLatest()
 
-                        githubscm.createBranch('stable')
-                        forcePushProtectedBranch('kogito-examples', 'stable', 'master')
+                        if(params.UPDATE_STABLE_BRANCH) {
+                            githubscm.createBranch('stable')
+                            forcePushProtectedBranch('kogito-examples', 'stable', 'master')
+                        }
                     }
                 }
             }
