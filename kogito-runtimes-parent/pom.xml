@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
@@ -47,23 +47,7 @@
   </developers>
 
   <properties>
-    <version.jdk>11</version.jdk>
-    <maven.compiler.release>8</maven.compiler.release>
-
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-    <checkstyle.header.template>.*</checkstyle.header.template>
-    <checkstyle.header.extensions>java</checkstyle.header.extensions>
-
-    <jacoco.agent.argLine/>
-    <!--
-      JaCoCo coverage data file location. Using a single file for appending in the project's root directory makes it
-      possible to measure cross-module test coverage -->
-    <jacoco.exec.file>${project.root.dir}/target/jacoco.exec</jacoco.exec.file>
-    <!--suppress UnresolvedMavenProperty -->
-    <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
-    <tests.surefire.include>**/*Test.java</tests.surefire.include>
-    <tests.failsafe.include>**/*IT.java</tests.failsafe.include>
   </properties>
 
   <!-- distributionManagement section -->
@@ -147,25 +131,4 @@
     <module>jenkins-tests</module>
   </modules>
 
-  <profiles>
-    <profile>
-      <activation>
-        <property>
-          <name>env.ghprbPullId</name>
-        </property>
-      </activation>
-      <id>sonarcloud-analysis-pull-request</id>
-      <properties>
-        <sonar.pullrequest.provider>GitHub</sonar.pullrequest.provider>
-        <!--suppress UnresolvedMavenProperty -->
-        <sonar.pullrequest.branch>${env.ghprbSourceBranch}</sonar.pullrequest.branch>
-        <!--suppress UnresolvedMavenProperty -->
-        <sonar.pullrequest.key>${env.ghprbPullId}</sonar.pullrequest.key>
-        <!--suppress UnresolvedMavenProperty -->
-        <sonar.pullrequest.base>${env.ghprbTargetBranch}</sonar.pullrequest.base>
-        <!--suppress UnresolvedMavenProperty -->
-        <sonar.pullrequest.github.repository>${env.ghprbPullLink}</sonar.pullrequest.github.repository>
-      </properties>
-    </profile>
-  </profiles>
 </project>
