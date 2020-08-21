@@ -3,6 +3,8 @@
 exports[`PageNotFound component tests snapshot testing with location object 1`] = `
 <Fragment>
   <PageSection
+    data-ouia-component-type="page-not-found"
+    data-ouia-safe={true}
     variant="light"
   >
     <Bullseye>
@@ -35,6 +37,8 @@ exports[`PageNotFound component tests snapshot testing with location object 1`] 
 exports[`PageNotFound component tests snapshot testing without location object 1`] = `
 <Fragment>
   <PageSection
+    data-ouia-component-type="page-not-found"
+    data-ouia-safe={true}
     variant="light"
   >
     <Bullseye>

@@ -171,6 +171,8 @@ exports[`Domain Explorer Table Component Snapshot test with default props 1`] = 
     }
     className="kogito-common--domain-explorer__table"
     contentId="expanded-content"
+    data-ouia-component-type="domain-explorer-table"
+    data-ouia-safe={false}
     dropdownDirection="down"
     dropdownPosition="right"
     expandId="expandable-toggle"

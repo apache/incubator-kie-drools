@@ -16,8 +16,12 @@ import {
   handleLogout,
   isAuthEnabled
 } from '../../../utils/KeycloakClient';
+import { componentOuiaProps, OUIAProps } from '../../../utils/OuiaUtils';
 
-const PageToolbar: React.FunctionComponent = () => {
+const PageToolbar: React.FunctionComponent<OUIAProps> = ({
+  ouiaId,
+  ouiaSafe
+}) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [modalToggle, setmodalToggle] = useState(false);
 
@@ -53,7 +57,7 @@ const PageToolbar: React.FunctionComponent = () => {
         isOpenProp={modalToggle}
         handleModalToggleProp={handleModalToggle}
       />
-      <Toolbar>
+      <Toolbar {...componentOuiaProps(ouiaId, 'page-toolbar', ouiaSafe)}>
         <ToolbarGroup>
           <ToolbarItem
             className={css(

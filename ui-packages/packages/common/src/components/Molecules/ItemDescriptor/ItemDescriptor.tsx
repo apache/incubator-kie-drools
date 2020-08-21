@@ -6,6 +6,7 @@ import {
   Text,
   TextVariants
 } from '@patternfly/react-core';
+import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
 
 export interface ItemDescription {
   id: string;
@@ -17,7 +18,11 @@ interface IOwnProps {
   itemDescription: ItemDescription;
 }
 
-const ItemDescriptor: React.FC<IOwnProps> = ({ itemDescription }) => {
+const ItemDescriptor: React.FC<IOwnProps & OUIAProps> = ({
+  itemDescription,
+  ouiaId,
+  ouiaSafe
+}) => {
   const idStringModifier = (strId: string) => {
     return (
       <TextContent className="pf-u-display-inline">
@@ -29,7 +34,10 @@ const ItemDescriptor: React.FC<IOwnProps> = ({ itemDescription }) => {
   };
   return (
     <>
-      <Tooltip content={itemDescription.id}>
+      <Tooltip
+        content={itemDescription.id}
+        {...componentOuiaProps(ouiaId, 'item-descriptor', ouiaSafe)}
+      >
         <span>
           {itemDescription.name}{' '}
           {itemDescription.description ? (

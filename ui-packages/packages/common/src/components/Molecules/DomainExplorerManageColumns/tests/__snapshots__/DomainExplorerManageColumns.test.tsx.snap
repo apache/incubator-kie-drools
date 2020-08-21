@@ -198,13 +198,14 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
   <Button
     id="manage-columns-button"
     onClick={[Function]}
+    ouiaId="manage-columns-button"
     variant="link"
   >
     <button
       aria-disabled={false}
       aria-label={null}
       className="pf-c-button pf-m-link"
-      data-ouia-component-id={11}
+      data-ouia-component-id="manage-columns-button"
       data-ouia-component-type="PF4/Button"
       data-ouia-safe={true}
       disabled={false}
@@ -249,7 +250,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                 aria-labelledby="pf-modal-part-1"
                 aria-modal="true"
                 class="pf-c-modal-box kogito-common--manage-columns__modal pf-m-sm"
-                data-ouia-component-id="12"
+                data-ouia-component-id="9"
                 data-ouia-component-type="PF4/ModalContent"
                 data-ouia-safe="true"
                 id="pf-modal-part-0"
@@ -259,7 +260,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                   aria-disabled="false"
                   aria-label="Close"
                   class="pf-c-button pf-m-plain"
-                  data-ouia-component-id="13"
+                  data-ouia-component-id="10"
                   data-ouia-component-type="PF4/Button"
                   data-ouia-safe="true"
                   type="button"
@@ -306,10 +307,12 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                 </header>
                 <div
                   class="pf-c-modal-box__body"
+                  data-ouia-component-type="manage-columns-modal"
+                  data-ouia-safe="true"
                 >
                   <div
                     class="pf-c-dropdown"
-                    data-ouia-component-id="14"
+                    data-ouia-component-id="11"
                     data-ouia-component-type="PF4/Dropdown"
                     data-ouia-safe="true"
                     id="selectAll-dropdown"
@@ -418,7 +421,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                               aria-label="Details"
                               aria-labelledby="kie-datalist-item-flight kie-datalist-toggle-flight"
                               class="pf-c-button pf-m-plain"
-                              data-ouia-component-id="15"
+                              data-ouia-component-id="12"
                               data-ouia-component-type="PF4/Button"
                               data-ouia-safe="true"
                               id="kie-datalist-toggle-flight"
@@ -558,7 +561,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                               aria-label="Details"
                               aria-labelledby="kie-datalist-item-hotel/address / location kie-datalist-toggle-hotel/address / location"
                               class="pf-c-button pf-m-plain"
-                              data-ouia-component-id="16"
+                              data-ouia-component-id="13"
                               data-ouia-component-type="PF4/Button"
                               data-ouia-safe="true"
                               id="kie-datalist-toggle-hotel/address / location"
@@ -698,7 +701,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                               aria-label="Details"
                               aria-labelledby="kie-datalist-item-hotel/address kie-datalist-toggle-hotel/address"
                               class="pf-c-button pf-m-plain"
-                              data-ouia-component-id="17"
+                              data-ouia-component-id="14"
                               data-ouia-component-type="PF4/Button"
                               data-ouia-safe="true"
                               id="kie-datalist-toggle-hotel/address"
@@ -838,7 +841,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                               aria-label="Details"
                               aria-labelledby="kie-datalist-item-hotel kie-datalist-toggle-hotel"
                               class="pf-c-button pf-m-plain"
-                              data-ouia-component-id="18"
+                              data-ouia-component-id="15"
                               data-ouia-component-type="PF4/Button"
                               data-ouia-safe="true"
                               id="kie-datalist-toggle-hotel"
@@ -925,7 +928,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                   <button
                     aria-disabled="false"
                     class="pf-c-button pf-m-primary"
-                    data-ouia-component-id="19"
+                    data-ouia-component-id="16"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe="true"
                     id="save-columns"
@@ -936,7 +939,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                   <button
                     aria-disabled="false"
                     class="pf-c-button pf-m-secondary"
-                    data-ouia-component-id="20"
+                    data-ouia-component-id="17"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe="true"
                     type="button"
@@ -954,6 +957,8 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
     aria-label=""
     aria-labelledby=""
     className="kogito-common--manage-columns__modal"
+    data-ouia-component-type="manage-columns-modal"
+    data-ouia-safe={true}
     description={
       <TextContent>
         <Text
@@ -985,7 +990,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                 aria-labelledby="pf-modal-part-1"
                 aria-modal="true"
                 class="pf-c-modal-box kogito-common--manage-columns__modal pf-m-sm"
-                data-ouia-component-id="12"
+                data-ouia-component-id="9"
                 data-ouia-component-type="PF4/ModalContent"
                 data-ouia-safe="true"
                 id="pf-modal-part-0"
@@ -995,7 +1000,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                   aria-disabled="false"
                   aria-label="Close"
                   class="pf-c-button pf-m-plain"
-                  data-ouia-component-id="13"
+                  data-ouia-component-id="10"
                   data-ouia-component-type="PF4/Button"
                   data-ouia-safe="true"
                   type="button"
@@ -1042,10 +1047,12 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                 </header>
                 <div
                   class="pf-c-modal-box__body"
+                  data-ouia-component-type="manage-columns-modal"
+                  data-ouia-safe="true"
                 >
                   <div
                     class="pf-c-dropdown"
-                    data-ouia-component-id="14"
+                    data-ouia-component-id="11"
                     data-ouia-component-type="PF4/Dropdown"
                     data-ouia-safe="true"
                     id="selectAll-dropdown"
@@ -1154,7 +1161,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                               aria-label="Details"
                               aria-labelledby="kie-datalist-item-flight kie-datalist-toggle-flight"
                               class="pf-c-button pf-m-plain"
-                              data-ouia-component-id="15"
+                              data-ouia-component-id="12"
                               data-ouia-component-type="PF4/Button"
                               data-ouia-safe="true"
                               id="kie-datalist-toggle-flight"
@@ -1294,7 +1301,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                               aria-label="Details"
                               aria-labelledby="kie-datalist-item-hotel/address / location kie-datalist-toggle-hotel/address / location"
                               class="pf-c-button pf-m-plain"
-                              data-ouia-component-id="16"
+                              data-ouia-component-id="13"
                               data-ouia-component-type="PF4/Button"
                               data-ouia-safe="true"
                               id="kie-datalist-toggle-hotel/address / location"
@@ -1434,7 +1441,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                               aria-label="Details"
                               aria-labelledby="kie-datalist-item-hotel/address kie-datalist-toggle-hotel/address"
                               class="pf-c-button pf-m-plain"
-                              data-ouia-component-id="17"
+                              data-ouia-component-id="14"
                               data-ouia-component-type="PF4/Button"
                               data-ouia-safe="true"
                               id="kie-datalist-toggle-hotel/address"
@@ -1574,7 +1581,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                               aria-label="Details"
                               aria-labelledby="kie-datalist-item-hotel kie-datalist-toggle-hotel"
                               class="pf-c-button pf-m-plain"
-                              data-ouia-component-id="18"
+                              data-ouia-component-id="15"
                               data-ouia-component-type="PF4/Button"
                               data-ouia-safe="true"
                               id="kie-datalist-toggle-hotel"
@@ -1661,7 +1668,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                   <button
                     aria-disabled="false"
                     class="pf-c-button pf-m-primary"
-                    data-ouia-component-id="19"
+                    data-ouia-component-id="16"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe="true"
                     id="save-columns"
@@ -1672,7 +1679,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                   <button
                     aria-disabled="false"
                     class="pf-c-button pf-m-secondary"
-                    data-ouia-component-id="20"
+                    data-ouia-component-id="17"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe="true"
                     type="button"
@@ -1709,6 +1716,8 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
         aria-labelledby=""
         boxId="pf-modal-part-0"
         className="kogito-common--manage-columns__modal"
+        data-ouia-component-type="manage-columns-modal"
+        data-ouia-safe={true}
         description={
           <TextContent>
             <Text
@@ -1750,7 +1759,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                   aria-label=""
                   aria-labelledby="pf-modal-part-1"
                   className="kogito-common--manage-columns__modal"
-                  data-ouia-component-id={12}
+                  data-ouia-component-id={9}
                   data-ouia-component-type="PF4/ModalContent"
                   data-ouia-safe={true}
                   id="pf-modal-part-0"
@@ -1763,7 +1772,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                     aria-labelledby="pf-modal-part-1"
                     aria-modal="true"
                     className="pf-c-modal-box kogito-common--manage-columns__modal pf-m-sm"
-                    data-ouia-component-id={12}
+                    data-ouia-component-id={9}
                     data-ouia-component-type="PF4/ModalContent"
                     data-ouia-safe={true}
                     id="pf-modal-part-0"
@@ -1783,7 +1792,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                           aria-disabled={false}
                           aria-label="Close"
                           className="pf-c-button pf-m-plain"
-                          data-ouia-component-id={13}
+                          data-ouia-component-id={10}
                           data-ouia-component-type="PF4/Button"
                           data-ouia-safe={true}
                           disabled={false}
@@ -1861,9 +1870,14 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                         </ModalBoxDescription>
                       </header>
                     </ModalBoxHeader>
-                    <ModalBoxBody>
+                    <ModalBoxBody
+                      data-ouia-component-type="manage-columns-modal"
+                      data-ouia-safe={true}
+                    >
                       <div
                         className="pf-c-modal-box__body"
+                        data-ouia-component-type="manage-columns-modal"
+                        data-ouia-safe={true}
                       >
                         <Dropdown
                           dropdownItems={
@@ -1951,7 +1965,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                           >
                             <div
                               className="pf-c-dropdown"
-                              data-ouia-component-id={14}
+                              data-ouia-component-id={11}
                               data-ouia-component-type="PF4/Dropdown"
                               data-ouia-safe={true}
                               id="selectAll-dropdown"
@@ -1969,7 +1983,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                                   Object {
                                     "current": <div
                                       class="pf-c-dropdown"
-                                      data-ouia-component-id="14"
+                                      data-ouia-component-id="11"
                                       data-ouia-component-type="PF4/Dropdown"
                                       data-ouia-safe="true"
                                       id="selectAll-dropdown"
@@ -2083,7 +2097,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                                       Object {
                                         "current": <div
                                           class="pf-c-dropdown"
-                                          data-ouia-component-id="14"
+                                          data-ouia-component-id="11"
                                           data-ouia-component-type="PF4/Dropdown"
                                           data-ouia-safe="true"
                                           id="selectAll-dropdown"
@@ -2317,7 +2331,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                                               aria-label="Details"
                                               aria-labelledby="kie-datalist-item-flight kie-datalist-toggle-flight"
                                               className="pf-c-button pf-m-plain"
-                                              data-ouia-component-id={15}
+                                              data-ouia-component-id={12}
                                               data-ouia-component-type="PF4/Button"
                                               data-ouia-safe={true}
                                               disabled={false}
@@ -2602,7 +2616,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                                               aria-label="Details"
                                               aria-labelledby="kie-datalist-item-hotel/address / location kie-datalist-toggle-hotel/address / location"
                                               className="pf-c-button pf-m-plain"
-                                              data-ouia-component-id={16}
+                                              data-ouia-component-id={13}
                                               data-ouia-component-type="PF4/Button"
                                               data-ouia-safe={true}
                                               disabled={false}
@@ -2887,7 +2901,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                                               aria-label="Details"
                                               aria-labelledby="kie-datalist-item-hotel/address kie-datalist-toggle-hotel/address"
                                               className="pf-c-button pf-m-plain"
-                                              data-ouia-component-id={17}
+                                              data-ouia-component-id={14}
                                               data-ouia-component-type="PF4/Button"
                                               data-ouia-safe={true}
                                               disabled={false}
@@ -3173,7 +3187,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                                               aria-label="Details"
                                               aria-labelledby="kie-datalist-item-hotel kie-datalist-toggle-hotel"
                                               className="pf-c-button pf-m-plain"
-                                              data-ouia-component-id={18}
+                                              data-ouia-component-id={15}
                                               data-ouia-component-type="PF4/Button"
                                               data-ouia-safe={true}
                                               disabled={false}
@@ -3347,7 +3361,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                             aria-disabled={false}
                             aria-label={null}
                             className="pf-c-button pf-m-primary"
-                            data-ouia-component-id={19}
+                            data-ouia-component-id={16}
                             data-ouia-component-type="PF4/Button"
                             data-ouia-safe={true}
                             disabled={false}
@@ -3367,7 +3381,7 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
                             aria-disabled={false}
                             aria-label={null}
                             className="pf-c-button pf-m-secondary"
-                            data-ouia-component-id={20}
+                            data-ouia-component-id={17}
                             data-ouia-component-type="PF4/Button"
                             data-ouia-safe={true}
                             disabled={false}
@@ -3392,13 +3406,14 @@ exports[`Domain Explorer Manage columns component Snapshot testing with default 
     aria-label="Refresh list"
     id="refresh-button"
     onClick={[Function]}
+    ouiaId="refresh-button"
     variant="plain"
   >
     <button
       aria-disabled={false}
       aria-label="Refresh list"
       className="pf-c-button pf-m-plain"
-      data-ouia-component-id={21}
+      data-ouia-component-id="refresh-button"
       data-ouia-component-type="PF4/Button"
       data-ouia-safe={true}
       disabled={false}

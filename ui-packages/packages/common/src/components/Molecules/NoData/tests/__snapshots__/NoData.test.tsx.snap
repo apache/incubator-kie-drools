@@ -3,6 +3,8 @@
 exports[`NoData component tests snapshot tests with location object 1`] = `
 <Fragment>
   <PageSection
+    data-ouia-component-type="no-data"
+    data-ouia-safe={true}
     isFilled={true}
   >
     <Bullseye>
@@ -34,6 +36,8 @@ exports[`NoData component tests snapshot tests with location object 1`] = `
 exports[`NoData component tests snapshot tests without location object 1`] = `
 <Fragment>
   <PageSection
+    data-ouia-component-type="no-data"
+    data-ouia-safe={true}
     isFilled={true}
   >
     <Bullseye>

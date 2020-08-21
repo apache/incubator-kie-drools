@@ -44,6 +44,8 @@ exports[`ServerUnavailable component tests snapshot testing  1`] = `
       }
     >
       <PageSection
+        data-ouia-component-type="server-unavailable"
+        data-ouia-safe={true}
         variant="light"
       >
         <Bullseye>

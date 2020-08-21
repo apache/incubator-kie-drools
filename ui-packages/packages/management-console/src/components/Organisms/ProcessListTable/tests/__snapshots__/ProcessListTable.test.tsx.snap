@@ -1574,9 +1574,14 @@ exports[`ProcessListTable component tests Snapshot testing with wrong query para
         <section
           className="pf-c-page__main-section pf-m-light"
         >
-          <Bullseye>
+          <Bullseye
+            data-ouia-component-type="server-errors"
+            data-ouia-safe={true}
+          >
             <div
               className="pf-l-bullseye"
+              data-ouia-component-type="server-errors"
+              data-ouia-safe={true}
             >
               <EmptyState
                 variant="full"

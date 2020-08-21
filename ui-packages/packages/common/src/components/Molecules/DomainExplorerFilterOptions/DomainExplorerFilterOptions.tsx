@@ -18,6 +18,7 @@ import useGetInputFieldsFromTypeQuery = GraphQL.useGetInputFieldsFromTypeQuery;
 import { QuestionCircleIcon } from '@patternfly/react-icons';
 import { set, removeDuplicates } from '../../../utils/Utils';
 import '../../styles.css';
+import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
 
 interface ResponseType {
   loading?: boolean;
@@ -37,7 +38,7 @@ interface IOwnProps {
   setReset: (reset: boolean) => void;
   setRunQuery: (runQuery: boolean) => void;
 }
-const DomainExplorerFilterOptions: React.FC<IOwnProps> = ({
+const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
   filterChips,
   finalFilters,
   generateFilterQuery,
@@ -49,7 +50,9 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps> = ({
   setFinalFilters,
   setOffset,
   setReset,
-  setRunQuery
+  setRunQuery,
+  ouiaId,
+  ouiaSafe
 }) => {
   // tslint:disable: forin
   // tslint:disable: no-floating-promises
@@ -573,7 +576,7 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps> = ({
   };
 
   return (
-    <>
+    <div {...componentOuiaProps(ouiaId, 'filter-options', ouiaSafe)}>
       {!getSchema.loading && (
         <Select
           onToggle={onFieldToggle}
@@ -735,7 +738,7 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps> = ({
           </Button>
         </>
       )}
-    </>
+    </div>
   );
 };
 

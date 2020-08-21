@@ -180,6 +180,8 @@ exports[`KogitoPageLayout component tests snapshot tests 1`] = `
                     brandImageAlt="Kogito Logo"
                     brandImageSrc="../../../../static/kogito.png"
                     className="kogito-common--aboutModalBox"
+                    data-ouia-component-type="AboutModalBox"
+                    data-ouia-safe={true}
                     isOpen={false}
                     noAboutModalBoxContentContainer={false}
                     onClose={[Function]}
@@ -196,6 +198,8 @@ exports[`KogitoPageLayout component tests snapshot tests 1`] = `
                         brandImageAlt="Kogito Logo"
                         brandImageSrc="../../../../static/kogito.png"
                         className="kogito-common--aboutModalBox"
+                        data-ouia-component-type="AboutModalBox"
+                        data-ouia-safe={true}
                         isOpen={false}
                         noAboutModalBoxContentContainer={false}
                         onClose={[Function]}
@@ -205,12 +209,17 @@ exports[`KogitoPageLayout component tests snapshot tests 1`] = `
                     </Portal>
                   </AboutModal>
                 </AboutModalBox>
-                <Toolbar>
+                <Toolbar
+                  data-ouia-component-type="page-toolbar"
+                  data-ouia-safe={true}
+                >
                   <GenerateId
                     prefix="pf-random-id-"
                   >
                     <div
                       className="pf-c-toolbar"
+                      data-ouia-component-type="page-toolbar"
+                      data-ouia-safe={true}
                       id="pf-random-id-0"
                     >
                       <ForwardRef>

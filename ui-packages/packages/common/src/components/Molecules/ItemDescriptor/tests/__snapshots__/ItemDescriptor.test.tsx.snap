@@ -4,6 +4,8 @@ exports[`ItemDescriptor component tests snapshot testing for buisness key null 1
 <Fragment>
   <Tooltip
     content="a1e139d5-4e77-48c9-84ae-34578e904e5a"
+    data-ouia-component-type="item-descriptor"
+    data-ouia-safe={true}
   >
     <span>
       HotelBooking
@@ -27,6 +29,8 @@ exports[`ItemDescriptor component tests snapshot testing for business key availa
 <Fragment>
   <Tooltip
     content="a1e139d5-4e77-48c9-84ae-34578e904e5a"
+    data-ouia-component-type="item-descriptor"
+    data-ouia-safe={true}
   >
     <span>
       HotelBooking

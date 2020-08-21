@@ -168,9 +168,14 @@ exports[`Domain Explorer component Check error response for getQueryFields query
         <section
           className="pf-c-page__main-section pf-m-light"
         >
-          <Bullseye>
+          <Bullseye
+            data-ouia-component-type="server-errors"
+            data-ouia-safe={true}
+          >
             <div
               className="pf-l-bullseye"
+              data-ouia-component-type="server-errors"
+              data-ouia-safe={true}
             >
               <EmptyState
                 variant="full"
@@ -622,406 +627,411 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                             setReset={[Function]}
                             setRunQuery={[Function]}
                           >
-                            <Select
-                              aria-label=""
-                              aria-labelledby="Select a field"
-                              className=""
-                              clearSelectionsAriaLabel="Clear all"
-                              createText="Create"
-                              customBadgeText={null}
-                              customContent={null}
-                              direction="down"
-                              hasInlineFilter={false}
-                              id="select-field"
-                              inlineFilterPlaceholderText={null}
-                              inputIdPrefix=""
-                              isCreatable={false}
-                              isDisabled={false}
-                              isGrouped={true}
-                              isOpen={false}
-                              isPlain={false}
-                              maxHeight="60vh"
-                              menuAppendTo="inline"
-                              noResultsFoundText="No results found"
-                              onClear={[Function]}
-                              onCreateOption={[Function]}
-                              onFilter={null}
-                              onSelect={[Function]}
-                              onToggle={[Function]}
-                              ouiaSafe={true}
-                              placeholderText="Select a field"
-                              removeSelectionAriaLabel="Remove"
-                              selections="id"
-                              toggleAriaLabel="Options menu"
-                              toggleIcon={null}
-                              toggleId={null}
-                              typeAheadAriaLabel=""
-                              variant="single"
-                              width=""
+                            <div
+                              data-ouia-component-type="filter-options"
+                              data-ouia-safe={true}
                             >
-                              <GenerateId
-                                prefix="pf-random-id-"
+                              <Select
+                                aria-label=""
+                                aria-labelledby="Select a field"
+                                className=""
+                                clearSelectionsAriaLabel="Clear all"
+                                createText="Create"
+                                customBadgeText={null}
+                                customContent={null}
+                                direction="down"
+                                hasInlineFilter={false}
+                                id="select-field"
+                                inlineFilterPlaceholderText={null}
+                                inputIdPrefix=""
+                                isCreatable={false}
+                                isDisabled={false}
+                                isGrouped={true}
+                                isOpen={false}
+                                isPlain={false}
+                                maxHeight="60vh"
+                                menuAppendTo="inline"
+                                noResultsFoundText="No results found"
+                                onClear={[Function]}
+                                onCreateOption={[Function]}
+                                onFilter={null}
+                                onSelect={[Function]}
+                                onToggle={[Function]}
+                                ouiaSafe={true}
+                                placeholderText="Select a field"
+                                removeSelectionAriaLabel="Remove"
+                                selections="id"
+                                toggleAriaLabel="Options menu"
+                                toggleIcon={null}
+                                toggleId={null}
+                                typeAheadAriaLabel=""
+                                variant="single"
+                                width=""
                               >
-                                <div
-                                  className="pf-c-select"
-                                  data-ouia-component-id={187}
-                                  data-ouia-component-type="PF4/Select"
-                                  data-ouia-safe={true}
+                                <GenerateId
+                                  prefix="pf-random-id-"
                                 >
-                                  <SelectToggle
-                                    aria-label="Options menu"
-                                    aria-labelledby="Select a field pf-select-toggle-id-44"
-                                    className=""
-                                    handleTypeaheadKeys={[Function]}
-                                    hasClearButton={false}
-                                    id="pf-select-toggle-id-44"
-                                    isActive={false}
-                                    isDisabled={false}
-                                    isOpen={false}
-                                    isPlain={false}
-                                    menuRef={
-                                      Object {
-                                        "current": null,
-                                      }
-                                    }
-                                    onClose={[Function]}
-                                    onEnter={[Function]}
-                                    onToggle={[Function]}
-                                    parentRef={
-                                      Object {
-                                        "current": <div
-                                          class="pf-c-select"
-                                          data-ouia-component-id="187"
-                                          data-ouia-component-type="PF4/Select"
-                                          data-ouia-safe="true"
-                                        >
-                                          <button
-                                            aria-expanded="false"
-                                            aria-haspopup="listbox"
-                                            aria-labelledby="Select a field pf-select-toggle-id-44"
-                                            class="pf-c-select__toggle"
-                                            id="pf-select-toggle-id-44"
-                                            type="button"
-                                          >
-                                            <div
-                                              class="pf-c-select__toggle-wrapper"
-                                            >
-                                              <span
-                                                class="pf-c-select__toggle-text"
-                                              >
-                                                id
-                                              </span>
-                                            </div>
-                                            <span
-                                              class="pf-c-select__toggle-arrow"
-                                            >
-                                              <svg
-                                                aria-hidden="true"
-                                                fill="currentColor"
-                                                height="1em"
-                                                role="img"
-                                                style="vertical-align: -0.125em;"
-                                                viewBox="0 0 320 512"
-                                                width="1em"
-                                              >
-                                                <path
-                                                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                                  transform=""
-                                                />
-                                              </svg>
-                                            </span>
-                                          </button>
-                                        </div>,
-                                      }
-                                    }
-                                    type="button"
-                                    variant="single"
+                                  <div
+                                    className="pf-c-select"
+                                    data-ouia-component-id={187}
+                                    data-ouia-component-type="PF4/Select"
+                                    data-ouia-safe={true}
                                   >
-                                    <button
-                                      aria-expanded={false}
-                                      aria-haspopup="listbox"
+                                    <SelectToggle
+                                      aria-label="Options menu"
                                       aria-labelledby="Select a field pf-select-toggle-id-44"
-                                      className="pf-c-select__toggle"
-                                      disabled={false}
+                                      className=""
+                                      handleTypeaheadKeys={[Function]}
+                                      hasClearButton={false}
                                       id="pf-select-toggle-id-44"
-                                      onClick={[Function]}
-                                      onKeyDown={[Function]}
-                                      type="button"
-                                    >
-                                      <div
-                                        className="pf-c-select__toggle-wrapper"
-                                      >
-                                        <span
-                                          className="pf-c-select__toggle-text"
-                                        >
-                                          id
-                                        </span>
-                                      </div>
-                                      <span
-                                        className="pf-c-select__toggle-arrow"
-                                      >
-                                        <CaretDownIcon
-                                          color="currentColor"
-                                          noVerticalAlign={false}
-                                          size="sm"
-                                        >
-                                          <svg
-                                            aria-hidden={true}
-                                            aria-labelledby={null}
-                                            fill="currentColor"
-                                            height="1em"
-                                            role="img"
-                                            style={
-                                              Object {
-                                                "verticalAlign": "-0.125em",
-                                              }
-                                            }
-                                            viewBox="0 0 320 512"
-                                            width="1em"
-                                          >
-                                            <path
-                                              d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                              transform=""
-                                            />
-                                          </svg>
-                                        </CaretDownIcon>
-                                      </span>
-                                    </button>
-                                  </SelectToggle>
-                                </div>
-                              </GenerateId>
-                            </Select>
-                            <Select
-                              aria-label="Location"
-                              aria-labelledby=""
-                              className=""
-                              clearSelectionsAriaLabel="Clear all"
-                              createText="Create"
-                              customBadgeText={null}
-                              customContent={null}
-                              direction="down"
-                              hasInlineFilter={false}
-                              id="select-operator"
-                              inlineFilterPlaceholderText={null}
-                              inputIdPrefix=""
-                              isCreatable={false}
-                              isDisabled={false}
-                              isGrouped={false}
-                              isOpen={false}
-                              isPlain={false}
-                              menuAppendTo="inline"
-                              noResultsFoundText="No results found"
-                              onClear={[Function]}
-                              onCreateOption={[Function]}
-                              onFilter={null}
-                              onSelect={[Function]}
-                              onToggle={[Function]}
-                              ouiaSafe={true}
-                              placeholderText="operator"
-                              removeSelectionAriaLabel="Remove"
-                              selections="equal"
-                              toggleAriaLabel="Options menu"
-                              toggleIcon={null}
-                              toggleId={null}
-                              typeAheadAriaLabel=""
-                              variant="single"
-                              width=""
-                            >
-                              <GenerateId
-                                prefix="pf-random-id-"
-                              >
-                                <div
-                                  className="pf-c-select"
-                                  data-ouia-component-id={188}
-                                  data-ouia-component-type="PF4/Select"
-                                  data-ouia-safe={true}
-                                >
-                                  <SelectToggle
-                                    aria-label="Options menu"
-                                    aria-labelledby=" pf-select-toggle-id-45"
-                                    className=""
-                                    handleTypeaheadKeys={[Function]}
-                                    hasClearButton={false}
-                                    id="pf-select-toggle-id-45"
-                                    isActive={false}
-                                    isDisabled={false}
-                                    isOpen={false}
-                                    isPlain={false}
-                                    menuRef={
-                                      Object {
-                                        "current": null,
+                                      isActive={false}
+                                      isDisabled={false}
+                                      isOpen={false}
+                                      isPlain={false}
+                                      menuRef={
+                                        Object {
+                                          "current": null,
+                                        }
                                       }
-                                    }
-                                    onClose={[Function]}
-                                    onEnter={[Function]}
-                                    onToggle={[Function]}
-                                    parentRef={
-                                      Object {
-                                        "current": <div
-                                          class="pf-c-select"
-                                          data-ouia-component-id="188"
-                                          data-ouia-component-type="PF4/Select"
-                                          data-ouia-safe="true"
-                                        >
-                                          <button
-                                            aria-expanded="false"
-                                            aria-haspopup="listbox"
-                                            aria-labelledby=" pf-select-toggle-id-45"
-                                            class="pf-c-select__toggle"
-                                            id="pf-select-toggle-id-45"
-                                            type="button"
+                                      onClose={[Function]}
+                                      onEnter={[Function]}
+                                      onToggle={[Function]}
+                                      parentRef={
+                                        Object {
+                                          "current": <div
+                                            class="pf-c-select"
+                                            data-ouia-component-id="187"
+                                            data-ouia-component-type="PF4/Select"
+                                            data-ouia-safe="true"
                                           >
-                                            <div
-                                              class="pf-c-select__toggle-wrapper"
+                                            <button
+                                              aria-expanded="false"
+                                              aria-haspopup="listbox"
+                                              aria-labelledby="Select a field pf-select-toggle-id-44"
+                                              class="pf-c-select__toggle"
+                                              id="pf-select-toggle-id-44"
+                                              type="button"
                                             >
+                                              <div
+                                                class="pf-c-select__toggle-wrapper"
+                                              >
+                                                <span
+                                                  class="pf-c-select__toggle-text"
+                                                >
+                                                  id
+                                                </span>
+                                              </div>
                                               <span
-                                                class="pf-c-select__toggle-text"
+                                                class="pf-c-select__toggle-arrow"
                                               >
-                                                equal
+                                                <svg
+                                                  aria-hidden="true"
+                                                  fill="currentColor"
+                                                  height="1em"
+                                                  role="img"
+                                                  style="vertical-align: -0.125em;"
+                                                  viewBox="0 0 320 512"
+                                                  width="1em"
+                                                >
+                                                  <path
+                                                    d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                                    transform=""
+                                                  />
+                                                </svg>
                                               </span>
-                                            </div>
-                                            <span
-                                              class="pf-c-select__toggle-arrow"
-                                            >
-                                              <svg
-                                                aria-hidden="true"
-                                                fill="currentColor"
-                                                height="1em"
-                                                role="img"
-                                                style="vertical-align: -0.125em;"
-                                                viewBox="0 0 320 512"
-                                                width="1em"
-                                              >
-                                                <path
-                                                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                                  transform=""
-                                                />
-                                              </svg>
-                                            </span>
-                                          </button>
-                                        </div>,
+                                            </button>
+                                          </div>,
+                                        }
                                       }
-                                    }
-                                    type="button"
-                                    variant="single"
-                                  >
-                                    <button
-                                      aria-expanded={false}
-                                      aria-haspopup="listbox"
-                                      aria-labelledby=" pf-select-toggle-id-45"
-                                      className="pf-c-select__toggle"
-                                      disabled={false}
-                                      id="pf-select-toggle-id-45"
-                                      onClick={[Function]}
-                                      onKeyDown={[Function]}
                                       type="button"
+                                      variant="single"
                                     >
-                                      <div
-                                        className="pf-c-select__toggle-wrapper"
+                                      <button
+                                        aria-expanded={false}
+                                        aria-haspopup="listbox"
+                                        aria-labelledby="Select a field pf-select-toggle-id-44"
+                                        className="pf-c-select__toggle"
+                                        disabled={false}
+                                        id="pf-select-toggle-id-44"
+                                        onClick={[Function]}
+                                        onKeyDown={[Function]}
+                                        type="button"
                                       >
-                                        <span
-                                          className="pf-c-select__toggle-text"
+                                        <div
+                                          className="pf-c-select__toggle-wrapper"
                                         >
-                                          equal
-                                        </span>
-                                      </div>
-                                      <span
-                                        className="pf-c-select__toggle-arrow"
-                                      >
-                                        <CaretDownIcon
-                                          color="currentColor"
-                                          noVerticalAlign={false}
-                                          size="sm"
-                                        >
-                                          <svg
-                                            aria-hidden={true}
-                                            aria-labelledby={null}
-                                            fill="currentColor"
-                                            height="1em"
-                                            role="img"
-                                            style={
-                                              Object {
-                                                "verticalAlign": "-0.125em",
-                                              }
-                                            }
-                                            viewBox="0 0 320 512"
-                                            width="1em"
+                                          <span
+                                            className="pf-c-select__toggle-text"
                                           >
-                                            <path
-                                              d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                              transform=""
-                                            />
-                                          </svg>
-                                        </CaretDownIcon>
-                                      </span>
-                                    </button>
-                                  </SelectToggle>
-                                </div>
-                              </GenerateId>
-                            </Select>
-                            <ForwardRef
-                              aria-label="filter text for id"
-                              className="kogito-common--filter-options__inputs"
-                              id="textBox-input"
-                              name="filterText"
-                              onChange={[Function]}
-                              placeholder="value"
-                              type="search"
-                              value=""
-                            >
-                              <TextInputBase
+                                            id
+                                          </span>
+                                        </div>
+                                        <span
+                                          className="pf-c-select__toggle-arrow"
+                                        >
+                                          <CaretDownIcon
+                                            color="currentColor"
+                                            noVerticalAlign={false}
+                                            size="sm"
+                                          >
+                                            <svg
+                                              aria-hidden={true}
+                                              aria-labelledby={null}
+                                              fill="currentColor"
+                                              height="1em"
+                                              role="img"
+                                              style={
+                                                Object {
+                                                  "verticalAlign": "-0.125em",
+                                                }
+                                              }
+                                              viewBox="0 0 320 512"
+                                              width="1em"
+                                            >
+                                              <path
+                                                d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                                transform=""
+                                              />
+                                            </svg>
+                                          </CaretDownIcon>
+                                        </span>
+                                      </button>
+                                    </SelectToggle>
+                                  </div>
+                                </GenerateId>
+                              </Select>
+                              <Select
+                                aria-label="Location"
+                                aria-labelledby=""
+                                className=""
+                                clearSelectionsAriaLabel="Clear all"
+                                createText="Create"
+                                customBadgeText={null}
+                                customContent={null}
+                                direction="down"
+                                hasInlineFilter={false}
+                                id="select-operator"
+                                inlineFilterPlaceholderText={null}
+                                inputIdPrefix=""
+                                isCreatable={false}
+                                isDisabled={false}
+                                isGrouped={false}
+                                isOpen={false}
+                                isPlain={false}
+                                menuAppendTo="inline"
+                                noResultsFoundText="No results found"
+                                onClear={[Function]}
+                                onCreateOption={[Function]}
+                                onFilter={null}
+                                onSelect={[Function]}
+                                onToggle={[Function]}
+                                ouiaSafe={true}
+                                placeholderText="operator"
+                                removeSelectionAriaLabel="Remove"
+                                selections="equal"
+                                toggleAriaLabel="Options menu"
+                                toggleIcon={null}
+                                toggleId={null}
+                                typeAheadAriaLabel=""
+                                variant="single"
+                                width=""
+                              >
+                                <GenerateId
+                                  prefix="pf-random-id-"
+                                >
+                                  <div
+                                    className="pf-c-select"
+                                    data-ouia-component-id={188}
+                                    data-ouia-component-type="PF4/Select"
+                                    data-ouia-safe={true}
+                                  >
+                                    <SelectToggle
+                                      aria-label="Options menu"
+                                      aria-labelledby=" pf-select-toggle-id-45"
+                                      className=""
+                                      handleTypeaheadKeys={[Function]}
+                                      hasClearButton={false}
+                                      id="pf-select-toggle-id-45"
+                                      isActive={false}
+                                      isDisabled={false}
+                                      isOpen={false}
+                                      isPlain={false}
+                                      menuRef={
+                                        Object {
+                                          "current": null,
+                                        }
+                                      }
+                                      onClose={[Function]}
+                                      onEnter={[Function]}
+                                      onToggle={[Function]}
+                                      parentRef={
+                                        Object {
+                                          "current": <div
+                                            class="pf-c-select"
+                                            data-ouia-component-id="188"
+                                            data-ouia-component-type="PF4/Select"
+                                            data-ouia-safe="true"
+                                          >
+                                            <button
+                                              aria-expanded="false"
+                                              aria-haspopup="listbox"
+                                              aria-labelledby=" pf-select-toggle-id-45"
+                                              class="pf-c-select__toggle"
+                                              id="pf-select-toggle-id-45"
+                                              type="button"
+                                            >
+                                              <div
+                                                class="pf-c-select__toggle-wrapper"
+                                              >
+                                                <span
+                                                  class="pf-c-select__toggle-text"
+                                                >
+                                                  equal
+                                                </span>
+                                              </div>
+                                              <span
+                                                class="pf-c-select__toggle-arrow"
+                                              >
+                                                <svg
+                                                  aria-hidden="true"
+                                                  fill="currentColor"
+                                                  height="1em"
+                                                  role="img"
+                                                  style="vertical-align: -0.125em;"
+                                                  viewBox="0 0 320 512"
+                                                  width="1em"
+                                                >
+                                                  <path
+                                                    d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                                    transform=""
+                                                  />
+                                                </svg>
+                                              </span>
+                                            </button>
+                                          </div>,
+                                        }
+                                      }
+                                      type="button"
+                                      variant="single"
+                                    >
+                                      <button
+                                        aria-expanded={false}
+                                        aria-haspopup="listbox"
+                                        aria-labelledby=" pf-select-toggle-id-45"
+                                        className="pf-c-select__toggle"
+                                        disabled={false}
+                                        id="pf-select-toggle-id-45"
+                                        onClick={[Function]}
+                                        onKeyDown={[Function]}
+                                        type="button"
+                                      >
+                                        <div
+                                          className="pf-c-select__toggle-wrapper"
+                                        >
+                                          <span
+                                            className="pf-c-select__toggle-text"
+                                          >
+                                            equal
+                                          </span>
+                                        </div>
+                                        <span
+                                          className="pf-c-select__toggle-arrow"
+                                        >
+                                          <CaretDownIcon
+                                            color="currentColor"
+                                            noVerticalAlign={false}
+                                            size="sm"
+                                          >
+                                            <svg
+                                              aria-hidden={true}
+                                              aria-labelledby={null}
+                                              fill="currentColor"
+                                              height="1em"
+                                              role="img"
+                                              style={
+                                                Object {
+                                                  "verticalAlign": "-0.125em",
+                                                }
+                                              }
+                                              viewBox="0 0 320 512"
+                                              width="1em"
+                                            >
+                                              <path
+                                                d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                                transform=""
+                                              />
+                                            </svg>
+                                          </CaretDownIcon>
+                                        </span>
+                                      </button>
+                                    </SelectToggle>
+                                  </div>
+                                </GenerateId>
+                              </Select>
+                              <ForwardRef
                                 aria-label="filter text for id"
                                 className="kogito-common--filter-options__inputs"
                                 id="textBox-input"
-                                innerRef={null}
-                                isDisabled={false}
-                                isReadOnly={false}
-                                isRequired={false}
                                 name="filterText"
                                 onChange={[Function]}
                                 placeholder="value"
                                 type="search"
-                                validated="default"
                                 value=""
                               >
-                                <input
-                                  aria-invalid={false}
+                                <TextInputBase
                                   aria-label="filter text for id"
-                                  className="pf-c-form-control kogito-common--filter-options__inputs"
-                                  disabled={false}
+                                  className="kogito-common--filter-options__inputs"
                                   id="textBox-input"
+                                  innerRef={null}
+                                  isDisabled={false}
+                                  isReadOnly={false}
+                                  isRequired={false}
                                   name="filterText"
                                   onChange={[Function]}
                                   placeholder="value"
-                                  readOnly={false}
-                                  required={false}
                                   type="search"
+                                  validated="default"
                                   value=""
-                                />
-                              </TextInputBase>
-                            </ForwardRef>
-                            <Button
-                              id="button-with-string"
-                              isDisabled={true}
-                              onClick={[Function]}
-                              variant="primary"
-                            >
-                              <button
-                                aria-disabled={true}
-                                aria-label={null}
-                                className="pf-c-button pf-m-primary pf-m-disabled"
-                                data-ouia-component-id={189}
-                                data-ouia-component-type="PF4/Button"
-                                data-ouia-safe={true}
-                                disabled={true}
+                                >
+                                  <input
+                                    aria-invalid={false}
+                                    aria-label="filter text for id"
+                                    className="pf-c-form-control kogito-common--filter-options__inputs"
+                                    disabled={false}
+                                    id="textBox-input"
+                                    name="filterText"
+                                    onChange={[Function]}
+                                    placeholder="value"
+                                    readOnly={false}
+                                    required={false}
+                                    type="search"
+                                    value=""
+                                  />
+                                </TextInputBase>
+                              </ForwardRef>
+                              <Button
                                 id="button-with-string"
+                                isDisabled={true}
                                 onClick={[Function]}
-                                tabIndex={null}
-                                type="button"
+                                variant="primary"
                               >
-                                Apply Filter
-                              </button>
-                            </Button>
+                                <button
+                                  aria-disabled={true}
+                                  aria-label={null}
+                                  className="pf-c-button pf-m-primary pf-m-disabled"
+                                  data-ouia-component-id={189}
+                                  data-ouia-component-type="PF4/Button"
+                                  data-ouia-safe={true}
+                                  disabled={true}
+                                  id="button-with-string"
+                                  onClick={[Function]}
+                                  tabIndex={null}
+                                  type="button"
+                                >
+                                  Apply Filter
+                                </button>
+                              </Button>
+                            </div>
                           </Memo(DomainExplorerFilterOptions)>
                         </div>
                       </ToolbarItem>
@@ -2084,406 +2094,411 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                             setReset={[Function]}
                             setRunQuery={[Function]}
                           >
-                            <Select
-                              aria-label=""
-                              aria-labelledby="Select a field"
-                              className=""
-                              clearSelectionsAriaLabel="Clear all"
-                              createText="Create"
-                              customBadgeText={null}
-                              customContent={null}
-                              direction="down"
-                              hasInlineFilter={false}
-                              id="select-field"
-                              inlineFilterPlaceholderText={null}
-                              inputIdPrefix=""
-                              isCreatable={false}
-                              isDisabled={false}
-                              isGrouped={true}
-                              isOpen={false}
-                              isPlain={false}
-                              maxHeight="60vh"
-                              menuAppendTo="inline"
-                              noResultsFoundText="No results found"
-                              onClear={[Function]}
-                              onCreateOption={[Function]}
-                              onFilter={null}
-                              onSelect={[Function]}
-                              onToggle={[Function]}
-                              ouiaSafe={true}
-                              placeholderText="Select a field"
-                              removeSelectionAriaLabel="Remove"
-                              selections="id"
-                              toggleAriaLabel="Options menu"
-                              toggleIcon={null}
-                              toggleId={null}
-                              typeAheadAriaLabel=""
-                              variant="single"
-                              width=""
+                            <div
+                              data-ouia-component-type="filter-options"
+                              data-ouia-safe={true}
                             >
-                              <GenerateId
-                                prefix="pf-random-id-"
+                              <Select
+                                aria-label=""
+                                aria-labelledby="Select a field"
+                                className=""
+                                clearSelectionsAriaLabel="Clear all"
+                                createText="Create"
+                                customBadgeText={null}
+                                customContent={null}
+                                direction="down"
+                                hasInlineFilter={false}
+                                id="select-field"
+                                inlineFilterPlaceholderText={null}
+                                inputIdPrefix=""
+                                isCreatable={false}
+                                isDisabled={false}
+                                isGrouped={true}
+                                isOpen={false}
+                                isPlain={false}
+                                maxHeight="60vh"
+                                menuAppendTo="inline"
+                                noResultsFoundText="No results found"
+                                onClear={[Function]}
+                                onCreateOption={[Function]}
+                                onFilter={null}
+                                onSelect={[Function]}
+                                onToggle={[Function]}
+                                ouiaSafe={true}
+                                placeholderText="Select a field"
+                                removeSelectionAriaLabel="Remove"
+                                selections="id"
+                                toggleAriaLabel="Options menu"
+                                toggleIcon={null}
+                                toggleId={null}
+                                typeAheadAriaLabel=""
+                                variant="single"
+                                width=""
                               >
-                                <div
-                                  className="pf-c-select"
-                                  data-ouia-component-id={47}
-                                  data-ouia-component-type="PF4/Select"
-                                  data-ouia-safe={true}
+                                <GenerateId
+                                  prefix="pf-random-id-"
                                 >
-                                  <SelectToggle
-                                    aria-label="Options menu"
-                                    aria-labelledby="Select a field pf-select-toggle-id-12"
-                                    className=""
-                                    handleTypeaheadKeys={[Function]}
-                                    hasClearButton={false}
-                                    id="pf-select-toggle-id-12"
-                                    isActive={false}
-                                    isDisabled={false}
-                                    isOpen={false}
-                                    isPlain={false}
-                                    menuRef={
-                                      Object {
-                                        "current": null,
-                                      }
-                                    }
-                                    onClose={[Function]}
-                                    onEnter={[Function]}
-                                    onToggle={[Function]}
-                                    parentRef={
-                                      Object {
-                                        "current": <div
-                                          class="pf-c-select"
-                                          data-ouia-component-id="74"
-                                          data-ouia-component-type="PF4/Select"
-                                          data-ouia-safe="true"
-                                        >
-                                          <button
-                                            aria-expanded="false"
-                                            aria-haspopup="listbox"
-                                            aria-labelledby="Select a field pf-select-toggle-id-18"
-                                            class="pf-c-select__toggle"
-                                            id="pf-select-toggle-id-18"
-                                            type="button"
-                                          >
-                                            <div
-                                              class="pf-c-select__toggle-wrapper"
-                                            >
-                                              <span
-                                                class="pf-c-select__toggle-text"
-                                              >
-                                                id
-                                              </span>
-                                            </div>
-                                            <span
-                                              class="pf-c-select__toggle-arrow"
-                                            >
-                                              <svg
-                                                aria-hidden="true"
-                                                fill="currentColor"
-                                                height="1em"
-                                                role="img"
-                                                style="vertical-align: -0.125em;"
-                                                viewBox="0 0 320 512"
-                                                width="1em"
-                                              >
-                                                <path
-                                                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                                  transform=""
-                                                />
-                                              </svg>
-                                            </span>
-                                          </button>
-                                        </div>,
-                                      }
-                                    }
-                                    type="button"
-                                    variant="single"
+                                  <div
+                                    className="pf-c-select"
+                                    data-ouia-component-id={47}
+                                    data-ouia-component-type="PF4/Select"
+                                    data-ouia-safe={true}
                                   >
-                                    <button
-                                      aria-expanded={false}
-                                      aria-haspopup="listbox"
+                                    <SelectToggle
+                                      aria-label="Options menu"
                                       aria-labelledby="Select a field pf-select-toggle-id-12"
-                                      className="pf-c-select__toggle"
-                                      disabled={false}
+                                      className=""
+                                      handleTypeaheadKeys={[Function]}
+                                      hasClearButton={false}
                                       id="pf-select-toggle-id-12"
-                                      onClick={[Function]}
-                                      onKeyDown={[Function]}
-                                      type="button"
-                                    >
-                                      <div
-                                        className="pf-c-select__toggle-wrapper"
-                                      >
-                                        <span
-                                          className="pf-c-select__toggle-text"
-                                        >
-                                          id
-                                        </span>
-                                      </div>
-                                      <span
-                                        className="pf-c-select__toggle-arrow"
-                                      >
-                                        <CaretDownIcon
-                                          color="currentColor"
-                                          noVerticalAlign={false}
-                                          size="sm"
-                                        >
-                                          <svg
-                                            aria-hidden={true}
-                                            aria-labelledby={null}
-                                            fill="currentColor"
-                                            height="1em"
-                                            role="img"
-                                            style={
-                                              Object {
-                                                "verticalAlign": "-0.125em",
-                                              }
-                                            }
-                                            viewBox="0 0 320 512"
-                                            width="1em"
-                                          >
-                                            <path
-                                              d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                              transform=""
-                                            />
-                                          </svg>
-                                        </CaretDownIcon>
-                                      </span>
-                                    </button>
-                                  </SelectToggle>
-                                </div>
-                              </GenerateId>
-                            </Select>
-                            <Select
-                              aria-label="Location"
-                              aria-labelledby=""
-                              className=""
-                              clearSelectionsAriaLabel="Clear all"
-                              createText="Create"
-                              customBadgeText={null}
-                              customContent={null}
-                              direction="down"
-                              hasInlineFilter={false}
-                              id="select-operator"
-                              inlineFilterPlaceholderText={null}
-                              inputIdPrefix=""
-                              isCreatable={false}
-                              isDisabled={false}
-                              isGrouped={false}
-                              isOpen={false}
-                              isPlain={false}
-                              menuAppendTo="inline"
-                              noResultsFoundText="No results found"
-                              onClear={[Function]}
-                              onCreateOption={[Function]}
-                              onFilter={null}
-                              onSelect={[Function]}
-                              onToggle={[Function]}
-                              ouiaSafe={true}
-                              placeholderText="operator"
-                              removeSelectionAriaLabel="Remove"
-                              selections="equal"
-                              toggleAriaLabel="Options menu"
-                              toggleIcon={null}
-                              toggleId={null}
-                              typeAheadAriaLabel=""
-                              variant="single"
-                              width=""
-                            >
-                              <GenerateId
-                                prefix="pf-random-id-"
-                              >
-                                <div
-                                  className="pf-c-select"
-                                  data-ouia-component-id={48}
-                                  data-ouia-component-type="PF4/Select"
-                                  data-ouia-safe={true}
-                                >
-                                  <SelectToggle
-                                    aria-label="Options menu"
-                                    aria-labelledby=" pf-select-toggle-id-13"
-                                    className=""
-                                    handleTypeaheadKeys={[Function]}
-                                    hasClearButton={false}
-                                    id="pf-select-toggle-id-13"
-                                    isActive={false}
-                                    isDisabled={false}
-                                    isOpen={false}
-                                    isPlain={false}
-                                    menuRef={
-                                      Object {
-                                        "current": null,
+                                      isActive={false}
+                                      isDisabled={false}
+                                      isOpen={false}
+                                      isPlain={false}
+                                      menuRef={
+                                        Object {
+                                          "current": null,
+                                        }
                                       }
-                                    }
-                                    onClose={[Function]}
-                                    onEnter={[Function]}
-                                    onToggle={[Function]}
-                                    parentRef={
-                                      Object {
-                                        "current": <div
-                                          class="pf-c-select"
-                                          data-ouia-component-id="75"
-                                          data-ouia-component-type="PF4/Select"
-                                          data-ouia-safe="true"
-                                        >
-                                          <button
-                                            aria-expanded="false"
-                                            aria-haspopup="listbox"
-                                            aria-labelledby=" pf-select-toggle-id-19"
-                                            class="pf-c-select__toggle"
-                                            id="pf-select-toggle-id-19"
-                                            type="button"
+                                      onClose={[Function]}
+                                      onEnter={[Function]}
+                                      onToggle={[Function]}
+                                      parentRef={
+                                        Object {
+                                          "current": <div
+                                            class="pf-c-select"
+                                            data-ouia-component-id="74"
+                                            data-ouia-component-type="PF4/Select"
+                                            data-ouia-safe="true"
                                           >
-                                            <div
-                                              class="pf-c-select__toggle-wrapper"
+                                            <button
+                                              aria-expanded="false"
+                                              aria-haspopup="listbox"
+                                              aria-labelledby="Select a field pf-select-toggle-id-18"
+                                              class="pf-c-select__toggle"
+                                              id="pf-select-toggle-id-18"
+                                              type="button"
                                             >
+                                              <div
+                                                class="pf-c-select__toggle-wrapper"
+                                              >
+                                                <span
+                                                  class="pf-c-select__toggle-text"
+                                                >
+                                                  id
+                                                </span>
+                                              </div>
                                               <span
-                                                class="pf-c-select__toggle-text"
+                                                class="pf-c-select__toggle-arrow"
                                               >
-                                                equal
+                                                <svg
+                                                  aria-hidden="true"
+                                                  fill="currentColor"
+                                                  height="1em"
+                                                  role="img"
+                                                  style="vertical-align: -0.125em;"
+                                                  viewBox="0 0 320 512"
+                                                  width="1em"
+                                                >
+                                                  <path
+                                                    d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                                    transform=""
+                                                  />
+                                                </svg>
                                               </span>
-                                            </div>
-                                            <span
-                                              class="pf-c-select__toggle-arrow"
-                                            >
-                                              <svg
-                                                aria-hidden="true"
-                                                fill="currentColor"
-                                                height="1em"
-                                                role="img"
-                                                style="vertical-align: -0.125em;"
-                                                viewBox="0 0 320 512"
-                                                width="1em"
-                                              >
-                                                <path
-                                                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                                  transform=""
-                                                />
-                                              </svg>
-                                            </span>
-                                          </button>
-                                        </div>,
+                                            </button>
+                                          </div>,
+                                        }
                                       }
-                                    }
-                                    type="button"
-                                    variant="single"
-                                  >
-                                    <button
-                                      aria-expanded={false}
-                                      aria-haspopup="listbox"
-                                      aria-labelledby=" pf-select-toggle-id-13"
-                                      className="pf-c-select__toggle"
-                                      disabled={false}
-                                      id="pf-select-toggle-id-13"
-                                      onClick={[Function]}
-                                      onKeyDown={[Function]}
                                       type="button"
+                                      variant="single"
                                     >
-                                      <div
-                                        className="pf-c-select__toggle-wrapper"
+                                      <button
+                                        aria-expanded={false}
+                                        aria-haspopup="listbox"
+                                        aria-labelledby="Select a field pf-select-toggle-id-12"
+                                        className="pf-c-select__toggle"
+                                        disabled={false}
+                                        id="pf-select-toggle-id-12"
+                                        onClick={[Function]}
+                                        onKeyDown={[Function]}
+                                        type="button"
                                       >
-                                        <span
-                                          className="pf-c-select__toggle-text"
+                                        <div
+                                          className="pf-c-select__toggle-wrapper"
                                         >
-                                          equal
-                                        </span>
-                                      </div>
-                                      <span
-                                        className="pf-c-select__toggle-arrow"
-                                      >
-                                        <CaretDownIcon
-                                          color="currentColor"
-                                          noVerticalAlign={false}
-                                          size="sm"
-                                        >
-                                          <svg
-                                            aria-hidden={true}
-                                            aria-labelledby={null}
-                                            fill="currentColor"
-                                            height="1em"
-                                            role="img"
-                                            style={
-                                              Object {
-                                                "verticalAlign": "-0.125em",
-                                              }
-                                            }
-                                            viewBox="0 0 320 512"
-                                            width="1em"
+                                          <span
+                                            className="pf-c-select__toggle-text"
                                           >
-                                            <path
-                                              d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                              transform=""
-                                            />
-                                          </svg>
-                                        </CaretDownIcon>
-                                      </span>
-                                    </button>
-                                  </SelectToggle>
-                                </div>
-                              </GenerateId>
-                            </Select>
-                            <ForwardRef
-                              aria-label="filter text for id"
-                              className="kogito-common--filter-options__inputs"
-                              id="textBox-input"
-                              name="filterText"
-                              onChange={[Function]}
-                              placeholder="value"
-                              type="search"
-                              value=""
-                            >
-                              <TextInputBase
+                                            id
+                                          </span>
+                                        </div>
+                                        <span
+                                          className="pf-c-select__toggle-arrow"
+                                        >
+                                          <CaretDownIcon
+                                            color="currentColor"
+                                            noVerticalAlign={false}
+                                            size="sm"
+                                          >
+                                            <svg
+                                              aria-hidden={true}
+                                              aria-labelledby={null}
+                                              fill="currentColor"
+                                              height="1em"
+                                              role="img"
+                                              style={
+                                                Object {
+                                                  "verticalAlign": "-0.125em",
+                                                }
+                                              }
+                                              viewBox="0 0 320 512"
+                                              width="1em"
+                                            >
+                                              <path
+                                                d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                                transform=""
+                                              />
+                                            </svg>
+                                          </CaretDownIcon>
+                                        </span>
+                                      </button>
+                                    </SelectToggle>
+                                  </div>
+                                </GenerateId>
+                              </Select>
+                              <Select
+                                aria-label="Location"
+                                aria-labelledby=""
+                                className=""
+                                clearSelectionsAriaLabel="Clear all"
+                                createText="Create"
+                                customBadgeText={null}
+                                customContent={null}
+                                direction="down"
+                                hasInlineFilter={false}
+                                id="select-operator"
+                                inlineFilterPlaceholderText={null}
+                                inputIdPrefix=""
+                                isCreatable={false}
+                                isDisabled={false}
+                                isGrouped={false}
+                                isOpen={false}
+                                isPlain={false}
+                                menuAppendTo="inline"
+                                noResultsFoundText="No results found"
+                                onClear={[Function]}
+                                onCreateOption={[Function]}
+                                onFilter={null}
+                                onSelect={[Function]}
+                                onToggle={[Function]}
+                                ouiaSafe={true}
+                                placeholderText="operator"
+                                removeSelectionAriaLabel="Remove"
+                                selections="equal"
+                                toggleAriaLabel="Options menu"
+                                toggleIcon={null}
+                                toggleId={null}
+                                typeAheadAriaLabel=""
+                                variant="single"
+                                width=""
+                              >
+                                <GenerateId
+                                  prefix="pf-random-id-"
+                                >
+                                  <div
+                                    className="pf-c-select"
+                                    data-ouia-component-id={48}
+                                    data-ouia-component-type="PF4/Select"
+                                    data-ouia-safe={true}
+                                  >
+                                    <SelectToggle
+                                      aria-label="Options menu"
+                                      aria-labelledby=" pf-select-toggle-id-13"
+                                      className=""
+                                      handleTypeaheadKeys={[Function]}
+                                      hasClearButton={false}
+                                      id="pf-select-toggle-id-13"
+                                      isActive={false}
+                                      isDisabled={false}
+                                      isOpen={false}
+                                      isPlain={false}
+                                      menuRef={
+                                        Object {
+                                          "current": null,
+                                        }
+                                      }
+                                      onClose={[Function]}
+                                      onEnter={[Function]}
+                                      onToggle={[Function]}
+                                      parentRef={
+                                        Object {
+                                          "current": <div
+                                            class="pf-c-select"
+                                            data-ouia-component-id="75"
+                                            data-ouia-component-type="PF4/Select"
+                                            data-ouia-safe="true"
+                                          >
+                                            <button
+                                              aria-expanded="false"
+                                              aria-haspopup="listbox"
+                                              aria-labelledby=" pf-select-toggle-id-19"
+                                              class="pf-c-select__toggle"
+                                              id="pf-select-toggle-id-19"
+                                              type="button"
+                                            >
+                                              <div
+                                                class="pf-c-select__toggle-wrapper"
+                                              >
+                                                <span
+                                                  class="pf-c-select__toggle-text"
+                                                >
+                                                  equal
+                                                </span>
+                                              </div>
+                                              <span
+                                                class="pf-c-select__toggle-arrow"
+                                              >
+                                                <svg
+                                                  aria-hidden="true"
+                                                  fill="currentColor"
+                                                  height="1em"
+                                                  role="img"
+                                                  style="vertical-align: -0.125em;"
+                                                  viewBox="0 0 320 512"
+                                                  width="1em"
+                                                >
+                                                  <path
+                                                    d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                                    transform=""
+                                                  />
+                                                </svg>
+                                              </span>
+                                            </button>
+                                          </div>,
+                                        }
+                                      }
+                                      type="button"
+                                      variant="single"
+                                    >
+                                      <button
+                                        aria-expanded={false}
+                                        aria-haspopup="listbox"
+                                        aria-labelledby=" pf-select-toggle-id-13"
+                                        className="pf-c-select__toggle"
+                                        disabled={false}
+                                        id="pf-select-toggle-id-13"
+                                        onClick={[Function]}
+                                        onKeyDown={[Function]}
+                                        type="button"
+                                      >
+                                        <div
+                                          className="pf-c-select__toggle-wrapper"
+                                        >
+                                          <span
+                                            className="pf-c-select__toggle-text"
+                                          >
+                                            equal
+                                          </span>
+                                        </div>
+                                        <span
+                                          className="pf-c-select__toggle-arrow"
+                                        >
+                                          <CaretDownIcon
+                                            color="currentColor"
+                                            noVerticalAlign={false}
+                                            size="sm"
+                                          >
+                                            <svg
+                                              aria-hidden={true}
+                                              aria-labelledby={null}
+                                              fill="currentColor"
+                                              height="1em"
+                                              role="img"
+                                              style={
+                                                Object {
+                                                  "verticalAlign": "-0.125em",
+                                                }
+                                              }
+                                              viewBox="0 0 320 512"
+                                              width="1em"
+                                            >
+                                              <path
+                                                d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                                transform=""
+                                              />
+                                            </svg>
+                                          </CaretDownIcon>
+                                        </span>
+                                      </button>
+                                    </SelectToggle>
+                                  </div>
+                                </GenerateId>
+                              </Select>
+                              <ForwardRef
                                 aria-label="filter text for id"
                                 className="kogito-common--filter-options__inputs"
                                 id="textBox-input"
-                                innerRef={null}
-                                isDisabled={false}
-                                isReadOnly={false}
-                                isRequired={false}
                                 name="filterText"
                                 onChange={[Function]}
                                 placeholder="value"
                                 type="search"
-                                validated="default"
                                 value=""
                               >
-                                <input
-                                  aria-invalid={false}
+                                <TextInputBase
                                   aria-label="filter text for id"
-                                  className="pf-c-form-control kogito-common--filter-options__inputs"
-                                  disabled={false}
+                                  className="kogito-common--filter-options__inputs"
                                   id="textBox-input"
+                                  innerRef={null}
+                                  isDisabled={false}
+                                  isReadOnly={false}
+                                  isRequired={false}
                                   name="filterText"
                                   onChange={[Function]}
                                   placeholder="value"
-                                  readOnly={false}
-                                  required={false}
                                   type="search"
+                                  validated="default"
                                   value=""
-                                />
-                              </TextInputBase>
-                            </ForwardRef>
-                            <Button
-                              id="button-with-string"
-                              isDisabled={true}
-                              onClick={[Function]}
-                              variant="primary"
-                            >
-                              <button
-                                aria-disabled={true}
-                                aria-label={null}
-                                className="pf-c-button pf-m-primary pf-m-disabled"
-                                data-ouia-component-id={49}
-                                data-ouia-component-type="PF4/Button"
-                                data-ouia-safe={true}
-                                disabled={true}
+                                >
+                                  <input
+                                    aria-invalid={false}
+                                    aria-label="filter text for id"
+                                    className="pf-c-form-control kogito-common--filter-options__inputs"
+                                    disabled={false}
+                                    id="textBox-input"
+                                    name="filterText"
+                                    onChange={[Function]}
+                                    placeholder="value"
+                                    readOnly={false}
+                                    required={false}
+                                    type="search"
+                                    value=""
+                                  />
+                                </TextInputBase>
+                              </ForwardRef>
+                              <Button
                                 id="button-with-string"
+                                isDisabled={true}
                                 onClick={[Function]}
-                                tabIndex={null}
-                                type="button"
+                                variant="primary"
                               >
-                                Apply Filter
-                              </button>
-                            </Button>
+                                <button
+                                  aria-disabled={true}
+                                  aria-label={null}
+                                  className="pf-c-button pf-m-primary pf-m-disabled"
+                                  data-ouia-component-id={49}
+                                  data-ouia-component-type="PF4/Button"
+                                  data-ouia-safe={true}
+                                  disabled={true}
+                                  id="button-with-string"
+                                  onClick={[Function]}
+                                  tabIndex={null}
+                                  type="button"
+                                >
+                                  Apply Filter
+                                </button>
+                              </Button>
+                            </div>
                           </Memo(DomainExplorerFilterOptions)>
                         </div>
                       </ToolbarItem>
@@ -3541,406 +3556,411 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                             setReset={[Function]}
                             setRunQuery={[Function]}
                           >
-                            <Select
-                              aria-label=""
-                              aria-labelledby="Select a field"
-                              className=""
-                              clearSelectionsAriaLabel="Clear all"
-                              createText="Create"
-                              customBadgeText={null}
-                              customContent={null}
-                              direction="down"
-                              hasInlineFilter={false}
-                              id="select-field"
-                              inlineFilterPlaceholderText={null}
-                              inputIdPrefix=""
-                              isCreatable={false}
-                              isDisabled={false}
-                              isGrouped={true}
-                              isOpen={false}
-                              isPlain={false}
-                              maxHeight="60vh"
-                              menuAppendTo="inline"
-                              noResultsFoundText="No results found"
-                              onClear={[Function]}
-                              onCreateOption={[Function]}
-                              onFilter={null}
-                              onSelect={[Function]}
-                              onToggle={[Function]}
-                              ouiaSafe={true}
-                              placeholderText="Select a field"
-                              removeSelectionAriaLabel="Remove"
-                              selections="id"
-                              toggleAriaLabel="Options menu"
-                              toggleIcon={null}
-                              toggleId={null}
-                              typeAheadAriaLabel=""
-                              variant="single"
-                              width=""
+                            <div
+                              data-ouia-component-type="filter-options"
+                              data-ouia-safe={true}
                             >
-                              <GenerateId
-                                prefix="pf-random-id-"
+                              <Select
+                                aria-label=""
+                                aria-labelledby="Select a field"
+                                className=""
+                                clearSelectionsAriaLabel="Clear all"
+                                createText="Create"
+                                customBadgeText={null}
+                                customContent={null}
+                                direction="down"
+                                hasInlineFilter={false}
+                                id="select-field"
+                                inlineFilterPlaceholderText={null}
+                                inputIdPrefix=""
+                                isCreatable={false}
+                                isDisabled={false}
+                                isGrouped={true}
+                                isOpen={false}
+                                isPlain={false}
+                                maxHeight="60vh"
+                                menuAppendTo="inline"
+                                noResultsFoundText="No results found"
+                                onClear={[Function]}
+                                onCreateOption={[Function]}
+                                onFilter={null}
+                                onSelect={[Function]}
+                                onToggle={[Function]}
+                                ouiaSafe={true}
+                                placeholderText="Select a field"
+                                removeSelectionAriaLabel="Remove"
+                                selections="id"
+                                toggleAriaLabel="Options menu"
+                                toggleIcon={null}
+                                toggleId={null}
+                                typeAheadAriaLabel=""
+                                variant="single"
+                                width=""
                               >
-                                <div
-                                  className="pf-c-select"
-                                  data-ouia-component-id={268}
-                                  data-ouia-component-type="PF4/Select"
-                                  data-ouia-safe={true}
+                                <GenerateId
+                                  prefix="pf-random-id-"
                                 >
-                                  <SelectToggle
-                                    aria-label="Options menu"
-                                    aria-labelledby="Select a field pf-select-toggle-id-62"
-                                    className=""
-                                    handleTypeaheadKeys={[Function]}
-                                    hasClearButton={false}
-                                    id="pf-select-toggle-id-62"
-                                    isActive={false}
-                                    isDisabled={false}
-                                    isOpen={false}
-                                    isPlain={false}
-                                    menuRef={
-                                      Object {
-                                        "current": null,
-                                      }
-                                    }
-                                    onClose={[Function]}
-                                    onEnter={[Function]}
-                                    onToggle={[Function]}
-                                    parentRef={
-                                      Object {
-                                        "current": <div
-                                          class="pf-c-select"
-                                          data-ouia-component-id="268"
-                                          data-ouia-component-type="PF4/Select"
-                                          data-ouia-safe="true"
-                                        >
-                                          <button
-                                            aria-expanded="false"
-                                            aria-haspopup="listbox"
-                                            aria-labelledby="Select a field pf-select-toggle-id-62"
-                                            class="pf-c-select__toggle"
-                                            id="pf-select-toggle-id-62"
-                                            type="button"
-                                          >
-                                            <div
-                                              class="pf-c-select__toggle-wrapper"
-                                            >
-                                              <span
-                                                class="pf-c-select__toggle-text"
-                                              >
-                                                id
-                                              </span>
-                                            </div>
-                                            <span
-                                              class="pf-c-select__toggle-arrow"
-                                            >
-                                              <svg
-                                                aria-hidden="true"
-                                                fill="currentColor"
-                                                height="1em"
-                                                role="img"
-                                                style="vertical-align: -0.125em;"
-                                                viewBox="0 0 320 512"
-                                                width="1em"
-                                              >
-                                                <path
-                                                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                                  transform=""
-                                                />
-                                              </svg>
-                                            </span>
-                                          </button>
-                                        </div>,
-                                      }
-                                    }
-                                    type="button"
-                                    variant="single"
+                                  <div
+                                    className="pf-c-select"
+                                    data-ouia-component-id={268}
+                                    data-ouia-component-type="PF4/Select"
+                                    data-ouia-safe={true}
                                   >
-                                    <button
-                                      aria-expanded={false}
-                                      aria-haspopup="listbox"
+                                    <SelectToggle
+                                      aria-label="Options menu"
                                       aria-labelledby="Select a field pf-select-toggle-id-62"
-                                      className="pf-c-select__toggle"
-                                      disabled={false}
+                                      className=""
+                                      handleTypeaheadKeys={[Function]}
+                                      hasClearButton={false}
                                       id="pf-select-toggle-id-62"
-                                      onClick={[Function]}
-                                      onKeyDown={[Function]}
-                                      type="button"
-                                    >
-                                      <div
-                                        className="pf-c-select__toggle-wrapper"
-                                      >
-                                        <span
-                                          className="pf-c-select__toggle-text"
-                                        >
-                                          id
-                                        </span>
-                                      </div>
-                                      <span
-                                        className="pf-c-select__toggle-arrow"
-                                      >
-                                        <CaretDownIcon
-                                          color="currentColor"
-                                          noVerticalAlign={false}
-                                          size="sm"
-                                        >
-                                          <svg
-                                            aria-hidden={true}
-                                            aria-labelledby={null}
-                                            fill="currentColor"
-                                            height="1em"
-                                            role="img"
-                                            style={
-                                              Object {
-                                                "verticalAlign": "-0.125em",
-                                              }
-                                            }
-                                            viewBox="0 0 320 512"
-                                            width="1em"
-                                          >
-                                            <path
-                                              d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                              transform=""
-                                            />
-                                          </svg>
-                                        </CaretDownIcon>
-                                      </span>
-                                    </button>
-                                  </SelectToggle>
-                                </div>
-                              </GenerateId>
-                            </Select>
-                            <Select
-                              aria-label="Location"
-                              aria-labelledby=""
-                              className=""
-                              clearSelectionsAriaLabel="Clear all"
-                              createText="Create"
-                              customBadgeText={null}
-                              customContent={null}
-                              direction="down"
-                              hasInlineFilter={false}
-                              id="select-operator"
-                              inlineFilterPlaceholderText={null}
-                              inputIdPrefix=""
-                              isCreatable={false}
-                              isDisabled={false}
-                              isGrouped={false}
-                              isOpen={false}
-                              isPlain={false}
-                              menuAppendTo="inline"
-                              noResultsFoundText="No results found"
-                              onClear={[Function]}
-                              onCreateOption={[Function]}
-                              onFilter={null}
-                              onSelect={[Function]}
-                              onToggle={[Function]}
-                              ouiaSafe={true}
-                              placeholderText="operator"
-                              removeSelectionAriaLabel="Remove"
-                              selections="equal"
-                              toggleAriaLabel="Options menu"
-                              toggleIcon={null}
-                              toggleId={null}
-                              typeAheadAriaLabel=""
-                              variant="single"
-                              width=""
-                            >
-                              <GenerateId
-                                prefix="pf-random-id-"
-                              >
-                                <div
-                                  className="pf-c-select"
-                                  data-ouia-component-id={269}
-                                  data-ouia-component-type="PF4/Select"
-                                  data-ouia-safe={true}
-                                >
-                                  <SelectToggle
-                                    aria-label="Options menu"
-                                    aria-labelledby=" pf-select-toggle-id-63"
-                                    className=""
-                                    handleTypeaheadKeys={[Function]}
-                                    hasClearButton={false}
-                                    id="pf-select-toggle-id-63"
-                                    isActive={false}
-                                    isDisabled={false}
-                                    isOpen={false}
-                                    isPlain={false}
-                                    menuRef={
-                                      Object {
-                                        "current": null,
+                                      isActive={false}
+                                      isDisabled={false}
+                                      isOpen={false}
+                                      isPlain={false}
+                                      menuRef={
+                                        Object {
+                                          "current": null,
+                                        }
                                       }
-                                    }
-                                    onClose={[Function]}
-                                    onEnter={[Function]}
-                                    onToggle={[Function]}
-                                    parentRef={
-                                      Object {
-                                        "current": <div
-                                          class="pf-c-select"
-                                          data-ouia-component-id="269"
-                                          data-ouia-component-type="PF4/Select"
-                                          data-ouia-safe="true"
-                                        >
-                                          <button
-                                            aria-expanded="false"
-                                            aria-haspopup="listbox"
-                                            aria-labelledby=" pf-select-toggle-id-63"
-                                            class="pf-c-select__toggle"
-                                            id="pf-select-toggle-id-63"
-                                            type="button"
+                                      onClose={[Function]}
+                                      onEnter={[Function]}
+                                      onToggle={[Function]}
+                                      parentRef={
+                                        Object {
+                                          "current": <div
+                                            class="pf-c-select"
+                                            data-ouia-component-id="268"
+                                            data-ouia-component-type="PF4/Select"
+                                            data-ouia-safe="true"
                                           >
-                                            <div
-                                              class="pf-c-select__toggle-wrapper"
+                                            <button
+                                              aria-expanded="false"
+                                              aria-haspopup="listbox"
+                                              aria-labelledby="Select a field pf-select-toggle-id-62"
+                                              class="pf-c-select__toggle"
+                                              id="pf-select-toggle-id-62"
+                                              type="button"
                                             >
+                                              <div
+                                                class="pf-c-select__toggle-wrapper"
+                                              >
+                                                <span
+                                                  class="pf-c-select__toggle-text"
+                                                >
+                                                  id
+                                                </span>
+                                              </div>
                                               <span
-                                                class="pf-c-select__toggle-text"
+                                                class="pf-c-select__toggle-arrow"
                                               >
-                                                equal
+                                                <svg
+                                                  aria-hidden="true"
+                                                  fill="currentColor"
+                                                  height="1em"
+                                                  role="img"
+                                                  style="vertical-align: -0.125em;"
+                                                  viewBox="0 0 320 512"
+                                                  width="1em"
+                                                >
+                                                  <path
+                                                    d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                                    transform=""
+                                                  />
+                                                </svg>
                                               </span>
-                                            </div>
-                                            <span
-                                              class="pf-c-select__toggle-arrow"
-                                            >
-                                              <svg
-                                                aria-hidden="true"
-                                                fill="currentColor"
-                                                height="1em"
-                                                role="img"
-                                                style="vertical-align: -0.125em;"
-                                                viewBox="0 0 320 512"
-                                                width="1em"
-                                              >
-                                                <path
-                                                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                                  transform=""
-                                                />
-                                              </svg>
-                                            </span>
-                                          </button>
-                                        </div>,
+                                            </button>
+                                          </div>,
+                                        }
                                       }
-                                    }
-                                    type="button"
-                                    variant="single"
-                                  >
-                                    <button
-                                      aria-expanded={false}
-                                      aria-haspopup="listbox"
-                                      aria-labelledby=" pf-select-toggle-id-63"
-                                      className="pf-c-select__toggle"
-                                      disabled={false}
-                                      id="pf-select-toggle-id-63"
-                                      onClick={[Function]}
-                                      onKeyDown={[Function]}
                                       type="button"
+                                      variant="single"
                                     >
-                                      <div
-                                        className="pf-c-select__toggle-wrapper"
+                                      <button
+                                        aria-expanded={false}
+                                        aria-haspopup="listbox"
+                                        aria-labelledby="Select a field pf-select-toggle-id-62"
+                                        className="pf-c-select__toggle"
+                                        disabled={false}
+                                        id="pf-select-toggle-id-62"
+                                        onClick={[Function]}
+                                        onKeyDown={[Function]}
+                                        type="button"
                                       >
-                                        <span
-                                          className="pf-c-select__toggle-text"
+                                        <div
+                                          className="pf-c-select__toggle-wrapper"
                                         >
-                                          equal
-                                        </span>
-                                      </div>
-                                      <span
-                                        className="pf-c-select__toggle-arrow"
-                                      >
-                                        <CaretDownIcon
-                                          color="currentColor"
-                                          noVerticalAlign={false}
-                                          size="sm"
-                                        >
-                                          <svg
-                                            aria-hidden={true}
-                                            aria-labelledby={null}
-                                            fill="currentColor"
-                                            height="1em"
-                                            role="img"
-                                            style={
-                                              Object {
-                                                "verticalAlign": "-0.125em",
-                                              }
-                                            }
-                                            viewBox="0 0 320 512"
-                                            width="1em"
+                                          <span
+                                            className="pf-c-select__toggle-text"
                                           >
-                                            <path
-                                              d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                              transform=""
-                                            />
-                                          </svg>
-                                        </CaretDownIcon>
-                                      </span>
-                                    </button>
-                                  </SelectToggle>
-                                </div>
-                              </GenerateId>
-                            </Select>
-                            <ForwardRef
-                              aria-label="filter text for id"
-                              className="kogito-common--filter-options__inputs"
-                              id="textBox-input"
-                              name="filterText"
-                              onChange={[Function]}
-                              placeholder="value"
-                              type="search"
-                              value=""
-                            >
-                              <TextInputBase
+                                            id
+                                          </span>
+                                        </div>
+                                        <span
+                                          className="pf-c-select__toggle-arrow"
+                                        >
+                                          <CaretDownIcon
+                                            color="currentColor"
+                                            noVerticalAlign={false}
+                                            size="sm"
+                                          >
+                                            <svg
+                                              aria-hidden={true}
+                                              aria-labelledby={null}
+                                              fill="currentColor"
+                                              height="1em"
+                                              role="img"
+                                              style={
+                                                Object {
+                                                  "verticalAlign": "-0.125em",
+                                                }
+                                              }
+                                              viewBox="0 0 320 512"
+                                              width="1em"
+                                            >
+                                              <path
+                                                d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                                transform=""
+                                              />
+                                            </svg>
+                                          </CaretDownIcon>
+                                        </span>
+                                      </button>
+                                    </SelectToggle>
+                                  </div>
+                                </GenerateId>
+                              </Select>
+                              <Select
+                                aria-label="Location"
+                                aria-labelledby=""
+                                className=""
+                                clearSelectionsAriaLabel="Clear all"
+                                createText="Create"
+                                customBadgeText={null}
+                                customContent={null}
+                                direction="down"
+                                hasInlineFilter={false}
+                                id="select-operator"
+                                inlineFilterPlaceholderText={null}
+                                inputIdPrefix=""
+                                isCreatable={false}
+                                isDisabled={false}
+                                isGrouped={false}
+                                isOpen={false}
+                                isPlain={false}
+                                menuAppendTo="inline"
+                                noResultsFoundText="No results found"
+                                onClear={[Function]}
+                                onCreateOption={[Function]}
+                                onFilter={null}
+                                onSelect={[Function]}
+                                onToggle={[Function]}
+                                ouiaSafe={true}
+                                placeholderText="operator"
+                                removeSelectionAriaLabel="Remove"
+                                selections="equal"
+                                toggleAriaLabel="Options menu"
+                                toggleIcon={null}
+                                toggleId={null}
+                                typeAheadAriaLabel=""
+                                variant="single"
+                                width=""
+                              >
+                                <GenerateId
+                                  prefix="pf-random-id-"
+                                >
+                                  <div
+                                    className="pf-c-select"
+                                    data-ouia-component-id={269}
+                                    data-ouia-component-type="PF4/Select"
+                                    data-ouia-safe={true}
+                                  >
+                                    <SelectToggle
+                                      aria-label="Options menu"
+                                      aria-labelledby=" pf-select-toggle-id-63"
+                                      className=""
+                                      handleTypeaheadKeys={[Function]}
+                                      hasClearButton={false}
+                                      id="pf-select-toggle-id-63"
+                                      isActive={false}
+                                      isDisabled={false}
+                                      isOpen={false}
+                                      isPlain={false}
+                                      menuRef={
+                                        Object {
+                                          "current": null,
+                                        }
+                                      }
+                                      onClose={[Function]}
+                                      onEnter={[Function]}
+                                      onToggle={[Function]}
+                                      parentRef={
+                                        Object {
+                                          "current": <div
+                                            class="pf-c-select"
+                                            data-ouia-component-id="269"
+                                            data-ouia-component-type="PF4/Select"
+                                            data-ouia-safe="true"
+                                          >
+                                            <button
+                                              aria-expanded="false"
+                                              aria-haspopup="listbox"
+                                              aria-labelledby=" pf-select-toggle-id-63"
+                                              class="pf-c-select__toggle"
+                                              id="pf-select-toggle-id-63"
+                                              type="button"
+                                            >
+                                              <div
+                                                class="pf-c-select__toggle-wrapper"
+                                              >
+                                                <span
+                                                  class="pf-c-select__toggle-text"
+                                                >
+                                                  equal
+                                                </span>
+                                              </div>
+                                              <span
+                                                class="pf-c-select__toggle-arrow"
+                                              >
+                                                <svg
+                                                  aria-hidden="true"
+                                                  fill="currentColor"
+                                                  height="1em"
+                                                  role="img"
+                                                  style="vertical-align: -0.125em;"
+                                                  viewBox="0 0 320 512"
+                                                  width="1em"
+                                                >
+                                                  <path
+                                                    d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                                    transform=""
+                                                  />
+                                                </svg>
+                                              </span>
+                                            </button>
+                                          </div>,
+                                        }
+                                      }
+                                      type="button"
+                                      variant="single"
+                                    >
+                                      <button
+                                        aria-expanded={false}
+                                        aria-haspopup="listbox"
+                                        aria-labelledby=" pf-select-toggle-id-63"
+                                        className="pf-c-select__toggle"
+                                        disabled={false}
+                                        id="pf-select-toggle-id-63"
+                                        onClick={[Function]}
+                                        onKeyDown={[Function]}
+                                        type="button"
+                                      >
+                                        <div
+                                          className="pf-c-select__toggle-wrapper"
+                                        >
+                                          <span
+                                            className="pf-c-select__toggle-text"
+                                          >
+                                            equal
+                                          </span>
+                                        </div>
+                                        <span
+                                          className="pf-c-select__toggle-arrow"
+                                        >
+                                          <CaretDownIcon
+                                            color="currentColor"
+                                            noVerticalAlign={false}
+                                            size="sm"
+                                          >
+                                            <svg
+                                              aria-hidden={true}
+                                              aria-labelledby={null}
+                                              fill="currentColor"
+                                              height="1em"
+                                              role="img"
+                                              style={
+                                                Object {
+                                                  "verticalAlign": "-0.125em",
+                                                }
+                                              }
+                                              viewBox="0 0 320 512"
+                                              width="1em"
+                                            >
+                                              <path
+                                                d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                                transform=""
+                                              />
+                                            </svg>
+                                          </CaretDownIcon>
+                                        </span>
+                                      </button>
+                                    </SelectToggle>
+                                  </div>
+                                </GenerateId>
+                              </Select>
+                              <ForwardRef
                                 aria-label="filter text for id"
                                 className="kogito-common--filter-options__inputs"
                                 id="textBox-input"
-                                innerRef={null}
-                                isDisabled={false}
-                                isReadOnly={false}
-                                isRequired={false}
                                 name="filterText"
                                 onChange={[Function]}
                                 placeholder="value"
                                 type="search"
-                                validated="default"
                                 value=""
                               >
-                                <input
-                                  aria-invalid={false}
+                                <TextInputBase
                                   aria-label="filter text for id"
-                                  className="pf-c-form-control kogito-common--filter-options__inputs"
-                                  disabled={false}
+                                  className="kogito-common--filter-options__inputs"
                                   id="textBox-input"
+                                  innerRef={null}
+                                  isDisabled={false}
+                                  isReadOnly={false}
+                                  isRequired={false}
                                   name="filterText"
                                   onChange={[Function]}
                                   placeholder="value"
-                                  readOnly={false}
-                                  required={false}
                                   type="search"
+                                  validated="default"
                                   value=""
-                                />
-                              </TextInputBase>
-                            </ForwardRef>
-                            <Button
-                              id="button-with-string"
-                              isDisabled={true}
-                              onClick={[Function]}
-                              variant="primary"
-                            >
-                              <button
-                                aria-disabled={true}
-                                aria-label={null}
-                                className="pf-c-button pf-m-primary pf-m-disabled"
-                                data-ouia-component-id={270}
-                                data-ouia-component-type="PF4/Button"
-                                data-ouia-safe={true}
-                                disabled={true}
+                                >
+                                  <input
+                                    aria-invalid={false}
+                                    aria-label="filter text for id"
+                                    className="pf-c-form-control kogito-common--filter-options__inputs"
+                                    disabled={false}
+                                    id="textBox-input"
+                                    name="filterText"
+                                    onChange={[Function]}
+                                    placeholder="value"
+                                    readOnly={false}
+                                    required={false}
+                                    type="search"
+                                    value=""
+                                  />
+                                </TextInputBase>
+                              </ForwardRef>
+                              <Button
                                 id="button-with-string"
+                                isDisabled={true}
                                 onClick={[Function]}
-                                tabIndex={null}
-                                type="button"
+                                variant="primary"
                               >
-                                Apply Filter
-                              </button>
-                            </Button>
+                                <button
+                                  aria-disabled={true}
+                                  aria-label={null}
+                                  className="pf-c-button pf-m-primary pf-m-disabled"
+                                  data-ouia-component-id={270}
+                                  data-ouia-component-type="PF4/Button"
+                                  data-ouia-safe={true}
+                                  disabled={true}
+                                  id="button-with-string"
+                                  onClick={[Function]}
+                                  tabIndex={null}
+                                  type="button"
+                                >
+                                  Apply Filter
+                                </button>
+                              </Button>
+                            </div>
                           </Memo(DomainExplorerFilterOptions)>
                         </div>
                       </ToolbarItem>

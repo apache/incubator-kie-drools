@@ -23,6 +23,7 @@ import { SyncIcon } from '@patternfly/react-icons';
 import '../../styles.css';
 import _ from 'lodash';
 import { filterColumnSelection, removeDuplicates } from '../../../utils/Utils';
+import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
 
 interface ResponseType {
   loading: boolean;
@@ -48,7 +49,7 @@ export interface IOwnProps {
   enableRefresh: boolean;
 }
 
-const DomainExplorerManageColumns: React.FC<IOwnProps> = ({
+const DomainExplorerManageColumns: React.FC<IOwnProps & OUIAProps> = ({
   columnPickerType,
   data,
   enableRefresh,
@@ -63,7 +64,9 @@ const DomainExplorerManageColumns: React.FC<IOwnProps> = ({
   setParameters,
   setPageSize,
   setRunQuery,
-  setSelected
+  setSelected,
+  ouiaId,
+  ouiaSafe
 }) => {
   // tslint:disable: forin
   // tslint:disable: no-floating-promises
@@ -438,6 +441,7 @@ const DomainExplorerManageColumns: React.FC<IOwnProps> = ({
             Cancel
           </Button>
         ]}
+        {...componentOuiaProps(ouiaId, 'manage-columns-modal', ouiaSafe)}
       >
         {bulkSelection}
         <DataList
@@ -474,6 +478,7 @@ const DomainExplorerManageColumns: React.FC<IOwnProps> = ({
         variant="link"
         onClick={handleModalToggle}
         id="manage-columns-button"
+        ouiaId="manage-columns-button"
       >
         Manage columns
       </Button>
@@ -484,6 +489,7 @@ const DomainExplorerManageColumns: React.FC<IOwnProps> = ({
           onRefresh();
         }}
         id="refresh-button"
+        ouiaId="refresh-button"
         aria-label={'Refresh list'}
       >
         <SyncIcon />

@@ -9,14 +9,17 @@ import {
 import '../../styles.css';
 import { aboutLogoContext } from '../../contexts';
 import aboutPageBackground from '../../../static/kogitoAbout.png';
+import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
 
 export interface IOwnProps {
   isOpenProp: boolean;
   handleModalToggleProp: any;
 }
-const AboutModalBox: React.FC<IOwnProps> = ({
+const AboutModalBox: React.FC<IOwnProps & OUIAProps> = ({
   isOpenProp,
-  handleModalToggleProp
+  handleModalToggleProp,
+  ouiaId,
+  ouiaSafe
 }) => {
   const dataIndexURL =
     // @ts-ignore
@@ -31,6 +34,7 @@ const AboutModalBox: React.FC<IOwnProps> = ({
       brandImageSrc={logoSrc}
       className="kogito-common--aboutModalBox"
       backgroundImageSrc={aboutPageBackground}
+      {...componentOuiaProps(ouiaId, 'AboutModalBox', ouiaSafe)}
     >
       <TextContent>
         <Text component="h5" />

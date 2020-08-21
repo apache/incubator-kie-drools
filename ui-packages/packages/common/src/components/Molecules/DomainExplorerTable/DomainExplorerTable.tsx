@@ -39,6 +39,7 @@ import {
   KogitoEmptyStateType
 } from '../../Atoms/KogitoEmptyState/KogitoEmptyState';
 import { set } from '../../../utils/Utils';
+import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
 
 interface RowContent {
   cells: string[] | object[];
@@ -67,7 +68,7 @@ interface IOwnProps {
   sortBy: object;
   tableLoading: boolean;
 }
-const DomainExplorerTable: React.FC<IOwnProps> = ({
+const DomainExplorerTable: React.FC<IOwnProps & OUIAProps> = ({
   columnFilters,
   displayTable,
   displayEmptyState,
@@ -86,7 +87,9 @@ const DomainExplorerTable: React.FC<IOwnProps> = ({
   setRunQuery,
   setSortBy,
   sortBy,
-  tableLoading
+  tableLoading,
+  ouiaId,
+  ouiaSafe
 }) => {
   // tslint:disable: forin
   const [columns, setColumns] = useState([]);
@@ -383,6 +386,11 @@ const DomainExplorerTable: React.FC<IOwnProps> = ({
           aria-label="Domain Explorer Table"
           className="kogito-common--domain-explorer__table"
           onCollapse={onCollapse}
+          {...componentOuiaProps(
+            ouiaId,
+            'domain-explorer-table',
+            ouiaSafe ? ouiaSafe : !tableLoading && !isLoadingMore
+          )}
         >
           <TableHeader />
           <TableBody rowKey="rowKey" />

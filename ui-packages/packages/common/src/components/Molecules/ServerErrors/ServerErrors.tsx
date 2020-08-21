@@ -14,9 +14,18 @@ import {
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import '../../styles.css';
-import { withRouter } from 'react-router-dom';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
 
-const ServerErrors = props => {
+interface IOwnProps {
+  error: any;
+  variant: string;
+}
+const ServerErrors: React.FC<IOwnProps & RouteComponentProps & OUIAProps> = ({
+  ouiaId,
+  ouiaSafe,
+  ...props
+}) => {
   const [displayError, setDisplayError] = useState(false);
 
   const renderContent = () => (
@@ -54,31 +63,29 @@ const ServerErrors = props => {
     </>
   );
 
+  const renderBullseye = (renderButton: boolean) => (
+    <Bullseye {...componentOuiaProps(ouiaId, 'server-errors', ouiaSafe)}>
+      <EmptyState variant={EmptyStateVariant.full}>
+        {renderContent()}
+        {renderButton && (
+          <Button
+            variant="primary"
+            id="goback-button"
+            onClick={() => props.history.goBack()}
+          >
+            Go back
+          </Button>
+        )}
+      </EmptyState>
+    </Bullseye>
+  );
+
   return (
     <>
       {props.variant === 'large' && (
-        <PageSection variant="light">
-          <Bullseye>
-            <EmptyState variant={EmptyStateVariant.full}>
-              {renderContent()}
-              <Button
-                variant="primary"
-                id="goback-button"
-                onClick={() => props.history.goBack()}
-              >
-                Go back
-              </Button>
-            </EmptyState>
-          </Bullseye>
-        </PageSection>
+        <PageSection variant="light">{renderBullseye(true)}</PageSection>
       )}
-      {props.variant === 'small' && (
-        <Bullseye>
-          <EmptyState variant={EmptyStateVariant.full}>
-            {renderContent()}
-          </EmptyState>
-        </Bullseye>
-      )}
+      {props.variant === 'small' && renderBullseye(false)}
     </>
   );
 };

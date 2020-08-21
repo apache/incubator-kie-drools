@@ -6,7 +6,10 @@ exports[`PageToolbar component tests snapshot testing with kogito_auth_enabled p
     handleModalToggleProp={[Function]}
     isOpenProp={false}
   />
-  <Toolbar>
+  <Toolbar
+    data-ouia-component-type="page-toolbar"
+    data-ouia-safe={true}
+  >
     <ForwardRef>
       <ToolbarItem
         className="pf-u-screen-reader pf-u-visible-on-md"
@@ -52,7 +55,10 @@ exports[`PageToolbar component tests snapshot testing with kogito-auth_enabled a
     handleModalToggleProp={[Function]}
     isOpenProp={false}
   />
-  <Toolbar>
+  <Toolbar
+    data-ouia-component-type="page-toolbar"
+    data-ouia-safe={true}
+  >
     <ForwardRef>
       <ToolbarItem
         className="pf-u-screen-reader pf-u-visible-on-md"

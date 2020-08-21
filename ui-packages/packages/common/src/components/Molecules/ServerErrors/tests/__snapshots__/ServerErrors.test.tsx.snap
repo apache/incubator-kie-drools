@@ -47,9 +47,14 @@ exports[`ServerErrors component tests snapshot testing  1`] = `
     <section
       className="pf-c-page__main-section pf-m-light"
     >
-      <Bullseye>
+      <Bullseye
+        data-ouia-component-type="server-errors"
+        data-ouia-safe={true}
+      >
         <div
           className="pf-l-bullseye"
+          data-ouia-component-type="server-errors"
+          data-ouia-safe={true}
         >
           <EmptyState
             variant="full"
@@ -203,9 +208,14 @@ exports[`ServerErrors component tests snapshot testing with small variant  1`] =
   }
   variant="small"
 >
-  <Bullseye>
+  <Bullseye
+    data-ouia-component-type="server-errors"
+    data-ouia-safe={true}
+  >
     <div
       className="pf-l-bullseye"
+      data-ouia-component-type="server-errors"
+      data-ouia-safe={true}
     >
       <EmptyState
         variant="full"
