@@ -8411,6 +8411,15 @@
           "fieldName": "K",
           "elementKind": "field",
           "justification": "K constant move to the KOptMoveSelectorFactory."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.optaplanner.core.api.solver.SolverJob<Solution_, ProblemId_> org.optaplanner.core.api.solver.SolverManager<Solution_, ProblemId_>::solveAndListen(ProblemId_, java.util.function.Function<? super ProblemId_, ? extends Solution_>, java.util.function.Consumer<? super Solution_>, java.util.function.Consumer<? super Solution_>, java.util.function.BiConsumer<? super ProblemId_, ? super java.lang.Throwable>)",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverManager",
+          "methodName": "solveAndListen",
+          "elementKind": "method",
+          "justification": "SolverManager needs an API that allows a user to listen to both best solution and solver terminated events"
         }
       ]
     }

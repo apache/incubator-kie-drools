@@ -238,7 +238,9 @@ public class SolverManagerTest {
                         }));
         SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(
                 solverConfig, new SolverManagerConfig().withParallelSolverCount("1"));
-        AtomicInteger eventCount = new AtomicInteger();
+        AtomicInteger bestSolutionCount = new AtomicInteger();
+        AtomicInteger finalBestSolutionCount = new AtomicInteger();
+        AtomicInteger exceptionCount = new AtomicInteger();
         SolverJob<TestdataSolution, Long> solverJob1 = solverManager.solveAndListen(1L,
                 problemId -> PlannerTestUtils.generateTestdataSolution("s1", 4),
                 bestSolution -> {
@@ -246,7 +248,7 @@ public class SolverManagerTest {
                         // The problem itself causes a best solution event. TODO Do we really want that behavior?
                         return;
                     }
-                    eventCount.incrementAndGet();
+                    bestSolutionCount.incrementAndGet();
                     if (bestSolution.getEntityList().get(2).getValue() == null) {
                         try {
                             latch.await();
@@ -256,10 +258,14 @@ public class SolverManagerTest {
                     } else if (bestSolution.getEntityList().get(3).getValue() == null) {
                         fail("No skip ahead occurred: both e2 and e3 are null in a best solution event.");
                     }
-                });
+                },
+                finalBestSolution -> finalBestSolutionCount.incrementAndGet(),
+                (problemId, throwable) -> exceptionCount.incrementAndGet());
         assertSolutionInitialized(solverJob1.getFinalBestSolution());
         // EventCount can be 2 or 3, depending on the race, but it can never be 4.
-        assertThat(eventCount).hasValueLessThan(4);
+        assertThat(bestSolutionCount).hasValueLessThan(4);
+        assertThat(finalBestSolutionCount).hasValue(1);
+        assertThat(exceptionCount).hasValue(0);
     }
 
     @Test

@@ -86,8 +86,9 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
     public SolverJob<Solution_, ProblemId_> solveAndListen(ProblemId_ problemId,
             Function<? super ProblemId_, ? extends Solution_> problemFinder,
             Consumer<? super Solution_> bestSolutionConsumer,
+            Consumer<? super Solution_> finalBestSolutionConsumer,
             BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler) {
-        return solve(problemId, problemFinder, bestSolutionConsumer, null, exceptionHandler);
+        return solve(problemId, problemFinder, bestSolutionConsumer, finalBestSolutionConsumer, exceptionHandler);
     }
 
     protected SolverJob<Solution_, ProblemId_> solve(ProblemId_ problemId,

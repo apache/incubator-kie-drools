@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -206,7 +207,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      */
     default SolverJob<Solution_, ProblemId_> solveAndListen(ProblemId_ problemId,
             Function<? super ProblemId_, ? extends Solution_> problemFinder, Consumer<? super Solution_> bestSolutionConsumer) {
-        return solveAndListen(problemId, problemFinder, bestSolutionConsumer, null);
+        return solveAndListen(problemId, problemFinder, bestSolutionConsumer, null, null);
     }
 
     /**
@@ -222,8 +223,39 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      *        If null it defaults to logging the exception as an error.
      * @return never null
      */
+    default SolverJob<Solution_, ProblemId_> solveAndListen(ProblemId_ problemId,
+            Function<? super ProblemId_, ? extends Solution_> problemFinder,
+            Consumer<? super Solution_> bestSolutionConsumer,
+            BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler) {
+        return solveAndListen(problemId, problemFinder, bestSolutionConsumer, null, exceptionHandler);
+    }
+
+    /**
+     * As defined by {@link #solveAndListen(Object, Function, Consumer)}.
+     * <p>
+     * The final best solution is delivered twice:
+     * first to the {@code bestSolutionConsumer} when it is found
+     * and then again to the {@code finalBestSolutionConsumer} when the solver terminates.
+     * Do not store the solution twice.
+     * This allows for use cases that only process the {@link Score} first (during best solution changed events)
+     * and then store the solution upon termination.
+     *
+     * @param problemId never null, an ID for each planning problem. This must be unique.
+     *        Use this problemId to {@link #terminateEarly(Object) terminate} the solver early,
+     *        {@link #getSolverStatus(Object) to get the status} or if the problem changes while solving.
+     * @param problemFinder never null, function that returns a {@link PlanningSolution}, usually with uninitialized planning
+     *        variables
+     * @param bestSolutionConsumer never null, called multiple times, on a consumer thread
+     * @param finalBestSolutionConsumer sometimes null, called only once, at the end, on a consumer thread.
+     *        That final best solution is already consumed by the bestSolutionConsumer earlier.
+     * @param exceptionHandler sometimes null, called if an exception or error occurs.
+     *        If null it defaults to logging the exception as an error.
+     * @return never null
+     */
     SolverJob<Solution_, ProblemId_> solveAndListen(ProblemId_ problemId,
-            Function<? super ProblemId_, ? extends Solution_> problemFinder, Consumer<? super Solution_> bestSolutionConsumer,
+            Function<? super ProblemId_, ? extends Solution_> problemFinder,
+            Consumer<? super Solution_> bestSolutionConsumer,
+            Consumer<? super Solution_> finalBestSolutionConsumer,
             BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler);
 
     /**
