@@ -32,11 +32,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.IntStream;
 
 import org.assertj.core.api.Assertions;
+import org.drools.model.functions.accumulate.GroupKey;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Customer;
@@ -1719,29 +1719,6 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals( 119, results.get("M") );
     }
 
-    public static class GroupKey {
-        private final Object key;
-
-        public GroupKey( Object key ) {
-            this.key = key;
-        }
-
-        public Object getKey() {
-            return key;
-        }
-
-        @Override
-        public boolean equals( Object o ) {
-            GroupKey groupKey = ( GroupKey ) o;
-            return key.equals( groupKey.key );
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash( key );
-        }
-    }
-
     @Test
     public void testGroupBy3() {
         // DROOLS-4737
@@ -1752,20 +1729,20 @@ public class AccumulateTest extends BaseModelTest {
                 "global Map results;\n" +
                 "rule R1 when\n" +
                 "    Person( $initial : name.substring(0,1) )\n" +
-                "    not( GroupKey(key == $initial) )\n" +
+                "    not( GroupKey(topic ==\"a\", key == $initial) )\n" +
                 "then\n" +
-                "    insert( new GroupKey( $initial ) );\n" +
+                "    insert( new GroupKey( \"a\", $initial ) );\n" +
                 "end\n" +
                 "\n" +
                 "rule R2 when\n" +
-                "    $k: GroupKey( $initial : key )\n" +
+                "    $k: GroupKey( topic ==\"a\", $initial : key )\n" +
                 "    not( Person( name.substring(0,1) == $initial ) )\n" +
                 "then\n" +
                 "    delete( $k );\n" +
                 "end\n" +
                 "\n" +
                 "rule R3 when\n" +
-                "    GroupKey( $initial : key )\n" +
+                "    GroupKey( topic ==\"a\", $initial : key )\n" +
                 "    accumulate (\n" +
                 "            Person( $age: age, name.substring(0,1) == $initial );\n" +
                 "            $sumOfAges : sum($age)\n" +

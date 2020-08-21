@@ -16,6 +16,8 @@ package org.drools.model.functions.accumulate;
 
 import java.util.Objects;
 
+import org.drools.model.DomainClassMetadata;
+
 public class GroupKey {
     private final String topic;
     private final Object key;
@@ -45,5 +47,29 @@ public class GroupKey {
     @Override
     public int hashCode() {
         return Objects.hash( topic, key );
+    }
+
+    public enum Metadata implements DomainClassMetadata {
+
+        INSTANCE;
+
+        @Override
+        public Class<?> getDomainClass() {
+            return GroupKey.class;
+        }
+
+        @Override
+        public int getPropertiesSize() {
+            return 2;
+        }
+
+        @Override
+        public int getPropertyIndex( String name ) {
+            switch(name) {
+                case "key": return 0;
+                case "topic": return 1;
+            }
+            throw new RuntimeException("Unknown property '" + name + "' for class class class org.drools.model.functions.accumulate.GroupKey");
+        }
     }
 }

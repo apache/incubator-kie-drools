@@ -89,6 +89,7 @@ import org.drools.model.From2;
 import org.drools.model.From3;
 import org.drools.model.From4;
 import org.drools.model.Global;
+import org.drools.model.GroupByPattern;
 import org.drools.model.Index;
 import org.drools.model.Model;
 import org.drools.model.Prototype;
@@ -107,9 +108,13 @@ import org.drools.model.consequences.ConditionalNamedConsequenceImpl;
 import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.constraints.AbstractSingleConstraint;
 import org.drools.model.constraints.SingleConstraint1;
+import org.drools.model.constraints.SingleConstraint2;
 import org.drools.model.functions.Function0;
+import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
+import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.accumulate.AccumulateFunction;
+import org.drools.model.functions.accumulate.GroupKey;
 import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.impl.Exchange;
 import org.drools.model.patterns.CompositePatterns;
@@ -117,6 +122,9 @@ import org.drools.model.patterns.EvalImpl;
 import org.drools.model.patterns.ExistentialPatternImpl;
 import org.drools.model.patterns.PatternImpl;
 import org.drools.model.patterns.QueryCallPattern;
+import org.drools.model.view.BindViewItem1;
+import org.drools.model.view.Expr1ViewItemImpl;
+import org.drools.model.view.Expr2ViewItemImpl;
 import org.drools.modelcompiler.attributes.LambdaEnabled;
 import org.drools.modelcompiler.attributes.LambdaSalience;
 import org.drools.modelcompiler.consequence.LambdaConsequence;
@@ -132,6 +140,8 @@ import org.drools.modelcompiler.constraints.LambdaEvalExpression;
 import org.drools.modelcompiler.constraints.LambdaReadAccessor;
 import org.drools.modelcompiler.constraints.TemporalConstraintEvaluator;
 import org.drools.modelcompiler.constraints.UnificationConstraint;
+import org.drools.modelcompiler.dsl.pattern.D;
+import org.drools.modelcompiler.util.EvaluationUtil;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.rule.All;
 import org.kie.api.definition.rule.Direct;
@@ -205,9 +215,10 @@ public class KiePackagesBuilder {
             int ruleCounter = 0;
             for (Rule rule : model.getRules()) {
                 KnowledgePackageImpl pkg = ( KnowledgePackageImpl ) packages.computeIfAbsent( rule.getPackage(), this::createKiePackage );
-                RuleImpl ruleImpl = compileRule( pkg, rule );
-                ruleImpl.setLoadOrder( ruleCounter++ );
-                pkg.addRule( ruleImpl );
+                for (RuleImpl ruleImpl : compileRule( pkg, rule ) ) {
+                    ruleImpl.setLoadOrder( ruleCounter++ );
+                    pkg.addRule( ruleImpl );
+                }
             }
         }
         return new CanonicalKiePackages(packages);
@@ -224,7 +235,7 @@ public class KiePackagesBuilder {
         return kpkg;
     }
 
-    private RuleImpl compileRule( KnowledgePackageImpl pkg, Rule rule ) {
+    private List<RuleImpl> compileRule( KnowledgePackageImpl pkg, Rule rule ) {
         RuleImpl ruleImpl = new RuleImpl( rule.getName() );
         ruleImpl.setPackage( pkg.getName() );
         ruleImpl.setPackage( rule.getPackage() );
@@ -240,7 +251,16 @@ public class KiePackagesBuilder {
         }
         setRuleAttributes( rule, ruleImpl, ctx );
         setRuleMetaAttributes( rule, ruleImpl );
-        return ruleImpl;
+
+        if (ctx.hasSubRules()) {
+            List<RuleImpl> rules = new ArrayList<>();
+            for (Rule subRule : ctx.getSubRules()) {
+                rules.addAll( compileRule( pkg, subRule ) );
+            }
+            rules.add(ruleImpl);
+            return rules;
+        }
+        return Collections.singletonList( ruleImpl );
     }
 
     private void setRuleAttributes( Rule rule, RuleImpl ruleImpl, RuleContext ctx ) {
@@ -425,56 +445,21 @@ public class KiePackagesBuilder {
         switch (condition.getType()) {
             case SENDER:
             case RECEIVER:
-            case PATTERN: {
+            case PATTERN:
                 return buildPattern( ctx, group, condition );
-            }
-            case EVAL: {
+
+            case EVAL:
                 return buildEval( ctx, ( EvalImpl ) condition );
-            }
-            case ACCUMULATE: {
-                AccumulatePattern accumulatePattern = (AccumulatePattern) condition;
-                Pattern pattern = null;
-                if (accumulatePattern.getAccumulateFunctions().length == 1) {
-                    pattern = ctx.getPattern( accumulatePattern.getAccumulateFunctions()[0].getResult() );
-                }
-                boolean existingPattern = pattern != null;
-                if (!existingPattern) {
-                    pattern = new Pattern( 0, JAVA_CLASS_OBJECT_TYPE );
-                }
 
-                PatternImpl<?> sourcePattern = (PatternImpl<?>) accumulatePattern.getPattern();
-                Set<String> usedVariableName = new LinkedHashSet<>();
+            case ACCUMULATE:
+                return buildAccumulate( ctx, group, (AccumulatePattern) condition );
 
-                if (sourcePattern != null) {
-                    for (Variable v : sourcePattern.getInputVariables()) {
-                        usedVariableName.add( v.getName() );
-                    }
-                }
+            case GROUP_BY:
+                return buildGroupBy( ctx, group, ( GroupByPattern ) condition );
 
-                RuleConditionElement source;
-                if(accumulatePattern.isCompositePatterns()) {
-                    CompositePatterns compositePatterns = (CompositePatterns) accumulatePattern.getCondition();
-                    GroupElement allSubConditions = new GroupElement(conditionToGroupElementType( compositePatterns.getType() ));
-                    for(Condition c : compositePatterns.getSubConditions()) {
-                        recursivelyAddConditions(ctx, group, allSubConditions, c);
-                    }
-                    source = allSubConditions;
-                } else {
-                    source = buildPattern(ctx, group, condition );
-                }
-
-                pattern.setSource(buildAccumulate(ctx, accumulatePattern, source, pattern, new ArrayList<>(usedVariableName), sourcePattern != null ? sourcePattern.getBindings() : Collections.emptyList()) );
-
-                for(Variable v : accumulatePattern.getBoundVariables()) {
-                    if(source instanceof Pattern) {
-                        ctx.registerPattern(v, (Pattern) source);
-                    }
-                }
-
-                return existingPattern ? null : pattern;
-            }
             case QUERY:
                 return buildQueryPattern( ctx, ( (QueryCallPattern) condition ) );
+
             case NOT:
             case EXISTS: {
                 // existential pattern can have only one subcondition
@@ -513,6 +498,130 @@ public class KiePackagesBuilder {
                 }
         }
         throw new UnsupportedOperationException();
+    }
+
+    private RuleConditionElement buildAccumulate( RuleContext ctx, GroupElement group, AccumulatePattern accumulatePattern ) {
+        Pattern pattern = null;
+        if (accumulatePattern.getAccumulateFunctions().length == 1) {
+            pattern = ctx.getPattern( accumulatePattern.getAccumulateFunctions()[0].getResult() );
+        }
+        boolean existingPattern = pattern != null;
+        if (!existingPattern) {
+            pattern = new Pattern( 0, JAVA_CLASS_OBJECT_TYPE );
+        }
+
+        PatternImpl<?> sourcePattern = (PatternImpl<?>) accumulatePattern.getPattern();
+        Set<String> usedVariableName = new LinkedHashSet<>();
+
+        if (sourcePattern != null) {
+            for (Variable v : sourcePattern.getInputVariables()) {
+                usedVariableName.add( v.getName() );
+            }
+        }
+
+        RuleConditionElement source;
+        if (accumulatePattern.isCompositePatterns()) {
+            CompositePatterns compositePatterns = (CompositePatterns) accumulatePattern.getCondition();
+            GroupElement allSubConditions = new GroupElement(conditionToGroupElementType( compositePatterns.getType() ));
+            for(Condition c : compositePatterns.getSubConditions()) {
+                recursivelyAddConditions( ctx, group, allSubConditions, c);
+            }
+            source = allSubConditions;
+        } else {
+            source = buildPattern( ctx, group, accumulatePattern );
+        }
+
+        pattern.setSource(buildAccumulate( ctx, accumulatePattern, source, pattern, new ArrayList<>(usedVariableName), sourcePattern != null ? sourcePattern.getBindings() : Collections.emptyList()) );
+
+        for (Variable v : accumulatePattern.getBoundVariables()) {
+            if (source instanceof Pattern) {
+                ctx.registerPattern(v, (Pattern) source);
+            }
+        }
+
+        return existingPattern ? null : pattern;
+    }
+
+    private RuleConditionElement buildGroupBy( RuleContext ctx, GroupElement group, GroupByPattern groupByPattern ) {
+        Variable<GroupKey> inputVariable = new DeclarationImpl<>( GroupKey.class, "$group_" + groupByPattern.getTopic() ).setMetadata( GroupKey.Metadata.INSTANCE );
+        BindViewItem1 binding = new BindViewItem1( groupByPattern.getVarKey(), new Function1.Impl<>( GroupKey::getKey ), inputVariable, new String[] { "key" }, null );
+
+        Expr1ViewItemImpl topicExpr = new Expr1ViewItemImpl<>( "TOPIC_" + groupByPattern.getTopic(), inputVariable,
+                new Predicate1.Impl<>( (GroupKey g) -> g.getTopic().equals( groupByPattern.getTopic() ) ))
+                .indexedBy( String.class, Index.ConstraintType.EQUAL, GroupKey.Metadata.INSTANCE.getPropertyIndex( "topic" ), new Function1.Impl<>( GroupKey::getTopic ), groupByPattern.getTopic() );
+        topicExpr.reactOn( "topic" );
+
+        PatternImpl pattern = new PatternImpl(inputVariable, new SingleConstraint1( topicExpr ), Collections.singletonList( binding ));
+        group.addChild( buildPattern( ctx, group, pattern ) );
+
+        PatternImpl accPattern = (PatternImpl) groupByPattern.getPattern();
+        Expr2ViewItemImpl groupingExpr = new Expr2ViewItemImpl( "KEY_" + groupByPattern.getTopic(), accPattern.getPatternVariable(), groupByPattern.getVarKey(),
+                new Predicate2.Impl<>( (Object obj, Object $key) -> EvaluationUtil.areNullSafeEquals(groupByPattern.getGroupingFunction().apply( obj ), $key) ));
+        accPattern.addConstraint( new SingleConstraint2( groupingExpr ) );
+
+        ctx.addSubRule( insertingGroupRule(groupByPattern, accPattern) );
+        ctx.addSubRule( deletingGroupRule(groupByPattern, accPattern) );
+
+        return buildAccumulate( ctx, group, groupByPattern );
+    }
+
+    private Rule insertingGroupRule( GroupByPattern groupByPattern, PatternImpl accPattern) {
+        Variable var_$grouped = D.declarationOf(accPattern.getPatternVariable().getType(), "var_$grouped");
+        Variable<Object> var_$key = D.declarationOf(Object.class, "$key");
+        Variable<GroupKey> var_$group = D.declarationOf(GroupKey.class, GroupKey.Metadata.INSTANCE, "var_$group");
+
+        return D.rule("CREATE_GROUP_" + groupByPattern.getTopic()).build(
+                D.pattern(var_$grouped).bind(var_$key, (Object obj) -> groupByPattern.getGroupingFunction().apply( obj )),
+                D.not(D.pattern(var_$group)
+                        .expr("TOPIC_" + groupByPattern.getTopic(),
+                                (GroupKey _this) -> EvaluationUtil.areNullSafeEquals(_this.getTopic(), groupByPattern.getTopic()),
+                                D.alphaIndexedBy(String.class, Index.ConstraintType.EQUAL,
+                                        GroupKey.Metadata.INSTANCE.getPropertyIndex( "topic" ),
+                                        (GroupKey _this) -> _this.getTopic(),
+                                        groupByPattern.getTopic()),
+                                D.reactOn("topic"))
+                        .expr("KEY_" + groupByPattern.getTopic(),
+                                var_$key,
+                                (GroupKey _this, Object $key) -> EvaluationUtil.areNullSafeEquals(_this.getKey(), $key),
+                                D.betaIndexedBy(java.lang.Object.class,
+                                        Index.ConstraintType.EQUAL,
+                                        GroupKey.Metadata.INSTANCE.getPropertyIndex( "key" ),
+                                        (GroupKey _this) -> _this.getKey(),
+                                        obj -> obj),
+                        D.reactOn("key"))),
+                D.on(var_$key).execute((org.drools.model.Drools drools, Object $key) -> {
+                    {
+                        drools.insert(new GroupKey(groupByPattern.getTopic(), $key));
+                    }
+                }));
+    }
+
+    private Rule deletingGroupRule( GroupByPattern groupByPattern, PatternImpl accPattern) {
+        Variable var_$grouped = D.declarationOf(accPattern.getPatternVariable().getType(), "var_$grouped");
+        Variable<Object> var_$key = D.declarationOf(Object.class, "$key");
+        Variable<GroupKey> var_$group = D.declarationOf(GroupKey.class, GroupKey.Metadata.INSTANCE, "var_$group");
+
+        return D.rule("DELETE_GROUP_" + groupByPattern.getTopic()).build(
+                D.pattern(var_$group)
+                        .expr("TOPIC_" + groupByPattern.getTopic(),
+                                (GroupKey _this) -> EvaluationUtil.areNullSafeEquals(_this.getTopic(), groupByPattern.getTopic()),
+                                D.alphaIndexedBy(String.class, Index.ConstraintType.EQUAL,
+                                        GroupKey.Metadata.INSTANCE.getPropertyIndex( "topic" ),
+                                        (GroupKey _this) -> _this.getTopic(),
+                                        groupByPattern.getTopic()),
+                                D.reactOn("topic"))
+                        .bind(var_$key,
+                                (GroupKey _this) -> _this.getKey(),
+                                D.reactOn("key")),
+                D.not(D.pattern(var_$grouped)
+                        .expr("KEY_" + groupByPattern.getTopic(),
+                        var_$key,
+                        (Object obj, Object $key) -> EvaluationUtil.areNullSafeEquals(groupByPattern.getGroupingFunction().apply( obj ), $key))),
+                D.on(var_$group).execute((org.drools.model.Drools drools, GroupKey $group) -> {
+                    {
+                        drools.delete($group);
+                    }
+                }));
     }
 
     private Constraint getForallSelfJoin(Condition condition) {
