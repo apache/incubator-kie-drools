@@ -37,14 +37,11 @@ pipeline {
         }
     }
     post {
-        failure {
+        unsuccessful {
             emailext body: 'Kogito Runtimes daily Sonar #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
                             'Please look here: ${BUILD_URL} ',
-                     subject: 'Kogito Runtimes daily Sonar #${BRANCH_NAME}',
+                     subject: "[${env.BRANCH_NAME}][d] Runtimes Sonar",
                      to: env.KOGITO_CI_EMAIL_TO
-            script {
-                mailer.sendEmailFailure()
-            }
         }
         always {
             junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'

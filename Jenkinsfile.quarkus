@@ -59,16 +59,10 @@ pipeline {
         }
     }
     post {
-        failure {
+        unsuccessful {
             emailext body: 'Kogito daily Quarkus master #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
                      'Please look here: ${BUILD_URL} ',
-                     subject: 'Kogito daily Quarkus master',
-                     to: env.KOGITO_CI_EMAIL_TO
-        }
-        unstable {
-            emailext body: 'Kogito daily Quarkus master #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
-                     'Please look here: ${BUILD_URL} ',
-                     subject: 'Kogito daily Quarkus master',
+                     subject: "[${env.BRANCH_NAME}][d] Runtimes Quarkus snapshot",
                      to: env.KOGITO_CI_EMAIL_TO
         }
         always {

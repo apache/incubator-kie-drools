@@ -79,7 +79,7 @@ pipeline {
                         emailext body: "${getProjectVersion()} artifacts are ready for promotion.\n" +
                                  "The staging repository can be found at: ${getStagingRepoUrl()}\n" +
                                  "Please promote the repository and then confirm the promotion here: ${env.BUILD_URL}input",
-                                 subject: "Kogito Release on #${getBuildBranch()}",
+                                 subject: "[${getBuildBranch()}] Release Pipeline",
                                  to: ZULIP_EMAIL
                     }
                     input message: 'Has the staging repository been promoted?', ok: 'Yes'

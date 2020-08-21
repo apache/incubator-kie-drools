@@ -102,10 +102,7 @@ pipeline {
         }
     }
     post {
-        failure {
-            sendNotification()
-        }
-        unstable {
+        unsuccessful {
             sendNotification()
         }
         always {
@@ -117,7 +114,7 @@ pipeline {
 
 void sendNotification(){
     emailext body: "Kogito daily Drools #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}",
-             subject: "Kogito daily Drools #${params.BRANCH_NAME}",
+             subject: "[${params.BRANCH_NAME}][d] Runtimes Drools snapshot",
              to: env.KOGITO_CI_EMAIL_TO
 }
 

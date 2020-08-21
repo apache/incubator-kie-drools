@@ -195,7 +195,7 @@ pipeline {
                 script {
                     withCredentials([string(credentialsId: 'KOGITO_CI_EMAIL_TO', variable: 'ZULIP_EMAIL')]) {
                         emailext body: "Kogito Runtimes deploy pipeline #${env.BUILD_NUMBER} => Artifacts with version ${getProjectVersion()} have been pushed to staging repository. Please retrieve the staging repository URL and provide it here: ${env.BUILD_URL}input",
-                                 subject: "Kogito Release on #${getBuildBranch()}",
+                                 subject: "[${getBuildBranch()}] Release Pipeline",
                                  to: ZULIP_EMAIL
                     }
                     // Add `/` at the end of the given url if missing
