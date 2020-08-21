@@ -20,10 +20,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.util.EvalHelper;
 
 public class SumFunction
@@ -34,8 +32,11 @@ public class SumFunction
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName("list") List list) {
-        if ( list == null || list.isEmpty() ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null or empty"));
+        if ( list == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "the list cannot be null"));
+        }
+        if (list.isEmpty()) {
+            return FEELFnResult.ofResult(null); // DMN spec, Table 75: ...or null if list is empty
         }
         BigDecimal sum = BigDecimal.ZERO;
         for ( Object element : list ) {
