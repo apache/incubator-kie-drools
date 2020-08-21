@@ -57,7 +57,7 @@
     </requiredProperty>
     <!-- springboot version -->
     <requiredProperty key="springbootVersion">
-      <defaultValue>2.1.1.RELEASE</defaultValue>
+      <defaultValue>2.2.2.RELEASE</defaultValue>
     </requiredProperty>
   </requiredProperties>
 
