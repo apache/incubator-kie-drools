@@ -16,7 +16,6 @@
   <description>Kogito Apps</description>
 
   <properties>
-    <version.io.quarkus>1.6.0.Final</version.io.quarkus>
     <version.frontend.plugin>1.9.1</version.frontend.plugin>
     <version.node>v12.16.2</version.node>
     <version.npm>6.10.3</version.npm>
@@ -24,9 +23,7 @@
     <maven.compiler.release>11</maven.compiler.release>
     <version.maven-remote-resources-plugin>1.7.0</version.maven-remote-resources-plugin>
 
-    <version.org.infinispan>10.1.5.Final</version.org.infinispan>
     <version.org.infinispan.image>10.1.5.Final</version.org.infinispan.image>
-    <version.org.infinispan.protostream>4.3.2.Final</version.org.infinispan.protostream>
 
     <!-- containers used for testing -->
     <container.image.infinispan>quay.io/infinispan/server:${version.org.infinispan.image}</container.image.infinispan>

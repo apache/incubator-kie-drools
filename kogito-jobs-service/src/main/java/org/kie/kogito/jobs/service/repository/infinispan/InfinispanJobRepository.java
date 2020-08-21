@@ -91,7 +91,7 @@ public class InfinispanJobRepository extends BaseReactiveJobRepository implement
     public PublisherBuilder<JobDetails> findAll() {
         return ReactiveStreams
                 .fromIterable(queryFactory.from(JobDetails.class)
-                                      .build()
+                                      .<JobDetails>build()
                                       .list());
     }
 
@@ -102,12 +102,12 @@ public class InfinispanJobRepository extends BaseReactiveJobRepository implement
                                                     .in(Arrays.stream(status)
                                                                 .map(JobStatus::name)
                                                                 .collect(Collectors.toList()))
-                                                    .build()
+                                                    .<JobDetails>build()
                                                     .list());
     }
 
     public PublisherBuilder<JobDetails> findByStatusBetweenDatesOrderByPriority(ZonedDateTime from, ZonedDateTime to,
-                                                                                  JobStatus... status) {
+                                                                                JobStatus... status) {
         return ReactiveStreams.fromIterable(queryFactory.from(JobDetails.class)
                                                     .having("status")
                                                     .in(Arrays.stream(status)
@@ -118,7 +118,7 @@ public class InfinispanJobRepository extends BaseReactiveJobRepository implement
                                                     .between(DateUtil.zonedDateTimeToInstant(from),
                                                              DateUtil.zonedDateTimeToInstant(to))
                                                     .orderBy("priority", SortOrder.DESC)
-                                                    .build()
+                                                    .<JobDetails>build()
                                                     .list());
     }
 }

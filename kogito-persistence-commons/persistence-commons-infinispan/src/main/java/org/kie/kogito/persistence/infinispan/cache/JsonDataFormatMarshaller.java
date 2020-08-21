@@ -44,7 +44,7 @@ public class JsonDataFormatMarshaller extends AbstractMarshaller {
         String json = object.toString();
         LOGGER.debug("Serializing JSON: \n{}", json);
         byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
-        return new ByteBufferImpl(bytes, 0, bytes.length);
+        return ByteBufferImpl.create(bytes, 0, bytes.length);
     }
 
     @Override
