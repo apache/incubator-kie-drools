@@ -15,8 +15,8 @@
 
 package org.jbpm.process.instance.impl.humantask;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.drools.core.process.instance.impl.KogitoWorkItemImpl;
@@ -165,7 +165,7 @@ public class HumanTaskWorkItemImpl extends KogitoWorkItemImpl implements HumanTa
         }
     }
     
-    protected void checkAssignedOwners(String user, List<String> roles) {
+    protected void checkAssignedOwners(String user, Collection<String> roles) {
      // is not in the excluded users
         if (getExcludedUsers().contains(user)) {
             logger.debug("Requesting user '{}' is excluded from the potential workers on work item {}", user, getId());

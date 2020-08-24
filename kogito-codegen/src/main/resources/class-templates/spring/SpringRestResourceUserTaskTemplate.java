@@ -20,34 +20,29 @@ public class $Type$Resource {
     @PostMapping(value = "/{id}/$taskName$", produces = MediaType.APPLICATION_JSON_VALUE,
                  consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<$Type$Output> signal(@PathVariable("id") final String id) {
-        return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(),
-                                                      () -> process
-                                                                   .instances()
-                                                                   .findById(id)
-                                                                   .map(pi -> {
-                                                                       pi.send(Sig.of("$taskNodeName$",
-                                                                                      java.util.Collections.emptyMap()));
-                                                                       java.util.Optional<WorkItem> task =
-                                                                               pi.workItems()
-                                                                                 .stream()
-                                                                                 .filter(wi -> wi.getName()
-                                                                                                 .equals("$taskName$"))
-                                                                                 .findFirst();
-                                                                       if (task.isPresent()) {
-                                                                           return ResponseEntity.status(HttpStatus.OK)
-                                                                                                .header("Link",
-                                                                                                        "</" + id +
-                                                                                                                "/$taskName$/" +
-                                                                                                                task.get()
-                                                                                                                    .getId() +
-                                                                                                                ">; rel='instance'")
-                                                                                                .body(pi.variables()
-                                                                                                        .toOutput())
-                                                                                                .build();
-                                                                       }
-                                                                       return ResponseEntity.notFound().build();
-                                                                   })
-                                                                   .orElse(null));
+        return UnitOfWorkExecutor
+            .executeInUnitOfWork(
+                application.unitOfWorkManager(),
+                () -> process
+                    .instances()
+                    .findById(id)
+                    .map(pi -> {
+                        pi.send(Sig.of("$taskNodeName$", java.util.Collections.emptyMap()));
+                        java.util.Optional<WorkItem> task = pi
+                            .workItems()
+                            .stream()
+                            .filter(wi -> wi.getName().equals("$taskName$"))
+                            .findFirst();
+                        if (task.isPresent()) {
+                            return ResponseEntity
+                                .status(HttpStatus.OK)
+                                .header("Link", "</" + id + "/$taskName$/" + task.get().getId() + ">; rel='instance'")
+                                .body(pi.variables().toOutput())
+                                .build();
+                        }
+                        return ResponseEntity.notFound().build();
+                    })
+                    .orElse(null));
     }
 
     @PostMapping(value = "/{id}/$taskName$/{workItemId}", produces = MediaType.APPLICATION_JSON_VALUE,
@@ -58,18 +53,20 @@ public class $Type$Resource {
                                      @RequestParam(value = "user", required = false) final String user,
                                      @RequestParam(value = "group", required = false) final List<String> groups,
                                      @RequestBody final $TaskOutput$ model) {
-        return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(),
-                                                      () -> process
-                                                                   .instances()
-                                                                   .findById(id)
-                                                                   .map(pi -> {
-                                                                       pi.transitionWorkItem(workItemId,
-                                                                                             HumanTaskTransition.withoutModel(phase,
-                                                                                                                              policies(user,
-                                                                                                                                       groups)));
-                                                                       return pi.variables().toOutput();
-                                                                   })
-                                                                   .orElse(null));
+        return UnitOfWorkExecutor
+            .executeInUnitOfWork(
+                application.unitOfWorkManager(),
+                () -> process
+                    .instances()
+                    .findById(id)
+                    .map(pi -> {
+                        pi
+                            .transitionWorkItem(
+                                workItemId,
+                                HumanTaskTransition.withoutModel(phase, Policies.of(user, groups)));
+                        return pi.variables().toOutput();
+                    })
+                    .orElse(null));
     }
 
     @GetMapping(value = "/{id}/$taskName$/{workItemId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -78,10 +75,10 @@ public class $Type$Resource {
                                @RequestParam(value = "user", required = false) final String user,
                                @RequestParam(value = "group", required = false) final List<String> groups) {
         return process
-                      .instances()
-                      .findById(id)
-                      .map(pi -> $TaskInput$.from(pi.workItem(workItemId, policies(user, groups))))
-                      .orElse(null);
+            .instances()
+            .findById(id)
+            .map(pi -> $TaskInput$.from(pi.workItem(workItemId, Policies.of(user, groups))))
+            .orElse(null);
     }
 
     @GetMapping(value = "$taskName$/schema", produces = MediaType.APPLICATION_JSON)
@@ -94,9 +91,14 @@ public class $Type$Resource {
                                          @PathParam("workItemId") final String workItemId,
                                          @QueryParam("user") final String user,
                                          @QueryParam("group") final List<String> groups) {
-        return JsonSchemaUtil.addPhases(process, application, id, workItemId, policies(user, groups),
-                                        JsonSchemaUtil.load(this.getClass().getClassLoader(), process.id(),
-                                                            "$taskName$"));
+        return JsonSchemaUtil
+            .addPhases(
+                process,
+                application,
+                id,
+                workItemId,
+                Policies.of(user, groups),
+                JsonSchemaUtil.load(this.getClass().getClassLoader(), process.id(), "$taskName$"));
     }
 
     @DeleteMapping(value = "/{id}/$taskName$/{workItemId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -105,18 +107,19 @@ public class $Type$Resource {
                                   @RequestParam(value = "phase", defaultValue = "abort") final String phase,
                                   @RequestParam(value = "user", required = false) final String user,
                                   @RequestParam(value = "group", required = false) final List<String> groups) {
-        return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(),
-                                                      () -> process
-                                                                   .instances()
-                                                                   .findById(id)
-                                                                   .map(
-                                                                        pi -> {
-                                                                            pi.transitionWorkItem(workItemId,
-                                                                                                  HumanTaskTransition.withoutModel(phase,
-                                                                                                                                   policies(user,
-                                                                                                                                            groups)));
-                                                                            return pi.variables().toOutput();
-                                                                        })
-                                                                   .orElse(null));
+        return UnitOfWorkExecutor
+            .executeInUnitOfWork(
+                application.unitOfWorkManager(),
+                () -> process
+                    .instances()
+                    .findById(id)
+                    .map(pi -> {
+                        pi
+                            .transitionWorkItem(
+                                workItemId,
+                                HumanTaskTransition.withoutModel(phase, Policies.of(user, groups)));
+                        return pi.variables().toOutput();
+                    })
+                    .orElse(null));
     }
 }

@@ -16,15 +16,13 @@
 
 package org.kie.kogito.auth;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Delivers security information about given identity that includes name and assigned roles.
  *
  */
 public interface IdentityProvider {
-
-    public static final String UNKNOWN_USER_IDENTITY = "unknown";
 
     /**
      * Returns name assigned to the current context, usually refers to user name
@@ -34,9 +32,9 @@ public interface IdentityProvider {
 
     /**
      * Returns roles assigned to the current context if any
-     * @return list of assigned roles or empty list
+     * @return Collection of assigned roles or empty one
      */
-    List<String> getRoles();
+    Collection<String> getRoles();
 
     /**
      * Checks if given role is assigned to current context

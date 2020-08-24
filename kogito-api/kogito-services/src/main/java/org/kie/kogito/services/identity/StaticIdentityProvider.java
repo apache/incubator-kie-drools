@@ -21,16 +21,14 @@ import java.util.List;
 import org.kie.kogito.auth.IdentityProvider;
 
 /**
- * Simple implementation of identity provider that must always be used for just
- * one security context, needs to be recreated every time for each "request"
- *
- * Relies on given name and roles
+ * @deprecated use IdentityProviders.of
  */
+@Deprecated
 public class StaticIdentityProvider implements IdentityProvider {
 
     private String name;
     private List<String> roles;
-    
+
     public StaticIdentityProvider(String name) {
         this(name, Collections.emptyList());
     }

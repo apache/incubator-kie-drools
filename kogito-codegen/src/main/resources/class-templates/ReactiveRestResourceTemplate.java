@@ -21,16 +21,13 @@ import javax.ws.rs.core.MediaType;
 
 import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.kie.kogito.Application;
-import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.WorkItem;
-import org.kie.kogito.process.workitem.Policy;
+import org.kie.kogito.process.workitem.Policies;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
-import org.kie.kogito.services.identity.StaticIdentityProvider;
-import org.kie.kogito.auth.IdentityProvider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,53 +45,67 @@ public class $Type$ReactiveResource {
     public CompletionStage<$Type$Output> createResource_$name$(@Context HttpHeaders httpHeaders,
                                                                @QueryParam("businessKey") String businessKey,
                                                                $Type$Input resource) {
-        return CompletableFuture.supplyAsync(() -> UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(),
-            () -> {
-                $Type$Input inputModel = resource != null ? resource : new $Type$Input();
-                ProcessInstance<$Type$> pi = process.createInstance(businessKey, inputModel.toModel());
-                String startFromNode = httpHeaders.getHeaderString("X-KOGITO-StartFromNode");
-                if (startFromNode != null) {
-                    pi.startFrom(startFromNode);
-                } else {
-                    pi.start();
-                }
-                return pi.checkError().variables().toOutput();
-            })
-        ); 
+        return CompletableFuture
+            .supplyAsync(
+                () -> UnitOfWorkExecutor
+                    .executeInUnitOfWork(
+                        application.unitOfWorkManager(),
+                        () -> {
+                            $Type$Input inputModel = resource != null ? resource : new $Type$Input();
+                            ProcessInstance<$Type$> pi = process.createInstance(businessKey, inputModel.toModel());
+                            String startFromNode = httpHeaders.getHeaderString("X-KOGITO-StartFromNode");
+                            if (startFromNode != null) {
+                                pi.startFrom(startFromNode);
+                            } else {
+                                pi.start();
+                            }
+                            return pi.checkError().variables().toOutput();
+                        }));
     }
 
     @GET()
     @Produces(MediaType.APPLICATION_JSON)
     public CompletionStage<List<$Type$Output>> getResources_$name$() {
-        return CompletableFuture.supplyAsync(() -> process.instances().values().stream()
-                                                          .map(pi -> pi.variables().toOutput())
-                                                          .collect(Collectors.toList()));
+        return CompletableFuture
+            .supplyAsync(
+                () -> process
+                    .instances()
+                    .values()
+                    .stream()
+                    .map(pi -> pi.variables().toOutput())
+                    .collect(Collectors.toList()));
     }
 
     @GET()
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public CompletionStage<$Type$Output> getResource_$name$(@PathParam("id") String id) {
-        return CompletableFuture.supplyAsync(() -> process.instances()
-                                                          .findById(id, ProcessInstanceReadMode.READ_ONLY)
-                                                          .map(pi -> pi.variables().toOutput())
-                                                          .orElse(null));
+        return CompletableFuture
+            .supplyAsync(
+                () -> process
+                    .instances()
+                    .findById(id, ProcessInstanceReadMode.READ_ONLY)
+                    .map(pi -> pi.variables().toOutput())
+                    .orElse(null));
     }
 
     @DELETE()
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public CompletionStage<$Type$Output> deleteResource_$name$(@PathParam("id") final String id) {
-        return CompletableFuture.supplyAsync(() -> UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(),
-            () -> process
-                    .instances()
-                    .findById(id)
-                    .map(pi -> {
-                        pi.abort();
-                        return pi.checkError().variables().toOutput();
-                    })
-                    .orElse(null))
-        );
+        return CompletableFuture
+            .supplyAsync(
+                () -> UnitOfWorkExecutor
+                    .executeInUnitOfWork(
+                        application.unitOfWorkManager(),
+                        () -> process
+                            .instances()
+                            .findById(id)
+                            .map(pi -> {
+                                pi.abort();
+                                return pi.checkError().variables().toOutput();
+                            })
+                            .orElse(null)));
     }
 
     @POST()
@@ -102,13 +113,16 @@ public class $Type$ReactiveResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public CompletionStage<$Type$Output> updateModel_$name$(@PathParam("id") String id, $Type$ resource) {
-        return CompletableFuture.supplyAsync(() -> UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(),
-            () -> process
-                    .instances()
-                    .findById(id)
-                    .map(pi -> pi.updateVariables(resource).toOutput())
-                    .orElse(null))
-        );
+        return CompletableFuture
+            .supplyAsync(
+                () -> UnitOfWorkExecutor
+                    .executeInUnitOfWork(
+                        application.unitOfWorkManager(),
+                        () -> process
+                            .instances()
+                            .findById(id)
+                            .map(pi -> pi.updateVariables(resource).toOutput())
+                            .orElse(null)));
     }
 
     @GET()
@@ -117,22 +131,13 @@ public class $Type$ReactiveResource {
     public CompletionStage<Map<String, String>> getTasks_$name$(@PathParam("id") String id,
                                                                 @QueryParam("user") final String user,
                                                                 @QueryParam("group") final List<String> groups) {
-        return CompletableFuture.supplyAsync(() -> process.instances()
-                                                          .findById(id, ProcessInstanceReadMode.READ_ONLY)
-                                                          .map(pi -> pi.workItems(policies(user, groups)))
-                                                          .map(l -> l.stream().collect(Collectors.toMap(WorkItem::getId,
-                                                                                                        WorkItem::getName)))
-                                                          .orElse(null));
-    }
-
-    protected Policy[] policies(String user, List<String> groups) {
-        if (user == null) {
-            return new Policy[0];
-        }
-        IdentityProvider identity = null;
-        if (user != null) {
-            identity = new StaticIdentityProvider(user, groups);
-        }
-        return new Policy[]{SecurityPolicy.of(identity)};
+        return CompletableFuture
+            .supplyAsync(
+                () -> process
+                    .instances()
+                    .findById(id, ProcessInstanceReadMode.READ_ONLY)
+                    .map(pi -> pi.workItems(Policies.of(user, groups)))
+                    .map(l -> l.stream().collect(Collectors.toMap(WorkItem::getId, WorkItem::getName)))
+                    .orElse(null));
     }
 }

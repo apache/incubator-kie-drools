@@ -21,17 +21,15 @@ import javax.ws.rs.core.Response;
 import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.jbpm.util.JsonSchemaUtil;
 import org.kie.kogito.Application;
-import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.WorkItem;
-import org.kie.kogito.process.workitem.Policy;
+import org.kie.kogito.process.workitem.Policies;
 import org.kie.kogito.process.impl.Sig;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
-import org.kie.kogito.services.identity.StaticIdentityProvider;
 import org.kie.kogito.auth.IdentityProvider;
 import org.jbpm.process.instance.impl.humantask.HumanTaskTransition;
 
@@ -120,19 +118,9 @@ public class $Type$Resource {
                                                @QueryParam("group") final List<String> groups) {
         return process.instances()
                       .findById(id, ProcessInstanceReadMode.READ_ONLY)
-                      .map(pi -> pi.workItems(policies(user, groups)))
+                      .map(pi -> pi.workItems(Policies.of(user, groups)))
                       .map(l -> l.stream().collect(Collectors.toMap(WorkItem::getId, WorkItem::getName)))
                       .orElse(null);
     }
 
-    protected Policy[] policies(String user, List<String> groups) {
-        if (user == null) {
-            return new Policy[0];
-        }
-        IdentityProvider identity = null;
-        if (user != null) {
-            identity = new StaticIdentityProvider(user, groups);
-        }
-        return new Policy[]{SecurityPolicy.of(identity)};
-    }
 }
