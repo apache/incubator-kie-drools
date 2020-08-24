@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.kie.kogito.quarkus.deployment;
 
 import java.io.File;
@@ -18,6 +34,7 @@ import java.util.Set;
 import io.quarkus.deployment.dev.JavaCompilationProvider;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.GeneratedFile.Type;
 import org.kie.kogito.codegen.Generator;
 import org.kie.kogito.codegen.GeneratorContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
@@ -62,7 +79,9 @@ public abstract class KogitoCompilationProvider extends JavaCompilationProvider 
                 Path path = pathOf(outputDirectory.getPath(), file.relativePath());
                 if (file.getType() != GeneratedFile.Type.APPLICATION && file.getType() != GeneratedFile.Type.APPLICATION_CONFIG) {
                     Files.write(path, file.contents());
-                    generatedSourceFiles.add(path.toFile());
+                    if (file.getType() != Type.RESOURCE && file.getType() != Type.GENERATED_CP_RESOURCE) {
+                        generatedSourceFiles.add(path.toFile());
+                    }
                 }
             }
             super.compile(generatedSourceFiles, context);

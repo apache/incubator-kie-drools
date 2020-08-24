@@ -1,22 +1,31 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.kie.kogito.quarkus.deployment;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
-import io.quarkus.deployment.dev.JavaCompilationProvider;
-import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.Generator;
 import org.kie.kogito.codegen.decision.DecisionCodegen;
 
-import static org.kie.kogito.quarkus.deployment.KogitoCompilationProvider.pathOf;
-
-public class DMNCompilationProvider extends JavaCompilationProvider {
+public class DMNCompilationProvider extends KogitoCompilationProvider {
 
     @Override
     public Set<String> handledExtensions() {
@@ -24,22 +33,7 @@ public class DMNCompilationProvider extends JavaCompilationProvider {
     }
 
     @Override
-    public final void compile(Set<File> filesToCompile, Context context) {
-        File outputDirectory = context.getOutputDirectory();
-        try {
-            Generator generator = DecisionCodegen.ofPath(context.getProjectDirectory().toPath().resolve("src/main/resources"));
-            Collection<GeneratedFile> generatedFiles = generator.generate();
-
-            Set<File> generatedSourceFiles = new HashSet<>();
-            for (GeneratedFile file : generatedFiles) {
-                Path path = pathOf(outputDirectory.getPath(), file.relativePath());
-                Files.write(path, file.contents());
-                generatedSourceFiles.add(path.toFile());
-            }
-            super.compile(generatedSourceFiles, context);
-        } catch (IOException e) {
-            throw new KogitoCompilerException(e);
-        }
-
+    protected Generator addGenerator(ApplicationGenerator appGen, Set<File> filesToCompile, Context context, ClassLoader cl) throws IOException {
+        return appGen.withGenerator(DecisionCodegen.ofPath(context.getProjectDirectory().toPath().resolve("src" + File.separator + "main" + File.separator + "resources")));
     }
 }
