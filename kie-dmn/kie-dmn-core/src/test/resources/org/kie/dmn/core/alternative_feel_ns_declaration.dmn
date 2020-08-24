@@ -14,25 +14,20 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
-                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
-                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
-                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
-                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
-                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
-                      id="0001-input-data-string"
-                      name="0001-input-data-string"
-                      namespace="https://github.com/kiegroup/kie-dmn">
-   <semantic:decision name="Greeting Message" id="d_GreetingMessage">
-      <semantic:variable name="Greeting Message" typeRef="feelstring"/>
-      <semantic:informationRequirement>
-         <semantic:requiredInput href="#i_FullName"/>
-      </semantic:informationRequirement>
-      <semantic:literalExpression>
-         <semantic:text>"Hello " + Full Name</semantic:text>
-      </semantic:literalExpression>
-   </semantic:decision>
-   <semantic:inputData name="Full Name" id="i_FullName">
-      <semantic:variable name="Full Name" typeRef="feelstring"/>
-   </semantic:inputData>
-</semantic:definitions>
+
+<definitions id="0001-input-data-string" name="0001-input-data-string"
+	namespace="https://github.com/kiegroup/kie-dmn"
+	xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/">
+	<decision name="Greeting Message" id="d_GreetingMessage">
+		<variable xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" name="Greeting Message" typeRef="feel.string"/>
+		<informationRequirement>
+			<requiredInput href="#i_FullName"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>"Hello " + Full Name</text>
+		</literalExpression>
+	</decision>
+	<inputData name="Full Name" id="i_FullName">
+		<variable xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" name="Full Name" typeRef="feel.string"/>
+	</inputData>
+</definitions>
