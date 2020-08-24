@@ -4596,4 +4596,74 @@ public class IncrementalCompilationTest {
         final IncrementalResults addResults2 = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/r2.drl").build();
         assertEquals(0, addResults2.getAddedMessages().size());
     }
+
+    @Test
+    public void testUnusedDeclaredTypeUpdate() throws Exception {
+        // DROOLS-5560
+        final String drl1 = "package org.example.rules \n" +
+                "\n" +
+                "import org.example.facts.*;\n" +
+                "\n" +
+                "rule \"rule updating ReferencedType\"\n" +
+                "when\n" +
+                "    $x : ReferencedType( str == \"bar\" )  \n" +
+                "then\n" +
+                "    modify($x) { setStr(\"foo\") };\n" +
+                "end\n";
+
+        final String drl2_1 = "package org.example.facts \n" +
+                "\n" +
+                "declare  ReferencedType \n" +
+                "    str : String\n" +
+                "end\n" +
+                "declare  UnreferencedType \n" +
+                "    x : int\n" +
+                "end\n" +
+                "\n";
+
+        final String drl2_2 = "package org.example.facts \n" +
+                "\n" +
+                "declare  ReferencedType \n" +
+                "    str : String\n" +
+                "end\n" +
+                "declare  UnreferencedType \n" +
+                "    x : int\n" +
+                "    y : String\n" + // NEW ATTRIBUTE ADDED HERE
+                "end\n";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        // Create an in-memory jar for version 1.0.0
+        final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
+        KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, drl1, drl2_1);
+
+        // Create a session and fire rules
+        final KieContainer kc = ks.newKieContainer(releaseId1);
+        KieSession ksession = kc.newKieSession();
+
+        KieBase kiebase = ksession.getKieBase();
+        FactType referencedType = kiebase.getFactType("org.example.facts", "ReferencedType");
+        Object instance = referencedType.newInstance();
+        referencedType.set(instance, "str", "bar");
+        assertEquals("bar", referencedType.get(instance, "str"));
+
+        ksession.insert( instance );
+        assertEquals(1, ksession.fireAllRules());
+
+        // Create a new jar for version 1.1.0
+        final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
+        KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, drl1, drl2_2);
+
+        // try to update the container to version 1.1.0
+        kc.updateToVersion(releaseId2);
+
+        KieBase kiebase2 = ksession.getKieBase();
+        FactType referencedType2 = kiebase2.getFactType("org.example.facts", "ReferencedType");
+        Object instance2 = referencedType2.newInstance();
+        referencedType2.set(instance2, "str", "bar");
+        assertEquals("bar", referencedType2.get(instance2, "str"));
+
+        ksession.insert( instance2 );
+        assertEquals(1, ksession.fireAllRules());
+    }
 }

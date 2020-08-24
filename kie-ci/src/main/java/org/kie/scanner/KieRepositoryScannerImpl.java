@@ -89,7 +89,7 @@ public class KieRepositoryScannerImpl extends AbstractKieScanner<Map<DependencyD
 
     private ArtifactResolver getArtifactResolver() {
         if (artifactResolver == null) {
-            artifactResolver = ArtifactResolver.create();
+            artifactResolver = new ArtifactResolver();
         }
         return artifactResolver;
     }

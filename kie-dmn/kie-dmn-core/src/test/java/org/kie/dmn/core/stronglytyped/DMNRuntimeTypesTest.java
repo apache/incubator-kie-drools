@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
@@ -38,6 +40,7 @@ import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.core.BaseVariantTest;
 import org.kie.dmn.core.DMNRuntimeTest;
 import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.core.v1_2.DMNDecisionServicesTest;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
@@ -69,21 +72,40 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
     }
 
     @Test
-    public void testOneOfEachType() {
+    public void testOneOfEachType() throws Exception {
         final DMNRuntime runtime = createRuntime("OneOfEachType.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_4f5608e9-4d74-4c22-a47e-ab657257fc9c", "OneOfEachType");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        final DMNContext context = DMNFactory.newContext();
-        context.set("InputString", "John Doe");
-        context.set("InputNumber", BigDecimal.ONE);
-        context.set("InputBoolean", true);
-        context.set("InputDTDuration", Duration.parse("P1D"));
-        context.set("InputYMDuration", Period.parse("P1M"));
-        context.set("InputDateAndTime", LocalDateTime.of(2020, 4, 2, 9, 0));
-        context.set("InputDate", LocalDate.of(2020, 4, 2));
-        context.set("InputTime", LocalTime.of(9, 0));
+        DMNContext context = DMNFactory.newContext();
+        if (!isTypeSafe()) {
+            context.set("InputString", "John Doe");
+            context.set("InputNumber", BigDecimal.ONE);
+            context.set("InputBoolean", true);
+            context.set("InputDTDuration", Duration.parse("P1D"));
+            context.set("InputYMDuration", Period.parse("P1M"));
+            context.set("InputDateAndTime", LocalDateTime.of(2020, 4, 2, 9, 0));
+            context.set("InputDate", LocalDate.of(2020, 4, 2));
+            context.set("InputTime", LocalTime.of(9, 0));
+        } else {
+            JsonMapper mapper = JsonMapper.builder()
+                                          .addModule(new JavaTimeModule())
+                                          .build();
+            final String JSON = "{\n" +
+                                "    \"InputBoolean\": true,\n" +
+                                "    \"InputDTDuration\": \"P1D\",\n" +
+                                "    \"InputDate\": \"2020-04-02\",\n" +
+                                "    \"InputDateAndTime\": \"2020-04-02T09:00:00\",\n" +
+                                "    \"InputNumber\": 1,\n" +
+                                "    \"InputString\": \"John Doe\",\n" +
+                                "    \"InputTime\": \"09:00\",\n" +
+                                "    \"InputYMDuration\": \"P1M\"\n" +
+                                "}";
+            Class<?> inputSetClass = getStronglyClassByName(dmnModel, "InputSet");
+            FEELPropertyAccessible inputSet = (FEELPropertyAccessible) mapper.readValue(JSON, inputSetClass);
+            context = new DMNContextFPAImpl(inputSet);
+        }
 
         final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
@@ -533,10 +555,8 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Ignore
     @Test
     public void testCapitalLetterConflict() {
-        // To be fixed by DROOLS-5518
         final DMNRuntime runtime = createRuntime("capitalLetterConflict.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_B321C9B1-856E-45DE-B05D-5B4D4D301D37", "capitalLetterConflict");
         assertThat(dmnModel, notNullValue());
@@ -564,11 +584,11 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
             FEELPropertyAccessible myPersonOut = (FEELPropertyAccessible) allProperties.get("myPerson");
             assertThat(myPersonOut.getClass().getSimpleName(), is("TPerson"));
             assertThat(myPersonOut.getFEELProperty("name").toOptional().get(), is("John"));
-            assertThat(myPersonOut.getFEELProperty("age").toOptional().get(), is(28));
+            assertThat(EvalHelper.coerceNumber(myPersonOut.getFEELProperty("age").toOptional().get()), is(EvalHelper.coerceNumber(28)));
             FEELPropertyAccessible myPersonCapitalOut = (FEELPropertyAccessible) allProperties.get("MyPerson");
             assertThat(myPersonCapitalOut.getClass().getSimpleName(), is("TPerson"));
             assertThat(myPersonCapitalOut.getFEELProperty("name").toOptional().get(), is("Paul"));
-            assertThat(myPersonCapitalOut.getFEELProperty("age").toOptional().get(), is(26));
+            assertThat(EvalHelper.coerceNumber(myPersonCapitalOut.getFEELProperty("age").toOptional().get()), is(EvalHelper.coerceNumber(26)));
             Object myDecision = (String) allProperties.get("myDecision");
             assertThat(myDecision, is("myDecision is John"));
             Object myDecisionCapital = (String) allProperties.get("MyDecision");
@@ -576,10 +596,8 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Ignore
     @Test
     public void testCapitalLetterConflictWithInputAndDecision() {
-        // To be fixed by DROOLS-5518
         final DMNRuntime runtime = createRuntime("capitalLetterConflictWithInputAndDecision.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_EE9DAFC0-D50D-4D23-8676-FF8A40E02919", "capitalLetterConflictWithInputAndDecision");
         assertThat(dmnModel, notNullValue());
@@ -602,9 +620,39 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
             FEELPropertyAccessible myPersonOut = (FEELPropertyAccessible) allProperties.get("myNode");
             assertThat(myPersonOut.getClass().getSimpleName(), is("TPerson"));
             assertThat(myPersonOut.getFEELProperty("name").toOptional().get(), is("John"));
-            assertThat(myPersonOut.getFEELProperty("age").toOptional().get(), is(28));
+            assertThat(EvalHelper.coerceNumber(myPersonOut.getFEELProperty("age").toOptional().get()), is(EvalHelper.coerceNumber(28)));
             Object myDecision = (String) allProperties.get("MyNode");
             assertThat(myDecision, is("MyNode is John"));
+        }
+    }
+
+    @Test
+    public void testCapitalLetterConflictItemDef() {
+        final DMNRuntime runtime = createRuntime("capitalLetterConflictItemDef.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_DA986720-823F-4334-8AB5-5CBA76FD1B9E", "capitalLetterConflictItemDef");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final Map<String, Object> person = new HashMap<>();
+        person.put("name", "john");
+        person.put("Name", "John");
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("InputData-1", person);
+
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        assertThat(dmnResult.hasErrors(), is(false));
+        Map<String, Object> outPerson = (Map<String, Object>)dmnResult.getContext().get("Decision-1");
+        assertThat(outPerson.get("name"), is("paul"));
+        assertThat(outPerson.get("Name"), is("Paul"));
+
+        if (isTypeSafe()) {
+            FEELPropertyAccessible outputSet = convertToOutputSet(dmnModel, dmnResult);
+            Map<String, Object> allProperties = outputSet.allFEELProperties();
+            FEELPropertyAccessible myPersonOut = (FEELPropertyAccessible) allProperties.get("Decision-1");
+            assertThat(myPersonOut.getClass().getSimpleName(), is("TPerson"));
+            assertThat(myPersonOut.getFEELProperty("name").toOptional().get(), is("paul"));
+            assertThat(myPersonOut.getFEELProperty("Name").toOptional().get(), is("Paul"));
         }
     }
 
