@@ -18,7 +18,7 @@
    <semantic:import xmlns:drools="http://www.drools.org/kie/dmn/1.1"
                     xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
                     drools:modelName="Imported Model"
-                    drools:name="myImport"
+                    name="myImport"
                     importType="http://www.omg.org/spec/DMN/20180521/MODEL/"
                     namespace="http://www.trisotech.com/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36"
                     triso:fileId="eyJmIjp7InNrdSI6IjBmMzNjZmVhLTZkYTQtNDJjNS04MDM3LTRiYjJmNWJkYzc0YiIsIm5hbWUiOiJJbXBvcnRlZCBNb2RlbCJ9fQ=="
