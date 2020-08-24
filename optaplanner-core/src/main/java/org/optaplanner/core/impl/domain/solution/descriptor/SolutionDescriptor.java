@@ -727,32 +727,6 @@ public class SolutionDescriptor<Solution_> {
     // Model methods
     // ************************************************************************
 
-    public EntityDescriptor deduceEntityDescriptor(Class<?> entityClass) {
-        EntityDescriptor<Solution_> entityDescriptor;
-        if (entityClass != null) {
-            entityDescriptor = getEntityDescriptorStrict(entityClass);
-            if (entityDescriptor == null) {
-                throw new IllegalArgumentException("The config (" + this
-                        + ") has an entityClass (" + entityClass + ") that is not a known planning entity.\n"
-                        + "Check your solver configuration. If that class (" + entityClass.getSimpleName()
-                        + ") is not in the entityClassSet (" + getEntityClassSet()
-                        + "), check your " + PlanningSolution.class.getSimpleName()
-                        + " implementation's annotated methods too.");
-            }
-        } else {
-            Collection<EntityDescriptor<Solution_>> entityDescriptors = getGenuineEntityDescriptors();
-            if (entityDescriptors.size() != 1) {
-                throw new IllegalArgumentException("The config (" + this
-                        + ") has no entityClass (" + entityClass
-                        + ") configured and because there are multiple in the entityClassSet ("
-                        + getEntityClassSet()
-                        + "), it cannot be deduced automatically.");
-            }
-            entityDescriptor = entityDescriptors.iterator().next();
-        }
-        return entityDescriptor;
-    }
-
     public MemberAccessor getConstraintConfigurationMemberAccessor() {
         return constraintConfigurationMemberAccessor;
     }

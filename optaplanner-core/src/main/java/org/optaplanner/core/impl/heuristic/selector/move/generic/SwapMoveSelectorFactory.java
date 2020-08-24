@@ -32,6 +32,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
@@ -42,36 +43,33 @@ public class SwapMoveSelectorFactory extends AbstractMoveSelectorFactory<SwapMov
     }
 
     @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
+    protected MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy, SelectionCacheType minimumCacheType,
+            boolean randomSelection) {
         EntitySelectorConfig entitySelectorConfig_ =
-                moveSelectorConfig.getEntitySelectorConfig() == null ? new EntitySelectorConfig()
-                        : moveSelectorConfig.getEntitySelectorConfig();
-        EntitySelector leftEntitySelector = entitySelectorConfig_.buildEntitySelector(
-                configPolicy,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        EntitySelectorConfig rightEntitySelectorConfig = defaultIfNull(moveSelectorConfig.getSecondaryEntitySelectorConfig(),
+                config.getEntitySelectorConfig() == null ? new EntitySelectorConfig() : config.getEntitySelectorConfig();
+        EntitySelector leftEntitySelector = EntitySelectorFactory.create(entitySelectorConfig_).buildEntitySelector(
+                configPolicy, minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+        EntitySelectorConfig rightEntitySelectorConfig = defaultIfNull(config.getSecondaryEntitySelectorConfig(),
                 entitySelectorConfig_);
-        EntitySelector rightEntitySelector = rightEntitySelectorConfig.buildEntitySelector(
-                configPolicy,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        List<GenuineVariableDescriptor> variableDescriptorList = leftEntitySelector.getEntityDescriptor()
-                .deduceVariableDescriptorList(moveSelectorConfig.getVariableNameIncludeList());
+        EntitySelector rightEntitySelector = EntitySelectorFactory.create(rightEntitySelectorConfig).buildEntitySelector(
+                configPolicy, minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+        List<GenuineVariableDescriptor> variableDescriptorList =
+                deduceVariableDescriptorList(leftEntitySelector.getEntityDescriptor(), config.getVariableNameIncludeList());
         return new SwapMoveSelector(leftEntitySelector, rightEntitySelector, variableDescriptorList,
                 randomSelection);
     }
 
     @Override
     protected MoveSelectorConfig buildUnfoldedMoveSelectorConfig(HeuristicConfigPolicy configPolicy) {
-        EntityDescriptor onlyEntityDescriptor = moveSelectorConfig.getEntitySelectorConfig() == null ? null
-                : moveSelectorConfig.getEntitySelectorConfig().extractEntityDescriptor(configPolicy);
-        if (moveSelectorConfig.getSecondaryEntitySelectorConfig() != null) {
-            EntityDescriptor onlySecondaryEntityDescriptor = moveSelectorConfig.getSecondaryEntitySelectorConfig()
-                    .extractEntityDescriptor(configPolicy);
+        EntityDescriptor onlyEntityDescriptor = config.getEntitySelectorConfig() == null ? null
+                : EntitySelectorFactory.create(config.getEntitySelectorConfig()).extractEntityDescriptor(configPolicy);
+        if (config.getSecondaryEntitySelectorConfig() != null) {
+            EntityDescriptor onlySecondaryEntityDescriptor = EntitySelectorFactory
+                    .create(config.getSecondaryEntitySelectorConfig()).extractEntityDescriptor(configPolicy);
             if (onlyEntityDescriptor != onlySecondaryEntityDescriptor) {
-                throw new IllegalArgumentException("The entitySelector (" + moveSelectorConfig.getEntitySelectorConfig()
+                throw new IllegalArgumentException("The entitySelector (" + config.getEntitySelectorConfig()
                         + ")'s entityClass (" + (onlyEntityDescriptor == null ? null : onlyEntityDescriptor.getEntityClass())
-                        + ") and secondaryEntitySelectorConfig (" + moveSelectorConfig.getSecondaryEntitySelectorConfig()
+                        + ") and secondaryEntitySelectorConfig (" + config.getSecondaryEntitySelectorConfig()
                         + ")'s entityClass ("
                         + (onlySecondaryEntityDescriptor == null ? null : onlySecondaryEntityDescriptor.getEntityClass())
                         + ") must be the same entity class.");
@@ -89,21 +87,20 @@ public class SwapMoveSelectorFactory extends AbstractMoveSelectorFactory<SwapMov
         for (EntityDescriptor entityDescriptor : entityDescriptors) {
             // No childMoveSelectorConfig.inherit() because of unfoldedMoveSelectorConfig.inheritFolded()
             SwapMoveSelectorConfig childMoveSelectorConfig = new SwapMoveSelectorConfig();
-            EntitySelectorConfig childEntitySelectorConfig =
-                    new EntitySelectorConfig(moveSelectorConfig.getEntitySelectorConfig());
+            EntitySelectorConfig childEntitySelectorConfig = new EntitySelectorConfig(config.getEntitySelectorConfig());
             if (childEntitySelectorConfig.getMimicSelectorRef() == null) {
                 childEntitySelectorConfig.setEntityClass(entityDescriptor.getEntityClass());
             }
             childMoveSelectorConfig.setEntitySelectorConfig(childEntitySelectorConfig);
-            if (moveSelectorConfig.getSecondaryEntitySelectorConfig() != null) {
-                EntitySelectorConfig childSecondaryEntitySelectorConfig = new EntitySelectorConfig(
-                        moveSelectorConfig.getSecondaryEntitySelectorConfig());
+            if (config.getSecondaryEntitySelectorConfig() != null) {
+                EntitySelectorConfig childSecondaryEntitySelectorConfig =
+                        new EntitySelectorConfig(config.getSecondaryEntitySelectorConfig());
                 if (childSecondaryEntitySelectorConfig.getMimicSelectorRef() == null) {
                     childSecondaryEntitySelectorConfig.setEntityClass(entityDescriptor.getEntityClass());
                 }
                 childMoveSelectorConfig.setSecondaryEntitySelectorConfig(childSecondaryEntitySelectorConfig);
             }
-            childMoveSelectorConfig.setVariableNameIncludeList(moveSelectorConfig.getVariableNameIncludeList());
+            childMoveSelectorConfig.setVariableNameIncludeList(config.getVariableNameIncludeList());
             moveSelectorConfigList.add(childMoveSelectorConfig);
         }
 
@@ -113,7 +110,7 @@ public class SwapMoveSelectorFactory extends AbstractMoveSelectorFactory<SwapMov
         } else {
             unfoldedMoveSelectorConfig = new UnionMoveSelectorConfig(moveSelectorConfigList);
         }
-        unfoldedMoveSelectorConfig.inheritFolded(moveSelectorConfig);
+        unfoldedMoveSelectorConfig.inheritFolded(config);
         return unfoldedMoveSelectorConfig;
     }
 }

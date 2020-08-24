@@ -27,6 +27,7 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMov
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
@@ -37,28 +38,29 @@ public class PillarSwapMoveSelectorFactory extends AbstractMoveSelectorFactory<P
     }
 
     @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
+    protected MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy, SelectionCacheType minimumCacheType,
+            boolean randomSelection) {
         PillarSelectorConfig leftPillarSelectorConfig =
-                defaultIfNull(moveSelectorConfig.getPillarSelectorConfig(), new PillarSelectorConfig());
+                defaultIfNull(config.getPillarSelectorConfig(), new PillarSelectorConfig());
         PillarSelector leftPillarSelector =
                 buildPillarSelector(leftPillarSelectorConfig, configPolicy, minimumCacheType, randomSelection);
         PillarSelectorConfig rightPillarSelectorConfig =
-                defaultIfNull(moveSelectorConfig.getSecondaryPillarSelectorConfig(), leftPillarSelectorConfig);
+                defaultIfNull(config.getSecondaryPillarSelectorConfig(), leftPillarSelectorConfig);
         PillarSelector rightPillarSelector =
                 buildPillarSelector(rightPillarSelectorConfig, configPolicy, minimumCacheType, randomSelection);
 
-        List<GenuineVariableDescriptor> variableDescriptorList = leftPillarSelector.getEntityDescriptor()
-                .deduceVariableDescriptorList(moveSelectorConfig.getVariableNameIncludeList());
+        List<GenuineVariableDescriptor> variableDescriptorList =
+                deduceVariableDescriptorList(leftPillarSelector.getEntityDescriptor(), config.getVariableNameIncludeList());
         return new PillarSwapMoveSelector(leftPillarSelector, rightPillarSelector, variableDescriptorList,
                 randomSelection);
     }
 
-    private PillarSelector buildPillarSelector(PillarSelectorConfig pillarSelectorConfig,
-            HeuristicConfigPolicy configPolicy, SelectionCacheType minimumCacheType, boolean randomSelection) {
-        return pillarSelectorConfig.buildPillarSelector(configPolicy, moveSelectorConfig.getSubPillarType(),
-                moveSelectorConfig.getSubPillarSequenceComparatorClass(), minimumCacheType,
-                SelectionOrder.fromRandomSelectionBoolean(randomSelection), moveSelectorConfig.getVariableNameIncludeList());
+    private PillarSelector buildPillarSelector(PillarSelectorConfig pillarSelectorConfig, HeuristicConfigPolicy configPolicy,
+            SelectionCacheType minimumCacheType, boolean randomSelection) {
+        return PillarSelectorFactory.create(pillarSelectorConfig).buildPillarSelector(configPolicy,
+                config.getSubPillarType(), config.getSubPillarSequenceComparatorClass(),
+                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection),
+                config.getVariableNameIncludeList());
     }
 
 }

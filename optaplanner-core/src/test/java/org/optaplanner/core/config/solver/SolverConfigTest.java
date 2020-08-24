@@ -44,13 +44,13 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-public class SolverConfigTest {
+class SolverConfigTest {
     private static final String TEST_SOLVER_CONFIG = "testSolverConfig.xml";
 
     private final JaxbIO<SolverConfig> xmlIO = new JaxbIO<>(SolverConfig.class);
 
     @Test
-    public void xmlConfigFileRemainsSameAfterReadWrite() throws IOException {
+    void xmlConfigFileRemainsSameAfterReadWrite() throws IOException {
         SolverConfig jaxbSolverConfig = unmarshallSolverConfigFromResource(TEST_SOLVER_CONFIG);
 
         Writer stringWriter = new StringWriter();
@@ -72,7 +72,7 @@ public class SolverConfigTest {
     }
 
     @Test
-    public void whiteCharsInClassName() {
+    void whiteCharsInClassName() {
         String solutionClassName = "org.optaplanner.core.impl.testdata.domain.TestdataSolution";
         String xmlFragment = String.format("<solver>%n"
                 + "  <solutionClass>  %s  %n" // Intentionally included white chars around the class name.
@@ -83,7 +83,7 @@ public class SolverConfigTest {
     }
 
     @Test
-    public void variableNameAsNestedElementInValueSelector() {
+    void variableNameAsNestedElementInValueSelector() {
         String xmlFragment = String.format("<solver>\n"
                 + "  <constructionHeuristic>\n"
                 + "      <changeMoveSelector>\n"
@@ -102,6 +102,13 @@ public class SolverConfigTest {
                 (ChangeMoveSelectorConfig) constructionHeuristicPhaseConfig.getMoveSelectorConfigList().get(0);
         ValueSelectorConfig valueSelectorConfig = changeMoveSelectorConfig.getValueSelectorConfig();
         assertThat(valueSelectorConfig.getVariableName()).isNull();
+    }
+
+    @Test
+    void inherit() {
+        SolverConfig originalSolverConfig = unmarshallSolverConfigFromResource(TEST_SOLVER_CONFIG);
+        SolverConfig inheritedSolverConfig = new SolverConfig().inherit(originalSolverConfig);
+        assertThat(inheritedSolverConfig).usingRecursiveComparison().isEqualTo(originalSolverConfig);
     }
 
     /* Dummy classes below are referenced from the testSolverConfig.xml used in this test case. */

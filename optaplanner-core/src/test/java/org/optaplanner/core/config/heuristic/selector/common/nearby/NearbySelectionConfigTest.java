@@ -15,6 +15,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.nearby.BetaDistributi
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.BlockDistributionNearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.LinearDistributionNearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandomFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.ParabolicDistributionNearbyRandom;
 
 public class NearbySelectionConfigTest {
@@ -94,7 +95,7 @@ public class NearbySelectionConfigTest {
     public void buildNearbyRandomWithNoRandomSelection() {
         NearbySelectionConfig nearbySelectionConfig = buildNearbySelectionConfig();
 
-        Assertions.assertThat(nearbySelectionConfig.buildNearbyRandom(false)).isNull();
+        Assertions.assertThat(NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(false)).isNull();
     }
 
     @Test
@@ -102,7 +103,8 @@ public class NearbySelectionConfigTest {
         NearbySelectionConfig nearbySelectionConfig = buildNearbySelectionConfig();
         nearbySelectionConfig.setBlockDistributionSizeMinimum(1);
 
-        assertThatIllegalArgumentException().isThrownBy(() -> nearbySelectionConfig.buildNearbyRandom(false))
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(false))
                 .withMessageContaining("randomSelection").withMessageContaining("distribution");
     }
 
@@ -112,7 +114,8 @@ public class NearbySelectionConfigTest {
         nearbySelectionConfig.setBlockDistributionSizeMinimum(1);
         nearbySelectionConfig.setLinearDistributionSizeMaximum(1);
 
-        assertThatIllegalArgumentException().isThrownBy(() -> nearbySelectionConfig.buildNearbyRandom(true))
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true))
                 .withMessageContaining(BLOCK).withMessageContaining(LINEAR);
     }
 
@@ -122,7 +125,8 @@ public class NearbySelectionConfigTest {
         nearbySelectionConfig.setBlockDistributionSizeMinimum(1);
         nearbySelectionConfig.setParabolicDistributionSizeMaximum(1);
 
-        assertThatIllegalArgumentException().isThrownBy(() -> nearbySelectionConfig.buildNearbyRandom(true))
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true))
                 .withMessageContaining(BLOCK).withMessageContaining(PARABOLIC);
     }
 
@@ -132,7 +136,8 @@ public class NearbySelectionConfigTest {
         nearbySelectionConfig.setBlockDistributionSizeMinimum(1);
         nearbySelectionConfig.setBetaDistributionAlpha(0.0);
 
-        assertThatIllegalArgumentException().isThrownBy(() -> nearbySelectionConfig.buildNearbyRandom(true))
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true))
                 .withMessageContaining(BLOCK).withMessageContaining(BETA);
     }
 
@@ -142,7 +147,8 @@ public class NearbySelectionConfigTest {
         nearbySelectionConfig.setLinearDistributionSizeMaximum(1);
         nearbySelectionConfig.setParabolicDistributionSizeMaximum(1);
 
-        assertThatIllegalArgumentException().isThrownBy(() -> nearbySelectionConfig.buildNearbyRandom(true))
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true))
                 .withMessageContaining(LINEAR).withMessageContaining(PARABOLIC);
     }
 
@@ -152,7 +158,8 @@ public class NearbySelectionConfigTest {
         nearbySelectionConfig.setLinearDistributionSizeMaximum(1);
         nearbySelectionConfig.setBetaDistributionAlpha(1.0);
 
-        assertThatIllegalArgumentException().isThrownBy(() -> nearbySelectionConfig.buildNearbyRandom(true))
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true))
                 .withMessageContaining(LINEAR).withMessageContaining(BETA);
     }
 
@@ -162,7 +169,8 @@ public class NearbySelectionConfigTest {
         nearbySelectionConfig.setParabolicDistributionSizeMaximum(1);
         nearbySelectionConfig.setBetaDistributionAlpha(1.0);
 
-        assertThatIllegalArgumentException().isThrownBy(() -> nearbySelectionConfig.buildNearbyRandom(true))
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true))
                 .withMessageContaining(PARABOLIC).withMessageContaining(BETA);
     }
 
@@ -178,7 +186,7 @@ public class NearbySelectionConfigTest {
         double probability = 0.1;
         nearbySelectionConfig.setBlockDistributionUniformDistributionProbability(probability);
 
-        assertThat(nearbySelectionConfig.buildNearbyRandom(true))
+        assertThat(NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true))
                 .isEqualToComparingFieldByField(new BlockDistributionNearbyRandom(minimum, maximum, sizeRatio, probability));
     }
 
@@ -188,7 +196,7 @@ public class NearbySelectionConfigTest {
         int maximum = 2;
         nearbySelectionConfig.setLinearDistributionSizeMaximum(maximum);
 
-        assertThat(nearbySelectionConfig.buildNearbyRandom(true))
+        assertThat(NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true))
                 .isEqualToComparingFieldByField(new LinearDistributionNearbyRandom(maximum));
     }
 
@@ -198,7 +206,7 @@ public class NearbySelectionConfigTest {
         int maximum = 2;
         nearbySelectionConfig.setParabolicDistributionSizeMaximum(maximum);
 
-        assertThat(nearbySelectionConfig.buildNearbyRandom(true))
+        assertThat(NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true))
                 .isEqualToComparingFieldByField(new ParabolicDistributionNearbyRandom(maximum));
     }
 
@@ -212,7 +220,7 @@ public class NearbySelectionConfigTest {
 
         // A RandomGenerator in BetaDistribution is not easily accessible through BetaDistributionNearbyRandom
         // and messes up equals, therefore only a class check is done, but is sufficient.
-        assertThat(nearbySelectionConfig.buildNearbyRandom(true).getClass())
+        assertThat(NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true).getClass())
                 .isEqualTo(BetaDistributionNearbyRandom.class);
     }
 
@@ -220,7 +228,7 @@ public class NearbySelectionConfigTest {
     public void buildNearbyRandomWithDefaultDistribution() {
         NearbySelectionConfig nearbySelectionConfig = buildNearbySelectionConfig();
 
-        assertThat(nearbySelectionConfig.buildNearbyRandom(true))
+        assertThat(NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true))
                 .isEqualToComparingFieldByField(new LinearDistributionNearbyRandom(Integer.MAX_VALUE));
     }
 

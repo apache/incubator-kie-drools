@@ -38,24 +38,23 @@ public class UnionMoveSelectorFactory extends AbstractCompositeMoveSelectorFacto
     @Override
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        List<MoveSelector> moveSelectorList = buildInnerMoveSelectors(moveSelectorConfig.getMoveSelectorConfigList(),
+        List<MoveSelector> moveSelectorList = buildInnerMoveSelectors(config.getMoveSelectorConfigList(),
                 configPolicy, minimumCacheType, randomSelection);
 
         SelectionProbabilityWeightFactory selectorProbabilityWeightFactory;
-        if (moveSelectorConfig.getSelectorProbabilityWeightFactoryClass() != null) {
+        if (config.getSelectorProbabilityWeightFactoryClass() != null) {
             if (!randomSelection) {
-                throw new IllegalArgumentException("The moveSelectorConfig (" + moveSelectorConfig
+                throw new IllegalArgumentException("The moveSelectorConfig (" + config
                         + ") with selectorProbabilityWeightFactoryClass ("
-                        + moveSelectorConfig.getSelectorProbabilityWeightFactoryClass()
+                        + config.getSelectorProbabilityWeightFactoryClass()
                         + ") has non-random randomSelection (" + randomSelection + ").");
             }
-            selectorProbabilityWeightFactory = ConfigUtils.newInstance(moveSelectorConfig,
-                    "selectorProbabilityWeightFactoryClass", moveSelectorConfig.getSelectorProbabilityWeightFactoryClass());
+            selectorProbabilityWeightFactory = ConfigUtils.newInstance(config,
+                    "selectorProbabilityWeightFactoryClass", config.getSelectorProbabilityWeightFactoryClass());
         } else if (randomSelection) {
-            Map<MoveSelector, Double> fixedProbabilityWeightMap = new HashMap<>(
-                    moveSelectorConfig.getMoveSelectorConfigList().size());
-            for (int i = 0; i < moveSelectorConfig.getMoveSelectorConfigList().size(); i++) {
-                MoveSelectorConfig innerMoveSelectorConfig = moveSelectorConfig.getMoveSelectorConfigList().get(i);
+            Map<MoveSelector, Double> fixedProbabilityWeightMap = new HashMap<>(config.getMoveSelectorConfigList().size());
+            for (int i = 0; i < config.getMoveSelectorConfigList().size(); i++) {
+                MoveSelectorConfig innerMoveSelectorConfig = config.getMoveSelectorConfigList().get(i);
                 MoveSelector moveSelector = moveSelectorList.get(i);
                 Double fixedProbabilityWeight = innerMoveSelectorConfig.getFixedProbabilityWeight();
                 if (fixedProbabilityWeight == null) {

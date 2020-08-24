@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.config.solver.recaller;
+package org.optaplanner.core.impl.solver.recaller;
 
-import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 
-// Currently not yet supported as being nested, so no XStreamAlias
-public class BestSolutionRecallerConfig extends AbstractConfig<BestSolutionRecallerConfig> {
+public class BestSolutionRecallerFactory {
 
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
+    public static BestSolutionRecallerFactory create() {
+        return new BestSolutionRecallerFactory();
+    }
 
     public <Solution_> BestSolutionRecaller<Solution_> buildBestSolutionRecaller(EnvironmentMode environmentMode) {
         BestSolutionRecaller<Solution_> bestSolutionRecaller = new BestSolutionRecaller<>();
@@ -36,15 +33,4 @@ public class BestSolutionRecallerConfig extends AbstractConfig<BestSolutionRecal
         }
         return bestSolutionRecaller;
     }
-
-    @Override
-    public BestSolutionRecallerConfig inherit(BestSolutionRecallerConfig inheritedConfig) {
-        return this;
-    }
-
-    @Override
-    public BestSolutionRecallerConfig copyConfig() {
-        return new BestSolutionRecallerConfig().inherit(this);
-    }
-
 }

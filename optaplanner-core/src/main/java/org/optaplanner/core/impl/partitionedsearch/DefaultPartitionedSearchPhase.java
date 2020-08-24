@@ -27,7 +27,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.phase.PhaseConfig;
-import org.optaplanner.core.config.solver.recaller.BestSolutionRecallerConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.partitionedsearch.event.PartitionedSearchPhaseLifecycleListener;
@@ -41,6 +40,7 @@ import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.phase.PhaseFactory;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
+import org.optaplanner.core.impl.solver.recaller.BestSolutionRecallerFactory;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.ChildThreadPlumbingTermination;
 import org.optaplanner.core.impl.solver.termination.OrCompositeTermination;
@@ -168,8 +168,8 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
     public PartitionSolver<Solution_> buildPartitionSolver(
             ChildThreadPlumbingTermination childThreadPlumbingTermination, Semaphore runnablePartThreadSemaphore,
             SolverScope<Solution_> solverScope) {
-        BestSolutionRecaller<Solution_> bestSolutionRecaller = new BestSolutionRecallerConfig()
-                .buildBestSolutionRecaller(configPolicy.getEnvironmentMode());
+        BestSolutionRecaller<Solution_> bestSolutionRecaller =
+                BestSolutionRecallerFactory.create().buildBestSolutionRecaller(configPolicy.getEnvironmentMode());
         Termination partTermination = new OrCompositeTermination(childThreadPlumbingTermination,
                 termination.createChildThreadTermination(solverScope, ChildThreadType.PART_THREAD));
         List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList.size());

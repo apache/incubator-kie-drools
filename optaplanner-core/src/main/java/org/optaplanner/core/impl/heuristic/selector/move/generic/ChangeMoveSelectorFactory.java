@@ -32,9 +32,11 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
 
 public class ChangeMoveSelectorFactory extends AbstractMoveSelectorFactory<ChangeMoveSelectorConfig> {
 
@@ -43,19 +45,22 @@ public class ChangeMoveSelectorFactory extends AbstractMoveSelectorFactory<Chang
     }
 
     @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
+    protected MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        if (moveSelectorConfig.getEntitySelectorConfig() == null) {
-            throw new IllegalStateException("The entitySelectorConfig (" + moveSelectorConfig.getEntitySelectorConfig()
+        if (config.getEntitySelectorConfig() == null) {
+            throw new IllegalStateException("The entitySelectorConfig (" + config.getEntitySelectorConfig()
                     + ") should haven been initialized during unfolding.");
         }
-        EntitySelector entitySelector = moveSelectorConfig.getEntitySelectorConfig().buildEntitySelector(configPolicy,
+        EntitySelectorFactory entitySelectorFactory =
+                EntitySelectorFactory.create(config.getEntitySelectorConfig());
+        EntitySelector entitySelector = entitySelectorFactory.buildEntitySelector(configPolicy,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        if (moveSelectorConfig.getValueSelectorConfig() == null) {
-            throw new IllegalStateException("The valueSelectorConfig (" + moveSelectorConfig.getValueSelectorConfig()
+        if (config.getValueSelectorConfig() == null) {
+            throw new IllegalStateException("The valueSelectorConfig (" + config.getValueSelectorConfig()
                     + ") should haven been initialized during unfolding.");
         }
-        ValueSelector valueSelector = moveSelectorConfig.getValueSelectorConfig().buildValueSelector(configPolicy,
+        ValueSelectorFactory valueSelectorFactory = ValueSelectorFactory.create(config.getValueSelectorConfig());
+        ValueSelector valueSelector = valueSelectorFactory.buildValueSelector(configPolicy,
                 entitySelector.getEntityDescriptor(),
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         return new ChangeMoveSelector(entitySelector, valueSelector, randomSelection);
@@ -64,8 +69,8 @@ public class ChangeMoveSelectorFactory extends AbstractMoveSelectorFactory<Chang
     @Override
     protected MoveSelectorConfig buildUnfoldedMoveSelectorConfig(HeuristicConfigPolicy configPolicy) {
         Collection<EntityDescriptor> entityDescriptors;
-        EntityDescriptor onlyEntityDescriptor = moveSelectorConfig.getEntitySelectorConfig() == null ? null
-                : moveSelectorConfig.getEntitySelectorConfig().extractEntityDescriptor(configPolicy);
+        EntityDescriptor onlyEntityDescriptor = config.getEntitySelectorConfig() == null ? null
+                : EntitySelectorFactory.create(config.getEntitySelectorConfig()).extractEntityDescriptor(configPolicy);
         if (onlyEntityDescriptor != null) {
             entityDescriptors = Collections.singletonList(onlyEntityDescriptor);
         } else {
@@ -73,8 +78,9 @@ public class ChangeMoveSelectorFactory extends AbstractMoveSelectorFactory<Chang
         }
         List<GenuineVariableDescriptor> variableDescriptorList = new ArrayList<>();
         for (EntityDescriptor entityDescriptor : entityDescriptors) {
-            GenuineVariableDescriptor onlyVariableDescriptor = moveSelectorConfig.getValueSelectorConfig() == null ? null
-                    : moveSelectorConfig.getValueSelectorConfig().extractVariableDescriptor(configPolicy, entityDescriptor);
+            GenuineVariableDescriptor onlyVariableDescriptor = config.getValueSelectorConfig() == null ? null
+                    : ValueSelectorFactory.create(config.getValueSelectorConfig()).extractVariableDescriptor(configPolicy,
+                            entityDescriptor);
             if (onlyVariableDescriptor != null) {
                 if (onlyEntityDescriptor != null) {
                     // No need for unfolding or deducing
@@ -94,13 +100,12 @@ public class ChangeMoveSelectorFactory extends AbstractMoveSelectorFactory<Chang
             // No childMoveSelectorConfig.inherit() because of unfoldedMoveSelectorConfig.inheritFolded()
             ChangeMoveSelectorConfig childMoveSelectorConfig = new ChangeMoveSelectorConfig();
             // Different EntitySelector per child because it is a union
-            EntitySelectorConfig childEntitySelectorConfig =
-                    new EntitySelectorConfig(moveSelectorConfig.getEntitySelectorConfig());
+            EntitySelectorConfig childEntitySelectorConfig = new EntitySelectorConfig(config.getEntitySelectorConfig());
             if (childEntitySelectorConfig.getMimicSelectorRef() == null) {
                 childEntitySelectorConfig.setEntityClass(variableDescriptor.getEntityDescriptor().getEntityClass());
             }
             childMoveSelectorConfig.setEntitySelectorConfig(childEntitySelectorConfig);
-            ValueSelectorConfig childValueSelectorConfig = new ValueSelectorConfig(moveSelectorConfig.getValueSelectorConfig());
+            ValueSelectorConfig childValueSelectorConfig = new ValueSelectorConfig(config.getValueSelectorConfig());
             if (childValueSelectorConfig.getMimicSelectorRef() == null) {
                 childValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
             }
@@ -114,7 +119,7 @@ public class ChangeMoveSelectorFactory extends AbstractMoveSelectorFactory<Chang
         } else {
             unfoldedMoveSelectorConfig = new UnionMoveSelectorConfig(moveSelectorConfigList);
         }
-        unfoldedMoveSelectorConfig.inheritFolded(moveSelectorConfig);
+        unfoldedMoveSelectorConfig.inheritFolded(config);
         return unfoldedMoveSelectorConfig;
     }
 }

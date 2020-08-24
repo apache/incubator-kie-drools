@@ -8420,6 +8420,14 @@
           "methodName": "solveAndListen",
           "elementKind": "method",
           "justification": "SolverManager needs an API that allows a user to listen to both best solution and solver terminated events"
+        },
+        {
+          "code": "java.class.removed",
+          "old": "class org.optaplanner.core.config.solver.recaller.BestSolutionRecallerConfig",
+          "package": "org.optaplanner.core.config.solver.recaller",
+          "classSimpleName": "BestSolutionRecallerConfig",
+          "elementKind": "class",
+          "justification": "The BestSolutionRecallerConfig has moved to BestSolutionRecallerFactory as it was not a part of the XML model."
         }
       ]
     }

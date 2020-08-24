@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.config.heuristic.selector.common.nearby;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 import javax.xml.bind.annotation.XmlElement;
 
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
@@ -25,17 +23,7 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.BetaDistributionNearbyRandom;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.BlockDistributionNearbyRandom;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.LinearDistributionNearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.ParabolicDistributionNearbyRandom;
-import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.entity.nearby.NearEntityNearbyEntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
-import org.optaplanner.core.impl.heuristic.selector.value.nearby.NearEntityNearbyValueSelector;
 
 public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig> {
 
@@ -175,104 +163,6 @@ public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig>
                     + ") and nearbyDistanceMeterClass (" + nearbyDistanceMeterClass
                     + ") has a resolvedCacheType (" + resolvedCacheType
                     + ") that is cached.");
-        }
-    }
-
-    public EntitySelector applyNearbyEntitySelector(HeuristicConfigPolicy configPolicy,
-            SelectionCacheType minimumCacheType, SelectionCacheType resolvedCacheType,
-            SelectionOrder resolvedSelectionOrder, EntitySelector entitySelector) {
-        boolean randomSelection = resolvedSelectionOrder.toRandomSelectionBoolean();
-        EntitySelector originEntitySelector = originEntitySelectorConfig.buildEntitySelector(
-                configPolicy,
-                minimumCacheType, resolvedSelectionOrder);
-        NearbyDistanceMeter nearbyDistanceMeter = ConfigUtils.newInstance(this,
-                "nearbyDistanceMeterClass", nearbyDistanceMeterClass);
-        // TODO Check nearbyDistanceMeterClass.getGenericInterfaces() to confirm generic type S is an entityClass
-        NearbyRandom nearbyRandom = buildNearbyRandom(randomSelection);
-        return new NearEntityNearbyEntitySelector(entitySelector, originEntitySelector,
-                nearbyDistanceMeter, nearbyRandom, randomSelection);
-    }
-
-    public ValueSelector applyNearbyValueSelector(HeuristicConfigPolicy configPolicy,
-            SelectionCacheType minimumCacheType, SelectionCacheType resolvedCacheType,
-            SelectionOrder resolvedSelectionOrder, ValueSelector valueSelector) {
-        boolean randomSelection = resolvedSelectionOrder.toRandomSelectionBoolean();
-        EntitySelector originEntitySelector = originEntitySelectorConfig.buildEntitySelector(
-                configPolicy, minimumCacheType, resolvedSelectionOrder);
-        NearbyDistanceMeter nearbyDistanceMeter = ConfigUtils.newInstance(this,
-                "nearbyDistanceMeterClass", nearbyDistanceMeterClass);
-        // TODO Check nearbyDistanceMeterClass.getGenericInterfaces() to confirm generic type S is an entityClass
-        NearbyRandom nearbyRandom = buildNearbyRandom(randomSelection);
-        return new NearEntityNearbyValueSelector(valueSelector, originEntitySelector,
-                nearbyDistanceMeter, nearbyRandom, randomSelection);
-    }
-
-    protected NearbyRandom buildNearbyRandom(boolean randomSelection) {
-        boolean blockDistributionEnabled = nearbySelectionDistributionType == NearbySelectionDistributionType.BLOCK_DISTRIBUTION
-                || blockDistributionSizeMinimum != null
-                || blockDistributionSizeMaximum != null
-                || blockDistributionSizeRatio != null
-                || blockDistributionUniformDistributionProbability != null;
-        boolean linearDistributionEnabled =
-                nearbySelectionDistributionType == NearbySelectionDistributionType.LINEAR_DISTRIBUTION
-                        || linearDistributionSizeMaximum != null;
-        boolean parabolicDistributionEnabled =
-                nearbySelectionDistributionType == NearbySelectionDistributionType.PARABOLIC_DISTRIBUTION
-                        || parabolicDistributionSizeMaximum != null;
-        boolean betaDistributionEnabled = nearbySelectionDistributionType == NearbySelectionDistributionType.BETA_DISTRIBUTION
-                || betaDistributionAlpha != null
-                || betaDistributionBeta != null;
-        if (!randomSelection) {
-            if (blockDistributionEnabled || linearDistributionEnabled || parabolicDistributionEnabled
-                    || betaDistributionEnabled) {
-                throw new IllegalArgumentException("The nearbySelectorConfig (" + this
-                        + ") with randomSelection (" + randomSelection
-                        + ") has distribution parameters.");
-            }
-            return null;
-        }
-        if (blockDistributionEnabled && linearDistributionEnabled) {
-            throw new IllegalArgumentException("The nearbySelectorConfig (" + this
-                    + ") has both blockDistribution and linearDistribution parameters.");
-        }
-        if (blockDistributionEnabled && parabolicDistributionEnabled) {
-            throw new IllegalArgumentException("The nearbySelectorConfig (" + this
-                    + ") has both blockDistribution and parabolicDistribution parameters.");
-        }
-        if (blockDistributionEnabled && betaDistributionEnabled) {
-            throw new IllegalArgumentException("The nearbySelectorConfig (" + this
-                    + ") has both blockDistribution and betaDistribution parameters.");
-        }
-        if (linearDistributionEnabled && parabolicDistributionEnabled) {
-            throw new IllegalArgumentException("The nearbySelectorConfig (" + this
-                    + ") has both linearDistribution and parabolicDistribution parameters.");
-        }
-        if (linearDistributionEnabled && betaDistributionEnabled) {
-            throw new IllegalArgumentException("The nearbySelectorConfig (" + this
-                    + ") has both linearDistribution and betaDistribution parameters.");
-        }
-        if (parabolicDistributionEnabled && betaDistributionEnabled) {
-            throw new IllegalArgumentException("The nearbySelectorConfig (" + this
-                    + ") has both parabolicDistribution and betaDistribution parameters.");
-        }
-        if (blockDistributionEnabled) {
-            int sizeMinimum = defaultIfNull(blockDistributionSizeMinimum, 1);
-            int sizeMaximum = defaultIfNull(blockDistributionSizeMaximum, Integer.MAX_VALUE);
-            double sizeRatio = defaultIfNull(blockDistributionSizeRatio, 1.0);
-            double uniformDistributionProbability = defaultIfNull(blockDistributionUniformDistributionProbability, 0.0);
-            return new BlockDistributionNearbyRandom(sizeMinimum, sizeMaximum, sizeRatio, uniformDistributionProbability);
-        } else if (linearDistributionEnabled) {
-            int sizeMaximum = defaultIfNull(linearDistributionSizeMaximum, Integer.MAX_VALUE);
-            return new LinearDistributionNearbyRandom(sizeMaximum);
-        } else if (parabolicDistributionEnabled) {
-            int sizeMaximum = defaultIfNull(parabolicDistributionSizeMaximum, Integer.MAX_VALUE);
-            return new ParabolicDistributionNearbyRandom(sizeMaximum);
-        } else if (betaDistributionEnabled) {
-            double alpha = defaultIfNull(betaDistributionAlpha, 1.0);
-            double beta = defaultIfNull(betaDistributionBeta, 5.0);
-            return new BetaDistributionNearbyRandom(alpha, beta);
-        } else {
-            return new LinearDistributionNearbyRandom(Integer.MAX_VALUE);
         }
     }
 

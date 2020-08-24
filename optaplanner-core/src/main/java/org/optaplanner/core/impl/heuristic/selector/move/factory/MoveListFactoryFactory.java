@@ -32,14 +32,14 @@ public class MoveListFactoryFactory extends AbstractMoveSelectorFactory<MoveList
     @Override
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        if (moveSelectorConfig.getMoveListFactoryClass() == null) {
-            throw new IllegalArgumentException("The moveListFactoryConfig (" + moveSelectorConfig
-                    + ") lacks a moveListFactoryClass (" + moveSelectorConfig.getMoveListFactoryClass() + ").");
+        if (config.getMoveListFactoryClass() == null) {
+            throw new IllegalArgumentException("The moveListFactoryConfig (" + config
+                    + ") lacks a moveListFactoryClass (" + config.getMoveListFactoryClass() + ").");
         }
-        MoveListFactory moveListFactory = ConfigUtils.newInstance(moveSelectorConfig,
-                "moveListFactoryClass", moveSelectorConfig.getMoveListFactoryClass());
+        MoveListFactory moveListFactory =
+                ConfigUtils.newInstance(config, "moveListFactoryClass", config.getMoveListFactoryClass());
         ConfigUtils.applyCustomProperties(moveListFactory, "moveListFactoryClass",
-                moveSelectorConfig.getMoveListFactoryCustomProperties(), "moveListFactoryCustomProperties");
+                config.getMoveListFactoryCustomProperties(), "moveListFactoryCustomProperties");
         // MoveListFactoryToMoveSelectorBridge caches by design, so it uses the minimumCacheType
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {
             // cacheType upgrades to SelectionCacheType.STEP (without shuffling) because JIT is not supported

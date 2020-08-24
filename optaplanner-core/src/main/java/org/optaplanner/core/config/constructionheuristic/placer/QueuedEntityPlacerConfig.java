@@ -79,10 +79,6 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPla
         this.moveSelectorConfigList = moveSelectorConfigList;
     }
 
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
-
     @Override
     public QueuedEntityPlacerConfig inherit(QueuedEntityPlacerConfig inheritedConfig) {
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());

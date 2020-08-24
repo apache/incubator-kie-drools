@@ -35,9 +35,9 @@ public class CartesianProductMoveSelectorFactory
     @Override
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        List<MoveSelector> moveSelectorList = buildInnerMoveSelectors(moveSelectorConfig.getMoveSelectorConfigList(),
+        List<MoveSelector> moveSelectorList = buildInnerMoveSelectors(config.getMoveSelectorConfigList(),
                 configPolicy, minimumCacheType, randomSelection);
-        boolean ignoreEmptyChildIterators_ = defaultIfNull(moveSelectorConfig.getIgnoreEmptyChildIterators(), true);
+        boolean ignoreEmptyChildIterators_ = defaultIfNull(config.getIgnoreEmptyChildIterators(), true);
         return new CartesianProductMoveSelector(moveSelectorList, ignoreEmptyChildIterators_, randomSelection);
     }
 }

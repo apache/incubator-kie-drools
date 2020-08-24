@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.config.heuristic.selector;
+package org.optaplanner.core.impl.heuristic.selector;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public abstract class AbstractSelectorConfigTest {
+public abstract class AbstractSelectorFactoryTest {
 
     public HeuristicConfigPolicy buildHeuristicConfigPolicy() {
         return buildHeuristicConfigPolicy(TestdataSolution.buildSolutionDescriptor());

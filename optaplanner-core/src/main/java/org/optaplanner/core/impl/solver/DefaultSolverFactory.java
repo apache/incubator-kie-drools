@@ -32,7 +32,6 @@ import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.random.RandomType;
-import org.optaplanner.core.config.solver.recaller.BestSolutionRecallerConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -44,6 +43,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryFactory;
 import org.optaplanner.core.impl.solver.random.DefaultRandomFactory;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
+import org.optaplanner.core.impl.solver.recaller.BestSolutionRecallerFactory;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.BasicPlumbingTermination;
 import org.optaplanner.core.impl.solver.termination.Termination;
@@ -85,8 +85,8 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
         SolverScope<Solution_> solverScope = new SolverScope<>();
         solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(true, constraintMatchEnabledPreference));
 
-        BestSolutionRecaller<Solution_> bestSolutionRecaller = new BestSolutionRecallerConfig()
-                .buildBestSolutionRecaller(environmentMode_);
+        BestSolutionRecaller<Solution_> bestSolutionRecaller =
+                BestSolutionRecallerFactory.create().buildBestSolutionRecaller(environmentMode_);
         HeuristicConfigPolicy configPolicy = new HeuristicConfigPolicy(environmentMode_,
                 moveThreadCount_, solverConfig.getMoveThreadBufferSize(), solverConfig.getThreadFactoryClass(),
                 scoreDirectorFactory);
@@ -191,9 +191,8 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                     return null;
                 }
             } else {
-                resolvedMoveThreadCount = ConfigUtils.resolveThreadPoolSizeScript(
-                        "moveThreadCount", moveThreadCount, SolverConfig.MOVE_THREAD_COUNT_NONE,
-                        SolverConfig.MOVE_THREAD_COUNT_AUTO);
+                resolvedMoveThreadCount = ConfigUtils.resolveThreadPoolSizeScript("moveThreadCount", moveThreadCount,
+                        SolverConfig.MOVE_THREAD_COUNT_NONE, SolverConfig.MOVE_THREAD_COUNT_AUTO);
             }
             if (resolvedMoveThreadCount < 1) {
                 throw new IllegalArgumentException("The moveThreadCount (" + moveThreadCount

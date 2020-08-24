@@ -22,15 +22,15 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
+import org.optaplanner.core.impl.AbstractFromConfigFactory;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 
-abstract class AbstractEntityPlacerFactory<Config_ extends EntityPlacerConfig> implements EntityPlacerFactory {
+abstract class AbstractEntityPlacerFactory<EntityPlacerConfig_ extends EntityPlacerConfig<EntityPlacerConfig_>>
+        extends AbstractFromConfigFactory<EntityPlacerConfig_> implements EntityPlacerFactory {
 
-    protected final Config_ placerConfig;
-
-    protected AbstractEntityPlacerFactory(Config_ placerConfig) {
-        this.placerConfig = placerConfig;
+    protected AbstractEntityPlacerFactory(EntityPlacerConfig_ placerConfig) {
+        super(placerConfig);
     }
 
     protected ChangeMoveSelectorConfig buildChangeMoveSelectorConfig(HeuristicConfigPolicy configPolicy,

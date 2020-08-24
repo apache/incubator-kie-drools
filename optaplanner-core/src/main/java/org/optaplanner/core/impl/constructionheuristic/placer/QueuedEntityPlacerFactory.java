@@ -33,6 +33,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
 
@@ -77,11 +78,11 @@ public class QueuedEntityPlacerFactory extends AbstractEntityPlacerFactory<Queue
     @Override
     public QueuedEntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy) {
         EntitySelectorConfig entitySelectorConfig_ = buildEntitySelectorConfig(configPolicy);
-        EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(configPolicy,
+        EntitySelector entitySelector = EntitySelectorFactory.create(entitySelectorConfig_).buildEntitySelector(configPolicy,
                 SelectionCacheType.PHASE, SelectionOrder.ORIGINAL);
 
         List<MoveSelectorConfig> moveSelectorConfigList_;
-        if (ConfigUtils.isEmptyCollection(placerConfig.getMoveSelectorConfigList())) {
+        if (ConfigUtils.isEmptyCollection(config.getMoveSelectorConfigList())) {
             EntityDescriptor entityDescriptor = entitySelector.getEntityDescriptor();
             Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getGenuineVariableDescriptors();
             List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<>(variableDescriptors.size());
@@ -98,7 +99,7 @@ public class QueuedEntityPlacerFactory extends AbstractEntityPlacerFactory<Queue
             }
             moveSelectorConfigList_ = Collections.singletonList(subMoveSelectorConfig);
         } else {
-            moveSelectorConfigList_ = placerConfig.getMoveSelectorConfigList();
+            moveSelectorConfigList_ = config.getMoveSelectorConfigList();
         }
         List<MoveSelector> moveSelectorList = new ArrayList<>(moveSelectorConfigList_.size());
         for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList_) {
@@ -111,9 +112,9 @@ public class QueuedEntityPlacerFactory extends AbstractEntityPlacerFactory<Queue
 
     public EntitySelectorConfig buildEntitySelectorConfig(HeuristicConfigPolicy configPolicy) {
         EntitySelectorConfig entitySelectorConfig_;
-        if (placerConfig.getEntitySelectorConfig() == null) {
+        if (config.getEntitySelectorConfig() == null) {
             entitySelectorConfig_ = new EntitySelectorConfig();
-            EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor().deduceEntityDescriptor(null);
+            EntityDescriptor entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
             Class<?> entityClass = entityDescriptor.getEntityClass();
             entitySelectorConfig_.setId(entityClass.getName());
             entitySelectorConfig_.setEntityClass(entityClass);
@@ -123,11 +124,11 @@ public class QueuedEntityPlacerFactory extends AbstractEntityPlacerFactory<Queue
                 entitySelectorConfig_.setSorterManner(configPolicy.getEntitySorterManner());
             }
         } else {
-            entitySelectorConfig_ = placerConfig.getEntitySelectorConfig();
+            entitySelectorConfig_ = config.getEntitySelectorConfig();
         }
         if (entitySelectorConfig_.getCacheType() != null
                 && entitySelectorConfig_.getCacheType().compareTo(SelectionCacheType.PHASE) < 0) {
-            throw new IllegalArgumentException("The queuedEntityPlacer (" + placerConfig
+            throw new IllegalArgumentException("The queuedEntityPlacer (" + config
                     + ") cannot have an entitySelectorConfig (" + entitySelectorConfig_
                     + ") with a cacheType (" + entitySelectorConfig_.getCacheType()
                     + ") lower than " + SelectionCacheType.PHASE + ".");

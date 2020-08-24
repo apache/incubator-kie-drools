@@ -23,9 +23,11 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailC
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
 
 public class TailChainSwapMoveSelectorFactory extends AbstractMoveSelectorFactory<TailChainSwapMoveSelectorConfig> {
 
@@ -34,19 +36,17 @@ public class TailChainSwapMoveSelectorFactory extends AbstractMoveSelectorFactor
     }
 
     @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
+    protected MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         EntitySelectorConfig entitySelectorConfig_ =
-                moveSelectorConfig.getEntitySelectorConfig() == null ? new EntitySelectorConfig()
-                        : moveSelectorConfig.getEntitySelectorConfig();
-        EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(configPolicy,
+                config.getEntitySelectorConfig() == null ? new EntitySelectorConfig() : config.getEntitySelectorConfig();
+        EntitySelector entitySelector = EntitySelectorFactory.create(entitySelectorConfig_).buildEntitySelector(configPolicy,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         ValueSelectorConfig valueSelectorConfig_ =
-                moveSelectorConfig.getValueSelectorConfig() == null ? new ValueSelectorConfig()
-                        : moveSelectorConfig.getValueSelectorConfig();
-        ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(configPolicy,
-                entitySelector.getEntityDescriptor(),
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+                config.getValueSelectorConfig() == null ? new ValueSelectorConfig() : config.getValueSelectorConfig();
+        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig_).buildValueSelector(configPolicy,
+                entitySelector.getEntityDescriptor(), minimumCacheType,
+                SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         return new TailChainSwapMoveSelector(entitySelector, valueSelector, randomSelection);
     }
 }

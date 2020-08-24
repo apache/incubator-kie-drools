@@ -23,9 +23,11 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.chained.KOptM
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
 
 public class KOptMoveSelectorFactory extends AbstractMoveSelectorFactory<KOptMoveSelectorConfig> {
 
@@ -36,21 +38,19 @@ public class KOptMoveSelectorFactory extends AbstractMoveSelectorFactory<KOptMov
     }
 
     @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
+    protected MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         EntitySelectorConfig entitySelectorConfig_ =
-                moveSelectorConfig.getEntitySelectorConfig() == null ? new EntitySelectorConfig()
-                        : moveSelectorConfig.getEntitySelectorConfig();
-        EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(configPolicy,
+                config.getEntitySelectorConfig() == null ? new EntitySelectorConfig() : config.getEntitySelectorConfig();
+        EntitySelector entitySelector = EntitySelectorFactory.create(entitySelectorConfig_).buildEntitySelector(configPolicy,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         ValueSelectorConfig valueSelectorConfig_ =
-                moveSelectorConfig.getValueSelectorConfig() == null ? new ValueSelectorConfig()
-                        : moveSelectorConfig.getValueSelectorConfig();
+                config.getValueSelectorConfig() == null ? new ValueSelectorConfig() : config.getValueSelectorConfig();
         ValueSelector[] valueSelectors = new ValueSelector[K - 1];
         for (int i = 0; i < valueSelectors.length; i++) {
-            valueSelectors[i] = valueSelectorConfig_.buildValueSelector(configPolicy,
-                    entitySelector.getEntityDescriptor(),
-                    minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+            valueSelectors[i] = ValueSelectorFactory.create(valueSelectorConfig_).buildValueSelector(configPolicy,
+                    entitySelector.getEntityDescriptor(), minimumCacheType,
+                    SelectionOrder.fromRandomSelectionBoolean(randomSelection));
 
         }
         return new KOptMoveSelector(entitySelector, valueSelectors, randomSelection);

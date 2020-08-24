@@ -60,7 +60,8 @@ public class PooledEntityPlacerFactory extends AbstractEntityPlacerFactory<Poole
                         + ") without explicitly configuring the <pooledEntityPlacer>.");
             }
             if (entitySelectorConfig == null) {
-                EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor().deduceEntityDescriptor(null);
+                EntityDescriptor entityDescriptor =
+                        new PooledEntityPlacerFactory(config).deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
                 entitySelectorConfig = buildEntitySelectorConfig(configPolicy, entityDescriptor);
                 changeMoveSelectorConfig.setEntitySelectorConfig(entitySelectorConfig);
             }
@@ -91,8 +92,8 @@ public class PooledEntityPlacerFactory extends AbstractEntityPlacerFactory<Poole
     @Override
     public PooledEntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy) {
         MoveSelectorConfig moveSelectorConfig_ =
-                placerConfig.getMoveSelectorConfig() == null ? buildMoveSelectorConfig(configPolicy)
-                        : placerConfig.getMoveSelectorConfig();
+                config.getMoveSelectorConfig() == null ? buildMoveSelectorConfig(configPolicy)
+                        : config.getMoveSelectorConfig();
 
         MoveSelector moveSelector = MoveSelectorFactory.create(moveSelectorConfig_).buildMoveSelector(
                 configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
@@ -100,7 +101,7 @@ public class PooledEntityPlacerFactory extends AbstractEntityPlacerFactory<Poole
     }
 
     private MoveSelectorConfig buildMoveSelectorConfig(HeuristicConfigPolicy configPolicy) {
-        EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor().deduceEntityDescriptor(null);
+        EntityDescriptor entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
         EntitySelectorConfig entitySelectorConfig = buildEntitySelectorConfig(configPolicy, entityDescriptor);
 
         Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getGenuineVariableDescriptors();

@@ -32,14 +32,14 @@ public class MoveIteratorFactoryFactory extends AbstractMoveSelectorFactory<Move
     @Override
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy, SelectionCacheType minimumCacheType,
             boolean randomSelection) {
-        if (moveSelectorConfig.getMoveIteratorFactoryClass() == null) {
-            throw new IllegalArgumentException("The moveIteratorFactoryConfig (" + moveSelectorConfig
-                    + ") lacks a moveListFactoryClass (" + moveSelectorConfig.getMoveIteratorFactoryClass() + ").");
+        if (config.getMoveIteratorFactoryClass() == null) {
+            throw new IllegalArgumentException("The moveIteratorFactoryConfig (" + config
+                    + ") lacks a moveListFactoryClass (" + config.getMoveIteratorFactoryClass() + ").");
         }
-        MoveIteratorFactory moveIteratorFactory = ConfigUtils.newInstance(moveSelectorConfig,
-                "moveIteratorFactoryClass", moveSelectorConfig.getMoveIteratorFactoryClass());
+        MoveIteratorFactory moveIteratorFactory = ConfigUtils.newInstance(config,
+                "moveIteratorFactoryClass", config.getMoveIteratorFactoryClass());
         ConfigUtils.applyCustomProperties(moveIteratorFactory, "moveIteratorFactoryClass",
-                moveSelectorConfig.getMoveIteratorFactoryCustomProperties(), "moveIteratorFactoryCustomProperties");
+                config.getMoveIteratorFactoryCustomProperties(), "moveIteratorFactoryCustomProperties");
         return new MoveIteratorFactoryToMoveSelectorBridge(moveIteratorFactory, randomSelection);
     }
 }

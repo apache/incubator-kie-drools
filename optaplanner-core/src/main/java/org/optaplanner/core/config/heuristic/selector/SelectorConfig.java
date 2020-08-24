@@ -17,8 +17,6 @@
 package org.optaplanner.core.config.heuristic.selector;
 
 import org.optaplanner.core.config.AbstractConfig;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
@@ -27,38 +25,5 @@ import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
  * General superclass for {@link MoveSelectorConfig}, {@link EntitySelectorConfig} and {@link ValueSelectorConfig}.
  */
 public abstract class SelectorConfig<C extends SelectorConfig> extends AbstractConfig<C> {
-
-    // ************************************************************************
-    // Helper methods
-    // ************************************************************************
-
-    protected void validateCacheTypeVersusSelectionOrder(
-            SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder) {
-        switch (resolvedSelectionOrder) {
-            case INHERIT:
-                throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                        + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
-                        + ") which should have been resolved by now.");
-            case ORIGINAL:
-            case RANDOM:
-                break;
-            case SORTED:
-            case SHUFFLED:
-            case PROBABILISTIC:
-                if (resolvedCacheType.isNotCached()) {
-                    throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                            + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
-                            + ") which does not support the resolvedCacheType (" + resolvedCacheType + ").");
-                }
-                break;
-            default:
-                throw new IllegalStateException("The resolvedSelectionOrder (" + resolvedSelectionOrder
-                        + ") is not implemented.");
-        }
-    }
-
-    // ************************************************************************
-    // Builder methods
-    // ************************************************************************
 
 }

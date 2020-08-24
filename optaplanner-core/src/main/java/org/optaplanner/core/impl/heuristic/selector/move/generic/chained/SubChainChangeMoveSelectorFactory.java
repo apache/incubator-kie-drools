@@ -30,7 +30,9 @@ import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFac
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelectorFactory;
 
 public class SubChainChangeMoveSelectorFactory extends AbstractMoveSelectorFactory<SubChainChangeMoveSelectorConfig> {
 
@@ -39,28 +41,26 @@ public class SubChainChangeMoveSelectorFactory extends AbstractMoveSelectorFacto
     }
 
     @Override
-    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
+    protected MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         EntityDescriptor entityDescriptor =
-                configPolicy.getSolutionDescriptor().deduceEntityDescriptor(moveSelectorConfig.getEntityClass());
+                config.getEntityClass() == null ? deduceEntityDescriptor(configPolicy.getSolutionDescriptor())
+                        : deduceEntityDescriptor(configPolicy.getSolutionDescriptor(), config.getEntityClass());
         SubChainSelectorConfig subChainSelectorConfig_ =
-                moveSelectorConfig.getSubChainSelectorConfig() == null ? new SubChainSelectorConfig()
-                        : moveSelectorConfig.getSubChainSelectorConfig();
-        SubChainSelector subChainSelector = subChainSelectorConfig_.buildSubChainSelector(configPolicy,
-                entityDescriptor,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+                config.getSubChainSelectorConfig() == null ? new SubChainSelectorConfig() : config.getSubChainSelectorConfig();
+        SubChainSelector subChainSelector =
+                SubChainSelectorFactory.create(subChainSelectorConfig_).buildSubChainSelector(configPolicy, entityDescriptor,
+                        minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         ValueSelectorConfig valueSelectorConfig_ =
-                moveSelectorConfig.getValueSelectorConfig() == null ? new ValueSelectorConfig()
-                        : moveSelectorConfig.getValueSelectorConfig();
-        ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(configPolicy,
-                entityDescriptor,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+                config.getValueSelectorConfig() == null ? new ValueSelectorConfig() : config.getValueSelectorConfig();
+        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig_).buildValueSelector(configPolicy,
+                entityDescriptor, minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
-            throw new IllegalArgumentException("The moveSelectorConfig (" + moveSelectorConfig
+            throw new IllegalArgumentException("The moveSelectorConfig (" + config
                     + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
                     + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
         }
         return new SubChainChangeMoveSelector(subChainSelector, (EntityIndependentValueSelector) valueSelector,
-                randomSelection, defaultIfNull(moveSelectorConfig.getSelectReversingMoveToo(), true));
+                randomSelection, defaultIfNull(config.getSelectReversingMoveToo(), true));
     }
 }
