@@ -1,39 +1,72 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_820c548c-377d-463e-a62b-bb95ddc4758c" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:include1="http://www.trisotech.com/dmn/definitions/_01a65215-7e0d-47ac-845a-a768f6abf7fe" xmlns:include2="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.9.201806081408" id="_820c548c-377d-463e-a62b-bb95ddc4758c" name="L3 Do say hello" namespace="http://www.trisotech.com/dmn/definitions/_820c548c-377d-463e-a62b-bb95ddc4758c" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
-  <dmn11:extensionElements/>
-  <dmn11:import xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:modelName="Do say hello with 2 bkms" drools:name="L2import" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="http://www.trisotech.com/dmn/definitions/_01a65215-7e0d-47ac-845a-a768f6abf7fe" triso:fileId="eyJmIjp7InNrdSI6ImMwOWEwMDc5LTk1YWUtNDU1ZC1hZGU3LTljNDQxYjA3YTI5MiIsIm5hbWUiOiJEbyBzYXkgaGVsbG8gd2l0aCAyIGJrbXMifSwiciI6eyJhcGlrZXkiOiIyOTIwMDNmNjk4NDBlNzEyIn19" triso:fileName="Matteo Mortari/Do say hello with 2 bkms"/>
-  <dmn11:import xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:modelName="Saying hello 2 bkms" drools:name="L3importM1" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a" triso:fileId="eyJmIjp7InNrdSI6IjFhMDM4MzFjLWYyNzQtNDRmNC05OWZiLTQ4ZGU2YjEyOGZjYiIsIm5hbWUiOiJTYXlpbmcgaGVsbG8gMiBia21zIn0sInIiOnsiYXBpa2V5IjoiMjkyMDAzZjY5ODQwZTcxMiJ9fQ==" triso:fileName="Matteo Mortari/Saying hello 2 bkms"/>
-  <dmn11:inputData id="_c7bdaeac-d5fc-45b0-a48b-5ea8435d86e6" name="Another Name">
-    <dmn11:variable id="_4f3d2a39-a619-4b2d-b6b3-bccc771ea040" name="Another Name" typeRef="feel:string"/>
-  </dmn11:inputData>
-  <dmn11:decision id="_13bf7ff8-a1fc-45ed-905d-7637d5d86def" name="L3 decision">
-    <dmn11:variable id="_6b4e6fa2-cf36-4c34-b6e3-0847cd2d3451" name="L3 decision"/>
-    <dmn11:informationRequirement>
-      <dmn11:requiredInput href="#_c7bdaeac-d5fc-45b0-a48b-5ea8435d86e6"/>
-    </dmn11:informationRequirement>
-    <dmn11:knowledgeRequirement>
-      <dmn11:requiredKnowledge href="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a#_d9be6ede-31af-4773-a0e2-e27515347fcd"/>
-    </dmn11:knowledgeRequirement>
-    <dmn11:literalExpression id="_8855ea72-b19c-4fb1-8cbd-2af094652f4a">
-      <dmn11:text>L3importM1.Say hello(Another Name)</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-  <dmn11:decision id="_32d66e6d-d961-4f04-81aa-769f7bde889b" name="L3 what about hello">
-    <dmn11:variable id="_5fafa4b9-ebf6-4b4b-8a86-a0a830b1730b" name="L3 what about hello"/>
-    <dmn11:knowledgeRequirement>
-      <dmn11:requiredKnowledge href="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a#_ca2409f4-0963-4d8e-9bdb-7102b67fdeff"/>
-    </dmn11:knowledgeRequirement>
-    <dmn11:literalExpression id="_6147d900-e336-4bda-98bf-f371321e921a">
-      <dmn11:text>L3importM1.knowledge of hello()</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-  <dmn11:decision id="_7119e1a0-2f1e-404e-b474-fa349757bb69" name="L3 view on M2">
-    <dmn11:variable id="_59ea4e32-ee26-4c71-80e9-605f43945817" name="L3 view on M2"/>
-    <dmn11:informationRequirement>
-      <dmn11:requiredDecision href="http://www.trisotech.com/dmn/definitions/_01a65215-7e0d-47ac-845a-a768f6abf7fe#_432cfc50-bf92-40fe-8d99-a9191d4b3006"/>
-    </dmn11:informationRequirement>
-    <dmn11:literalExpression id="_cb3f433d-6474-4d46-9232-0f42403953a5">
-      <dmn11:text>L2import.Say hello decision</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-</dmn11:definitions>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/dmn/definitions/_820c548c-377d-463e-a62b-bb95ddc4758c"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:include1="http://www.trisotech.com/dmn/definitions/_01a65215-7e0d-47ac-845a-a768f6abf7fe"
+                      xmlns:include2="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.0.9.201806081408"
+                      id="_820c548c-377d-463e-a62b-bb95ddc4758c"
+                      name="L3 Do say hello"
+                      namespace="http://www.trisotech.com/dmn/definitions/_820c548c-377d-463e-a62b-bb95ddc4758c">
+   <semantic:extensionElements/>
+   <semantic:import xmlns:drools="http://www.drools.org/kie/dmn/1.1"
+                    xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                    drools:modelName="Do say hello with 2 bkms"
+                    drools:name="L2import"
+                    importType="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                    namespace="http://www.trisotech.com/dmn/definitions/_01a65215-7e0d-47ac-845a-a768f6abf7fe"
+                    triso:fileId="eyJmIjp7InNrdSI6ImMwOWEwMDc5LTk1YWUtNDU1ZC1hZGU3LTljNDQxYjA3YTI5MiIsIm5hbWUiOiJEbyBzYXkgaGVsbG8gd2l0aCAyIGJrbXMifSwiciI6eyJhcGlrZXkiOiIyOTIwMDNmNjk4NDBlNzEyIn19"
+                    triso:fileName="Matteo Mortari/Do say hello with 2 bkms"
+                    name="L2import"/>
+   <semantic:import xmlns:drools="http://www.drools.org/kie/dmn/1.1"
+                    xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                    drools:modelName="Saying hello 2 bkms"
+                    drools:name="L3importM1"
+                    importType="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                    namespace="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a"
+                    triso:fileId="eyJmIjp7InNrdSI6IjFhMDM4MzFjLWYyNzQtNDRmNC05OWZiLTQ4ZGU2YjEyOGZjYiIsIm5hbWUiOiJTYXlpbmcgaGVsbG8gMiBia21zIn0sInIiOnsiYXBpa2V5IjoiMjkyMDAzZjY5ODQwZTcxMiJ9fQ=="
+                    triso:fileName="Matteo Mortari/Saying hello 2 bkms"
+                    name="L3importM1"/>
+   <semantic:inputData id="_c7bdaeac-d5fc-45b0-a48b-5ea8435d86e6" name="Another Name">
+      <semantic:variable id="_4f3d2a39-a619-4b2d-b6b3-bccc771ea040"
+                         name="Another Name"
+                         typeRef="string"/>
+   </semantic:inputData>
+   <semantic:decision id="_13bf7ff8-a1fc-45ed-905d-7637d5d86def" name="L3 decision">
+      <semantic:variable id="_6b4e6fa2-cf36-4c34-b6e3-0847cd2d3451" name="L3 decision"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_c7bdaeac-d5fc-45b0-a48b-5ea8435d86e6"/>
+      </semantic:informationRequirement>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a#_d9be6ede-31af-4773-a0e2-e27515347fcd"/>
+      </semantic:knowledgeRequirement>
+      <semantic:literalExpression id="_8855ea72-b19c-4fb1-8cbd-2af094652f4a">
+         <semantic:text>L3importM1.Say hello(Another Name)</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:decision id="_32d66e6d-d961-4f04-81aa-769f7bde889b" name="L3 what about hello">
+      <semantic:variable id="_5fafa4b9-ebf6-4b4b-8a86-a0a830b1730b" name="L3 what about hello"/>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a#_ca2409f4-0963-4d8e-9bdb-7102b67fdeff"/>
+      </semantic:knowledgeRequirement>
+      <semantic:literalExpression id="_6147d900-e336-4bda-98bf-f371321e921a">
+         <semantic:text>L3importM1.knowledge of hello()</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:decision id="_7119e1a0-2f1e-404e-b474-fa349757bb69" name="L3 view on M2">
+      <semantic:variable id="_59ea4e32-ee26-4c71-80e9-605f43945817" name="L3 view on M2"/>
+      <semantic:informationRequirement>
+         <semantic:requiredDecision href="http://www.trisotech.com/dmn/definitions/_01a65215-7e0d-47ac-845a-a768f6abf7fe#_432cfc50-bf92-40fe-8d99-a9191d4b3006"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression id="_cb3f433d-6474-4d46-9232-0f42403953a5">
+         <semantic:text>L2import.Say hello decision</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+</semantic:definitions>

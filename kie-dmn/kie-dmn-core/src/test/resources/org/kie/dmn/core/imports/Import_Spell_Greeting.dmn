@@ -1,20 +1,46 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_d67f19e9-7835-4cad-9c80-16b8423cc392" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:include1="http://www.trisotech.com/dmn/definitions/_88f4fc88-1eb2-4188-a721-5720cf5565ce" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.8.201805241511" id="_d67f19e9-7835-4cad-9c80-16b8423cc392" name="Import Spell Greeting" namespace="http://www.trisotech.com/dmn/definitions/_d67f19e9-7835-4cad-9c80-16b8423cc392" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
-  <dmn11:extensionElements/>
-  <dmn11:import xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:modelName="Spell Greeting" drools:name="sg" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="http://www.trisotech.com/dmn/definitions/_88f4fc88-1eb2-4188-a721-5720cf5565ce" triso:fileId="eyJmIjp7InNrdSI6IjlkM2ExMGEwLWM1YTUtNDIxNC04NmMyLTRhMTUxNTMwNWM1MCIsIm5hbWUiOiJTcGVsbCBHcmVldGluZyJ9fQ==" triso:fileName="Matteo Mortari/Spell Greeting"/>
-  <dmn11:inputData id="_2a802a5a-9b63-4a9d-a6cd-b9661d7ae285" name="Person Name">
-    <dmn11:variable id="_d8b2285e-79d0-426c-9158-ec9bf5697a3c" name="Person Name" typeRef="feel:string"/>
-  </dmn11:inputData>
-  <dmn11:decision id="_6938dac5-9d7d-4416-8bba-25b41de3b6df" name="Say the Greeting to Person">
-    <dmn11:variable id="_a3b88e24-65d6-49a2-a325-2efb7f339072" name="Say the Greeting to Person"/>
-    <dmn11:informationRequirement>
-      <dmn11:requiredInput href="#_2a802a5a-9b63-4a9d-a6cd-b9661d7ae285"/>
-    </dmn11:informationRequirement>
-    <dmn11:informationRequirement>
-      <dmn11:requiredDecision href="http://www.trisotech.com/dmn/definitions/_88f4fc88-1eb2-4188-a721-5720cf5565ce#_764902f0-f4bc-49d9-ba55-cc8f5216e52c"/>
-    </dmn11:informationRequirement>
-    <dmn11:literalExpression id="_80988e25-680c-49f4-a2ac-7cc79e0844c7">
-      <dmn11:text>sg.Spell Greeting + ", " + Person Name</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-</dmn11:definitions>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/dmn/definitions/_d67f19e9-7835-4cad-9c80-16b8423cc392"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:include1="http://www.trisotech.com/dmn/definitions/_88f4fc88-1eb2-4188-a721-5720cf5565ce"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.0.8.201805241511"
+                      id="_d67f19e9-7835-4cad-9c80-16b8423cc392"
+                      name="Import Spell Greeting"
+                      namespace="http://www.trisotech.com/dmn/definitions/_d67f19e9-7835-4cad-9c80-16b8423cc392">
+   <semantic:extensionElements/>
+   <semantic:import xmlns:drools="http://www.drools.org/kie/dmn/1.1"
+                    xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                    drools:modelName="Spell Greeting"
+                    drools:name="sg"
+                    importType="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                    namespace="http://www.trisotech.com/dmn/definitions/_88f4fc88-1eb2-4188-a721-5720cf5565ce"
+                    triso:fileId="eyJmIjp7InNrdSI6IjlkM2ExMGEwLWM1YTUtNDIxNC04NmMyLTRhMTUxNTMwNWM1MCIsIm5hbWUiOiJTcGVsbCBHcmVldGluZyJ9fQ=="
+                    triso:fileName="Matteo Mortari/Spell Greeting"
+                    name="sg"/>
+   <semantic:inputData id="_2a802a5a-9b63-4a9d-a6cd-b9661d7ae285" name="Person Name">
+      <semantic:variable id="_d8b2285e-79d0-426c-9158-ec9bf5697a3c"
+                         name="Person Name"
+                         typeRef="string"/>
+   </semantic:inputData>
+   <semantic:decision id="_6938dac5-9d7d-4416-8bba-25b41de3b6df"
+                      name="Say the Greeting to Person">
+      <semantic:variable id="_a3b88e24-65d6-49a2-a325-2efb7f339072"
+                         name="Say the Greeting to Person"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_2a802a5a-9b63-4a9d-a6cd-b9661d7ae285"/>
+      </semantic:informationRequirement>
+      <semantic:informationRequirement>
+         <semantic:requiredDecision href="http://www.trisotech.com/dmn/definitions/_88f4fc88-1eb2-4188-a721-5720cf5565ce#_764902f0-f4bc-49d9-ba55-cc8f5216e52c"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression id="_80988e25-680c-49f4-a2ac-7cc79e0844c7">
+         <semantic:text>sg.Spell Greeting + ", " + Person Name</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+</semantic:definitions>
