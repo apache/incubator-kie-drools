@@ -32,14 +32,14 @@ import org.kie.pmml.commons.model.KiePMMLExtension;
  * For complex instantiation, concrete classes should extend the <b>Builder</b> defined in the current one
  *
  */
-public abstract class AbstractKiePMMLBase {
+public abstract class AbstractKiePMMLComponent {
 
     protected final String name;
     protected final List<KiePMMLExtension> extensions;
     protected String id;
     protected String parentId;
 
-    protected AbstractKiePMMLBase(String name, List<KiePMMLExtension> extensions) {
+    protected AbstractKiePMMLComponent(String name, List<KiePMMLExtension> extensions) {
         this.name = name;
         this.extensions = extensions;
     }
@@ -67,7 +67,7 @@ public abstract class AbstractKiePMMLBase {
         return Collections.unmodifiableList(extensions);
     }
 
-    public static class Builder<T extends AbstractKiePMMLBase> {
+    public static class Builder<T extends AbstractKiePMMLComponent> {
 
         private static final AtomicInteger counter = new AtomicInteger(1);
         protected T toBuild;

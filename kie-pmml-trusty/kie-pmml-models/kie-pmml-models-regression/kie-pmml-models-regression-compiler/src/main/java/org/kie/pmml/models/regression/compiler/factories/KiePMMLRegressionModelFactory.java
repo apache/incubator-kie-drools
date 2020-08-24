@@ -49,6 +49,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
+import static org.kie.pmml.commons.Constants.UNCHANGED_VARIABLE_IN_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.getOutputFields;
@@ -156,7 +157,7 @@ public class KiePMMLRegressionModelFactory {
                     assignExpr.setValue(new NameExpr(PMML_MODEL.REGRESSION_MODEL.getClass().getName() + "." + PMML_MODEL.REGRESSION_MODEL.name()));
                     break;
                 default:
-                    // NOOP
+                    logger.debug(UNCHANGED_VARIABLE_IN_CONSTRUCTOR, assignExprName, constructorDeclaration.toString());
             }
         });
     }

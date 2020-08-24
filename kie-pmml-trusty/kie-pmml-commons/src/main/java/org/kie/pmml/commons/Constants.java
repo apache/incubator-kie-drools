@@ -24,6 +24,7 @@ public class Constants {
     public static final String DONE = "DONE";
     public static final String MISSING_BODY_TEMPLATE = "Missing body in %s";
     public static final String MISSING_DEFAULT_CONSTRUCTOR = "Missing default constructor in ClassOrInterfaceDeclaration %s ";
+    public static final String UNCHANGED_VARIABLE_IN_CONSTRUCTOR = "Unchanged variable {} in constructor {} ";
 
     private Constants() {
         // Avoid instantiation

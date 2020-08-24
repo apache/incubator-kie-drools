@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
+import static org.kie.pmml.commons.Constants.UNCHANGED_VARIABLE_IN_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
@@ -155,7 +156,7 @@ public class KiePMMLMiningModelFactory {
                     assignExpr.setValue(objectCreationExpr);
                     break;
                 default:
-                    // NOOP
+                    logger.debug(UNCHANGED_VARIABLE_IN_CONSTRUCTOR, assignExprName, constructorDeclaration.toString());
             }
         });
     }

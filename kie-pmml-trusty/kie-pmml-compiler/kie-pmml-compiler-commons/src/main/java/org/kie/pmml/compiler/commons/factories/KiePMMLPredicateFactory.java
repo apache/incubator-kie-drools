@@ -122,6 +122,7 @@ public class KiePMMLPredicateFactory {
         logger.info("getPredicateSourcesMap {}", kiePMMLPredicate);
         if (kiePMMLPredicate instanceof KiePMMLSimplePredicate) {
             return getKiePMMLSimplePredicateSourcesMap((KiePMMLSimplePredicate) kiePMMLPredicate, packageName);
+            // TODO {gcardosi}
 //        } else if (predicate instanceof CompoundPredicate) {
 //            return getKiePMMLCompoundPredicate((CompoundPredicate) predicate, dataDictionary);
         } else if (kiePMMLPredicate instanceof KiePMMLTruePredicate) {

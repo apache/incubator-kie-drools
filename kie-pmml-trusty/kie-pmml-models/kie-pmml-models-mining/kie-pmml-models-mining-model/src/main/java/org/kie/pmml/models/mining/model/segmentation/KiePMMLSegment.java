@@ -20,10 +20,10 @@ import java.util.Objects;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLBase;
+import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
 
-public class KiePMMLSegment extends AbstractKiePMMLBase {
+public class KiePMMLSegment extends AbstractKiePMMLComponent {
 
     private final KiePMMLPredicate kiePMMLPredicate;
     private final KiePMMLModel model;
@@ -87,7 +87,7 @@ public class KiePMMLSegment extends AbstractKiePMMLBase {
         return Objects.hash(kiePMMLPredicate, model, weight);
     }
 
-    public static class Builder extends AbstractKiePMMLBase.Builder<KiePMMLSegment> {
+    public static class Builder extends AbstractKiePMMLComponent.Builder<KiePMMLSegment> {
 
         private Builder(String name, List<KiePMMLExtension> extensions, KiePMMLPredicate kiePMMLPredicate, KiePMMLModel model) {
             super("Segmentation-", () -> new KiePMMLSegment(name, extensions, kiePMMLPredicate, model));

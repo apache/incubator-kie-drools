@@ -74,11 +74,7 @@ public class RegressionModelImplementationProviderTest {
         final Map<String, String> sourcesMap = retrievedWithSources.getSourcesMap();
         assertNotNull(sourcesMap);
         assertFalse(sourcesMap.isEmpty());
-        try {
-            KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+        KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
     }
 
     @Test

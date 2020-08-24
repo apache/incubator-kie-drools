@@ -45,6 +45,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
+import static org.kie.pmml.commons.Constants.UNCHANGED_VARIABLE_IN_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.getOutputFields;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
@@ -103,7 +104,11 @@ public class KiePMMLDroolsModelFactoryUtils {
      * @param targetField
      * @param miningFunction
      */
-    static void setConstructor(final Model model, final ConstructorDeclaration constructorDeclaration, final SimpleName tableName, final String targetField, MINING_FUNCTION miningFunction) {
+    static void setConstructor(final Model model,
+                               final ConstructorDeclaration constructorDeclaration,
+                               final SimpleName tableName,
+                               final String targetField,
+                               final MINING_FUNCTION miningFunction) {
         constructorDeclaration.setName(tableName);
         final BlockStmt body = constructorDeclaration.getBody();
         final List<AssignExpr> assignExprs = body.findAll(AssignExpr.class);
@@ -121,7 +126,7 @@ public class KiePMMLDroolsModelFactoryUtils {
                     assignExpr.setValue(new NameExpr(pmmlModel.getClass().getName() + "." + pmmlModel.name()));
                     break;
                 default:
-                    // NOOP
+                    logger.debug(UNCHANGED_VARIABLE_IN_CONSTRUCTOR, assignExprName, constructorDeclaration.toString());
             }
         });
     }

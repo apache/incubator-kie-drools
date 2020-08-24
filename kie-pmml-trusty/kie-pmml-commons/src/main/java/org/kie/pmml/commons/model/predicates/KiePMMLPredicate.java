@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLBase;
+import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdGroup_PREDICATE>PREDICATE</a>
  */
-public abstract class KiePMMLPredicate extends AbstractKiePMMLBase {
+public abstract class KiePMMLPredicate extends AbstractKiePMMLComponent {
 
     private static final long serialVersionUID = -1996390505352151403L;
 

@@ -104,6 +104,4 @@ public class KiePMMLScorecardModelFactory {
     static void setConstructor(final Scorecard scorecard, final ConstructorDeclaration constructorDeclaration, final SimpleName modelName) {
         setConstructorSuperNameInvocation(modelName.asString(), constructorDeclaration, scorecard.getModelName());
     }
-
-
 }

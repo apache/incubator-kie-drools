@@ -19,13 +19,13 @@ import java.util.List;
 import java.util.Objects;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLBase;
+import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-3/MultipleModels.html#xsdElement_Segmentation>Segmentation</a>
  */
-public class KiePMMLSegmentation extends AbstractKiePMMLBase {
+public class KiePMMLSegmentation extends AbstractKiePMMLComponent {
 
     private final MULTIPLE_MODEL_METHOD multipleModelMethod;
     protected List<KiePMMLSegment> segments;
@@ -83,7 +83,7 @@ public class KiePMMLSegmentation extends AbstractKiePMMLBase {
         return Objects.hash(super.hashCode(), multipleModelMethod, segments);
     }
 
-    public static class Builder extends AbstractKiePMMLBase.Builder<KiePMMLSegmentation> {
+    public static class Builder extends AbstractKiePMMLComponent.Builder<KiePMMLSegmentation> {
 
         private Builder(String name, List<KiePMMLExtension> extensions, MULTIPLE_MODEL_METHOD multipleModelMethod) {
             super("Segmentation-", () -> new KiePMMLSegmentation(name, extensions, multipleModelMethod));
