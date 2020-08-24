@@ -69,6 +69,7 @@ import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratorContext;
 import org.kie.kogito.codegen.KogitoPackageSources;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.codegen.rules.config.NamedRuleUnitConfig;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
 import org.kie.kogito.conf.ClockType;
@@ -88,6 +89,14 @@ import static org.kie.kogito.codegen.ApplicationGenerator.log;
 import static org.kie.kogito.codegen.ApplicationGenerator.logger;
 
 public class IncrementalRuleCodegen extends AbstractGenerator {
+
+    public static IncrementalRuleCodegen ofCollectedResources(Collection<CollectedResource> resources) {
+        List<Resource> dmnResources = resources.stream()
+                .map(CollectedResource::resource)
+                .filter(IncrementalRuleCodegen::isSupportedResourceType)
+                .collect(toList());
+        return ofResources(dmnResources);
+    }
 
     public static IncrementalRuleCodegen ofJar(Path... jarPaths) {
         Collection<Resource> resources = new ArrayList<>();
@@ -158,6 +167,15 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
     private static Set<Resource> toResources(Stream<File> files) {
         return files.map(FileSystemResource::new).peek(r -> r.setResourceType(typeOf(r))).filter(r -> r.getResourceType() != null).collect(Collectors.toSet());
+    }
+
+    private static boolean isSupportedResourceType(Resource r) {
+        for (ResourceType rt : resourceTypes) {
+            if (r.getResourceType() == rt) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static ResourceType typeOf(FileSystemResource r) {

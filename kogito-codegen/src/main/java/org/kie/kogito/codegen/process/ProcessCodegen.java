@@ -67,14 +67,17 @@ import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratedFile.Type;
 import org.kie.kogito.codegen.ResourceGeneratorFactory;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.kie.kogito.codegen.process.events.CloudEventsMessageProducerGenerator;
 import org.kie.kogito.codegen.process.events.CloudEventsResourceGenerator;
+import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 import org.kie.kogito.rules.units.UndefinedGeneratedRuleUnitVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import static java.util.stream.Collectors.toList;
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.kie.api.io.ResourceType.determineResourceType;
 import static org.kie.kogito.codegen.ApplicationGenerator.log;
@@ -107,6 +110,24 @@ public class ProcessCodegen extends AbstractGenerator {
     private ClassLoader contextClassLoader;
     private ResourceGeneratorFactory resourceGeneratorFactory;
     private String packageName;
+
+    public static ProcessCodegen ofCollectedResources(Collection<CollectedResource> resources) {
+        List<Process> processes = resources.stream()
+                .map(CollectedResource::resource)
+                .flatMap(resource -> {
+                    if (SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch(resource.getSourcePath()::endsWith)) {
+                        return parseProcessFile(resource).stream();
+                    } else {
+                        return SUPPORTED_SW_EXTENSIONS.entrySet()
+                                .stream()
+                                .filter(e -> resource.getSourcePath().endsWith(e.getKey()))
+                                .map(e -> parseWorkflowFile(resource, e.getValue()));
+                    }
+                })
+                .collect(toList());
+
+        return ofProcesses(processes);
+    }
 
     public static ProcessCodegen ofJar(Path... jarPaths) {
         List<Process> processes = new ArrayList<>();

@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -54,6 +55,7 @@ import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.KogitoPackageSources;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.codegen.prediction.config.PredictionConfigGenerator;
 import org.kie.kogito.codegen.rules.RuleCodegenError;
 import org.kie.pmml.commons.model.HasSourcesMap;
@@ -84,6 +86,14 @@ public class PredictionCodegen extends AbstractGenerator {
         // set default package name
         setPackageName(ApplicationGenerator.DEFAULT_PACKAGE_NAME);
         this.moduleGenerator = new PredictionContainerGenerator(applicationCanonicalName, resources);
+    }
+
+    public static PredictionCodegen ofCollectedResources(Collection<CollectedResource> resources) {
+        List<PMMLResource> dmnResources = resources.stream()
+                .filter(r -> r.resource().getResourceType() == ResourceType.PMML)
+                .flatMap(r -> parsePredictions(r.basePath(), Collections.singletonList(r.resource())).stream())
+                .collect(toList());
+        return ofPredictions(dmnResources);
     }
 
     public static PredictionCodegen ofJar(Path... jarPaths) throws IOException {

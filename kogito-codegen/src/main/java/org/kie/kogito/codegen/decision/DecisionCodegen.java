@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -58,6 +59,7 @@ import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.decision.config.DecisionConfigGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.grafana.GrafanaConfigurationWriter;
 
 import static java.util.stream.Collectors.toList;
@@ -70,6 +72,15 @@ public class DecisionCodegen extends AbstractGenerator {
 
     public static String STRONGLY_TYPED_CONFIGURATION_KEY = "kogito.decisions.stronglytyped";
 
+    public static DecisionCodegen ofCollectedResources(Collection<CollectedResource> resources) {
+        List<DMNResource> dmnResources = resources.stream()
+                .filter(r -> r.resource().getResourceType() == ResourceType.DMN)
+                .flatMap(r -> parseDecisions(r.basePath(), Collections.singletonList(r.resource())).stream())
+                .collect(toList());
+        return ofDecisions(dmnResources);
+    }
+
+    @Deprecated
     public static DecisionCodegen ofJar(Path... jarPaths) throws IOException {
         List<DMNResource> dmnResources = new ArrayList<>();
 
