@@ -179,14 +179,11 @@
    <semantic:inputData id="_1480f7e8-1c39-4781-9684-9a0e784044ce" name="Number of guests">
       <semantic:variable id="_db14818f-bd6b-4481-a797-7602d6f15c0e" name="Number of guests"/>
    </semantic:inputData>
-   <itemDefinition xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-                   xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-                   xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
-                   id="tDrinks"
+   <semantic:itemDefinition id="tDrinks"
                    name="tDrinks"
                    isCollection="true">
-      <typeRef>feel:string</typeRef>
-   </itemDefinition>
+      <semantic:typeRef>string</semantic:typeRef>
+   </semantic:itemDefinition>
    <semantic:decision id="_7e01ac6d-56b2-4ddf-aa0e-9242db09cfe5" name="Drinks">
       <semantic:variable id="_4ea2078c-8107-4df9-b4d5-876462bcc728"
                          name="Drinks"
