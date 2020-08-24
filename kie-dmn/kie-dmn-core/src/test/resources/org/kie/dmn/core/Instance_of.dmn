@@ -1,55 +1,86 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<dmn11:definitions xmlns="http://www.trisotech.com/definitions/_b5c4d644-5a15-4528-8028-86537cb1c836" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.0.2" id="_b5c4d644-5a15-4528-8028-86537cb1c836" name="Instance of" namespace="http://www.trisotech.com/definitions/_b5c4d644-5a15-4528-8028-86537cb1c836" triso:logoChoice="None" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
-  <dmn11:extensionElements/>
-  <dmn11:itemDefinition isCollection="false" label="myType" name="myType">
-    <dmn11:typeRef>feel:date</dmn11:typeRef>
-  </dmn11:itemDefinition>
-  <dmn11:decision id="_a550e669-6746-41fd-9e83-ace2e414ea8b" name="Decision Logic 1">
-    <dmn11:variable id="_f9dd6976-d7d2-49cd-a3ec-a27e35b68a52" name="Decision Logic 1"/>
-    <dmn11:informationRequirement>
-      <dmn11:requiredInput href="#_57ab1f68-4696-44c9-a24b-9f9b092a6952"/>
-    </dmn11:informationRequirement>
-    <dmn11:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_4b559a9c-1a49-4438-be0d-99e0545643d7" triso:unparsed="true">
-      <dmn11:text>if input year month duration instance of yearMonthDuration then true else false</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-  <dmn11:inputData id="_57ab1f68-4696-44c9-a24b-9f9b092a6952" name="input year month duration">
-    <dmn11:variable id="_40968c45-9523-4812-8e79-62c0460fb9a9" name="input year month duration" typeRef="feel:yearMonthDuration"/>
-  </dmn11:inputData>
-  <dmn11:decision id="_5e042647-1bd2-433e-945e-2e59fc4fe467" name="Decision Logic 2">
-    <dmn11:variable id="_d3b15c39-6dbd-4a2d-be7e-c6fae8653441" name="Decision Logic 2"/>
-    <dmn11:informationRequirement>
-      <dmn11:requiredInput href="#_daba2f6f-a499-4095-b161-06062dd7e4ad"/>
-    </dmn11:informationRequirement>
-    <dmn11:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_3492a8c2-c6e5-4a53-8e01-a5707c651552" triso:unparsed="true">
-      <dmn11:text>if input day time duration instance of dayTimeDuration then true else false</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-  <dmn11:inputData id="_daba2f6f-a499-4095-b161-06062dd7e4ad" name="input day time duration">
-    <dmn11:variable id="_b765b9d7-b18f-4d6a-ad8c-efe2fe98782a" name="input day time duration" typeRef="feel:dayTimeDuration"/>
-  </dmn11:inputData>
-  <dmn11:inputData id="_11668437-de5e-4c56-829c-284f12c313c7" name="input date time">
-    <dmn11:variable id="_9c6fc5aa-456c-43c4-b273-5ba89f2c1c22" name="input date time" typeRef="feel:dateTime"/>
-  </dmn11:inputData>
-  <dmn11:inputData id="_415533d5-10d5-40ec-b833-e4f5a88cfcf9" name="input myType">
-    <dmn11:variable id="_64952486-5305-4d2d-8cca-67d5749f0d08" name="input myType" typeRef="myType"/>
-  </dmn11:inputData>
-  <dmn11:decision id="_a1a9a66b-2c7b-45f6-b9fb-63dd992b5302" name="Decision Logic 3">
-    <dmn11:variable id="_56822e3a-c37b-4377-8aa3-67ed58d950f3" name="Decision Logic 3"/>
-    <dmn11:informationRequirement>
-      <dmn11:requiredInput href="#_11668437-de5e-4c56-829c-284f12c313c7"/>
-    </dmn11:informationRequirement>
-    <dmn11:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_ed278bee-7097-476c-b162-3c0d8d8bd8b7" triso:unparsed="true">
-      <dmn11:text>if input date time instance of dateTime then true else false</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-  <dmn11:decision id="_09293ccd-4edc-458c-ac5c-df7d9158a7d4" name="Decision Logic 4">
-    <dmn11:variable id="_48c59ab0-1a45-451b-9558-4c9c9aa6fe07" name="Decision Logic 4"/>
-    <dmn11:informationRequirement>
-      <dmn11:requiredInput href="#_415533d5-10d5-40ec-b833-e4f5a88cfcf9"/>
-    </dmn11:informationRequirement>
-    <dmn11:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_fbc83663-3f4c-4def-94a2-a647b427a1d1" triso:unparsed="true">
-      <dmn11:text>if input myType instance of myType then true else false</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-</dmn11:definitions>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/definitions/_b5c4d644-5a15-4528-8028-86537cb1c836"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.1.0.2"
+                      id="_b5c4d644-5a15-4528-8028-86537cb1c836"
+                      name="Instance of"
+                      namespace="http://www.trisotech.com/definitions/_b5c4d644-5a15-4528-8028-86537cb1c836">
+   <semantic:extensionElements/>
+   <semantic:itemDefinition isCollection="false" label="myType" name="myType">
+      <semantic:typeRef>date</semantic:typeRef>
+   </semantic:itemDefinition>
+   <semantic:decision id="_a550e669-6746-41fd-9e83-ace2e414ea8b" name="Decision Logic 1">
+      <semantic:variable id="_f9dd6976-d7d2-49cd-a3ec-a27e35b68a52" name="Decision Logic 1"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_57ab1f68-4696-44c9-a24b-9f9b092a6952"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                                  id="_4b559a9c-1a49-4438-be0d-99e0545643d7"
+                                  triso:unparsed="true">
+         <semantic:text>if input year month duration instance of yearMonthDuration then true else false</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:inputData id="_57ab1f68-4696-44c9-a24b-9f9b092a6952"
+                       name="input year month duration">
+      <semantic:variable id="_40968c45-9523-4812-8e79-62c0460fb9a9"
+                         name="input year month duration"
+                         typeRef="yearMonthDuration"/>
+   </semantic:inputData>
+   <semantic:decision id="_5e042647-1bd2-433e-945e-2e59fc4fe467" name="Decision Logic 2">
+      <semantic:variable id="_d3b15c39-6dbd-4a2d-be7e-c6fae8653441" name="Decision Logic 2"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_daba2f6f-a499-4095-b161-06062dd7e4ad"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                                  id="_3492a8c2-c6e5-4a53-8e01-a5707c651552"
+                                  triso:unparsed="true">
+         <semantic:text>if input day time duration instance of dayTimeDuration then true else false</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:inputData id="_daba2f6f-a499-4095-b161-06062dd7e4ad"
+                       name="input day time duration">
+      <semantic:variable id="_b765b9d7-b18f-4d6a-ad8c-efe2fe98782a"
+                         name="input day time duration"
+                         typeRef="dayTimeDuration"/>
+   </semantic:inputData>
+   <semantic:inputData id="_11668437-de5e-4c56-829c-284f12c313c7" name="input date time">
+      <semantic:variable id="_9c6fc5aa-456c-43c4-b273-5ba89f2c1c22"
+                         name="input date time"
+                         typeRef="dateTime"/>
+   </semantic:inputData>
+   <semantic:inputData id="_415533d5-10d5-40ec-b833-e4f5a88cfcf9" name="input myType">
+      <semantic:variable id="_64952486-5305-4d2d-8cca-67d5749f0d08"
+                         name="input myType"
+                         typeRef="myType"/>
+   </semantic:inputData>
+   <semantic:decision id="_a1a9a66b-2c7b-45f6-b9fb-63dd992b5302" name="Decision Logic 3">
+      <semantic:variable id="_56822e3a-c37b-4377-8aa3-67ed58d950f3" name="Decision Logic 3"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_11668437-de5e-4c56-829c-284f12c313c7"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                                  id="_ed278bee-7097-476c-b162-3c0d8d8bd8b7"
+                                  triso:unparsed="true">
+         <semantic:text>if input date time instance of dateTime then true else false</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:decision id="_09293ccd-4edc-458c-ac5c-df7d9158a7d4" name="Decision Logic 4">
+      <semantic:variable id="_48c59ab0-1a45-451b-9558-4c9c9aa6fe07" name="Decision Logic 4"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_415533d5-10d5-40ec-b833-e4f5a88cfcf9"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                                  id="_fbc83663-3f4c-4def-94a2-a647b427a1d1"
+                                  triso:unparsed="true">
+         <semantic:text>if input myType instance of myType then true else false</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+</semantic:definitions>

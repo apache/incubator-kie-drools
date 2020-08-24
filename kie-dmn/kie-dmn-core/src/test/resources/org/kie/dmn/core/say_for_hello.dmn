@@ -1,32 +1,49 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_b6f2a9ca-a246-4f27-896a-e8ef04ea439c" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.0.2" id="_b6f2a9ca-a246-4f27-896a-e8ef04ea439c" name="say for hello" namespace="http://www.trisotech.com/dmn/definitions/_b6f2a9ca-a246-4f27-896a-e8ef04ea439c" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
-  <dmn11:extensionElements/>
-  <dmn11:decision id="_0fac3fb2-88b7-47f1-9ed6-465dbc548e37" name="just say">
-    <dmn11:variable id="_889afdc2-3159-4208-b42f-6baffcda7d23" name="just say"/>
-    <dmn11:knowledgeRequirement>
-      <dmn11:requiredKnowledge href="#_cf9c2f2a-38bc-4547-b200-55fdf6ef31c4"/>
-    </dmn11:knowledgeRequirement>
-        <dmn11:knowledgeRequirement>
-      <dmn11:requiredKnowledge href="#_cf9c2f2a-38bc-4547-b200-55fdf6ef31c42"/>
-    </dmn11:knowledgeRequirement>
-    <dmn11:literalExpression id="_3f78ff5a-1c79-476d-ba25-68f2772d1dca">
-      <dmn11:text>for i in [1,2,3] return prefix say for hello()</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-  <dmn11:businessKnowledgeModel id="_cf9c2f2a-38bc-4547-b200-55fdf6ef31c4" name="prefix say for hello">
-    <dmn11:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="F" id="_b81f60af-d50e-4c26-b173-62a7da8521ce">
-      <dmn11:literalExpression id="_32b31f9f-bb50-47d2-b4f3-1177aa4dee98">
-        <dmn11:text>"Hello"</dmn11:text>
-      </dmn11:literalExpression>
-    </dmn11:encapsulatedLogic>
-    <dmn11:variable id="_68ad6b3c-e323-4ba5-80f7-fe0b1c174ed3" name="prefix say for hello" typeRef="feel:string"/>
-  </dmn11:businessKnowledgeModel>
-  <dmn11:businessKnowledgeModel id="_cf9c2f2a-38bc-4547-b200-55fdf6ef31c42" name="prefix aaa for hello">
-    <dmn11:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="F" id="_b81f60af-d50e-4c26-b173-62a7da8521ce2">
-      <dmn11:literalExpression id="_32b31f9f-bb50-47d2-b4f3-1177aa4dee98">
-        <dmn11:text>"Hello"</dmn11:text>
-      </dmn11:literalExpression>
-    </dmn11:encapsulatedLogic>
-    <dmn11:variable id="_68ad6b3c-e323-4ba5-80f7-fe0b1c174ed32" name="prefix aaa for hello" typeRef="feel:string"/>
-  </dmn11:businessKnowledgeModel>
-</dmn11:definitions>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/dmn/definitions/_b6f2a9ca-a246-4f27-896a-e8ef04ea439c"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.1.0.2"
+                      id="_b6f2a9ca-a246-4f27-896a-e8ef04ea439c"
+                      name="say for hello"
+                      namespace="http://www.trisotech.com/dmn/definitions/_b6f2a9ca-a246-4f27-896a-e8ef04ea439c">
+   <semantic:extensionElements/>
+   <semantic:decision id="_0fac3fb2-88b7-47f1-9ed6-465dbc548e37" name="just say">
+      <semantic:variable id="_889afdc2-3159-4208-b42f-6baffcda7d23" name="just say"/>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="#_cf9c2f2a-38bc-4547-b200-55fdf6ef31c4"/>
+      </semantic:knowledgeRequirement>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="#_cf9c2f2a-38bc-4547-b200-55fdf6ef31c42"/>
+      </semantic:knowledgeRequirement>
+      <semantic:literalExpression id="_3f78ff5a-1c79-476d-ba25-68f2772d1dca">
+         <semantic:text>for i in [1,2,3] return prefix say for hello()</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:businessKnowledgeModel id="_cf9c2f2a-38bc-4547-b200-55fdf6ef31c4" name="prefix say for hello">
+      <semantic:variable id="_68ad6b3c-e323-4ba5-80f7-fe0b1c174ed3"
+                         name="prefix say for hello"
+                         typeRef="string"/>
+      <semantic:encapsulatedLogic kind="FEEL" id="_b81f60af-d50e-4c26-b173-62a7da8521ce">
+         <semantic:literalExpression id="_32b31f9f-bb50-47d2-b4f3-1177aa4dee98">
+            <semantic:text>"Hello"</semantic:text>
+         </semantic:literalExpression>
+      </semantic:encapsulatedLogic>
+   </semantic:businessKnowledgeModel>
+   <semantic:businessKnowledgeModel id="_cf9c2f2a-38bc-4547-b200-55fdf6ef31c42" name="prefix aaa for hello">
+      <semantic:variable id="_68ad6b3c-e323-4ba5-80f7-fe0b1c174ed32"
+                         name="prefix aaa for hello"
+                         typeRef="string"/>
+      <semantic:encapsulatedLogic kind="FEEL" id="_b81f60af-d50e-4c26-b173-62a7da8521ce2">
+         <semantic:literalExpression id="_32b31f9f-bb50-47d2-b4f3-1177aa4dee98">
+            <semantic:text>"Hello"</semantic:text>
+         </semantic:literalExpression>
+      </semantic:encapsulatedLogic>
+   </semantic:businessKnowledgeModel>
+</semantic:definitions>

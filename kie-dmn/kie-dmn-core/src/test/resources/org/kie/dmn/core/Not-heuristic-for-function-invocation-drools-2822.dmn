@@ -1,10 +1,23 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_82f7e67e-0a8c-492d-aa78-94851c10eee6" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.4.1" id="_82f7e67e-0a8c-492d-aa78-94851c10eee6" name="Drawing 1" namespace="http://www.trisotech.com/dmn/definitions/_82f7e67e-0a8c-492d-aa78-94851c10eee6" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
-  <dmn11:extensionElements/>
-  <dmn11:decision id="_ca370861-6b8a-4334-8161-297622462910" name="Not working">
-    <dmn11:variable id="_93412417-fd6c-4639-b7d3-379ba48f1817" name="Not working"/>
-    <dmn11:literalExpression id="_28b2bdd7-ceb7-40ce-a204-768e455537e8">
-      <dmn11:text>not(list contains([1,2,3,4,5,6], 3))</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-</dmn11:definitions>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/dmn/definitions/_82f7e67e-0a8c-492d-aa78-94851c10eee6"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.1.4.1"
+                      id="_82f7e67e-0a8c-492d-aa78-94851c10eee6"
+                      name="Drawing 1"
+                      namespace="http://www.trisotech.com/dmn/definitions/_82f7e67e-0a8c-492d-aa78-94851c10eee6">
+   <semantic:extensionElements/>
+   <semantic:decision id="_ca370861-6b8a-4334-8161-297622462910" name="Not working">
+      <semantic:variable id="_93412417-fd6c-4639-b7d3-379ba48f1817" name="Not working"/>
+      <semantic:literalExpression id="_28b2bdd7-ceb7-40ce-a204-768e455537e8">
+         <semantic:text>not(list contains([1,2,3,4,5,6], 3))</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+</semantic:definitions>
