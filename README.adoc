@@ -18,6 +18,10 @@ image:https://img.shields.io/badge/zulip-join_chat-brightgreen.svg?logo=zulip[
 {sonarBadge}&metric=ncloc["Lines of Code", {sonarLink}]
 {sonarBadge}&metric=coverage["Coverage", {sonarLink}]
 
+== Looking for Quickstarts?
+
+OptaPlanner's quickstarts have moved to https://github.com/kiegroup/optaplanner-quickstarts[optaplanner-quickstarts repository].
+
 == Quick development start
 
 To build and run from source:
