@@ -41,7 +41,6 @@ public class NNSumFunction
             return FEELFnResult.ofResult(null);
         }
         BigDecimal sum = BigDecimal.ZERO;
-        boolean containsElement = false;
         for ( Object element : list ) {
             if( element == null ) {
                 continue;
@@ -57,9 +56,8 @@ public class NNSumFunction
             } else {
                 return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "an element in the list is not a number"));
             }
-            containsElement = true;
         }
-        return FEELFnResult.ofResult( containsElement ? sum : null );
+        return FEELFnResult.ofResult( sum );
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName("list") Number single) {
