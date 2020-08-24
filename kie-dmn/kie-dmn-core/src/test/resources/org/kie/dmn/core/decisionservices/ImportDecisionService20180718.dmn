@@ -23,7 +23,8 @@
                     importType="http://www.omg.org/spec/DMN/20180521/MODEL/"
                     namespace="http://www.trisotech.com/dmn/definitions/_6eef3a7c-bb0d-40bb-858d-f9067789c18a"
                     triso:fileId="eyJmIjp7InNrdSI6IjBkN2Q0NzdmLTVlNDQtNGI1ZS1iNmZlLTIxZjVmM2FlZGE5NCIsIm5hbWUiOiJEZWNpc2lvbiBTZXJ2aWNlIDIwMTgwNzE4In19"
-                    triso:fileName="Matteo Mortari/Decision Service 20180718"/>
+                    triso:fileName="Matteo Mortari/Decision Service 20180718"
+                    name="import1"/>
    <semantic:decision id="_d85b923e-b757-41f4-9bec-b47a2887c5d5" name="invoke imported DS">
       <semantic:variable id="_adf487ac-5576-4b7b-9cd4-61b95a66c1ad" name="invoke imported DS"/>
       <semantic:informationRequirement>
