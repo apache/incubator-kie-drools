@@ -35,7 +35,7 @@ public class KiePMMLSimplePredicate extends KiePMMLPredicate {
     private final OPERATOR operator;
     private Object value;
 
-    private KiePMMLSimplePredicate(final String name, final List<KiePMMLExtension> extensions, final OPERATOR operator) {
+    protected KiePMMLSimplePredicate(final String name, final List<KiePMMLExtension> extensions, final OPERATOR operator) {
         super(name, extensions);
         this.operator = operator;
     }

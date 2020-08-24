@@ -37,7 +37,7 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
     private BinaryOperator<Boolean> operatorFunction;
     private List<KiePMMLPredicate> kiePMMLPredicates;
 
-    private KiePMMLCompoundPredicate(final String name, final List<KiePMMLExtension> extensions, final BOOLEAN_OPERATOR booleanOperator) {
+    protected KiePMMLCompoundPredicate(final String name, final List<KiePMMLExtension> extensions, final BOOLEAN_OPERATOR booleanOperator) {
         super(name, extensions);
         this.booleanOperator = booleanOperator;
     }
@@ -129,8 +129,8 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
                     return (aBoolean, aBoolean2) -> aBoolean != null ? aBoolean && aBoolean2 : aBoolean2;
                 case XOR:
                     return (aBoolean, aBoolean2) -> aBoolean != null ? aBoolean ^ aBoolean2 : aBoolean2;
-                // TODO {gcardosi} How to manage?
                 case SURROGATE:
+                    // TODO {gcardosi} DROOLS-5594
                 default:
                     return (aBoolean, aBoolean2) -> aBoolean;
             }

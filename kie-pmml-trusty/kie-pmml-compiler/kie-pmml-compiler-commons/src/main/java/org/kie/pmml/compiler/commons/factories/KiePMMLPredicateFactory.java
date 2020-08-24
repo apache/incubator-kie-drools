@@ -61,6 +61,8 @@ public class KiePMMLPredicateFactory {
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLPredicateFactory.class.getName());
     static final String KIE_PMML_SIMPLE_PREDICATE_TEMPLATE_JAVA = "KiePMMLSimplePredicateTemplate.tmpl";
     static final String KIE_PMML_SIMPLE_PREDICATE_TEMPLATE = "KiePMMLSimplePredicateTemplate";
+    static final String KIE_PMML_COMPOUND_PREDICATE_TEMPLATE_JAVA = "KiePMMLCompoundPredicateTemplate.tmpl";
+    static final String KIE_PMML_COMPOUND_PREDICATE_TEMPLATE = "KiePMMLCompoundPredicateTemplate";
     static final String KIE_PMML_TRUE_PREDICATE_TEMPLATE_JAVA = "KiePMMLTruePredicateTemplate.tmpl";
     static final String KIE_PMML_TRUE_PREDICATE_TEMPLATE = "KiePMMLTruePredicateTemplate";
     static final String KIE_PMML_FALSE_PREDICATE_TEMPLATE_JAVA = "KiePMMLFalsePredicateTemplate.tmpl";
@@ -122,9 +124,8 @@ public class KiePMMLPredicateFactory {
         logger.info("getPredicateSourcesMap {}", kiePMMLPredicate);
         if (kiePMMLPredicate instanceof KiePMMLSimplePredicate) {
             return getKiePMMLSimplePredicateSourcesMap((KiePMMLSimplePredicate) kiePMMLPredicate, packageName);
-            // TODO {gcardosi}
-//        } else if (predicate instanceof CompoundPredicate) {
-//            return getKiePMMLCompoundPredicate((CompoundPredicate) predicate, dataDictionary);
+        } else if (kiePMMLPredicate instanceof KiePMMLCompoundPredicate) {
+            return getKiePMMLCompoundPredicateSourcesMap((KiePMMLCompoundPredicate) kiePMMLPredicate, packageName);
         } else if (kiePMMLPredicate instanceof KiePMMLTruePredicate) {
             return getKiePMMLTruePredicateSourcesMap((KiePMMLTruePredicate) kiePMMLPredicate, packageName);
         } else if (kiePMMLPredicate instanceof KiePMMLFalsePredicate) {
@@ -146,6 +147,20 @@ public class KiePMMLPredicateFactory {
                                       constructorDeclaration,
                                       kiePMMLSimplePredicate.getOperator(),
                                       kiePMMLSimplePredicate.getValue());
+        return Collections.singletonMap(getFullClassName(cloneCU), cloneCU.toString());
+    }
+
+    static Map<String, String> getKiePMMLCompoundPredicateSourcesMap(final KiePMMLCompoundPredicate kiePMMLCompoundPredicate, final String packageName)  {
+        String className = getSanitizedClassName(kiePMMLCompoundPredicate.getName());
+        CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName, KIE_PMML_COMPOUND_PREDICATE_TEMPLATE_JAVA, KIE_PMML_COMPOUND_PREDICATE_TEMPLATE);
+        ClassOrInterfaceDeclaration predicateTemplate = cloneCU.getClassByName(className)
+                .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
+        final ConstructorDeclaration constructorDeclaration = predicateTemplate.getDefaultConstructor()
+                .orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, predicateTemplate.getName())));
+        setCompoundPredicateConstructor(className,
+                                      kiePMMLCompoundPredicate.getName(),
+                                      constructorDeclaration,
+                                      kiePMMLCompoundPredicate.getBooleanOperator());
         return Collections.singletonMap(getFullClassName(cloneCU), cloneCU.toString());
     }
 
@@ -195,6 +210,21 @@ public class KiePMMLPredicateFactory {
         assignExprs.forEach(assignExpr -> {
             if (assignExpr.getTarget().asNameExpr().getNameAsString().equals("value")) {
                 assignExpr.setValue(new StringLiteralExpr(value.toString()));
+            }
+        });
+    }
+
+    static void setCompoundPredicateConstructor(final String generatedClassName,
+                                              final String predicateName,
+                                              final ConstructorDeclaration constructorDeclaration,
+                                              final BOOLEAN_OPERATOR booleanOperator) {
+        setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, predicateName);
+        final BlockStmt body = constructorDeclaration.getBody();
+        body.getStatements().iterator().forEachRemaining(statement -> {
+            if (statement instanceof ExplicitConstructorInvocationStmt) {
+                ExplicitConstructorInvocationStmt superStatement = (ExplicitConstructorInvocationStmt) statement;
+                NameExpr nameExpr = (NameExpr) superStatement.getArgument(2);
+                nameExpr.setName(booleanOperator.getClass().getSimpleName() + "." + booleanOperator.name());
             }
         });
     }
