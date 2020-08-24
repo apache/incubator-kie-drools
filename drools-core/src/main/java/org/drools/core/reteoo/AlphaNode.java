@@ -254,12 +254,17 @@ public class AlphaNode extends ObjectSource
         public void assertObject(final InternalFactHandle handle,
                                  final PropagationContext propagationContext,
                                  final InternalWorkingMemory workingMemory) {
-
-            if (this.constraint.isAllowed(handle,
-                    workingMemory)) {
-                this.sink.assertObject(handle,
-                        propagationContext,
-                        workingMemory);
+            try {
+                if (this.constraint.isAllowed(handle, workingMemory)) {
+                    this.sink.assertObject(handle, propagationContext, workingMemory);
+                }
+            } catch (RuntimeException e) {
+                // Forcing the jitting of a constraint the eveluation may throw a CCE
+                // it is safe to ignore it since this means that the old fact is no longer compatible
+                // with the updated constraint and then its propagation should be skipped
+                if (!(e.getCause() instanceof ClassCastException)) {
+                    throw e;
+                }
             }
         }
 
