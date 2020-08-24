@@ -88,7 +88,7 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "max(duration(\"P6Y\"), duration(\"P5Y\"))", ComparablePeriod.parse("P6Y"), null},
                 { "sum( 1, 2, 3 )", BigDecimal.valueOf( 6 ) , null},
                 { "sum([ 1, 2, 3 ])", BigDecimal.valueOf( 6 ) , null},
-                { "sum([])", null, FEELEvent.Severity.ERROR},
+                { "sum([])", null, null},
                 { "mean( 1, 2, 3 )", BigDecimal.valueOf( 2 ) , null},
                 { "mean([ 1, 2, 3 ])", BigDecimal.valueOf( 2 ) , null},
                 { "sublist( [1, 2, 3, 4, 5 ], 3, 2 )", Arrays.asList( BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ) ), null},
