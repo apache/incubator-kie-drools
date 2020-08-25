@@ -11,7 +11,15 @@
                       id="_3e1a628d-36bc-45f1-8464-b201735e5ce0"
                       name="Get Viable Loan Products"
                       namespace="http://www.trisotech.com/definitions/_3e1a628d-36bc-45f1-8464-b201735e5ce0">
-   <semantic:extensionElements/>
+  <semantic:extensionElements>
+    <triso:ProjectCharter xmlns:triso="http://www.trisotech.com/2015/triso/modeling">
+      <triso:projectDescription>&lt;p&gt;This example was taken from the book "DMN Method &amp;amp; Style" by Bruce Silver and then modified by Trisotech.&lt;/p&gt;
+&lt;p&gt;It is a concrete usage of DMN to suggest mortgage products to a customer based on his need and his objectives.&lt;/p&gt;</triso:projectDescription>
+      <triso:projectGoals/>
+      <triso:projectChallenges/>
+      <triso:projectStakeholders/>
+    </triso:ProjectCharter>
+  </semantic:extensionElements>
    <semantic:itemDefinition label="tRequested" name="tRequested">
       <semantic:itemComponent id="_759b9f16-90bd-4e99-a37a-09b79a88af8e" name="PropertyZIP">
          <semantic:typeRef>string</semantic:typeRef>
