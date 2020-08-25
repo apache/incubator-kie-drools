@@ -12,7 +12,6 @@
                       exporter="DMN Modeler; Method and Style trisofix.xslt"
                       exporterVersion="5.0.32.2; 1.0"
                       name="Lending1"
-                      xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd ../../dmn.xsd"
                       typeLanguage="http://www.omg.org/spec/FEEL/20140401">
    <semantic:itemDefinition name="tEligibility" isCollection="false">
       <semantic:typeRef>string</semantic:typeRef>

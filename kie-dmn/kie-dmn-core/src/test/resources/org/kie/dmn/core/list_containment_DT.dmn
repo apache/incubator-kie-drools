@@ -14,9 +14,7 @@
                       name="list containment DT"
                       namespace="http://www.trisotech.com/definitions/_6ab2bd6d-adaa-45c4-a141-a84382a201eb">
    <semantic:extensionElements>
-      <tc:testCases xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-                    xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-                    xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+      <tc:testCases xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
                     xmlns:trisofeed="http://trisotech.com/feed">
          <tc:testCase id="_3de6b15d-2a94-45ee-988d-dc5906a6230d" name="Test case 1">
             <tc:inputNode name="Passenger">

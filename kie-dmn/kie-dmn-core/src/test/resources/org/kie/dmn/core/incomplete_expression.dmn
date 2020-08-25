@@ -13,12 +13,7 @@
                       id="_56fd6445-ff6a-4c28-8206-71fce7f80436"
                       name="incomplete expression"
                       namespace="http://www.trisotech.com/definitions/_56fd6445-ff6a-4c28-8206-71fce7f80436">
-   <semantic:extensionElements>
-      <triso:dmnInputs xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-                       xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-                       xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
-                       xmlns:trisofeed="http://trisotech.com/feed">[]</triso:dmnInputs>
-   </semantic:extensionElements>
+   <semantic:extensionElements/>
    <semantic:decision displayName="a decision just now"
                       id="_cf6124bd-9907-4ac0-b4fd-59a962dbc502"
                       name="incomplete expression">

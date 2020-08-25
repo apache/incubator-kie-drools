@@ -14,9 +14,7 @@
                       exporterVersion="6.0.3.201803061110"
                       name="Null in relations">
    <semantic:extensionElements>
-      <triso:dmnInputs xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-                       xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-                       xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+      <triso:dmnInputs xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
                        xmlns:trisofeed="http://trisotech.com/feed">[{"name":"Value","id":"_67bf0d5b-fa84-4c3a-828b-e8d1b37fad1a","type":"string"}]</triso:dmnInputs>
    </semantic:extensionElements>
    <semantic:itemDefinition isCollection="true" name="Values" label="Values">

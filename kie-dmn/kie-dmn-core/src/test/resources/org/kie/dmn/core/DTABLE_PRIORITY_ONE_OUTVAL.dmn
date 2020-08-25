@@ -37,7 +37,6 @@
                       id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c"
                       namespace="https://github.com/kiegroup/kie-dmn"
                       name="DTABLE_PRIORITY_ONE_OUTVAL"
-                      xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
                       typeLanguage="http://www.omg.org/spec/FEEL/20140401">
    <semantic:decision id="_DTABLE_PRIORITY_ONE_OUTVAL" name="DTABLE_PRIORITY_ONE_OUTVAL">
       <semantic:variable name="Approval Status"/>

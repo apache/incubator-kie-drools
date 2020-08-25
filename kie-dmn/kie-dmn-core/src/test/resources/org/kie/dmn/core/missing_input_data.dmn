@@ -11,14 +11,7 @@
                       id="_4047acf3-fce2-42f3-abf2-fb06282c1ea0"
                       name="Upgrade Based On Promotions"
                       namespace="http://www.trisotech.com/definitions/_4047acf3-fce2-42f3-abf2-fb06282c1ea0">
-   <semantic:extensionElements>
-      <rss:rss xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-               xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-               xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
-               version="2.0">
-         <rss:channel/>
-      </rss:rss>
-   </semantic:extensionElements>
+   <semantic:extensionElements/>
    <semantic:knowledgeSource id="_601981b2-d94d-41c9-bb31-d6069751f6e8"
                              name="Member Reservation System">
       <semantic:authorityRequirement>

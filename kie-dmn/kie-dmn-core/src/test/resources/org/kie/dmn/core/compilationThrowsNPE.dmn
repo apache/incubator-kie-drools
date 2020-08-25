@@ -24,7 +24,6 @@
                       id="compilation-throws-npe"
                       namespace="https://github.com/kiegroup/kie-dmn"
                       name="compilation-throws-npe"
-                      xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
                       typeLanguage="http://www.omg.org/spec/FEEL/20140401">
    <semantic:decision id="decision1" name="decision1">
       <semantic:variable id="variable1" name="variable1" typeRef="string"/>

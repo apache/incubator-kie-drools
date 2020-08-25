@@ -14,9 +14,7 @@
                       name="FilterJohns"
                       namespace="http://www.trisotech.com/definitions/_feb9886e-22ce-469a-bbb6-096f13b71c7d">
    <semantic:extensionElements>
-      <triso:dmnInputs xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-                       xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-                       xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+      <triso:dmnInputs xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
                        xmlns:trisofeed="http://trisotech.com/feed">[{"name":"PersonList","id":"_3eaf4650-5b57-4a71-8b97-935ab5ac7e53","type":"complex","isCollection":true,"children":[{"name":"name","id":"_3eaf4650-5b57-4a71-8b97-935ab5ac7e53_54881955-df95-438a-afe3-c7902df66965","type":"string"},{"name":"surname","id":"_3eaf4650-5b57-4a71-8b97-935ab5ac7e53_da6a1dd6-6e6d-4c94-a87a-ed32a7a2da85","type":"string"}]}]</triso:dmnInputs>
    </semantic:extensionElements>
    <semantic:itemDefinition label="Person" name="Person">

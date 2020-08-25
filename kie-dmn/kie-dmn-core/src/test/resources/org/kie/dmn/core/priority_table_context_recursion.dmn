@@ -43,9 +43,7 @@
          <semantic:contextEntry>
             <semantic:variable id="m1" name="m1" typeRef="string"/>
             <semantic:literalExpression>
-               <text xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-                     xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-                     xmlns:trisofeed="http://trisotech.com/feed">"Hello World"</text>
+               <semantic:text>"Hello World"</semantic:text>
             </semantic:literalExpression>
          </semantic:contextEntry>
          <semantic:contextEntry>

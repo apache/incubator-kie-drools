@@ -11,14 +11,7 @@
                       id="_41b69eb6-05d3-4eff-bf19-dd9de80320c3"
                       name="When is it"
                       namespace="http://www.trisotech.com/dmn/definitions/_4ad80959-5fd8-46b7-8c9a-ab2fa58cb5b4">
-   <semantic:extensionElements>
-      <rss:rss xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-               xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-               xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
-               version="2.0">
-         <rss:channel/>
-      </rss:rss>
-   </semantic:extensionElements>
+   <semantic:extensionElements/>
    <semantic:decision id="_06600a1f-8207-4bee-a356-62b2c2114854" name="When is it">
       <semantic:variable id="_bf86a212-8a4d-4881-8734-14c1e4c94ff5"
                          name="When is it"

@@ -11,14 +11,7 @@
                       id="_098bb607-eff7-4772-83ac-6ded8b371fa7"
                       name="Input reuse in output"
                       namespace="http://www.trisotech.com/dmn/definitions/_098bb607-eff7-4772-83ac-6ded8b371fa7">
-   <semantic:extensionElements>
-      <rss:rss xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-               xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-               xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
-               version="2.0">
-         <rss:channel/>
-      </rss:rss>
-   </semantic:extensionElements>
+   <semantic:extensionElements/>
    <semantic:decision id="_30f465a9-e726-47c8-92eb-72efe26b17cf" name="My Decision">
       <semantic:variable id="_69825d24-3944-474d-be4b-88c1cb7c4e2b"
                          name="My Decision"

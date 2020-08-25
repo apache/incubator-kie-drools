@@ -12,15 +12,7 @@
                       id="_e215ed7a-701b-4c53-b8df-4b4d23d5fe32"
                       name="Person filtering by age"
                       namespace="http://www.trisotech.com/definitions/_e215ed7a-701b-4c53-b8df-4b4d23d5fe32">
-   <semantic:extensionElements>
-      <rss:rss xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-               xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-               xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
-               xmlns:trisofeed="http://trisotech.com/feed"
-               version="2.0">
-         <rss:channel/>
-      </rss:rss>
-   </semantic:extensionElements>
+   <semantic:extensionElements/>
    <semantic:businessKnowledgeModel id="_d8d03646-2d42-4b87-8213-9a60c999a727" name="persons">
       <semantic:variable id="_e041d6ee-55bf-4460-b955-799918242b88" name="persons"/>
       <semantic:encapsulatedLogic>

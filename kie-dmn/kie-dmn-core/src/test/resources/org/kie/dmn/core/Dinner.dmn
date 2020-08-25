@@ -11,14 +11,7 @@
                       id="_0c45df24-0d57-4acc-b296-b4cba8b71a36"
                       name="Dinner"
                       namespace="http://www.trisotech.com/definitions/_0c45df24-0d57-4acc-b296-b4cba8b71a36">
-   <semantic:extensionElements>
-      <rss:rss xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-               xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-               xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
-               version="2.0">
-         <rss:channel/>
-      </rss:rss>
-   </semantic:extensionElements>
+   <semantic:extensionElements/>
    <semantic:decision id="_b9dc3d65-6aa4-4ff9-9baf-f4ed04fdf8fd" name="Dish">
       <semantic:variable id="_32b0b201-8057-4322-8625-4d9135957e4a"
                          name="Dish"

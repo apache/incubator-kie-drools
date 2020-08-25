@@ -11,14 +11,7 @@
                       id="_820611e9-c21c-47cd-8e52-5cba2be9f9cc"
                       name="Car Damage Responsibility"
                       namespace="http://www.trisotech.com/definitions/_820611e9-c21c-47cd-8e52-5cba2be9f9cc">
-   <semantic:extensionElements>
-      <rss:rss xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-               xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-               xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
-               version="2.0">
-         <rss:channel/>
-      </rss:rss>
-   </semantic:extensionElements>
+   <semantic:extensionElements/>
    <semantic:decision id="_5693fada-33cb-4a9e-bcfa-6fc343505538"
                       name="Car Damage Responsibility">
       <semantic:variable id="_1b9f9da5-ec0b-49e8-8ab6-a7767c05cf1d"

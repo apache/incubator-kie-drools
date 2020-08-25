@@ -14,9 +14,7 @@
                       name="Dynamic composition"
                       namespace="http://www.trisotech.com/definitions/_c2d86765-c3c7-4e1d-b1fa-b830fa5bc529">
    <semantic:extensionElements>
-      <tc:testCases xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-                    xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-                    xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+      <tc:testCases xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
                     xmlns:trisofeed="http://trisotech.com/feed">
          <tc:testCase id="_2805a8df-deab-4b28-89fc-63d77eea87ca" name="Test case 1">
             <tc:inputNode name="Order">
@@ -206,9 +204,7 @@
             </tc:resultNode>
          </tc:testCase>
       </tc:testCases>
-      <triso:dmnInputs xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-                       xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-                       xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+      <triso:dmnInputs xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
                        xmlns:trisofeed="http://trisotech.com/feed">[{"name":"Order","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58","type":"complex","children":[{"name":"number","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_94829153-d0b7-48f2-bfa3-b8098e9969d0","type":"number"},{"name":"customer name","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_6db42db6-b6b3-4c06-9f31-bb71fefa2614","type":"string"},{"name":"address","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_9b01eb9a-470f-4856-9e28-e6c1de13b510","type":"complex","children":[{"name":"street address","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_9b01eb9a-470f-4856-9e28-e6c1de13b510_5ff803a2-90f1-47b2-adce-efcc1b47d199","type":"string"},{"name":"state","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_9b01eb9a-470f-4856-9e28-e6c1de13b510_262a08f3-295a-4a39-8562-90a9be983410","type":"string"},{"name":"postal code","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_9b01eb9a-470f-4856-9e28-e6c1de13b510_db2da9ca-ec01-430d-b526-025a85ad851a","type":"string"}]},{"name":"items","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_d25663f5-8df1-478f-93de-27b746241804","isCollection":true,"type":"complex","children":[{"name":"product code","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_d25663f5-8df1-478f-93de-27b746241804_503f0478-34cd-4841-911d-f5d54370a040","type":"string"},{"name":"product name","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_d25663f5-8df1-478f-93de-27b746241804_8b8b9be3-b411-481d-9aca-a308d7f0ad55","type":"string"},{"name":"category","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_d25663f5-8df1-478f-93de-27b746241804_6f7c2609-5d3e-4143-9b52-914d0aeb2af6","type":"string","constraints":{"dataType":"feel:string","constraints":"\"Food\",\"Electronic\",\"Hygiene\",\"Luxury\"","constraintsType":"enumeration","_choices":["\"Food\"","\"Electronic\"","\"Hygiene\"","\"Luxury\""]}},{"name":"quantity","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_d25663f5-8df1-478f-93de-27b746241804_b2b6ca14-914e-4d67-8c3f-c3bf8708152a","type":"number"},{"name":"price","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_d25663f5-8df1-478f-93de-27b746241804_71925f05-eb0a-4dc0-8b98-1da93ee600a6","type":"number"},{"name":"total amount","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_d25663f5-8df1-478f-93de-27b746241804_71132388-b3c0-4715-bc8e-7adb30a1dca4","type":"number"}]},{"name":"total amount","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_3b96f758-b66a-427d-b4dd-78b266abe200","type":"number"}]},{"name":"State Model","id":"_3ea75f6d-a9a5-4d7b-8f2a-e29173c03e73","type":"complex","children":[{"name":"namespace","id":"_3ea75f6d-a9a5-4d7b-8f2a-e29173c03e73_094ae2b8-1a75-4ca7-9bd7-edd23e2c1aa1","type":"string"},{"name":"name","id":"_3ea75f6d-a9a5-4d7b-8f2a-e29173c03e73_d7381ecc-0f72-4133-b9ab-d0c7eba93811","type":"string"}]}]</triso:dmnInputs>
    </semantic:extensionElements>
    <semantic:itemDefinition label="tOrder" name="tOrder">

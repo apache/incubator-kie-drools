@@ -11,14 +11,7 @@
                       id="_da1a4dcb-01bf-4dee-9be8-f498bc68178c"
                       name="Collect Hit Policy"
                       namespace="http://www.trisotech.com/definitions/_da1a4dcb-01bf-4dee-9be8-f498bc68178c">
-   <semantic:extensionElements>
-      <rss:rss xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-               xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-               xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
-               version="2.0">
-         <rss:channel/>
-      </rss:rss>
-   </semantic:extensionElements>
+   <semantic:extensionElements/>
    <semantic:decision id="_0ec4142e-209c-4ab6-b6b2-43e3c1431bd5" name="Collect">
       <semantic:variable id="_5c26fb00-41cd-455f-9d18-3b5a5c1cb076"
                          name="Collect"

@@ -11,14 +11,7 @@
                       id="_ecf4ea54-2abc-4e2f-a101-4fe14e356a46"
                       name="strictMode"
                       namespace="http://www.trisotech.com/dmn/definitions/_ecf4ea54-2abc-4e2f-a101-4fe14e356a46">
-   <semantic:extensionElements>
-      <rss:rss xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-               xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-               xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
-               version="2.0">
-         <rss:channel/>
-      </rss:rss>
-   </semantic:extensionElements>
+   <semantic:extensionElements/>
    <semantic:inputData id="_598e78c7-ed8d-4cf3-8d0c-8b1d0532c432" name="timestring">
       <semantic:variable id="_22d1c1ff-021b-49d2-ac4a-ebb7ec71a652" name="timestring"/>
    </semantic:inputData>

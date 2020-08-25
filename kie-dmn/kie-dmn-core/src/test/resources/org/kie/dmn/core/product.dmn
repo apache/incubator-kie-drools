@@ -14,9 +14,7 @@
                       name="Drawing 1"
                       namespace="http://www.trisotech.com/dmn/definitions/_40fdbc2c-a631-4ba4-8435-17571b5d1942">
    <semantic:extensionElements>
-      <tc:testCases xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-                    xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-                    xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+      <tc:testCases xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
                     xmlns:trisofeed="http://trisotech.com/feed">
          <tc:testCase id="_f1cbc9c0-0d5b-4451-a77b-ca4a49d952fd" name="Test case 1">
             <tc:inputNode name="product">

@@ -11,14 +11,7 @@
                       id="_0019_flight_rebooking"
                       name="0019-flight-rebooking"
                       namespace="http://www.trisotech.com/dmn/definitions/_188d6caf-a355-49b5-a692-bd6ce713da08">
-   <semantic:extensionElements>
-      <rss:rss xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-               xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-               xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
-               version="2.0">
-         <rss:channel/>
-      </rss:rss>
-   </semantic:extensionElements>
+   <semantic:extensionElements/>
    <semantic:itemDefinition label="tFlight" name="tFlight">
       <semantic:itemComponent id="_tFlight_Flight" name="Flight Number">
          <semantic:typeRef>string</semantic:typeRef>

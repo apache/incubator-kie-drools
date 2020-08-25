@@ -14,9 +14,7 @@
                       name="MACD-enhanced iteration"
                       namespace="http://www.trisotech.com/definitions/_6cfe7d88-6741-45d1-968c-b61a597d0964">
    <semantic:extensionElements>
-      <triso:dmnInputs xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-                       xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-                       xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+      <triso:dmnInputs xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
                        xmlns:trisofeed="http://trisotech.com/feed">[{"name":"DailyTable","id":"_5c7b0249-b284-481a-b177-a2b46c7ac2ef","type":"complex","isCollection":true,"children":[{"name":"aDate","id":"_5c7b0249-b284-481a-b177-a2b46c7ac2ef_90c3f986-d80c-4b44-8a56-b5036c455889","type":"date"},{"name":"Close","id":"_5c7b0249-b284-481a-b177-a2b46c7ac2ef_2f7acc15-f997-4a3d-8435-9424e9c3b896","type":"number"}]}]</triso:dmnInputs>
    </semantic:extensionElements>
    <semantic:itemDefinition label="tDailyPrice" name="tDailyPrice">

@@ -10,15 +10,7 @@
                       exporter="DMN Modeler"
                       exporterVersion="5.0.34.201611081547"
                       name="Solution 3">
-   <semantic:extensionElements>
-      <rss xmlns="http://purl.org/rss/2.0/"
-           xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-           xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-           xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
-           version="2.0">
-         <channel/>
-      </rss>
-   </semantic:extensionElements>
+   <semantic:extensionElements/>
    <semantic:itemDefinition id="tShipInfo" name="tShipInfo">
       <semantic:itemComponent id="_de46ed8e-2d54-4089-9100-a13db913d1c4" name="Size">
          <semantic:typeRef>number</semantic:typeRef>
