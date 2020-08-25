@@ -2,7 +2,7 @@ OK ./src/test/java/org/kie/dmn/validation/ValidatorBusinessKnowledgeModelTest.ja
 OK ./src/test/java/org/kie/dmn/validation/ValidatorDMNElementReferenceTest.java
 OK ./src/test/java/org/kie/dmn/validation/ValidatorAuthorityRequirementTest.java
 OK ./src/test/java/org/kie/dmn/validation/ValidatorArtifactTest.java
-./src/test/java/org/kie/dmn/validation/ValidatorTest.java
+OK ./src/test/java/org/kie/dmn/validation/ValidatorTest.java
 OK ./src/test/java/org/kie/dmn/validation/ValidatorBusinessContextTest.java
 OK ./src/test/java/org/kie/dmn/validation/ValidatorDecisionTest.java
 OK ./src/test/java/org/kie/dmn/validation/ValidatorKnowledgeRequirementTest.java
@@ -12,4 +12,4 @@ OK ./src/test/java/org/kie/dmn/validation/ValidatorContextTest.java
 OK ./src/test/java/org/kie/dmn/validation/ValidatorTypeRefTest.java
 OK ./src/test/java/org/kie/dmn/validation/ValidatorInformationRequirementTest.java
 OK ./src/test/java/org/kie/dmn/validation/ValidatorInputDataTest.java
-./src/test/java/org/kie/dmn/validation/ValidatorImportTest.java
+OK ./src/test/java/org/kie/dmn/validation/ValidatorImportTest.java

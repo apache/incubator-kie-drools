@@ -18,7 +18,6 @@ package org.kie.dmn.legacy.tests.validation.v1_1;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -171,26 +170,5 @@ public class ValidatorImportTest extends AbstractValidatorTest {
                                                                             "Only Import base model"),
                                                              Validation.VALIDATE_MODEL);
         assertTrue(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.IMPORT_NOT_FOUND)));
-    }
-
-    @Test
-    public void testImportNoAddtnAttribute() throws IOException {
-        // DROOLS-4187 kie-dmn-validation: Incorrect import detection
-        final List<DMNMessage> messages = validator.validateUsing(Validation.VALIDATE_MODEL,
-                                                                  Validation.VALIDATE_COMPILATION)
-                                                   .theseModels(getFile("import/DROOLS-4187a.dmn"),
-                                                                getFile("import/DROOLS-4187b.dmn"));
-        assertThat(ValidatorUtil.formatMessages(messages), messages.size(), is(0));
-
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("import/DROOLS-4187a.dmn", this.getClass(), "import/DROOLS-4187b.dmn");
-        DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_D0CFBAE7-4EBD-4FA5-A15F-DA00581ADA0B", "b");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
-
-        DMNContext context = DMNFactory.newContext();
-        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-        LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-        assertThat(dmnResult.getDecisionResultByName("aaa").getResult(), is(new BigDecimal(2)));
     }
 }
