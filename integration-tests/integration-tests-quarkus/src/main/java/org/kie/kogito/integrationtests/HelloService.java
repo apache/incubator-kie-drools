@@ -16,6 +16,8 @@
 
 package org.kie.kogito.integrationtests;
 
+import java.io.IOException;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -28,21 +30,20 @@ public class HelloService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HelloService.class);
 
-    public String hello(String name) {
+    public String hello(String name) throws IOException {
+        if (name.equals("exception")) {
+            throw new IOException("what kind of name is that?");
+        }
         logMethodCall("hello", name);
         return "Hello " + name + "!";
     }
 
-    public JsonNode jsonHello(JsonNode person) {
+    public JsonNode jsonHello(JsonNode person) throws IOException {
         logMethodCall("jsonHello", person);
 
         String retJsonStr = "{\"result\":\"Hello " + person.get("name").textValue() + "\"}";
         ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readTree(retJsonStr);
-        } catch (Exception e) {
-            return null;
-        }
+        return mapper.readTree(retJsonStr);
     }
 
     public String goodbye(String name) {

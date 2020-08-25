@@ -56,4 +56,19 @@ class FlexibleProcessTest {
                 .body("var1", equalTo("Hello first! Script"))
                 .body("var2", equalTo("second Script 2"));
     }
+
+    @Test
+    void testProcessException() {
+        Map<String, String> params = new HashMap<>();
+        params.put("var1", "exception");
+        params.put("var2", "second");
+
+        given()
+            .contentType(ContentType.JSON)
+            .when()
+            .body(params)
+            .post("/AdHocProcess")
+            .then()
+            .statusCode(500);
+    }
 }

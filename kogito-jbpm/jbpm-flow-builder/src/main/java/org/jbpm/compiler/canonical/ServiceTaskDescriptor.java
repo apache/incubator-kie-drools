@@ -19,39 +19,53 @@ package org.jbpm.compiler.canonical;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.CatchClause;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.stmt.ThrowStmt;
+import com.github.javaparser.ast.stmt.TryStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.ast.type.UnionType;
 import org.jbpm.process.core.ParameterDefinition;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
-
-import static java.util.stream.Collectors.joining;
+import org.kie.kogito.process.workitem.WorkItemExecutionError;
 
 public class ServiceTaskDescriptor {
+
+    private static final String RESULT_NAME = "result";
+    private static final String EXCEPTION_NAME = "ex";
 
     private final ClassLoader contextClassLoader;
     private final String interfaceName;
@@ -59,7 +73,7 @@ public class ServiceTaskDescriptor {
     private final Map<String, String> parameters;
     private final WorkItemNode workItemNode;
     private final String mangledName;
-    Class<?> cls;
+    private Class<?> cls;
 
     ServiceTaskDescriptor(WorkItemNode workItemNode, ClassLoader contextClassLoader) {
         this.workItemNode = workItemNode;
@@ -109,9 +123,12 @@ public class ServiceTaskDescriptor {
             }
         }
         throw new IllegalArgumentException(
-                MessageFormat.format(
-                        "Invalid work item \"{0}\": could not find a method called \"{1}\" in class \"{2}\"",
-                        workItemNode.getName(), operationName, interfaceName));
+            MessageFormat
+                .format(
+                    "Invalid work item \"{0}\": could not find a method called \"{1}\" in class \"{2}\"",
+                    workItemNode.getName(),
+                    operationName,
+                    interfaceName));
     }
 
     private void loadClass() {
@@ -122,9 +139,11 @@ public class ServiceTaskDescriptor {
             cls = contextClassLoader.loadClass(interfaceName);
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(
-                    MessageFormat.format(
-                            "Invalid work item \"{0}\": class not found for interfaceName \"{1}\"",
-                            workItemNode.getName(), interfaceName));
+                MessageFormat
+                    .format(
+                        "Invalid work item \"{0}\": class not found for interfaceName \"{1}\"",
+                        workItemNode.getName(),
+                        interfaceName));
         }
     }
 
@@ -138,9 +157,8 @@ public class ServiceTaskDescriptor {
 
     public CompilationUnit generateHandlerClassForService() {
         CompilationUnit compilationUnit = new CompilationUnit("org.kie.kogito.handlers");
-
         compilationUnit.getTypes().add(classDeclaration());
-
+        compilationUnit.addImport(WorkItemExecutionError.class);
         return compilationUnit;
     }
 
@@ -151,6 +169,7 @@ public class ServiceTaskDescriptor {
                 .setModifiers(Modifier.Keyword.PUBLIC)
                 .addImplementedType(WorkItemHandler.class.getCanonicalName());
         ClassOrInterfaceType serviceType = new ClassOrInterfaceType(null, interfaceName);
+
         FieldDeclaration serviceField = new FieldDeclaration()
                 .addVariable(new VariableDeclarator(serviceType, "service"));
         cls.addMember(serviceField);
@@ -171,8 +190,11 @@ public class ServiceTaskDescriptor {
             MethodCallExpr getParamMethod = new MethodCallExpr(new NameExpr("workItem"), "getParameter").addArgument(new StringLiteralExpr(paramEntry.getKey()));
             callService.addArgument(new CastExpr(new ClassOrInterfaceType(null, paramEntry.getValue()), getParamMethod));
         }
-        MethodCallExpr completeWorkItem = completeWorkItem(executeWorkItemBody, callService);
 
+        MethodCallExpr completeWorkItem = completeWorkItem(
+            executeWorkItemBody,
+            callService,
+            Arrays.asList(getOperationMethod().getExceptionTypes()));
         executeWorkItemBody.addStatement(completeWorkItem);
 
         // abortWorkItem method
@@ -198,27 +220,81 @@ public class ServiceTaskDescriptor {
         return cls;
     }
 
-    private MethodCallExpr completeWorkItem(BlockStmt executeWorkItemBody, MethodCallExpr callService) {
+    private Method getOperationMethod() {
+        loadClass();
+        try {
+            return ReflectionUtils.getMethod(contextClassLoader, cls, operationName, parameters.values());
+        } catch (ReflectiveOperationException ex) {
+            throw new IllegalArgumentException(
+                MessageFormat
+                    .format(
+                        "Invalid work item \"{0}\": could not find a method called \"{1}\" in class \"{2}\" with proper arguments \"{3}\", error \"{4}\"",
+                        workItemNode.getName(),
+                        operationName,
+                        interfaceName,
+                        parameters,
+                        ex));
+        }
+
+    }
+
+    private Statement tryStmt(Expression expr, Collection<Class<?>> exceptions) {
+        return exceptions.isEmpty() ? new ExpressionStmt(expr) : new TryStmt(
+            new BlockStmt().addStatement(expr),
+            NodeList
+                .nodeList(
+                    new CatchClause(
+                        new Parameter(processException(exceptions), new SimpleName(EXCEPTION_NAME)),
+                        new BlockStmt()
+                            .addStatement(
+                                new ThrowStmt(
+                                    new ObjectCreationExpr()
+                                        .setType(WorkItemExecutionError.class)
+                                        .addArgument(new StringLiteralExpr("500"))
+                                        .addArgument(new NameExpr(EXCEPTION_NAME)))))),
+            null);
+    }
+
+    private Type processException(Collection<Class<?>> exceptions) {
+        return new UnionType(
+            exceptions
+                .stream()
+                .map(Class::getName)
+                .map(StaticJavaParser::parseClassOrInterfaceType)
+                .collect(NodeList.toNodeList()));
+    }
+
+    private MethodCallExpr
+        completeWorkItem(BlockStmt executeWorkItemBody, MethodCallExpr callService, Collection<Class<?>> exceptions) {
         Expression results = null;
+
         List<DataAssociation> outAssociations = workItemNode.getOutAssociations();
         if (outAssociations.isEmpty()) {
-            executeWorkItemBody.addStatement(callService);
+            executeWorkItemBody.addStatement(tryStmt(callService,exceptions));
             results = new NullLiteralExpr();
         } else {
             VariableDeclarationExpr resultField = new VariableDeclarationExpr()
-                    .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, Object.class.getCanonicalName()), "result", callService));
-
+                .addVariable(
+                    new VariableDeclarator(
+                        new ClassOrInterfaceType(null, Object.class.getCanonicalName()),
+                        RESULT_NAME));
             executeWorkItemBody.addStatement(resultField);
-
+            executeWorkItemBody
+                .addStatement(
+                    tryStmt(
+                        new AssignExpr(
+                            new NameExpr(RESULT_NAME),
+                            callService,
+                            AssignExpr.Operator.ASSIGN),
+                        exceptions));
             results = new MethodCallExpr(new NameExpr("java.util.Collections"), "singletonMap")
-                    .addArgument(new StringLiteralExpr(outAssociations.get(0).getSources().get(0)))
-                    .addArgument(new NameExpr("result"));
+                .addArgument(new StringLiteralExpr(outAssociations.get(0).getSources().get(0)))
+                .addArgument(new NameExpr(RESULT_NAME));
         }
 
-        MethodCallExpr completeWorkItem = new MethodCallExpr(new NameExpr("workItemManager"), "completeWorkItem")
+        return new MethodCallExpr(new NameExpr("workItemManager"), "completeWorkItem")
                 .addArgument(new MethodCallExpr(new NameExpr("workItem"), "getId"))
                 .addArgument(results);
-        return completeWorkItem;
     }
 
 }

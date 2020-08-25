@@ -35,15 +35,16 @@ public class HotReloadTest {
     private static final String HTTP_TEST_PORT = "65535";
 
     @RegisterExtension
-    final static QuarkusDevModeTest test = new QuarkusDevModeTest().setArchiveProducer(
-            () -> ShrinkWrap.create(JavaArchive.class)
-                    .addAsResource("orders.txt", PACKAGE_FOLDER + "/orders.bpmn")
-                    .addAsResource("orderItems.txt", PACKAGE_FOLDER + "/orderItems.bpmn")
-                    .addAsResource("CalculationService.txt", PACKAGE_FOLDER + "/CalculationService.java")
-                    .addAsResource("Order.txt", PACKAGE_FOLDER + "/Order.java")
-                    .addAsResource("OrdersProcessService.txt", PACKAGE_FOLDER + "/OrdersProcessService.java")
-                    .addAsResource("text-process.txt", RESOURCE_FILE)
-                    .addAsResource("JbpmHotReloadTestHelper.txt", PACKAGE_FOLDER + "/JbpmHotReloadTestHelper.java"));
+    final static QuarkusDevModeTest test = new QuarkusDevModeTest()
+        .setArchiveProducer(
+            () -> ShrinkWrap
+                .create(JavaArchive.class)
+                .addAsResource("orders.txt", PACKAGE_FOLDER + "/orders.bpmn")
+                .addAsResource("orderItems.txt", PACKAGE_FOLDER + "/orderItems.bpmn")
+                .addClass(CalculationService.class)
+                .addClass(Order.class)
+                .addAsResource("text-process.txt", RESOURCE_FILE)
+                .addClass(JbpmHotReloadTestHelper.class));
 
     @Test
     public void testServletChange() {
@@ -65,7 +66,7 @@ public class HotReloadTest {
         assertEquals(2, result.size());
         assertEquals("HELLO", result.get("mytext"));
         
-        test.modifyResourceFile( RESOURCE_FILE, s -> s.replaceAll("toUpper", "toLower") );
+        test.modifySourceFile(JbpmHotReloadTestHelper.class, s -> s.replace("toUpperCase", "toLowerCase"));
 
         result = given()
                 .baseUri("http://localhost:" + HTTP_TEST_PORT)
