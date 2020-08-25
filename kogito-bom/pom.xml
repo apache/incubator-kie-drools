@@ -387,6 +387,45 @@
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>data-index-service-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>data-index-service-common</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>data-index-service-common</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>data-index-service-infinispan</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>data-index-service-infinispan</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>data-index-service-mongodb</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>data-index-service-mongodb</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
 
       <!-- Kogito Apps Persistence -->
       <dependency>
@@ -447,12 +486,6 @@
         <artifactId>persistence-commons-mongodb</artifactId>
         <version>${project.version}</version>
         <classifier>javadoc</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>persistence-commons-mongodb</artifactId>
-        <version>${project.version}</version>
-        <type>test-jar</type>
       </dependency>
 
       <dependency>
