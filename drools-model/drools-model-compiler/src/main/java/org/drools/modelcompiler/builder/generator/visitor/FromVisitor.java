@@ -206,13 +206,13 @@ public class FromVisitor {
     }
 
     private String addFromArgument( MethodCallExpr methodCallExpr, MethodCallExpr fromCall ) {
-        List<String> args = methodCallExpr
+        Collection<String> args = methodCallExpr
                 .getArguments()
                 .stream()
                 .flatMap(a -> a.findAll(NameExpr.class).stream())
                 .map(Object::toString)
                 .filter(context::hasDeclaration)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
         args.stream()
                 .map(context::getVarExpr)
