@@ -116,13 +116,22 @@ public class KiePMMLSegmentFactory {
             final KnowledgeBuilder kBuilder) {
         logger.debug("getSegment {}", segment);
         final String packageName = getSanitizedPackageName(parentPackageName + "." + segment.getId());
-        KiePMMLModel kiePmmlModel = getFromCommonDataAndTransformationDictionaryAndModelFromPlugin(
+        final KiePMMLModel kiePmmlModel = getFromCommonDataAndTransformationDictionaryAndModelFromPlugin(
                 packageName,
                 dataDictionary,
                 transformationDictionary,
                 segment.getModel(),
                 kBuilder)
                 .orElseThrow(() -> new KiePMMLException("Failed to get the KiePMMLModel for segment " + segment.getModel().getModelName()));
+        return getSegmentSourcesMap(packageName, dataDictionary, segment, kiePmmlModel);
+    }
+
+    public static Map<String, String> getSegmentSourcesMap(
+            final String packageName,
+            final DataDictionary dataDictionary,
+            final Segment segment,
+            final KiePMMLModel kiePmmlModel) {
+        logger.debug("getSegment {}", segment);
         if (!(kiePmmlModel instanceof HasSourcesMap)) {
             throw new KiePMMLException("Retrieved KiePMMLModel for segment " + segment.getModel().getModelName() + " " +
                                                "does not implement HasSources");
@@ -144,6 +153,7 @@ public class KiePMMLSegmentFactory {
         toReturn.put(getFullClassName(cloneCU), cloneCU.toString());
         return toReturn;
     }
+
 
     static void setConstructor(final String segmentName,
                                final String generatedClassName,

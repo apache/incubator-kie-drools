@@ -16,13 +16,17 @@
 
 package org.kie.pmml.models.mining.compiler.factories;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.dmg.pmml.mining.Segment;
 import org.junit.Test;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionModelWithSources;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -65,8 +69,8 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
                 segments,
                 KNOWLEDGE_BUILDER);
         assertNotNull(retrieved);
-        for (int i = 0; i < segments.size(); i++) {
-            commonEvaluateMap(retrieved, segments.get(i));
+        for (Segment segment : segments) {
+            commonEvaluateMap(retrieved, segment);
         }
     }
 
@@ -80,6 +84,49 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
                                                                                          segment,
                                                                                          KNOWLEDGE_BUILDER);
         commonEvaluateMap(retrieved, segment);
+    }
+
+    @Test
+    public void getSegmentSourcesMapHasSourcesWithKiePMMLModelClass() {
+        final Segment segment = MINING_MODEL.getSegmentation().getSegments().get(0);
+        final String packageName = "packagename";
+        final String regressionModelName = "CategoricalVariablesRegression";
+        final String kiePMMLModelClass = packageName + "." + regressionModelName;
+        final Map<String, String> sourcesMap = new HashMap<>();
+        sourcesMap.put(kiePMMLModelClass, String.format("public class %s {}", regressionModelName));
+        final KiePMMLModel kiePMMLModel = new KiePMMLRegressionModelWithSources(regressionModelName, "packagename.miningmodelregressionminingmodel0segment0", sourcesMap);
+        final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMap(packageName,
+                                                                                         DATA_DICTIONARY,
+                                                                                         segment,
+                                                                                         kiePMMLModel);
+        commonEvaluateMap(retrieved, segment);
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void getSegmentSourcesMapNoHasSources() {
+        final Segment segment = MINING_MODEL.getSegmentation().getSegments().get(0);
+        final String packageName = "packagename";
+        final String regressionModelName = "CategoricalVariablesRegression";
+        final KiePMMLModel kiePMMLModel = new KiePMMLRegressionModel(regressionModelName) {
+
+        };
+        KiePMMLSegmentFactory.getSegmentSourcesMap(packageName,
+                                                   DATA_DICTIONARY,
+                                                   segment,
+                                                   kiePMMLModel);
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void getSegmentSourcesMapHasSourcesWithoutKiePMMLModelClass() {
+        final Segment segment = MINING_MODEL.getSegmentation().getSegments().get(0);
+        final String packageName = "packagename";
+        final String regressionModelName = "CategoricalVariablesRegression";
+        final Map<String, String> sourcesMap = new HashMap<>();
+        final KiePMMLModel kiePMMLModel = new KiePMMLRegressionModelWithSources(regressionModelName, "packagename.miningmodelregressionminingmodel0segment0", sourcesMap);
+        KiePMMLSegmentFactory.getSegmentSourcesMap(packageName,
+                                                                                         DATA_DICTIONARY,
+                                                                                         segment,
+                                                                                         kiePMMLModel);
     }
 
     private void commonEvaluateSegment(final KiePMMLSegment toEvaluate, final Segment segment) {

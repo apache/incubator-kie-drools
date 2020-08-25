@@ -148,6 +148,16 @@ public class DroolsModelProviderTest {
     }
 
     @Test(expected = KiePMMLException.class)
+    public void getKiePMMLModelFromPluginWithException() {
+        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
+        droolsModelProvider.getKiePMMLModelFromPlugin(PACKAGE_NAME,
+                                                                                     null,
+                                                                                     null,
+                                                                                     null,
+                                                                                     knowledgeBuilder);
+    }
+
+    @Test(expected = KiePMMLException.class)
     public void getKiePMMLModelFromPluginNoKnowledgeBuilder() {
         droolsModelProvider.getKiePMMLModelFromPlugin(PACKAGE_NAME,
                                                                                      pmml.getDataDictionary(),
