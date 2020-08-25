@@ -29,10 +29,10 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.bson.Document;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.persistence.mongodb.MongoServerTestResource;
 import org.kie.kogito.persistence.mongodb.client.MongoClientManager;
 import org.kie.kogito.persistence.mongodb.mock.MockMongoEntityMapper;
 import org.kie.kogito.persistence.mongodb.model.MongoEntityMapper;
+import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
 
 import static com.mongodb.client.model.Filters.eq;
 import static java.util.Arrays.asList;
@@ -42,7 +42,7 @@ import static org.kie.kogito.persistence.mongodb.model.ModelUtils.MONGO_ID;
 import static org.kie.kogito.persistence.mongodb.storage.MongoStorage.OPERATION_TYPE;
 
 @QuarkusTest
-@QuarkusTestResource(MongoServerTestResource.class)
+@QuarkusTestResource(MongoDBQuarkusTestResource.class)
 class StorageUtilsIT {
 
     @Inject

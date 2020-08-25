@@ -49,8 +49,8 @@ import org.kie.kogito.persistence.api.schema.SchemaDescriptor;
 import org.kie.kogito.persistence.api.schema.SchemaRegisteredEvent;
 import org.kie.kogito.persistence.api.schema.SchemaRegistrationException;
 import org.kie.kogito.persistence.api.schema.SchemaType;
-import org.kie.kogito.persistence.mongodb.MongoServerTestResource;
 import org.kie.kogito.persistence.mongodb.mock.MockProcessIndexEventListener;
+import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
 import org.mockito.ArgumentMatchers;
 
 import static io.quarkus.test.junit.QuarkusMock.installMockForType;
@@ -66,7 +66,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @QuarkusTest
-@QuarkusTestResource(MongoServerTestResource.class)
+@QuarkusTestResource(MongoDBQuarkusTestResource.class)
 class IndexManagerIT {
 
     private IndexSchemaAcceptor indexSchemaAcceptor;

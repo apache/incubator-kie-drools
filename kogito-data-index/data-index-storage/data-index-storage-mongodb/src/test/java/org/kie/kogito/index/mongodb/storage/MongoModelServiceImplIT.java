@@ -38,7 +38,7 @@ import org.kie.kogito.index.mongodb.model.ProcessInstanceEntity;
 import org.kie.kogito.index.mongodb.model.ProcessInstanceEntityMapper;
 import org.kie.kogito.index.mongodb.model.UserTaskInstanceEntity;
 import org.kie.kogito.index.mongodb.model.UserTaskInstanceEntityMapper;
-import org.kie.kogito.persistence.mongodb.MongoServerTestResource;
+import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -48,7 +48,7 @@ import static org.kie.kogito.index.Constants.PROCESS_INSTANCES_STORAGE;
 import static org.kie.kogito.index.Constants.USER_TASK_INSTANCES_STORAGE;
 
 @QuarkusTest
-@QuarkusTestResource(MongoServerTestResource.class)
+@QuarkusTestResource(MongoDBQuarkusTestResource.class)
 class MongoModelServiceImplIT {
 
     @Inject

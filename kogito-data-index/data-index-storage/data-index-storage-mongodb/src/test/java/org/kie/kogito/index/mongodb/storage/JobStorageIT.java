@@ -31,14 +31,14 @@ import org.kie.kogito.index.mongodb.TestUtils;
 import org.kie.kogito.index.mongodb.model.JobEntity;
 import org.kie.kogito.index.mongodb.model.JobEntityMapper;
 import org.kie.kogito.persistence.api.Storage;
-import org.kie.kogito.persistence.mongodb.MongoServerTestResource;
 import org.kie.kogito.persistence.mongodb.client.MongoClientManager;
 import org.kie.kogito.persistence.mongodb.storage.MongoStorage;
+import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
 
 import static org.kie.kogito.index.Constants.JOBS_STORAGE;
 
 @QuarkusTest
-@QuarkusTestResource(MongoServerTestResource.class)
+@QuarkusTestResource(MongoDBQuarkusTestResource.class)
 class JobStorageIT extends StorageTestBase<String, Job> {
 
     @Inject

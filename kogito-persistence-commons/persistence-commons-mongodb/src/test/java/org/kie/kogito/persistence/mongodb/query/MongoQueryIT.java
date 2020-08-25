@@ -28,9 +28,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.persistence.api.query.QueryFilterFactory;
-import org.kie.kogito.persistence.mongodb.MongoServerTestResource;
 import org.kie.kogito.persistence.mongodb.client.MongoClientManager;
 import org.kie.kogito.persistence.mongodb.mock.MockMongoEntityMapper;
+import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.orderBy;
@@ -39,7 +39,7 @@ import static org.kie.kogito.persistence.mongodb.mock.MockMongoEntityMapper.TEST
 import static org.kie.kogito.persistence.mongodb.model.ModelUtils.MONGO_ID;
 
 @QuarkusTest
-@QuarkusTestResource(MongoServerTestResource.class)
+@QuarkusTestResource(MongoDBQuarkusTestResource.class)
 class MongoQueryIT {
 
     @Inject

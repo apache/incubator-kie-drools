@@ -28,17 +28,17 @@ import org.kie.kogito.index.mongodb.model.ProcessIdEntity;
 import org.kie.kogito.index.mongodb.model.ProcessIdEntityMapper;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.schema.ProcessDescriptor;
-import org.kie.kogito.persistence.mongodb.MongoServerTestResource;
 import org.kie.kogito.persistence.mongodb.client.MongoClientManager;
 import org.kie.kogito.persistence.mongodb.index.ProcessIndexEvent;
 import org.kie.kogito.persistence.mongodb.storage.MongoStorage;
+import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.kogito.index.Constants.PROCESS_ID_MODEL_STORAGE;
 
 @QuarkusTest
-@QuarkusTestResource(MongoServerTestResource.class)
+@QuarkusTestResource(MongoDBQuarkusTestResource.class)
 class ProcessIndexObserverIT {
 
     @Inject

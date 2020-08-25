@@ -32,14 +32,14 @@ import org.kie.kogito.index.mongodb.TestUtils;
 import org.kie.kogito.index.mongodb.model.ProcessInstanceEntity;
 import org.kie.kogito.index.mongodb.model.ProcessInstanceEntityMapper;
 import org.kie.kogito.persistence.api.Storage;
-import org.kie.kogito.persistence.mongodb.MongoServerTestResource;
 import org.kie.kogito.persistence.mongodb.client.MongoClientManager;
 import org.kie.kogito.persistence.mongodb.storage.MongoStorage;
+import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
 
 import static org.kie.kogito.index.Constants.PROCESS_INSTANCES_STORAGE;
 
 @QuarkusTest
-@QuarkusTestResource(MongoServerTestResource.class)
+@QuarkusTestResource(MongoDBQuarkusTestResource.class)
 class ProcessInstanceStorageIT extends StorageTestBase<String, ProcessInstance> {
 
     @Inject

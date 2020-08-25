@@ -31,14 +31,14 @@ import org.kie.kogito.index.mongodb.TestUtils;
 import org.kie.kogito.index.mongodb.model.UserTaskInstanceEntity;
 import org.kie.kogito.index.mongodb.model.UserTaskInstanceEntityMapper;
 import org.kie.kogito.persistence.api.Storage;
-import org.kie.kogito.persistence.mongodb.MongoServerTestResource;
 import org.kie.kogito.persistence.mongodb.client.MongoClientManager;
 import org.kie.kogito.persistence.mongodb.storage.MongoStorage;
+import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
 
 import static org.kie.kogito.index.Constants.USER_TASK_INSTANCES_STORAGE;
 
 @QuarkusTest
-@QuarkusTestResource(MongoServerTestResource.class)
+@QuarkusTestResource(MongoDBQuarkusTestResource.class)
 class UserTaskInstanceStorageIT extends StorageTestBase<String, UserTaskInstance> {
 
     @Inject
