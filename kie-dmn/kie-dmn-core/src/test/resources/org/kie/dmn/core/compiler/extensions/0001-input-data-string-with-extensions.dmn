@@ -14,33 +14,37 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<definitions id="0001-input-data-string" name="0001-input-data-string"
-	namespace="https://github.com/kiegroup/kie-dmn"
-	xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-	xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
-	<decision name="Greeting Message" id="d_GreetingMessage">
-		<variable name="Greeting Message" typeRef="feel:string"/>
-		<informationRequirement>
-			<requiredInput href="#i_FirstName"/>
-		</informationRequirement>
-        <informationRequirement>
-            <requiredInput href="#i_LastName"/>
-        </informationRequirement>
-		<literalExpression>
-			<text>"Hello " + First Name + " " + Last Name</text>
-		</literalExpression>
-	</decision>
-	<inputData name="First Name" id="i_FirstName">
-		<variable name="First Name" typeRef="feel:string"/>
-		<extensionElements>
-		    <firstNameDescription>First name in latin characters</firstNameDescription>
-		</extensionElements>
-	</inputData>
-	<inputData name="Last Name" id="i_LastName">
-    		<variable name="Last Name" typeRef="feel:string"/>
-    		<extensionElements>
-    		    <lastNameDescription>Last name in latin characters</lastNameDescription>
-    		</extensionElements>
-    	</inputData>
-</definitions>
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      id="0001-input-data-string"
+                      name="0001-input-data-string"
+                      namespace="https://github.com/kiegroup/kie-dmn">
+   <semantic:decision name="Greeting Message" id="d_GreetingMessage">
+      <semantic:variable name="Greeting Message" typeRef="string"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#i_FirstName"/>
+      </semantic:informationRequirement>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#i_LastName"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression>
+         <semantic:text>"Hello " + First Name + " " + Last Name</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:inputData name="First Name" id="i_FirstName">
+      <semantic:extensionElements>
+         <semantic:firstNameDescription>First name in latin characters</semantic:firstNameDescription>
+      </semantic:extensionElements>
+      <semantic:variable name="First Name" typeRef="string"/>
+   </semantic:inputData>
+   <semantic:inputData name="Last Name" id="i_LastName">
+      <semantic:extensionElements>
+         <semantic:lastNameDescription>Last name in latin characters</semantic:lastNameDescription>
+      </semantic:extensionElements>
+      <semantic:variable name="Last Name" typeRef="string"/>
+   </semantic:inputData>
+</semantic:definitions>

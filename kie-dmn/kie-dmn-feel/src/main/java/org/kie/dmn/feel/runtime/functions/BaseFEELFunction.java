@@ -244,7 +244,7 @@ public abstract class BaseFEELFunction
                         if ( valueCollection.size() == 1 ) {
                             Object singletonValue = valueCollection.iterator().next();
                             // re-perform the assignable-from check, this time using the element itself the singleton value from the original parameter list
-                            if ( parameterTypes[i].isAssignableFrom( singletonValue.getClass() ) ) {
+                            if ( singletonValue != null && parameterTypes[i].isAssignableFrom( singletonValue.getClass() ) ) {
                                 Object[] newParams = new Object[cm.getActualParams().length];
                                 System.arraycopy( cm.getActualParams(), 0, newParams, 0, cm.getActualParams().length ); // can't rely on adjustForVariableParameters() have actually copied
                                 newParams[i] = singletonValue;
