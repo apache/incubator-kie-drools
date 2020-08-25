@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_b4ebfbf2-8608-4297-9662-be70bab01974" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.2" id="_b4ebfbf2-8608-4297-9662-be70bab01974" name="Decision Services singleton or multiple output decisions" namespace="http://www.trisotech.com/dmn/definitions/_b4ebfbf2-8608-4297-9662-be70bab01974" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements>
+    <drools:decisionServices xmlns:drools="http://www.drools.org/kie/dmn/1.1">
+      <dmn11:decisionService id="_636f3230-7bd3-4f27-98a9-9cc4602970ee" name="DS with singleton value">
+        <dmn11:outputDecision href="#_66c4115a-6dd8-493e-9188-6274c21a16aa"/>
+      </dmn11:decisionService>
+      <dmn11:decisionService id="_9c14d880-c6a0-406c-b2f1-3c044861e9d3" name="DS with multiple output decisions">
+        <dmn11:outputDecision href="#_905172e8-3585-4384-a6d0-7c44c65877dc"/>
+        <dmn11:outputDecision href="#_d1453d96-ae7c-4af4-88de-56634854c1b1"/>
+      </dmn11:decisionService>
+    </drools:decisionServices>
+  </dmn11:extensionElements>
+  <dmn11:decision id="_66c4115a-6dd8-493e-9188-6274c21a16aa" name="a Value">
+    <dmn11:variable id="_b629f1dd-300c-4155-bd3e-bbcf6d2c721d" name="a Value" typeRef="feel:string"/>
+    <dmn11:literalExpression id="_4bd45d38-a624-4298-83f5-e45b976b91ec" typeRef="feel:string">
+      <dmn11:text>"a string Value"</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+  <dmn11:decision id="_905172e8-3585-4384-a6d0-7c44c65877dc" name="a String Value">
+    <dmn11:variable id="_09703d93-f97b-4022-affc-9e54c199caf8" name="a String Value" typeRef="feel:string"/>
+    <dmn11:literalExpression id="_28cf2a49-d000-46a2-b22e-f363a9f16cb0" typeRef="feel:string">
+      <dmn11:text>"a String Value"</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+  <dmn11:decision id="_d1453d96-ae7c-4af4-88de-56634854c1b1" name="a Number Value">
+    <dmn11:variable id="_80b964a1-d28d-4631-9492-32ed188334ce" name="a Number Value" typeRef="feel:number"/>
+    <dmn11:literalExpression id="_9668a2f3-56d5-43d9-8f82-de0f1a1404c6" typeRef="feel:number">
+      <dmn11:text>47</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+  <dmn11:decision id="_9fdce0a1-dce1-4231-ae15-929612c4bc70" name="eval DS with singleton value">
+    <dmn11:variable id="_e6706956-d8a4-4af4-83b3-d03132cea675" name="eval DS with singleton value"/>
+    <dmn11:knowledgeRequirement>
+      <dmn11:requiredKnowledge href="#_636f3230-7bd3-4f27-98a9-9cc4602970ee"/>
+    </dmn11:knowledgeRequirement>
+    <dmn11:literalExpression id="_69776607-6867-42d5-9a58-57617cfdd4e9">
+      <dmn11:text>DS with singleton value()</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+  <dmn11:decision id="_7b8a4743-5197-42e3-9cb3-1216f7dad820" name="eval DS with multiple output decisions">
+    <dmn11:variable id="_922bd110-3f23-471a-8986-e6ed34f859fa" name="eval DS with multiple output decisions"/>
+    <dmn11:knowledgeRequirement>
+      <dmn11:requiredKnowledge href="#_9c14d880-c6a0-406c-b2f1-3c044861e9d3"/>
+    </dmn11:knowledgeRequirement>
+    <dmn11:literalExpression id="_fc742b7a-bfb1-425d-877b-ac50816d3e99">
+      <dmn11:text>DS with multiple output decisions()</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+</dmn11:definitions>

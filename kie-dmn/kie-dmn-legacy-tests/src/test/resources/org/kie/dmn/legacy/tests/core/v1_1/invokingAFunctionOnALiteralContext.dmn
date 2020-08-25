@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_781968dd-64dc-4231-9cd0-2ce590881f2c" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.1.1" id="_781968dd-64dc-4231-9cd0-2ce590881f2c" name="Drawing 1" namespace="http://www.trisotech.com/dmn/definitions/_781968dd-64dc-4231-9cd0-2ce590881f2c" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements/>
+  <dmn11:decision id="_3a1ba370-604f-423d-9fdf-ef1b9913a79e" name="invoking a function on a literal context">
+    <dmn11:variable id="_f39c1d74-f9fc-4e37-9af4-153cb81f801b" name="invoking a function on a literal context"/>
+    <dmn11:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_ed65d496-3a3b-44aa-9d5c-3f6ecf40c14c" triso:unparsed="true">
+      <dmn11:text>{ add : function(x,y) x + y }.add(1,2)</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+</dmn11:definitions>

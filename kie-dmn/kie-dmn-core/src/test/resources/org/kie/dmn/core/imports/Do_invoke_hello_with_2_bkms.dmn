@@ -1,22 +1,46 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<dmn11:definitions xmlns="http://www.trisotech.com/definitions/_eedf6ecc-f113-4333-ace0-79b783e313e5" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:include1="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.0.201806182117" id="_eedf6ecc-f113-4333-ace0-79b783e313e5" name="Do invoke hello with 2 bkms" namespace="http://www.trisotech.com/definitions/_eedf6ecc-f113-4333-ace0-79b783e313e5" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
-  <dmn11:extensionElements/>
-  <dmn11:import xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:modelName="Saying hello 2 bkms" drools:name="myimport" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a" triso:fileId="eyJmIjp7InNrdSI6IjFhMDM4MzFjLWYyNzQtNDRmNC05OWZiLTQ4ZGU2YjEyOGZjYiIsIm5hbWUiOiJTYXlpbmcgaGVsbG8gMiBia21zIn19" triso:fileName="Matteo Mortari/Saying hello 2 bkms"/>
-  <dmn11:decision id="_c98ce03e-0c50-47f7-8484-2a5f5cfd782f" name="invocation of hello">
-    <dmn11:variable id="_c003d842-e9da-44df-89a0-e98c96411ca0" name="invocation of hello" typeRef="feel:string"/>
-    <dmn11:knowledgeRequirement>
-      <dmn11:requiredKnowledge href="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a#_d9be6ede-31af-4773-a0e2-e27515347fcd"/>
-    </dmn11:knowledgeRequirement>
-    <dmn11:invocation id="_644828fc-4fdf-449a-94eb-dcf34ebcb503">
-      <dmn11:literalExpression id="literal__644828fc-4fdf-449a-94eb-dcf34ebcb503">
-        <dmn11:text>myimport.Say hello</dmn11:text>
-      </dmn11:literalExpression>
-      <dmn11:binding>
-        <dmn11:parameter id="_a2f967e3-04c1-4ffa-8edc-42c6fabca6a0" name="name"/>
-        <dmn11:literalExpression id="_cfe28715-2e43-48ea-ac26-02e8900ac670">
-          <dmn11:text>"John"</dmn11:text>
-        </dmn11:literalExpression>
-      </dmn11:binding>
-    </dmn11:invocation>
-  </dmn11:decision>
-</dmn11:definitions>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/definitions/_eedf6ecc-f113-4333-ace0-79b783e313e5"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:include1="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.1.0.201806182117"
+                      id="_eedf6ecc-f113-4333-ace0-79b783e313e5"
+                      name="Do invoke hello with 2 bkms"
+                      namespace="http://www.trisotech.com/definitions/_eedf6ecc-f113-4333-ace0-79b783e313e5">
+   <semantic:extensionElements/>
+   <semantic:import xmlns:drools="http://www.drools.org/kie/dmn/1.1"
+                    xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                    drools:modelName="Saying hello 2 bkms"
+                    drools:name="myimport"
+                    importType="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                    namespace="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a"
+                    triso:fileId="eyJmIjp7InNrdSI6IjFhMDM4MzFjLWYyNzQtNDRmNC05OWZiLTQ4ZGU2YjEyOGZjYiIsIm5hbWUiOiJTYXlpbmcgaGVsbG8gMiBia21zIn19"
+                    triso:fileName="Matteo Mortari/Saying hello 2 bkms"
+                    name="myimport"/>
+   <semantic:decision id="_c98ce03e-0c50-47f7-8484-2a5f5cfd782f" name="invocation of hello">
+      <semantic:variable id="_c003d842-e9da-44df-89a0-e98c96411ca0"
+                         name="invocation of hello"
+                         typeRef="string"/>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a#_d9be6ede-31af-4773-a0e2-e27515347fcd"/>
+      </semantic:knowledgeRequirement>
+      <semantic:invocation id="_644828fc-4fdf-449a-94eb-dcf34ebcb503">
+         <semantic:literalExpression id="literal__644828fc-4fdf-449a-94eb-dcf34ebcb503">
+            <semantic:text>myimport.Say hello</semantic:text>
+         </semantic:literalExpression>
+         <semantic:binding>
+            <semantic:parameter id="_a2f967e3-04c1-4ffa-8edc-42c6fabca6a0" name="name"/>
+            <semantic:literalExpression id="_cfe28715-2e43-48ea-ac26-02e8900ac670">
+               <semantic:text>"John"</semantic:text>
+            </semantic:literalExpression>
+         </semantic:binding>
+      </semantic:invocation>
+   </semantic:decision>
+</semantic:definitions>

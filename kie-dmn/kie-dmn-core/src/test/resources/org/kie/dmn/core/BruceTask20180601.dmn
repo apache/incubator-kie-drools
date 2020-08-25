@@ -1,62 +1,83 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<dmn11:definitions xmlns="http://www.trisotech.com/definitions/_3802fcb2-5b93-4502-aff4-0f5c61244eab" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.8.2" id="_3802fcb2-5b93-4502-aff4-0f5c61244eab" name="Bruce Task" namespace="http://www.trisotech.com/definitions/_3802fcb2-5b93-4502-aff4-0f5c61244eab" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
-  <dmn11:extensionElements/>
-  <dmn11:itemDefinition isCollection="true" label="tbook" name="tbook">
-    <dmn11:itemComponent id="_7719b667-5132-4d9c-b778-7b809671a6cf" isCollection="false" name="Title">
-      <dmn11:typeRef>feel:string</dmn11:typeRef>
-    </dmn11:itemComponent>
-    <dmn11:itemComponent id="_322ea6f5-91f9-4055-b1ca-77b56f873775" isCollection="false" name="Price">
-      <dmn11:typeRef>feel:number</dmn11:typeRef>
-    </dmn11:itemComponent>
-    <dmn11:itemComponent id="_55c65733-8288-4117-994a-692fd93db8b5" isCollection="false" name="Quantity">
-      <dmn11:typeRef>feel:number</dmn11:typeRef>
-    </dmn11:itemComponent>
-  </dmn11:itemDefinition>
-  <dmn11:decision id="_84dddd45-1a3e-473b-86d3-9ca9195fd45a" name="Bruce">
-    <dmn11:variable id="_bc7d02ce-fbcd-4c3c-9ca6-d23ecacea0df" name="Bruce"/>
-    <dmn11:informationRequirement>
-      <dmn11:requiredInput href="#_f98673f3-6163-4950-a1f0-43f6f898d5fa"/>
-    </dmn11:informationRequirement>
-    <dmn11:context id="_9dbd64fe-83a1-44ec-a582-881af3bf554f">
-      <dmn11:contextEntry>
-        <dmn11:variable id="_d8ce694d-6537-409f-be64-5475c7654774" name="one"/>
-        <dmn11:literalExpression id="_46d49596-308d-487a-90a9-570900a37f07">
-          <dmn11:text>TheBook[Price = 5]</dmn11:text>
-        </dmn11:literalExpression>
-      </dmn11:contextEntry>
-      <dmn11:contextEntry>
-        <dmn11:variable id="_4d175204-4304-4c16-ba43-b8486f922ee7" name="two"/>
-        <dmn11:literalExpression id="_f9721d88-954a-4625-af39-71813bb6ef1e">
-          <dmn11:text>TheBook[Price != 5]</dmn11:text>
-        </dmn11:literalExpression>
-      </dmn11:contextEntry>
-      <dmn11:contextEntry>
-        <dmn11:variable id="_f222e9ef-0476-437f-97b8-c1c6272cc81f" name="three"/>
-        <dmn11:literalExpression id="_a710a60a-c0c8-41e7-8000-b20fe1fca92a">
-          <dmn11:text>TheBook[Price=5 and Quantity=10]</dmn11:text>
-        </dmn11:literalExpression>
-      </dmn11:contextEntry>
-      <dmn11:contextEntry>
-        <dmn11:variable id="_af180542-2d85-45d5-89c0-5534efbc31fd" name="Four"/>
-        <dmn11:literalExpression id="_94a15877-988a-4e97-b609-fc4099f085b2">
-          <dmn11:text>TheBook[ Price != 5 and Quantity != 10]</dmn11:text>
-        </dmn11:literalExpression>
-      </dmn11:contextEntry>
-      <dmn11:contextEntry>
-        <dmn11:variable id="_57070de5-2d81-4ee8-90cd-a67f0172b2ad" name="Five"/>
-        <dmn11:literalExpression id="_ad708b6a-5354-4438-8a78-77410e33e9ec">
-          <dmn11:text>TheBook[not(Price = 5) and not(Quantity = 10)]</dmn11:text>
-        </dmn11:literalExpression>
-      </dmn11:contextEntry>
-      <dmn11:contextEntry>
-        <dmn11:variable id="_3c3d8049-5562-4da3-a754-15001f41edb7" name="six"/>
-        <dmn11:literalExpression id="_341d2012-794e-4ba3-a48d-41bf715c803a">
-          <dmn11:text>TheBook[not(item.Price = 5) and not(item.Quantity = 10)]</dmn11:text>
-        </dmn11:literalExpression>
-      </dmn11:contextEntry>
-    </dmn11:context>
-  </dmn11:decision>
-  <dmn11:inputData id="_f98673f3-6163-4950-a1f0-43f6f898d5fa" name="TheBook">
-    <dmn11:variable id="_6fe6e965-fa26-4d4c-811e-c4e25a852617" name="TheBook" typeRef="tbook"/>
-  </dmn11:inputData>
-</dmn11:definitions>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/definitions/_3802fcb2-5b93-4502-aff4-0f5c61244eab"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.0.8.2"
+                      id="_3802fcb2-5b93-4502-aff4-0f5c61244eab"
+                      name="Bruce Task"
+                      namespace="http://www.trisotech.com/definitions/_3802fcb2-5b93-4502-aff4-0f5c61244eab">
+   <semantic:extensionElements/>
+   <semantic:itemDefinition isCollection="true" label="tbook" name="tbook">
+      <semantic:itemComponent id="_7719b667-5132-4d9c-b778-7b809671a6cf"
+                              isCollection="false"
+                              name="Title">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_322ea6f5-91f9-4055-b1ca-77b56f873775"
+                              isCollection="false"
+                              name="Price">
+         <semantic:typeRef>number</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_55c65733-8288-4117-994a-692fd93db8b5"
+                              isCollection="false"
+                              name="Quantity">
+         <semantic:typeRef>number</semantic:typeRef>
+      </semantic:itemComponent>
+   </semantic:itemDefinition>
+   <semantic:decision id="_84dddd45-1a3e-473b-86d3-9ca9195fd45a" name="Bruce">
+      <semantic:variable id="_bc7d02ce-fbcd-4c3c-9ca6-d23ecacea0df" name="Bruce"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_f98673f3-6163-4950-a1f0-43f6f898d5fa"/>
+      </semantic:informationRequirement>
+      <semantic:context id="_9dbd64fe-83a1-44ec-a582-881af3bf554f">
+         <semantic:contextEntry>
+            <semantic:variable id="_d8ce694d-6537-409f-be64-5475c7654774" name="one"/>
+            <semantic:literalExpression id="_46d49596-308d-487a-90a9-570900a37f07">
+               <semantic:text>TheBook[Price = 5]</semantic:text>
+            </semantic:literalExpression>
+         </semantic:contextEntry>
+         <semantic:contextEntry>
+            <semantic:variable id="_4d175204-4304-4c16-ba43-b8486f922ee7" name="two"/>
+            <semantic:literalExpression id="_f9721d88-954a-4625-af39-71813bb6ef1e">
+               <semantic:text>TheBook[Price != 5]</semantic:text>
+            </semantic:literalExpression>
+         </semantic:contextEntry>
+         <semantic:contextEntry>
+            <semantic:variable id="_f222e9ef-0476-437f-97b8-c1c6272cc81f" name="three"/>
+            <semantic:literalExpression id="_a710a60a-c0c8-41e7-8000-b20fe1fca92a">
+               <semantic:text>TheBook[Price=5 and Quantity=10]</semantic:text>
+            </semantic:literalExpression>
+         </semantic:contextEntry>
+         <semantic:contextEntry>
+            <semantic:variable id="_af180542-2d85-45d5-89c0-5534efbc31fd" name="Four"/>
+            <semantic:literalExpression id="_94a15877-988a-4e97-b609-fc4099f085b2">
+               <semantic:text>TheBook[ Price != 5 and Quantity != 10]</semantic:text>
+            </semantic:literalExpression>
+         </semantic:contextEntry>
+         <semantic:contextEntry>
+            <semantic:variable id="_57070de5-2d81-4ee8-90cd-a67f0172b2ad" name="Five"/>
+            <semantic:literalExpression id="_ad708b6a-5354-4438-8a78-77410e33e9ec">
+               <semantic:text>TheBook[not(Price = 5) and not(Quantity = 10)]</semantic:text>
+            </semantic:literalExpression>
+         </semantic:contextEntry>
+         <semantic:contextEntry>
+            <semantic:variable id="_3c3d8049-5562-4da3-a754-15001f41edb7" name="six"/>
+            <semantic:literalExpression id="_341d2012-794e-4ba3-a48d-41bf715c803a">
+               <semantic:text>TheBook[not(item.Price = 5) and not(item.Quantity = 10)]</semantic:text>
+            </semantic:literalExpression>
+         </semantic:contextEntry>
+      </semantic:context>
+   </semantic:decision>
+   <semantic:inputData id="_f98673f3-6163-4950-a1f0-43f6f898d5fa" name="TheBook">
+      <semantic:variable id="_6fe6e965-fa26-4d4c-811e-c4e25a852617"
+                         name="TheBook"
+                         typeRef="tbook"/>
+   </semantic:inputData>
+</semantic:definitions>

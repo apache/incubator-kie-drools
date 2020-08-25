@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_42bf043d-df86-48bd-9045-dfc08aa8ba0d" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.2.14" id="_42bf043d-df86-48bd-9045-dfc08aa8ba0d" name="typecheck in context result" namespace="http://www.trisotech.com/definitions/_42bf043d-df86-48bd-9045-dfc08aa8ba0d" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition label="tPerson" name="tPerson">
+    <semantic:itemComponent id="_b58e2d69-fc57-44e8-a609-25386624dbf6" name="name">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_56257838-300a-47c3-abad-726351a1d089" name="age">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:decision id="_25c0a299-1a85-48c1-92af-7b108eb3c6eb" name="an hardcoded person">
+    <semantic:variable id="_f1e803c0-ce55-419f-8336-e200f7c201ad" name="an hardcoded person" typeRef="tPerson"/>
+    <semantic:context id="_338802be-0268-4317-9100-8888a145620e">
+      <semantic:contextEntry>
+        <semantic:variable id="_093ec043-9f26-4bd9-a084-36c320d9e4da" name="temp"/>
+        <semantic:literalExpression id="_0653cf7d-a00d-47fc-b79c-0589082b8958">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_8fa7ed32-d040-484b-914e-931b0ff1fca8" triso:unparsed="true">
+          <semantic:text>{ name : "John Doe", age : temp + 47}</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+    </semantic:context>
+  </semantic:decision>
+  <semantic:decision id="_0ecb9b69-9936-4488-97a6-20f8dcb0ea5e" name="an hardcoded person with no name">
+    <semantic:variable id="_336f4f97-6c39-4e0b-b5fa-3963227f569c" name="an hardcoded person with no name" typeRef="tPerson"/>
+    <semantic:context id="_338802be-0268-4317-9100-8888a145620e">
+      <semantic:contextEntry>
+        <semantic:variable id="_093ec043-9f26-4bd9-a084-36c320d9e4da" name="temp"/>
+        <semantic:literalExpression id="_0653cf7d-a00d-47fc-b79c-0589082b8958">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_8fa7ed32-d040-484b-914e-931b0ff1fca8" triso:unparsed="true">
+          <semantic:text>{ age : temp + 47}</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+    </semantic:context>
+  </semantic:decision>
+</semantic:definitions>

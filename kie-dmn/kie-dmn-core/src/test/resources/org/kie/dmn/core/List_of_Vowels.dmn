@@ -1,24 +1,43 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_c5f007ce-4d45-4aac-8729-991d4abc7826" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.3.2" id="_c5f007ce-4d45-4aac-8729-991d4abc7826" name="List of Vowels" namespace="http://www.trisotech.com/dmn/definitions/_c5f007ce-4d45-4aac-8729-991d4abc7826" triso:logoChoice="Default">
-  <semantic:extensionElements>
-    <triso:dmnInputs>[]</triso:dmnInputs>
-  </semantic:extensionElements>
-  <semantic:itemDefinition isCollection="true" label="tListOfVowels" name="tListOfVowels">
-    <semantic:typeRef>feel:string</semantic:typeRef>
-    <semantic:allowedValues triso:constraintsType="enumeration">
-      <semantic:text>"a","e","i","o","u"</semantic:text>
-    </semantic:allowedValues>
-  </semantic:itemDefinition>
-  <semantic:decision id="_75ebc891-d0fd-47ad-8a30-046fbc5fe266" name="Decide Vowel a">
-    <semantic:variable id="_93094673-2394-405d-a1c0-4b6cf06d4dc5" name="Decide Vowel a" typeRef="tListOfVowels"/>
-    <semantic:literalExpression id="_332101e1-ac11-4dd6-92bd-a91d3308f6b0">
-      <semantic:text>"a"</semantic:text>
-    </semantic:literalExpression>
-  </semantic:decision>
-  <semantic:decision id="_b2205027-d06c-41b5-8419-e14b501e14a6" name="Decide BAD">
-    <semantic:variable id="_9c1747fa-5c4b-46ae-b42b-6389239b322f" name="Decide BAD" typeRef="tListOfVowels"/>
-    <semantic:literalExpression id="_332101e1-ac11-4dd6-92bd-a91d3308f6b0">
-      <semantic:text>"zzz"</semantic:text>
-    </semantic:literalExpression>
-  </semantic:decision>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/dmn/definitions/_c5f007ce-4d45-4aac-8729-991d4abc7826"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.0.3.2"
+                      id="_c5f007ce-4d45-4aac-8729-991d4abc7826"
+                      name="List of Vowels"
+                      namespace="http://www.trisotech.com/dmn/definitions/_c5f007ce-4d45-4aac-8729-991d4abc7826">
+   <semantic:extensionElements>
+      <triso:dmnInputs xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                       xmlns:trisofeed="http://trisotech.com/feed">[]</triso:dmnInputs>
+   </semantic:extensionElements>
+   <semantic:itemDefinition isCollection="true" label="tListOfVowels" name="tListOfVowels">
+      <semantic:typeRef>string</semantic:typeRef>
+      <semantic:allowedValues xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                              triso:constraintsType="enumeration">
+         <semantic:text>"a","e","i","o","u"</semantic:text>
+      </semantic:allowedValues>
+   </semantic:itemDefinition>
+   <semantic:decision id="_75ebc891-d0fd-47ad-8a30-046fbc5fe266" name="Decide Vowel a">
+      <semantic:variable id="_93094673-2394-405d-a1c0-4b6cf06d4dc5"
+                         name="Decide Vowel a"
+                         typeRef="tListOfVowels"/>
+      <semantic:literalExpression id="_332101e1-ac11-4dd6-92bd-a91d3308f6b0">
+         <semantic:text>"a"</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:decision id="_b2205027-d06c-41b5-8419-e14b501e14a6" name="Decide BAD">
+      <semantic:variable id="_9c1747fa-5c4b-46ae-b42b-6389239b322f"
+                         name="Decide BAD"
+                         typeRef="tListOfVowels"/>
+      <semantic:literalExpression id="_332101e1-ac11-4dd6-92bd-a91d3308f6b0">
+         <semantic:text>"zzz"</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
 </semantic:definitions>

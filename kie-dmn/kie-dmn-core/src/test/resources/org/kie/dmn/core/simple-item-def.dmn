@@ -14,25 +14,29 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<definitions id="_simple-item-def" name="simple-item-def"
-	namespace="https://github.com/kiegroup/kie-dmn/itemdef"
-	xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-	xmlns:kie="https://github.com/kiegroup/kie-dmn/itemdef"
-	xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
-	<itemDefinition name="tSalary" id="_tSalary">
-		<typeRef>feel:number</typeRef>
-	</itemDefinition>
-	<decision name="Yearly Salary" id="d_YearlySalary">
-		<variable name="Yearly Salary" typeRef="kie:tSalary"/>
-		<informationRequirement>
-			<requiredInput href="#i_MonthlySalary"/>
-		</informationRequirement>
-		<literalExpression>
-			<text>12 * Monthly Salary</text>
-		</literalExpression>
-	</decision>
-	<inputData name="Monthly Salary" id="i_MonthlySalary">
-		<variable name="Monthly Salary" typeRef="kie:tSalary"/>
-	</inputData>
-</definitions>
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn/itemdef"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:kie="https://github.com/kiegroup/kie-dmn/itemdef"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      id="_simple-item-def"
+                      name="simple-item-def"
+                      namespace="https://github.com/kiegroup/kie-dmn/itemdef">
+   <semantic:itemDefinition name="tSalary" id="_tSalary">
+      <semantic:typeRef>number</semantic:typeRef>
+   </semantic:itemDefinition>
+   <semantic:decision name="Yearly Salary" id="d_YearlySalary">
+      <semantic:variable name="Yearly Salary" typeRef="tSalary"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#i_MonthlySalary"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression>
+         <semantic:text>12 * Monthly Salary</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:inputData name="Monthly Salary" id="i_MonthlySalary">
+      <semantic:variable name="Monthly Salary" typeRef="tSalary"/>
+   </semantic:inputData>
+</semantic:definitions>

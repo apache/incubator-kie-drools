@@ -1,52 +1,76 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_c5889555-7ae5-4a67-a872-3a9492caf6e7" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.2.14" id="_c5889555-7ae5-4a67-a872-3a9492caf6e7" name="will be null if negative" namespace="http://www.trisotech.com/definitions/_c5889555-7ae5-4a67-a872-3a9492caf6e7" triso:logoChoice="Default">
-  <semantic:extensionElements/>
-  <semantic:itemDefinition label="tTableResult" name="tTableResult">
-    <semantic:itemComponent id="_e312a9bf-4339-4548-9739-7db4b8fe3b1b" name="s1">
-      <semantic:typeRef>feel:string</semantic:typeRef>
-    </semantic:itemComponent>
-    <semantic:itemComponent id="_e14b148b-77bd-46aa-9ebc-4f27e5f76003" name="s2">
-      <semantic:typeRef>feel:string</semantic:typeRef>
-    </semantic:itemComponent>
-  </semantic:itemDefinition>
-  <semantic:inputData id="_c68abc5f-aff5-43e2-9b6f-65f20ebff8a7" name="a number">
-    <semantic:variable id="_3587ef97-0d74-4f6f-8378-2334929c0a1b" name="a number" typeRef="feel:number"/>
-  </semantic:inputData>
-  <semantic:decision id="_983dcb6d-f481-48cf-8d38-a067eceaaca8" name="will be null if negative">
-    <semantic:variable id="_0a307d7f-9a59-4e4f-8fdd-15f5d07ab0c9" name="will be null if negative" typeRef="tTableResult"/>
-    <semantic:informationRequirement>
-      <semantic:requiredInput href="#_c68abc5f-aff5-43e2-9b6f-65f20ebff8a7"/>
-    </semantic:informationRequirement>
-    <semantic:decisionTable hitPolicy="UNIQUE" id="_fd079f60-aee0-4af4-9aa2-3900258197a8" outputLabel="will be null if negative">
-      <semantic:input id="_3d84d41c-af3b-4188-9714-243d234d14b5">
-        <semantic:inputExpression typeRef="feel:number">
-          <semantic:text>a number</semantic:text>
-        </semantic:inputExpression>
-      </semantic:input>
-      <semantic:output id="_cda95d61-ee9f-4ac2-a10b-ece025103978" name="s1" typeRef="feel:string"/>
-      <semantic:output id="_5e5cdc5a-7257-4918-ab8b-150556fd4eb9" name="s2" typeRef="feel:string"/>
-      <semantic:rule id="_6f29cf4f-b635-479f-a558-0b8fa0b831ac">
-        <semantic:inputEntry id="_26bb2f59-d44e-490e-ba3e-5301f3fc586c">
-          <semantic:text>&gt;=0</semantic:text>
-        </semantic:inputEntry>
-        <semantic:outputEntry id="_c00adffc-7cec-4948-b90c-bf3e34896d4b">
-          <semantic:text>"good is positive"</semantic:text>
-        </semantic:outputEntry>
-        <semantic:outputEntry id="_2f31fc74-a58e-474a-a85f-f2c2a9528128">
-          <semantic:text>"positive"</semantic:text>
-        </semantic:outputEntry>
-      </semantic:rule>
-      <semantic:rule id="_789e6b30-4c8c-46c4-9bca-73ed66db1cf7">
-        <semantic:inputEntry id="_59a17e7c-02a1-4317-b10b-cb9a570fcbf6">
-          <semantic:text>&lt;0</semantic:text>
-        </semantic:inputEntry>
-        <semantic:outputEntry id="_8db28b9a-7025-4fd2-a163-c6168359862b">
-          <semantic:text>null</semantic:text>
-        </semantic:outputEntry>
-        <semantic:outputEntry id="_f0195dd2-2f0c-428f-8f57-0910fad9527b">
-          <semantic:text>"negative"</semantic:text>
-        </semantic:outputEntry>
-      </semantic:rule>
-    </semantic:decisionTable>
-  </semantic:decision>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/definitions/_c5889555-7ae5-4a67-a872-3a9492caf6e7"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="5.2.14"
+                      id="_c5889555-7ae5-4a67-a872-3a9492caf6e7"
+                      name="will be null if negative"
+                      namespace="http://www.trisotech.com/definitions/_c5889555-7ae5-4a67-a872-3a9492caf6e7">
+   <semantic:extensionElements/>
+   <semantic:itemDefinition label="tTableResult" name="tTableResult">
+      <semantic:itemComponent id="_e312a9bf-4339-4548-9739-7db4b8fe3b1b" name="s1">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_e14b148b-77bd-46aa-9ebc-4f27e5f76003" name="s2">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+   </semantic:itemDefinition>
+   <semantic:inputData id="_c68abc5f-aff5-43e2-9b6f-65f20ebff8a7" name="a number">
+      <semantic:variable id="_3587ef97-0d74-4f6f-8378-2334929c0a1b"
+                         name="a number"
+                         typeRef="number"/>
+   </semantic:inputData>
+   <semantic:decision id="_983dcb6d-f481-48cf-8d38-a067eceaaca8"
+                      name="will be null if negative">
+      <semantic:variable id="_0a307d7f-9a59-4e4f-8fdd-15f5d07ab0c9"
+                         name="will be null if negative"
+                         typeRef="tTableResult"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_c68abc5f-aff5-43e2-9b6f-65f20ebff8a7"/>
+      </semantic:informationRequirement>
+      <semantic:decisionTable hitPolicy="UNIQUE"
+                              id="_fd079f60-aee0-4af4-9aa2-3900258197a8"
+                              outputLabel="will be null if negative">
+         <semantic:input id="_3d84d41c-af3b-4188-9714-243d234d14b5">
+            <semantic:inputExpression typeRef="number">
+               <semantic:text>a number</semantic:text>
+            </semantic:inputExpression>
+         </semantic:input>
+         <semantic:output id="_cda95d61-ee9f-4ac2-a10b-ece025103978"
+                          name="s1"
+                          typeRef="string"/>
+         <semantic:output id="_5e5cdc5a-7257-4918-ab8b-150556fd4eb9"
+                          name="s2"
+                          typeRef="string"/>
+         <semantic:rule id="_6f29cf4f-b635-479f-a558-0b8fa0b831ac">
+            <semantic:inputEntry id="_26bb2f59-d44e-490e-ba3e-5301f3fc586c">
+               <semantic:text>&gt;=0</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_c00adffc-7cec-4948-b90c-bf3e34896d4b">
+               <semantic:text>"good is positive"</semantic:text>
+            </semantic:outputEntry>
+            <semantic:outputEntry id="_2f31fc74-a58e-474a-a85f-f2c2a9528128">
+               <semantic:text>"positive"</semantic:text>
+            </semantic:outputEntry>
+         </semantic:rule>
+         <semantic:rule id="_789e6b30-4c8c-46c4-9bca-73ed66db1cf7">
+            <semantic:inputEntry id="_59a17e7c-02a1-4317-b10b-cb9a570fcbf6">
+               <semantic:text>&lt;0</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_8db28b9a-7025-4fd2-a163-c6168359862b">
+               <semantic:text>null</semantic:text>
+            </semantic:outputEntry>
+            <semantic:outputEntry id="_f0195dd2-2f0c-428f-8f57-0910fad9527b">
+               <semantic:text>"negative"</semantic:text>
+            </semantic:outputEntry>
+         </semantic:rule>
+      </semantic:decisionTable>
+   </semantic:decision>
 </semantic:definitions>

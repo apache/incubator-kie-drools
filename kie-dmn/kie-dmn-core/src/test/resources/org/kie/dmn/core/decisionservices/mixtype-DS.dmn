@@ -1,112 +1,139 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_c9885563-aa54-4c7b-ae8a-738cfd29b544" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.1.1" id="_c9885563-aa54-4c7b-ae8a-738cfd29b544" name="mixtype DS" namespace="http://www.trisotech.com/dmn/definitions/_c9885563-aa54-4c7b-ae8a-738cfd29b544" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
-  <dmn11:extensionElements>
-    <drools:decisionServices xmlns:drools="http://www.drools.org/kie/dmn/1.1">
-      <dmn11:decisionService id="_b15cd56a-317a-4433-9deb-7a7a4c8562ee" name="DS all">
-        <dmn11:outputDecision href="#_3f8c7393-a4d9-49a0-9f48-f4c13e2bdfa5"/>
-        <dmn11:outputDecision href="#_e2a4ff1f-9211-4034-a897-36aac0fa76a1"/>
-        <dmn11:outputDecision href="#_fd22ac48-9158-46ea-a830-1a76f6142e53"/>
-        <dmn11:encapsulatedDecision href="#_e82e828f-192b-44d8-93fa-f4523df59110"/>
-        <dmn11:inputData href="#_831c0982-ad91-4064-a708-49deaf3567af"/>
-        <dmn11:inputData href="#_1dbd29b9-bb42-403d-9b74-8f44247d2427"/>
-      </dmn11:decisionService>
-      <dmn11:decisionService id="_5b969b04-4004-463a-86f0-99c0da87d6f9" name="DS greet adult">
-        <dmn11:outputDecision href="#_3f8c7393-a4d9-49a0-9f48-f4c13e2bdfa5"/>
-        <dmn11:outputDecision href="#_e2a4ff1f-9211-4034-a897-36aac0fa76a1"/>
-        <dmn11:inputDecision href="#_fd22ac48-9158-46ea-a830-1a76f6142e53"/>
-        <dmn11:inputData href="#_831c0982-ad91-4064-a708-49deaf3567af"/>
-      </dmn11:decisionService>
-      <dmn11:decisionService id="_002f15d5-fab9-406a-a109-6f3f58169854" name="DS encapsulate">
-        <dmn11:outputDecision href="#_3f8c7393-a4d9-49a0-9f48-f4c13e2bdfa5"/>
-        <dmn11:outputDecision href="#_e2a4ff1f-9211-4034-a897-36aac0fa76a1"/>
-        <dmn11:encapsulatedDecision href="#_fd22ac48-9158-46ea-a830-1a76f6142e53"/>
-        <dmn11:encapsulatedDecision href="#_e82e828f-192b-44d8-93fa-f4523df59110"/>
-        <dmn11:inputData href="#_831c0982-ad91-4064-a708-49deaf3567af"/>
-        <dmn11:inputData href="#_1dbd29b9-bb42-403d-9b74-8f44247d2427"/>
-      </dmn11:decisionService>
-    </drools:decisionServices>
-  </dmn11:extensionElements>
-  <dmn11:inputData id="_831c0982-ad91-4064-a708-49deaf3567af" name="Person name">
-    <dmn11:variable id="_40217d0b-b6c3-426d-9d0f-f7b6ab161ee7" name="Person name" typeRef="feel:string"/>
-  </dmn11:inputData>
-  <dmn11:inputData id="_1dbd29b9-bb42-403d-9b74-8f44247d2427" name="Person year of birth">
-    <dmn11:variable id="_eaaa5fb1-7937-4dd9-9462-4d201ddeb9bc" name="Person year of birth" typeRef="feel:number"/>
-  </dmn11:inputData>
-  <dmn11:decision id="_3f8c7393-a4d9-49a0-9f48-f4c13e2bdfa5" name="Greet the Person">
-    <dmn11:variable id="_a698f42e-9eab-438f-b652-387e63b4fdb6" name="Greet the Person" typeRef="feel:string"/>
-    <dmn11:informationRequirement>
-      <dmn11:requiredInput href="#_831c0982-ad91-4064-a708-49deaf3567af"/>
-    </dmn11:informationRequirement>
-    <dmn11:literalExpression id="_44d859a0-9954-4b98-8336-195835d42348" typeRef="feel:string">
-      <dmn11:text>"Hello, "+Person name</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-  <dmn11:decision id="_fd22ac48-9158-46ea-a830-1a76f6142e53" name="Person age">
-    <dmn11:variable id="_217b293e-55cf-4223-9b41-50cccd9fa58b" name="Person age" typeRef="feel:number"/>
-    <dmn11:informationRequirement>
-      <dmn11:requiredInput href="#_1dbd29b9-bb42-403d-9b74-8f44247d2427"/>
-    </dmn11:informationRequirement>
-    <dmn11:informationRequirement>
-      <dmn11:requiredDecision href="#_e82e828f-192b-44d8-93fa-f4523df59110"/>
-    </dmn11:informationRequirement>
-    <dmn11:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_42173054-60d8-4be6-9a5d-35463e41cf55" triso:unparsed="true" typeRef="feel:number">
-      <dmn11:text>hardcoded now.year - Person year of birth</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-  <dmn11:decision id="_e2a4ff1f-9211-4034-a897-36aac0fa76a1" name="is Person an adult">
-    <dmn11:variable id="_e62ebc60-b718-4295-b1f0-0e2aa99d282e" name="is Person an adult" typeRef="feel:boolean"/>
-    <dmn11:informationRequirement>
-      <dmn11:requiredDecision href="#_fd22ac48-9158-46ea-a830-1a76f6142e53"/>
-    </dmn11:informationRequirement>
-    <dmn11:literalExpression id="_d677eebf-60e7-4951-be97-cd3e3f82f8eb" typeRef="feel:boolean">
-      <dmn11:text>Person age &gt;= 18</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-  <dmn11:decision id="_3ef54a28-3363-4fd7-930f-f7809be74dbb" name="eval DS all">
-    <dmn11:variable id="_50b38477-cef4-451b-8c12-5988c71851de" name="eval DS all"/>
-    <dmn11:knowledgeRequirement>
-      <dmn11:requiredKnowledge href="#_b15cd56a-317a-4433-9deb-7a7a4c8562ee"/>
-    </dmn11:knowledgeRequirement>
-    <dmn11:literalExpression id="_17864874-9eda-42f3-b591-60f8703515e4">
-      <dmn11:text>DS all("ds all", 2000)</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-  <dmn11:decision id="_e3846579-231e-4cbe-9a14-d03e71cbffaf" name="eval DS encapsulate">
-    <dmn11:variable id="_e5621fff-a05e-4090-95b2-6fe68402fb7d" name="eval DS encapsulate"/>
-    <dmn11:knowledgeRequirement>
-      <dmn11:requiredKnowledge href="#_002f15d5-fab9-406a-a109-6f3f58169854"/>
-    </dmn11:knowledgeRequirement>
-    <dmn11:literalExpression id="_ad41e19d-6c70-4af6-86a5-3ffae45ff247">
-      <dmn11:text>DS encapsulate("DS encapsulate", 1998)</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-  <dmn11:decision id="_134dfd6a-c35b-4976-aad8-f8cc9afc9e40" name="eval DS greet adult">
-    <dmn11:variable id="_aeeca65c-a25b-47b8-9b32-a74d904e98ed" name="eval DS greet adult"/>
-    <dmn11:knowledgeRequirement>
-      <dmn11:requiredKnowledge href="#_5b969b04-4004-463a-86f0-99c0da87d6f9"/>
-    </dmn11:knowledgeRequirement>
-    <dmn11:invocation id="_a66e98bc-a1d8-46fd-b72f-0425622ac92d">
-      <dmn11:literalExpression id="literal__a66e98bc-a1d8-46fd-b72f-0425622ac92d">
-        <dmn11:text>DS greet adult</dmn11:text>
-      </dmn11:literalExpression>
-      <dmn11:binding>
-        <dmn11:parameter id="_a59ba6a5-4bcd-475d-bd3a-a932af5f50e4" name="Person name"/>
-        <dmn11:literalExpression id="_c2036bd8-edcf-4772-bdd6-c61d6e62238a">
-          <dmn11:text>"DS greet adult"</dmn11:text>
-        </dmn11:literalExpression>
-      </dmn11:binding>
-      <dmn11:binding>
-        <dmn11:parameter id="_572b4391-6ab8-467e-adc6-c1c47a0036e9" name="Person age"/>
-        <dmn11:literalExpression id="_d4bf6423-1b03-45d9-8e41-48634ab0db72">
-          <dmn11:text>1988</dmn11:text>
-        </dmn11:literalExpression>
-      </dmn11:binding>
-    </dmn11:invocation>
-  </dmn11:decision>
-  <dmn11:decision id="_e82e828f-192b-44d8-93fa-f4523df59110" name="hardcoded now">
-    <dmn11:variable id="_83bf0a19-f70a-4029-b65b-0a9ca7e38080" name="hardcoded now"/>
-    <dmn11:literalExpression id="_f9426781-d906-4426-a8f4-d3ed38b1ff84">
-      <dmn11:text>date and time("2018-07-16T00:00:00")</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-</dmn11:definitions>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/dmn/definitions/_c9885563-aa54-4c7b-ae8a-738cfd29b544"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.1.1.1"
+                      id="_c9885563-aa54-4c7b-ae8a-738cfd29b544"
+                      name="mixtype DS"
+                      namespace="http://www.trisotech.com/dmn/definitions/_c9885563-aa54-4c7b-ae8a-738cfd29b544">
+   <semantic:extensionElements>
+  </semantic:extensionElements>
+   <semantic:inputData id="_831c0982-ad91-4064-a708-49deaf3567af" name="Person name">
+      <semantic:variable id="_40217d0b-b6c3-426d-9d0f-f7b6ab161ee7"
+                         name="Person name"
+                         typeRef="string"/>
+   </semantic:inputData>
+   <semantic:inputData id="_1dbd29b9-bb42-403d-9b74-8f44247d2427" name="Person year of birth">
+      <semantic:variable id="_eaaa5fb1-7937-4dd9-9462-4d201ddeb9bc"
+                         name="Person year of birth"
+                         typeRef="number"/>
+   </semantic:inputData>
+   <semantic:decision id="_3f8c7393-a4d9-49a0-9f48-f4c13e2bdfa5" name="Greet the Person">
+      <semantic:variable id="_a698f42e-9eab-438f-b652-387e63b4fdb6"
+                         name="Greet the Person"
+                         typeRef="string"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_831c0982-ad91-4064-a708-49deaf3567af"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression id="_44d859a0-9954-4b98-8336-195835d42348" typeRef="string">
+         <semantic:text>"Hello, "+Person name</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:decision id="_fd22ac48-9158-46ea-a830-1a76f6142e53" name="Person age">
+      <semantic:variable id="_217b293e-55cf-4223-9b41-50cccd9fa58b"
+                         name="Person age"
+                         typeRef="number"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_1dbd29b9-bb42-403d-9b74-8f44247d2427"/>
+      </semantic:informationRequirement>
+      <semantic:informationRequirement>
+         <semantic:requiredDecision href="#_e82e828f-192b-44d8-93fa-f4523df59110"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                                  id="_42173054-60d8-4be6-9a5d-35463e41cf55"
+                                  triso:unparsed="true"
+                                  typeRef="number">
+         <semantic:text>hardcoded now.year - Person year of birth</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:decision id="_e2a4ff1f-9211-4034-a897-36aac0fa76a1" name="is Person an adult">
+      <semantic:variable id="_e62ebc60-b718-4295-b1f0-0e2aa99d282e"
+                         name="is Person an adult"
+                         typeRef="boolean"/>
+      <semantic:informationRequirement>
+         <semantic:requiredDecision href="#_fd22ac48-9158-46ea-a830-1a76f6142e53"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression id="_d677eebf-60e7-4951-be97-cd3e3f82f8eb" typeRef="boolean">
+         <semantic:text>Person age &gt;= 18</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:decision id="_3ef54a28-3363-4fd7-930f-f7809be74dbb" name="eval DS all">
+      <semantic:variable id="_50b38477-cef4-451b-8c12-5988c71851de" name="eval DS all"/>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="#_b15cd56a-317a-4433-9deb-7a7a4c8562ee"/>
+      </semantic:knowledgeRequirement>
+      <semantic:literalExpression id="_17864874-9eda-42f3-b591-60f8703515e4">
+         <semantic:text>DS all("ds all", 2000)</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:decision id="_e3846579-231e-4cbe-9a14-d03e71cbffaf" name="eval DS encapsulate">
+      <semantic:variable id="_e5621fff-a05e-4090-95b2-6fe68402fb7d" name="eval DS encapsulate"/>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="#_002f15d5-fab9-406a-a109-6f3f58169854"/>
+      </semantic:knowledgeRequirement>
+      <semantic:literalExpression id="_ad41e19d-6c70-4af6-86a5-3ffae45ff247">
+         <semantic:text>DS encapsulate("DS encapsulate", 1998)</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:decision id="_134dfd6a-c35b-4976-aad8-f8cc9afc9e40" name="eval DS greet adult">
+      <semantic:variable id="_aeeca65c-a25b-47b8-9b32-a74d904e98ed" name="eval DS greet adult"/>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="#_5b969b04-4004-463a-86f0-99c0da87d6f9"/>
+      </semantic:knowledgeRequirement>
+      <semantic:invocation id="_a66e98bc-a1d8-46fd-b72f-0425622ac92d">
+         <semantic:literalExpression id="literal__a66e98bc-a1d8-46fd-b72f-0425622ac92d">
+            <semantic:text>DS greet adult</semantic:text>
+         </semantic:literalExpression>
+         <semantic:binding>
+            <semantic:parameter id="_a59ba6a5-4bcd-475d-bd3a-a932af5f50e4" name="Person name"/>
+            <semantic:literalExpression id="_c2036bd8-edcf-4772-bdd6-c61d6e62238a">
+               <semantic:text>"DS greet adult"</semantic:text>
+            </semantic:literalExpression>
+         </semantic:binding>
+         <semantic:binding>
+            <semantic:parameter id="_572b4391-6ab8-467e-adc6-c1c47a0036e9" name="Person age"/>
+            <semantic:literalExpression id="_d4bf6423-1b03-45d9-8e41-48634ab0db72">
+               <semantic:text>1988</semantic:text>
+            </semantic:literalExpression>
+         </semantic:binding>
+      </semantic:invocation>
+   </semantic:decision>
+   <semantic:decision id="_e82e828f-192b-44d8-93fa-f4523df59110" name="hardcoded now">
+      <semantic:variable id="_83bf0a19-f70a-4029-b65b-0a9ca7e38080" name="hardcoded now"/>
+      <semantic:literalExpression id="_f9426781-d906-4426-a8f4-d3ed38b1ff84">
+         <semantic:text>date and time("2018-07-16T00:00:00")</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:decisionService id="_b15cd56a-317a-4433-9deb-7a7a4c8562ee" name="DS all">
+      <semantic:variable name="DS all" typeRef="Any"/>
+      <semantic:outputDecision href="#_3f8c7393-a4d9-49a0-9f48-f4c13e2bdfa5"/>
+      <semantic:outputDecision href="#_e2a4ff1f-9211-4034-a897-36aac0fa76a1"/>
+      <semantic:outputDecision href="#_fd22ac48-9158-46ea-a830-1a76f6142e53"/>
+      <semantic:encapsulatedDecision href="#_e82e828f-192b-44d8-93fa-f4523df59110"/>
+      <semantic:inputData href="#_831c0982-ad91-4064-a708-49deaf3567af"/>
+      <semantic:inputData href="#_1dbd29b9-bb42-403d-9b74-8f44247d2427"/>
+   </semantic:decisionService>
+   <semantic:decisionService id="_5b969b04-4004-463a-86f0-99c0da87d6f9" name="DS greet adult">
+      <semantic:variable name="DS greet adult" typeRef="Any"/>
+      <semantic:outputDecision href="#_3f8c7393-a4d9-49a0-9f48-f4c13e2bdfa5"/>
+      <semantic:outputDecision href="#_e2a4ff1f-9211-4034-a897-36aac0fa76a1"/>
+      <semantic:inputDecision href="#_fd22ac48-9158-46ea-a830-1a76f6142e53"/>
+      <semantic:inputData href="#_831c0982-ad91-4064-a708-49deaf3567af"/>
+   </semantic:decisionService>
+   <semantic:decisionService id="_002f15d5-fab9-406a-a109-6f3f58169854" name="DS encapsulate">
+      <semantic:variable name="DS encapsulate" typeRef="Any"/>
+      <semantic:outputDecision href="#_3f8c7393-a4d9-49a0-9f48-f4c13e2bdfa5"/>
+      <semantic:outputDecision href="#_e2a4ff1f-9211-4034-a897-36aac0fa76a1"/>
+      <semantic:encapsulatedDecision href="#_fd22ac48-9158-46ea-a830-1a76f6142e53"/>
+      <semantic:encapsulatedDecision href="#_e82e828f-192b-44d8-93fa-f4523df59110"/>
+      <semantic:inputData href="#_831c0982-ad91-4064-a708-49deaf3567af"/>
+      <semantic:inputData href="#_1dbd29b9-bb42-403d-9b74-8f44247d2427"/>
+   </semantic:decisionService>
+</semantic:definitions>

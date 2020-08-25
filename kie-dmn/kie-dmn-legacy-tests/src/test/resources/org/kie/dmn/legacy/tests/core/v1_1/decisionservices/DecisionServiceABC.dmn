@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_2443d3f5-f178-47c6-a0c9-b1fd1c933f60" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.6.201808301036" id="_2443d3f5-f178-47c6-a0c9-b1fd1c933f60" name="Drawing 1" namespace="http://www.trisotech.com/dmn/definitions/_2443d3f5-f178-47c6-a0c9-b1fd1c933f60" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements>
+    <drools:decisionServices xmlns:drools="http://www.drools.org/kie/dmn/1.1">
+      <dmn11:decisionService id="_f8555b12-15f7-45f2-803c-fb621f44088d" name="Decision Service ABC">
+        <dmn11:outputDecision href="#_148cc263-b911-4aa5-a59b-b4239b93c03d"/>
+      </dmn11:decisionService>
+    </drools:decisionServices>
+  </dmn11:extensionElements>
+  <dmn11:decision id="_8786de4a-b9d3-42b9-ba55-3c23610a3017" name="Invoking Decision">
+    <dmn11:variable id="_8a0e33e2-7c18-4f9f-8255-6add99439a75" name="Invoking Decision" typeRef="feel:string"/>
+    <dmn11:knowledgeRequirement>
+      <dmn11:requiredKnowledge href="#_f8555b12-15f7-45f2-803c-fb621f44088d"/>
+    </dmn11:knowledgeRequirement>
+    <dmn11:literalExpression id="_3fa75474-1e59-4590-b4c4-32e6133d1f8a" typeRef="feel:string">
+      <dmn11:text>Decision Service ABC()</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+  <dmn11:decision id="_148cc263-b911-4aa5-a59b-b4239b93c03d" name="ABC">
+    <dmn11:variable id="_90e44665-56a9-46f6-9385-9b745ac60e3f" name="ABC" typeRef="feel:string"/>
+    <dmn11:literalExpression id="_8fcfe696-11b2-44a0-b55c-ffb60ea9c88b" typeRef="feel:string">
+      <dmn11:text>"abc"</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+</dmn11:definitions>

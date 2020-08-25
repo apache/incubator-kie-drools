@@ -1,401 +1,468 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_c2d86765-c3c7-4e1d-b1fa-b830fa5bc529" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.2" id="_c2d86765-c3c7-4e1d-b1fa-b830fa5bc529" name="Dynamic composition" namespace="http://www.trisotech.com/definitions/_c2d86765-c3c7-4e1d-b1fa-b830fa5bc529" triso:logoChoice="Default">
-    <semantic:extensionElements>
-        <tc:testCases>
-            <tc:testCase id="_2805a8df-deab-4b28-89fc-63d77eea87ca" name="Test case 1">
-                <tc:inputNode name="Order">
-                    <tc:component name="number">
-                        <tc:value xsi:type="xsd:double">1</tc:value>
-                    </tc:component>
-                    <tc:component name="customer name">
-                        <tc:value xsi:type="xsd:string">Bob</tc:value>
-                    </tc:component>
-                    <tc:component name="address">
-                        <tc:component name="street address">
-                            <tc:value xsi:type="xsd:string">100 broadway</tc:value>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/definitions/_c2d86765-c3c7-4e1d-b1fa-b830fa5bc529"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.0.2"
+                      id="_c2d86765-c3c7-4e1d-b1fa-b830fa5bc529"
+                      name="Dynamic composition"
+                      namespace="http://www.trisotech.com/definitions/_c2d86765-c3c7-4e1d-b1fa-b830fa5bc529">
+   <semantic:extensionElements>
+      <tc:testCases xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                    xmlns:trisofeed="http://trisotech.com/feed">
+         <tc:testCase id="_2805a8df-deab-4b28-89fc-63d77eea87ca" name="Test case 1">
+            <tc:inputNode name="Order">
+               <tc:component name="number">
+                  <tc:value xsi:type="xsd:double">1</tc:value>
+               </tc:component>
+               <tc:component name="customer name">
+                  <tc:value xsi:type="xsd:string">Bob</tc:value>
+               </tc:component>
+               <tc:component name="address">
+                  <tc:component name="street address">
+                     <tc:value xsi:type="xsd:string">100 broadway</tc:value>
+                  </tc:component>
+                  <tc:component name="state">
+                     <tc:value xsi:type="xsd:string">NY</tc:value>
+                  </tc:component>
+                  <tc:component name="postal code">
+                     <tc:value xsi:type="xsd:string">12345</tc:value>
+                  </tc:component>
+               </tc:component>
+               <tc:component name="items">
+                  <tc:list>
+                     <tc:item>
+                        <tc:component name="product code">
+                           <tc:value xsi:type="xsd:string">X1</tc:value>
                         </tc:component>
-                        <tc:component name="state">
-                            <tc:value xsi:type="xsd:string">NY</tc:value>
+                        <tc:component name="product name">
+                           <tc:value xsi:type="xsd:string">Oranges</tc:value>
                         </tc:component>
-                        <tc:component name="postal code">
-                            <tc:value xsi:type="xsd:string">12345</tc:value>
+                        <tc:component name="category">
+                           <tc:value xsi:type="xsd:string">Food</tc:value>
                         </tc:component>
-                    </tc:component>
-                    <tc:component name="items">
-                        <tc:list>
-                            <tc:item>
-                                <tc:component name="product code">
-                                    <tc:value xsi:type="xsd:string">X1</tc:value>
-                                </tc:component>
-                                <tc:component name="product name">
-                                    <tc:value xsi:type="xsd:string">Oranges</tc:value>
-                                </tc:component>
-                                <tc:component name="category">
-                                    <tc:value xsi:type="xsd:string">Food</tc:value>
-                                </tc:component>
-                                <tc:component name="quantity">
-                                    <tc:value xsi:type="xsd:double">10</tc:value>
-                                </tc:component>
-                                <tc:component name="price">
-                                    <tc:value xsi:type="xsd:double">0.5</tc:value>
-                                </tc:component>
-                                <tc:component name="total amount">
-                                    <tc:value xsi:type="xsd:double">5</tc:value>
-                                </tc:component>
-                            </tc:item>
-                            <tc:item>
-                                <tc:component name="product code">
-                                    <tc:value xsi:type="xsd:string">X2</tc:value>
-                                </tc:component>
-                                <tc:component name="product name">
-                                    <tc:value xsi:type="xsd:string">TV</tc:value>
-                                </tc:component>
-                                <tc:component name="category">
-                                    <tc:value xsi:type="xsd:string">Electronic</tc:value>
-                                </tc:component>
-                                <tc:component name="quantity">
-                                    <tc:value xsi:type="xsd:double">1</tc:value>
-                                </tc:component>
-                                <tc:component name="price">
-                                    <tc:value xsi:type="xsd:double">2000</tc:value>
-                                </tc:component>
-                                <tc:component name="total amount">
-                                    <tc:value xsi:type="xsd:double">2000</tc:value>
-                                </tc:component>
-                            </tc:item>
-                            <tc:item>
-                                <tc:component name="product code">
-                                    <tc:value xsi:type="xsd:string">X3</tc:value>
-                                </tc:component>
-                                <tc:component name="product name">
-                                    <tc:value xsi:type="xsd:string">Necklace</tc:value>
-                                </tc:component>
-                                <tc:component name="category">
-                                    <tc:value xsi:type="xsd:string">Luxury</tc:value>
-                                </tc:component>
-                                <tc:component name="quantity">
-                                    <tc:value xsi:type="xsd:double">1</tc:value>
-                                </tc:component>
-                                <tc:component name="price">
-                                    <tc:value xsi:type="xsd:double">5000</tc:value>
-                                </tc:component>
-                                <tc:component name="total amount">
-                                    <tc:value xsi:type="xsd:double">5000</tc:value>
-                                </tc:component>
-                            </tc:item>
-                            <tc:item>
-                                <tc:component name="product code">
-                                    <tc:value xsi:type="xsd:string">X4</tc:value>
-                                </tc:component>
-                                <tc:component name="product name">
-                                    <tc:value xsi:type="xsd:string">Shampoo</tc:value>
-                                </tc:component>
-                                <tc:component name="category">
-                                    <tc:value xsi:type="xsd:string">Hygiene</tc:value>
-                                </tc:component>
-                                <tc:component name="quantity">
-                                    <tc:value xsi:type="xsd:double">2</tc:value>
-                                </tc:component>
-                                <tc:component name="price">
-                                    <tc:value xsi:type="xsd:double">10</tc:value>
-                                </tc:component>
-                                <tc:component name="total amount">
-                                    <tc:value xsi:type="xsd:double">20</tc:value>
-                                </tc:component>
-                            </tc:item>
-                        </tc:list>
-                    </tc:component>
-                    <tc:component name="total amount">
-                        <tc:value xsi:type="xsd:double">7025</tc:value>
-                    </tc:component>
-                </tc:inputNode>
-                <tc:inputNode name="State Model">
-                    <tc:component name="namespace">
-                        <tc:value xsi:type="xsd:string">xxx</tc:value>
-                    </tc:component>
-                    <tc:component name="name">
-                        <tc:value xsi:type="xsd:string">NY</tc:value>
-                    </tc:component>
-                </tc:inputNode>
-                <tc:resultNode name="Calculate Total Taxes">
-                    <tc:expected/>
-                </tc:resultNode>
-                <tc:resultNode name="Calculate State Taxes">
-                    <tc:expected>
-                        <tc:list>
-                            <tc:item>
-                                <tc:component name="rate">
-                                    <tc:value xsi:type="xsd:string">0.05</tc:value>
-                                </tc:component>
-                                <tc:component name="tax">
-                                    <tc:value xsi:type="xsd:double">0.25</tc:value>
-                                </tc:component>
-                            </tc:item>
-                            <tc:item>
-                                <tc:component name="rate">
-                                    <tc:value xsi:type="xsd:string">0.05</tc:value>
-                                </tc:component>
-                                <tc:component name="tax">
-                                    <tc:value xsi:type="xsd:double">100</tc:value>
-                                </tc:component>
-                            </tc:item>
-                            <tc:item>
-                                <tc:component name="rate">
-                                    <tc:value xsi:type="xsd:string">0.05</tc:value>
-                                </tc:component>
-                                <tc:component name="tax">
-                                    <tc:value xsi:type="xsd:double">250</tc:value>
-                                </tc:component>
-                            </tc:item>
-                            <tc:item>
-                                <tc:component name="rate">
-                                    <tc:value xsi:type="xsd:string">0.05</tc:value>
-                                </tc:component>
-                                <tc:component name="tax">
-                                    <tc:value xsi:type="xsd:double">1</tc:value>
-                                </tc:component>
-                            </tc:item>
-                        </tc:list>
-                    </tc:expected>
-                </tc:resultNode>
-                <tc:resultNode name="Calculate Federal Taxes">
-                    <tc:expected>
-                        <tc:list>
-                            <tc:item/>
-                            <tc:item>
-                                <tc:component name="rate">
-                                    <tc:value xsi:type="xsd:string">0.05</tc:value>
-                                </tc:component>
-                                <tc:component name="tax">
-                                    <tc:value xsi:type="xsd:double">100</tc:value>
-                                </tc:component>
-                                <tc:component name="Calculate Federal Taxes">
-                                    <tc:value xsi:type="xsd:string"/>
-                                </tc:component>
-                            </tc:item>
-                            <tc:item/>
-                            <tc:item>
-                                <tc:component name="rate">
-                                    <tc:value xsi:type="xsd:string">0.05</tc:value>
-                                </tc:component>
-                                <tc:component name="tax">
-                                    <tc:value xsi:type="xsd:double">1</tc:value>
-                                </tc:component>
-                                <tc:component name="Calculate Federal Taxes">
-                                    <tc:value xsi:type="xsd:string"/>
-                                </tc:component>
-                            </tc:item>
-                        </tc:list>
-                    </tc:expected>
-                </tc:resultNode>
-            </tc:testCase>
-        </tc:testCases>
-        <triso:dmnInputs>[{"name":"Order","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58","type":"complex","children":[{"name":"number","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_94829153-d0b7-48f2-bfa3-b8098e9969d0","type":"number"},{"name":"customer name","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_6db42db6-b6b3-4c06-9f31-bb71fefa2614","type":"string"},{"name":"address","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_9b01eb9a-470f-4856-9e28-e6c1de13b510","type":"complex","children":[{"name":"street address","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_9b01eb9a-470f-4856-9e28-e6c1de13b510_5ff803a2-90f1-47b2-adce-efcc1b47d199","type":"string"},{"name":"state","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_9b01eb9a-470f-4856-9e28-e6c1de13b510_262a08f3-295a-4a39-8562-90a9be983410","type":"string"},{"name":"postal code","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_9b01eb9a-470f-4856-9e28-e6c1de13b510_db2da9ca-ec01-430d-b526-025a85ad851a","type":"string"}]},{"name":"items","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_d25663f5-8df1-478f-93de-27b746241804","isCollection":true,"type":"complex","children":[{"name":"product code","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_d25663f5-8df1-478f-93de-27b746241804_503f0478-34cd-4841-911d-f5d54370a040","type":"string"},{"name":"product name","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_d25663f5-8df1-478f-93de-27b746241804_8b8b9be3-b411-481d-9aca-a308d7f0ad55","type":"string"},{"name":"category","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_d25663f5-8df1-478f-93de-27b746241804_6f7c2609-5d3e-4143-9b52-914d0aeb2af6","type":"string","constraints":{"dataType":"feel:string","constraints":"\"Food\",\"Electronic\",\"Hygiene\",\"Luxury\"","constraintsType":"enumeration","_choices":["\"Food\"","\"Electronic\"","\"Hygiene\"","\"Luxury\""]}},{"name":"quantity","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_d25663f5-8df1-478f-93de-27b746241804_b2b6ca14-914e-4d67-8c3f-c3bf8708152a","type":"number"},{"name":"price","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_d25663f5-8df1-478f-93de-27b746241804_71925f05-eb0a-4dc0-8b98-1da93ee600a6","type":"number"},{"name":"total amount","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_d25663f5-8df1-478f-93de-27b746241804_71132388-b3c0-4715-bc8e-7adb30a1dca4","type":"number"}]},{"name":"total amount","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_3b96f758-b66a-427d-b4dd-78b266abe200","type":"number"}]},{"name":"State Model","id":"_3ea75f6d-a9a5-4d7b-8f2a-e29173c03e73","type":"complex","children":[{"name":"namespace","id":"_3ea75f6d-a9a5-4d7b-8f2a-e29173c03e73_094ae2b8-1a75-4ca7-9bd7-edd23e2c1aa1","type":"string"},{"name":"name","id":"_3ea75f6d-a9a5-4d7b-8f2a-e29173c03e73_d7381ecc-0f72-4133-b9ab-d0c7eba93811","type":"string"}]}]</triso:dmnInputs>
-    </semantic:extensionElements>
-    <semantic:itemDefinition label="tOrder" name="tOrder">
-        <semantic:itemComponent id="_94829153-d0b7-48f2-bfa3-b8098e9969d0" name="number">
-            <semantic:typeRef>feel:number</semantic:typeRef>
-        </semantic:itemComponent>
-        <semantic:itemComponent id="_6db42db6-b6b3-4c06-9f31-bb71fefa2614" name="customer name">
-            <semantic:typeRef>feel:string</semantic:typeRef>
-        </semantic:itemComponent>
-        <semantic:itemComponent id="_9b01eb9a-470f-4856-9e28-e6c1de13b510" name="address">
-            <semantic:itemComponent id="_5ff803a2-90f1-47b2-adce-efcc1b47d199" name="street address">
-                <semantic:typeRef>feel:string</semantic:typeRef>
-            </semantic:itemComponent>
-            <semantic:itemComponent id="_262a08f3-295a-4a39-8562-90a9be983410" name="state">
-                <semantic:typeRef>feel:string</semantic:typeRef>
-            </semantic:itemComponent>
-            <semantic:itemComponent id="_db2da9ca-ec01-430d-b526-025a85ad851a" name="postal code">
-                <semantic:typeRef>feel:string</semantic:typeRef>
-            </semantic:itemComponent>
-        </semantic:itemComponent>
-        <semantic:itemComponent id="_d25663f5-8df1-478f-93de-27b746241804" name="items">
-            <semantic:typeRef>tItemList</semantic:typeRef>
-        </semantic:itemComponent>
-        <semantic:itemComponent id="_3b96f758-b66a-427d-b4dd-78b266abe200" name="total amount">
-            <semantic:typeRef>feel:number</semantic:typeRef>
-        </semantic:itemComponent>
-    </semantic:itemDefinition>
-    <semantic:itemDefinition label="tItem" name="tItem">
-        <semantic:itemComponent id="_503f0478-34cd-4841-911d-f5d54370a040" name="product code">
-            <semantic:typeRef>feel:string</semantic:typeRef>
-        </semantic:itemComponent>
-        <semantic:itemComponent id="_8b8b9be3-b411-481d-9aca-a308d7f0ad55" name="product name">
-            <semantic:typeRef>feel:string</semantic:typeRef>
-        </semantic:itemComponent>
-        <semantic:itemComponent id="_6f7c2609-5d3e-4143-9b52-914d0aeb2af6" name="category">
-            <semantic:typeRef>tCategory</semantic:typeRef>
-        </semantic:itemComponent>
-        <semantic:itemComponent id="_b2b6ca14-914e-4d67-8c3f-c3bf8708152a" name="quantity">
-            <semantic:typeRef>feel:number</semantic:typeRef>
-        </semantic:itemComponent>
-        <semantic:itemComponent id="_71925f05-eb0a-4dc0-8b98-1da93ee600a6" name="price">
-            <semantic:typeRef>feel:number</semantic:typeRef>
-        </semantic:itemComponent>
-        <semantic:itemComponent id="_71132388-b3c0-4715-bc8e-7adb30a1dca4" name="total amount">
-            <semantic:typeRef>feel:number</semantic:typeRef>
-        </semantic:itemComponent>
-    </semantic:itemDefinition>
-    <semantic:itemDefinition label="tCategory" name="tCategory">
-        <semantic:typeRef>feel:string</semantic:typeRef>
-        <semantic:allowedValues triso:constraintsType="enumeration">
-            <semantic:text>"Food","Electronic","Hygiene","Luxury"</semantic:text>
-        </semantic:allowedValues>
-    </semantic:itemDefinition>
-    <semantic:itemDefinition isCollection="true" label="tNumberList" name="tNumberList">
-        <semantic:typeRef>feel:number</semantic:typeRef>
-    </semantic:itemDefinition>
-    <semantic:itemDefinition isCollection="true" label="tItemList" name="tItemList">
-        <semantic:typeRef>tItem</semantic:typeRef>
-    </semantic:itemDefinition>
-    <semantic:itemDefinition isCollection="false" label="tTax" name="tTax">
-        <semantic:itemComponent id="_87812ecd-4016-48b5-8322-c9baa9faca43" isCollection="false" name="rate">
-            <semantic:typeRef>feel:string</semantic:typeRef>
-        </semantic:itemComponent>
-        <semantic:itemComponent id="_47ac19aa-9d91-4be4-9ca1-51eec9bf0758" name="tax">
-            <semantic:typeRef>feel:number</semantic:typeRef>
-        </semantic:itemComponent>
-    </semantic:itemDefinition>
-    <semantic:itemDefinition label="tStateModel" name="tStateModel">
-        <semantic:itemComponent id="_094ae2b8-1a75-4ca7-9bd7-edd23e2c1aa1" name="namespace">
-            <semantic:typeRef>feel:string</semantic:typeRef>
-        </semantic:itemComponent>
-        <semantic:itemComponent id="_d7381ecc-0f72-4133-b9ab-d0c7eba93811" name="name">
-            <semantic:typeRef>feel:string</semantic:typeRef>
-        </semantic:itemComponent>
-    </semantic:itemDefinition>
-    <semantic:itemDefinition isCollection="true" label="tTaxList" name="tTaxList">
-        <semantic:typeRef>tTax</semantic:typeRef>
-    </semantic:itemDefinition>
-    <semantic:inputData displayName="Order" id="_4e51febc-03ab-4caa-a0a5-fb8d9547ea58" name="Order">
-        <semantic:variable id="_81eba44c-0d5e-4e3e-83d1-2565dff6821b" name="Order" typeRef="tOrder"/>
-    </semantic:inputData>
-    <semantic:decision displayName="Calculate Federal Taxes" id="_e51cabcd-635e-4349-bb1e-7774ed33fd71" name="Calculate Federal Taxes">
-        <semantic:variable id="_e8d8d370-b548-489a-b105-e6bac0ce79b0" name="Calculate Federal Taxes" typeRef="tTaxList"/>
-        <semantic:informationRequirement>
-            <semantic:requiredInput href="#_4e51febc-03ab-4caa-a0a5-fb8d9547ea58"/>
-        </semantic:informationRequirement>
-        <semantic:knowledgeRequirement>
-            <semantic:requiredKnowledge href="#_3bd319b2-4bfe-48f4-ae4a-6487f119f3fd"/>
-        </semantic:knowledgeRequirement>
-        <semantic:literalExpression id="_e8aaf457-cd99-47bc-9ba0-bc69e431d741">
-            <semantic:text>for item in Order.items return Federal Tax for Item( item )</semantic:text>
-        </semantic:literalExpression>
-    </semantic:decision>
-    <semantic:decision displayName="Calculate Total Taxes" id="_a9aa8a44-87b9-4645-ab43-4dba6fca129a" name="Calculate Total Taxes">
-        <semantic:variable id="_24ac1180-01e2-41e4-bd67-5d2453328dfa" name="Calculate Total Taxes" typeRef="feel:number"/>
-        <semantic:informationRequirement>
-            <semantic:requiredDecision href="#_e51cabcd-635e-4349-bb1e-7774ed33fd71"/>
-        </semantic:informationRequirement>
-        <semantic:informationRequirement>
-            <semantic:requiredDecision href="#_996d8438-3c91-4cf8-b27a-464f1633924b"/>
-        </semantic:informationRequirement>
-        <semantic:context id="_2b2da344-58c1-408d-bb60-ccc295477db6">
+                        <tc:component name="quantity">
+                           <tc:value xsi:type="xsd:double">10</tc:value>
+                        </tc:component>
+                        <tc:component name="price">
+                           <tc:value xsi:type="xsd:double">0.5</tc:value>
+                        </tc:component>
+                        <tc:component name="total amount">
+                           <tc:value xsi:type="xsd:double">5</tc:value>
+                        </tc:component>
+                     </tc:item>
+                     <tc:item>
+                        <tc:component name="product code">
+                           <tc:value xsi:type="xsd:string">X2</tc:value>
+                        </tc:component>
+                        <tc:component name="product name">
+                           <tc:value xsi:type="xsd:string">TV</tc:value>
+                        </tc:component>
+                        <tc:component name="category">
+                           <tc:value xsi:type="xsd:string">Electronic</tc:value>
+                        </tc:component>
+                        <tc:component name="quantity">
+                           <tc:value xsi:type="xsd:double">1</tc:value>
+                        </tc:component>
+                        <tc:component name="price">
+                           <tc:value xsi:type="xsd:double">2000</tc:value>
+                        </tc:component>
+                        <tc:component name="total amount">
+                           <tc:value xsi:type="xsd:double">2000</tc:value>
+                        </tc:component>
+                     </tc:item>
+                     <tc:item>
+                        <tc:component name="product code">
+                           <tc:value xsi:type="xsd:string">X3</tc:value>
+                        </tc:component>
+                        <tc:component name="product name">
+                           <tc:value xsi:type="xsd:string">Necklace</tc:value>
+                        </tc:component>
+                        <tc:component name="category">
+                           <tc:value xsi:type="xsd:string">Luxury</tc:value>
+                        </tc:component>
+                        <tc:component name="quantity">
+                           <tc:value xsi:type="xsd:double">1</tc:value>
+                        </tc:component>
+                        <tc:component name="price">
+                           <tc:value xsi:type="xsd:double">5000</tc:value>
+                        </tc:component>
+                        <tc:component name="total amount">
+                           <tc:value xsi:type="xsd:double">5000</tc:value>
+                        </tc:component>
+                     </tc:item>
+                     <tc:item>
+                        <tc:component name="product code">
+                           <tc:value xsi:type="xsd:string">X4</tc:value>
+                        </tc:component>
+                        <tc:component name="product name">
+                           <tc:value xsi:type="xsd:string">Shampoo</tc:value>
+                        </tc:component>
+                        <tc:component name="category">
+                           <tc:value xsi:type="xsd:string">Hygiene</tc:value>
+                        </tc:component>
+                        <tc:component name="quantity">
+                           <tc:value xsi:type="xsd:double">2</tc:value>
+                        </tc:component>
+                        <tc:component name="price">
+                           <tc:value xsi:type="xsd:double">10</tc:value>
+                        </tc:component>
+                        <tc:component name="total amount">
+                           <tc:value xsi:type="xsd:double">20</tc:value>
+                        </tc:component>
+                     </tc:item>
+                  </tc:list>
+               </tc:component>
+               <tc:component name="total amount">
+                  <tc:value xsi:type="xsd:double">7025</tc:value>
+               </tc:component>
+            </tc:inputNode>
+            <tc:inputNode name="State Model">
+               <tc:component name="namespace">
+                  <tc:value xsi:type="xsd:string">xxx</tc:value>
+               </tc:component>
+               <tc:component name="name">
+                  <tc:value xsi:type="xsd:string">NY</tc:value>
+               </tc:component>
+            </tc:inputNode>
+            <tc:resultNode name="Calculate Total Taxes">
+               <tc:expected/>
+            </tc:resultNode>
+            <tc:resultNode name="Calculate State Taxes">
+               <tc:expected>
+                  <tc:list>
+                     <tc:item>
+                        <tc:component name="rate">
+                           <tc:value xsi:type="xsd:string">0.05</tc:value>
+                        </tc:component>
+                        <tc:component name="tax">
+                           <tc:value xsi:type="xsd:double">0.25</tc:value>
+                        </tc:component>
+                     </tc:item>
+                     <tc:item>
+                        <tc:component name="rate">
+                           <tc:value xsi:type="xsd:string">0.05</tc:value>
+                        </tc:component>
+                        <tc:component name="tax">
+                           <tc:value xsi:type="xsd:double">100</tc:value>
+                        </tc:component>
+                     </tc:item>
+                     <tc:item>
+                        <tc:component name="rate">
+                           <tc:value xsi:type="xsd:string">0.05</tc:value>
+                        </tc:component>
+                        <tc:component name="tax">
+                           <tc:value xsi:type="xsd:double">250</tc:value>
+                        </tc:component>
+                     </tc:item>
+                     <tc:item>
+                        <tc:component name="rate">
+                           <tc:value xsi:type="xsd:string">0.05</tc:value>
+                        </tc:component>
+                        <tc:component name="tax">
+                           <tc:value xsi:type="xsd:double">1</tc:value>
+                        </tc:component>
+                     </tc:item>
+                  </tc:list>
+               </tc:expected>
+            </tc:resultNode>
+            <tc:resultNode name="Calculate Federal Taxes">
+               <tc:expected>
+                  <tc:list>
+                     <tc:item/>
+                     <tc:item>
+                        <tc:component name="rate">
+                           <tc:value xsi:type="xsd:string">0.05</tc:value>
+                        </tc:component>
+                        <tc:component name="tax">
+                           <tc:value xsi:type="xsd:double">100</tc:value>
+                        </tc:component>
+                        <tc:component name="Calculate Federal Taxes">
+                           <tc:value xsi:type="xsd:string"/>
+                        </tc:component>
+                     </tc:item>
+                     <tc:item/>
+                     <tc:item>
+                        <tc:component name="rate">
+                           <tc:value xsi:type="xsd:string">0.05</tc:value>
+                        </tc:component>
+                        <tc:component name="tax">
+                           <tc:value xsi:type="xsd:double">1</tc:value>
+                        </tc:component>
+                        <tc:component name="Calculate Federal Taxes">
+                           <tc:value xsi:type="xsd:string"/>
+                        </tc:component>
+                     </tc:item>
+                  </tc:list>
+               </tc:expected>
+            </tc:resultNode>
+         </tc:testCase>
+      </tc:testCases>
+      <triso:dmnInputs xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                       xmlns:trisofeed="http://trisotech.com/feed">[{"name":"Order","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58","type":"complex","children":[{"name":"number","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_94829153-d0b7-48f2-bfa3-b8098e9969d0","type":"number"},{"name":"customer name","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_6db42db6-b6b3-4c06-9f31-bb71fefa2614","type":"string"},{"name":"address","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_9b01eb9a-470f-4856-9e28-e6c1de13b510","type":"complex","children":[{"name":"street address","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_9b01eb9a-470f-4856-9e28-e6c1de13b510_5ff803a2-90f1-47b2-adce-efcc1b47d199","type":"string"},{"name":"state","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_9b01eb9a-470f-4856-9e28-e6c1de13b510_262a08f3-295a-4a39-8562-90a9be983410","type":"string"},{"name":"postal code","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_9b01eb9a-470f-4856-9e28-e6c1de13b510_db2da9ca-ec01-430d-b526-025a85ad851a","type":"string"}]},{"name":"items","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_d25663f5-8df1-478f-93de-27b746241804","isCollection":true,"type":"complex","children":[{"name":"product code","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_d25663f5-8df1-478f-93de-27b746241804_503f0478-34cd-4841-911d-f5d54370a040","type":"string"},{"name":"product name","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_d25663f5-8df1-478f-93de-27b746241804_8b8b9be3-b411-481d-9aca-a308d7f0ad55","type":"string"},{"name":"category","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_d25663f5-8df1-478f-93de-27b746241804_6f7c2609-5d3e-4143-9b52-914d0aeb2af6","type":"string","constraints":{"dataType":"feel:string","constraints":"\"Food\",\"Electronic\",\"Hygiene\",\"Luxury\"","constraintsType":"enumeration","_choices":["\"Food\"","\"Electronic\"","\"Hygiene\"","\"Luxury\""]}},{"name":"quantity","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_d25663f5-8df1-478f-93de-27b746241804_b2b6ca14-914e-4d67-8c3f-c3bf8708152a","type":"number"},{"name":"price","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_d25663f5-8df1-478f-93de-27b746241804_71925f05-eb0a-4dc0-8b98-1da93ee600a6","type":"number"},{"name":"total amount","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_d25663f5-8df1-478f-93de-27b746241804_71132388-b3c0-4715-bc8e-7adb30a1dca4","type":"number"}]},{"name":"total amount","id":"_4e51febc-03ab-4caa-a0a5-fb8d9547ea58_3b96f758-b66a-427d-b4dd-78b266abe200","type":"number"}]},{"name":"State Model","id":"_3ea75f6d-a9a5-4d7b-8f2a-e29173c03e73","type":"complex","children":[{"name":"namespace","id":"_3ea75f6d-a9a5-4d7b-8f2a-e29173c03e73_094ae2b8-1a75-4ca7-9bd7-edd23e2c1aa1","type":"string"},{"name":"name","id":"_3ea75f6d-a9a5-4d7b-8f2a-e29173c03e73_d7381ecc-0f72-4133-b9ab-d0c7eba93811","type":"string"}]}]</triso:dmnInputs>
+   </semantic:extensionElements>
+   <semantic:itemDefinition label="tOrder" name="tOrder">
+      <semantic:itemComponent id="_94829153-d0b7-48f2-bfa3-b8098e9969d0" name="number">
+         <semantic:typeRef>number</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_6db42db6-b6b3-4c06-9f31-bb71fefa2614" name="customer name">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_9b01eb9a-470f-4856-9e28-e6c1de13b510" name="address">
+         <semantic:itemComponent id="_5ff803a2-90f1-47b2-adce-efcc1b47d199" name="street address">
+            <semantic:typeRef>string</semantic:typeRef>
+         </semantic:itemComponent>
+         <semantic:itemComponent id="_262a08f3-295a-4a39-8562-90a9be983410" name="state">
+            <semantic:typeRef>string</semantic:typeRef>
+         </semantic:itemComponent>
+         <semantic:itemComponent id="_db2da9ca-ec01-430d-b526-025a85ad851a" name="postal code">
+            <semantic:typeRef>string</semantic:typeRef>
+         </semantic:itemComponent>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_d25663f5-8df1-478f-93de-27b746241804" name="items">
+         <semantic:typeRef>tItemList</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_3b96f758-b66a-427d-b4dd-78b266abe200" name="total amount">
+         <semantic:typeRef>number</semantic:typeRef>
+      </semantic:itemComponent>
+   </semantic:itemDefinition>
+   <semantic:itemDefinition label="tItem" name="tItem">
+      <semantic:itemComponent id="_503f0478-34cd-4841-911d-f5d54370a040" name="product code">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_8b8b9be3-b411-481d-9aca-a308d7f0ad55" name="product name">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_6f7c2609-5d3e-4143-9b52-914d0aeb2af6" name="category">
+         <semantic:typeRef>tCategory</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_b2b6ca14-914e-4d67-8c3f-c3bf8708152a" name="quantity">
+         <semantic:typeRef>number</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_71925f05-eb0a-4dc0-8b98-1da93ee600a6" name="price">
+         <semantic:typeRef>number</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_71132388-b3c0-4715-bc8e-7adb30a1dca4" name="total amount">
+         <semantic:typeRef>number</semantic:typeRef>
+      </semantic:itemComponent>
+   </semantic:itemDefinition>
+   <semantic:itemDefinition label="tCategory" name="tCategory">
+      <semantic:typeRef>string</semantic:typeRef>
+      <semantic:allowedValues xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                              triso:constraintsType="enumeration">
+         <semantic:text>"Food","Electronic","Hygiene","Luxury"</semantic:text>
+      </semantic:allowedValues>
+   </semantic:itemDefinition>
+   <semantic:itemDefinition isCollection="true" label="tNumberList" name="tNumberList">
+      <semantic:typeRef>number</semantic:typeRef>
+   </semantic:itemDefinition>
+   <semantic:itemDefinition isCollection="true" label="tItemList" name="tItemList">
+      <semantic:typeRef>tItem</semantic:typeRef>
+   </semantic:itemDefinition>
+   <semantic:itemDefinition isCollection="false" label="tTax" name="tTax">
+      <semantic:itemComponent id="_87812ecd-4016-48b5-8322-c9baa9faca43"
+                              isCollection="false"
+                              name="rate">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_47ac19aa-9d91-4be4-9ca1-51eec9bf0758" name="tax">
+         <semantic:typeRef>number</semantic:typeRef>
+      </semantic:itemComponent>
+   </semantic:itemDefinition>
+   <semantic:itemDefinition label="tStateModel" name="tStateModel">
+      <semantic:itemComponent id="_094ae2b8-1a75-4ca7-9bd7-edd23e2c1aa1" name="namespace">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_d7381ecc-0f72-4133-b9ab-d0c7eba93811" name="name">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+   </semantic:itemDefinition>
+   <semantic:itemDefinition isCollection="true" label="tTaxList" name="tTaxList">
+      <semantic:typeRef>tTax</semantic:typeRef>
+   </semantic:itemDefinition>
+   <semantic:inputData displayName="Order"
+                       id="_4e51febc-03ab-4caa-a0a5-fb8d9547ea58"
+                       name="Order">
+      <semantic:variable id="_81eba44c-0d5e-4e3e-83d1-2565dff6821b"
+                         name="Order"
+                         typeRef="tOrder"/>
+   </semantic:inputData>
+   <semantic:decision displayName="Calculate Federal Taxes"
+                      id="_e51cabcd-635e-4349-bb1e-7774ed33fd71"
+                      name="Calculate Federal Taxes">
+      <semantic:variable id="_e8d8d370-b548-489a-b105-e6bac0ce79b0"
+                         name="Calculate Federal Taxes"
+                         typeRef="tTaxList"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_4e51febc-03ab-4caa-a0a5-fb8d9547ea58"/>
+      </semantic:informationRequirement>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="#_3bd319b2-4bfe-48f4-ae4a-6487f119f3fd"/>
+      </semantic:knowledgeRequirement>
+      <semantic:literalExpression id="_e8aaf457-cd99-47bc-9ba0-bc69e431d741">
+         <semantic:text>for item in Order.items return Federal Tax for Item( item )</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:decision displayName="Calculate Total Taxes"
+                      id="_a9aa8a44-87b9-4645-ab43-4dba6fca129a"
+                      name="Calculate Total Taxes">
+      <semantic:variable id="_24ac1180-01e2-41e4-bd67-5d2453328dfa"
+                         name="Calculate Total Taxes"
+                         typeRef="number"/>
+      <semantic:informationRequirement>
+         <semantic:requiredDecision href="#_e51cabcd-635e-4349-bb1e-7774ed33fd71"/>
+      </semantic:informationRequirement>
+      <semantic:informationRequirement>
+         <semantic:requiredDecision href="#_996d8438-3c91-4cf8-b27a-464f1633924b"/>
+      </semantic:informationRequirement>
+      <semantic:context id="_2b2da344-58c1-408d-bb60-ccc295477db6">
+         <semantic:contextEntry>
+            <semantic:variable id="_7c799bc5-d13a-4afa-811f-b6a0dd976f9e"
+                               name="total federal taxes"
+                               typeRef="number"/>
+            <semantic:literalExpression id="_af1b71ab-4b65-4be1-a1b5-755b427bf285">
+               <semantic:text>sum( Calculate Federal Taxes.tax )</semantic:text>
+            </semantic:literalExpression>
+         </semantic:contextEntry>
+         <semantic:contextEntry>
+            <semantic:variable id="_2b734558-c9ae-4ee9-8610-d100552d8391"
+                               name="total state taxes"
+                               typeRef="number"/>
+            <semantic:literalExpression id="_9b12769e-e918-4586-a22f-511efc5de623">
+               <semantic:text>sum( Calculate State Taxes.tax )</semantic:text>
+            </semantic:literalExpression>
+         </semantic:contextEntry>
+         <semantic:contextEntry>
+            <semantic:literalExpression id="_97da5231-74fb-4bc6-8eb1-0a5239ecddb8">
+               <semantic:text>total federal taxes + total state taxes</semantic:text>
+            </semantic:literalExpression>
+         </semantic:contextEntry>
+      </semantic:context>
+   </semantic:decision>
+   <semantic:decision displayName="Calculate State Taxes"
+                      id="_996d8438-3c91-4cf8-b27a-464f1633924b"
+                      name="Calculate State Taxes">
+      <semantic:variable id="_49dea4c7-3efd-406c-a87d-b343d87a7df5"
+                         name="Calculate State Taxes"
+                         typeRef="tTaxList"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_4e51febc-03ab-4caa-a0a5-fb8d9547ea58"/>
+      </semantic:informationRequirement>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_3ea75f6d-a9a5-4d7b-8f2a-e29173c03e73"/>
+      </semantic:informationRequirement>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="#_add79238-9574-4f07-83a7-d9b20efe6334"/>
+      </semantic:knowledgeRequirement>
+      <semantic:literalExpression id="_6afbc9d3-2a58-4019-b50d-e3c3c5309903">
+         <semantic:text>for item in Order.items return State Tax For Item( State Model, item )</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:businessKnowledgeModel displayName="State Tax For Item"
+                                    id="_add79238-9574-4f07-83a7-d9b20efe6334"
+                                    name="State Tax For Item">
+      <semantic:variable id="_18b3c4b8-ba74-47b8-aa5e-403ab4f54625"
+                         name="State Tax For Item"
+                         typeRef="tTax"/>
+      <semantic:encapsulatedLogic id="_a01619f4-d7d1-496d-80a2-3fd54fc621d0">
+         <semantic:formalParameter id="_978bffb8-cb51-47b6-8ba8-e347847b3c5e"
+                                   name="State Model"
+                                   typeRef="tStateModel"/>
+         <semantic:formalParameter id="_6e1e2e7d-159b-46b8-bdc3-9418b3c415d2"
+                                   name="Item"
+                                   typeRef="tItem"/>
+         <semantic:context id="context__a01619f4-d7d1-496d-80a2-3fd54fc621d0">
             <semantic:contextEntry>
-                <semantic:variable id="_7c799bc5-d13a-4afa-811f-b6a0dd976f9e" name="total federal taxes" typeRef="feel:number"/>
-                <semantic:literalExpression id="_af1b71ab-4b65-4be1-a1b5-755b427bf285">
-                    <semantic:text>sum( Calculate Federal Taxes.tax )</semantic:text>
-                </semantic:literalExpression>
+               <semantic:variable id="_7785561f-58c4-4dda-827d-c76d814141ed"
+                                  name="rate"
+                                  typeRef="number"/>
+               <semantic:literalExpression id="_16b14fa1-6c87-41a6-b61c-a363c1521649">
+                  <semantic:text>0.05</semantic:text>
+               </semantic:literalExpression>
             </semantic:contextEntry>
             <semantic:contextEntry>
-                <semantic:variable id="_2b734558-c9ae-4ee9-8610-d100552d8391" name="total state taxes" typeRef="feel:number"/>
-                <semantic:literalExpression id="_9b12769e-e918-4586-a22f-511efc5de623">
-                    <semantic:text>sum( Calculate State Taxes.tax )</semantic:text>
-                </semantic:literalExpression>
+               <semantic:variable id="_83eef4e1-51ce-40eb-9f43-59dbc925dc2e"
+                                  name="tax"
+                                  typeRef="number"/>
+               <semantic:literalExpression id="_1d01be00-c740-462e-8947-499987b7e5de">
+                  <semantic:text>Item.total amount * rate</semantic:text>
+               </semantic:literalExpression>
             </semantic:contextEntry>
+         </semantic:context>
+      </semantic:encapsulatedLogic>
+   </semantic:businessKnowledgeModel>
+   <semantic:businessKnowledgeModel displayName="Federal Tax for Item"
+                                    id="_3bd319b2-4bfe-48f4-ae4a-6487f119f3fd"
+                                    name="Federal Tax for Item">
+      <semantic:variable id="_41012aee-1a6f-4b89-9d28-733e570953a1"
+                         name="Federal Tax for Item"
+                         typeRef="tTax"/>
+      <semantic:encapsulatedLogic id="_9252bd41-1e7b-4a7d-8922-bd7a8a881dbc">
+         <semantic:formalParameter id="_e627b558-1999-4d24-ab74-7f61121e76e9"
+                                   name="item"
+                                   typeRef="tItem"/>
+         <semantic:context id="context__9252bd41-1e7b-4a7d-8922-bd7a8a881dbc">
             <semantic:contextEntry>
-                <semantic:literalExpression id="_97da5231-74fb-4bc6-8eb1-0a5239ecddb8">
-                    <semantic:text>total federal taxes + total state taxes</semantic:text>
-                </semantic:literalExpression>
-            </semantic:contextEntry>
-        </semantic:context>
-    </semantic:decision>
-    <semantic:decision displayName="Calculate State Taxes" id="_996d8438-3c91-4cf8-b27a-464f1633924b" name="Calculate State Taxes">
-        <semantic:variable id="_49dea4c7-3efd-406c-a87d-b343d87a7df5" name="Calculate State Taxes" typeRef="tTaxList"/>
-        <semantic:informationRequirement>
-            <semantic:requiredInput href="#_4e51febc-03ab-4caa-a0a5-fb8d9547ea58"/>
-        </semantic:informationRequirement>
-        <semantic:informationRequirement>
-            <semantic:requiredInput href="#_3ea75f6d-a9a5-4d7b-8f2a-e29173c03e73"/>
-        </semantic:informationRequirement>
-        <semantic:knowledgeRequirement>
-            <semantic:requiredKnowledge href="#_add79238-9574-4f07-83a7-d9b20efe6334"/>
-        </semantic:knowledgeRequirement>
-        <semantic:literalExpression id="_6afbc9d3-2a58-4019-b50d-e3c3c5309903">
-            <semantic:text>for item in Order.items return State Tax For Item( State Model, item )</semantic:text>
-        </semantic:literalExpression>
-    </semantic:decision>
-    <semantic:businessKnowledgeModel displayName="State Tax For Item" id="_add79238-9574-4f07-83a7-d9b20efe6334" name="State Tax For Item">
-        <semantic:encapsulatedLogic id="_a01619f4-d7d1-496d-80a2-3fd54fc621d0">
-            <semantic:formalParameter id="_978bffb8-cb51-47b6-8ba8-e347847b3c5e" name="State Model" typeRef="tStateModel"/>
-            <semantic:formalParameter id="_6e1e2e7d-159b-46b8-bdc3-9418b3c415d2" name="Item" typeRef="tItem"/>
-            <semantic:context id="context__a01619f4-d7d1-496d-80a2-3fd54fc621d0">
-                <semantic:contextEntry>
-                    <semantic:variable id="_7785561f-58c4-4dda-827d-c76d814141ed" name="rate" typeRef="feel:number"/>
-                    <semantic:literalExpression id="_16b14fa1-6c87-41a6-b61c-a363c1521649">
+               <semantic:variable id="_72c36234-ed2a-483c-b928-5e4b24761464"
+                                  name="rate"
+                                  typeRef="string"/>
+               <semantic:decisionTable hitPolicy="UNIQUE"
+                                       id="_62a7746f-d0ac-4b69-a716-a19f3d6fa971"
+                                       outputLabel="rate">
+                  <semantic:input id="_085b2351-4962-480e-a464-dd787f20898d">
+                     <semantic:inputExpression typeRef="tCategory">
+                        <semantic:text>item.category</semantic:text>
+                     </semantic:inputExpression>
+                     <semantic:inputValues xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                                           triso:constraintsType="enumeration">
+                        <semantic:text>"Food","Electronic","Hygiene","Luxury"</semantic:text>
+                     </semantic:inputValues>
+                  </semantic:input>
+                  <semantic:output id="_c369da23-0044-495e-949b-65c2e7b11781">
+                     <semantic:defaultOutputEntry>
                         <semantic:text>0.05</semantic:text>
-                    </semantic:literalExpression>
-                </semantic:contextEntry>
-                <semantic:contextEntry>
-                    <semantic:variable id="_83eef4e1-51ce-40eb-9f43-59dbc925dc2e" name="tax" typeRef="feel:number"/>
-                    <semantic:literalExpression id="_1d01be00-c740-462e-8947-499987b7e5de">
-                        <semantic:text>Item.total amount * rate</semantic:text>
-                    </semantic:literalExpression>
-                </semantic:contextEntry>
-            </semantic:context>
-        </semantic:encapsulatedLogic>
-        <semantic:variable id="_18b3c4b8-ba74-47b8-aa5e-403ab4f54625" name="State Tax For Item" typeRef="tTax"/>
-    </semantic:businessKnowledgeModel>
-    <semantic:businessKnowledgeModel displayName="Federal Tax for Item" id="_3bd319b2-4bfe-48f4-ae4a-6487f119f3fd" name="Federal Tax for Item">
-        <semantic:encapsulatedLogic id="_9252bd41-1e7b-4a7d-8922-bd7a8a881dbc">
-            <semantic:formalParameter id="_e627b558-1999-4d24-ab74-7f61121e76e9" name="item" typeRef="tItem"/>
-            <semantic:context id="context__9252bd41-1e7b-4a7d-8922-bd7a8a881dbc">
-                <semantic:contextEntry>
-                    <semantic:variable id="_72c36234-ed2a-483c-b928-5e4b24761464" name="rate" typeRef="feel:string"/>
-                    <semantic:decisionTable hitPolicy="UNIQUE" id="_62a7746f-d0ac-4b69-a716-a19f3d6fa971" outputLabel="rate">
-                        <semantic:input id="_085b2351-4962-480e-a464-dd787f20898d">
-                            <semantic:inputExpression typeRef="tCategory">
-                                <semantic:text>item.category</semantic:text>
-                            </semantic:inputExpression>
-                            <semantic:inputValues triso:constraintsType="enumeration">
-                                <semantic:text>"Food","Electronic","Hygiene","Luxury"</semantic:text>
-                            </semantic:inputValues>
-                        </semantic:input>
-                        <semantic:output id="_c369da23-0044-495e-949b-65c2e7b11781">
-                            <semantic:defaultOutputEntry>
-                                <semantic:text>0.05</semantic:text>
-                            </semantic:defaultOutputEntry>
-                        </semantic:output>
-                        <semantic:rule id="_30370d8c-7ebb-4468-8bb5-11c858c25f48">
-                            <semantic:inputEntry id="_5712feb4-ec85-4df9-b5d7-d711473af251">
-                                <semantic:text>"Food"</semantic:text>
-                            </semantic:inputEntry>
-                            <semantic:outputEntry id="_538fa83d-d8e9-45a5-ba1a-0ff051c72322">
-                                <semantic:text>0</semantic:text>
-                            </semantic:outputEntry>
-                        </semantic:rule>
-                        <semantic:rule id="_9aadb953-1436-4372-8170-647076cad08b">
-                            <semantic:inputEntry id="_13854b4a-49ec-4516-884c-0845d2d25a77">
-                                <semantic:text>"Luxury"</semantic:text>
-                            </semantic:inputEntry>
-                            <semantic:outputEntry id="_6956ee5c-ccb6-463d-baa5-c544d60b379b">
-                                <semantic:text>0.08</semantic:text>
-                            </semantic:outputEntry>
-                        </semantic:rule>
-                    </semantic:decisionTable>
-                </semantic:contextEntry>
-                <semantic:contextEntry>
-                    <semantic:variable id="_511829e7-ebae-4125-8408-a3e48287b0c2" name="tax" typeRef="feel:number"/>
-                    <semantic:literalExpression id="_4e0bf043-c035-47cf-8f70-1cfec67bd166">
-                        <semantic:text>item.total amount * rate</semantic:text>
-                    </semantic:literalExpression>
-                </semantic:contextEntry>
-            </semantic:context>
-        </semantic:encapsulatedLogic>
-        <semantic:variable id="_41012aee-1a6f-4b89-9d28-733e570953a1" name="Federal Tax for Item" typeRef="tTax"/>
-    </semantic:businessKnowledgeModel>
-    <semantic:inputData displayName="State Model" id="_3ea75f6d-a9a5-4d7b-8f2a-e29173c03e73" name="State Model">
-        <semantic:variable id="_b5132b86-444d-4e48-92ec-62d8593c356f" name="State Model" typeRef="tStateModel"/>
-    </semantic:inputData>
+                     </semantic:defaultOutputEntry>
+                  </semantic:output>
+                  <semantic:rule id="_30370d8c-7ebb-4468-8bb5-11c858c25f48">
+                     <semantic:inputEntry id="_5712feb4-ec85-4df9-b5d7-d711473af251">
+                        <semantic:text>"Food"</semantic:text>
+                     </semantic:inputEntry>
+                     <semantic:outputEntry id="_538fa83d-d8e9-45a5-ba1a-0ff051c72322">
+                        <semantic:text>0</semantic:text>
+                     </semantic:outputEntry>
+                  </semantic:rule>
+                  <semantic:rule id="_9aadb953-1436-4372-8170-647076cad08b">
+                     <semantic:inputEntry id="_13854b4a-49ec-4516-884c-0845d2d25a77">
+                        <semantic:text>"Luxury"</semantic:text>
+                     </semantic:inputEntry>
+                     <semantic:outputEntry id="_6956ee5c-ccb6-463d-baa5-c544d60b379b">
+                        <semantic:text>0.08</semantic:text>
+                     </semantic:outputEntry>
+                  </semantic:rule>
+               </semantic:decisionTable>
+            </semantic:contextEntry>
+            <semantic:contextEntry>
+               <semantic:variable id="_511829e7-ebae-4125-8408-a3e48287b0c2"
+                                  name="tax"
+                                  typeRef="number"/>
+               <semantic:literalExpression id="_4e0bf043-c035-47cf-8f70-1cfec67bd166">
+                  <semantic:text>item.total amount * rate</semantic:text>
+               </semantic:literalExpression>
+            </semantic:contextEntry>
+         </semantic:context>
+      </semantic:encapsulatedLogic>
+   </semantic:businessKnowledgeModel>
+   <semantic:inputData displayName="State Model"
+                       id="_3ea75f6d-a9a5-4d7b-8f2a-e29173c03e73"
+                       name="State Model">
+      <semantic:variable id="_b5132b86-444d-4e48-92ec-62d8593c356f"
+                         name="State Model"
+                         typeRef="tStateModel"/>
+   </semantic:inputData>
 </semantic:definitions>

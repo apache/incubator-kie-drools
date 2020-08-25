@@ -14,39 +14,47 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<definitions id="_null_values_model" name="Null values model"
-	namespace="https://github.com/kiegroup/kie-dmn"
-	xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-	xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
-	<decision name="Null value" id="d_GreetingMessage">
-		<variable name="Null value" typeRef="feel:string"/>
-		<informationRequirement>
-			<requiredInput href="#i_NullInput"/>
-		</informationRequirement>
-		<decisionTable>
-			<input>
-				<inputExpression typeRef="feel:string">
-					<text>Null Input</text>
-				</inputExpression>
-			</input>
-			<output typeRef="feel:string">
-			</output>
-			<rule>
-				<inputEntry>
-					<text>null</text>
-				</inputEntry>
-				<outputEntry><text>"Input is null"</text></outputEntry>
-			</rule>
-			<rule>
-				<inputEntry>
-					<text>not(null)</text>
-				</inputEntry>
-				<outputEntry><text>"Input is not null"</text></outputEntry>
-			</rule>
-		</decisionTable>
-	</decision>
-	<inputData name="Null Input" id="i_NullInput">
-		<variable name="Null Input" typeRef="feel:string"/>
-	</inputData>
-</definitions>
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      id="_null_values_model"
+                      name="Null values model"
+                      namespace="https://github.com/kiegroup/kie-dmn">
+   <semantic:decision name="Null value" id="d_GreetingMessage">
+      <semantic:variable name="Null value" typeRef="string"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#i_NullInput"/>
+      </semantic:informationRequirement>
+      <semantic:decisionTable>
+         <semantic:input>
+            <semantic:inputExpression typeRef="string">
+               <semantic:text>Null Input</semantic:text>
+            </semantic:inputExpression>
+         </semantic:input>
+         <semantic:output typeRef="string">
+			</semantic:output>
+         <semantic:rule>
+            <semantic:inputEntry>
+               <semantic:text>null</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry>
+               <semantic:text>"Input is null"</semantic:text>
+            </semantic:outputEntry>
+         </semantic:rule>
+         <semantic:rule>
+            <semantic:inputEntry>
+               <semantic:text>not(null)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry>
+               <semantic:text>"Input is not null"</semantic:text>
+            </semantic:outputEntry>
+         </semantic:rule>
+      </semantic:decisionTable>
+   </semantic:decision>
+   <semantic:inputData name="Null Input" id="i_NullInput">
+      <semantic:variable name="Null Input" typeRef="string"/>
+   </semantic:inputData>
+</semantic:definitions>

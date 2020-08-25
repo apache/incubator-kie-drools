@@ -1,34 +1,54 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_ae5d2033-c6d0-411f-a394-da33a70e5638" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.3.2" id="_ae5d2033-c6d0-411f-a394-da33a70e5638" name="Drawing 1" namespace="http://www.trisotech.com/dmn/definitions/_ae5d2033-c6d0-411f-a394-da33a70e5638" triso:logoChoice="Default">
-  <semantic:extensionElements>
-    <triso:dmnInputs>[{"name":"selector","id":"_286222df-3010-407b-b3f0-b07b861333ae","type":"string"}]</triso:dmnInputs>
-  </semantic:extensionElements>
-  <semantic:itemDefinition isCollection="true" label="tListOfWords" name="tListOfWords">
-    <semantic:typeRef>feel:string</semantic:typeRef>
-  </semantic:itemDefinition>
-  <semantic:decision id="_3ed3a74c-b705-4969-9c81-7fef2152fda8" name="a decision">
-    <semantic:variable id="_ef668353-81b2-4806-a9cb-d7826945ff41" name="a decision" typeRef="tListOfWords"/>
-    <semantic:informationRequirement>
-      <semantic:requiredInput href="#_286222df-3010-407b-b3f0-b07b861333ae"/>
-    </semantic:informationRequirement>
-    <semantic:decisionTable hitPolicy="UNIQUE" id="_43dba451-df26-41f9-8f62-461a32fa20db" outputLabel="a decision">
-      <semantic:input id="_7048dd17-b911-4d63-b6fc-eab6fd40188c">
-        <semantic:inputExpression typeRef="feel:string">
-          <semantic:text>selector</semantic:text>
-        </semantic:inputExpression>
-      </semantic:input>
-      <semantic:output id="_c4a84c9c-a8cd-46c2-9a50-2a112ae233ec"/>
-      <semantic:rule id="_0da2578c-3dec-4fba-ab70-c4806688fb72">
-        <semantic:inputEntry id="_d7c41083-f2cd-4a99-b1db-af9f759a999d">
-          <semantic:text>-</semantic:text>
-        </semantic:inputEntry>
-        <semantic:outputEntry id="_38a3075f-6629-4002-a2f8-f8e3789fbae9">
-          <semantic:text>["abc", "xyz"]</semantic:text>
-        </semantic:outputEntry>
-      </semantic:rule>
-    </semantic:decisionTable>
-  </semantic:decision>
-  <semantic:inputData id="_286222df-3010-407b-b3f0-b07b861333ae" name="selector">
-    <semantic:variable id="_f4adf05a-b5ff-41d0-b460-0e74df5dab55" name="selector" typeRef="feel:string"/>
-  </semantic:inputData>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/dmn/definitions/_ae5d2033-c6d0-411f-a394-da33a70e5638"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.0.3.2"
+                      id="_ae5d2033-c6d0-411f-a394-da33a70e5638"
+                      name="Drawing 1"
+                      namespace="http://www.trisotech.com/dmn/definitions/_ae5d2033-c6d0-411f-a394-da33a70e5638">
+   <semantic:extensionElements>
+      <triso:dmnInputs xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                       xmlns:trisofeed="http://trisotech.com/feed">[{"name":"selector","id":"_286222df-3010-407b-b3f0-b07b861333ae","type":"string"}]</triso:dmnInputs>
+   </semantic:extensionElements>
+   <semantic:itemDefinition isCollection="true" label="tListOfWords" name="tListOfWords">
+      <semantic:typeRef>string</semantic:typeRef>
+   </semantic:itemDefinition>
+   <semantic:decision id="_3ed3a74c-b705-4969-9c81-7fef2152fda8" name="a decision">
+      <semantic:variable id="_ef668353-81b2-4806-a9cb-d7826945ff41"
+                         name="a decision"
+                         typeRef="tListOfWords"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_286222df-3010-407b-b3f0-b07b861333ae"/>
+      </semantic:informationRequirement>
+      <semantic:decisionTable hitPolicy="UNIQUE"
+                              id="_43dba451-df26-41f9-8f62-461a32fa20db"
+                              outputLabel="a decision">
+         <semantic:input id="_7048dd17-b911-4d63-b6fc-eab6fd40188c">
+            <semantic:inputExpression typeRef="string">
+               <semantic:text>selector</semantic:text>
+            </semantic:inputExpression>
+         </semantic:input>
+         <semantic:output id="_c4a84c9c-a8cd-46c2-9a50-2a112ae233ec"/>
+         <semantic:rule id="_0da2578c-3dec-4fba-ab70-c4806688fb72">
+            <semantic:inputEntry id="_d7c41083-f2cd-4a99-b1db-af9f759a999d">
+               <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_38a3075f-6629-4002-a2f8-f8e3789fbae9">
+               <semantic:text>["abc", "xyz"]</semantic:text>
+            </semantic:outputEntry>
+         </semantic:rule>
+      </semantic:decisionTable>
+   </semantic:decision>
+   <semantic:inputData id="_286222df-3010-407b-b3f0-b07b861333ae" name="selector">
+      <semantic:variable id="_f4adf05a-b5ff-41d0-b460-0e74df5dab55"
+                         name="selector"
+                         typeRef="string"/>
+   </semantic:inputData>
 </semantic:definitions>

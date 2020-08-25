@@ -14,21 +14,25 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<definitions id="_out-of-order" name="out-of-order"
-	namespace="https://github.com/kiegroup/kie-dmn"
-	xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-	xmlns:kie="https://github.com/kiegroup/kie-dmn"
-	xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
-	<itemDefinition name="tPassenger">
-		<itemComponent name="Status">
-			<typeRef>kie:tStatus</typeRef>
-		</itemComponent>
-	</itemDefinition>
-	<itemDefinition name="tStatus">
-		<typeRef>feel:string</typeRef>
-		<allowedValues>
-			<text>"gold","silver","bronze"</text>
-		</allowedValues>
-	</itemDefinition>
-</definitions>
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:kie="https://github.com/kiegroup/kie-dmn"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      id="_out-of-order"
+                      name="out-of-order"
+                      namespace="https://github.com/kiegroup/kie-dmn">
+   <semantic:itemDefinition name="tPassenger">
+      <semantic:itemComponent name="Status">
+         <semantic:typeRef>tStatus</semantic:typeRef>
+      </semantic:itemComponent>
+   </semantic:itemDefinition>
+   <semantic:itemDefinition name="tStatus">
+      <semantic:typeRef>string</semantic:typeRef>
+      <semantic:allowedValues>
+         <semantic:text>"gold","silver","bronze"</semantic:text>
+      </semantic:allowedValues>
+   </semantic:itemDefinition>
+</semantic:definitions>

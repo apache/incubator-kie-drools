@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_6ab2bd6d-adaa-45c4-a141-a84382a201eb" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.5.1" id="_6ab2bd6d-adaa-45c4-a141-a84382a201eb" name="list containment DT" namespace="http://www.trisotech.com/definitions/_6ab2bd6d-adaa-45c4-a141-a84382a201eb" triso:logoChoice="Default">
+  <semantic:extensionElements>
+    <tc:testCases>
+      <tc:testCase id="_3de6b15d-2a94-45ee-988d-dc5906a6230d" name="Test case 1">
+        <tc:inputNode name="Passenger">
+          <tc:component name="name">
+            <tc:value xsi:type="xsd:string">Osama bin Laden</tc:value>
+          </tc:component>
+        </tc:inputNode>
+        <tc:resultNode name="Boarding Status">
+          <tc:expected>
+            <tc:value xsi:type="xsd:string">OK</tc:value>
+          </tc:expected>
+        </tc:resultNode>
+        <tc:resultNode name="NoFly List">
+          <tc:expected>
+            <tc:list>
+              <tc:item>
+                <tc:component name="name">
+                  <tc:value xsi:type="xsd:string">John Xlpah</tc:value>
+                </tc:component>
+              </tc:item>
+              <tc:item>
+                <tc:component name="name">
+                  <tc:value xsi:type="xsd:string">Osama bin Laden</tc:value>
+                </tc:component>
+              </tc:item>
+              <tc:item>
+                <tc:component name="name">
+                  <tc:value xsi:type="xsd:string">Fred ZZgty</tc:value>
+                </tc:component>
+              </tc:item>
+            </tc:list>
+          </tc:expected>
+        </tc:resultNode>
+      </tc:testCase>
+    </tc:testCases>
+  </semantic:extensionElements>
+  <semantic:itemDefinition isCollection="false" label="tPassenger" name="tPassenger">
+    <semantic:itemComponent id="_1612c4cc-b826-4529-907a-e44c044f5082" isCollection="false" name="name">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="true" label="tPassengerList" name="tPassengerList">
+    <semantic:typeRef>tPassenger</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tBoardingStatus" name="tBoardingStatus">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>"OK","Denied"</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:decision id="_ce4f216e-683a-4615-ba34-e8656bbdfe2a" name="Boarding Status">
+    <semantic:variable id="_400b1ee4-c21d-4d9a-b9a9-488d3af25b00" name="Boarding Status" typeRef="tBoardingStatus"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_8bf2598c-81db-42a5-84dc-e361230601ea"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_d0074e8b-c1e2-4d13-82f6-7e33ccc0de52"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" id="_e8827354-3a2f-4243-891c-449bb8b846e9" outputLabel="Boarding Status">
+      <semantic:input id="_d0d62378-654a-4968-b5cb-723af80aee44">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Passenger.name</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_8a921221-4f89-4ee8-bdf2-1479d0843027">
+        <semantic:outputValues triso:constraintsType="enumeration">
+          <semantic:text>"OK","Denied"</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:rule id="_9d7c955a-5353-4d80-a506-11f9a16325dd">
+        <semantic:inputEntry id="_95db60a9-862c-45e5-a493-8f0a0a4675cc">
+          <semantic:text>NoFly List.name</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_94163ed9-d2cf-442a-accd-d60dbc3a9b97">
+          <semantic:text>"Denied"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_465e57a8-d58d-4ab9-af78-ba7e2d28cd6d">
+        <semantic:inputEntry id="_0f487f0e-6ded-4fe4-818a-36edfe2cf462">
+          <semantic:text>not(NoFly List.name)</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_ce24ef8a-844e-421f-8598-886eb8a98b40">
+          <semantic:text>"OK"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:decision id="_8bf2598c-81db-42a5-84dc-e361230601ea" name="NoFly List">
+    <semantic:variable id="_a722cfb5-51be-4b5a-a1bf-6bd4877c887c" name="NoFly List" typeRef="tPassengerList"/>
+    <semantic:relation id="_6313156b-0467-488f-aee1-92d08ffea17b">
+      <semantic:column id="_6b8aad97-2885-4a21-9735-71a0418221f6" name="name" typeRef="feel:string"/>
+      <semantic:row id="_fa3ea8ff-202d-4f5e-a67a-bdfea5519490">
+        <semantic:literalExpression id="_4e180575-fd9a-40cb-9f46-6dc71e8d2a9f">
+          <semantic:text>"John Xlpah"</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_8620ce2a-6c56-450c-a589-793e9c058ce8">
+        <semantic:literalExpression id="_93214792-c671-479c-b3be-1d5b0505be48">
+          <semantic:text>"Osama bin Laden"</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_57272d02-30be-4892-acde-2bf80f3f867f">
+        <semantic:literalExpression id="_3bad7a11-401c-4bb0-bef6-2fb7aa5a6ce5">
+          <semantic:text>"Fred ZZgty"</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+    </semantic:relation>
+  </semantic:decision>
+  <semantic:inputData id="_d0074e8b-c1e2-4d13-82f6-7e33ccc0de52" name="Passenger">
+    <semantic:variable id="_8ff3fae9-1d68-45dc-91bd-a1d2b2e72d1e" name="Passenger" typeRef="tPassenger"/>
+  </semantic:inputData>
+</semantic:definitions>

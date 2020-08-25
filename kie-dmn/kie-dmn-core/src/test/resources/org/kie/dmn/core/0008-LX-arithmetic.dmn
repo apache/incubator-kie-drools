@@ -12,38 +12,39 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-						 xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-						 xmlns:tns="https://github.com/kiegroup/kie-dmn"
-						 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-						 id="_0008-LX-arithmetic"
-						 name="0008-LX-arithmetic"
-						 namespace="https://github.com/kiegroup/kie-dmn"
-						 xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-						 expressionLanguage="http://www.omg.org/spec/FEEL/20140401"
-						 typeLanguage="http://www.omg.org/spec/FEEL/20140401">
-	<itemDefinition id="tLoan" name="tLoan" isCollection="false">
-		<itemComponent id="_principal" name="principal" isCollection="false">
-			<typeRef>feel:number</typeRef>
-		</itemComponent>
-		<itemComponent id="_rate" name="rate" isCollection="false">
-			<typeRef>feel:number</typeRef>
-		</itemComponent>
-		<itemComponent id="_termMonths" name="termMonths" isCollection="false">
-			<typeRef>feel:number</typeRef>
-		</itemComponent>
-	</itemDefinition>
-	<decision id="_payment" name="payment">
-		<variable name="payment" typeRef="feel:number"/>
-		<informationRequirement>
-			<requiredInput href="#_loan"/>
-		</informationRequirement>
-		<literalExpression>
-			<text>(loan.principal*loan.rate/12)/(1-(1+loan.rate/12)**-loan.termMonths)</text>
-		</literalExpression>
-	</decision>
-	<inputData id="_loan" name="loan">
-		<variable name="loan" typeRef="tns:tLoan"/>
-	</inputData>
-</definitions>
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      id="_0008-LX-arithmetic"
+                      name="0008-LX-arithmetic"
+                      namespace="https://github.com/kiegroup/kie-dmn"
+                      >
+   <semantic:itemDefinition id="tLoan" name="tLoan" isCollection="false">
+      <semantic:itemComponent id="_principal" name="principal" isCollection="false">
+         <semantic:typeRef>number</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_rate" name="rate" isCollection="false">
+         <semantic:typeRef>number</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_termMonths" name="termMonths" isCollection="false">
+         <semantic:typeRef>number</semantic:typeRef>
+      </semantic:itemComponent>
+   </semantic:itemDefinition>
+   <semantic:decision id="_payment" name="payment">
+      <semantic:variable name="payment" typeRef="number"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_loan"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression>
+         <semantic:text>(loan.principal*loan.rate/12)/(1-(1+loan.rate/12)**-loan.termMonths)</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:inputData id="_loan" name="loan">
+      <semantic:variable name="loan" typeRef="tLoan"/>
+   </semantic:inputData>
+</semantic:definitions>

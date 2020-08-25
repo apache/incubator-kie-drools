@@ -14,29 +14,32 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<definitions id="business-knowledge-model-required-input" name="business-knowledge-model-required-input"
-             namespace="https://github.com/kiegroup/kie-dmn"
-             xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-             xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
-  <businessKnowledgeModel name="someModel" id="id_someModel">
-    <variable name="someModelVariable" id="id_someModelVariable"/>
-    <knowledgeRequirement>
-      <requiredKnowledge href="#input1"/>
-    </knowledgeRequirement>
-    <!--<authorityRequirement>-->
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      id="business-knowledge-model-required-input"
+                      name="business-knowledge-model-required-input"
+                      namespace="https://github.com/kiegroup/kie-dmn">
+   <semantic:businessKnowledgeModel name="someModel" id="id_someModel">
+      <semantic:variable name="someModelVariable" id="id_someModelVariable"/>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="#input1"/>
+      </semantic:knowledgeRequirement>
+      <!--<authorityRequirement>-->
       <!--<requiredInput href="#input1"/>-->
-    <!--</authorityRequirement>-->
-  </businessKnowledgeModel>
-  <businessKnowledgeModel name="input1" id="input1">
-    <variable name="variableee" id="variableee"/>
-    <knowledgeRequirement>
-      <requiredKnowledge href=""/>
-    </knowledgeRequirement>
-  </businessKnowledgeModel>
-  <!--<knowledgeSource name="input1" id="input1"></knowledgeSource>-->
-  <!--<inputData name="Full Name" id="i_FullName">-->
-    <!--<variable name="Full Name" typeRef="feel:string"/>-->
-  <!--</inputData>-->
-
-</definitions>
+      <!--</authorityRequirement>-->
+   </semantic:businessKnowledgeModel>
+   <semantic:businessKnowledgeModel name="input1" id="input1">
+      <semantic:variable name="variableee" id="variableee"/>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href=""/>
+      </semantic:knowledgeRequirement>
+   </semantic:businessKnowledgeModel>
+   <!--<knowledgeSource name="input1" id="input1"></knowledgeSource>-->
+   <!--<inputData name="Full Name" id="i_FullName">-->
+   <!--<variable name="Full Name" typeRef="feel:string"/>-->
+   <!--</inputData>-->
+</semantic:definitions>

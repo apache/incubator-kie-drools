@@ -1,57 +1,87 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_c3e08836-7973-4e4d-af2b-d46b23725c13" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:include1="http://www.trisotech.com/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.6.201804192120" id="_c3e08836-7973-4e4d-af2b-d46b23725c13" name="Import BKM and have a Decision Ctx with DT" namespace="http://www.trisotech.com/definitions/_c3e08836-7973-4e4d-af2b-d46b23725c13" triso:logoChoice="Default">
-  <semantic:extensionElements/>
-  <semantic:import xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:modelName="Imported Model" drools:name="myimport" importType="http://www.omg.org/spec/DMN1-2Alpha/20160929/MODEL" namespace="http://www.trisotech.com/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36" triso:fileId="eyJmIjp7InNrdSI6IjBmMzNjZmVhLTZkYTQtNDJjNS04MDM3LTRiYjJmNWJkYzc0YiIsIm5hbWUiOiJJbXBvcnRlZCBNb2RlbCJ9fQ==" triso:fileName="Matteo Mortari/Imported Model"/>
-  <semantic:inputData id="_9df2ca89-d100-4ba3-9a44-6a71cae5c001" name="A Person">
-    <semantic:variable id="_9e1f6cbc-584f-41f6-8748-97f579a3df43" name="A Person" typeRef="myimport.tPerson"/>
-  </semantic:inputData>
-  <semantic:decision id="_2d131943-c513-416b-acc6-6efe8fe01ba4" name="A Decision Ctx with DT">
-    <semantic:variable id="_1a9b6949-afac-4c9e-afcd-178d9f720f29" name="A Decision Ctx with DT"/>
-    <semantic:informationRequirement>
-      <semantic:requiredInput href="#_9df2ca89-d100-4ba3-9a44-6a71cae5c001"/>
-    </semantic:informationRequirement>
-    <semantic:knowledgeRequirement>
-      <semantic:requiredKnowledge href="http://www.trisotech.com/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36#_32543811-b499-4608-b784-6c6f294b1c58"/>
-    </semantic:knowledgeRequirement>
-    <semantic:context id="_6bffe0cf-17b5-4372-afeb-161d2378dfc6">
-      <semantic:contextEntry>
-        <semantic:variable id="_5459fb02-6003-4c75-9660-bd5dc8111e92" name="normal greeting"/>
-        <semantic:literalExpression id="_c6977a3f-f3e0-411f-a1fc-590db1b97958">
-          <semantic:text>myimport.Say Hello(A Person)</semantic:text>
-        </semantic:literalExpression>
-      </semantic:contextEntry>
-      <semantic:contextEntry>
-        <semantic:variable id="_2e57804f-68d1-4613-9cd5-2f9aa04c5d84" name="override greeting" typeRef="feel:string"/>
-        <semantic:decisionTable hitPolicy="UNIQUE" id="_beebc5ac-ba03-4330-b01a-9ced32ef17fe" outputLabel="override greeting">
-          <semantic:input id="_d7a3e1e5-15c6-4b83-9fe6-f4ab8ce4be1c">
-            <semantic:inputExpression typeRef="feel:number">
-              <semantic:text>A Person.age</semantic:text>
-            </semantic:inputExpression>
-          </semantic:input>
-          <semantic:output id="_22740ea7-5a3a-45a2-ba08-95f0f0d98eea"/>
-          <semantic:rule id="_5f3dad91-e3b0-483f-a259-c855a0e6d7d6">
-            <semantic:inputEntry id="_6fe43313-b225-4b78-aac1-bf90794b80fd">
-              <semantic:text>&lt;=30</semantic:text>
-            </semantic:inputEntry>
-            <semantic:outputEntry id="_25a3221c-9ee1-4b01-9b80-1553d376527e">
-              <semantic:text>normal greeting</semantic:text>
-            </semantic:outputEntry>
-          </semantic:rule>
-          <semantic:rule id="_b73ea436-a867-43c7-b164-222bc5d65ae3">
-            <semantic:inputEntry id="_c4f6a141-36c6-4e4c-b737-3dcafee8c60b">
-              <semantic:text>&gt;30</semantic:text>
-            </semantic:inputEntry>
-            <semantic:outputEntry id="_28977b5a-e0ba-4266-957d-dad963e4c7cf">
-              <semantic:text>"Respectfully, "+normal greeting</semantic:text>
-            </semantic:outputEntry>
-          </semantic:rule>
-        </semantic:decisionTable>
-      </semantic:contextEntry>
-      <semantic:contextEntry>
-        <semantic:literalExpression id="_67c0a864-cbb6-4fa7-a516-687778423717">
-          <semantic:text>override greeting</semantic:text>
-        </semantic:literalExpression>
-      </semantic:contextEntry>
-    </semantic:context>
-  </semantic:decision>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/definitions/_c3e08836-7973-4e4d-af2b-d46b23725c13"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:include1="http://www.trisotech.com/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.0.6.201804192120"
+                      id="_c3e08836-7973-4e4d-af2b-d46b23725c13"
+                      name="Import BKM and have a Decision Ctx with DT"
+                      namespace="http://www.trisotech.com/definitions/_c3e08836-7973-4e4d-af2b-d46b23725c13">
+   <semantic:extensionElements/>
+   <semantic:import xmlns:drools="http://www.drools.org/kie/dmn/1.1"
+                    xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                    drools:modelName="Imported Model"
+                    drools:name="myimport"
+                    importType="http://www.omg.org/spec/DMN1-2Alpha/20160929/MODEL"
+                    namespace="http://www.trisotech.com/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36"
+                    triso:fileId="eyJmIjp7InNrdSI6IjBmMzNjZmVhLTZkYTQtNDJjNS04MDM3LTRiYjJmNWJkYzc0YiIsIm5hbWUiOiJJbXBvcnRlZCBNb2RlbCJ9fQ=="
+                    triso:fileName="Matteo Mortari/Imported Model"
+                    name="myimport"/>
+   <semantic:inputData id="_9df2ca89-d100-4ba3-9a44-6a71cae5c001" name="A Person">
+      <semantic:variable id="_9e1f6cbc-584f-41f6-8748-97f579a3df43"
+                         name="A Person"
+                         typeRef="myimport.tPerson"/>
+   </semantic:inputData>
+   <semantic:decision id="_2d131943-c513-416b-acc6-6efe8fe01ba4"
+                      name="A Decision Ctx with DT">
+      <semantic:variable id="_1a9b6949-afac-4c9e-afcd-178d9f720f29"
+                         name="A Decision Ctx with DT"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_9df2ca89-d100-4ba3-9a44-6a71cae5c001"/>
+      </semantic:informationRequirement>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="http://www.trisotech.com/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36#_32543811-b499-4608-b784-6c6f294b1c58"/>
+      </semantic:knowledgeRequirement>
+      <semantic:context id="_6bffe0cf-17b5-4372-afeb-161d2378dfc6">
+         <semantic:contextEntry>
+            <semantic:variable id="_5459fb02-6003-4c75-9660-bd5dc8111e92" name="normal greeting"/>
+            <semantic:literalExpression id="_c6977a3f-f3e0-411f-a1fc-590db1b97958">
+               <semantic:text>myimport.Say Hello(A Person)</semantic:text>
+            </semantic:literalExpression>
+         </semantic:contextEntry>
+         <semantic:contextEntry>
+            <semantic:variable id="_2e57804f-68d1-4613-9cd5-2f9aa04c5d84"
+                               name="override greeting"
+                               typeRef="string"/>
+            <semantic:decisionTable hitPolicy="UNIQUE"
+                                    id="_beebc5ac-ba03-4330-b01a-9ced32ef17fe"
+                                    outputLabel="override greeting">
+               <semantic:input id="_d7a3e1e5-15c6-4b83-9fe6-f4ab8ce4be1c">
+                  <semantic:inputExpression typeRef="number">
+                     <semantic:text>A Person.age</semantic:text>
+                  </semantic:inputExpression>
+               </semantic:input>
+               <semantic:output id="_22740ea7-5a3a-45a2-ba08-95f0f0d98eea"/>
+               <semantic:rule id="_5f3dad91-e3b0-483f-a259-c855a0e6d7d6">
+                  <semantic:inputEntry id="_6fe43313-b225-4b78-aac1-bf90794b80fd">
+                     <semantic:text>&lt;=30</semantic:text>
+                  </semantic:inputEntry>
+                  <semantic:outputEntry id="_25a3221c-9ee1-4b01-9b80-1553d376527e">
+                     <semantic:text>normal greeting</semantic:text>
+                  </semantic:outputEntry>
+               </semantic:rule>
+               <semantic:rule id="_b73ea436-a867-43c7-b164-222bc5d65ae3">
+                  <semantic:inputEntry id="_c4f6a141-36c6-4e4c-b737-3dcafee8c60b">
+                     <semantic:text>&gt;30</semantic:text>
+                  </semantic:inputEntry>
+                  <semantic:outputEntry id="_28977b5a-e0ba-4266-957d-dad963e4c7cf">
+                     <semantic:text>"Respectfully, "+normal greeting</semantic:text>
+                  </semantic:outputEntry>
+               </semantic:rule>
+            </semantic:decisionTable>
+         </semantic:contextEntry>
+         <semantic:contextEntry>
+            <semantic:literalExpression id="_67c0a864-cbb6-4fa7-a516-687778423717">
+               <semantic:text>override greeting</semantic:text>
+            </semantic:literalExpression>
+         </semantic:contextEntry>
+      </semantic:context>
+   </semantic:decision>
 </semantic:definitions>

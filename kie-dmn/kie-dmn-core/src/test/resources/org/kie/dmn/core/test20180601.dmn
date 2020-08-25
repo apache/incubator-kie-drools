@@ -1,16 +1,33 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_9b8f2642-2597-4a99-9fcd-f9302692d3dc" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.8.2" id="_9b8f2642-2597-4a99-9fcd-f9302692d3dc" name="Drawing 1" namespace="http://www.trisotech.com/dmn/definitions/_9b8f2642-2597-4a99-9fcd-f9302692d3dc" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
-  <dmn11:extensionElements/>
-  <dmn11:inputData id="_6c58f75f-aa86-4484-b93b-cf92df414846" name="my num">
-    <dmn11:variable id="_1a907293-60ec-4baf-800b-0a289f53cf64" name="my num" typeRef="feel:number"/>
-  </dmn11:inputData>
-  <dmn11:decision id="_712a0a2e-481e-4067-a464-778fbece830f" name="my decision">
-    <dmn11:variable id="_f9cf3a2b-1383-4ae5-813b-7a3f8a56a7cc" name="my decision"/>
-    <dmn11:informationRequirement>
-      <dmn11:requiredInput href="#_6c58f75f-aa86-4484-b93b-cf92df414846"/>
-    </dmn11:informationRequirement>
-    <dmn11:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_e9bde2a6-82c5-4e25-ac62-6835a7874661" triso:unparsed="true">
-      <dmn11:text>not( my num = 3 )</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-</dmn11:definitions>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/dmn/definitions/_9b8f2642-2597-4a99-9fcd-f9302692d3dc"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.0.8.2"
+                      id="_9b8f2642-2597-4a99-9fcd-f9302692d3dc"
+                      name="Drawing 1"
+                      namespace="http://www.trisotech.com/dmn/definitions/_9b8f2642-2597-4a99-9fcd-f9302692d3dc">
+   <semantic:extensionElements/>
+   <semantic:inputData id="_6c58f75f-aa86-4484-b93b-cf92df414846" name="my num">
+      <semantic:variable id="_1a907293-60ec-4baf-800b-0a289f53cf64"
+                         name="my num"
+                         typeRef="number"/>
+   </semantic:inputData>
+   <semantic:decision id="_712a0a2e-481e-4067-a464-778fbece830f" name="my decision">
+      <semantic:variable id="_f9cf3a2b-1383-4ae5-813b-7a3f8a56a7cc" name="my decision"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_6c58f75f-aa86-4484-b93b-cf92df414846"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                                  id="_e9bde2a6-82c5-4e25-ac62-6835a7874661"
+                                  triso:unparsed="true">
+         <semantic:text>not( my num = 3 )</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+</semantic:definitions>

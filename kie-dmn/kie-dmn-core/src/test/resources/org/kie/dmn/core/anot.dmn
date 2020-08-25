@@ -1,74 +1,97 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_292c1c7b-6b38-415d-938f-e9ca51d30b2b" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.5.1" id="_292c1c7b-6b38-415d-938f-e9ca51d30b2b" name="anot" namespace="http://www.trisotech.com/dmn/definitions/_292c1c7b-6b38-415d-938f-e9ca51d30b2b" triso:logoChoice="Default">
-  <semantic:extensionElements/>
-  <semantic:itemDefinition isCollection="true" label="tList" name="tList">
-    <semantic:typeRef>feel:string</semantic:typeRef>
-  </semantic:itemDefinition>
-  <semantic:decision id="_9177cf88-4dd1-463e-9a83-6215e4dcd61d" name="vowels">
-    <semantic:variable id="_e99124bc-5445-45a0-9e74-5547c96ce454" name="vowels"/>
-    <semantic:relation id="_3d6c22b7-c814-4114-8a27-f73c240ae0d3">
-      <semantic:column id="_403677cf-63e4-4b34-912e-3955acf45902" name="vowels"/>
-      <semantic:row id="_2bb00cce-95b5-464e-8353-f05e74453b7d">
-        <semantic:literalExpression id="_b39f40d4-27b7-4372-9d9d-0cd7848d44df">
-          <semantic:text>"a"</semantic:text>
-        </semantic:literalExpression>
-      </semantic:row>
-      <semantic:row id="_e013151f-2a9e-4254-9a39-7be3b272a7d6">
-        <semantic:literalExpression id="_d919a242-1f75-4a76-82c8-7cef086ca473">
-          <semantic:text>"e"</semantic:text>
-        </semantic:literalExpression>
-      </semantic:row>
-      <semantic:row id="_ac2c6990-10e4-403c-bd4d-51b9466c96b8">
-        <semantic:literalExpression id="_7e33bed1-2b28-4f82-a3d3-c95766c9566f">
-          <semantic:text>"i"</semantic:text>
-        </semantic:literalExpression>
-      </semantic:row>
-      <semantic:row id="_b8191c50-b106-4fdf-9a1e-487f2b017c26">
-        <semantic:literalExpression id="_74081744-35b7-4e22-9f83-f51805240e0b">
-          <semantic:text>"o"</semantic:text>
-        </semantic:literalExpression>
-      </semantic:row>
-      <semantic:row id="_9044e1f7-af1a-4c82-a004-1428dd027259">
-        <semantic:literalExpression id="_683719b1-6446-4f9a-9325-8431d570e415">
-          <semantic:text>"u"</semantic:text>
-        </semantic:literalExpression>
-      </semantic:row>
-    </semantic:relation>
-  </semantic:decision>
-  <semantic:inputData id="_68db6d4d-3d0c-4f03-8c51-f11dea6dfbbe" name="a letter">
-    <semantic:variable id="_ed9c2828-0eb6-459c-9737-8a89004e2e88" name="a letter" typeRef="feel:string"/>
-  </semantic:inputData>
-  <semantic:decision id="_ba35b33b-bb9e-434e-a586-9776f7d1804f" name="what letter decision">
-    <semantic:variable id="_ffc96aea-d340-4d66-a939-298a1af6465b" name="what letter decision" typeRef="feel:string"/>
-    <semantic:informationRequirement>
-      <semantic:requiredDecision href="#_9177cf88-4dd1-463e-9a83-6215e4dcd61d"/>
-    </semantic:informationRequirement>
-    <semantic:informationRequirement>
-      <semantic:requiredInput href="#_68db6d4d-3d0c-4f03-8c51-f11dea6dfbbe"/>
-    </semantic:informationRequirement>
-    <semantic:decisionTable hitPolicy="UNIQUE" id="_e751a48a-fcb2-49c5-b1ed-f7af3e82e7cb" outputLabel="what letter decision">
-      <semantic:input id="_221ec68d-5083-40d9-ae5a-0bc335784231">
-        <semantic:inputExpression typeRef="feel:string">
-          <semantic:text>a letter</semantic:text>
-        </semantic:inputExpression>
-      </semantic:input>
-      <semantic:output id="_a9cee08b-bbb5-40eb-bb3e-8ff4511e9423"/>
-      <semantic:rule id="_a1f34f82-6135-4ae4-8e41-27813fae3f30">
-        <semantic:inputEntry expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_1c26451f-e0e9-4e45-b14e-05a5b9717204" triso:unparsed="true">
-          <semantic:text>vowels.vowels</semantic:text>
-        </semantic:inputEntry>
-        <semantic:outputEntry id="_ff6e2070-44c3-44cf-8166-849685f8838a">
-          <semantic:text>"vowel"</semantic:text>
-        </semantic:outputEntry>
-      </semantic:rule>
-      <semantic:rule id="_df163d3a-a15e-43fd-93ac-fd26a09ea2ce">
-        <semantic:inputEntry expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_a2251ea3-6c6b-4fc8-bcca-8a79a1417148" triso:unparsed="true">
-          <semantic:text>not( vowels.vowels )</semantic:text>
-        </semantic:inputEntry>
-        <semantic:outputEntry id="_cf72f80c-b7d0-4e6e-96f5-729649200bf0">
-          <semantic:text>"consonant"</semantic:text>
-        </semantic:outputEntry>
-      </semantic:rule>
-    </semantic:decisionTable>
-  </semantic:decision>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/dmn/definitions/_292c1c7b-6b38-415d-938f-e9ca51d30b2b"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.0.5.1"
+                      id="_292c1c7b-6b38-415d-938f-e9ca51d30b2b"
+                      name="anot"
+                      namespace="http://www.trisotech.com/dmn/definitions/_292c1c7b-6b38-415d-938f-e9ca51d30b2b">
+   <semantic:extensionElements/>
+   <semantic:itemDefinition isCollection="true" label="tList" name="tList">
+      <semantic:typeRef>string</semantic:typeRef>
+   </semantic:itemDefinition>
+   <semantic:decision id="_9177cf88-4dd1-463e-9a83-6215e4dcd61d" name="vowels">
+      <semantic:variable id="_e99124bc-5445-45a0-9e74-5547c96ce454" name="vowels"/>
+      <semantic:relation id="_3d6c22b7-c814-4114-8a27-f73c240ae0d3">
+         <semantic:column id="_403677cf-63e4-4b34-912e-3955acf45902" name="vowels"/>
+         <semantic:row id="_2bb00cce-95b5-464e-8353-f05e74453b7d">
+            <semantic:literalExpression id="_b39f40d4-27b7-4372-9d9d-0cd7848d44df">
+               <semantic:text>"a"</semantic:text>
+            </semantic:literalExpression>
+         </semantic:row>
+         <semantic:row id="_e013151f-2a9e-4254-9a39-7be3b272a7d6">
+            <semantic:literalExpression id="_d919a242-1f75-4a76-82c8-7cef086ca473">
+               <semantic:text>"e"</semantic:text>
+            </semantic:literalExpression>
+         </semantic:row>
+         <semantic:row id="_ac2c6990-10e4-403c-bd4d-51b9466c96b8">
+            <semantic:literalExpression id="_7e33bed1-2b28-4f82-a3d3-c95766c9566f">
+               <semantic:text>"i"</semantic:text>
+            </semantic:literalExpression>
+         </semantic:row>
+         <semantic:row id="_b8191c50-b106-4fdf-9a1e-487f2b017c26">
+            <semantic:literalExpression id="_74081744-35b7-4e22-9f83-f51805240e0b">
+               <semantic:text>"o"</semantic:text>
+            </semantic:literalExpression>
+         </semantic:row>
+         <semantic:row id="_9044e1f7-af1a-4c82-a004-1428dd027259">
+            <semantic:literalExpression id="_683719b1-6446-4f9a-9325-8431d570e415">
+               <semantic:text>"u"</semantic:text>
+            </semantic:literalExpression>
+         </semantic:row>
+      </semantic:relation>
+   </semantic:decision>
+   <semantic:inputData id="_68db6d4d-3d0c-4f03-8c51-f11dea6dfbbe" name="a letter">
+      <semantic:variable id="_ed9c2828-0eb6-459c-9737-8a89004e2e88"
+                         name="a letter"
+                         typeRef="string"/>
+   </semantic:inputData>
+   <semantic:decision id="_ba35b33b-bb9e-434e-a586-9776f7d1804f" name="what letter decision">
+      <semantic:variable id="_ffc96aea-d340-4d66-a939-298a1af6465b"
+                         name="what letter decision"
+                         typeRef="string"/>
+      <semantic:informationRequirement>
+         <semantic:requiredDecision href="#_9177cf88-4dd1-463e-9a83-6215e4dcd61d"/>
+      </semantic:informationRequirement>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_68db6d4d-3d0c-4f03-8c51-f11dea6dfbbe"/>
+      </semantic:informationRequirement>
+      <semantic:decisionTable hitPolicy="UNIQUE"
+                              id="_e751a48a-fcb2-49c5-b1ed-f7af3e82e7cb"
+                              outputLabel="what letter decision">
+         <semantic:input id="_221ec68d-5083-40d9-ae5a-0bc335784231">
+            <semantic:inputExpression typeRef="string">
+               <semantic:text>a letter</semantic:text>
+            </semantic:inputExpression>
+         </semantic:input>
+         <semantic:output id="_a9cee08b-bbb5-40eb-bb3e-8ff4511e9423"/>
+         <semantic:rule id="_a1f34f82-6135-4ae4-8e41-27813fae3f30">
+            <semantic:inputEntry xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                                 id="_1c26451f-e0e9-4e45-b14e-05a5b9717204"
+                                 triso:unparsed="true">
+               <semantic:text>vowels.vowels</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_ff6e2070-44c3-44cf-8166-849685f8838a">
+               <semantic:text>"vowel"</semantic:text>
+            </semantic:outputEntry>
+         </semantic:rule>
+         <semantic:rule id="_df163d3a-a15e-43fd-93ac-fd26a09ea2ce">
+            <semantic:inputEntry xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                                 id="_a2251ea3-6c6b-4fc8-bcca-8a79a1417148"
+                                 triso:unparsed="true">
+               <semantic:text>not( vowels.vowels )</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_cf72f80c-b7d0-4e6e-96f5-729649200bf0">
+               <semantic:text>"consonant"</semantic:text>
+            </semantic:outputEntry>
+         </semantic:rule>
+      </semantic:decisionTable>
+   </semantic:decision>
 </semantic:definitions>

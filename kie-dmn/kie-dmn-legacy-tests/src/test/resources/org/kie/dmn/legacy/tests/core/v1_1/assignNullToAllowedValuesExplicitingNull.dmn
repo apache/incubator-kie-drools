@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_700a46e0-01ed-4361-9034-4afdb2537ea4" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.11.2" id="_700a46e0-01ed-4361-9034-4afdb2537ea4" name="Drawing 1" namespace="http://www.trisotech.com/dmn/definitions/_700a46e0-01ed-4361-9034-4afdb2537ea4" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements/>
+  <dmn11:itemDefinition label="tLetter" name="tLetter">
+    <dmn11:typeRef>feel:string</dmn11:typeRef>
+    <dmn11:allowedValues triso:constraintsType="enumeration">
+      <dmn11:text>"a","b","c",null</dmn11:text><!-- tLetter type explicitly allows `null` in allowedValues -->
+    </dmn11:allowedValues>
+  </dmn11:itemDefinition>
+  <dmn11:decision id="_24e8b31b-9505-4f52-93af-6dd9ef39c72a" name="hardcoded letter">
+    <dmn11:variable id="_005ce5a8-8d7a-4796-910b-05d5e4c9e288" name="hardcoded letter" typeRef="tLetter"/>
+    <dmn11:literalExpression id="_0badca66-f5d4-4fb4-8db8-efcf4c15e360" typeRef="tLetter">
+      <dmn11:text>null</dmn11:text><!-- Deliberate trying to assign null to a tLetter type -->
+    </dmn11:literalExpression>
+  </dmn11:decision>
+  <dmn11:inputData id="_09945fda-2b89-4148-8758-0bcb91a66e4a" name="an input letter">
+    <dmn11:variable id="_440bd0a0-b158-4b11-8ea4-a33a4ec492a4" name="an input letter" typeRef="tLetter"/>
+  </dmn11:inputData>
+  <dmn11:decision id="_c3fcbca5-b311-4c65-9006-e5bd450fc6f8" name="decision over the input letter">
+    <dmn11:variable id="_b5caa390-d801-452d-aea4-b4bebb38a3d6" name="decision over the input letter"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#_09945fda-2b89-4148-8758-0bcb91a66e4a"/>
+    </dmn11:informationRequirement>
+    <dmn11:informationRequirement>
+      <dmn11:requiredDecision href="#_24e8b31b-9505-4f52-93af-6dd9ef39c72a"/>
+    </dmn11:informationRequirement>
+    <dmn11:literalExpression id="_fef26340-ffcb-4cd1-8baa-a1d449e91e7f">
+      <dmn11:text>"The input letter was: "+ an input letter</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+</dmn11:definitions>
