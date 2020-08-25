@@ -12,6 +12,10 @@
   <name>KIE :: PMML :: Models :: Mining :: Model</name>
   <description>KiePMML Model for Mining implementation</description>
 
+  <properties>
+    <sonar.coverage.exclusions>**/segmentation/**.java</sonar.coverage.exclusions>
+  </properties>
+
   <dependencies>
     <!-- PMML -->
     <dependency>
