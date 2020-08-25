@@ -1,0 +1,15 @@
+./src/test/java/org/kie/dmn/validation/ValidatorBusinessKnowledgeModelTest.java
+./src/test/java/org/kie/dmn/validation/ValidatorDMNElementReferenceTest.java
+./src/test/java/org/kie/dmn/validation/ValidatorAuthorityRequirementTest.java
+./src/test/java/org/kie/dmn/validation/ValidatorArtifactTest.java
+./src/test/java/org/kie/dmn/validation/ValidatorTest.java
+./src/test/java/org/kie/dmn/validation/ValidatorBusinessContextTest.java
+./src/test/java/org/kie/dmn/validation/ValidatorDecisionTest.java
+./src/test/java/org/kie/dmn/validation/ValidatorKnowledgeRequirementTest.java
+./src/test/java/org/kie/dmn/validation/ValidatorDecisionTableTest.java
+./src/test/java/org/kie/dmn/validation/ValidatorKnowledgeSourceTest.java
+./src/test/java/org/kie/dmn/validation/ValidatorContextTest.java
+./src/test/java/org/kie/dmn/validation/ValidatorTypeRefTest.java
+./src/test/java/org/kie/dmn/validation/ValidatorInformationRequirementTest.java
+./src/test/java/org/kie/dmn/validation/ValidatorInputDataTest.java
+./src/test/java/org/kie/dmn/validation/ValidatorImportTest.java
