@@ -14,6 +14,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
+
 <semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
                       xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
                       xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
@@ -24,8 +25,7 @@
                       id="TYPEREF_NO_NS"
                       name="TYPEREF_NO_NS"
                       namespace="https://github.com/kiegroup/kie-dmn">
-   <semantic:inputData name="Full Name" id="i_FullName">
-      <semantic:variable name="Full Name" typeRef="asd"/>
-      <!-- TEST already failing for XSD validation no valid QNAME -->
-   </semantic:inputData>
+    <semantic:inputData name="Full Name" id="i_FullName">
+        <semantic:variable name="Full Name" typeRef="nsUnexisting.asd" /> <!-- TEST already failing for XSD validation no valid QNAME -->
+    </semantic:inputData>
 </semantic:definitions>
