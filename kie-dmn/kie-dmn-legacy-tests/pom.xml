@@ -49,6 +49,11 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-validation</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-validation</artifactId>
+      <scope>test</scope>
       <classifier>tests</classifier>
     </dependency>
     <dependency>
