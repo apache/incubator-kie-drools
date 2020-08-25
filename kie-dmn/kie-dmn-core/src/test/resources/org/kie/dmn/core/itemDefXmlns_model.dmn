@@ -1,6 +1,5 @@
 <dmn:definitions name="MyDecision" id="_123456789" 
              xmlns="http://sample.dmn" namespace="http://sample.dmn"
-             xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
              xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/">
     <dmn:itemDefinition name="tPerson" label="tPerson">
         <dmn:itemComponent id="_f2d68912-345e-45bf-8791-457f6987bba1" name="name">
