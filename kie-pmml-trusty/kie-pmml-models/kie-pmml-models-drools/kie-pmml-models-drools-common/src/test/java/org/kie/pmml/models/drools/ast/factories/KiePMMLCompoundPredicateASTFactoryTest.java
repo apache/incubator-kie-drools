@@ -30,6 +30,7 @@ import org.dmg.pmml.DataType;
 import org.dmg.pmml.SimplePredicate;
 import org.junit.Test;
 import org.kie.pmml.commons.enums.ResultCode;
+import org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
@@ -37,21 +38,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.kie.pmml.commons.Constants.DONE;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.STATUS_PATTERN;
 import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.SURROGATE_GROUP_PATTERN;
 import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getPredicateASTFactoryData;
-import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getSimplePredicate;
+
 
 public class KiePMMLCompoundPredicateASTFactoryTest {
 
     @Test
     public void declareRuleFromCompoundPredicateAndOrXorFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        List<SimplePredicate> predicates = IntStream.range(0, 2)
-                .mapToObj(index -> getSimplePredicate("SIMPLEPREDICATE-" + index,
-                                                     DataType.STRING, "VALUE-" + index,
-                                                     SimplePredicate.Operator.LESS_THAN,
-                                                     fieldTypeMap)).collect(Collectors.toList());
+        final List<SimplePredicate> predicates = getSimplePredicates(fieldTypeMap);
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
         String result = "RESULT";
@@ -97,12 +95,7 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
     @Test
     public void declareRuleFromCompoundPredicateAndOrXorNotFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        List<SimplePredicate> predicates = IntStream.range(0, 2)
-                .mapToObj(index -> getSimplePredicate("SIMPLEPREDICATE-" + index,
-                                                      DataType.STRING,
-                                                      "VALUE-" + index,
-                                                      SimplePredicate.Operator.LESS_THAN,
-                                                      fieldTypeMap)).collect(Collectors.toList());
+        final List<SimplePredicate> predicates = getSimplePredicates(fieldTypeMap);
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
         String result = "RESULT";
@@ -146,12 +139,7 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
     @Test
     public void declareRuleFromCompoundPredicateSurrogateFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        List<SimplePredicate> predicates = IntStream.range(0, 2)
-                .mapToObj(index -> getSimplePredicate("SIMPLEPREDICATE-" + index,
-                                                      DataType.STRING,
-                                                      "VALUE-" + index,
-                                                      SimplePredicate.Operator.LESS_THAN,
-                                                      fieldTypeMap)).collect(Collectors.toList());
+        final List<SimplePredicate> predicates = getSimplePredicates(fieldTypeMap);
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
         String result = "RESULT";
@@ -216,12 +204,7 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
     @Test
     public void declareRuleFromCompoundPredicateSurrogateNotFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        List<SimplePredicate> predicates = IntStream.range(0, 2)
-                .mapToObj(index -> getSimplePredicate("SIMPLEPREDICATE-" + index,
-                                                      DataType.STRING,
-                                                      "VALUE-" + index,
-                                                      SimplePredicate.Operator.LESS_THAN,
-                                                      fieldTypeMap)).collect(Collectors.toList());
+        final List<SimplePredicate> predicates = getSimplePredicates(fieldTypeMap);
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
         String result = "RESULT";
@@ -279,5 +262,20 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
                 assertNull(retrieved.getResultCode());
             }
         }
+    }
+
+    private List<SimplePredicate> getSimplePredicates(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+        return IntStream.range(0, 2)
+                .mapToObj(index -> {
+                    String predicateName = "SIMPLEPREDICATE-" + index;
+                    fieldTypeMap.put(predicateName,
+                                     new KiePMMLOriginalTypeGeneratedType(DataType.STRING.value(),
+                                                                          getSanitizedClassName(predicateName.toUpperCase())));
+                    return PMMLModelTestUtils.getSimplePredicate(predicateName,
+                                                                 "VALUE-" + index,
+                                                                 SimplePredicate.Operator.LESS_THAN);
+                })
+                .collect(Collectors.toList());
+
     }
 }

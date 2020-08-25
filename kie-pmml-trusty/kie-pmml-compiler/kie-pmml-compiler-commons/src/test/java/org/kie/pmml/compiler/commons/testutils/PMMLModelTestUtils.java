@@ -16,8 +16,13 @@
 package org.kie.pmml.compiler.commons.testutils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
+import org.dmg.pmml.Array;
+import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
@@ -28,6 +33,8 @@ import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.ParameterField;
+import org.dmg.pmml.SimplePredicate;
+import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.regression.CategoricalPredictor;
 import org.dmg.pmml.regression.NumericPredictor;
@@ -40,6 +47,10 @@ import org.kie.pmml.commons.model.enums.DATA_TYPE;
  * Helper methods related to <b>PMML</b> original model
  */
 public class PMMLModelTestUtils {
+
+    private PMMLModelTestUtils() {
+        // Avoid instantiation
+    }
 
     public static DataDictionary getDataDictionary(List<DataField> dataFields) {
         DataDictionary toReturn = new DataDictionary();
@@ -142,11 +153,79 @@ public class PMMLModelTestUtils {
         return toReturn;
     }
 
-    public static FieldName getFieldName(String fieldName) {
+    public static SimplePredicate getSimplePredicate(final String predicateName,
+                                                     final Object value,
+                                                     final SimplePredicate.Operator operator) {
+        FieldName fieldName = FieldName.create(predicateName);
+        SimplePredicate toReturn = new SimplePredicate();
+        toReturn.setField(fieldName);
+        toReturn.setOperator(operator);
+        toReturn.setValue(value);
+        return toReturn;
+    }
+
+    public static CompoundPredicate getCompoundPredicate(final List<SimplePredicate> simplePredicates, int counter) {
+        CompoundPredicate toReturn = new CompoundPredicate();
+        toReturn.setBooleanOperator(getRandomCompoundPredicateAndOrOperator(counter));
+        toReturn.getPredicates().addAll(getRandomSimplePredicates(simplePredicates));
+        return toReturn;
+    }
+
+    public static SimpleSetPredicate getSimpleSetPredicate(final String predicateName,
+                                                           final Array.Type arrayType,
+                                                           final List<String> values,
+                                                           final SimpleSetPredicate.BooleanOperator booleanOperator) {
+        FieldName fieldName = FieldName.create(predicateName);
+        SimpleSetPredicate toReturn = new SimpleSetPredicate();
+        toReturn.setField(fieldName);
+        toReturn.setBooleanOperator(booleanOperator);
+        String arrayString = String.join(" ", values);
+        Array array = new Array(arrayType, arrayString);
+        array.setN(values.size());
+        toReturn.setArray(array);
+        return toReturn;
+    }
+
+    public static FieldName getFieldName(final String fieldName) {
         return FieldName.create(fieldName);
     }
 
-    public static FieldRef getFieldRef(String fieldName) {
+    public static FieldRef getFieldRef(final String fieldName) {
         return new FieldRef(getFieldName(fieldName));
+    }
+
+    public static Object getRandomValue(DataType dataType) {
+        switch (dataType) {
+            case INTEGER:
+                return new Random().nextInt(40);
+            case DOUBLE:
+                return new Random().nextDouble();
+            case BOOLEAN:
+                return new Random().nextBoolean();
+            case STRING:
+                return UUID.randomUUID().toString();
+            default:
+                return null;
+        }
+    }
+
+    public static SimplePredicate.Operator getRandomSimplePredicateOperator() {
+        final SimplePredicate.Operator[] values = SimplePredicate.Operator.values();
+        int rndIndex = new Random().nextInt(values.length - 3);
+        return values[rndIndex];
+    }
+
+
+    private static List<SimplePredicate> getRandomSimplePredicates(final List<SimplePredicate> simplePredicates) {
+        int firstIndex = new Random().nextInt(simplePredicates.size());
+        int secondIndex = -1;
+        while (secondIndex == -1 || secondIndex == firstIndex) {
+            secondIndex = new Random().nextInt(simplePredicates.size());
+        }
+        return Arrays.asList(simplePredicates.get(firstIndex), simplePredicates.get(secondIndex));
+    }
+
+    private static CompoundPredicate.BooleanOperator getRandomCompoundPredicateAndOrOperator(int counter) {
+        return counter % 2 == 0 ? CompoundPredicate.BooleanOperator.AND : CompoundPredicate.BooleanOperator.OR;
     }
 }

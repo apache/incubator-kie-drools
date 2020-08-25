@@ -203,7 +203,7 @@ public class KiePMMLPredicateFactory {
             if (statement instanceof ExplicitConstructorInvocationStmt) {
                 ExplicitConstructorInvocationStmt superStatement = (ExplicitConstructorInvocationStmt) statement;
                 NameExpr nameExpr = (NameExpr) superStatement.getArgument(2);
-                nameExpr.setName(operator.getClass().getSimpleName() + "." + operator.name());
+                nameExpr.setName(operator.getClass().getCanonicalName() + "." + operator.name());
             }
         });
         final List<AssignExpr> assignExprs = body.findAll(AssignExpr.class);
@@ -224,7 +224,7 @@ public class KiePMMLPredicateFactory {
             if (statement instanceof ExplicitConstructorInvocationStmt) {
                 ExplicitConstructorInvocationStmt superStatement = (ExplicitConstructorInvocationStmt) statement;
                 NameExpr nameExpr = (NameExpr) superStatement.getArgument(2);
-                nameExpr.setName(booleanOperator.getClass().getSimpleName() + "." + booleanOperator.name());
+                nameExpr.setName(booleanOperator.getClass().getCanonicalName() + "." + booleanOperator.name());
             }
         });
     }

@@ -33,7 +33,7 @@ public class KiePMMLSimplePredicate extends KiePMMLPredicate {
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLSimplePredicate.class);
 
     private final OPERATOR operator;
-    private Object value;
+    protected Object value;
 
     protected KiePMMLSimplePredicate(final String name, final List<KiePMMLExtension> extensions, final OPERATOR operator) {
         super(name, extensions);

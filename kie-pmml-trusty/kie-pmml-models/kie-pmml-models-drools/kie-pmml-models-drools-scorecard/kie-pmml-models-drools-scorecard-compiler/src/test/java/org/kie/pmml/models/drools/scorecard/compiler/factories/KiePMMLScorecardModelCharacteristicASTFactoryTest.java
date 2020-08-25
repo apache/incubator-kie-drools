@@ -42,6 +42,7 @@ import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.enums.OPERATOR;
+import org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
@@ -57,12 +58,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.DONE;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldType;
 import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.PATH_PATTERN;
 import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.STATUS_PATTERN;
 import static org.kie.pmml.models.drools.commons.utils.KiePMMLDroolsModelUtils.getCorrectlyFormattedResult;
-import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getSimplePredicate;
-import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getSimpleSetPredicate;
 
 public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
 
@@ -515,5 +515,32 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
         KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(samplePmml.getDataDictionary());
         assertFalse(fieldTypeMap.isEmpty());
         return KiePMMLScorecardModelCharacteristicASTFactory.factory(fieldTypeMap, Collections.emptyList(), targetType);
+    }
+
+    private SimplePredicate getSimplePredicate(final String predicateName,
+                                               final DataType dataType,
+                                               final Object value,
+                                               final SimplePredicate.Operator operator,
+                                               final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+        fieldTypeMap.put(predicateName,
+                         new KiePMMLOriginalTypeGeneratedType(dataType.value(),
+                                                              getSanitizedClassName(predicateName.toUpperCase())));
+        return PMMLModelTestUtils.getSimplePredicate(predicateName,
+                                                     value,
+                                                     operator);
+    }
+
+    private SimpleSetPredicate getSimpleSetPredicate(final String predicateName,
+                                                     final Array.Type arrayType,
+                                                     final List<String> values,
+                                                     final SimpleSetPredicate.BooleanOperator booleanOperator,
+                                                     final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+        fieldTypeMap.put(predicateName,
+                         new KiePMMLOriginalTypeGeneratedType(arrayType.value(),
+                                                              getSanitizedClassName(predicateName.toUpperCase())));
+        return PMMLModelTestUtils.getSimpleSetPredicate(predicateName,
+                                                        arrayType,
+                                                        values,
+                                                        booleanOperator);
     }
 }

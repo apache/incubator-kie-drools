@@ -57,8 +57,7 @@ import static org.kie.pmml.evaluator.core.utils.Converter.getUnwrappedParameters
 public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
 
     private static final Logger logger = LoggerFactory.getLogger(PMMLMiningModelEvaluator.class.getName());
-    private static final String EXPECTED_A_KIE_PMMLMINING_MODEL_RECEIVED = "Expected a KiePMMLMiningModel, received " +
-            "%s ";
+    private static final String EXPECTED_A_KIE_PMMLMINING_MODEL_RECEIVED = "Expected a KiePMMLMiningModel, received %s";
     private static final String TARGET_FIELD_REQUIRED_RETRIEVED = "TargetField required, retrieved %s";
     private static final Map<String, InternalKnowledgeBase> MAPPED_KIEBASES = new HashMap<>();
 
@@ -75,22 +74,9 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
         return evaluateMiningModel((KiePMMLMiningModel) model, pmmlContext, knowledgeBase);
     }
 
-    private PMML4Result evaluateMiningModel(final KiePMMLMiningModel toEvaluate,
-                                            final PMMLContext pmmlContext,
-                                            final KieBase knowledgeBase) {
+    PMML4Result getPMML4Result(final KiePMMLMiningModel toEvaluate,
+                    final LinkedHashMap<String, KiePMMLNameValue> inputData) {
         final MULTIPLE_MODEL_METHOD multipleModelMethod = toEvaluate.getSegmentation().getMultipleModelMethod();
-        final List<KiePMMLSegment> segments = toEvaluate.getSegmentation().getSegments();
-
-        final LinkedHashMap<String, KiePMMLNameValue> inputData = new LinkedHashMap<>();
-
-        for (KiePMMLSegment segment : segments) {
-            Optional<PMML4Result> segmentResult = evaluateSegment(segment, pmmlContext, knowledgeBase, toEvaluate.getName());
-            segmentResult.ifPresent(pmml4Result -> {
-                KiePMMLNameValue kiePMMLNameValue = getKiePMMLNameValue(pmml4Result, multipleModelMethod,
-                                                                        segment.getWeight());
-                inputData.put(segment.getId(), kiePMMLNameValue);
-            });
-        }
         final Object prediction = multipleModelMethod.apply(inputData);
         PMML4Result toReturn = new PMML4Result();
         toReturn.addResultVariable(toEvaluate.getTargetField(), prediction);
@@ -100,27 +86,21 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
         return toReturn;
     }
 
-    private Optional<PMML4Result> evaluateSegment(final KiePMMLSegment toEvaluate, final PMMLContext pmmlContext,
-                                                  final KieBase knowledgeBase, final String containerModelName) {
-        logger.info("evaluateSegment {}", toEvaluate.getId());
-        final KiePMMLPredicate kiePMMLPredicate = toEvaluate.getKiePMMLPredicate();
-        Optional<PMML4Result> toReturn = Optional.empty();
-        Map<String, Object> values = getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
-        String modelName = toEvaluate.getModel().getName();
-        if (kiePMMLPredicate != null && kiePMMLPredicate.evaluate(values)) {
-            final PMMLRuntime pmmlRuntime = getPMMLRuntime(toEvaluate.getModel().getKModulePackageName(),
-                                                           knowledgeBase, containerModelName);
-            logger.info("{}: matching predicate, evaluating... ", toEvaluate.getId());
-            toReturn = Optional.of(pmmlRuntime.evaluate(modelName, pmmlContext));
-        }
-        return toReturn;
-    }
-
-    private PMMLRuntime getPMMLRuntime(final String kModulePackageName, final KieBase knowledgeBase,
+    /**
+     * Retrieve the <code>PMMLRuntime</code> to be used for the given <b>segment</b>
+     * It creates new <code>InternalKnowledgeBase</code>s and store them in a <code>Map</code>,
+     * to reuse them.
+     * @param kModulePackageName
+     * @param knowledgeBase
+     * @param containerModelName
+     * @return
+     */
+    PMMLRuntime getPMMLRuntime(final String kModulePackageName, final KieBase knowledgeBase,
                                        final String containerModelName) {
         final String key = containerModelName + "_" + kModulePackageName;
         InternalKnowledgeBase kieBase = MAPPED_KIEBASES.computeIfAbsent(key, s -> {
-            List<KiePackage> packages = Collections.singletonList(knowledgeBase.getKiePackage(kModulePackageName));
+            final KiePackage kiePackage = knowledgeBase.getKiePackage(kModulePackageName);
+            final List<KiePackage> packages = kiePackage != null ? Collections.singletonList(knowledgeBase.getKiePackage(kModulePackageName)) : Collections.emptyList();
             RuleBaseConfiguration conf = new RuleBaseConfiguration();
             conf.setClassLoader(((KnowledgeBaseImpl) knowledgeBase).getRootClassLoader());
             InternalKnowledgeBase toReturn = KnowledgeBaseFactory.newKnowledgeBase(kModulePackageName, conf);
@@ -141,7 +121,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
      * @return
      * @throws KiePMMLException
      */
-    private KiePMMLNameValue getKiePMMLNameValue(PMML4Result result, MULTIPLE_MODEL_METHOD multipleModelMethod,
+    KiePMMLNameValue getKiePMMLNameValue(PMML4Result result, MULTIPLE_MODEL_METHOD multipleModelMethod,
                                                  double weight) {
         String fieldName = result.getResultObjectName();
         Object retrieved = getEventuallyWeightedResult(result.getResultVariables().get(fieldName),
@@ -158,7 +138,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
      * @return
      * @throws KiePMMLException
      */
-    private Object getEventuallyWeightedResult(Object rawObject, MULTIPLE_MODEL_METHOD multipleModelMethod,
+    Object getEventuallyWeightedResult(Object rawObject, MULTIPLE_MODEL_METHOD multipleModelMethod,
                                                double weight) {
         switch (multipleModelMethod) {
             case MAJORITY_VOTE:
@@ -184,7 +164,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
         }
     }
 
-    private void validate(final KiePMMLModel toValidate) {
+    void validate(final KiePMMLModel toValidate) {
         if (!(toValidate instanceof KiePMMLMiningModel)) {
             throw new KiePMMLModelException(String.format(EXPECTED_A_KIE_PMMLMINING_MODEL_RECEIVED,
                                                           toValidate.getClass().getName()));
@@ -192,10 +172,63 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
         validateMining((KiePMMLMiningModel) toValidate);
     }
 
-    private void validateMining(final KiePMMLMiningModel toValidate) {
+    void validateMining(final KiePMMLMiningModel toValidate) {
         if (toValidate.getTargetField() == null || StringUtils.isEmpty(toValidate.getTargetField().trim())) {
             throw new KiePMMLInternalException(String.format(TARGET_FIELD_REQUIRED_RETRIEVED,
                                                              toValidate.getTargetField()));
         }
+    }
+
+    /**
+     * Evaluate the whole <code>KiePMMLMiningModel</code>
+     * Being it a <b>meta</b> model, it actually works as the top-level PMML model,
+     * recursively and indirectly invoking model-specific evaluators (through <code>PMMLRuntime</code> container)
+     *
+     * @param toEvaluate
+     * @param pmmlContext
+     * @param knowledgeBase
+     * @return
+     */
+    private PMML4Result evaluateMiningModel(final KiePMMLMiningModel toEvaluate,
+                                            final PMMLContext pmmlContext,
+                                            final KieBase knowledgeBase) {
+        final MULTIPLE_MODEL_METHOD multipleModelMethod = toEvaluate.getSegmentation().getMultipleModelMethod();
+        final List<KiePMMLSegment> segments = toEvaluate.getSegmentation().getSegments();
+        final LinkedHashMap<String, KiePMMLNameValue> inputData = new LinkedHashMap<>();
+        for (KiePMMLSegment segment : segments) {
+            Optional<PMML4Result> segmentResult = evaluateSegment(segment, pmmlContext, knowledgeBase, toEvaluate.getName());
+            segmentResult.ifPresent(pmml4Result -> {
+                KiePMMLNameValue kiePMMLNameValue = getKiePMMLNameValue(pmml4Result, multipleModelMethod,
+                                                                        segment.getWeight());
+                inputData.put(segment.getId(), kiePMMLNameValue);
+            });
+        }
+        return getPMML4Result(toEvaluate, inputData);
+    }
+
+    /**
+     * Evaluate the model contained in the <code>KiePMMLSegment</code>, indirectly invoking
+     * the model-specific evaluator (through <code>PMMLRuntime</code> container)
+     *
+     * @param toEvaluate
+     * @param pmmlContext
+     * @param knowledgeBase
+     * @param containerModelName
+     * @return
+     */
+    private Optional<PMML4Result> evaluateSegment(final KiePMMLSegment toEvaluate, final PMMLContext pmmlContext,
+                                                  final KieBase knowledgeBase, final String containerModelName) {
+        logger.info("evaluateSegment {}", toEvaluate.getId());
+        final KiePMMLPredicate kiePMMLPredicate = toEvaluate.getKiePMMLPredicate();
+        Optional<PMML4Result> toReturn = Optional.empty();
+        Map<String, Object> values = getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
+        String modelName = toEvaluate.getModel().getName();
+        if (kiePMMLPredicate != null && kiePMMLPredicate.evaluate(values)) {
+            final PMMLRuntime pmmlRuntime = getPMMLRuntime(toEvaluate.getModel().getKModulePackageName(),
+                                                           knowledgeBase, containerModelName);
+            logger.info("{}: matching predicate, evaluating... ", toEvaluate.getId());
+            toReturn = Optional.of(pmmlRuntime.evaluate(modelName, pmmlContext));
+        }
+        return toReturn;
     }
 }

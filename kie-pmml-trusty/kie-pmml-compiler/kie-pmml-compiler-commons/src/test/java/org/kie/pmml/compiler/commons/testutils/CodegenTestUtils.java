@@ -70,4 +70,12 @@ public class CodegenTestUtils {
         }
     }
 
+    public static void commonValidateCompilation(Map<String, String> sourcesMap) {
+        try {
+            KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
 }

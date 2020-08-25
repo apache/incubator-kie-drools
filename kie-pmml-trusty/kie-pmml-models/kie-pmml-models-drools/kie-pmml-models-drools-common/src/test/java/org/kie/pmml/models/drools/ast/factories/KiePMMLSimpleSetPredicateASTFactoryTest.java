@@ -27,6 +27,7 @@ import org.dmg.pmml.Array;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.junit.Test;
 import org.kie.pmml.commons.enums.ResultCode;
+import org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
@@ -35,9 +36,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.DONE;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.STATUS_PATTERN;
 import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getPredicateASTFactoryData;
-import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getSimpleSetPredicate;
 
 public class KiePMMLSimpleSetPredicateASTFactoryTest {
 
@@ -46,7 +47,7 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         List<String> values = Arrays.asList("-5", "0.5", "1", "10");
         final SimpleSetPredicate simpleSetPredicate = getSimpleSetPredicate("input1",
-                                                                            Array.Type.REAL, values,
+                                                                            values,
                                                                             SimpleSetPredicate.BooleanOperator.IS_IN,
                                                                             fieldTypeMap);
         String parentPath = "_classA";
@@ -86,7 +87,6 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         List<String> values = Arrays.asList("-5", "0.5", "1", "10");
         final SimpleSetPredicate simpleSetPredicate = getSimpleSetPredicate("input1",
-                                                                            Array.Type.REAL,
                                                                             values,
                                                                             SimpleSetPredicate.BooleanOperator.IS_IN,
                                                                             fieldTypeMap);
@@ -127,7 +127,6 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         List<String> values = Arrays.asList("3", "8.5");
         final SimpleSetPredicate simpleSetPredicate = getSimpleSetPredicate("input2",
-                                                                            Array.Type.REAL,
                                                                             values,
                                                                             SimpleSetPredicate.BooleanOperator.IS_NOT_IN,
                                                                             fieldTypeMap);
@@ -169,7 +168,6 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         List<String> values = Arrays.asList("3", "8.5");
         final SimpleSetPredicate simpleSetPredicate = getSimpleSetPredicate("input2",
-                                                                            Array.Type.REAL,
                                                                             values,
                                                                             SimpleSetPredicate.BooleanOperator.IS_NOT_IN,
                                                                             fieldTypeMap);
@@ -203,5 +201,18 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
         retrievedValues.forEach(retrievedValue -> {
             assertTrue(originalPredicateValues.contains(retrievedValue));
         });
+    }
+
+    private SimpleSetPredicate getSimpleSetPredicate(final String predicateName,
+                                                     final List<String> values,
+                                                     final SimpleSetPredicate.BooleanOperator booleanOperator,
+                                                     final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+        fieldTypeMap.put(predicateName,
+                         new KiePMMLOriginalTypeGeneratedType(Array.Type.REAL.value(),
+                                                              getSanitizedClassName(predicateName.toUpperCase())));
+        return PMMLModelTestUtils.getSimpleSetPredicate(predicateName,
+                                                        Array.Type.REAL,
+                                                        values,
+                                                        booleanOperator);
     }
 }
