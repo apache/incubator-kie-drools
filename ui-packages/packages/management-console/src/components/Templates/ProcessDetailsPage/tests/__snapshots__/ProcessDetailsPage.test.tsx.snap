@@ -577,6 +577,14 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
                   }
                   from={
                     Object {
+                      "filters": Object {
+                        "businessKey": Array [
+                          "tra",
+                        ],
+                        "status": Array [
+                          "ACTIVE",
+                        ],
+                      },
                       "prev": "/ProcessInstances/8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
                     }
                   }
@@ -1159,6 +1167,14 @@ exports[`Process Details Page component tests snapshot testing in Error state 1`
                   }
                   from={
                     Object {
+                      "filters": Object {
+                        "businessKey": Array [
+                          "tra",
+                        ],
+                        "status": Array [
+                          "ACTIVE",
+                        ],
+                      },
                       "prev": "/ProcessInstances/8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
                     }
                   }
@@ -1741,6 +1757,14 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
                   }
                   from={
                     Object {
+                      "filters": Object {
+                        "businessKey": Array [
+                          "tra",
+                        ],
+                        "status": Array [
+                          "ACTIVE",
+                        ],
+                      },
                       "prev": "/ProcessInstances/8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
                     }
                   }

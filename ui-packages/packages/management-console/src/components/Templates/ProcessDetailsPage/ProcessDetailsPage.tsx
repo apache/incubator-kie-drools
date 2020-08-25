@@ -50,7 +50,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, {}, {}> &
   const [modalTitle, setModalTitle] = useState<string>('');
   const [titleType, setTitleType] = useState<string>('');
   const [modalContent, setModalContent] = useState<string>('');
-  const currentPage = JSON.parse(window.localStorage.getItem('state'));
+  let currentPage = JSON.parse(window.localStorage.getItem('state'));
 
   const { loading, error, data } = GraphQL.useGetProcessInstanceByIdQuery({
     variables: { id }
@@ -124,6 +124,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, {}, {}> &
     const result = data.ProcessInstances;
     /* istanbul ignore else */
     if (currentPage) {
+      currentPage = { ...currentPage, ...props.location.state };
       const tempPath = currentPage.prev.split('/');
       prevPath = tempPath.filter(item => item);
       BreadCrumb.push(...prevPath);
