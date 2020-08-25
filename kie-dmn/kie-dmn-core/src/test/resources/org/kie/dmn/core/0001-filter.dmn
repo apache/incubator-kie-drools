@@ -12,7 +12,7 @@
                       exporter="DMN Modeler; Method and Style trisofix.xslt"
                       exporterVersion="5.0.32.2; 1.0"
                       name="filter01"
-                      typeLanguage="http://www.omg.org/spec/FEEL/20140401">
+                      >
    <semantic:itemDefinition id="tEmployee" name="tEmployee" isCollection="true">
       <semantic:itemComponent id="_c22147cb-9481-404e-8f48-f8eee8d25565"
                               name="id"

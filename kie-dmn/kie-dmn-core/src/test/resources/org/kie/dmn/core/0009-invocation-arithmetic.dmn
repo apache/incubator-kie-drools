@@ -12,7 +12,7 @@
                       exporter="DMN Modeler; Method and Style trisofix.xslt"
                       exporterVersion="5.0.32.2; 1.0"
                       name="literal invocation1"
-                      typeLanguage="http://www.omg.org/spec/FEEL/20140401">
+                      >
    <semantic:itemDefinition name="tLoan" isCollection="false">
       <semantic:itemComponent name="amount" isCollection="false">
          <semantic:typeRef>number</semantic:typeRef>

@@ -37,7 +37,7 @@
                       id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c"
                       namespace="https://github.com/kiegroup/kie-dmn"
                       name="decisiontable-default-value"
-                      typeLanguage="http://www.omg.org/spec/FEEL/20140401">
+                      >
    <semantic:decision id="d_decisiontable_default_value" name="Approval Status">
       <semantic:variable name="Approval Status" typeRef="string"/>
       <semantic:informationRequirement>

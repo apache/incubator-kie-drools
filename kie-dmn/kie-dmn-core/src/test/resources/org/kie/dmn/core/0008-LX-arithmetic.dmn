@@ -23,7 +23,7 @@
                       id="_0008-LX-arithmetic"
                       name="0008-LX-arithmetic"
                       namespace="https://github.com/kiegroup/kie-dmn"
-                      typeLanguage="http://www.omg.org/spec/FEEL/20140401">
+                      >
    <semantic:itemDefinition id="tLoan" name="tLoan" isCollection="false">
       <semantic:itemComponent id="_principal" name="principal" isCollection="false">
          <semantic:typeRef>number</semantic:typeRef>

@@ -37,7 +37,7 @@
                       id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c"
                       namespace="https://github.com/kiegroup/kie-dmn"
                       name="0004-simpletable-A"
-                      typeLanguage="http://www.omg.org/spec/FEEL/20140401">
+                      >
    <semantic:decision id="_0004-simpletable-A" name="_0004-simpletable-A">
       <semantic:variable name="Approval Status" typeRef="string"/>
       <semantic:informationRequirement>
