@@ -3,10 +3,14 @@
 exports[`DomainExplorerListDomains Component test cases Assertions 1`] = `
 <DomainExplorerListDomains>
   <EmptyState
+    data-ouia-component-type="domain-explorer-list-domains"
+    data-ouia-safe={true}
     variant="full"
   >
     <div
       className="pf-c-empty-state"
+      data-ouia-component-type="domain-explorer-list-domains"
+      data-ouia-safe={true}
     >
       <div
         className="pf-c-empty-state__content"
@@ -151,10 +155,14 @@ exports[`DomainExplorerListDomains Component test cases Assertions 1`] = `
 exports[`DomainExplorerListDomains Component test cases Snapshot with mock useGetQueryFieldsQuery 1`] = `
 <DomainExplorerListDomains>
   <EmptyState
+    data-ouia-component-type="domain-explorer-list-domains"
+    data-ouia-safe={true}
     variant="full"
   >
     <div
       className="pf-c-empty-state"
+      data-ouia-component-type="domain-explorer-list-domains"
+      data-ouia-safe={true}
     >
       <div
         className="pf-c-empty-state__content"

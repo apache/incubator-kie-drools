@@ -18,7 +18,9 @@ const KogitoSpinner: React.FC<KogitoSpinnerProps & OUIAProps> = ({
   return (
     <EmptyState {...componentOuiaProps(ouiaId, 'kogito-spinner', ouiaSafe)}>
       <EmptyStateIcon variant="container" component={Spinner} />
-      <Title size="lg" headingLevel="h3">{spinnerText}</Title>
+      <Title size="lg" headingLevel="h3">
+        {spinnerText}
+      </Title>
     </EmptyState>
   );
 };

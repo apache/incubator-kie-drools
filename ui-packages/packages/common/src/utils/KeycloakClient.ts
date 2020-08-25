@@ -8,12 +8,16 @@ export const isAuthEnabled = (): boolean => {
 };
 
 export const createKeycloakInstance = (): KeycloakInstance => {
-  // @ts-ignore
-  const authKeycloakRealm = window.KOGITO_AUTH_KEYCLOAK_REALM || process.env.KOGITO_KEYCLOAK_REALM;
-  // @ts-ignore
-  const authKeycloakUrl = window.KOGITO_AUTH_KEYCLOAK_URL || process.env.KOGITO_KEYCLOAK_URL;
-  // @ts-ignore
-  const authKeycloakClientId = window.KOGITO_AUTH_KEYCLOAK_CLIENT_ID || process.env.KOGITO_KEYCLOAK_CLIENT_ID;
+  const authKeycloakRealm =
+    // @ts-ignore
+    window.KOGITO_AUTH_KEYCLOAK_REALM || process.env.KOGITO_KEYCLOAK_REALM;
+  const authKeycloakUrl =
+    // @ts-ignore
+    window.KOGITO_AUTH_KEYCLOAK_URL || process.env.KOGITO_KEYCLOAK_URL;
+  const authKeycloakClientId =
+    // @ts-ignore
+    window.KOGITO_AUTH_KEYCLOAK_CLIENT_ID ||
+    process.env.KOGITO_KEYCLOAK_CLIENT_ID;
 
   return Keycloak({
     realm: authKeycloakRealm,

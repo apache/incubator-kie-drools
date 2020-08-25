@@ -1692,6 +1692,8 @@ exports[`Domain Explorer component Mock query testing 1`] = `
   </Toolbar>
   <Card
     className="kogito-common--domain-explorer__table-OverFlow"
+    data-ouia-component-type="domain-explorer"
+    data-ouia-safe={true}
   >
     <article
       className="pf-c-card kogito-common--domain-explorer__table-OverFlow"
@@ -3159,6 +3161,8 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
   </Toolbar>
   <Card
     className="kogito-common--domain-explorer__table-OverFlow"
+    data-ouia-component-type="domain-explorer"
+    data-ouia-safe={true}
   >
     <article
       className="pf-c-card kogito-common--domain-explorer__table-OverFlow"
@@ -4621,6 +4625,8 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
   </Toolbar>
   <Card
     className="kogito-common--domain-explorer__table-OverFlow"
+    data-ouia-component-type="domain-explorer"
+    data-ouia-safe={true}
   >
     <article
       className="pf-c-card kogito-common--domain-explorer__table-OverFlow"

@@ -15,8 +15,12 @@ import { CubesIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
 import { GraphQL } from '../../../graphql/types';
 import useGetQueryFieldsQuery = GraphQL.useGetQueryFieldsQuery;
+import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
 
-const DomainExplorerListDomains = () => {
+const DomainExplorerListDomains: React.FC<OUIAProps> = ({
+  ouiaId,
+  ouiaSafe
+}) => {
   const getQuery = useGetQueryFieldsQuery();
   let availableDomains =
     !getQuery.loading && getQuery.data.__type.fields.slice(2);
@@ -30,7 +34,10 @@ const DomainExplorerListDomains = () => {
       }
     });
   return (
-    <EmptyState variant={EmptyStateVariant.full}>
+    <EmptyState
+      variant={EmptyStateVariant.full}
+      {...componentOuiaProps(ouiaId, 'domain-explorer-list-domains', ouiaSafe)}
+    >
       <EmptyStateIcon icon={CubesIcon} />
 
       {availableDomains.length > 0 ? (

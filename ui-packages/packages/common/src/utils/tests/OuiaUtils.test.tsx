@@ -15,7 +15,7 @@ describe('test function ouiaAttribute', () => {
     expect(attribute).not.toHaveProperty('attribute');
   });
   it('int value', () => {
-    const attribute = ouiaAttribute( 'attribute', 3);
+    const attribute = ouiaAttribute('attribute', 3);
     expect(attribute).toHaveProperty('attribute', 3);
   });
 });
@@ -72,16 +72,13 @@ describe('test function componentOuiaProps', () => {
 });
 const TestComponentSettingPageType = (): React.ReactElement => {
   useEffect(() => {
-    return ouiaPageTypeAndObjectId( 'test-page-type');
+    return ouiaPageTypeAndObjectId('test-page-type');
   });
   return <div />;
 };
 const TestComponentSettingPageTypeAndId = (): React.ReactElement => {
   useEffect(() => {
-    return ouiaPageTypeAndObjectId(
-      'test-page-type',
-      'test-object-id'
-    );
+    return ouiaPageTypeAndObjectId('test-page-type', 'test-object-id');
   });
   return <div />;
 };

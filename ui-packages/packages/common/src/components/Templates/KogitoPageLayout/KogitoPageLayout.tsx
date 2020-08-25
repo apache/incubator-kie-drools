@@ -34,7 +34,7 @@ const KogitoPageLayout: React.FC<IOwnProps & OUIAProps> = ({
   };
 
   useEffect(() => {
-    if(document.getElementById(pageId)) {
+    if (document.getElementById(pageId)) {
       document.getElementById(pageId).setAttribute('data-ouia-main', 'true');
     }
   });

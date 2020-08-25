@@ -96,7 +96,7 @@ export interface OUIAProps {
  */
 export const ouiaAttribute = (name: string, value: any) => {
   // if (ouiaContext.isOuia && value) {
-  if( value ) {
+  if (value) {
     return { [name]: value };
   }
   return {};
@@ -146,5 +146,5 @@ export const componentOuiaProps = (
  * @param ouiaId id string value to be set as an id
  */
 export const attributeOuiaId = (ouiaId: OuiaId) => {
-  return ouiaAttribute( 'data-ouia-component-id', ouiaId);
+  return ouiaAttribute('data-ouia-component-id', ouiaId);
 };

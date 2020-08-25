@@ -44,9 +44,9 @@ const ServerUnavailable: React.FC<IOwnProps & OUIAProps> = ({
       headerTools={
         <PageHeaderTools>
           <aboutLogoContext.Provider value={props.src}>
-              <PageToolbar />
+            <PageToolbar />
           </aboutLogoContext.Provider>
-        <Avatar src={userImage} alt="Kogito Logo" />
+          <Avatar src={userImage} alt="Kogito Logo" />
         </PageHeaderTools>
       }
       showNavToggle

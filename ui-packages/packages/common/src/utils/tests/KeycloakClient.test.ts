@@ -90,9 +90,10 @@ describe('Tests for keycloak client functions', () => {
     successCallback(true);
     expect(renderMock).toBeCalled();
 
-    // @ts-ignore
-    // tslint:disable-next-line:no-floating-promises
-    expect( axios.interceptors.response.handlers[0].rejected({
+    expect(
+      // @ts-ignore
+      // tslint:disable-next-line:no-floating-promises
+      axios.interceptors.response.handlers[0].rejected({
         response: {
           status: 401,
           config: 'http://originalRequest'
@@ -103,9 +104,11 @@ describe('Tests for keycloak client functions', () => {
       config: 'http://originalRequest'
     });
 
-    // @ts-ignore
-    expect( axios.interceptors.request.handlers[0].fulfilled(
-      { headers: { Authorization: 'Bearer No token' } })
+    expect(
+      // @ts-ignore
+      axios.interceptors.request.handlers[0].fulfilled({
+        headers: { Authorization: 'Bearer No token' }
+      })
     ).toMatchObject({
       headers: { Authorization: 'Bearer testToken' }
     });
