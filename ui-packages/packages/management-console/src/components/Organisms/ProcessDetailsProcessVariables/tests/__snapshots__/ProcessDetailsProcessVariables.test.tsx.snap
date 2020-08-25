@@ -1,7 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ProcessVariables component tests snapshot testing with variables 1`] = `
-<Card>
+<Card
+  data-ouia-component-type="process-variables"
+  data-ouia-safe={true}
+>
   <CardHeader>
     <Title
       headingLevel="h3"
@@ -77,7 +80,10 @@ exports[`ProcessVariables component tests snapshot testing with variables 1`] = 
 `;
 
 exports[`ProcessVariables component tests snapshot testing without variables 1`] = `
-<Card>
+<Card
+  data-ouia-component-type="process-variables"
+  data-ouia-safe={true}
+>
   <CardHeader>
     <Title
       headingLevel="h3"

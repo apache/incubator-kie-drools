@@ -14,7 +14,13 @@ import {
 import React from 'react';
 import { LevelDownAltIcon, LevelUpAltIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
-import { ItemDescriptor, GraphQL, EndpointLink } from '@kogito-apps/common';
+import {
+  ItemDescriptor,
+  GraphQL,
+  EndpointLink,
+  OUIAProps,
+  componentOuiaProps
+} from '@kogito-apps/common';
 import {
   getProcessInstanceDescription,
   stateIconCreator
@@ -39,9 +45,20 @@ interface IOwnProps {
   };
   from: any;
 }
-const ProcessDetails: React.FC<IOwnProps> = ({ data, from }) => {
+const ProcessDetails: React.FC<IOwnProps & OUIAProps> = ({
+  data,
+  from,
+  ouiaId,
+  ouiaSafe
+}) => {
   return (
-    <Card>
+    <Card
+      {...componentOuiaProps(
+        ouiaId ? ouiaId : data.ProcessInstances[0].id,
+        'process-details',
+        ouiaSafe
+      )}
+    >
       <CardHeader>
         <Title headingLevel="h3" size="xl">
           Details

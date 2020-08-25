@@ -1,7 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ProcessDetails component tests Snapshot testing with basic data loaded 1`] = `
-<Card>
+<Card
+  data-ouia-component-id="2d962eef-45b8-48a9-ad4e-9cde0ad6af89"
+  data-ouia-component-type="process-details"
+  data-ouia-safe={true}
+>
   <CardHeader>
     <Title
       headingLevel="h3"
@@ -53,7 +57,9 @@ exports[`ProcessDetails component tests Snapshot testing with basic data loaded 
         <Text
           className="kogito-management-console--u-WordBreak"
           component="p"
-        />
+        >
+          2d962eef-45b8-48a9-ad4e-9cde0ad6af89
+        </Text>
       </FormGroup>
       <FormGroup
         fieldId="start"

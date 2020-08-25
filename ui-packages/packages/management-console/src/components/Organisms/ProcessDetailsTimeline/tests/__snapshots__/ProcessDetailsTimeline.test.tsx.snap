@@ -1,7 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ProcessDetailsTimeline component tests Snapshot testing for completed state 1`] = `
-<Card>
+<Card
+  data-ouia-component-id="8035b580-6ae4-4aa8-9ec0-e18e19809e0b"
+  data-ouia-component-type="timeline"
+  data-ouia-safe={true}
+>
   <MockedProcessListModal
     handleModalToggle={[Function]}
     isModalOpen={false}
@@ -156,7 +160,11 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for completed s
 `;
 
 exports[`ProcessDetailsTimeline component tests Snapshot testing for no service url 1`] = `
-<Card>
+<Card
+  data-ouia-component-id="8035b580-6ae4-4aa8-9ec0-e18e19809e0b"
+  data-ouia-component-type="timeline"
+  data-ouia-safe={true}
+>
   <MockedProcessListModal
     handleModalToggle={[Function]}
     isModalOpen={false}
@@ -311,7 +319,11 @@ exports[`ProcessDetailsTimeline component tests Snapshot testing for no service 
 `;
 
 exports[`ProcessDetailsTimeline component tests Snapshot testing for service url available 1`] = `
-<Card>
+<Card
+  data-ouia-component-id="8035b580-6ae4-4aa8-9ec0-e18e19809e0b"
+  data-ouia-component-type="timeline"
+  data-ouia-safe={true}
+>
   <MockedProcessListModal
     handleModalToggle={[Function]}
     isModalOpen={false}

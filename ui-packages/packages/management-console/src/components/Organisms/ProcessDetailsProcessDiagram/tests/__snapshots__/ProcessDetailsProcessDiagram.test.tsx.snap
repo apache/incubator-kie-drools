@@ -1,7 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ProcessDetailsDiagram component tests Snapshot testing 1`] = `
-<Card>
+<Card
+  data-ouia-component-type="process-diagram"
+  data-ouia-safe={true}
+>
   <CardHeader>
     <Title
       headingLevel="h3"

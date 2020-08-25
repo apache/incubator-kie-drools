@@ -1,10 +1,14 @@
 import { Card, CardBody, CardHeader, Title } from '@patternfly/react-core';
 import React from 'react';
 import { url } from './Url';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/common';
 
-const ProcessDetailsProcessDiagram = () => {
+const ProcessDetailsProcessDiagram: React.FC<OUIAProps> = ({
+  ouiaId,
+  ouiaSafe
+}) => {
   return (
-    <Card>
+    <Card {...componentOuiaProps(ouiaId, 'process-diagram', ouiaSafe)}>
       <CardHeader>
         <Title headingLevel="h3" size="xl">
           Process Diagram

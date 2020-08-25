@@ -5,7 +5,9 @@ import {
   GraphQL,
   KogitoEmptyState,
   KogitoEmptyStateType,
-  KogitoSpinner
+  KogitoSpinner,
+  OUIAProps,
+  componentOuiaProps
 } from '@kogito-apps/common';
 import '../../Templates/ProcessListPage/ProcessListPage.css';
 import ProcessListTableItems from '../../Molecules/ProcessListTableItems/ProcessListTableItems';
@@ -33,7 +35,7 @@ interface IOwnProps {
   setSelectedNumber: (selectedNumber: number) => void;
 }
 
-const ProcessListTable: React.FC<IOwnProps> = ({
+const ProcessListTable: React.FC<IOwnProps & OUIAProps> = ({
   initData,
   setInitData,
   setLimit,
@@ -45,7 +47,9 @@ const ProcessListTable: React.FC<IOwnProps> = ({
   filters,
   setIsAllChecked,
   selectedNumber,
-  setSelectedNumber
+  setSelectedNumber,
+  ouiaId,
+  ouiaSafe
 }) => {
   const [checkedArray, setCheckedArray] = useState<ProcessInstanceState[]>(
     filters.status
@@ -103,7 +107,10 @@ const ProcessListTable: React.FC<IOwnProps> = ({
   }
 
   return (
-    <DataList aria-label="Process instance list">
+    <DataList
+      aria-label="Process instance list"
+      {...componentOuiaProps(ouiaId, 'process-list-table', ouiaSafe)}
+    >
       {!loading &&
         initData !== undefined &&
         initData.ProcessInstances.map((item, index) => {

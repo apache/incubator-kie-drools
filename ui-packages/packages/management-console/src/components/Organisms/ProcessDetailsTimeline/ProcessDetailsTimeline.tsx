@@ -23,7 +23,7 @@ import {
 } from '@patternfly/react-icons';
 import React, { useState } from 'react';
 import './ProcessDetailsTimeline.css';
-import { GraphQL } from '@kogito-apps/common';
+import { GraphQL, OUIAProps, componentOuiaProps } from '@kogito-apps/common';
 import {
   handleRetry,
   handleSkip,
@@ -44,7 +44,11 @@ enum TitleType {
   SUCCESS = 'success',
   FAILURE = 'failure'
 }
-const ProcessDetailsTimeline: React.FC<IOwnProps> = ({ data }) => {
+const ProcessDetailsTimeline: React.FC<IOwnProps & OUIAProps> = ({
+  data,
+  ouiaId,
+  ouiaSafe
+}) => {
   const [kebabOpenArray, setKebabOpenArray] = useState([]);
   const [modalTitle, setModalTitle] = useState<string>('');
   const [titleType, setTitleType] = useState<string>('');
@@ -217,7 +221,9 @@ const ProcessDetailsTimeline: React.FC<IOwnProps> = ({ data }) => {
   };
 
   return (
-    <Card>
+    <Card
+      {...componentOuiaProps(ouiaId ? ouiaId : data.id, 'timeline', ouiaSafe)}
+    >
       <ProcessListModal
         isModalOpen={isModalOpen}
         handleModalToggle={handleModalToggle}

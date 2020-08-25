@@ -195,10 +195,14 @@ exports[`ProcessListTable component tests Snapshot testing initial empty data 1`
 >
   <DataList
     aria-label="Process instance list"
+    data-ouia-component-type="process-list-table"
+    data-ouia-safe={true}
   >
     <ul
       aria-label="Process instance list"
       className="pf-c-data-list"
+      data-ouia-component-type="process-list-table"
+      data-ouia-safe={true}
     >
       <KogitoEmptyState
         body="Try using different filters"
@@ -385,10 +389,14 @@ exports[`ProcessListTable component tests Snapshot testing with no data 1`] = `
 >
   <DataList
     aria-label="Process instance list"
+    data-ouia-component-type="process-list-table"
+    data-ouia-safe={true}
   >
     <ul
       aria-label="Process instance list"
       className="pf-c-data-list"
+      data-ouia-component-type="process-list-table"
+      data-ouia-safe={true}
     >
       <KogitoEmptyState
         body="Try using different filters"
@@ -643,10 +651,14 @@ exports[`ProcessListTable component tests Snapshot testing with success data 1`]
 >
   <DataList
     aria-label="Process instance list"
+    data-ouia-component-type="process-list-table"
+    data-ouia-safe={true}
   >
     <ul
       aria-label="Process instance list"
       className="pf-c-data-list"
+      data-ouia-component-type="process-list-table"
+      data-ouia-safe={true}
     >
       <MockedProcessListTableItems
         filters={
@@ -1080,10 +1092,14 @@ exports[`ProcessListTable component tests Snapshot testing with success data(wit
 >
   <DataList
     aria-label="Process instance list"
+    data-ouia-component-type="process-list-table"
+    data-ouia-safe={true}
   >
     <ul
       aria-label="Process instance list"
       className="pf-c-data-list"
+      data-ouia-component-type="process-list-table"
+      data-ouia-safe={true}
     >
       <MockedProcessListTableItems
         filters={

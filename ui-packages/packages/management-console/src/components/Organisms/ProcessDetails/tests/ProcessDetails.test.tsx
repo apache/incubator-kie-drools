@@ -8,7 +8,7 @@ const props = {
   data: {
     ProcessInstances: [
       {
-        id: '',
+        id: '2d962eef-45b8-48a9-ad4e-9cde0ad6af89',
         processId: '',
         state: ProcessInstanceState.Active,
         parentProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
