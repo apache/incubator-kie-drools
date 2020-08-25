@@ -14,26 +14,30 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<definitions id="ASSOC_REFERENCES_NOT_EMPTY" name="ASSOC_REFERENCES_NOT_EMPTY"
-             namespace="https://github.com/kiegroup/kie-dmn"
-             xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-             xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <decision name="Greeting Message" id="d_GreetingMessage">
-    <variable name="Greeting Message" typeRef="feel:string"/>
-    <literalExpression>
-      <text>"Hello Something"</text>
-    </literalExpression>
-  </decision>
-  <decision name="Greeting Message2" id="d_GreetingMessage2">
-    <variable name="Greeting Message2" typeRef="feel:string"/>
-    <literalExpression>
-      <text>"Hello Something Else"</text>
-    </literalExpression>
-  </decision>
-  <association id="assoc1" associationDirection="Both">
-    <sourceRef href="#someId"/>
-    <targetRef href="#someOtherId"/>
-  </association>
-</definitions>
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      id="ASSOC_REFERENCES_NOT_EMPTY"
+                      name="ASSOC_REFERENCES_NOT_EMPTY"
+                      namespace="https://github.com/kiegroup/kie-dmn">
+   <semantic:decision name="Greeting Message" id="d_GreetingMessage">
+      <semantic:variable name="Greeting Message" typeRef="string"/>
+      <semantic:literalExpression>
+         <semantic:text>"Hello Something"</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:decision name="Greeting Message2" id="d_GreetingMessage2">
+      <semantic:variable name="Greeting Message2" typeRef="string"/>
+      <semantic:literalExpression>
+         <semantic:text>"Hello Something Else"</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:association id="assoc1" associationDirection="Both">
+      <semantic:sourceRef href="#someId"/>
+      <semantic:targetRef href="#someOtherId"/>
+   </semantic:association>
+</semantic:definitions>

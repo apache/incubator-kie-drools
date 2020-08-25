@@ -12,23 +12,28 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<definitions id="REQAUTH_NOT_KNOWLEDGESOURCEbis" name="REQAUTH_NOT_KNOWLEDGESOURCEbis"
-    namespace="https://github.com/kiegroup/kie-dmn"
-    xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-    xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <businessKnowledgeModel name="bkm1">
-    <encapsulatedLogic>
-      <literalExpression>
-        <text>true</text>
-      </literalExpression>
-    </encapsulatedLogic>
-    <variable name="bkm1" typeRef="feel:string"/>
-    <authorityRequirement>
-      <requiredInput href="#_90aab494-9458-4b43-bdf4-0a82c22761b3" />
-    </authorityRequirement>
-  </businessKnowledgeModel>
-  <knowledgeSource id="auth2" name="auth2"></knowledgeSource>
-  <textAnnotation id="auth1"></textAnnotation> <!-- TEST, should be an inputdata with the same ID -->
-</definitions>
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      id="REQAUTH_NOT_KNOWLEDGESOURCEbis"
+                      name="REQAUTH_NOT_KNOWLEDGESOURCEbis"
+                      namespace="https://github.com/kiegroup/kie-dmn">
+   <semantic:businessKnowledgeModel name="bkm1">
+      <semantic:variable name="bkm1" typeRef="string"/>
+      <semantic:encapsulatedLogic>
+         <semantic:literalExpression>
+            <semantic:text>true</semantic:text>
+         </semantic:literalExpression>
+      </semantic:encapsulatedLogic>
+      <semantic:authorityRequirement>
+         <semantic:requiredInput href="#_90aab494-9458-4b43-bdf4-0a82c22761b3"/>
+      </semantic:authorityRequirement>
+   </semantic:businessKnowledgeModel>
+   <semantic:knowledgeSource id="auth2" name="auth2"/>
+   <semantic:textAnnotation id="auth1"/>
+   <!-- TEST, should be an inputdata with the same ID -->
+</semantic:definitions>

@@ -12,17 +12,22 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<definitions id="AUTHREQ_DEP_REQ_AUTH_NOT_KNOWLEDGESOURCE" name="AUTHREQ_DEP_REQ_AUTH_NOT_KNOWLEDGESOURCE"
-    namespace="https://github.com/kiegroup/kie-dmn"
-    xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-    xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <businessKnowledgeModel name="bkm1">
-    <authorityRequirement>
-        <requiredAuthority href="#auth1"/> 
-    </authorityRequirement>
-  </businessKnowledgeModel>
-  <knowledgeSource id="auth2" name="auth2"></knowledgeSource>
-  <textAnnotation id="auth1"></textAnnotation> <!-- TEST, should be a KnowledgeSource -->
-</definitions>
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      id="AUTHREQ_DEP_REQ_AUTH_NOT_KNOWLEDGESOURCE"
+                      name="AUTHREQ_DEP_REQ_AUTH_NOT_KNOWLEDGESOURCE"
+                      namespace="https://github.com/kiegroup/kie-dmn">
+   <semantic:businessKnowledgeModel name="bkm1">
+      <semantic:authorityRequirement>
+         <semantic:requiredAuthority href="#auth1"/>
+      </semantic:authorityRequirement>
+   </semantic:businessKnowledgeModel>
+   <semantic:knowledgeSource id="auth2" name="auth2"/>
+   <semantic:textAnnotation id="auth1"/>
+   <!-- TEST, should be a KnowledgeSource -->
+</semantic:definitions>

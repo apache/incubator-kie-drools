@@ -1,28 +1,50 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_7e8d7561-657a-4729-b2a9-5a6279df6d5d" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.9.1" id="_7e8d7561-657a-4729-b2a9-5a6279df6d5d" name="Drawing 1" namespace="http://www.trisotech.com/dmn/definitions/_7e8d7561-657a-4729-b2a9-5a6279df6d5d" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
-  <dmn11:extensionElements/>
-  <dmn11:inputData id="_89af483d-7535-4503-a9c5-4d7b0be05372" name="Person Name">
-    <dmn11:variable id="_e2ce8469-a74c-4ccc-91ff-a02349211f21" name="Person Name" typeRef="feel:string"/>
-  </dmn11:inputData>
-  <dmn11:decision id="_2ddf910e-9d77-444f-9415-a3dcc63ff396" name="Greeting Decision">
-    <dmn11:variable id="_9a510dbe-04a8-497f-817e-f277dcec9fbe" name="Greeting Decision" typeRef="feel:string"/>
-    <dmn11:informationRequirement>
-      <dmn11:requiredInput href="#_89af483d-7535-4503-a9c5-4d7b0be05372"/>
-    </dmn11:informationRequirement>
-    <dmn11:knowledgeRequirement>
-      <dmn11:requiredKnowledge href="#_b0a560b5-acac-42d0-a37e-f6667c0e92f7"/>
-    </dmn11:knowledgeRequirement>
-    <dmn11:literalExpression id="_f3094eea-44e3-4e78-9669-c41fd2e73d54">
-      <dmn11:text>concat Hello with Name(Person Name)</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-  <dmn11:businessKnowledgeModel id="_b0a560b5-acac-42d0-a37e-f6667c0e92f7" name="concat Hello with Name">
-    <dmn11:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="F" id="_b533abcf-8a4f-44dd-9ac0-eca7d36f1fce">
-      <dmn11:formalParameter id="_6780a46f-ac96-458d-bc61-45eb0057f484" name="name" typeRef="feel:string"/>
-      <dmn11:literalExpression id="_993901fd-d619-4990-9f52-39e86cd99425">
-        <dmn11:text>"Hello, " + name</dmn11:text>
-      </dmn11:literalExpression>
-    </dmn11:encapsulatedLogic>
-    <dmn11:variable id="_e63759fe-9fc1-43b6-bb69-2f54434bf320" name="concat Hello with Name"/> <!-- please notice variable of BKM no typeref, this is ok. -->
-  </dmn11:businessKnowledgeModel>
-</dmn11:definitions>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/dmn/definitions/_7e8d7561-657a-4729-b2a9-5a6279df6d5d"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.0.9.1"
+                      id="_7e8d7561-657a-4729-b2a9-5a6279df6d5d"
+                      name="Drawing 1"
+                      namespace="http://www.trisotech.com/dmn/definitions/_7e8d7561-657a-4729-b2a9-5a6279df6d5d">
+   <semantic:extensionElements/>
+   <semantic:inputData id="_89af483d-7535-4503-a9c5-4d7b0be05372" name="Person Name">
+      <semantic:variable id="_e2ce8469-a74c-4ccc-91ff-a02349211f21"
+                         name="Person Name"
+                         typeRef="string"/>
+   </semantic:inputData>
+   <semantic:decision id="_2ddf910e-9d77-444f-9415-a3dcc63ff396" name="Greeting Decision">
+      <semantic:variable id="_9a510dbe-04a8-497f-817e-f277dcec9fbe"
+                         name="Greeting Decision"
+                         typeRef="string"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_89af483d-7535-4503-a9c5-4d7b0be05372"/>
+      </semantic:informationRequirement>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="#_b0a560b5-acac-42d0-a37e-f6667c0e92f7"/>
+      </semantic:knowledgeRequirement>
+      <semantic:literalExpression id="_f3094eea-44e3-4e78-9669-c41fd2e73d54">
+         <semantic:text>concat Hello with Name(Person Name)</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:businessKnowledgeModel id="_b0a560b5-acac-42d0-a37e-f6667c0e92f7"
+                                    name="concat Hello with Name">
+      <semantic:variable id="_e63759fe-9fc1-43b6-bb69-2f54434bf320"
+                         name="concat Hello with Name"/>
+      <semantic:encapsulatedLogic kind="FEEL" id="_b533abcf-8a4f-44dd-9ac0-eca7d36f1fce">
+         <semantic:formalParameter id="_6780a46f-ac96-458d-bc61-45eb0057f484"
+                                   name="name"
+                                   typeRef="string"/>
+         <semantic:literalExpression id="_993901fd-d619-4990-9f52-39e86cd99425">
+            <semantic:text>"Hello, " + name</semantic:text>
+         </semantic:literalExpression>
+      </semantic:encapsulatedLogic>
+      <!-- please notice variable of BKM no typeref, this is ok. -->
+   </semantic:businessKnowledgeModel>
+</semantic:definitions>

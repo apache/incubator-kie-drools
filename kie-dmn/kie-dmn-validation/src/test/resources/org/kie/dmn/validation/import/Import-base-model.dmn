@@ -1,113 +1,153 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_b33fa7d9-f501-423b-afa8-15ded7e7f493" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:include1="http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.4.201808011735" id="_b33fa7d9-f501-423b-afa8-15ded7e7f493" name="Import base model" namespace="http://www.trisotech.com/dmn/definitions/_b33fa7d9-f501-423b-afa8-15ded7e7f493" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
-  <dmn11:extensionElements/>
-  <dmn11:import xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:modelName="Base model" drools:name="Base model" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30" triso:fileId="eyJmIjp7InNrdSI6ImEwY2Q5OGEwLWNkOWYtNGFhNy05MTliLTI4ZmZlMTM1OTNhNSIsIm5hbWUiOiJCYXNlIG1vZGVsIn19" triso:fileName="20180802-DS/Base model"/>
-  <dmn11:inputData id="_4ec61cd4-96fe-43d8-93b9-470c84158593" name="Customer">
-    <dmn11:variable id="_c5efccac-e79b-4f72-a235-adfa4df3206b" name="Customer" typeRef="Base model.tPerson"/>
-  </dmn11:inputData>
-  <dmn11:decision id="_6d634e6f-4a74-4a32-a4b2-1f596bba6d76" name="Greetings to the Customer using BKM">
-    <dmn11:variable id="_f0738d71-f26d-413d-b1de-847f4fa9c4aa" name="Greetings to the Customer using BKM" typeRef="feel:string"/>
-    <dmn11:informationRequirement>
-      <dmn11:requiredInput href="#_4ec61cd4-96fe-43d8-93b9-470c84158593"/>
-    </dmn11:informationRequirement>
-    <dmn11:knowledgeRequirement>
-      <dmn11:requiredKnowledge href="http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30#_e63f2587-df20-44d3-b3f0-1c5227d85a5b"/>
-    </dmn11:knowledgeRequirement>
-    <dmn11:invocation id="_1d4f6f62-2334-4013-87ca-ab5e15b11cd6" typeRef="feel:string">
-      <dmn11:literalExpression id="literal__1d4f6f62-2334-4013-87ca-ab5e15b11cd6">
-        <dmn11:text>Base model.How to greet a Person</dmn11:text>
-      </dmn11:literalExpression>
-      <dmn11:binding>
-        <dmn11:parameter id="_1f71448d-1cd2-4f63-a2ca-dddcfb8cd88a" name="p1"/>
-        <dmn11:context id="undefined">
-          <dmn11:contextEntry>
-            <dmn11:variable id="undefined" name="full name" typeRef="feel:string"/>
-            <dmn11:literalExpression id="_5e37106f-adb9-4927-81e8-1ecbb61caf1d">
-              <dmn11:text>Customer.full name</dmn11:text>
-            </dmn11:literalExpression>
-          </dmn11:contextEntry>
-          <dmn11:contextEntry>
-            <dmn11:variable id="undefined" name="age" typeRef="feel:number"/>
-            <dmn11:literalExpression id="_8b4ac003-cccc-46a8-9171-b3b41b1ec9fb">
-              <dmn11:text>Customer.age</dmn11:text>
-            </dmn11:literalExpression>
-          </dmn11:contextEntry>
-        </dmn11:context>
-      </dmn11:binding>
-    </dmn11:invocation>
-  </dmn11:decision>
-  <dmn11:decision id="_aaf64479-1eab-456f-a5ab-ce348c41b21e" name="Greeting to the Customer using DS">
-    <dmn11:variable id="_210ed1be-10e8-4779-960b-2fbfa24ee5c7" name="Greeting to the Customer using DS" typeRef="feel:string"/>
-    <dmn11:informationRequirement>
-      <dmn11:requiredInput href="#_4ec61cd4-96fe-43d8-93b9-470c84158593"/>
-    </dmn11:informationRequirement>
-    <dmn11:knowledgeRequirement>
-      <dmn11:requiredKnowledge href="http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30#_f379ab62-a642-47b6-a9f8-354dd1ce9445"/>
-    </dmn11:knowledgeRequirement>
-    <dmn11:invocation id="_5875e3ce-00a6-4b28-8a79-f7e92f41b544" typeRef="feel:string">
-      <dmn11:literalExpression id="literal__5875e3ce-00a6-4b28-8a79-f7e92f41b544">
-        <dmn11:text>Base model.Base DS</dmn11:text>
-      </dmn11:literalExpression>
-      <dmn11:binding>
-        <dmn11:parameter id="_36c5721f-f8fd-4211-9517-b47fa5bd17ad" name="Input Person"/>
-        <dmn11:context id="undefined">
-          <dmn11:contextEntry>
-            <dmn11:variable id="undefined" name="full name" typeRef="feel:string"/>
-            <dmn11:literalExpression id="_c1c4f2ec-42ec-453c-8b84-4bba6354ff32">
-              <dmn11:text>Customer.full name</dmn11:text>
-            </dmn11:literalExpression>
-          </dmn11:contextEntry>
-          <dmn11:contextEntry>
-            <dmn11:variable id="undefined" name="age" typeRef="feel:number"/>
-            <dmn11:literalExpression id="_61d82c03-9ee8-4d11-99d2-9fe96f74b6ff">
-              <dmn11:text>Customer.age</dmn11:text>
-            </dmn11:literalExpression>
-          </dmn11:contextEntry>
-        </dmn11:context>
-      </dmn11:binding>
-    </dmn11:invocation>
-  </dmn11:decision>
-  <dmn11:decision id="_65c2eea3-fa18-407a-a7c7-0ecaa14f4e03" name="Greetings using a local BKM">
-    <dmn11:variable id="_a258c139-c419-43b7-9b11-a5f8c9917679" name="Greetings using a local BKM" typeRef="feel:string"/>
-    <dmn11:informationRequirement>
-      <dmn11:requiredInput href="#_4ec61cd4-96fe-43d8-93b9-470c84158593"/>
-    </dmn11:informationRequirement>
-    <dmn11:knowledgeRequirement>
-      <dmn11:requiredKnowledge href="#_ad7a94be-98a3-40a3-afed-c1adf0768c2c"/>
-    </dmn11:knowledgeRequirement>
-    <dmn11:literalExpression id="_62192d32-e2b5-48fe-8cf6-62bc5e626eb8" typeRef="feel:string">
-      <dmn11:text>which uses the imported DS(Customer)</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-  <dmn11:businessKnowledgeModel id="_ad7a94be-98a3-40a3-afed-c1adf0768c2c" name="which uses the imported DS">
-    <dmn11:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="F" id="_9a5f6cc5-e20b-43c6-a425-96d76ac3a018" typeRef="feel:string">
-      <dmn11:formalParameter id="_33e1103d-fcb5-4da5-bc7f-1b62fcc88ea7" name="c1" typeRef="Base model.tPerson"/>
-      <dmn11:invocation id="_065089c5-263d-46d9-8f1b-b220c587a22b">
-        <dmn11:literalExpression id="literal__065089c5-263d-46d9-8f1b-b220c587a22b">
-          <dmn11:text>Base model.Base DS</dmn11:text>
-        </dmn11:literalExpression>
-        <dmn11:binding>
-          <dmn11:parameter id="_5c05e32e-3e53-4910-a236-0ab881cce03a" name="Input Person"/>
-          <dmn11:context id="undefined">
-            <dmn11:contextEntry>
-              <dmn11:variable id="undefined" name="full name" typeRef="feel:string"/>
-              <dmn11:literalExpression id="_1c9496c7-e085-4108-aa8f-51425e23ad89">
-                <dmn11:text>c1.full name</dmn11:text>
-              </dmn11:literalExpression>
-            </dmn11:contextEntry>
-            <dmn11:contextEntry>
-              <dmn11:variable id="undefined" name="age" typeRef="feel:number"/>
-              <dmn11:literalExpression id="_0ed19d8c-7732-43cf-bbe8-ebb17a990c3b">
-                <dmn11:text>c1.age</dmn11:text>
-              </dmn11:literalExpression>
-            </dmn11:contextEntry>
-          </dmn11:context>
-        </dmn11:binding>
-      </dmn11:invocation>
-    </dmn11:encapsulatedLogic>
-    <dmn11:variable id="_55d7aa76-285f-4af6-be57-c3d8a88c4b2d" name="which uses the imported DS" typeRef="feel:string"/>
-    <dmn11:knowledgeRequirement>
-      <dmn11:requiredKnowledge href="http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30#_f379ab62-a642-47b6-a9f8-354dd1ce9445"/>
-    </dmn11:knowledgeRequirement>
-  </dmn11:businessKnowledgeModel>
-</dmn11:definitions>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/dmn/definitions/_b33fa7d9-f501-423b-afa8-15ded7e7f493"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:include1="http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.1.4.201808011735"
+                      id="_b33fa7d9-f501-423b-afa8-15ded7e7f493"
+                      name="Import base model"
+                      namespace="http://www.trisotech.com/dmn/definitions/_b33fa7d9-f501-423b-afa8-15ded7e7f493">
+   <semantic:extensionElements/>
+   <semantic:import xmlns:drools="http://www.drools.org/kie/dmn/1.1"
+                    xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                    drools:modelName="Base model"
+                    drools:name="Base model"
+                    importType="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                    namespace="http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30"
+                    triso:fileId="eyJmIjp7InNrdSI6ImEwY2Q5OGEwLWNkOWYtNGFhNy05MTliLTI4ZmZlMTM1OTNhNSIsIm5hbWUiOiJCYXNlIG1vZGVsIn19"
+                    triso:fileName="20180802-DS/Base model"
+                    name="Base model"/>
+   <semantic:inputData id="_4ec61cd4-96fe-43d8-93b9-470c84158593" name="Customer">
+      <semantic:variable id="_c5efccac-e79b-4f72-a235-adfa4df3206b"
+                         name="Customer"
+                         typeRef="Base model.tPerson"/>
+   </semantic:inputData>
+   <semantic:decision id="_6d634e6f-4a74-4a32-a4b2-1f596bba6d76"
+                      name="Greetings to the Customer using BKM">
+      <semantic:variable id="_f0738d71-f26d-413d-b1de-847f4fa9c4aa"
+                         name="Greetings to the Customer using BKM"
+                         typeRef="string"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_4ec61cd4-96fe-43d8-93b9-470c84158593"/>
+      </semantic:informationRequirement>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30#_e63f2587-df20-44d3-b3f0-1c5227d85a5b"/>
+      </semantic:knowledgeRequirement>
+      <semantic:invocation id="_1d4f6f62-2334-4013-87ca-ab5e15b11cd6" typeRef="string">
+         <semantic:literalExpression id="literal__1d4f6f62-2334-4013-87ca-ab5e15b11cd6">
+            <semantic:text>Base model.How to greet a Person</semantic:text>
+         </semantic:literalExpression>
+         <semantic:binding>
+            <semantic:parameter id="_1f71448d-1cd2-4f63-a2ca-dddcfb8cd88a" name="p1"/>
+            <semantic:context id="undefined">
+               <semantic:contextEntry>
+                  <semantic:variable id="undefined" name="full name" typeRef="string"/>
+                  <semantic:literalExpression id="_5e37106f-adb9-4927-81e8-1ecbb61caf1d">
+                     <semantic:text>Customer.full name</semantic:text>
+                  </semantic:literalExpression>
+               </semantic:contextEntry>
+               <semantic:contextEntry>
+                  <semantic:variable id="undefined" name="age" typeRef="number"/>
+                  <semantic:literalExpression id="_8b4ac003-cccc-46a8-9171-b3b41b1ec9fb">
+                     <semantic:text>Customer.age</semantic:text>
+                  </semantic:literalExpression>
+               </semantic:contextEntry>
+            </semantic:context>
+         </semantic:binding>
+      </semantic:invocation>
+   </semantic:decision>
+   <semantic:decision id="_aaf64479-1eab-456f-a5ab-ce348c41b21e"
+                      name="Greeting to the Customer using DS">
+      <semantic:variable id="_210ed1be-10e8-4779-960b-2fbfa24ee5c7"
+                         name="Greeting to the Customer using DS"
+                         typeRef="string"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_4ec61cd4-96fe-43d8-93b9-470c84158593"/>
+      </semantic:informationRequirement>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30#_f379ab62-a642-47b6-a9f8-354dd1ce9445"/>
+      </semantic:knowledgeRequirement>
+      <semantic:invocation id="_5875e3ce-00a6-4b28-8a79-f7e92f41b544" typeRef="string">
+         <semantic:literalExpression id="literal__5875e3ce-00a6-4b28-8a79-f7e92f41b544">
+            <semantic:text>Base model.Base DS</semantic:text>
+         </semantic:literalExpression>
+         <semantic:binding>
+            <semantic:parameter id="_36c5721f-f8fd-4211-9517-b47fa5bd17ad" name="Input Person"/>
+            <semantic:context id="undefined">
+               <semantic:contextEntry>
+                  <semantic:variable id="undefined" name="full name" typeRef="string"/>
+                  <semantic:literalExpression id="_c1c4f2ec-42ec-453c-8b84-4bba6354ff32">
+                     <semantic:text>Customer.full name</semantic:text>
+                  </semantic:literalExpression>
+               </semantic:contextEntry>
+               <semantic:contextEntry>
+                  <semantic:variable id="undefined" name="age" typeRef="number"/>
+                  <semantic:literalExpression id="_61d82c03-9ee8-4d11-99d2-9fe96f74b6ff">
+                     <semantic:text>Customer.age</semantic:text>
+                  </semantic:literalExpression>
+               </semantic:contextEntry>
+            </semantic:context>
+         </semantic:binding>
+      </semantic:invocation>
+   </semantic:decision>
+   <semantic:decision id="_65c2eea3-fa18-407a-a7c7-0ecaa14f4e03"
+                      name="Greetings using a local BKM">
+      <semantic:variable id="_a258c139-c419-43b7-9b11-a5f8c9917679"
+                         name="Greetings using a local BKM"
+                         typeRef="string"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_4ec61cd4-96fe-43d8-93b9-470c84158593"/>
+      </semantic:informationRequirement>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="#_ad7a94be-98a3-40a3-afed-c1adf0768c2c"/>
+      </semantic:knowledgeRequirement>
+      <semantic:literalExpression id="_62192d32-e2b5-48fe-8cf6-62bc5e626eb8" typeRef="string">
+         <semantic:text>which uses the imported DS(Customer)</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:businessKnowledgeModel id="_ad7a94be-98a3-40a3-afed-c1adf0768c2c"
+                                    name="which uses the imported DS">
+      <semantic:variable id="_55d7aa76-285f-4af6-be57-c3d8a88c4b2d"
+                         name="which uses the imported DS"
+                         typeRef="string"/>
+      <semantic:encapsulatedLogic kind="FEEL"
+                                  id="_9a5f6cc5-e20b-43c6-a425-96d76ac3a018"
+                                  typeRef="string">
+         <semantic:formalParameter id="_33e1103d-fcb5-4da5-bc7f-1b62fcc88ea7"
+                                   name="c1"
+                                   typeRef="Base model.tPerson"/>
+         <semantic:invocation id="_065089c5-263d-46d9-8f1b-b220c587a22b">
+            <semantic:literalExpression id="literal__065089c5-263d-46d9-8f1b-b220c587a22b">
+               <semantic:text>Base model.Base DS</semantic:text>
+            </semantic:literalExpression>
+            <semantic:binding>
+               <semantic:parameter id="_5c05e32e-3e53-4910-a236-0ab881cce03a" name="Input Person"/>
+               <semantic:context id="undefined">
+                  <semantic:contextEntry>
+                     <semantic:variable id="undefined" name="full name" typeRef="string"/>
+                     <semantic:literalExpression id="_1c9496c7-e085-4108-aa8f-51425e23ad89">
+                        <semantic:text>c1.full name</semantic:text>
+                     </semantic:literalExpression>
+                  </semantic:contextEntry>
+                  <semantic:contextEntry>
+                     <semantic:variable id="undefined" name="age" typeRef="number"/>
+                     <semantic:literalExpression id="_0ed19d8c-7732-43cf-bbe8-ebb17a990c3b">
+                        <semantic:text>c1.age</semantic:text>
+                     </semantic:literalExpression>
+                  </semantic:contextEntry>
+               </semantic:context>
+            </semantic:binding>
+         </semantic:invocation>
+      </semantic:encapsulatedLogic>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30#_f379ab62-a642-47b6-a9f8-354dd1ce9445"/>
+      </semantic:knowledgeRequirement>
+   </semantic:businessKnowledgeModel>
+</semantic:definitions>
