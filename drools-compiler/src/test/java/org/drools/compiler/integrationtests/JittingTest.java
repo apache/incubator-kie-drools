@@ -187,6 +187,7 @@ public class JittingTest extends CommonTestMethodBase {
 
     @Test
     public void testJitMapCoercion() {
+        // DROOLS-4334
         checkJitMapCoercion("status < $map.get(\"key\")", true, 0);
         checkJitMapCoercion("$map.get(\"key\") > status", true, 0);
         checkJitMapCoercion("status > $map.get(\"key\")", true, 1);
@@ -196,10 +197,15 @@ public class JittingTest extends CommonTestMethodBase {
         checkJitMapCoercion("$map.get(\"key\") > status", false, 1);
         checkJitMapCoercion("status > $map.get(\"key\")", false, 0);
         checkJitMapCoercion("$map.get(\"key\") < status", false, 0);
+
+        // DROOLS-5596
+        checkJitMapCoercion("$map.get(\"key\") < 10", true, 1);
+        checkJitMapCoercion("$map.get(\"key\") < \"10\"", true, 1);
+        checkJitMapCoercion("10 > $map.get(\"key\")", true, 1);
+        checkJitMapCoercion("\"10\" > $map.get(\"key\")", true, 1);
     }
 
     public void checkJitMapCoercion(String constraint, boolean useInt, int expectedFires) {
-        // DROOLS-4334
         String drl =
                 "package com.sample\n" +
                 "import " + Map.class.getCanonicalName() + ";\n" +

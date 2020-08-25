@@ -425,13 +425,13 @@ public class ASMConditionEvaluatorJitter {
             Class<?> leftType = isDeclarationExpression(left) ? convertFromPrimitiveType(left.getType()) : left.getType();
             Class<?> rightType = isDeclarationExpression(right) ? convertFromPrimitiveType(right.getType()) : right.getType();
 
-            jitExpression(left, type != null ? type : leftType);
+            jitExpression(left, type != null && type != CoercingComparisonType.class ? type : leftType);
             if (isDeclarationExpression(left) && left.getType().isPrimitive()) {
                 castFromPrimitive(left.getType());
             }
             store(LEFT_OPERAND, leftType);
 
-            jitExpression(right, type != null ? type : rightType);
+            jitExpression(right, type != null && type != CoercingComparisonType.class ? type : rightType);
             if (isDeclarationExpression(right) && right.getType().isPrimitive()) {
                 castFromPrimitive(right.getType());
             }
