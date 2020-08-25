@@ -653,7 +653,11 @@ public class FromTest extends BaseModelTest {
         public void setVal(String val) {
             this.val = val;
         }
-    }
+
+        public List<String> getListOfCodes() {
+            return Arrays.asList("a", "b", "c");
+        }
+     }
 
     @Test
     public void testFromFunctionCall() {
@@ -801,6 +805,43 @@ public class FromTest extends BaseModelTest {
                 "when\n" +
                 " $m : Measurement( id == \"color\", $colorVal : val )\n" +
                 " String() from dummyService.dummy($m.getId(), $m.getVal())\n" +
+                "then\n" +
+                " controlSet.add($colorVal);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        HashSet<Object> hashSet = new HashSet<>();
+        ksession.setGlobal("controlSet", hashSet);
+        ksession.setGlobal("dummyService", new DummyService());
+
+        ksession.insert(new Measurement("color", "red"));
+
+        int ruleFired = ksession.fireAllRules();
+
+        assertEquals( 1, ruleFired );
+        assertEquals( "red", hashSet.iterator().next() );
+    }
+
+    @Test
+    public void testMultipleFromFromList() {
+        // DROOLS-5590
+        String str =
+                "package com.sample;" +
+                "global java.util.Set controlSet;\n" +
+                "global " + DummyService.class.getCanonicalName() + " dummyService;\n" +
+                "import " + Measurement.class.getCanonicalName() + ";\n" +
+                "import " + List.class.getCanonicalName() + ";\n" +
+                "import " + Map.class.getCanonicalName() + ";\n" +
+                "" +
+                "rule \"will execute per each Measurement having ID color\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                " $measurement: Measurement( id == \"color\", $colorVal : val )\n" +
+                " $lst : List() from collect(Measurement())\n" +
+                " $selectedList: List() from accumulate(Measurement($m: this) from $lst, " +
+                        "collectList(Map.entry($m, $measurement.getListOfCodes())))\n" +
+                "\n" +
                 "then\n" +
                 " controlSet.add($colorVal);\n" +
                 "end";
