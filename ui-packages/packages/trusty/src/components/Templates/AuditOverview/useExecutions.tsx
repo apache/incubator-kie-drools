@@ -1,7 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
-import { getExecutions } from '../../../utils/api/auditApi';
-import { isCancelledRequest } from '../../../utils/api/httpClient';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  EXECUTIONS_PATH,
+  callOnceHandler
+} from '../../../utils/api/httpClient';
 import { RemoteData, Executions } from '../../../types';
+import axios, { AxiosRequestConfig } from 'axios';
 
 type useExecutionsParameters = {
   searchString: string;
@@ -17,17 +20,26 @@ const useExecutions = (parameters: useExecutionsParameters) => {
     status: 'NOT_ASKED'
   });
 
+  const getExecutions = useMemo(() => callOnceHandler(), []);
+
   const loadExecutions = useCallback(() => {
     let isMounted = true;
     setExecutions({ status: 'LOADING' });
-    getExecutions(searchString, from, to, limit, offset)
+
+    const config: AxiosRequestConfig = {
+      url: EXECUTIONS_PATH,
+      method: 'get',
+      params: { search: searchString, from, to, limit, offset }
+    };
+
+    getExecutions(config)
       .then(response => {
         if (isMounted) {
           setExecutions({ status: 'SUCCESS', data: response.data });
         }
       })
       .catch(error => {
-        if (!isCancelledRequest(error)) {
+        if (!axios.isCancel(error)) {
           setExecutions({ status: 'FAILURE', error });
         }
       });

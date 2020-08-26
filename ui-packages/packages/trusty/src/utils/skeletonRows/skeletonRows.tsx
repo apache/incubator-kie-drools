@@ -9,15 +9,15 @@ import SkeletonStripe from '../../components/Atoms/SkeletonStripe/SkeletonStripe
  * */
 
 const skeletonRows = (
-  colsNumber: number,
-  rowsNumber: number,
+  colsCount: number,
+  rowsCount: number,
   rowKey?: string
 ) => {
   const skeletons = [];
   rowKey = rowKey || 'key';
-  for (let j = 0; j < rowsNumber; j++) {
+  for (let j = 0; j < rowsCount; j++) {
     const cells = [];
-    for (let i = 0; i < colsNumber; i++) {
+    for (let i = 0; i < colsCount; i++) {
       const size = (i + j) % 2 ? 'lg' : 'md';
       cells.push({
         title: <SkeletonStripe size={size} />

@@ -1,0 +1,80 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExplanationSwitch renders correctly 1`] = `
+<div
+  className="explanation-switch"
+>
+  <Select
+    aria-label="Select Decision Outcome"
+    aria-labelledby=""
+    className=""
+    clearSelectionsAriaLabel="Clear all"
+    createText="Create"
+    customBadgeText={null}
+    customContent={null}
+    direction="down"
+    hasInlineFilter={false}
+    inlineFilterPlaceholderText={null}
+    inputIdPrefix=""
+    isCreatable={false}
+    isDisabled={false}
+    isGrouped={false}
+    isOpen={false}
+    isPlain={false}
+    menuAppendTo="inline"
+    noResultsFoundText="No results found"
+    onClear={[Function]}
+    onCreateOption={[Function]}
+    onFilter={null}
+    onSelect={[Function]}
+    onToggle={[Function]}
+    ouiaSafe={true}
+    placeholderText=""
+    removeSelectionAriaLabel="Remove"
+    selections="_12268B68-94A1-4960-B4C8-0B6071AFDE58"
+    toggleAriaLabel="Options menu"
+    toggleIcon={null}
+    toggleId={null}
+    typeAheadAriaLabel=""
+    variant="single"
+    width=""
+  >
+    <SelectOption
+      className=""
+      component="button"
+      index={0}
+      inputId=""
+      isChecked={false}
+      isDisabled={false}
+      isNoResultsOption={false}
+      isPlaceholder={false}
+      isSelected={false}
+      key="0"
+      keyHandler={[Function]}
+      onClick={[Function]}
+      sendRef={[Function]}
+      value="_12268B68-94A1-4960-B4C8-0B6071AFDE58"
+    >
+      Mortgage Approval
+    </SelectOption>
+    <SelectOption
+      className=""
+      component="button"
+      index={0}
+      inputId=""
+      isChecked={false}
+      isDisabled={false}
+      isNoResultsOption={false}
+      isPlaceholder={false}
+      isSelected={false}
+      key="1"
+      keyHandler={[Function]}
+      onClick={[Function]}
+      sendRef={[Function]}
+      value="_9CFF8C35-4EB3-451E-874C-DB27A5A424C0"
+    >
+      Risk Score
+    </SelectOption>
+  </Select>
+</div>
+`;

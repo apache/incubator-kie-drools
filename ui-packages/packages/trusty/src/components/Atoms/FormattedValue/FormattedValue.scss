@@ -1,0 +1,11 @@
+.formatted-value {
+  &--capitalize {
+    text-transform: capitalize;
+  }
+}
+
+.formatted-list {
+  &--no-entries {
+    font-style: italic;
+  }
+}

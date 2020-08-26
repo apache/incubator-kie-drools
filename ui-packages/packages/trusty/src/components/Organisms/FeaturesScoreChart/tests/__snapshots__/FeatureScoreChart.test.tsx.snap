@@ -1,0 +1,269 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FeaturesScoreChart renders a chart for a list of feature scores 1`] = `
+<Chart
+  ariaDesc="Importance of different features on the decision"
+  domain={
+    Object {
+      "y": Array [
+        0.9240811677386516,
+        -0.9240811677386516,
+      ],
+    }
+  }
+  domainPadding={
+    Object {
+      "x": Array [
+        20,
+        20,
+      ],
+      "y": 80,
+    }
+  }
+  height={500}
+  horizontal={true}
+  padding={
+    Object {
+      "bottom": 30,
+      "left": 30,
+      "right": 30,
+      "top": 60,
+    }
+  }
+  width={800}
+>
+  <ChartAxis
+    tickFormat={[Function]}
+  />
+  <ChartBar
+    alignment="middle"
+    animate={
+      Object {
+        "duration": 2000,
+        "onLoad": Object {
+          "duration": 1000,
+        },
+      }
+    }
+    barWidth={25}
+    data={
+      Array [
+        Object {
+          "featureName": "Liabilities",
+          "featureScore": 0.6780527129423648,
+        },
+        Object {
+          "featureName": "Lender Ratings",
+          "featureScore": -0.08937896629080377,
+        },
+        Object {
+          "featureName": "Employment Income",
+          "featureScore": -0.9240811677386516,
+        },
+        Object {
+          "featureName": "Liabilities 2",
+          "featureScore": 0.7693802543201365,
+        },
+        Object {
+          "featureName": "Assets",
+          "featureScore": 0.21272743757961554,
+        },
+      ]
+    }
+    events={
+      Array [
+        Object {
+          "eventHandlers": Object {
+            "onMouseMove": [Function],
+            "onMouseOut": [Function],
+            "onMouseOver": [Function],
+            "onTouchEnd": [Function],
+            "onTouchMove": [Function],
+            "onTouchStart": [Function],
+          },
+          "target": "data",
+        },
+      ]
+    }
+    labelComponent={<CustomLabel />}
+    labels={
+      Array [
+        "0.68",
+        "-0.09",
+        "-0.92",
+        "0.77",
+        "0.21",
+      ]
+    }
+    style={
+      Object {
+        "data": Object {
+          "fill": [Function],
+          "opacity": [Function],
+        },
+      }
+    }
+    x="featureName"
+    y="featureScore"
+  />
+  <ChartGroup>
+    <ChartLabel
+      className="feature-chart-axis-label"
+      datum={
+        Object {
+          "x": 1,
+          "y": 0,
+        }
+      }
+      direction="rtl"
+      dx={-10}
+      key="Liabilities"
+      text="Liabilities"
+      textAnchor="start"
+    />
+    <ChartLabel
+      className="feature-chart-axis-label"
+      datum={
+        Object {
+          "x": 2,
+          "y": 0,
+        }
+      }
+      direction="rtl"
+      dx={10}
+      key="Lender Ratings"
+      text="Lender Ratings"
+      textAnchor="end"
+    />
+    <ChartLabel
+      className="feature-chart-axis-label"
+      datum={
+        Object {
+          "x": 3,
+          "y": 0,
+        }
+      }
+      direction="rtl"
+      dx={10}
+      key="Employment Income"
+      text="Employment Income"
+      textAnchor="end"
+    />
+    <ChartLabel
+      className="feature-chart-axis-label"
+      datum={
+        Object {
+          "x": 4,
+          "y": 0,
+        }
+      }
+      direction="rtl"
+      dx={-10}
+      key="Liabilities 2"
+      text="Liabilities 2"
+      textAnchor="start"
+    />
+    <ChartLabel
+      className="feature-chart-axis-label"
+      datum={
+        Object {
+          "x": 5,
+          "y": 0,
+        }
+      }
+      direction="rtl"
+      dx={-10}
+      key="Assets"
+      text="Assets"
+      textAnchor="start"
+    />
+  </ChartGroup>
+  <ChartGroup>
+    <ChartLabel
+      className="feature-chart-score-label"
+      datum={
+        Object {
+          "x": 1,
+          "y": 0.6780527129423648,
+        }
+      }
+      dx={10}
+      key="Liabilities"
+      text="0.68"
+      textAnchor="start"
+    />
+    <ChartLabel
+      className="feature-chart-score-label"
+      datum={
+        Object {
+          "x": 2,
+          "y": -0.08937896629080377,
+        }
+      }
+      dx={-10}
+      key="Lender Ratings"
+      text="-0.09"
+      textAnchor="end"
+    />
+    <ChartLabel
+      className="feature-chart-score-label"
+      datum={
+        Object {
+          "x": 3,
+          "y": -0.9240811677386516,
+        }
+      }
+      dx={-10}
+      key="Employment Income"
+      text="-0.92"
+      textAnchor="end"
+    />
+    <ChartLabel
+      className="feature-chart-score-label"
+      datum={
+        Object {
+          "x": 4,
+          "y": 0.7693802543201365,
+        }
+      }
+      dx={10}
+      key="Liabilities 2"
+      text="0.77"
+      textAnchor="start"
+    />
+    <ChartLabel
+      className="feature-chart-score-label"
+      datum={
+        Object {
+          "x": 5,
+          "y": 0.21272743757961554,
+        }
+      }
+      dx={10}
+      key="Assets"
+      text="0.21"
+      textAnchor="start"
+    />
+  </ChartGroup>
+  <ChartLegend
+    colorScale={
+      Array [
+        "var(--pf-global--palette--orange-300)",
+        "var(--pf-global--info-color--100)",
+      ]
+    }
+    data={
+      Array [
+        Object {
+          "name": "Negative Impact",
+        },
+        Object {
+          "name": "Positive Impact",
+        },
+      ]
+    }
+    x={250}
+    y={10}
+  />
+</Chart>
+`;

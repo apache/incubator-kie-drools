@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SkeletonDatalist renders a 2x2 data list 1`] = `
+<DataList
+  aria-label="Loading content"
+>
+  <DataListItem
+    aria-labelledby=""
+  >
+    <DataListItemRow
+      key="skeleton-row-0"
+    >
+      <DataListItemCells
+        dataListCells={
+          Array [
+            <DataListCell>
+              <SkeletonStripe
+                size="md"
+              />
+            </DataListCell>,
+            <DataListCell>
+              <SkeletonStripe
+                size="lg"
+              />
+            </DataListCell>,
+          ]
+        }
+      />
+    </DataListItemRow>
+    <DataListItemRow
+      key="skeleton-row-1"
+    >
+      <DataListItemCells
+        dataListCells={
+          Array [
+            <DataListCell>
+              <SkeletonStripe
+                size="lg"
+              />
+            </DataListCell>,
+            <DataListCell>
+              <SkeletonStripe
+                size="md"
+              />
+            </DataListCell>,
+          ]
+        }
+      />
+    </DataListItemRow>
+  </DataListItem>
+</DataList>
+`;

@@ -1,0 +1,13 @@
+.audit-detail {
+  &__nav {
+    margin-top: var(--pf-global--spacer--md);
+    .pf-c-nav__item:first-child {
+      .pf-c-nav__link {
+        padding-left: 0;
+        &:before {
+          left: 0;
+        }
+      }
+    }
+  }
+}

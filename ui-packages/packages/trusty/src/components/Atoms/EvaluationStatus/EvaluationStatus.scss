@@ -1,0 +1,15 @@
+.evaluation-status-badge {
+  margin-right: 0.5em;
+  &--success {
+    @extend .evaluation-status-badge;
+    color: var(--pf-global--success-color--100);
+  }
+  &--pending {
+    @extend .evaluation-status-badge;
+    color: var(--pf-global--warning-color--100);
+  }
+  &--failure {
+    @extend .evaluation-status-badge;
+    color: var(--pf-global--danger-color--100);
+  }
+}

@@ -1,0 +1,95 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SkeletonGrid renders a 2x2 grid 1`] = `
+<Grid
+  hasGutter={true}
+>
+  <GridItem
+    key="skeleton-grid-0-0"
+    span={6}
+  >
+    <SkeletonStripe
+      size="md"
+    />
+  </GridItem>
+  <GridItem
+    key="skeleton-grid-1-0"
+    span={6}
+  >
+    <SkeletonStripe
+      size="lg"
+    />
+  </GridItem>
+  <GridItem
+    key="skeleton-grid-0-1"
+    span={6}
+  >
+    <SkeletonStripe
+      size="lg"
+    />
+  </GridItem>
+  <GridItem
+    key="skeleton-grid-1-1"
+    span={6}
+  >
+    <SkeletonStripe
+      size="md"
+    />
+  </GridItem>
+</Grid>
+`;
+
+exports[`SkeletonGrid renders a grid with custom columns sizes 1`] = `
+<Grid
+  hasGutter={true}
+>
+  <GridItem
+    key="skeleton-grid-0-0"
+    span={1}
+  >
+    <SkeletonStripe
+      size="md"
+    />
+  </GridItem>
+  <GridItem
+    key="skeleton-grid-1-0"
+    span={2}
+  >
+    <SkeletonStripe
+      size="lg"
+    />
+  </GridItem>
+  <GridItem
+    key="skeleton-grid-2-0"
+    span={1}
+  >
+    <SkeletonStripe
+      size="md"
+    />
+  </GridItem>
+  <GridItem
+    key="skeleton-grid-0-1"
+    span={1}
+  >
+    <SkeletonStripe
+      size="lg"
+    />
+  </GridItem>
+  <GridItem
+    key="skeleton-grid-1-1"
+    span={2}
+  >
+    <SkeletonStripe
+      size="md"
+    />
+  </GridItem>
+  <GridItem
+    key="skeleton-grid-2-1"
+    span={1}
+  >
+    <SkeletonStripe
+      size="lg"
+    />
+  </GridItem>
+</Grid>
+`;

@@ -1,10 +1,10 @@
 import { renderHook } from '@testing-library/react-hooks';
 import useExecutions from '../useExecutions';
-import * as api from '../../../../utils/api/auditApi';
+import * as api from '../../../../utils/api/httpClient';
 import { act } from 'react-test-renderer';
 
 const flushPromises = () => new Promise(setImmediate);
-const apiMock = jest.spyOn(api, 'getExecutions');
+const apiMock = jest.spyOn(api, 'callOnceHandler');
 
 beforeEach(() => {
   apiMock.mockClear();
@@ -62,8 +62,10 @@ describe('useExecutions', () => {
       }
     };
 
-    // @ts-ignore
-    apiMock.mockImplementation(() => Promise.resolve(executionsResponse));
+    apiMock.mockImplementation(() => () =>
+      // @ts-ignore
+      Promise.resolve(executionsResponse)
+    );
     const { result } = renderHook(() => {
       // tslint:disable-next-line:react-hooks-nesting
       return useExecutions({
@@ -90,17 +92,19 @@ describe('useExecutions', () => {
     });
 
     expect(result.current.executions).toStrictEqual({ status: 'LOADING' });
+
     await act(async () => {
       await flushPromises();
     });
+
     expect(result.current.executions).toStrictEqual(
       Object.assign({ status: 'SUCCESS' }, executionsResponse)
     );
-    expect(apiMock).toHaveBeenCalledTimes(2);
+    expect(apiMock).toHaveBeenCalledTimes(1);
   });
 
   it('returns a loading error when APIs call fails', async () => {
-    apiMock.mockImplementation(() => Promise.reject('error'));
+    apiMock.mockImplementation(() => () => Promise.reject('error'));
     const { result } = renderHook(() => {
       // tslint:disable-next-line:react-hooks-nesting
       return useExecutions({

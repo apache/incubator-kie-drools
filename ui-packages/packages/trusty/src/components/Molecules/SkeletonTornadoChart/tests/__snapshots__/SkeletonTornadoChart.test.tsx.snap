@@ -1,0 +1,83 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SkeletonTornadoChart renders a loading chart with 5 values 1`] = `
+<div
+  className="skeleton-tornado"
+  style={
+    Object {
+      "height": 400,
+      "width": "100%",
+    }
+  }
+>
+  <div
+    className="skeleton-tornado__legend"
+  >
+    <SkeletonStripe
+      isInline={true}
+    />
+    <SkeletonStripe
+      isInline={true}
+    />
+  </div>
+  <div
+    className="skeleton-tornado__chart"
+  >
+    <SkeletonStripe
+      customStyle={
+        Object {
+          "left": "5%",
+          "top": "1%",
+          "width": "45%",
+        }
+      }
+      isInline={true}
+      key="0"
+    />
+    <SkeletonStripe
+      customStyle={
+        Object {
+          "left": "50%",
+          "top": "11%",
+          "width": "37%",
+        }
+      }
+      isInline={true}
+      key="1"
+    />
+    <SkeletonStripe
+      customStyle={
+        Object {
+          "left": "21%",
+          "top": "21%",
+          "width": "29%",
+        }
+      }
+      isInline={true}
+      key="2"
+    />
+    <SkeletonStripe
+      customStyle={
+        Object {
+          "left": "50%",
+          "top": "31%",
+          "width": "21%",
+        }
+      }
+      isInline={true}
+      key="3"
+    />
+    <SkeletonStripe
+      customStyle={
+        Object {
+          "left": "37%",
+          "top": "41%",
+          "width": "13%",
+        }
+      }
+      isInline={true}
+      key="4"
+    />
+  </div>
+</div>
+`;

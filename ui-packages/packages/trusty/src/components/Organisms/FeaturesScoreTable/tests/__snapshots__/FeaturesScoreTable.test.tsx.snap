@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FeaturesScoreTable renders correctly a score table 1`] = `
+<section
+  className="feature-score-table"
+>
+  <ScoreTable
+    featuresScore={
+      Array [
+        Object {
+          "featureName": "Assets",
+          "featureScore": 0.21272743757961554,
+        },
+        Object {
+          "featureName": "Liabilities 2",
+          "featureScore": 0.7693802543201365,
+        },
+        Object {
+          "featureName": "Liabilities",
+          "featureScore": 0.6780527129423648,
+        },
+      ]
+    }
+    name="Positive Weight"
+  />
+  <ScoreTable
+    featuresScore={
+      Array [
+        Object {
+          "featureName": "Employment Income",
+          "featureScore": -0.9240811677386516,
+        },
+        Object {
+          "featureName": "Lender Ratings",
+          "featureScore": -0.08937896629080377,
+        },
+      ]
+    }
+    name="Negative Weight"
+  />
+</section>
+`;

@@ -1,0 +1,11 @@
+.execution-header {
+  &__uuid {
+    text-transform: uppercase;
+  }
+  &__property {
+    padding: 0 8px;
+    .pf-c-title {
+      font-weight: 400;
+    }
+  }
+}
