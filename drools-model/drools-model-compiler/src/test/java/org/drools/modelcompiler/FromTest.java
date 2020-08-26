@@ -585,7 +585,7 @@ public class FromTest extends BaseModelTest {
     }
 
     @Test
-    public void TestFromOr() {
+    public void testFromOr() {
         String str =
                 "package org.drools.compiler.test  \n" +
                      "import " + Person.class.getCanonicalName() + "\n" +
@@ -824,7 +824,7 @@ public class FromTest extends BaseModelTest {
     }
 
     @Test
-    public void testMultipleFromFromList() {
+    public void testMultipleFromList() {
         // DROOLS-5590
         String str =
                 "package com.sample;" +
