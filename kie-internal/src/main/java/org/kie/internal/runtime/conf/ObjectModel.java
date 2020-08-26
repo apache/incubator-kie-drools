@@ -158,4 +158,10 @@ public class ObjectModel implements Serializable {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "ObjectModel [resolver=" + resolver + ", identifier=" + identifier + ", parameters=" + parameters + "]";
+    }
+
 }

@@ -18,6 +18,7 @@ package org.kie.internal.runtime.manager.deploy;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -82,7 +83,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 
     @XmlElement(name = "task-event-listener")
     @XmlElementWrapper(name = "task-event-listeners")
-    private Set<ObjectModel> taskEventListeners = new LinkedHashSet<ObjectModel>();
+    private List<ObjectModel> taskEventListeners = new ArrayList<>();
 
     @XmlElement(name = "global")
     @XmlElementWrapper(name = "globals")
@@ -209,7 +210,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 
     @Override
     public List<ObjectModel> getTaskEventListeners() {
-        return new ArrayList<ObjectModel>(cleanSet(taskEventListeners));
+        return new ArrayList<>(cleanList(taskEventListeners));
     }
 
     @Override
@@ -280,7 +281,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 
     public void setTaskEventListeners(List<ObjectModel> taskEventListeners) {
         if (taskEventListeners != null) {
-            this.taskEventListeners = new HashSet<ObjectModel>(taskEventListeners);
+            this.taskEventListeners = new ArrayList<>(taskEventListeners);
         }
     }
 
@@ -340,7 +341,13 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
         return input;
     }
 
-    protected void removeTransient(Set<?> input) {
+    protected List<ObjectModel> cleanList(List<ObjectModel> input) {
+        while(input.remove(null)) {
+        }
+        return input;
+    }
+
+    protected void removeTransient(Collection<?> input) {
         Iterator<?> it = input.iterator();
 
         while (it.hasNext()) {
@@ -503,8 +510,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
             @Override
             public DeploymentDescriptorBuilder addTaskEventListener(ObjectModel model) {
                 if (handler.accepted(model)) {
-                    if (!descriptor.taskEventListeners.add(model)) {
-                        descriptor.taskEventListeners.remove(model);
+                    if (!descriptor.taskEventListeners.contains(model)) {
                         descriptor.taskEventListeners.add(model);
                     }
                 }
@@ -680,4 +686,26 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
         return DeploymentDescriptorIO.toXml(this);
     }
 
+    @Override
+    public String toString() {
+        return "DeploymentDescriptorImpl [\n" +
+               "persistenceUnit=" + persistenceUnit + "\n" +
+               "auditPersistenceUnit=" + auditPersistenceUnit + "\n" +
+               "auditMode=" + auditMode + "\n" +
+               "persistenceMode=" + persistenceMode + "\n" +
+               "runtimeStrategy=" + runtimeStrategy + "\n" +
+               "marshallingStrategies=" + marshallingStrategies + "\n" +
+               "eventListeners=" + eventListeners + "\n" +
+               "taskEventListeners=" + taskEventListeners + "\n" + 
+               "globals=" + globals + "\n" +
+               "workItemHandlers=" + workItemHandlers + "\n" +
+               "environmentEntries=" + environmentEntries + "\n" +
+               "configuration=" + configuration + "\n" +
+               "requiredRoles=" + requiredRoles + "\n" +
+               "classes=" + classes + "\n" +
+               "limitSerializationClasses=" + limitSerializationClasses + "\n" +
+               "mappedRoles=" + mappedRoles + "]";
+    }
+
+    
 }
