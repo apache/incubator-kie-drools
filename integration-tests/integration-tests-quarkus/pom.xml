@@ -71,12 +71,26 @@
               <goal>process</goal>
             </goals>
             <configuration>
+              <outputDirectory>${project.basedir}/src/main/resources/kogito/</outputDirectory>
               <resourceBundles>
                 <resourceBundle>org.kie.kogito:integration-tests-common:${project.version}</resourceBundle>
               </resourceBundles>
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${project.basedir}/src/main/resources/kogito/</directory>
+              <includes>
+                <include>**</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
       </plugin>
 
       <plugin>
