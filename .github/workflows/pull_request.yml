@@ -12,7 +12,7 @@ jobs:
     steps:
     - name: Build Chain ${{ matrix.java-version }}
       id: build-chain   
-      uses: kiegroup/github-action-build-chain@v1.1
+      uses: kiegroup/github-action-build-chain@v1.2
       with:
         parent-dependencies: 'droolsjbpm-knowledge'
         child-dependencies: 'optaplanner@master:7.x'
