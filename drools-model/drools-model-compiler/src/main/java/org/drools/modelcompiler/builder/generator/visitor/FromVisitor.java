@@ -212,7 +212,8 @@ public class FromVisitor {
                 .flatMap(a -> a.findAll(NameExpr.class).stream())
                 .map(Object::toString)
                 .filter(context::hasDeclaration)
-                .collect(Collectors.toSet());
+                .distinct()
+                .collect(Collectors.toList());
 
         args.stream()
                 .map(context::getVarExpr)
