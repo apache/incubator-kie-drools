@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
-import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -46,6 +45,7 @@ import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
+import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -206,12 +206,7 @@ public class KiePMMLPredicateFactory {
                 nameExpr.setName(operator.getClass().getCanonicalName() + "." + operator.name());
             }
         });
-        final List<AssignExpr> assignExprs = body.findAll(AssignExpr.class);
-        assignExprs.forEach(assignExpr -> {
-            if (assignExpr.getTarget().asNameExpr().getNameAsString().equals("value")) {
-                assignExpr.setValue(new StringLiteralExpr(value.toString()));
-            }
-        });
+        CommonCodegenUtils.setAssignExpressionValue(body, "value", new StringLiteralExpr(value.toString()));
     }
 
     static void setCompoundPredicateConstructor(final String generatedClassName,

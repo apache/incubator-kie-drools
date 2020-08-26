@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
-import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
@@ -40,6 +39,7 @@ import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
+import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
 import org.slf4j.Logger;
@@ -47,7 +47,6 @@ import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
-import static org.kie.pmml.commons.Constants.UNCHANGED_VARIABLE_IN_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
@@ -178,19 +177,7 @@ public class KiePMMLSegmentFactory {
                 nameExprs.setName(objectCreationExpr.toString());
             }
         });
-        final List<AssignExpr> assignExprs = body.findAll(AssignExpr.class);
-        assignExprs.forEach(assignExpr -> {
-            final String assignExprName = assignExpr.getTarget().asNameExpr().getNameAsString();
-            switch (assignExprName) {
-                case "weight":
-                    assignExpr.setValue(new DoubleLiteralExpr(weight));
-                    break;
-                case "id":
-                    assignExpr.setValue(new StringLiteralExpr(segmentName));
-                    break;
-                default:
-                    logger.debug(UNCHANGED_VARIABLE_IN_CONSTRUCTOR, assignExprName, constructorDeclaration.toString());
-            }
-        });
+        CommonCodegenUtils.setAssignExpressionValue(body, "weight", new DoubleLiteralExpr(weight));
+        CommonCodegenUtils.setAssignExpressionValue(body, "id", new StringLiteralExpr(segmentName));
     }
 }

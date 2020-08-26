@@ -20,7 +20,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.expr.DoubleLiteralExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.mining.Segment;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -28,11 +38,25 @@ import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModelWithSources;
 
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
+import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
+import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.KIE_PMML_SEGMENT_TEMPLATE;
+import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.KIE_PMML_SEGMENT_TEMPLATE_JAVA;
 
 public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
+
+    private static CompilationUnit COMPILATION_UNIT;
+    private static ClassOrInterfaceDeclaration MODEL_TEMPLATE;
+
+    @BeforeClass
+    public static void setup() {
+        COMPILATION_UNIT = getFromFileName(KIE_PMML_SEGMENT_TEMPLATE_JAVA);
+        MODEL_TEMPLATE = COMPILATION_UNIT.getClassByName(KIE_PMML_SEGMENT_TEMPLATE).get();
+    }
 
     @Test
     public void getSegments() {
@@ -127,6 +151,36 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
                                                                                          DATA_DICTIONARY,
                                                                                          segment,
                                                                                          kiePMMLModel);
+    }
+
+    @Test
+    public void setConstructor() {
+        ConstructorDeclaration constructorDeclaration = MODEL_TEMPLATE.getDefaultConstructor().get();
+        String segmentName = "SEGMENTNAME";
+        String generatedClassName = "GENERATEDCLASSNAME";
+        String predicateClassName = "PREDICATECLASSNAME";
+        String kiePMMLModelClass = "KIEPMMLMODELCLASS";
+        double weight = 12.22;
+        KiePMMLSegmentFactory.setConstructor(segmentName,
+                                             generatedClassName,
+                                             constructorDeclaration,
+                                             predicateClassName,
+                                             kiePMMLModelClass,
+                                             weight);
+        Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
+        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", segmentName)));
+        ClassOrInterfaceType classOrInterfaceType = parseClassOrInterfaceType(predicateClassName);
+        ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
+        objectCreationExpr.setType(classOrInterfaceType);
+        superInvocationExpressionsMap.put(2, new NameExpr(objectCreationExpr.toString()));
+        classOrInterfaceType = parseClassOrInterfaceType(kiePMMLModelClass);
+        objectCreationExpr = new ObjectCreationExpr();
+        objectCreationExpr.setType(classOrInterfaceType);
+        superInvocationExpressionsMap.put(3, new NameExpr(objectCreationExpr.toString()));
+        Map<String, Expression> assignExpressionMap = new HashMap<>();
+        assignExpressionMap.put("weight", new DoubleLiteralExpr(weight));
+        assignExpressionMap.put("id", new StringLiteralExpr(segmentName));
+        commonEvaluateConstructor(constructorDeclaration, generatedClassName, superInvocationExpressionsMap, assignExpressionMap);
     }
 
     private void commonEvaluateSegment(final KiePMMLSegment toEvaluate, final Segment segment) {

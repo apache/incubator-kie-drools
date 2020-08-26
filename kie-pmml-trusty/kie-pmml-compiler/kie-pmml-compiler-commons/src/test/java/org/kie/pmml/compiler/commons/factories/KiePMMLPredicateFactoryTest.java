@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import org.dmg.pmml.CompoundPredicate;
@@ -56,6 +58,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilation;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getDataDictionary;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomSimplePredicateOperator;
@@ -266,9 +269,12 @@ public class KiePMMLPredicateFactoryTest {
                                                                 predicateName,
                                                                 constructorDeclaration,
                                                                 operator, value);
-        commonVerifyConstructor(generatedClassName, predicateName);
-        String expected = operator.getClass().getCanonicalName() + "." + operator.name();
-        assertEquals(expected, superInvocation.getArgument(2).asNameExpr().getNameAsString());
+        Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
+        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", predicateName)));
+        superInvocationExpressionsMap.put(2, new NameExpr(operator.getClass().getCanonicalName() + "." + operator.name()));
+        Map<String, Expression> assignExpressionMap = new HashMap<>();
+        assignExpressionMap.put("value", valueAssignExpr.getValue().asStringLiteralExpr());
+        commonEvaluateConstructor(constructorDeclaration, generatedClassName, superInvocationExpressionsMap, assignExpressionMap);
         assertEquals("24", valueAssignExpr.getValue().asStringLiteralExpr().asString());
 
         operator = OPERATOR.IS_MISSING;
@@ -277,9 +283,12 @@ public class KiePMMLPredicateFactoryTest {
                                                                 predicateName,
                                                                 constructorDeclaration,
                                                                 operator, value);
-        commonVerifyConstructor(generatedClassName, predicateName);
-        expected = operator.getClass().getCanonicalName() + "." + operator.name();
-        assertEquals(expected, superInvocation.getArgument(2).asNameExpr().getNameAsString());
+        superInvocationExpressionsMap = new HashMap<>();
+        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", predicateName)));
+        superInvocationExpressionsMap.put(2, new NameExpr(operator.getClass().getCanonicalName() + "." + operator.name()));
+        assignExpressionMap = new HashMap<>();
+        assignExpressionMap.put("value", valueAssignExpr.getValue().asStringLiteralExpr());
+        commonEvaluateConstructor(constructorDeclaration, generatedClassName, superInvocationExpressionsMap, assignExpressionMap);
         assertEquals("VALUE", valueAssignExpr.getValue().asStringLiteralExpr().asString());
     }
 
@@ -292,17 +301,22 @@ public class KiePMMLPredicateFactoryTest {
                                                                  predicateName,
                                                                  constructorDeclaration,
                                                                 booleanOperator);
-        commonVerifyConstructor(generatedClassName, predicateName);
-        String expected = booleanOperator.getClass().getCanonicalName() + "." + booleanOperator.name();
-        assertEquals(expected, superInvocation.getArgument(2).asNameExpr().getNameAsString());
+        Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
+        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", predicateName)));
+        superInvocationExpressionsMap.put(2, new NameExpr(booleanOperator.getClass().getCanonicalName() + "." + booleanOperator.name()));
+        Map<String, Expression> assignExpressionMap = new HashMap<>();
+        commonEvaluateConstructor(constructorDeclaration, generatedClassName, superInvocationExpressionsMap, assignExpressionMap);
+
         booleanOperator = BOOLEAN_OPERATOR.AND;
         KiePMMLPredicateFactory.setCompoundPredicateConstructor(generatedClassName,
                                                                 predicateName,
                                                                 constructorDeclaration,
                                                                 booleanOperator);
-        commonVerifyConstructor(generatedClassName, predicateName);
-        expected = booleanOperator.getClass().getCanonicalName() + "." + booleanOperator.name();
-        assertEquals(expected, superInvocation.getArgument(2).asNameExpr().getNameAsString());
+        superInvocationExpressionsMap = new HashMap<>();
+        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", predicateName)));
+        superInvocationExpressionsMap.put(2, new NameExpr(booleanOperator.getClass().getCanonicalName() + "." + booleanOperator.name()));
+        assignExpressionMap = new HashMap<>();
+        commonEvaluateConstructor(constructorDeclaration, generatedClassName, superInvocationExpressionsMap, assignExpressionMap);
     }
 
     @Test
@@ -312,7 +326,10 @@ public class KiePMMLPredicateFactoryTest {
         KiePMMLPredicateFactory.setTrueFalsePredicateConstructor(generatedClassName,
                                                                  predicateName,
                                                                  constructorDeclaration);
-        commonVerifyConstructor(generatedClassName, predicateName);
+        Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
+        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", predicateName)));
+        Map<String, Expression> assignExpressionMap = new HashMap<>();
+        commonEvaluateConstructor(constructorDeclaration, generatedClassName, superInvocationExpressionsMap, assignExpressionMap);
     }
 
     private void commonVerifySimplePredicate(final KiePMMLSimplePredicate toVerify, final String parentId) {
@@ -329,8 +346,6 @@ public class KiePMMLPredicateFactoryTest {
                 assertEquals(parentId, toVerify.getParentId());
             });
         }
-
-
     }
 
     private void commonVerifySourceMap(final Map<String, String> toVerify, String packageName, String predicateName) {
@@ -339,12 +354,6 @@ public class KiePMMLPredicateFactoryTest {
         String expectedKey = String.format("%s.%s", packageName, predicateName);
         assertTrue(toVerify.containsKey(expectedKey));
         commonValidateCompilation(toVerify);
-
-    }
-
-    private void commonVerifyConstructor(String generatedClassName, String predicateName) {
-        assertEquals(generatedClassName, constructorDeclaration.getName().asString());
-        assertEquals(String.format("\"%s\"", predicateName), superInvocation.getArgument(0).asNameExpr().getNameAsString());
 
     }
 }

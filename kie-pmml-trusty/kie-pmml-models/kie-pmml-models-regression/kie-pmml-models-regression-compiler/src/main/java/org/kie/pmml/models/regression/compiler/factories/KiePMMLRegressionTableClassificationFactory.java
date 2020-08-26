@@ -27,7 +27,6 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -44,6 +43,7 @@ import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
+import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
@@ -60,11 +60,11 @@ import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressio
 public class KiePMMLRegressionTableClassificationFactory {
 
     public static final String KIE_PMML_REGRESSION_TABLE_CLASSIFICATION_TEMPLATE_JAVA = "KiePMMLRegressionTableClassificationTemplate.tmpl";
+    public static final String KIE_PMML_REGRESSION_TABLE_CLASSIFICATION_TEMPLATE = "KiePMMLRegressionTableClassificationTemplate";
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLRegressionTableClassificationFactory.class.getName());
     private static final String MAIN_CLASS_NOT_FOUND = "Main class not found";
     private static final String KIE_PMML_GET_PROBABILITY_MAP_METHOD_TEMPLATE_JAVA = "KiePMMLGetProbabilityMapMethodTemplate.tmpl";
     private static final String KIE_PMML_GET_PROBABILITY_MAP_METHOD_TEMPLATE = "KiePMMLGetProbabilityMapMethodTemplate";
-    private static final String KIE_PMML_REGRESSION_TABLE_CLASSIFICATION_TEMPLATE = "KiePMMLRegressionTableClassificationTemplate";
     private static AtomicInteger classArity = new AtomicInteger(0);
     private static CompilationUnit templateEvaluate;
     private static CompilationUnit cloneEvaluate;
@@ -105,28 +105,14 @@ public class KiePMMLRegressionTableClassificationFactory {
      * @param generatedClassName
      * @param targetField
      */
-    private static void setConstructor(final ConstructorDeclaration constructorDeclaration, final SimpleName generatedClassName, final String targetField, final REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod, final OP_TYPE opType) {
+    static void setConstructor(final ConstructorDeclaration constructorDeclaration, final SimpleName generatedClassName, final String targetField, final REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod, final OP_TYPE opType) {
         constructorDeclaration.setName(generatedClassName);
         final BlockStmt body = constructorDeclaration.getBody();
-        final List<AssignExpr> assignExprs = body.findAll(AssignExpr.class);
-        assignExprs.forEach(assignExpr -> {
-            final String propertyName = assignExpr.getTarget().asNameExpr().getNameAsString();
-            switch (propertyName) {
-                case "targetField":
-                    assignExpr.setValue(new StringLiteralExpr(targetField));
-                    break;
-                case "regressionNormalizationMethod":
-                    assignExpr.setValue(new NameExpr(regressionNormalizationMethod.getClass().getSimpleName() + "." + regressionNormalizationMethod.name()));
-                    break;
-                case "opType":
-                    if (opType != null) {
-                        assignExpr.setValue(new NameExpr(opType.getClass().getSimpleName() + "." + opType.name()));
-                    }
-                    break;
-                default:
-                    logger.warn("Unexpected property inside the constructor: {}", propertyName);
-            }
-        });
+        CommonCodegenUtils.setAssignExpressionValue(body, "targetField", new StringLiteralExpr(targetField));
+        CommonCodegenUtils.setAssignExpressionValue(body, "regressionNormalizationMethod", new NameExpr(regressionNormalizationMethod.getClass().getSimpleName() + "." + regressionNormalizationMethod.name()));
+        if (opType != null) {
+            CommonCodegenUtils.setAssignExpressionValue(body, "opType", new NameExpr(opType.getClass().getSimpleName() + "." + opType.name()));
+        }
     }
 
     /**

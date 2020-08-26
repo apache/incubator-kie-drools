@@ -30,7 +30,6 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
-import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -59,6 +58,8 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateAssignExpr;
+import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 
 public class KiePMMLDroolsModelFactoryUtilsTest {
@@ -91,19 +92,25 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         miningSchema.addMiningFields(targetMiningField);
         model.setMiningSchema(miningSchema);
         Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        fieldTypeMap.put(targetFieldString, new KiePMMLOriginalTypeGeneratedType(targetFieldString, getSanitizedClassName(targetFieldString)));
+        fieldTypeMap.put(targetFieldString, new KiePMMLOriginalTypeGeneratedType(targetFieldString,
+                                                                                 getSanitizedClassName(targetFieldString)));
         String packageName = "net.test";
-        CompilationUnit retrieved = KiePMMLDroolsModelFactoryUtils.getKiePMMLModelCompilationUnit(dataDictionary, model, fieldTypeMap, packageName, TEMPLATE_SOURCE, TEMPLATE_CLASS_NAME);
+        CompilationUnit retrieved = KiePMMLDroolsModelFactoryUtils.getKiePMMLModelCompilationUnit(dataDictionary,
+                                                                                                  model, fieldTypeMap
+                , packageName, TEMPLATE_SOURCE, TEMPLATE_CLASS_NAME);
         assertEquals(packageName, retrieved.getPackageDeclaration().get().getNameAsString());
-        ConstructorDeclaration constructorDeclaration = retrieved.getClassByName(modelName).get().getDefaultConstructor().get();
+        ConstructorDeclaration constructorDeclaration =
+                retrieved.getClassByName(modelName).get().getDefaultConstructor().get();
         MINING_FUNCTION miningFunction = MINING_FUNCTION.CLASSIFICATION;
         PMML_MODEL pmmlModel = PMML_MODEL.byName(model.getClass().getSimpleName());
         Map<String, Expression> assignExpressionMap = new HashMap<>();
         assignExpressionMap.put("targetField", new StringLiteralExpr(targetFieldString));
-        assignExpressionMap.put("miningFunction", new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
+        assignExpressionMap.put("miningFunction",
+                                new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         assignExpressionMap.put("pmmlMODEL", new NameExpr(pmmlModel.getClass().getName() + "." + pmmlModel.name()));
         commonEvaluateAssignExpr(constructorDeclaration.getBody(), assignExpressionMap);
-        int expectedMethodCallExprs = assignExpressionMap.size() + fieldTypeMap.size() + 1; // The last "1" is for the super invocation
+        int expectedMethodCallExprs = assignExpressionMap.size() + fieldTypeMap.size() + 1; // The last "1" is for
+        // the super invocation
         commonEvaluateFieldTypeMap(constructorDeclaration.getBody(), fieldTypeMap, expectedMethodCallExprs);
     }
 
@@ -115,13 +122,16 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         SimpleName tableName = new SimpleName("TABLE_NAME");
         String targetField = "TARGET_FIELD";
         MINING_FUNCTION miningFunction = MINING_FUNCTION.CLASSIFICATION;
-        KiePMMLDroolsModelFactoryUtils.setConstructor(model, constructorDeclaration, tableName, targetField, miningFunction);
-        assertEquals(tableName, constructorDeclaration.getName());
+        KiePMMLDroolsModelFactoryUtils.setConstructor(model, constructorDeclaration, tableName, targetField,
+                                                      miningFunction);
+        Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
         Map<String, Expression> assignExpressionMap = new HashMap<>();
         assignExpressionMap.put("targetField", new StringLiteralExpr(targetField));
-        assignExpressionMap.put("miningFunction", new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
+        assignExpressionMap.put("miningFunction",
+                                new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         assignExpressionMap.put("pmmlMODEL", new NameExpr(pmmlModel.getClass().getName() + "." + pmmlModel.name()));
-        commonEvaluateAssignExpr(constructorDeclaration.getBody(), assignExpressionMap);
+        commonEvaluateConstructor(constructorDeclaration, tableName.asString(), superInvocationExpressionsMap,
+                                  assignExpressionMap);
     }
 
     @Test
@@ -130,24 +140,19 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         IntStream.range(0, 3).forEach(index -> {
             String key = "KEY-" + index;
-            KiePMMLOriginalTypeGeneratedType value = new KiePMMLOriginalTypeGeneratedType("ORIGINALTYPE-" + index, "GENERATEDTYPE-" + index);
+            KiePMMLOriginalTypeGeneratedType value = new KiePMMLOriginalTypeGeneratedType("ORIGINALTYPE-" + index,
+                                                                                          "GENERATEDTYPE-" + index);
             fieldTypeMap.put(key, value);
         });
         KiePMMLDroolsModelFactoryUtils.addFieldTypeMapPopulation(blockStmt, fieldTypeMap);
         commonEvaluateFieldTypeMap(blockStmt, fieldTypeMap, fieldTypeMap.size());
     }
 
-    private void commonEvaluateAssignExpr(BlockStmt blockStmt, Map<String, Expression> assignExpressionMap) {
-        List<AssignExpr> retrieved = blockStmt.findAll(AssignExpr.class);
-        for (Map.Entry<String, Expression> entry : assignExpressionMap.entrySet()) {
-            assertTrue(retrieved.stream()
-                               .filter(assignExpr -> assignExpr.getTarget().asNameExpr().equals(new NameExpr(entry.getKey())))
-                               .anyMatch(assignExpr -> assignExpr.getValue().equals(entry.getValue())));
-        }
-    }
-
-    private void commonEvaluateFieldTypeMap(BlockStmt blockStmt, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, int expectedMethodCallSize) {
-        List<MethodCallExpr> retrieved = getMethodCallExprList(blockStmt, expectedMethodCallSize, "fieldTypeMap", "put");
+    private void commonEvaluateFieldTypeMap(BlockStmt blockStmt,
+                                            Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
+                                            int expectedMethodCallSize) {
+        List<MethodCallExpr> retrieved = getMethodCallExprList(blockStmt, expectedMethodCallSize, "fieldTypeMap",
+                                                               "put");
         for (Map.Entry<String, KiePMMLOriginalTypeGeneratedType> entry : fieldTypeMap.entrySet()) {
             assertTrue(retrieved.stream()
                                .map(MethodCallExpr::getArguments)
@@ -155,7 +160,8 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         }
     }
 
-    private boolean evaluateFieldTypeMapPopulation(Map.Entry<String, KiePMMLOriginalTypeGeneratedType> entry, NodeList<Expression> arguments) {
+    private boolean evaluateFieldTypeMapPopulation(Map.Entry<String, KiePMMLOriginalTypeGeneratedType> entry,
+                                                   NodeList<Expression> arguments) {
         boolean toReturn = arguments.size() == 2;
         Expression firstArgument = arguments.get(0);
         Expression secondArgument = arguments.get(1);
@@ -177,7 +183,8 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
      * @param method
      * @return
      */
-    private List<MethodCallExpr> getMethodCallExprList(BlockStmt blockStmt, int expectedSize, String scope, String method) {
+    private List<MethodCallExpr> getMethodCallExprList(BlockStmt blockStmt, int expectedSize, String scope,
+                                                       String method) {
         Stream<Statement> statementStream = getStatementStream(blockStmt, expectedSize);
         return statementStream
                 .filter(Statement::isExpressionStmt)
