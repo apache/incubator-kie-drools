@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -754,6 +755,10 @@ public class FromTest extends BaseModelTest {
         public String dummy(Object a, Object b) {
             return "test";
         }
+
+        public static <K, V> Map.Entry<K, V> mapEntry(K key, V value) {
+            return new AbstractMap.SimpleEntry<K, V>(key, value);
+        }
     }
 
     @Test
@@ -830,6 +835,7 @@ public class FromTest extends BaseModelTest {
                 "package com.sample;" +
                 "global java.util.Set controlSet;\n" +
                 "global " + DummyService.class.getCanonicalName() + " dummyService;\n" +
+                "import " + DummyService.class.getCanonicalName() + ";\n" +
                 "import " + Measurement.class.getCanonicalName() + ";\n" +
                 "import " + List.class.getCanonicalName() + ";\n" +
                 "import " + Map.class.getCanonicalName() + ";\n" +
@@ -840,7 +846,7 @@ public class FromTest extends BaseModelTest {
                 " $measurement: Measurement( id == \"color\", $colorVal : val )\n" +
                 " $lst : List() from collect(Measurement())\n" +
                 " $selectedList: List() from accumulate(Measurement($m: this) from $lst, " +
-                        "collectList(Map.entry($m, $measurement.getListOfCodes())))\n" +
+                        "collectList(DummyService.mapEntry($m, $measurement.getListOfCodes())))\n" +
                 "\n" +
                 "then\n" +
                 " controlSet.add($colorVal);\n" +
