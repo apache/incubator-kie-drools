@@ -43,8 +43,7 @@ public class DefaultPartitionedSearchPhaseFactory<Solution_>
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultPartitionedSearchPhaseFactory.class);
 
-    public DefaultPartitionedSearchPhaseFactory(
-            PartitionedSearchPhaseConfig phaseConfig) {
+    public DefaultPartitionedSearchPhaseFactory(PartitionedSearchPhaseConfig phaseConfig) {
         super(phaseConfig);
     }
 
