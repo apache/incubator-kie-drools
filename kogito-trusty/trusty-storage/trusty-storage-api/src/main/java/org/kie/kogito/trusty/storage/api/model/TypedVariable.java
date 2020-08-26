@@ -32,7 +32,7 @@ public class TypedVariable {
     public static final String VALUE_FIELD = "value";
     public static final String COMPONENTS_FIELD = "components";
 
-    @JsonProperty(NAME_FIELD)
+    @JsonProperty(KIND_FIELD)
     private Kind kind;
 
     @JsonProperty(NAME_FIELD)
