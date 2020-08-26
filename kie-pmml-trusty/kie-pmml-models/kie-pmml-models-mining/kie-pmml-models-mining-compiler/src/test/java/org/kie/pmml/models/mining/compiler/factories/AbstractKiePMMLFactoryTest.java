@@ -45,8 +45,7 @@ public abstract class AbstractKiePMMLFactoryTest {
     protected static TransformationDictionary TRANSFORMATION_DICTIONARY;
     protected static MiningModel MINING_MODEL;
 
-    @BeforeClass
-    public static void setup() throws JAXBException, SAXException, IOException {
+    protected static void innerSetup() throws JAXBException, SAXException, IOException {
         FileInputStream fis = FileUtils.getFileInputStream(SOURCE_REGRESSION);
         PMML pmml = KiePMMLUtil.load(fis, SOURCE_REGRESSION);
         assertNotNull(pmml);

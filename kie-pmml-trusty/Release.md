@@ -1,6 +1,14 @@
 RELEASES
 ========
 
+Mining model
+===============
+
+rel 7.43.0
+----------
+Implemented overall functionality
+
+
 Transformations
 ===============
 

@@ -35,7 +35,7 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
 
     private final BOOLEAN_OPERATOR booleanOperator;
     private BinaryOperator<Boolean> operatorFunction;
-    private List<KiePMMLPredicate> kiePMMLPredicates;
+    protected List<KiePMMLPredicate> kiePMMLPredicates;
 
     protected KiePMMLCompoundPredicate(final String name, final List<KiePMMLExtension> extensions, final BOOLEAN_OPERATOR booleanOperator) {
         super(name, extensions);

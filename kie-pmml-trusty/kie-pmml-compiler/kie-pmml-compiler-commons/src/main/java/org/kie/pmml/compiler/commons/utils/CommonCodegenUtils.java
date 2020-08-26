@@ -272,7 +272,7 @@ public class CommonCodegenUtils {
      * @throws <code>KiePMMLException</code> if <code>AssignExpr</code> with given <b>assignExpressionName</b> is not found
      */
     public static void setAssignExpressionValue( final BlockStmt body, final String assignExpressionName, final Expression value) {
-        AssignExpr assignExpr = getAssignExpressions(body, assignExpressionName)
+        AssignExpr assignExpr = getAssignExpression(body, assignExpressionName)
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, assignExpressionName, body)));
         assignExpr.setValue(value);
     }
@@ -284,7 +284,7 @@ public class CommonCodegenUtils {
      * @return <code>Optional&lt;AssignExpr&gt;</code> with the found <code>AssignExpr</code>, or <code>Optional.empty()</code> if no match
      * has been found
      */
-    public static Optional<AssignExpr> getAssignExpressions( final BlockStmt body, final String assignExpressionName) {
+    public static Optional<AssignExpr> getAssignExpression(final BlockStmt body, final String assignExpressionName) {
         final List<AssignExpr> assignExprs = body.findAll(AssignExpr.class);
         return assignExprs.stream()
                 .filter(assignExpr -> assignExpressionName.equals(assignExpr.getTarget().asNameExpr().getNameAsString()))

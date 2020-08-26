@@ -16,15 +16,25 @@
 
 package org.kie.pmml.models.mining.compiler.factories;
 
+import java.io.IOException;
 import java.util.Map;
 
+import javax.xml.bind.JAXBException;
+
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
+import org.xml.sax.SAXException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class KiePMMLSegmentationFactoryTest extends AbstractKiePMMLFactoryTest {
+
+    @BeforeClass
+    public static void setup() throws IOException, JAXBException, SAXException {
+        innerSetup();
+    }
 
     @Test
     public void getSegmentation() {

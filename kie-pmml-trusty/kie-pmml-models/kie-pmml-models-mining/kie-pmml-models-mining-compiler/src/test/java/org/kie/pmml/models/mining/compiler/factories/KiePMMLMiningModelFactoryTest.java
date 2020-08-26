@@ -16,8 +16,11 @@
 
 package org.kie.pmml.models.mining.compiler.factories;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.xml.bind.JAXBException;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -35,6 +38,7 @@ import org.junit.Test;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
+import org.xml.sax.SAXException;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.junit.Assert.assertEquals;
@@ -51,7 +55,8 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
     private static ClassOrInterfaceDeclaration MODEL_TEMPLATE;
 
     @BeforeClass
-    public static void setup() {
+    public static void setup() throws IOException, JAXBException, SAXException {
+        innerSetup();
         COMPILATION_UNIT = getFromFileName(TEMPLATE_SOURCE);
         MODEL_TEMPLATE = COMPILATION_UNIT.getClassByName(TEMPLATE_CLASS_NAME).get();
     }

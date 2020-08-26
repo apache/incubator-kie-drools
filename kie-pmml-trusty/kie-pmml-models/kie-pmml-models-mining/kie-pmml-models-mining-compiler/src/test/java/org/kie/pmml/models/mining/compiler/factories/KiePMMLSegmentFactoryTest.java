@@ -16,9 +16,12 @@
 
 package org.kie.pmml.models.mining.compiler.factories;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.bind.JAXBException;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -37,6 +40,7 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModelWithSources;
+import org.xml.sax.SAXException;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.junit.Assert.assertEquals;
@@ -53,7 +57,8 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
     private static ClassOrInterfaceDeclaration MODEL_TEMPLATE;
 
     @BeforeClass
-    public static void setup() {
+    public static void setup() throws IOException, JAXBException, SAXException {
+        innerSetup();
         COMPILATION_UNIT = getFromFileName(KIE_PMML_SEGMENT_TEMPLATE_JAVA);
         MODEL_TEMPLATE = COMPILATION_UNIT.getClassByName(KIE_PMML_SEGMENT_TEMPLATE).get();
     }

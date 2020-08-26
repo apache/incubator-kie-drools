@@ -223,18 +223,18 @@ public class CommonCodegenUtilsTest {
     }
 
     @Test
-    public void getAssignExpressions() {
+    public void getAssignExpression() {
         BlockStmt body = new BlockStmt();
-        Optional<AssignExpr> retrieved = CommonCodegenUtils.getAssignExpressions(body, "NOMATCH");
+        Optional<AssignExpr> retrieved = CommonCodegenUtils.getAssignExpression(body, "NOMATCH");
         assertNotNull(retrieved);
         assertFalse(retrieved.isPresent());
         AssignExpr assignExpr = new AssignExpr();
         assignExpr.setTarget(new NameExpr("MATCH"));
         body.addStatement(assignExpr);
-        retrieved = CommonCodegenUtils.getAssignExpressions(body, "NOMATCH");
+        retrieved = CommonCodegenUtils.getAssignExpression(body, "NOMATCH");
         assertNotNull(retrieved);
         assertFalse(retrieved.isPresent());
-        retrieved = CommonCodegenUtils.getAssignExpressions(body, "MATCH");
+        retrieved = CommonCodegenUtils.getAssignExpression(body, "MATCH");
         assertNotNull(retrieved);
         assertTrue(retrieved.isPresent());
         AssignExpr retrievedAssignExpr = retrieved.get();

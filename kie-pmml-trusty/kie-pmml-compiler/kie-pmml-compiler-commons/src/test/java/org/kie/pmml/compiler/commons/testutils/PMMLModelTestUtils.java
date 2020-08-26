@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.dmg.pmml.Array;
 import org.dmg.pmml.CompoundPredicate;
@@ -69,7 +71,9 @@ public class PMMLModelTestUtils {
         return toReturn;
     }
 
-    public static RegressionModel getRegressionModel(String modelName, MiningFunction miningFunction, MiningSchema miningSchema, List<RegressionTable> regressionTables) {
+    public static RegressionModel getRegressionModel(String modelName, MiningFunction miningFunction,
+                                                     MiningSchema miningSchema,
+                                                     List<RegressionTable> regressionTables) {
         RegressionModel toReturn = new RegressionModel();
         toReturn.setModelName(modelName);
         toReturn.setMiningFunction(miningFunction);
@@ -78,7 +82,10 @@ public class PMMLModelTestUtils {
         return toReturn;
     }
 
-    public static RegressionTable getRegressionTable(List<CategoricalPredictor> categoricalPredictors, List<NumericPredictor> numericPredictors, List<PredictorTerm> predictorTerms, double intercept, Object targetCategory) {
+    public static RegressionTable getRegressionTable(List<CategoricalPredictor> categoricalPredictors,
+                                                     List<NumericPredictor> numericPredictors,
+                                                     List<PredictorTerm> predictorTerms, double intercept,
+                                                     Object targetCategory) {
         RegressionTable toReturn = new RegressionTable();
         toReturn.setIntercept(intercept);
         toReturn.setTargetCategory(targetCategory);
@@ -133,7 +140,7 @@ public class PMMLModelTestUtils {
         return toReturn;
     }
 
-    public static  List<ParameterField> getParameterFields() {
+    public static List<ParameterField> getParameterFields() {
         DATA_TYPE[] dataTypes = DATA_TYPE.values();
         List<ParameterField> toReturn = new ArrayList<>();
         for (int i = 0; i < dataTypes.length; i++) {
@@ -144,7 +151,7 @@ public class PMMLModelTestUtils {
         return toReturn;
     }
 
-    public static  List<DataType> getDataTypes() {
+    public static List<DataType> getDataTypes() {
         DATA_TYPE[] dataTypes = DATA_TYPE.values();
         List<DataType> toReturn = new ArrayList<>();
         for (int i = 0; i < dataTypes.length; i++) {
@@ -179,10 +186,15 @@ public class PMMLModelTestUtils {
         SimpleSetPredicate toReturn = new SimpleSetPredicate();
         toReturn.setField(fieldName);
         toReturn.setBooleanOperator(booleanOperator);
-        String arrayString = String.join(" ", values);
-        Array array = new Array(arrayType, arrayString);
-        array.setN(values.size());
+        Array array = getArray(arrayType, values);
         toReturn.setArray(array);
+        return toReturn;
+    }
+
+    public static Array getArray(Array.Type arrayType, final List<String> values) {
+        String arrayString = String.join(" ", values);
+        Array toReturn = new Array(arrayType, arrayString);
+        toReturn.setN(values.size());
         return toReturn;
     }
 
@@ -215,6 +227,27 @@ public class PMMLModelTestUtils {
         return values[rndIndex];
     }
 
+    public static SimpleSetPredicate.BooleanOperator getRandomSimpleSetPredicateOperator() {
+        final SimpleSetPredicate.BooleanOperator[] values = SimpleSetPredicate.BooleanOperator.values();
+        int rndIndex = new Random().nextInt(values.length);
+        return values[rndIndex];
+    }
+
+    public static List<String> getStringObjects(Array.Type arrayType, int size) {
+        return IntStream.range(0, size).mapToObj(index -> {
+            switch (arrayType) {
+                case INT:
+                    return String.valueOf(new Random().nextInt(40));
+                case REAL:
+                    return String.valueOf(new Random().nextDouble());
+                case STRING:
+                    return UUID.randomUUID().toString();
+                default:
+                    return null;
+            }
+        })
+                .collect(Collectors.toList());
+    }
 
     private static List<SimplePredicate> getRandomSimplePredicates(final List<SimplePredicate> simplePredicates) {
         int firstIndex = new Random().nextInt(simplePredicates.size());
@@ -228,4 +261,5 @@ public class PMMLModelTestUtils {
     private static CompoundPredicate.BooleanOperator getRandomCompoundPredicateAndOrOperator(int counter) {
         return counter % 2 == 0 ? CompoundPredicate.BooleanOperator.AND : CompoundPredicate.BooleanOperator.OR;
     }
+
 }
