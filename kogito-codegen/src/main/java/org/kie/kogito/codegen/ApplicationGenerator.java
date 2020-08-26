@@ -194,8 +194,10 @@ public class ApplicationGenerator {
             Enumeration<URL> urls = classLoader.getResources("META-INF/kogito.addon");
             while (urls.hasMoreElements()) {
                 URL url = urls.nextElement();
-                String addon = StringUtils.readFileAsString(new InputStreamReader(url.openStream()));
-                addons.add(addon);
+                try (InputStreamReader isr = new InputStreamReader(url.openStream())) {
+                    String addon = StringUtils.readFileAsString(isr);
+                    addons.add(addon);
+                }
             }
         } catch (IOException e) {
             logger.warn("Unexpected exception during loading of kogito.addon files", e);

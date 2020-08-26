@@ -128,7 +128,7 @@ public class PersistenceGenerator extends AbstractGenerator {
         List<GeneratedFile> generatedFiles = new ArrayList<>();
         if (persistence) {
             if (persistenceType.equals(INFINISPAN_PERSISTENCE_TYPE)) {
-                inifinispanBasedPersistence(generatedFiles);
+                infinispanBasedPersistence(generatedFiles);
             } else if (persistenceType.equals(FILESYSTEM_PERSISTENCE_TYPE)) {
                 fileSystemBasedPersistence(generatedFiles);
             } else if (persistenceType.equals(MONGODB_PERSISTENCE_TYPE)) {
@@ -162,7 +162,7 @@ public class PersistenceGenerator extends AbstractGenerator {
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    protected void inifinispanBasedPersistence(List<GeneratedFile> generatedFiles) {
+    protected void infinispanBasedPersistence(List<GeneratedFile> generatedFiles) {
         Collection dataModelClasses = protoGenerator.extractDataClasses((Collection) modelClasses, targetDirectory.toString());
         Path protoFilePath = Paths.get(targetDirectory.getParent(), "src/main/resources", "/persistence", KOGITO_APPLICATION_PROTO);
         File persistencePath = Paths.get(targetDirectory.getAbsolutePath(), "/classes/persistence").toFile();

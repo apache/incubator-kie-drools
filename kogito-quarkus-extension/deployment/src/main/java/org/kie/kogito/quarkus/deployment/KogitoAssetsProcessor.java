@@ -274,16 +274,13 @@ public class KogitoAssetsProcessor {
             }
         }
 
-        Collection<GeneratedFile> generatedFiles = getGeneratedPersistenceFiles(
-                appPaths, index, usePersistence, parameters);
+        Collection<GeneratedFile> generatedFiles = getGeneratedPersistenceFiles(appPaths, index, usePersistence, parameters);
 
         if (!generatedFiles.isEmpty()) {
-            MemoryFileSystem trgMfs = new MemoryFileSystem();
-            InMemoryCompiler inMemoryCompiler = new InMemoryCompiler(
-                    appPaths.classesPaths,
-                    curateOutcomeBuildItem.getEffectiveModel().getUserDependencies());
+            InMemoryCompiler inMemoryCompiler = new InMemoryCompiler(appPaths.classesPaths,
+                                                                     curateOutcomeBuildItem.getEffectiveModel().getUserDependencies());
             inMemoryCompiler.compile(generatedFiles);
-            Collection<GeneratedBeanBuildItem> generatedBeanBuildItems = makeBuildItems(appPaths, trgMfs);
+            Collection<GeneratedBeanBuildItem> generatedBeanBuildItems = makeBuildItems(appPaths, inMemoryCompiler.getTargetFileSystem());
             generatedBeanBuildItems.forEach(generatedBeans::produce);
         }
 
@@ -292,11 +289,10 @@ public class KogitoAssetsProcessor {
         }
     }
 
-    private Collection<GeneratedFile> getGeneratedPersistenceFiles(
-            AppPaths appPaths,
-            IndexView index,
-            boolean usePersistence,
-            List<String> parameters) {
+    private Collection<GeneratedFile> getGeneratedPersistenceFiles(AppPaths appPaths,
+                                                                   IndexView index,
+                                                                   boolean usePersistence,
+                                                                   List<String> parameters) {
         GeneratorContext context = buildContext(appPaths, index);
 
         JandexProtoGenerator jandexProtoGenerator =
@@ -451,8 +447,7 @@ public class KogitoAssetsProcessor {
         return kogitoIndexer.complete();
     }
 
-    private Collection<GeneratedBeanBuildItem> makeBuildItems(
-            AppPaths appPaths, MemoryFileSystem trgMfs) throws IOException {
+    private Collection<GeneratedBeanBuildItem> makeBuildItems(AppPaths appPaths, MemoryFileSystem trgMfs) throws IOException {
 
         ArrayList<GeneratedBeanBuildItem> buildItems = new ArrayList<>();
         Path location = appPaths.getFirstProjectPath().resolve(targetClassesDir);
