@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.optaplanner.examples.examination.solver.score;
 
 import java.util.Arrays;
@@ -257,17 +273,21 @@ public class ExaminationConstraintProviderTest {
     }
 
     @Test
-    public void mixedDurationsTest() {
+    public void mixedDurations11Test() {
         Period period = new Period();
         Room room = new Room();
         LeadingExam exam1 = new LeadingExam()
                 .withId(1L)
-                .withTopic(new Topic().withDuration(1))
+                .withTopic(new Topic()
+                        .withId(1)
+                        .withDuration(1))
                 .withPeriod(period)
                 .withRoom(room);
         LeadingExam exam2 = new LeadingExam()
                 .withId(2L)
-                .withTopic(new Topic().withDuration(1))
+                .withTopic(new Topic()
+                        .withId(2)
+                        .withDuration(1))
                 .withPeriod(period)
                 .withRoom(room);
 
@@ -275,17 +295,56 @@ public class ExaminationConstraintProviderTest {
         constraintVerifier.verifyThat(ExaminationConstraintProvider::mixedDurations)
                 .given(exam1, exam2)
                 .penalizesBy(0);
+    }
 
-        exam2.setTopic(new Topic().withDuration(2));
+    @Test
+    public void mixedDurations12Test() {
+        Period period = new Period();
+        Room room = new Room();
+        LeadingExam exam1 = new LeadingExam()
+                .withId(1L)
+                .withTopic(new Topic()
+                        .withId(1)
+                        .withDuration(1))
+                .withPeriod(period)
+                .withRoom(room);
+        LeadingExam exam2 = new LeadingExam()
+                .withId(2L)
+                .withTopic(new Topic()
+                        .withId(2)
+                        .withDuration(2))
+                .withPeriod(period)
+                .withRoom(room);
 
         // Topic durations: 1, 2
         constraintVerifier.verifyThat(ExaminationConstraintProvider::mixedDurations)
                 .given(exam1, exam2)
                 .penalizesBy(1);
+    }
 
+    @Test
+    public void mixedDurations123Test() {
+        Period period = new Period();
+        Room room = new Room();
+        LeadingExam exam1 = new LeadingExam()
+                .withId(1L)
+                .withTopic(new Topic()
+                        .withId(1)
+                        .withDuration(1))
+                .withPeriod(period)
+                .withRoom(room);
+        LeadingExam exam2 = new LeadingExam()
+                .withId(2L)
+                .withTopic(new Topic()
+                        .withId(2)
+                        .withDuration(2))
+                .withPeriod(period)
+                .withRoom(room);
         LeadingExam exam3 = new LeadingExam()
                 .withId(3L)
-                .withTopic(new Topic().withDuration(3))
+                .withTopic(new Topic()
+                        .withId(3)
+                        .withDuration(3))
                 .withPeriod(period)
                 .withRoom(room);
 
@@ -293,43 +352,193 @@ public class ExaminationConstraintProviderTest {
         constraintVerifier.verifyThat(ExaminationConstraintProvider::mixedDurations)
                 .given(exam1, exam2, exam3)
                 .penalizesBy(2);
+    }
 
-        exam2.setTopic(new Topic().withDuration(1));
+    @Test
+    public void mixedDurations113Test() {
+        Period period = new Period();
+        Room room = new Room();
+        LeadingExam exam1 = new LeadingExam()
+                .withId(1L)
+                .withTopic(new Topic()
+                        .withId(1)
+                        .withDuration(1))
+                .withPeriod(period)
+                .withRoom(room);
+        LeadingExam exam2 = new LeadingExam()
+                .withId(2L)
+                .withTopic(new Topic()
+                        .withId(2)
+                        .withDuration(1))
+                .withPeriod(period)
+                .withRoom(room);
+        LeadingExam exam3 = new LeadingExam()
+                .withId(3L)
+                .withTopic(new Topic()
+                        .withId(3)
+                        .withDuration(3))
+                .withPeriod(period)
+                .withRoom(room);
 
         // Topic durations: 1, 1, 3
         constraintVerifier.verifyThat(ExaminationConstraintProvider::mixedDurations)
                 .given(exam1, exam2, exam3)
                 .penalizesBy(1);
+    }
 
-        exam2.setTopic(new Topic().withDuration(3));
+    @Test
+    public void mixedDurations133Test() {
+        Period period = new Period();
+        Room room = new Room();
+        LeadingExam exam1 = new LeadingExam()
+                .withId(1L)
+                .withTopic(new Topic()
+                        .withId(1)
+                        .withDuration(1))
+                .withPeriod(period)
+                .withRoom(room);
+        LeadingExam exam2 = new LeadingExam()
+                .withId(2L)
+                .withTopic(new Topic()
+                        .withId(2)
+                        .withDuration(3))
+                .withPeriod(period)
+                .withRoom(room);
+        LeadingExam exam3 = new LeadingExam()
+                .withId(3L)
+                .withTopic(new Topic()
+                        .withId(3)
+                        .withDuration(3))
+                .withPeriod(period)
+                .withRoom(room);
 
         // Topic durations: 1, 3, 3
         constraintVerifier.verifyThat(ExaminationConstraintProvider::mixedDurations)
                 .given(exam1, exam2, exam3)
                 .penalizesBy(1);
+    }
 
-        exam3.setTopic(new Topic().withDuration(1));
+    @Test
+    public void mixedDurations131Test() {
+        Period period = new Period();
+        Room room = new Room();
+        LeadingExam exam1 = new LeadingExam()
+                .withId(1L)
+                .withTopic(new Topic()
+                        .withId(1)
+                        .withDuration(1))
+                .withPeriod(period)
+                .withRoom(room);
+        LeadingExam exam2 = new LeadingExam()
+                .withId(2L)
+                .withTopic(new Topic()
+                        .withId(2)
+                        .withDuration(3))
+                .withPeriod(period)
+                .withRoom(room);
+        LeadingExam exam3 = new LeadingExam()
+                .withId(3L)
+                .withTopic(new Topic()
+                        .withId(3)
+                        .withDuration(1))
+                .withPeriod(period)
+                .withRoom(room);
 
         // Topic durations: 1, 3, 1
         constraintVerifier.verifyThat(ExaminationConstraintProvider::mixedDurations)
                 .given(exam1, exam2, exam3)
                 .penalizesBy(1);
+    }
 
-        exam1.setTopic(new Topic().withDuration(4));
+    @Test
+    public void mixedDurations431Test() {
+        Period period = new Period();
+        Room room = new Room();
+        LeadingExam exam1 = new LeadingExam()
+                .withId(1L)
+                .withTopic(new Topic()
+                        .withId(1)
+                        .withDuration(4))
+                .withPeriod(period)
+                .withRoom(room);
+        LeadingExam exam2 = new LeadingExam()
+                .withId(2L)
+                .withTopic(new Topic()
+                        .withId(2)
+                        .withDuration(3))
+                .withPeriod(period)
+                .withRoom(room);
+        LeadingExam exam3 = new LeadingExam()
+                .withId(3L)
+                .withTopic(new Topic()
+                        .withId(3)
+                        .withDuration(1))
+                .withPeriod(period)
+                .withRoom(room);
 
         // Topic durations: 4, 3, 1
         constraintVerifier.verifyThat(ExaminationConstraintProvider::mixedDurations)
                 .given(exam1, exam2, exam3)
                 .penalizesBy(2);
+    }
 
-        exam2.setTopic(new Topic().withDuration(1));
+    @Test
+    public void mixedDurations411Test() {
+        Period period = new Period();
+        Room room = new Room();
+        LeadingExam exam1 = new LeadingExam()
+                .withId(1L)
+                .withTopic(new Topic()
+                        .withId(1)
+                        .withDuration(4))
+                .withPeriod(period)
+                .withRoom(room);
+        LeadingExam exam2 = new LeadingExam()
+                .withId(2L)
+                .withTopic(new Topic()
+                        .withId(2)
+                        .withDuration(1))
+                .withPeriod(period)
+                .withRoom(room);
+        LeadingExam exam3 = new LeadingExam()
+                .withId(3L)
+                .withTopic(new Topic()
+                        .withId(3)
+                        .withDuration(1))
+                .withPeriod(period)
+                .withRoom(room);
 
         // Topic durations: 4, 1, 1
         constraintVerifier.verifyThat(ExaminationConstraintProvider::mixedDurations)
                 .given(exam1, exam2, exam3)
                 .penalizesBy(1);
+    }
 
-        exam2.setTopic(new Topic().withDuration(4));
+    @Test
+    public void mixedDurations441Test() {
+        Period period = new Period();
+        Room room = new Room();
+        LeadingExam exam1 = new LeadingExam()
+                .withId(1L)
+                .withTopic(new Topic()
+                        .withId(1)
+                        .withDuration(4))
+                .withPeriod(period)
+                .withRoom(room);
+        LeadingExam exam2 = new LeadingExam()
+                .withId(2L)
+                .withTopic(new Topic()
+                        .withId(2)
+                        .withDuration(4))
+                .withPeriod(period)
+                .withRoom(room);
+        LeadingExam exam3 = new LeadingExam()
+                .withId(3L)
+                .withTopic(new Topic()
+                        .withId(3)
+                        .withDuration(1))
+                .withPeriod(period)
+                .withRoom(room);
 
         // Topic durations: 4, 4, 1
         constraintVerifier.verifyThat(ExaminationConstraintProvider::mixedDurations)
