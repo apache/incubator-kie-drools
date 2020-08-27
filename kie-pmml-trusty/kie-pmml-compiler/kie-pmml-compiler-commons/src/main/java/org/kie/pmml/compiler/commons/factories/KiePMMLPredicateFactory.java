@@ -74,6 +74,7 @@ import static org.kie.pmml.commons.Constants.MISSING_EXPRESSION_IN_RETURN;
 import static org.kie.pmml.commons.Constants.MISSING_METHOD_IN_CLASS;
 import static org.kie.pmml.commons.Constants.MISSING_RETURN_IN_METHOD;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
+import static org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR.SURROGATE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
@@ -346,6 +347,9 @@ public class KiePMMLPredicateFactory {
                                                 final ConstructorDeclaration constructorDeclaration,
                                                 final BOOLEAN_OPERATOR booleanOperator,
                                                 final Set<String> predicatesClasses) {
+        if (booleanOperator.equals(BOOLEAN_OPERATOR.SURROGATE)) {
+            throw new IllegalArgumentException(SURROGATE + " not supported, yet");
+        }
         setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, predicateName);
         final BlockStmt body = constructorDeclaration.getBody();
         body.getStatements().iterator().forEachRemaining(statement -> {
@@ -416,6 +420,8 @@ public class KiePMMLPredicateFactory {
                 case REAL:
                     toReturn.add(Double.valueOf(s));
                     break;
+                default:
+                    throw new KiePMMLException("Unknown Array " + type);
             }
         }
         return toReturn;

@@ -19,17 +19,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.enums.OPERATOR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR.SURROGATE;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimplePredicate>SimplePredicate</a>
  */
 public class KiePMMLSimplePredicate extends KiePMMLPredicate {
 
-    private static final long serialVersionUID = -1996390505352151403L;
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLSimplePredicate.class);
 
     private final OPERATOR operator;
@@ -137,8 +139,10 @@ public class KiePMMLSimplePredicate extends KiePMMLPredicate {
                 }
             case IS_MISSING:
             case IS_NOT_MISSING:
+                // TODO {gcardosi} DROOLS-5604
+                throw new IllegalArgumentException(SURROGATE + " not supported, yet");
             default:
-                return true;
+                throw new KiePMMLException("Unknown OPERATOR " + operator);
         }
     }
 

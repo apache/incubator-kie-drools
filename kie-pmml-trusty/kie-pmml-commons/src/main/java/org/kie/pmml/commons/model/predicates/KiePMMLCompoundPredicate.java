@@ -20,17 +20,19 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BinaryOperator;
 
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR.SURROGATE;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimplePredicate>SimplePredicate</a>
  */
 public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
 
-    private static final long serialVersionUID = -1996390505352151403L;
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLCompoundPredicate.class);
 
     private final BOOLEAN_OPERATOR booleanOperator;
@@ -131,8 +133,9 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
                     return (aBoolean, aBoolean2) -> aBoolean != null ? aBoolean ^ aBoolean2 : aBoolean2;
                 case SURROGATE:
                     // TODO {gcardosi} DROOLS-5594
+                    throw new IllegalArgumentException(SURROGATE + " not supported, yet");
                 default:
-                    return (aBoolean, aBoolean2) -> aBoolean;
+                    throw new KiePMMLException("Unknown BOOLEAN_OPERATOR " + booleanOperator);
             }
         }
     }

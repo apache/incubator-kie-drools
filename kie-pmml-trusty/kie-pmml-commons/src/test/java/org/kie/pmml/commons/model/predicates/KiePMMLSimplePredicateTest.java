@@ -63,6 +63,24 @@ public class KiePMMLSimplePredicateTest {
         assertTrue(kiePMMLSimplePredicate.evaluate(inputData));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void evaluateStringIsNotMissing() {
+        Object value = "43";
+        KiePMMLSimplePredicate kiePMMLSimplePredicate = getKiePMMLSimplePredicate(OPERATOR.IS_NOT_MISSING, value);
+        Map<String, Object> inputData = new HashMap<>();
+        inputData.put(SIMPLE_PREDICATE_NAME, value);
+        kiePMMLSimplePredicate.evaluate(inputData);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void evaluateStringIsMissing() {
+        Object value = "43";
+        KiePMMLSimplePredicate kiePMMLSimplePredicate = getKiePMMLSimplePredicate(OPERATOR.IS_MISSING, value);
+        Map<String, Object> inputData = new HashMap<>();
+        inputData.put(SIMPLE_PREDICATE_NAME, value);
+        kiePMMLSimplePredicate.evaluate(inputData);
+    }
+
     @Test
     public void evaluationStringEqual() {
         Object value = "43";
@@ -77,6 +95,20 @@ public class KiePMMLSimplePredicateTest {
         KiePMMLSimplePredicate kiePMMLSimplePredicate = getKiePMMLSimplePredicate(OPERATOR.NOT_EQUAL, value);
         assertFalse(kiePMMLSimplePredicate.evaluation(value));
         assertTrue(kiePMMLSimplePredicate.evaluation("NOT"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void evaluationStringIsNotMissing() {
+        Object value = "43";
+        KiePMMLSimplePredicate kiePMMLSimplePredicate = getKiePMMLSimplePredicate(OPERATOR.IS_NOT_MISSING, value);
+        kiePMMLSimplePredicate.evaluation(value);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void evaluationStringIsMissing() {
+        Object value = "43";
+        KiePMMLSimplePredicate kiePMMLSimplePredicate = getKiePMMLSimplePredicate(OPERATOR.IS_MISSING, value);
+        kiePMMLSimplePredicate.evaluation(value);
     }
 
     private KiePMMLSimplePredicate getKiePMMLSimplePredicate(final OPERATOR operator,

@@ -137,7 +137,27 @@ public class KiePMMLCompoundPredicateTest {
         assertTrue(kiePMMLCompoundPredicate.evaluate(inputData));
     }
 
-
+    @Test(expected = IllegalArgumentException.class)
+    public void evaluateCompoundPredicateSurrogate() {
+        ARRAY_TYPE arrayType = ARRAY_TYPE.STRING;
+        List<Object> stringValues = getObjects(arrayType, 4);
+        KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicateString = getKiePMMLSimpleSetPredicate(SIMPLE_SET_PREDICATE_STRING_NAME,
+                                                                                                 stringValues,
+                                                                                                 arrayType,
+                                                                                                 IN_NOTIN.IN);
+        arrayType = ARRAY_TYPE.INT;
+        List<Object> intValues = getObjects(arrayType, 4);
+        KiePMMLSimpleSetPredicate kiePMMLSimpleSetPredicateInt = getKiePMMLSimpleSetPredicate(SIMPLE_SET_PREDICATE_INT_NAME,
+                                                                                              intValues,
+                                                                                              arrayType,
+                                                                                              IN_NOTIN.NOT_IN);
+        KiePMMLCompoundPredicate kiePMMLCompoundPredicate = getKiePMMLCompoundPredicate(BOOLEAN_OPERATOR.SURROGATE,
+                                                                                        Arrays.asList(kiePMMLSimpleSetPredicateString, kiePMMLSimpleSetPredicateInt));
+        Map<String, Object> inputData = new HashMap<>();
+        inputData.put(SIMPLE_SET_PREDICATE_STRING_NAME, "NOT");
+        inputData.put(SIMPLE_SET_PREDICATE_INT_NAME, intValues.get(0));
+        kiePMMLCompoundPredicate.evaluate(inputData);
+    }
 
     private KiePMMLCompoundPredicate getKiePMMLCompoundPredicate(final BOOLEAN_OPERATOR booleanOperator,
                                                                    final List<KiePMMLPredicate> kiePMMLPredicates) {

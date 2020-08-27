@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
  */
 public class KiePMMLTruePredicate extends KiePMMLPredicate {
 
-    private static final long serialVersionUID = -1996390505352151403L;
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLTruePredicate.class);
 
     private static final String TRUE = "True";
@@ -44,7 +43,6 @@ public class KiePMMLTruePredicate extends KiePMMLPredicate {
     public static Builder builder(List<KiePMMLExtension> extensions) {
         return new Builder(extensions);
     }
-
 
     @Override
     public String getName() {

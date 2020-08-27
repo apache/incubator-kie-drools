@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
  */
 public class KiePMMLSimpleSetPredicate extends KiePMMLPredicate {
 
-    private static final long serialVersionUID = -1996390505352151403L;
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLSimpleSetPredicate.class);
 
     private final ARRAY_TYPE arrayType;

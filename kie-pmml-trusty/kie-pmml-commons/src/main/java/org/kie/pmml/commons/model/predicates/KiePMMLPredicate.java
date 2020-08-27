@@ -26,8 +26,6 @@ import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
  */
 public abstract class KiePMMLPredicate extends AbstractKiePMMLComponent {
 
-    private static final long serialVersionUID = -1996390505352151403L;
-
     protected KiePMMLPredicate(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
     }
