@@ -1,4 +1,4 @@
-name: Build Chain [pull request]
+name: Build Chain
 
 on: [pull_request]
 
@@ -7,17 +7,22 @@ jobs:
     strategy:
       matrix:
         java-version: [8, 11]
+      fail-fast: false
     runs-on: ubuntu-latest
-    name: Build Pull Request
+    name: Maven Build
     steps:
-    - name: Build Chain ${{ matrix.java-version }}
-      id: build-chain   
-      uses: kiegroup/github-action-build-chain@v1.3
-      with:
-        parent-dependencies: 'droolsjbpm-knowledge'
-        child-dependencies: 'optaplanner@master:7.x'
-        build-command: 'mvn -e -nsu -Dfull -Pwildfly clean install -Prun-code-coverage  -Dcontainer.profile=wildfly -Dcontainer=wildfly -Dintegration-tests=true -Dmaven.test.failure.ignore=true -DjvmArgs="-Xms1g -Xmx4g"'
-        build-command-upstream: "mvn -e -T1C clean install -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true"
-        workflow-file-name: "pull_request.yml"
-      env:
-        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"                                        
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java-version }}
+      - name: Build Chain ${{ matrix.java-version }}
+        id: build-chain
+        uses: kiegroup/github-action-build-chain@master
+        with:
+          parent-dependencies: 'droolsjbpm-knowledge'
+          child-dependencies: 'optaplanner@master:7.x'
+          build-command: 'mvn -e -nsu -Dfull -Pwildfly clean install -Prun-code-coverage  -Dcontainer.profile=wildfly -Dcontainer=wildfly -Dintegration-tests=true -Dmaven.test.failure.ignore=true -DjvmArgs="-Xms1g -Xmx4g"'
+          build-command-upstream: "mvn -e -T1C clean install -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true"
+          workflow-file-name: "pull_request.yml"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
