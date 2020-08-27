@@ -96,6 +96,7 @@
     <module>data-index</module>
     <module>ui-packages</module>
     <module>management-console</module>
+    <module>trusty-ui</module>
     <module>task-console</module>
     <module>explainability</module>
     <module>trusty</module>
