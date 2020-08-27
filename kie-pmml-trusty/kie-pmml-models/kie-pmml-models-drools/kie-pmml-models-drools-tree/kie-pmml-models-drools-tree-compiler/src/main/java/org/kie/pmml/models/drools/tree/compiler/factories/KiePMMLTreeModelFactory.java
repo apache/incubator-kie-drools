@@ -32,6 +32,7 @@ import org.dmg.pmml.tree.TreeModel;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
@@ -39,6 +40,7 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
@@ -111,12 +113,8 @@ public class KiePMMLTreeModelFactory {
     static void setConstructor(final TreeModel treeModel, final ConstructorDeclaration constructorDeclaration, final SimpleName modelName) {
         setConstructorSuperNameInvocation(modelName.asString(), constructorDeclaration, treeModel.getModelName());
         final BlockStmt body = constructorDeclaration.getBody();
-        body.getStatements().iterator().forEachRemaining(statement -> {
-            if (statement instanceof ExplicitConstructorInvocationStmt) {
-                ExplicitConstructorInvocationStmt superStatement = (ExplicitConstructorInvocationStmt) statement;
-                NameExpr algorithmNameExpr = (NameExpr) superStatement.getArgument(2);
-                algorithmNameExpr.setName(String.format("\"%s\"", treeModel.getAlgorithmName()));
-            }
-        });
+        final ExplicitConstructorInvocationStmt superStatement = CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
+        CommonCodegenUtils.setExplicitConstructorInvocationArgument(superStatement, "algorithmName", String.format("\"%s\"", treeModel.getAlgorithmName()));
     }
 }

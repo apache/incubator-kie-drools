@@ -48,6 +48,7 @@ import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.kie.pmml.commons.Constants.MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 
 /**
@@ -291,7 +292,6 @@ public class CommonCodegenUtils {
                 .findFirst();
     }
 
-
     /**
      * Return an <code>Optional&lt;ExplicitConstructorInvocationStmt&gt;</code> from the given <code>BlockStmt</code>
      * @param body
@@ -302,6 +302,33 @@ public class CommonCodegenUtils {
         return body.getStatements().stream()
                 .filter(statement -> statement instanceof ExplicitConstructorInvocationStmt)
                 .map(statement -> (ExplicitConstructorInvocationStmt) statement)
+                .findFirst();
+    }
+
+    /**
+     * Return an <code>Optional&lt;NameExpr&gt;</code>  from the given <code>ExplicitConstructorInvocationStmt</code>
+     * @param constructorInvocationStmt
+     * @param parameterName
+     * @param value
+     * @return <code>Optional&lt;NameExpr&gt;</code> with the found <code>NameExpr</code>, or <code>Optional.empty()</code> if none is found
+     */
+    public static void setExplicitConstructorInvocationArgument(final ExplicitConstructorInvocationStmt constructorInvocationStmt, final String parameterName, final String value) {
+        final NameExpr parameterExpr = getExplicitConstructorInvocationParameter(constructorInvocationStmt, parameterName)
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION, parameterName, constructorInvocationStmt)));
+        parameterExpr.setName(value);
+    }
+
+    /**
+     * Return an <code>Optional&lt;NameExpr&gt;</code>  from the given <code>ExplicitConstructorInvocationStmt</code>
+     * @param constructorInvocationStmt
+     * @param parameterName
+     * @return <code>Optional&lt;NameExpr&gt;</code> with the found <code>NameExpr</code>, or <code>Optional.empty()</code> if none is found
+     */
+    public static Optional<NameExpr> getExplicitConstructorInvocationParameter(final ExplicitConstructorInvocationStmt constructorInvocationStmt, final String parameterName) {
+        return constructorInvocationStmt.getArguments()
+                .stream()
+                .filter(expression -> expression instanceof NameExpr && ((NameExpr)expression).getName().asString().equals(parameterName))
+                .map(expression -> (NameExpr)expression )
                 .findFirst();
     }
 

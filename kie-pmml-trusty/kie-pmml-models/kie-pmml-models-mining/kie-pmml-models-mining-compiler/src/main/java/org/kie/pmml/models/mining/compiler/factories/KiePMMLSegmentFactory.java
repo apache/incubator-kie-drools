@@ -46,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
@@ -162,21 +163,16 @@ public class KiePMMLSegmentFactory {
                                final double weight) {
         setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, segmentName);
         final BlockStmt body = constructorDeclaration.getBody();
-        body.getStatements().iterator().forEachRemaining(statement -> {
-            if (statement instanceof ExplicitConstructorInvocationStmt) {
-                ExplicitConstructorInvocationStmt superStatement = (ExplicitConstructorInvocationStmt) statement;
-                NameExpr nameExprs = (NameExpr) superStatement.getArgument(2);
-                ClassOrInterfaceType classOrInterfaceType = parseClassOrInterfaceType(predicateClassName);
-                ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
-                objectCreationExpr.setType(classOrInterfaceType);
-                nameExprs.setName(objectCreationExpr.toString());
-                nameExprs = (NameExpr) superStatement.getArgument(3);
-                classOrInterfaceType = parseClassOrInterfaceType(kiePMMLModelClass);
-                objectCreationExpr = new ObjectCreationExpr();
-                objectCreationExpr.setType(classOrInterfaceType);
-                nameExprs.setName(objectCreationExpr.toString());
-            }
-        });
+        final ExplicitConstructorInvocationStmt superStatement = CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
+        ClassOrInterfaceType classOrInterfaceType = parseClassOrInterfaceType(predicateClassName);
+        ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
+        objectCreationExpr.setType(classOrInterfaceType);
+        CommonCodegenUtils.setExplicitConstructorInvocationArgument(superStatement, "kiePMMLPredicate", objectCreationExpr.toString());
+        classOrInterfaceType = parseClassOrInterfaceType(kiePMMLModelClass);
+        objectCreationExpr = new ObjectCreationExpr();
+        objectCreationExpr.setType(classOrInterfaceType);
+        CommonCodegenUtils.setExplicitConstructorInvocationArgument(superStatement, "model", objectCreationExpr.toString());
         CommonCodegenUtils.setAssignExpressionValue(body, "weight", new DoubleLiteralExpr(weight));
         CommonCodegenUtils.setAssignExpressionValue(body, "id", new StringLiteralExpr(segmentName));
     }

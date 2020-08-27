@@ -256,6 +256,48 @@ public class CommonCodegenUtilsTest {
         assertEquals(explicitConstructorInvocationStmt, retrievedExplicitConstructorInvocationStmt);
     }
 
+    @Test
+    public void setExplicitConstructorInvocationArgumentWithParameter() {
+        final String parameterName = "PARAMETER_NAME";
+        final String value = "VALUE";
+        final ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt = new ExplicitConstructorInvocationStmt();
+        explicitConstructorInvocationStmt.setArguments(NodeList.nodeList( new NameExpr("NOT_PARAMETER"), new NameExpr(parameterName)));
+        assertTrue(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName).isPresent());
+        CommonCodegenUtils.setExplicitConstructorInvocationArgument(explicitConstructorInvocationStmt, parameterName, value);
+        assertFalse(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName).isPresent());
+        assertTrue(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, value).isPresent());
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void setExplicitConstructorInvocationArgumentNoParameter() {
+        final String parameterName = "PARAMETER_NAME";
+        final ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt = new ExplicitConstructorInvocationStmt();
+        explicitConstructorInvocationStmt.setArguments(NodeList.nodeList( new NameExpr("NOT_PARAMETER")));
+        CommonCodegenUtils.setExplicitConstructorInvocationArgument(explicitConstructorInvocationStmt, parameterName, "VALUE");
+    }
+
+    @Test
+    public void getExplicitConstructorInvocationParameter() {
+        final String parameterName = "PARAMETER_NAME";
+        final ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt = new ExplicitConstructorInvocationStmt();
+        assertFalse(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName).isPresent());
+        explicitConstructorInvocationStmt.setArguments(NodeList.nodeList( new NameExpr("NOT_PARAMETER")));
+        assertFalse(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName).isPresent());
+        explicitConstructorInvocationStmt.setArguments(NodeList.nodeList( new NameExpr("NOT_PARAMETER"), new NameExpr(parameterName)));
+        assertTrue(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName).isPresent());
+    }
+
+    @Test
+    public void getMethodDeclaration() {
+        final String methodName = "METHOD_NAME";
+        final ClassOrInterfaceDeclaration classOrInterfaceDeclaration = new ClassOrInterfaceDeclaration();
+        assertFalse(CommonCodegenUtils.getMethodDeclaration(classOrInterfaceDeclaration, methodName).isPresent());
+        classOrInterfaceDeclaration.addMethod("NOT_METHOD");
+        assertFalse(CommonCodegenUtils.getMethodDeclaration(classOrInterfaceDeclaration, methodName).isPresent());
+        classOrInterfaceDeclaration.addMethod(methodName);
+        assertTrue(CommonCodegenUtils.getMethodDeclaration(classOrInterfaceDeclaration, methodName).isPresent());
+    }
+
     private void commonValidateMethodDeclaration(MethodDeclaration toValidate, String methodName) {
         assertNotNull(toValidate);
         assertEquals(methodName, toValidate.getName().asString());
