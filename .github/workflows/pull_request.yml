@@ -17,7 +17,7 @@ jobs:
           java-version: ${{ matrix.java-version }}
       - name: Build Chain ${{ matrix.java-version }}
         id: build-chain
-        uses: kiegroup/github-action-build-chain@master
+        uses: kiegroup/github-action-build-chain@v1.4
         with:
           parent-dependencies: 'droolsjbpm-knowledge'
           child-dependencies: 'optaplanner@master:7.x'
