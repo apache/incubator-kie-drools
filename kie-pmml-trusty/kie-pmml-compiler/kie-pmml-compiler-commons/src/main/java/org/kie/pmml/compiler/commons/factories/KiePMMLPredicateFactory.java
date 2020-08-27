@@ -69,6 +69,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.kie.pmml.commons.Constants.MISSING_BODY_IN_METHOD;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.Constants.MISSING_EXPRESSION_IN_RETURN;
 import static org.kie.pmml.commons.Constants.MISSING_METHOD_IN_CLASS;
@@ -368,7 +369,9 @@ public class KiePMMLPredicateFactory {
         String methodName = "getInnerBinaryOperator" + booleanOperator.name();
         final MethodDeclaration methodDeclaration = CommonCodegenUtils.getMethodDeclaration(operatorFunctionClass, methodName)
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_METHOD_IN_CLASS,methodName, operatorFunctionClass)));
-        final ReturnStmt returnStmt = methodDeclaration.getBody().get().getStatements()
+        final BlockStmt methodBody =  methodDeclaration.getBody()
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_BODY_IN_METHOD, methodDeclaration)));
+        final ReturnStmt returnStmt = methodBody.getStatements()
                 .stream()
                 .filter(statement -> statement instanceof ReturnStmt)
                 .map(statement -> (ReturnStmt) statement)
