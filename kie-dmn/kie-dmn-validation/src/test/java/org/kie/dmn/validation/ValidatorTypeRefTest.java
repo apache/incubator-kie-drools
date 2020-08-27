@@ -40,7 +40,7 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
             assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
-            assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_REF_NOT_FOUND)));
+            assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND)));
         }
     }
 
@@ -50,7 +50,7 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
                 getFile("typeref/TYPEREF_NO_FEEL_TYPE.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_REF_NOT_FOUND)));
+        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND)));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
                 getDefinitions("typeref/TYPEREF_NO_FEEL_TYPE.dmn", "https://github.com/kiegroup/kie-dmn", "TYPEREF_NO_FEEL_TYPE"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_REF_NOT_FOUND)));
+        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND)));
     }
 
     @Test
@@ -68,8 +68,7 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
-            assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.FAILED_XML_VALIDATION)));
+            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
             assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND)));
         }
     }
@@ -79,8 +78,7 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("typeref/TYPEREF_NO_NS.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
-        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.FAILED_XML_VALIDATION)));
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPE_DEF_NOT_FOUND)));
     }
 

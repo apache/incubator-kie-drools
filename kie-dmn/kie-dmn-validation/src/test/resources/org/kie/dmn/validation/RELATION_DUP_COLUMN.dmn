@@ -14,39 +14,45 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<definitions id="RELATION_DUP_COLUMN" name="RELATION_DUP_COLUMN"
-             namespace="https://github.com/kiegroup/kie-dmn"
-             xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-             xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <decision name="Employee Relation" id="d_EmployeeRelation">
-    <variable name="Employee Relation" typeRef="feel:list"/>
-    <relation>
-      <column name="Name" typeRef="feel:string"/>
-      <column name="Name" typeRef="feel:string"/>  <!-- TEST -->
-      <column name="Salary" typeRef="feel:number"/>
-      <row>
-        <literalExpression>
-          <text>"John"</text>
-        </literalExpression>
-        <literalExpression>
-          <text>"Sales"</text>
-        </literalExpression>
-        <literalExpression>
-          <text>100000</text>
-        </literalExpression>
-      </row>
-      <row>
-        <literalExpression>
-          <text>"Mary"</text>
-        </literalExpression>
-        <literalExpression>
-          <text>"Finances"</text>
-        </literalExpression>
-        <literalExpression>
-          <text>120000</text>
-        </literalExpression>
-      </row>
-    </relation>
-  </decision>
-</definitions>
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      id="RELATION_DUP_COLUMN"
+                      name="RELATION_DUP_COLUMN"
+                      namespace="https://github.com/kiegroup/kie-dmn">
+   <semantic:decision name="Employee Relation" id="d_EmployeeRelation">
+      <semantic:variable name="Employee Relation" typeRef="list"/>
+      <semantic:relation>
+         <semantic:column name="Name" typeRef="string"/>
+         <semantic:column name="Name" typeRef="string"/>
+         <!-- TEST -->
+         <semantic:column name="Salary" typeRef="number"/>
+         <semantic:row>
+            <semantic:literalExpression>
+               <semantic:text>"John"</semantic:text>
+            </semantic:literalExpression>
+            <semantic:literalExpression>
+               <semantic:text>"Sales"</semantic:text>
+            </semantic:literalExpression>
+            <semantic:literalExpression>
+               <semantic:text>100000</semantic:text>
+            </semantic:literalExpression>
+         </semantic:row>
+         <semantic:row>
+            <semantic:literalExpression>
+               <semantic:text>"Mary"</semantic:text>
+            </semantic:literalExpression>
+            <semantic:literalExpression>
+               <semantic:text>"Finances"</semantic:text>
+            </semantic:literalExpression>
+            <semantic:literalExpression>
+               <semantic:text>120000</semantic:text>
+            </semantic:literalExpression>
+         </semantic:row>
+      </semantic:relation>
+   </semantic:decision>
+</semantic:definitions>

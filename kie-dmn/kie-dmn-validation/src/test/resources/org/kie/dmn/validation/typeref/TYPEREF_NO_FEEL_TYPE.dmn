@@ -14,13 +14,18 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<definitions id="TYPEREF_NO_FEEL_TYPE" name="TYPEREF_NO_FEEL_TYPE"
-    namespace="https://github.com/kiegroup/kie-dmn"
-    xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-    xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <inputData name="Full Name" id="i_FullName">
-        <variable name="Full Name" typeRef="feel:ssstringgg" /> <!-- TEST -->
-    </inputData>
-</definitions>
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      id="TYPEREF_NO_FEEL_TYPE"
+                      name="TYPEREF_NO_FEEL_TYPE"
+                      namespace="https://github.com/kiegroup/kie-dmn">
+   <semantic:inputData name="Full Name" id="i_FullName">
+      <semantic:variable name="Full Name" typeRef="ssstringgg"/>
+      <!-- TEST -->
+   </semantic:inputData>
+</semantic:definitions>

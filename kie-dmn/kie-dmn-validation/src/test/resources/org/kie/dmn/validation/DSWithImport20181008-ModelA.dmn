@@ -1,7 +1,22 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<dmn11:definitions xmlns="http://www.trisotech.com/definitions/_06945eb5-d665-41eb-a96a-3091b2e4e82f" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.10" id="_06945eb5-d665-41eb-a96a-3091b2e4e82f" name="Model A" namespace="http://www.trisotech.com/definitions/_06945eb5-d665-41eb-a96a-3091b2e4e82f" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
-  <dmn11:extensionElements/>
-  <dmn11:inputData id="_0b30a69e-76c9-433b-8e20-07bd6bef68a7" name="Input 1">
-    <dmn11:variable id="_c2be4b38-1dd8-45c8-aeee-8caaf97bd468" name="Input 1" typeRef="feel:string"/>
-  </dmn11:inputData>
-</dmn11:definitions>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/definitions/_06945eb5-d665-41eb-a96a-3091b2e4e82f"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.1.10"
+                      id="_06945eb5-d665-41eb-a96a-3091b2e4e82f"
+                      name="Model A"
+                      namespace="http://www.trisotech.com/definitions/_06945eb5-d665-41eb-a96a-3091b2e4e82f">
+   <semantic:extensionElements/>
+   <semantic:inputData id="_0b30a69e-76c9-433b-8e20-07bd6bef68a7" name="Input 1">
+      <semantic:variable id="_c2be4b38-1dd8-45c8-aeee-8caaf97bd468"
+                         name="Input 1"
+                         typeRef="string"/>
+   </semantic:inputData>
+</semantic:definitions>

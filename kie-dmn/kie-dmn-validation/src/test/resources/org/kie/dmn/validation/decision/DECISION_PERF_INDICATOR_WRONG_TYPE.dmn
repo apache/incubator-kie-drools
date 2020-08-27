@@ -14,20 +14,24 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<definitions id="DECISION_PERF_INDICATOR_WRONG_TYPE" name="DECISION_PERF_INDICATOR_WRONG_TYPE"
-             namespace="https://github.com/kiegroup/kie-dmn"
-             xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-             xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <decision name="Greeting Message" id="d_GreetingMessage">
-    <variable name="Greeting Message" typeRef="feel:string"/>
-    <impactedPerformanceIndicator href="#someIndicator1"/>
-    <impactedPerformanceIndicator href="#someIndicator2"/>
-    <literalExpression>
-      <text>"Hello something!"</text>
-    </literalExpression>
-  </decision>
-  <textAnnotation id="someIndicator1"/>
-  <textAnnotation id="someIndicator2"/>
-</definitions>
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      id="DECISION_PERF_INDICATOR_WRONG_TYPE"
+                      name="DECISION_PERF_INDICATOR_WRONG_TYPE"
+                      namespace="https://github.com/kiegroup/kie-dmn">
+   <semantic:decision name="Greeting Message" id="d_GreetingMessage">
+      <semantic:variable name="Greeting Message" typeRef="string"/>
+      <semantic:impactedPerformanceIndicator href="#someIndicator1"/>
+      <semantic:impactedPerformanceIndicator href="#someIndicator2"/>
+      <semantic:literalExpression>
+         <semantic:text>"Hello something!"</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:textAnnotation id="someIndicator1"/>
+   <semantic:textAnnotation id="someIndicator2"/>
+</semantic:definitions>

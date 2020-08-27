@@ -14,26 +14,37 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<definitions id="CONTEXT_MISSING_EXPR" name="CONTEXT_MISSING_EXPR"
-    namespace="https://github.com/kiegroup/kie-dmn"
-    xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-    xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <decision id="d1" name="Decision1">
-        <variable name="Decision1" typeRef="feel:context"/>
-        <context>
-            <contextEntry>
-                <variable name="entry1" typeRef="feel:string"/>
-                <literalExpression><text>"foo"</text></literalExpression>
-            </contextEntry>
-            <contextEntry>
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      id="CONTEXT_MISSING_EXPR"
+                      name="CONTEXT_MISSING_EXPR"
+                      namespace="https://github.com/kiegroup/kie-dmn">
+   <semantic:decision id="d1" name="Decision1">
+      <semantic:variable name="Decision1" typeRef="context"/>
+      <semantic:context>
+         <semantic:contextEntry>
+            <semantic:variable name="entry1" typeRef="string"/>
+            <semantic:literalExpression>
+               <semantic:text>"foo"</semantic:text>
+            </semantic:literalExpression>
+         </semantic:contextEntry>
+         <semantic:contextEntry>
                 <!-- this should raise an error because no variable is defined and it is not the last entry -->
-                <literalExpression><text>"bar"</text></literalExpression>
-            </contextEntry>
-            <contextEntry>
+            <semantic:literalExpression>
+               <semantic:text>"bar"</semantic:text>
+            </semantic:literalExpression>
+         </semantic:contextEntry>
+         <semantic:contextEntry>
                 <!-- this should not raise an error because it is the last entry -->
-                <literalExpression><text>"baz"</text></literalExpression>
-            </contextEntry>
-        </context>
-    </decision>
-</definitions>
+            <semantic:literalExpression>
+               <semantic:text>"baz"</semantic:text>
+            </semantic:literalExpression>
+         </semantic:contextEntry>
+      </semantic:context>
+   </semantic:decision>
+</semantic:definitions>

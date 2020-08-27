@@ -14,19 +14,23 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<definitions id="DECISION_CYCLIC_DEPENDENCY_SELF_REFERENCE" name="DECISION_CYCLIC_DEPENDENCY_SELF_REFERENCE"
-    namespace="https://github.com/kiegroup/kie-dmn"
-    xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-    xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <decision name="self" id="d_self">
-        <variable name="self" typeRef="feel:string"/>
-        <informationRequirement>
-            <requiredDecision href="#d_self"/>
-        </informationRequirement>
-        <literalExpression>
-            <text>self</text>
-        </literalExpression>
-    </decision>
-</definitions>
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      id="DECISION_CYCLIC_DEPENDENCY_SELF_REFERENCE"
+                      name="DECISION_CYCLIC_DEPENDENCY_SELF_REFERENCE"
+                      namespace="https://github.com/kiegroup/kie-dmn">
+   <semantic:decision name="self" id="d_self">
+      <semantic:variable name="self" typeRef="string"/>
+      <semantic:informationRequirement>
+         <semantic:requiredDecision href="#d_self"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression>
+         <semantic:text>self</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+</semantic:definitions>
