@@ -100,6 +100,8 @@ exports[`ProcessVariables component tests snapshot testing with variables 1`] = 
               <div>
                 <mockConstructor
                   name={false}
+                  onAdd={[Function]}
+                  onDelete={[Function]}
                   onEdit={[Function]}
                   src={
                     Object {
@@ -115,6 +117,8 @@ exports[`ProcessVariables component tests snapshot testing with variables 1`] = 
                 >
                   <MockedComponent
                     name={false}
+                    onAdd={[Function]}
+                    onDelete={[Function]}
                     onEdit={[Function]}
                     src={
                       Object {
@@ -165,6 +169,8 @@ exports[`ProcessVariables component tests snapshot testing without variables 1`]
       <div>
         <mockConstructor
           name={false}
+          onAdd={[Function]}
+          onDelete={[Function]}
           onEdit={[Function]}
           src={
             Object {
