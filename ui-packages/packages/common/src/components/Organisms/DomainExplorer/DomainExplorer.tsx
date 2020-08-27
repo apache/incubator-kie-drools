@@ -301,22 +301,20 @@ const DomainExplorer: React.FC<IOwnProps & OUIAProps> = ({
                     chips={filterChips}
                     deleteChip={onDeleteChip}
                   >
-                    <ToolbarItem>
-                      <DomainExplorerFilterOptions
-                        filterChips={filterChips}
-                        finalFilters={finalFilters}
-                        getQueryTypes={getQueryTypes}
-                        getSchema={getSchema}
-                        reset={reset}
-                        runQuery={runQuery}
-                        setFilterChips={setFilterChips}
-                        setFinalFilters={setFinalFilters}
-                        setOffset={setOffset}
-                        setReset={setReset}
-                        setRunQuery={setRunQuery}
-                        generateFilterQuery={generateFilterQuery}
-                      />
-                    </ToolbarItem>
+                    <DomainExplorerFilterOptions
+                      filterChips={filterChips}
+                      finalFilters={finalFilters}
+                      getQueryTypes={getQueryTypes}
+                      getSchema={getSchema}
+                      reset={reset}
+                      runQuery={runQuery}
+                      setFilterChips={setFilterChips}
+                      setFinalFilters={setFinalFilters}
+                      setOffset={setOffset}
+                      setReset={setReset}
+                      setRunQuery={setRunQuery}
+                      generateFilterQuery={generateFilterQuery}
+                    />
                   </ToolbarFilter>
                 )}
               </ToolbarToggleGroup>

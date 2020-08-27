@@ -11,7 +11,8 @@ import {
   DropdownItem,
   InputGroup,
   Popover,
-  PopoverPosition
+  PopoverPosition,
+  ToolbarItem
 } from '@patternfly/react-core';
 import { GraphQL } from '../../../graphql/types';
 import useGetInputFieldsFromTypeQuery = GraphQL.useGetInputFieldsFromTypeQuery;
@@ -576,7 +577,7 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
   };
 
   return (
-    <div {...componentOuiaProps(ouiaId, 'filter-options', ouiaSafe)}>
+    <ToolbarItem {...componentOuiaProps(ouiaId, 'filter-options', ouiaSafe)}>
       {!getSchema.loading && (
         <Select
           onToggle={onFieldToggle}
@@ -738,7 +739,7 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
           </Button>
         </>
       )}
-    </div>
+    </ToolbarItem>
   );
 };
 
