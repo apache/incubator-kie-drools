@@ -46,10 +46,10 @@ import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 import org.kie.kogito.trusty.service.TrustyService;
 import org.kie.kogito.trusty.service.messaging.incoming.ModelIdCreator;
+import org.kie.kogito.trusty.service.models.MatchedExecutionHeaders;
 import org.kie.kogito.trusty.service.responses.ExecutionHeaderResponse;
 import org.kie.kogito.trusty.service.responses.ExecutionsResponse;
 import org.kie.kogito.trusty.storage.api.model.Decision;
-import org.kie.kogito.trusty.storage.api.model.Execution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -131,11 +131,11 @@ public class ExecutionsApiV1 {
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), "Date format should be yyyy-MM-dd'T'HH:mm:ssZ").build();
         }
 
-        List<Execution> executions = executionService.getExecutionHeaders(fromDate, toDate, limit, offset, prefix);
+        MatchedExecutionHeaders result = executionService.getExecutionHeaders(fromDate, toDate, limit, offset, prefix);
 
         List<ExecutionHeaderResponse> headersResponses = new ArrayList<>();
-        executions.forEach(x -> headersResponses.add(ExecutionHeaderResponse.fromExecution(x)));
-        return Response.ok(new ExecutionsResponse(headersResponses.size(), limit, offset, headersResponses)).build();
+        result.getExecutions().forEach(x -> headersResponses.add(ExecutionHeaderResponse.fromExecution(x)));
+        return Response.ok(new ExecutionsResponse(result.getAvailableResults(), limit, offset, headersResponses)).build();
     }
 
     private OffsetDateTime parseParameterDate(String date, boolean localDateAtStartOfDay) {

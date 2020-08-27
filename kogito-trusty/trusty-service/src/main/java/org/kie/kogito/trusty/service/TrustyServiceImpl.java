@@ -30,10 +30,15 @@ import org.kie.kogito.persistence.api.query.AttributeFilter;
 import org.kie.kogito.persistence.api.query.QueryFilterFactory;
 import org.kie.kogito.trusty.service.messaging.incoming.ModelIdCreator;
 import org.kie.kogito.trusty.service.messaging.outgoing.ExplainabilityRequestProducer;
+import org.kie.kogito.trusty.service.models.MatchedExecutionHeaders;
 import org.kie.kogito.trusty.storage.api.TrustyStorageService;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.Execution;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityResult;
+
+import static java.util.Arrays.asList;
+import static org.kie.kogito.persistence.api.query.QueryFilterFactory.orderBy;
+import static org.kie.kogito.persistence.api.query.SortDirection.DESC;
 
 @ApplicationScoped
 public class TrustyServiceImpl implements TrustyService {
@@ -56,13 +61,23 @@ public class TrustyServiceImpl implements TrustyService {
     }
 
     @Override
-    public List<Execution> getExecutionHeaders(OffsetDateTime from, OffsetDateTime to, int limit, int offset, String prefix) {
+    public MatchedExecutionHeaders getExecutionHeaders(OffsetDateTime from, OffsetDateTime to, int limit, int offset, String prefix) {
         Storage<String, Decision> storage = storageService.getDecisionsStorage();
         List<AttributeFilter<?>> filters = new ArrayList<>();
         filters.add(QueryFilterFactory.like(Execution.EXECUTION_ID_FIELD, prefix + "*"));
         filters.add(QueryFilterFactory.greaterThanEqual(Execution.EXECUTION_TIMESTAMP_FIELD, from.toInstant().toEpochMilli()));
         filters.add(QueryFilterFactory.lessThanEqual(Execution.EXECUTION_TIMESTAMP_FIELD, to.toInstant().toEpochMilli()));
-        return new ArrayList<>(storage.query().limit(limit).offset(offset).filter(filters).execute());
+        ArrayList result = new ArrayList<>(storage.query()
+                                                   .sort(asList(orderBy(Execution.EXECUTION_TIMESTAMP_FIELD, DESC)))
+                                                   .filter(filters)
+                                                   .execute()
+        );
+
+        if (result.size() < offset) {
+            throw new IllegalArgumentException("Out of bound start offset in result");
+        }
+
+        return new MatchedExecutionHeaders(result.subList(offset, Math.min(offset + limit, result.size())), result.size());
     }
 
     @Override

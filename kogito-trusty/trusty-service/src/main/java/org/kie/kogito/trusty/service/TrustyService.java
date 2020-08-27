@@ -17,10 +17,9 @@
 package org.kie.kogito.trusty.service;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 
+import org.kie.kogito.trusty.service.models.MatchedExecutionHeaders;
 import org.kie.kogito.trusty.storage.api.model.Decision;
-import org.kie.kogito.trusty.storage.api.model.Execution;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityResult;
 
 /**
@@ -38,9 +37,9 @@ public interface TrustyService {
      * @param limit  The maximum (non-negative) number of items to be returned.
      * @param offset The non-negative pagination offset.
      * @param prefix The executionId prefix to be matched in the search.
-     * @return The execution headers that satisfy the time range, pagination and prefix conditions.
+     * @return The execution headers that satisfy the time range, pagination and prefix conditions and the total number of available results.
      */
-    List<Execution> getExecutionHeaders(OffsetDateTime from, OffsetDateTime to, int limit, int offset, String prefix);
+    MatchedExecutionHeaders getExecutionHeaders(OffsetDateTime from, OffsetDateTime to, int limit, int offset, String prefix);
 
     /**
      * Gets a decision by execution ID.

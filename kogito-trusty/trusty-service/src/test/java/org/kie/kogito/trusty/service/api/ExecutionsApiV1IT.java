@@ -29,6 +29,7 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.trusty.service.TrustyService;
+import org.kie.kogito.trusty.service.models.MatchedExecutionHeaders;
 import org.kie.kogito.trusty.service.responses.ExecutionsResponse;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.Execution;
@@ -38,6 +39,7 @@ import org.mockito.Mockito;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -52,7 +54,8 @@ class ExecutionsApiV1IT {
 
     @Test
     void givenRequestWithoutLimitAndOffsetParametersWhenExecutionEndpointIsCalledThenTheDefaultValuesAreCorrect() {
-        Mockito.when(executionService.getExecutionHeaders(any(OffsetDateTime.class), any(OffsetDateTime.class), any(Integer.class), any(Integer.class), any(String.class))).thenReturn(new ArrayList<>());
+        Mockito.when(executionService.getExecutionHeaders(any(OffsetDateTime.class), any(OffsetDateTime.class), any(Integer.class), any(Integer.class), any(String.class)))
+                .thenReturn(new MatchedExecutionHeaders(new ArrayList<>(), 0));
         ExecutionsResponse response = given().contentType(ContentType.JSON).when().get("/executions?from=2000-01-01T00:00:00Z&to=2021-01-01T00:00:00Z").as(ExecutionsResponse.class);
 
         Assertions.assertEquals(100, response.getLimit());
@@ -62,6 +65,8 @@ class ExecutionsApiV1IT {
 
     @Test
     void givenARequestWithoutTimeRangeParametersWhenExecutionEndpointIsCalledThenTheDefaultValuesAreUsed() {
+        Mockito.when(executionService.getExecutionHeaders(any(OffsetDateTime.class), any(OffsetDateTime.class), any(Integer.class), any(Integer.class), any(String.class)))
+                .thenReturn(new MatchedExecutionHeaders(new ArrayList<>(), 0));
         given().when().get("/executions").then().statusCode(200);
         given().when().get("/executions?from=2000-01-01T00:00:00Z").then().statusCode(200);
         given().when().get("/executions?to=2000-01-01T00:00:00Z").then().statusCode(200);
@@ -91,11 +96,51 @@ class ExecutionsApiV1IT {
         Execution execution = new Execution("test1", "http://localhost:8081/model",
                                             OffsetDateTime.parse("2020-01-01T00:00:00Z", DateTimeFormatter.ISO_OFFSET_DATE_TIME).toInstant().toEpochMilli(),
                                             true, "name", "model", "namespace", ExecutionTypeEnum.DECISION);
-        Mockito.when(executionService.getExecutionHeaders(any(OffsetDateTime.class), any(OffsetDateTime.class), any(Integer.class), any(Integer.class), any(String.class))).thenReturn(List.of(execution));
+        Mockito.when(executionService.getExecutionHeaders(any(OffsetDateTime.class), any(OffsetDateTime.class), any(Integer.class), any(Integer.class), any(String.class)))
+                .thenReturn(new MatchedExecutionHeaders(List.of(execution), 1));
 
         ExecutionsResponse response = given().contentType(ContentType.JSON).when().get("/executions?from=2000-01-01T00:00:00Z&to=2021-01-01T00:00:00Z").as(ExecutionsResponse.class);
 
         Assertions.assertEquals(1, response.getHeaders().size());
+    }
+
+    @Test
+    void givenMoreResultsThanQueryLimitThenPaginationIsCorrect() throws ParseException {
+        List<Execution> executions = generateExecutions(15);
+
+        mockGetExecutionHeaders(executions, 0, 10);
+        mockGetExecutionHeaders(executions, 5, 10);
+        mockGetExecutionHeaders(executions, 10, 10);
+
+        ExecutionsResponse response = given().contentType(ContentType.JSON)
+                .when()
+                .get("/executions?from=2000-01-01T00:00:00Z&to=2021-01-01T00:00:00Z&limit=10")
+                .as(ExecutionsResponse.class);
+
+        Assertions.assertEquals(10, response.getHeaders().size());
+        Assertions.assertEquals(15, response.getTotal());
+        Assertions.assertEquals(0, response.getOffset());
+        Assertions.assertEquals(10, response.getLimit());
+
+        response = given().contentType(ContentType.JSON)
+                .when()
+                .get("/executions?from=2000-01-01T00:00:00Z&to=2021-01-01T00:00:00Z&limit=10&offset=5")
+                .as(ExecutionsResponse.class);
+
+        Assertions.assertEquals(10, response.getHeaders().size());
+        Assertions.assertEquals(15, response.getTotal());
+        Assertions.assertEquals(5, response.getOffset());
+        Assertions.assertEquals(10, response.getLimit());
+
+        response = given().contentType(ContentType.JSON)
+                .when()
+                .get("/executions?from=2000-01-01T00:00:00Z&to=2021-01-01T00:00:00Z&limit=10&offset=10")
+                .as(ExecutionsResponse.class);
+
+        Assertions.assertEquals(5, response.getHeaders().size());
+        Assertions.assertEquals(15, response.getTotal());
+        Assertions.assertEquals(10, response.getOffset());
+        Assertions.assertEquals(10, response.getLimit());
     }
 
     @Test
@@ -123,5 +168,20 @@ class ExecutionsApiV1IT {
         when(executionService.getModelById(anyString())).thenThrow(new IllegalArgumentException("Model does not exist."));
 
         given().contentType(ContentType.TEXT).when().get("/executions/123/model").then().statusCode(400);
+    }
+
+    private List<Execution> generateExecutions(int size) {
+        ArrayList<Execution> executions = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            executions.add(new Execution(String.format("test-%d", i), "test",
+                                         OffsetDateTime.parse("2020-01-01T00:00:00Z", DateTimeFormatter.ISO_OFFSET_DATE_TIME).plusDays(i).toInstant().toEpochMilli(),
+                                         true, "name", "model", "namespace", ExecutionTypeEnum.DECISION));
+        }
+        return executions;
+    }
+
+    private void mockGetExecutionHeaders(List<Execution> executions, int offset, int limit){
+        Mockito.when(executionService.getExecutionHeaders(any(OffsetDateTime.class), any(OffsetDateTime.class), eq(limit), eq(offset), any(String.class)))
+                .thenReturn(new MatchedExecutionHeaders(executions.subList(offset, Math.min(offset+limit, executions.size())), executions.size()));
     }
 }
