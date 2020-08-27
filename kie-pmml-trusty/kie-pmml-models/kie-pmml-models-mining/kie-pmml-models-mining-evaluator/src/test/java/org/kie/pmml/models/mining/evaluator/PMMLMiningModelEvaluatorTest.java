@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.stream.IntStream;
 
 import org.junit.Before;
@@ -46,8 +45,10 @@ import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.kie.pmml.commons.enums.ResultCode.FAIL;
 import static org.kie.pmml.commons.enums.ResultCode.OK;
 import static org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD.AVERAGE;
 import static org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD.MAJORITY_VOTE;
@@ -89,7 +90,7 @@ public class PMMLMiningModelEvaluatorTest {
     }
 
     @Test
-    public void getPMML4Result() {
+    public void getPMML4ResultOK() {
         String name = "NAME";
         String targetField = "TARGET";
         String prediction = "FIRST_VALUE";
@@ -114,6 +115,37 @@ public class PMMLMiningModelEvaluatorTest {
         final Map<String, Object> resultVariables = retrieved.getResultVariables();
         assertTrue(resultVariables.containsKey(targetField));
         assertEquals(prediction, resultVariables.get(targetField));
+        outputFieldsMap.forEach((key, value) -> {
+            assertTrue(resultVariables.containsKey(key));
+            assertEquals(value, resultVariables.get(key));
+        });
+    }
+
+    @Test
+    public void getPMML4ResultFAIL() {
+        String name = "NAME";
+        String targetField = "TARGET";
+        final Map<String, Object> outputFieldsMap = new HashMap<>();
+        IntStream.range(0,3).forEach(index -> {
+            outputFieldsMap.put("KEY_" + index, "OBJECT_" + index);
+        });
+        KiePMMLSegmentation kiePMMLSegmentation = KiePMMLSegmentation.builder("SEGM_1", Collections.emptyList(), AVERAGE).build();
+        KiePMMLMiningModel kiePMMLMiningModel = KiePMMLMiningModel.builder(name, Collections.emptyList(),
+                                                                           MINING_FUNCTION.ASSOCIATION_RULES)
+                .withTargetField(targetField)
+                .withSegmentation(kiePMMLSegmentation)
+                .withOutputFieldsMap(outputFieldsMap)
+                .build();
+        final LinkedHashMap<String, KiePMMLNameValue> inputData = new LinkedHashMap<>();
+        inputData.put("FIRST_KEY", new KiePMMLNameValue("FIRST_NAME", "FIRST_VALUE"));
+        inputData.put("SECOND_KEY", new KiePMMLNameValue("SECOND_NAME", "SECOND_VALUE"));
+        PMML4Result retrieved = evaluator.getPMML4Result(kiePMMLMiningModel, inputData);
+        assertNotNull(retrieved);
+        assertEquals(FAIL.getName(), retrieved.getResultCode());
+        assertEquals(targetField, retrieved.getResultObjectName());
+        final Map<String, Object> resultVariables = retrieved.getResultVariables();
+        assertTrue(resultVariables.containsKey(targetField));
+        assertNull(resultVariables.get(targetField));
         outputFieldsMap.forEach((key, value) -> {
             assertTrue(resultVariables.containsKey(key));
             assertEquals(value, resultVariables.get(key));

@@ -5,6 +5,10 @@
     <ksession name="MixedMiningSession" type="stateless"/>
   </kbase>
 
+  <kbase name="PredicatesMining" packages="predicatesmining">
+    <ksession name="PredicatesMiningSession" type="stateless"/>
+  </kbase>
+
   <kbase name="SegmentationMeanMining" packages="segmentationmeanmining">
     <ksession name="SegmentationMeanMiningSession" type="stateless"/>
   </kbase>

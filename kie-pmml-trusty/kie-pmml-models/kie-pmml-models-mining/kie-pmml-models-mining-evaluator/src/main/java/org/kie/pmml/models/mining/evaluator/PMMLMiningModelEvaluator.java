@@ -31,6 +31,8 @@ import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.KieRuntimeFactory;
+import org.kie.pmml.commons.enums.ResultCode;
+import org.kie.pmml.commons.exceptions.KieEnumException;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -48,6 +50,7 @@ import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.commons.enums.ResultCode.FAIL;
 import static org.kie.pmml.commons.enums.ResultCode.OK;
 import static org.kie.pmml.evaluator.core.utils.Converter.getUnwrappedParametersMap;
 
@@ -77,11 +80,18 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
     PMML4Result getPMML4Result(final KiePMMLMiningModel toEvaluate,
                     final LinkedHashMap<String, KiePMMLNameValue> inputData) {
         final MULTIPLE_MODEL_METHOD multipleModelMethod = toEvaluate.getSegmentation().getMultipleModelMethod();
-        final Object prediction = multipleModelMethod.apply(inputData);
+        Object prediction = null;
+        ResultCode resultCode = OK;
+        try {
+            prediction = multipleModelMethod.apply(inputData);
+        } catch (KieEnumException e) {
+            logger.warn(e.getMessage());
+            resultCode = FAIL;
+        }
         PMML4Result toReturn = new PMML4Result();
         toReturn.addResultVariable(toEvaluate.getTargetField(), prediction);
         toReturn.setResultObjectName(toEvaluate.getTargetField());
-        toReturn.setResultCode(OK.getName());
+        toReturn.setResultCode(resultCode.getName());
         toEvaluate.getOutputFieldsMap().forEach(toReturn::addResultVariable);
         return toReturn;
     }
