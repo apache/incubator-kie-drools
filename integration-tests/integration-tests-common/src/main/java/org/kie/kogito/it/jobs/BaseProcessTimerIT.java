@@ -40,7 +40,7 @@ public abstract class BaseProcessTimerIT {
         assertThat(id).isEqualTo(id2);
         with().pollDelay(2, SECONDS)
                 .atMost(3, SECONDS)
-                .untilAsserted(() -> getTimerWithStatusCode(id, 204, TIMERS));
+                .untilAsserted(() -> getTimerWithStatusCode(id, 404, TIMERS));
     }
 
     @Test
@@ -48,7 +48,7 @@ public abstract class BaseProcessTimerIT {
         String id = createTimer(new RequestPayload("PT030S"), TIMERS);
         Object id2 = deleteTimer(id, TIMERS);
         assertThat(id).isEqualTo(id2);
-        getTimerWithStatusCode(id, 204, TIMERS);
+        getTimerWithStatusCode(id, 404, TIMERS);
     }
 
     //Cycle Timers Tests
@@ -59,7 +59,7 @@ public abstract class BaseProcessTimerIT {
         assertThat(id).isEqualTo(id2);
         with().pollDelay(2, SECONDS)
                 .atMost(3, SECONDS)
-                .untilAsserted(() -> getTimerWithStatusCode(id, 204, TIMERS));
+                .untilAsserted(() -> getTimerWithStatusCode(id, 404, TIMERS));
     }
 
     @Test
@@ -78,7 +78,7 @@ public abstract class BaseProcessTimerIT {
         assertThat(id).isEqualTo(id2);
         with().pollDelay(2, SECONDS)
                 .atMost(3, SECONDS)
-                .untilAsserted(() -> getTimerWithStatusCode(id, 204, TIMERS_ON_TASK));
+                .untilAsserted(() -> getTimerWithStatusCode(id, 404, TIMERS_ON_TASK));
     }
 
     @Test
@@ -106,7 +106,7 @@ public abstract class BaseProcessTimerIT {
                 .when()
                 .post("/" + path)
                 .then()
-                .statusCode(200)
+                .statusCode(201)
                 .body("id", notNullValue())
                 .extract()
                 .path("id");
