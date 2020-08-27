@@ -11,6 +11,7 @@ import axios from 'axios';
 jest.mock('axios');
 import * as Utils from '../../../../utils/Utils';
 import { act } from 'react-dom/test-utils';
+
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 jest.mock('../../../Atoms/ProcessListModal/ProcessListModal');
 jest.mock('../../../Atoms/ProcessListBulkInstances/ProcessListBulkInstances');
@@ -104,9 +105,11 @@ const mocks1 = [
       query: GetProcessInstanceByIdDocument,
       variables: {
         id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b'
-      }
+      },
+      fetchPolicy: 'network-only'
     },
     result: {
+      loading: false,
       data: {
         ProcessInstances: [
           {
@@ -155,7 +158,8 @@ const mocks2 = [
       query: GetProcessInstanceByIdDocument,
       variables: {
         id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b'
-      }
+      },
+      fetchPolicy: 'network-only'
     },
     result: {
       data: {
@@ -206,7 +210,8 @@ const mocks3 = [
       query: GetProcessInstanceByIdDocument,
       variables: {
         id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b'
-      }
+      },
+      fetchPolicy: 'network-only'
     },
     result: {
       data: {
@@ -292,7 +297,8 @@ describe('Process Details Page component tests', () => {
       await act(async () => {
         wrapper
           .find(Button)
-          .find('button')
+          .find('#abort-button')
+          .first()
           .simulate('click');
       });
       wrapper.update();
@@ -312,7 +318,8 @@ describe('Process Details Page component tests', () => {
       await act(async () => {
         wrapper
           .find(Button)
-          .find('button')
+          .find('#abort-button')
+          .first()
           .simulate('click');
       });
       wrapper.update();
@@ -353,5 +360,75 @@ describe('Process Details Page component tests', () => {
       'ProcessDetailsPage'
     );
     expect(wrapper).toMatchSnapshot();
+  });
+  it('Test refresh and save button', async () => {
+    mockedAxios.post.mockResolvedValue({});
+    jest.setTimeout(2000);
+    const { location } = window;
+    delete window.location;
+    // @ts-ignore
+    window.location = { reload: jest.fn() };
+    const wrapper = await getWrapperAsync(
+      <MockedProvider mocks={mocks1} addTypename={false}>
+        <BrowserRouter>
+          <ProcessDetailsPage {...props} />
+        </BrowserRouter>
+      </MockedProvider>,
+      'ProcessDetailsPage'
+    );
+    const handleVariableUpdateSpy = jest.spyOn(Utils, 'handleVariableUpdate');
+    wrapper
+      .find('#refresh-button')
+      .first()
+      .simulate('click');
+    await act(async () => {
+      wrapper
+        .find('#save-button')
+        .first()
+        .simulate('click');
+    });
+    act(() => {
+      wrapper
+        .find('Modal')
+        .at(0)
+        .props()
+        ['onClose']();
+    });
+    wrapper
+      .find('Modal')
+      .at(1)
+      .props()
+      ['onClose']();
+    window.location = location;
+    expect(handleVariableUpdateSpy).toHaveBeenCalled();
+  });
+  it('Test error axios response', async () => {
+    mockedAxios.post.mockRejectedValue({ message: '404 error' });
+    jest.setTimeout(2000);
+    const { location } = window;
+    delete window.location;
+    // @ts-ignore
+    window.location = { reload: jest.fn() };
+    const wrapper = await getWrapperAsync(
+      <MockedProvider mocks={mocks1} addTypename={false}>
+        <BrowserRouter>
+          <ProcessDetailsPage {...props} />
+        </BrowserRouter>
+      </MockedProvider>,
+      'ProcessDetailsPage'
+    );
+    const handleVariableUpdateSpy = jest.spyOn(Utils, 'handleVariableUpdate');
+    wrapper
+      .find('#refresh-button')
+      .first()
+      .simulate('click');
+    await act(async () => {
+      wrapper
+        .find('#save-button')
+        .first()
+        .simulate('click');
+    });
+    window.location = location;
+    expect(handleVariableUpdateSpy).toHaveBeenCalled();
   });
 });

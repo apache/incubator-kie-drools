@@ -14,8 +14,8 @@ exports[`ProcessBulkModal component tests snapshot testing 1`] = `
   }
   appendTo={<body />}
   aria-describedby=""
-  aria-label=""
-  aria-labelledby=""
+  aria-label="process list modal"
+  aria-labelledby="process list modal"
   className=""
   data-ouia-component-type="process-list-modal"
   data-ouia-safe={true}

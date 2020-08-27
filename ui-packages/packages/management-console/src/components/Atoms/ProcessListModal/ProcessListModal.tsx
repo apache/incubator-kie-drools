@@ -60,6 +60,8 @@ const ProcessListModal: React.FC<IOwnProps & OUIAProps> = ({
       }
       isOpen={isModalOpen}
       onClose={onOkClick}
+      aria-label="process list modal"
+      aria-labelledby="process list modal"
       actions={[
         <Button key="confirm-selection" variant="primary" onClick={onOkClick}>
           OK

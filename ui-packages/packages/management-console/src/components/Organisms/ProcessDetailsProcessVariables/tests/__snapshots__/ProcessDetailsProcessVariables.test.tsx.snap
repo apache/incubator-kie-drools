@@ -1,82 +1,142 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ProcessVariables component tests snapshot testing with variables 1`] = `
-<Card
-  data-ouia-component-type="process-variables"
-  data-ouia-safe={true}
+<Memo(ProcessDetailsProcessVariables)
+  displayLabel={true}
+  displaySuccess={true}
+  setDisplayLabel={[MockFunction]}
+  setUpdateJson={[MockFunction]}
+  updateJson={
+    Object {
+      "trip": Object {
+        "begin": "2019-10-22T22:00:00Z[UTC]",
+        "city": "Berlin",
+        "country": "Germany",
+        "end": "2019-10-30T22:00:00Z[UTC]",
+        "visaRequired": false,
+      },
+    }
+  }
 >
-  <CardHeader>
-    <Title
-      headingLevel="h3"
-      size="xl"
+  <Card
+    data-ouia-component-type="process-variables"
+    data-ouia-safe={true}
+  >
+    <article
+      className="pf-c-card"
+      data-ouia-component-id={0}
+      data-ouia-component-type="PF4/Card"
+      data-ouia-safe={true}
     >
-      Process Variables
-    </Title>
-  </CardHeader>
-  <CardBody>
-    <TextContent>
-      <div
-        key="0"
-      >
-        <t
-          collapseStringsAfterLength={false}
-          collapsed={false}
-          defaultValue={null}
-          displayDataTypes={true}
-          displayObjectSize={true}
-          enableClipboard={true}
-          groupArraysAfterLength={100}
-          iconStyle="triangle"
-          indentWidth={4}
-          name="root"
-          onAdd={false}
-          onDelete={false}
-          onEdit={false}
-          onSelect={false}
-          shouldCollapse={false}
-          sortKeys={false}
-          src={
-            Object {
-              "hotel": Object {
-                "address": Object {
-                  "city": "Berlin",
-                  "country": "Germany",
-                  "street": "street",
-                  "zipCode": "12345",
-                },
-                "bookingNumber": "XX-012345",
-                "name": "Perfect hotel",
-                "phone": "09876543",
-              },
-              "traveller": Object {
-                "address": Object {
-                  "city": "Karkow",
-                  "country": "Poland",
-                  "street": "palna",
-                  "zipCode": "200300",
-                },
-                "email": "rob@redhat.com",
-                "firstName": "Rob",
-                "lastName": "Rob",
-                "nationality": "Polish",
-              },
-              "trip": Object {
-                "begin": "2019-10-22T22:00:00Z[UTC]",
-                "city": "Berlin",
-                "country": "Germany",
-                "end": "2019-10-30T22:00:00Z[UTC]",
-                "visaRequired": false,
-              },
-            }
-          }
-          style={Object {}}
-          theme="rjv-default"
-          validationMessage="Validation Error"
-        />
-      </div>
-    </TextContent>
-  </CardBody>
-</Card>
+      <CardHeader>
+        <div
+          className="pf-c-card__header"
+        >
+          <Title
+            headingLevel="h3"
+            size="xl"
+          >
+            <h3
+              className="pf-c-title pf-m-xl"
+            >
+              Process Variables
+            </h3>
+          </Title>
+          <Label
+            color="orange"
+            icon={<InfoCircleIcon />}
+          >
+            <span
+              className="pf-c-label pf-m-orange"
+            >
+              <span
+                className="pf-c-label__content"
+              >
+                <span
+                  className="pf-c-label__icon"
+                >
+                  <InfoCircleIcon>
+                    <MockedComponent />
+                  </InfoCircleIcon>
+                </span>
+                 
+                Changes are not saved yet
+              </span>
+            </span>
+          </Label>
+          <Label
+            className="kogito-management-console--variables__label-fadeIn"
+            color="green"
+            icon={<InfoCircleIcon />}
+          >
+            <span
+              className="pf-c-label pf-m-green kogito-management-console--variables__label-fadeIn"
+            >
+              <span
+                className="pf-c-label__content"
+              >
+                <span
+                  className="pf-c-label__icon"
+                >
+                  <InfoCircleIcon>
+                    <MockedComponent />
+                  </InfoCircleIcon>
+                </span>
+                 
+                Changes are saved
+              </span>
+            </span>
+          </Label>
+        </div>
+      </CardHeader>
+      <CardBody>
+        <div
+          className="pf-c-card__body"
+        >
+          <TextContent>
+            <div
+              className="pf-c-content"
+            >
+              <div>
+                <mockConstructor
+                  name={false}
+                  onEdit={[Function]}
+                  src={
+                    Object {
+                      "trip": Object {
+                        "begin": "2019-10-22T22:00:00Z[UTC]",
+                        "city": "Berlin",
+                        "country": "Germany",
+                        "end": "2019-10-30T22:00:00Z[UTC]",
+                        "visaRequired": false,
+                      },
+                    }
+                  }
+                >
+                  <MockedComponent
+                    name={false}
+                    onEdit={[Function]}
+                    src={
+                      Object {
+                        "trip": Object {
+                          "begin": "2019-10-22T22:00:00Z[UTC]",
+                          "city": "Berlin",
+                          "country": "Germany",
+                          "end": "2019-10-30T22:00:00Z[UTC]",
+                          "visaRequired": false,
+                        },
+                      }
+                    }
+                  />
+                </mockConstructor>
+              </div>
+            </div>
+          </TextContent>
+        </div>
+      </CardBody>
+    </article>
+  </Card>
+</Memo(ProcessDetailsProcessVariables)>
 `;
 
 exports[`ProcessVariables component tests snapshot testing without variables 1`] = `
@@ -91,9 +151,35 @@ exports[`ProcessVariables component tests snapshot testing without variables 1`]
     >
       Process Variables
     </Title>
+    <Label
+      className="kogito-management-console--variables__label-fadeOut"
+      color="green"
+      icon={<InfoCircleIcon />}
+    >
+       
+      Changes are saved
+    </Label>
   </CardHeader>
   <CardBody>
-    <TextContent />
+    <TextContent>
+      <div>
+        <mockConstructor
+          name={false}
+          onEdit={[Function]}
+          src={
+            Object {
+              "trip": Object {
+                "begin": "2019-10-22T22:00:00Z[UTC]",
+                "city": "Berlin",
+                "country": "Germany",
+                "end": "2019-10-30T22:00:00Z[UTC]",
+                "visaRequired": false,
+              },
+            }
+          }
+        />
+      </div>
+    </TextContent>
   </CardBody>
 </Card>
 `;

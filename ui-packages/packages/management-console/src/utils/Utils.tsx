@@ -233,3 +233,26 @@ export const getProcessInstanceDescription = (
     description: processInstance.businessKey
   };
 };
+
+// function containing Api call to update process variables
+export const handleVariableUpdate = async (
+  processInstance: Pick<ProcessInstance, 'id' | 'endpoint'>,
+  updateJson: object,
+  setDisplayLabel: (displayLabel: boolean) => void,
+  setDisplaySuccess: (displaySuccess: boolean) => void,
+  setVariableError: (error: string) => void
+) => {
+  try {
+    await axios
+      .post(`${processInstance.endpoint}/${processInstance.id}`, updateJson)
+      .then(() => {
+        setDisplayLabel(false);
+        setDisplaySuccess(true);
+        setTimeout(() => {
+          setDisplaySuccess(false);
+        }, 2000);
+      });
+  } catch (error) {
+    setVariableError(error.message);
+  }
+};

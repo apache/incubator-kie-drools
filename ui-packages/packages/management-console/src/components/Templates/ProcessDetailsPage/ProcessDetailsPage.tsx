@@ -12,7 +12,10 @@ import {
   SplitItem,
   OverflowMenu,
   OverflowMenuContent,
-  OverflowMenuGroup
+  OverflowMenuGroup,
+  ModalVariant,
+  Modal,
+  TitleSizes
 } from '@patternfly/react-core';
 import {
   ServerErrors,
@@ -31,8 +34,13 @@ import ProcessDetailsTimeline from '../../Organisms/ProcessDetailsTimeline/Proce
 import './ProcessDetailsPage.css';
 import PageTitle from '../../Molecules/PageTitle/PageTitle';
 import ProcessListModal from '../../Atoms/ProcessListModal/ProcessListModal';
-import { handleAbort, setTitle } from '../../../utils/Utils';
+import {
+  handleAbort,
+  setTitle,
+  handleVariableUpdate
+} from '../../../utils/Utils';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
+import { SyncIcon, InfoCircleIcon } from '@patternfly/react-icons';
 
 interface MatchProps {
   instanceID: string;
@@ -50,10 +58,17 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, {}, {}> &
   const [modalTitle, setModalTitle] = useState<string>('');
   const [titleType, setTitleType] = useState<string>('');
   const [modalContent, setModalContent] = useState<string>('');
+  const [updateJson, setUpdateJson] = useState<any>({});
+  const [displayLabel, setDisplayLabel] = useState(false);
+  const [displaySuccess, setDisplaySuccess] = useState(false);
+  const [errorModalOpen, setErrorModalOpen] = useState(false);
+  const [confirmationModal, setConfirmationModal] = useState(false);
+  const [variableError, setVariableError] = useState();
   let currentPage = JSON.parse(window.localStorage.getItem('state'));
 
   const { loading, error, data } = GraphQL.useGetProcessInstanceByIdQuery({
-    variables: { id }
+    variables: { id },
+    fetchPolicy: 'network-only'
   });
   const handleModalToggle = () => {
     setIsModalOpen(!isModalOpen);
@@ -94,6 +109,185 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, {}, {}> &
           `Failed to abort process ${data.ProcessInstances[0].processName}. Message: ${errorMessage}`,
           TitleType.FAILURE
         )
+    );
+  };
+
+  useEffect(() => {
+    if (data) {
+      setUpdateJson(JSON.parse(data.ProcessInstances[0].variables));
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (variableError && variableError.length > 0) {
+      setErrorModalOpen(true);
+    }
+  }, [variableError]);
+
+  const handleSave = async () => {
+    setDisplaySuccess(false);
+    await handleVariableUpdate(
+      data.ProcessInstances[0],
+      updateJson,
+      setDisplayLabel,
+      setDisplaySuccess,
+      setVariableError
+    );
+  };
+
+  const handleRefresh = () => {
+    if (displayLabel === true) {
+      setConfirmationModal(true);
+    } else {
+      window.location.reload();
+    }
+  };
+
+  const handleConfirmationModal = () => {
+    setConfirmationModal(!confirmationModal);
+  };
+
+  const handleConfirm = () => {
+    window.location.reload();
+    handleConfirmationModal();
+  };
+
+  const handleCancel = () => {
+    handleConfirmationModal();
+  };
+
+  const RenderConfirmationModal = () => {
+    return (
+      <Modal
+        title=""
+        header={
+          <>
+            <Title headingLevel="h1" size={TitleSizes['2xl']}>
+              <InfoCircleIcon
+                className="pf-u-mr-sm"
+                color="var(--pf-global--warning-color--100)"
+              />
+              Refresh
+            </Title>
+          </>
+        }
+        variant={ModalVariant.small}
+        isOpen={confirmationModal}
+        onClose={handleConfirmationModal}
+        actions={[
+          <Button
+            key="Ok"
+            variant="primary"
+            id="confirm-button"
+            onClick={handleConfirm}
+          >
+            Ok
+          </Button>,
+          <Button
+            key="Cancel"
+            variant="link"
+            id="cancel-button"
+            onClick={handleCancel}
+          >
+            Cancel
+          </Button>
+        ]}
+        aria-label="Confirmation modal"
+        aria-labelledby="Confirmation modal"
+      >
+        This action discards changes made on process variables.
+      </Modal>
+    );
+  };
+
+  const handleErrorModal = () => {
+    setErrorModalOpen(!errorModalOpen);
+  };
+
+  const handleRetry = () => {
+    handleErrorModal();
+    setVariableError(null);
+    // tslint:disable-next-line: no-floating-promises
+    handleSave();
+  };
+
+  const handleDiscard = () => {
+    handleErrorModal();
+    handleRefresh();
+  };
+
+  const errorModal = () => {
+    return (
+      <Modal
+        title=""
+        header={
+          <>
+            <Title headingLevel="h1" size={TitleSizes['2xl']}>
+              <InfoCircleIcon
+                className="pf-u-mr-sm"
+                color="var(--pf-global--danger-color--100)"
+              />
+              Error
+            </Title>
+          </>
+        }
+        variant={ModalVariant.small}
+        isOpen={errorModalOpen}
+        onClose={handleErrorModal}
+        actions={[
+          <Button
+            key="Retry"
+            variant="primary"
+            id="retry-button"
+            onClick={handleRetry}
+          >
+            Retry
+          </Button>,
+          <Button
+            key="Discard"
+            variant="link"
+            id="discard-button"
+            onClick={handleDiscard}
+          >
+            Discard
+          </Button>
+        ]}
+        aria-label="Error modal"
+        aria-labelledby="Error modal"
+      >
+        {variableError}
+      </Modal>
+    );
+  };
+
+  const updateVariablesButton = () => {
+    if (data.ProcessInstances[0].serviceUrl !== null) {
+      return (
+        <Button
+          variant="secondary"
+          id="save-button"
+          className="kogito-management-console--details__buttonMargin"
+          onClick={handleSave}
+          isDisabled={!displayLabel}
+        >
+          Save
+        </Button>
+      );
+    }
+  };
+
+  const refreshButton = () => {
+    return (
+      <Button
+        variant="plain"
+        onClick={() => {
+          handleRefresh();
+        }}
+        id="refresh-button"
+        aria-label={'Refresh list'}
+      >
+        <SyncIcon />
+      </Button>
     );
   };
   const abortButton = () => {
@@ -246,7 +440,11 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, {}, {}> &
                       <OverflowMenu breakpoint="lg">
                         <OverflowMenuContent isPersistent>
                           <OverflowMenuGroup groupType="button" isPersistent>
-                            {abortButton()}
+                            <>
+                              {updateVariablesButton()}
+                              {abortButton()}
+                              {refreshButton()}
+                            </>
                           </OverflowMenuGroup>
                         </OverflowMenuContent>
                       </OverflowMenu>
@@ -258,12 +456,22 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, {}, {}> &
                     <ProcessDetails data={data} from={currentPage} />
                   </GridItem>
                 )}
-                <GridItem>
-                  <ProcessDetailsProcessVariables data={data} />
-                </GridItem>
+                {Object.keys(updateJson).length > 0 && (
+                  <GridItem>
+                    <ProcessDetailsProcessVariables
+                      displayLabel={displayLabel}
+                      displaySuccess={displaySuccess}
+                      setUpdateJson={setUpdateJson}
+                      setDisplayLabel={setDisplayLabel}
+                      updateJson={updateJson}
+                    />
+                  </GridItem>
+                )}
                 <GridItem>
                   <ProcessDetailsTimeline data={data.ProcessInstances[0]} />
                 </GridItem>
+                {errorModal()}
+                {RenderConfirmationModal()}
               </Grid>
             ) : (
               <Card>
