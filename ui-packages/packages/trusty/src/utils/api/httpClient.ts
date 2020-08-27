@@ -1,7 +1,8 @@
 import axios, { AxiosRequestConfig, CancelTokenSource } from 'axios';
 
 export const httpClient = axios.create({
-  baseURL: process.env.KOGITO_TRUSTY_API_HTTP_URL,
+  // @ts-ignore
+  baseURL: window.TRUSTY_ENDPOINT || process.env.KOGITO_TRUSTY_API_HTTP_URL,
   timeout: 5000,
   headers: {}
 });
