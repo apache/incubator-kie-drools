@@ -34,7 +34,7 @@ public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLCompoundPredicate.class);
 
     private final BOOLEAN_OPERATOR booleanOperator;
-    private BinaryOperator<Boolean> operatorFunction;
+    protected BinaryOperator<Boolean> operatorFunction;
     protected List<KiePMMLPredicate> kiePMMLPredicates;
 
     protected KiePMMLCompoundPredicate(final String name, final List<KiePMMLExtension> extensions, final BOOLEAN_OPERATOR booleanOperator) {

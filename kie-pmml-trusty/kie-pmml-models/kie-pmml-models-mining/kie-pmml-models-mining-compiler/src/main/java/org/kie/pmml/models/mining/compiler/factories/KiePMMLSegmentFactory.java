@@ -147,7 +147,7 @@ public class KiePMMLSegmentFactory {
         final ConstructorDeclaration constructorDeclaration = segmentTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, segmentTemplate.getName())));
         KiePMMLPredicate predicate = getPredicate(segment.getPredicate(), dataDictionary);
         toReturn.putAll(getPredicateSourcesMap(predicate, packageName));
-        String predicateClassName = packageName + "." + predicate.getName();
+        String predicateClassName = packageName + "." +  getSanitizedClassName(predicate.getId());
         setConstructor(segment.getId(), className, constructorDeclaration, predicateClassName,  kiePMMLModelClass, segment.getWeight().doubleValue());
         toReturn.put(getFullClassName(cloneCU), cloneCU.toString());
         return toReturn;

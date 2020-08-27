@@ -34,6 +34,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
@@ -68,12 +69,14 @@ import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
 import org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilation;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getArray;
@@ -256,16 +259,16 @@ public class KiePMMLPredicateFactoryTest {
                 .withValue(24)
                 .build();
         Map<String, String> retrieved =  KiePMMLPredicateFactory.getPredicateSourcesMap(kiePMMLPredicate, packageName);
-        commonVerifySourceMap(retrieved, packageName, kiePMMLPredicate.getName(), 1);
+        commonVerifySourceMap(retrieved, packageName, getSanitizedClassName(kiePMMLPredicate.getId()), 1);
         kiePMMLPredicate = KiePMMLCompoundPredicate.builder(Collections.emptyList(), BOOLEAN_OPERATOR.OR).build();
         retrieved =  KiePMMLPredicateFactory.getPredicateSourcesMap(kiePMMLPredicate, packageName);
-        commonVerifySourceMap(retrieved, packageName, kiePMMLPredicate.getName(), 1);
+        commonVerifySourceMap(retrieved, packageName, getSanitizedClassName(kiePMMLPredicate.getId()), 1);
         kiePMMLPredicate = KiePMMLTruePredicate.builder(Collections.emptyList()).build();
         retrieved =  KiePMMLPredicateFactory.getPredicateSourcesMap(kiePMMLPredicate, packageName);
-        commonVerifySourceMap(retrieved, packageName, kiePMMLPredicate.getName(), 1);
+        commonVerifySourceMap(retrieved, packageName, getSanitizedClassName(kiePMMLPredicate.getId()), 1);
         kiePMMLPredicate = KiePMMLFalsePredicate.builder(Collections.emptyList()).build();
         retrieved =  KiePMMLPredicateFactory.getPredicateSourcesMap(kiePMMLPredicate, packageName);
-        commonVerifySourceMap(retrieved, packageName, kiePMMLPredicate.getName(), 1);
+        commonVerifySourceMap(retrieved, packageName, getSanitizedClassName(kiePMMLPredicate.getId()), 1);
     }
 
     @Test
@@ -277,7 +280,7 @@ public class KiePMMLPredicateFactoryTest {
                 .build();
         String packageName = "PACKAGENAME";
         final Map<String, String> retrieved =  KiePMMLPredicateFactory.getKiePMMLSimplePredicateSourcesMap(kiePMMLSimplePredicate, packageName);
-        commonVerifySourceMap(retrieved, packageName, kiePMMLSimplePredicate.getName(), 1);
+        commonVerifySourceMap(retrieved, packageName, getSanitizedClassName(kiePMMLSimplePredicate.getId()), 1);
     }
 
     @Test
@@ -295,7 +298,7 @@ public class KiePMMLPredicateFactoryTest {
                 .build();
         String packageName = "PACKAGENAME";
         final Map<String, String> retrieved =  KiePMMLPredicateFactory.getKiePMMLSimpleSetPredicateSourcesMap(kiePMMLSimpleSetPredicate, packageName);
-        commonVerifySourceMap(retrieved, packageName, kiePMMLSimpleSetPredicate.getName(), 1);
+        commonVerifySourceMap(retrieved, packageName, getSanitizedClassName(kiePMMLSimpleSetPredicate.getId()), 1);
     }
 
     @Test
@@ -324,7 +327,7 @@ public class KiePMMLPredicateFactoryTest {
                 .build();
         String packageName = "PACKAGENAME";
         final Map<String, String> retrieved =  KiePMMLPredicateFactory.getKiePMMLCompoundPredicateSourcesMap(kiePMMLCompoundPredicate, packageName);
-        commonVerifySourceMap(retrieved, packageName, kiePMMLCompoundPredicate.getName(), 4);
+        commonVerifySourceMap(retrieved, packageName, getSanitizedClassName(kiePMMLCompoundPredicate.getId()), 4);
     }
 
     @Test
@@ -332,7 +335,7 @@ public class KiePMMLPredicateFactoryTest {
         final KiePMMLTruePredicate kiePMMLTruePredicate = KiePMMLTruePredicate.builder(Collections.emptyList()).build();
         String packageName = "PACKAGENAME";
         final Map<String, String> retrieved =  KiePMMLPredicateFactory.getKiePMMLTruePredicateSourcesMap(kiePMMLTruePredicate, packageName);
-        commonVerifySourceMap(retrieved, packageName, kiePMMLTruePredicate.getName(), 1);
+        commonVerifySourceMap(retrieved, packageName, getSanitizedClassName(kiePMMLTruePredicate.getId()), 1);
     }
 
     @Test
@@ -340,7 +343,7 @@ public class KiePMMLPredicateFactoryTest {
         final KiePMMLFalsePredicate kiePMMLFalsePredicate = KiePMMLFalsePredicate.builder(Collections.emptyList()).build();
         String packageName = "PACKAGENAME";
         final Map<String, String> retrieved =  KiePMMLPredicateFactory.getKiePMMLFalsePredicateSourcesMap(kiePMMLFalsePredicate, packageName);
-        commonVerifySourceMap(retrieved, packageName, kiePMMLFalsePredicate.getName(), 1);
+        commonVerifySourceMap(retrieved, packageName, getSanitizedClassName(kiePMMLFalsePredicate.getId()), 1);
     }
 
     @Test
@@ -442,6 +445,8 @@ public class KiePMMLPredicateFactoryTest {
         superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", predicateName)));
         superInvocationExpressionsMap.put(2, new NameExpr(booleanOperator.getClass().getCanonicalName() + "." + booleanOperator.name()));
         Map<String, Expression> assignExpressionMap = new HashMap<>();
+        Expression expression = parseExpression("(aBoolean, aBoolean2) -> aBoolean != null ? aBoolean || aBoolean2 : aBoolean2");
+        assignExpressionMap.put("operatorFunction", expression);
         ClassOrInterfaceType kiePMMLSegmentClass = parseClassOrInterfaceType(ArrayList.class.getName());
         ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
         objectCreationExpr.setType(kiePMMLSegmentClass);
@@ -477,6 +482,8 @@ public class KiePMMLPredicateFactoryTest {
         superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", predicateName)));
         superInvocationExpressionsMap.put(2, new NameExpr(booleanOperator.getClass().getCanonicalName() + "." + booleanOperator.name()));
         assignExpressionMap = new HashMap<>();
+        expression = parseExpression("(aBoolean, aBoolean2) -> aBoolean != null ? aBoolean && aBoolean2 : aBoolean2");
+        assignExpressionMap.put("operatorFunction", expression);
         assignExpressionMap.put("kiePMMLPredicates", objectCreationExpr);
         commonEvaluateConstructor(constructorDeclaration, generatedClassName, superInvocationExpressionsMap, assignExpressionMap);
     }

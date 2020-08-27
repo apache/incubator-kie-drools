@@ -304,4 +304,16 @@ public class CommonCodegenUtils {
                 .map(statement -> (ExplicitConstructorInvocationStmt) statement)
                 .findFirst();
     }
+
+    /**
+     * Return an <code>Optional&lt;MethodDeclaration&gt;</code> with the <b>first</b> method <b>methodName</b> from the given <code>ClassOrInterfaceDeclaration</code>
+     * @param classOrInterfaceDeclaration
+     * @param methodName
+     * @return <code>Optional&lt;MethodDeclaration&gt;</code> with the first found <code>MethodDeclaration</code>, or <code>Optional.empty()</code> if no match
+     * has been found
+     */
+    public static Optional<MethodDeclaration> getMethodDeclaration(final ClassOrInterfaceDeclaration classOrInterfaceDeclaration, final String methodName) {
+        final List<MethodDeclaration> assignExprs = classOrInterfaceDeclaration.getMethodsByName(methodName);
+        return assignExprs.isEmpty() ? Optional.empty() : Optional.of(assignExprs.get(0));
+    }
 }
