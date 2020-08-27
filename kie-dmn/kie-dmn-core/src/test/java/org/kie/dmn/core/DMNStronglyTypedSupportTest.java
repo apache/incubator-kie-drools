@@ -75,7 +75,7 @@ public class DMNStronglyTypedSupportTest extends BaseVariantTest {
         // DROOLS-1569
         final DMNRuntime runtime = createRuntime("DMNInputDataNodeTypeTest.dmn", this.getClass());
         final String MODEL_NAMESPACE = "http://www.trisotech.com/definitions/_17396034-163a-48aa-9a7f-c6eb17f9cc6c";
-        final String FEEL_NAMESPACE = "http://www.omg.org/spec/FEEL/20140401";
+        final String FEEL_NAMESPACE = org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_FEEL;
         final DMNModel dmnModel = runtime.getModel(MODEL_NAMESPACE, "DMNInputDataNodeTypeTest");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));

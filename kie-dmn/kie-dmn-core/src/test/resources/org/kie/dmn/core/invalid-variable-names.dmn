@@ -14,55 +14,65 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<definitions id="0001-input-data-string" name="0001-input-data-string"
-	namespace="https://github.com/kiegroup/kie-dmn"
-	xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-	xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
-	<itemDefinition name="Person)" id="_person">
-		<itemComponent name="not old">
-			<typeRef>feel:boolean</typeRef>
-		</itemComponent>
-	</itemDefinition>
-	<decision name="Monkeys in the jungle" id="d_NameWithInKeyword">
-		<variable name="Monkeys in the jungle" typeRef="feel:string"/>
-		<informationRequirement>
-			<requiredInput href="#i_FullName"/>
-		</informationRequirement>
-		<context>
-			<contextEntry>
-				<variable name="# foo bar"/>
-				<literalExpression>
-					<text>"Hello " + Full Name</text>
-				</literalExpression>
-			</contextEntry>
-			<contextEntry>
-				<variable name="my ^ function" typeRef="feel:number"/>
-				<functionDefinition id="_mf">
-					<formalParameter name="some number" id="_some_param"/>
-					<literalExpression><text>some number</text></literalExpression>
-				</functionDefinition>
-			</contextEntry>
-		</context>
-	</decision>
-	<decision name="Relation with invalid names" id="_relation">
-		<variable name="Relation with invalid names"/>
-		<relation>
-			<column name="Foo # bar" typeRef="feel:string" id="_fff"/>
-			<column name="Baz - this is valid" typeRef="feel:number"/>
-			<row>
-				<literalExpression><text>"x"</text></literalExpression>
-				<literalExpression><text>100</text></literalExpression>
-			</row>
-		</relation>
-	</decision>
-	<inputData name="Full Name" id="i_FullName">
-		<variable name="Full Name" typeRef="feel:string"/>
-	</inputData>
-	<inputData name="Sales (%)" id="i_InvalidSymbol">
-		<variable name="Sales (%)" typeRef="feel:string"/>
-	</inputData>
-	<inputData name="some people" id="i_somekeyword">
-		<variable name="some people" typeRef="feel:string"/>
-	</inputData>
-</definitions>
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      id="0001-input-data-string"
+                      name="0001-input-data-string"
+                      namespace="https://github.com/kiegroup/kie-dmn">
+   <semantic:itemDefinition name="Person)" id="_person">
+      <semantic:itemComponent name="not old">
+         <semantic:typeRef>boolean</semantic:typeRef>
+      </semantic:itemComponent>
+   </semantic:itemDefinition>
+   <semantic:decision name="Monkeys in the jungle" id="d_NameWithInKeyword">
+      <semantic:variable name="Monkeys in the jungle" typeRef="string"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#i_FullName"/>
+      </semantic:informationRequirement>
+      <semantic:context>
+         <semantic:contextEntry>
+            <semantic:variable name="# foo bar"/>
+            <semantic:literalExpression>
+               <semantic:text>"Hello " + Full Name</semantic:text>
+            </semantic:literalExpression>
+         </semantic:contextEntry>
+         <semantic:contextEntry>
+            <semantic:variable name="my ^ function" typeRef="number"/>
+            <semantic:functionDefinition id="_mf">
+               <semantic:formalParameter name="some number" id="_some_param"/>
+               <semantic:literalExpression>
+                  <semantic:text>some number</semantic:text>
+               </semantic:literalExpression>
+            </semantic:functionDefinition>
+         </semantic:contextEntry>
+      </semantic:context>
+   </semantic:decision>
+   <semantic:decision name="Relation with invalid names" id="_relation">
+      <semantic:variable name="Relation with invalid names"/>
+      <semantic:relation>
+         <semantic:column name="Foo # bar" typeRef="string" id="_fff"/>
+         <semantic:column name="Baz - this is valid" typeRef="number"/>
+         <semantic:row>
+            <semantic:literalExpression>
+               <semantic:text>"x"</semantic:text>
+            </semantic:literalExpression>
+            <semantic:literalExpression>
+               <semantic:text>100</semantic:text>
+            </semantic:literalExpression>
+         </semantic:row>
+      </semantic:relation>
+   </semantic:decision>
+   <semantic:inputData name="Full Name" id="i_FullName">
+      <semantic:variable name="Full Name" typeRef="string"/>
+   </semantic:inputData>
+   <semantic:inputData name="Sales (%)" id="i_InvalidSymbol">
+      <semantic:variable name="Sales (%)" typeRef="string"/>
+   </semantic:inputData>
+   <semantic:inputData name="some people" id="i_somekeyword">
+      <semantic:variable name="some people" typeRef="string"/>
+   </semantic:inputData>
+</semantic:definitions>

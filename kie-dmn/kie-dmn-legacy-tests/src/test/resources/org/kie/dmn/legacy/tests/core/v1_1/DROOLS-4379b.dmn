@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:rss="http://purl.org/rss/2.0/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:trisofeed="http://trisotech.com/feed" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"             xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:openapi="https://openapis.org/omg/extension/1.0" xmlns="http://www.trisotech.com/definitions/_95436b7a-7268-4713-bf84-58bff10407b4" id="_95436b7a-7268-4713-bf84-58bff10407b4" name="Dessin 1" namespace="http://www.trisotech.com/definitions/_95436b7a-7268-4713-bf84-58bff10407b4" exporter="DMN Modeler" exporterVersion="6.2.6.2" triso:logoChoice="Default">
+    <semantic:itemDefinition isCollection="true" name="results" label="results">
+        <semantic:typeRef>string</semantic:typeRef>
+        <semantic:allowedValues triso:constraintsType="enumeration">
+            <semantic:text>"r1","r2","r3","r4","r5","r6"</semantic:text>
+        </semantic:allowedValues>
+    </semantic:itemDefinition>
+    <semantic:inputData id="_8a4ecfe7-4ad7-4e5f-a420-8e4587843ba4" name="test">
+        <semantic:variable name="test" id="_72d5b8bd-1e26-4869-b0af-64eab7885b51" typeRef="results"/>
+    </semantic:inputData>
+    <semantic:decision id="_22f84b3d-ab1b-4d83-878e-1fe293519d7a" name="D4" triso:useOutputTypeAsAnswer="false">
+        <semantic:variable name="D4" id="_02bce604-cb68-49f5-8c86-6269437b348f" typeRef="Any"/>
+        <semantic:informationRequirement id="_f9a07e00-e8e3-4446-a4d5-86e620217c57">
+            <semantic:requiredInput href="#_8a4ecfe7-4ad7-4e5f-a420-8e4587843ba4"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_b55307d4-0b20-4e23-a4f2-0bc2da1d0d2b" hitPolicy="UNIQUE" outputLabel="D4" typeRef="Any" triso:expressionId="_a1d2bc01-2e24-485c-926d-7cfe739dc098">
+            <semantic:input id="_bc286ddb-420a-4272-9bc6-cee6af5f86a5">
+                <semantic:inputExpression typeRef="results">
+                    <semantic:text>test</semantic:text>
+                </semantic:inputExpression>
+                <semantic:inputValues triso:constraintsType="enumeration">
+                    <semantic:text>"r1","r2","r3","r4","r5","r6"</semantic:text>
+                </semantic:inputValues>
+            </semantic:input>
+            <semantic:output id="_8367f449-62ec-4980-8dc3-caff0356678c" triso:allowNull="true"/>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_15525282-9fd6-4ef9-a4d6-13f930dd674e">
+                <semantic:inputEntry id="_d49da001-52fb-40d2-8e7a-61a6a264b1cf">
+                    <semantic:text>list contains(?, "r1")</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_d74245fc-c04a-4586-bbc8-8e8e0fc1157b">
+                    <semantic:text>"Contains r1"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+    <semantic:decision id="_138e8c68-685a-4241-a82b-a9b9d9a1db6b" name="D5">
+        <semantic:variable name="D5" id="_52bf6943-cb88-435c-8bdc-436826c08117" typeRef="results"/>
+        <semantic:informationRequirement id="_288e0927-651a-4d01-94ee-60e29ca40618">
+            <semantic:requiredInput href="#_8a4ecfe7-4ad7-4e5f-a420-8e4587843ba4"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_5944340c-947d-49e2-8890-ce3fea94d9dd" hitPolicy="UNIQUE" outputLabel="D5" typeRef="results" triso:expressionId="_befa441f-be57-478f-b1d6-3a5b9d717e17">
+            <semantic:input id="_b16f06ff-bcec-49f3-be67-045390959f05">
+                <semantic:inputExpression typeRef="results">
+                    <semantic:text>test</semantic:text>
+                </semantic:inputExpression>
+                <semantic:inputValues triso:constraintsType="enumeration">
+                    <semantic:text>"r1","r2","r3","r4","r5","r6"</semantic:text>
+                </semantic:inputValues>
+            </semantic:input>
+            <semantic:output id="_108babeb-2d5d-41a0-ba52-7e64e5dfeb50" triso:allowNull="true">
+                <semantic:outputValues triso:constraintsType="enumeration">
+                    <semantic:text>"r1","r2","r3","r4","r5","r6",null</semantic:text>
+                </semantic:outputValues>
+            </semantic:output>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_673630df-574d-4470-a37f-5ea721f592ef">
+                <semantic:inputEntry id="_f421c08e-4f17-4695-bfce-e03ec6d2df25">
+                    <semantic:text>list contains(?, "r1")</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_91ad3430-1509-41d1-9c60-cb1a93d59dd4">
+                    <semantic:text>["r1", "r2"]</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+</semantic:definitions>

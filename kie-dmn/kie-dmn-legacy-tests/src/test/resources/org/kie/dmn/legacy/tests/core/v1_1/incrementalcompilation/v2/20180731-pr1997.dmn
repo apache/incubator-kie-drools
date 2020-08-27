@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_7a39d775-bce9-45e3-aa3b-147d6f0028c7" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.3" id="_7a39d775-bce9-45e3-aa3b-147d6f0028c7" name="20180731-pr1997" namespace="http://www.trisotech.com/dmn/definitions/_7a39d775-bce9-45e3-aa3b-147d6f0028c7" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements/>
+  <dmn11:itemDefinition label="tPerson" name="tPerson">
+    <dmn11:itemComponent id="_f9e6ab7c-00f0-4224-888b-54549abf8893" name="first name">
+      <dmn11:typeRef>feel:string</dmn11:typeRef>
+    </dmn11:itemComponent>
+    <dmn11:itemComponent id="_37ad35d4-d556-4759-8f73-a817c21d9678" name="last name">
+      <dmn11:typeRef>feel:string</dmn11:typeRef>
+    </dmn11:itemComponent>
+    <dmn11:itemComponent id="_eaed9437-6f4a-4ad3-8e2b-b94bb61ef25c" name="age">
+      <dmn11:typeRef>feel:number</dmn11:typeRef>
+    </dmn11:itemComponent>
+  </dmn11:itemDefinition>
+  <dmn11:inputData id="_adc0f4e2-5a03-4538-a7ee-109465118053" name="a Person">
+    <dmn11:variable id="_566ce98f-30a8-4617-8cde-d1d5dc2a8eb2" name="a Person" typeRef="tPerson"/>
+  </dmn11:inputData>
+  <dmn11:decision id="_2d231831-8c74-4aea-a471-e5b381f76d23" name="Say hello and age">
+    <dmn11:variable id="_ecbbe939-2d2b-4c73-840d-99b795c9a458" name="Say hello and age" typeRef="feel:string"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#_adc0f4e2-5a03-4538-a7ee-109465118053"/>
+    </dmn11:informationRequirement>
+    <dmn11:literalExpression id="_f52f3ec5-a514-4890-a514-f49d61f044b0" typeRef="feel:string">
+      <dmn11:text>"UPGRADED Hello " + a Person.first name + " " + a Person.last name + ", your age is: " + string ( a Person.age )</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+</dmn11:definitions>

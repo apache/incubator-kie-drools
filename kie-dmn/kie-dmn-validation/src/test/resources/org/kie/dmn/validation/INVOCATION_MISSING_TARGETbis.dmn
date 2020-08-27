@@ -14,36 +14,42 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<definitions id="INVOCATION_MISSING_TARGETbis" name="INVOCATION_MISSING_TARGETbis"
-    namespace="https://github.com/kiegroup/kie-dmn"
-    xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-    xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <decision id="d1" name="Decision1">
-        <variable name="Decision1"/>
-        <invocation>
-            <literalExpression>
-                <text>"Decision"+"2"</text> <!-- TEST -->
-            </literalExpression>
-            <binding>
-                <parameter id="p1" name="Parameter1"/>
-                <literalExpression>
-                    <text>Parameter1</text>
-                </literalExpression>
-            </binding>
-        </invocation>
-    </decision>
-    <businessKnowledgeModel id="bkm1" name="Decision2">
-        <encapsulatedLogic>
-            <formalParameter name="Parameter1" typeRef="feel:string"/>
-            <context>
-                <contextEntry>
-                    <literalExpression>
-                        <text>"Hello "+Parameter1</text>
-                    </literalExpression>
-                </contextEntry>
-            </context>
-        </encapsulatedLogic>
-        <variable name="Decision2" typeRef="feel:string"/>
-    </businessKnowledgeModel>
-</definitions>
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      id="INVOCATION_MISSING_TARGETbis"
+                      name="INVOCATION_MISSING_TARGETbis"
+                      namespace="https://github.com/kiegroup/kie-dmn">
+   <semantic:decision id="d1" name="Decision1">
+      <semantic:variable name="Decision1"/>
+      <semantic:invocation>
+         <semantic:literalExpression>
+            <semantic:text>"Decision"+"2"</semantic:text>
+            <!-- TEST -->
+         </semantic:literalExpression>
+         <semantic:binding>
+            <semantic:parameter id="p1" name="Parameter1"/>
+            <semantic:literalExpression>
+               <semantic:text>Parameter1</semantic:text>
+            </semantic:literalExpression>
+         </semantic:binding>
+      </semantic:invocation>
+   </semantic:decision>
+   <semantic:businessKnowledgeModel id="bkm1" name="Decision2">
+      <semantic:variable name="Decision2" typeRef="string"/>
+      <semantic:encapsulatedLogic>
+         <semantic:formalParameter name="Parameter1" typeRef="string"/>
+         <semantic:context>
+            <semantic:contextEntry>
+               <semantic:literalExpression>
+                  <semantic:text>"Hello "+Parameter1</semantic:text>
+               </semantic:literalExpression>
+            </semantic:contextEntry>
+         </semantic:context>
+      </semantic:encapsulatedLogic>
+   </semantic:businessKnowledgeModel>
+</semantic:definitions>

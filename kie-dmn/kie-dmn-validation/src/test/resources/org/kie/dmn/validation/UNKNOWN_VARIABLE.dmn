@@ -14,19 +14,27 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-  
-<definitions id="NAME_INVALID" name="NAME_INVALID"
-    namespace="https://www.drools.org/kie-dmn/definitions"
-    xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-    xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <inputData id="_e026e26d-7806-45c8-811e-a4408eee8a31" name="Annual Salary">
-    <variable id="_20d1791d-7df5-4579-b6af-ac235ec38c9e" name="Annual Salary" typeRef="feel:number"/>
-  </inputData>
-  <decision id="_1f54fd51-6805-4280-b576-607450f85edd" name="Monthly Salary">
-    <variable id="_dd662d27-7896-42cb-9d14-bd74203bdbec" name="Monthly Salary" typeRef="feel:number"/>
-    <literalExpression id="_899864a9-2fdb-4082-a0e4-7f334530dd99">
-      <text>Annual Salary / 12</text>
-    </literalExpression>
-  </decision>
-</definitions>
+<semantic:definitions xmlns="https://www.drools.org/kie-dmn/definitions"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      id="NAME_INVALID"
+                      name="NAME_INVALID"
+                      namespace="https://www.drools.org/kie-dmn/definitions">
+   <semantic:inputData id="_e026e26d-7806-45c8-811e-a4408eee8a31" name="Annual Salary">
+      <semantic:variable id="_20d1791d-7df5-4579-b6af-ac235ec38c9e"
+                         name="Annual Salary"
+                         typeRef="number"/>
+   </semantic:inputData>
+   <semantic:decision id="_1f54fd51-6805-4280-b576-607450f85edd" name="Monthly Salary">
+      <semantic:variable id="_dd662d27-7896-42cb-9d14-bd74203bdbec"
+                         name="Monthly Salary"
+                         typeRef="number"/>
+      <semantic:literalExpression id="_899864a9-2fdb-4082-a0e4-7f334530dd99">
+         <semantic:text>Annual Salary / 12</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+</semantic:definitions>

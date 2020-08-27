@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+                      xmlns="http://www.trisotech.com/dmn/definitions/_15be17d6-e30e-4c43-9fc8-1b3c271edcd8"
+                      xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      xmlns:trisofeed="http://trisotech.com/feed"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler" exporterVersion="6.0.5.2" id="_15be17d6-e30e-4c43-9fc8-1b3c271edcd8" name="Drawing 1"
+                      namespace="http://www.trisotech.com/dmn/definitions/_15be17d6-e30e-4c43-9fc8-1b3c271edcd8" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:inputData id="_f67acc2e-179f-470d-b876-55eba7ec24ed" name="my name">
+    <semantic:variable id="_4c063cd5-a1c9-4c59-ab5d-6f655cfd9a9c" name="my name" typeRef="feel:string"/>
+  </semantic:inputData>
+  <semantic:decision id="_c45fd3c0-bbba-4b5d-a8d3-8149af102c65" name="Greet name">
+    <semantic:variable id="_2aea14dc-9adc-4f71-9347-7eb5724348cf" name="Greet name" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_f67acc2e-179f-470d-b876-55eba7ec24ed"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_c5b72606-7c06-4d64-9d0b-11d7a161d08b">
+      <semantic:text>"Hello "+ my name</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+</semantic:definitions>

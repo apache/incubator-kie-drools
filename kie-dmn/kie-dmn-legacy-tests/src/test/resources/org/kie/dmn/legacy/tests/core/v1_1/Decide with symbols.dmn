@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_79b16a68-013b-484c-98f5-49ff77808800" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.3" id="_79b16a68-013b-484c-98f5-49ff77808800" name="Decide with symbols" namespace="http://www.trisotech.com/dmn/definitions/_79b16a68-013b-484c-98f5-49ff77808800" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements/>
+  <dmn11:inputData id="_4a990535-4682-4bd7-84f2-39a40a53f36a" name="Person age">
+    <dmn11:variable id="_347588d0-c39e-46e4-bead-0c56c6711fcb" name="Person age" typeRef="feel:number"/>
+  </dmn11:inputData>
+  <dmn11:inputData id="_1f82bee7-f868-4cc1-aed3-5797dc22763d" name="Person name">
+    <dmn11:variable id="_f34b14ba-05e8-4b10-b7f7-bb1d3a60e78e" name="Person name" typeRef="feel:string"/>
+  </dmn11:inputData>
+  <dmn11:decision id="_0244d0d8-aece-4e75-b84d-32ff3efe0d21" name="Decide with symbol">
+    <dmn11:variable id="_bc7b2bb7-7d99-46cb-970f-9ea02660098e" name="Decide with symbol" typeRef="feel:string"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#_4a990535-4682-4bd7-84f2-39a40a53f36a"/>
+    </dmn11:informationRequirement>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#_1f82bee7-f868-4cc1-aed3-5797dc22763d"/>
+    </dmn11:informationRequirement>
+    <dmn11:decisionTable hitPolicy="UNIQUE" id="_1d807eb8-59d2-4252-9112-a40ed2f134ad" outputLabel="Decide with symbol" typeRef="feel:string">
+      <dmn11:input id="_a2db62ba-f4d6-453a-bacd-52fa93329af4">
+        <dmn11:inputExpression typeRef="feel:number">
+          <dmn11:text>Person age</dmn11:text>
+        </dmn11:inputExpression>
+      </dmn11:input>
+      <dmn11:output id="_34b1b14c-c2d4-49e7-ade8-3fe68040007a"/>
+      <dmn11:rule id="_10078aa7-0ddb-4bc3-87b1-c97bc4ee5b67">
+        <dmn11:inputEntry id="_2bac0960-dc37-4387-9a77-8045d1dc1818">
+          <dmn11:text>&lt;18</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:outputEntry id="_90e9b2ce-9803-4823-9994-457afd27679c">
+          <dmn11:text>"not allowed"</dmn11:text>
+        </dmn11:outputEntry>
+      </dmn11:rule>
+      <dmn11:rule id="_7a50c891-04aa-44df-8426-325492a6fd72">
+        <dmn11:inputEntry id="_764503b8-7d4e-4acd-9bdb-44646318ecbc">
+          <dmn11:text>&gt;=18</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:outputEntry id="_7174d198-6856-48d3-ad50-14858b822b58">
+          <dmn11:text>"Hello, "+Person name</dmn11:text>
+        </dmn11:outputEntry>
+      </dmn11:rule>
+    </dmn11:decisionTable>
+  </dmn11:decision>
+</dmn11:definitions>

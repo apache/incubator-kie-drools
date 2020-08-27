@@ -1,73 +1,82 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_188d6caf-a355-49b5-a692-bd6ce713da08" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-                      xmlns:rss="http://purl.org/rss/2.0/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
-                      exporter="DMN Modeler" exporterVersion="5.1.0.201612161330" id="_0019_flight_rebooking"
-                      name="0019-flight-rebooking" namespace="http://www.trisotech.com/dmn/definitions/_188d6caf-a355-49b5-a692-bd6ce713da08"
-                      triso:logoChoice="Default">
-  <semantic:extensionElements>
-    <rss:rss version="2.0">
-      <rss:channel/>
-    </rss:rss>
-  </semantic:extensionElements>
-  <semantic:itemDefinition label="tFlight" name="tFlight">
-    <semantic:itemComponent id="_tFlight_Flight" name="Flight Number">
-      <semantic:typeRef>feel:string</semantic:typeRef>
-    </semantic:itemComponent>
-    <semantic:itemComponent id="_tFlight_From" name="From">
-      <semantic:typeRef>feel:string</semantic:typeRef>
-    </semantic:itemComponent>
-    <semantic:itemComponent id="_tFlight_To" name="To">
-      <semantic:typeRef>feel:string</semantic:typeRef>
-    </semantic:itemComponent>
-    <semantic:itemComponent id="_tFlight_Dep" name="Departure">
-      <semantic:typeRef>feel:dateTime</semantic:typeRef>
-    </semantic:itemComponent>
-    <semantic:itemComponent id="_tFlight_Arr" name="Arrival">
-      <semantic:typeRef>feel:dateTime</semantic:typeRef>
-    </semantic:itemComponent>
-    <semantic:itemComponent id="_tFlight_Capacity" name="Capacity">
-      <semantic:typeRef>feel:number</semantic:typeRef>
-    </semantic:itemComponent>
-    <semantic:itemComponent id="_tFlight_Status" name="Status">
-      <semantic:typeRef>feel:string</semantic:typeRef>
-    </semantic:itemComponent>
-  </semantic:itemDefinition>
-  <semantic:itemDefinition isCollection="true" label="tFlightTable" name="tFlightTable">
-    <semantic:typeRef>tFlight</semantic:typeRef>
-  </semantic:itemDefinition>
-  <semantic:itemDefinition label="tPassenger" name="tPassenger">
-    <semantic:itemComponent id="_tPassenger_Name" name="Name">
-      <semantic:typeRef>feel:string</semantic:typeRef>
-    </semantic:itemComponent>
-    <semantic:itemComponent id="_tPassenger_Status" name="Status">
-      <semantic:typeRef>feel:string</semantic:typeRef>
-    </semantic:itemComponent>
-    <semantic:itemComponent id="_tPassenger_Miles" name="Miles">
-      <semantic:typeRef>feel:number</semantic:typeRef>
-    </semantic:itemComponent>
-    <semantic:itemComponent id="_tPassenger_Flight" name="Flight Number">
-      <semantic:typeRef>feel:string</semantic:typeRef>
-    </semantic:itemComponent>
-  </semantic:itemDefinition>
-  <semantic:itemDefinition isCollection="true" label="tPassengerTable" name="tPassengerTable">
-    <semantic:typeRef>tPassenger</semantic:typeRef>
-  </semantic:itemDefinition>
-  <semantic:inputData id="i_Flight_List" name="Flight List">
-    <semantic:variable id="_862d74ad-a21a-4785-a631-6cbbf733f658" name="Flight List" typeRef="tFlightTable"/>
-  </semantic:inputData>
-  <semantic:inputData id="i_Passenger_List" name="Passenger List">
-    <semantic:variable id="_1968486f-47f8-4a41-8374-297ab08c60d5" name="Passenger List" typeRef="tPassengerTable"/>
-  </semantic:inputData>
-  <semantic:decision id="d_RebookedPassengers" name="Rebooked Passengers">
-    <semantic:variable id="_7fb7eb92-a803-4685-856d-e729971eb268" name="Rebooked Passengers" typeRef="tPassengerTable"/>
-    <semantic:informationRequirement>
-      <semantic:requiredInput href="#i_Passenger_List"/>
-    </semantic:informationRequirement>
-    <semantic:informationRequirement>
-      <semantic:requiredInput href="#i_Flight_List"/>
-    </semantic:informationRequirement>
-    <semantic:literalExpression expressionLanguage="http://www.omg.org/spec/DMN/uninterpreted/20140801">
-      <semantic:text>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/dmn/definitions/_188d6caf-a355-49b5-a692-bd6ce713da08"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:rss="http://purl.org/rss/2.0/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      exporter="DMN Modeler"
+                      exporterVersion="5.1.0.201612161330"
+                      id="_0019_flight_rebooking"
+                      name="0019-flight-rebooking"
+                      namespace="http://www.trisotech.com/dmn/definitions/_188d6caf-a355-49b5-a692-bd6ce713da08">
+   <semantic:extensionElements/>
+   <semantic:itemDefinition label="tFlight" name="tFlight">
+      <semantic:itemComponent id="_tFlight_Flight" name="Flight Number">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_tFlight_From" name="From">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_tFlight_To" name="To">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_tFlight_Dep" name="Departure">
+         <semantic:typeRef>dateTime</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_tFlight_Arr" name="Arrival">
+         <semantic:typeRef>dateTime</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_tFlight_Capacity" name="Capacity">
+         <semantic:typeRef>number</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_tFlight_Status" name="Status">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+   </semantic:itemDefinition>
+   <semantic:itemDefinition isCollection="true" label="tFlightTable" name="tFlightTable">
+      <semantic:typeRef>tFlight</semantic:typeRef>
+   </semantic:itemDefinition>
+   <semantic:itemDefinition label="tPassenger" name="tPassenger">
+      <semantic:itemComponent id="_tPassenger_Name" name="Name">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_tPassenger_Status" name="Status">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_tPassenger_Miles" name="Miles">
+         <semantic:typeRef>number</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_tPassenger_Flight" name="Flight Number">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+   </semantic:itemDefinition>
+   <semantic:itemDefinition isCollection="true" label="tPassengerTable" name="tPassengerTable">
+      <semantic:typeRef>tPassenger</semantic:typeRef>
+   </semantic:itemDefinition>
+   <semantic:inputData id="i_Flight_List" name="Flight List">
+      <semantic:variable id="_862d74ad-a21a-4785-a631-6cbbf733f658"
+                         name="Flight List"
+                         typeRef="tFlightTable"/>
+   </semantic:inputData>
+   <semantic:inputData id="i_Passenger_List" name="Passenger List">
+      <semantic:variable id="_1968486f-47f8-4a41-8374-297ab08c60d5"
+                         name="Passenger List"
+                         typeRef="tPassengerTable"/>
+   </semantic:inputData>
+   <semantic:decision id="d_RebookedPassengers" name="Rebooked Passengers">
+      <semantic:variable id="_7fb7eb92-a803-4685-856d-e729971eb268"
+                         name="Rebooked Passengers"
+                         typeRef="tPassengerTable"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#i_Passenger_List"/>
+      </semantic:informationRequirement>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#i_Flight_List"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression expressionLanguage="http://www.omg.org/spec/DMN/uninterpreted/20140801">
+         <semantic:text>
         {
         // creating the status priority decision table:
         status priority : decision table(
@@ -118,6 +127,6 @@
         result : rebooked flights( Prioritized Waiting List, [], Flight List )
         }.result
       </semantic:text>
-    </semantic:literalExpression>
-  </semantic:decision>
+      </semantic:literalExpression>
+   </semantic:decision>
 </semantic:definitions>

@@ -1,100 +1,120 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_40fdbc2c-a631-4ba4-8435-17571b5d1942" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.7.2" id="_40fdbc2c-a631-4ba4-8435-17571b5d1942" name="Drawing 1" namespace="http://www.trisotech.com/dmn/definitions/_40fdbc2c-a631-4ba4-8435-17571b5d1942" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
-    <dmn11:extensionElements>
-        <tc:testCases>
-            <tc:testCase id="_f1cbc9c0-0d5b-4451-a77b-ca4a49d952fd" name="Test case 1">
-                <tc:inputNode name="product">
-                    <tc:component name="name">
-                        <tc:value xsi:type="xsd:string">Product1</tc:value>
-                    </tc:component>
-                    <tc:component name="type">
-                        <tc:value xsi:type="xsd:double">1</tc:value>
-                    </tc:component>
-                </tc:inputNode>
-                <tc:resultNode name="TestDecision">
-                    <tc:expected>
-                        <tc:value xsi:type="xsd:string">Unrecognized product type</tc:value>
-                    </tc:expected>
-                </tc:resultNode>
-            </tc:testCase>
-            <tc:testCase id="_e1637c3c-b226-467d-b440-839752a96ca9" name="Test case 2">
-                <tc:inputNode name="product">
-                    <tc:component name="name">
-                        <tc:value xsi:type="xsd:string">Product2</tc:value>
-                    </tc:component>
-                    <tc:component name="type">
-                        <tc:value xsi:type="xsd:double">2</tc:value>
-                    </tc:component>
-                </tc:inputNode>
-                <tc:resultNode name="TestDecision">
-                    <tc:expected>
-                        <tc:value xsi:type="xsd:string">Unrecognized product type</tc:value>
-                    </tc:expected>
-                </tc:resultNode>
-            </tc:testCase>
-        </tc:testCases>
-    </dmn11:extensionElements>
-    <dmn11:itemDefinition label="product" name="product">
-        <dmn11:itemComponent id="_4423c551-9d67-43cd-8dac-36afaf14e29e" name="name">
-            <dmn11:typeRef>feel:string</dmn11:typeRef>
-        </dmn11:itemComponent>
-        <dmn11:itemComponent id="_c7719e0a-5f0e-4d24-b8ca-7ceef0e7f96b" name="type">
-            <dmn11:typeRef>feel:number</dmn11:typeRef>
-        </dmn11:itemComponent>
-    </dmn11:itemDefinition>
-    <dmn11:decision id="_c4c8238a-583a-408c-875a-1e1ec689a5d0" name="TestDecision">
-        <dmn11:variable id="_d67ed6de-cef8-42e3-b21b-f156d7f96639" name="TestDecision" typeRef="feel:string"/>
-        <dmn11:informationRequirement>
-            <dmn11:requiredInput href="#_4df3d030-f507-43d5-84de-bb7e2e457958"/>
-        </dmn11:informationRequirement>
-        <dmn11:decisionTable hitPolicy="FIRST" id="_b1f0708d-e61a-4e59-8775-e46dc95f6943" outputLabel="TestDecision">
-            <dmn11:input id="_5bda3ca9-9f02-48c0-b949-cba34add7685">
-                <dmn11:inputExpression typeRef="feel:string">
-                    <dmn11:text>product.name</dmn11:text>
-                </dmn11:inputExpression>
-            </dmn11:input>
-            <dmn11:input id="_e9d7d8cf-8b6a-42d8-b402-3c0e4c243ddb">
-                <dmn11:inputExpression typeRef="feel:number">
-                    <dmn11:text>product.type</dmn11:text>
-                </dmn11:inputExpression>
-            </dmn11:input>
-            <dmn11:output id="_7fc22f74-d7ee-4a25-8590-879e8f078ca4"/>
-            <dmn11:rule id="_3012276d-5a7a-41de-8032-5aa4bb06d5cc">
-                <dmn11:inputEntry id="_a478cf6b-ad24-4404-9d1f-b7556555018c">
-                    <dmn11:text>"Product1"</dmn11:text>
-                </dmn11:inputEntry>
-                <dmn11:inputEntry id="_8fe142a7-999e-401b-b713-5f4e34e22f2f">
-                    <dmn11:text>1</dmn11:text>
-                </dmn11:inputEntry>
-                <dmn11:outputEntry id="_1f13bb59-7fd0-408b-91f4-592e9d5937d2">
-                    <dmn11:text>"This is product 1"</dmn11:text>
-                </dmn11:outputEntry>
-            </dmn11:rule>
-            <dmn11:rule id="_8b0eadaa-c1e5-48ca-9b05-dbbad3fd7cbb">
-                <dmn11:inputEntry id="_dba52b02-5a0c-41c4-806e-93a9689e65a2">
-                    <dmn11:text>"Product2"</dmn11:text>
-                </dmn11:inputEntry>
-                <dmn11:inputEntry id="_c1cc878f-6cd2-4b90-a7eb-0207e4a7279c">
-                    <dmn11:text>2</dmn11:text>
-                </dmn11:inputEntry>
-                <dmn11:outputEntry id="_ded89b36-d6a6-4849-b6aa-2e065cdb4027">
-                    <dmn11:text>"This is product 2"</dmn11:text>
-                </dmn11:outputEntry>
-            </dmn11:rule>
-            <dmn11:rule id="_e2e0fbbb-cbf3-417f-baef-85a5474fb1b3">
-                <dmn11:inputEntry id="_b8bb78b7-aa2c-4dc5-b383-dd8f6cdff857">
-                    <dmn11:text>-</dmn11:text>
-                </dmn11:inputEntry>
-                <dmn11:inputEntry id="_7ce1da36-a8c4-419b-97b6-6235cb23b437">
-                    <dmn11:text>-</dmn11:text>
-                </dmn11:inputEntry>
-                <dmn11:outputEntry id="_dc9400f1-6b1c-45de-a688-7eca6ae5795b">
-                    <dmn11:text>"Unrecognized product type"</dmn11:text>
-                </dmn11:outputEntry>
-            </dmn11:rule>
-        </dmn11:decisionTable>
-    </dmn11:decision>
-    <dmn11:inputData id="_4df3d030-f507-43d5-84de-bb7e2e457958" name="product">
-        <dmn11:variable id="_93995645-bc1b-4a4e-9a18-0f6687e029c4" name="product" typeRef="product"/>
-    </dmn11:inputData>
-</dmn11:definitions>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/dmn/definitions/_40fdbc2c-a631-4ba4-8435-17571b5d1942"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.0.7.2"
+                      id="_40fdbc2c-a631-4ba4-8435-17571b5d1942"
+                      name="Drawing 1"
+                      namespace="http://www.trisotech.com/dmn/definitions/_40fdbc2c-a631-4ba4-8435-17571b5d1942">
+   <semantic:extensionElements>
+      <tc:testCases xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                    xmlns:trisofeed="http://trisotech.com/feed">
+         <tc:testCase id="_f1cbc9c0-0d5b-4451-a77b-ca4a49d952fd" name="Test case 1">
+            <tc:inputNode name="product">
+               <tc:component name="name">
+                  <tc:value xsi:type="xsd:string">Product1</tc:value>
+               </tc:component>
+               <tc:component name="type">
+                  <tc:value xsi:type="xsd:double">1</tc:value>
+               </tc:component>
+            </tc:inputNode>
+            <tc:resultNode name="TestDecision">
+               <tc:expected>
+                  <tc:value xsi:type="xsd:string">Unrecognized product type</tc:value>
+               </tc:expected>
+            </tc:resultNode>
+         </tc:testCase>
+         <tc:testCase id="_e1637c3c-b226-467d-b440-839752a96ca9" name="Test case 2">
+            <tc:inputNode name="product">
+               <tc:component name="name">
+                  <tc:value xsi:type="xsd:string">Product2</tc:value>
+               </tc:component>
+               <tc:component name="type">
+                  <tc:value xsi:type="xsd:double">2</tc:value>
+               </tc:component>
+            </tc:inputNode>
+            <tc:resultNode name="TestDecision">
+               <tc:expected>
+                  <tc:value xsi:type="xsd:string">Unrecognized product type</tc:value>
+               </tc:expected>
+            </tc:resultNode>
+         </tc:testCase>
+      </tc:testCases>
+   </semantic:extensionElements>
+   <semantic:itemDefinition label="product" name="product">
+      <semantic:itemComponent id="_4423c551-9d67-43cd-8dac-36afaf14e29e" name="name">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_c7719e0a-5f0e-4d24-b8ca-7ceef0e7f96b" name="type">
+         <semantic:typeRef>number</semantic:typeRef>
+      </semantic:itemComponent>
+   </semantic:itemDefinition>
+   <semantic:decision id="_c4c8238a-583a-408c-875a-1e1ec689a5d0" name="TestDecision">
+      <semantic:variable id="_d67ed6de-cef8-42e3-b21b-f156d7f96639"
+                         name="TestDecision"
+                         typeRef="string"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_4df3d030-f507-43d5-84de-bb7e2e457958"/>
+      </semantic:informationRequirement>
+      <semantic:decisionTable hitPolicy="FIRST"
+                              id="_b1f0708d-e61a-4e59-8775-e46dc95f6943"
+                              outputLabel="TestDecision">
+         <semantic:input id="_5bda3ca9-9f02-48c0-b949-cba34add7685">
+            <semantic:inputExpression typeRef="string">
+               <semantic:text>product.name</semantic:text>
+            </semantic:inputExpression>
+         </semantic:input>
+         <semantic:input id="_e9d7d8cf-8b6a-42d8-b402-3c0e4c243ddb">
+            <semantic:inputExpression typeRef="number">
+               <semantic:text>product.type</semantic:text>
+            </semantic:inputExpression>
+         </semantic:input>
+         <semantic:output id="_7fc22f74-d7ee-4a25-8590-879e8f078ca4"/>
+         <semantic:rule id="_3012276d-5a7a-41de-8032-5aa4bb06d5cc">
+            <semantic:inputEntry id="_a478cf6b-ad24-4404-9d1f-b7556555018c">
+               <semantic:text>"Product1"</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_8fe142a7-999e-401b-b713-5f4e34e22f2f">
+               <semantic:text>1</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_1f13bb59-7fd0-408b-91f4-592e9d5937d2">
+               <semantic:text>"This is product 1"</semantic:text>
+            </semantic:outputEntry>
+         </semantic:rule>
+         <semantic:rule id="_8b0eadaa-c1e5-48ca-9b05-dbbad3fd7cbb">
+            <semantic:inputEntry id="_dba52b02-5a0c-41c4-806e-93a9689e65a2">
+               <semantic:text>"Product2"</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_c1cc878f-6cd2-4b90-a7eb-0207e4a7279c">
+               <semantic:text>2</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_ded89b36-d6a6-4849-b6aa-2e065cdb4027">
+               <semantic:text>"This is product 2"</semantic:text>
+            </semantic:outputEntry>
+         </semantic:rule>
+         <semantic:rule id="_e2e0fbbb-cbf3-417f-baef-85a5474fb1b3">
+            <semantic:inputEntry id="_b8bb78b7-aa2c-4dc5-b383-dd8f6cdff857">
+               <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_7ce1da36-a8c4-419b-97b6-6235cb23b437">
+               <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_dc9400f1-6b1c-45de-a688-7eca6ae5795b">
+               <semantic:text>"Unrecognized product type"</semantic:text>
+            </semantic:outputEntry>
+         </semantic:rule>
+      </semantic:decisionTable>
+   </semantic:decision>
+   <semantic:inputData id="_4df3d030-f507-43d5-84de-bb7e2e457958" name="product">
+      <semantic:variable id="_93995645-bc1b-4a4e-9a18-0f6687e029c4"
+                         name="product"
+                         typeRef="product"/>
+   </semantic:inputData>
+</semantic:definitions>

@@ -17,9 +17,9 @@
 
 <definitions id="0001-input-data-string" name="0001-input-data-string"
 	namespace="https://github.com/kiegroup/kie-dmn"
-	xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+	xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/">
 	<decision name="Greeting Message" id="d_GreetingMessage">
-		<variable xmlns:feel="http://www.omg.org/spec/FEEL/20140401" name="Greeting Message" typeRef="feel:string"/>
+		<variable xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" name="Greeting Message" typeRef="feel.string"/>
 		<informationRequirement>
 			<requiredInput href="#i_FullName"/>
 		</informationRequirement>
@@ -28,6 +28,6 @@
 		</literalExpression>
 	</decision>
 	<inputData name="Full Name" id="i_FullName">
-		<variable xmlns:feel="http://www.omg.org/spec/FEEL/20140401"  name="Full Name" typeRef="feel:string"/>
+		<variable xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" name="Full Name" typeRef="feel.string"/>
 	</inputData>
 </definitions>

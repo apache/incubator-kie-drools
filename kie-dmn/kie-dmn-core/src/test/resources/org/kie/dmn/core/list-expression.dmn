@@ -14,16 +14,24 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<definitions id="_list-expression" name="list-expression"
-	namespace="https://github.com/kiegroup/kie-dmn"
-	xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-	xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
-	<decision name="Name list" id="d_NameList">
-		<variable name="Name list" typeRef="feel:list"/>
-		<list>
-			<literalExpression><text>"John"</text></literalExpression>
-			<literalExpression><text>"Ma"+"ry"</text></literalExpression>
-		</list>
-	</decision>
-</definitions>
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      id="_list-expression"
+                      name="list-expression"
+                      namespace="https://github.com/kiegroup/kie-dmn">
+   <semantic:decision name="Name list" id="d_NameList">
+      <semantic:variable name="Name list" typeRef="list"/>
+      <semantic:list>
+         <semantic:literalExpression>
+            <semantic:text>"John"</semantic:text>
+         </semantic:literalExpression>
+         <semantic:literalExpression>
+            <semantic:text>"Ma"+"ry"</semantic:text>
+         </semantic:literalExpression>
+      </semantic:list>
+   </semantic:decision>
+</semantic:definitions>

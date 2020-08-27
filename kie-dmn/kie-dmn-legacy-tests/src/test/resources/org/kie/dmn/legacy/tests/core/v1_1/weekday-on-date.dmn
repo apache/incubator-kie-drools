@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<dmn11:definitions xmlns="http://www.trisotech.com/definitions/_55a2dafd-ab4d-4154-bace-826d426da251" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.0.1" id="_55a2dafd-ab4d-4154-bace-826d426da251" name="weekday on date" namespace="http://www.trisotech.com/definitions/_55a2dafd-ab4d-4154-bace-826d426da251" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements/>
+  <dmn11:itemDefinition isCollection="false" label="tBankHolidayStatus" name="tBankHolidayStatus">
+    <dmn11:typeRef>feel:string</dmn11:typeRef>
+    <dmn11:allowedValues triso:constraintsType="enumeration">
+      <dmn11:text>"Bank Holiday","Not Bank Holiday"</dmn11:text>
+    </dmn11:allowedValues>
+  </dmn11:itemDefinition>
+  <dmn11:inputData id="_91a566ec-89ee-42bb-8c36-79baea4111b6" name="Run Date">
+    <dmn11:variable id="_05331df7-8193-4d0d-99dc-879a66e8b273" name="Run Date" typeRef="feel:date"/>
+  </dmn11:inputData>
+  <dmn11:decision id="_71553f92-233b-4a10-b6b3-0762dcb5acf7" name="Weekday">
+    <dmn11:variable id="_f055bab1-a535-47a8-8202-93df76c89779" name="Weekday" typeRef="feel:number"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#_91a566ec-89ee-42bb-8c36-79baea4111b6"/>
+    </dmn11:informationRequirement>
+    <dmn11:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_9af0f230-3589-4192-a3b0-ae763ec03da6" triso:unparsed="true">
+      <dmn11:text>Run Date.weekday</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+</dmn11:definitions>

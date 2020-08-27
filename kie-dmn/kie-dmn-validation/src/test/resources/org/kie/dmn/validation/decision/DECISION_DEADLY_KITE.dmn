@@ -14,55 +14,59 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<definitions id="DECISION_DEADLY_KITE" name="DECISION_DEADLY_KITE"
-    namespace="https://github.com/kiegroup/kie-dmn"
-    xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-    xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <decision name="a" id="d_a">
-        <variable name="a" typeRef="feel:string"/>
-        <informationRequirement>
-            <requiredDecision href="#d_b"/>
-        </informationRequirement>
-                <informationRequirement>
-                    <requiredDecision href="#d_c"/>
-                </informationRequirement>
-        <literalExpression>
-            <text>b + c</text>
-        </literalExpression>
-    </decision>
-    <decision name="b" id="d_b">
-        <variable name="b" typeRef="feel:string"/>
-        <informationRequirement>
-            <requiredDecision href="#d_d"/>
-        </informationRequirement>
-        <literalExpression>
-            <text>d</text>
-        </literalExpression>
-    </decision>
-    <decision name="c" id="d_c">
-        <variable name="c" typeRef="feel:string"/>
-        <informationRequirement>
-            <requiredDecision href="#d_d"/>
-        </informationRequirement>
-        <literalExpression>
-            <text>d</text>
-        </literalExpression>
-    </decision>
-    <decision name="d" id="d_d">
-        <variable name="d" typeRef="feel:string"/>
-        <informationRequirement>
-            <requiredDecision href="#d_e"/>
-        </informationRequirement>
-        <literalExpression>
-            <text>e</text>
-        </literalExpression>
-    </decision>
-    <decision name="e" id="d_e">
-        <variable name="e" typeRef="feel:string"/>
-        <literalExpression>
-            <text>""</text>
-        </literalExpression>
-    </decision>
-</definitions>
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      id="DECISION_DEADLY_KITE"
+                      name="DECISION_DEADLY_KITE"
+                      namespace="https://github.com/kiegroup/kie-dmn">
+   <semantic:decision name="a" id="d_a">
+      <semantic:variable name="a" typeRef="string"/>
+      <semantic:informationRequirement>
+         <semantic:requiredDecision href="#d_b"/>
+      </semantic:informationRequirement>
+      <semantic:informationRequirement>
+         <semantic:requiredDecision href="#d_c"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression>
+         <semantic:text>b + c</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:decision name="b" id="d_b">
+      <semantic:variable name="b" typeRef="string"/>
+      <semantic:informationRequirement>
+         <semantic:requiredDecision href="#d_d"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression>
+         <semantic:text>d</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:decision name="c" id="d_c">
+      <semantic:variable name="c" typeRef="string"/>
+      <semantic:informationRequirement>
+         <semantic:requiredDecision href="#d_d"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression>
+         <semantic:text>d</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:decision name="d" id="d_d">
+      <semantic:variable name="d" typeRef="string"/>
+      <semantic:informationRequirement>
+         <semantic:requiredDecision href="#d_e"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression>
+         <semantic:text>e</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:decision name="e" id="d_e">
+      <semantic:variable name="e" typeRef="string"/>
+      <semantic:literalExpression>
+         <semantic:text>""</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+</semantic:definitions>

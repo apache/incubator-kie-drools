@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Copyright 2017 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,20 +14,21 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-             xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             id="compilation-throws-npe"
-             namespace="https://github.com/kiegroup/kie-dmn"
-             name="compilation-throws-npe"
-             xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-             expressionLanguage="http://www.omg.org/spec/FEEL/20140401"
-             typeLanguage="http://www.omg.org/spec/FEEL/20140401">
-  <decision id="decision1" name="decision1">
-    <variable id="variable1" name="variable1" typeRef="feel:string"/>
-    <decisionTable id="dt">
-      <input id="input1"></input>
-    </decisionTable>
-  </decision>
-</definitions>
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      id="compilation-throws-npe"
+                      namespace="https://github.com/kiegroup/kie-dmn"
+                      name="compilation-throws-npe"
+                      >
+   <semantic:decision id="decision1" name="decision1">
+      <semantic:variable id="variable1" name="variable1" typeRef="string"/>
+      <semantic:decisionTable id="dt">
+         <semantic:input id="input1"/>
+      </semantic:decisionTable>
+   </semantic:decision>
+</semantic:definitions>

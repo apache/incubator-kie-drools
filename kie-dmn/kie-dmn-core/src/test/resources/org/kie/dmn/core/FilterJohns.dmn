@@ -1,29 +1,51 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_feb9886e-22ce-469a-bbb6-096f13b71c7d" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.0" id="_feb9886e-22ce-469a-bbb6-096f13b71c7d" name="FilterJohns" namespace="http://www.trisotech.com/definitions/_feb9886e-22ce-469a-bbb6-096f13b71c7d" triso:logoChoice="Default">
-  <semantic:extensionElements>
-    <triso:dmnInputs>[{"name":"PersonList","id":"_3eaf4650-5b57-4a71-8b97-935ab5ac7e53","type":"complex","isCollection":true,"children":[{"name":"name","id":"_3eaf4650-5b57-4a71-8b97-935ab5ac7e53_54881955-df95-438a-afe3-c7902df66965","type":"string"},{"name":"surname","id":"_3eaf4650-5b57-4a71-8b97-935ab5ac7e53_da6a1dd6-6e6d-4c94-a87a-ed32a7a2da85","type":"string"}]}]</triso:dmnInputs>
-  </semantic:extensionElements>
-  <semantic:itemDefinition label="Person" name="Person">
-    <semantic:itemComponent id="_54881955-df95-438a-afe3-c7902df66965" name="name">
-      <semantic:typeRef>feel:string</semantic:typeRef>
-    </semantic:itemComponent>
-    <semantic:itemComponent id="_da6a1dd6-6e6d-4c94-a87a-ed32a7a2da85" name="surname">
-      <semantic:typeRef>feel:string</semantic:typeRef>
-    </semantic:itemComponent>
-  </semantic:itemDefinition>
-  <semantic:itemDefinition isCollection="true" label="PersonList" name="PersonList">
-    <semantic:typeRef>Person</semantic:typeRef>
-  </semantic:itemDefinition>
-  <semantic:inputData displayName="PersonList" id="_3eaf4650-5b57-4a71-8b97-935ab5ac7e53" name="PersonList">
-    <semantic:variable id="_a0426883-08c5-4fca-8e41-e85be12e1daa" name="PersonList" typeRef="PersonList"/>
-  </semantic:inputData>
-  <semantic:decision displayName="PickAllJohns" id="_a40f5194-dc70-498a-b095-56a13d95a19c" name="PickAllJohns">
-    <semantic:variable id="_3270b780-e023-475b-a381-7020de308dbc" name="PickAllJohns" typeRef="PersonList"/>
-    <semantic:informationRequirement>
-      <semantic:requiredInput href="#_3eaf4650-5b57-4a71-8b97-935ab5ac7e53"/>
-    </semantic:informationRequirement>
-    <semantic:literalExpression id="_811d1147-e378-4fd1-8f2d-30a59ec7eae1">
-      <semantic:text>PersonList[name = "John"]</semantic:text>
-    </semantic:literalExpression>
-  </semantic:decision>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/definitions/_feb9886e-22ce-469a-bbb6-096f13b71c7d"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.0.0"
+                      id="_feb9886e-22ce-469a-bbb6-096f13b71c7d"
+                      name="FilterJohns"
+                      namespace="http://www.trisotech.com/definitions/_feb9886e-22ce-469a-bbb6-096f13b71c7d">
+   <semantic:extensionElements>
+      <triso:dmnInputs xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                       xmlns:trisofeed="http://trisotech.com/feed">[{"name":"PersonList","id":"_3eaf4650-5b57-4a71-8b97-935ab5ac7e53","type":"complex","isCollection":true,"children":[{"name":"name","id":"_3eaf4650-5b57-4a71-8b97-935ab5ac7e53_54881955-df95-438a-afe3-c7902df66965","type":"string"},{"name":"surname","id":"_3eaf4650-5b57-4a71-8b97-935ab5ac7e53_da6a1dd6-6e6d-4c94-a87a-ed32a7a2da85","type":"string"}]}]</triso:dmnInputs>
+   </semantic:extensionElements>
+   <semantic:itemDefinition label="Person" name="Person">
+      <semantic:itemComponent id="_54881955-df95-438a-afe3-c7902df66965" name="name">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_da6a1dd6-6e6d-4c94-a87a-ed32a7a2da85" name="surname">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+   </semantic:itemDefinition>
+   <semantic:itemDefinition isCollection="true" label="PersonList" name="PersonList">
+      <semantic:typeRef>Person</semantic:typeRef>
+   </semantic:itemDefinition>
+   <semantic:inputData displayName="PersonList"
+                       id="_3eaf4650-5b57-4a71-8b97-935ab5ac7e53"
+                       name="PersonList">
+      <semantic:variable id="_a0426883-08c5-4fca-8e41-e85be12e1daa"
+                         name="PersonList"
+                         typeRef="PersonList"/>
+   </semantic:inputData>
+   <semantic:decision displayName="PickAllJohns"
+                      id="_a40f5194-dc70-498a-b095-56a13d95a19c"
+                      name="PickAllJohns">
+      <semantic:variable id="_3270b780-e023-475b-a381-7020de308dbc"
+                         name="PickAllJohns"
+                         typeRef="PersonList"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_3eaf4650-5b57-4a71-8b97-935ab5ac7e53"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression id="_811d1147-e378-4fd1-8f2d-30a59ec7eae1">
+         <semantic:text>PersonList[name = "John"]</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
 </semantic:definitions>

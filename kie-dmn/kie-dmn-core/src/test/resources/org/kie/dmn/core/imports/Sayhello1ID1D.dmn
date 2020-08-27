@@ -1,16 +1,33 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.3" id="_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9" name="Say hello 1ID1D" namespace="http://www.trisotech.com/dmn/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
-  <dmn11:extensionElements/>
-  <dmn11:inputData id="_4f6c136c-8512-4d71-8bbf-7c9eb6e74063" name="Person name">
-    <dmn11:variable id="_46b6677b-4a26-4bca-9532-9a57dd55b8ec" name="Person name" typeRef="feel:string"/>
-  </dmn11:inputData>
-  <dmn11:decision id="_f7fdaec4-d669-4797-b3b4-12b860de2eb5" name="Greet the Person">
-    <dmn11:variable id="_85193e88-cb32-41da-9181-fb8e5450753a" name="Greet the Person" typeRef="feel:string"/>
-    <dmn11:informationRequirement>
-      <dmn11:requiredInput href="#_4f6c136c-8512-4d71-8bbf-7c9eb6e74063"/>
-    </dmn11:informationRequirement>
-    <dmn11:literalExpression id="_429b0c63-31e0-4f79-b457-32f565167702" typeRef="feel:string">
-      <dmn11:text>"Hello, "+Person name</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-</dmn11:definitions>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/dmn/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.1.3"
+                      id="_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9"
+                      name="Say hello 1ID1D"
+                      namespace="http://www.trisotech.com/dmn/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9">
+   <semantic:extensionElements/>
+   <semantic:inputData id="_4f6c136c-8512-4d71-8bbf-7c9eb6e74063" name="Person name">
+      <semantic:variable id="_46b6677b-4a26-4bca-9532-9a57dd55b8ec"
+                         name="Person name"
+                         typeRef="string"/>
+   </semantic:inputData>
+   <semantic:decision id="_f7fdaec4-d669-4797-b3b4-12b860de2eb5" name="Greet the Person">
+      <semantic:variable id="_85193e88-cb32-41da-9181-fb8e5450753a"
+                         name="Greet the Person"
+                         typeRef="string"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_4f6c136c-8512-4d71-8bbf-7c9eb6e74063"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression id="_429b0c63-31e0-4f79-b457-32f565167702" typeRef="string">
+         <semantic:text>"Hello, "+Person name</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+</semantic:definitions>

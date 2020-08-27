@@ -1,40 +1,63 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_153e2b47-3bd2-4db0-828c-db3fce0b3199" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.6" id="_153e2b47-3bd2-4db0-828c-db3fce0b3199" name="Drawing 1" namespace="http://www.trisotech.com/dmn/definitions/_153e2b47-3bd2-4db0-828c-db3fce0b3199" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
-  <dmn11:extensionElements/>
-  <dmn11:itemDefinition label="tPerson" name="xxxtPerson"> <!-- Intentional, wrong type changed name. -->
-    <dmn11:itemComponent id="_9d959fad-6b6f-450e-b661-77793c8ea368" name="First Name">
-      <dmn11:typeRef>feel:string</dmn11:typeRef>
-    </dmn11:itemComponent>
-    <dmn11:itemComponent id="_66c2d19b-7b95-4d81-a141-d52639464a25" name="Last Name">
-      <dmn11:typeRef>feel:string</dmn11:typeRef>
-    </dmn11:itemComponent>
-  </dmn11:itemDefinition>
-  <dmn11:businessKnowledgeModel id="_30810b88-8416-4c02-8ed1-8c19b7606243" name="an hardcoded Person">
-    <dmn11:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="F" id="_a086a9a1-7d8d-4689-9b22-7d1dad1077a2" typeRef="tPerson">
-      <dmn11:context id="_0f38d114-5d6e-40dd-aa9c-9f031f9b0571">
-        <dmn11:contextEntry>
-          <dmn11:variable id="_e6d181fd-d46e-4159-bf0e-949366d52847" name="First Name" typeRef="feel:string"/>
-          <dmn11:literalExpression id="_3cb6879c-2b08-4a8e-9666-af6064eb6cd1">
-            <dmn11:text>"John"</dmn11:text>
-          </dmn11:literalExpression>
-        </dmn11:contextEntry>
-        <dmn11:contextEntry>
-          <dmn11:variable id="_1d6ae593-887a-4fd8-bd66-05fe47040b0f" name="Last Name" typeRef="feel:string"/>
-          <dmn11:literalExpression id="_6614e534-3f4e-48ed-b692-2afe370b1012">
-            <dmn11:text>"Doe"</dmn11:text>
-          </dmn11:literalExpression>
-        </dmn11:contextEntry>
-      </dmn11:context>
-    </dmn11:encapsulatedLogic>
-    <dmn11:variable id="_561d31ba-a34b-4cf3-b9a4-537e21ce1013" name="an hardcoded Person" typeRef="tPerson"/>
-  </dmn11:businessKnowledgeModel>
-  <dmn11:decision id="_927fbe09-da09-4634-937a-3a8ba71b7aab" name="just exec BKM">
-    <dmn11:variable id="_45fa8674-f4f0-4c06-b2fd-52bbd17d8550" name="just exec BKM" typeRef="tPerson"/>
-    <dmn11:knowledgeRequirement>
-      <dmn11:requiredKnowledge href="#_30810b88-8416-4c02-8ed1-8c19b7606243"/>
-    </dmn11:knowledgeRequirement>
-    <dmn11:literalExpression id="_8cbc3bb4-4cee-4c18-b169-165e1b1eb0a1" typeRef="tPerson">
-      <dmn11:text>an hardcoded Person()</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-</dmn11:definitions>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/dmn/definitions/_153e2b47-3bd2-4db0-828c-db3fce0b3199"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.1.6"
+                      id="_153e2b47-3bd2-4db0-828c-db3fce0b3199"
+                      name="Drawing 1"
+                      namespace="http://www.trisotech.com/dmn/definitions/_153e2b47-3bd2-4db0-828c-db3fce0b3199">
+   <semantic:extensionElements/>
+   <semantic:itemDefinition label="tPerson" name="xxxtPerson"> <!-- Intentional, wrong type changed name. -->
+      <semantic:itemComponent id="_9d959fad-6b6f-450e-b661-77793c8ea368" name="First Name">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+      <semantic:itemComponent id="_66c2d19b-7b95-4d81-a141-d52639464a25" name="Last Name">
+         <semantic:typeRef>string</semantic:typeRef>
+      </semantic:itemComponent>
+   </semantic:itemDefinition>
+   <semantic:businessKnowledgeModel id="_30810b88-8416-4c02-8ed1-8c19b7606243" name="an hardcoded Person">
+      <semantic:variable id="_561d31ba-a34b-4cf3-b9a4-537e21ce1013"
+                         name="an hardcoded Person"
+                         typeRef="tPerson"/>
+      <semantic:encapsulatedLogic kind="FEEL"
+                                  id="_a086a9a1-7d8d-4689-9b22-7d1dad1077a2"
+                                  typeRef="tPerson">
+         <semantic:context id="_0f38d114-5d6e-40dd-aa9c-9f031f9b0571">
+            <semantic:contextEntry>
+               <semantic:variable id="_e6d181fd-d46e-4159-bf0e-949366d52847"
+                                  name="First Name"
+                                  typeRef="string"/>
+               <semantic:literalExpression id="_3cb6879c-2b08-4a8e-9666-af6064eb6cd1">
+                  <semantic:text>"John"</semantic:text>
+               </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry>
+               <semantic:variable id="_1d6ae593-887a-4fd8-bd66-05fe47040b0f"
+                                  name="Last Name"
+                                  typeRef="string"/>
+               <semantic:literalExpression id="_6614e534-3f4e-48ed-b692-2afe370b1012">
+                  <semantic:text>"Doe"</semantic:text>
+               </semantic:literalExpression>
+            </semantic:contextEntry>
+         </semantic:context>
+      </semantic:encapsulatedLogic>
+   </semantic:businessKnowledgeModel>
+   <semantic:decision id="_927fbe09-da09-4634-937a-3a8ba71b7aab" name="just exec BKM">
+      <semantic:variable id="_45fa8674-f4f0-4c06-b2fd-52bbd17d8550"
+                         name="just exec BKM"
+                         typeRef="tPerson"/>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="#_30810b88-8416-4c02-8ed1-8c19b7606243"/>
+      </semantic:knowledgeRequirement>
+      <semantic:literalExpression id="_8cbc3bb4-4cee-4c18-b169-165e1b1eb0a1" typeRef="tPerson">
+         <semantic:text>an hardcoded Person()</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+</semantic:definitions>

@@ -182,7 +182,7 @@ public class DrlxParseUtil {
 
     public static java.lang.reflect.Type returnTypeOfMethodCallExpr(RuleContext context, TypeResolver typeResolver, MethodCallExpr methodCallExpr, java.lang.reflect.Type clazz, Collection<String> usedDeclarations) {
         final Class[] argsType = methodCallExpr.getArguments().stream()
-                .map((Expression e) -> getExpressionType(context, typeResolver, e, usedDeclarations))
+                .map((Expression e) -> toRawClass(getExpressionType(context, typeResolver, e, usedDeclarations)))
                 .toArray(Class[]::new);
         return findMethod(toRawClass( clazz ), methodCallExpr.getNameAsString(), argsType).getGenericReturnType();
     }

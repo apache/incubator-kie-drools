@@ -14,17 +14,22 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<definitions id="CONTEXT_MISSING_EXPR" name="CONTEXT_MISSING_EXPR"
-    namespace="https://github.com/kiegroup/kie-dmn"
-    xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-    xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <decision id="d1" name="Decision1">
-        <variable name="Decision1" typeRef="feel:context"/>
-        <context>
-            <contextEntry>
-                <variable name="var1" typeRef="feel:string" />
-            </contextEntry>
-        </context>
-    </decision>
-</definitions>
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      id="CONTEXT_MISSING_EXPR"
+                      name="CONTEXT_MISSING_EXPR"
+                      namespace="https://github.com/kiegroup/kie-dmn">
+   <semantic:decision id="d1" name="Decision1">
+      <semantic:variable name="Decision1" typeRef="context"/>
+      <semantic:context>
+         <semantic:contextEntry>
+            <semantic:variable name="var1" typeRef="string"/>
+         </semantic:contextEntry>
+      </semantic:context>
+   </semantic:decision>
+</semantic:definitions>

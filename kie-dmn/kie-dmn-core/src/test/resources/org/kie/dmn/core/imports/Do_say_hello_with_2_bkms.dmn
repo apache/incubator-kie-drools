@@ -1,29 +1,55 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_01a65215-7e0d-47ac-845a-a768f6abf7fe" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:include1="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.9.201806071350" id="_01a65215-7e0d-47ac-845a-a768f6abf7fe" name="Do say hello with 2 bkms" namespace="http://www.trisotech.com/dmn/definitions/_01a65215-7e0d-47ac-845a-a768f6abf7fe" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
-  <dmn11:extensionElements/>
-  <dmn11:import xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:modelName="Saying hello 2 bkms" drools:name="myimport" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a" triso:fileId="eyJmIjp7InNrdSI6IjFhMDM4MzFjLWYyNzQtNDRmNC05OWZiLTQ4ZGU2YjEyOGZjYiIsIm5hbWUiOiJTYXlpbmcgaGVsbG8gMiBia21zIn0sInIiOnsiYXBpa2V5IjoiMjkyMDAzZjY5ODQwZTcxMiJ9fQ==" triso:fileName="Matteo Mortari/Saying hello 2 bkms"/>
-  <dmn11:inputData id="_0d412cd6-9b10-4391-86b8-cd84a6ecba80" name="Person name">
-    <dmn11:variable id="_b7d53ee9-580a-485e-923d-98c868c417ba" name="Person name" typeRef="feel:string"/>
-  </dmn11:inputData>
-  <dmn11:decision id="_432cfc50-bf92-40fe-8d99-a9191d4b3006" name="Say hello decision">
-    <dmn11:variable id="_4c5212a4-db8d-4f77-88b0-114884b8857e" name="Say hello decision"/>
-    <dmn11:informationRequirement>
-      <dmn11:requiredInput href="#_0d412cd6-9b10-4391-86b8-cd84a6ecba80"/>
-    </dmn11:informationRequirement>
-    <dmn11:knowledgeRequirement>
-      <dmn11:requiredKnowledge href="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a#_d9be6ede-31af-4773-a0e2-e27515347fcd"/>
-    </dmn11:knowledgeRequirement>
-    <dmn11:literalExpression id="_512cea55-a09c-481b-8ba0-661729264ecd">
-      <dmn11:text>myimport.Say hello(Person name)</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-  <dmn11:decision id="_c98ce03e-0c50-47f7-8484-2a5f5cfd782f" name="what about hello">
-    <dmn11:variable id="_c003d842-e9da-44df-89a0-e98c96411ca0" name="what about hello" typeRef="feel:string"/>
-    <dmn11:knowledgeRequirement>
-      <dmn11:requiredKnowledge href="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a#_ca2409f4-0963-4d8e-9bdb-7102b67fdeff"/>
-    </dmn11:knowledgeRequirement>
-    <dmn11:literalExpression id="_03fb37b0-89bb-49c1-9648-c7e1672ca7e4">
-      <dmn11:text>myimport.knowledge of hello()</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-</dmn11:definitions>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/dmn/definitions/_01a65215-7e0d-47ac-845a-a768f6abf7fe"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:include1="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.0.9.201806071350"
+                      id="_01a65215-7e0d-47ac-845a-a768f6abf7fe"
+                      name="Do say hello with 2 bkms"
+                      namespace="http://www.trisotech.com/dmn/definitions/_01a65215-7e0d-47ac-845a-a768f6abf7fe">
+   <semantic:extensionElements/>
+   <semantic:import xmlns:drools="http://www.drools.org/kie/dmn/1.1"
+                    xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                    drools:modelName="Saying hello 2 bkms"
+                    drools:name="myimport"
+                    importType="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                    namespace="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a"
+                    triso:fileId="eyJmIjp7InNrdSI6IjFhMDM4MzFjLWYyNzQtNDRmNC05OWZiLTQ4ZGU2YjEyOGZjYiIsIm5hbWUiOiJTYXlpbmcgaGVsbG8gMiBia21zIn0sInIiOnsiYXBpa2V5IjoiMjkyMDAzZjY5ODQwZTcxMiJ9fQ=="
+                    triso:fileName="Matteo Mortari/Saying hello 2 bkms"
+                    name="myimport"/>
+   <semantic:inputData id="_0d412cd6-9b10-4391-86b8-cd84a6ecba80" name="Person name">
+      <semantic:variable id="_b7d53ee9-580a-485e-923d-98c868c417ba"
+                         name="Person name"
+                         typeRef="string"/>
+   </semantic:inputData>
+   <semantic:decision id="_432cfc50-bf92-40fe-8d99-a9191d4b3006" name="Say hello decision">
+      <semantic:variable id="_4c5212a4-db8d-4f77-88b0-114884b8857e" name="Say hello decision"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#_0d412cd6-9b10-4391-86b8-cd84a6ecba80"/>
+      </semantic:informationRequirement>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a#_d9be6ede-31af-4773-a0e2-e27515347fcd"/>
+      </semantic:knowledgeRequirement>
+      <semantic:literalExpression id="_512cea55-a09c-481b-8ba0-661729264ecd">
+         <semantic:text>myimport.Say hello(Person name)</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:decision id="_c98ce03e-0c50-47f7-8484-2a5f5cfd782f" name="what about hello">
+      <semantic:variable id="_c003d842-e9da-44df-89a0-e98c96411ca0"
+                         name="what about hello"
+                         typeRef="string"/>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="http://www.trisotech.com/dmn/definitions/_16a48e7a-0687-4c2d-b402-42925084fa1a#_ca2409f4-0963-4d8e-9bdb-7102b67fdeff"/>
+      </semantic:knowledgeRequirement>
+      <semantic:literalExpression id="_03fb37b0-89bb-49c1-9648-c7e1672ca7e4">
+         <semantic:text>myimport.knowledge of hello()</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+</semantic:definitions>

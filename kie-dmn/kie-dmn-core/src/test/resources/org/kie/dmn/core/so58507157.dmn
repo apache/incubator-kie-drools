@@ -1,5 +1,5 @@
 <definitions name="DecisionNumberInList" id="def_7e2582e9-cffe-e465-314a-5755eb893319" 
-xmlns:ns="http://sample.dmn" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" 
+xmlns:ns="http://sample.dmn"
 namespace="http://sample.dmn" exporter="ex" exporterVersion="11" 
 xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/">
   <itemDefinition name="numberList" id="_75a6eab3-9165-ca7d-c0a9-29c30e583885" isCollection="true">

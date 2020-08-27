@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<semantic:definitions
+xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+xmlns:dc="http://www.omg.org/spec/DMN/20151101/DC"
+xmlns:di="http://www.omg.org/spec/DMN/20151101/DI"
+xmlns:dmndi="http://www.omg.org/spec/DMN/20151101/DMNDI"
+xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+xmlns:trisofeed="http://trisotech.com/feed"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns="http://www.trisotech.com/definitions/_946a2145-89ae-4197-88b4-40e6f88c8101" id="_946a2145-89ae-4197-88b4-40e6f88c8101" namespace="http://www.trisotech.com/definitions/_946a2145-89ae-4197-88b4-40e6f88c8101"          exporter="DMN Modeler" exporterVersion="6.0.3.201803061110" name="Null in relations" triso:logoChoice="Default">
+    <semantic:extensionElements>
+        <triso:dmnInputs>[{"name":"Value","id":"_67bf0d5b-fa84-4c3a-828b-e8d1b37fad1a","type":"string"}]</triso:dmnInputs>
+    </semantic:extensionElements>
+    <semantic:itemDefinition isCollection="true" name="Values" label="Values">
+        <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemDefinition>
+    <semantic:itemDefinition name="tCondition" label="tCondition" isCollection="false">
+        <semantic:typeRef>feel:string</semantic:typeRef>
+        <semantic:allowedValues triso:constraintsType="enumeration">
+            <semantic:text>"Part of c1","Part of c2","Part of c3"</semantic:text>
+        </semantic:allowedValues>
+    </semantic:itemDefinition>
+    <semantic:itemDefinition isCollection="true" name="List" label="List">
+        <semantic:typeRef>tCondition</semantic:typeRef>
+    </semantic:itemDefinition>
+    <semantic:itemDefinition isCollection="true" name="tA10Relation" label="tA10Relation">
+        <semantic:itemComponent isCollection="false" name="f_1" id="_08a58702-61ae-4275-8f1a-e3563aea0b8d">
+            <semantic:typeRef>feel:string</semantic:typeRef>
+        </semantic:itemComponent>
+        <semantic:itemComponent isCollection="false" name="f_2" id="_caa36794-130f-4916-bf21-3e78929f615b">
+            <semantic:typeRef>feel:string</semantic:typeRef>
+        </semantic:itemComponent>
+        <semantic:itemComponent isCollection="false" name="f_3" id="_c332ad4c-54ad-4fa5-aa95-6c4bf0e3363d">
+            <semantic:typeRef>feel:string</semantic:typeRef>
+        </semantic:itemComponent>
+    </semantic:itemDefinition>
+    <semantic:itemDefinition name="tRelation" isCollection="true" label="tRelation">
+        <semantic:itemComponent id="_145ee8d7-3c92-4991-8aa5-0b1f536627a0" name="c1" isCollection="false">
+            <semantic:typeRef>feel:string</semantic:typeRef>
+        </semantic:itemComponent>
+        <semantic:itemComponent id="_f42e7d17-f98e-4886-85b8-fd7772427c01" name="c2" isCollection="false">
+            <semantic:typeRef>feel:string</semantic:typeRef>
+        </semantic:itemComponent>
+        <semantic:itemComponent id="_1fdea173-5b9e-4c96-9200-1cbab61e0f58" name="c3" isCollection="false">
+            <semantic:typeRef>feel:string</semantic:typeRef>
+        </semantic:itemComponent>
+    </semantic:itemDefinition>
+    <semantic:decision id="aRelation" name="Relation">
+        <semantic:variable name="Relation" id="_c8ca1047-9d88-43a9-acec-e121e63fd2f1" typeRef="tRelation"/>
+        <semantic:relation id="_2f5539dc-5314-4334-81ef-1fab856b5069">
+            <semantic:column id="_638646c9-7c83-477c-84fb-791e361ec975" name="c1" typeRef="feel:string"/>
+            <semantic:column id="_602f506a-1e37-477f-b497-be984cf39d39" name="c2" typeRef="feel:string"/>
+            <semantic:column id="_b93556a6-daef-4880-a97b-1436813c0b3c" name="c3" typeRef="feel:string"/>
+            <semantic:row id="_9a06f23c-b0ea-4899-a360-d519ec30689f">
+                <semantic:literalExpression id="_970d7dde-bb32-4053-9806-4254d5cf7d9e">
+                    <semantic:text>"a"</semantic:text>
+                </semantic:literalExpression>
+                <semantic:literalExpression id="_8191bbe8-2c04-4651-bc28-1efaf04b7033">
+                    <semantic:text>"a2"</semantic:text>
+                </semantic:literalExpression>
+                <semantic:literalExpression id="_f587c3b8-75f6-493c-8b90-b0558e646bad">
+                    <semantic:text>"a3"</semantic:text>
+                </semantic:literalExpression>
+            </semantic:row>
+            <semantic:row id="_a74b9700-a0e8-4d0e-9edb-3df2d4cf23a4">
+                <semantic:literalExpression id="_d6d8a606-3e58-40b5-a9b4-f4aee51ef5be">
+                    <semantic:text>"b"</semantic:text>
+                </semantic:literalExpression>
+                <semantic:literalExpression id="_de58b483-fcd5-4140-9e68-628771c58633">
+                    <semantic:text>"b2"</semantic:text>
+                </semantic:literalExpression>
+                <semantic:literalExpression id="_d6a6733c-7d80-40ec-a06f-21f070f14872">
+                    <semantic:text>"b3"</semantic:text>
+                </semantic:literalExpression>
+            </semantic:row>
+            <semantic:row id="_affc9259-44f3-424c-851a-a12927368e9c">
+                <semantic:literalExpression id="_18b05cb5-dd6b-4241-8830-fa113fb5b9d4">
+                    <semantic:text>"c"</semantic:text>
+                </semantic:literalExpression>
+                <semantic:literalExpression id="_f26ecf92-952d-499b-887d-79cfddafdc97">
+                    <semantic:text>"c2"</semantic:text>
+                </semantic:literalExpression>
+                <semantic:literalExpression id="_da422f31-5e28-4710-b5b7-9c44a4b2f492">
+                    <semantic:text>null</semantic:text>
+                </semantic:literalExpression>
+            </semantic:row>
+            <semantic:row id="_311ee2ea-e09d-428b-b42a-321a450b3c65">
+                <semantic:literalExpression id="_7b27a057-086e-4b65-9730-7db60cf15c59">
+                    <semantic:text>"d"</semantic:text>
+                </semantic:literalExpression>
+                <semantic:literalExpression id="_8daa1746-79bd-4b7d-8d74-40cee2e886a4">
+                    <semantic:text>"d2"</semantic:text>
+                </semantic:literalExpression>
+                <semantic:literalExpression id="_a9a98080-b151-448f-85b4-dacc2ae4a13f">
+                    <semantic:text>null</semantic:text>
+                </semantic:literalExpression>
+            </semantic:row>
+        </semantic:relation>
+    </semantic:decision>
+    <semantic:inputData id="_67bf0d5b-fa84-4c3a-828b-e8d1b37fad1a" name="Value">
+        <semantic:variable name="Value" id="_a7f53604-0228-4daa-b869-6be750386dc9" typeRef="feel:string"/>
+    </semantic:inputData>
+    <semantic:decision id="aDecisionTable" name="Mapping">
+        <semantic:variable name="Mapping" id="_e158524c-eff5-4551-aee8-e6f445c83e12" typeRef="tCondition"/>
+        <semantic:informationRequirement id="_16b7ab32-3eae-47ab-88bd-6e260a66ef91">
+            <semantic:requiredDecision href="#aRelation"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_d4d33627-00be-4545-adde-1d7952319436">
+            <semantic:requiredInput href="#_67bf0d5b-fa84-4c3a-828b-e8d1b37fad1a"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_e2e4b827-2e39-47f6-89a1-2120d5481d50" hitPolicy="UNIQUE" outputLabel="Mapping">
+            <semantic:input id="_90fd67f3-f880-4b17-a835-7a0e19b1c504">
+                <semantic:inputExpression typeRef="feel:string">
+                    <semantic:text>Value</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:output id="_73f4fad5-2c3c-4c01-b66c-5982f55683db">
+                <semantic:outputValues triso:constraintsType="enumeration">
+                    <semantic:text>"Part of c1","Part of c2","Part of c3"</semantic:text>
+                </semantic:outputValues>
+            </semantic:output>
+            <semantic:rule id="_14cfe5f7-c27c-49f7-822e-ef59913b24c9">
+                <semantic:inputEntry id="_c6f81d87-eed1-4312-9ee2-e99b2d1fe318">
+                    <semantic:text>Relation.c1</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_7bd93607-511d-4406-a081-624ebe2b5c67">
+                    <semantic:text>"Part of c1"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule id="_ce943bdb-228f-4e75-9084-a83eecede91b">
+                <semantic:inputEntry id="_1cd1b728-670a-4a48-ae0f-9eece147b887">
+                    <semantic:text>Relation.c2</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_0c99b11c-33a0-4b06-9b0e-b0eda136f188">
+                    <semantic:text>"Part of c2"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule id="_e6fbbe61-d531-4ba2-bb6c-2060c95739d2">
+                <semantic:inputEntry id="_3791fb44-f3dd-46b9-bf46-77671fb759c1">
+                    <semantic:text>Relation.c3</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_5a607d85-3a9a-488f-8d3d-b7ac1587de81">
+                    <semantic:text>"Part of c3"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+</semantic:definitions>

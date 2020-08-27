@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_99a00903-2943-47df-bab1-a32f276617ea" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.5.2" id="_99a00903-2943-47df-bab1-a32f276617ea" name="Relation with empty cell" namespace="http://www.trisotech.com/dmn/definitions/_99a00903-2943-47df-bab1-a32f276617ea" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition isCollection="true" label="tListOfPersons" name="tListOfPersons">
+    <semantic:typeRef>tPerson</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition label="tPerson" name="tPerson">
+    <semantic:itemComponent id="_96280b81-a9a1-40b8-a8e7-18e0fb3ecf19" name="name">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_8564dcaf-3912-4209-b360-57821bf21eaf" name="age">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:decision id="_fb0d7409-b04f-43c1-858c-593f0633908b" name="hardcoded relation">
+    <semantic:variable id="_23841b89-fb97-4f7e-b41e-12546ead7182" name="hardcoded relation" typeRef="tListOfPersons"/>
+    <semantic:relation id="_768f9c88-03bd-4faf-813c-5775a77be6c8">
+      <semantic:column id="_ad174e08-09fe-445b-a727-d640196e59c3" name="name" typeRef="feel:string"/>
+      <semantic:column id="_462b2744-4f69-4ac0-95ce-df1b5e3a4dd4" name="age" typeRef="feel:number"/>
+      <semantic:row id="_677e489c-7ffc-44c7-a69b-46ab94dd75a4">
+        <semantic:literalExpression id="_5c7c0168-0ab9-445d-b082-b20bb5b65759">
+          <semantic:text/>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e5676aa1-ab3f-434b-9c44-fee8b6fa13fc">
+          <semantic:text/>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_a2fffe1f-83b6-449e-aa2f-8e2aca8c4b97">
+        <semantic:literalExpression id="_897b302e-db22-4909-a620-5f6df17c8d30">
+          <semantic:text>"John"</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b6b66659-c134-4cd2-934d-78ba7ee0072e">
+          <semantic:text>1</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_da0f92bd-fcb3-4ed9-af44-d246765a0b23">
+        <semantic:literalExpression id="_2e86e825-dbf3-49c5-bf88-b4de00cd07db">
+          <semantic:text>null</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_59651cb7-b1b5-4aba-9539-1dca5a89760a">
+          <semantic:text>null</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_244a2ef0-7e8a-492a-baf4-cee60f3f8837">
+        <semantic:literalExpression id="_7abf3ae6-ff67-43ff-b947-475d90f526f3">
+          <semantic:text>"Matteo"</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_c83c89df-5c16-48e0-bdbc-828d42a5b576">
+          <semantic:text/>
+        </semantic:literalExpression>
+      </semantic:row>
+    </semantic:relation>
+  </semantic:decision>
+  <semantic:decision id="_72bd4b78-68b5-4ec0-95e6-2b7c24035fb6" name="Decision A">
+    <semantic:variable id="_7d38d355-3962-4e3b-9afa-acfe4c89e1c7" name="Decision A" typeRef="tListOfPersons"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_fb0d7409-b04f-43c1-858c-593f0633908b"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_1a536970-2645-4fb6-90c0-d19d61085174">
+      <semantic:text>hardcoded relation</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+</semantic:definitions>

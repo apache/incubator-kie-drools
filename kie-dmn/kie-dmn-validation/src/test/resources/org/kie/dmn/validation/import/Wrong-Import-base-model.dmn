@@ -1,14 +1,38 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_719a2325-5cac-47ea-8a99-665c01d570a5" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:include1="http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.4.201808011735" id="_719a2325-5cac-47ea-8a99-665c01d570a5" name="Wrong Import base model" namespace="http://www.trisotech.com/dmn/definitions/_719a2325-5cac-47ea-8a99-665c01d570a5" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
-  <dmn11:extensionElements/>
-  <dmn11:import xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:modelName="Base model" drools:name="Base model" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30" triso:fileId="eyJmIjp7InNrdSI6ImEwY2Q5OGEwLWNkOWYtNGFhNy05MTliLTI4ZmZlMTM1OTNhNSIsIm5hbWUiOiJCYXNlIG1vZGVsIn19" triso:fileName="20180802-DS/Base model"/>
-  <dmn11:decision id="_0841b391-f5df-4dee-92b4-44cfd1c1f725" name="something wrong">
-    <dmn11:variable id="_bd71dba6-c91a-446f-b781-7b03a1bfa6af" name="something wrong" typeRef="feel:string"/>
-    <dmn11:knowledgeRequirement>
-      <dmn11:requiredKnowledge href="http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30#_1d52934e-aa4e-47c9-a011-fc989d795664"/>
-    </dmn11:knowledgeRequirement>
-    <dmn11:literalExpression id="_9221c9bc-cdfd-4ad9-876b-fde4183fddbd" typeRef="feel:string">
-      <dmn11:text>"something wrong"</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-</dmn11:definitions>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/dmn/definitions/_719a2325-5cac-47ea-8a99-665c01d570a5"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:include1="http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.1.4.201808011735"
+                      id="_719a2325-5cac-47ea-8a99-665c01d570a5"
+                      name="Wrong Import base model"
+                      namespace="http://www.trisotech.com/dmn/definitions/_719a2325-5cac-47ea-8a99-665c01d570a5">
+   <semantic:extensionElements/>
+   <semantic:import xmlns:drools="http://www.drools.org/kie/dmn/1.1"
+                    xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                    drools:modelName="Base model"
+                    drools:name="Base model"
+                    importType="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                    namespace="http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30"
+                    triso:fileId="eyJmIjp7InNrdSI6ImEwY2Q5OGEwLWNkOWYtNGFhNy05MTliLTI4ZmZlMTM1OTNhNSIsIm5hbWUiOiJCYXNlIG1vZGVsIn19"
+                    triso:fileName="20180802-DS/Base model"
+                    name="Base model"/>
+   <semantic:decision id="_0841b391-f5df-4dee-92b4-44cfd1c1f725" name="something wrong">
+      <semantic:variable id="_bd71dba6-c91a-446f-b781-7b03a1bfa6af"
+                         name="something wrong"
+                         typeRef="string"/>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30#_1d52934e-aa4e-47c9-a011-fc989d795664"/>
+      </semantic:knowledgeRequirement>
+      <semantic:literalExpression id="_9221c9bc-cdfd-4ad9-876b-fde4183fddbd" typeRef="string">
+         <semantic:text>"something wrong"</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+</semantic:definitions>

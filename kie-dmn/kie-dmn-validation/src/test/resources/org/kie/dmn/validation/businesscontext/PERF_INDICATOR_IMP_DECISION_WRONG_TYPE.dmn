@@ -14,16 +14,20 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<definitions id="PERF_INDICATOR_IMP_DECISION_WRONG_TYPE" name="PERF_INDICATOR_IMP_DECISION_WRONG_TYPE"
-             namespace="https://github.com/kiegroup/kie-dmn"
-             xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-             xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <textAnnotation id="someDecision1"/>
-  <textAnnotation id="someDecision2"/>
-  <performanceIndicator name="someIndicator" id="someIndicator">
-    <impactingDecision href="#someDecision1"/>
-    <impactingDecision href="#someDecision2"/>
-  </performanceIndicator>
-</definitions>
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      id="PERF_INDICATOR_IMP_DECISION_WRONG_TYPE"
+                      name="PERF_INDICATOR_IMP_DECISION_WRONG_TYPE"
+                      namespace="https://github.com/kiegroup/kie-dmn">
+   <semantic:textAnnotation id="someDecision1"/>
+   <semantic:textAnnotation id="someDecision2"/>
+   <semantic:performanceIndicator name="someIndicator" id="someIndicator">
+      <semantic:impactingDecision href="#someDecision1"/>
+      <semantic:impactingDecision href="#someDecision2"/>
+   </semantic:performanceIndicator>
+</semantic:definitions>

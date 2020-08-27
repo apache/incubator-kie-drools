@@ -1,39 +1,60 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_0fad1a80-0642-4278-ac3d-47668c4f689a" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.14" id="_0fad1a80-0642-4278-ac3d-47668c4f689a" name="Drawing 1" namespace="http://www.trisotech.com/dmn/definitions/_0fad1a80-0642-4278-ac3d-47668c4f689a" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
-  <dmn11:extensionElements/>
-  <dmn11:decision id="_11b0cf1f-caaa-488b-9cc7-ee4d497d1fad" name="a context">
-    <dmn11:variable id="_243981b2-f8f9-4ea2-ae5c-1b4f9c4ee187" name="a context"/>
-    <dmn11:context id="_a474ff6e-b90d-4a24-b750-1ff010b76979" triso:expressionId="_514e886a-5dea-4d54-9816-398beb056d2b">
-      <dmn11:contextEntry>
-        <dmn11:variable id="_46259d7b-089c-4723-adb4-1bad30544f85" name="key1"/>
-        <dmn11:literalExpression id="_8ad42b30-edbb-481e-8266-23e16b92ec7f">
-          <dmn11:text>"value1"</dmn11:text>
-        </dmn11:literalExpression>
-      </dmn11:contextEntry>
-      <dmn11:contextEntry>
-        <dmn11:variable id="_4ec35cac-f710-44ab-be0c-572b5273a170" name="key2"/>
-        <dmn11:literalExpression id="_86092e68-103a-4fc0-9d0d-15dfb22a6982">
-          <dmn11:text>"value2"</dmn11:text>
-        </dmn11:literalExpression>
-      </dmn11:contextEntry>
-    </dmn11:context>
-  </dmn11:decision>
-  <dmn11:decision id="_0e7fa77e-f554-471d-90ae-342606bfc702" name="using get entries">
-    <dmn11:variable id="_faa146d7-796d-4eec-8646-27eca06028b3" name="using get entries"/>
-    <dmn11:informationRequirement>
-      <dmn11:requiredDecision href="#_11b0cf1f-caaa-488b-9cc7-ee4d497d1fad"/>
-    </dmn11:informationRequirement>
-    <dmn11:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_17f1da3d-0003-4130-9746-3f2cceeb5e20" triso:expressionId="_e71eb4cf-d3a8-48f9-954b-6ec2f30d8b80" triso:unparsed="true">
-      <dmn11:text>get entries(a context)[key="key2"].value</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-  <dmn11:decision id="_995807a0-2c30-40e9-a6cc-1b5170b6054e" name="using get value">
-    <dmn11:variable id="_0cbb0201-9359-4eef-b04f-c5f5f1dddef1" name="using get value"/>
-    <dmn11:informationRequirement>
-      <dmn11:requiredDecision href="#_11b0cf1f-caaa-488b-9cc7-ee4d497d1fad"/>
-    </dmn11:informationRequirement>
-    <dmn11:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_4ba261b6-62b5-42a1-bb41-4fd1e65713df" triso:expressionId="_7c99b91a-81d8-404c-8574-d36449bf36ef" triso:unparsed="true">
-      <dmn11:text>get value(a context, "key2")</dmn11:text>
-    </dmn11:literalExpression>
-  </dmn11:decision>
-</dmn11:definitions>
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/dmn/definitions/_0fad1a80-0642-4278-ac3d-47668c4f689a"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.1.14"
+                      id="_0fad1a80-0642-4278-ac3d-47668c4f689a"
+                      name="Drawing 1"
+                      namespace="http://www.trisotech.com/dmn/definitions/_0fad1a80-0642-4278-ac3d-47668c4f689a">
+   <semantic:extensionElements/>
+   <semantic:decision id="_11b0cf1f-caaa-488b-9cc7-ee4d497d1fad" name="a context">
+      <semantic:variable id="_243981b2-f8f9-4ea2-ae5c-1b4f9c4ee187" name="a context"/>
+      <semantic:context xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                        id="_a474ff6e-b90d-4a24-b750-1ff010b76979"
+                        triso:expressionId="_514e886a-5dea-4d54-9816-398beb056d2b">
+         <semantic:contextEntry>
+            <semantic:variable id="_46259d7b-089c-4723-adb4-1bad30544f85" name="key1"/>
+            <semantic:literalExpression id="_8ad42b30-edbb-481e-8266-23e16b92ec7f">
+               <semantic:text>"value1"</semantic:text>
+            </semantic:literalExpression>
+         </semantic:contextEntry>
+         <semantic:contextEntry>
+            <semantic:variable id="_4ec35cac-f710-44ab-be0c-572b5273a170" name="key2"/>
+            <semantic:literalExpression id="_86092e68-103a-4fc0-9d0d-15dfb22a6982">
+               <semantic:text>"value2"</semantic:text>
+            </semantic:literalExpression>
+         </semantic:contextEntry>
+      </semantic:context>
+   </semantic:decision>
+   <semantic:decision id="_0e7fa77e-f554-471d-90ae-342606bfc702" name="using get entries">
+      <semantic:variable id="_faa146d7-796d-4eec-8646-27eca06028b3" name="using get entries"/>
+      <semantic:informationRequirement>
+         <semantic:requiredDecision href="#_11b0cf1f-caaa-488b-9cc7-ee4d497d1fad"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                                  id="_17f1da3d-0003-4130-9746-3f2cceeb5e20"
+                                  triso:expressionId="_e71eb4cf-d3a8-48f9-954b-6ec2f30d8b80"
+                                  triso:unparsed="true">
+         <semantic:text>get entries(a context)[key="key2"].value</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:decision id="_995807a0-2c30-40e9-a6cc-1b5170b6054e" name="using get value">
+      <semantic:variable id="_0cbb0201-9359-4eef-b04f-c5f5f1dddef1" name="using get value"/>
+      <semantic:informationRequirement>
+         <semantic:requiredDecision href="#_11b0cf1f-caaa-488b-9cc7-ee4d497d1fad"/>
+      </semantic:informationRequirement>
+      <semantic:literalExpression xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                                  id="_4ba261b6-62b5-42a1-bb41-4fd1e65713df"
+                                  triso:expressionId="_7c99b91a-81d8-404c-8574-d36449bf36ef"
+                                  triso:unparsed="true">
+         <semantic:text>get value(a context, "key2")</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+</semantic:definitions>
