@@ -25,8 +25,10 @@ import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 
 /**
- * THIS IS VERY EXPERIMENTAL. It's NOT DOCUMENTED because we'll only document it when it actually works in more than 1 use case.
- * It's riddled with TODOs.
+ * THIS CLASS IS EXPERIMENTAL AND UNSUPPORTED.
+ * Backward compatibility is not guaranteed.
+ * It's NOT DOCUMENTED because we'll only document it when it actually works in more than 1 use case.
+ *
  * Do not use.
  *
  * @see TailChainSwapMoveSelectorConfig

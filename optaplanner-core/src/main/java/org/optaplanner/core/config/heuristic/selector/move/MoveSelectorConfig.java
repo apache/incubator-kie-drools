@@ -34,7 +34,6 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSel
 import org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.chained.KOptMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig;
@@ -49,11 +48,9 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
  */
 
 @XmlSeeAlso({
-        UnionMoveSelectorConfig.class, CartesianProductMoveSelectorConfig.class,
-        ChangeMoveSelectorConfig.class, SwapMoveSelectorConfig.class,
-        PillarChangeMoveSelectorConfig.class, PillarSwapMoveSelectorConfig.class,
-        TailChainSwapMoveSelectorConfig.class, KOptMoveSelectorConfig.class,
-        SubChainChangeMoveSelectorConfig.class, SubChainSwapMoveSelectorConfig.class,
+        UnionMoveSelectorConfig.class, CartesianProductMoveSelectorConfig.class, ChangeMoveSelectorConfig.class,
+        SwapMoveSelectorConfig.class, PillarChangeMoveSelectorConfig.class, PillarSwapMoveSelectorConfig.class,
+        TailChainSwapMoveSelectorConfig.class, SubChainChangeMoveSelectorConfig.class, SubChainSwapMoveSelectorConfig.class,
         MoveListFactoryConfig.class, MoveIteratorFactoryConfig.class })
 @XmlType(propOrder = {
         "cacheType",

@@ -8813,6 +8813,53 @@
           "classSimpleName": "TerminationConfig",
           "elementKind": "class",
           "justification": "Define explicit order of elements in the XML."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.moveSelectorConfigList",
+          "new": "field org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.moveSelectorConfigList",
+          "annotationType": "javax.xml.bind.annotation.XmlElements",
+          "annotation": "@javax.xml.bind.annotation.XmlElements({@javax.xml.bind.annotation.XmlElement(name = \"cartesianProductMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"changeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"moveIteratorFactory\", type = org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"moveListFactory\", type = org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"pillarChangeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"pillarSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"subChainChangeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"subChainSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"swapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"tailChainSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"unionMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig.class)})",
+          "package": "org.optaplanner.core.config.constructionheuristic",
+          "classSimpleName": "ConstructionHeuristicPhaseConfig",
+          "fieldName": "moveSelectorConfigList",
+          "elementKind": "field",
+          "justification": "Remove the KOptMoveSelector from XML configuration."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig.moveSelectorConfigList",
+          "new": "field org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig.moveSelectorConfigList",
+          "annotationType": "javax.xml.bind.annotation.XmlElements",
+          "annotation": "@javax.xml.bind.annotation.XmlElements({@javax.xml.bind.annotation.XmlElement(name = \"cartesianProductMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"changeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"moveIteratorFactory\", type = org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"moveListFactory\", type = org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"pillarChangeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"pillarSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"subChainChangeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"subChainSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"swapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"tailChainSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"unionMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig.class)})",
+          "package": "org.optaplanner.core.config.constructionheuristic.placer",
+          "classSimpleName": "QueuedEntityPlacerConfig",
+          "fieldName": "moveSelectorConfigList",
+          "elementKind": "field",
+          "justification": "Remove the KOptMoveSelector from XML configuration."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig.moveSelectorConfig",
+          "new": "field org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig.moveSelectorConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlElements",
+          "annotation": "@javax.xml.bind.annotation.XmlElements({@javax.xml.bind.annotation.XmlElement(name = \"cartesianProductMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"changeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"moveIteratorFactory\", type = org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"moveListFactory\", type = org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"pillarChangeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"pillarSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"subChainChangeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"subChainSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"swapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"tailChainSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"unionMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig.class)})",
+          "package": "org.optaplanner.core.config.exhaustivesearch",
+          "classSimpleName": "ExhaustiveSearchPhaseConfig",
+          "fieldName": "moveSelectorConfig",
+          "elementKind": "field",
+          "justification": "Remove the KOptMoveSelector from XML configuration."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<C extends org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig>",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<C extends org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig>",
+          "annotationType": "javax.xml.bind.annotation.XmlSeeAlso",
+          "annotation": "@javax.xml.bind.annotation.XmlSeeAlso({org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig.class, org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig.class})",
+          "package": "org.optaplanner.core.config.heuristic.selector.move",
+          "classSimpleName": "MoveSelectorConfig",
+          "elementKind": "class",
+          "justification": "Remove the KOptMoveSelector from XML configuration."
         }
       ]
     }

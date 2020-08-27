@@ -29,7 +29,6 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSel
 import org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.chained.KOptMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig;
@@ -52,7 +51,6 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
             @XmlElement(name = CartesianProductMoveSelectorConfig.XML_ELEMENT_NAME,
                     type = CartesianProductMoveSelectorConfig.class),
             @XmlElement(name = ChangeMoveSelectorConfig.XML_ELEMENT_NAME, type = ChangeMoveSelectorConfig.class),
-            @XmlElement(name = KOptMoveSelectorConfig.XML_ELEMENT_NAME, type = KOptMoveSelectorConfig.class),
             @XmlElement(name = MoveIteratorFactoryConfig.XML_ELEMENT_NAME, type = MoveIteratorFactoryConfig.class),
             @XmlElement(name = MoveListFactoryConfig.XML_ELEMENT_NAME, type = MoveListFactoryConfig.class),
             @XmlElement(name = PillarChangeMoveSelectorConfig.XML_ELEMENT_NAME,
