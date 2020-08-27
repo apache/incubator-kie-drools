@@ -53,4 +53,9 @@ public class ResourceGenerator extends AbstractResourceGenerator {
     public List<String> getRestAnnotations() {
         return Arrays.asList("POST", "GET", "PUT", "DELETE");
     }
+
+    @Override
+    protected String getSignalResponseType(String outputType) {
+        return outputType;
+    }
 }

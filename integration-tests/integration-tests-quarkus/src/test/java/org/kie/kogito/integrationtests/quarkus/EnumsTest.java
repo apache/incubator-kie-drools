@@ -56,7 +56,7 @@ class EnumsTest {
                 .body(params)
                 .post("/cinema")
             .then()
-                .statusCode(200)
+                .statusCode(201)
                 .body("id", not(emptyOrNullString()))
                 .body("movie.name", equalTo(movie.getName()))
                 .body("movie.genre", equalTo(movie.getGenre().name()))

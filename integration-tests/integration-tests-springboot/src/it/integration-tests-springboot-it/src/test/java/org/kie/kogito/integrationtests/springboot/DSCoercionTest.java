@@ -21,14 +21,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Period;
 
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -39,19 +36,7 @@ import static org.hamcrest.Matchers.is;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
 @ContextConfiguration(initializers = InfinispanSpringBootTestResource.Conditional.class)
-class DSCoercionTest {
-
-    static {
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-    }
-
-    @LocalServerPort
-    int randomServerPort;
-
-    @BeforeEach
-    void setPort() {
-        RestAssured.port = randomServerPort;
-    }
+class DSCoercionTest extends BaseRestTest {
 
     @Test
     void testWholeModel() {

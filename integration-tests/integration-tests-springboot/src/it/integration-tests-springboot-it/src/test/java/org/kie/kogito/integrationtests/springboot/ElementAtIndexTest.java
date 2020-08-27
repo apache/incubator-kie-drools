@@ -17,7 +17,6 @@ package org.kie.kogito.integrationtests.springboot;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
@@ -34,19 +33,7 @@ import static org.hamcrest.Matchers.nullValue;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
 @ContextConfiguration(initializers = InfinispanSpringBootTestResource.Conditional.class)
-class ElementAtIndexTest {
-
-    static {
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-    }
-
-    @LocalServerPort
-    int randomServerPort;
-
-    @BeforeEach
-    void setPort() {
-        RestAssured.port = randomServerPort;
-    }
+class ElementAtIndexTest extends BaseRestTest {
 
     @Test
     void testHeaderEmpty() {

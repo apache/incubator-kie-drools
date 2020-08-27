@@ -29,7 +29,6 @@ import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.emptyOrNullString;
 
 @QuarkusTest
@@ -45,39 +44,37 @@ class AdHocFragmentsTest {
         Map<String, String> params = new HashMap<>();
         params.put("var1", "Kermit");
 
-        String pid = given()
+        String id = given()
                 .contentType(ContentType.JSON)
             .when()
                 .body(params)
                 .post("/AdHocFragments")
             .then()
-                .statusCode(200)
-                .body("id", not(emptyOrNullString()))
-                .body("var1", equalTo("Kermit"))
-                .extract().path("id");
+                .statusCode(201)
+                .header("Location", not(emptyOrNullString()))
+            .extract()
+                .path("id");
 
-        String link = given()
+        String taskId = extractID(given()
                 .contentType(ContentType.JSON)
             .when()
-                .post("/AdHocFragments/{pid}/AdHocTask1", pid)
+                .post("/AdHocFragments/{pid}/AdHocTask1", id)
             .then()
-                .statusCode(200)
-                .header("Link", notNullValue())
-                .extract().header("Link");
-
-        String taskPath = link.substring(link.indexOf("<") + 1, link.indexOf(">"));
+                .statusCode(201)
+                .header("Location", not(emptyOrNullString()))
+            .extract()
+                .header("Location"));
 
         params = new HashMap<>();
         params.put("newVar1", "Gonzo");
         given()
                 .contentType(ContentType.JSON)
             .when()
-                .urlEncodingEnabled(false)
                 .body(params)
-                .post("/AdHocFragments/{taskPath}", taskPath)
+                .post("/AdHocFragments/{id}/AdHocTask1/{taskId}", id, taskId)
             .then()
-                .body("var1", equalTo("Gonzo"))
-                .statusCode(200);
+                .statusCode(200)
+                .body("var1", equalTo("Gonzo"));
     }
 
     @Test
@@ -91,10 +88,9 @@ class AdHocFragmentsTest {
                 .body(params)
                 .post("/AdHocFragments")
             .then()
-                .statusCode(200)
-                .body("id", not(emptyOrNullString()))
-                .body("var1", equalTo("Kermit"))
-                .extract().path("id");
+                .statusCode(201)
+            .extract()
+                .path("id");
 
         given()
                 .contentType(ContentType.JSON)
@@ -116,10 +112,9 @@ class AdHocFragmentsTest {
                 .body(params)
                 .post("/AdHocFragments")
             .then()
-                .statusCode(200)
-                .body("id", not(emptyOrNullString()))
-                .body("var1", equalTo("Kermit"))
-                .extract().path("id");
+                .statusCode(201)
+            .extract()
+                .path("id");
 
         given()
                 .contentType(ContentType.JSON)
@@ -127,5 +122,9 @@ class AdHocFragmentsTest {
                 .post("/AdHocFragments/{pid}/Task", pid)
             .then()
                 .statusCode(404);
+    }
+
+    static String extractID(String location) {
+        return location.substring(location.lastIndexOf("/") + 1);
     }
 }

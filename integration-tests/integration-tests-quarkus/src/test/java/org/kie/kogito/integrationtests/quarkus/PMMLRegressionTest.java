@@ -26,7 +26,9 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -51,12 +53,12 @@ class PMMLRegressionTest {
                 .post("/LinReg")
                 .then()
                 .statusCode(200)
-                .body("correlationId", is(new IsNull()))
-                .body("segmentationId", is(new IsNull()))
-                .body("segmentId", is(new IsNull()))
-                .body("segmentIndex", is(0)) // as JSON is not schema aware, here we assert the RAW string
-                .body("resultCode", is("OK"))
-                .body("resultObjectName", is("fld4"))
+                .body("correlationId", nullValue())
+                .body("segmentationId", nullValue())
+                .body("segmentId", nullValue())
+                .body("segmentIndex", equalTo(0)) // as JSON is not schema aware, here we assert the RAW string
+                .body("resultCode", equalTo("OK"))
+                .body("resultObjectName", equalTo("fld4"))
                 .extract()
                 .path("resultVariables");
         assertNotNull(resultVariables);

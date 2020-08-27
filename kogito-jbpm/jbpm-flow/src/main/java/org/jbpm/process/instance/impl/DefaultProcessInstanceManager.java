@@ -33,18 +33,8 @@ public class DefaultProcessInstanceManager implements ProcessInstanceManager {
     private Map<CorrelationKey, ProcessInstance> processInstancesByCorrelationKey = new ConcurrentHashMap<>();
 
     public void addProcessInstance(ProcessInstance processInstance, CorrelationKey correlationKey) {
-        String uuid;
-        if (correlationKey != null) {
-            uuid = UUID.nameUUIDFromBytes(correlationKey.toExternalForm().getBytes()).toString();
-            if (processInstancesByCorrelationKey.containsKey(correlationKey)) {
-                throw new RuntimeException(correlationKey + " already exists");
-            }
-            processInstancesByCorrelationKey.put(correlationKey, processInstance);
-        } else {
-            uuid = UUID.randomUUID().toString();
-        }
-
-        ((org.jbpm.process.instance.ProcessInstance) processInstance).setId(uuid);
+        String id = UUID.randomUUID().toString();
+        ((org.jbpm.process.instance.ProcessInstance) processInstance).setId(id);
         internalAddProcessInstance(processInstance);
     }
 

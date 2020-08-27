@@ -206,9 +206,8 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
         ((InternalProcessRuntime) getProcessRuntime()).getProcessInstanceManager().addProcessInstance(this.processInstance, this.correlationKey);
         this.id = processInstance.getId();
-        // this applies to business keys only as non business keys process instances id are always unique
         if (correlationKey != null && process.instances.exists(id)) {
-            throw new ProcessInstanceDuplicatedException(correlationKey.getName());
+            throw new ProcessInstanceDuplicatedException(id);
         }
         addCompletionEventListener();
         org.kie.api.runtime.process.ProcessInstance processInstance = getProcessRuntime().startProcessInstance(this.id, trigger);
@@ -292,6 +291,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         for (Entry<String, Object> entry : map.entrySet()) {
             processInstance().setVariable(entry.getKey(), entry.getValue());
         }
+        this.variables.update(map);
         addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).update(pi.id(), pi));
         return variables;
     }

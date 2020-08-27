@@ -32,7 +32,7 @@
   <bpmn2:interface id="_FACFF454-18FA-420D-A9AB-F4323E38499C_ServiceInterface" name="org.kie.kogito.integrationtests.HelloService" implementationRef="org.kie.kogito.integrationtests.HelloService">
     <bpmn2:operation id="_FACFF454-18FA-420D-A9AB-F4323E38499C_ServiceOperation" name="helloOutput" implementationRef="helloOutput"/>
   </bpmn2:interface>
-  <bpmn2:process id="TestCase.AdHocFragments" drools:packageName="org.kie.kogito" drools:version="1.0" drools:adHoc="true" name="AdHocFragments" isExecutable="true" processType="Public">
+  <bpmn2:process id="AdHocFragments" drools:packageName="org.kie.kogito" drools:version="1.0" drools:adHoc="true" name="AdHocFragments" isExecutable="true" processType="Public">
     <bpmn2:property id="var1" itemSubjectRef="_var1Item" name="var1"/>
     <bpmn2:sequenceFlow id="_830D53F8-A344-45AE-A1A1-2173DD983A43" sourceRef="_89FFDFF9-8D8A-4B86-B48C-76F30299D8D3" targetRef="_319B612D-CD70-4FB0-8390-2F825115847E">
       <bpmn2:extensionElements>

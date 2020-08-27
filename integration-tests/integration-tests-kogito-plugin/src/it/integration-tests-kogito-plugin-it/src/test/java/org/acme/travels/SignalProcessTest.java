@@ -34,45 +34,48 @@ public class SignalProcessTest {
     }
 
     @Test
-    public void testProcessSignals() {
+    void testProcessSignals() {
         String pid = given()
                 .contentType(ContentType.JSON)
-                .when()
+            .when()
                 .post("/greetings")
-                .then()
-                .statusCode(200)
+            .then()
+                .statusCode(201)
                 .body("id", not(emptyOrNullString()))
                 .body("test", emptyOrNullString())
-                .extract().path("id");
+            .extract()
+                .path("id");
 
         given()
                 .contentType(ContentType.JSON)
-                .when()
+            .when()
                 .body("testvalue")
                 .post("/greetings/{pid}/signalwithdata", pid)
-                .then()
-                .statusCode(200);
+            .then()
+                .statusCode(200)
+                .body("id", not(emptyOrNullString()))
+                .body("test", is("testvalue"));
 
         given()
                 .contentType(ContentType.JSON)
-                .when()
+            .when()
                 .get("/greetings/{pid}", pid)
-                .then()
+            .then()
                 .statusCode(200)
                 .body("test", is("testvalue"));
 
         given()
                 .contentType(ContentType.JSON)
-                .when()
+            .when()
                 .post("/greetings/{pid}/signalwithoutdata", pid)
-                .then()
+            .then()
                 .statusCode(200);
 
         given()
                 .contentType(ContentType.JSON)
-                .when()
+            .when()
                 .get("/greetings/{pid}", pid)
-                .then()
-                .statusCode(204);
+            .then()
+                .statusCode(404);
     }
 }

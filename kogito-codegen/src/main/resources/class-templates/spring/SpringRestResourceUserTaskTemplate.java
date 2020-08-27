@@ -1,6 +1,7 @@
 package com.myspace.demo;
 
 import java.util.List;
+import java.util.Map;
 
 import org.jbpm.util.JsonSchemaUtil;
 import org.kie.api.runtime.process.WorkItemNotFoundException;
@@ -19,7 +20,8 @@ public class $Type$Resource {
 
     @PostMapping(value = "/{id}/$taskName$", produces = MediaType.APPLICATION_JSON_VALUE,
                  consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<$Type$Output> signal(@PathVariable("id") final String id) {
+    public ResponseEntity<$Type$Output> signal(@PathVariable("id") final String id,
+                                               final UriComponentsBuilder uriComponentsBuilder) {
         return UnitOfWorkExecutor
             .executeInUnitOfWork(
                 application.unitOfWorkManager(),
@@ -34,20 +36,19 @@ public class $Type$Resource {
                             .filter(wi -> wi.getName().equals("$taskName$"))
                             .findFirst();
                         if (task.isPresent()) {
-                            return ResponseEntity
-                                .status(HttpStatus.OK)
-                                .header("Link", "</" + id + "/$taskName$/" + task.get().getId() + ">; rel='instance'")
-                                .body(pi.variables().toOutput())
-                                .build();
+                            UriComponents uriComponents = uriComponentsBuilder.path("/{taskId}").buildAndExpand(task.get().getId());
+                            URI location = uriComponents.toUri();
+                            return ResponseEntity.created(location)
+                                    .body(pi.checkError().variables().toOutput());
                         }
-                        return ResponseEntity.notFound().build();
+                        return new ResponseEntity<$Type$Output>(HttpStatus.NOT_FOUND);
                     })
-                    .orElse(null));
+                    .orElseGet(() -> ResponseEntity.notFound().build()));
     }
 
     @PostMapping(value = "/{id}/$taskName$/{workItemId}", produces = MediaType.APPLICATION_JSON_VALUE,
                  consumes = MediaType.APPLICATION_JSON_VALUE)
-    public $Type$Output completeTask(@PathVariable("id") final String id,
+    public ResponseEntity<$Type$Output> completeTask(@PathVariable("id") final String id,
                                      @PathVariable("workItemId") final String workItemId,
                                      @RequestParam(value = "phase", defaultValue = "complete") final String phase,
                                      @RequestParam(value = "user", required = false) final String user,
@@ -64,13 +65,13 @@ public class $Type$Resource {
                             .transitionWorkItem(
                                 workItemId,
                                 HumanTaskTransition.withoutModel(phase, Policies.of(user, groups)));
-                        return pi.variables().toOutput();
+                        ResponseEntity.ok(pi.checkError().variables().toOutput());
                     })
-                    .orElse(null));
+                    .orElseGet(() -> ResponseEntity.notFound().build()));
     }
 
     @GetMapping(value = "/{id}/$taskName$/{workItemId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public $TaskInput$ getTask(@PathVariable("id") String id,
+    public ResponseEntity<$TaskInput$> getTask(@PathVariable("id") String id,
                                @PathVariable("workItemId") String workItemId,
                                @RequestParam(value = "user", required = false) final String user,
                                @RequestParam(value = "group", required = false) final List<String> groups) {
@@ -78,19 +79,20 @@ public class $Type$Resource {
             .instances()
             .findById(id)
             .map(pi -> $TaskInput$.from(pi.workItem(workItemId, Policies.of(user, groups))))
-            .orElse(null);
+            .map(m -> ResponseEntity.ok(m))
+            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping(value = "$taskName$/schema", produces = MediaType.APPLICATION_JSON)
-    public JsonSchema getSchema() {
+    @GetMapping(value = "$taskName$/schema", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> getSchema() {
         return JsonSchemaUtil.load(this.getClass().getClassLoader(), process.id(), "$taskName$");
     }
 
-    @GetMapping(value = "/{id}/$taskName$/{workItemId}/schema", produces = MediaType.APPLICATION_JSON)
-    public JsonSchema getSchemaAndPhases(@PathParam("id") final String id,
-                                         @PathParam("workItemId") final String workItemId,
-                                         @QueryParam("user") final String user,
-                                         @QueryParam("group") final List<String> groups) {
+    @GetMapping(value = "/{id}/$taskName$/{workItemId}/schema", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> getSchemaAndPhases(@PathVariable("id") final String id,
+                                         @PathVariable("workItemId") final String workItemId,
+                                         @RequestParam(value = "user", required = false) final String user,
+                                         @RequestParam(value = "group", required = false) final List<String> groups) {
         return JsonSchemaUtil
             .addPhases(
                 process,
@@ -102,7 +104,7 @@ public class $Type$Resource {
     }
 
     @DeleteMapping(value = "/{id}/$taskName$/{workItemId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public $Type$Output abortTask(@PathVariable("id") final String id,
+    public ResponseEntity<$Type$Output> abortTask(@PathVariable("id") final String id,
                                   @PathVariable("workItemId") final String workItemId,
                                   @RequestParam(value = "phase", defaultValue = "abort") final String phase,
                                   @RequestParam(value = "user", required = false) final String user,
@@ -118,8 +120,8 @@ public class $Type$Resource {
                             .transitionWorkItem(
                                 workItemId,
                                 HumanTaskTransition.withoutModel(phase, Policies.of(user, groups)));
-                        return pi.variables().toOutput();
+                        return ResponseEntity.ok(pi.checkError().variables().toOutput());
                     })
-                    .orElse(null));
+                    .orElseGet(() -> ResponseEntity.notFound().build()));
     }
 }

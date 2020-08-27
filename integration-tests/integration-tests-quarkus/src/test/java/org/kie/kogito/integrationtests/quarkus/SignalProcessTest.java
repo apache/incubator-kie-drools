@@ -27,6 +27,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.nullValue;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanQuarkusTestResource.Conditional.class)
@@ -40,42 +41,45 @@ class SignalProcessTest {
     void testProcessSignals() {
         String pid = given()
                 .contentType(ContentType.JSON)
-                .when()
+            .when()
                 .post("/greetings")
-                .then()
-                .statusCode(200)
+            .then()
+                .statusCode(201)
                 .body("id", not(emptyOrNullString()))
-                .body("test", emptyOrNullString())
-                .extract().path("id");
+                .body("test", nullValue())
+            .extract()
+                .path("id");
 
         given()
                 .contentType(ContentType.JSON)
-                .when()
+            .when()
                 .body("testvalue")
                 .post("/greetings/{pid}/signalwithdata", pid)
-                .then()
-                .statusCode(200);
+            .then()
+                .statusCode(200)
+                .body("id", not(emptyOrNullString()))
+                .body("test", is("testvalue"));
 
         given()
                 .contentType(ContentType.JSON)
-                .when()
+            .when()
                 .get("/greetings/{pid}", pid)
-                .then()
+            .then()
                 .statusCode(200)
                 .body("test", is("testvalue"));
 
         given()
                 .contentType(ContentType.JSON)
-                .when()
+            .when()
                 .post("/greetings/{pid}/signalwithoutdata", pid)
-                .then()
+            .then()
                 .statusCode(200);
 
         given()
                 .contentType(ContentType.JSON)
-                .when()
+            .when()
                 .get("/greetings/{pid}", pid)
-                .then()
-                .statusCode(204);
+            .then()
+                .statusCode(404);
     }
 }

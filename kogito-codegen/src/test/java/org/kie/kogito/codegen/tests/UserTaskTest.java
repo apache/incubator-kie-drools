@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
-
 import javax.ws.rs.Path;
 
 import org.jbpm.process.instance.impl.humantask.HumanTaskTransition;
@@ -45,10 +44,8 @@ import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.ProcessInstanceDuplicatedException;
 import org.kie.kogito.process.VariableViolationException;
 import org.kie.kogito.process.WorkItem;
-import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.process.workitem.InvalidTransitionException;
 import org.kie.kogito.process.workitem.NotAuthorizedException;
 import org.kie.kogito.process.workitem.Policy;
@@ -859,17 +856,20 @@ public class UserTaskTest extends AbstractCodegenTest {
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
         m.fromMap(parameters);
+
         // assign custom business key for process instance
-        ProcessInstance<?> processInstance = p.createInstance("custom id", m);
+        String businessKey = "business key";
+        ProcessInstance<?> processInstance = p.createInstance(businessKey, m);
         processInstance.start();
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         // verify that custom business key is assigned properly
-        assertThat(processInstance.businessKey()).isEqualTo("custom id");
+        assertThat(processInstance.businessKey()).isEqualTo(businessKey);
 
-        // find the process instance by business key
-        Optional<?> processInstanceByBussinesKey = p.instances().findById("custom id");
+        // find the process instance by ID and verify business key
+        Optional<? extends ProcessInstance<? extends Model>> processInstanceByBussinesKey = p.instances().findById(processInstance.id());
         assertThat(processInstanceByBussinesKey.isPresent()).isTrue();
+        assertThat(processInstanceByBussinesKey.get().businessKey()).isEqualTo(businessKey);
 
         List<WorkItem> workItems = processInstance.workItems(securityPolicy);
         assertEquals(1, workItems.size());
@@ -897,31 +897,19 @@ public class UserTaskTest extends AbstractCodegenTest {
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();
         m.fromMap(parameters);
+
         // assign custom business key for process instance
-        ProcessInstance<?> processInstance = p.createInstance("custom id", m);
+        String businessKey = "business key";
+        ProcessInstance<?> processInstance = p.createInstance(businessKey, m);
         processInstance.start();
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         // verify that custom business key is assigned properly
-        assertThat(processInstance.businessKey()).isEqualTo("custom id");
+        assertThat(processInstance.businessKey()).isEqualTo(businessKey);
 
         // start another process instance with assigned duplicated business key of already active instance
-        assertThrows(ProcessInstanceDuplicatedException.class, () -> p.createInstance("custom id", m).start());
-
-        // abort first one
-        processInstance.abort();
-
-        // now it should be possible to start second one with same business key
-        ProcessInstance<?> processInstance2 = p.createInstance("custom id", m);
-        processInstance2.start();
-        assertThat(processInstance2.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        // verify that custom business key is assigned properly
-        assertThat(processInstance2.businessKey()).isEqualTo("custom id");
-
-        // find the process instance by business key
-        Optional<?> processInstanceByBussinesKey = p.instances().findById("custom id");
-        assertThat(processInstanceByBussinesKey.isPresent()).isTrue();
-        processInstance2 = (ProcessInstance<?>) processInstanceByBussinesKey.get();
-        processInstance2.abort();
+        ProcessInstance<? extends Model> otherProcessInstance = p.createInstance(businessKey, m);
+        assertThat(otherProcessInstance.id()).isNotEqualTo(processInstance.id());
+        assertThat(otherProcessInstance.businessKey()).isEqualTo(processInstance.businessKey()).isEqualTo(businessKey);
     }
 }

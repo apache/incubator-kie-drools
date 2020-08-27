@@ -1,10 +1,13 @@
 package org.kie.kogito.quarkus.jbpm;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
 
 import javax.inject.Inject;
 
+import org.hamcrest.Matchers;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -33,7 +36,8 @@ public class ProcessEndpointTest {
                 .when()
                 .post("/tests")
                 .then()
-                .statusCode(200)
-                .body("$", hasKey("id"));
+                .statusCode(201)
+                .body("id", not(emptyOrNullString()))
+                .header("Location", not(emptyOrNullString()));
     }
 }

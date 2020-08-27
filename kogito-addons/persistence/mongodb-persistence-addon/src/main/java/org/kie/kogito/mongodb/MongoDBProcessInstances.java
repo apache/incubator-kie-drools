@@ -55,7 +55,7 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
 
     @Override
     public Optional<ProcessInstance<T>> findById(String id, ProcessInstanceReadMode mode) {
-        ProcessInstanceDocument piDoc = find(resolveId(id));
+        ProcessInstanceDocument piDoc = find(id);
         if (piDoc == null) {
             return Optional.empty();
         }
@@ -84,8 +84,6 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
     }
 
     protected void updateStorage(String id, ProcessInstance<T> instance, boolean checkDuplicates) {
-
-        String resolvedId = resolveId(id);
         if (isActive(instance)) {
             ProcessInstanceDocument doc = marshaller.marshalProcessInstance(instance);
             if (checkDuplicates) {
@@ -95,33 +93,30 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
                     collection.insertOne(doc);
                 }
             } else {
-                collection.replaceOne(Filters.eq(DOCUMENT_ID, resolvedId), doc);
+                collection.replaceOne(Filters.eq(DOCUMENT_ID, id), doc);
             }
         }
-        reloadProcessInstance(instance, resolvedId);
+        reloadProcessInstance(instance, id);
     }
 
-    private ProcessInstanceDocument find(String resolvedId) {
-        return collection.find(Filters.eq(DOCUMENT_ID, resolvedId)).first();
+    private ProcessInstanceDocument find(String id) {
+        return collection.find(Filters.eq(DOCUMENT_ID, id)).first();
     }
 
     @Override
     public boolean exists(String id) {
-        String resolvedId = resolveId(id);
-        ProcessInstanceDocument existing = find(resolvedId);
-        return existing != null;
+        return find(id) != null;
     }
 
     @Override
     public void remove(String id) {
-        String resolvedId = resolveId(id);
-        collection.deleteOne(Filters.eq(DOCUMENT_ID, resolvedId));
+        collection.deleteOne(Filters.eq(DOCUMENT_ID, id));
     }
 
-    private void reloadProcessInstance(ProcessInstance<T> instance, String resolvedId) {
+    private void reloadProcessInstance(ProcessInstance<T> instance, String id) {
         ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(() -> {
             try {
-                ProcessInstanceDocument reloaded = find(resolvedId);
+                ProcessInstanceDocument reloaded = find(id);
                 if (reloaded != null) {
                     return marshaller.unmarshallWorkflowProcessInstance(reloaded, process);
                 }

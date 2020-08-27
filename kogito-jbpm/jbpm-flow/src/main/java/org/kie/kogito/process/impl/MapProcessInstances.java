@@ -35,7 +35,7 @@ class MapProcessInstances<T> implements MutableProcessInstances<T> {
 
     @Override
     public Optional<ProcessInstance<T>> findById(String id, ProcessInstanceReadMode mode) {
-        return Optional.ofNullable(instances.get(resolveId(id)));
+        return Optional.ofNullable(instances.get(id));
     }
 
     @Override
@@ -46,7 +46,7 @@ class MapProcessInstances<T> implements MutableProcessInstances<T> {
     @Override
     public void create(String id, ProcessInstance<T> instance) {
         if (isActive(instance)) {
-            ProcessInstance<T> existing = instances.putIfAbsent(resolveId(id), instance);
+            ProcessInstance<T> existing = instances.putIfAbsent(id, instance);
             if (existing != null) {
                 throw new ProcessInstanceDuplicatedException(id);
             }
@@ -56,13 +56,13 @@ class MapProcessInstances<T> implements MutableProcessInstances<T> {
     @Override
     public void update(String id, ProcessInstance<T> instance) {
         if (isActive(instance)) {
-            instances.put(resolveId(id), instance);
+            instances.put(id, instance);
         }
     }
 
     @Override
     public void remove(String id) {
-        instances.remove(resolveId(id));
+        instances.remove(id);
     }
 
     @Override

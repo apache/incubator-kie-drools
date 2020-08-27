@@ -80,8 +80,7 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
 
     @Override
     public Optional findById(String id, ProcessInstanceReadMode mode) {
-        String resolvedId = resolveId(id);
-        Path processInstanceStorage = Paths.get(storage.toString(), resolvedId);
+        Path processInstanceStorage = Paths.get(storage.toString(), id);
 
         if (Files.notExists(processInstanceStorage)) {
             return Optional.empty();
@@ -110,16 +109,14 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
 
     @Override
     public boolean exists(String id) {
-        return Files.exists(Paths.get(storage.toString(), resolveId(id)));
+        return Files.exists(Paths.get(storage.toString(), id));
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void create(String id, ProcessInstance instance) {
         if (isActive(instance)) {
-            String resolvedId = resolveId(id);
-            Path processInstanceStorage = Paths.get(storage.toString(), resolvedId);
-
+            Path processInstanceStorage = Paths.get(storage.toString(), id);
             if (Files.exists(processInstanceStorage)) {
                 throw new ProcessInstanceDuplicatedException(id);
             }
@@ -131,9 +128,7 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
     @Override
     public void update(String id, ProcessInstance instance) {
         if (isActive(instance)) {
-            String resolvedId = resolveId(id);
-            Path processInstanceStorage = Paths.get(storage.toString(), resolvedId);
-
+            Path processInstanceStorage = Paths.get(storage.toString(), id);
             if (Files.exists(processInstanceStorage)) {
                 storeProcessInstance(processInstanceStorage, instance);
             }
@@ -142,8 +137,7 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
 
     @Override
     public void remove(String id) {
-        Path processInstanceStorage = Paths.get(storage.toString(), resolveId(id));
-
+        Path processInstanceStorage = Paths.get(storage.toString(), id);
         try {
             Files.deleteIfExists(processInstanceStorage);
         } catch (IOException e) {

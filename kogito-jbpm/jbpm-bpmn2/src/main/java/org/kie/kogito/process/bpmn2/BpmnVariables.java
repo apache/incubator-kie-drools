@@ -66,6 +66,12 @@ public class BpmnVariables implements Model {
         return this;
     }
 
+    @Override
+    public void update(Map<String, Object> params) {
+        fromMap(params);
+    }
+
+    @Override
     public void fromMap(Map<String, Object> vs) {
         variables.putAll(vs);
     }

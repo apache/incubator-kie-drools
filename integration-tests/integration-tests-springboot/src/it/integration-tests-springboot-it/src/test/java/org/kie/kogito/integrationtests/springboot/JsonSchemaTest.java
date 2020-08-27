@@ -33,14 +33,7 @@ import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInC
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
 @ContextConfiguration(initializers = InfinispanSpringBootTestResource.Conditional.class)
-class JsonSchemaTest {
-
-    static {
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-    }
-
-    @LocalServerPort
-    int randomServerPort;
+public class JsonSchemaTest extends BaseRestTest {
 
     @Test
     void testJsonSchema() {

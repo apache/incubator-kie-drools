@@ -36,7 +36,7 @@ public class $Type$Resource {
             return process.instances().findById(id).map(pi -> {
                 pi.send(Sig.of("$signalName$", data));
                 return pi.checkError().variables().toOutput();
-            }).orElse(null);
+            }).orElseThrow(() -> new NotFoundException());
         });
     }
 }

@@ -46,34 +46,16 @@ class ManagementAddOnTest {
     }
 
     @Test
-    void testGetProcessNodes() {
-        given()
-                .contentType(ContentType.JSON)
-                .when()
-                .get("/management/processes/{processId}/nodes", "greetings")
-                .then()
-                .statusCode(200)
-                .body("$.size", is(10))
-                .body("[0].id", is(1))
-                .body("[0].name", is("End"))
-                .body("[0].type", is("EndNode"))
-                .body("[0].uniqueId", is("1"))
-                .body("[9].id", is(10))
-                .body("[9].name", is("BoundaryEvent"))
-                .body("[9].type", is("BoundaryEventNode"))
-                .body("[9].uniqueId", is("10"));
-    }
-
-    @Test
     void testAbortProcessInstance() {
         String pid = given()
                 .contentType(ContentType.JSON)
                 .when()
                 .post("/greetings")
                 .then()
-                .statusCode(200)
+                .statusCode(201)
                 .body("id", not(emptyOrNullString()))
                 .body("test", emptyOrNullString())
+                .header("Location", not(emptyOrNullString()))
                 .extract().path("id");
 
         given()
@@ -91,9 +73,10 @@ class ManagementAddOnTest {
                 .when()
                 .post("/greetings")
                 .then()
-                .statusCode(200)
+                .statusCode(201)
                 .body("id", not(emptyOrNullString()))
                 .body("test", emptyOrNullString())
+                .header("Location", not(emptyOrNullString()))
                 .extract().path("id");
 
         given()
@@ -107,5 +90,24 @@ class ManagementAddOnTest {
                 .body("[0].state", is(0))
                 .body("[1].name", is("Task"))
                 .body("[1].state", is(0));
+    }
+
+    @Test
+    void testGetProcessNodes() {
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/management/processes/{processId}/nodes", "greetings")
+                .then()
+                .statusCode(200)
+                .body("$.size", is(10))
+                .body("[0].id", is(1))
+                .body("[0].name", is("End"))
+                .body("[0].type", is("EndNode"))
+                .body("[0].uniqueId", is("1"))
+                .body("[9].id", is(10))
+                .body("[9].name", is("BoundaryEvent"))
+                .body("[9].type", is("BoundaryEventNode"))
+                .body("[9].uniqueId", is("10"));
     }
 }

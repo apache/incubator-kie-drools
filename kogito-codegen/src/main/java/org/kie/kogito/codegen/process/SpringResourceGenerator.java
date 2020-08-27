@@ -60,4 +60,9 @@ public class SpringResourceGenerator extends AbstractResourceGenerator {
     public List<String> getRestAnnotations() {
         return Arrays.asList("PostMapping", "GetMapping", "PutMapping", "DeleteMapping");
     }
+
+    @Override
+    protected String getSignalResponseType(String outputType) {
+        return "ResponseEntity<" + outputType + ">";
+    }
 }

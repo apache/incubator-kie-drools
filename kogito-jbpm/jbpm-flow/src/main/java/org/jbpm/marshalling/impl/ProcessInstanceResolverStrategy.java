@@ -20,7 +20,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.jbpm.process.instance.ProcessInstanceManager;
@@ -51,12 +50,7 @@ public class ProcessInstanceResolverStrategy
         ObjectMarshallingStrategy {
 
     public boolean accept(Object object) {
-        if ( object instanceof ProcessInstance ) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return object instanceof ProcessInstance;
     }
 
     public void write(ObjectOutputStream os,
@@ -68,8 +62,7 @@ public class ProcessInstanceResolverStrategy
         os.writeUTF( processInstance.getId() );
     }
 
-    public Object read(ObjectInputStream is) throws IOException,
-                                            ClassNotFoundException {
+    public Object read(ObjectInputStream is) throws IOException {
         String processInstanceId = is.readUTF();
         ProcessInstanceManager pim = retrieveProcessInstanceManager( is );
         ProcessInstance processInstance = pim.getProcessInstance( processInstanceId );
@@ -92,14 +85,14 @@ public class ProcessInstanceResolverStrategy
      * @return A {@link ProcessInstanceManager} object. 
      */
     public static ProcessInstanceManager retrieveProcessInstanceManager(Object streamContext) {
-        ProcessInstanceManager pim = null;
+        ProcessInstanceManager pim;
         if ( streamContext instanceof MarshallerWriteContext ) {
             MarshallerWriteContext context = (MarshallerWriteContext) streamContext;
-            pim = ((ProcessRuntimeImpl) ((InternalWorkingMemory) context.wm).getProcessRuntime()).getProcessInstanceManager();
+            pim = ((ProcessRuntimeImpl) context.wm.getProcessRuntime()).getProcessInstanceManager();
         }
         else if ( streamContext instanceof MarshallerReaderContext ) {
             MarshallerReaderContext context = (MarshallerReaderContext) streamContext;
-            pim = ((ProcessRuntimeImpl) ((InternalWorkingMemory) context.wm).getProcessRuntime()).getProcessInstanceManager();
+            pim = ((ProcessRuntimeImpl) context.wm.getProcessRuntime()).getProcessInstanceManager();
         }
         else {
             throw new UnsupportedOperationException( "Unable to retrieve " + ProcessInstanceManager.class.getSimpleName() + " from "
@@ -146,14 +139,14 @@ public class ProcessInstanceResolverStrategy
      * @return A {@link InternalKnowledgeRuntime} object. 
      */
     public static InternalKnowledgeRuntime retrieveKnowledgeRuntime(Object streamContext) {
-        InternalKnowledgeRuntime kruntime = null;
+        InternalKnowledgeRuntime kruntime;
         if ( streamContext instanceof MarshallerWriteContext ) {
             MarshallerWriteContext context = (MarshallerWriteContext) streamContext;
-            kruntime = ((InternalWorkingMemory) context.wm).getKnowledgeRuntime();
+            kruntime = context.wm.getKnowledgeRuntime();
         }
         else if ( streamContext instanceof MarshallerReaderContext ) {
             MarshallerReaderContext context = (MarshallerReaderContext) streamContext;
-            kruntime = ((InternalWorkingMemory) context.wm).getKnowledgeRuntime();
+            kruntime = context.wm.getKnowledgeRuntime();
         }
         else {
             throw new UnsupportedOperationException( "Unable to retrieve " + ProcessInstanceManager.class.getSimpleName() + " from "
@@ -164,7 +157,7 @@ public class ProcessInstanceResolverStrategy
 
     public byte[] marshal(Context context,
                           ObjectOutputStream os,
-                          Object object) throws IOException {
+                          Object object) {
         ProcessInstance processInstance = (ProcessInstance) object;
         connectProcessInstanceToRuntimeAndProcess( processInstance, os );
         return processInstance.getId().getBytes();
@@ -174,8 +167,7 @@ public class ProcessInstanceResolverStrategy
                             Context context,
                             ObjectInputStream is,
                             byte[] object,
-                            ClassLoader classloader) throws IOException,
-                                                    ClassNotFoundException {
+                            ClassLoader classloader) {
         String processInstanceId = new String( object );
         ProcessInstanceManager pim = retrieveProcessInstanceManager( is );
         // load it as read only to avoid any updates to the data base

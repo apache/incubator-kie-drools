@@ -128,6 +128,11 @@ public class AbstractProcessInstanceTest {
     static class TestModel implements Model {
 
         @Override
+        public void update(Map<String, Object> params) {
+            fromMap(params);
+        }
+
+        @Override
         public Map<String, Object> toMap() {
             return null;
         }

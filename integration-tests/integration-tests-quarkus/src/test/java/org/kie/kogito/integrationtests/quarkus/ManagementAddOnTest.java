@@ -22,7 +22,6 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
@@ -40,19 +39,19 @@ class ManagementAddOnTest {
     private static final String HELLO1_NODE = "_3CDC6E61-DCC5-4831-8BBB-417CFF517CB0";
     private static final String GREETINGS = "greetings";
 
-    @BeforeAll
-    public static void beforeAll() {
+    static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
     @Test
     void testGetProcessNodesWithInvalidProcessId() {
-        given().contentType(ContentType.JSON)
-               .when()
-               .get("/management/processes/{processId}/nodes", "aprocess")
-               .then()
-               .statusCode(404)
-               .body(equalTo("Process with id aprocess not found"));
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/management/processes/{processId}/nodes", "aprocess")
+                .then()
+                .statusCode(404)
+                .body(equalTo("Process with id aprocess not found"));
     }
 
     @Test
@@ -128,7 +127,7 @@ class ManagementAddOnTest {
                       .when()
                       .post("/greetings")
                       .then()
-                      .statusCode(200)
+                      .statusCode(201)
                       .body("id", not(emptyOrNullString()))
                       .body("test", emptyOrNullString())
                       .extract().path("id");

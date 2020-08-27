@@ -10,6 +10,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.PathParam;
@@ -28,9 +29,8 @@ import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.workitem.Policies;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kie.kogito.services.identity.StaticIdentityProvider;
+import org.kie.kogito.auth.IdentityProvider;
 
 @Path("/$name$")
 public class $Type$ReactiveResource {
@@ -108,7 +108,7 @@ public class $Type$ReactiveResource {
                             .orElse(null)));
     }
 
-    @POST()
+    @PUT()
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

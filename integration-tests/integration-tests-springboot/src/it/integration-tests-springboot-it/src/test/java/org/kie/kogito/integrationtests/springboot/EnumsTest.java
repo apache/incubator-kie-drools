@@ -19,7 +19,6 @@ package org.kie.kogito.integrationtests.springboot;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.acme.examples.model.Movie;
 import org.acme.examples.model.MovieGenre;
@@ -28,7 +27,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -41,30 +39,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
 @ContextConfiguration(initializers = InfinispanSpringBootTestResource.Conditional.class)
-class EnumsTest {
-
-    static {
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-    }
-
-    @LocalServerPort
-    int randomServerPort;
+class EnumsTest extends BaseRestTest {
 
     @Test
     @SuppressWarnings("unchecked")
     void testSubmitMovie() {
-        RestAssured.port = randomServerPort;
         Map<String, Object> params = new HashMap<>();
         Movie movie = new Movie().setGenre(MovieGenre.COMEDY).setName("The Holy Grail").setReleaseYear(1975).setRating(Rating.UR);
         params.put("movie", movie);
 
         String pid = given()
                 .contentType(ContentType.JSON)
-                .body(params)
             .when()
+                .body(params)
                 .post("/cinema")
             .then()
-                .statusCode(200)
+                .statusCode(201)
                 .body("id", not(emptyOrNullString()))
                 .body("movie.name", equalTo(movie.getName()))
                 .body("movie.genre", equalTo(movie.getGenre().name()))

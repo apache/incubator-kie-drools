@@ -15,6 +15,11 @@ public class XXXModel implements org.kie.kogito.Model {
         fromMap(null, params);
     }
 
+    @Override
+    public void update(Map<String, Object> params) {
+        fromMap(params);
+    }
+
     public void fromMap(String id, Map<String, Object> params) {
         
     }

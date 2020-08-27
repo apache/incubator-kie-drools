@@ -19,14 +19,12 @@ package org.kie.kogito.integrationtests.springboot;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -39,58 +37,44 @@ import static org.hamcrest.Matchers.emptyOrNullString;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
 @ContextConfiguration(initializers = InfinispanSpringBootTestResource.Conditional.class)
-class AdHocFragmentsTest {
-
-    static {
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-    }
-
-    @LocalServerPort
-    int randomServerPort;
-
-    @BeforeEach
-    void setPort() {
-        RestAssured.port = randomServerPort;
-    }
+class AdHocFragmentsTest extends BaseRestTest {
 
     @Test
     void testUserTaskProcess() {
         Map<String, String> params = new HashMap<>();
         params.put("var1", "Kermit");
 
-        String pid = given()
+        String id = given()
                 .contentType(ContentType.JSON)
             .when()
                 .body(params)
                 .post("/AdHocFragments")
             .then()
-                .statusCode(200)
-                .body("id", not(emptyOrNullString()))
-                .body("var1", equalTo("Kermit"))
-                .extract().path("id");
+                .statusCode(201)
+                .header("Location", not(emptyOrNullString()))
+            .extract()
+                .path("id");
 
-        String link = given()
+        String taskId = extractID(given()
                 .contentType(ContentType.JSON)
             .when()
-                .post("/AdHocFragments/{pid}/AdHocTask1", pid)
+                .post("/AdHocFragments/{pid}/AdHocTask1", id)
             .then()
-                .statusCode(200)
-                .header("Link", notNullValue())
-                .extract().header("Link");
-
-        String taskPath = link.substring(link.indexOf("<") + 1, link.indexOf(">"));
+                .statusCode(201)
+                .header("Location", not(emptyOrNullString()))
+            .extract()
+                .header("Location"));
 
         params = new HashMap<>();
         params.put("newVar1", "Gonzo");
         given()
                 .contentType(ContentType.JSON)
             .when()
-                .urlEncodingEnabled(false)
                 .body(params)
-                .post("/AdHocFragments/{taskPath}", taskPath)
+                .post("/AdHocFragments/{id}/AdHocTask1/{taskId}", id, taskId)
             .then()
-                .body("var1", equalTo("Gonzo"))
-                .statusCode(200);
+                .statusCode(200)
+                .body("var1", equalTo("Gonzo"));
     }
 
     @Test
@@ -104,10 +88,9 @@ class AdHocFragmentsTest {
                 .body(params)
                 .post("/AdHocFragments")
             .then()
-                .statusCode(200)
-                .body("id", not(emptyOrNullString()))
-                .body("var1", equalTo("Kermit"))
-                .extract().path("id");
+                .statusCode(201)
+            .extract()
+                .path("id");
 
         given()
                 .contentType(ContentType.JSON)
@@ -129,10 +112,9 @@ class AdHocFragmentsTest {
                 .body(params)
                 .post("/AdHocFragments")
             .then()
-                .statusCode(200)
-                .body("id", not(emptyOrNullString()))
-                .body("var1", equalTo("Kermit"))
-                .extract().path("id");
+                .statusCode(201)
+            .extract()
+                .path("id");
 
         given()
                 .contentType(ContentType.JSON)

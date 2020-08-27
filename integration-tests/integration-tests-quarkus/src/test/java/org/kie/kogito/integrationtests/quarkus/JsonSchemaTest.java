@@ -36,6 +36,6 @@ class JsonSchemaTest {
 
     @Test
     void testJsonSchema() {
-        given().contentType(ContentType.JSON).when().get("/approvals/firstLineApproval/schema").then().statusCode(200).body(matchesJsonSchemaInClasspath("approvals_firstLineApproval.json"));
+        given().contentType(ContentType.JSON).when().get("/approvals/firstLineApproval/schema").then().statusCode(200).body(matchesJsonSchemaInClasspath("META-INF/jsonSchema/approvals_firstLineApproval.json"));
     }
 }

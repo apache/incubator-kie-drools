@@ -372,19 +372,20 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         Map<String, String> classData = new HashMap<>();
         classData.put("org.drools.bpmn2.TestProcess", content);
 
-        String customId = "custom";
+        String businessKey = "custom";
         
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", 15);
         Map<String, BpmnProcess> processes = createProcesses(classData, Collections.singletonMap("Human Task", workItemHandler));
-        ProcessInstance<BpmnVariables> processInstance = processes.get("com.sample.test").createInstance(customId, BpmnVariables.create(params));
+        ProcessInstance<BpmnVariables> processInstance = processes.get("com.sample.test").createInstance(businessKey, BpmnVariables.create(params));
 
         processInstance.start();
         assertEquals(STATE_ACTIVE, processInstance.status());
 
-        ProcessInstance<BpmnVariables> loadedProcessInstance = processes.get("com.sample.test").instances().findById(customId).orElse(null);
+        ProcessInstance<BpmnVariables> loadedProcessInstance = processes.get("com.sample.test").instances().findById(processInstance.id()).orElse(null);
         assertThat(loadedProcessInstance).isNotNull();
+        assertThat(loadedProcessInstance.businessKey()).isEqualTo(businessKey);
         
         loadedProcessInstance.abort();
         

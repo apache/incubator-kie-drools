@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.annotation.DirtiesContext;
@@ -35,20 +34,11 @@ import static org.hamcrest.Matchers.closeTo;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
-@ContextConfiguration(initializers = InfinispanSpringBootTestResource.Conditional.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-class JavaFNctxTest {
-
-    static {
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-    }
-
-    @LocalServerPort
-    int randomServerPort;
+@ContextConfiguration(initializers = InfinispanSpringBootTestResource.Conditional.class)@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+public class JavaFNctxTest extends BaseRestTest {
 
     @Test
     void testJavaFNctx() {
-        RestAssured.port = randomServerPort;
         given().config(RestAssured.config().jsonConfig(jsonConfig().numberReturnType(JsonPathConfig.NumberReturnType.BIG_DECIMAL)))
                .body(" { \"Input\" : 3.14 }")
                .contentType(ContentType.JSON)

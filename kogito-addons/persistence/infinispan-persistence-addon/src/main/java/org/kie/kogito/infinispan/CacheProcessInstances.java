@@ -52,7 +52,7 @@ public class CacheProcessInstances implements MutableProcessInstances {
 
     @Override
     public Optional<? extends ProcessInstance> findById(String id, ProcessInstanceReadMode mode) {
-        byte[] data = cache.get(resolveId(id));
+        byte[] data = cache.get(id);
         if (data == null) {
             return Optional.empty();
         }
@@ -79,7 +79,7 @@ public class CacheProcessInstances implements MutableProcessInstances {
 
     @Override
     public void remove(String id) {
-        cache.remove(resolveId(id));
+        cache.remove(id);
     }
 
     protected String ignoreNullOrEmpty(String value) {
@@ -98,20 +98,19 @@ public class CacheProcessInstances implements MutableProcessInstances {
     @SuppressWarnings("unchecked")
     protected void updateStorage(String id, ProcessInstance instance, boolean checkDuplicates) {
         if (isActive(instance)) {
-            String resolvedId = resolveId(id);
             byte[] data = marshaller.marshallProcessInstance(instance);
 
             if (checkDuplicates) {
-                byte[] existing = cache.putIfAbsent(resolvedId, data);
+                byte[] existing = cache.putIfAbsent(id, data);
                 if (existing != null) {
                     throw new ProcessInstanceDuplicatedException(id);
                 }
             } else {
-                cache.put(resolvedId, data);
+                cache.put(id, data);
             }
 
             ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(() -> {
-                byte[] reloaded = cache.get(resolvedId);
+                byte[] reloaded = cache.get(id);
                 if (reloaded != null) {
                     return marshaller.unmarshallWorkflowProcessInstance(reloaded, process);
                 }

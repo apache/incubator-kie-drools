@@ -113,7 +113,7 @@ class MilestoneTest extends AbstractCodegenTest {
             assertNull(milestones);
         }
         assertNotNull(milestones);
-        assertThat(milestones.size()).isEqualTo(expected.size());
+        assertThat(milestones).hasSameSizeAs(expected);
         expected.forEach(e -> assertThat(milestones.stream().anyMatch(c -> Objects.equals(c.getName(), e.getName()) &&
                 Objects.equals(c.getStatus(), e.getStatus()))).withFailMessage("Expected: " + e + " - Not present in: " + milestones).isTrue());
     }

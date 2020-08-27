@@ -111,7 +111,9 @@ public class ModelMetaData {
     }
 
     public MethodCallExpr fromMap(String variableName, String mapVarName) {
-        return new MethodCallExpr(new NameExpr(variableName), "fromMap").addArgument(new MethodCallExpr(new ThisExpr(), "id")).addArgument(mapVarName);
+        return new MethodCallExpr(new NameExpr(variableName), "fromMap")
+                .addArgument(new MethodCallExpr(new ThisExpr(), "id"))
+                .addArgument(mapVarName);
     }
 
     public MethodCallExpr toMap(String varName) {
@@ -185,7 +187,6 @@ public class ModelMetaData {
             FieldAccessExpr idField = new FieldAccessExpr(new ThisExpr(), "id");
             staticFromMap.addStatement(new AssignExpr(idField, new NameExpr("id"), AssignExpr.Operator.ASSIGN));
         }
-
         for (Map.Entry<String, Variable> variable : variableScope.getTypes().entrySet()) {
             String varName = variable.getValue().getName();
             String vtype = variable.getValue().getType().getStringType();
@@ -229,7 +230,8 @@ public class ModelMetaData {
         toMapMethod.ifPresent(methodDeclaration -> methodDeclaration.setBody(toMapBody));
 
         modelClass.findFirst(
-                MethodDeclaration.class, sl -> sl.getName().asString().equals("fromMap") && sl.getParameters().size() == 2)// make sure to take only the method with two parameters (id and params)
+                // make sure to take only the method with two parameters (id, businessKey and params)
+                MethodDeclaration.class, sl -> sl.getName().asString().equals("fromMap") && sl.getParameters().size() == 2)
                 .ifPresent(m -> m.setBody(staticFromMap));
 
         return compilationUnit;

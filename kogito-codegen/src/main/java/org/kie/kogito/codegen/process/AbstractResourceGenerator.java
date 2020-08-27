@@ -122,6 +122,8 @@ public abstract class AbstractResourceGenerator {
 
     public abstract List<String> getRestAnnotations();
 
+    protected abstract String getSignalResponseType(String outputType);
+
     public String generate() {
         CompilationUnit clazz = parse(
                 this.getClass().getResourceAsStream(getResourceTemplate()));
@@ -162,7 +164,7 @@ public abstract class AbstractResourceGenerator {
                                                 body.findAll(NameExpr.class, nameExpr -> "data".equals(nameExpr.getNameAsString())).forEach(name -> name.replace(new NullLiteralExpr()));
                                             }
                                             template.addMethod(methodName, Keyword.PUBLIC)
-                                                    .setType(outputType)
+                                                    .setType(getSignalResponseType(outputType))
                                                     // Remove data parameter ( payload ) if signalType is null 
                                                     .setParameters(signalType == null ? NodeList.nodeList(cloned.getParameter(0)) : cloned.getParameters())
                                                     .setBody(body)

@@ -16,14 +16,11 @@
 
 package org.kie.kogito.integrationtests.springboot;
 
-import org.springframework.boot.test.context.SpringBootTest;
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -35,56 +32,51 @@ import static org.hamcrest.Matchers.emptyOrNullString;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
 @ContextConfiguration(initializers = InfinispanSpringBootTestResource.Conditional.class)
-class SignalProcessTest {
-
-    static {
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-    }
-
-    @LocalServerPort
-    int randomServerPort;
+class SignalProcessTest extends BaseRestTest {
 
     @Test
     void testProcessSignals() {
-        RestAssured.port = randomServerPort;
         String pid = given()
                 .contentType(ContentType.JSON)
-                .when()
+            .when()
                 .post("/greetings")
-                .then()
-                .statusCode(200)
+            .then()
+                .statusCode(201)
                 .body("id", not(emptyOrNullString()))
-                .body("test", emptyOrNullString())
-                .extract().path("id");
+                .body("test", nullValue())
+            .extract()
+                .path("id");
 
         given()
                 .contentType(ContentType.JSON)
-                .when()
+            .when()
                 .body("testvalue")
                 .post("/greetings/{pid}/signalwithdata", pid)
-                .then()
-                .statusCode(200);
+            .then()
+                .statusCode(200)
+                .body("id", not(emptyOrNullString()))
+                .body("test", is("testvalue"));
 
         given()
                 .contentType(ContentType.JSON)
-                .when()
+            .when()
                 .get("/greetings/{pid}", pid)
-                .then()
+            .then()
                 .statusCode(200)
                 .body("test", is("testvalue"));
 
         given()
                 .contentType(ContentType.JSON)
-                .when()
+            .when()
                 .post("/greetings/{pid}/signalwithoutdata", pid)
-                .then()
+            .then()
                 .statusCode(200);
 
         given()
                 .contentType(ContentType.JSON)
-                .when()
+            .when()
                 .get("/greetings/{pid}", pid)
-                .then()
-                .statusCode(204);
+            .then()
+                .statusCode(404);
     }
 }

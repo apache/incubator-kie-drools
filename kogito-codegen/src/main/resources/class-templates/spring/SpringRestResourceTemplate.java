@@ -16,10 +16,12 @@
 
 package com.myspace.demo;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.jsonschema.JsonSchema;
 import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.jbpm.util.JsonSchemaUtil;
 import org.kie.kogito.Application;
@@ -34,18 +36,22 @@ import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 import org.jbpm.process.instance.impl.humantask.HumanTaskTransition;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.Status;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/$name$")
@@ -56,19 +62,24 @@ public class $Type$Resource {
     Application application;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public $Type$Output createResource_$name$(@RequestHeader HttpHeaders httpHeaders,
+    public ResponseEntity<$Type$Output> createResource_$name$(@RequestHeader HttpHeaders httpHeaders,
                                               @RequestParam(value = "businessKey", required = false) String businessKey,
-                                              @RequestBody $Type$Input resource) {
+                                              @RequestBody $Type$Input resource,
+                                              UriComponentsBuilder uriComponentsBuilder) {
         return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
             $Type$Input inputModel = resource != null ? resource : new $Type$Input();
             ProcessInstance<$Type$> pi = process.createInstance(businessKey, inputModel.toModel());
-            String startFromNode = httpHeaders.getHeaderString("X-KOGITO-StartFromNode");
-            if (startFromNode != null) {
-                pi.startFrom(startFromNode);
+            List<String> startFromNode = httpHeaders.get("X-KOGITO-StartFromNode");
+
+            if (startFromNode != null && !startFromNode.isEmpty()) {
+                pi.startFrom(startFromNode.get(0));
             } else {
                 pi.start();
             }
-            return pi.checkError().variables().toOutput();
+            UriComponents uriComponents = uriComponentsBuilder.path("/{id}").buildAndExpand(pi.id());
+            URI location = uriComponents.toUri();
+            return ResponseEntity.created(location)
+                    .body(pi.checkError().variables().toOutput());
         });
 
     }
@@ -76,21 +87,22 @@ public class $Type$Resource {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<$Type$Output> getResources_$name$() {
         return process.instances()
-                      .findById(id)
+                      .values()
+                      .stream()
                       .map(pi -> pi.variables().toOutput())
-                      .orElse(null);
+                      .collect(Collectors.toList());
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public $Type$Output getResource_$name$(@PathVariable("id") String id) {
+    public ResponseEntity<$Type$Output> getResource_$name$(@PathVariable("id") String id) {
         return process.instances()
                       .findById(id, ProcessInstanceReadMode.READ_ONLY)
-                      .map(pi -> pi.variables().toOutput())
-                      .orElse(null);
+                      .map(m -> ResponseEntity.ok(m.variables().toOutput()))
+                      .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public $Type$Output deleteResource_$name$(@PathVariable("id") final String id) {
+    public ResponseEntity<$Type$Output> deleteResource_$name$(@PathVariable("id") final String id) {
         return UnitOfWorkExecutor.executeInUnitOfWork(
                                                       application.unitOfWorkManager(),
                                                       () -> process
@@ -100,12 +112,13 @@ public class $Type$Resource {
                                                                        pi.abort();
                                                                        return pi.checkError().variables().toOutput();
                                                                    })
-                                                                   .orElse(null));
+                                                                   .map(m -> ResponseEntity.ok(m)))
+                                                                   .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE,
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE,
                  consumes = MediaType.APPLICATION_JSON_VALUE)
-    public $Type$Output updateModel_$name$(@PathVariable("id") String id, @RequestBody $Type$ resource) {
+    public ResponseEntity<$Type$Output> updateModel_$name$(@PathVariable("id") String id, @RequestBody $Type$ resource) {
         return UnitOfWorkExecutor.executeInUnitOfWork(
                                                       application.unitOfWorkManager(),
                                                       () -> process
@@ -114,11 +127,12 @@ public class $Type$Resource {
                                                                    .map(pi -> pi
                                                                                 .updateVariables(resource)
                                                                                 .toOutput())
-                                                                   .orElse(null));
+                                                                   .map(m -> ResponseEntity.ok(m)))
+                                                                   .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping(value = "/{id}/tasks", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, String> getTasks_$name$(@PathVariable("id") String id,
+    public ResponseEntity<Map<String, String>> getTasks_$name$(@PathVariable("id") String id,
                                                @RequestParam(value = "user", required = false) final String user,
                                                @RequestParam(value = "group",
                                                              required = false) final List<String> groups) {
@@ -126,7 +140,8 @@ public class $Type$Resource {
                       .findById(id, ProcessInstanceReadMode.READ_ONLY)
                       .map(pi -> pi.workItems(Policies.of(user, groups)))
                       .map(l -> l.stream().collect(Collectors.toMap(WorkItem::getId, WorkItem::getName)))
-                      .orElse(null);
+                      .map(m -> ResponseEntity.ok(m))
+                      .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     

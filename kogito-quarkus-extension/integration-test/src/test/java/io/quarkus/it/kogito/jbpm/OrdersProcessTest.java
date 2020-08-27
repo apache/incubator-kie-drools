@@ -31,8 +31,18 @@ public class OrdersProcessTest {
     public void testOrdersRest() {
         // test adding new order
         String addOrderPayload = "{\"approver\" : \"john\", \"order\" : {\"orderNumber\" : \"12345\", \"shipped\" : false}}";
-        String firstCreatedId = given().contentType(ContentType.JSON).accept(ContentType.JSON).body(addOrderPayload).when()
-                .post("/orders").then().statusCode(200).body("id", notNullValue()).extract().path("id");
+        String firstCreatedId = given()
+                        .contentType(ContentType.JSON)
+                        .accept(ContentType.JSON)
+                        .body(addOrderPayload)
+                    .when()
+                        .post("/orders")
+                    .then()
+                        .statusCode(201)
+                        .header("Location", notNullValue())
+                        .body("id", notNullValue())
+                    .extract()
+                        .path("id");
 
         // test getting the created order
         given().accept(ContentType.JSON).when().get("/orders").then().statusCode(200)
@@ -44,8 +54,18 @@ public class OrdersProcessTest {
 
         // test delete order
         // first add second order...
-        String secondCreatedId = given().contentType(ContentType.JSON).accept(ContentType.JSON).body(addOrderPayload)
-                .when().post("/orders").then().statusCode(200).body("id", notNullValue()).extract().path("id");
+        String secondCreatedId = given()
+                        .contentType(ContentType.JSON)
+                        .accept(ContentType.JSON)
+                        .body(addOrderPayload)
+                    .when()
+                        .post("/orders")
+                    .then()
+                        .statusCode(201)
+                        .header("Location", notNullValue())
+                    .extract()
+                        .path("id");
+
         // now delete the first order created
         given().accept(ContentType.JSON).when().delete("/orders/" + firstCreatedId).then().statusCode(200);
         // get all orders make sure there is only one
@@ -58,4 +78,5 @@ public class OrdersProcessTest {
         given().accept(ContentType.JSON).when().get("/orders").then().statusCode(200)
                 .body("$.size()", is(0));
     }
+
 }
