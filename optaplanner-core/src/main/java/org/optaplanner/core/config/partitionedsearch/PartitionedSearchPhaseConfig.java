@@ -21,6 +21,7 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -32,9 +33,15 @@ import org.optaplanner.core.config.phase.NoChangePhaseConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.io.jaxb.JaxbCustomPropertiesAdapter;
+import org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
 
+@XmlType(propOrder = {
+        "solutionPartitionerClass",
+        "solutionPartitionerCustomProperties",
+        "runnablePartThreadLimit",
+        "phaseConfigList"
+})
 public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchPhaseConfig> {
 
     public static final String XML_ELEMENT_NAME = "partitionedSearch";

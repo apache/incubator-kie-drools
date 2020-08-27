@@ -26,18 +26,19 @@ import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlValue;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.impl.io.XmlUnmarshallingException;
+import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
 
-public class JaxbIOTest {
+class GenericJaxbIOTest {
 
-    private final JaxbIO<DummyJaxbClass> xmlIO = new JaxbIO<>(DummyJaxbClass.class);
+    private final GenericJaxbIO<DummyJaxbClass> xmlIO = new GenericJaxbIO<>(DummyJaxbClass.class);
 
     @Test
-    public void readWriteSimpleObject() {
-        DummyJaxbClass original = new DummyJaxbClass(1);
+    void readWriteSimpleObject() {
+        DummyJaxbClass original = new DummyJaxbClass(1, "");
 
         StringWriter stringWriter = new StringWriter();
         xmlIO.write(original, stringWriter);
@@ -47,26 +48,44 @@ public class JaxbIOTest {
     }
 
     @Test
-    public void writeThrowsExceptionOnNullParameters() {
+    void writeThrowsExceptionOnNullParameters() {
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(assertThatNullPointerException().isThrownBy(() -> xmlIO.write(null, new StringWriter())));
-            softly.assertThat(assertThatNullPointerException().isThrownBy(() -> xmlIO.write(new DummyJaxbClass(1), null)));
+            softly.assertThat(assertThatNullPointerException().isThrownBy(() -> xmlIO.write(new DummyJaxbClass(1, ""), null)));
         });
     }
 
     @Test
-    public void readThrowsExceptionOnNullParameter() {
-        assertThatNullPointerException().isThrownBy(() -> new JaxbIO<>(DummyJaxbClass.class).read(null));
+    void readThrowsExceptionOnNullParameter() {
+        assertThatNullPointerException().isThrownBy(() -> new GenericJaxbIO<>(DummyJaxbClass.class).read(null));
     }
 
     @Test
-    public void readThrowsExceptionOnInvalidXml() {
+    void readThrowsExceptionOnInvalidXml() {
         String invalidXml = "<unknownRootElement/>";
-        assertThatExceptionOfType(XmlUnmarshallingException.class).isThrownBy(() -> xmlIO.read(new StringReader(invalidXml)));
+        StringReader stringReader = new StringReader(invalidXml);
+        assertThatExceptionOfType(OptaPlannerXmlSerializationException.class).isThrownBy(() -> xmlIO.read(stringReader));
+    }
+
+    @Test
+    void readOverridingNamespaceIsProtectedFromXXE() {
+        String maliciousXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<!DOCTYPE dummyJaxbClass [  \n"
+                + "  <!ELEMENT dummyJaxbClass ANY >\n"
+                + "  <!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]"
+                + ">"
+                + "<dummyJaxbClass>&xxe;</dummyJaxbClass>";
+        DummyJaxbClass dummyJaxbClass = xmlIO.readOverridingNamespace(new StringReader(maliciousXml));
+        assertThat(dummyJaxbClass.value).isEmpty();
     }
 
     @XmlRootElement
     private static class DummyJaxbClass {
+
+        // This field is used only for evaluating the XXE attack protection.
+        @XmlValue
+        private String value;
+
         @XmlAttribute
         private int id;
 
@@ -74,8 +93,9 @@ public class JaxbIOTest {
             // Required by JAXB
         }
 
-        private DummyJaxbClass(int id) {
+        private DummyJaxbClass(int id, String value) {
             this.id = id;
+            this.value = value;
         }
 
         @Override

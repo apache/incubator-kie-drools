@@ -19,11 +19,33 @@ package org.optaplanner.core.config.localsearch.decider.acceptor;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.localsearch.decider.acceptor.stepcountinghillclimbing.StepCountingHillClimbingType;
 import org.optaplanner.core.config.util.ConfigUtils;
 
+@XmlType(propOrder = {
+        "acceptorTypeList",
+        "entityTabuSize",
+        "entityTabuRatio",
+        "fadingEntityTabuSize",
+        "fadingEntityTabuRatio",
+        "valueTabuSize",
+        "valueTabuRatio",
+        "fadingValueTabuSize",
+        "fadingValueTabuRatio",
+        "moveTabuSize",
+        "fadingMoveTabuSize",
+        "undoMoveTabuSize",
+        "fadingUndoMoveTabuSize",
+        "simulatedAnnealingStartingTemperature",
+        "lateAcceptanceSize",
+        "greatDelugeWaterLevelIncrementScore",
+        "greatDelugeWaterLevelIncrementRatio",
+        "stepCountingHillClimbingSize",
+        "stepCountingHillClimbingType"
+})
 public class LocalSearchAcceptorConfig extends AbstractConfig<LocalSearchAcceptorConfig> {
 
     @XmlElement(name = "acceptorType")

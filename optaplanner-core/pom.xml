@@ -137,7 +137,15 @@
         <groupId>org.revapi</groupId>
         <artifactId>revapi-maven-plugin</artifactId>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jaxb2-maven-plugin</artifactId>
+        <configuration>
+          <sources>
+            <source>${project.build.sourceDirectory}/org/optaplanner/core/config/solver</source>
+          </sources>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
-
 </project>

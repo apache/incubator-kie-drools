@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
  *
  * @param <C> the same class as the implementing subclass
  */
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.FIELD) // Applies to all subclasses.
 public abstract class AbstractConfig<C extends AbstractConfig> {
 
     /**

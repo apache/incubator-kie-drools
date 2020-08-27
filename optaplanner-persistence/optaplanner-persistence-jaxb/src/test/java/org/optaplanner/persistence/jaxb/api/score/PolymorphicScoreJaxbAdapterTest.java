@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.io.jaxb.JaxbIO;
+import org.optaplanner.core.impl.io.jaxb.GenericJaxbIO;
 
 public class PolymorphicScoreJaxbAdapterTest {
 
@@ -47,7 +47,7 @@ public class PolymorphicScoreJaxbAdapterTest {
                 + "<score class=\"org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore\">-1hard/-10soft</score>"
                 + "</dummy>";
 
-        JaxbIO<DummyRootElement> xmlIO = new JaxbIO<>(DummyRootElement.class);
+        GenericJaxbIO<DummyRootElement> xmlIO = new GenericJaxbIO<>(DummyRootElement.class);
         DummyRootElement dummyRootElement = xmlIO.read(new StringReader(xmlString));
 
         assertThat(dummyRootElement.score)

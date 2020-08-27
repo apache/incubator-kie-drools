@@ -16,9 +16,17 @@
 
 package org.optaplanner.core.config.localsearch.decider.forager;
 
+import javax.xml.bind.annotation.XmlType;
+
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 
+@XmlType(propOrder = {
+        "pickEarlyType",
+        "acceptedCountLimit",
+        "finalistPodiumType",
+        "breakTieRandomly"
+})
 public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerConfig> {
 
     protected LocalSearchPickEarlyType pickEarlyType = null;

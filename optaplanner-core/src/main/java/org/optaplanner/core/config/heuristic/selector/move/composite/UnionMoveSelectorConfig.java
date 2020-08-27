@@ -20,6 +20,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig;
@@ -35,6 +36,10 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailC
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 
+@XmlType(propOrder = {
+        "moveSelectorConfigList",
+        "selectorProbabilityWeightFactoryClass"
+})
 public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelectorConfig> {
 
     public static final String XML_ELEMENT_NAME = "unionMoveSelector";

@@ -17,11 +17,17 @@
 package org.optaplanner.core.config.heuristic.selector.entity.pillar;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 
+@XmlType(propOrder = {
+        "entitySelectorConfig",
+        "minimumSubPillarSize",
+        "maximumSubPillarSize"
+})
 public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
 
     @XmlElement(name = "entitySelector")

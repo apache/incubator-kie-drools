@@ -18,6 +18,7 @@ package org.optaplanner.core.config.constructionheuristic.placer;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
@@ -35,6 +36,11 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailC
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 
+@XmlType(propOrder = {
+        "entityClass",
+        "valueSelectorConfig",
+        "moveSelectorConfig"
+})
 public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlacerConfig> {
 
     protected Class<?> entityClass = null;

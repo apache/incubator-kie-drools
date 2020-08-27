@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.heuristic.selector.move.generic.chained;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
@@ -26,6 +27,10 @@ import org.optaplanner.core.config.util.ConfigUtils;
 /**
  * Also known as a 2-opt move selector config.
  */
+@XmlType(propOrder = {
+        "entitySelectorConfig",
+        "valueSelectorConfig"
+})
 public class TailChainSwapMoveSelectorConfig extends MoveSelectorConfig<TailChainSwapMoveSelectorConfig> {
 
     public static final String XML_ELEMENT_NAME = "tailChainSwapMoveSelector";

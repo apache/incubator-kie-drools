@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,25 +34,27 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.impl.io.XmlUnmarshallingException;
-import org.optaplanner.core.impl.io.jaxb.JaxbIO;
+import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
+import org.optaplanner.core.impl.io.jaxb.ElementNamespaceOverride;
+import org.optaplanner.core.impl.io.jaxb.GenericJaxbIO;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BenchmarkResultIO {
-
+    // BenchmarkResult contains <solverConfig/> element instead of the default SolverConfig.XML_ELEMENT_NAME.
+    private static final String SOLVER_CONFIG_XML_ELEMENT_NAME = "solverConfig";
     private static final String PLANNER_BENCHMARK_RESULT_FILENAME = "plannerBenchmarkResult.xml";
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final JaxbIO<PlannerBenchmarkResult> xmlIO = new JaxbIO(PlannerBenchmarkResult.class);
+    private final GenericJaxbIO<PlannerBenchmarkResult> genericJaxbIO = new GenericJaxbIO<>(PlannerBenchmarkResult.class);
 
     public void writePlannerBenchmarkResult(File benchmarkReportDirectory,
             PlannerBenchmarkResult plannerBenchmarkResult) {
         File plannerBenchmarkResultFile = new File(benchmarkReportDirectory, PLANNER_BENCHMARK_RESULT_FILENAME);
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(plannerBenchmarkResultFile), "UTF-8")) {
-            xmlIO.write(plannerBenchmarkResult, writer);
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(plannerBenchmarkResultFile), StandardCharsets.UTF_8)) {
+            write(plannerBenchmarkResult, writer);
         } catch (IOException e) {
             throw new IllegalArgumentException(
                     "Failed writing plannerBenchmarkResultFile (" + plannerBenchmarkResultFile + ").", e);
@@ -86,9 +89,9 @@ public class BenchmarkResultIO {
                     + ") does not exist.");
         }
         PlannerBenchmarkResult plannerBenchmarkResult;
-        try (Reader reader = new InputStreamReader(new FileInputStream(plannerBenchmarkResultFile), "UTF-8")) {
-            plannerBenchmarkResult = xmlIO.read(reader);
-        } catch (XmlUnmarshallingException e) {
+        try (Reader reader = new InputStreamReader(new FileInputStream(plannerBenchmarkResultFile), StandardCharsets.UTF_8)) {
+            plannerBenchmarkResult = read(reader);
+        } catch (OptaPlannerXmlSerializationException e) {
             logger.warn("Failed reading plannerBenchmarkResultFile ({}).", plannerBenchmarkResultFile, e);
             // If the plannerBenchmarkResultFile's format has changed, the app should not crash entirely
             String benchmarkReportDirectoryName = plannerBenchmarkResultFile.getParentFile().getName();
@@ -102,6 +105,15 @@ public class BenchmarkResultIO {
         restoreOmittedBidirectionalFields(plannerBenchmarkResult);
         restoreOtherOmittedFields(plannerBenchmarkResult);
         return plannerBenchmarkResult;
+    }
+
+    protected PlannerBenchmarkResult read(Reader reader) {
+        return genericJaxbIO.readOverridingNamespace(reader,
+                ElementNamespaceOverride.of(SOLVER_CONFIG_XML_ELEMENT_NAME, SolverConfig.XML_NAMESPACE));
+    }
+
+    protected void write(PlannerBenchmarkResult plannerBenchmarkResult, Writer writer) {
+        genericJaxbIO.writeWithoutNamespaces(plannerBenchmarkResult, writer);
     }
 
     private void restoreOmittedBidirectionalFields(PlannerBenchmarkResult plannerBenchmarkResult) {

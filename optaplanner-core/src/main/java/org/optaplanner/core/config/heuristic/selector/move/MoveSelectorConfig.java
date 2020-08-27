@@ -20,6 +20,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -54,6 +55,18 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
         TailChainSwapMoveSelectorConfig.class, KOptMoveSelectorConfig.class,
         SubChainChangeMoveSelectorConfig.class, SubChainSwapMoveSelectorConfig.class,
         MoveListFactoryConfig.class, MoveIteratorFactoryConfig.class })
+@XmlType(propOrder = {
+        "cacheType",
+        "selectionOrder",
+        "filterClass",
+        "sorterComparatorClass",
+        "sorterWeightFactoryClass",
+        "sorterOrder",
+        "sorterClass",
+        "probabilityWeightFactoryClass",
+        "selectedCountLimit",
+        "fixedProbabilityWeight"
+})
 public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends SelectorConfig<C> {
 
     protected SelectionCacheType cacheType = null;

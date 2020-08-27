@@ -17,11 +17,17 @@
 package org.optaplanner.core.config.heuristic.selector.value.chained;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 
+@XmlType(propOrder = {
+        "valueSelectorConfig",
+        "minimumSubChainSize",
+        "maximumSubChainSize"
+})
 public class SubChainSelectorConfig extends SelectorConfig<SubChainSelectorConfig> {
 
     @XmlElement(name = "valueSelector")

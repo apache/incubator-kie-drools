@@ -840,6 +840,31 @@
             </execution>
           </executions>
         </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>jaxb2-maven-plugin</artifactId>
+          <version>2.5.0</version>
+          <executions>
+            <execution>
+              <id>schemagen</id>
+              <goals>
+                <goal>schemagen</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <clearOutputDir>true</clearOutputDir>
+            <createJavaDocAnnotations>false</createJavaDocAnnotations>
+            <generateEpisode>false</generateEpisode>
+            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+            <transformSchemas>
+              <transformSchema>
+                <uri>https://www.optaplanner.org/xsd/optaplanner</uri>
+                <toFile>optaplanner.xsd</toFile>
+              </transformSchema>
+            </transformSchemas>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>

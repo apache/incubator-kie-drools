@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
@@ -42,6 +43,14 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
+@XmlType(propOrder = {
+        "solutionFileIOClass",
+        "writeOutputSolutionEnabled",
+        "inputSolutionFileList",
+        "problemStatisticEnabled",
+        "problemStatisticTypeList",
+        "singleStatisticTypeList"
+})
 public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksConfig> {
 
     private Class<SolutionFileIO> solutionFileIOClass = null;

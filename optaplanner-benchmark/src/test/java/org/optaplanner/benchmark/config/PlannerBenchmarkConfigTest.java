@@ -33,8 +33,8 @@ import java.util.TreeSet;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
+import org.optaplanner.benchmark.impl.io.PlannerBenchmarkConfigIO;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.io.jaxb.JaxbIO;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
@@ -169,7 +169,7 @@ public class PlannerBenchmarkConfigTest {
 
     @Test
     public void xmlConfigFileRemainsSameAfterReadWrite() throws IOException {
-        JaxbIO<PlannerBenchmarkConfig> xmlIO = new JaxbIO<>(PlannerBenchmarkConfig.class);
+        PlannerBenchmarkConfigIO xmlIO = new PlannerBenchmarkConfigIO();
         PlannerBenchmarkConfig jaxbBenchmarkConfig;
 
         try (Reader reader =
@@ -184,7 +184,7 @@ public class PlannerBenchmarkConfigTest {
         String originalXml = IOUtils.toString(
                 PlannerBenchmarkConfigTest.class.getResourceAsStream(TEST_PLANNER_BENCHMARK_CONFIG), StandardCharsets.UTF_8);
 
-        assertThat(jaxbString.trim()).isEqualToNormalizingNewlines(originalXml.trim());
+        assertThat(jaxbString.trim()).isXmlEqualTo(originalXml.trim());
     }
 
     // Used by the testBenchmarkConfig.xml

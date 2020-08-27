@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.io.jaxb;
+package org.optaplanner.core.impl.io.jaxb.adapter;
 
 import java.util.List;
 import java.util.Map;
@@ -22,7 +22,10 @@ import java.util.stream.Collectors;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+
+import org.optaplanner.core.config.solver.SolverConfig;
 
 public class JaxbCustomPropertiesAdapter extends XmlAdapter<JaxbCustomPropertiesAdapter.JaxbAdaptedMap, Map<String, String>> {
 
@@ -46,9 +49,11 @@ public class JaxbCustomPropertiesAdapter extends XmlAdapter<JaxbCustomProperties
         return new JaxbAdaptedMap(entries);
     }
 
+    // Required to generate the XSD type in the same namespace.
+    @XmlType(namespace = SolverConfig.XML_NAMESPACE)
     static class JaxbAdaptedMap {
 
-        @XmlElement(name = "property")
+        @XmlElement(name = "property", namespace = SolverConfig.XML_NAMESPACE)
         private List<JaxbAdaptedMapEntry> entries;
 
         private JaxbAdaptedMap() {
@@ -60,7 +65,9 @@ public class JaxbCustomPropertiesAdapter extends XmlAdapter<JaxbCustomProperties
         }
     }
 
-    private static class JaxbAdaptedMapEntry {
+    // Required to generate the XSD type in the same namespace.
+    @XmlType(namespace = SolverConfig.XML_NAMESPACE)
+    static class JaxbAdaptedMapEntry {
 
         @XmlAttribute
         private String name;

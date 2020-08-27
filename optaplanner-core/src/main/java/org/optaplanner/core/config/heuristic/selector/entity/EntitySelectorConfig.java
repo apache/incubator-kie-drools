@@ -20,6 +20,7 @@ import java.util.Comparator;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
@@ -34,6 +35,22 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionPr
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 
+@XmlType(propOrder = {
+        "id",
+        "mimicSelectorRef",
+        "entityClass",
+        "cacheType",
+        "selectionOrder",
+        "nearbySelectionConfig",
+        "filterClass",
+        "sorterManner",
+        "sorterComparatorClass",
+        "sorterWeightFactoryClass",
+        "sorterOrder",
+        "sorterClass",
+        "probabilityWeightFactoryClass",
+        "selectedCountLimit"
+})
 public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
 
     public static EntitySelectorConfig newMimicSelectorConfig(String mimicSelectorRef) {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.io.jaxb;
+package org.optaplanner.core.impl.io.jaxb.adapter;
 
 import java.time.DateTimeException;
 import java.time.OffsetDateTime;
@@ -25,10 +25,10 @@ import java.time.temporal.ChronoField;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 // TODO: Move the code to the jaxb-ri
-public class OffsetDateTimeJaxbAdapter extends XmlAdapter<String, OffsetDateTime> {
+public class JaxbOffsetDateTimeAdapter extends XmlAdapter<String, OffsetDateTime> {
     private final DateTimeFormatter formatter;
 
-    public OffsetDateTimeJaxbAdapter() {
+    public JaxbOffsetDateTimeAdapter() {
         formatter = new DateTimeFormatterBuilder()
                 .appendPattern("uuuu-MM-dd'T'HH:mm:ss")
                 .appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true)

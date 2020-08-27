@@ -18,8 +18,13 @@ package org.optaplanner.benchmark.config.blueprint;
 
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlType;
+
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 
+@XmlType(propOrder = {
+        "solverBenchmarkBluePrintType"
+})
 public class SolverBenchmarkBluePrintConfig {
 
     protected SolverBenchmarkBluePrintType solverBenchmarkBluePrintType = null;

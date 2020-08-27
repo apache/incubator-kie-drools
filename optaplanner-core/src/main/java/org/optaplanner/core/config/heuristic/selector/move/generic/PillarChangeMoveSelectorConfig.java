@@ -17,10 +17,14 @@
 package org.optaplanner.core.config.heuristic.selector.move.generic;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 
+@XmlType(propOrder = {
+        "valueSelectorConfig"
+})
 public class PillarChangeMoveSelectorConfig extends AbstractPillarMoveSelectorConfig<PillarChangeMoveSelectorConfig> {
 
     public static final String XML_ELEMENT_NAME = "pillarChangeMoveSelector";

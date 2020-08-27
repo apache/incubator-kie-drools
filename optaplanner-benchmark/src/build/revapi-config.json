@@ -387,6 +387,61 @@
           "classSimpleName": "BenchmarkReportConfig",
           "elementKind": "class",
           "justification": "XStream was replaced by JAXB in the benchmark configuration"
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "new": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"name\", \"benchmarkDirectory\", \"threadFactoryClass\", \"parallelBenchmarkCount\", \"warmUpMillisecondsSpentLimit\", \"warmUpSecondsSpentLimit\", \"warmUpMinutesSpentLimit\", \"warmUpHoursSpentLimit\", \"warmUpDaysSpentLimit\", \"benchmarkReportConfig\", \"inheritedSolverBenchmarkConfig\", \"solverBenchmarkBluePrintConfigList\", \"solverBenchmarkConfigList\"})",
+          "package": "org.optaplanner.benchmark.config",
+          "classSimpleName": "PlannerBenchmarkConfig",
+          "elementKind": "class",
+          "justification": "Define explicit order of elements in the XML."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.benchmark.config.ProblemBenchmarksConfig",
+          "new": "class org.optaplanner.benchmark.config.ProblemBenchmarksConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"solutionFileIOClass\", \"writeOutputSolutionEnabled\", \"inputSolutionFileList\", \"problemStatisticEnabled\", \"problemStatisticTypeList\", \"singleStatisticTypeList\"})",
+          "package": "org.optaplanner.benchmark.config",
+          "classSimpleName": "ProblemBenchmarksConfig",
+          "elementKind": "class",
+          "justification": "Define explicit order of elements in the XML."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig<Solution_ extends java.lang.Object>",
+          "new": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig<Solution_ extends java.lang.Object>",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"name\", \"solverConfig\", \"problemBenchmarksConfig\", \"subSingleCount\"})",
+          "package": "org.optaplanner.benchmark.config",
+          "classSimpleName": "SolverBenchmarkConfig",
+          "elementKind": "class",
+          "justification": "Define explicit order of elements in the XML."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig",
+          "new": "class org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"solverBenchmarkBluePrintType\"})",
+          "package": "org.optaplanner.benchmark.config.blueprint",
+          "classSimpleName": "SolverBenchmarkBluePrintConfig",
+          "elementKind": "class",
+          "justification": "Define explicit order of elements in the XML."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.benchmark.config.report.BenchmarkReportConfig",
+          "new": "class org.optaplanner.benchmark.config.report.BenchmarkReportConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"locale\", \"solverRankingType\", \"solverRankingComparatorClass\", \"solverRankingWeightFactoryClass\"})",
+          "package": "org.optaplanner.benchmark.config.report",
+          "classSimpleName": "BenchmarkReportConfig",
+          "elementKind": "class",
+          "justification": "Define explicit order of elements in the XML."
         }
       ]
     }

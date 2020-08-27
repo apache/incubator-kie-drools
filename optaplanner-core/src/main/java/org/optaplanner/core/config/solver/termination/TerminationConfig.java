@@ -20,13 +20,37 @@ import java.time.Duration;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.io.jaxb.JaxbDurationAdapter;
+import org.optaplanner.core.impl.io.jaxb.adapter.JaxbDurationAdapter;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
+@XmlType(propOrder = {
+        "terminationClass",
+        "terminationCompositionStyle",
+        "spentLimit",
+        "millisecondsSpentLimit",
+        "secondsSpentLimit",
+        "minutesSpentLimit",
+        "hoursSpentLimit",
+        "daysSpentLimit",
+        "unimprovedSpentLimit",
+        "unimprovedMillisecondsSpentLimit",
+        "unimprovedSecondsSpentLimit",
+        "unimprovedMinutesSpentLimit",
+        "unimprovedHoursSpentLimit",
+        "unimprovedDaysSpentLimit",
+        "unimprovedScoreDifferenceThreshold",
+        "bestScoreLimit",
+        "bestScoreFeasible",
+        "stepCountLimit",
+        "unimprovedStepCountLimit",
+        "scoreCalculationCountLimit",
+        "terminationConfigList"
+})
 public class TerminationConfig extends AbstractConfig<TerminationConfig> {
 
     private Class<? extends Termination> terminationClass = null;

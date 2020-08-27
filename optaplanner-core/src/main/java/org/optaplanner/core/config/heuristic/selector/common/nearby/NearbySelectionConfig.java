@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.heuristic.selector.common.nearby;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -25,6 +26,19 @@ import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfi
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 
+@XmlType(propOrder = {
+        "originEntitySelectorConfig",
+        "nearbyDistanceMeterClass",
+        "nearbySelectionDistributionType",
+        "blockDistributionSizeMinimum",
+        "blockDistributionSizeMaximum",
+        "blockDistributionSizeRatio",
+        "blockDistributionUniformDistributionProbability",
+        "linearDistributionSizeMaximum",
+        "parabolicDistributionSizeMaximum",
+        "betaDistributionAlpha",
+        "betaDistributionBeta"
+})
 public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig> {
 
     @XmlElement(name = "originEntitySelector")

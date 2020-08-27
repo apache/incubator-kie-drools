@@ -1,8 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plannerBenchmark>
   <benchmarkDirectory>data</benchmarkDirectory>
   <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
   <warmUpSecondsSpentLimit>0</warmUpSecondsSpentLimit>
+  <benchmarkReport>
+    <locale>cs_cz</locale>
+    <solverRankingType>TOTAL_SCORE</solverRankingType>
+  </benchmarkReport>
   <inheritedSolverBenchmark>
     <solver>
       <termination>

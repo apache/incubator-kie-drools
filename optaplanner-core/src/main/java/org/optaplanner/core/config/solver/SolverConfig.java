@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -50,16 +51,34 @@ import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.random.RandomType;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.io.XmlUnmarshallingException;
-import org.optaplanner.core.impl.io.jaxb.JaxbIO;
+import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
+import org.optaplanner.core.impl.io.jaxb.SolverConfigIO;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
 
 /**
  * To read it from XML, use {@link #createFromXmlResource(String)}.
  * To build a {@link SolverFactory} with it, use {@link SolverFactory#create(SolverConfig)}.
  */
-@XmlRootElement(name = "solver")
+@XmlRootElement(name = SolverConfig.XML_ELEMENT_NAME)
+@XmlType(propOrder = {
+        "environmentMode",
+        "daemon",
+        "randomType",
+        "randomSeed",
+        "randomFactoryClass",
+        "moveThreadCount",
+        "moveThreadBufferSize",
+        "threadFactoryClass",
+        "solutionClass",
+        "entityClassList",
+        "scoreDirectorFactoryConfig",
+        "terminationConfig",
+        "phaseConfigList"
+})
 public class SolverConfig extends AbstractConfig<SolverConfig> {
+
+    public static final String XML_ELEMENT_NAME = "solver";
+    public static final String XML_NAMESPACE = "https://www.optaplanner.org/xsd/optaplanner";
 
     /**
      * Reads an XML solver configuration from the classpath.
@@ -95,7 +114,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                 throw new IllegalArgumentException(errorMessage);
             }
             return createFromXmlInputStream(in, classLoader);
-        } catch (XmlUnmarshallingException e) {
+        } catch (OptaPlannerXmlSerializationException e) {
             throw new IllegalArgumentException("Unmarshalling of solverConfigResource (" + solverConfigResource + ") fails.",
                     e);
         } catch (IOException e) {
@@ -177,8 +196,8 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * @return never null
      */
     public static SolverConfig createFromXmlReader(Reader reader, ClassLoader classLoader) {
-        JaxbIO<?> xmlIO = new JaxbIO<>(SolverConfig.class);
-        Object solverConfigObject = xmlIO.read(reader);
+        SolverConfigIO solverConfigIO = new SolverConfigIO();
+        Object solverConfigObject = solverConfigIO.read(reader);
 
         if (!(solverConfigObject instanceof SolverConfig)) {
             throw new IllegalArgumentException("The " + SolverConfig.class.getSimpleName()

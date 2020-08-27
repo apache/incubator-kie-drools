@@ -1,12 +1,12 @@
 /*
  * Copyright 2020 Red Hat, Inc. and/or its affiliates.
- *
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ *  
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.io.jaxb;
+package org.optaplanner.core.impl.io.jaxb.adapter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.junit.jupiter.api.Test;
 
-public class JaxbCustomPropertiesAdapterTest {
+class JaxbCustomPropertiesAdapterTest {
 
     private final Unmarshaller unmarshaller;
 
@@ -42,22 +42,23 @@ public class JaxbCustomPropertiesAdapterTest {
     }
 
     @Test
-    public void readCustomProperties() throws JAXBException {
+    void readCustomProperties() throws JAXBException {
         String xmlFragment = "<testBean>"
                 + "  <customProperties>"
-                + "    <property name=\"firstKey\" value=\"firstValue\"/>"
-                + "    <property name=\"secondKey\" value=\"secondValue\"/>"
+                + "    <property xmlns=\"https://www.optaplanner.org/xsd/optaplanner\" name=\"firstKey\" value=\"firstValue\"/>"
+                + "    <property xmlns=\"https://www.optaplanner.org/xsd/optaplanner\" name=\"secondKey\" value=\"secondValue\"/>"
                 + "  </customProperties>"
                 + "</testBean>";
         Reader stringReader = new StringReader(xmlFragment);
         TestBean testBean = (TestBean) unmarshaller.unmarshal(stringReader);
-        assertThat(testBean.customProperties).hasSize(2);
-        assertThat(testBean.customProperties.get("firstKey")).isEqualTo("firstValue");
-        assertThat(testBean.customProperties.get("secondKey")).isEqualTo("secondValue");
+        assertThat(testBean.customProperties)
+                .hasSize(2)
+                .containsEntry("firstKey", "firstValue")
+                .containsEntry("secondKey", "secondValue");
     }
 
     @Test
-    public void nullValues() {
+    void nullValues() {
         JaxbCustomPropertiesAdapter jaxbCustomPropertiesAdapter = new JaxbCustomPropertiesAdapter();
         assertThat(jaxbCustomPropertiesAdapter.marshal(null)).isNull();
         assertThat(jaxbCustomPropertiesAdapter.unmarshal(null)).isNull();

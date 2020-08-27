@@ -2,6 +2,14 @@ package org.optaplanner.core.config.heuristic.selector.entity.pillar;
 
 import java.util.Comparator;
 
+import javax.xml.bind.annotation.XmlType;
+
+@XmlType(propOrder = {
+        "subPillarEnabled",
+        "minimumSubPillarSize",
+        "maximumSubPillarSize",
+        "maximumSubPillarSize"
+})
 public final class SubPillarConfigPolicy {
 
     private final boolean subPillarEnabled;

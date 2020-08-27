@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-/**
- * The {@link org.optaplanner.core.api.score.stream.ConstraintStream} API:
- * a way to define constraints for {@link org.optaplanner.core.api.score.Score} calculation.
- */
+@javax.xml.bind.annotation.XmlSchema(namespace = SolverConfig.XML_NAMESPACE)
 package org.optaplanner.core.api.score.stream;
+
+import org.optaplanner.core.config.solver.SolverConfig;

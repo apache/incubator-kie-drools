@@ -17,11 +17,18 @@
 package org.optaplanner.core.config.heuristic.selector.move.generic.chained;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.chained.SubChainSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 
+@XmlType(propOrder = {
+        "entityClass",
+        "subChainSelectorConfig",
+        "secondarySubChainSelectorConfig",
+        "selectReversingMoveToo"
+})
 public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig<SubChainSwapMoveSelectorConfig> {
 
     public static final String XML_ELEMENT_NAME = "subChainSwapMoveSelector";

@@ -19,6 +19,7 @@ package org.optaplanner.benchmark.config;
 import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
@@ -28,11 +29,17 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 
+@XmlType(propOrder = {
+        "name",
+        "solverConfig",
+        "problemBenchmarksConfig",
+        "subSingleCount"
+})
 public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBenchmarkConfig> {
 
     private String name = null;
 
-    @XmlElement(name = "solver")
+    @XmlElement(name = SolverConfig.XML_ELEMENT_NAME)
     private SolverConfig solverConfig = null;
 
     @XmlElement(name = "problemBenchmarks")

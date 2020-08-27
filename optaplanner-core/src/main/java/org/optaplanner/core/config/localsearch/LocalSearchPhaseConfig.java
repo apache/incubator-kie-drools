@@ -18,6 +18,7 @@ package org.optaplanner.core.config.localsearch;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
@@ -37,6 +38,12 @@ import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForage
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 
+@XmlType(propOrder = {
+        "localSearchType",
+        "moveSelectorConfig",
+        "acceptorConfig",
+        "foragerConfig"
+})
 public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> {
 
     public static final String XML_ELEMENT_NAME = "localSearch";

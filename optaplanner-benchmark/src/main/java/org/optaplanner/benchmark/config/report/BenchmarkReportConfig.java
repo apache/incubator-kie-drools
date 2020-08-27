@@ -20,6 +20,9 @@ import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.Locale;
 
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import org.optaplanner.benchmark.config.ranking.SolverRankingType;
 import org.optaplanner.benchmark.impl.ranking.SolverRankingWeightFactory;
 import org.optaplanner.benchmark.impl.ranking.TotalRankSolverRankingWeightFactory;
@@ -30,9 +33,17 @@ import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.io.jaxb.adapter.JaxbLocaleAdapter;
 
+@XmlType(propOrder = {
+        "locale",
+        "solverRankingType",
+        "solverRankingComparatorClass",
+        "solverRankingWeightFactoryClass"
+})
 public class BenchmarkReportConfig extends AbstractConfig<BenchmarkReportConfig> {
 
+    @XmlJavaTypeAdapter(JaxbLocaleAdapter.class)
     private Locale locale = null;
     private SolverRankingType solverRankingType = null;
     private Class<? extends Comparator<SolverBenchmarkResult>> solverRankingComparatorClass = null;

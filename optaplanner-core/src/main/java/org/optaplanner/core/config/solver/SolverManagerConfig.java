@@ -18,11 +18,17 @@ package org.optaplanner.core.config.solver;
 
 import java.util.concurrent.ThreadFactory;
 
+import javax.xml.bind.annotation.XmlType;
+
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@XmlType(propOrder = {
+        "parallelSolverCount",
+        "threadFactoryClass"
+})
 public class SolverManagerConfig extends AbstractConfig<SolverManagerConfig> {
 
     public static final String PARALLEL_SOLVER_COUNT_AUTO = "AUTO";

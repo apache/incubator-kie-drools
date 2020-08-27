@@ -22,13 +22,18 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.io.jaxb.JaxbCustomPropertiesAdapter;
+import org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter;
 import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 
+@XmlType(propOrder = {
+        "customPhaseCommandClassList",
+        "customProperties",
+})
 public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
 
     public static final String XML_ELEMENT_NAME = "customPhase";

@@ -16,9 +16,14 @@
 
 package org.optaplanner.core.config.constructionheuristic.decider.forager;
 
+import javax.xml.bind.annotation.XmlType;
+
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 
+@XmlType(propOrder = {
+        "pickEarlyType"
+})
 public class ConstructionHeuristicForagerConfig extends AbstractConfig<ConstructionHeuristicForagerConfig> {
 
     private ConstructionHeuristicPickEarlyType pickEarlyType = null;

@@ -42,7 +42,6 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.random.RandomType;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
-import org.optaplanner.core.impl.io.jaxb.JaxbIO;
 import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
@@ -50,8 +49,6 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution
 public class PlannerBenchmarkResultTest {
 
     private static final String TEST_PLANNER_BENCHMARK_RESULT = "testPlannerBenchmarkResult.xml";
-
-    private final JaxbIO<PlannerBenchmarkResult> xmlIO = new JaxbIO(PlannerBenchmarkResult.class);
 
     @Test
     public void createMergedResult() {
@@ -137,20 +134,21 @@ public class PlannerBenchmarkResultTest {
 
     @Test
     public void xmlReportRemainsSameAfterReadWrite() throws IOException {
+        BenchmarkResultIO benchmarkResultIO = new BenchmarkResultIO();
         PlannerBenchmarkResult plannerBenchmarkResult;
         try (Reader reader = new InputStreamReader(
                 PlannerBenchmarkResultTest.class.getResourceAsStream(TEST_PLANNER_BENCHMARK_RESULT), "UTF-8")) {
-            plannerBenchmarkResult = xmlIO.read(reader);
+            plannerBenchmarkResult = benchmarkResultIO.read(reader);
         }
 
         Writer stringWriter = new StringWriter();
-        xmlIO.write(plannerBenchmarkResult, stringWriter);
+        benchmarkResultIO.write(plannerBenchmarkResult, stringWriter);
         String jaxbString = stringWriter.toString();
 
         String originalXml = IOUtils.toString(
                 PlannerBenchmarkResultTest.class.getResourceAsStream(TEST_PLANNER_BENCHMARK_RESULT), StandardCharsets.UTF_8);
 
-        assertThat(jaxbString.trim()).isEqualToNormalizingNewlines(originalXml.trim());
+        assertThat(jaxbString.trim()).isXmlEqualTo(originalXml.trim());
     }
 
     @Test

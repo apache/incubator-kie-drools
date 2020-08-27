@@ -45,18 +45,19 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig;
 import org.optaplanner.benchmark.config.report.BenchmarkReportConfig;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
+import org.optaplanner.benchmark.impl.io.PlannerBenchmarkConfigIO;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.io.XmlUnmarshallingException;
-import org.optaplanner.core.impl.io.jaxb.JaxbIO;
+import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
 import org.optaplanner.core.impl.solver.thread.DefaultSolverThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,8 +71,25 @@ import freemarker.template.TemplateException;
  * To build a {@link PlannerBenchmarkFactory} with it, use {@link PlannerBenchmarkFactory#create(PlannerBenchmarkConfig)}.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "plannerBenchmark")
+@XmlRootElement(name = PlannerBenchmarkConfig.XML_ELEMENT_NAME)
+@XmlType(propOrder = {
+        "name",
+        "benchmarkDirectory",
+        "threadFactoryClass",
+        "parallelBenchmarkCount",
+        "warmUpMillisecondsSpentLimit",
+        "warmUpSecondsSpentLimit",
+        "warmUpMinutesSpentLimit",
+        "warmUpHoursSpentLimit",
+        "warmUpDaysSpentLimit",
+        "benchmarkReportConfig",
+        "inheritedSolverBenchmarkConfig",
+        "solverBenchmarkBluePrintConfigList",
+        "solverBenchmarkConfigList"
+})
 public class PlannerBenchmarkConfig {
+
+    public static final String XML_ELEMENT_NAME = "plannerBenchmark";
 
     // ************************************************************************
     // Static creation methods: SolverConfig
@@ -138,7 +156,7 @@ public class PlannerBenchmarkConfig {
                 throw new IllegalArgumentException(errorMessage);
             }
             return createFromXmlInputStream(in, classLoader);
-        } catch (XmlUnmarshallingException e) {
+        } catch (OptaPlannerXmlSerializationException e) {
             throw new IllegalArgumentException("Unmarshalling of benchmarkConfigResource (" + benchmarkConfigResource
                     + ") fails.", e);
         } catch (IOException e) {
@@ -218,7 +236,7 @@ public class PlannerBenchmarkConfig {
      * @return never null
      */
     public static PlannerBenchmarkConfig createFromXmlReader(Reader reader, ClassLoader classLoader) {
-        JaxbIO<?> xmlIO = new JaxbIO<>(PlannerBenchmarkConfig.class);
+        PlannerBenchmarkConfigIO xmlIO = new PlannerBenchmarkConfigIO();
         Object benchmarkConfigObject = xmlIO.read(reader);
         if (!(benchmarkConfigObject instanceof PlannerBenchmarkConfig)) {
             throw new IllegalArgumentException("The " + PlannerBenchmarkConfig.class.getSimpleName()
