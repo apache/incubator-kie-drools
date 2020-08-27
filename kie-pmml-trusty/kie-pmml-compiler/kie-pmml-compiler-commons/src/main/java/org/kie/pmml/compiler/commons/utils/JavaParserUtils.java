@@ -19,10 +19,19 @@ import java.io.InputStream;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * Class to provide shared, helper methods to be invoked by model-specific
+ * <b>code-generation</b>
+ */
 public class JavaParserUtils {
 
+    private static final Logger logger = LoggerFactory.getLogger(JavaParserUtils.class);
     public static final String MAIN_CLASS_NOT_FOUND = "Main class not found";
 
     private JavaParserUtils() {
@@ -35,5 +44,41 @@ public class JavaParserUtils {
         } catch (Exception e) {
             throw new KiePMMLInternalException(String.format("Failed to parse %s due to %s", fileName, e.getMessage()), e);
         }
+    }
+
+    /**
+     * @param className
+     * @param packageName
+     * @param javaTemplate the name of the <b>file</b> to be used as template source
+     * @param modelClassName the name of the class used in the provided template
+     * @return
+     */
+    public static CompilationUnit getKiePMMLModelCompilationUnit(final String className,
+                                                                 final String packageName,
+                                                                 final String javaTemplate,
+                                                                 final String modelClassName) {
+        logger.trace("getKiePMMLModelCompilationUnit {} {}", className, packageName);
+        CompilationUnit templateCU = getFromFileName(javaTemplate);
+        CompilationUnit toReturn = templateCU.clone();
+        toReturn.setPackageDeclaration(packageName);
+        ClassOrInterfaceDeclaration modelTemplate = toReturn.getClassByName(modelClassName)
+                .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + modelClassName));
+        modelTemplate.setName(className);
+        return toReturn;
+    }
+
+    /**
+     * Return the fully qualified name of the generated class.
+     * It throws <code>KiePMMLException</code> if the package name is missing
+     * @param cu
+     * @return
+     *
+     */
+    public static String getFullClassName(final CompilationUnit cu) {
+        String packageName = cu.getPackageDeclaration()
+                .orElseThrow(() ->new KiePMMLException("Missing package declaration for " + cu.toString()))
+                .getName().asString();
+        String className = cu.getType(0).getName().asString();
+        return packageName + "." + className;
     }
 }

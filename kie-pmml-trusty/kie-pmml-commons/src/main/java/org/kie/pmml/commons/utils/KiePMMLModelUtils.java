@@ -37,6 +37,6 @@ public class KiePMMLModelUtils {
      */
     public static String getSanitizedClassName(String input) {
         String upperCasedInput = input.substring(0, 1).toUpperCase() + input.substring(1);
-        return upperCasedInput.replace(".", "").replace("_", "").replace(" ", "");
+        return upperCasedInput.replace(".", "").replace("-", "").replace("_", "").replace(" ", "");
     }
 }

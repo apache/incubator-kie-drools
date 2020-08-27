@@ -44,7 +44,9 @@ public enum PMML_MODEL {
     SUPPORT_VECTOR_MACHINE_MODEL("SupportVectorMachineModel"),
     TEXT_MODEL("TextModel"),
     TIME_SERIES_MODEL("TimeSeriesModel"),
-    TREE_MODEL("TreeModel");
+    TREE_MODEL("TreeModel"),
+    // Used only for internal tests
+    TEST_MODEL("TestModel");
 
     private String name;
 

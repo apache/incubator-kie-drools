@@ -29,6 +29,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -38,13 +39,16 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 
 /**
  * Class meant to provide <i>helper</i> methods to all <i>code-generating</i> classes
@@ -256,5 +260,60 @@ public class CommonCodegenUtils {
                 .map(StaticJavaParser::parseClassOrInterfaceType).collect(Collectors.toList());
         toReturn.setTypeArguments(NodeList.nodeList(types));
         return toReturn;
+    }
+
+    /**
+     * Set the value of the variable with the given <b>assignExpressionName</b> in the given <code>BlockStmt</code>
+     * It throws <code>KiePMMLException</code> if variable is not found
+     * @param body
+     * @param assignExpressionName
+     * @param value
+     *
+     * @throws <code>KiePMMLException</code> if <code>AssignExpr</code> with given <b>assignExpressionName</b> is not found
+     */
+    public static void setAssignExpressionValue( final BlockStmt body, final String assignExpressionName, final Expression value) {
+        AssignExpr assignExpr = getAssignExpression(body, assignExpressionName)
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, assignExpressionName, body)));
+        assignExpr.setValue(value);
+    }
+
+    /**
+     * Return an <code>Optional&lt;AssignExpr&gt;</code> with the given <b>assignExpressionName</b> from the given <code>BlockStmt</code>
+     * @param body
+     * @param assignExpressionName
+     * @return <code>Optional&lt;AssignExpr&gt;</code> with the found <code>AssignExpr</code>, or <code>Optional.empty()</code> if no match
+     * has been found
+     */
+    public static Optional<AssignExpr> getAssignExpression(final BlockStmt body, final String assignExpressionName) {
+        final List<AssignExpr> assignExprs = body.findAll(AssignExpr.class);
+        return assignExprs.stream()
+                .filter(assignExpr -> assignExpressionName.equals(assignExpr.getTarget().asNameExpr().getNameAsString()))
+                .findFirst();
+    }
+
+
+    /**
+     * Return an <code>Optional&lt;ExplicitConstructorInvocationStmt&gt;</code> from the given <code>BlockStmt</code>
+     * @param body
+     * @return <code>Optional&lt;ExplicitConstructorInvocationStmt&gt;</code> with the found <code>ExplicitConstructorInvocationStmt</code>, or <code>Optional.empty()</code> if none is found
+     *
+     */
+    public static Optional<ExplicitConstructorInvocationStmt> getExplicitConstructorInvocationStmt(final BlockStmt body) {
+        return body.getStatements().stream()
+                .filter(statement -> statement instanceof ExplicitConstructorInvocationStmt)
+                .map(statement -> (ExplicitConstructorInvocationStmt) statement)
+                .findFirst();
+    }
+
+    /**
+     * Return an <code>Optional&lt;MethodDeclaration&gt;</code> with the <b>first</b> method <b>methodName</b> from the given <code>ClassOrInterfaceDeclaration</code>
+     * @param classOrInterfaceDeclaration
+     * @param methodName
+     * @return <code>Optional&lt;MethodDeclaration&gt;</code> with the first found <code>MethodDeclaration</code>, or <code>Optional.empty()</code> if no match
+     * has been found
+     */
+    public static Optional<MethodDeclaration> getMethodDeclaration(final ClassOrInterfaceDeclaration classOrInterfaceDeclaration, final String methodName) {
+        final List<MethodDeclaration> assignExprs = classOrInterfaceDeclaration.getMethodsByName(methodName);
+        return assignExprs.isEmpty() ? Optional.empty() : Optional.of(assignExprs.get(0));
     }
 }

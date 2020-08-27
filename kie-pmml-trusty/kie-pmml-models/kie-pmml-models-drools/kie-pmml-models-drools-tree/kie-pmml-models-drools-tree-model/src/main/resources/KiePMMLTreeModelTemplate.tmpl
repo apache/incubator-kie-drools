@@ -28,5 +28,11 @@ public class KiePMMLTreeModelTemplate extends KiePMMLTreeModel {
         super(modelName, Collections.emptyList(), algorithmName);
         targetField = targetField;
         pmmlMODEL = null;
+        miningFunction = null;
+    }
+
+    @Override
+    public String getKModulePackageName() {
+        return null;
     }
 }

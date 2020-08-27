@@ -18,26 +18,15 @@ package org.kie.pmml.regression.tests;
 
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
-import org.dmg.pmml.PMML;
-import org.dmg.pmml.regression.RegressionModel;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieRuntimeFactory;
-import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
-import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
-import org.kie.pmml.models.regression.compiler.executor.RegressionModelImplementationProvider;
-import org.kie.pmml.models.regression.evaluator.PMMLRegressionModelEvaluator;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public abstract class AbstractPMMLRegressionTest {
 

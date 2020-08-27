@@ -32,6 +32,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.compiler.testutils.TestUtils;
@@ -101,7 +102,7 @@ public class DroolsModelProviderTest {
     }
 
     @Test
-    public void getKiePMMLModel() {
+    public void getKiePMMLModelWithKnowledgeBuilder() {
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         KiePMMLDroolsModel retrieved = droolsModelProvider.getKiePMMLModel(pmml.getDataDictionary(),
                                                                            pmml.getTransformationDictionary(),
@@ -120,8 +121,16 @@ public class DroolsModelProviderTest {
         commonVerifyPackageDescr(packageDescr, null, expectedPackageName);
     }
 
+    @Test(expected = KiePMMLException.class)
+    public void getKiePMMLModelNoKnowledgeBuilder() {
+        droolsModelProvider.getKiePMMLModel(pmml.getDataDictionary(),
+                                                                           pmml.getTransformationDictionary(),
+                                                                           scorecard,
+                                                                           "knowledgeBuilder");
+    }
+
     @Test
-    public void getKiePMMLModelFromPlugin() {
+    public void getKiePMMLModelFromPluginWithKnowledgeBuilder() {
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         KiePMMLDroolsModel retrieved = droolsModelProvider.getKiePMMLModelFromPlugin(PACKAGE_NAME,
                                                                                      pmml.getDataDictionary(),
@@ -136,6 +145,25 @@ public class DroolsModelProviderTest {
         assertEquals(scorecard.getModelName(), retrievedSources.getName());
         PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs("defaultpkg").get(0);
         commonVerifyPackageDescr(packageDescr, null, PACKAGE_NAME);
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void getKiePMMLModelFromPluginWithException() {
+        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
+        droolsModelProvider.getKiePMMLModelFromPlugin(PACKAGE_NAME,
+                                                                                     null,
+                                                                                     null,
+                                                                                     null,
+                                                                                     knowledgeBuilder);
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void getKiePMMLModelFromPluginNoKnowledgeBuilder() {
+        droolsModelProvider.getKiePMMLModelFromPlugin(PACKAGE_NAME,
+                                                                                     pmml.getDataDictionary(),
+                                                                                     pmml.getTransformationDictionary(),
+                                                                                     scorecard,
+                                                                                     "knowledgeBuilder");
     }
 
     @Test

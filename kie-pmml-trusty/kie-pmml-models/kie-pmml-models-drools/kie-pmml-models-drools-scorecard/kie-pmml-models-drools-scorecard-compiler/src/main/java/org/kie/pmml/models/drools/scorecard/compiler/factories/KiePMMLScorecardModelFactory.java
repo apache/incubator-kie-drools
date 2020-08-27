@@ -22,10 +22,7 @@ import java.util.Map;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
-import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
-import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
@@ -39,10 +36,12 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.addTransformationsInClassOrInterfaceDeclaration;
+import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
 import static org.kie.pmml.models.drools.utils.KiePMMLDroolsModelFactoryUtils.getKiePMMLModelCompilationUnit;
 
 /**
@@ -75,8 +74,8 @@ public class KiePMMLScorecardModelFactory {
         String className = getSanitizedClassName(model.getModelName());
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
-        final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing default constructor in ClassOrInterfaceDeclaration %s ", modelTemplate.getName())));
-        setSuperInvocation(model, constructorDeclaration, modelTemplate.getName());
+        final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
+        setConstructor(model, constructorDeclaration, modelTemplate.getName());
         addTransformationsInClassOrInterfaceDeclaration(modelTemplate, transformationDictionary, model.getLocalTransformations());
         Map<String, String> toReturn = new HashMap<>();
         String fullClassName = packageName + "." + className;
@@ -102,15 +101,7 @@ public class KiePMMLScorecardModelFactory {
         return KiePMMLScorecardModelASTFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap, types);
     }
 
-    static void setSuperInvocation(final Scorecard scorecard, final ConstructorDeclaration constructorDeclaration, final SimpleName tableName) {
-        constructorDeclaration.setName(tableName);
-        final BlockStmt body = constructorDeclaration.getBody();
-        body.getStatements().iterator().forEachRemaining(statement -> {
-            if (statement instanceof ExplicitConstructorInvocationStmt) {
-                ExplicitConstructorInvocationStmt superStatement = (ExplicitConstructorInvocationStmt) statement;
-                NameExpr modelNameExpr = (NameExpr) superStatement.getArgument(0);
-                modelNameExpr.setName(String.format("\"%s\"", scorecard.getModelName()));
-            }
-        });
+    static void setConstructor(final Scorecard scorecard, final ConstructorDeclaration constructorDeclaration, final SimpleName modelName) {
+        setConstructorSuperNameInvocation(modelName.asString(), constructorDeclaration, scorecard.getModelName());
     }
 }

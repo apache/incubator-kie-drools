@@ -36,7 +36,7 @@ rule "_setosa"
 when
     $statusHolder : KiePMMLStatusHolder( status == null )
 then
-System.out.println("_setosa match");
+// System.out.println("_setosa match");
 $statusHolder.setStatus("_setosa");
 update($statusHolder);
 
@@ -46,7 +46,7 @@ rule "_setosa_setosa"
 when
     $statusHolder : KiePMMLStatusHolder( status == "_setosa" )
 then
-System.out.println("_setosa_setosa match");
+// System.out.println("_setosa_setosa match");
 $statusHolder.setStatus("_setosa_setosa_surrogate");
 update($statusHolder);
 
@@ -59,11 +59,11 @@ when
     $inputField : PETAL_LENGTH(  )
     if ( $inputField.getValue() < 2.45 )  break[match]
 then
-System.out.println("_setosa_setosa_surrogate_PETAL_LENGTH match");
+// System.out.println("_setosa_setosa_surrogate_PETAL_LENGTH match");
 //$statusHolder.setStatus("_setosa_setosa");
 //update($statusHolder);
 then[match]
-System.out.println("_setosa_setosa_surrogate_PETAL_LENGTH break");
+// System.out.println("_setosa_setosa_surrogate_PETAL_LENGTH break");
 $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
@@ -76,11 +76,11 @@ when
     $inputField : PETAL_WIDTH(  )
     if ( $inputField.getValue() < 0.8 )  break[match]
 then
-System.out.println("_setosa_setosa_surrogate_PETAL_WIDTH match");
+// System.out.println("_setosa_setosa_surrogate_PETAL_WIDTH match");
 //$statusHolder.setStatus("_setosa_setosa");
 //update($statusHolder);
 then[match]
-System.out.println("_setosa_setosa_surrogate_PETAL_WIDTH break");
+// System.out.println("_setosa_setosa_surrogate_PETAL_WIDTH break");
 $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
@@ -93,11 +93,11 @@ when
     $inputField : SEPAL_LENGTH(  )
     if ( $inputField.getValue() < 5.45 )  break[match]
 then
-System.out.println("_setosa_setosa_surrogate_SEPAL_LENGTH match");
+// System.out.println("_setosa_setosa_surrogate_SEPAL_LENGTH match");
 //$statusHolder.setStatus("_setosa_setosa");
 //update($statusHolder);
 then[match]
-System.out.println("_setosa_setosa_surrogate_SEPAL_LENGTH break");
+// System.out.println("_setosa_setosa_surrogate_SEPAL_LENGTH break");
 $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
@@ -110,11 +110,11 @@ when
     $inputField : SEPAL_WIDTH(  )
     if ( $inputField.getValue() >= 3.35 )  break[match]
 then
-System.out.println("_setosa_setosa_surrogate_SEPAL_WIDTH match");
+// System.out.println("_setosa_setosa_surrogate_SEPAL_WIDTH match");
 $statusHolder.setStatus("_setosa");
 update($statusHolder);
 then[match]
-System.out.println("_setosa_setosa_surrogate_SEPAL_WIDTH break");
+// System.out.println("_setosa_setosa_surrogate_SEPAL_WIDTH break");
 $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
@@ -125,7 +125,7 @@ rule "_setosa_versicolor"
 when
     $statusHolder : KiePMMLStatusHolder( status == "_setosa" )
 then
-System.out.println("_setosa_versicolor_surrogate_PETAL_LENGTH match");
+// System.out.println("_setosa_versicolor_surrogate_PETAL_LENGTH match");
 $statusHolder.setStatus("_setosa_versicolor_surrogate");
 update($statusHolder);
 end
@@ -136,11 +136,11 @@ when
     $inputField : PETAL_LENGTH(  )
     if ( $inputField.getValue() >= 2.45 )  break[match]
 then
-System.out.println("_setosa_versicolor_surrogate_PETAL_LENGTH match");
+// System.out.println("_setosa_versicolor_surrogate_PETAL_LENGTH match");
 //$statusHolder.setStatus("_setosa_versicolor");
 //update($statusHolder);
 then[match]
-System.out.println("_setosa_versicolor_surrogate_PETAL_LENGTH break");
+// System.out.println("_setosa_versicolor_surrogate_PETAL_LENGTH break");
 $statusHolder.setStatus("_setosa_versicolor_versicolor");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
@@ -153,11 +153,11 @@ when
     $inputField : PETAL_WIDTH(  )
     if ( $inputField.getValue() >= 0.8 )  break[match]
 then
-System.out.println("_setosa_versicolor_surrogate_PETAL_WIDTH match");
+// System.out.println("_setosa_versicolor_surrogate_PETAL_WIDTH match");
 //$statusHolder.setStatus("_setosa_versicolor");
 //update($statusHolder);
 then[match]
-System.out.println("_setosa_versicolor_surrogate_PETAL_WIDTH break");
+// System.out.println("_setosa_versicolor_surrogate_PETAL_WIDTH break");
 $statusHolder.setStatus("_setosa_versicolor_versicolor");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
@@ -170,11 +170,11 @@ when
     $inputField : SEPAL_LENGTH(  )
     if ( $inputField.getValue() >= 5.45 )  break[match]
 then
-System.out.println("_setosa_versicolor_surrogate_SEPAL_LENGTH match");
+// System.out.println("_setosa_versicolor_surrogate_SEPAL_LENGTH match");
 //$statusHolder.setStatus("_setosa_versicolor");
 //update($statusHolder);
 then[match]
-System.out.println("_setosa_versicolor_surrogate_SEPAL_LENGTH break");
+// System.out.println("_setosa_versicolor_surrogate_SEPAL_LENGTH break");
 $statusHolder.setStatus("_setosa_versicolor_versicolor");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
@@ -187,11 +187,11 @@ when
     $inputField : SEPAL_WIDTH(  )
     if ( $inputField.getValue() < 3.35 )  break[match]
 then
-System.out.println("_setosa_versicolor_surrogate_SEPAL_WIDTH match");
+// System.out.println("_setosa_versicolor_surrogate_SEPAL_WIDTH match");
 $statusHolder.setStatus("_setosa");
 update($statusHolder);
 then[match]
-System.out.println("_setosa_versicolor_surrogate_SEPAL_WIDTH break");
+// System.out.println("_setosa_versicolor_surrogate_SEPAL_WIDTH break");
 $statusHolder.setStatus("_setosa_versicolor_versicolor");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
@@ -202,11 +202,11 @@ rule "_setosa_versicolor_versicolor"
 when
     $statusHolder : KiePMMLStatusHolder( status == "_setosa_versicolor_versicolor" )
 then
-System.out.println("_setosa_versicolor_versicolor_surrogate_PETAL_WIDTH match");
+// System.out.println("_setosa_versicolor_versicolor_surrogate_PETAL_WIDTH match");
 $statusHolder.setStatus("_setosa_versicolor_versicolor");
 update($statusHolder);
 then[match]
-System.out.println("_setosa_versicolor_versicolor_surrogate_PETAL_WIDTH break");
+// System.out.println("_setosa_versicolor_versicolor_surrogate_PETAL_WIDTH break");
 $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
@@ -219,11 +219,11 @@ when
     $inputField : PETAL_WIDTH(  )
     if ( $inputField.getValue() < 1.75 )  break[match]
 then
-System.out.println("_setosa_versicolor_versicolor_surrogate_PETAL_WIDTH match");
+// System.out.println("_setosa_versicolor_versicolor_surrogate_PETAL_WIDTH match");
 $statusHolder.setStatus("_setosa_versicolor_versicolor");
 update($statusHolder);
 then[match]
-System.out.println("_setosa_versicolor_versicolor_surrogate_PETAL_WIDTH break");
+// System.out.println("_setosa_versicolor_versicolor_surrogate_PETAL_WIDTH break");
 $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
@@ -236,11 +236,11 @@ when
     $inputField : PETAL_LENGTH(  )
     if ( $inputField.getValue() < 4.75 )  break[match]
 then
-System.out.println("_setosa_versicolor_versicolor_surrogate_PETAL_LENGTH match");
+// System.out.println("_setosa_versicolor_versicolor_surrogate_PETAL_LENGTH match");
 $statusHolder.setStatus("_setosa_versicolor_versicolor");
 update($statusHolder);
 then[match]
-System.out.println("_setosa_versicolor_versicolor_surrogate_PETAL_LENGTH break");
+// System.out.println("_setosa_versicolor_versicolor_surrogate_PETAL_LENGTH break");
 $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
@@ -253,11 +253,11 @@ when
     $inputField : SEPAL_LENGTH(  )
     if ( $inputField.getValue() < 6.15 )  break[match]
 then
-System.out.println("_setosa_versicolor_versicolor_surrogate_SEPAL_LENGTH match");
+// System.out.println("_setosa_versicolor_versicolor_surrogate_SEPAL_LENGTH match");
 $statusHolder.setStatus("_setosa_versicolor_versicolor");
 update($statusHolder);
 then[match]
-System.out.println("_setosa_versicolor_versicolor_surrogate_SEPAL_LENGTH break");
+// System.out.println("_setosa_versicolor_versicolor_surrogate_SEPAL_LENGTH break");
 $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
@@ -270,11 +270,11 @@ when
     $inputField : SEPAL_WIDTH(  )
     if ( $inputField.getValue() < 2.95 )  break[match]
 then
-System.out.println("_setosa_versicolor_versicolor_surrogate_SEPAL_WIDTH match");
+// System.out.println("_setosa_versicolor_versicolor_surrogate_SEPAL_WIDTH match");
 $statusHolder.setStatus("DONE");
 update($statusHolder);
 then[match]
-System.out.println("_setosa_versicolor_versicolor_surrogate_SEPAL_WIDTH break");
+// System.out.println("_setosa_versicolor_versicolor_surrogate_SEPAL_WIDTH break");
 $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
@@ -287,11 +287,11 @@ when
     $inputField : PETAL_WIDTH(  )
     if ( $inputField.getValue() >= 1.75 )  break[match]
 then
-System.out.println("_setosa_versicolor_virginica_surrogate_PETAL_WIDTH match");
+// System.out.println("_setosa_versicolor_virginica_surrogate_PETAL_WIDTH match");
 $statusHolder.setStatus("_setosa_versicolor_virginica");
 update($statusHolder);
 then[match]
-System.out.println("_setosa_versicolor_virginica_surrogate_PETAL_WIDTH break");
+// System.out.println("_setosa_versicolor_virginica_surrogate_PETAL_WIDTH break");
 $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
@@ -304,11 +304,11 @@ when
     $inputField : PETAL_LENGTH(  )
     if ( $inputField.getValue() >= 4.75 )  break[match]
 then
-System.out.println("_setosa_versicolor_virginica_surrogate_PETAL_LENGTH match");
+// System.out.println("_setosa_versicolor_virginica_surrogate_PETAL_LENGTH match");
 $statusHolder.setStatus("_setosa_versicolor_virginica");
 update($statusHolder);
 then[match]
-System.out.println("_setosa_versicolor_virginica_surrogate_PETAL_LENGTH break");
+// System.out.println("_setosa_versicolor_virginica_surrogate_PETAL_LENGTH break");
 $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
@@ -321,11 +321,11 @@ when
     $inputField : SEPAL_LENGTH(  )
     if ( $inputField.getValue() >= 6.15 )  break[match]
 then
-System.out.println("_setosa_versicolor_virginica_surrogate_SEPAL_LENGTH match");
+// System.out.println("_setosa_versicolor_virginica_surrogate_SEPAL_LENGTH match");
 $statusHolder.setStatus("_setosa_versicolor_virginica");
 update($statusHolder);
 then[match]
-System.out.println("_setosa_versicolor_virginica_surrogate_SEPAL_LENGTH break");
+// System.out.println("_setosa_versicolor_virginica_surrogate_SEPAL_LENGTH break");
 $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
@@ -338,11 +338,11 @@ when
     $inputField : SEPAL_WIDTH(  )
     if ( $inputField.getValue() >= 2.95 )  break[match]
 then
-System.out.println("_setosa_versicolor_virginica_surrogate_SEPAL_WIDTH match");
+// System.out.println("_setosa_versicolor_virginica_surrogate_SEPAL_WIDTH match");
 $statusHolder.setStatus("DONE");
 update($statusHolder);
 then[match]
-System.out.println("_setosa_versicolor_virginica_surrogate_SEPAL_WIDTH break");
+// System.out.println("_setosa_versicolor_virginica_surrogate_SEPAL_WIDTH break");
 $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
@@ -353,7 +353,7 @@ rule "default__setosa_versicolor"
 when
     $statusHolder : KiePMMLStatusHolder( status == "_setosa_versicolor" )
 then
-System.out.println("default__setosa_versicolor match");
+// System.out.println("default__setosa_versicolor match");
 $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
@@ -365,7 +365,7 @@ rule "default__setosa"
 when
     $statusHolder : KiePMMLStatusHolder( status == "_setosa" )
 then
-System.out.println("default__setosa match");
+// System.out.println("default__setosa match");
 $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");

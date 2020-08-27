@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 
 public class KiePMMLDroolsModelWithSourcesTest {

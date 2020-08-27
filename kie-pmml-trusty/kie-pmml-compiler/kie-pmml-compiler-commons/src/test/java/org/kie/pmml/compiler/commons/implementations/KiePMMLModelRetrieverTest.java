@@ -21,12 +21,10 @@ import java.util.Optional;
 import org.dmg.pmml.PMML;
 import org.junit.Test;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.compiler.commons.mocks.KiePMMLTestingModel;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModel;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelFromPlugin;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
@@ -43,8 +41,6 @@ public class KiePMMLModelRetrieverTest {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(MULTIPLE_TARGETS_SOURCE), MULTIPLE_TARGETS_SOURCE);
         final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModel(pmmlModel.getDataDictionary(), pmmlModel.getTransformationDictionary(), pmmlModel.getModels().get(0), null);
         assertNotNull(retrieved);
-        assertTrue(retrieved.isPresent());
-        assertTrue(retrieved.get() instanceof KiePMMLTestingModel);
     }
 
     @Test
@@ -56,12 +52,10 @@ public class KiePMMLModelRetrieverTest {
     }
 
     @Test
-    public void getFromCommonDataAndTransformationDictionaryAndModelFromPluginlWithProvider() throws Exception {
+    public void getFromCommonDataAndTransformationDictionaryAndModelFromPluginWithProvider() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(MULTIPLE_TARGETS_SOURCE), MULTIPLE_TARGETS_SOURCE);
         final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModelFromPlugin(PACKAGE_NAME, pmmlModel.getDataDictionary(), pmmlModel.getTransformationDictionary(), pmmlModel.getModels().get(0), null);
         assertNotNull(retrieved);
-        assertTrue(retrieved.isPresent());
-        assertTrue(retrieved.get() instanceof KiePMMLTestingModel);
     }
 
     @Test

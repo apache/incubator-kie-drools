@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.Objects;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLBase;
+import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 
-public class KiePMMLFieldRef extends AbstractKiePMMLBase implements KiePMMLExpression {
+public class KiePMMLFieldRef extends AbstractKiePMMLComponent implements KiePMMLExpression {
 
     private final String mapMissingTo;
 

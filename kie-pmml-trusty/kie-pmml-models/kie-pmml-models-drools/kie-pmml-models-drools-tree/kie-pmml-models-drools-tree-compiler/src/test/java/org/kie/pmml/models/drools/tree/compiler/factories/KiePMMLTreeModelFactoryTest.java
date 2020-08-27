@@ -17,12 +17,16 @@
 package org.kie.pmml.models.drools.tree.compiler.factories;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
@@ -38,6 +42,7 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelFactory.KIE_PMML_TREE_MODEL_TEMPLATE;
 import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelFactory.KIE_PMML_TREE_MODEL_TEMPLATE_JAVA;
@@ -103,21 +108,20 @@ public class KiePMMLTreeModelFactoryTest {
     }
 
     @Test
-    public void setSuperInvocation() {
+    public void setConstructor() {
         ConstructorDeclaration constructorDeclaration = classOrInterfaceDeclaration.getDefaultConstructor().get();
         SimpleName simpleName = new SimpleName("SIMPLENAME");
-        KiePMMLTreeModelFactory.setSuperInvocation(treeModel,
-                                                        constructorDeclaration,
-                                                        simpleName);
-        String expected = String.format("public %s() {\n" +
-                                                "    super(\"%s\", Collections.emptyList(), \"%s\");\n" +
-                                                "    targetField = targetField;\n" +
-                                                "    pmmlMODEL = null;\n" +
-                                                "}",
-                                        simpleName.asString(),
-                                        treeModel.getModelName(),
-                                        treeModel.getAlgorithmName());
-        assertEquals(expected, constructorDeclaration.toString());
+        KiePMMLTreeModelFactory.setConstructor(treeModel,
+                                               constructorDeclaration,
+                                               simpleName);
+        Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
+        superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", treeModel.getModelName())));
+        superInvocationExpressionsMap.put(2, new NameExpr(String.format("\"%s\"", treeModel.getAlgorithmName())));
+        Map<String, Expression> assignExpressionMap = new HashMap<>();
+        assignExpressionMap.put("targetField", new NameExpr("targetField"));
+        assignExpressionMap.put("miningFunction", new NullLiteralExpr());
+        assignExpressionMap.put("pmmlMODEL", new NullLiteralExpr());
+        commonEvaluateConstructor(constructorDeclaration, simpleName.asString(), superInvocationExpressionsMap, assignExpressionMap);
     }
 
 }

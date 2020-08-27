@@ -19,10 +19,17 @@ package org.kie.pmml.evaluator.api.executor;
 import java.util.List;
 import java.util.Optional;
 
+import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
 public interface PMMLRuntime {
+
+    /**
+     * Returns the <code>KieBase</code> used by the current <code>PMMLRuntime</code>
+     * @return
+     */
+    KieBase getKnowledgeBase();
 
     /**
      * Returns a list of all models available to this runtime

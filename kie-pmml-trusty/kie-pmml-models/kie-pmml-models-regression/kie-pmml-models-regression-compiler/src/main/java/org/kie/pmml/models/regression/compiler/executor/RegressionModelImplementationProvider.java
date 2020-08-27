@@ -72,7 +72,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
             final Map<String, String> sourcesMap = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(dataDictionary, transformationDictionary, model, packageName);
             return new KiePMMLRegressionModelWithSources(model.getModelName(), packageName, sourcesMap);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new KiePMMLException(e);
         }
     }
 
@@ -88,12 +88,16 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
         }
     }
 
-    private void validateRegression(final List<KiePMMLNameOpType> targetFields, final RegressionModel toValidate) {
+    void validateRegression(final List<KiePMMLNameOpType> targetFields, final RegressionModel toValidate) {
         validateRegressionTargetField(targetFields, toValidate);
         if (toValidate.getRegressionTables().size() != 1) {
             throw new KiePMMLException("Expected one RegressionTable, retrieved " + toValidate.getRegressionTables().size());
         }
-        switch (toValidate.getNormalizationMethod()) {
+        validateNormalizationMethod(toValidate.getNormalizationMethod());
+    }
+
+    void validateNormalizationMethod(RegressionModel.NormalizationMethod toValidate) {
+        switch (toValidate) {
             case NONE:
             case SOFTMAX:
             case LOGIT:
@@ -104,7 +108,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
             case CAUCHIT:
                 return;
             default:
-                throw new KiePMMLException(INVALID_NORMALIZATION_METHOD + toValidate.getNormalizationMethod());
+                throw new KiePMMLException(INVALID_NORMALIZATION_METHOD + toValidate);
         }
     }
 

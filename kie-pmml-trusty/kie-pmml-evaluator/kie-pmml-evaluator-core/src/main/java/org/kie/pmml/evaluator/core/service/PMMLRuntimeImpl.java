@@ -51,6 +51,11 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
     }
 
     @Override
+    public KieBase getKnowledgeBase() {
+        return knowledgeBase;
+    }
+
+    @Override
     public List<KiePMMLModel> getModels() {
         return KnowledgeBaseUtils.getModels(knowledgeBase);
     }

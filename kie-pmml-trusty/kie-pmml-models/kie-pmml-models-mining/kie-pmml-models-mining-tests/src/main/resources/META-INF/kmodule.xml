@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
+
+  <kbase name="MixedMining" packages="mixedmining">
+    <ksession name="MixedMiningSession" type="stateless"/>
+  </kbase>
+
+  <kbase name="PredicatesMining" packages="predicatesmining">
+    <ksession name="PredicatesMiningSession" type="stateless"/>
+  </kbase>
+
+  <kbase name="SegmentationMeanMining" packages="segmentationmeanmining">
+    <ksession name="SegmentationMeanMiningSession" type="stateless"/>
+  </kbase>
+
+  <kbase name="SegmentationMedianMining" packages="segmentationmedianmining">
+    <ksession name="SegmentationMedianMiningSession" type="stateless"/>
+  </kbase>
+
+  <kbase name="SegmentationMedian2Mining" packages="segmentationmedian2mining">
+    <ksession name="SegmentationMedian2MiningSession" type="stateless"/>
+  </kbase>
+
+  <kbase name="SegmentationSumMining" packages="segmentationsummining">
+    <ksession name="SegmentationSumMiningSession" type="stateless"/>
+  </kbase>
+
+  <kbase name="SegmentationMaxMining" packages="segmentationmaxmining">
+    <ksession name="SegmentationMaxMiningSession" type="stateless"/>
+  </kbase>
+
+  <kbase name="SegmentationSelectFirstMining" packages="segmentationselectfirstmining">
+    <ksession name="SegmentationSelectFirstMiningSession" type="stateless"/>
+  </kbase>
+
+  <kbase name="SegmentationClassificationSelectFirst" packages="segmentationclassificationselectfirst">
+    <ksession name="SegmentationClassificationSelectFirstSession" type="stateless"/>
+  </kbase>
+</kmodule>

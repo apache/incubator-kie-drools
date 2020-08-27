@@ -18,7 +18,7 @@ package org.kie.pmml.commons.model;
 import java.util.Map;
 
 /**
- * Interface used to define if a given <code>KiePmmlModel</code> contains a <b>sources map</b>
+ * Interface used to define if a given <code>KiePMMLModel</code> contains a <b>sources map</b>
  */
 public interface HasSourcesMap {
 

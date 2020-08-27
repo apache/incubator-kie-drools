@@ -18,10 +18,9 @@ package org.kie.pmml.evaluator.assembler.service;
 
 import java.io.File;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class PMMLCompilerServiceTest {
 

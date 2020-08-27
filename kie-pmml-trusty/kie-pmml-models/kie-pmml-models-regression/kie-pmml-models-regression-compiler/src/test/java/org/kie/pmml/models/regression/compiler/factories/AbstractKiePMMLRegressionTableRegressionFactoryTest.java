@@ -18,9 +18,7 @@ package org.kie.pmml.models.regression.compiler.factories;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.IntStream;
 
 import com.github.javaparser.StaticJavaParser;
@@ -30,13 +28,9 @@ import com.github.javaparser.ast.validator.ProblemReporter;
 import org.dmg.pmml.regression.CategoricalPredictor;
 import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
-import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
-import org.junit.Test;
 import org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils;
-import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getCategoricalPredictor;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getNumericPredictor;

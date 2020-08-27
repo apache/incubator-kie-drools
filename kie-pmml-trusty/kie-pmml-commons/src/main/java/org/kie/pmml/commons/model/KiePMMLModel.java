@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLBase;
+import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
@@ -30,7 +30,7 @@ import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 /**
  * KIE representation of PMML model
  */
-public abstract class KiePMMLModel extends AbstractKiePMMLBase {
+public abstract class KiePMMLModel extends AbstractKiePMMLComponent {
 
     protected PMML_MODEL pmmlMODEL;
     protected MINING_FUNCTION miningFunction;
@@ -90,10 +90,10 @@ public abstract class KiePMMLModel extends AbstractKiePMMLBase {
      * @param requestData
      * @return
      */
-    public abstract Object evaluate(final Object knowledgeBase, Map<String, Object> requestData);
+    public abstract Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData);
 
 
-    public abstract static class Builder<T extends KiePMMLModel> extends AbstractKiePMMLBase.Builder<T> {
+    public abstract static class Builder<T extends KiePMMLModel> extends AbstractKiePMMLComponent.Builder<T> {
 
         protected Builder(String prefix, PMML_MODEL pmmlMODEL, MINING_FUNCTION miningFunction, Supplier<T> supplier) {
             super(prefix, supplier);

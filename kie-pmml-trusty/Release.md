@@ -1,6 +1,18 @@
 RELEASES
 ========
 
+Mining model
+===============
+
+rel 7.43.0
+----------
+Implemented overall functionality
+
+Currently known limitations:
+
+1. IsMissing/IsNotMissing inside SimplePredicate not implemented
+2. Surrogate inside CompoundPredicate not implemented
+
 Transformations
 ===============
 

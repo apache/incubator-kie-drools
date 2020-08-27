@@ -73,7 +73,7 @@ public class KiePMMLModelRetriever {
                                                                                                         final TransformationDictionary transformationDictionary,
                                                                                                         final Model model,
                                                                                                         final Object kBuilder) {
-        logger.trace("getFromDataDictionaryAndModel {}", model);
+        logger.trace("getFromCommonDataAndTransformationDictionaryAndModelFromPlugin {}", model);
         final PMML_MODEL pmmlMODEL = PMML_MODEL.byName(model.getClass().getSimpleName());
         logger.debug("pmmlModelType {}", pmmlMODEL);
         return getModelImplementationProviderStream(model)

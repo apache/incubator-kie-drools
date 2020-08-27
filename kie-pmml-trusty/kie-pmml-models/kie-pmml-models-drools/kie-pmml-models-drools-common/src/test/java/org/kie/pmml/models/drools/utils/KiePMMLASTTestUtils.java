@@ -19,8 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.Array;
-import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
@@ -28,8 +26,6 @@ import org.dmg.pmml.FieldName;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.Predicate;
-import org.dmg.pmml.SimplePredicate;
-import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
@@ -37,8 +33,6 @@ import org.kie.pmml.models.drools.ast.factories.KiePMMLDataDictionaryASTFactory;
 import org.kie.pmml.models.drools.ast.factories.KiePMMLDerivedFieldASTFactory;
 import org.kie.pmml.models.drools.ast.factories.PredicateASTFactoryData;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
-
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
 /**
  * Utility methods for other <b>Test</b> classes
@@ -83,38 +77,4 @@ public class KiePMMLASTTestUtils {
         return toReturn;
     }
 
-    public static SimplePredicate getSimplePredicate(String predicateName,
-                                                     DataType dataType,
-                                                     Object value,
-                                                     final SimplePredicate.Operator operator,
-                                                     final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-        FieldName fieldName = FieldName.create(predicateName);
-        fieldTypeMap.put(fieldName.getValue(),
-                         new KiePMMLOriginalTypeGeneratedType(dataType.value(),
-                                                              getSanitizedClassName(fieldName.getValue().toUpperCase())));
-        SimplePredicate toReturn = new SimplePredicate();
-        toReturn.setField(fieldName);
-        toReturn.setOperator(operator);
-        toReturn.setValue(value);
-        return toReturn;
-    }
-
-    public static SimpleSetPredicate getSimpleSetPredicate(String predicateName,
-                                                           Array.Type arrayType,
-                                                           List<String> values,
-                                                           SimpleSetPredicate.BooleanOperator booleanOperator,
-                                                           final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-        FieldName fieldName = FieldName.create(predicateName);
-        fieldTypeMap.put(fieldName.getValue(),
-                         new KiePMMLOriginalTypeGeneratedType(arrayType.value(),
-                                                              getSanitizedClassName(fieldName.getValue().toUpperCase())));
-        SimpleSetPredicate toReturn = new SimpleSetPredicate();
-        toReturn.setField(fieldName);
-        toReturn.setBooleanOperator(booleanOperator);
-        String arrayString = String.join(" ", values);
-        Array array = new Array(arrayType, arrayString);
-        array.setN(values.size());
-        toReturn.setArray(array);
-        return toReturn;
-    }
 }

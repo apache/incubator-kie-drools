@@ -31,6 +31,9 @@ import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.DoubleLiteralExpr;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -38,21 +41,24 @@ import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.junit.Test;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.LAMBDA_PARAMETER_NAME;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.PARAMETER_NAME_TEMPLATE;
 
 public class CommonCodegenUtilsTest {
 
@@ -188,6 +194,66 @@ public class CommonCodegenUtilsTest {
         assertNotNull(retrieved);
         String expected = String.format("%1$s<%2$s,%3$s>", className, typesName.get(0), typesName.get(1));
         assertEquals(expected, retrieved.asString());
+    }
+
+    @Test
+    public void setAssignExpressionValueMatch() {
+        final BlockStmt body = new BlockStmt();
+        AssignExpr assignExpr = new AssignExpr();
+        assignExpr.setTarget(new NameExpr("MATCH"));
+        body.addStatement(assignExpr);
+        final Expression value = new DoubleLiteralExpr(24.22);
+        CommonCodegenUtils.setAssignExpressionValue(body, "MATCH", value);
+        assertEquals(value, assignExpr.getValue());
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void setAssignExpressionValueNoMatch() {
+        final BlockStmt body = new BlockStmt();
+        AssignExpr assignExpr = new AssignExpr();
+        assignExpr.setTarget(new NameExpr("MATCH"));
+        body.addStatement(assignExpr);
+        CommonCodegenUtils.setAssignExpressionValue(body, "NOMATCH", new DoubleLiteralExpr(24.22));
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void setAssignExpressionValueNoAssignExpressions() {
+        final BlockStmt body = new BlockStmt();
+        CommonCodegenUtils.setAssignExpressionValue(body, "NOMATCH", new DoubleLiteralExpr(24.22));
+    }
+
+    @Test
+    public void getAssignExpression() {
+        BlockStmt body = new BlockStmt();
+        Optional<AssignExpr> retrieved = CommonCodegenUtils.getAssignExpression(body, "NOMATCH");
+        assertNotNull(retrieved);
+        assertFalse(retrieved.isPresent());
+        AssignExpr assignExpr = new AssignExpr();
+        assignExpr.setTarget(new NameExpr("MATCH"));
+        body.addStatement(assignExpr);
+        retrieved = CommonCodegenUtils.getAssignExpression(body, "NOMATCH");
+        assertNotNull(retrieved);
+        assertFalse(retrieved.isPresent());
+        retrieved = CommonCodegenUtils.getAssignExpression(body, "MATCH");
+        assertNotNull(retrieved);
+        assertTrue(retrieved.isPresent());
+        AssignExpr retrievedAssignExpr = retrieved.get();
+        assertEquals(assignExpr, retrievedAssignExpr);
+    }
+
+    @Test
+    public void getExplicitConstructorInvocationStmt() {
+        BlockStmt body = new BlockStmt();
+        Optional<ExplicitConstructorInvocationStmt> retrieved = CommonCodegenUtils.getExplicitConstructorInvocationStmt(body);
+        assertNotNull(retrieved);
+        assertFalse(retrieved.isPresent());
+        ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt = new ExplicitConstructorInvocationStmt();
+        body.addStatement(explicitConstructorInvocationStmt);
+        retrieved = CommonCodegenUtils.getExplicitConstructorInvocationStmt(body);
+        assertNotNull(retrieved);
+        assertTrue(retrieved.isPresent());
+        ExplicitConstructorInvocationStmt retrievedExplicitConstructorInvocationStmt = retrieved.get();
+        assertEquals(explicitConstructorInvocationStmt, retrievedExplicitConstructorInvocationStmt);
     }
 
     private void commonValidateMethodDeclaration(MethodDeclaration toValidate, String methodName) {
