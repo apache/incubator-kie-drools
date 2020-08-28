@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.exists;
 import static org.drools.model.DSL.not;
 import static org.drools.model.PatternDSL.pattern;
@@ -60,7 +59,7 @@ final class QuadExistenceMutator<A, B, C, D, E> implements Mutator {
     }
 
     private AbstractRuleAssembler applyFilters(AbstractRuleAssembler ruleAssembler, PentaPredicate<A, B, C, D, E> predicate) {
-        Variable<E> toExist = declarationOf(otherFactType, ruleAssembler.generateNextId("quadToExist"));
+        Variable<E> toExist = ruleAssembler.createVariable(otherFactType, "quadToExist");
         PatternDSL.PatternDef<E> existencePattern = pattern(toExist);
         PatternDSL.PatternDef<E> possiblyFilteredExistencePattern = predicate == null ? existencePattern
                 : existencePattern.expr("Filter using " + predicate, ruleAssembler.getVariable(0), ruleAssembler.getVariable(1),

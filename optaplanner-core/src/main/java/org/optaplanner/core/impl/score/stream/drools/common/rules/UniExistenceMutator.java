@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.exists;
 import static org.drools.model.DSL.not;
 import static org.drools.model.PatternDSL.betaIndexedBy;
@@ -54,7 +53,7 @@ final class UniExistenceMutator<A, B> implements Mutator {
     private AbstractRuleAssembler applyJoiners(AbstractRuleAssembler ruleAssembler, AbstractBiJoiner<A, B> joiner,
             BiPredicate<A, B> predicate) {
         PatternDSL.PatternDef<A> primaryPattern = ruleAssembler.getLastPrimaryPattern();
-        Variable<B> toExist = declarationOf(otherFactType, ruleAssembler.generateNextId("toExist"));
+        Variable<B> toExist = ruleAssembler.createVariable(otherFactType, "toExist");
         PatternDSL.PatternDef<B> existencePattern = pattern(toExist);
         if (joiner == null) {
             return applyFilters(ruleAssembler, existencePattern, predicate);
@@ -65,7 +64,7 @@ final class UniExistenceMutator<A, B> implements Mutator {
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
             // For each mapping, bind one join variable.
             int currentMappingIndex = mappingIndex;
-            Variable<Object> joinVar = declarationOf(Object.class, "joinVar");
+            Variable<Object> joinVar = ruleAssembler.createVariable("joinVar");
             Function<A, Object> leftMapping = joiner.getLeftMapping(currentMappingIndex);
             primaryPattern = primaryPattern.bind(joinVar, leftMapping::apply);
             joinVars[currentMappingIndex] = joinVar;

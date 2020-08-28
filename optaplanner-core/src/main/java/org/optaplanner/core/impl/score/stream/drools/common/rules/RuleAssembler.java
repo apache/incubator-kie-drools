@@ -19,12 +19,14 @@ package org.optaplanner.core.impl.score.stream.drools.common.rules;
 import org.drools.model.Global;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
 
 public interface RuleAssembler {
 
-    static RuleAssembler from(ConstraintGraphNode node, int expectedGroupByCount) {
-        return new UniRuleAssembler(node, expectedGroupByCount);
+    static RuleAssembler from(DroolsVariableFactory variableFactory, ConstraintGraphNode node,
+            int expectedGroupByCount) {
+        return new UniRuleAssembler(variableFactory, node, expectedGroupByCount);
     }
 
     RuleAssembler andThen(ConstraintGraphNode node);

@@ -41,12 +41,11 @@ abstract class AbstractUniGroupByMutator extends AbstractGroupByMutator {
 
     protected <InTuple> AbstractRuleAssembler universalGroup(AbstractRuleAssembler ruleAssembler,
             BiConsumer<PatternDef, Variable<InTuple>> primaryPatternVariableBinder, Transformer<InTuple> mutator) {
-        Variable<InTuple> mappedVariable = Util.createVariable(ruleAssembler.generateNextId("biMapped"));
+        Variable<InTuple> mappedVariable = ruleAssembler.createVariable("biMapped");
         primaryPatternVariableBinder.accept(ruleAssembler.getLastPrimaryPattern(), mappedVariable);
         ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(ruleAssembler);
         Variable<Collection<InTuple>> tupleCollection =
-                (Variable<Collection<InTuple>>) Util.createVariable(Collection.class,
-                        ruleAssembler.generateNextId("tupleCollection"));
+                (Variable<Collection<InTuple>>) ruleAssembler.createVariable(Collection.class, "tupleCollection");
         PatternDSL.PatternDef<Collection<InTuple>> pattern = pattern(tupleCollection)
                 .expr("Non-empty", collection -> !collection.isEmpty(),
                         alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Collection::size, 0));

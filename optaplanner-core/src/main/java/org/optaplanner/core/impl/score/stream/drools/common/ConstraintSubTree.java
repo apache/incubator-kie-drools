@@ -32,12 +32,14 @@ import org.optaplanner.core.impl.score.stream.drools.common.rules.RuleAssembler;
 
 final class ConstraintSubTree {
 
+    private final DroolsVariableFactory variableFactory;
     private final boolean isJoin;
     private final ConstraintSubTree leftSubTree;
     private final ConstraintSubTree rightSubTree;
     private final List<ConstraintGraphNode> nodeList;
 
-    public ConstraintSubTree(List<ConstraintGraphNode> joinlessNodeList) {
+    public ConstraintSubTree(List<ConstraintGraphNode> joinlessNodeList, DroolsVariableFactory variableFactory) {
+        this.variableFactory = variableFactory;
         this.isJoin = false;
         this.leftSubTree = null;
         this.rightSubTree = null;
@@ -54,7 +56,8 @@ final class ConstraintSubTree {
     }
 
     public ConstraintSubTree(ConstraintSubTree leftSubTree, ConstraintSubTree rightSubTree,
-            List<ConstraintGraphNode> joinAndOtherNodesList) {
+            List<ConstraintGraphNode> joinAndOtherNodesList, DroolsVariableFactory variableFactory) {
+        this.variableFactory = variableFactory;
         this.isJoin = true;
         this.leftSubTree = Objects.requireNonNull(leftSubTree);
         this.rightSubTree = Objects.requireNonNull(rightSubTree);
@@ -85,7 +88,7 @@ final class ConstraintSubTree {
     public RuleAssembler getRuleAssembler() {
         RuleAssembler builder = isJoin ? leftSubTree.getRuleAssembler()
                 .join(rightSubTree.getRuleAssembler(), nodeList.get(0))
-                : RuleAssembler.from(nodeList.get(0), getGroupByCount());
+                : RuleAssembler.from(variableFactory, nodeList.get(0), getGroupByCount());
         for (int i = 1; i < nodeList.size(); i++) {
             builder = builder.andThen(nodeList.get(i));
         }

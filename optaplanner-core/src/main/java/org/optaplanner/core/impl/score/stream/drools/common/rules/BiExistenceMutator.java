@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.exists;
 import static org.drools.model.DSL.not;
 import static org.drools.model.PatternDSL.pattern;
@@ -59,7 +58,7 @@ final class BiExistenceMutator<A, B, C> implements Mutator {
     }
 
     private AbstractRuleAssembler applyFilters(AbstractRuleAssembler ruleAssembler, TriPredicate<A, B, C> predicate) {
-        Variable<C> toExist = declarationOf(otherFactType, ruleAssembler.generateNextId("biToExist"));
+        Variable<C> toExist = ruleAssembler.createVariable(otherFactType, "biToExist");
         PatternDSL.PatternDef<C> existencePattern = pattern(toExist);
         PatternDSL.PatternDef<C> possiblyFilteredExistencePattern = predicate == null ? existencePattern
                 : existencePattern.expr("Filter using " + predicate, ruleAssembler.getVariable(0), ruleAssembler.getVariable(1),

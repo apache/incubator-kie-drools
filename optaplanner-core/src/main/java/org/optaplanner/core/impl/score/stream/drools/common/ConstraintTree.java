@@ -30,6 +30,8 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGrap
 final class ConstraintTree<Node_ extends ConstraintGraphNode, Consequence_ extends ConstraintConsequence<Node_>> {
 
     private final ConstraintSubTree nestedNodes;
+    // All rules from a single tree will share the same variable counter to guarantee unique variable names.
+    private final DroolsVariableFactory variableFactory = new DroolsVariableFactoryImpl();
 
     ConstraintTree(Consequence_ consequence) {
         List<ConstraintGraphNode> orderedNodeList = orderNodes(consequence);
@@ -110,12 +112,12 @@ final class ConstraintTree<Node_ extends ConstraintGraphNode, Consequence_ exten
                         throw new IllegalStateException("Impossible state: Must have at least three chunks " +
                                 "(FROM, FROM, JOIN), but had " + sequentialChunkList + ".");
                     case 1: // This is the only subtree.
-                        return new ConstraintSubTree(sequentialChunkList.get(0));
+                        return new ConstraintSubTree(sequentialChunkList.get(0), variableFactory);
                     default:
                         List<ConstraintGraphNode> currentChunkList = sequentialChunkList.get(2);
-                        ConstraintSubTree leftSubTree = new ConstraintSubTree(sequentialChunkList.get(0));
-                        ConstraintSubTree rightSubTree = new ConstraintSubTree(sequentialChunkList.get(1));
-                        joinSubTree = new ConstraintSubTree(leftSubTree, rightSubTree, currentChunkList);
+                        ConstraintSubTree leftSubTree = new ConstraintSubTree(sequentialChunkList.get(0), variableFactory);
+                        ConstraintSubTree rightSubTree = new ConstraintSubTree(sequentialChunkList.get(1), variableFactory);
+                        joinSubTree = new ConstraintSubTree(leftSubTree, rightSubTree, currentChunkList, variableFactory);
                         sequentialChunkList = sequentialChunkList.subList(3, sequentialChunkList.size());
                 }
             } else {
@@ -123,8 +125,8 @@ final class ConstraintTree<Node_ extends ConstraintGraphNode, Consequence_ exten
                     throw new IllegalStateException("Impossible state: JOIN must have at least two follow-up chunks " +
                             "(FROM, JOIN), but had " + sequentialChunkList + ".");
                 } else {
-                    ConstraintSubTree rightSubTree = new ConstraintSubTree(sequentialChunkList.get(0));
-                    joinSubTree = new ConstraintSubTree(joinSubTree, rightSubTree, sequentialChunkList.get(1));
+                    ConstraintSubTree rightSubTree = new ConstraintSubTree(sequentialChunkList.get(0), variableFactory);
+                    joinSubTree = new ConstraintSubTree(joinSubTree, rightSubTree, sequentialChunkList.get(1), variableFactory);
                     sequentialChunkList = sequentialChunkList.subList(2, sequentialChunkList.size());
                 }
             }

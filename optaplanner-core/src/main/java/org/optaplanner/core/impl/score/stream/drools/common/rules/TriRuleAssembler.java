@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 
 import org.drools.model.DSL;
 import org.drools.model.Drools;
@@ -36,6 +35,7 @@ import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
@@ -44,10 +44,10 @@ final class TriRuleAssembler extends AbstractRuleAssembler<TriPredicate> {
 
     private TriPredicate filterToApplyToLastPrimaryPattern = null;
 
-    public TriRuleAssembler(UnaryOperator<String> idSupplier, int expectedGroupByCount,
+    public TriRuleAssembler(DroolsVariableFactory variableFactory, int expectedGroupByCount,
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        super(idSupplier, expectedGroupByCount, finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
+        super(variableFactory, expectedGroupByCount, finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
     }
 
     @Override

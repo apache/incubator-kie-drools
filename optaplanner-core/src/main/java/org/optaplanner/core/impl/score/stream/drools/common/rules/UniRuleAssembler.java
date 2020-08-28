@@ -24,7 +24,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
-import java.util.function.UnaryOperator;
 
 import org.drools.model.DSL;
 import org.drools.model.Drools;
@@ -36,6 +35,7 @@ import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNode;
@@ -44,14 +44,15 @@ final class UniRuleAssembler extends AbstractRuleAssembler<Predicate> {
 
     private Predicate filterToApplyToLastPrimaryPattern = null;
 
-    public UniRuleAssembler(ConstraintGraphNode previousNode, int expectedGroupByCount) {
-        super(previousNode, expectedGroupByCount);
+    public UniRuleAssembler(DroolsVariableFactory variableFactory, ConstraintGraphNode previousNode,
+            int expectedGroupByCount) {
+        super(variableFactory, previousNode, expectedGroupByCount);
     }
 
-    public UniRuleAssembler(UnaryOperator<String> idSupplier, int expectedGroupByCount,
+    public UniRuleAssembler(DroolsVariableFactory variableFactory, int expectedGroupByCount,
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        super(idSupplier, expectedGroupByCount, finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
+        super(variableFactory, expectedGroupByCount, finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
     }
 
     @Override

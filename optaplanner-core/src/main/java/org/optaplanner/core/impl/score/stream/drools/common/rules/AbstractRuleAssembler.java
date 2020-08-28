@@ -20,7 +20,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
-import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.PatternDSL.pattern;
 import static org.drools.model.PatternDSL.rule;
 
@@ -31,10 +30,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import org.drools.model.Argument;
+import org.drools.model.DeclarationSource;
 import org.drools.model.Drools;
 import org.drools.model.Global;
 import org.drools.model.PatternDSL.PatternDef;
@@ -47,6 +46,7 @@ import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.FactTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelGroupingNode;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.AbstractConstraintModelJoiningNode;
@@ -54,26 +54,27 @@ import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGrap
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.ConstraintGraphNodeType;
 import org.optaplanner.core.impl.score.stream.drools.common.nodes.FromNode;
 
-abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler {
+abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler,
+        DroolsVariableFactory {
 
-    private final UnaryOperator<String> idSupplier;
+    private final DroolsVariableFactory variableFactory;
     private final int expectedGroupByCount;
     private final List<Variable> variables;
     private final List<ViewItem> finishedExpressions;
     private final List<PatternDef> primaryPatterns;
     private final Map<Integer, List<ViewItem>> dependentExpressionMap;
 
-    protected AbstractRuleAssembler(ConstraintGraphNode fromNode, int expectedGroupByCount) {
-        this(prefix -> prefix + ((FromNode) fromNode).getGraph().getNextId(), expectedGroupByCount, emptyList(),
-                emptyList(), emptyList(), emptyMap());
-        variables.add(declarationOf(((FromNode) fromNode).getFactType(), generateNextId("var")));
+    protected AbstractRuleAssembler(DroolsVariableFactory variableFactory, ConstraintGraphNode fromNode,
+            int expectedGroupByCount) {
+        this(variableFactory, expectedGroupByCount, emptyList(), emptyList(), emptyList(), emptyMap());
+        variables.add(createVariable(((FromNode) fromNode).getFactType(), "var"));
         primaryPatterns.add(pattern(variables.get(0)));
     }
 
-    protected AbstractRuleAssembler(UnaryOperator<String> idSupplier, int expectedGroupByCount,
+    protected AbstractRuleAssembler(DroolsVariableFactory variableFactory, int expectedGroupByCount,
             List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
             Map<Integer, List<ViewItem>> dependentExpressionMap) {
-        this.idSupplier = idSupplier;
+        this.variableFactory = variableFactory;
         this.expectedGroupByCount = expectedGroupByCount;
         this.finishedExpressions = new ArrayList<>(finishedExpressions);
         this.variables = new ArrayList<>(variables);
@@ -105,10 +106,6 @@ abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler {
         RuleContext kcontext = (RuleContext) drools;
         constraint.assertCorrectImpact(impact);
         scoreHolder.impactScore(kcontext, impact);
-    }
-
-    String generateNextId(String prefix) {
-        return idSupplier.apply(prefix);
     }
 
     int getExpectedGroupByCount() {
@@ -275,6 +272,21 @@ abstract class AbstractRuleAssembler<Predicate_> implements RuleAssembler {
         // There are plenty expected constraint justifications, one for each variable.
         return variables.stream()
                 .map(Argument::getType);
+    }
+
+    @Override
+    public <X> Variable<? extends X> createVariable(Class<X> clz, String baseName) {
+        return variableFactory.createVariable(clz, baseName);
+    }
+
+    @Override
+    public <X> Variable<? extends X> createVariable(String baseName, DeclarationSource source) {
+        return variableFactory.createVariable(baseName, source);
+    }
+
+    @Override
+    public <X> Variable<? extends X> createVariable(Class<X> clz, String baseName, DeclarationSource source) {
+        return variableFactory.createVariable(clz, baseName, source);
     }
 
 }
