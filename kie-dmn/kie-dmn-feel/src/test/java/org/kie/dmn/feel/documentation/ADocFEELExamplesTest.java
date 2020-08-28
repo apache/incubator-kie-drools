@@ -56,7 +56,7 @@ public class ADocFEELExamplesTest {
     @Test
     public void test() throws URISyntaxException {
         Asciidoctor asciidoctor = Asciidoctor.Factory.create();
-        URL resource = this.getClass().getResource("/FEELbuiltinfunctions.adoc");
+        URL resource = this.getClass().getResource("/ref-dmn-feel-builtin-functions.adoc");
         URI uri = resource.toURI();
         LOG.debug("{}", uri);
         File src = new File(uri);

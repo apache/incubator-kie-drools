@@ -116,7 +116,7 @@
       <artifactId>asciidoctorj</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
   </dependencies>
 
   <build>
@@ -127,7 +127,7 @@
       <testResource>
           <directory>${project.basedir}/../</directory>
           <includes>
-              <include>FEELbuiltinfunctions.adoc</include>
+              <include>ref-dmn-feel-builtin-functions.adoc</include>
           </includes>
           <filtering>false</filtering>
       </testResource>
