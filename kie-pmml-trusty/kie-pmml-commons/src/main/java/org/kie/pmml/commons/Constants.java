@@ -26,6 +26,7 @@ public class Constants {
     public static final String MISSING_DEFAULT_CONSTRUCTOR = "Missing default constructor in ClassOrInterfaceDeclaration %s ";
     public static final String MISSING_VARIABLE_IN_BODY = "Missing expected variable '%s' in body %s";
     public static final String MISSING_METHOD_IN_CLASS = "Missing expected method '%s' in class %s";
+    public static final String MISSING_BODY_IN_METHOD = "Missing expected body in method %s";
     public static final String MISSING_RETURN_IN_METHOD = "Missing expected return in method %s";
     public static final String MISSING_EXPRESSION_IN_RETURN = "Missing expected expression in return %s";
     public static final String MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION = "Missing expected parameter %s in constructor invocation %s";
