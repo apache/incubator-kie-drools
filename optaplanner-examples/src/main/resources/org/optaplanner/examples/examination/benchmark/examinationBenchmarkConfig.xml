@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   <benchmarkDirectory>local/data/examination</benchmarkDirectory>
   <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
 
   <inheritedSolverBenchmark>
+    <solver>
+      <solutionClass>org.optaplanner.examples.examination.domain.Examination</solutionClass>
+      <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
+      <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
+      <entityClass>org.optaplanner.examples.examination.domain.FollowingExam</entityClass>
+      <scoreDirectorFactory>
+        <scoreDrl>org/optaplanner/examples/examination/solver/examinationConstraints.drl</scoreDrl>
+        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+      </scoreDirectorFactory>
+      <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+      <termination>
+        <minutesSpentLimit>5</minutesSpentLimit>
+      </termination>
+    </solver>
     <problemBenchmarks>
       <solutionFileIOClass>org.optaplanner.examples.examination.persistence.ExaminationXmlSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>data/examination/unsolved/exam_comp_set1.xml</inputSolutionFile>
@@ -25,21 +40,6 @@
       <!--<singleStatisticType>PICKED_MOVE_TYPE_BEST_SCORE_DIFF</singleStatisticType>-->
       <!--<singleStatisticType>PICKED_MOVE_TYPE_STEP_SCORE_DIFF</singleStatisticType>-->
     </problemBenchmarks>
-
-    <solver>
-      <!--<environmentMode>FAST_ASSERT</environmentMode>-->
-      <solutionClass>org.optaplanner.examples.examination.domain.Examination</solutionClass>
-      <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-      <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
-      <entityClass>org.optaplanner.examples.examination.domain.FollowingExam</entityClass>
-      <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/examination/solver/examinationConstraints.drl</scoreDrl>
-        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>s
-      </scoreDirectorFactory>
-      <termination>
-        <minutesSpentLimit>5</minutesSpentLimit>
-      </termination>
-    </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>

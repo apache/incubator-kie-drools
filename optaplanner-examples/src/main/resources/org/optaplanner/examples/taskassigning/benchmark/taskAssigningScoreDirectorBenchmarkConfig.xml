@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   <benchmarkDirectory>local/data/taskassigning</benchmarkDirectory>
   <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
 
   <inheritedSolverBenchmark>
-    <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.taskassigning.persistence.TaskAssigningXmlSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/taskassigning/unsolved/24tasks-8employees.xml</inputSolutionFile>
-      <inputSolutionFile>data/taskassigning/unsolved/50tasks-5employees.xml</inputSolutionFile>
-      <inputSolutionFile>data/taskassigning/unsolved/100tasks-5employees.xml</inputSolutionFile>
-      <inputSolutionFile>data/taskassigning/unsolved/500tasks-20employees.xml</inputSolutionFile>
-    </problemBenchmarks>
-
     <solver>
       <solutionClass>org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution</solutionClass>
       <entityClass>org.optaplanner.examples.taskassigning.domain.TaskOrEmployee</entityClass>
@@ -22,6 +15,13 @@
       <constructionHeuristic/>
       <localSearch/>
     </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.taskassigning.persistence.TaskAssigningXmlSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/taskassigning/unsolved/24tasks-8employees.xml</inputSolutionFile>
+      <inputSolutionFile>data/taskassigning/unsolved/50tasks-5employees.xml</inputSolutionFile>
+      <inputSolutionFile>data/taskassigning/unsolved/100tasks-5employees.xml</inputSolutionFile>
+      <inputSolutionFile>data/taskassigning/unsolved/500tasks-20employees.xml</inputSolutionFile>
+    </problemBenchmarks>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
@@ -36,8 +36,8 @@
     <name>ConstraintStreams (Bavet)</name>
     <solver>
       <scoreDirectorFactory>
-        <constraintStreamImplType>BAVET</constraintStreamImplType>
         <constraintProviderClass>org.optaplanner.examples.taskassigning.solver.score.TaskAssigningConstraintProvider</constraintProviderClass>
+        <constraintStreamImplType>BAVET</constraintStreamImplType>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>

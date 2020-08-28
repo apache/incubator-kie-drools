@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   <benchmarkDirectory>local/data/nqueens/scoreDirector</benchmarkDirectory>
   <warmUpSecondsSpentLimit>30</warmUpSecondsSpentLimit>
 
   <inheritedSolverBenchmark>
-    <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensXmlSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
-      <inputSolutionFile>data/nqueens/unsolved/64queens.xml</inputSolutionFile>
-      <inputSolutionFile>data/nqueens/unsolved/256queens.xml</inputSolutionFile>
-    </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>
       <entityClass>org.optaplanner.examples.nqueens.domain.Queen</entityClass>
@@ -18,8 +13,8 @@
       </scoreDirectorFactory>
       <termination>
         <terminationCompositionStyle>OR</terminationCompositionStyle>
-        <bestScoreLimit>0</bestScoreLimit>
         <secondsSpentLimit>60</secondsSpentLimit>
+        <bestScoreLimit>0</bestScoreLimit>
       </termination>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
@@ -33,6 +28,12 @@
         </acceptor>
       </localSearch>
     </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensXmlSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
+      <inputSolutionFile>data/nqueens/unsolved/64queens.xml</inputSolutionFile>
+      <inputSolutionFile>data/nqueens/unsolved/256queens.xml</inputSolutionFile>
+    </problemBenchmarks>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
@@ -79,8 +80,8 @@
     <name>ConstraintStreams (Bavet)</name>
     <solver>
       <scoreDirectorFactory>
-        <constraintStreamImplType>BAVET</constraintStreamImplType>
         <constraintProviderClass>org.optaplanner.examples.nqueens.solver.score.NQueensConstraintProvider</constraintProviderClass>
+        <constraintStreamImplType>BAVET</constraintStreamImplType>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>

@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   <benchmarkDirectory>local/data/cloudbalancing/stepLimit</benchmarkDirectory>
   <warmUpSecondsSpentLimit>0</warmUpSecondsSpentLimit>
 
   <inheritedSolverBenchmark>
-    <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.cloudbalancing.persistence.CloudBalanceXmlSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/cloudbalancing/unsolved/100computers-300processes.xml</inputSolutionFile>
-    </problemBenchmarks>
-
     <solver>
       <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
       <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
@@ -17,6 +13,10 @@
         <initializingScoreTrend>ONLY_DOWN/ONLY_DOWN</initializingScoreTrend>
       </scoreDirectorFactory>
     </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.cloudbalancing.persistence.CloudBalanceXmlSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/cloudbalancing/unsolved/100computers-300processes.xml</inputSolutionFile>
+    </problemBenchmarks>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>

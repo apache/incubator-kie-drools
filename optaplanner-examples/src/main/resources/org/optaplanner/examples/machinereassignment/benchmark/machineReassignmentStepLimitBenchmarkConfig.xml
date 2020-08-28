@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   <benchmarkDirectory>local/data/machinereassignment/stepLimit</benchmarkDirectory>
   <warmUpSecondsSpentLimit>0</warmUpSecondsSpentLimit>
 
   <inheritedSolverBenchmark>
-    <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/machinereassignment/import/model_a1_4.txt</inputSolutionFile>
-    </problemBenchmarks>
-
     <solver>
       <!--<environmentMode>FAST_ASSERT</environmentMode>-->
       <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
@@ -19,6 +15,10 @@
         <!--<scoreDrl>org/optaplanner/examples/machinereassignment/solver/machineReassignmentConstraints.drl</scoreDrl>-->
       </scoreDirectorFactory>
     </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/machinereassignment/import/model_a1_4.txt</inputSolutionFile>
+    </problemBenchmarks>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>

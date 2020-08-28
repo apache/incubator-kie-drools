@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   <benchmarkDirectory>local/data/vehiclerouting</benchmarkDirectory>
   <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
 
   <inheritedSolverBenchmark>
+    <solver>
+      <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+      <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
+      <entityClass>org.optaplanner.examples.vehiclerouting.domain.Standstill</entityClass>
+      <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
+      <entityClass>org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer</entityClass>
+
+      <scoreDirectorFactory>
+        <incrementalScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.solver.score.VehicleRoutingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <!--<scoreDrl>org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingConstraints.drl</scoreDrl>-->
+        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+      </scoreDirectorFactory>
+
+      <termination>
+        <minutesSpentLimit>5</minutesSpentLimit>
+      </termination>
+    </solver>
     <problemBenchmarks>
       <solutionFileIOClass>org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingFileIO</solutionFileIOClass>
       <!-- Belgium datasets -->
@@ -114,24 +132,6 @@
       <!--<singleStatisticType>PICKED_MOVE_TYPE_BEST_SCORE_DIFF</singleStatisticType>-->
       <!--<singleStatisticType>PICKED_MOVE_TYPE_STEP_SCORE_DIFF</singleStatisticType>-->
     </problemBenchmarks>
-
-    <solver>
-      <!--<environmentMode>FAST_ASSERT</environmentMode>-->
-      <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
-      <entityClass>org.optaplanner.examples.vehiclerouting.domain.Standstill</entityClass>
-      <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
-      <entityClass>org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer</entityClass>
-
-      <scoreDirectorFactory>
-        <incrementalScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.solver.score.VehicleRoutingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
-        <!--<scoreDrl>org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingConstraints.drl</scoreDrl>-->
-        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
-      </scoreDirectorFactory>
-
-      <termination>
-        <minutesSpentLimit>5</minutesSpentLimit>
-      </termination>
-    </solver>
   </inheritedSolverBenchmark>
 
   <!--<solverBenchmarkBluePrint>-->

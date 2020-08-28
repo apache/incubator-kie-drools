@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   <benchmarkDirectory>local/data/nqueens</benchmarkDirectory>
   <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
 
   <inheritedSolverBenchmark>
+    <solver>
+      <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>
+      <entityClass>org.optaplanner.examples.nqueens.domain.Queen</entityClass>
+      <scoreDirectorFactory>
+        <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl</scoreDrl>
+        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+      </scoreDirectorFactory>
+      <termination>
+        <terminationCompositionStyle>OR</terminationCompositionStyle>
+        <secondsSpentLimit>20</secondsSpentLimit>
+        <bestScoreLimit>0</bestScoreLimit>
+      </termination>
+    </solver>
     <problemBenchmarks>
       <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensXmlSolutionFileIO</solutionFileIOClass>
+      <writeOutputSolutionEnabled>true</writeOutputSolutionEnabled>
       <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
       <inputSolutionFile>data/nqueens/unsolved/64queens.xml</inputSolutionFile>
-      <writeOutputSolutionEnabled>true</writeOutputSolutionEnabled>
       <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->
@@ -20,19 +34,6 @@
       <!--<singleStatisticType>PICKED_MOVE_TYPE_BEST_SCORE_DIFF</singleStatisticType>-->
       <!--<singleStatisticType>PICKED_MOVE_TYPE_STEP_SCORE_DIFF</singleStatisticType>-->
     </problemBenchmarks>
-    <solver>
-      <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>
-      <entityClass>org.optaplanner.examples.nqueens.domain.Queen</entityClass>
-      <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl</scoreDrl>
-        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
-      </scoreDirectorFactory>
-      <termination>
-        <terminationCompositionStyle>OR</terminationCompositionStyle>
-        <bestScoreLimit>0</bestScoreLimit>
-        <secondsSpentLimit>20</secondsSpentLimit>
-      </termination>
-    </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>

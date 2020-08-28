@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   <benchmarkDirectory>local/data/tsp</benchmarkDirectory>
   <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
 
   <inheritedSolverBenchmark>
+    <solver>
+      <solutionClass>org.optaplanner.examples.tsp.domain.TspSolution</solutionClass>
+      <entityClass>org.optaplanner.examples.tsp.domain.Visit</entityClass>
+
+      <scoreDirectorFactory>
+        <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.tsp.solver.score.TspIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
+        <scoreDrl>org/optaplanner/examples/tsp/solver/tspConstraints.drl</scoreDrl>
+        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+      </scoreDirectorFactory>
+
+      <termination>
+        <minutesSpentLimit>5</minutesSpentLimit>
+      </termination>
+    </solver>
     <problemBenchmarks>
       <solutionFileIOClass>org.optaplanner.examples.tsp.persistence.TspFileIO</solutionFileIOClass>
       <inputSolutionFile>data/tsp/import/other/air/europe40.tsp</inputSolutionFile>
@@ -20,21 +35,6 @@
       <!--<singleStatisticType>PICKED_MOVE_TYPE_BEST_SCORE_DIFF</singleStatisticType>-->
       <!--<singleStatisticType>PICKED_MOVE_TYPE_STEP_SCORE_DIFF</singleStatisticType>-->
     </problemBenchmarks>
-
-    <solver>
-      <solutionClass>org.optaplanner.examples.tsp.domain.TspSolution</solutionClass>
-      <entityClass>org.optaplanner.examples.tsp.domain.Visit</entityClass>
-
-      <scoreDirectorFactory>
-        <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.tsp.solver.score.TspIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
-        <scoreDrl>org/optaplanner/examples/tsp/solver/tspConstraints.drl</scoreDrl>
-        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
-      </scoreDirectorFactory>
-
-      <termination>
-        <minutesSpentLimit>5</minutesSpentLimit>
-      </termination>
-    </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>

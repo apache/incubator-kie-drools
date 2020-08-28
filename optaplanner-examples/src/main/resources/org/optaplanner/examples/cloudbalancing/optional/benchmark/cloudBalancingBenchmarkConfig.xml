@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   <benchmarkDirectory>local/data/cloudbalancing</benchmarkDirectory>
   <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
 
   <inheritedSolverBenchmark>
+    <solver>
+      <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
+      <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
+      <scoreDirectorFactory>
+        <scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingConstraints.drl</scoreDrl>
+        <initializingScoreTrend>ONLY_DOWN/ONLY_DOWN</initializingScoreTrend>
+      </scoreDirectorFactory>
+      <termination>
+        <minutesSpentLimit>5</minutesSpentLimit>
+      </termination>
+    </solver>
     <problemBenchmarks>
       <solutionFileIOClass>org.optaplanner.examples.cloudbalancing.persistence.CloudBalanceXmlSolutionFileIO</solutionFileIOClass>
       <!--<inputSolutionFile>data/cloudbalancing/unsolved/2computers-6processes.xml</inputSolutionFile>-->
@@ -41,18 +53,6 @@
       <!--<singleStatisticType>PICKED_MOVE_TYPE_BEST_SCORE_DIFF</singleStatisticType>-->
       <!--<singleStatisticType>PICKED_MOVE_TYPE_STEP_SCORE_DIFF</singleStatisticType>-->
     </problemBenchmarks>
-
-    <solver>
-      <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
-      <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
-      <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingConstraints.drl</scoreDrl>
-        <initializingScoreTrend>ONLY_DOWN/ONLY_DOWN</initializingScoreTrend>
-      </scoreDirectorFactory>
-      <termination>
-        <minutesSpentLimit>5</minutesSpentLimit>
-      </termination>
-    </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmarkBluePrint>

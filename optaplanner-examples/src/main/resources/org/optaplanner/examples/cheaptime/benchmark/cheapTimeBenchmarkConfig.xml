@@ -1,11 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   <benchmarkDirectory>local/data/cheaptime</benchmarkDirectory>
   <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
 
   <inheritedSolverBenchmark>
+    <solver>
+      <!--<environmentMode>FULL_ASSERT</environmentMode>-->
+      <solutionClass>org.optaplanner.examples.cheaptime.domain.CheapTimeSolution</solutionClass>
+      <entityClass>org.optaplanner.examples.cheaptime.domain.TaskAssignment</entityClass>
+      <scoreDirectorFactory>
+        <incrementalScoreCalculatorClass>org.optaplanner.examples.cheaptime.solver.score.CheapTimeIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+        <!--<assertionScoreDirectorFactory>-->
+        <!--<easyScoreCalculatorClass>org.optaplanner.examples.cheaptime.solver.score.CheapTimeEasyScoreCalculator</easyScoreCalculatorClass>-->
+        <!--</assertionScoreDirectorFactory>-->
+      </scoreDirectorFactory>
+      <termination>
+        <minutesSpentLimit>5</minutesSpentLimit>
+      </termination>
+    </solver>
     <problemBenchmarks>
       <solutionFileIOClass>org.optaplanner.examples.cheaptime.persistence.CheapTimeSolutionFileIO</solutionFileIOClass>
+      <writeOutputSolutionEnabled>true</writeOutputSolutionEnabled>
       <inputSolutionFile>data/cheaptime/import/instance00</inputSolutionFile>
       <inputSolutionFile>data/cheaptime/import/instance01</inputSolutionFile>
       <inputSolutionFile>data/cheaptime/import/instance02</inputSolutionFile>
@@ -66,24 +83,7 @@
       <!--<singleStatisticType>CONSTRAINT_MATCH_TOTAL_STEP_SCORE</singleStatisticType>-->
       <!--<singleStatisticType>PICKED_MOVE_TYPE_BEST_SCORE_DIFF</singleStatisticType>-->
       <!--<singleStatisticType>PICKED_MOVE_TYPE_STEP_SCORE_DIFF</singleStatisticType>-->
-      <writeOutputSolutionEnabled>true</writeOutputSolutionEnabled>
     </problemBenchmarks>
-
-    <solver>
-      <!--<environmentMode>FULL_ASSERT</environmentMode>-->
-      <solutionClass>org.optaplanner.examples.cheaptime.domain.CheapTimeSolution</solutionClass>
-      <entityClass>org.optaplanner.examples.cheaptime.domain.TaskAssignment</entityClass>
-      <scoreDirectorFactory>
-        <incrementalScoreCalculatorClass>org.optaplanner.examples.cheaptime.solver.score.CheapTimeIncrementalScoreCalculator</incrementalScoreCalculatorClass>
-        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
-        <!--<assertionScoreDirectorFactory>-->
-        <!--<easyScoreCalculatorClass>org.optaplanner.examples.cheaptime.solver.score.CheapTimeEasyScoreCalculator</easyScoreCalculatorClass>-->
-        <!--</assertionScoreDirectorFactory>-->
-      </scoreDirectorFactory>
-      <termination>
-        <minutesSpentLimit>5</minutesSpentLimit>
-      </termination>
-    </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>

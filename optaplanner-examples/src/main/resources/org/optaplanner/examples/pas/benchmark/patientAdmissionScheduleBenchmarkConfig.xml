@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plannerBenchmark>
+<plannerBenchmark xmlns="https://www.optaplanner.org/xsd/benchmark" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/benchmark https://www.optaplanner.org/xsd/benchmark/benchmark.xsd">
   <benchmarkDirectory>local/data/pas</benchmarkDirectory>
   <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
 
   <inheritedSolverBenchmark>
+    <solver>
+      <solutionClass>org.optaplanner.examples.pas.domain.PatientAdmissionSchedule</solutionClass>
+      <entityClass>org.optaplanner.examples.pas.domain.BedDesignation</entityClass>
+      <scoreDirectorFactory>
+        <scoreDrl>org/optaplanner/examples/pas/solver/patientAdmissionScheduleConstraints.drl</scoreDrl>
+      </scoreDirectorFactory>
+      <termination>
+        <secondsSpentLimit>300</secondsSpentLimit>
+      </termination>
+    </solver>
     <problemBenchmarks>
       <solutionFileIOClass>org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleXmlSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>data/pas/unsolved/testdata01.xml</inputSolutionFile>
@@ -30,17 +41,6 @@
       <!--<singleStatisticType>PICKED_MOVE_TYPE_BEST_SCORE_DIFF</singleStatisticType>-->
       <!--<singleStatisticType>PICKED_MOVE_TYPE_STEP_SCORE_DIFF</singleStatisticType>-->
     </problemBenchmarks>
-
-    <solver>
-      <solutionClass>org.optaplanner.examples.pas.domain.PatientAdmissionSchedule</solutionClass>
-      <entityClass>org.optaplanner.examples.pas.domain.BedDesignation</entityClass>
-      <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/pas/solver/patientAdmissionScheduleConstraints.drl</scoreDrl>
-      </scoreDirectorFactory>
-      <termination>
-        <secondsSpentLimit>300</secondsSpentLimit>
-      </termination>
-    </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
