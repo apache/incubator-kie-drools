@@ -1,4 +1,4 @@
-[id='dmn-data-types-ref_{context}']
+[id='dmn-feel-data-types-ref_{context}']
 = Data types in FEEL
 
 Friendly Enough Expression Language (FEEL) supports the following data types:
@@ -30,10 +30,8 @@ FEEL numbers use a dot (`.`) as a decimal separator. FEEL does not support `-INF
 
 {PRODUCT} extends the DMN specification and supports additional number notations:
 
-* *Scientific:* You can use scientific notation with the suffix `e<exp>` or `E<exp>`. For example, `1.2e3` is the same as writing the
-expression `1.2*10**3`, but is a literal instead of an expression.
-* *Hexadecimal:* You can use hexadecimal numbers with the prefix `0x`. For example, `0xff` is the same as the decimal
-number `255`. Both uppercase and lowercase letters are supported. For example, `0XFF` is the same as `0xff`.
+* *Scientific:* You can use scientific notation with the suffix `e<exp>` or `E<exp>`. For example, `1.2e3` is the same as writing the expression `1.2*10**3`, but is a literal instead of an expression.
+* *Hexadecimal:* You can use hexadecimal numbers with the prefix `0x`. For example, `0xff` is the same as the decimal number `255`. Both uppercase and lowercase letters are supported. For example, `0XFF` is the same as `0xff`.
 * *Type suffixes:* You can use the type suffixes `f`, `F`, `d`, `D`, `l`, and `L`. These suffixes are ignored.
 --
 
@@ -41,7 +39,7 @@ Strings::
 Strings in FEEL are any sequence of characters delimited by double quotation marks.
 +
 --
-Example:
+.Example
 ----
 "John Doe"
 ----
@@ -52,8 +50,7 @@ FEEL uses three-valued boolean logic, so a boolean logic expression may have val
 
 
 Dates::
-Date literals are not supported in FEEL, but you can use the built-in `date()` function to construct date values. Date strings in FEEL follow the format defined in the https://www.w3.org/TR/xmlschema-2/#date[XML Schema Part 2: Datatypes] document. The format is `"YYYY-MM-DD"` where `YYYY` is the year with four digits, `MM` is the number of the month with
-two digits, and `DD` is the number of the day.
+Date literals are not supported in FEEL, but you can use the built-in `date()` function to construct date values. Date strings in FEEL follow the format defined in the https://www.w3.org/TR/xmlschema-2/#date[XML Schema Part 2: Datatypes] document. The format is `"YYYY-MM-DD"` where `YYYY` is the year with four digits, `MM` is the number of the month with two digits, and `DD` is the number of the day.
 +
 --
 Example:
@@ -142,8 +139,7 @@ In this example, the FEEL expression creates a function that adds the parameters
 --
 
 Contexts::
-FEEL has `context` literals that you can use to create contexts. A `context` in FEEL is a list of key and value pairs,
-similar to maps in languages like Java. The DMN specification currently does not provide an explicit way of declaring a variable as a `context`, but {PRODUCT} extends the DMN built-in types to support variables of contexts.
+FEEL has `context` literals that you can use to create contexts. A `context` in FEEL is a list of key and value pairs, similar to maps in languages like Java. The DMN specification currently does not provide an explicit way of declaring a variable as a `context`, but {PRODUCT} extends the DMN built-in types to support variables of contexts.
 +
 --
 Example:
@@ -176,8 +172,7 @@ closed_end     := ']'
 endpoint       := expression
 ----
 
-The expression for the endpoint must return a comparable value, and the lower bound endpoint must be lower than the
-upper bound endpoint.
+The expression for the endpoint must return a comparable value, and the lower bound endpoint must be lower than the upper bound endpoint.
 
 For example, the following literal expression defines an interval between `1` and `10`, including the boundaries (a closed interval on both endpoints):
 
