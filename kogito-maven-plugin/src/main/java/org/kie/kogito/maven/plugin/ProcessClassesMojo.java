@@ -116,8 +116,9 @@ public class ProcessClassesMojo extends AbstractKieMojo {
                 
                 GeneratorContext context = GeneratorContext.ofResourcePath(kieSourcesDirectory);
                 context.withBuildContext(discoverKogitoRuntimeContext(project));
-
-                PersistenceGenerator persistenceGenerator = new PersistenceGenerator(new File(project.getBuild().getDirectory()), modelClasses, !classes.isEmpty(), new ReflectionProtoGenerator(), cl, parameters);
+                
+                String persistenceType = context.getApplicationProperty("kogito.persistence.type").orElse(PersistenceGenerator.DEFAULT_PERSISTENCE_TYPE);
+                PersistenceGenerator persistenceGenerator = new PersistenceGenerator(new File(project.getBuild().getDirectory()), modelClasses, !classes.isEmpty(), new ReflectionProtoGenerator(), cl, parameters, persistenceType);
                 persistenceGenerator.setPackageName(appPackageName);
                 persistenceGenerator.setDependencyInjection(discoverDependencyInjectionAnnotator(project));
                 persistenceGenerator.setContext(context);

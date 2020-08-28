@@ -64,10 +64,10 @@ import org.kie.kogito.codegen.process.persistence.proto.ProtoGenerator;
 
 public class PersistenceGenerator extends AbstractGenerator {
 
-    private static final String FILESYSTEM_PERSISTENCE_TYPE = "filesystem";
-    private static final String INFINISPAN_PERSISTENCE_TYPE = "infinispan";
-    private static final String DEFAULT_PERSISTENCE_TYPE = INFINISPAN_PERSISTENCE_TYPE;
-    private static final String MONGODB_PERSISTENCE_TYPE = "mongodb";
+    public static final String FILESYSTEM_PERSISTENCE_TYPE = "filesystem";
+    public static final String INFINISPAN_PERSISTENCE_TYPE = "infinispan";
+    public static final String DEFAULT_PERSISTENCE_TYPE = INFINISPAN_PERSISTENCE_TYPE;
+    public static final String MONGODB_PERSISTENCE_TYPE = "mongodb";
     
     private static final String TEMPLATE_NAME = "templateName";
     private static final String PATH_NAME = "path";
@@ -94,21 +94,23 @@ public class PersistenceGenerator extends AbstractGenerator {
     private DependencyInjectionAnnotator annotator;
 
     private ClassLoader classLoader;
+    private String persistenceType;
 
     private PersistenceProtoFilesLabeler persistenceProtoLabeler = new PersistenceProtoFilesLabeler();
     private PersistenceLabeler persistenceLabeler = new PersistenceLabeler();
 
-    public PersistenceGenerator(File targetDirectory, Collection<?> modelClasses, boolean persistence, ProtoGenerator<?> protoGenerator, List<String> parameters) {
-        this(targetDirectory, modelClasses, persistence, protoGenerator, Thread.currentThread().getContextClassLoader(), parameters);
+    public PersistenceGenerator(File targetDirectory, Collection<?> modelClasses, boolean persistence, ProtoGenerator<?> protoGenerator, List<String> parameters, String persistenceType) {
+        this(targetDirectory, modelClasses, persistence, protoGenerator, Thread.currentThread().getContextClassLoader(), parameters, persistenceType);
     }
 
-    public PersistenceGenerator(File targetDirectory, Collection<?> modelClasses, boolean persistence, ProtoGenerator<?> protoGenerator, ClassLoader classLoader, List<String> parameters) {
+    public PersistenceGenerator(File targetDirectory, Collection<?> modelClasses, boolean persistence, ProtoGenerator<?> protoGenerator, ClassLoader classLoader, List<String> parameters, String persistenceType) {
         this.targetDirectory = targetDirectory;
         this.modelClasses = modelClasses;
         this.persistence = persistence;
         this.protoGenerator = protoGenerator;
         this.classLoader = classLoader;
         this.parameters = parameters;
+        this.persistenceType = persistenceType;
         if (this.persistence) {
             this.addLabeler(persistenceProtoLabeler);
             this.addLabeler(persistenceLabeler);
@@ -123,8 +125,6 @@ public class PersistenceGenerator extends AbstractGenerator {
 
     @Override
     public Collection<GeneratedFile> generate() {
-        String persistenceType = context.getApplicationProperty("kogito.persistence.type").orElse(DEFAULT_PERSISTENCE_TYPE);
-
         List<GeneratedFile> generatedFiles = new ArrayList<>();
         if (persistence) {
             if (persistenceType.equals(INFINISPAN_PERSISTENCE_TYPE)) {

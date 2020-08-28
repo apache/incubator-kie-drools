@@ -52,8 +52,7 @@ class MongoDBPersistenceGeneratorTest {
     @Test
     void test() {
         context.withBuildContext(new QuarkusKogitoBuildContext((className -> true)));
-        PersistenceGenerator persistenceGenerator = new PersistenceGenerator(targetDirectory.toFile(), Collections.singleton(Person.class), true, null, null, Arrays.asList(
-                                                                                                                                                                            "com.mongodb.client.MongoClient"));
+        PersistenceGenerator persistenceGenerator = new PersistenceGenerator(targetDirectory.toFile(), Collections.singleton(Person.class), true, null, null, Arrays.asList("com.mongodb.client.MongoClient"), "mongodb");
         persistenceGenerator.setPackageName(this.getClass().getPackage().getName());
         persistenceGenerator.setDependencyInjection(null);
         persistenceGenerator.setContext(context);

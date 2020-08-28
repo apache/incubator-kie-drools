@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -273,8 +274,9 @@ public class KogitoAssetsProcessor {
                 }
             }
         }
-
-        Collection<GeneratedFile> generatedFiles = getGeneratedPersistenceFiles(appPaths, index, usePersistence, parameters);
+        GeneratorContext context = buildContext(appPaths, index);
+        String persistenceType = context.getApplicationProperty("kogito.persistence.type").orElse(PersistenceGenerator.DEFAULT_PERSISTENCE_TYPE);
+        Collection<GeneratedFile> generatedFiles = getGeneratedPersistenceFiles(appPaths, index, usePersistence, parameters, context, persistenceType);
 
         if (!generatedFiles.isEmpty()) {
             InMemoryCompiler inMemoryCompiler = new InMemoryCompiler(appPaths.classesPaths,
@@ -287,14 +289,26 @@ public class KogitoAssetsProcessor {
         if (usePersistence) {
             resource.produce(new NativeImageResourceBuildItem("kogito-types.proto"));
         }
+       
+        if(persistenceType.equals(PersistenceGenerator.MONGODB_PERSISTENCE_TYPE)) {
+            addInnerClasses(org.jbpm.marshalling.impl.JBPMMessages.class, reflectiveClass);
+            reflectiveClass.produce(new ReflectiveClassBuildItem(true, true, "java.lang.String"));
+        }
+    }
+    
+    private void addInnerClasses(Class<?> superClass, BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
+        Arrays.asList(superClass.getDeclaredClasses()).forEach(c -> {
+            reflectiveClass.produce(new ReflectiveClassBuildItem(true, true, c.getName()));
+            addInnerClasses(c, reflectiveClass);
+        });
     }
 
     private Collection<GeneratedFile> getGeneratedPersistenceFiles(AppPaths appPaths,
                                                                    IndexView index,
                                                                    boolean usePersistence,
-                                                                   List<String> parameters) {
-        GeneratorContext context = buildContext(appPaths, index);
-
+                                                                   List<String> parameters,
+                                                                   GeneratorContext context,
+                                                                   String persistenceType) {
         JandexProtoGenerator jandexProtoGenerator =
                 new JandexProtoGenerator(
                         index,
@@ -313,7 +327,8 @@ public class KogitoAssetsProcessor {
                             context,
                             modelClasses,
                             jandexProtoGenerator,
-                            projectPath);
+                            projectPath,
+                            persistenceType);
 
             generatedFiles.addAll(persistenceGenerator.generate());
         }
@@ -326,14 +341,16 @@ public class KogitoAssetsProcessor {
             GeneratorContext context,
             Collection<ClassInfo> modelClasses,
             JandexProtoGenerator jandexProtoGenerator,
-            Path projectPath) {
+            Path projectPath,
+            String persistenceType) {
         PersistenceGenerator persistenceGenerator =
                 new PersistenceGenerator(
                         new File(projectPath.toFile(), "target"),
                         modelClasses,
                         usePersistence,
                         jandexProtoGenerator,
-                        parameters);
+                        parameters,
+                        persistenceType);
         persistenceGenerator.setDependencyInjection(new CDIDependencyInjectionAnnotator());
         persistenceGenerator.setPackageName(appPackageName);
         persistenceGenerator.setContext(context);
