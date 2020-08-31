@@ -36,6 +36,17 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.mvel</groupId>
             <artifactId>mvel2</artifactId>
         </dependency>
@@ -156,7 +167,7 @@
                         <Import-Package>
                             *
                         </Import-Package>
-    <!--                    <Bundle-Activator>org.drools.core.osgi.Activator</Bundle-Activator>-->
+                        <Bundle-Activator>org.drools.mvel.osgi.Activator</Bundle-Activator>
                         <_removeheaders>Private-Package</_removeheaders>
                     </instructions>
                 </configuration>

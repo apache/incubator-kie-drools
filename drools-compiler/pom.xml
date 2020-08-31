@@ -236,6 +236,9 @@
                    in ECJ directly to export the versions correctly in the MANIFEST.MF. -->
               org.eclipse.jdt.*;version="[0,1)";resolution:=optional,
               org.osgi.*;resolution:=optional,
+              org.drools.core.base.accumulators;resolution:=optional,
+              org.drools.core.rule.builder.dialect.asm;resolution:=optional,
+              org.drools.mvel.asm;resolution:=optional,
               org.drools.cdi;resolution:=optional,
               org.drools.template.parser;resolution:=optional,
               org.jbpm.process.instance.impl;resolution:=optional,
