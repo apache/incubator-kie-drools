@@ -26,7 +26,7 @@ public class Feature {
     private final Type type;
     private final Value value;
 
-    Feature(String name, Type type, Value value) {
+    public Feature(String name, Type type, Value value) {
         this.name = name;
         this.type = type;
         this.value = value;

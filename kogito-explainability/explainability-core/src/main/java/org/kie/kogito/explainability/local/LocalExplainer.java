@@ -18,6 +18,8 @@ package org.kie.kogito.explainability.local;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionProvider;
 
+import java.util.concurrent.CompletableFuture;
+
 /**
  * A local explainability method.
  *
@@ -25,5 +27,5 @@ import org.kie.kogito.explainability.model.PredictionProvider;
  */
 public interface LocalExplainer<T> {
 
-    T explain(Prediction prediction, PredictionProvider model);
+    CompletableFuture<T> explainAsync(Prediction prediction, PredictionProvider model);
 }

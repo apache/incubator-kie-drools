@@ -19,19 +19,26 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.TestUtils;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
+import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
 
+import static java.util.Collections.emptyList;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -81,7 +88,7 @@ class ExplainabilityMetricsTest {
     }
 
     @Test
-    void testFidelityWithTextClassifier() {
+    void testFidelityWithTextClassifier() throws ExecutionException, InterruptedException, TimeoutException {
         List<Pair<Saliency, Prediction>> pairs = new LinkedList<>();
         LimeExplainer limeExplainer = new LimeExplainer(10, 1);
         PredictionProvider model = TestUtils.getDummyTextClassifier();
@@ -89,8 +96,13 @@ class ExplainabilityMetricsTest {
         features.add(FeatureFactory.newFulltextFeature("f-0", "brown fox", s -> Arrays.asList(s.split(" "))));
         features.add(FeatureFactory.newTextFeature("f-1", "money"));
         PredictionInput input = new PredictionInput(features);
-        Prediction prediction = new Prediction(input, model.predict(List.of(input)).get(0));
-        Map<String, Saliency> saliencyMap = limeExplainer.explain(prediction, model);
+        Prediction prediction = new Prediction(
+                input,
+                model.predictAsync(List.of(input))
+                        .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit())
+                        .get(0));
+        Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
         for (Saliency saliency : saliencyMap.values()) {
             pairs.add(Pair.of(saliency, prediction));
         }
@@ -100,7 +112,7 @@ class ExplainabilityMetricsTest {
     }
 
     @Test
-    void testFidelityWithEvenSumModel() {
+    void testFidelityWithEvenSumModel() throws ExecutionException, InterruptedException, TimeoutException {
         List<Pair<Saliency, Prediction>> pairs = new LinkedList<>();
         LimeExplainer limeExplainer = new LimeExplainer(10, 1);
         PredictionProvider model = TestUtils.getEvenSumModel(1);
@@ -109,13 +121,40 @@ class ExplainabilityMetricsTest {
         features.add(FeatureFactory.newNumericalFeature("f-2", 2));
         features.add(FeatureFactory.newNumericalFeature("f-3", 3));
         PredictionInput input = new PredictionInput(features);
-        Prediction prediction = new Prediction(input, model.predict(List.of(input)).get(0));
-        Map<String, Saliency> saliencyMap = limeExplainer.explain(prediction, model);
+        Prediction prediction = new Prediction(
+                input,
+                model.predictAsync(List.of(input))
+                        .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit())
+                        .get(0));
+        Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
         for (Saliency saliency : saliencyMap.values()) {
             pairs.add(Pair.of(saliency, prediction));
         }
         Assertions.assertDoesNotThrow(() -> {
             ExplainabilityMetrics.classificationFidelity(pairs);
         });
+    }
+
+    @Test
+    void testBrokenPredict() {
+        Config.INSTANCE.setAsyncTimeout(1);
+        Config.INSTANCE.setAsyncTimeUnit(TimeUnit.MILLISECONDS);
+        Prediction emptyPrediction = new Prediction(new PredictionInput(emptyList()), new PredictionOutput(emptyList()));
+        PredictionProvider brokenProvider = inputs -> supplyAsync(
+                () -> {
+                    try {
+                        Thread.sleep(1000);
+                        return emptyList();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException("this is a test");
+                    }
+                });
+
+        Assertions.assertThrows(TimeoutException.class,
+                () -> ExplainabilityMetrics.impactScore(brokenProvider, emptyPrediction, emptyList()));
+
+        Config.INSTANCE.setAsyncTimeout(Config.DEFAULT_ASYNC_TIMEOUT);
+        Config.INSTANCE.setAsyncTimeUnit(Config.DEFAULT_ASYNC_TIMEUNIT);
     }
 }

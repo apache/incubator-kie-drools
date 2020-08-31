@@ -23,6 +23,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.kie.kogito.trusty.storage.api.model.Message;
 import org.kie.kogito.trusty.storage.api.model.MessageExceptionField;
@@ -44,8 +45,14 @@ public class TraceEventTestUtils {
         assertEquals(expected.hasSucceeded(), actual.hasSucceeded());
         assertEquals(expected.getExecutedModelName(), actual.getExecutedModelName());
         assertEquals(expected.getExecutorName(), actual.getExecutorName());
-        assertList(expected.getInputs(), actual.getInputs(), TraceEventTestUtils::assertTypedVariable, TraceEventTestUtils::compareTypedVariable);
+        assertList(expected.getInputs(), actual.getInputs(), TraceEventTestUtils::assertDecisionInput, TraceEventTestUtils::compareDecisionInput);
         assertList(expected.getOutcomes(), actual.getOutcomes(), TraceEventTestUtils::assertDecisionOutcome, TraceEventTestUtils::compareDecisionOutcome);
+    }
+
+    public static void assertDecisionInput(DecisionInput expected, DecisionInput actual) {
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getName(), actual.getName());
+        assertTypedVariable(expected.getValue(), actual.getValue());
     }
 
     public static void assertDecisionOutcome(DecisionOutcome expected, DecisionOutcome actual) {
@@ -103,11 +110,20 @@ public class TraceEventTestUtils {
         assertEquals(expected.getValue(), actual.getValue());
     }
 
+    public static int compareDecisionInput(DecisionInput expected, DecisionInput actual) {
+        return new CompareToBuilder()
+                .append(expected.getId(), actual.getId())
+                .append(expected.getName(), actual.getName())
+                .append(expected.getValue(), actual.getValue(), toObjectComparator(TypedVariable.class, TraceEventTestUtils::compareTypedVariable))
+                .toComparison();
+    }
+
     public static int compareDecisionOutcome(DecisionOutcome expected, DecisionOutcome actual) {
         return new CompareToBuilder()
                 .append(expected.getOutcomeId(), actual.getOutcomeId())
                 .append(expected.getOutcomeName(), actual.getOutcomeName())
                 .append(expected.getEvaluationStatus(), actual.getEvaluationStatus())
+                .append(expected.getOutcomeResult(), actual.getOutcomeResult(), toObjectComparator(TypedVariable.class, TraceEventTestUtils::compareTypedVariable))
                 .toComparison();
     }
 
@@ -125,5 +141,9 @@ public class TraceEventTestUtils {
                 .append(expected.getTypeRef(), actual.getTypeRef())
                 .append(expected.getName(), actual.getName())
                 .toComparison();
+    }
+
+    public static <T> Comparator<Object> toObjectComparator(Class<T> clazz, Comparator<T> comparator) {
+        return (o1, o2) -> comparator.compare(clazz.cast(o1), clazz.cast(o2));
     }
 }

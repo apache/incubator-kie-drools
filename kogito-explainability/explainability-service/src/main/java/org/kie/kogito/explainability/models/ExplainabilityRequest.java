@@ -16,22 +16,54 @@
 
 package org.kie.kogito.explainability.models;
 
+import java.util.Map;
+
 import org.kie.kogito.explainability.api.ExplainabilityRequestDto;
+import org.kie.kogito.tracing.typedvalue.TypedValue;
 
 public class ExplainabilityRequest {
 
-    private String executionId;
+    private final String executionId;
+    private final String serviceUrl;
+    private final ModelIdentifier modelIdentifier;
+    private final Map<String, TypedValue> inputs;
+    private final Map<String, TypedValue> outputs;
 
-    public ExplainabilityRequest(String executionId) {
+    public ExplainabilityRequest(String executionId, String serviceUrl, ModelIdentifier modelIdentifier, Map<String, TypedValue> inputs, Map<String, TypedValue> outputs) {
         this.executionId = executionId;
-    }
-
-    public static ExplainabilityRequest from(ExplainabilityRequestDto explainabilityRequestDto) {
-        // TODO: Update the converter with all the properties in ExplainabilityRequestDto when they will be defined. https://issues.redhat.com/browse/KOGITO-2944
-        return new ExplainabilityRequest(explainabilityRequestDto.getExecutionId());
+        this.serviceUrl = serviceUrl;
+        this.modelIdentifier = modelIdentifier;
+        this.inputs = inputs;
+        this.outputs = outputs;
     }
 
     public String getExecutionId() {
         return this.executionId;
+    }
+
+    public String getServiceUrl() {
+        return serviceUrl;
+    }
+
+    public ModelIdentifier getModelIdentifier() {
+        return modelIdentifier;
+    }
+
+    public Map<String, TypedValue> getInputs() {
+        return inputs;
+    }
+
+    public Map<String, TypedValue> getOutputs() {
+        return outputs;
+    }
+
+    public static ExplainabilityRequest from(ExplainabilityRequestDto dto) {
+        return new ExplainabilityRequest(
+                dto.getExecutionId(),
+                dto.getServiceUrl(),
+                ModelIdentifier.from(dto.getModelIdentifier()),
+                dto.getInputs(),
+                dto.getOutputs()
+        );
     }
 }

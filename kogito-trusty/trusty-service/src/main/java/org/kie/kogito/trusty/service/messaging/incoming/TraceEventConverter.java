@@ -24,7 +24,9 @@ import org.kie.kogito.tracing.decision.event.message.MessageLevel;
 import org.kie.kogito.tracing.decision.event.trace.TraceEvent;
 import org.kie.kogito.tracing.decision.event.trace.TraceInputValue;
 import org.kie.kogito.tracing.decision.event.trace.TraceOutputValue;
+import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.kie.kogito.trusty.storage.api.model.Message;
 import org.kie.kogito.trusty.storage.api.model.MessageExceptionField;
@@ -37,9 +39,9 @@ public class TraceEventConverter {
 
     public static Decision toDecision(TraceEvent event, String sourceUrl) {
 
-        List<TypedVariable> inputs = event.getInputs() == null
+        List<DecisionInput> inputs = event.getInputs() == null
                 ? null
-                : event.getInputs().stream().map(TraceEventConverter::toTypedVariable).collect(Collectors.toList());
+                : event.getInputs().stream().map(TraceEventConverter::toInput).collect(Collectors.toList());
 
         List<DecisionOutcome> outcomes = event.getOutputs() == null
                 ? null
@@ -58,11 +60,11 @@ public class TraceEventConverter {
         );
     }
 
-    public static TypedVariable toTypedVariable(TraceInputValue eventInput) {
-        return toTypedVariable(eventInput.getName(), eventInput.getValue());
+    public static DecisionInput toInput(TraceInputValue eventInput) {
+        return new DecisionInput(eventInput.getId(), eventInput.getName(), toTypedVariable(eventInput.getName(), eventInput.getValue()));
     }
 
-    public static TypedVariable toTypedVariable(String name, org.kie.kogito.tracing.decision.event.variable.TypedVariable typedVariable) {
+    public static TypedVariable toTypedVariable(String name, TypedValue typedVariable) {
         if (typedVariable == null) {
             return TypedVariable.buildUnit(name, null, null);
         }

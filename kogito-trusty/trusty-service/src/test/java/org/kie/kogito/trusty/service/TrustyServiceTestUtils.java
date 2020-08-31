@@ -43,9 +43,11 @@ import org.kie.kogito.tracing.decision.event.trace.TraceInputValue;
 import org.kie.kogito.tracing.decision.event.trace.TraceOutputValue;
 import org.kie.kogito.tracing.decision.event.trace.TraceResourceId;
 import org.kie.kogito.tracing.decision.event.trace.TraceType;
-import org.kie.kogito.tracing.decision.event.variable.StructureVariable;
-import org.kie.kogito.tracing.decision.event.variable.UnitVariable;
+import org.kie.kogito.tracing.typedvalue.StructureValue;
+import org.kie.kogito.tracing.typedvalue.TypedValue;
+import org.kie.kogito.tracing.typedvalue.UnitValue;
 import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.kie.kogito.trusty.storage.api.model.TypedVariable;
 
@@ -107,21 +109,21 @@ public class TrustyServiceTestUtils {
     private static final TraceType tFineType = new TraceType(TYPE_FINE_NODE_ID, MODEL_NAMESPACE, "tFine");
     private static final TraceType tViolationType = new TraceType(TYPE_VIOLATION_NODE_ID, MODEL_NAMESPACE, "tViolation");
 
-    private static final org.kie.kogito.tracing.decision.event.variable.TypedVariable vEventDriver = new StructureVariable("tDriver", Map.of(
-            "Age", new UnitVariable("number", toJsonNode("25")),
-            "Points", new UnitVariable("number", toJsonNode("13"))
+    private static final TypedValue vEventDriver = new StructureValue("tDriver", Map.of(
+            "Age", new UnitValue("number", toJsonNode("25")),
+            "Points", new UnitValue("number", toJsonNode("13"))
     ));
-    private static final org.kie.kogito.tracing.decision.event.variable.TypedVariable vEventDriverNull = new StructureVariable("tDriver", null);
-    private static final org.kie.kogito.tracing.decision.event.variable.TypedVariable vEventViolation = new StructureVariable("tViolation", Map.of(
-            "Type", new UnitVariable("string", toJsonNode("\"speed\"")),
-            "Actual Speed", new UnitVariable("number", toJsonNode("140")),
-            "Speed Limit", new UnitVariable("number", toJsonNode("100"))
+    private static final TypedValue vEventDriverNull = new StructureValue("tDriver", null);
+    private static final TypedValue vEventViolation = new StructureValue("tViolation", Map.of(
+            "Type", new UnitValue("string", toJsonNode("\"speed\"")),
+            "Actual Speed", new UnitValue("number", toJsonNode("140")),
+            "Speed Limit", new UnitValue("number", toJsonNode("100"))
     ));
-    private static final org.kie.kogito.tracing.decision.event.variable.TypedVariable vEventFine = new StructureVariable("tFine", Map.of(
-            "Amount", new UnitVariable("number", toJsonNode("1000")),
-            "Points", new UnitVariable("number", toJsonNode("7"))
+    private static final TypedValue vEventFine = new StructureValue("tFine", Map.of(
+            "Amount", new UnitValue("number", toJsonNode("1000")),
+            "Points", new UnitValue("number", toJsonNode("7"))
     ));
-    private static final org.kie.kogito.tracing.decision.event.variable.TypedVariable vEventSuspended = new UnitVariable("string", toJsonNode("\"Yes\""));
+    private static final TypedValue vEventSuspended = new UnitValue("string", toJsonNode("\"Yes\""));
 
     private static final TypedVariable vDecisionDriver = TypedVariable.buildStructure(INPUT_DRIVER_NODE_NAME, "tDriver", List.of(
             TypedVariable.buildUnit("Age", "number", toJsonNode("25")),
@@ -246,8 +248,8 @@ public class TrustyServiceTestUtils {
         return new Decision(
                 cloudEventId, CLOUDEVENT_SOURCE, CORRECT_CLOUDEVENT_START_TS, true, null, MODEL_NAME, MODEL_NAMESPACE,
                 List.of(
-                        vDecisionViolation,
-                        vDecisionDriver
+                        new DecisionInput(INPUT_VIOLATION_NODE_ID, INPUT_VIOLATION_NODE_NAME, vDecisionViolation),
+                        new DecisionInput(INPUT_DRIVER_NODE_ID, INPUT_DRIVER_NODE_NAME, vDecisionDriver)
                 ),
                 List.of(
                         new DecisionOutcome(
@@ -354,8 +356,8 @@ public class TrustyServiceTestUtils {
         return new Decision(
                 CLOUDEVENT_WITH_ERRORS_ID, CLOUDEVENT_SOURCE, CLOUDEVENT_WITH_ERRORS_START_TS, false, null, MODEL_NAME, MODEL_NAMESPACE,
                 List.of(
-                        vDecisionViolation,
-                        vDecisionDriverNull
+                        new DecisionInput(INPUT_VIOLATION_NODE_ID, INPUT_VIOLATION_NODE_NAME, vDecisionViolation),
+                        new DecisionInput(INPUT_DRIVER_NODE_ID, INPUT_DRIVER_NODE_NAME, vDecisionDriverNull)
                 ),
                 List.of(
                         new DecisionOutcome(

@@ -39,27 +39,52 @@ public class ProtostreamProducer {
     }
 
     @Produces
-    org.infinispan.protostream.MessageMarshaller decisionModelMarshaller() {
+    org.infinispan.protostream.MessageMarshaller decisionMarshaller() {
         return new DecisionMarshaller(mapper);
     }
 
     @Produces
-    org.infinispan.protostream.MessageMarshaller decisionOutcomeModelMarshaller() {
+    org.infinispan.protostream.MessageMarshaller decisionInputMarshaller() {
+        return new DecisionInputMarshaller(mapper);
+    }
+
+    @Produces
+    org.infinispan.protostream.MessageMarshaller decisionOutcomeMarshaller() {
         return new DecisionOutcomeMarshaller(mapper);
     }
 
     @Produces
-    org.infinispan.protostream.MessageMarshaller messageExceptionFieldModelMarshaller() {
+    org.infinispan.protostream.MessageMarshaller explainabilityResultMarshaller() {
+        return new ExplainabilityResultMarshaller(mapper);
+    }
+
+    @Produces
+    org.infinispan.protostream.MessageMarshaller explainabilityResultItemMarshaller() {
+        return new ExplainabilityResultItemMarshaller(mapper);
+    }
+
+    @Produces
+    org.infinispan.protostream.MessageMarshaller featureImportanceMarshaller() {
+        return new FeatureImportanceMarshaller(mapper);
+    }
+
+    @Produces
+    org.infinispan.protostream.MessageMarshaller messageExceptionFieldMarshaller() {
         return new MessageExceptionFieldMarshaller(mapper);
     }
 
     @Produces
-    org.infinispan.protostream.MessageMarshaller messageModelMarshaller() {
+    org.infinispan.protostream.MessageMarshaller messageMarshaller() {
         return new MessageMarshaller(mapper);
     }
 
     @Produces
-    org.infinispan.protostream.MessageMarshaller typedValueModelMarshaller() {
+    org.infinispan.protostream.MessageMarshaller saliencyMarshaller() {
+        return new SaliencyMarshaller(mapper);
+    }
+
+    @Produces
+    org.infinispan.protostream.MessageMarshaller typedValueMarshaller() {
         return new TypedVariableMarshaller(mapper);
     }
 }

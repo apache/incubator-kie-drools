@@ -144,20 +144,21 @@ public class DataUtils {
      * Perform perturbations on a fixed number of features in the given input.
      * Which feature will be perturbed is non deterministic.
      *
-     * @param input               the input whose features need to be perturbed
+     * @param originalFeatures    the input features that need to be perturbed
      * @param perturbationContext the perturbation context
      * @return a new input with perturbed features
      */
-    public static PredictionInput perturbFeatures(PredictionInput input, PerturbationContext perturbationContext) {
-        List<Feature> originalFeatures = input.getFeatures();
+    public static PredictionInput perturbFeatures(List<Feature> originalFeatures, PerturbationContext perturbationContext) {
         List<Feature> newFeatures = new ArrayList<>(originalFeatures);
         PredictionInput perturbedInput = new PredictionInput(newFeatures);
-        int perturbationSize = Math.min(perturbationContext.getNoOfPerturbations(), originalFeatures.size());
-        int[] indexesToBePerturbed = perturbationContext.getRandom().ints(0, perturbedInput.getFeatures().size()).distinct().limit(perturbationSize).toArray();
-        for (int index : indexesToBePerturbed) {
-            Feature feature = perturbedInput.getFeatures().get(index);
-            Feature perturbedFeature = FeatureFactory.copyOf(feature, feature.getType().perturb(feature.getValue(), perturbationContext));
-            perturbedInput.getFeatures().set(index, perturbedFeature);
+        if (!newFeatures.isEmpty()) {
+            int perturbationSize = Math.min(perturbationContext.getNoOfPerturbations(), originalFeatures.size());
+            int[] indexesToBePerturbed = perturbationContext.getRandom().ints(0, perturbedInput.getFeatures().size()).distinct().limit(perturbationSize).toArray();
+            for (int index : indexesToBePerturbed) {
+                Feature feature = perturbedInput.getFeatures().get(index);
+                Feature perturbedFeature = FeatureFactory.copyOf(feature, feature.getType().perturb(feature.getValue(), perturbationContext));
+                perturbedInput.getFeatures().set(index, perturbedFeature);
+            }
         }
         return perturbedInput;
     }

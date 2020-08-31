@@ -18,6 +18,9 @@ package org.kie.kogito.explainability.global;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.PredictionProviderMetadata;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+
 /**
  * A global explainability method.
  *
@@ -25,5 +28,5 @@ import org.kie.kogito.explainability.model.PredictionProviderMetadata;
  */
 public interface GlobalExplainer<T> {
 
-    T explain(PredictionProvider model, PredictionProviderMetadata metadata);
+    T explain(PredictionProvider model, PredictionProviderMetadata metadata) throws InterruptedException, ExecutionException, TimeoutException;
 }

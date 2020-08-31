@@ -15,11 +15,6 @@
  */
 package org.kie.kogito.explainability.explainability.integrationtests.dmn;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNResult;
@@ -31,6 +26,14 @@ import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
+import static java.util.concurrent.CompletableFuture.completedFuture;
 
 /**
  * {@link PredictionProvider} implementation based on a Kogito {@link DecisionModel}.
@@ -44,7 +47,7 @@ class DecisionModelWrapper implements PredictionProvider {
     }
 
     @Override
-    public List<PredictionOutput> predict(List<PredictionInput> inputs) {
+    public CompletableFuture<List<PredictionOutput>> predictAsync(List<PredictionInput> inputs) {
         List<PredictionOutput> predictionOutputs = new LinkedList<>();
         for (PredictionInput input : inputs) {
             Map<String, Object> contextVariables = toMap(input.getFeatures());
@@ -58,9 +61,10 @@ class DecisionModelWrapper implements PredictionProvider {
             PredictionOutput predictionOutput = new PredictionOutput(outputs);
             predictionOutputs.add(predictionOutput);
         }
-        return predictionOutputs;
+        return completedFuture(predictionOutputs);
     }
 
+    @SuppressWarnings("unchecked")
     private Map<String, Object> toMap(List<Feature> features) {
         Map<String, Object> map = new HashMap<>();
         for (Feature f : features) {

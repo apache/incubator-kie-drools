@@ -15,10 +15,6 @@
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>explainability-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
       <artifactId>persistence-commons-api</artifactId>
     </dependency>
     <dependency>

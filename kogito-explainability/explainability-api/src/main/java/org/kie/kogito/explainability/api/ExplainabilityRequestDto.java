@@ -16,8 +16,11 @@
 
 package org.kie.kogito.explainability.api;
 
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.kie.kogito.tracing.typedvalue.TypedValue;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ExplainabilityRequestDto {
@@ -25,17 +28,46 @@ public class ExplainabilityRequestDto {
     @JsonProperty("executionId")
     private String executionId;
 
-    public ExplainabilityRequestDto(){
+    @JsonProperty("serviceUrl")
+    private String serviceUrl;
 
+    @JsonProperty("modelIdentifier")
+    private ModelIdentifierDto modelIdentifier;
+
+    @JsonProperty("inputs")
+    private Map<String, TypedValue> inputs;
+
+    @JsonProperty("outputs")
+    private Map<String, TypedValue> outputs;
+
+    private ExplainabilityRequestDto() {
     }
 
-    public ExplainabilityRequestDto(String executionId){
+    public ExplainabilityRequestDto(String executionId, String serviceUrl, ModelIdentifierDto modelIdentifier, Map<String, TypedValue> inputs, Map<String, TypedValue> outputs) {
         this.executionId = executionId;
+        this.serviceUrl = serviceUrl;
+        this.modelIdentifier = modelIdentifier;
+        this.inputs = inputs;
+        this.outputs = outputs;
     }
 
-    public String getExecutionId(){
-        return this.executionId;
+    public String getExecutionId() {
+        return executionId;
     }
 
-    // TODO: add properties
+    public String getServiceUrl() {
+        return serviceUrl;
+    }
+
+    public ModelIdentifierDto getModelIdentifier() {
+        return modelIdentifier;
+    }
+
+    public Map<String, TypedValue> getInputs() {
+        return inputs;
+    }
+
+    public Map<String, TypedValue> getOutputs() {
+        return outputs;
+    }
 }

@@ -27,7 +27,6 @@ import java.util.function.BiConsumer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.cloudevents.json.Json;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.filter.log.ResponseLoggingFilter;
@@ -45,25 +44,24 @@ import org.kie.kogito.trusty.service.responses.MessageExceptionFieldResponse;
 import org.kie.kogito.trusty.service.responses.MessageResponse;
 import org.kie.kogito.trusty.service.responses.TypedVariableResponse;
 import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.kie.kogito.trusty.storage.api.model.ExecutionTypeEnum;
 import org.kie.kogito.trusty.storage.api.model.Message;
 import org.kie.kogito.trusty.storage.api.model.MessageExceptionField;
 import org.kie.kogito.trusty.storage.api.model.TypedVariable;
 
-import static io.restassured.RestAssured.expect;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @QuarkusTest
-public class DecisionsApiV1IT {
+class DecisionsApiV1IT {
 
     private static final String TEST_EXECUTION_ID = "executionId";
     private static final String TEST_MODEL_NAME = "testModel";
@@ -277,8 +275,8 @@ public class DecisionsApiV1IT {
 
             case FULL:
                 decision.setInputs(List.of(
-                        TypedVariable.buildUnit("first", "FirstInput", mapper.readTree("\"Hello\"")),
-                        TypedVariable.buildUnit("second", "SecondInput", mapper.readTree("12345"))
+                        new DecisionInput("1", "first", TypedVariable.buildUnit("first", "FirstInput", mapper.readTree("\"Hello\""))),
+                        new DecisionInput("2", "second", TypedVariable.buildUnit("second", "SecondInput", mapper.readTree("12345")))
                 ));
         }
 

@@ -44,6 +44,7 @@ public class TrustyServiceIT {
 
     @BeforeEach
     public void setup() {
+        trustyStorageService.getExplainabilityResultStorage().clear();
         trustyStorageService.getDecisionsStorage().clear();
         trustyStorageService.getModelStorage().clear();
     }

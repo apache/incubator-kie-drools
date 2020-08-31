@@ -21,7 +21,7 @@ import java.util.Collection;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.kie.kogito.tracing.decision.event.variable.TypedVariable.Kind;
+import org.kie.kogito.tracing.typedvalue.TypedValue.Kind;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TypedVariable {

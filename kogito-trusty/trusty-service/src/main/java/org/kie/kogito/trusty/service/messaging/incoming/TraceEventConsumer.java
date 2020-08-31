@@ -74,7 +74,7 @@ public class TraceEventConsumer extends BaseEventConsumer<TraceEvent> {
         TraceEventType traceEventType = traceEvent.getHeader().getType();
 
         if (traceEventType == TraceEventType.DMN) {
-            service.processDecision(attributes.getId(), TraceEventConverter.toDecision(traceEvent, attributes.getSource().toString()));
+            service.processDecision(attributes.getId(), attributes.getSource().toString(), TraceEventConverter.toDecision(traceEvent, attributes.getSource().toString()));
         } else {
             LOG.error("Unsupported TraceEvent type {}", traceEventType);
         }

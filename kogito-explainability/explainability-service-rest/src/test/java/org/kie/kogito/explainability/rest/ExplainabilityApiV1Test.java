@@ -23,6 +23,9 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.api.ExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.ExplainabilityResultDto;
+import org.kie.kogito.explainability.api.ModelIdentifierDto;
+
+import java.util.Collections;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,7 +38,10 @@ public class ExplainabilityApiV1Test {
     @Test
     public void testEndpointWithRequest() throws JsonProcessingException {
         String executionId = "test";
-        String body = MAPPER.writeValueAsString(new ExplainabilityRequestDto(executionId));
+        String serviceUrl = "http://localhost:8080";
+        ModelIdentifierDto modelIdentifierDto = new ModelIdentifierDto("dmn", "namespace:name");
+
+        String body = MAPPER.writeValueAsString(new ExplainabilityRequestDto(executionId, serviceUrl, modelIdentifierDto, Collections.emptyMap(), Collections.emptyMap()));
 
         ExplainabilityResultDto result = given()
                 .contentType(ContentType.JSON)

@@ -21,7 +21,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.infinispan.protostream.MessageMarshaller;
-import org.kie.kogito.tracing.decision.event.variable.TypedVariable.Kind;
+import org.kie.kogito.tracing.typedvalue.TypedValue.Kind;
 import org.kie.kogito.trusty.storage.api.model.TypedVariable;
 import org.kie.kogito.trusty.storage.infinispan.testfield.AbstractTestField;
 import org.kie.kogito.trusty.storage.infinispan.testfield.CollectionTestField;

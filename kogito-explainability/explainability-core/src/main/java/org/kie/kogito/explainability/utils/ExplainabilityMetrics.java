@@ -15,9 +15,8 @@
  */
 package org.kie.kogito.explainability.utils;
 
-import java.util.List;
-
 import org.apache.commons.lang3.tuple.Pair;
+import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureImportance;
 import org.kie.kogito.explainability.model.Output;
@@ -27,11 +26,19 @@ import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Saliency;
 import org.kie.kogito.explainability.model.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Utility class providing different methods to evaluate explainability.
  */
 public class ExplainabilityMetrics {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExplainabilityMetrics.class);
 
     /**
      * Drop in confidence score threshold for impact score calculation.
@@ -68,24 +75,32 @@ public class ExplainabilityMetrics {
      * @param topFeatures the list of important features that should be dropped
      * @return the saliency impact
      */
-    public static double impactScore(PredictionProvider model, Prediction prediction, List<FeatureImportance> topFeatures) {
+    public static double impactScore(PredictionProvider model, Prediction prediction, List<FeatureImportance> topFeatures) throws InterruptedException, ExecutionException, TimeoutException {
         List<Feature> copy = List.copyOf(prediction.getInput().getFeatures());
         for (FeatureImportance featureImportance : topFeatures) {
             copy = DataUtils.dropFeature(copy, featureImportance.getFeature());
         }
 
         PredictionInput predictionInput = new PredictionInput(copy);
-        List<PredictionOutput> predictionOutputs = model.predict(List.of(predictionInput));
-        PredictionOutput predictionOutput = predictionOutputs.get(0);
-        double impact = 0d;
-        double size = predictionOutput.getOutputs().size();
-        for (int i = 0; i < size; i++) {
-            Output original = prediction.getOutput().getOutputs().get(i);
-            Output modified = predictionOutput.getOutputs().get(i);
-            impact += (!original.getValue().asString().equals(modified.getValue().asString())
-                    || modified.getScore() < original.getScore() * CONFIDENCE_DROP_RATIO) ? 1d : 0d;
+        List<PredictionOutput> predictionOutputs;
+        try {
+            predictionOutputs = model.predictAsync(List.of(predictionInput))
+                    .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            LOGGER.error("Impossible to obtain prediction {}", e.getMessage());
+            throw e;
         }
-        return impact / size;
+        double impact = 0d;
+        for (PredictionOutput predictionOutput : predictionOutputs) {
+            double size = predictionOutput.getOutputs().size();
+            for (int i = 0; i < size; i++) {
+                Output original = prediction.getOutput().getOutputs().get(i);
+                Output modified = predictionOutput.getOutputs().get(i);
+                impact += (!original.getValue().asString().equals(modified.getValue().asString())
+                        || modified.getScore() < original.getScore() * CONFIDENCE_DROP_RATIO) ? 1d / size : 0d;
+            }
+        }
+        return impact;
     }
 
     /**

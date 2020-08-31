@@ -16,11 +16,13 @@
 package org.kie.kogito.explainability.model;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * A provider of predictions.
  * This can be any model, service or function, like (local / remote) DMN, PMML services or any other ML model.
  */
+@FunctionalInterface
 public interface PredictionProvider {
 
     /**
@@ -28,6 +30,5 @@ public interface PredictionProvider {
      * @param inputs the input batch
      * @return a batch of prediction outputs
      */
-    List<PredictionOutput> predict(List<PredictionInput> inputs);
-
+    CompletableFuture<List<PredictionOutput>> predictAsync(List<PredictionInput> inputs);
 }

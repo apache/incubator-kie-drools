@@ -18,6 +18,7 @@ package org.kie.kogito.trusty.storage.api;
 
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.ExplainabilityResult;
 
 public interface TrustyStorageService {
 
@@ -27,6 +28,13 @@ public interface TrustyStorageService {
      * @return The Storage for decisions.
      */
     Storage<String, Decision> getDecisionsStorage();
+
+    /**
+     * Gets the explainability result storage.
+     *
+     * @return The Storage for explainability results.
+     */
+    Storage<String, ExplainabilityResult> getExplainabilityResultStorage();
 
     /**
      * Gets the model definition storage.

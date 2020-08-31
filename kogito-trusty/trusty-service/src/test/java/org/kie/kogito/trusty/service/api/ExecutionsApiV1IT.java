@@ -68,6 +68,8 @@ class ExecutionsApiV1IT {
         Mockito.when(executionService.getExecutionHeaders(any(OffsetDateTime.class), any(OffsetDateTime.class), any(Integer.class), any(Integer.class), any(String.class)))
                 .thenReturn(new MatchedExecutionHeaders(new ArrayList<>(), 0));
         given().when().get("/executions").then().statusCode(200);
+        given().when().get("/executions?from=2000-01-01").then().statusCode(200);
+        given().when().get("/executions?to=2000-01-01").then().statusCode(200);
         given().when().get("/executions?from=2000-01-01T00:00:00Z").then().statusCode(200);
         given().when().get("/executions?to=2000-01-01T00:00:00Z").then().statusCode(200);
     }

@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.kie.kogito.tracing.decision.event.variable.TypedVariable.Kind;
+import org.kie.kogito.tracing.typedvalue.TypedValue.Kind;
 import org.kie.kogito.trusty.storage.api.model.TypedVariable;
 
 public class TypedVariableMarshaller extends AbstractModelMarshaller<TypedVariable> {

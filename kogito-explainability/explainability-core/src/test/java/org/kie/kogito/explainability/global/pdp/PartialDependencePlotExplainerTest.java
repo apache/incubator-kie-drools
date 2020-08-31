@@ -15,12 +15,10 @@
  */
 package org.kie.kogito.explainability.global.pdp;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.explainability.Config;
+import org.kie.kogito.explainability.FakeRandom;
 import org.kie.kogito.explainability.TestUtils;
 import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.Feature;
@@ -35,35 +33,44 @@ import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
 import org.kie.kogito.explainability.utils.DataUtils;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class PartialDependencePlotExplainerTest {
 
+    PartialDependencePlotExplainer partialDependencePlotProvider = new PartialDependencePlotExplainer();
+    PredictionProviderMetadata metadata = new PredictionProviderMetadata() {
+        @Override
+        public DataDistribution getDataDistribution() {
+            return DataUtils.generateRandomDataDistribution(10, 100, new FakeRandom());
+        }
+
+        @Override
+        public PredictionInput getInputShape() {
+            List<Feature> features = new LinkedList<>();
+            features.add(FeatureFactory.newTextFeature("text", ""));
+            return new PredictionInput(features);
+        }
+
+        @Override
+        public PredictionOutput getOutputShape() {
+            List<Output> outputs = new LinkedList<>();
+            outputs.add(new Output("spam", Type.BOOLEAN, new Value<>(null), 0d));
+            return new PredictionOutput(outputs);
+        }
+    };
+
     @Test
-    void testPdpTextClassifier() {
-        PartialDependencePlotExplainer partialDependencePlotProvider = new PartialDependencePlotExplainer();
+    void testPdpTextClassifier() throws Exception {
         PredictionProvider modelInfo = TestUtils.getDummyTextClassifier();
-        PredictionProviderMetadata metadata = new PredictionProviderMetadata() {
-            @Override
-            public DataDistribution getDataDistribution() {
-                return DataUtils.generateRandomDataDistribution(10, 100, new Random());
-            }
-
-            @Override
-            public PredictionInput getInputShape() {
-                List<Feature> features = new LinkedList<>();
-                features.add(FeatureFactory.newTextFeature("text", ""));
-                return new PredictionInput(features);
-            }
-
-            @Override
-            public PredictionOutput getOutputShape() {
-                List<Output> outputs = new LinkedList<>();
-                outputs.add(new Output("spam", Type.BOOLEAN, new Value<>(null), 0d));
-                return new PredictionOutput(outputs);
-            }
-        };
         Collection<PartialDependenceGraph> pdps = partialDependencePlotProvider.explain(modelInfo, metadata);
         assertNotNull(pdps);
         for (PartialDependenceGraph pdp : pdps) {
@@ -74,4 +81,25 @@ class PartialDependencePlotExplainerTest {
         }
     }
 
+    @Test
+    void testBrokenPredict() {
+        Config.INSTANCE.setAsyncTimeout(1);
+        Config.INSTANCE.setAsyncTimeUnit(TimeUnit.MILLISECONDS);
+
+        PredictionProvider brokenProvider = inputs -> supplyAsync(
+                () -> {
+                    try {
+                        Thread.sleep(1000);
+                        return Collections.emptyList();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException("this is a test");
+                    }
+                });
+
+        Assertions.assertThrows(TimeoutException.class,
+                () -> partialDependencePlotProvider.explain(brokenProvider, metadata));
+
+        Config.INSTANCE.setAsyncTimeout(Config.DEFAULT_ASYNC_TIMEOUT);
+        Config.INSTANCE.setAsyncTimeUnit(Config.DEFAULT_ASYNC_TIMEUNIT);
+    }
 }

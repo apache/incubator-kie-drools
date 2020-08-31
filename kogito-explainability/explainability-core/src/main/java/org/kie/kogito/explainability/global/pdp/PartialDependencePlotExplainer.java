@@ -20,7 +20,10 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
+import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.global.GlobalExplainer;
 import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.FeatureDistribution;
@@ -71,7 +74,7 @@ public class PartialDependencePlotExplainer implements GlobalExplainer<Collectio
     }
 
     @Override
-    public Collection<PartialDependenceGraph> explain(PredictionProvider model, PredictionProviderMetadata metadata) {
+    public Collection<PartialDependenceGraph> explain(PredictionProvider model, PredictionProviderMetadata metadata) throws InterruptedException, ExecutionException, TimeoutException {
         long start = System.currentTimeMillis();
 
         Collection<PartialDependenceGraph> pdps = new LinkedList<>();
@@ -108,8 +111,15 @@ public class PartialDependencePlotExplainer implements GlobalExplainer<Collectio
                         predictionInputs.add(input);
                     }
 
+                    List<PredictionOutput> predictionOutputs;
+                    try {
+                        predictionOutputs = model.predictAsync(predictionInputs).get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                        LOGGER.error("Impossible to obtain prediction {}", e.getMessage());
+                        throw e;
+                    }
                     // prediction requests are batched per value of feature 'Xs' under analysis
-                    for (PredictionOutput predictionOutput : model.predict(predictionInputs)) {
+                    for (PredictionOutput predictionOutput : predictionOutputs) {
                         Output output = predictionOutput.getOutputs().get(outputIndex);
                         marginalImpacts[i] += output.getScore() / (double) seriesLength;
                     }

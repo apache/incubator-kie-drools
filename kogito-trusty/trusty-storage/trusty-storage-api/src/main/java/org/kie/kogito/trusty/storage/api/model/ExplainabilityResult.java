@@ -16,26 +16,44 @@
 
 package org.kie.kogito.trusty.storage.api.model;
 
-import org.kie.kogito.explainability.api.ExplainabilityResultDto;
+import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ExplainabilityResult {
 
+    public static final String EXECUTION_ID_FIELD = "executionId";
+    public static final String SALIENCIES_FIELD = "saliencies";
+
+    @JsonProperty(EXECUTION_ID_FIELD)
     private String executionId;
 
-    // TODO: add the properties.
+    @JsonProperty(SALIENCIES_FIELD)
+    private Map<String, Saliency> saliencies;
 
     public ExplainabilityResult() {
     }
 
-    public ExplainabilityResult(String executionId) {
+    public ExplainabilityResult(String executionId, Map<String, Saliency> saliencies) {
         this.executionId = executionId;
-    }
-
-    public static ExplainabilityResult from(ExplainabilityResultDto explainabilityResultDto) {
-        return new ExplainabilityResult(explainabilityResultDto.getExecutionId());
+        this.saliencies = saliencies;
     }
 
     public String getExecutionId() {
-        return this.executionId;
+        return executionId;
+    }
+
+    public void setExecutionId(String executionId) {
+        this.executionId = executionId;
+    }
+
+    public Map<String, Saliency> getSaliencies() {
+        return saliencies;
+    }
+
+    public void setSaliencies(Map<String, Saliency> saliencies) {
+        this.saliencies = saliencies;
     }
 }

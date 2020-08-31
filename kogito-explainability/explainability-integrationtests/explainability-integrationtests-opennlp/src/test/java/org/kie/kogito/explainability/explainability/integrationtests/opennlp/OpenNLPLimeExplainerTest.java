@@ -15,17 +15,13 @@
  */
 package org.kie.kogito.explainability.explainability.integrationtests.opennlp;
 
-import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
 import opennlp.tools.langdetect.Language;
 import opennlp.tools.langdetect.LanguageDetector;
 import opennlp.tools.langdetect.LanguageDetectorME;
 import opennlp.tools.langdetect.LanguageDetectorModel;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
@@ -39,10 +35,24 @@ import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
 import org.kie.kogito.explainability.utils.ExplainabilityMetrics;
 
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class OpenNLPLimeExplainerTest {
+
+    @BeforeAll
+    static void init() {
+        Config.INSTANCE.setAsyncTimeout(5000);
+        Config.INSTANCE.setAsyncTimeUnit(TimeUnit.MILLISECONDS);
+    }
 
     @Test
     void testOpenNLPLangDetect() throws Exception {
@@ -63,7 +73,7 @@ class OpenNLPLimeExplainerTest {
                                                                               bestLanguage.getConfidence())));
             Prediction prediction = new Prediction(input, output);
 
-            PredictionProvider model = inputs -> {
+            PredictionProvider model = inputs -> CompletableFuture.supplyAsync(() -> {
                 List<PredictionOutput> results = new LinkedList<>();
                 for (PredictionInput predictionInput : inputs) {
                     StringBuilder builder = new StringBuilder();
@@ -78,8 +88,9 @@ class OpenNLPLimeExplainerTest {
                     results.add(predictionOutput);
                 }
                 return results;
-            };
-            Map<String, Saliency> saliencyMap = limeExplainer.explain(prediction, model);
+            });
+            Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
+                    .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
             for (Saliency saliency : saliencyMap.values()) {
                 assertNotNull(saliency);
                 double i1 = ExplainabilityMetrics.impactScore(model, prediction, saliency.getPositiveFeatures(3));

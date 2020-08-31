@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.kie.kogito.trusty.storage.api.model.Decision;
-import org.kie.kogito.trusty.storage.api.model.TypedVariable;
+import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 
 public class DecisionStructuredInputsResponse {
 
@@ -39,7 +39,7 @@ public class DecisionStructuredInputsResponse {
         return inputs;
     }
 
-    public static DecisionStructuredInputsResponse from(Collection<TypedVariable> inputs) {
+    public static DecisionStructuredInputsResponse from(Collection<DecisionInput> inputs) {
         return inputs == null ? null : new DecisionStructuredInputsResponse(inputs.stream().map(TypedVariableResponse::from).collect(Collectors.toList()));
     }
 

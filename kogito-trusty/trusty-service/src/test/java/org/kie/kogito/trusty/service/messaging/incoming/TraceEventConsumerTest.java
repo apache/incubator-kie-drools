@@ -86,7 +86,7 @@ class TraceEventConsumerTest {
 
     private void testNumberOfInvocations(Message<String> message, int wantedNumberOfServiceInvocations) {
         consumer.handleMessage(message);
-        verify(trustyService, times(wantedNumberOfServiceInvocations)).processDecision(any(), any());
+        verify(trustyService, times(wantedNumberOfServiceInvocations)).processDecision(any(), any(), any());
         verify(message, times(1)).ack();
     }
 }

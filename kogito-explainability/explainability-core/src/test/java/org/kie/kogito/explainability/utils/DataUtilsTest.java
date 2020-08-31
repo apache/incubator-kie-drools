@@ -37,6 +37,7 @@ import org.kie.kogito.explainability.model.Value;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DataUtilsTest {
 
@@ -100,14 +101,28 @@ class DataUtilsTest {
         double[] y = new double[]{2, 3};
         double distance = DataUtils.euclideanDistance(x, y);
         assertEquals(2.236, distance, 1e-3);
+
+        assertTrue(Double.isNaN(DataUtils.euclideanDistance(x, new double[0])));
     }
 
     @Test
-    void testHammingDistance() {
+    void testHammingDistanceDouble() {
         double[] x = new double[]{2, 1};
         double[] y = new double[]{2, 3};
         double distance = DataUtils.hammingDistance(x, y);
         assertEquals(1, distance, 1e-1);
+
+        assertTrue(Double.isNaN(DataUtils.hammingDistance(x, new double[0])));
+    }
+
+    @Test
+    void testHammingDistanceString() {
+        String x = "test1";
+        String y = "test2";
+        double distance = DataUtils.hammingDistance(x, y);
+        assertEquals(1, distance, 1e-1);
+
+        assertTrue(Double.isNaN(DataUtils.hammingDistance(x, "testTooLong")));
     }
 
     @Test
@@ -115,6 +130,15 @@ class DataUtilsTest {
         double x = 0.218;
         double k = DataUtils.exponentialSmoothingKernel(x, 2);
         assertEquals(0.994, k, 1e-3);
+    }
+
+    @Test
+    void testPerturbFeaturesEmpty() {
+        List<Feature> features = new LinkedList<>();
+        PerturbationContext perturbationContext = new PerturbationContext(random, 0);
+        PredictionInput predictionInput = DataUtils.perturbFeatures(features, perturbationContext);
+        assertNotNull(predictionInput);
+        assertEquals(features.size(), predictionInput.getFeatures().size());
     }
 
     @Test
@@ -202,7 +226,7 @@ class DataUtilsTest {
     }
 
     private void assertPerturbDropNumeric(PredictionInput input, int noOfPerturbations) {
-        PredictionInput perturbedInput = DataUtils.perturbFeatures(input, new PerturbationContext(random, noOfPerturbations));
+        PredictionInput perturbedInput = DataUtils.perturbFeatures(input.getFeatures(), new PerturbationContext(random, noOfPerturbations));
         int changedFeatures = 0;
         for (int i = 0; i < input.getFeatures().size(); i++) {
             double v = input.getFeatures().get(i).getValue().asNumber();
@@ -215,7 +239,7 @@ class DataUtilsTest {
     }
 
     private void assertPerturbDropString(PredictionInput input, int noOfPerturbations) {
-        PredictionInput perturbedInput = DataUtils.perturbFeatures(input, new PerturbationContext(random, noOfPerturbations));
+        PredictionInput perturbedInput = DataUtils.perturbFeatures(input.getFeatures(), new PerturbationContext(random, noOfPerturbations));
         int changedFeatures = 0;
         for (int i = 0; i < input.getFeatures().size(); i++) {
             String v = input.getFeatures().get(i).getValue().asString();

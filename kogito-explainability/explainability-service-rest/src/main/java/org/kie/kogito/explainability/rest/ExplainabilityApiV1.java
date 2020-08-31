@@ -34,14 +34,24 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.kie.kogito.explainability.ExplanationService;
+import org.kie.kogito.explainability.PredictionProviderFactory;
 import org.kie.kogito.explainability.api.ExplainabilityRequestDto;
+import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.models.ExplainabilityRequest;
 
 @Path("/v1")
 public class ExplainabilityApiV1 {
 
+    protected ExplanationService explanationService;
+    protected PredictionProviderFactory predictionProviderFactory;
+
     @Inject
-    ExplanationService explanationService;
+    public ExplainabilityApiV1(
+            ExplanationService explanationService,
+            PredictionProviderFactory predictionProviderFactory) {
+        this.explanationService = explanationService;
+        this.predictionProviderFactory = predictionProviderFactory;
+    }
 
     @POST
     @Path("/explain")
@@ -53,9 +63,10 @@ public class ExplainabilityApiV1 {
     @Operation(summary = "Retrieve the explainability for a given decision.", description = "Retrieve the explainability for a given decision.")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Response> explain(ExplainabilityRequestDto request) {
-
-        CompletionStage<Response> result = explanationService.explainAsync(ExplainabilityRequest.from(request))
+    public Uni<Response> explain(ExplainabilityRequestDto requestDto) {
+        ExplainabilityRequest request = ExplainabilityRequest.from(requestDto);
+        PredictionProvider provider = predictionProviderFactory.createPredictionProvider(request);
+        CompletionStage<Response> result = explanationService.explainAsync(request, provider)
                 .thenApply(x -> Response.ok(x).build());
 
         return Uni.createFrom().completionStage(result);

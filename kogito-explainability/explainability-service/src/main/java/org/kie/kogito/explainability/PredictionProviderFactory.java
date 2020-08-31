@@ -16,6 +16,10 @@
 
 package org.kie.kogito.explainability;
 
-public class ExplanationServiceTest {
+import org.kie.kogito.explainability.model.PredictionProvider;
+import org.kie.kogito.explainability.models.ExplainabilityRequest;
 
+public interface PredictionProviderFactory {
+
+    PredictionProvider createPredictionProvider(ExplainabilityRequest request);
 }

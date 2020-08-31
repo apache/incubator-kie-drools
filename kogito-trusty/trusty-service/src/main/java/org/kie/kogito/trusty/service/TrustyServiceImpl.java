@@ -18,16 +18,21 @@ package org.kie.kogito.trusty.service;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.explainability.api.ExplainabilityRequestDto;
+import org.kie.kogito.explainability.api.ModelIdentifierDto;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.AttributeFilter;
 import org.kie.kogito.persistence.api.query.QueryFilterFactory;
+import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.kie.kogito.trusty.service.messaging.incoming.ModelIdCreator;
 import org.kie.kogito.trusty.service.messaging.outgoing.ExplainabilityRequestProducer;
 import org.kie.kogito.trusty.service.models.MatchedExecutionHeaders;
@@ -35,29 +40,42 @@ import org.kie.kogito.trusty.storage.api.TrustyStorageService;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.Execution;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.orderBy;
 import static org.kie.kogito.persistence.api.query.SortDirection.DESC;
+import static org.kie.kogito.trusty.service.messaging.MessagingUtils.modelToTracingTypedValue;
 
 @ApplicationScoped
 public class TrustyServiceImpl implements TrustyService {
 
-    @ConfigProperty(name = "trusty.explainability.enabled")
-    Boolean isExplainabilityEnabled;
+    private static final Logger LOG = LoggerFactory.getLogger(TrustyServiceImpl.class);
 
-    @Inject
-    ExplainabilityRequestProducer explainabilityRequestProducer;
+    private boolean isExplainabilityEnabled;
 
-    @Inject
-    TrustyStorageService storageService;
+    private ExplainabilityRequestProducer explainabilityRequestProducer;
+    private TrustyStorageService storageService;
 
     TrustyServiceImpl() {
         // dummy constructor needed
     }
 
-    public TrustyServiceImpl(TrustyStorageService storageService) {
+    @Inject
+    public TrustyServiceImpl(
+            @ConfigProperty(name = "trusty.explainability.enabled") Boolean isExplainabilityEnabled,
+            ExplainabilityRequestProducer explainabilityRequestProducer,
+            TrustyStorageService storageService
+    ) {
+        this.isExplainabilityEnabled = Boolean.TRUE.equals(isExplainabilityEnabled);
+        this.explainabilityRequestProducer = explainabilityRequestProducer;
         this.storageService = storageService;
+    }
+
+    // used only in tests
+    void enableExplainability() {
+        isExplainabilityEnabled = true;
     }
 
     @Override
@@ -104,17 +122,46 @@ public class TrustyServiceImpl implements TrustyService {
     }
 
     @Override
-    public void processDecision(String executionId, Decision decision) {
+    public void processDecision(String executionId, String serviceUrl, Decision decision) {
         storeDecision(executionId, decision);
-        // TODO: Create a proper ExplainabilityRequestDto when all the properties will be defined and available. https://issues.redhat.com/browse/KOGITO-2944
-        if (Boolean.TRUE.equals(isExplainabilityEnabled)) {
-            explainabilityRequestProducer.sendEvent(new ExplainabilityRequestDto(executionId));
+        if (isExplainabilityEnabled) {
+            Map<String, TypedValue> inputs = decision.getInputs() != null
+                    ? decision.getInputs().stream()
+                    .collect(HashMap::new, (m, v) -> m.put(v.getName(), modelToTracingTypedValue(v.getValue())), HashMap::putAll)
+                    : Collections.emptyMap();
+
+            Map<String, TypedValue> outputs = decision.getOutcomes() != null
+                    ? decision.getOutcomes().stream()
+                    .collect(HashMap::new, (m, v) -> m.put(v.getOutcomeName(), modelToTracingTypedValue(v.getOutcomeResult())), HashMap::putAll)
+                    : Collections.emptyMap();
+
+            explainabilityRequestProducer.sendEvent(new ExplainabilityRequestDto(
+                    executionId,
+                    serviceUrl,
+                    createDecisionModelIdentifierDto(decision),
+                    inputs,
+                    outputs
+            ));
         }
     }
 
     @Override
-    public void storeExplainability(String executionId, ExplainabilityResult result) {
-        // TODO: Store it https://issues.redhat.com/browse/KOGITO-2945
+    public ExplainabilityResult getExplainabilityResultById(String executionId) {
+        Storage<String, ExplainabilityResult> storage = storageService.getExplainabilityResultStorage();
+        if (!storage.containsKey(executionId)) {
+            throw new IllegalArgumentException(String.format("A explainability result with ID %s does not exist in the storage.", executionId));
+        }
+        return storage.get(executionId);
+    }
+
+    @Override
+    public void storeExplainabilityResult(String executionId, ExplainabilityResult result) {
+        Storage<String, ExplainabilityResult> storage = storageService.getExplainabilityResultStorage();
+        if (storage.containsKey(executionId)) {
+            throw new IllegalArgumentException(String.format("A explainability result with ID %s is already present in the storage.", executionId));
+        }
+        storage.put(executionId, result);
+        LOG.info("Stored explainability result for execution {}", executionId);
     }
 
     @Override
@@ -134,5 +181,12 @@ public class TrustyServiceImpl implements TrustyService {
             throw new IllegalArgumentException(String.format("A model with ID %s does not exist in the storage.", modelId));
         }
         return storage.get(modelId);
+    }
+
+    private ModelIdentifierDto createDecisionModelIdentifierDto(Decision decision) {
+        String resourceId = decision.getExecutedModelNamespace() +
+                ModelIdentifierDto.RESOURCE_ID_SEPARATOR +
+                decision.getExecutedModelName();
+        return new ModelIdentifierDto("dmn", resourceId);
     }
 }
