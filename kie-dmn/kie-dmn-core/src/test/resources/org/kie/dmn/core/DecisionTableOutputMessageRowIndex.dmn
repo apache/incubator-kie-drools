@@ -1,0 +1,74 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_D7A4B999-3178-4929-834F-8979E3C5000F" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_1617384A-FBD0-40D5-B924-C12E64415511" name="DecisionTableOutputMessageRowIndex" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_D7A4B999-3178-4929-834F-8979E3C5000F">
+  <dmn:extensionElements/>
+  <dmn:inputData id="_9C4B65CB-12A3-486A-80F4-CC91CDFD0F10" name="InputData-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_E94A04B2-DCC7-49E8-967A-5C14C5C34612" name="InputData-1" typeRef="Any"/>
+  </dmn:inputData>
+  <dmn:decision id="_F2189A67-B088-4367-8983-AE2A2136D055" name="Decision-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_364CCC40-40DB-4146-B4AB-280CABEF654E" name="Decision-1" typeRef="string"/>
+    <dmn:informationRequirement id="_54500D14-BD9C-49F3-8422-8A85A6B02739">
+      <dmn:requiredInput href="#_9C4B65CB-12A3-486A-80F4-CC91CDFD0F10"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_D0AEEEC8-0A63-4ACB-A060-AF8712D81A80" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_470E3BAF-A0A9-4EBC-9CD5-65BEE9094066">
+        <dmn:inputExpression id="_11DAD138-C48B-4F35-8A7C-5145583DCE54" typeRef="Any">
+          <dmn:text>InputData-1</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_0EFF04FD-DFDD-4CDA-B997-378E4544AD1E">
+        <dmn:outputValues id="_79C2FC20-F5CC-41EB-AD37-15F9B90D1C73">
+          <dmn:text>"a","b","c",null</dmn:text>
+        </dmn:outputValues>
+      </dmn:output>
+      <dmn:annotation name="annotation-1"/>
+      <dmn:rule id="_FF9C7FBC-4190-486E-A9A3-C6F9F110DED8">
+        <dmn:inputEntry id="_6AC8E8AE-ABE8-4BF7-BBB8-C29C7600BF64">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_0BE67DD3-826B-46D6-98BD-05464648E180">
+          <dmn:text>"x"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>this DT expecting "a","b","c" I give you st else</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_D0AEEEC8-0A63-4ACB-A060-AF8712D81A80">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>137</kie:width>
+            <kie:width>396</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-_9C4B65CB-12A3-486A-80F4-CC91CDFD0F10" dmnElementRef="_9C4B65CB-12A3-486A-80F4-CC91CDFD0F10" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="245" y="125" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_F2189A67-B088-4367-8983-AE2A2136D055" dmnElementRef="_F2189A67-B088-4367-8983-AE2A2136D055" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="425" y="125" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-_54500D14-BD9C-49F3-8422-8A85A6B02739" dmnElementRef="_54500D14-BD9C-49F3-8422-8A85A6B02739">
+        <di:waypoint x="345" y="150"/>
+        <di:waypoint x="425" y="150"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

@@ -167,7 +167,7 @@ public class DecisionTableImpl implements DecisionTable {
         if (((EvaluationContextImpl) ctx).isPerformRuntimeTypeCheck() && !dtOutputClause.getType().isAssignableValue(value)) {
             // invalid type
             msgs.put( index,
-                      "Invalid result type on rule #" + rule.getIndex() + ", output " +
+                      "Invalid result type on rule #" + (rule.getIndex()+1) + ", output " +
                       (dtOutputClause.getName() != null ? "'"+dtOutputClause.getName()+"'" : "#" + index) +
                             ". Value " + value + " is not of type " + dtOutputClause.getType().getName() + ".");
             return;
@@ -183,7 +183,7 @@ public class DecisionTableImpl implements DecisionTable {
             if( ! found ) {
                 // invalid result
                 msgs.put( index,
-                          "Invalid result value on rule #"+rule.getIndex()+", output "+
+                          "Invalid result value on rule #"+(rule.getIndex()+1)+", output "+
                           (dtOutputClause.getName() != null ? "'"+dtOutputClause.getName()+"'" : "#"+index ) +
                                 ". Value " + value + " does not match list of allowed values.");
             }
