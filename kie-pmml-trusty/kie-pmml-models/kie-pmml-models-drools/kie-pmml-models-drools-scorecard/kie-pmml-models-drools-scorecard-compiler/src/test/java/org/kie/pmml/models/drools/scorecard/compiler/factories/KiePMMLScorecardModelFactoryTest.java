@@ -120,6 +120,6 @@ public class KiePMMLScorecardModelFactoryTest {
         assignExpressionMap.put("targetField", new NameExpr("targetField"));
         assignExpressionMap.put("miningFunction", new NullLiteralExpr());
         assignExpressionMap.put("pmmlMODEL", new NullLiteralExpr());
-        commonEvaluateConstructor(constructorDeclaration, simpleName.asString(), superInvocationExpressionsMap, assignExpressionMap);
+        assertTrue(commonEvaluateConstructor(constructorDeclaration, simpleName.asString(), superInvocationExpressionsMap, assignExpressionMap));
     }
 }

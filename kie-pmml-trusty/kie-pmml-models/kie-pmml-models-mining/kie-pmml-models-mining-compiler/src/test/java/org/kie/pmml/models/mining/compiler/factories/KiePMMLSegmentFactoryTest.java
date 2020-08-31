@@ -185,7 +185,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
         Map<String, Expression> assignExpressionMap = new HashMap<>();
         assignExpressionMap.put("weight", new DoubleLiteralExpr(weight));
         assignExpressionMap.put("id", new StringLiteralExpr(segmentName));
-        commonEvaluateConstructor(constructorDeclaration, generatedClassName, superInvocationExpressionsMap, assignExpressionMap);
+        assertTrue(commonEvaluateConstructor(constructorDeclaration, generatedClassName, superInvocationExpressionsMap, assignExpressionMap));
     }
 
     private void commonEvaluateSegment(final KiePMMLSegment toEvaluate, final Segment segment) {

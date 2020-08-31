@@ -63,6 +63,8 @@ public class KiePMMLSegmentFactory {
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLSegmentFactory.class.getName());
     static final String KIE_PMML_SEGMENT_TEMPLATE_JAVA = "KiePMMLSegmentTemplate.tmpl";
     static final String KIE_PMML_SEGMENT_TEMPLATE = "KiePMMLSegmentTemplate";
+    private static final String GET_SEGMENTS= "getSegments {}";
+    private static final String GET_SEGMENT= "getSegment {}";
 
     private KiePMMLSegmentFactory() {
     }
@@ -71,7 +73,7 @@ public class KiePMMLSegmentFactory {
                                                    final TransformationDictionary transformationDictionary,
                                                    final List<Segment> segments,
                                                    final KnowledgeBuilder kBuilder) {
-        logger.debug("getSegments {}", segments);
+        logger.debug(GET_SEGMENTS, segments);
         return segments.stream().map(segment -> getSegment(dataDictionary, transformationDictionary, segment,
                                                            kBuilder)).collect(Collectors.toList());
     }
@@ -80,7 +82,7 @@ public class KiePMMLSegmentFactory {
                                             final TransformationDictionary transformationDictionary,
                                             final Segment segment,
                                             final KnowledgeBuilder kBuilder) {
-        logger.debug("getSegment {}", segment);
+        logger.debug(GET_SEGMENT, segment);
         return KiePMMLSegment.builder(segment.getId(),
                                       getKiePMMLExtensions(segment.getExtensions()),
                                       getPredicate(segment.getPredicate(), dataDictionary),
@@ -97,7 +99,7 @@ public class KiePMMLSegmentFactory {
                                                             final TransformationDictionary transformationDictionary,
                                                             final List<Segment> segments,
                                                             final KnowledgeBuilder kBuilder) {
-        logger.debug("getSegments {}", segments);
+        logger.debug(GET_SEGMENTS, segments);
         final Map<String, String> toReturn = new HashMap<>();
         segments.forEach(segment -> toReturn.putAll(getSegmentSourcesMap(parentPackageName,
                                                                          dataDictionary,
@@ -113,7 +115,7 @@ public class KiePMMLSegmentFactory {
             final TransformationDictionary transformationDictionary,
             final Segment segment,
             final KnowledgeBuilder kBuilder) {
-        logger.debug("getSegment {}", segment);
+        logger.debug(GET_SEGMENT, segment);
         final String packageName = getSanitizedPackageName(parentPackageName + "." + segment.getId());
         final KiePMMLModel kiePmmlModel = getFromCommonDataAndTransformationDictionaryAndModelFromPlugin(
                 packageName,
@@ -130,7 +132,7 @@ public class KiePMMLSegmentFactory {
             final DataDictionary dataDictionary,
             final Segment segment,
             final KiePMMLModel kiePmmlModel) {
-        logger.debug("getSegment {}", segment);
+        logger.debug(GET_SEGMENT, segment);
         if (!(kiePmmlModel instanceof HasSourcesMap)) {
             throw new KiePMMLException("Retrieved KiePMMLModel for segment " + segment.getModel().getModelName() + " " +
                                                "does not implement HasSources");

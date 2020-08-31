@@ -195,7 +195,7 @@ public class KiePMMLRegressionModelFactoryTest {
         ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
         objectCreationExpr.setType(nestedTable);
         assignExpressionMap.put("regressionTable", objectCreationExpr);
-        commonEvaluateConstructor(constructorDeclaration, generatedClassName, superInvocationExpressionsMap, assignExpressionMap);
+        assertTrue(commonEvaluateConstructor(constructorDeclaration, generatedClassName, superInvocationExpressionsMap, assignExpressionMap));
     }
 
     @Test
