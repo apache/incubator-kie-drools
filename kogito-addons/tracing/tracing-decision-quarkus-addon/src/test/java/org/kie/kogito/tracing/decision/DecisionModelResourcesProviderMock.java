@@ -26,9 +26,9 @@ import org.kie.internal.decision.DecisionModelResourcesProvider;
 import org.kie.kogito.decision.DecisionModelType;
 import org.kie.kogito.dmn.DecisionModelRelativeResource;
 
-import static org.kie.kogito.tracing.decision.Constants.MODEL_NAME;
-import static org.kie.kogito.tracing.decision.Constants.MODEL_NAMESPACE;
-import static org.kie.kogito.tracing.decision.Constants.MODEL_RESOURCE;
+import static org.kie.kogito.tracing.decision.QuarkusDecisionTracingTest.MODEL_NAME;
+import static org.kie.kogito.tracing.decision.QuarkusDecisionTracingTest.MODEL_NAMESPACE;
+import static org.kie.kogito.tracing.decision.QuarkusDecisionTracingTest.MODEL_RESOURCE;
 
 @Mock
 public class DecisionModelResourcesProviderMock implements DecisionModelResourcesProvider {

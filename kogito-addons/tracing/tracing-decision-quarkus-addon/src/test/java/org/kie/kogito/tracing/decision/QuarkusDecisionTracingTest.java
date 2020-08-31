@@ -39,9 +39,6 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.kie.kogito.tracing.decision.Constants.MODEL_NAME;
-import static org.kie.kogito.tracing.decision.Constants.MODEL_NAMESPACE;
-import static org.kie.kogito.tracing.decision.Constants.MODEL_RESOURCE;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -50,6 +47,10 @@ import static org.mockito.Mockito.when;
 
 
 public class QuarkusDecisionTracingTest {
+
+    public final static String MODEL_RESOURCE = "/Traffic Violation.dmn";
+    public final static String MODEL_NAMESPACE = "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF";
+    public final static String MODEL_NAME = "Traffic Violation";
 
     private static final String TEST_EXECUTION_ID = "7c50581e-6e5b-407b-91d6-2ffb1d47ebc0";
     private final static String TEST_SERVICE_URL = "localhost:8080";

@@ -14,6 +14,7 @@
   <name>Kogito :: Add-Ons :: Tracing</name>
 
   <modules>
+    <module>typedvalue-api</module>
     <module>tracing-decision-api</module>
     <module>tracing-decision-common</module>
     <module>tracing-decision-quarkus-addon</module>

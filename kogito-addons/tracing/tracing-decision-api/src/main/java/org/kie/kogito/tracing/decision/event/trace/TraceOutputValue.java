@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.kie.kogito.tracing.decision.event.message.Message;
-import org.kie.kogito.tracing.decision.event.variable.TypedVariable;
+import org.kie.kogito.tracing.typedvalue.TypedValue;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 
@@ -40,11 +40,11 @@ public class TraceOutputValue {
     private String status;
 
     @JsonProperty("value")
-    private TypedVariable value;
+    private TypedValue value;
 
     @JsonProperty("inputs")
     @JsonInclude(NON_EMPTY)
-    private Map<String, TypedVariable> inputs;
+    private Map<String, TypedValue> inputs;
 
     @JsonProperty("messages")
     @JsonInclude(NON_EMPTY)
@@ -53,7 +53,7 @@ public class TraceOutputValue {
     private TraceOutputValue() {
     }
 
-    public TraceOutputValue(String id, String name, String status, TypedVariable value, Map<String, TypedVariable> inputs, List<Message> messages) {
+    public TraceOutputValue(String id, String name, String status, TypedValue value, Map<String, TypedValue> inputs, List<Message> messages) {
         this.id = id;
         this.name = name;
         this.status = status;
@@ -74,11 +74,11 @@ public class TraceOutputValue {
         return status;
     }
 
-    public TypedVariable getValue() {
+    public TypedValue getValue() {
         return value;
     }
 
-    public Map<String, TypedVariable> getInputs() {
+    public Map<String, TypedValue> getInputs() {
         return inputs;
     }
 

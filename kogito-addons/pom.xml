@@ -20,6 +20,7 @@
     <module>predictions</module>
     <module>process-management</module>
     <module>tracing</module>
+    <module>explainability</module>
   </modules>
 
   <dependencyManagement>

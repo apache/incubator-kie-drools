@@ -41,11 +41,10 @@ import org.kie.kogito.tracing.decision.event.message.MessageFEELEvent;
 import org.kie.kogito.tracing.decision.event.message.MessageFEELEventSeverity;
 import org.kie.kogito.tracing.decision.event.message.MessageLevel;
 import org.kie.kogito.tracing.decision.event.trace.TraceResourceId;
-import org.kie.kogito.tracing.decision.event.trace.TraceType;
-import org.kie.kogito.tracing.decision.event.variable.CollectionVariable;
-import org.kie.kogito.tracing.decision.event.variable.StructureVariable;
-import org.kie.kogito.tracing.decision.event.variable.TypedVariable;
-import org.kie.kogito.tracing.decision.event.variable.UnitVariable;
+import org.kie.kogito.tracing.typedvalue.CollectionValue;
+import org.kie.kogito.tracing.typedvalue.StructureValue;
+import org.kie.kogito.tracing.typedvalue.TypedValue;
+import org.kie.kogito.tracing.typedvalue.UnitValue;
 
 public class EventUtils {
 
@@ -170,64 +169,60 @@ public class EventUtils {
         return new TraceResourceId(serviceUrl, model.getNamespace(), model.getName());
     }
 
-    public static TraceType traceTypeFrom(DMNType dmnType) {
-        return new TraceType(dmnType.getId(), dmnType.getNamespace(), dmnType.getName());
+    public static TypedValue typedValueFrom(Object value) {
+        return typedValueFromJsonNode(jsonNodeFrom(value), BuiltInType.determineTypeFromInstance(value));
     }
 
-    public static TypedVariable typedVariableFrom(Object value) {
-        return typedVariableFromJsonNode(jsonNodeFrom(value), BuiltInType.determineTypeFromInstance(value));
+    public static TypedValue typedValueFrom(DMNType type, Object value) {
+        return typedValueFromJsonNode(type, jsonNodeFrom(value), BuiltInType.determineTypeFromInstance(value));
     }
 
-    public static TypedVariable typedVariableFrom(DMNType type, Object value) {
-        return typedVariableFromJsonNode(type, jsonNodeFrom(value), BuiltInType.determineTypeFromInstance(value));
-    }
-
-    private static TypedVariable typedVariableFromJsonNode(JsonNode value, Type suggestedType) {
+    static TypedValue typedValueFromJsonNode(JsonNode value, Type suggestedType) {
         if (value != null && value.isObject()) {
-            return new StructureVariable(
+            return new StructureValue(
                     typeOf(value).getName(),
                     streamFrom(value.fields())
-                            .collect(HashMap::new, (map, entry) -> map.put(entry.getKey(), typedVariableFromJsonNode(entry.getValue(), null)), HashMap::putAll)
+                            .collect(HashMap::new, (map, entry) -> map.put(entry.getKey(), typedValueFromJsonNode(entry.getValue(), null)), HashMap::putAll)
             );
         }
         if (value != null && value.isArray()) {
-            return new CollectionVariable(
+            return new CollectionValue(
                     typeOf(value).getName(),
-                    streamFrom(value.elements()).map(v -> typedVariableFromJsonNode(v, null)).collect(Collectors.toList())
+                    streamFrom(value.elements()).map(v -> typedValueFromJsonNode(v, null)).collect(Collectors.toList())
             );
         }
         Type finalType = Optional.ofNullable(suggestedType).orElseGet(() -> typeOf(value));
-        return new UnitVariable(finalType.getName(), value);
+        return new UnitValue(finalType.getName(), value);
     }
 
-    private static TypedVariable typedVariableFromJsonNode(DMNType type, JsonNode value, Type suggestedType) {
+    static TypedValue typedValueFromJsonNode(DMNType type, JsonNode value, Type suggestedType) {
         if (type == null) {
-            return typedVariableFromJsonNode(value, suggestedType);
+            return typedValueFromJsonNode(value, suggestedType);
         }
         if (value != null && value.isObject()) {
-            return new StructureVariable(
+            return new StructureValue(
                     type.getName(),
                     streamFrom(value.fields())
-                            .collect(HashMap::new, (map, entry) -> map.put(entry.getKey(), typedVariableFromJsonNode(type.getFields().get(entry.getKey()), entry.getValue(), null)), HashMap::putAll)
+                            .collect(HashMap::new, (map, entry) -> map.put(entry.getKey(), typedValueFromJsonNode(type.getFields().get(entry.getKey()), entry.getValue(), null)), HashMap::putAll)
             );
         }
         if (value != null && value.isArray()) {
-            return new CollectionVariable(
+            return new CollectionValue(
                     type.getName(),
-                    streamFrom(value.elements()).map(element -> typedVariableFromJsonNode(type, element, null)).collect(Collectors.toList())
+                    streamFrom(value.elements()).map(element -> typedValueFromJsonNode(type, element, null)).collect(Collectors.toList())
             );
         }
-        return new UnitVariable(type.getName(), baseTypeOf(type), value);
+        return new UnitValue(type.getName(), baseTypeOf(type), value);
     }
 
-    private static String baseTypeOf(DMNType type) {
+    static String baseTypeOf(DMNType type) {
         if (type == null || type.getBaseType() == null) {
             return null;
         }
         return type.getBaseType().getId() == null ? type.getBaseType().getName() : baseTypeOf(type.getBaseType());
     }
 
-    private static Type typeOf(JsonNode value) {
+    static Type typeOf(JsonNode value) {
         if (value == null) {
             return BuiltInType.UNKNOWN;
         }
