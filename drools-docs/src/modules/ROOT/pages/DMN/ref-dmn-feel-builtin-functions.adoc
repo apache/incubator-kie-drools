@@ -687,7 +687,7 @@ NOTE: This function uses regular expression parameters as defined in https://www
 .Example
 [source,FEEL]
 ----
-matches( "testing", "^te*t" ) = true
+matches( "teeesting", "^te*sting" ) = true
 ----
 --
 // ----------------------------------------------------------------------------
