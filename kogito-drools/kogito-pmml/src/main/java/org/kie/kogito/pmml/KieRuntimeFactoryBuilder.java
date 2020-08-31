@@ -15,13 +15,6 @@
  */
 package org.kie.kogito.pmml;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
-
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.PackageDescr;
@@ -38,11 +31,20 @@ import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.api.container.PMMLPackage;
 import org.kie.pmml.evaluator.assembler.container.PMMLPackageImpl;
+import org.kie.pmml.evaluator.assembler.service.PMMLCompilerService;
+import org.kie.pmml.evaluator.assembler.service.PMMLLoaderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.stream.Stream;
+
 import static org.kie.pmml.evaluator.assembler.service.PMMLAssemblerService.getFactoryClassNamePackageName;
-import static org.kie.pmml.evaluator.assembler.service.PMMLLoaderService.getKiePMMLModelsLoadedFromResource;
 
 /**
  * Utility class to replace the <b>Assembler</b> mechanism where this is not available
@@ -56,11 +58,21 @@ public class KieRuntimeFactoryBuilder {
     }
 
     public static Map<KieBase, KieRuntimeFactory> fromResources(final Stream<Resource> resources) {
+        return commonFromResources(resources, PMMLLoaderService::getKiePMMLModelsLoadedFromResource);
+    }
+
+    public static Map<KieBase, KieRuntimeFactory> fromResourcesWithInMemoryCompilation(final Stream<Resource> resources) {
+        return commonFromResources(resources, PMMLCompilerService::getKiePMMLModelsCompiledFromResource);
+    }
+
+    private static Map<KieBase, KieRuntimeFactory> commonFromResources(
+            final Stream<Resource> resources,
+            final BiFunction<KnowledgeBuilderImpl, Resource, List<KiePMMLModel>> modelProducer) {
         final Map<KieBase, KieRuntimeFactory> toReturn = new HashMap<>();
         resources.forEach(resource -> {
             final String[] factoryClassNamePackageName = getFactoryClassNamePackageName(resource);
             final KnowledgeBuilderImpl kbuilderImpl = createKnowledgeBuilderImpl(resource);
-            List<KiePMMLModel> toAdd = getKiePMMLModelsLoadedFromResource(kbuilderImpl, resource);
+            List<KiePMMLModel> toAdd = modelProducer.apply(kbuilderImpl, resource);
             if (toAdd.isEmpty()) {
                 throw new KiePMMLException("Failed to retrieve compiled models");
             }
@@ -73,8 +85,9 @@ public class KieRuntimeFactoryBuilder {
                     internalKnowledgePackage = pkgReg.getPackage();
                 }
                 PMMLPackage pmmlPkg =
-                        internalKnowledgePackage.getResourceTypePackages().computeIfAbsent(ResourceType.PMML,
-                                                                                           rtp -> new PMMLPackageImpl());
+                        internalKnowledgePackage.getResourceTypePackages().computeIfAbsent(
+                                ResourceType.PMML,
+                                rtp -> new PMMLPackageImpl());
                 pmmlPkg.addAll(Collections.singletonList(kiePMMLModel));
             }
             KieBase kieBase = kbuilderImpl.getKnowledgeBase();
