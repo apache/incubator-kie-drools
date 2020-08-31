@@ -144,4 +144,34 @@ public class DecisionCodegenTest {
 
         return dashboards;
     }
+
+    @Test
+    public void testNSEW_positive() throws Exception {
+        // This test is meant to check that IFF Eclipse MP OpenAPI annotations are available on Build/CP of Kogito application, annotation is used with codegen
+        DecisionCodegen codeGenerator = DecisionCodegen.ofPath(Paths.get("src/test/resources/decision-NSEW").toAbsolutePath());
+        GeneratorContext context = stronglyTypedContext();
+        codeGenerator.setContext(context);
+        codeGenerator.withClassLoader(new ClassLoader() {
+            public Class<?> loadClass(String name) throws ClassNotFoundException {
+                return Object.class;
+            }
+        });
+
+        List<GeneratedFile> generatedFiles = codeGenerator.generate();
+        assertThat(generatedFiles).anyMatch(x -> x.relativePath().endsWith("InputSet.java"));
+        GeneratedFile inputSetFile = generatedFiles.stream().filter(x -> x.relativePath().endsWith("InputSet.java")).findFirst().get();
+        assertThat(new String(inputSetFile.contents())).contains("@org.eclipse.microprofile.openapi.annotations.media.Schema(enumeration");
+    }
+
+    @Test
+    public void testNSEW_negative() throws Exception {
+        DecisionCodegen codeGenerator = DecisionCodegen.ofPath(Paths.get("src/test/resources/decision-NSEW").toAbsolutePath());
+        GeneratorContext context = stronglyTypedContext();
+        codeGenerator.setContext(context);
+
+        List<GeneratedFile> generatedFiles = codeGenerator.generate();
+        assertThat(generatedFiles).anyMatch(x -> x.relativePath().endsWith("InputSet.java"));
+        GeneratedFile inputSetFile = generatedFiles.stream().filter(x -> x.relativePath().endsWith("InputSet.java")).findFirst().get();
+        assertThat(new String(inputSetFile.contents())).doesNotContain("@org.eclipse.microprofile.openapi.annotations.media.Schema(enumeration");
+    }
 }

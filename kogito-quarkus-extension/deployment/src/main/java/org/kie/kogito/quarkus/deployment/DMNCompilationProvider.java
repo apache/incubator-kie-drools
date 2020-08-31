@@ -34,6 +34,7 @@ public class DMNCompilationProvider extends KogitoCompilationProvider {
 
     @Override
     protected Generator addGenerator(ApplicationGenerator appGen, Set<File> filesToCompile, Context context, ClassLoader cl) throws IOException {
-        return appGen.withGenerator(DecisionCodegen.ofPath(context.getProjectDirectory().toPath().resolve("src" + File.separator + "main" + File.separator + "resources")));
+        return appGen.withGenerator(DecisionCodegen.ofPath(context.getProjectDirectory().toPath().resolve("src" + File.separator + "main" + File.separator + "resources")))
+                     .withClassLoader(cl);
     }
 }

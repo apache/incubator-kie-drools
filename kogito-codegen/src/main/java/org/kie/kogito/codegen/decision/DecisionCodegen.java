@@ -152,6 +152,7 @@ public class DecisionCodegen extends AbstractGenerator {
     private final List<DMNResource> resources;
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
     private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
+    private ClassLoader projectClassLoader;
 
     public DecisionCodegen(List<DMNResource> resources) {
         this.resources = resources;
@@ -245,10 +246,25 @@ public class DecisionCodegen extends AbstractGenerator {
             DMNTypeSafePackageName.Factory factory = m -> new DMNTypeSafePackageName("", m.getNamespace(), "");
             DMNAllTypesIndex index = new DMNAllTypesIndex(factory, model);
 
-            Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(
-                    model,
-                    index, factory)
-                    .withJacksonAnnotation()
+            DMNTypeSafeTypeGenerator generator = new DMNTypeSafeTypeGenerator(model, index, factory).withJacksonAnnotation();
+            boolean useMPAnnotations = false;
+            if (projectClassLoader != null) {
+                try {
+                    Class<?> loadedOpenAPI = projectClassLoader.loadClass("org.eclipse.microprofile.openapi.models.OpenAPI");
+                    if (loadedOpenAPI != null) {
+                        useMPAnnotations = true;
+                    }
+                } catch (Exception e) {
+                    // do nothing.
+                }
+            }
+            if (useMPAnnotations) {
+                logger.debug("useMPAnnotations");
+                generator.withMPAnnotation();
+            } else {
+                logger.debug("NO useMPAnnotations");
+            }
+            Map<String, String> allTypesSourceCode = generator
                     .processTypes()
                     .generateSourceCodeOfAllTypes();
 
@@ -297,6 +313,11 @@ public class DecisionCodegen extends AbstractGenerator {
     public DecisionCodegen withAddons(AddonsConfig addonsConfig) {
         this.decisionContainerGenerator.withAddons(addonsConfig);
         this.addonsConfig = addonsConfig;
+        return this;
+    }
+
+    public DecisionCodegen withClassLoader(ClassLoader projectClassLoader) {
+        this.projectClassLoader = projectClassLoader;
         return this;
     }
 }

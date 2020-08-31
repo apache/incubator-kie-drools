@@ -189,7 +189,8 @@ public class KogitoAssetsProcessor {
                 .withAddons(addonsConfig);
 
         appGen.withGenerator(DecisionCodegen.ofCollectedResources(CollectedResource.fromPaths(paths)))
-                .withAddons(addonsConfig);
+              .withAddons(addonsConfig)
+              .withClassLoader(classLoader);
 
         // real work occurs here: invoke the code-generation procedure
         Collection<GeneratedFile> generatedFiles = appGen.generate();
