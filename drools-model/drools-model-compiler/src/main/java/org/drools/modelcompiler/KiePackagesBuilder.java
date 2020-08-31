@@ -555,23 +555,22 @@ public class KiePackagesBuilder {
         group.addChild( buildPattern( ctx, group, pattern ) );
 
         PatternImpl accPattern = (PatternImpl) groupByPattern.getPattern();
+        ctx.addSubRule( insertingGroupRule(groupByPattern, accPattern) );
+        ctx.addSubRule( deletingGroupRule(groupByPattern, accPattern) );
+
         Expr2ViewItemImpl groupingExpr = new Expr2ViewItemImpl( "KEY_" + groupByPattern.getTopic(), accPattern.getPatternVariable(), groupByPattern.getVarKey(),
                 new Predicate2.Impl<>( (Object obj, Object $key) -> EvaluationUtil.areNullSafeEquals(groupByPattern.getGroupingFunction().apply( obj ), $key) ));
         accPattern.addConstraint( new SingleConstraint2( groupingExpr ) );
-
-        ctx.addSubRule( insertingGroupRule(groupByPattern, accPattern) );
-        ctx.addSubRule( deletingGroupRule(groupByPattern, accPattern) );
 
         return buildAccumulate( ctx, group, groupByPattern );
     }
 
     private Rule insertingGroupRule( GroupByPattern groupByPattern, PatternImpl accPattern) {
-        Variable var_$grouped = D.declarationOf(accPattern.getPatternVariable().getType(), "var_$grouped");
         Variable<Object> var_$key = D.declarationOf(Object.class, "$key");
         Variable<GroupKey> var_$group = D.declarationOf(GroupKey.class, GroupKey.Metadata.INSTANCE, "var_$group");
 
-        return D.rule("CREATE_GROUP_" + groupByPattern.getTopic()).build(
-                D.pattern(var_$grouped).bind(var_$key, (Object obj) -> groupByPattern.getGroupingFunction().apply( obj )),
+        Rule rule = D.rule("CREATE_GROUP_" + groupByPattern.getTopic()).build(
+                D.pattern(accPattern.getPatternVariable()).bind(var_$key, (Object obj) -> groupByPattern.getGroupingFunction().apply( obj )),
                 D.not(D.pattern(var_$group)
                         .expr("TOPIC_" + groupByPattern.getTopic(),
                                 (GroupKey _this) -> EvaluationUtil.areNullSafeEquals(_this.getTopic(), groupByPattern.getTopic()),
@@ -594,10 +593,14 @@ public class KiePackagesBuilder {
                         drools.insert(new GroupKey(groupByPattern.getTopic(), $key));
                     }
                 }));
+
+        PatternImpl firstPattern = (PatternImpl)rule.getView().getSubConditions().get(0);
+        firstPattern.addConstraint( accPattern.getConstraint() );
+
+        return rule;
     }
 
     private Rule deletingGroupRule( GroupByPattern groupByPattern, PatternImpl accPattern) {
-        Variable var_$grouped = D.declarationOf(accPattern.getPatternVariable().getType(), "var_$grouped");
         Variable<Object> var_$key = D.declarationOf(Object.class, "$key");
         Variable<GroupKey> var_$group = D.declarationOf(GroupKey.class, GroupKey.Metadata.INSTANCE, "var_$group");
 
@@ -613,7 +616,7 @@ public class KiePackagesBuilder {
                         .bind(var_$key,
                                 (GroupKey _this) -> _this.getKey(),
                                 D.reactOn("key")),
-                D.not(D.pattern(var_$grouped)
+                D.not(D.pattern(accPattern.getPatternVariable())
                         .expr("KEY_" + groupByPattern.getTopic(),
                         var_$key,
                         (Object obj, Object $key) -> EvaluationUtil.areNullSafeEquals(groupByPattern.getGroupingFunction().apply( obj ), $key))),
