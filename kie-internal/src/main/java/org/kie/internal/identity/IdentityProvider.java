@@ -27,4 +27,12 @@ public interface IdentityProvider {
     List<String> getRoles();
 
     boolean hasRole(String role);
+
+    default void setContextIdentity(String userId) {
+        // do nothing
+    }
+
+    default void removeContextIdentity() {
+        // do nothing
+    }
 }
