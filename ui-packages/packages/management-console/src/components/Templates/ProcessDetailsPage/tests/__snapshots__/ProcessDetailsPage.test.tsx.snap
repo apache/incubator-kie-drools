@@ -596,14 +596,180 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
                 </Split>
               </div>
             </GridItem>
-            <GridItem>
+          </div>
+        </Grid>
+        <Flex>
+          <div
+            className="pf-l-flex"
+          >
+            <Flex
+              direction={
+                Object {
+                  "default": "column",
+                }
+              }
+              flex={
+                Object {
+                  "default": "flex_1",
+                }
+              }
+            >
               <div
-                className="pf-l-grid__item"
+                className="pf-l-flex pf-m-flex-1 pf-m-column"
               >
-                <MockedProcessDetails
-                  data={
-                    Object {
-                      "ProcessInstances": Array [
+                <FlexItem>
+                  <div
+                    className=""
+                  >
+                    <MockedProcessDetails
+                      data={
+                        Object {
+                          "ProcessInstances": Array [
+                            Object {
+                              "addons": Array [
+                                "process-management",
+                              ],
+                              "businessKey": null,
+                              "childProcessInstances": Array [],
+                              "end": null,
+                              "endpoint": "http://localhost:4000",
+                              "error": Object {
+                                "message": "Something went wrong",
+                                "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-3459188e90433n",
+                              },
+                              "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+                              "lastUpdate": "2019-10-22T03:40:44.089Z",
+                              "nodes": Array [
+                                Object {
+                                  "definitionId": "StartEvent_1",
+                                  "enter": "2019-10-22T04:43:01.135Z",
+                                  "exit": "2019-10-22T04:43:01.135Z",
+                                  "id": "90e5a337-1c26-4fcc-8ee2-d20e6ba2a1a3",
+                                  "name": "StartProcess",
+                                  "nodeId": "9",
+                                  "type": "StartNode",
+                                },
+                              ],
+                              "parentProcessInstance": null,
+                              "parentProcessInstanceId": null,
+                              "processId": "Travels",
+                              "processName": "travels",
+                              "roles": Array [],
+                              "serviceUrl": "http://localhost:4000",
+                              "start": "2019-10-22T03:40:44.089Z",
+                              "state": "ACTIVE",
+                              "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
+                            },
+                          ],
+                        }
+                      }
+                      from={
+                        Object {
+                          "filters": Object {
+                            "businessKey": Array [
+                              "tra",
+                            ],
+                            "status": Array [
+                              "ACTIVE",
+                            ],
+                          },
+                          "prev": "/ProcessInstances/8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+                        }
+                      }
+                    />
+                  </div>
+                </FlexItem>
+              </div>
+            </Flex>
+            <Flex
+              direction={
+                Object {
+                  "default": "column",
+                }
+              }
+              flex={
+                Object {
+                  "default": "flex_1",
+                }
+              }
+            >
+              <div
+                className="pf-l-flex pf-m-flex-1 pf-m-column"
+              >
+                <FlexItem>
+                  <div
+                    className=""
+                  >
+                    <MockedProcessDetailsProcessVariables
+                      displayLabel={true}
+                      displaySuccess={false}
+                      setDisplayLabel={[Function]}
+                      setUpdateJson={[Function]}
+                      updateJson={
+                        Object {
+                          "flight": Object {
+                            "arrival": "2019-10-30T22:00:00Z[UTC]",
+                            "departure": "2019-10-22T22:00:00Z[UTC]",
+                            "flightNumber": "MX555",
+                          },
+                          "hotel": Object {
+                            "address": Object {
+                              "city": "Berlin",
+                              "country": "Germany",
+                              "street": "street",
+                              "zipCode": "12345",
+                            },
+                            "bookingNumber": "XX-012345",
+                            "name": "Perfect hotel",
+                            "phone": "09876543",
+                          },
+                          "traveller": Object {
+                            "address": Object {
+                              "city": "Karkow",
+                              "country": "Poland",
+                              "street": "palna",
+                              "zipCode": "200300",
+                            },
+                            "email": "rob@redhat.com",
+                            "firstName": "Rob",
+                            "lastName": "Rob",
+                            "nationality": "Polish",
+                          },
+                          "trip": Object {
+                            "begin": "2019-10-22T22:00:00Z[UTC]",
+                            "city": "Berlin",
+                            "country": "Germany",
+                            "end": "2019-10-30T22:00:00Z[UTC]",
+                            "visaRequired": false,
+                          },
+                        }
+                      }
+                    />
+                  </div>
+                </FlexItem>
+              </div>
+            </Flex>
+            <Flex
+              direction={
+                Object {
+                  "default": "column",
+                }
+              }
+              flex={
+                Object {
+                  "default": "flex_1",
+                }
+              }
+            >
+              <div
+                className="pf-l-flex pf-m-flex-1 pf-m-column"
+              >
+                <FlexItem>
+                  <div
+                    className=""
+                  >
+                    <MockedProcessDetailsTimeline
+                      data={
                         Object {
                           "addons": Array [
                             "process-management",
@@ -638,122 +804,13 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
                           "start": "2019-10-22T03:40:44.089Z",
                           "state": "ACTIVE",
                           "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
-                        },
-                      ],
-                    }
-                  }
-                  from={
-                    Object {
-                      "filters": Object {
-                        "businessKey": Array [
-                          "tra",
-                        ],
-                        "status": Array [
-                          "ACTIVE",
-                        ],
-                      },
-                      "prev": "/ProcessInstances/8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
-                    }
-                  }
-                />
+                        }
+                      }
+                    />
+                  </div>
+                </FlexItem>
               </div>
-            </GridItem>
-            <GridItem>
-              <div
-                className="pf-l-grid__item"
-              >
-                <MockedProcessDetailsProcessVariables
-                  displayLabel={true}
-                  displaySuccess={false}
-                  setDisplayLabel={[Function]}
-                  setUpdateJson={[Function]}
-                  updateJson={
-                    Object {
-                      "flight": Object {
-                        "arrival": "2019-10-30T22:00:00Z[UTC]",
-                        "departure": "2019-10-22T22:00:00Z[UTC]",
-                        "flightNumber": "MX555",
-                      },
-                      "hotel": Object {
-                        "address": Object {
-                          "city": "Berlin",
-                          "country": "Germany",
-                          "street": "street",
-                          "zipCode": "12345",
-                        },
-                        "bookingNumber": "XX-012345",
-                        "name": "Perfect hotel",
-                        "phone": "09876543",
-                      },
-                      "traveller": Object {
-                        "address": Object {
-                          "city": "Karkow",
-                          "country": "Poland",
-                          "street": "palna",
-                          "zipCode": "200300",
-                        },
-                        "email": "rob@redhat.com",
-                        "firstName": "Rob",
-                        "lastName": "Rob",
-                        "nationality": "Polish",
-                      },
-                      "trip": Object {
-                        "begin": "2019-10-22T22:00:00Z[UTC]",
-                        "city": "Berlin",
-                        "country": "Germany",
-                        "end": "2019-10-30T22:00:00Z[UTC]",
-                        "visaRequired": false,
-                      },
-                    }
-                  }
-                />
-              </div>
-            </GridItem>
-            <GridItem>
-              <div
-                className="pf-l-grid__item"
-              >
-                <MockedProcessDetailsTimeline
-                  data={
-                    Object {
-                      "addons": Array [
-                        "process-management",
-                      ],
-                      "businessKey": null,
-                      "childProcessInstances": Array [],
-                      "end": null,
-                      "endpoint": "http://localhost:4000",
-                      "error": Object {
-                        "message": "Something went wrong",
-                        "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-3459188e90433n",
-                      },
-                      "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
-                      "lastUpdate": "2019-10-22T03:40:44.089Z",
-                      "nodes": Array [
-                        Object {
-                          "definitionId": "StartEvent_1",
-                          "enter": "2019-10-22T04:43:01.135Z",
-                          "exit": "2019-10-22T04:43:01.135Z",
-                          "id": "90e5a337-1c26-4fcc-8ee2-d20e6ba2a1a3",
-                          "name": "StartProcess",
-                          "nodeId": "9",
-                          "type": "StartNode",
-                        },
-                      ],
-                      "parentProcessInstance": null,
-                      "parentProcessInstanceId": null,
-                      "processId": "Travels",
-                      "processName": "travels",
-                      "roles": Array [],
-                      "serviceUrl": "http://localhost:4000",
-                      "start": "2019-10-22T03:40:44.089Z",
-                      "state": "ACTIVE",
-                      "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
-                    }
-                  }
-                />
-              </div>
-            </GridItem>
+            </Flex>
             <Modal
               actions={
                 Array [
@@ -977,7 +1034,7 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
               </Portal>
             </Modal>
           </div>
-        </Grid>
+        </Flex>
       </section>
     </PageSection>
   </div>
@@ -1457,14 +1514,178 @@ exports[`Process Details Page component tests snapshot testing in Error state 1`
                 </Split>
               </div>
             </GridItem>
-            <GridItem>
+          </div>
+        </Grid>
+        <Flex>
+          <div
+            className="pf-l-flex"
+          >
+            <Flex
+              direction={
+                Object {
+                  "default": "column",
+                }
+              }
+              flex={
+                Object {
+                  "default": "flex_1",
+                }
+              }
+            >
               <div
-                className="pf-l-grid__item"
+                className="pf-l-flex pf-m-flex-1 pf-m-column"
               >
-                <MockedProcessDetails
-                  data={
-                    Object {
-                      "ProcessInstances": Array [
+                <FlexItem>
+                  <div
+                    className=""
+                  >
+                    <MockedProcessDetails
+                      data={
+                        Object {
+                          "ProcessInstances": Array [
+                            Object {
+                              "addons": Array [],
+                              "businessKey": null,
+                              "childProcessInstances": Array [],
+                              "end": null,
+                              "endpoint": "http://localhost:4000",
+                              "error": Object {
+                                "message": "Something went wrong",
+                                "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-3459188e90433n",
+                              },
+                              "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+                              "lastUpdate": "2019-10-22T03:40:44.089Z",
+                              "nodes": Array [
+                                Object {
+                                  "definitionId": "StartEvent_1",
+                                  "enter": "2019-10-22T04:43:01.135Z",
+                                  "exit": "2019-10-22T04:43:01.135Z",
+                                  "id": "90e5a337-1c26-4fcc-8ee2-d20e6ba2a1a3",
+                                  "name": "StartProcess",
+                                  "nodeId": "9",
+                                  "type": "StartNode",
+                                },
+                              ],
+                              "parentProcessInstance": null,
+                              "parentProcessInstanceId": null,
+                              "processId": "Travels",
+                              "processName": "travels",
+                              "roles": Array [],
+                              "serviceUrl": null,
+                              "start": "2019-10-22T03:40:44.089Z",
+                              "state": "ERROR",
+                              "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
+                            },
+                          ],
+                        }
+                      }
+                      from={
+                        Object {
+                          "filters": Object {
+                            "businessKey": Array [
+                              "tra",
+                            ],
+                            "status": Array [
+                              "ACTIVE",
+                            ],
+                          },
+                          "prev": "/ProcessInstances/8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+                        }
+                      }
+                    />
+                  </div>
+                </FlexItem>
+              </div>
+            </Flex>
+            <Flex
+              direction={
+                Object {
+                  "default": "column",
+                }
+              }
+              flex={
+                Object {
+                  "default": "flex_1",
+                }
+              }
+            >
+              <div
+                className="pf-l-flex pf-m-flex-1 pf-m-column"
+              >
+                <FlexItem>
+                  <div
+                    className=""
+                  >
+                    <MockedProcessDetailsProcessVariables
+                      displayLabel={true}
+                      displaySuccess={false}
+                      setDisplayLabel={[Function]}
+                      setUpdateJson={[Function]}
+                      updateJson={
+                        Object {
+                          "flight": Object {
+                            "arrival": "2019-10-30T22:00:00Z[UTC]",
+                            "departure": "2019-10-22T22:00:00Z[UTC]",
+                            "flightNumber": "MX555",
+                          },
+                          "hotel": Object {
+                            "address": Object {
+                              "city": "Berlin",
+                              "country": "Germany",
+                              "street": "street",
+                              "zipCode": "12345",
+                            },
+                            "bookingNumber": "XX-012345",
+                            "name": "Perfect hotel",
+                            "phone": "09876543",
+                          },
+                          "traveller": Object {
+                            "address": Object {
+                              "city": "Karkow",
+                              "country": "Poland",
+                              "street": "palna",
+                              "zipCode": "200300",
+                            },
+                            "email": "rob@redhat.com",
+                            "firstName": "Rob",
+                            "lastName": "Rob",
+                            "nationality": "Polish",
+                          },
+                          "trip": Object {
+                            "begin": "2019-10-22T22:00:00Z[UTC]",
+                            "city": "Berlin",
+                            "country": "Germany",
+                            "end": "2019-10-30T22:00:00Z[UTC]",
+                            "visaRequired": false,
+                          },
+                        }
+                      }
+                    />
+                  </div>
+                </FlexItem>
+              </div>
+            </Flex>
+            <Flex
+              direction={
+                Object {
+                  "default": "column",
+                }
+              }
+              flex={
+                Object {
+                  "default": "flex_1",
+                }
+              }
+            >
+              <div
+                className="pf-l-flex pf-m-flex-1 pf-m-column"
+              >
+                <FlexItem>
+                  <div
+                    className=""
+                  >
+                    <MockedProcessDetailsTimeline
+                      data={
                         Object {
                           "addons": Array [],
                           "businessKey": null,
@@ -1497,120 +1718,13 @@ exports[`Process Details Page component tests snapshot testing in Error state 1`
                           "start": "2019-10-22T03:40:44.089Z",
                           "state": "ERROR",
                           "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
-                        },
-                      ],
-                    }
-                  }
-                  from={
-                    Object {
-                      "filters": Object {
-                        "businessKey": Array [
-                          "tra",
-                        ],
-                        "status": Array [
-                          "ACTIVE",
-                        ],
-                      },
-                      "prev": "/ProcessInstances/8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
-                    }
-                  }
-                />
+                        }
+                      }
+                    />
+                  </div>
+                </FlexItem>
               </div>
-            </GridItem>
-            <GridItem>
-              <div
-                className="pf-l-grid__item"
-              >
-                <MockedProcessDetailsProcessVariables
-                  displayLabel={true}
-                  displaySuccess={false}
-                  setDisplayLabel={[Function]}
-                  setUpdateJson={[Function]}
-                  updateJson={
-                    Object {
-                      "flight": Object {
-                        "arrival": "2019-10-30T22:00:00Z[UTC]",
-                        "departure": "2019-10-22T22:00:00Z[UTC]",
-                        "flightNumber": "MX555",
-                      },
-                      "hotel": Object {
-                        "address": Object {
-                          "city": "Berlin",
-                          "country": "Germany",
-                          "street": "street",
-                          "zipCode": "12345",
-                        },
-                        "bookingNumber": "XX-012345",
-                        "name": "Perfect hotel",
-                        "phone": "09876543",
-                      },
-                      "traveller": Object {
-                        "address": Object {
-                          "city": "Karkow",
-                          "country": "Poland",
-                          "street": "palna",
-                          "zipCode": "200300",
-                        },
-                        "email": "rob@redhat.com",
-                        "firstName": "Rob",
-                        "lastName": "Rob",
-                        "nationality": "Polish",
-                      },
-                      "trip": Object {
-                        "begin": "2019-10-22T22:00:00Z[UTC]",
-                        "city": "Berlin",
-                        "country": "Germany",
-                        "end": "2019-10-30T22:00:00Z[UTC]",
-                        "visaRequired": false,
-                      },
-                    }
-                  }
-                />
-              </div>
-            </GridItem>
-            <GridItem>
-              <div
-                className="pf-l-grid__item"
-              >
-                <MockedProcessDetailsTimeline
-                  data={
-                    Object {
-                      "addons": Array [],
-                      "businessKey": null,
-                      "childProcessInstances": Array [],
-                      "end": null,
-                      "endpoint": "http://localhost:4000",
-                      "error": Object {
-                        "message": "Something went wrong",
-                        "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-3459188e90433n",
-                      },
-                      "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
-                      "lastUpdate": "2019-10-22T03:40:44.089Z",
-                      "nodes": Array [
-                        Object {
-                          "definitionId": "StartEvent_1",
-                          "enter": "2019-10-22T04:43:01.135Z",
-                          "exit": "2019-10-22T04:43:01.135Z",
-                          "id": "90e5a337-1c26-4fcc-8ee2-d20e6ba2a1a3",
-                          "name": "StartProcess",
-                          "nodeId": "9",
-                          "type": "StartNode",
-                        },
-                      ],
-                      "parentProcessInstance": null,
-                      "parentProcessInstanceId": null,
-                      "processId": "Travels",
-                      "processName": "travels",
-                      "roles": Array [],
-                      "serviceUrl": null,
-                      "start": "2019-10-22T03:40:44.089Z",
-                      "state": "ERROR",
-                      "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
-                    }
-                  }
-                />
-              </div>
-            </GridItem>
+            </Flex>
             <Modal
               actions={
                 Array [
@@ -1846,7 +1960,7 @@ exports[`Process Details Page component tests snapshot testing in Error state 1`
               </Portal>
             </Modal>
           </div>
-        </Grid>
+        </Flex>
       </section>
     </PageSection>
   </div>
@@ -2350,14 +2464,180 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
                 </Split>
               </div>
             </GridItem>
-            <GridItem>
+          </div>
+        </Grid>
+        <Flex>
+          <div
+            className="pf-l-flex"
+          >
+            <Flex
+              direction={
+                Object {
+                  "default": "column",
+                }
+              }
+              flex={
+                Object {
+                  "default": "flex_1",
+                }
+              }
+            >
               <div
-                className="pf-l-grid__item"
+                className="pf-l-flex pf-m-flex-1 pf-m-column"
               >
-                <MockedProcessDetails
-                  data={
-                    Object {
-                      "ProcessInstances": Array [
+                <FlexItem>
+                  <div
+                    className=""
+                  >
+                    <MockedProcessDetails
+                      data={
+                        Object {
+                          "ProcessInstances": Array [
+                            Object {
+                              "addons": Array [
+                                "process-management",
+                              ],
+                              "businessKey": null,
+                              "childProcessInstances": Array [],
+                              "end": null,
+                              "endpoint": "http://localhost:4000",
+                              "error": Object {
+                                "message": "Something went wrong",
+                                "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-3459188e90433n",
+                              },
+                              "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+                              "lastUpdate": "2019-10-22T03:40:44.089Z",
+                              "nodes": Array [
+                                Object {
+                                  "definitionId": "StartEvent_1",
+                                  "enter": "2019-10-22T04:43:01.135Z",
+                                  "exit": "2019-10-22T04:43:01.135Z",
+                                  "id": "90e5a337-1c26-4fcc-8ee2-d20e6ba2a1a3",
+                                  "name": "StartProcess",
+                                  "nodeId": "9",
+                                  "type": "StartNode",
+                                },
+                              ],
+                              "parentProcessInstance": null,
+                              "parentProcessInstanceId": null,
+                              "processId": "Travels",
+                              "processName": "travels",
+                              "roles": Array [],
+                              "serviceUrl": "http://localhost:4000",
+                              "start": "2019-10-22T03:40:44.089Z",
+                              "state": "SUSPENDED",
+                              "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
+                            },
+                          ],
+                        }
+                      }
+                      from={
+                        Object {
+                          "filters": Object {
+                            "businessKey": Array [
+                              "tra",
+                            ],
+                            "status": Array [
+                              "ACTIVE",
+                            ],
+                          },
+                          "prev": "/ProcessInstances/8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+                        }
+                      }
+                    />
+                  </div>
+                </FlexItem>
+              </div>
+            </Flex>
+            <Flex
+              direction={
+                Object {
+                  "default": "column",
+                }
+              }
+              flex={
+                Object {
+                  "default": "flex_1",
+                }
+              }
+            >
+              <div
+                className="pf-l-flex pf-m-flex-1 pf-m-column"
+              >
+                <FlexItem>
+                  <div
+                    className=""
+                  >
+                    <MockedProcessDetailsProcessVariables
+                      displayLabel={true}
+                      displaySuccess={false}
+                      setDisplayLabel={[Function]}
+                      setUpdateJson={[Function]}
+                      updateJson={
+                        Object {
+                          "flight": Object {
+                            "arrival": "2019-10-30T22:00:00Z[UTC]",
+                            "departure": "2019-10-22T22:00:00Z[UTC]",
+                            "flightNumber": "MX555",
+                          },
+                          "hotel": Object {
+                            "address": Object {
+                              "city": "Berlin",
+                              "country": "Germany",
+                              "street": "street",
+                              "zipCode": "12345",
+                            },
+                            "bookingNumber": "XX-012345",
+                            "name": "Perfect hotel",
+                            "phone": "09876543",
+                          },
+                          "traveller": Object {
+                            "address": Object {
+                              "city": "Karkow",
+                              "country": "Poland",
+                              "street": "palna",
+                              "zipCode": "200300",
+                            },
+                            "email": "rob@redhat.com",
+                            "firstName": "Rob",
+                            "lastName": "Rob",
+                            "nationality": "Polish",
+                          },
+                          "trip": Object {
+                            "begin": "2019-10-22T22:00:00Z[UTC]",
+                            "city": "Berlin",
+                            "country": "Germany",
+                            "end": "2019-10-30T22:00:00Z[UTC]",
+                            "visaRequired": false,
+                          },
+                        }
+                      }
+                    />
+                  </div>
+                </FlexItem>
+              </div>
+            </Flex>
+            <Flex
+              direction={
+                Object {
+                  "default": "column",
+                }
+              }
+              flex={
+                Object {
+                  "default": "flex_1",
+                }
+              }
+            >
+              <div
+                className="pf-l-flex pf-m-flex-1 pf-m-column"
+              >
+                <FlexItem>
+                  <div
+                    className=""
+                  >
+                    <MockedProcessDetailsTimeline
+                      data={
                         Object {
                           "addons": Array [
                             "process-management",
@@ -2392,122 +2672,13 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
                           "start": "2019-10-22T03:40:44.089Z",
                           "state": "SUSPENDED",
                           "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
-                        },
-                      ],
-                    }
-                  }
-                  from={
-                    Object {
-                      "filters": Object {
-                        "businessKey": Array [
-                          "tra",
-                        ],
-                        "status": Array [
-                          "ACTIVE",
-                        ],
-                      },
-                      "prev": "/ProcessInstances/8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
-                    }
-                  }
-                />
+                        }
+                      }
+                    />
+                  </div>
+                </FlexItem>
               </div>
-            </GridItem>
-            <GridItem>
-              <div
-                className="pf-l-grid__item"
-              >
-                <MockedProcessDetailsProcessVariables
-                  displayLabel={true}
-                  displaySuccess={false}
-                  setDisplayLabel={[Function]}
-                  setUpdateJson={[Function]}
-                  updateJson={
-                    Object {
-                      "flight": Object {
-                        "arrival": "2019-10-30T22:00:00Z[UTC]",
-                        "departure": "2019-10-22T22:00:00Z[UTC]",
-                        "flightNumber": "MX555",
-                      },
-                      "hotel": Object {
-                        "address": Object {
-                          "city": "Berlin",
-                          "country": "Germany",
-                          "street": "street",
-                          "zipCode": "12345",
-                        },
-                        "bookingNumber": "XX-012345",
-                        "name": "Perfect hotel",
-                        "phone": "09876543",
-                      },
-                      "traveller": Object {
-                        "address": Object {
-                          "city": "Karkow",
-                          "country": "Poland",
-                          "street": "palna",
-                          "zipCode": "200300",
-                        },
-                        "email": "rob@redhat.com",
-                        "firstName": "Rob",
-                        "lastName": "Rob",
-                        "nationality": "Polish",
-                      },
-                      "trip": Object {
-                        "begin": "2019-10-22T22:00:00Z[UTC]",
-                        "city": "Berlin",
-                        "country": "Germany",
-                        "end": "2019-10-30T22:00:00Z[UTC]",
-                        "visaRequired": false,
-                      },
-                    }
-                  }
-                />
-              </div>
-            </GridItem>
-            <GridItem>
-              <div
-                className="pf-l-grid__item"
-              >
-                <MockedProcessDetailsTimeline
-                  data={
-                    Object {
-                      "addons": Array [
-                        "process-management",
-                      ],
-                      "businessKey": null,
-                      "childProcessInstances": Array [],
-                      "end": null,
-                      "endpoint": "http://localhost:4000",
-                      "error": Object {
-                        "message": "Something went wrong",
-                        "nodeDefinitionId": "a1e139d5-4e77-48c9-84ae-3459188e90433n",
-                      },
-                      "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
-                      "lastUpdate": "2019-10-22T03:40:44.089Z",
-                      "nodes": Array [
-                        Object {
-                          "definitionId": "StartEvent_1",
-                          "enter": "2019-10-22T04:43:01.135Z",
-                          "exit": "2019-10-22T04:43:01.135Z",
-                          "id": "90e5a337-1c26-4fcc-8ee2-d20e6ba2a1a3",
-                          "name": "StartProcess",
-                          "nodeId": "9",
-                          "type": "StartNode",
-                        },
-                      ],
-                      "parentProcessInstance": null,
-                      "parentProcessInstanceId": null,
-                      "processId": "Travels",
-                      "processName": "travels",
-                      "roles": Array [],
-                      "serviceUrl": "http://localhost:4000",
-                      "start": "2019-10-22T03:40:44.089Z",
-                      "state": "SUSPENDED",
-                      "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
-                    }
-                  }
-                />
-              </div>
-            </GridItem>
+            </Flex>
             <Modal
               actions={
                 Array [
@@ -2747,7 +2918,7 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
               </Portal>
             </Modal>
           </div>
-        </Grid>
+        </Flex>
       </section>
     </PageSection>
   </div>

@@ -15,7 +15,9 @@ import {
   OverflowMenuGroup,
   ModalVariant,
   Modal,
-  TitleSizes
+  TitleSizes,
+  Flex,
+  FlexItem
 } from '@patternfly/react-core';
 import {
   ServerErrors,
@@ -414,65 +416,84 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, {}, {}> &
           </PageSection>
           <PageSection>
             {!loading ? (
-              <Grid hasGutter md={1} span={12} lg={6} xl={4}>
-                <GridItem span={12}>
-                  <Split
-                    hasGutter={true}
-                    component={'div'}
-                    className="pf-u-align-items-center"
+              <>
+                <Grid hasGutter md={1} span={12} lg={6} xl={4}>
+                  <GridItem span={12}>
+                    <Split
+                      hasGutter={true}
+                      component={'div'}
+                      className="pf-u-align-items-center"
+                    >
+                      <SplitItem isFilled={true}>
+                        <Title
+                          headingLevel="h2"
+                          size="4xl"
+                          className="kogito-management-console--details__title"
+                        >
+                          <ItemDescriptor
+                            itemDescription={{
+                              id: data.ProcessInstances[0].id,
+                              name: data.ProcessInstances[0].processName,
+                              description: data.ProcessInstances[0].businessKey
+                            }}
+                          />
+                        </Title>
+                      </SplitItem>
+                      <SplitItem>
+                        <OverflowMenu breakpoint="lg">
+                          <OverflowMenuContent isPersistent>
+                            <OverflowMenuGroup groupType="button" isPersistent>
+                              <>
+                                {updateVariablesButton()}
+                                {abortButton()}
+                                {refreshButton()}
+                              </>
+                            </OverflowMenuGroup>
+                          </OverflowMenuContent>
+                        </OverflowMenu>
+                      </SplitItem>
+                    </Split>
+                  </GridItem>
+                </Grid>
+                <Flex>
+                  <Flex
+                    direction={{ default: 'column' }}
+                    flex={{ default: 'flex_1' }}
                   >
-                    <SplitItem isFilled={true}>
-                      <Title
-                        headingLevel="h2"
-                        size="4xl"
-                        className="kogito-management-console--details__title"
-                      >
-                        <ItemDescriptor
-                          itemDescription={{
-                            id: data.ProcessInstances[0].id,
-                            name: data.ProcessInstances[0].processName,
-                            description: data.ProcessInstances[0].businessKey
-                          }}
+                    {currentPage && (
+                      <FlexItem>
+                        <ProcessDetails data={data} from={currentPage} />
+                      </FlexItem>
+                    )}
+                  </Flex>
+                  <Flex
+                    direction={{ default: 'column' }}
+                    flex={{ default: 'flex_1' }}
+                  >
+                    {Object.keys(updateJson).length > 0 && (
+                      <FlexItem>
+                        <ProcessDetailsProcessVariables
+                          displayLabel={displayLabel}
+                          displaySuccess={displaySuccess}
+                          setUpdateJson={setUpdateJson}
+                          setDisplayLabel={setDisplayLabel}
+                          updateJson={updateJson}
                         />
-                      </Title>
-                    </SplitItem>
-                    <SplitItem>
-                      <OverflowMenu breakpoint="lg">
-                        <OverflowMenuContent isPersistent>
-                          <OverflowMenuGroup groupType="button" isPersistent>
-                            <>
-                              {updateVariablesButton()}
-                              {abortButton()}
-                              {refreshButton()}
-                            </>
-                          </OverflowMenuGroup>
-                        </OverflowMenuContent>
-                      </OverflowMenu>
-                    </SplitItem>
-                  </Split>
-                </GridItem>
-                {currentPage && (
-                  <GridItem>
-                    <ProcessDetails data={data} from={currentPage} />
-                  </GridItem>
-                )}
-                {Object.keys(updateJson).length > 0 && (
-                  <GridItem>
-                    <ProcessDetailsProcessVariables
-                      displayLabel={displayLabel}
-                      displaySuccess={displaySuccess}
-                      setUpdateJson={setUpdateJson}
-                      setDisplayLabel={setDisplayLabel}
-                      updateJson={updateJson}
-                    />
-                  </GridItem>
-                )}
-                <GridItem>
-                  <ProcessDetailsTimeline data={data.ProcessInstances[0]} />
-                </GridItem>
-                {errorModal()}
-                {RenderConfirmationModal()}
-              </Grid>
+                      </FlexItem>
+                    )}
+                  </Flex>
+                  <Flex
+                    direction={{ default: 'column' }}
+                    flex={{ default: 'flex_1' }}
+                  >
+                    <FlexItem>
+                      <ProcessDetailsTimeline data={data.ProcessInstances[0]} />
+                    </FlexItem>
+                  </Flex>
+                  {errorModal()}
+                  {RenderConfirmationModal()}
+                </Flex>
+              </>
             ) : (
               <Card>
                 <Bullseye>
