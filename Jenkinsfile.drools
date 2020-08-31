@@ -33,7 +33,7 @@ pipeline {
                     dir('kogito-build-parent'){
                         // query mvn to get the latest version
                         env.DROOLS_VERSION = """${sh (
-                                script: 'mvn versions:display-property-updates -DincludeProperties=version.org.kie7 -DallowSnapshots -N  | grep version.org.kie7 | cut -d " " -f8',
+                                script: 'mvn versions:display-property-updates -DincludeProperties=version.org.kie7 -DallowSnapshots -N  | grep version.org.kie7 | awk \'{print $4}\' ',
                                 returnStdout: true
                             ).trim()}"""
                         assert env.DROOLS_VERSION != ""
