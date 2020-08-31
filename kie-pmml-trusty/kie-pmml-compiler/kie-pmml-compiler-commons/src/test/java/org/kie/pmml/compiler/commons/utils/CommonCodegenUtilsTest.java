@@ -54,7 +54,6 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.LAMBDA_PARAMETER_NAME;
@@ -254,6 +253,48 @@ public class CommonCodegenUtilsTest {
         assertTrue(retrieved.isPresent());
         ExplicitConstructorInvocationStmt retrievedExplicitConstructorInvocationStmt = retrieved.get();
         assertEquals(explicitConstructorInvocationStmt, retrievedExplicitConstructorInvocationStmt);
+    }
+
+    @Test
+    public void setExplicitConstructorInvocationArgumentWithParameter() {
+        final String parameterName = "PARAMETER_NAME";
+        final String value = "VALUE";
+        final ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt = new ExplicitConstructorInvocationStmt();
+        explicitConstructorInvocationStmt.setArguments(NodeList.nodeList( new NameExpr("NOT_PARAMETER"), new NameExpr(parameterName)));
+        assertTrue(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName).isPresent());
+        CommonCodegenUtils.setExplicitConstructorInvocationArgument(explicitConstructorInvocationStmt, parameterName, value);
+        assertFalse(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName).isPresent());
+        assertTrue(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, value).isPresent());
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void setExplicitConstructorInvocationArgumentNoParameter() {
+        final String parameterName = "PARAMETER_NAME";
+        final ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt = new ExplicitConstructorInvocationStmt();
+        explicitConstructorInvocationStmt.setArguments(NodeList.nodeList( new NameExpr("NOT_PARAMETER")));
+        CommonCodegenUtils.setExplicitConstructorInvocationArgument(explicitConstructorInvocationStmt, parameterName, "VALUE");
+    }
+
+    @Test
+    public void getExplicitConstructorInvocationParameter() {
+        final String parameterName = "PARAMETER_NAME";
+        final ExplicitConstructorInvocationStmt explicitConstructorInvocationStmt = new ExplicitConstructorInvocationStmt();
+        assertFalse(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName).isPresent());
+        explicitConstructorInvocationStmt.setArguments(NodeList.nodeList( new NameExpr("NOT_PARAMETER")));
+        assertFalse(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName).isPresent());
+        explicitConstructorInvocationStmt.setArguments(NodeList.nodeList( new NameExpr("NOT_PARAMETER"), new NameExpr(parameterName)));
+        assertTrue(CommonCodegenUtils.getExplicitConstructorInvocationParameter(explicitConstructorInvocationStmt, parameterName).isPresent());
+    }
+
+    @Test
+    public void getMethodDeclaration() {
+        final String methodName = "METHOD_NAME";
+        final ClassOrInterfaceDeclaration classOrInterfaceDeclaration = new ClassOrInterfaceDeclaration();
+        assertFalse(CommonCodegenUtils.getMethodDeclaration(classOrInterfaceDeclaration, methodName).isPresent());
+        classOrInterfaceDeclaration.addMethod("NOT_METHOD");
+        assertFalse(CommonCodegenUtils.getMethodDeclaration(classOrInterfaceDeclaration, methodName).isPresent());
+        classOrInterfaceDeclaration.addMethod(methodName);
+        assertTrue(CommonCodegenUtils.getMethodDeclaration(classOrInterfaceDeclaration, methodName).isPresent());
     }
 
     private void commonValidateMethodDeclaration(MethodDeclaration toValidate, String methodName) {

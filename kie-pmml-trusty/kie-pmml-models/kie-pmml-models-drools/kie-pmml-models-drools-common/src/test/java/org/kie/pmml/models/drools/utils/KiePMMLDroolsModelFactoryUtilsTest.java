@@ -108,7 +108,7 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         assignExpressionMap.put("miningFunction",
                                 new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         assignExpressionMap.put("pmmlMODEL", new NameExpr(pmmlModel.getClass().getName() + "." + pmmlModel.name()));
-        commonEvaluateAssignExpr(constructorDeclaration.getBody(), assignExpressionMap);
+        assertTrue(commonEvaluateAssignExpr(constructorDeclaration.getBody(), assignExpressionMap));
         int expectedMethodCallExprs = assignExpressionMap.size() + fieldTypeMap.size() + 1; // The last "1" is for
         // the super invocation
         commonEvaluateFieldTypeMap(constructorDeclaration.getBody(), fieldTypeMap, expectedMethodCallExprs);
@@ -130,8 +130,8 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         assignExpressionMap.put("miningFunction",
                                 new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         assignExpressionMap.put("pmmlMODEL", new NameExpr(pmmlModel.getClass().getName() + "." + pmmlModel.name()));
-        commonEvaluateConstructor(constructorDeclaration, tableName.asString(), superInvocationExpressionsMap,
-                                  assignExpressionMap);
+        assertTrue(commonEvaluateConstructor(constructorDeclaration, tableName.asString(), superInvocationExpressionsMap,
+                                  assignExpressionMap));
     }
 
     @Test

@@ -19,7 +19,6 @@ package org.kie.pmml.models.regression.compiler.executor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.regression.RegressionModel;

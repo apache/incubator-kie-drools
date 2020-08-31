@@ -42,6 +42,7 @@ import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableClassificationFactory.KIE_PMML_REGRESSION_TABLE_CLASSIFICATION_TEMPLATE;
@@ -90,7 +91,7 @@ public class KiePMMLRegressionTableClassificationFactoryTest extends AbstractKie
         assignExpressionMap.put("targetField", new StringLiteralExpr(targetField));
         assignExpressionMap.put("regressionNormalizationMethod", new NameExpr(regressionNormalizationMethod.getClass().getSimpleName() + "." + regressionNormalizationMethod.name()));
         assignExpressionMap.put("opType", new NameExpr(opType.getClass().getSimpleName() + "." + opType.name()));
-        commonEvaluateConstructor(constructorDeclaration, generatedClassName.asString(), superInvocationExpressionsMap, assignExpressionMap);
+        assertTrue(commonEvaluateConstructor(constructorDeclaration, generatedClassName.asString(), superInvocationExpressionsMap, assignExpressionMap));
     }
 
     private KiePMMLOutputField getOutputField(String name, RESULT_FEATURE resultFeature, String targetField) {

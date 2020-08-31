@@ -28,7 +28,6 @@ import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.junit.BeforeClass;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 import org.kie.test.util.filesystem.FileUtils;
 import org.xml.sax.SAXException;

@@ -18,12 +18,9 @@ package org.kie.pmml.commons.model.predicates;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
-import org.kie.pmml.commons.model.enums.ARRAY_TYPE;
-import org.kie.pmml.commons.model.enums.IN_NOTIN;
 import org.kie.pmml.commons.model.enums.OPERATOR;
 
 import static org.junit.Assert.assertFalse;

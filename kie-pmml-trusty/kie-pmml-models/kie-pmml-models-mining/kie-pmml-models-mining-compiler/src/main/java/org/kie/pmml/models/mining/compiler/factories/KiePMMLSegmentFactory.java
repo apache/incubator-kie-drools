@@ -24,7 +24,6 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
-import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -46,6 +45,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
@@ -63,6 +63,8 @@ public class KiePMMLSegmentFactory {
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLSegmentFactory.class.getName());
     static final String KIE_PMML_SEGMENT_TEMPLATE_JAVA = "KiePMMLSegmentTemplate.tmpl";
     static final String KIE_PMML_SEGMENT_TEMPLATE = "KiePMMLSegmentTemplate";
+    private static final String GET_SEGMENTS= "getSegments {}";
+    private static final String GET_SEGMENT= "getSegment {}";
 
     private KiePMMLSegmentFactory() {
     }
@@ -71,7 +73,7 @@ public class KiePMMLSegmentFactory {
                                                    final TransformationDictionary transformationDictionary,
                                                    final List<Segment> segments,
                                                    final KnowledgeBuilder kBuilder) {
-        logger.debug("getSegments {}", segments);
+        logger.debug(GET_SEGMENTS, segments);
         return segments.stream().map(segment -> getSegment(dataDictionary, transformationDictionary, segment,
                                                            kBuilder)).collect(Collectors.toList());
     }
@@ -80,7 +82,7 @@ public class KiePMMLSegmentFactory {
                                             final TransformationDictionary transformationDictionary,
                                             final Segment segment,
                                             final KnowledgeBuilder kBuilder) {
-        logger.debug("getSegment {}", segment);
+        logger.debug(GET_SEGMENT, segment);
         return KiePMMLSegment.builder(segment.getId(),
                                       getKiePMMLExtensions(segment.getExtensions()),
                                       getPredicate(segment.getPredicate(), dataDictionary),
@@ -97,7 +99,7 @@ public class KiePMMLSegmentFactory {
                                                             final TransformationDictionary transformationDictionary,
                                                             final List<Segment> segments,
                                                             final KnowledgeBuilder kBuilder) {
-        logger.debug("getSegments {}", segments);
+        logger.debug(GET_SEGMENTS, segments);
         final Map<String, String> toReturn = new HashMap<>();
         segments.forEach(segment -> toReturn.putAll(getSegmentSourcesMap(parentPackageName,
                                                                          dataDictionary,
@@ -113,7 +115,7 @@ public class KiePMMLSegmentFactory {
             final TransformationDictionary transformationDictionary,
             final Segment segment,
             final KnowledgeBuilder kBuilder) {
-        logger.debug("getSegment {}", segment);
+        logger.debug(GET_SEGMENT, segment);
         final String packageName = getSanitizedPackageName(parentPackageName + "." + segment.getId());
         final KiePMMLModel kiePmmlModel = getFromCommonDataAndTransformationDictionaryAndModelFromPlugin(
                 packageName,
@@ -130,7 +132,7 @@ public class KiePMMLSegmentFactory {
             final DataDictionary dataDictionary,
             final Segment segment,
             final KiePMMLModel kiePmmlModel) {
-        logger.debug("getSegment {}", segment);
+        logger.debug(GET_SEGMENT, segment);
         if (!(kiePmmlModel instanceof HasSourcesMap)) {
             throw new KiePMMLException("Retrieved KiePMMLModel for segment " + segment.getModel().getModelName() + " " +
                                                "does not implement HasSources");
@@ -162,21 +164,16 @@ public class KiePMMLSegmentFactory {
                                final double weight) {
         setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, segmentName);
         final BlockStmt body = constructorDeclaration.getBody();
-        body.getStatements().iterator().forEachRemaining(statement -> {
-            if (statement instanceof ExplicitConstructorInvocationStmt) {
-                ExplicitConstructorInvocationStmt superStatement = (ExplicitConstructorInvocationStmt) statement;
-                NameExpr nameExprs = (NameExpr) superStatement.getArgument(2);
-                ClassOrInterfaceType classOrInterfaceType = parseClassOrInterfaceType(predicateClassName);
-                ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
-                objectCreationExpr.setType(classOrInterfaceType);
-                nameExprs.setName(objectCreationExpr.toString());
-                nameExprs = (NameExpr) superStatement.getArgument(3);
-                classOrInterfaceType = parseClassOrInterfaceType(kiePMMLModelClass);
-                objectCreationExpr = new ObjectCreationExpr();
-                objectCreationExpr.setType(classOrInterfaceType);
-                nameExprs.setName(objectCreationExpr.toString());
-            }
-        });
+        final ExplicitConstructorInvocationStmt superStatement = CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
+        ClassOrInterfaceType classOrInterfaceType = parseClassOrInterfaceType(predicateClassName);
+        ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
+        objectCreationExpr.setType(classOrInterfaceType);
+        CommonCodegenUtils.setExplicitConstructorInvocationArgument(superStatement, "kiePMMLPredicate", objectCreationExpr.toString());
+        classOrInterfaceType = parseClassOrInterfaceType(kiePMMLModelClass);
+        objectCreationExpr = new ObjectCreationExpr();
+        objectCreationExpr.setType(classOrInterfaceType);
+        CommonCodegenUtils.setExplicitConstructorInvocationArgument(superStatement, "model", objectCreationExpr.toString());
         CommonCodegenUtils.setAssignExpressionValue(body, "weight", new DoubleLiteralExpr(weight));
         CommonCodegenUtils.setAssignExpressionValue(body, "id", new StringLiteralExpr(segmentName));
     }

@@ -29,6 +29,8 @@ public class Constants {
     public static final String MISSING_BODY_IN_METHOD = "Missing expected body in method %s";
     public static final String MISSING_RETURN_IN_METHOD = "Missing expected return in method %s";
     public static final String MISSING_EXPRESSION_IN_RETURN = "Missing expected expression in return %s";
+    public static final String MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION = "Missing expected parameter %s in constructor invocation %s";
+    public static final String MISSING_CONSTRUCTOR_IN_BODY = "Missing constructor invocation in body %s";
     public static final String UNCHANGED_VARIABLE_IN_CONSTRUCTOR = "Unchanged variable {} in constructor {} ";
 
     private Constants() {
