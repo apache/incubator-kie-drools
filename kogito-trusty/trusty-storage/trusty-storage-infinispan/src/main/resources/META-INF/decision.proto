@@ -14,7 +14,9 @@ message Decision {
     /* @Field(store = Store.YES) */
     optional string sourceUrl = 3;
 
-    /* @Field(store = Store.YES) */
+    /* @Field(store = Store.YES) 
+     * @SortableField
+     */
     optional int64 executionTimestamp = 4;
 
     /* @Field(store = Store.YES) */
