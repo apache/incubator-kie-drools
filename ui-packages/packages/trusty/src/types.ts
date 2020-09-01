@@ -72,3 +72,19 @@ export interface FeatureScores {
   featureName: string;
   featureScore: number;
 }
+
+export interface ServiceIdentifier {
+  groupId?: string;
+  artifactId?: string;
+  version?: string;
+}
+
+export interface ModelData {
+  deploymentDate?: string;
+  modelId?: string;
+  name: string;
+  namespace: string;
+  type: string;
+  serviceIdentifier: ServiceIdentifier;
+  model: string;
+}

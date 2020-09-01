@@ -138,7 +138,7 @@ describe('AuditDetail', () => {
       execution
     );
     expect(wrapper.find('Nav')).toHaveLength(1);
-    expect(wrapper.find('NavItem')).toHaveLength(2);
+    expect(wrapper.find('NavItem')).toHaveLength(4);
     expect(
       wrapper
         .find('NavItem a')

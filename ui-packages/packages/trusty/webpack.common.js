@@ -1,12 +1,16 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
 const BG_IMAGES_DIRNAME = 'bgimages';
 
 module.exports = {
   entry: {
     app: path.resolve(__dirname, 'src', 'index.tsx')
+  },
+  devServer: {
+    contentBase: path.join(__dirname, 'static')
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -17,6 +21,12 @@ module.exports = {
       KOGITO_APP_VERSION: 'DEV',
       KOGITO_APP_NAME: 'Trusty',
       KOGITO_TRUSTY_API_HTTP_URL: 'http://localhost:1336'
+    }),
+    new CopyPlugin({
+      patterns: [
+        { from: 'static/gwt-editors', to: 'gwt-editors' },
+        { from: 'static/envelope', to: 'envelope' }
+      ]
     })
   ],
   module: {

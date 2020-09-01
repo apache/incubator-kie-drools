@@ -1,8 +1,8 @@
 {
+  "/executions/:executionId/model": "/models/:executionId",
   "/executions/:executionType/:executionId": "/decisions/:executionId",
   "/executions/:executionType/:executionId/structuredInputs": "/inputs?executionId=:executionId",
   "/executions/:executionType/:executionId/outcomes": "/outcomes?header.executionId=:executionId&singular=1",
   "/executions/:executionType/:executionId/outcomes/:outcomeId": "/outcomeDetail?outcomeId=:outcomeId&singular=1",
-  "/executions/:executionType/:executionId/featureImportance": "/featureImportance?executionId=:executionId",
-  "/executions/:executionType/:executionId/model": "/models/:executionId"
+  "/executions/:executionType/:executionId/featureImportance": "/featureImportance?executionId=:executionId"
 }

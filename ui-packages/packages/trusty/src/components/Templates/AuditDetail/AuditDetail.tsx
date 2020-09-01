@@ -26,6 +26,8 @@ import SkeletonCards from '../../Molecules/SkeletonCards/SkeletonCards';
 import ExecutionDetail from '../ExecutionDetail/ExecutionDetail';
 import useDecisionOutcomes from './useDecisionOutcomes';
 import Explanation from '../Explanation/Explanation';
+import InputData from '../InputData/InputData';
+import ModelLookup from '../ModelLookup/ModelLookup';
 import './AuditDetail.scss';
 
 const AuditDetail = () => {
@@ -51,6 +53,8 @@ const AuditDetail = () => {
         newNav.push({ url: '/outcomes', desc: 'Outcomes' });
         newNav.push({ url: '/outcomes-details', desc: 'Outcomes Details' });
       }
+      newNav.push({ url: '/input-data', desc: 'Input Data' });
+      newNav.push({ url: '/model-lookup', desc: 'Model Lookup' });
       setThirdLevelNav(newNav);
     }
   }, [outcomes]);
@@ -94,6 +98,12 @@ const AuditDetail = () => {
         </Route>
         <Route path={`${path}/outcomes-details`}>
           <Explanation outcomes={outcomes} />
+        </Route>
+        <Route path={`${path}/input-data`}>
+          <InputData />
+        </Route>
+        <Route path={`${path}/model-lookup`}>
+          <ModelLookup />
         </Route>
         <Route exact path={`${path}/`}>
           {outcomes.status === 'SUCCESS' && outcomes.data.length === 1 && (

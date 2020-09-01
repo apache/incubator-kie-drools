@@ -29,7 +29,8 @@
       "**/coverage/**/*.js",
       "**/webpack.*.js",
       "**/jest.config.js",
-      "**/server/**/*.js"
+      "**/server/**/*.js",
+      "**/src/components/Organisms/ModelDiagram/pmml/generated/**/*.ts"
     ]
   },
   "rulesDirectory": []
