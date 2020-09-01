@@ -339,6 +339,12 @@ public class ClassUtil {
         return from.isAssignableFrom(to) || areBoxingCompatible(from, to);
     }
 
+    public static boolean isAssignableFrom(Type from, Type to) {
+        Class<?> fromClass = toRawClass( from );
+        Class<?> toClass = toRawClass( to );
+        return fromClass.isAssignableFrom(toClass) || areBoxingCompatible(fromClass, toClass);
+    }
+
     private static boolean areBoxingCompatible(Class<?> c1, Class<?> c2) {
         return c1.isPrimitive() ? isPrimitiveOf(c2, c1) : (c2.isPrimitive() && isPrimitiveOf(c1, c2));
     }
