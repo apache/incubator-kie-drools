@@ -208,9 +208,8 @@ public class FromVisitor {
 
     private String addFromArgument( MethodCallExpr methodCallExpr, MethodCallExpr fromCall ) {
         Collection<String> args = methodCallExpr
-                .getArguments()
+                .findAll(NameExpr.class)
                 .stream()
-                .flatMap(a -> a.findAll(NameExpr.class).stream())
                 .map(Object::toString)
                 .filter(context::hasDeclaration)
                 .distinct()
