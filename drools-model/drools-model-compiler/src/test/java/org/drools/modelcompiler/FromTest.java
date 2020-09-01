@@ -25,10 +25,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.FunctionsTest.Pojo;
 import org.drools.modelcompiler.domain.*;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -727,6 +729,40 @@ public class FromTest extends BaseModelTest {
                         "when\n" +
                         " Measurement( id == \"color\", $colorVal : val )\n" +
                         " $val: String() from dummyFunction(Collections.singletonMap($colorVal, \"something\"))\n" +
+                        "then\n" +
+                        " controlSet.add($colorVal);\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        HashSet<Object> hashSet = new HashSet<>();
+        ksession.setGlobal("controlSet", hashSet);
+
+        ksession.insert(new Measurement("color", "red"));
+
+        int ruleFired = ksession.fireAllRules();
+
+        assertEquals( 1, ruleFired );
+        assertEquals( "red", hashSet.iterator().next() );
+    }
+
+    @Test
+    @Ignore("not supported in legacy drools")
+    public void testFromChainedCall() {
+        // DROOLS-5608
+        String str =
+                "package com.sample;" +
+                        "global java.util.Set controlSet;\n" +
+                        "import " + Measurement.class.getCanonicalName() + ";\n" +
+                        "import " + Optional.class.getCanonicalName() + ";\n" +
+                        "import java.util.*;\n" +
+                        "" +
+                        "\n" +
+                        "rule \"will execute per each Measurement having ID color\"\n" +
+                        "no-loop\n" +
+                        "when\n" +
+                        " Measurement( id == \"color\", $colorVal : val )\n" +
+                        " String() from Optional.of($colorVal).orElse(\"blah\")\n" +
                         "then\n" +
                         " controlSet.add($colorVal);\n" +
                         "end";
