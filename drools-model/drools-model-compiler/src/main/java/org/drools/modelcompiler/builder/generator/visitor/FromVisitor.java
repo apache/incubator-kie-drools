@@ -58,6 +58,7 @@ import static org.drools.core.rule.Pattern.isCompatibleWithFromReturnType;
 import static org.drools.core.util.StringUtils.splitArgumentsList;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findViaScopeWithPredicate;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ENTRY_POINT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
@@ -216,6 +217,8 @@ public class FromVisitor {
                 .collect(Collectors.toList());
 
         args.stream()
+                // Avoid re-add preexisting arguments
+                .filter(a -> fromCall.findAll(NameExpr.class, fa -> fa.toString().equals(toVar(a))).isEmpty())
                 .map(context::getVarExpr)
                 .forEach(fromCall::addArgument);
 
