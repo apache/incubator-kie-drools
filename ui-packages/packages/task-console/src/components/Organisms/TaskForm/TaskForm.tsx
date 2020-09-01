@@ -1,6 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-
-import { isEmpty } from 'lodash';
 import axios from 'axios';
 import {
   KogitoEmptyState,
@@ -16,6 +14,7 @@ import FormRenderer from '../../Molecules/FormRenderer/FormRenderer';
 import { TaskFormSubmitHandler } from '../../../util/uniforms/TaskFormSubmitHandler/TaskFormSubmitHandler';
 import { FormSchema } from '../../../util/uniforms/FormSchema';
 import UserTaskInstance = GraphQL.UserTaskInstance;
+import { getTaskSchemaEndPoint } from '../../../util/Utils';
 
 interface IOwnProps {
   userTaskInstance?: UserTaskInstance;
@@ -58,8 +57,10 @@ const TaskForm: React.FC<IOwnProps> = ({
 
   const loadForm = () => {
     if (stateUserTask) {
+      const endpoint = getTaskSchemaEndPoint(stateUserTask);
+
       axios
-        .get(stateUserTask.endpoint + '/schema', {
+        .get(endpoint, {
           headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
@@ -119,14 +120,12 @@ const TaskForm: React.FC<IOwnProps> = ({
       const formSubmitHandler = new TaskFormSubmitHandler(
         stateUserTask,
         taskFormSchema,
+        context.getUser(),
         phase => notifySuccess(phase),
         (phase, errorMessage) => notifyError(phase, errorMessage)
       );
 
-      const outputs = JSON.parse(stateUserTask.outputs);
-      const formData = !isEmpty(outputs)
-        ? outputs
-        : JSON.parse(stateUserTask.inputs);
+      const formData = JSON.parse(stateUserTask.inputs);
 
       return (
         <React.Fragment>
@@ -134,6 +133,7 @@ const TaskForm: React.FC<IOwnProps> = ({
             <FormNotification
               message={alertMessage.message}
               closeAction={alertMessage.callback}
+              ouiaId={'user-task-' + userTaskInstance.id}
             />
           )}
           <FormRenderer

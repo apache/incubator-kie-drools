@@ -18,7 +18,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import FormNotification from '../FormNotification';
 
-describe('Form Footer test', () => {
+describe('Form Notification test', () => {
   it('Snapshot testing', () => {
     const message = 'The form has been submitted';
     const onClose = jest.fn();

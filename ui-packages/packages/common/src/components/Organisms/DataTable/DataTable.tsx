@@ -22,7 +22,7 @@ import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
 export interface DataTableColumn {
   path: string;
   label: string;
-  bodyCellTransformer?: (value: any, rowDataObj: object) => any;
+  bodyCellTransformer?: (value: any, rowDataObj?: any) => any;
 }
 interface IOwnProps {
   data: any[];
@@ -57,7 +57,12 @@ const getColumns = (data: any[], columns: DataTableColumn[]) => {
               ? [
                   ((value, extra) => {
                     const rowDataObj = data[extra.rowIndex];
-                    return column.bodyCellTransformer(value, rowDataObj);
+                    return {
+                      children: column.bodyCellTransformer(
+                        value.title,
+                        rowDataObj
+                      )
+                    };
                   }) as ITransform
                 ]
               : undefined

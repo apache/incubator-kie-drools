@@ -51,6 +51,10 @@ describe('PageLayout tests', () => {
     testRoute('/');
   });
 
+  it('test TaskInbox route', () => {
+    testRoute('/TaskInbox');
+  });
+
   it('test UserTasks route', () => {
     testRoute('/UserTasks');
   });

@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import axios from 'axios';
 
+import axios from 'axios';
+import { GraphQL, User } from '@kogito-apps/common';
 import {
   IFormAction,
   IFormSubmitHandler
 } from '../FormSubmitHandler/FormSubmitHandler';
 import { FormSchema } from '../FormSchema';
-import { GraphQL } from '@kogito-apps/common';
 import UserTaskInstance = GraphQL.UserTaskInstance;
 
 interface FormAssignments {
@@ -29,6 +29,7 @@ interface FormAssignments {
 }
 
 export class TaskFormSubmitHandler implements IFormSubmitHandler {
+  private readonly user: User;
   private readonly userTaskInstance: UserTaskInstance;
   private readonly formSchema: FormSchema;
   private readonly successCallback?: (result: string) => void;
@@ -45,11 +46,13 @@ export class TaskFormSubmitHandler implements IFormSubmitHandler {
   constructor(
     userTaskInstance: UserTaskInstance,
     formSchema: FormSchema,
+    user: User,
     successCallback?: (phase: string) => void,
     errorCallback?: (phase: string, errorMessage?: string) => void
   ) {
     this.userTaskInstance = userTaskInstance;
     this.formSchema = formSchema;
+    this.user = user;
     this.successCallback = successCallback;
     this.errorCallback = errorCallback;
 
@@ -89,7 +92,9 @@ export class TaskFormSubmitHandler implements IFormSubmitHandler {
         }
       });
 
-      const endpoint = `${this.userTaskInstance.endpoint}?phase=${this.selectedPhase}`;
+      const endpoint = `${this.userTaskInstance.endpoint}?phase=${
+        this.selectedPhase
+      }&user=${this.user.id}&group=${this.user.groups.join(',')}`;
 
       const response = await axios.post(endpoint, data, {
         headers: {

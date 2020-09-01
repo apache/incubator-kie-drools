@@ -10,9 +10,10 @@ const props: any = {
   history: []
 };
 
+jest.mock('../../../Organisms/TaskInbox/TaskInbox.tsx');
 jest.mock('../../DataListContainerExpandable/DataListContainerExpandable.tsx');
 
-describe('PageLayout tests', () => {
+describe('PageLayout Click test', () => {
   it('Brand click testing', () => {
     const wrapper = getWrapper(
       <Router keyLength={0}>

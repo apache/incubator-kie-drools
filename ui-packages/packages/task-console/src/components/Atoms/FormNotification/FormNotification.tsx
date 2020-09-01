@@ -15,30 +15,24 @@
  */
 
 import React from 'react';
-import {
-  Button,
-  Modal,
-  Text,
-  TextContent,
-  Title,
-  TitleSizes
-} from '@patternfly/react-core';
+import { Button, Modal, Text, TextContent } from '@patternfly/react-core';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/common';
 
 interface IOwnProps {
   message: string;
   closeAction: () => void;
 }
 
-const FormNotification: React.FC<IOwnProps> = ({ message, closeAction }) => {
+const FormNotification: React.FC<IOwnProps & OUIAProps> = ({
+  message,
+  closeAction,
+  ouiaId,
+  ouiaSafe
+}) => {
   return (
     <Modal
       variant="small"
-      title=""
-      header={
-        <Title headingLevel="h1" size={TitleSizes['2xl']}>
-          Executing Task
-        </Title>
-      }
+      title="Executing Task"
       isOpen={true}
       onClose={closeAction}
       actions={[
@@ -46,6 +40,7 @@ const FormNotification: React.FC<IOwnProps> = ({ message, closeAction }) => {
           OK
         </Button>
       ]}
+      {...componentOuiaProps(ouiaId, 'form-notification-modal', ouiaSafe)}
     >
       <TextContent>
         <Text>{message}</Text>

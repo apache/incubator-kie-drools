@@ -24,7 +24,7 @@ const data = [
   {
     id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',
     description: null,
-    name: 'Apply for visa',
+    name: 'VisaApplication',
     priority: '1',
     processInstanceId: '9ae7ce3b-d49c-4f35-b843-8ac3d22fa427',
     processId: 'travels',
@@ -42,12 +42,12 @@ const data = [
     inputs:
       '{"Skippable":"true","trip":{"city":"Boston","country":"US","begin":"2020-02-19T23:00:00.000+01:00","end":"2020-02-26T23:00:00.000+01:00","visaRequired":true},"TaskName":"VisaApplication","NodeName":"Apply for visa","traveller":{"firstName":"Rachel","lastName":"White","email":"rwhite@gorle.com","nationality":"Polish","address":{"street":"Cabalone","city":"Zerf","zipCode":"765756","country":"Poland"}},"Priority":"1"}"',
     outputs: '{}',
-    referenceName: 'VisaApplication'
+    referenceName: 'Apply for visa'
   },
   {
     id: '047ec38d-5d57-4330-8c8d-9bd67b53a529',
     description: '',
-    name: 'Confirm travel',
+    name: 'ConfirmTravel',
     priority: '1',
     processInstanceId: '9ae407dd-cdfa-4722-8a49-0a6d2e14550d',
     processId: 'travels',
@@ -64,19 +64,18 @@ const data = [
     potentialUsers: [],
     inputs:
       '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null}}',
-    outputs: '{"ActorId":""}',
-    referenceName: 'ConfirmTravel'
+    outputs: '{}',
+    referenceName: 'Confirm travel'
   }
 ];
-const stateColumnTransformer = (value, rowDataObj) => {
+
+const stateColumnTransformer = value => {
   if (!value) {
     return null;
   }
-  const { title } = value;
-  return {
-    children: <Label>{title}</Label>
-  };
+  return <Label>{value}</Label>;
 };
+
 const columns: DataTableColumn[] = [
   {
     label: 'ProcessId',
@@ -140,7 +139,7 @@ const mocks = [
           {
             id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',
             description: null,
-            name: 'Apply for visa',
+            name: 'VisaApplication',
             priority: '1',
             processInstanceId: '9ae7ce3b-d49c-4f35-b843-8ac3d22fa427',
             processId: 'travels',
@@ -158,12 +157,12 @@ const mocks = [
             inputs:
               '{"Skippable":"true","trip":{"city":"Boston","country":"US","begin":"2020-02-19T23:00:00.000+01:00","end":"2020-02-26T23:00:00.000+01:00","visaRequired":true},"TaskName":"VisaApplication","NodeName":"Apply for visa","traveller":{"firstName":"Rachel","lastName":"White","email":"rwhite@gorle.com","nationality":"Polish","address":{"street":"Cabalone","city":"Zerf","zipCode":"765756","country":"Poland"}},"Priority":"1"}"',
             outputs: '{}',
-            referenceName: 'VisaApplication'
+            referenceName: 'Apply for visa'
           },
           {
             id: '047ec38d-5d57-4330-8c8d-9bd67b53a529',
             description: '',
-            name: 'Confirm travel',
+            name: 'ConfirmTravel',
             priority: '1',
             processInstanceId: '9ae407dd-cdfa-4722-8a49-0a6d2e14550d',
             processId: 'travels',
@@ -180,8 +179,8 @@ const mocks = [
             potentialUsers: [],
             inputs:
               '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null}}',
-            outputs: '{"ActorId":""}',
-            referenceName: 'ConfirmTravel'
+            outputs: '{}',
+            referenceName: 'Confirm travel'
           }
         ]
       }

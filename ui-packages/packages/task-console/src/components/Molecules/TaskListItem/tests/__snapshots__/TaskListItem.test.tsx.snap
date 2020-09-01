@@ -15,14 +15,14 @@ exports[`TaskListItem test Snapshot test 1`] = `
       "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
       "inputs": "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}",
       "lastUpdate": "2020-02-19T11:11:56.282Z",
-      "name": "Apply for visa",
+      "name": "VisaApplication",
       "outputs": "{}",
       "potentialGroups": Array [],
       "potentialUsers": Array [],
       "priority": "1",
       "processId": "travels",
       "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
-      "referenceName": "VisaApplication",
+      "referenceName": "Apply for visa",
       "rootProcessId": null,
       "rootProcessInstanceId": null,
       "started": "2020-02-19T11:11:56.282Z",
@@ -49,7 +49,7 @@ exports[`TaskListItem test Snapshot test 1`] = `
             dataListCells={
               Array [
                 <DataListCell>
-                  Apply for visa
+                  VisaApplication
                 </DataListCell>,
                 <DataListCell>
                   <t
@@ -95,7 +95,7 @@ exports[`TaskListItem test Snapshot test 1`] = `
                 <div
                   className="pf-c-data-list__cell"
                 >
-                  Apply for visa
+                  VisaApplication
                 </div>
               </DataListCell>
               <DataListCell

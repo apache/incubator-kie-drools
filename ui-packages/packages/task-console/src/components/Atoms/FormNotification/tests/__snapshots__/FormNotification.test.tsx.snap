@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Form Footer test Snapshot testing 1`] = `
+exports[`Form Notification test Snapshot testing 1`] = `
 <FormNotification
   closeAction={[MockFunction]}
   message="The form has been submitted"
@@ -29,6 +29,7 @@ exports[`Form Footer test Snapshot testing 1`] = `
             >
               <div
                 aria-describedby="pf-modal-part-2"
+                aria-labelledby="pf-modal-part-1"
                 aria-modal="true"
                 class="pf-c-modal-box pf-m-sm"
                 data-ouia-component-id="0"
@@ -65,13 +66,16 @@ exports[`Form Footer test Snapshot testing 1`] = `
                   class="pf-c-modal-box__header"
                 >
                   <h1
-                    class="pf-c-title pf-m-2xl"
+                    class="pf-c-modal-box__title pf-c-modal-box__title"
+                    id="pf-modal-part-1"
                   >
                     Executing Task
                   </h1>
                 </header>
                 <div
                   class="pf-c-modal-box__body"
+                  data-ouia-component-type="form-notification-modal"
+                  data-ouia-safe="true"
                   id="pf-modal-part-2"
                 >
                   <div
@@ -109,20 +113,14 @@ exports[`Form Footer test Snapshot testing 1`] = `
     aria-label=""
     aria-labelledby=""
     className=""
+    data-ouia-component-type="form-notification-modal"
+    data-ouia-safe={true}
     hasNoBodyWrapper={false}
-    header={
-      <Title
-        headingLevel="h1"
-        size="2xl"
-      >
-        Executing Task
-      </Title>
-    }
     isOpen={true}
     onClose={[MockFunction]}
     ouiaSafe={true}
     showClose={true}
-    title=""
+    title="Executing Task"
     variant="small"
   >
     <Portal
@@ -136,6 +134,7 @@ exports[`Form Footer test Snapshot testing 1`] = `
             >
               <div
                 aria-describedby="pf-modal-part-2"
+                aria-labelledby="pf-modal-part-1"
                 aria-modal="true"
                 class="pf-c-modal-box pf-m-sm"
                 data-ouia-component-id="0"
@@ -172,13 +171,16 @@ exports[`Form Footer test Snapshot testing 1`] = `
                   class="pf-c-modal-box__header"
                 >
                   <h1
-                    class="pf-c-title pf-m-2xl"
+                    class="pf-c-modal-box__title pf-c-modal-box__title"
+                    id="pf-modal-part-1"
                   >
                     Executing Task
                   </h1>
                 </header>
                 <div
                   class="pf-c-modal-box__body"
+                  data-ouia-component-type="form-notification-modal"
+                  data-ouia-safe="true"
                   id="pf-modal-part-2"
                 >
                   <div
@@ -228,22 +230,16 @@ exports[`Form Footer test Snapshot testing 1`] = `
         aria-labelledby=""
         boxId="pf-modal-part-0"
         className=""
+        data-ouia-component-type="form-notification-modal"
+        data-ouia-safe={true}
         descriptorId="pf-modal-part-2"
         hasNoBodyWrapper={false}
-        header={
-          <Title
-            headingLevel="h1"
-            size="2xl"
-          >
-            Executing Task
-          </Title>
-        }
         isOpen={true}
         labelId="pf-modal-part-1"
         onClose={[MockFunction]}
         ouiaSafe={true}
         showClose={true}
-        title=""
+        title="Executing Task"
         variant="small"
       >
         <Backdrop>
@@ -266,7 +262,7 @@ exports[`Form Footer test Snapshot testing 1`] = `
                 <ModalBox
                   aria-describedby="pf-modal-part-2"
                   aria-label=""
-                  aria-labelledby=""
+                  aria-labelledby="pf-modal-part-1"
                   className=""
                   data-ouia-component-id={0}
                   data-ouia-component-type="PF4/ModalContent"
@@ -278,7 +274,7 @@ exports[`Form Footer test Snapshot testing 1`] = `
                   <div
                     aria-describedby="pf-modal-part-2"
                     aria-label={null}
-                    aria-labelledby={null}
+                    aria-labelledby="pf-modal-part-1"
                     aria-modal="true"
                     className="pf-c-modal-box pf-m-sm"
                     data-ouia-component-id={0}
@@ -340,23 +336,29 @@ exports[`Form Footer test Snapshot testing 1`] = `
                       <header
                         className="pf-c-modal-box__header"
                       >
-                        <Title
-                          headingLevel="h1"
-                          size="2xl"
+                        <ModalBoxTitle
+                          className="pf-c-modal-box__title"
+                          id="pf-modal-part-1"
+                          title="Executing Task"
                         >
                           <h1
-                            className="pf-c-title pf-m-2xl"
+                            className="pf-c-modal-box__title pf-c-modal-box__title"
+                            id="pf-modal-part-1"
                           >
                             Executing Task
                           </h1>
-                        </Title>
+                        </ModalBoxTitle>
                       </header>
                     </ModalBoxHeader>
                     <ModalBoxBody
+                      data-ouia-component-type="form-notification-modal"
+                      data-ouia-safe={true}
                       id="pf-modal-part-2"
                     >
                       <div
                         className="pf-c-modal-box__body"
+                        data-ouia-component-type="form-notification-modal"
+                        data-ouia-safe={true}
                         id="pf-modal-part-2"
                       >
                         <TextContent>

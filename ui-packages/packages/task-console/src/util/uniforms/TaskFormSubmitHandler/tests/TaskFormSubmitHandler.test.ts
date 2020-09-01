@@ -18,7 +18,7 @@ import axios from 'axios';
 
 import ApplyForVisaForm from '../../../tests/mocks/ApplyForVisa';
 import { TaskFormSubmitHandler } from '../TaskFormSubmitHandler';
-import { GraphQL } from '@kogito-apps/common';
+import { DefaultUser, GraphQL, User } from '@kogito-apps/common';
 import UserTaskInstance = GraphQL.UserTaskInstance;
 
 const userTaskInstance: UserTaskInstance = {
@@ -57,6 +57,8 @@ let formSchema;
 let successCallback;
 let errorCallback;
 
+const testUser: User = new DefaultUser('test', ['group1', 'group2']);
+
 const testSuccessfulRequest = async (phase: string, expectedPayload) => {
   const response = {
     status: 200
@@ -73,7 +75,9 @@ const testSuccessfulRequest = async (phase: string, expectedPayload) => {
   expect(postParams).toHaveLength(3);
 
   const expectedEndpoint =
-    userTaskInstance.endpoint + (phase ? '?phase=' + phase : '');
+    userTaskInstance.endpoint +
+    (phase ? '?phase=' + phase : '') +
+    '&user=test&group=group1,group2';
 
   expect(postParams[0]).toBe(expectedEndpoint);
   expect(postParams[1]).toMatchObject(expectedPayload);
@@ -123,6 +127,7 @@ describe('TaskFormSubmitHandler tests', () => {
     handler = new TaskFormSubmitHandler(
       userTaskInstance,
       formSchema,
+      testUser,
       successCallback,
       errorCallback
     );

@@ -3,7 +3,7 @@ import {
   Grid,
   GridItem,
   PageSection,
-  ExpandableSection,
+  ExpandableSection
 } from '@patternfly/react-core';
 import React, { useState, useEffect } from 'react';
 import UserTaskPageHeader from '../../Molecules/UserTaskPageHeader/UserTaskPageHeader';
@@ -26,7 +26,7 @@ const DataListContainerExpandable: React.FC<OUIAProps> = ({
   };
 
   useEffect(() => {
-    return ouiaPageTypeAndObjectId('user-tasks','true');
+    return ouiaPageTypeAndObjectId('user-tasks', 'true');
   });
 
   return (
@@ -34,22 +34,24 @@ const DataListContainerExpandable: React.FC<OUIAProps> = ({
       <div
         {...componentOuiaProps(ouiaId, 'DataListContainerExpandable', ouiaSafe)}
       >
-      <UserTaskPageHeader />
-      <PageSection>
-        <Grid hasGutter md={1}>
-          <GridItem span={12}>
-            <Card className="dataList">
-              <ExpandableSection
-                toggleText={isExpanded ? 'READY Show Less' : 'READY Show More'}
-                onToggle={onToggle}
-                isExpanded={isExpanded}
-              >
-                <TaskListByState currentState={'Ready'} />
-              </ExpandableSection>
-            </Card>
-          </GridItem>
-        </Grid>
-      </PageSection>
+        <UserTaskPageHeader />
+        <PageSection>
+          <Grid hasGutter md={1}>
+            <GridItem span={12}>
+              <Card className="dataList">
+                <ExpandableSection
+                  toggleText={
+                    isExpanded ? 'READY Show Less' : 'READY Show More'
+                  }
+                  onToggle={onToggle}
+                  isExpanded={isExpanded}
+                >
+                  <TaskListByState currentState={'Ready'} />
+                </ExpandableSection>
+              </Card>
+            </GridItem>
+          </Grid>
+        </PageSection>
       </div>
     </React.Fragment>
   );

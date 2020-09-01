@@ -1,13 +1,21 @@
 import React from 'react';
 import axios from 'axios';
-import { getWrapperAsync, GraphQL } from '@kogito-apps/common';
+import { act } from 'react-dom/test-utils';
+import _ from 'lodash';
+import {
+  DefaultUser,
+  getWrapperAsync,
+  GraphQL,
+  User
+} from '@kogito-apps/common';
 import TaskForm from '../TaskForm';
 import ApplyForVisaForm from '../../../../util/tests/mocks/ApplyForVisa';
 import FormRenderer from '../../../Molecules/FormRenderer/FormRenderer';
-import { act } from 'react-dom/test-utils';
 import FormNotification from '../../../Atoms/FormNotification/FormNotification';
 import { TaskFormSubmitHandler } from '../../../../util/uniforms/TaskFormSubmitHandler/TaskFormSubmitHandler';
+import { getTaskSchemaEndPoint } from '../../../../util/Utils';
 import UserTaskInstance = GraphQL.UserTaskInstance;
+import TaskConsoleContextProvider from '../../../../context/TaskConsoleContext/TaskConsoleContextProvider';
 
 jest.mock('../../../Atoms/FormNotification/FormNotification');
 jest.mock('../../../Molecules/FormRenderer/FormRenderer');
@@ -28,7 +36,8 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 const userTaskInstance: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',
   description: null,
-  name: 'Apply for visa',
+  name: 'VisaApplication',
+  referenceName: 'Apply for visa',
   priority: '1',
   processInstanceId: '9ae7ce3b-d49c-4f35-b843-8ac3d22fa427',
   processId: 'travels',
@@ -46,11 +55,12 @@ const userTaskInstance: UserTaskInstance = {
   inputs:
     '{"Skippable":"true","trip":{"city":"Boston","country":"US","begin":"2020-02-19T23:00:00.000+01:00","end":"2020-02-26T23:00:00.000+01:00","visaRequired":true},"TaskName":"VisaApplication","NodeName":"Apply for visa","traveller":{"firstName":"Rachel","lastName":"White","email":"rwhite@gorle.com","nationality":"Polish","address":{"street":"Cabalone","city":"Zerf","zipCode":"765756","country":"Poland"}},"Priority":"1"}',
   outputs: '{}',
-  referenceName: 'VisaApplication',
   lastUpdate: '2020-02-19T11:11:56.282Z',
   endpoint:
     'http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3'
 };
+
+const testUser: User = new DefaultUser('test', ['group1', 'group2']);
 
 enum Mode {
   SUCCESS,
@@ -64,15 +74,17 @@ const testSubmitCallbacks = async (mode: Mode) => {
 
   mockedAxios.get.mockResolvedValue({
     status: 200,
-    data: ApplyForVisaForm
+    data: _.cloneDeep(ApplyForVisaForm)
   });
 
   let wrapper = await getWrapperAsync(
-    <TaskForm
-      userTaskInstance={userTaskInstance}
-      successCallback={formSubmitSuccessCallback}
-      errorCallback={formSubmitErrorCallback}
-    />,
+    <TaskConsoleContextProvider user={testUser}>
+      <TaskForm
+        userTaskInstance={userTaskInstance}
+        successCallback={formSubmitSuccessCallback}
+        errorCallback={formSubmitErrorCallback}
+      />
+    </TaskConsoleContextProvider>,
     'TaskForm'
   );
 
@@ -157,10 +169,12 @@ describe('TaskForm Test', () => {
   it('Test rendering form', async () => {
     mockedAxios.get.mockResolvedValue({
       status: 200,
-      data: ApplyForVisaForm
+      data: _.cloneDeep(ApplyForVisaForm)
     });
     const wrapper = await getWrapperAsync(
-      <TaskForm userTaskInstance={userTaskInstance} />,
+      <TaskConsoleContextProvider user={testUser}>
+        <TaskForm userTaskInstance={userTaskInstance} />
+      </TaskConsoleContextProvider>,
       'TaskForm'
     );
 
@@ -172,7 +186,6 @@ describe('TaskForm Test', () => {
 
     expect(renderer).not.toBeNull();
 
-    expect(renderer.props().formSchema).toBe(ApplyForVisaForm);
     expect(renderer.props().formSubmitHandler).toBeInstanceOf(
       TaskFormSubmitHandler
     );
@@ -187,7 +200,9 @@ describe('TaskForm Test', () => {
     });
 
     const wrapper = await getWrapperAsync(
-      <TaskForm userTaskInstance={userTaskInstance} />,
+      <TaskConsoleContextProvider user={testUser}>
+        <TaskForm userTaskInstance={userTaskInstance} />
+      </TaskConsoleContextProvider>,
       'TaskForm'
     );
 
@@ -206,5 +221,37 @@ describe('TaskForm Test', () => {
 
   it('Test unsuccessful callback with extra message', async () => {
     await testSubmitCallbacks(Mode.ERROR_WITH_MESSAGE);
+  });
+
+  it('Test render completed task', async () => {
+    const task = _.cloneDeep(userTaskInstance);
+    task.completed = true;
+
+    mockedAxios.get.mockResolvedValue({
+      status: 200,
+      data: _.cloneDeep(ApplyForVisaForm)
+    });
+
+    const axiosCalls = mockedAxios.get.mock.calls.length;
+
+    const wrapper = await getWrapperAsync(
+      <TaskConsoleContextProvider user={testUser}>
+        <TaskForm userTaskInstance={task} />
+      </TaskConsoleContextProvider>,
+      'TaskForm'
+    );
+
+    wrapper.update();
+
+    expect(wrapper).toMatchSnapshot();
+
+    expect(mockedAxios.get).toBeCalledTimes(axiosCalls + 1);
+
+    const requestParams = mockedAxios.get.mock.calls[axiosCalls];
+
+    const requestURL = requestParams[0];
+
+    expect(requestURL).not.toBe(task.endpoint + '/schema');
+    expect(requestURL).toEqual(getTaskSchemaEndPoint(task));
   });
 });

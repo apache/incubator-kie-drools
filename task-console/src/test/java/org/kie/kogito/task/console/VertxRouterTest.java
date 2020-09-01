@@ -27,6 +27,10 @@ class VertxRouterTest {
     @Test
     void testHandlePath() {
 
+        given().when().get("/TaskInbox")
+                .then()
+                .statusCode(200);
+
         given().when().get("/UserTasks")
                 .then()
                 .statusCode(200);

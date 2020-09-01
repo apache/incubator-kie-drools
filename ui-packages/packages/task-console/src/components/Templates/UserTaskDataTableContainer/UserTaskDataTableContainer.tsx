@@ -4,7 +4,7 @@ import {
   GridItem,
   PageSection,
   Bullseye,
-  Label,
+  Label
 } from '@patternfly/react-core';
 import React, { useEffect } from 'react';
 import UserTaskPageHeader from '../../Molecules/UserTaskPageHeader/UserTaskPageHeader';
@@ -25,15 +25,13 @@ const UserTaskLoadingComponent = (
   </Bullseye>
 );
 
-const stateColumnTransformer = (value, rowDataObj) => {
+const stateColumnTransformer = value => {
   // rowDataObj is the original data object to render the row
   if (!value) {
     return null;
   }
-  const { title } = value;
-  return {
-    children: <Label>{title}</Label>
-  };
+
+  return <Label>{value}</Label>;
 };
 
 const UserTaskDataTableContainer: React.FC<OUIAProps> = ({
@@ -79,7 +77,7 @@ const UserTaskDataTableContainer: React.FC<OUIAProps> = ({
   ];
 
   useEffect(() => {
-    return ouiaPageTypeAndObjectId( 'user-tasks');
+    return ouiaPageTypeAndObjectId('user-tasks');
   });
 
   return (
@@ -87,24 +85,24 @@ const UserTaskDataTableContainer: React.FC<OUIAProps> = ({
       <div
         {...componentOuiaProps(ouiaId, 'UserTaskDataTableContainer', ouiaSafe)}
       >
-      <UserTaskPageHeader />
-      <PageSection>
-        <Grid hasGutter md={1}>
-          <GridItem span={12}>
-            <Card className="kogito-task-console--user-task_table-OverFlow">
-              <DataTable
-                data={data ? data.UserTaskInstances : undefined}
-                isLoading={loading}
-                columns={columns}
-                networkStatus={networkStatus}
-                error={error}
-                refetch={refetch}
-                LoadingComponent={UserTaskLoadingComponent}
-              />
-            </Card>
-          </GridItem>
-        </Grid>
-      </PageSection>
+        <UserTaskPageHeader />
+        <PageSection>
+          <Grid hasGutter md={1}>
+            <GridItem span={12}>
+              <Card className="kogito-task-console--user-task_table-OverFlow">
+                <DataTable
+                  data={data ? data.UserTaskInstances : undefined}
+                  isLoading={loading}
+                  columns={columns}
+                  networkStatus={networkStatus}
+                  error={error}
+                  refetch={refetch}
+                  LoadingComponent={UserTaskLoadingComponent}
+                />
+              </Card>
+            </GridItem>
+          </Grid>
+        </PageSection>
       </div>
     </React.Fragment>
   );

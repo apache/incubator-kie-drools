@@ -271,3 +271,47 @@ const GET_USER_TASK = gql`
     }
   }
 `;
+
+const GET_TASKS_FOR_USER = gql`
+  query getTaskForUser(
+    $user: String
+    $groups: [String!]
+    $offset: Int
+    $limit: Int
+  ) {
+    UserTaskInstances(
+      where: {
+        or: [
+          { actualOwner: { equal: $user } }
+          { potentialUsers: { contains: $user } }
+          { potentialGroups: { containsAny: $groups } }
+        ]
+      }
+      pagination: { offset: $offset, limit: $limit }
+    ) {
+      id
+      name
+      referenceName
+      description
+      priority
+      processInstanceId
+      processId
+      rootProcessInstanceId
+      rootProcessId
+      state
+      actualOwner
+      adminGroups
+      adminUsers
+      completed
+      started
+      excludedUsers
+      potentialGroups
+      potentialUsers
+      inputs
+      outputs
+      referenceName
+      lastUpdate
+      endpoint
+    }
+  }
+`;

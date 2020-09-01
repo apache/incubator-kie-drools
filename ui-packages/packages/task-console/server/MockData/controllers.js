@@ -1,9 +1,15 @@
 const fs = require('fs');
+const _ = require('lodash');
 const graphQL = require('./graphql');
 const confirmTravelForm = require('./forms/ConfirmTravel');
 const applyForVisaForm = require('./forms/ApplyForVisa');
 
 const restData = require('./rest');
+
+const tasksUnableToTransition = [
+  '047ec38d-5d57-4330-8c8d-9bd67b53a529',
+  '841b9dba-3d91-4725-9de3-f9f4853b417e'
+]
 
 module.exports = controller = {
   callCompleteTask: (req, res) => {
@@ -11,71 +17,72 @@ module.exports = controller = {
       `......ProcessId:${req.params.processId} --piId:${req.params.processId} --taskId:${req.params.taskId}`
     );
 
+    console.log(req.data);
+
     const processId = restData.process.filter(data => {
       return data.processId === req.params.processId;
     });
 
-    const piTasks = processId[0].instances.filter(err => {
-      return err.processInstanceId === req.params.processInstanceId;
+    const task = graphQL.UserTaskInstances.find(userTask => {
+      return userTask.id === req.params.taskId;
     });
 
-    const task = piTasks[0].tasks.filter(err => {
-      return err.taskId === req.params.taskId;
-    });
+    if(tasksUnableToTransition.includes(task.id)) {
+      res.status(500).send("");
+    } else {
+      const phase = req.query.phase;
 
-    const phase = req.query.phase;
+      if(phase === 'complete') {
+        task.state = 'Completed';
+        task.completed = new Date().toISOString()
+      }
 
-    switch (task[0].complete) {
-      case 'success':
-        let successMessage;
-
-        const userTask = graphQL.UserTaskInstances.find(userTask => userTask.id ===  req.params.taskId);
-
-        if(phase === 'complete') {
-          userTask.state = 'Completed';
-          userTask.completed = new Date().toISOString()
-        }
-
-        if (phase) {
-          successMessage = `Task '${req.params.taskId}' has successfully finished phase '${phase}'`;
-        } else {
-          successMessage = `Task '${req.params.taskId}' successfully completed.`;
-        }
-        res.send(successMessage);
-        break;
-      case 'failed':
-        let failedMessage;
-        if (phase) {
-          failedMessage = `Task '${req.params.taskId}' couldn't successfully finish phase '${phase}'`;
-        } else {
-          failedMessage = `Task '${req.params.taskId}' couldn't be completed`;
-        }
-        res.status(500).send(failedMessage);
-        break;
+      res.send(task.inputs);
     }
   },
 
   getTaskForm: (req, res) => {
     console.log(
-      `......ProcessId:${req.params.processId} --piId:${req.params.processId} --taskId:${req.params.taskId}`
+      `......ProcessId:${req.params.processId} --piId:${req.params.processInstanceId} --taskId:${req.params.taskId}`
     );
 
-    const processId = restData.process.filter(data => {
-      return data.processId === req.params.processId;
+    const task = graphQL.UserTaskInstances.find(userTask => {
+      return userTask.id === req.params.taskId;
     });
 
-    const piTasks = processId[0].instances.filter(err => {
-      return err.processInstanceId === req.params.processInstanceId;
-    });
+    const clearPhases = task.completed || task.state === 'Aborted';
 
-    const task = piTasks[0].tasks.filter(err => {
-      return err.taskId === req.params.taskId;
-    });
+    res.send(JSON.stringify(getTaskSchema(task.name, clearPhases)));
+  },
 
-    if (task[0].referenceName === 'ConfirmTravel') {
-      res.send(confirmTravelForm);
-    } else if (task[0].referenceName === 'VisaApplication') {
-      res.send(applyForVisaForm);
-    }
+  getTaskDefinitionForm: (req, res) => {
+    console.log(
+      `......ProcessId:${req.params.processId} --TaskName:${req.params.taskName}`
+    );
+
+    res.send(JSON.stringify(getTaskSchema(req.params.taskName, true)));
   }
 };
+
+function getTaskSchema (taskName, clearPhases) {
+  let schema;
+
+  console.log(`Getting Schema for task: ${taskName} --clearPhases: ${clearPhases}`)
+
+  switch (taskName) {
+    case 'ConfirmTravel': {
+      schema = _.cloneDeep(confirmTravelForm);
+      break;
+    }
+    case 'VisaApplication': {
+      schema = _.cloneDeep(applyForVisaForm);
+      break;
+    }
+  }
+
+  if(clearPhases) {
+    delete schema.phases;
+  }
+
+  return schema;
+}

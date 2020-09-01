@@ -36,16 +36,21 @@ app.use(
 );
 
 //Rest Api's
-// http://localhost:4000/{processId}/{processInstanceId}/{taskReferenceName}/{taskId}
+// http://localhost:4000/{processId}/{processInstanceId}/{taskName}/{taskId}
 
 app.post(
-  '/:processId/:processInstanceId/:taskReferenceName/:taskId',
+  '/:processId/:processInstanceId/:taskName/:taskId',
   controller.callCompleteTask
 );
 
 app.get(
-  '/:processId/:processInstanceId/:taskReferenceName/:taskId/schema',
+  '/:processId/:processInstanceId/:taskName/:taskId/schema',
   controller.getTaskForm
+);
+
+app.get(
+  '/:processId/:taskName/schema',
+  controller.getTaskDefinitionForm
 );
 
 function timeout(ms) {
@@ -56,17 +61,28 @@ function timeout(ms) {
 const resolvers = {
   Query: {
     UserTaskInstances: async (parent, args) => {
-      const result = data.UserTaskInstances.filter(datum => {
-        console.log('args', args['where']);
-        if (args['where'].id && args['where'].id.equal) {
-          return datum.id == args['where'].id.equal;
-        }
+      let result = data.UserTaskInstances.filter(datum => {
+        console.log('args', args)
+
         if (args['where'].state && args['where'].state.in) {
           return args['where'].state.in.includes(datum.state);
+        } else {
+          // searching for tasks assigned to current user
+          return true;
         }
+
         return false;
       });
+
       await timeout(2000);
+
+      if (args.pagination) {
+        const offset = args.pagination.offset;
+        const limit = args.pagination.limit;
+
+        result = result.slice(offset, offset + limit);
+      }
+
       console.log('result length: ' + result.length);
       return result;
     },
