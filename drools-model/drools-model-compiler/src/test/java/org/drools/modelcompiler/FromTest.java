@@ -747,7 +747,6 @@ public class FromTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore("not supported in legacy drools")
     public void testFromChainedCall() {
         // DROOLS-5608
         String str =
@@ -762,7 +761,7 @@ public class FromTest extends BaseModelTest {
                         "no-loop\n" +
                         "when\n" +
                         " Measurement( id == \"color\", $colorVal : val )\n" +
-                        " String() from Optional.of($colorVal).orElse(\"blah\")\n" +
+                        " Object() from Optional.of($colorVal).orElse(\"blah\")\n" +
                         "then\n" +
                         " controlSet.add($colorVal);\n" +
                         "end";
