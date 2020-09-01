@@ -26,9 +26,10 @@ import java.util.List;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.OptionsBuilder;
 import org.asciidoctor.ast.Block;
-import org.asciidoctor.ast.ContentNode;
+import org.asciidoctor.ast.DescriptionList;
+import org.asciidoctor.ast.DescriptionListEntry;
 import org.asciidoctor.ast.Document;
-import org.asciidoctor.ast.Section;
+import org.asciidoctor.ast.ListItem;
 import org.asciidoctor.ast.StructuralNode;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -56,7 +57,7 @@ public class ADocFEELExamplesTest {
     @Test
     public void test() throws URISyntaxException {
         Asciidoctor asciidoctor = Asciidoctor.Factory.create();
-        URL resource = this.getClass().getResource("/FEELbuiltinfunctions.adoc");
+        URL resource = this.getClass().getResource("/ref-dmn-feel-builtin-functions.adoc");
         URI uri = resource.toURI();
         LOG.debug("{}", uri);
         File src = new File(uri);
@@ -70,23 +71,22 @@ public class ADocFEELExamplesTest {
         for (int i = 0; i < blocks.size(); i++) {
             final StructuralNode currentBlock = blocks.get(i);
             if (currentBlock instanceof StructuralNode) {
-                if ("listing".equals(currentBlock.getContext())) {
+                if (currentBlock instanceof DescriptionList) {
+                    DescriptionList descriptionList = (DescriptionList) currentBlock;
+                    for (DescriptionListEntry dle : descriptionList.getItems()) {
+                        ListItem description = dle.getDescription();
+                        processBlock(description);
+                    }
+                } else if ("listing".equals(currentBlock.getContext())) {
                     Block b = (Block) currentBlock;
                     List<String> lines = b.getLines();
                     LOG.trace("{}", lines);
                     LOG.trace("{}", b.getAttributes());
-                    ContentNode parent = b.getParent();
-                    String sectionTitle = "";
-                    if (parent instanceof Section) {
-                        Section section = (Section) parent;
-                        sectionTitle = section.getTitle();
-                    }
                     if (b.getAttribute("language", "unknown").equals("FEEL")) {
-                        for (String l : lines) {
-                            String titled = sectionTitle + ": " + l;
-                            LOG.info("checking DOC {}", titled);
-                            Object FEELResult = feel.evaluate(l);
-                            Assert.assertThat(titled, FEELResult, Matchers.is(true));
+                        for (String line : lines) {
+                            LOG.info("checking DOC {}", line);
+                            Object FEELResult = feel.evaluate(line);
+                            Assert.assertThat(line, FEELResult, Matchers.is(true));
                         }
                     } else {
                         LOG.trace("This block is not FEEL true predicate snippets: {}", b);
