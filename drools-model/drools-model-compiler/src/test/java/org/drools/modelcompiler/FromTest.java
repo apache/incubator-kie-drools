@@ -798,39 +798,6 @@ public class FromTest extends BaseModelTest {
     }
 
     @Test
-    public void testNestedService() {
-        // DROOLS-5609
-        String str =
-                "package com.sample;" +
-                "global java.util.Set controlSet;\n" +
-                "global " + DummyService.class.getCanonicalName() + " dummyService;\n" +
-                "import " + Measurement.class.getCanonicalName() + ";\n" +
-                "" +
-                "rule \"will execute per each Measurement having ID color\"\n" +
-                "no-loop\n" +
-                "when\n" +
-                " Measurement( id == \"color\", $colorVal : val )\n" +
-                " String() from dummyService.dummy(dummyService.dummy($colorVal))\n" +
-                "then\n" +
-                " controlSet.add($colorVal);\n" +
-                "end";
-
-        KieSession ksession = getKieSession( str );
-
-        HashSet<Object> hashSet = new HashSet<>();
-        ksession.setGlobal("controlSet", hashSet);
-        ksession.setGlobal("dummyService", new DummyService());
-
-        ksession.insert(new Measurement("color", "red"));
-
-        int ruleFired = ksession.fireAllRules();
-
-        assertEquals( 1, ruleFired );
-        assertEquals( "red", hashSet.iterator().next() );
-    }
-
-
-    @Test
     public void testMultipleFrom() {
         // DROOLS-5542
         String str =
