@@ -859,8 +859,12 @@
             <outputDirectory>${project.build.outputDirectory}</outputDirectory>
             <transformSchemas>
               <transformSchema>
-                <uri>https://www.optaplanner.org/xsd/optaplanner</uri>
-                <toFile>optaplanner.xsd</toFile>
+                <uri>https://www.optaplanner.org/xsd/solver</uri>
+                <toFile>solver.xsd</toFile>
+              </transformSchema>
+              <transformSchema>
+                <uri>https://www.optaplanner.org/xsd/benchmark</uri>
+                <toFile>benchmark-with-import.xsd</toFile>
               </transformSchema>
             </transformSchemas>
           </configuration>

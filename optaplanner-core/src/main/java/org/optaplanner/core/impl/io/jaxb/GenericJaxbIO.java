@@ -116,8 +116,14 @@ public final class GenericJaxbIO<T> implements JaxbIO<T> {
             throw new IllegalArgumentException("Failed to read input schema resource (" + nonNullSchemaResource + ")", e);
         }
 
+        return readAndValidate(reader, schema);
+    }
+
+    public T readAndValidate(Reader reader, Schema schema) {
+        Reader nonNullReader = Objects.requireNonNull(reader);
+        Schema nonNullSchema = Objects.requireNonNull(schema);
         Unmarshaller unmarshaller = createUnmarshaller();
-        unmarshaller.setSchema(schema);
+        unmarshaller.setSchema(nonNullSchema);
 
         ValidationEventCollector validationEventCollector = new ValidationEventCollector();
         try {
@@ -129,7 +135,7 @@ public final class GenericJaxbIO<T> implements JaxbIO<T> {
         }
 
         try {
-            return (T) unmarshaller.unmarshal(reader);
+            return (T) unmarshaller.unmarshal(nonNullReader);
         } catch (JAXBException jaxbException) {
             if (validationEventCollector.hasEvents()) {
                 String errMessage =

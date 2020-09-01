@@ -35,15 +35,18 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.benchmark.impl.io.PlannerBenchmarkConfigIO;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.io.jaxb.GenericJaxbIO;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
-public class PlannerBenchmarkConfigTest {
+class PlannerBenchmarkConfigTest {
 
-    private static final String TEST_PLANNER_BENCHMARK_CONFIG = "testBenchmarkConfig.xml";
+    private static final String TEST_PLANNER_BENCHMARK_CONFIG_WITH_NAMESPACE = "testBenchmarkConfigWithNamespace.xml";
+    private static final String TEST_PLANNER_BENCHMARK_CONFIG_WITHOUT_NAMESPACE = "testBenchmarkConfigWithoutNamespace.xml";
+    private static final String BENCHMARK_XSD = "/benchmark.xsd";
 
     @Test
-    public void validNameWithUnderscoreAndSpace() {
+    void validNameWithUnderscoreAndSpace() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setName("Valid_name with space_and_underscore");
         config.setSolverBenchmarkConfigList(Collections.singletonList(new SolverBenchmarkConfig()));
@@ -51,7 +54,7 @@ public class PlannerBenchmarkConfigTest {
     }
 
     @Test
-    public void validNameWithJapanese() {
+    void validNameWithJapanese() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setName("Valid name (有効名 in Japanese)");
         config.setSolverBenchmarkConfigList(Collections.singletonList(new SolverBenchmarkConfig()));
@@ -59,7 +62,7 @@ public class PlannerBenchmarkConfigTest {
     }
 
     @Test
-    public void invalidNameWithSlash() {
+    void invalidNameWithSlash() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setName("slash/name");
         config.setSolverBenchmarkConfigList(Collections.singletonList(new SolverBenchmarkConfig()));
@@ -67,7 +70,7 @@ public class PlannerBenchmarkConfigTest {
     }
 
     @Test
-    public void invalidNameWithSuffixWhitespace() {
+    void invalidNameWithSuffixWhitespace() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setName("Suffixed with space ");
         config.setSolverBenchmarkConfigList(Collections.singletonList(new SolverBenchmarkConfig()));
@@ -75,7 +78,7 @@ public class PlannerBenchmarkConfigTest {
     }
 
     @Test
-    public void invalidNameWithPrefixWhitespace() {
+    void invalidNameWithPrefixWhitespace() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setName(" prefixed with space");
         config.setSolverBenchmarkConfigList(Collections.singletonList(new SolverBenchmarkConfig()));
@@ -83,7 +86,7 @@ public class PlannerBenchmarkConfigTest {
     }
 
     @Test
-    public void noSolverConfigs() {
+    void noSolverConfigs() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setSolverBenchmarkConfigList(null);
         config.setSolverBenchmarkBluePrintConfigList(null);
@@ -91,7 +94,7 @@ public class PlannerBenchmarkConfigTest {
     }
 
     @Test
-    public void nonUniqueSolverConfigName() {
+    void nonUniqueSolverConfigName() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         final String sbcName = "x";
         SolverBenchmarkConfig sbc1 = new SolverBenchmarkConfig();
@@ -103,7 +106,7 @@ public class PlannerBenchmarkConfigTest {
     }
 
     @Test
-    public void uniqueNamesGenerated() {
+    void uniqueNamesGenerated() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         SolverBenchmarkConfig sbc1 = new SolverBenchmarkConfig();
         SolverBenchmarkConfig sbc2 = new SolverBenchmarkConfig();
@@ -123,7 +126,7 @@ public class PlannerBenchmarkConfigTest {
     }
 
     @Test
-    public void resolveParallelBenchmarkCountAutomatically() {
+    void resolveParallelBenchmarkCountAutomatically() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         assertThat(config.resolveParallelBenchmarkCountAutomatically(-1)).isEqualTo(1);
         assertThat(config.resolveParallelBenchmarkCountAutomatically(0)).isEqualTo(1);
@@ -137,7 +140,7 @@ public class PlannerBenchmarkConfigTest {
     }
 
     @Test
-    public void resolveParallelBenchmarkCountFromFormula() {
+    void resolveParallelBenchmarkCountFromFormula() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setParallelBenchmarkCount(ConfigUtils.AVAILABLE_PROCESSOR_COUNT + "+1");
         // resolved benchmark count cannot be higher than available processors
@@ -145,20 +148,20 @@ public class PlannerBenchmarkConfigTest {
     }
 
     @Test
-    public void parallelBenchmarkDisabledByDefault() {
+    void parallelBenchmarkDisabledByDefault() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         assertThat(config.resolveParallelBenchmarkCount()).isEqualTo(1);
     }
 
     @Test
-    public void resolvedParallelBenchmarkCountNegative() {
+    void resolvedParallelBenchmarkCountNegative() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setParallelBenchmarkCount("-1");
         assertThatIllegalArgumentException().isThrownBy(config::resolveParallelBenchmarkCount);
     }
 
     @Test
-    public void calculateWarmUpTimeMillisSpentLimit() {
+    void calculateWarmUpTimeMillisSpentLimit() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setWarmUpHoursSpentLimit(1L);
         config.setWarmUpMinutesSpentLimit(2L);
@@ -168,12 +171,12 @@ public class PlannerBenchmarkConfigTest {
     }
 
     @Test
-    public void xmlConfigFileRemainsSameAfterReadWrite() throws IOException {
+    void xmlConfigFileRemainsSameAfterReadWrite() throws IOException {
         PlannerBenchmarkConfigIO xmlIO = new PlannerBenchmarkConfigIO();
         PlannerBenchmarkConfig jaxbBenchmarkConfig;
 
-        try (Reader reader =
-                new InputStreamReader(PlannerBenchmarkConfigTest.class.getResourceAsStream(TEST_PLANNER_BENCHMARK_CONFIG))) {
+        try (Reader reader = new InputStreamReader(
+                PlannerBenchmarkConfigTest.class.getResourceAsStream(TEST_PLANNER_BENCHMARK_CONFIG_WITHOUT_NAMESPACE))) {
             jaxbBenchmarkConfig = xmlIO.read(reader);
         }
 
@@ -182,9 +185,22 @@ public class PlannerBenchmarkConfigTest {
         String jaxbString = stringWriter.toString();
 
         String originalXml = IOUtils.toString(
-                PlannerBenchmarkConfigTest.class.getResourceAsStream(TEST_PLANNER_BENCHMARK_CONFIG), StandardCharsets.UTF_8);
+                PlannerBenchmarkConfigTest.class.getResourceAsStream(TEST_PLANNER_BENCHMARK_CONFIG_WITHOUT_NAMESPACE),
+                StandardCharsets.UTF_8);
 
         assertThat(jaxbString.trim()).isXmlEqualTo(originalXml.trim());
+    }
+
+    @Test
+    void readAndValidateBenchmarkConfig() throws IOException {
+        GenericJaxbIO<PlannerBenchmarkConfig> genericJaxbIO = new GenericJaxbIO<>(PlannerBenchmarkConfig.class);
+        PlannerBenchmarkConfig jaxbBenchmarkConfig;
+        try (Reader reader = new InputStreamReader(
+                PlannerBenchmarkConfigTest.class.getResourceAsStream(TEST_PLANNER_BENCHMARK_CONFIG_WITH_NAMESPACE))) {
+            jaxbBenchmarkConfig = genericJaxbIO.readAndValidate(reader, BENCHMARK_XSD);
+        }
+
+        assertThat(jaxbBenchmarkConfig).isNotNull();
     }
 
     // Used by the testBenchmarkConfig.xml

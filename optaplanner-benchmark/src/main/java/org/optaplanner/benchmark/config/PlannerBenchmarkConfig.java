@@ -88,8 +88,9 @@ import freemarker.template.TemplateException;
         "solverBenchmarkConfigList"
 })
 public class PlannerBenchmarkConfig {
-
+    public static final String SOLVER_NAMESPACE_PREFIX = "solver";
     public static final String XML_ELEMENT_NAME = "plannerBenchmark";
+    public static final String XML_NAMESPACE = "https://www.optaplanner.org/xsd/benchmark";
 
     // ************************************************************************
     // Static creation methods: SolverConfig

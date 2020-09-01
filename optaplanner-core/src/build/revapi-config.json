@@ -8860,6 +8860,17 @@
           "classSimpleName": "MoveSelectorConfig",
           "elementKind": "class",
           "justification": "Remove the KOptMoveSelector from XML configuration."
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.solver.SolverConfig",
+          "new": "class org.optaplanner.core.config.solver.SolverConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "annotation": "@javax.xml.bind.annotation.XmlType(name = \"solverConfig\", propOrder = {\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\"})",
+          "package": "org.optaplanner.core.config.solver",
+          "classSimpleName": "SolverConfig",
+          "elementKind": "class",
+          "justification": "Declare XML type name."
         }
       ]
     }
