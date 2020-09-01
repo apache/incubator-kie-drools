@@ -43,29 +43,13 @@ class SampleWeighterTest {
         Collection<Pair<double[], Double>> trainingSet = new LinkedList<>();
         List<Feature> features = new LinkedList<>();
         for (int i = 0; i < 5; i++) {
-            features.add(TestUtils.getMockedNumericFeature());
+            features.add(TestUtils.getMockedNumericFeature(1d));
         }
         // create a dataset whose samples values decrease as the dataset grows (starting from 1)
         for (int i = 0; i < 10; i++) {
-            int finalI = i;
-            Pair<double[], Double> doubles = new Pair<>() {
-                @Override
-                public double[] getLeft() {
-                    double[] vector = new double[features.size()];
-                    Arrays.fill(vector, 1d / (1d + finalI));
-                    return vector;
-                }
-
-                @Override
-                public Double getRight() {
-                    return 0d;
-                }
-
-                @Override
-                public Double setValue(Double aDouble) {
-                    return 0d;
-                }
-            };
+            double[] vector = new double[features.size()];
+            Arrays.fill(vector, 1d / (1d + i));
+            Pair<double[], Double> doubles = Pair.of(vector, 0d);
             trainingSet.add(doubles);
         }
         PredictionInput targetInput = new PredictionInput(features);
