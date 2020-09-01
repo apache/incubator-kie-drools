@@ -579,7 +579,7 @@ public class KiePackagesBuilder {
                                         (GroupKey _this) -> _this.getTopic(),
                                         groupByPattern.getTopic()),
                                 D.reactOn("topic"))
-                        .expr("KEY_" + groupByPattern.getTopic(),
+                        .expr("KEY_1_" + groupByPattern.getTopic(),
                                 var_$key,
                                 (GroupKey _this, Object $key) -> EvaluationUtil.areNullSafeEquals(_this.getKey(), $key),
                                 D.betaIndexedBy(java.lang.Object.class,
@@ -617,9 +617,14 @@ public class KiePackagesBuilder {
                                 (GroupKey _this) -> _this.getKey(),
                                 D.reactOn("key")),
                 D.not(D.pattern(accPattern.getPatternVariable())
-                        .expr("KEY_" + groupByPattern.getTopic(),
+                        .expr("KEY_2_" + groupByPattern.getTopic(),
                         var_$key,
-                        (Object obj, Object $key) -> EvaluationUtil.areNullSafeEquals(groupByPattern.getGroupingFunction().apply( obj ), $key))),
+                        (Object obj, Object $key) -> EvaluationUtil.areNullSafeEquals(groupByPattern.getGroupingFunction().apply( obj ), $key),
+                        D.betaIndexedBy(java.lang.Object.class,
+                                Index.ConstraintType.EQUAL,
+                                1, // GroupKey.Metadata.INSTANCE.getPropertyIndex( "key" ),
+                                obj -> groupByPattern.getGroupingFunction().apply( obj ),
+                                (GroupKey _this) -> _this.getKey()))),
                 D.on(var_$group).execute((org.drools.model.Drools drools, GroupKey $group) -> {
                     {
                         drools.delete($group);
