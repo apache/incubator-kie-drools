@@ -13,7 +13,7 @@ pipeline {
     }
     options {
         buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')
-        timeout(time: 120, unit: 'MINUTES')
+        timeout(time: 360, unit: 'MINUTES')
     }
     parameters {
         string(name: 'BRANCH_NAME', defaultValue: "master", description: 'Set the branch to build&test')
