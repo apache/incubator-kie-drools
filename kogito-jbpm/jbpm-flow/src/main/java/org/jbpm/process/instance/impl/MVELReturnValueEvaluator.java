@@ -29,7 +29,7 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.spi.GlobalResolver;
-import org.drools.core.util.MVELSafeHelper;
+import org.jbpm.workflow.instance.impl.MVELProcessHelper;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.process.ProcessContext;
 import org.mvel2.integration.VariableResolverFactory;
@@ -106,9 +106,9 @@ public class MVELReturnValueEvaluator
             factory.setNextFactory( data.getFunctionFactory() );
         }
 
-        Object value = MVELSafeHelper.getEvaluator().executeExpression( this.expr,
-	                                           null,
-	                                           factory );
+        Object value = MVELProcessHelper.evaluator().executeExpression(this.expr,
+                                                                                    null,
+                                                                                    factory );
 
         if ( !(value instanceof Boolean) ) {
             throw new RuntimeException( "Constraints must return boolean values: " + 

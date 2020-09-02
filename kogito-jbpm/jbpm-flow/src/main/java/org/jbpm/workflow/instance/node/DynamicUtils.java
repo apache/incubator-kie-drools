@@ -27,12 +27,12 @@ import org.drools.core.impl.KogitoStatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.process.instance.KogitoWorkItemManager;
 import org.drools.core.process.instance.impl.KogitoWorkItemImpl;
-import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
+import org.jbpm.workflow.instance.impl.MVELProcessHelper;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.ProcessInstanceResolverFactory;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
@@ -105,8 +105,8 @@ public class DynamicUtils {
                     variableValue = processInstance.getVariable(paramName);
                     if (variableValue == null) {
                         try {
-                            variableValue = MVELSafeHelper.getEvaluator().eval(paramName,
-                                                                               new ProcessInstanceResolverFactory(processInstance));
+                            variableValue = MVELProcessHelper.evaluator().eval(paramName,
+                                                                                            new ProcessInstanceResolverFactory(processInstance));
                         } catch (Throwable t) {
                             logger.error("Could not find variable scope for variable {}",
                                          paramName);

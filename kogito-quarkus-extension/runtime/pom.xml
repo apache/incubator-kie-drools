@@ -15,6 +15,12 @@
   <description>Add business automation capabilities - processes and rules with Kogito (a toolkit that originates from projects Drools and jBPM)</description>
   <dependencies>
 
+    <dependency>
+      <groupId>org.graalvm.nativeimage</groupId>
+      <artifactId>svm</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- quarkus -->
     <dependency>
       <groupId>io.quarkus</groupId>

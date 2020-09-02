@@ -28,7 +28,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.spi.GlobalResolver;
-import org.drools.core.util.MVELSafeHelper;
+import org.jbpm.workflow.instance.impl.MVELProcessHelper;
 import org.kie.api.runtime.process.ProcessContext;
 import org.mvel2.integration.VariableResolverFactory;
 
@@ -102,9 +102,9 @@ public class MVELAction
 //            factory.setNextFactory( data.getFunctionFactory() );
 //        }
 //        
-        MVELSafeHelper.getEvaluator().executeExpression( this.expr,
-                                null,
-                                factory );
+        MVELProcessHelper.evaluator().executeExpression(this.expr,
+                                                                     null,
+                                                                     factory );
 
     }
 
