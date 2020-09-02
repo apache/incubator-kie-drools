@@ -17,6 +17,7 @@ package org.drools.compiler.compiler.xml.rules;
 
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.compiler.DrlParser;
+import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.DrlDumper;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.junit.Test;
@@ -147,6 +148,14 @@ public class DumperTest {
         assertTrue( out.contains("count( $s2 )") );
     }
 
+    private void checkRoundtrip( String drl ) throws DroolsParserException {
+        DrlParser parser = new DrlParser( LanguageLevelOption.DRL6 );
+        final PackageDescr pkgOriginal = parser.parse( false, drl );
+        final DrlDumper dumper = new DrlDumper();
+        String out = dumper.dump( pkgOriginal );
+        Assertions.assertThat( drl ).isEqualToIgnoringWhitespace( out );
+    }
+
     @Test
     public void testRoundTripDRLAccumulate() throws Exception {
         // RHDM-254
@@ -162,10 +171,38 @@ public class DumperTest {
                 "        $cnt > 0 )\n" +
                 "then\n" +
                 "end";
-        DrlParser parser = new DrlParser( LanguageLevelOption.DRL6);
-        final PackageDescr pkgOriginal = parser.parse( false, drl );
-        final DrlDumper dumper = new DrlDumper();
-        String out = dumper.dump( pkgOriginal );
-        Assertions.assertThat(drl).isEqualToIgnoringWhitespace(out);
+
+        checkRoundtrip( drl );
+    }
+
+    @Test
+    public void testRoundTripDRLAccumulateWith2Patterns() throws Exception {
+        // DROOLS-5607
+        String drl =
+                "package org.example\n" +
+                "declare  Flight \n" +
+                "    pnrRecordLocator : String  \n" +
+                "    flightSegmentDepartureIataCode : String  \n" +
+                "    flightSegmentArrivalIataCode : String  \n" +
+                "    id : int  \n" +
+                "end\n" +
+                "\n" +
+                "rule \"round trips accumulate\"\n" +
+                "when\n" +
+                "  $roundTripSet : java.util.Set( size >= 1 ) from accumulate (\n" +
+                "    $f1:Flight()\n" +
+                "    and\n" +
+                "    $f2:Flight(\n" +
+                "        id > $f1.id,\n" +
+                "        pnrRecordLocator==$f1.pnrRecordLocator,\n" +
+                "        flightSegmentDepartureIataCode==$f1.flightSegmentArrivalIataCode,\n" +
+                "        flightSegmentArrivalIataCode==$f1.flightSegmentDepartureIataCode\n" +
+                "    )" +
+                "  , collectSet($f1.getId()) )\n" +
+                "then\n" +
+                "    System.out.println($roundTripSet);\n" +
+                "end";
+
+        checkRoundtrip( drl );
     }
 }

@@ -50,7 +50,7 @@ end
 @foreach{rule : pkg.rules}@{rule.isRule()?"rule":"query"} "@{rule.name}"@if{!rule.isRule() && rule.getParameters().length > 0} ( @foreach{n:rule.parameters,t:rule.parameterTypes}@{t} @{n}@end{", "} ) @end{}@if{rule.parentName!=null} extends "@{rule.parentName}"@end{}@if{!rule.annotations.isEmpty()}
 @foreach{ ann : rule.annotations }    @includeNamed{"annotation"; ann=ann}@end{"\n"}@end{}@if{!rule.attributes.isEmpty()}
 @foreach{attr : rule.attributes.values() }    @{attr.name} @{attr.valueString}@end{"\n"}@end{}@if{rule.isRule()}
-when@end{}@includeNamed{"ced"; base=rule.lhs; root=true}@if{rule.isRule()}
+when@end{}@includeNamed{"ced"; base=rule.lhs; root=true; inAcc=false}@if{rule.isRule()}
 then
 @{rule.consequence}@end{}
 @foreach{namedCons : rule.namedConsequences.keySet()}then[@{namedCons}]
@@ -81,15 +81,15 @@ end
 @comment{***************************************************************
                        CONDITIONAL ELEMENT CHILD TEMPLATE
 ************************************************************************ }
-@declare{"cedchildren"}@if{connect!="" && list.size() > 1}(@end{}@foreach{child : list}
-    @includeNamed{"ced"; base=child; root=false} @end{connect}@if{connect!="" && list.size() > 1})@end{}@end{}
+@declare{"cedchildren"}@if{connect!="" && list.size() > 1 && !inAcc}(@end{}@foreach{child : list}
+    @includeNamed{"ced"; base=child; root=false} @end{connect}@if{connect!="" && list.size() > 1 && !inAcc})@end{}@end{}
 
 @comment{***************************************************************
                        PATTERN SOURCE TEMPLATE
 ************************************************************************ }
 @declare{"psource"}@if{source!=null}@if{(source instanceof FromDescr) || (source instanceof EntryPointDescr)}@{source.toString()}@comment{
-}@elseif{source instanceof CollectDescr}from collect( @includeNamed{"ced"; base=source.inputPattern; root=false} )@comment{
-}@elseif{source instanceof AccumulateDescr}@code{isFunc=source.isExternalFunction()}@code{cp=source}@if{!topLevelAcc}from @end{}accumulate(     @includeNamed{"ced"; base=source.input; root=false},
+}@elseif{source instanceof CollectDescr}from collect( @includeNamed{"ced"; base=source.inputPattern; root=false; inAcc=false} )@comment{
+}@elseif{source instanceof AccumulateDescr}@code{isFunc=source.isExternalFunction()}@code{cp=source}@if{!topLevelAcc}from @end{}accumulate(     @includeNamed{"ced"; base=source.input; root=false; inAcc=true},
         @if{isFunc}@includeNamed{"accFunctions"; functions=cp.functions}@else{}@includeNamed{"accCustom";acc=cp}@end{} @if{topLevelAcc};
         @foreach{constr:constrs}@{constr}@end{", "}@end{} )@end{}@end{}@end{}
 
