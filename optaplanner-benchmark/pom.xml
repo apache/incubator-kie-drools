@@ -123,6 +123,26 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <excludes combine.children="append">
+            <!-- Remove the solver XSD as the JAR file should contain only the benchmark XSD. -->
+            <exclude>${schema.filename.solver}</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <configuration>
+          <excludes combine.children="append">
+            <!-- Remove the solver XSD as the JAR file should contain only the benchmark XSD. -->
+            <exclude>${schema.filename.solver}</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.revapi</groupId>
         <artifactId>revapi-maven-plugin</artifactId>
       </plugin>
@@ -157,8 +177,8 @@
               <!-- Merge the first two XSD files to a standalone benchmark XSD file containing XML types from both of them. -->
               <mainClass>org.optaplanner.benchmark.impl.xsd.XsdAggregator</mainClass>
               <arguments>
-                <argument>${project.build.outputDirectory}/solver.xsd</argument>
-                <argument>${project.build.outputDirectory}/benchmark-with-import.xsd</argument>
+                <argument>${project.build.outputDirectory}/${schema.filename.solver}</argument>
+                <argument>${project.build.outputDirectory}/${schema.filename.benchmark}</argument>
                 <argument>${project.build.outputDirectory}/benchmark.xsd</argument>
               </arguments>
             </configuration>
