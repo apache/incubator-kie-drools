@@ -63,4 +63,49 @@ public class IndexTest extends BaseModelTest {
 
         assertEquals( 1, ksession.fireAllRules() );
     }
+
+    public static class ObjectWrapper {
+        private final Object object;
+
+        public ObjectWrapper( Object object ) {
+            this.object = object;
+        }
+
+        public Object getObject() {
+            return object;
+        }
+    }
+
+    public static class IntegerWrapper {
+        private final Integer integer;
+
+        public IntegerWrapper( Integer integer ) {
+            this.integer = integer;
+        }
+
+        public Integer getInteger() {
+            return integer;
+        }
+    }
+
+    @Test
+    public void testBetaIndexWithImplicitDowncast() {
+        // DROOLS-5614
+        String str =
+                "import " + ObjectWrapper.class.getCanonicalName() + ";" +
+                "import " + IntegerWrapper.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "  ObjectWrapper( $o : object )\n" +
+                "  IntegerWrapper( integer == $o )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new ObjectWrapper( 42 ) );
+        ksession.insert( new IntegerWrapper( 42 ) );
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
 }

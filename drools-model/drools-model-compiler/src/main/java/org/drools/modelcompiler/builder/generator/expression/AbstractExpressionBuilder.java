@@ -59,6 +59,8 @@ import static java.util.Optional.ofNullable;
 import static org.drools.model.bitmask.BitMaskUtil.isAccessibleProperties;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.*;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CALL;
+import static org.drools.modelcompiler.util.ClassUtil.isAssignableFrom;
+import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
@@ -226,33 +228,46 @@ public abstract class AbstractExpressionBuilder {
         }
 
         if (leftType.equals(Double.class)) {
-            expression = new CastExpr( PrimitiveType.doubleType(), expression );
-        } else if (leftType.equals(Long.class)) {
+            return new CastExpr( PrimitiveType.doubleType(), expression );
+        }
+
+        if (leftType.equals(Long.class)) {
             if (right.getType().equals( Double.class ) || right.getType().equals( double.class )) {
-                expression = new MethodCallExpr( expression, "longValue" );
+                return new MethodCallExpr( expression, "longValue" );
             } else {
-                expression = new CastExpr( PrimitiveType.longType(), expression );
+                return new CastExpr( PrimitiveType.longType(), expression );
             }
+        }
 
-        } else if (expression instanceof LiteralExpr) {
+        if (expression instanceof LiteralExpr) {
             if (expression instanceof BigDecimalLiteralExpr) {
-                expression = toNewExpr(BigDecimal.class, new StringLiteralExpr(((BigDecimalLiteralExpr) expression).asBigDecimal().toString()));
-            } else if (expression instanceof BigIntegerLiteralExpr) {
-                expression = toNewExpr(toRawClass(leftType), new StringLiteralExpr(((BigIntegerLiteralExpr) expression).asBigInteger().toString()));
-            } else if (leftType.equals(BigDecimal.class)) {
+                return toNewExpr(BigDecimal.class, new StringLiteralExpr(((BigDecimalLiteralExpr) expression).asBigDecimal().toString()));
+            }
+            if (expression instanceof BigIntegerLiteralExpr) {
+                return toNewExpr(toRawClass(leftType), new StringLiteralExpr(((BigIntegerLiteralExpr) expression).asBigInteger().toString()));
+            }
+            if (leftType.equals(BigDecimal.class)) {
                 final BigDecimal bigDecimal = new BigDecimal( expression.toString() );
-                expression = toNewExpr(BigDecimal.class, new StringLiteralExpr( bigDecimal.toString() ) );
-            } else if (leftType.equals(BigInteger.class)) {
+                return toNewExpr(BigDecimal.class, new StringLiteralExpr( bigDecimal.toString() ) );
+            }
+            if (leftType.equals(BigInteger.class)) {
                 final BigInteger bigInteger = new BigDecimal(expression.toString()).toBigInteger();
-                expression = toNewExpr(BigInteger.class, new StringLiteralExpr(bigInteger.toString()));
+                return toNewExpr(BigInteger.class, new StringLiteralExpr(bigInteger.toString()));
             }
 
-        } else if (expression instanceof NameExpr) {
+        }
+
+        if (expression instanceof NameExpr) {
             if (leftType.equals(BigDecimal.class) && !right.getType().equals(BigDecimal.class)) {
-                expression = toNewExpr(BigDecimal.class, expression);
-            } else if (leftType.equals(BigInteger.class) && !right.getType().equals(BigInteger.class)) {
-                expression = toNewExpr(BigInteger.class, expression);
+                return toNewExpr(BigDecimal.class, expression);
             }
+            if (leftType.equals(BigInteger.class) && !right.getType().equals(BigInteger.class)) {
+                return toNewExpr(BigInteger.class, expression);
+            }
+        }
+
+        if ( !isAssignableFrom( leftType, right.getType() ) && isAssignableFrom( right.getType(), leftType ) ) {
+            return new CastExpr( toClassOrInterfaceType(toNonPrimitiveType(toRawClass(leftType))), expression );
         }
 
         return expression;
