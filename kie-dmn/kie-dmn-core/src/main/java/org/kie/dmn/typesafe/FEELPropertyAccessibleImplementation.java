@@ -74,9 +74,16 @@ public class FEELPropertyAccessibleImplementation {
         allMethods.add(getFeelPropertyDefinition());
         allMethods.add(setFeelPropertyDefinition());
         allMethods.add(fromMap());
+        if (containsCompositeCollection()) {
+            allMethods.add(processCompositeCollection());
+        }
         allMethods.add(allFeelProperties());
 
         return allMethods;
+    }
+
+    private boolean containsCompositeCollection() {
+        return fields.stream().anyMatch(DMNDeclaredField::isCompositeCollection);
     }
 
     private MethodDefinition getFeelPropertyDefinition() {
@@ -201,6 +208,20 @@ public class FEELPropertyAccessibleImplementation {
         addOverrideAnnotation(setFeelProperty);
 
         return setFeelProperty;
+    }
+
+    private MethodDefinition processCompositeCollection() {
+
+        MethodDeclaration processCompositeCollection = cloneMethodTemplate("processCompositeCollection");
+
+        BlockStmt body = processCompositeCollection.getBody().orElseThrow(() -> new InvalidTemplateException("Missing body in generated method"));
+
+        MethodWithStringBody processCompositeCollectionDefinition = new MethodWithStringBody("processCompositeCollection", "void", body.toString());
+        processCompositeCollectionDefinition.addParameter("java.util.Collection", "destCol");
+        processCompositeCollectionDefinition.addParameter("java.util.Collection", "srcCol");
+        processCompositeCollectionDefinition.addParameter("Class<?>", "baseClass");
+
+        return processCompositeCollectionDefinition;
     }
 
     private CompilationUnit getMethodTemplate() {

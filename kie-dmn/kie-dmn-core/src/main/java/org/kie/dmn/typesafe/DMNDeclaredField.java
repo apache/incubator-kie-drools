@@ -75,7 +75,7 @@ public class DMNDeclaredField implements FieldDefinition {
     // This returns the generic type i.e. when Collection<String> then String
     private String fieldTypeUnwrapped() {
         if (fieldDMNType.isCollection()) {
-            return index.asJava(DMNTypeUtils.genericOfCollection(fieldDMNType));
+            return index.asJava(DMNTypeUtils.getRootBaseTypeOfCollection(fieldDMNType));
         }
         throw new IllegalArgumentException();
     }
@@ -212,5 +212,9 @@ public class DMNDeclaredField implements FieldDefinition {
     @Override
     public Optional<String> getJavadocComment() {
         return Optional.of(fieldDMNType.toString());
+    }
+
+    public boolean isCompositeCollection() {
+        return fieldDMNType.isCollection() && fieldIsDifferentThanObject();
     }
 }

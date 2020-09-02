@@ -22,10 +22,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -60,6 +62,7 @@ import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
+import static org.kie.dmn.feel.util.EvalHelper.coerceNumber;
 
 public class DMNRuntimeTypesTest extends BaseVariantTest {
 
@@ -905,5 +908,118 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
 
             assertThat(dmnResult2.getContext().get("Decision-1"), nullValue());
         }
+    }
+
+    public void testCollectionOfCollection() {
+        final DMNRuntime runtime = createRuntime("topLevelColOfCol.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_74636626-ACB0-4A1F-9AD3-D4E0AFA1A24A", "topLevelColOfCol");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        // create ColB -> ColA -> Person data
+        List<Map<String, Object>> personList = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            personList.add(prototype(entry("name", "John" + i), entry("age", 20 + i)));
+        }
+        final List<Map<String, Object>> colA1 = personList.subList(0, 2);
+        final List<Map<String, Object>> colA2 = personList.subList(2, 4);
+
+        final List<List<Map<String, Object>>> colB = Arrays.asList(colA1, colA2);
+
+        context.set("InputData-1", colB);
+
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        assertThat(dmnResult.hasErrors(), is(false));
+
+        if (isTypeSafe()) {
+            FEELPropertyAccessible outputSet = ((DMNContextFPAImpl)dmnResult.getContext()).getFpa();
+            Map<String, Object> allProperties = outputSet.allFEELProperties();
+            List<List<FEELPropertyAccessible>> colBOut = (List<List<FEELPropertyAccessible>>) allProperties.get("Decision-1");
+            List<FEELPropertyAccessible> colAOut1 = colBOut.get(0);
+            assertPersonInCol(colAOut1.get(0));
+            assertPersonInCol(colAOut1.get(1));
+            List<FEELPropertyAccessible> colAOut2 = colBOut.get(1);
+            assertPersonInCol(colAOut2.get(0));
+            assertPersonInCol(colAOut2.get(1));
+        } else {
+            List<List<Map<String, Object>>> colBOut = (List<List<Map<String, Object>>>)dmnResult.getContext().get("Decision-1");
+            List<Map<String, Object>> colAOut1 = colBOut.get(0);
+            assertPersonMapInCol(colAOut1.get(0));
+            assertPersonMapInCol(colAOut1.get(1));
+            List<Map<String, Object>> colAOut2 = colBOut.get(1);
+            assertPersonMapInCol(colAOut2.get(0));
+            assertPersonMapInCol(colAOut2.get(1));
+        }
+    }
+
+    private void assertPersonInCol(FEELPropertyAccessible person) {
+        assertThat(person.getFEELProperty("name").toOptional().get(), anyOf(is("John0X"), is("John1X"), is("John2X"), is("John3X")));
+        assertThat(person.getFEELProperty("age").toOptional().get(), anyOf(is(coerceNumber(21)), is(coerceNumber(22)), is(coerceNumber(23)), is(coerceNumber(24))));
+    }
+
+    private void assertPersonMapInCol(Map<String, Object> personMap) {
+        assertThat(personMap.get("name"), anyOf(is("John0X"), is("John1X"), is("John2X"), is("John3X")));
+        assertThat(personMap.get("age"), anyOf(is(coerceNumber(21)), is(coerceNumber(22)), is(coerceNumber(23)), is(coerceNumber(24))));
+    }
+
+    @Test
+    public void testCollectionOfCollectionOfCollection() {
+        final DMNRuntime runtime = createRuntime("topLevelColOfColOfCol.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_74636626-ACB0-4A1F-9AD3-D4E0AFA1A24A", "topLevelColOfColOfCol");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+
+        // create ColC -> ColB -> ColA -> Person data
+        List<Map<String, Object>> personList = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            personList.add(prototype(entry("name", "John" + i), entry("age", 20 + i)));
+        }
+        final List<Map<String, Object>> colA1 = personList.subList(0, 2);
+        final List<Map<String, Object>> colA2 = personList.subList(2, 3);
+        final List<Map<String, Object>> colA3 = personList.subList(4, 6);
+        final List<Map<String, Object>> colA4 = personList.subList(6, 8);
+
+        final List<List<Map<String, Object>>> colB1 = Arrays.asList(colA1, colA2);
+        final List<List<Map<String, Object>>> colB2 = Arrays.asList(colA3, colA4);
+
+        final List<List<List<Map<String, Object>>>> colC = Arrays.asList(colB1, colB2);
+
+        context.set("InputData-1", colC);
+
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        assertThat(dmnResult.hasErrors(), is(false));
+
+        if (isTypeSafe()) {
+            FEELPropertyAccessible outputSet = ((DMNContextFPAImpl)dmnResult.getContext()).getFpa();
+            Map<String, Object> allProperties = outputSet.allFEELProperties();
+            List<List<List<FEELPropertyAccessible>>> colCOut = (List<List<List<FEELPropertyAccessible>>>) allProperties.get("Decision-1");
+            List<FEELPropertyAccessible>  personOutList = colCOut.stream().flatMap(colB -> colB.stream()).flatMap(colA -> colA.stream()).collect(Collectors.toList());
+            personOutList.stream().forEach(person -> assertPersonInDeepCol(person));
+        } else {
+            List<List<List<Map<String, Object>>>> colCOut = (List<List<List<Map<String, Object>>>>)dmnResult.getContext().get("Decision-1");
+            List<Map<String, Object>>  personOutList = colCOut.stream().flatMap(colB -> colB.stream()).flatMap(colA -> colA.stream()).collect(Collectors.toList());
+            personOutList.stream().forEach(person -> assertPersonMapInDeepCol(person));
+        }
+    }
+
+    private void assertPersonInDeepCol(FEELPropertyAccessible person) {
+        assertThat(person.getFEELProperty("name").toOptional().get(),
+                   anyOf(is("John0X"), is("John1X"), is("John2X"), is("John3X"),
+                         is("John4X"), is("John5X"), is("John6X"), is("John7X")));
+        assertThat(person.getFEELProperty("age").toOptional().get(),
+                   anyOf(is(coerceNumber(21)), is(coerceNumber(22)), is(coerceNumber(23)), is(coerceNumber(24)),
+                         is(coerceNumber(25)), is(coerceNumber(26)), is(coerceNumber(27)), is(coerceNumber(28))));
+    }
+
+    private void assertPersonMapInDeepCol(Map<String, Object> personMap) {
+        assertThat(personMap.get("name"),
+                   anyOf(is("John0X"), is("John1X"), is("John2X"), is("John3X"),
+                         is("John4X"), is("John5X"), is("John6X"), is("John7X")));
+        assertThat(personMap.get("age"),
+                   anyOf(is(coerceNumber(21)), is(coerceNumber(22)), is(coerceNumber(23)), is(coerceNumber(24)),
+                         is(coerceNumber(25)), is(coerceNumber(26)), is(coerceNumber(27)), is(coerceNumber(28))));
     }
 }
