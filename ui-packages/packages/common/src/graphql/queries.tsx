@@ -273,7 +273,7 @@ const GET_USER_TASK = gql`
 `;
 
 const GET_TASKS_FOR_USER = gql`
-  query getTaskForUser(
+  query getTasksForUser(
     $user: String
     $groups: [String!]
     $offset: Int

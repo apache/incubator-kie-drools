@@ -5,7 +5,7 @@ import * as ApolloReactHooks from '@apollo/react-hooks';
 
 export namespace GraphQL {
   export type Maybe<T> = T | null;
-  export type Exact<T extends { [key: string]: unknown }> = {
+  export type Exact<T extends { [key: string]: any }> = {
     [K in keyof T]: T[K];
   };
 
