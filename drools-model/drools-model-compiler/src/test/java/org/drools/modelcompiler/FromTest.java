@@ -25,10 +25,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.FunctionsTest.Pojo;
 import org.drools.modelcompiler.domain.*;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -760,6 +762,39 @@ public class FromTest extends BaseModelTest {
             return new AbstractMap.SimpleEntry<K, V>(key, value);
         }
     }
+
+    @Test
+    public void testNestedService() {
+        // DROOLS-5609
+        String str =
+                "package com.sample;" +
+                "global java.util.Set controlSet;\n" +
+                "global " + DummyService.class.getCanonicalName() + " dummyService;\n" +
+                "import " + Measurement.class.getCanonicalName() + ";\n" +
+                "" +
+                "rule \"will execute per each Measurement having ID color\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                " Measurement( id == \"color\", $colorVal : val )\n" +
+                " String() from dummyService.dummy(dummyService.dummy($colorVal))\n" +
+                "then\n" +
+                " controlSet.add($colorVal);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        HashSet<Object> hashSet = new HashSet<>();
+        ksession.setGlobal("controlSet", hashSet);
+        ksession.setGlobal("dummyService", new DummyService());
+
+        ksession.insert(new Measurement("color", "red"));
+
+        int ruleFired = ksession.fireAllRules();
+
+        assertEquals( 1, ruleFired );
+        assertEquals( "red", hashSet.iterator().next() );
+    }
+
 
     @Test
     public void testMultipleFrom() {
