@@ -548,7 +548,7 @@ public class KiePackagesBuilder {
 
         Expr1ViewItemImpl topicExpr = new Expr1ViewItemImpl<>( "TOPIC_" + groupByPattern.getTopic(), inputVariable,
                 new Predicate1.Impl<>( (GroupKey g) -> g.getTopic().equals( groupByPattern.getTopic() ) ))
-                .indexedBy( String.class, Index.ConstraintType.EQUAL, GroupKey.Metadata.INSTANCE.getPropertyIndex( "topic" ), new Function1.Impl<>( GroupKey::getTopic ), groupByPattern.getTopic() );
+                .indexedBy( String.class, Index.ConstraintType.EQUAL, GroupKey.Metadata.INSTANCE.getPropertyIndex( "topic" ), GroupKey::getTopic, groupByPattern.getTopic() );
         topicExpr.reactOn( "topic" );
 
         PatternImpl pattern = new PatternImpl(inputVariable, new SingleConstraint1( topicExpr ), Collections.singletonList( binding ));
@@ -559,7 +559,8 @@ public class KiePackagesBuilder {
         ctx.addSubRule( deletingGroupRule(groupByPattern, accPattern) );
 
         Expr2ViewItemImpl groupingExpr = new Expr2ViewItemImpl( "KEY_" + groupByPattern.getTopic(), accPattern.getPatternVariable(), groupByPattern.getVarKey(),
-                new Predicate2.Impl<>( (Object obj, Object $key) -> EvaluationUtil.areNullSafeEquals(groupByPattern.getGroupingFunction().apply( obj ), $key) ));
+                new Predicate2.Impl<>( (Object obj, Object $key) -> EvaluationUtil.areNullSafeEquals(groupByPattern.getKey( obj ), $key) ))
+                .indexedBy( java.lang.Object.class, Index.ConstraintType.EQUAL, 1, groupByPattern::getKey, key -> key );
         accPattern.addConstraint( new SingleConstraint2( groupingExpr ) );
 
         return buildAccumulate( ctx, group, groupByPattern );
@@ -570,7 +571,7 @@ public class KiePackagesBuilder {
         Variable<GroupKey> var_$group = D.declarationOf(GroupKey.class, GroupKey.Metadata.INSTANCE, "var_$group");
 
         Rule rule = D.rule("CREATE_GROUP_" + groupByPattern.getTopic()).build(
-                D.pattern(accPattern.getPatternVariable()).bind(var_$key, (Object obj) -> groupByPattern.getGroupingFunction().apply( obj )),
+                D.pattern(accPattern.getPatternVariable()).bind(var_$key, groupByPattern::getKey),
                 D.not(D.pattern(var_$group)
                         .expr("TOPIC_" + groupByPattern.getTopic(),
                                 (GroupKey _this) -> EvaluationUtil.areNullSafeEquals(_this.getTopic(), groupByPattern.getTopic()),
@@ -586,7 +587,7 @@ public class KiePackagesBuilder {
                                         Index.ConstraintType.EQUAL,
                                         GroupKey.Metadata.INSTANCE.getPropertyIndex( "key" ),
                                         (GroupKey _this) -> _this.getKey(),
-                                        obj -> obj),
+                                        key -> key),
                         D.reactOn("key"))),
                 D.on(var_$key).execute((org.drools.model.Drools drools, Object $key) -> {
                     {
@@ -619,11 +620,11 @@ public class KiePackagesBuilder {
                 D.not(D.pattern(accPattern.getPatternVariable())
                         .expr("KEY_2_" + groupByPattern.getTopic(),
                         var_$key,
-                        (Object obj, Object $key) -> EvaluationUtil.areNullSafeEquals(groupByPattern.getGroupingFunction().apply( obj ), $key),
+                        (Object obj, Object $key) -> EvaluationUtil.areNullSafeEquals(groupByPattern.getKey( obj ), $key),
                         D.betaIndexedBy(java.lang.Object.class,
                                 Index.ConstraintType.EQUAL,
-                                1, // GroupKey.Metadata.INSTANCE.getPropertyIndex( "key" ),
-                                obj -> groupByPattern.getGroupingFunction().apply( obj ),
+                                1,
+                                groupByPattern::getKey,
                                 (GroupKey _this) -> _this.getKey()))),
                 D.on(var_$group).execute((org.drools.model.Drools drools, GroupKey $group) -> {
                     {
