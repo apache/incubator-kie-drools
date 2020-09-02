@@ -79,11 +79,24 @@ public class PMMLAssemblerService implements KieAssemblerService {
     }
 
     private static boolean isToEnable() {
+        if (isjPMMLAvailableToClassLoader()) {
+            return false;
+        }
         if (!isOtherImplementationPresent()) {
             return true;
         } else {
             final String property = System.getProperty(KIE_PMML_IMPLEMENTATION.getName(), LEGACY.getName());
             return property.equals(LEGACY.getName());
+        }
+    }
+
+    private static boolean isjPMMLAvailableToClassLoader() {
+        try {
+            Thread.currentThread().getContextClassLoader().loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
+            log.info("jpmml libraries available on classpath, skipping kie-pmml parsing and compilation");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
         }
     }
 
@@ -123,10 +136,6 @@ public class PMMLAssemblerService implements KieAssemblerService {
      * @throws IOException
      */
     private void addPackage(Resource resource) throws DroolsParserException, IOException {
-        if (isjPMMLAvailableToClassLoader(rootClassLoader)) {
-            log.info("jpmml libraries available on classpath, skipping kie-pmml parsing and compilation");
-            return;
-        }
         if (pmmlCompiler != null) {
             if (pmmlCompiler.getResults().isEmpty()) {
                 PMML pmml = pmmlCompiler.loadModel(PMML4Compiler.PMML, resource.getInputStream());
@@ -318,12 +327,4 @@ public class PMMLAssemblerService implements KieAssemblerService {
         return javaCompiler;
     }
 
-    private boolean isjPMMLAvailableToClassLoader(ClassLoader classLoader) {
-        try {
-            classLoader.loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
-    }
 }
