@@ -20,10 +20,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.EntryPointDescr;
+import org.drools.compiler.lang.descr.ExistsDescr;
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.compiler.lang.descr.ImportDescr;
+import org.drools.compiler.lang.descr.NotDescr;
+import org.drools.compiler.lang.descr.OrDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
@@ -33,6 +37,7 @@ import org.drools.compiler.rule.builder.EnabledBuilder;
 import org.drools.compiler.rule.builder.EngineElementBuilder;
 import org.drools.compiler.rule.builder.EntryPointBuilder;
 import org.drools.compiler.rule.builder.FromBuilder;
+import org.drools.compiler.rule.builder.GroupElementBuilder;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.PatternBuilder;
 import org.drools.compiler.rule.builder.PredicateBuilder;
@@ -50,6 +55,8 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.core.base.CoreComponentsBuilder.throwExceptionForMissingMvel;
 
 /**
  * 
@@ -283,7 +290,10 @@ public class JavaConfiguration
             if (clazz == EntryPointDescr.class) {
                 return getEntryPointBuilder();
             }
-            throw new UnsupportedOperationException();
+            if (clazz == AndDescr.class || clazz == OrDescr.class || clazz == NotDescr.class || clazz == ExistsDescr.class) {
+                return new GroupElementBuilder();
+            }
+            return throwExceptionForMissingMvel();
         }
 
         @Override
@@ -303,107 +313,107 @@ public class JavaConfiguration
 
         @Override
         public String getExpressionDialectName() {
-            throw new UnsupportedOperationException();
+            return throwExceptionForMissingMvel();
         }
 
         @Override
         public Map<Class<?>, EngineElementBuilder> getBuilders() {
-            throw new UnsupportedOperationException();
+            return throwExceptionForMissingMvel();
         }
 
         @Override
         public SalienceBuilder getSalienceBuilder() {
-            throw new UnsupportedOperationException();
+            return throwExceptionForMissingMvel();
         }
 
         @Override
         public EnabledBuilder getEnabledBuilder() {
-            throw new UnsupportedOperationException();
+            return throwExceptionForMissingMvel();
         }
 
         @Override
         public QueryBuilder getQueryBuilder() {
-            throw new UnsupportedOperationException();
+            return throwExceptionForMissingMvel();
         }
 
         @Override
         public RuleConditionBuilder getEvalBuilder() {
-            throw new UnsupportedOperationException();
+            return throwExceptionForMissingMvel();
         }
 
         @Override
         public AccumulateBuilder getAccumulateBuilder() {
-            throw new UnsupportedOperationException();
+            return throwExceptionForMissingMvel();
         }
 
         @Override
         public PredicateBuilder getPredicateBuilder() {
-            throw new UnsupportedOperationException();
+            return throwExceptionForMissingMvel();
         }
 
         @Override
         public ReturnValueBuilder getReturnValueBuilder() {
-            throw new UnsupportedOperationException();
+            return throwExceptionForMissingMvel();
         }
 
         @Override
         public ConsequenceBuilder getConsequenceBuilder() {
-            throw new UnsupportedOperationException();
+            return throwExceptionForMissingMvel();
         }
 
         @Override
         public RuleClassBuilder getRuleClassBuilder() {
-            throw new UnsupportedOperationException();
+            return throwExceptionForMissingMvel();
         }
 
         @Override
         public FromBuilder getFromBuilder() {
-            throw new UnsupportedOperationException();
+            return throwExceptionForMissingMvel();
         }
 
         @Override
         public AnalysisResult analyzeExpression( PackageBuildContext context, BaseDescr descr, Object content, BoundIdentifiers availableIdentifiers ) {
-            throw new UnsupportedOperationException();
+            return throwExceptionForMissingMvel();
         }
 
         @Override
         public AnalysisResult analyzeBlock( PackageBuildContext context, BaseDescr descr, String text, BoundIdentifiers availableIdentifiers ) {
-            throw new UnsupportedOperationException();
+            return throwExceptionForMissingMvel();
         }
 
         @Override
         public void compileAll() {
-            throw new UnsupportedOperationException();
+            throwExceptionForMissingMvel();
         }
 
         @Override
         public void addRule( RuleBuildContext context ) {
-            throw new UnsupportedOperationException();
+            throwExceptionForMissingMvel();
         }
 
         @Override
         public void addFunction( FunctionDescr functionDescr, TypeResolver typeResolver, Resource resource ) {
-            throw new UnsupportedOperationException();
+            throwExceptionForMissingMvel();
         }
 
         @Override
         public List<KnowledgeBuilderResult> getResults() {
-            throw new UnsupportedOperationException();
+            return throwExceptionForMissingMvel();
         }
 
         @Override
         public void clearResults() {
-            throw new UnsupportedOperationException();
+            throwExceptionForMissingMvel();
         }
 
         @Override
         public void postCompileAddFunction( FunctionDescr functionDescr, TypeResolver typeResolver ) {
-            throw new UnsupportedOperationException();
+            throwExceptionForMissingMvel();
         }
 
         @Override
         public void preCompileAddFunction( FunctionDescr functionDescr, TypeResolver typeResolver ) {
-            throw new UnsupportedOperationException();
+            throwExceptionForMissingMvel();
         }
     }
 }

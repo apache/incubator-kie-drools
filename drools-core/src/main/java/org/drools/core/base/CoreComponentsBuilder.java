@@ -22,12 +22,23 @@ import org.drools.core.util.MVELExecutor;
 import org.kie.api.internal.utils.ServiceRegistry;
 
 public interface CoreComponentsBuilder {
+
+    String NO_MVEL = "You're trying to compile a Drools asset without mvel. Please add the module org.drools:drools-mvel to your classpath.";
+
+    static <T> T throwExceptionForMissingMvel() {
+        throw new RuntimeException(NO_MVEL);
+    }
+
     class Holder {
         private static final CoreComponentsBuilder cBuilder = ServiceRegistry.getInstance().get( CoreComponentsBuilder.class );
     }
 
     static CoreComponentsBuilder get() {
-        return Holder.cBuilder;
+        return Holder.cBuilder != null ? Holder.cBuilder : throwExceptionForMissingMvel();
+    }
+
+    static boolean present() {
+        return Holder.cBuilder != null;
     }
 
     InternalReadAccessor getReadAcessor( String className, String expr, boolean typesafe, Class<?> returnType );

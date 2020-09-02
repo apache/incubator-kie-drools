@@ -147,8 +147,6 @@ public class KnowledgeBuilderConfigurationImpl
 
     private DroolsCompilerComponentFactory    componentFactory;
 
-    private ClassBuilderFactory               classBuilderFactory;
-
     private KieComponentFactory               kieComponentFactory;
 
     private LanguageLevelOption               languageLevel           = DrlParser.DEFAULT_LANGUAGE_LEVEL;
@@ -264,7 +262,6 @@ public class KnowledgeBuilderConfigurationImpl
         this.componentFactory = new DroolsCompilerComponentFactory();
 
         this.kieComponentFactory = createKieComponentFactory();
-        this.classBuilderFactory = kieComponentFactory.getClassBuilderFactory();
     }
 
     protected ClassLoader getFunctionFactoryClassLoader() {
@@ -700,11 +697,7 @@ public class KnowledgeBuilderConfigurationImpl
     }
 
     public ClassBuilderFactory getClassBuilderFactory() {
-        return classBuilderFactory;
-    }
-
-    public void setClassBuilderFactory(ClassBuilderFactory classBuilderFactory) {
-        this.classBuilderFactory = classBuilderFactory;
+        return kieComponentFactory.getClassBuilderFactory();
     }
 
     public KieComponentFactory getKieComponentFactory() {

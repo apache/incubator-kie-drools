@@ -16,9 +16,16 @@ package org.drools.core.base;
 
 import org.kie.api.internal.utils.ServiceRegistry;
 
+import static org.drools.core.base.CoreComponentsBuilder.throwExceptionForMissingMvel;
+
 public interface FieldAccessorFactory {
     class Holder {
-        private static final FieldAccessorFactory fieldFactory = ServiceRegistry.getInstance().get(FieldAccessorFactory.class);
+        private static final FieldAccessorFactory fieldFactory = getFactory();
+
+        private static FieldAccessorFactory getFactory() {
+            FieldAccessorFactory instance = ServiceRegistry.getInstance().get( FieldAccessorFactory.class );
+            return instance != null ? instance : throwExceptionForMissingMvel();
+        }
     }
 
     static FieldAccessorFactory get() {

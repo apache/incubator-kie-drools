@@ -108,6 +108,6 @@ public class Drools {
     }
 
     public static boolean hasMvel() {
-        return CoreComponentsBuilder.get() != null;
+        return CoreComponentsBuilder.present();
     }
 }
