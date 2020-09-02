@@ -1,6 +1,6 @@
 import React from 'react';
 import { Popover, Button } from '@patternfly/react-core';
-import { stateIconCreator } from '../../../utils/Utils';
+import { ProcessInstanceIconCreator } from '../../../utils/Utils';
 import { GraphQL, OUIAProps, componentOuiaProps } from '@kogito-apps/common';
 import ProcessInstance = GraphQL.ProcessInstance;
 
@@ -55,7 +55,7 @@ const ErrorPopover: React.FC<IOwnProps & OUIAProps> = ({
       {...componentOuiaProps(ouiaId, 'error-popover', ouiaSafe)}
     >
       <Button variant="link" isInline>
-        {stateIconCreator(processInstanceData.state)}
+        {ProcessInstanceIconCreator(processInstanceData.state)}
       </Button>
     </Popover>
   );

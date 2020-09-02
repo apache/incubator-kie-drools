@@ -43,6 +43,7 @@ import {
 } from '../../../utils/Utils';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
 import { SyncIcon, InfoCircleIcon } from '@patternfly/react-icons';
+import ProcessDetailsJobsPanel from '../../Organisms/ProcessDetailsJobsPanel/ProcessDetailsJobsPanel';
 
 interface MatchProps {
   instanceID: string;
@@ -488,6 +489,9 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, {}, {}> &
                   >
                     <FlexItem>
                       <ProcessDetailsTimeline data={data.ProcessInstances[0]} />
+                    </FlexItem>
+                    <FlexItem>
+                      <ProcessDetailsJobsPanel processInstanceId={id} />
                     </FlexItem>
                   </Flex>
                   {errorModal()}

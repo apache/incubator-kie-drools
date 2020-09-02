@@ -1076,6 +1076,35 @@ export namespace GraphQL {
     >;
   };
 
+  export type GetJobsByProcessInstanceIdQueryVariables = Exact<{
+    processInstanceId?: Maybe<Scalars['String']>;
+  }>;
+
+  export type GetJobsByProcessInstanceIdQuery = { __typename?: 'Query' } & {
+    Jobs?: Maybe<
+      Array<
+        Maybe<
+          { __typename?: 'Job' } & Pick<
+            Job,
+            | 'id'
+            | 'processId'
+            | 'processInstanceId'
+            | 'rootProcessId'
+            | 'status'
+            | 'expirationTime'
+            | 'priority'
+            | 'callbackEndpoint'
+            | 'repeatInterval'
+            | 'repeatLimit'
+            | 'scheduledId'
+            | 'retries'
+            | 'lastUpdate'
+          >
+        >
+      >
+    >;
+  };
+
   export const GetProcessInstancesDocument = gql`
     query getProcessInstances(
       $where: ProcessInstanceArgument
@@ -1922,5 +1951,74 @@ export namespace GraphQL {
   export type GetTasksForUserQueryResult = ApolloReactCommon.QueryResult<
     GetTasksForUserQuery,
     GetTasksForUserQueryVariables
+  >;
+  export const GetJobsByProcessInstanceIdDocument = gql`
+    query getJobsByProcessInstanceId($processInstanceId: String) {
+      Jobs(where: { processInstanceId: { equal: $processInstanceId } }) {
+        id
+        processId
+        processInstanceId
+        rootProcessId
+        status
+        expirationTime
+        priority
+        callbackEndpoint
+        repeatInterval
+        repeatLimit
+        scheduledId
+        retries
+        lastUpdate
+        expirationTime
+      }
+    }
+  `;
+
+  /**
+   * __useGetJobsByProcessInstanceIdQuery__
+   *
+   * To run a query within a React component, call `useGetJobsByProcessInstanceIdQuery` and pass it any options that fit your needs.
+   * When your component renders, `useGetJobsByProcessInstanceIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+   * you can use to render your UI.
+   *
+   * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+   *
+   * @example
+   * const { data, loading, error } = useGetJobsByProcessInstanceIdQuery({
+   *   variables: {
+   *      processInstanceId: // value for 'processInstanceId'
+   *   },
+   * });
+   */
+  export function useGetJobsByProcessInstanceIdQuery(
+    baseOptions?: ApolloReactHooks.QueryHookOptions<
+      GetJobsByProcessInstanceIdQuery,
+      GetJobsByProcessInstanceIdQueryVariables
+    >
+  ) {
+    return ApolloReactHooks.useQuery<
+      GetJobsByProcessInstanceIdQuery,
+      GetJobsByProcessInstanceIdQueryVariables
+    >(GetJobsByProcessInstanceIdDocument, baseOptions);
+  }
+  export function useGetJobsByProcessInstanceIdLazyQuery(
+    baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+      GetJobsByProcessInstanceIdQuery,
+      GetJobsByProcessInstanceIdQueryVariables
+    >
+  ) {
+    return ApolloReactHooks.useLazyQuery<
+      GetJobsByProcessInstanceIdQuery,
+      GetJobsByProcessInstanceIdQueryVariables
+    >(GetJobsByProcessInstanceIdDocument, baseOptions);
+  }
+  export type GetJobsByProcessInstanceIdQueryHookResult = ReturnType<
+    typeof useGetJobsByProcessInstanceIdQuery
+  >;
+  export type GetJobsByProcessInstanceIdLazyQueryHookResult = ReturnType<
+    typeof useGetJobsByProcessInstanceIdLazyQuery
+  >;
+  export type GetJobsByProcessInstanceIdQueryResult = ApolloReactCommon.QueryResult<
+    GetJobsByProcessInstanceIdQuery,
+    GetJobsByProcessInstanceIdQueryVariables
   >;
 }

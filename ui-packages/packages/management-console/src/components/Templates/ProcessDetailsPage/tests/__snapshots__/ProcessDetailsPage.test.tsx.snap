@@ -809,6 +809,15 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
                     />
                   </div>
                 </FlexItem>
+                <FlexItem>
+                  <div
+                    className=""
+                  >
+                    <ProcessDetailsJobsPanel
+                      processInstanceId="8035b580-6ae4-4aa8-9ec0-e18e19809e0b"
+                    />
+                  </div>
+                </FlexItem>
               </div>
             </Flex>
             <Modal
@@ -1720,6 +1729,15 @@ exports[`Process Details Page component tests snapshot testing in Error state 1`
                           "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
                         }
                       }
+                    />
+                  </div>
+                </FlexItem>
+                <FlexItem>
+                  <div
+                    className=""
+                  >
+                    <ProcessDetailsJobsPanel
+                      processInstanceId="8035b580-6ae4-4aa8-9ec0-e18e19809e0b"
                     />
                   </div>
                 </FlexItem>
@@ -2674,6 +2692,15 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
                           "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
                         }
                       }
+                    />
+                  </div>
+                </FlexItem>
+                <FlexItem>
+                  <div
+                    className=""
+                  >
+                    <ProcessDetailsJobsPanel
+                      processInstanceId="8035b580-6ae4-4aa8-9ec0-e18e19809e0b"
                     />
                   </div>
                 </FlexItem>

@@ -28,6 +28,11 @@ module.exports = typeDefs = gql`
       orderBy: VisaApplicationsOrderBy
       pagination: Pagination
     ): [VisaApplications]
+    Jobs(
+      where: JobArgument
+      orderBy: JobOrderBy
+      pagination: Pagination
+      ): [Job]
   }
 
   type ProcessInstance {
@@ -547,4 +552,61 @@ module.exports = typeDefs = gql`
     visaApplication: VisaApplicationOrderBy
     metadata: KogitoMetadataOrderBy
   }
+
+  input JobArgument {
+    and: [JobArgument!]
+    or: [JobArgument!]
+    id: IdArgument
+    processId: StringArgument
+    processInstanceId: IdArgument
+    rootProcessInstanceId: IdArgument
+    rootProcessId: StringArgument
+    status: JobStatusArgument
+    expirationTime: DateArgument
+    priority: NumericArgument
+    scheduledId: IdArgument
+    lastUpdate: DateArgument
+}
+
+input JobOrderBy {
+    processId: OrderBy
+    rootProcessId: OrderBy
+    status: OrderBy
+    expirationTime: OrderBy
+    priority: OrderBy
+    retries: OrderBy
+    lastUpdate: OrderBy
+    executionCounter: OrderBy
+}
+
+input JobStatusArgument {
+  equal: JobStatus
+  in: [JobStatus]
+}
+
+type Job {
+  id: String!
+  processId: String
+  processInstanceId: String
+  rootProcessInstanceId: String
+  rootProcessId: String
+  status: JobStatus!
+  expirationTime: DateTime
+  priority: Int
+  callbackEndpoint: String
+  repeatInterval: Int
+  repeatLimit: Int
+  scheduledId: String
+  retries: Int
+  lastUpdate: DateTime
+  executionCounter: Int
+}
+
+enum JobStatus {
+  ERROR
+  EXECUTED
+  SCHEDULED
+  RETRY
+  CANCELED
+}
 `;

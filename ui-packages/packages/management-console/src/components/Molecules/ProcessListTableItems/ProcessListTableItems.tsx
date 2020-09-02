@@ -37,7 +37,7 @@ import {
   handleRetry,
   handleSkip,
   setTitle,
-  stateIconCreator
+  ProcessInstanceIconCreator
 } from '../../../utils/Utils';
 import ProcessInstance = GraphQL.ProcessInstance;
 import { ProcessInstanceBulkList } from '../ProcessListToolbar/ProcessListToolbar';
@@ -409,7 +409,7 @@ const ProcessListTableItems: React.FC<IOwnProps & OUIAProps> = ({
                     onRetryClick={onRetryClick}
                   />
                 ) : (
-                  stateIconCreator(processInstanceData.state)
+                  ProcessInstanceIconCreator(processInstanceData.state)
                 )}
               </DataListCell>,
               <DataListCell key={2}>

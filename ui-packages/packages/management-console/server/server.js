@@ -78,7 +78,7 @@ function paginatedResult(arr, offset, limit) {
 const resolvers = {
   Query: {
     ProcessInstances: async (parent, args) => {
-      const result = data.filter(datum => {
+      const result = data.ProcessInstanceData.filter(datum => {
         console.log('args', args['where']);
         if (args['where'].id && args['where'].id.equal) {
           return datum.id == args['where'].id.equal;
@@ -139,6 +139,15 @@ const resolvers = {
         );
       }
       console.log('result length: ' + result.length);
+      return result;
+    },
+    Jobs: async (parent, args) => {
+      const result = data.JobsData.filter(jobData => {
+        console.log('Job data args->', args['where'].processInstanceId)
+        if (args['where'].processInstanceId && args['where'].processInstanceId.equal) {
+          return jobData.processInstanceId == args['where'].processInstanceId.equal;
+        }
+      });
       return result;
     }
   },

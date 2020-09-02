@@ -1,15 +1,17 @@
 import {
-  stateIconCreator,
+  ProcessInstanceIconCreator,
   setTitle,
   handleSkip,
   handleRetry,
   handleAbort,
   handleNodeInstanceRetrigger,
   handleNodeInstanceCancel,
-  performMultipleAction
+  performMultipleAction,
+  JobsIconCreator
 } from '../Utils';
 import { GraphQL } from '@kogito-apps/common';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
+import JobStatus = GraphQL.JobStatus;
 import axios from 'axios';
 import wait from 'waait';
 import { OperationType } from '../../components/Molecules/ProcessListToolbar/ProcessListToolbar';
@@ -19,22 +21,41 @@ const children = 'children';
 /* tslint:disable:no-string-literal */
 describe('uitility function testing', () => {
   it('state icon creator tests', () => {
-    const activeTestResult = stateIconCreator(ProcessInstanceState.Active);
-    const completedTestResult = stateIconCreator(
+    const activeTestResult = ProcessInstanceIconCreator(
+      ProcessInstanceState.Active
+    );
+    const completedTestResult = ProcessInstanceIconCreator(
       ProcessInstanceState.Completed
     );
-    const errorTestResult = stateIconCreator(ProcessInstanceState.Error);
-    const suspendedTestResult = stateIconCreator(
+    const errorTestResult = ProcessInstanceIconCreator(
+      ProcessInstanceState.Error
+    );
+    const suspendedTestResult = ProcessInstanceIconCreator(
       ProcessInstanceState.Suspended
     );
-    const abortedTestResult = stateIconCreator(ProcessInstanceState.Aborted);
+    const abortedTestResult = ProcessInstanceIconCreator(
+      ProcessInstanceState.Aborted
+    );
+
     expect(activeTestResult.props[children][1]).toEqual('Active');
     expect(completedTestResult.props[children][1]).toEqual('Completed');
     expect(errorTestResult.props[children][1]).toEqual('Error');
     expect(suspendedTestResult.props[children][1]).toEqual('Suspended');
     expect(abortedTestResult.props[children][1]).toEqual('Aborted');
   });
+  it('Jobs icon creator tests', () => {
+    const jobsErrorResult = JobsIconCreator(JobStatus.Error);
+    const jobsCanceledResult = JobsIconCreator(JobStatus.Canceled);
+    const jobsScheduledResult = JobsIconCreator(JobStatus.Scheduled);
+    const jobsExecutedResult = JobsIconCreator(JobStatus.Executed);
+    const jobsRetryResult = JobsIconCreator(JobStatus.Retry);
 
+    expect(jobsErrorResult.props[children][1]).toEqual('Error');
+    expect(jobsCanceledResult.props[children][1]).toEqual('Canceled');
+    expect(jobsScheduledResult.props[children][1]).toEqual('Scheduled');
+    expect(jobsRetryResult.props[children][1]).toEqual('Retry');
+    expect(jobsExecutedResult.props[children][1]).toEqual('Executed');
+  });
   it('set title tests', () => {
     const successResult = setTitle('success', 'Abort operation');
     const failureResult = setTitle('failure', 'Skip operation');

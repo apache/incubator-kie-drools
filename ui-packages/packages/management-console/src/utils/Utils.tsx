@@ -6,17 +6,22 @@ import {
   BanIcon,
   PausedIcon,
   ErrorCircleOIcon,
-  InfoCircleIcon
+  InfoCircleIcon,
+  UndoIcon,
+  ClockIcon
 } from '@patternfly/react-icons';
 import { GraphQL } from '@kogito-apps/common';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
 import ProcessInstance = GraphQL.ProcessInstance;
+import JobStatus = GraphQL.JobStatus;
 import {
   ProcessInstanceBulkList,
   OperationType
 } from '../components/Molecules/ProcessListToolbar/ProcessListToolbar';
 
-export const stateIconCreator = (state: ProcessInstanceState): JSX.Element => {
+export const ProcessInstanceIconCreator = (
+  state: ProcessInstanceState
+): JSX.Element => {
   switch (state) {
     case ProcessInstanceState.Active:
       return (
@@ -57,6 +62,52 @@ export const stateIconCreator = (state: ProcessInstanceState): JSX.Element => {
             color="var(--pf-global--danger-color--100)"
           />
           Error
+        </>
+      );
+  }
+};
+
+export const JobsIconCreator = (state: JobStatus): JSX.Element => {
+  switch (state) {
+    case JobStatus.Error:
+      return (
+        <>
+          <ErrorCircleOIcon
+            className="pf-u-mr-sm"
+            color="var(--pf-global--danger-color--100)"
+          />
+          Error
+        </>
+      );
+    case JobStatus.Canceled:
+      return (
+        <>
+          <BanIcon className="pf-u-mr-sm" />
+          Canceled
+        </>
+      );
+    case JobStatus.Executed:
+      return (
+        <>
+          <CheckCircleIcon
+            className="pf-u-mr-sm"
+            color="var(--pf-global--success-color--100)"
+          />
+          Executed
+        </>
+      );
+    case JobStatus.Retry:
+      return (
+        <>
+          <UndoIcon className="pf-u-mr-sm" />
+          Retry
+        </>
+      );
+    case JobStatus.Scheduled:
+      return (
+        <>
+          <ClockIcon className="pf-u-mr-sm" />
+          Scheduled
         </>
       );
   }

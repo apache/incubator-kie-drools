@@ -315,3 +315,24 @@ const GET_TASKS_FOR_USER = gql`
     }
   }
 `;
+
+const GET_JOBS_BY_PROC_INST_ID = gql`
+  query getJobsByProcessInstanceId($processInstanceId: String) {
+    Jobs(where: { processInstanceId: { equal: $processInstanceId } }) {
+      id
+      processId
+      processInstanceId
+      rootProcessId
+      status
+      expirationTime
+      priority
+      callbackEndpoint
+      repeatInterval
+      repeatLimit
+      scheduledId
+      retries
+      lastUpdate
+      expirationTime
+    }
+  }
+`;

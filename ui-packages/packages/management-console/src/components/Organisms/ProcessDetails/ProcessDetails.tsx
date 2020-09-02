@@ -23,7 +23,7 @@ import {
 } from '@kogito-apps/common';
 import {
   getProcessInstanceDescription,
-  stateIconCreator
+  ProcessInstanceIconCreator
 } from '../../../utils/Utils';
 import ProcessInstance = GraphQL.ProcessInstance;
 
@@ -80,7 +80,7 @@ const ProcessDetails: React.FC<IOwnProps & OUIAProps> = ({
           )}
           <FormGroup label="State" fieldId="state">
             <Text component={TextVariants.p}>
-              {stateIconCreator(data.ProcessInstances[0].state)}
+              {ProcessInstanceIconCreator(data.ProcessInstances[0].state)}
             </Text>
           </FormGroup>
           <FormGroup label="Id" fieldId="id">
