@@ -77,7 +77,7 @@ public final class XsdAggregator {
         new XsdAggregator().mergeXmlSchemas(solverXsd, benchmarkXsd, outputXsd);
     }
 
-    protected static File checkFileExists(File file) {
+    private static File checkFileExists(File file) {
         Objects.requireNonNull(file);
         if (!file.exists()) {
             throw new IllegalArgumentException(String.format("The file (%s) does not exist.", file.getAbsolutePath()));
@@ -85,7 +85,7 @@ public final class XsdAggregator {
         return file;
     }
 
-    protected void mergeXmlSchemas(File solverSchemaFile, File benchmarkSchemaFile, File outputSchemaFile) {
+    private void mergeXmlSchemas(File solverSchemaFile, File benchmarkSchemaFile, File outputSchemaFile) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         Document solverSchema = parseXml(solverSchemaFile, factory);
         Element solverRootElement = solverSchema.getDocumentElement();

@@ -41,13 +41,14 @@ class XsdAggregatorTest {
     @Test
     void validateByMergedXsd() throws IOException {
         // 1. Use the solver.xsd and the benchmark-with-import.xsd from the classpath.
-        File solverXsd = XsdAggregator.checkFileExists(getResourceAsFile("/solver.xsd"));
-        File benchmarkXsd = XsdAggregator.checkFileExists(getResourceAsFile("/benchmark-with-import.xsd"));
+        File solverXsd = getResourceAsFile("/solver.xsd");
+        File benchmarkXsd = getResourceAsFile("/benchmark-with-import.xsd");
         File mergedBenchmarkXsd = File.createTempFile("benchmark_", ".xsd");
-        XsdAggregator xsdAggregator = new XsdAggregator();
 
         // 2. Merge them to a single file.
-        xsdAggregator.mergeXmlSchemas(solverXsd, benchmarkXsd, mergedBenchmarkXsd);
+        String[] args = new String[] { solverXsd.getAbsolutePath(), benchmarkXsd.getAbsolutePath(),
+                mergedBenchmarkXsd.getAbsolutePath() };
+        XsdAggregator.main(args);
 
         // 3. prepare a short benchmarkConfig (including solver config) and validate it
         GenericJaxbIO<PlannerBenchmarkConfig> jaxbIO = new GenericJaxbIO<>(PlannerBenchmarkConfig.class);
