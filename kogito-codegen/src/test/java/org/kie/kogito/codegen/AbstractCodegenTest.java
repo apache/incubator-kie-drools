@@ -40,11 +40,13 @@ import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.core.io.impl.FileSystemResource;
 import org.kie.kogito.Application;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.context.SpringBootKogitoBuildContext;
 import org.kie.kogito.codegen.decision.DecisionCodegen;
+import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.codegen.prediction.PredictionCodegen;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
@@ -88,11 +90,13 @@ public class AbstractCodegenTest {
                                                                                                    TEST_RESOURCES, resource))
                                                                                            .collect(Collectors.toList())));
         generatorTypeMap.put(TYPE.DECISION,
-                             strings -> DecisionCodegen.ofFiles(Paths.get(TEST_RESOURCES).toAbsolutePath(),
-                                                                strings
-                                                                        .stream()
-                                                                        .map(resource -> new File(TEST_RESOURCES, resource))
-                                                                        .collect(Collectors.toList())));
+                             strings -> {
+                                 List<CollectedResource> cResources = strings.stream()
+                                                                             .map(s -> new CollectedResource(Paths.get(TEST_RESOURCES).toAbsolutePath(),
+                                                                                                             new FileSystemResource(Paths.get(TEST_RESOURCES, s).toAbsolutePath().toFile())))
+                                                                             .collect(Collectors.toList());
+                                 return DecisionCodegen.ofCollectedResources(cResources);
+                             });
 
         generatorTypeMap.put(TYPE.JAVA, strings -> IncrementalRuleCodegen.ofJavaFiles(strings
                                                                                               .stream()

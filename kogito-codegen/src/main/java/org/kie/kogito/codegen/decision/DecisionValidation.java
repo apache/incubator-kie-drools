@@ -1,0 +1,147 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kie.kogito.codegen.decision;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
+import org.kie.api.builder.Message.Level;
+import org.kie.api.io.Resource;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.validation.DMNValidator;
+import org.kie.dmn.validation.DMNValidatorFactory;
+import org.kie.kogito.codegen.GeneratorContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Helper class to support DecisionCodegen for DMN model validations
+ */
+public class DecisionValidation {
+
+    public static final Logger LOG = LoggerFactory.getLogger(DecisionValidation.class);
+
+    public static enum ValidationOption {
+        /**
+         * Perform DMN Validation and blocks if any Errors is found. This is the default.
+         */
+        ENABLED,
+        /**
+         * Disable DMN Validation
+         */
+        DISABLED,
+        /**
+         * Perform DMN Validation, but Errors are ignored: they are logged but they don't result in any blocking
+         */
+        IGNORE;
+    }
+
+    static void dmnValidateResources(GeneratorContext context, Collection<Resource> resources) {
+        ValidationOption validateOption = fromContext(context);
+        if (validateOption == ValidationOption.DISABLED) {
+            LOG.info("DMN Validation was set to DISABLED, skipping.");
+            return;
+        }
+        List<DMNMessage> schemaModelValidations = DMNValidatorFactory.newValidator(Arrays.asList(new ExtendedDMNProfile()))
+                                                                     .validateUsing(DMNValidator.Validation.VALIDATE_SCHEMA,
+                                                                                    DMNValidator.Validation.VALIDATE_MODEL)
+                                                                     .theseModels(resources.stream()
+                                                                                           .map(DecisionValidation::resourceToReader)
+                                                                                           .collect(Collectors.toList())
+                                                                                           .toArray(new Reader[]{}));
+        logValidationMessages(schemaModelValidations);
+        List<DMNMessage> errors = schemaModelValidations.stream().filter(m -> m.getLevel() == Level.ERROR).collect(Collectors.toList());
+        if (!errors.isEmpty()) {
+            if (validateOption != ValidationOption.IGNORE) {
+                StringBuilder sb = new StringBuilder("DMN Validation schema and model validation contained errors").append("\n");
+                sb.append("You may configure ").append(DecisionCodegen.VALIDATION_CONFIGURATION_KEY).append("=IGNORE to ignore validation errors").append("\n");
+                sb.append("DMN Validation errors:").append("\n");
+                sb.append(errors.stream().map(DMNMessage::getMessage).collect(Collectors.joining(",\n")));
+                LOG.error(sb.toString());
+                throw new RuntimeException(sb.toString());
+            } else {
+                LOG.warn("DMN Validation encountered errors but validation configuration was set to IGNORE, continuing with no blocking error.");
+                return;
+            }
+        }
+    }
+
+    private static ValidationOption fromContext(GeneratorContext context) {
+        if (context == null) {
+            LOG.info("No GeneratorContext available, will assume {}=ENABLED", DecisionCodegen.VALIDATION_CONFIGURATION_KEY);
+            return ValidationOption.ENABLED;
+        }
+        Optional<String> applicationProperty = context.getApplicationProperty(DecisionCodegen.VALIDATION_CONFIGURATION_KEY);
+        if (!applicationProperty.isPresent()) {
+            return ValidationOption.ENABLED; // the default;
+        }
+        Optional<ValidationOption> configOption = Arrays.stream(ValidationOption.values())
+                                                        .filter(e -> e.name().equalsIgnoreCase(applicationProperty.get()))
+                                                        .findAny();
+        if (!configOption.isPresent()) {
+            LOG.warn("Validation configuration value {} does not correspond to any valid option, will assume {}=ENABLED", applicationProperty.get(), DecisionCodegen.VALIDATION_CONFIGURATION_KEY);
+            return ValidationOption.ENABLED;
+        }
+        return configOption.get();
+    }
+
+    private static Reader resourceToReader(Resource resource) {
+        try {
+            return resource.getReader();
+        } catch (IOException e) {
+            throw new RuntimeException("DecisionValidation unable to locate Resource's Reader", e);
+        }
+    }
+
+    private static void logValidationMessages(List<DMNMessage> validation) {
+        for (DMNMessage msg : validation) {
+            Consumer<String> logFn = null;
+            switch (msg.getLevel()) {
+                case ERROR:
+                    logFn = LOG::error;
+                    break;
+                case WARNING:
+                    logFn = LOG::warn;
+                    break;
+                case INFO:
+                default:
+                    logFn = LOG::info;
+                    break;
+            }
+            StringBuilder sb = new StringBuilder("DMN Model name: ");
+            if (msg.getSourceReference() instanceof DMNModelInstrumentedBase) {
+                DMNModelInstrumentedBase ib = (DMNModelInstrumentedBase) msg.getSourceReference();
+                while (ib.getParent() != null) {
+                    ib = ib.getParent();
+                }
+                if (ib instanceof Definitions) {
+                    sb.append(((Definitions) ib).getName() + ", ");
+                }
+            }
+            sb.append(msg.getText());
+            logFn.accept(sb.toString());
+        }
+    }
+}

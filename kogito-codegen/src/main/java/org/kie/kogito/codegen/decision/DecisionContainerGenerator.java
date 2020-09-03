@@ -36,6 +36,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.util.IoUtils;
 import org.kie.kogito.codegen.AbstractApplicationSection;
 import org.kie.kogito.codegen.AddonsConfig;
+import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.decision.DecisionModels;
 import org.kie.kogito.dmn.DmnExecutionIdSupplier;
 
@@ -46,13 +47,13 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
     private static final String TEMPLATE_JAVA = "/class-templates/DecisionContainerTemplate.java";
 
     private String applicationCanonicalName;
-    private final List<DMNResource> resources;
+    private final List<CollectedResource> resources;
     private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
 
-    public DecisionContainerGenerator(String applicationCanonicalName, List<DMNResource> resources) {
+    public DecisionContainerGenerator(String applicationCanonicalName, List<CollectedResource> cResources) {
         super("DecisionModels", "decisionModels", DecisionModels.class);
         this.applicationCanonicalName = applicationCanonicalName;
-        this.resources = resources;
+        this.resources = cResources;
     }
 
     public DecisionContainerGenerator withAddons(AddonsConfig addonsConfig) {
@@ -66,7 +67,7 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
         ClassOrInterfaceDeclaration typeDeclaration = (ClassOrInterfaceDeclaration) clazz.getTypes().get(0);
         ClassOrInterfaceType applicationClass = StaticJavaParser.parseClassOrInterfaceType(applicationCanonicalName);
         ClassOrInterfaceType inputStreamReaderClass = StaticJavaParser.parseClassOrInterfaceType(java.io.InputStreamReader.class.getCanonicalName());
-        for (DMNResource resource : resources) {
+        for (CollectedResource resource : resources) {
             MethodCallExpr getResAsStream = getReadResourceMethod(applicationClass, resource);
             ObjectCreationExpr isr = new ObjectCreationExpr().setType(inputStreamReaderClass).addArgument(getResAsStream);
             Optional<FieldDeclaration> dmnRuntimeField = typeDeclaration.getFieldByName("dmnRuntime");
@@ -84,13 +85,13 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
         return typeDeclaration;
     }
 
-    private String getDecisionModelJarResourcePath(DMNResource resource) {
-        return resource.getDmnModel().getResource().getSourcePath();
+    private String getDecisionModelJarResourcePath(CollectedResource resource) {
+        return resource.resource().getSourcePath();
     }
 
-    private String getDecisionModelRelativeResourcePath(DMNResource resource) {
+    private String getDecisionModelRelativeResourcePath(CollectedResource resource) {
         String source = getDecisionModelJarResourcePath(resource);
-        Path relativizedPath = resource.getPath().relativize(Paths.get(source));
+        Path relativizedPath = resource.basePath().relativize(Paths.get(source));
         return "/" + relativizedPath.toString().replace(File.separatorChar, '/');
     }
 
@@ -101,8 +102,8 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
         execIdSupplierVariable.setInitializer(newObject(DmnExecutionIdSupplier.class));
     }
 
-    private MethodCallExpr getReadResourceMethod(ClassOrInterfaceType applicationClass, DMNResource resource) {
-        if (resource.getPath().toString().endsWith(".jar")) {
+    private MethodCallExpr getReadResourceMethod(ClassOrInterfaceType applicationClass, CollectedResource resource) {
+        if (resource.basePath().toString().endsWith(".jar")) {
             return new MethodCallExpr(
                     new MethodCallExpr(new NameExpr(IoUtils.class.getCanonicalName() + ".class"), "getClassLoader"),
                     "getResourceAsStream").addArgument(new StringLiteralExpr(getDecisionModelJarResourcePath(resource)));
