@@ -26,6 +26,8 @@ public interface GroupByPattern<T, K> extends AccumulatePattern<T> {
 
     FunctionN getGroupingFunction();
 
+    Pattern[] getGroupingPatterns();
+
     default Object getKey(Object... objs) {
         return getGroupingFunction().apply( objs );
     }

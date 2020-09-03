@@ -554,7 +554,7 @@ public class KiePackagesBuilder {
         PatternImpl pattern = new PatternImpl(inputVariable, new SingleConstraint1( topicExpr ), Collections.singletonList( binding ));
         group.addChild( buildPattern( ctx, group, pattern ) );
 
-        PatternImpl accPattern = (PatternImpl) groupByPattern.getPattern();
+        PatternImpl accPattern = (PatternImpl) groupByPattern.getGroupingPatterns()[0];
         ctx.addSubRule( insertingGroupRule(groupByPattern, accPattern) );
         ctx.addSubRule( deletingGroupRule(groupByPattern, accPattern) );
 

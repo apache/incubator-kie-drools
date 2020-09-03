@@ -54,6 +54,7 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 public class AccumulateTest extends BaseModelTest {
@@ -1767,6 +1768,78 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals( 3, results.size() );
         assertEquals( 35, results.get("G") );
         assertEquals( 71, results.get("E") );
+        assertEquals( 126, results.get("M") );
+        results.clear();
+
+        ksession.delete( meFH );
+        ksession.fireAllRules();
+
+        assertEquals( 1, results.size() );
+        assertEquals( 81, results.get("M") );
+        results.clear();
+
+        ksession.update(geoffreyFH, new Person("Geoffrey", 40));
+        ksession.insert(new Person("Matteo", 38));
+        ksession.fireAllRules();
+
+        assertEquals( 2, results.size() );
+        assertEquals( 40, results.get("G") );
+        assertEquals( 119, results.get("M") );
+    }
+
+    @Test
+    public void testGroupBy3WithExists() {
+        String str =
+                "import java.util.*;\n" +
+                "import " + GroupKey.class.getCanonicalName() + ";\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global Map results;\n" +
+                "rule R1 when\n" +
+                "    Person( $initial : name.substring(0,1) )\n" +
+                "    exists( String( this == $initial) )\n " +
+                "    not( GroupKey(topic ==\"a\", key == $initial) )\n" +
+                "then\n" +
+                "    insert( new GroupKey( \"a\", $initial ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "    $k: GroupKey( topic ==\"a\", $initial : key )\n" +
+                "    not( Person( name.substring(0,1) == $initial ) )\n" +
+                "then\n" +
+                "    delete( $k );\n" +
+                "end\n" +
+                "\n" +
+                "rule R3 when\n" +
+                "    GroupKey( topic ==\"a\", $initial : key )\n" +
+                "    accumulate (\n" +
+                "            Person( $age: age, name.substring(0,1) == $initial );\n" +
+                "            $sumOfAges : sum($age)\n" +
+                "         )\n" +
+                "then\n" +
+                "    results.put($initial, $sumOfAges);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Map results = new HashMap();
+        ksession.setGlobal( "results", results );
+
+        ksession.insert(new Person("Mark", 42));
+        ksession.insert(new Person("Edson", 38));
+        FactHandle meFH = ksession.insert(new Person("Mario", 45));
+        ksession.insert(new Person("Maciej", 39));
+        ksession.insert(new Person("Edoardo", 33));
+        FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
+
+        ksession.insert( "G" );
+        ksession.insert( "M" );
+        ksession.insert( "X" );
+
+        ksession.fireAllRules();
+
+        assertEquals( 2, results.size() );
+        assertEquals( 35, results.get("G") );
+        assertNull( results.get("E") );
         assertEquals( 126, results.get("M") );
         results.clear();
 
