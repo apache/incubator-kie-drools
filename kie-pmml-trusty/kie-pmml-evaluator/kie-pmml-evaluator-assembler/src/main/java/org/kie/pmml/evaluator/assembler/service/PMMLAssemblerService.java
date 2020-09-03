@@ -68,11 +68,24 @@ public class PMMLAssemblerService implements KieAssemblerService {
     }
 
     private static boolean isToEnable() {
+        if (isjPMMLAvailableToClassLoader()) {
+            return false;
+        }
         if (!isOtherImplementationPresent()) {
             return true;
         } else {
             final String property = System.getProperty(KIE_PMML_IMPLEMENTATION.getName(), LEGACY.getName());
             return property.equals(NEW.getName());
+        }
+    }
+
+    private static boolean isjPMMLAvailableToClassLoader() {
+        try {
+            Thread.currentThread().getContextClassLoader().loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
+            logger.info("jpmml libraries available on classpath, skipping kie-pmml parsing and compilation");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
         }
     }
 
