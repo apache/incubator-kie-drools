@@ -55,7 +55,8 @@ public class VertxRouter {
     }
 
     void setupRouter(@Observes Router router) {
-        router.route("/").handler(ctx -> handle(ctx));
+        router.route("/").handler(ctx -> ctx.response().putHeader("location", "/audit").setStatusCode(302).end());
+        router.route("/audit*").handler(ctx -> handle(ctx));
         router.route().handler(StaticHandler.create());
     }
 

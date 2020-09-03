@@ -62,4 +62,15 @@ public class StaticContentTest {
                 .header(HttpHeaders.CACHE_CONTROL.toString(), "no-cache")
                 .header(HttpHeaders.CONTENT_TYPE.toString(), "text/html;charset=utf8");
     }
+    
+    @Test
+    public void testHandlePath() {
+        given().when().get("/audit")
+                .then()
+                .statusCode(200);
+
+        given().when().get("/audit/decision/9cf2179f-4fed-4793-b674-a19c45e6cbff/outcomes")
+                .then()
+                .statusCode(200);
+    }
 }
