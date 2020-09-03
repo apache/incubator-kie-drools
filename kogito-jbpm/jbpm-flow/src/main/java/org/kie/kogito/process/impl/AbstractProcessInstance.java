@@ -52,7 +52,6 @@ import org.kie.kogito.process.NodeNotFoundException;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.ProcessInstanceDuplicatedException;
 import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.Signal;
 import org.kie.kogito.process.WorkItem;
@@ -204,11 +203,8 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             processInstance.setReferenceId(referenceId);
         }
 
-        ((InternalProcessRuntime) getProcessRuntime()).getProcessInstanceManager().addProcessInstance(this.processInstance, this.correlationKey);
+        ((InternalProcessRuntime) getProcessRuntime()).getProcessInstanceManager().addProcessInstance(this.processInstance);
         this.id = processInstance.getId();
-        if (correlationKey != null && process.instances.exists(id)) {
-            throw new ProcessInstanceDuplicatedException(id);
-        }
         addCompletionEventListener();
         org.kie.api.runtime.process.ProcessInstance processInstance = getProcessRuntime().startProcessInstance(this.id, trigger);
         addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).create(pi.id(), pi));
@@ -314,7 +310,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     public void startFrom(String nodeId, String referenceId) {
         processInstance.setStartDate(new Date());
         processInstance.setState(STATE_ACTIVE);
-        ((InternalProcessRuntime) getProcessRuntime()).getProcessInstanceManager().addProcessInstance(this.processInstance, this.correlationKey);
+        ((InternalProcessRuntime) getProcessRuntime()).getProcessInstanceManager().addProcessInstance(this.processInstance);
         this.id = processInstance.getId();
         addCompletionEventListener();
         if (referenceId != null) {

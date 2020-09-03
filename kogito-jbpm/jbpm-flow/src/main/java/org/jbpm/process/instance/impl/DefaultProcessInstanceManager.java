@@ -19,20 +19,17 @@ package org.jbpm.process.instance.impl;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jbpm.process.instance.ProcessInstanceManager;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.process.CorrelationKey;
 
 public class DefaultProcessInstanceManager implements ProcessInstanceManager {
 
     private Map<String, ProcessInstance> processInstances = new ConcurrentHashMap<>();
-    private Map<CorrelationKey, ProcessInstance> processInstancesByCorrelationKey = new ConcurrentHashMap<>();
 
-    public void addProcessInstance(ProcessInstance processInstance, CorrelationKey correlationKey) {
+    public void addProcessInstance(ProcessInstance processInstance) {
         String id = UUID.randomUUID().toString();
         ((org.jbpm.process.instance.ProcessInstance) processInstance).setId(id);
         internalAddProcessInstance(processInstance);
@@ -60,11 +57,6 @@ public class DefaultProcessInstanceManager implements ProcessInstanceManager {
 
     public void internalRemoveProcessInstance(ProcessInstance processInstance) {
         processInstances.remove(processInstance.getId());
-        for (Entry<CorrelationKey, ProcessInstance> entry : processInstancesByCorrelationKey.entrySet()) {
-            if (entry.getValue().getId().equals(processInstance.getId())) {
-                processInstancesByCorrelationKey.remove(entry.getKey());
-            }
-        }
     }
 
     public void clearProcessInstances() {
@@ -73,10 +65,5 @@ public class DefaultProcessInstanceManager implements ProcessInstanceManager {
 
     public void clearProcessInstancesState() {
 
-    }
-
-    @Override
-    public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
-        return processInstancesByCorrelationKey.get(correlationKey);
     }
 }

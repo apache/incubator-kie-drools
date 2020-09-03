@@ -130,7 +130,7 @@ public class LightProcessRuntime implements InternalProcessRuntime {
     public ProcessInstance startProcess(String processId, Map<String, Object> parameters, String trigger) {
         ProcessInstance processInstance = createProcessInstance(processId, parameters);
         if (processInstance != null) {
-            processInstanceManager.addProcessInstance(processInstance, null);
+            processInstanceManager.addProcessInstance(processInstance);
             return startProcessInstance(processInstance.getId(), trigger);
         }
         return null;
@@ -163,7 +163,7 @@ public class LightProcessRuntime implements InternalProcessRuntime {
     public ProcessInstance startProcess(String processId, CorrelationKey correlationKey, Map<String, Object> parameters) {
         ProcessInstance processInstance = createProcessInstance(processId, correlationKey, parameters);
         if (processInstance != null) {
-            processInstanceManager.addProcessInstance(processInstance, correlationKey);
+            processInstanceManager.addProcessInstance(processInstance);
             return startProcessInstance(processInstance.getId());
         }
         return null;
@@ -183,11 +183,6 @@ public class LightProcessRuntime implements InternalProcessRuntime {
         } finally {
             runtimeContext.endOperation();
         }
-    }
-
-    @Override
-    public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
-        return processInstanceManager.getProcessInstance(correlationKey);
     }
 
     private org.jbpm.process.instance.ProcessInstance createProcessInstance(Process process, CorrelationKey correlationKey, Map<String, Object> parameters) {

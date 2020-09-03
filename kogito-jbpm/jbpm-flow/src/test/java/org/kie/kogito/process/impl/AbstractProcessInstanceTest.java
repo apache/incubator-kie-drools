@@ -83,7 +83,7 @@ public class AbstractProcessInstanceTest {
         assertThat(processInstance.id()).isNull();
         assertThat(processInstance.businessKey()).isNull();
 
-        verify(pim, never()).addProcessInstance(any(), any());
+        verify(pim, never()).addProcessInstance(any());
     }
 
     @Test

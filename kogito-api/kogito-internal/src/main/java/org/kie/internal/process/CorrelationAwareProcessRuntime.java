@@ -55,14 +55,4 @@ public interface CorrelationAwareProcessRuntime {
      */
     ProcessInstance createProcessInstance(String processId, CorrelationKey correlationKey,
                                           Map<String, Object> parameters);
-
-    /**
-     * Returns the process instance with the given correlationKey.  Note that only active process instances
-     * will be returned.  If a process instance has been completed already, this method will return
-     * <code>null</code>.
-     *
-     * @param correlationKey the custom correlation key assigned when process instance was created
-     * @return the process instance with the given id or <code>null</code> if it cannot be found
-     */
-    ProcessInstance getProcessInstance(CorrelationKey correlationKey);
 }

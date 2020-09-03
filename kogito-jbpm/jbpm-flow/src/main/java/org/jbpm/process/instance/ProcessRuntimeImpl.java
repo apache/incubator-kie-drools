@@ -227,11 +227,6 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         }
     }
 
-    @Override
-    public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
-        return processInstanceManager.getProcessInstance(correlationKey);
-    }
-
     private org.jbpm.process.instance.ProcessInstance startProcess(Process process, CorrelationKey correlationKey, Map<String, Object> parameters) {
         ProcessInstanceFactory conf = ProcessInstanceFactoryRegistry.INSTANCE.getProcessInstanceFactory(process);
         if (conf == null) {
