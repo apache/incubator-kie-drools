@@ -117,6 +117,13 @@
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <!-- collides with javax.inject:javax.inject:jar:1:compile -->
+        <exclusion>
+          <groupId>jakarta.enterprise</groupId>
+          <artifactId>jakarta.enterprise.cdi-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
