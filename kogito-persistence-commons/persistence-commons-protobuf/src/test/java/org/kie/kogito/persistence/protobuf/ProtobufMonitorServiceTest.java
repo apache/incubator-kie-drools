@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -60,15 +59,14 @@ class ProtobufMonitorServiceTest {
 
             protobufMonitorService.monitor = true;
             protobufMonitorService.protoFiles = Optional.of(dir.toAbsolutePath().toString());
-            protobufMonitorService.onFolderWatch = path ->
-                    CompletableFuture.runAsync(() -> {
-                        try {
-                            Files.write(file2, "test".getBytes());
-                            Files.write(file1, "test".getBytes());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
+            protobufMonitorService.onFolderWatch = path -> {
+                try {
+                    Files.write(file2, "test".getBytes());
+                    Files.write(file1, "test".getBytes());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            };
             protobufMonitorService.startMonitoring();
 
             latch.await(1, TimeUnit.MINUTES);
@@ -89,8 +87,8 @@ class ProtobufMonitorServiceTest {
         try {
             dir = Files.createTempDirectory(this.getClass().getName());
             Files.createFile(dir.resolve("kogito-application.proto"));
-            Files.createFile(dir.resolve("test1.proto"));
-            CountDownLatch latch = new CountDownLatch(2);
+            Files.createFile(dir.resolve("test1.proto")); // valid proto file
+            CountDownLatch latch = new CountDownLatch(2); // should only register test1 and test2 proto files
             Path proto = dir.resolve("proto");
             doAnswer(args -> {
                 latch.countDown();
@@ -99,16 +97,15 @@ class ProtobufMonitorServiceTest {
 
             protobufMonitorService.monitor = true;
             protobufMonitorService.protoFiles = Optional.of(dir.toAbsolutePath().toString());
-            protobufMonitorService.onFolderWatch = path ->
-                    CompletableFuture.runAsync(() -> {
-                        try {
-                            Path sub = Files.createDirectory(proto);
-                            Files.createFile(sub.resolve("test2.txt"));
-                            Files.createFile(sub.resolve("test2.proto"));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
+            protobufMonitorService.onFolderWatch = path -> {
+                try {
+                    Path sub = Files.createDirectory(proto);
+                    Files.createFile(sub.resolve("test2.txt"));
+                    Files.createFile(sub.resolve("test2.proto")); // valid proto file
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            };
             protobufMonitorService.startMonitoring();
 
             latch.await(1, TimeUnit.MINUTES);
