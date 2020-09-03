@@ -29,6 +29,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
@@ -850,6 +851,59 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
             assertThat(outputAddr1.get("street"), anyOf(is("street1"), is("street2")));
             assertThat(outputAddr2.get("city"), anyOf(is("city1"), is("city2")));
             assertThat(outputAddr2.get("street"), anyOf(is("street1"), is("street2")));
+        }
+    }
+
+    @Test
+    public void testEvaluateByIdAndName() {
+        final DMNRuntime runtime = createRuntimeWithAdditionalResources("2decisions.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_6453A539-85B5-4A4E-800E-6721C50B6B55", "2decisions");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("InputData-1", mapOf(entry("name", "John"), entry("age", 30)));
+
+        final DMNResult dmnResult1 = evaluateById(runtime, dmnModel, context, "_0BD595AB-B8C6-4FBF-B2DD-BEB49420EDFE");
+
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult1.getMessages()), dmnResult1.hasErrors(), is(false));
+
+        if (isTypeSafe()) {
+            FEELPropertyAccessible outputSet = ((DMNContextFPAImpl)dmnResult1.getContext()).getFpa();
+            Map<String, Object> allProperties = outputSet.allFEELProperties();
+            FEELPropertyAccessible person = (FEELPropertyAccessible)allProperties.get("Decision-1");
+            assertThat(person.getClass().getSimpleName(), is("TPerson"));
+            assertThat(person.getFEELProperty("name").toOptional().get(), is("Paul"));
+            assertThat(person.getFEELProperty("age").toOptional().get(), is(EvalHelper.coerceNumber(28)));
+
+            assertThat(allProperties.get("Decision-2"), nullValue());
+        } else {
+            Map<String, Object> person = (Map<String, Object>)dmnResult1.getContext().get("Decision-1");
+            assertThat(person.get("name"), is("Paul"));
+            assertThat(person.get("age"), is(EvalHelper.coerceNumber(28)));
+
+            assertThat(dmnResult1.getContext().get("Decision-2"), nullValue());
+        }
+
+        final DMNResult dmnResult2 = evaluateByName(runtime, dmnModel, context, "Decision-2");
+
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult2.getMessages()), dmnResult2.hasErrors(), is(false));
+
+        if (isTypeSafe()) {
+            FEELPropertyAccessible outputSet = ((DMNContextFPAImpl)dmnResult2.getContext()).getFpa();
+            Map<String, Object> allProperties = outputSet.allFEELProperties();
+            FEELPropertyAccessible person = (FEELPropertyAccessible)allProperties.get("Decision-2");
+            assertThat(person.getClass().getSimpleName(), is("TPerson"));
+            assertThat(person.getFEELProperty("name").toOptional().get(), is("George"));
+            assertThat(person.getFEELProperty("age").toOptional().get(), is(EvalHelper.coerceNumber(27)));
+
+            assertThat(allProperties.get("Decision-1"), nullValue());
+        } else {
+            Map<String, Object> person = (Map<String, Object>)dmnResult2.getContext().get("Decision-2");
+            assertThat(person.get("name"), is("George"));
+            assertThat(person.get("age"), is(EvalHelper.coerceNumber(27)));
+
+            assertThat(dmnResult2.getContext().get("Decision-1"), nullValue());
         }
     }
 }

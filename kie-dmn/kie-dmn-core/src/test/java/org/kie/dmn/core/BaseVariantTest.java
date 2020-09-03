@@ -218,6 +218,22 @@ public abstract class BaseVariantTest {
         }
     }
 
+    protected DMNResult evaluateById(DMNRuntime runtime, DMNModel dmnModel, DMNContext context, String... decisionIds) {
+        if (testConfig.isTypeSafe()) {
+            return evaluateByIdTypeSafe(runtime, dmnModel, context, decisionIds);
+        } else {
+            return runtime.evaluateById(dmnModel, context, decisionIds);
+        }
+    }
+
+    protected DMNResult evaluateByName(DMNRuntime runtime, DMNModel dmnModel, DMNContext context, String... decisionNames) {
+        if (testConfig.isTypeSafe()) {
+            return evaluateByNameTypeSafe(runtime, dmnModel, context, decisionNames);
+        } else {
+            return runtime.evaluateByName(dmnModel, context, decisionNames);
+        }
+    }
+
     protected DMNResult evaluateDecisionService(DMNRuntime runtime, DMNModel dmnModel, DMNContext context, String decisionServiceName) {
         if (testConfig.isTypeSafe()) {
             return evaluateDecisionServiceTypeSafe(runtime, dmnModel, context, decisionServiceName);
@@ -234,6 +250,32 @@ public abstract class BaseVariantTest {
             outputSet.fromMap(inputMap);
             DMNContext contextFpa = new DMNContextFPAImpl(outputSet);
             return runtime.evaluateAll(dmnModel, contextFpa);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private DMNResult evaluateByIdTypeSafe(DMNRuntime runtime, DMNModel dmnModel, DMNContext context, String... decisionIds) {
+        Map<String, Object> inputMap = context.getAll();
+        FEELPropertyAccessible outputSet;
+        try {
+            outputSet = createInstanceFromCompiledClasses(allCompiledClasses, factory.create(dmnModel), "OutputSet");
+            outputSet.fromMap(inputMap);
+            DMNContext contextFpa = new DMNContextFPAImpl(outputSet);
+            return runtime.evaluateById(dmnModel, contextFpa, decisionIds);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private DMNResult evaluateByNameTypeSafe(DMNRuntime runtime, DMNModel dmnModel, DMNContext context, String... decisionNames) {
+        Map<String, Object> inputMap = context.getAll();
+        FEELPropertyAccessible outputSet;
+        try {
+            outputSet = createInstanceFromCompiledClasses(allCompiledClasses, factory.create(dmnModel), "OutputSet");
+            outputSet.fromMap(inputMap);
+            DMNContext contextFpa = new DMNContextFPAImpl(outputSet);
+            return runtime.evaluateByName(dmnModel, contextFpa, decisionNames);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

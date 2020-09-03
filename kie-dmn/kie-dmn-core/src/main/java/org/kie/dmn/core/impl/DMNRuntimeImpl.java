@@ -149,6 +149,7 @@ public class DMNRuntimeImpl
         for (String name : decisionNames) {
             evaluateByNameInternal( model, context, result, name );
         }
+        convertContext(result);
         return result;
     }
 
@@ -194,6 +195,7 @@ public class DMNRuntimeImpl
         for ( String id : decisionIds ) {
             evaluateByIdInternal( model, context, result, id );
         }
+        convertContext(result);
         return result;
     }
 
