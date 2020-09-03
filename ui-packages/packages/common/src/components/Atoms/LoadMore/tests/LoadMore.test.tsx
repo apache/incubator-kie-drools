@@ -1,6 +1,13 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import LoadMore from '../LoadMore';
+import {
+  DropdownToggle,
+  DropdownItem,
+  DropdownToggleAction
+} from '@patternfly/react-core';
+import { act } from 'react-dom/test-utils';
+import { CheckIcon } from '@patternfly/react-icons';
 
 describe('LoadMore component tests with isLoading false', () => {
   const props = {
@@ -16,41 +23,93 @@ describe('LoadMore component tests with isLoading false', () => {
     const wrapper = shallow(<LoadMore {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
-  it('test loadMore button click', () => {
-    const wrapper = shallow(<LoadMore {...props} />);
-    const button1 = wrapper.find('#load10');
-    const button2 = wrapper.find('#load20');
-    const button3 = wrapper.find('#load50');
-    const button4 = wrapper.find('#load100');
-    button1.simulate('click');
-    button2.simulate('click');
-    button3.simulate('click');
-    button4.simulate('click');
-    expect(props.getMoreItems).toHaveBeenCalledTimes(4);
-    expect(props.getMoreItems.mock.calls).toEqual([
-      [10, 10],
-      [10, 20],
-      [10, 50],
-      [10, 100]
-    ]);
-  });
-});
+  it('select dropdown options tests', async () => {
+    let wrapper = mount(<LoadMore {...props} />);
+    await act(async () => {
+      wrapper
+        .find(DropdownToggle)
+        .find('button')
+        .at(1)
+        .simulate('click');
+    });
+    wrapper = wrapper.update();
+    // length of dropdown is 4(10,20,50,100)
+    expect(wrapper.find(DropdownItem).length).toBe(4);
+    await act(async () => {
+      wrapper
+        .find(DropdownItem)
+        .at(1)
+        .find('button')
+        .simulate('click');
+    });
+    wrapper = wrapper.update();
+    // change selection to 20
+    expect(
+      wrapper
+        .find(DropdownItem)
+        .at(1)
+        .find(CheckIcon)
+    ).toBeDefined();
 
-describe('LoadMore component tests with isLoading true', () => {
-  const props = {
-    offset: 0,
-    setOffset: jest.fn(),
-    getMoreItems: jest.fn(),
-    pageSize: 10,
-    isLoadingMore: true,
-    ouiaId: 'load-more-ouia-id'
-  };
-  it('snapshot testing', () => {
-    const wrapper = shallow(<LoadMore {...props} />);
-    expect(wrapper).toMatchSnapshot();
+    await act(async () => {
+      wrapper
+        .find(DropdownItem)
+        .at(2)
+        .find('button')
+        .simulate('click');
+    });
+    wrapper = wrapper.update();
+    // change selection to 50
+    expect(
+      wrapper
+        .find(DropdownItem)
+        .at(2)
+        .find(CheckIcon)
+    ).toBeDefined();
+
+    await act(async () => {
+      wrapper
+        .find(DropdownItem)
+        .at(3)
+        .find('button')
+        .simulate('click');
+    });
+    wrapper = wrapper.update();
+    // change selection to 100
+    expect(
+      wrapper
+        .find(DropdownItem)
+        .at(3)
+        .find(CheckIcon)
+    ).toBeDefined();
   });
-  it('test Loading button displayed', () => {
-    const wrapper = shallow(<LoadMore {...props} />);
-    expect(wrapper.find('#loading').exists()).toBeTruthy();
+
+  it('click loadmore button', async () => {
+    const wrapper = mount(<LoadMore {...props} />);
+    await act(async () => {
+      wrapper
+        .find(DropdownToggleAction)
+        .find('button')
+        .simulate('click');
+    });
+    expect(props.getMoreItems).toHaveBeenCalled();
+    expect(props.setLoadMoreClicked).toHaveBeenCalled();
+    expect(props.setOffset).toHaveBeenCalled();
+  });
+
+  it('simulate loading state in button', async () => {
+    let wrapper = mount(
+      <LoadMore {...{ ...props, isLoadingMore: true, ouiaSafe: true }} />
+    );
+    expect(
+      wrapper
+        .find(DropdownToggleAction)
+        .find('button')
+        .children()
+        .at(0)
+        .contains('Loading...')
+    ).toBeTruthy();
+    wrapper = wrapper.find(DropdownToggleAction);
+    expect(wrapper).toMatchSnapshot();
   });
 });

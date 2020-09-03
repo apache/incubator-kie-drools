@@ -32,6 +32,7 @@ import TaskInbox from '../TaskInbox';
 import TaskConsoleContextProvider from '../../../../context/TaskConsoleContext/TaskConsoleContextProvider';
 import { MemoryRouter as Router } from 'react-router';
 import { act } from 'react-dom/test-utils';
+import { DropdownToggle } from '@patternfly/react-core';
 
 const MockedComponent = (): React.ReactElement => {
   return <></>;
@@ -188,10 +189,12 @@ describe('TaskInbox tests', () => {
 
     expect(loadMore.exists()).toBeTruthy();
 
-    const load10 = loadMore.find('#load10').find('button');
-
     await act(async () => {
-      load10.simulate('click');
+      wrapper
+        .find(DropdownToggle)
+        .find('button')
+        .at(0)
+        .simulate('click');
     });
 
     wrapper = wrapper.update().find(TaskInbox);

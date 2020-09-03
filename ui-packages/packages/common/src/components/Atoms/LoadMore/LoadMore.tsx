@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Button,
   DataList,
   DataListItem,
   DataListCell,
-  Spinner
+  Spinner,
+  DropdownItem,
+  Dropdown,
+  DropdownToggle,
+  DropdownToggleAction,
+  Split,
+  SplitItem
 } from '@patternfly/react-core';
 import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
 import '../../styles.css';
+import { CheckIcon } from '@patternfly/react-icons';
 
 interface IOwnProps {
   offset: number;
@@ -28,26 +34,43 @@ const LoadMore: React.FC<IOwnProps & OUIAProps> = ({
   ouiaId,
   ouiaSafe
 }) => {
-  const loadMore = newPageSize => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [loadMoreValue, setLoadMoreValue] = useState<number>(10);
+
+  const loadMore = (newPageSize: number): void => {
     setLoadMoreClicked && setLoadMoreClicked(true);
     const newOffset = offset + pageSize;
     setOffset(newOffset);
     getMoreItems(newOffset, newPageSize);
   };
 
-  const load10More = () => {
-    loadMore(10);
-  };
-  const load20More = () => {
-    loadMore(20);
-  };
-  const load50More = () => {
-    loadMore(50);
-  };
-  const load100More = () => {
-    loadMore(100);
+  const onToggle = (isDropdownOpen: boolean): void => {
+    setIsOpen(isDropdownOpen);
   };
 
+  const onSelect = (event: React.SyntheticEvent<HTMLDivElement>): void => {
+    const selectedValue: number = parseInt(event.currentTarget.id, 10);
+    setLoadMoreValue(selectedValue);
+  };
+
+  const dropdownItem = (count: number): JSX.Element => {
+    return (
+      <DropdownItem
+        key={'loadmore' + count}
+        component="button"
+        id={count.toString()}
+      >
+        <Split hasGutter>
+          <SplitItem>Load {count} more</SplitItem>
+          {loadMoreValue === count && (
+            <SplitItem>
+              <CheckIcon size="sm" color="var(--pf-global--info-color--100)" />
+            </SplitItem>
+          )}
+        </Split>
+      </DropdownItem>
+    );
+  };
   return (
     <DataList
       aria-label="Simple data list example"
@@ -59,26 +82,43 @@ const LoadMore: React.FC<IOwnProps & OUIAProps> = ({
     >
       <DataListItem aria-labelledby="kie-datalist-item">
         <DataListCell className="kogito-common__load-more">
-          {!isLoadingMore ? (
-            <>
-              <Button onClick={load10More} variant="secondary" id="load10">
-                Load 10 more
-              </Button>{' '}
-              <Button onClick={load20More} variant="secondary" id="load20">
-                Load 20 more
-              </Button>{' '}
-              <Button onClick={load50More} variant="secondary" id="load50">
-                Load 50 more
-              </Button>{' '}
-              <Button onClick={load100More} variant="secondary" id="load100">
-                Load 100 more
-              </Button>
-            </>
-          ) : (
-            <Button variant="secondary" id="loading">
-              Loading... <Spinner size="md" />
-            </Button>
-          )}
+          <div className="pf-u-float-right pf-u-mr-md">
+            <Dropdown
+              onSelect={onSelect}
+              direction="up"
+              toggle={
+                <DropdownToggle
+                  id={`toggle-id`}
+                  onToggle={onToggle}
+                  splitButtonItems={[
+                    <DropdownToggleAction
+                      key={`toggle-id-${ouiaId}`}
+                      onClick={() => {
+                        loadMore(loadMoreValue);
+                        setIsOpen(false);
+                      }}
+                    >
+                      {isLoadingMore ? (
+                        <>
+                          Loading...
+                          <Spinner size="md" className="pf-u-ml-sm" />{' '}
+                        </>
+                      ) : (
+                        `Load ${loadMoreValue} more`
+                      )}
+                    </DropdownToggleAction>
+                  ]}
+                />
+              }
+              isOpen={isOpen}
+              dropdownItems={[
+                dropdownItem(10),
+                dropdownItem(20),
+                dropdownItem(50),
+                dropdownItem(100)
+              ]}
+            />
+          </div>
         </DataListCell>
       </DataListItem>
     </DataList>
