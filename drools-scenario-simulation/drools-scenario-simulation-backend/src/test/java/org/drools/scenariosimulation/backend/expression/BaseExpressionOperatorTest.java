@@ -20,6 +20,8 @@ import java.time.LocalDate;
 import java.util.Arrays;
 
 import org.assertj.core.api.Assertions;
+import org.drools.scenariosimulation.api.model.FactMappingType;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -31,6 +33,7 @@ import static org.drools.scenariosimulation.backend.expression.BaseExpressionOpe
 import static org.drools.scenariosimulation.backend.expression.BaseExpressionOperator.values;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -50,11 +53,18 @@ public class BaseExpressionOperatorTest {
                             .hasMessageEndingWith(" operator cannot be used in a GIVEN clause");
                 });
 
-        assertEquals("Test", EQUALS.evaluateLiteralExpression(String.class.getCanonicalName(), "= Test", classLoader));
-        assertEquals("", EQUALS.evaluateLiteralExpression(String.class.getCanonicalName(), "= ", classLoader));
-        assertNull(EQUALS.evaluateLiteralExpression(String.class.getCanonicalName(), "null", classLoader));
-        assertNull(EQUALS.evaluateLiteralExpression(String.class.getCanonicalName(), "= null", classLoader));
-        assertNull(EQUALS.evaluateLiteralExpression(String.class.getCanonicalName(), null, classLoader));
+        assertEquals("Test", EQUALS.evaluateLiteralExpression(String.class.getName(), "= Test", classLoader));
+        assertEquals("", EQUALS.evaluateLiteralExpression(String.class.getName(), "= ", classLoader));
+        assertEquals(1, EQUALS.evaluateLiteralExpression(Integer.class.getName(), "= 1", classLoader));
+        assertNotEquals(1, EQUALS.evaluateLiteralExpression(Integer.class.getName(), "= 2", classLoader));
+        assertEquals(FactMappingType.GIVEN, EQUALS.evaluateLiteralExpression(FactMappingType.class.getName(), "= GIVEN", classLoader));
+        assertNotEquals(FactMappingType.EXPECT, EQUALS.evaluateLiteralExpression(FactMappingType.class.getName(), "= GIVEN", classLoader));
+        assertNotEquals(ScenarioSimulationModel.Type.DMN, EQUALS.evaluateLiteralExpression(ScenarioSimulationModel.Type.class.getName(), "= RULE", classLoader));
+        assertEquals(ScenarioSimulationModel.Type.RULE, EQUALS.evaluateLiteralExpression(ScenarioSimulationModel.Type.class.getName(), "= RULE", classLoader));
+        assertNotEquals(ScenarioSimulationModel.Type.DMN, EQUALS.evaluateLiteralExpression(ScenarioSimulationModel.Type.class.getName(), "= RULE", classLoader));
+        assertNull(EQUALS.evaluateLiteralExpression(String.class.getName(), "null", classLoader));
+        assertNull(EQUALS.evaluateLiteralExpression(String.class.getName(), "= null", classLoader));
+        assertNull(EQUALS.evaluateLiteralExpression(String.class.getName(), null, classLoader));
     }
 
     @Test
