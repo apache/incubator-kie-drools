@@ -88,7 +88,7 @@ public enum BaseExpressionOperator {
 
         @Override
         public boolean eval(String rawValue, Object resultValue, Class<?> resultClass, ClassLoader classLoader) {
-            Object parsedResults = evaluateLiteralExpression(resultClass != null ? resultClass.getCanonicalName() : null, rawValue, classLoader);
+            Object parsedResults = evaluateLiteralExpression(resultClass != null ? resultClass.getName() : null, rawValue, classLoader);
 
             return compareValues(parsedResults, resultValue);
         }
