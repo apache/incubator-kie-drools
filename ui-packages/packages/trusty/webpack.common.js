@@ -24,8 +24,8 @@ module.exports = {
     }),
     new CopyPlugin({
       patterns: [
-        { from: 'static/gwt-editors', to: 'gwt-editors' },
-        { from: 'static/envelope', to: 'envelope' }
+        { from: './static/gwt-editors', to: 'gwt-editors' },
+        { from: './static/envelope', to: 'envelope' }
       ]
     })
   ],

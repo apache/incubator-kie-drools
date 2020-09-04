@@ -35,7 +35,7 @@
     </repositories>
 
     <properties>
-        <version.dmn.webapp>7.39.0-SNAPSHOT</version.dmn.webapp>
+        <version.dmn.webapp>7.41.0.Final</version.dmn.webapp>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -146,7 +146,7 @@
                             <outputDirectory>${project.basedir}/static/envelope</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>${project.build.directory}/../../../node_modules/@kogito-tooling/embedded-editor/dist/envelope</directory>
+                                    <directory>${project.build.directory}/../../../node_modules/@kogito-tooling/kie-bc-editors/dist/envelope-dist</directory>
                                 </resource>
                             </resources>
                         </configuration>

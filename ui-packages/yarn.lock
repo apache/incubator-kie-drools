@@ -1920,73 +1920,74 @@
     uniforms-bridge-json-schema "3.0.0-alpha.4"
     uniforms-patternfly "0.1.4"
 
-"@kogito-tooling/core-api@0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/core-api/-/core-api-0.6.0.tgz#e77a614070370b8115f53a42da384af849991d1c"
-  integrity sha512-xWl9/PjUfTJsZjNQWEB6x9iheN2RSwZ3wYksvEMlBFtAIlYGgiUaQqvZUtFVUBrmVRNNlsRqKgZZ48OgxyffEA==
-  dependencies:
-    react "16.12.0"
-    react-dom "16.12.0"
+"@kogito-tooling/channel-common-api@0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/channel-common-api/-/channel-common-api-0.6.1.tgz#fcc5fc4e969fc27164346bc599773f4b727d19c5"
+  integrity sha512-6hFx/z1vSLDPqflWny56i9CXxXU7BnAOQ35W1qslm7xjyfQU/XqF3H4+7wd8Holly/aB+MugVnq/87fGX5aQmA==
 
-"@kogito-tooling/embedded-editor@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/embedded-editor/-/embedded-editor-0.6.0.tgz#9a338c2b65d8bbe694e54d4a03fc63d2d1eed3a9"
-  integrity sha512-3j4xm4ZvPUcUSP5puytxAVQdRjNF5Y6DlQNzmYncM/zpeSzD0O/lXw5Is67fOB66ugg0mfkVh79Rvi+G9WjhHQ==
+"@kogito-tooling/editor@0.6.1", "@kogito-tooling/editor@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/editor/-/editor-0.6.1.tgz#52fd9597426b45cf6b49f2ef2ef41407102aa575"
+  integrity sha512-43JltV6soGwYtxxv6pPGWqf2R09Pp/tjUs5sPjB376IJDMH/n/K1uf4HGcSoFzvYzh99PKClvjtNHk8sykfK1Q==
   dependencies:
-    "@kogito-tooling/core-api" "0.6.0"
-    "@kogito-tooling/guided-tour" "0.6.0"
-    "@kogito-tooling/kie-bc-editors" "0.6.0"
-    "@kogito-tooling/microeditor-envelope" "0.6.0"
-    "@kogito-tooling/microeditor-envelope-protocol" "0.6.0"
-    "@kogito-tooling/patternfly-base" "0.6.0"
+    "@kogito-tooling/envelope" "0.6.1"
+    "@kogito-tooling/envelope-bus" "0.6.1"
+    "@kogito-tooling/guided-tour" "0.6.1"
+    "@kogito-tooling/keyboard-shortcuts" "0.6.1"
 
-"@kogito-tooling/guided-tour@0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/guided-tour/-/guided-tour-0.6.0.tgz#739080b9c74b8f2a7753c08ebd2d0359a928cb94"
-  integrity sha512-o8ik/itVN8nhUxN+5QKzg7AHAQfq7CkIrxIUeevAYn6qylI9AK60NaLp6RhE5BCbho6kyZhvTfpFUojVSIfGoA==
+"@kogito-tooling/envelope-bus@0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/envelope-bus/-/envelope-bus-0.6.1.tgz#88864c40e14748431e51ea64ab3731df019e656b"
+  integrity sha512-2INOMepepa/c1YeOeKH+MW7GrUpgGWYEGXP8D0xlgmM+wH41Yagw0QB705fUpHHFQaaaFhwc71nUx5TR6m/lHg==
 
-"@kogito-tooling/keyboard-shortcuts@0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/keyboard-shortcuts/-/keyboard-shortcuts-0.6.0.tgz#a78f9fa891019987d3e9b443dca917da547d7255"
-  integrity sha512-X/HjnRhdWbu1nsBnar06DQHBhwsoBEV0ixT9d9j7MXAVsnfMtPfk9jRoTJ/7Je4rrL3WPGncBZ4T5fhwpuc4jA==
+"@kogito-tooling/envelope@0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/envelope/-/envelope-0.6.1.tgz#60aa38e5981ad1a9f81f7570d6d021bd1b20cb0f"
+  integrity sha512-n9zX0mH3ItjkCMfnnvJzSSD6tUI5T/RQQXDUGu0dBNxObwh3Wk9CceH5gJSFajxwf4XSCyMXMJzwLL24tSKVkg==
   dependencies:
-    "@kogito-tooling/core-api" "0.6.0"
+    "@kogito-tooling/envelope-bus" "0.6.1"
 
-"@kogito-tooling/kie-bc-editors@0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/kie-bc-editors/-/kie-bc-editors-0.6.0.tgz#f985db626587833fd40847f5a2026f152d0490b6"
-  integrity sha512-RXDGr6Z9nWbzXYdS1q7bHtYImoBAg3fz/bEutGOCCdfI4UWBvmy3upG06bzdil7Is+aJ8BwyQLmA+MD4NucrNw==
+"@kogito-tooling/guided-tour@0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/guided-tour/-/guided-tour-0.6.1.tgz#60a39b3faa501ddfa558de543165fee69de84396"
+  integrity sha512-GUCA0Yu2on00ZbTmg2fcMZBmTS046zPSwVkvAr21y5EVnrT1ChivAae4XAk/CHHj4rOJiYVr3+6yOR1BPrUF1Q==
   dependencies:
-    "@kogito-tooling/core-api" "0.6.0"
-    "@kogito-tooling/microeditor-envelope" "0.6.0"
+    "@kogito-tooling/envelope-bus" "0.6.1"
+    "@kogito-tooling/i18n" "0.6.1"
+    "@kogito-tooling/i18n-common-dictionary" "0.6.1"
 
-"@kogito-tooling/microeditor-envelope-protocol@0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/microeditor-envelope-protocol/-/microeditor-envelope-protocol-0.6.0.tgz#524399a7af109f6fee855260a4974fc938cfe939"
-  integrity sha512-LhgabJjrlmYQazFEgODo9KAIf1L4ynloznYbE+tNRx3RZ/0a+HhHD6bx6HdAyWe4BEpD0yLQmdSsCfm3915bTg==
+"@kogito-tooling/i18n-common-dictionary@0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/i18n-common-dictionary/-/i18n-common-dictionary-0.6.1.tgz#74adeabf226abda76821766daa665a41a8b04b6c"
+  integrity sha512-5jHe4Q2tUKtE7ynedxYqK1ZN+NN2VqNoxDztbd1r4m5DeNoijeOipzYxeroV/51XOjQIgUBiMeHqWETfQCjuaA==
   dependencies:
-    "@kogito-tooling/core-api" "0.6.0"
-    "@kogito-tooling/guided-tour" "0.6.0"
+    "@kogito-tooling/i18n" "0.6.1"
 
-"@kogito-tooling/microeditor-envelope@0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/microeditor-envelope/-/microeditor-envelope-0.6.0.tgz#4e79d4aeef6900c3e817b59cf8ba4b05293942fd"
-  integrity sha512-4C8PCc/yjdlRLSDvUABrVhIlDe1a4Gy5/mDDY1qZz96BNCtKbwMY7iDAwXAx1PyQHLP/SddK3w71Byv44CnoAw==
-  dependencies:
-    "@kogito-tooling/core-api" "0.6.0"
-    "@kogito-tooling/guided-tour" "0.6.0"
-    "@kogito-tooling/keyboard-shortcuts" "0.6.0"
-    "@kogito-tooling/microeditor-envelope-protocol" "0.6.0"
-    "@kogito-tooling/patternfly-base" "0.6.0"
+"@kogito-tooling/i18n@0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/i18n/-/i18n-0.6.1.tgz#54b7909a99fd28882521950c69552989521d549f"
+  integrity sha512-QKTVoFUfQIrIx7FxQNXLJRm4CyjCJF2awaiIpXtuSOX0xWIoykLuaUTw2keMYbDo9ozRG8NVHgzOinLJvXl3Hw==
 
-"@kogito-tooling/patternfly-base@0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/patternfly-base/-/patternfly-base-0.6.0.tgz#d5a7e54f6a5897353faa699b376125dfee6a40b2"
-  integrity sha512-nMFsS6Gfz+awEvZ8TjFpcq9Cp62hoOmqfStR6iOMxTmkGBENWRALTBwAVyRkJzfilz8FUCNxrs0D/JkDIY4U7w==
+"@kogito-tooling/keyboard-shortcuts@0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/keyboard-shortcuts/-/keyboard-shortcuts-0.6.1.tgz#c0ecf75a84ef4a70c5db1267fc11a72e7b75184b"
+  integrity sha512-3tz0hhqYxPXzFODTQYkRQYGZxlJSf6Sd/GUQudPk1ttsU/41tCWG/zK/GTeLZcXCCi2Z/rPlzlDYF27NJ9zO8w==
   dependencies:
-    "@patternfly/patternfly" "2.71.5"
-    "@patternfly/react-core" "3.153.13"
-    "@patternfly/react-icons" "3.15.16"
+    "@kogito-tooling/channel-common-api" "0.6.1"
+    "@kogito-tooling/envelope-bus" "0.6.1"
+
+"@kogito-tooling/kie-bc-editors-unpacked@0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/kie-bc-editors-unpacked/-/kie-bc-editors-unpacked-0.6.1.tgz#3f39f715b346770bc4e6336971e3f0c4f97ac72b"
+  integrity sha512-d8F5GiT7nKOQWVVopkGGyD+Ffrj1NpwIhlyRKJsVbKqnjbTryEMOGdCDu2GPbCVG/F0KAUJ9BycAVX1M/xNoeg==
+
+"@kogito-tooling/kie-bc-editors@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/kie-bc-editors/-/kie-bc-editors-0.6.1.tgz#79633c6226a8f08105c02ca377235555c2db8c71"
+  integrity sha512-+bUmKmOn52J4jXMlhgpFOMD+1hodHYbOVRIrga3atUyfy6e7f6BZS1jnVPtXaT+U1lxhVB7GRIwHzNcTep3orQ==
+  dependencies:
+    "@kogito-tooling/editor" "0.6.1"
+    "@kogito-tooling/kie-bc-editors-unpacked" "0.6.1"
 
 "@lerna/add@3.21.0":
   version "3.21.0"
@@ -2823,11 +2824,6 @@
   dependencies:
     "@types/node" ">= 8"
 
-"@patternfly/patternfly@2.71.5":
-  version "2.71.5"
-  resolved "https://registry.yarnpkg.com/@patternfly/patternfly/-/patternfly-2.71.5.tgz#db096c07cf3478a3c05f9020e3cd16be9c098be2"
-  integrity sha512-kkPVr+B9UKDeko8F31RzO7g1ecMbp4rVVQhg6X95rrzPd9mqBC8TGuwhyXnnHCbSAyNyqsp+ldGhDMsN5yMPiw==
-
 "@patternfly/patternfly@4.23.3":
   version "4.23.3"
   resolved "https://registry.yarnpkg.com/@patternfly/patternfly/-/patternfly-4.23.3.tgz#ecc60fe2a1c1315951dc39bf7d52ced9c1c74079"
@@ -2873,18 +2869,6 @@
     react-dropzone "9.0.0"
     tippy.js "5.1.2"
 
-"@patternfly/react-core@3.153.13":
-  version "3.153.13"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-core/-/react-core-3.153.13.tgz#f05dead48f3fff7dae156798c6a5b4c244d77c9d"
-  integrity sha512-OyssAlsdsHWXRuKXvkcagG8PcplpE02FSLClON+407Fzhj4t0BLGWECI8RQwZ0Tapr+qVXikKQRukM5MY9zIqg==
-  dependencies:
-    "@patternfly/react-icons" "^3.15.16"
-    "@patternfly/react-styles" "^3.7.13"
-    "@patternfly/react-tokens" "^2.8.13"
-    focus-trap "4.0.2"
-    react-dropzone "9.0.0"
-    tippy.js "5.1.2"
-
 "@patternfly/react-core@4.32.1", "@patternfly/react-core@^4.32.1":
   version "4.32.1"
   resolved "https://registry.yarnpkg.com/@patternfly/react-core/-/react-core-4.32.1.tgz#9fd2dc024eda51b8d8e58d014cbb9d69c3a78604"
@@ -2898,19 +2882,12 @@
     tippy.js "5.1.2"
     tslib "^1.11.1"
 
-"@patternfly/react-icons@3.15.16":
-  version "3.15.16"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-3.15.16.tgz#dedb37e4f37ec8fd787abc1f1a4a9321a5047899"
-  integrity sha512-YOBED8rhkbBEHTQpjEns/OjgD1gDsW8e6rw6u0H0y6S9YwrmZXhgq/aiu2OG0ftmKWOvYvrrDgmNBkkWpEWlEA==
-  dependencies:
-    "@fortawesome/free-brands-svg-icons" "^5.8.1"
-
 "@patternfly/react-icons@4.5.0", "@patternfly/react-icons@^4.5.0":
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-4.5.0.tgz#9c0c74348aa2b4c83765b743022f92d45fd762dc"
   integrity sha512-wXAENYa6nST4D8DBkiCrZXf4aRTmVQNA4cyImMJ3aQWAzwJ7Xc1zIBBuYSX5EP0JOuf9DzWVCrzvgfQz1Fcx8g==
 
-"@patternfly/react-icons@^3.15.13", "@patternfly/react-icons@^3.15.14", "@patternfly/react-icons@^3.15.16":
+"@patternfly/react-icons@^3.15.13", "@patternfly/react-icons@^3.15.14":
   version "3.15.17"
   resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-3.15.17.tgz#97a71fd6469a3f6c08dc46575a340b82cfc7e1db"
   integrity sha512-Q0JAlxEvSAl5kcMSUMItLiKi9fweO941g5+lS45t3o/Rv4Eg91Ig7AyK1YWw6m1ah+/eHslLfox0Uqw7m7usLg==
@@ -2922,7 +2899,7 @@
   resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-4.5.0.tgz#d40c9d1e4b4898cb26ec8dd0aa56e89fce9ba2a9"
   integrity sha512-6w8mvxx/cC+yUzBKlWY8YRnavlWCTLWly1si0skleYPF1t69f3P+jeXNy39kH6+o2vXJR5MeecLrnuMV0XtKvg==
 
-"@patternfly/react-styles@^3.7.10", "@patternfly/react-styles@^3.7.13":
+"@patternfly/react-styles@^3.7.10":
   version "3.7.14"
   resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-3.7.14.tgz#66a3b6c1cca34d37112485fc0492b12d71a4379e"
   integrity sha512-NVwbPP9JroulfQgj0LOLWKP4DumArW8RrP1FB1lLOCuw13KkuAcFbLN9MSF8ZBwJ8syxGEdux5mDC3jPjsrQiw==
@@ -2953,7 +2930,7 @@
   resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-4.6.0.tgz#1a9648537e3a7f0202663af49cba4ceda5886dfd"
   integrity sha512-zpA4AlYqJNJm5aqsarBVjod1gjP9muJ5oWI2ZwGUFiw4YNRn8eY7QKQ1VvNZxqwI+WSXl98jTqJiKuJGF3DEvw==
 
-"@patternfly/react-tokens@^2.8.10", "@patternfly/react-tokens@^2.8.13":
+"@patternfly/react-tokens@^2.8.10":
   version "2.8.15"
   resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-2.8.15.tgz#f62a569213ccb32ecdbd9da8709d6b5a55f8d215"
   integrity sha512-hhxWJ+gHqBxh5kWo6J23B9T5hvaRqwwtK5YoVscvv2skWIS+5XPLetVjhEmMoZ18MEcMHmpKkEri9s9Tj5jtlQ==
@@ -15211,16 +15188,6 @@ react-docgen@^5.0.0:
     node-dir "^0.1.10"
     strip-indent "^3.0.0"
 
-react-dom@16.12.0:
-  version "16.12.0"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.12.0.tgz#0da4b714b8d13c2038c9396b54a92baea633fe11"
-  integrity sha512-LMxFfAGrcS3kETtQaCkTKjMiifahaMySFDn71fZUNpPHZQEzmk/GiAeIT8JSOrHB23fnuCOMruL2a8NYlw+8Gw==
-  dependencies:
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
-    prop-types "^15.6.2"
-    scheduler "^0.18.0"
-
 react-dom@^16.8.3, react-dom@^16.9.0:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.13.1.tgz#c1bd37331a0486c078ee54c4740720993b2e0e7f"
@@ -15464,15 +15431,6 @@ react-transition-group@^4.3.0:
     "@babel/runtime" "^7.5.5"
     dom-helpers "^5.0.1"
     loose-envify "^1.4.0"
-    prop-types "^15.6.2"
-
-react@16.12.0:
-  version "16.12.0"
-  resolved "https://registry.yarnpkg.com/react/-/react-16.12.0.tgz#0c0a9c6a142429e3614834d5a778e18aa78a0b83"
-  integrity sha512-fglqy3k5E+81pA8s+7K0/T3DBCF0ZDOher1elBFzF7O6arXJgzyu/FW+COxFvAWXJoJN9KIZbT2LXlukwphYTA==
-  dependencies:
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
     prop-types "^15.6.2"
 
 react@^16.8.3, react@^16.9.0:
@@ -16206,14 +16164,6 @@ saxes@^3.1.9:
   integrity sha512-Ydydq3zC+WYDJK1+gRxRapLIED9PWeSuuS41wqyoRmzvhhh9nc+QQrVMKJYzJFULazeGhzSV0QleN2wD3boh2g==
   dependencies:
     xmlchars "^2.1.1"
-
-scheduler@^0.18.0:
-  version "0.18.0"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.18.0.tgz#5901ad6659bc1d8f3fdaf36eb7a67b0d6746b1c4"
-  integrity sha512-agTSHR1Nbfi6ulI0kYNK0203joW2Y5W4po4l+v03tOoiJKpTBbxpNhWDvqc/4IcOw+KLmSiQLTasZ4cab2/UWQ==
-  dependencies:
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
 
 scheduler@^0.19.1:
   version "0.19.1"
