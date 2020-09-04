@@ -746,6 +746,39 @@ public class FromTest extends BaseModelTest {
         assertEquals( "red", hashSet.iterator().next() );
     }
 
+    @Test
+    public void testFromChainedCall() {
+        // DROOLS-5608
+        String str =
+                "package com.sample;" +
+                        "global java.util.Set controlSet;\n" +
+                        "import " + Measurement.class.getCanonicalName() + ";\n" +
+                        "import " + Optional.class.getCanonicalName() + ";\n" +
+                        "import java.util.*;\n" +
+                        "" +
+                        "\n" +
+                        "rule \"will execute per each Measurement having ID color\"\n" +
+                        "no-loop\n" +
+                        "when\n" +
+                        " Measurement( id == \"color\", $colorVal : val )\n" +
+                        " Object() from Optional.of($colorVal).orElse(\"blah\")\n" +
+                        "then\n" +
+                        " controlSet.add($colorVal);\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        HashSet<Object> hashSet = new HashSet<>();
+        ksession.setGlobal("controlSet", hashSet);
+
+        ksession.insert(new Measurement("color", "red"));
+
+        int ruleFired = ksession.fireAllRules();
+
+        assertEquals( 1, ruleFired );
+        assertEquals( "red", hashSet.iterator().next() );
+    }
+
     public static class DummyService {
         public String dummy(String a) {
             return "test";
