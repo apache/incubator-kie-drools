@@ -4,12 +4,20 @@ on: [pull_request]
 
 jobs:
   build-chain:
+    strategy:
+      matrix:
+        java-version: [8, 11]
+      fail-fast: false
     runs-on: ubuntu-latest
-    name: Maven Build (8)
+    name: Maven Build
     steps:
-      - name: Build Chain
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java-version }}
+      - name: Build Chain ${{ matrix.java-version }}
         id: build-chain
-        uses: kiegroup/github-action-build-chain@openjdk8
+        uses: kiegroup/github-action-build-chain@v1.4
         with:
           parent-dependencies: 'droolsjbpm-knowledge'
           child-dependencies: 'optaplanner@master:7.x'
