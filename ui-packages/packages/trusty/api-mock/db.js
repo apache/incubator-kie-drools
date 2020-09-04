@@ -4,7 +4,7 @@ const inputData = require('./mocks/inputData');
 const outcomeData = require('./mocks/outcomes');
 const outcomeDetailData = require('./mocks/outcomeDetail');
 const modelData = require('./mocks/modelData');
-const featureImportance = require('./mocks/featureImportance');
+const salienciesData = require('./mocks/saliencies');
 const executionIdBase = require('./mocks/executionIdBase');
 
 let generateFakeAPIs = () => {
@@ -46,7 +46,7 @@ let generateFakeAPIs = () => {
     outcomes: outcomeData,
     outcomeDetail: outcomeDetailData,
     models: modelData,
-    featureImportance: featureImportance
+    saliencies: salienciesData
   };
 };
 

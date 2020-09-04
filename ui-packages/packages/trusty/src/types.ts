@@ -70,7 +70,18 @@ export interface Outcome {
 
 export interface FeatureScores {
   featureName: string;
+  featureId: string;
   featureScore: number;
+}
+
+export interface Saliency {
+  outcomeId: string;
+  featureImportance: FeatureScores[];
+}
+export interface Saliencies {
+  status: 'SUCCEEDED' | 'FAILED';
+  statusDetail: string;
+  saliencies: Saliency[];
 }
 
 export interface ServiceIdentifier {

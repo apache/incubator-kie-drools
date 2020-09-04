@@ -65,14 +65,14 @@ const FeaturesScoreChart = (props: FeaturesScoreChartProps) => {
       domain={{ y: [-maxValue, maxValue] }}
       horizontal
       padding={{ top: 60, right: 30, bottom: 30, left: 30 }}
+      animate={{
+        duration: 400,
+        onLoad: { duration: 400 }
+      }}
     >
       <ChartAxis tickFormat={() => ''} />
 
       <ChartBar
-        animate={{
-          duration: 2000,
-          onLoad: { duration: 1000 }
-        }}
         data={featuresScore}
         x="featureName"
         y="featureScore"
@@ -167,7 +167,7 @@ const FeaturesScoreChart = (props: FeaturesScoreChartProps) => {
         }}
       />
       <ChartGroup>
-        {featuresScore !== null &&
+        {featuresScore.length > 0 &&
           featuresScore.map((item, index) => {
             return (
               <ChartLabel
@@ -184,7 +184,7 @@ const FeaturesScoreChart = (props: FeaturesScoreChartProps) => {
       </ChartGroup>
 
       <ChartGroup>
-        {featuresScore !== null &&
+        {featuresScore.length > 0 &&
           featuresScore.map((item, index) => {
             return (
               <ChartLabel

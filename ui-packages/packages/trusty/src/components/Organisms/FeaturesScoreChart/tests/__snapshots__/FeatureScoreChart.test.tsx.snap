@@ -2,6 +2,14 @@
 
 exports[`FeaturesScoreChart renders a chart for a list of feature scores 1`] = `
 <Chart
+  animate={
+    Object {
+      "duration": 400,
+      "onLoad": Object {
+        "duration": 400,
+      },
+    }
+  }
   ariaDesc="Importance of different features on the decision"
   domain={
     Object {
@@ -37,14 +45,6 @@ exports[`FeaturesScoreChart renders a chart for a list of feature scores 1`] = `
   />
   <ChartBar
     alignment="middle"
-    animate={
-      Object {
-        "duration": 2000,
-        "onLoad": Object {
-          "duration": 1000,
-        },
-      }
-    }
     barWidth={25}
     data={
       Array [

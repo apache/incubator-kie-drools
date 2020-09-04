@@ -56,12 +56,6 @@ const TrustyApp = () => {
         <NavItem isActive={location.pathname.startsWith('/audit')}>
           <NavLink to="/audit">Audit Investigation</NavLink>
         </NavItem>
-        <NavItem to="http://localhost:3001/" target="_blank">
-          Business Monitoring
-        </NavItem>
-        <NavItem to="http://localhost:3001/" target="_blank">
-          Operational Monitoring
-        </NavItem>
       </NavList>
     </Nav>
   );

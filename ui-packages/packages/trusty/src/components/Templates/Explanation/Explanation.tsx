@@ -27,7 +27,9 @@ import SkeletonTornadoChart from '../../Molecules/SkeletonTornadoChart/SkeletonT
 import SkeletonStripe from '../../Atoms/SkeletonStripe/SkeletonStripe';
 import useFeaturesScores from './useFeaturesScores';
 import useOutcomeDetail from './useOutcomeDetail';
+import useSaliencies from './useSaliencies';
 import ExplanationUnavailable from '../../Molecules/ExplanationUnavailable/ExplanationUnavailable';
+import ExplanationError from '../../Molecules/ExplanationError/ExplanationError';
 import EvaluationStatus from '../../Atoms/EvaluationStatus/EvaluationStatus';
 import { ExecutionRouteParams, Outcome, RemoteData } from '../../../types';
 import './Explanation.scss';
@@ -42,7 +44,12 @@ const Explanation = ({ outcomes }: ExplanationProps) => {
   const [outcomesList, setOutcomesList] = useState<Outcome[] | null>(null);
   const [outcomeId, setOutcomeId] = useState<string | null>(null);
   const outcomeDetail = useOutcomeDetail(executionId, outcomeId);
-  const { featuresScores, topFeaturesScores } = useFeaturesScores(executionId);
+  const saliencies = useSaliencies(executionId);
+  const { featuresScores, topFeaturesScores } = useFeaturesScores(
+    saliencies,
+    outcomeId
+  );
+  const [displayChart, setDisplayChart] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const history = useHistory();
   const location = useLocation();
@@ -53,13 +60,21 @@ const Explanation = ({ outcomes }: ExplanationProps) => {
 
   const switchExplanation = useCallback(
     (selectedOutcomeId: string) => {
-      history.push({
-        search: `outcomeId=${selectedOutcomeId}`
-      });
+      if (selectedOutcomeId !== outcomeId) {
+        history.push({
+          search: `outcomeId=${selectedOutcomeId}`
+        });
+        setDisplayChart(false);
+      }
     },
-    [history]
+    [history, outcomeId]
   );
 
+  useEffect(() => {
+    if (featuresScores.length) {
+      setDisplayChart(true);
+    }
+  }, [featuresScores]);
   useEffect(() => {
     if (outcomes.status === 'SUCCESS') {
       setOutcomesList(outcomes.data);
@@ -162,9 +177,9 @@ const Explanation = ({ outcomes }: ExplanationProps) => {
               </Title>
             </StackItem>
             <StackItem>
-              {(featuresScores.status === 'LOADING' ||
-                (featuresScores.status === 'SUCCESS' &&
-                  featuresScores.data.length > 0)) && (
+              {(saliencies.status === 'LOADING' ||
+                (saliencies.status === 'SUCCESS' &&
+                  featuresScores.length > 0)) && (
                 <Grid hasGutter>
                   <GridItem span={8}>
                     <Card>
@@ -180,24 +195,28 @@ const Explanation = ({ outcomes }: ExplanationProps) => {
                         )}
                       </CardHeader>
                       <CardBody>
-                        {featuresScores.status === 'LOADING' && (
+                        {saliencies.status === 'LOADING' && (
                           <SkeletonTornadoChart valuesCount={10} height={400} />
                         )}
-                        {featuresScores.status === 'SUCCESS' && (
+                        {saliencies.status === 'SUCCESS' && (
                           <>
                             {topFeaturesScores.length === 0 && (
                               <div className="explanation-view__chart">
-                                <FeaturesScoreChart
-                                  featuresScore={featuresScores.data}
-                                />
+                                {displayChart && (
+                                  <FeaturesScoreChart
+                                    featuresScore={featuresScores}
+                                  />
+                                )}
                               </div>
                             )}
                             {topFeaturesScores.length > 0 && (
                               <>
                                 <div className="explanation-view__chart">
-                                  <FeaturesScoreChart
-                                    featuresScore={topFeaturesScores}
-                                  />
+                                  {displayChart && (
+                                    <FeaturesScoreChart
+                                      featuresScore={topFeaturesScores}
+                                    />
+                                  )}
                                 </div>
                                 <Button
                                   variant="secondary"
@@ -222,7 +241,7 @@ const Explanation = ({ outcomes }: ExplanationProps) => {
                                   ]}
                                 >
                                   <FeaturesScoreChart
-                                    featuresScore={featuresScores.data}
+                                    featuresScore={featuresScores}
                                     large={true}
                                   />
                                 </Modal>
@@ -241,15 +260,15 @@ const Explanation = ({ outcomes }: ExplanationProps) => {
                         </Title>
                       </CardHeader>
                       <CardBody>
-                        {featuresScores.status === 'LOADING' && (
+                        {saliencies.status === 'LOADING' && (
                           <SkeletonGrid rowsCount={4} colsDefinition={2} />
                         )}
-                        {featuresScores.status === 'SUCCESS' && (
+                        {saliencies.status === 'SUCCESS' && (
                           <FeaturesScoreTable
                             featuresScore={
                               topFeaturesScores.length > 0
                                 ? topFeaturesScores
-                                : featuresScores.data
+                                : featuresScores
                             }
                           />
                         )}
@@ -258,8 +277,17 @@ const Explanation = ({ outcomes }: ExplanationProps) => {
                   </GridItem>
                 </Grid>
               )}
-              {featuresScores.status === 'SUCCESS' &&
-                featuresScores.data.length === 0 && <ExplanationUnavailable />}
+              {saliencies.status === 'SUCCESS' && (
+                <>
+                  {saliencies.data.status === 'SUCCEEDED' &&
+                    featuresScores.length === 0 && <ExplanationUnavailable />}
+                  {saliencies.data.status === 'FAILED' && (
+                    <ExplanationError
+                      statusDetail={saliencies.data.statusDetail}
+                    />
+                  )}
+                </>
+              )}
             </StackItem>
           </Stack>
         </div>
