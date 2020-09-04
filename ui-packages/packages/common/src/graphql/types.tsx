@@ -781,6 +781,14 @@ export namespace GraphQL {
                   | 'definitionId'
                 >
               >;
+              milestones?: Maybe<
+                Array<
+                  { __typename?: 'Milestone' } & Pick<
+                    Milestone,
+                    'id' | 'name' | 'status'
+                  >
+                >
+              >;
             }
         >
       >
@@ -1298,6 +1306,11 @@ export namespace GraphQL {
           exit
           type
           definitionId
+        }
+        milestones {
+          id
+          name
+          status
         }
       }
     }

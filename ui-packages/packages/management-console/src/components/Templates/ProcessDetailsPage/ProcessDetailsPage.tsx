@@ -33,6 +33,7 @@ import { Link, Redirect, RouteComponentProps } from 'react-router-dom';
 import ProcessDetails from '../../Organisms/ProcessDetails/ProcessDetails';
 import ProcessDetailsProcessVariables from '../../Organisms/ProcessDetailsProcessVariables/ProcessDetailsProcessVariables';
 import ProcessDetailsTimeline from '../../Organisms/ProcessDetailsTimeline/ProcessDetailsTimeline';
+import ProcessDetailsMilestones from '../../Organisms/ProcessDetailsMilestones/ProcessDetailsMilestones';
 import './ProcessDetailsPage.css';
 import PageTitle from '../../Molecules/PageTitle/PageTitle';
 import ProcessListModal from '../../Atoms/ProcessListModal/ProcessListModal';
@@ -466,6 +467,11 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, {}, {}> &
                         <ProcessDetails data={data} from={currentPage} />
                       </FlexItem>
                     )}
+                    <FlexItem>
+                      <ProcessDetailsMilestones
+                        milestones={data.ProcessInstances[0].milestones}
+                      />
+                    </FlexItem>
                   </Flex>
                   <Flex
                     direction={{ default: 'column' }}

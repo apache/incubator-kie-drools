@@ -48,6 +48,7 @@ module.exports = typeDefs = gql`
     serviceUrl: String
     endpoint: String!
     nodes: [NodeInstance!]!
+    milestones: [Milestones!]
     variables: String
     start: DateTime!
     end: DateTime
@@ -115,6 +116,17 @@ module.exports = typeDefs = gql`
     nodeId: String!
   }
 
+  type Milestones {
+    id: String!
+    name: String!
+    status: MilestoneStatus!
+  }
+  enum MilestoneStatus {
+    ACTIVE
+    AVAILABLE
+    COMPLETED
+  }
+  
   input ProcessInstanceOrderBy {
     processId: OrderBy
     processName: OrderBy

@@ -96,6 +96,11 @@ const GET_PROCESS_INSTANCE = gql`
         type
         definitionId
       }
+      milestones {
+        id
+        name
+        status
+      }
     }
   }
 `;

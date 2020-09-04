@@ -87,6 +87,11 @@ exports[`Process Details Page component tests snapshot testing for error occuran
       type
       definitionId
     }
+    milestones {
+      id
+      name
+      status
+    }
   }
 }
 , variables: {"id":"8035b580-6ae4-4aa8-9ec0-e18e19809e0bc"}]
@@ -639,6 +644,23 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
                               },
                               "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
                               "lastUpdate": "2019-10-22T03:40:44.089Z",
+                              "milestones": Array [
+                                Object {
+                                  "id": "27107f38-d888-4edf-9a4f-11b9e6d75m36",
+                                  "name": "Milestone 1: Order placed",
+                                  "status": "ACTIVE",
+                                },
+                                Object {
+                                  "id": "27107f38-d888-4edf-9a4f-11b9e6d75m66",
+                                  "name": "Milestone 2: Order shipped",
+                                  "status": "AVAILABLE",
+                                },
+                                Object {
+                                  "id": "27107f38-d888-4edf-9a4f-11b9e6d75i86",
+                                  "name": "Manager decision",
+                                  "status": "COMPLETED",
+                                },
+                              ],
                               "nodes": Array [
                                 Object {
                                   "definitionId": "StartEvent_1",
@@ -675,6 +697,33 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
                           },
                           "prev": "/ProcessInstances/8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
                         }
+                      }
+                    />
+                  </div>
+                </FlexItem>
+                <FlexItem>
+                  <div
+                    className=""
+                  >
+                    <ProcessDetailsMilestones
+                      milestones={
+                        Array [
+                          Object {
+                            "id": "27107f38-d888-4edf-9a4f-11b9e6d75m36",
+                            "name": "Milestone 1: Order placed",
+                            "status": "ACTIVE",
+                          },
+                          Object {
+                            "id": "27107f38-d888-4edf-9a4f-11b9e6d75m66",
+                            "name": "Milestone 2: Order shipped",
+                            "status": "AVAILABLE",
+                          },
+                          Object {
+                            "id": "27107f38-d888-4edf-9a4f-11b9e6d75i86",
+                            "name": "Manager decision",
+                            "status": "COMPLETED",
+                          },
+                        ]
                       }
                     />
                   </div>
@@ -784,6 +833,23 @@ exports[`Process Details Page component tests snapshot testing in Active state 1
                           },
                           "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
                           "lastUpdate": "2019-10-22T03:40:44.089Z",
+                          "milestones": Array [
+                            Object {
+                              "id": "27107f38-d888-4edf-9a4f-11b9e6d75m36",
+                              "name": "Milestone 1: Order placed",
+                              "status": "ACTIVE",
+                            },
+                            Object {
+                              "id": "27107f38-d888-4edf-9a4f-11b9e6d75m66",
+                              "name": "Milestone 2: Order shipped",
+                              "status": "AVAILABLE",
+                            },
+                            Object {
+                              "id": "27107f38-d888-4edf-9a4f-11b9e6d75i86",
+                              "name": "Manager decision",
+                              "status": "COMPLETED",
+                            },
+                          ],
                           "nodes": Array [
                             Object {
                               "definitionId": "StartEvent_1",
@@ -1564,6 +1630,23 @@ exports[`Process Details Page component tests snapshot testing in Error state 1`
                               },
                               "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
                               "lastUpdate": "2019-10-22T03:40:44.089Z",
+                              "milestones": Array [
+                                Object {
+                                  "id": "27107f38-d888-4edf-9a4f-11b9e6d75m36",
+                                  "name": "Milestone 1: Order placed",
+                                  "status": "ACTIVE",
+                                },
+                                Object {
+                                  "id": "27107f38-d888-4edf-9a4f-11b9e6d75m66",
+                                  "name": "Milestone 2: Order shipped",
+                                  "status": "AVAILABLE",
+                                },
+                                Object {
+                                  "id": "27107f38-d888-4edf-9a4f-11b9e6d75i86",
+                                  "name": "Manager decision",
+                                  "status": "COMPLETED",
+                                },
+                              ],
                               "nodes": Array [
                                 Object {
                                   "definitionId": "StartEvent_1",
@@ -1600,6 +1683,33 @@ exports[`Process Details Page component tests snapshot testing in Error state 1`
                           },
                           "prev": "/ProcessInstances/8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
                         }
+                      }
+                    />
+                  </div>
+                </FlexItem>
+                <FlexItem>
+                  <div
+                    className=""
+                  >
+                    <ProcessDetailsMilestones
+                      milestones={
+                        Array [
+                          Object {
+                            "id": "27107f38-d888-4edf-9a4f-11b9e6d75m36",
+                            "name": "Milestone 1: Order placed",
+                            "status": "ACTIVE",
+                          },
+                          Object {
+                            "id": "27107f38-d888-4edf-9a4f-11b9e6d75m66",
+                            "name": "Milestone 2: Order shipped",
+                            "status": "AVAILABLE",
+                          },
+                          Object {
+                            "id": "27107f38-d888-4edf-9a4f-11b9e6d75i86",
+                            "name": "Manager decision",
+                            "status": "COMPLETED",
+                          },
+                        ]
                       }
                     />
                   </div>
@@ -1707,6 +1817,23 @@ exports[`Process Details Page component tests snapshot testing in Error state 1`
                           },
                           "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
                           "lastUpdate": "2019-10-22T03:40:44.089Z",
+                          "milestones": Array [
+                            Object {
+                              "id": "27107f38-d888-4edf-9a4f-11b9e6d75m36",
+                              "name": "Milestone 1: Order placed",
+                              "status": "ACTIVE",
+                            },
+                            Object {
+                              "id": "27107f38-d888-4edf-9a4f-11b9e6d75m66",
+                              "name": "Milestone 2: Order shipped",
+                              "status": "AVAILABLE",
+                            },
+                            Object {
+                              "id": "27107f38-d888-4edf-9a4f-11b9e6d75i86",
+                              "name": "Manager decision",
+                              "status": "COMPLETED",
+                            },
+                          ],
                           "nodes": Array [
                             Object {
                               "definitionId": "StartEvent_1",
@@ -2525,6 +2652,23 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
                               },
                               "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
                               "lastUpdate": "2019-10-22T03:40:44.089Z",
+                              "milestones": Array [
+                                Object {
+                                  "id": "27107f38-d888-4edf-9a4f-11b9e6d75m36",
+                                  "name": "Milestone 1: Order placed",
+                                  "status": "ACTIVE",
+                                },
+                                Object {
+                                  "id": "27107f38-d888-4edf-9a4f-11b9e6d75m66",
+                                  "name": "Milestone 2: Order shipped",
+                                  "status": "AVAILABLE",
+                                },
+                                Object {
+                                  "id": "27107f38-d888-4edf-9a4f-11b9e6d75i86",
+                                  "name": "Manager decision",
+                                  "status": "COMPLETED",
+                                },
+                              ],
                               "nodes": Array [
                                 Object {
                                   "definitionId": "StartEvent_1",
@@ -2561,6 +2705,33 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
                           },
                           "prev": "/ProcessInstances/8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
                         }
+                      }
+                    />
+                  </div>
+                </FlexItem>
+                <FlexItem>
+                  <div
+                    className=""
+                  >
+                    <ProcessDetailsMilestones
+                      milestones={
+                        Array [
+                          Object {
+                            "id": "27107f38-d888-4edf-9a4f-11b9e6d75m36",
+                            "name": "Milestone 1: Order placed",
+                            "status": "ACTIVE",
+                          },
+                          Object {
+                            "id": "27107f38-d888-4edf-9a4f-11b9e6d75m66",
+                            "name": "Milestone 2: Order shipped",
+                            "status": "AVAILABLE",
+                          },
+                          Object {
+                            "id": "27107f38-d888-4edf-9a4f-11b9e6d75i86",
+                            "name": "Manager decision",
+                            "status": "COMPLETED",
+                          },
+                        ]
                       }
                     />
                   </div>
@@ -2670,6 +2841,23 @@ exports[`Process Details Page component tests snapshot testing in Suspended stat
                           },
                           "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
                           "lastUpdate": "2019-10-22T03:40:44.089Z",
+                          "milestones": Array [
+                            Object {
+                              "id": "27107f38-d888-4edf-9a4f-11b9e6d75m36",
+                              "name": "Milestone 1: Order placed",
+                              "status": "ACTIVE",
+                            },
+                            Object {
+                              "id": "27107f38-d888-4edf-9a4f-11b9e6d75m66",
+                              "name": "Milestone 2: Order shipped",
+                              "status": "AVAILABLE",
+                            },
+                            Object {
+                              "id": "27107f38-d888-4edf-9a4f-11b9e6d75i86",
+                              "name": "Manager decision",
+                              "status": "COMPLETED",
+                            },
+                          ],
                           "nodes": Array [
                             Object {
                               "definitionId": "StartEvent_1",

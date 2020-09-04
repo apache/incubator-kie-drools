@@ -6,18 +6,22 @@ import { BrowserRouter } from 'react-router-dom';
 import { getWrapperAsync, GraphQL } from '@kogito-apps/common';
 import GetProcessInstanceByIdDocument = GraphQL.GetProcessInstanceByIdDocument;
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
+import MilestoneStatus = GraphQL.MilestoneStatus;
 import { Button } from '@patternfly/react-core';
 import axios from 'axios';
 jest.mock('axios');
 import * as Utils from '../../../../utils/Utils';
 import { act } from 'react-dom/test-utils';
-
+// tslint:disable: no-string-literal
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 jest.mock('../../../Atoms/ProcessListModal/ProcessListModal');
 jest.mock('../../../Atoms/ProcessListBulkInstances/ProcessListBulkInstances');
 jest.mock('../../../Organisms/ProcessDetails/ProcessDetails');
 jest.mock(
   '../../../Organisms/ProcessDetailsProcessDiagram/ProcessDetailsProcessDiagram'
+);
+jest.mock(
+  '../../../Organisms/ProcessDetailsMilestones/ProcessDetailsMilestones'
 );
 jest.mock(
   '../../../Organisms/ProcessDetailsProcessVariables/ProcessDetailsProcessVariables'
@@ -144,6 +148,26 @@ const mocks1 = [
                 type: 'StartNode',
                 definitionId: 'StartEvent_1'
               }
+            ],
+            milestones: [
+              {
+                id: '27107f38-d888-4edf-9a4f-11b9e6d75m36',
+                name: 'Milestone 1: Order placed',
+                status: MilestoneStatus['Active'],
+                __typename: 'Milestones'
+              },
+              {
+                id: '27107f38-d888-4edf-9a4f-11b9e6d75m66',
+                name: 'Milestone 2: Order shipped',
+                status: MilestoneStatus['Available'],
+                __typename: 'Milestones'
+              },
+              {
+                id: '27107f38-d888-4edf-9a4f-11b9e6d75i86',
+                name: 'Manager decision',
+                status: MilestoneStatus['Completed'],
+                __typename: 'Milestones'
+              }
             ]
           }
         ]
@@ -196,6 +220,26 @@ const mocks2 = [
                 type: 'StartNode',
                 definitionId: 'StartEvent_1'
               }
+            ],
+            milestones: [
+              {
+                id: '27107f38-d888-4edf-9a4f-11b9e6d75m36',
+                name: 'Milestone 1: Order placed',
+                status: MilestoneStatus['Active'],
+                __typename: 'Milestones'
+              },
+              {
+                id: '27107f38-d888-4edf-9a4f-11b9e6d75m66',
+                name: 'Milestone 2: Order shipped',
+                status: MilestoneStatus['Available'],
+                __typename: 'Milestones'
+              },
+              {
+                id: '27107f38-d888-4edf-9a4f-11b9e6d75i86',
+                name: 'Manager decision',
+                status: MilestoneStatus['Completed'],
+                __typename: 'Milestones'
+              }
             ]
           }
         ]
@@ -247,6 +291,26 @@ const mocks3 = [
                 exit: '2019-10-22T04:43:01.135Z',
                 type: 'StartNode',
                 definitionId: 'StartEvent_1'
+              }
+            ],
+            milestones: [
+              {
+                id: '27107f38-d888-4edf-9a4f-11b9e6d75m36',
+                name: 'Milestone 1: Order placed',
+                status: MilestoneStatus['Active'],
+                __typename: 'Milestones'
+              },
+              {
+                id: '27107f38-d888-4edf-9a4f-11b9e6d75m66',
+                name: 'Milestone 2: Order shipped',
+                status: MilestoneStatus['Available'],
+                __typename: 'Milestones'
+              },
+              {
+                id: '27107f38-d888-4edf-9a4f-11b9e6d75i86',
+                name: 'Manager decision',
+                status: MilestoneStatus['Completed'],
+                __typename: 'Milestones'
               }
             ]
           }

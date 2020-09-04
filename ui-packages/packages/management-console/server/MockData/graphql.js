@@ -53,6 +53,23 @@ module.exports ={ ProcessInstanceData : [
         type: 'StartNode'
       }
     ],
+    milestones: [
+      {
+        id: '27107f38-d888-4edf-9a4f-11b9e6d75i86',
+        name: 'Manager decision',
+        status: 'COMPLETED'
+      },
+      {
+        id: '27107f38-d888-4edf-9a4f-11b9e6d75m36',
+        name: 'Milestone 1: Order placed',
+        status: 'ACTIVE'
+      },
+      {
+        id: '27107f38-d888-4edf-9a4f-11b9e6d75m66',
+        name: 'Milestone 2: Order shipped',
+        status: 'AVAILABLE'
+      },
+    ],
     childProcessInstances: []
   },
   {
@@ -109,6 +126,23 @@ module.exports ={ ProcessInstanceData : [
         type: 'StartNode'
       }
     ],
+    milestones: [
+      {
+        id: '27107f38-d888-4edf-9a4f-11b9e6d75ze6',
+        name: 'Manager decision',
+        status: 'COMPLETED'
+      },
+      {
+        id: '27107f38-d888-4edf-9a4f-11b9e6d75a56',
+        name: 'Milestone 1: Order placed',
+        status: 'ACTIVE'
+      },
+      {
+        id: '27107f38-d888-4edf-9a4f-11b9e6d75q76',
+        name: 'Milestone 2: Order shipped',
+        status: 'AVAILABLE'
+      },
+    ],
     childProcessInstances: []
   },
   {
@@ -164,6 +198,23 @@ module.exports ={ ProcessInstanceData : [
         exit: '2019-10-22T03:37:30.804Z',
         type: 'StartNode'
       }
+    ],
+    milestones: [
+      {
+        id: '27107f38-d888-4edf-9a4f-11b9e6d751g6',
+        name: 'Manager decision',
+        status: 'COMPLETED'
+      },
+      {
+        id: '27107f38-d888-4edf-9a4f-11b9e6d75v36',
+        name: 'Milestone 1: Order placed',
+        status: 'ACTIVE'
+      },
+      {
+        id: '27107f38-d888-4edf-9a4f-11b9e6d75o96',
+        name: 'Milestone 2: Order shipped',
+        status: 'AVAILABLE'
+      },
     ],
     childProcessInstances: []
   },
@@ -279,6 +330,23 @@ module.exports ={ ProcessInstanceData : [
         exit: '2019-10-22T03:37:30.754Z',
         type: 'StartNode'
       }
+    ],
+    milestones: [
+      {
+        id: '27107f38-d888-4edf-9a4f-11b9e6d75m26',
+        name: 'Manager decision',
+        status: 'COMPLETED'
+      },
+      {
+        id: '27107f38-d888-4edf-9a4f-11b9e6d75uu26',
+        name: 'Milestone 1: Order placed',
+        status: 'ACTIVE'
+      },
+      {
+        id: '27107f38-d888-4edf-9a4f-11b9e6d75mi86',
+        name: 'Milestone 2: Order shipped',
+        status: 'AVAILABLE'
+      },
     ],
     childProcessInstances: [
       {
@@ -978,6 +1046,28 @@ module.exports ={ ProcessInstanceData : [
         exit: '2019-10-22T04:43:01.135Z',
         type: 'StartNode'
       }
+    ],
+    milestones: [
+      {
+        id: '27107f38-d888-4edf-9a4f-11b9e6d75i86',
+        name: 'Manager decision',
+        status: 'COMPLETED'
+      },
+      {
+        id: '27107f38-d888-4edf-9a4f-11b9e6d75m36',
+        name: 'Milestone 1: Order placed',
+        status: 'ACTIVE'
+      },
+      {
+        id: '27107f38-d888-4edf-9a4f-11b9e6d75m66',
+        name: 'Milestone 2: Order shipped',
+        status: 'AVAILABLE'
+      },
+      {
+        id: '27107f38-d888-4edf-9a4f-11b9e6d75m88',
+        name: 'Milestone 3: Order delivered and closed with customer sign off',
+        status: 'ACTIVE'
+      },
     ],
     childProcessInstances: []
   },
