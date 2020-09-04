@@ -8,7 +8,6 @@
   ],
   "scripts": {
     "init": "lerna bootstrap",
-    "prepare": "yarn workspace @kogito-apps/trusty run prepare",
     "build": "lerna run build --stream --",
     "build:fast": "lerna run build:fast --stream --",
     "build:prod": "lerna run build:prod --stream --",
