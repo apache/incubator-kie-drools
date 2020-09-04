@@ -57,8 +57,6 @@ import org.slf4j.LoggerFactory;
 
 public class KieComponentFactory implements Serializable {
 
-    Logger logger = LoggerFactory.getLogger(KieComponentFactory.class);
-
     public static final KieComponentFactory DEFAULT = new KieComponentFactory();
 
     public static KieComponentFactory createKieComponentFactory() {
