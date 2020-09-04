@@ -30,14 +30,14 @@ public class FeatureImportanceMarshaller extends AbstractModelMarshaller<Feature
     @Override
     public FeatureImportance readFrom(ProtoStreamReader reader) throws IOException {
         return new FeatureImportance(
-                reader.readString(FeatureImportance.FEATURE_ID_FIELD),
+                reader.readString(FeatureImportance.FEATURE_NAME_FIELD),
                 reader.readDouble(FeatureImportance.SCORE_FIELD)
         );
     }
 
     @Override
     public void writeTo(ProtoStreamWriter writer, FeatureImportance input) throws IOException {
-        writer.writeString(FeatureImportance.FEATURE_ID_FIELD, input.getFeatureId());
+        writer.writeString(FeatureImportance.FEATURE_NAME_FIELD, input.getFeatureName());
         writer.writeDouble(FeatureImportance.SCORE_FIELD, input.getScore());
     }
 

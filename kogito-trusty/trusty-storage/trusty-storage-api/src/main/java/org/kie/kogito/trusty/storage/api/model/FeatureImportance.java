@@ -22,11 +22,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FeatureImportance {
 
-    public static final String FEATURE_ID_FIELD = "featureId";
+    public static final String FEATURE_NAME_FIELD = "featureName";
     public static final String SCORE_FIELD = "score";
 
-    @JsonProperty(FEATURE_ID_FIELD)
-    private String featureId;
+    @JsonProperty(FEATURE_NAME_FIELD)
+    private String featureName;
 
     @JsonProperty(SCORE_FIELD)
     private Double score;
@@ -34,17 +34,17 @@ public class FeatureImportance {
     public FeatureImportance() {
     }
 
-    public FeatureImportance(String featureId, Double score) {
-        this.featureId = featureId;
+    public FeatureImportance(String featureName, Double score) {
+        this.featureName = featureName;
         this.score = score;
     }
 
-    public String getFeatureId() {
-        return featureId;
+    public String getFeatureName() {
+        return featureName;
     }
 
-    public void setFeatureId(String featureId) {
-        this.featureId = featureId;
+    public void setFeatureName(String featureName) {
+        this.featureName = featureName;
     }
 
     public Double getScore() {

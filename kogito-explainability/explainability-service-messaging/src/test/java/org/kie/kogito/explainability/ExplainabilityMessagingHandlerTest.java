@@ -16,6 +16,12 @@
 
 package org.kie.kogito.explainability;
 
+import java.util.Collections;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,12 +32,6 @@ import org.kie.kogito.explainability.api.ModelIdentifierDto;
 import org.kie.kogito.explainability.messaging.ExplainabilityMessagingHandler;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.models.ExplainabilityRequest;
-
-import java.util.Collections;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.mockito.ArgumentMatchers.any;
@@ -88,7 +88,7 @@ public class ExplainabilityMessagingHandlerTest {
     }
 
     private ExplainabilityResultDto mockExplainabilityResultDto() {
-        return new ExplainabilityResultDto(UUID.randomUUID().toString(), Collections.emptyMap());
+        return ExplainabilityResultDto.buildSucceeded(UUID.randomUUID().toString(), Collections.emptyMap());
     }
 
     private void testNumberOfInvocations(Message<String> message, int wantedNumberOfServiceInvocations) throws InterruptedException, ExecutionException, TimeoutException {

@@ -24,7 +24,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Saliency {
 
+    public static final String OUTCOME_ID_FIELD = "outcomeId";
+    public static final String OUTCOME_NAME_FIELD = "outcomeName";
     public static final String FEATURE_IMPORTANCE_FIELD = "featureImportance";
+
+    @JsonProperty(OUTCOME_ID_FIELD)
+    private String outcomeId;
+
+    @JsonProperty(OUTCOME_NAME_FIELD)
+    private String outcomeName;
 
     @JsonProperty(FEATURE_IMPORTANCE_FIELD)
     private List<FeatureImportance> featureImportance;
@@ -32,8 +40,26 @@ public class Saliency {
     public Saliency() {
     }
 
-    public Saliency(List<FeatureImportance> featureImportance) {
+    public Saliency(String outcomeId, String outcomeName, List<FeatureImportance> featureImportance) {
+        this.outcomeId = outcomeId;
+        this.outcomeName = outcomeName;
         this.featureImportance = featureImportance;
+    }
+
+    public String getOutcomeId() {
+        return outcomeId;
+    }
+
+    public void setOutcomeId(String outcomeId) {
+        this.outcomeId = outcomeId;
+    }
+
+    public String getOutcomeName() {
+        return outcomeName;
+    }
+
+    public void setOutcomeName(String outcomeName) {
+        this.outcomeName = outcomeName;
     }
 
     public List<FeatureImportance> getFeatureImportance() {

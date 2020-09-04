@@ -16,31 +16,7 @@
 
 package org.kie.kogito.explainability.api;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class FeatureImportanceDto {
-
-    @JsonProperty("featureName")
-    private String featureName;
-
-    @JsonProperty("score")
-    private Double score;
-
-    private FeatureImportanceDto() {
-    }
-
-    public FeatureImportanceDto(String featureName, Double score) {
-        this.featureName = featureName;
-        this.score = score;
-    }
-
-    public String getFeatureName() {
-        return featureName;
-    }
-
-    public Double getScore() {
-        return score;
-    }
+public enum ExplainabilityStatus {
+    SUCCEEDED,
+    FAILED
 }

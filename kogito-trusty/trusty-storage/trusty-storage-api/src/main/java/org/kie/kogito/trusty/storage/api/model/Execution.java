@@ -56,18 +56,18 @@ public class Execution {
     private String executedModelNamespace;
 
     @JsonProperty(EXECUTION_TYPE_FIELD)
-    private ExecutionTypeEnum executionType;
+    private ExecutionType executionType;
 
     public Execution() {
     }
 
-    public Execution(ExecutionTypeEnum executionType) {
+    public Execution(ExecutionType executionType) {
         this.executionType = executionType;
     }
 
     public Execution(String executionId, String sourceUrl, Long executionTimestamp, Boolean hasSucceeded,
                      String executorName, String executedModelName, String executedModelNamespace,
-                     ExecutionTypeEnum executionType) {
+                     ExecutionType executionType) {
         this.executionId = executionId;
         this.sourceUrl = sourceUrl;
         this.executionTimestamp = executionTimestamp;
@@ -200,7 +200,7 @@ public class Execution {
      *
      * @return The execution type.
      */
-    public ExecutionTypeEnum getExecutionType() {
+    public ExecutionType getExecutionType() {
         return executionType;
     }
 
@@ -209,7 +209,7 @@ public class Execution {
      *
      * @param executionType The execution type.
      */
-    public void setExecutionType(ExecutionTypeEnum executionType) {
+    public void setExecutionType(ExecutionType executionType) {
         this.executionType = executionType;
     }
 

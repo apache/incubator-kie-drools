@@ -23,7 +23,7 @@ import java.time.ZoneOffset;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.kie.kogito.trusty.storage.api.model.Execution;
-import org.kie.kogito.trusty.storage.api.model.ExecutionTypeEnum;
+import org.kie.kogito.trusty.storage.api.model.ExecutionType;
 
 /**
  * An execution header.
@@ -50,7 +50,7 @@ public class ExecutionHeaderResponse {
     private String executedModelNamespace;
 
     @JsonProperty("executionType")
-    private ExecutionTypeEnum executionType;
+    private ExecutionType executionType;
 
     private ExecutionHeaderResponse() {
     }
@@ -61,7 +61,7 @@ public class ExecutionHeaderResponse {
                                    String executorName,
                                    String executedModelName,
                                    String executedModelNamespace,
-                                   ExecutionTypeEnum executionType) {
+                                   ExecutionType executionType) {
         this.executionId = executionId;
         this.executionDate = executionDate;
         this.hasSucceeded = hasSucceeded;
@@ -141,7 +141,7 @@ public class ExecutionHeaderResponse {
      *
      * @return The execution type.
      */
-    public ExecutionTypeEnum getExecutionType() {
+    public ExecutionType getExecutionType() {
         return executionType;
     }
 }

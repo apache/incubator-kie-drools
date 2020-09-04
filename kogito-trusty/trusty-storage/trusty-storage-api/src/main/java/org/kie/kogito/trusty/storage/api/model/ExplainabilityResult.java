@@ -16,7 +16,7 @@
 
 package org.kie.kogito.trusty.storage.api.model;
 
-import java.util.Map;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,19 +25,29 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ExplainabilityResult {
 
     public static final String EXECUTION_ID_FIELD = "executionId";
+    public static final String STATUS_FIELD = "status";
+    public static final String STATUS_DETAILS_FIELD = "statusDetails";
     public static final String SALIENCIES_FIELD = "saliencies";
 
     @JsonProperty(EXECUTION_ID_FIELD)
     private String executionId;
 
+    @JsonProperty(STATUS_FIELD)
+    private ExplainabilityStatus status;
+
+    @JsonProperty(STATUS_DETAILS_FIELD)
+    private String statusDetails;
+
     @JsonProperty(SALIENCIES_FIELD)
-    private Map<String, Saliency> saliencies;
+    private List<Saliency> saliencies;
 
     public ExplainabilityResult() {
     }
 
-    public ExplainabilityResult(String executionId, Map<String, Saliency> saliencies) {
+    public ExplainabilityResult(String executionId, ExplainabilityStatus status, String statusDetails, List<Saliency> saliencies) {
         this.executionId = executionId;
+        this.status = status;
+        this.statusDetails = statusDetails;
         this.saliencies = saliencies;
     }
 
@@ -49,11 +59,27 @@ public class ExplainabilityResult {
         this.executionId = executionId;
     }
 
-    public Map<String, Saliency> getSaliencies() {
+    public ExplainabilityStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ExplainabilityStatus status) {
+        this.status = status;
+    }
+
+    public String getStatusDetails() {
+        return statusDetails;
+    }
+
+    public void setStatusDetails(String statusDetails) {
+        this.statusDetails = statusDetails;
+    }
+
+    public List<Saliency> getSaliencies() {
         return saliencies;
     }
 
-    public void setSaliencies(Map<String, Saliency> saliencies) {
+    public void setSaliencies(List<Saliency> saliencies) {
         this.saliencies = saliencies;
     }
 }

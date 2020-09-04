@@ -27,14 +27,22 @@ public class ExplainabilityResultDto {
     @JsonProperty("executionId")
     private String executionId;
 
+    @JsonProperty("status")
+    private ExplainabilityStatus status;
+
+    @JsonProperty("statusDetails")
+    private String statusDetails;
+
     @JsonProperty("saliency")
     private Map<String, SaliencyDto> saliencies;
 
     private ExplainabilityResultDto() {
     }
 
-    public ExplainabilityResultDto(String executionId, Map<String, SaliencyDto> saliencies) {
+    private ExplainabilityResultDto(String executionId, ExplainabilityStatus status, String statusDetails, Map<String, SaliencyDto> saliencies) {
         this.executionId = executionId;
+        this.status = status;
+        this.statusDetails = statusDetails;
         this.saliencies = saliencies;
     }
 
@@ -42,7 +50,23 @@ public class ExplainabilityResultDto {
         return executionId;
     }
 
+    public ExplainabilityStatus getStatus() {
+        return status;
+    }
+
+    public String getStatusDetails() {
+        return statusDetails;
+    }
+
     public Map<String, SaliencyDto> getSaliencies() {
         return saliencies;
+    }
+
+    public static ExplainabilityResultDto buildSucceeded(String executionId, Map<String, SaliencyDto> saliencies) {
+        return new ExplainabilityResultDto(executionId, ExplainabilityStatus.SUCCEEDED, null, saliencies);
+    }
+
+    public static ExplainabilityResultDto buildFailed(String executionId, String statusDetails) {
+        return new ExplainabilityResultDto(executionId, ExplainabilityStatus.FAILED, statusDetails, null);
     }
 }

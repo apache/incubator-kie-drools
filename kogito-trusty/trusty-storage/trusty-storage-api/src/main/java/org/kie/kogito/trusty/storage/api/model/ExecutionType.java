@@ -19,7 +19,7 @@ package org.kie.kogito.trusty.storage.api.model;
 /**
  * The execution enum type.
  */
-public enum ExecutionTypeEnum {
+public enum ExecutionType {
 
     /**
      * An execution of a decision.
@@ -33,7 +33,7 @@ public enum ExecutionTypeEnum {
 
     private String type;
 
-    ExecutionTypeEnum(String type) {
+    ExecutionType(String type) {
         this.type = type;
     }
 }

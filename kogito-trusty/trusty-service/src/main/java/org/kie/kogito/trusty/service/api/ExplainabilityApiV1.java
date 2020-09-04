@@ -35,7 +35,7 @@ public class ExplainabilityApiV1 {
     TrustyService trustyService;
 
     @GET
-    @Path("/{executionId}/saliencies")
+    @Path("/{executionId}/explanations/saliencies")
     @APIResponses(value = {
             @APIResponse(description = "Gets the local explanation of a decision.", responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = DecisionStructuredInputsResponse.class))),
             @APIResponse(description = "Bad Request", responseCode = "400", content = @Content(mediaType = MediaType.TEXT_PLAIN))
@@ -72,8 +72,10 @@ public class ExplainabilityApiV1 {
             return null;
         }
         return new SalienciesResponse(
-                model.getSaliencies().entrySet().stream()
-                        .map(e -> saliencyModelToResponse(e.getKey(), e.getValue()))
+                model.getStatus().name(),
+                model.getStatusDetails(),
+                model.getSaliencies().stream()
+                        .map(ExplainabilityApiV1::saliencyModelToResponse)
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList())
         );
@@ -83,15 +85,16 @@ public class ExplainabilityApiV1 {
         if (model == null) {
             return null;
         }
-        return new FeatureImportanceResponse(model.getFeatureId(), model.getScore());
+        return new FeatureImportanceResponse(model.getFeatureName(), model.getScore());
     }
 
-    static SaliencyResponse saliencyModelToResponse(String id, Saliency model) {
+    static SaliencyResponse saliencyModelToResponse(Saliency model) {
         if (model == null) {
             return null;
         }
         return new SaliencyResponse(
-                id,
+                model.getOutcomeId(),
+                model.getOutcomeName(),
                 model.getFeatureImportance().stream()
                         .map(ExplainabilityApiV1::featureImportanceModelToResponse)
                         .filter(Objects::nonNull)

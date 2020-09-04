@@ -38,14 +38,14 @@ public class Decision extends Execution {
     private Collection<DecisionOutcome> outcomes;
 
     public Decision() {
-        super(ExecutionTypeEnum.DECISION);
+        super(ExecutionType.DECISION);
     }
 
     public Decision(String executionId, String sourceUrl, Long executionTimestamp, Boolean hasSucceeded,
                     String executorName, String executedModelName, String executedModelNamespace,
                     List<DecisionInput> inputs, List<DecisionOutcome> outcomes) {
         super(executionId, sourceUrl, executionTimestamp, hasSucceeded, executorName,
-                executedModelName, executedModelNamespace, ExecutionTypeEnum.DECISION);
+                executedModelName, executedModelNamespace, ExecutionType.DECISION);
         this.inputs = inputs;
         this.outcomes = outcomes;
     }

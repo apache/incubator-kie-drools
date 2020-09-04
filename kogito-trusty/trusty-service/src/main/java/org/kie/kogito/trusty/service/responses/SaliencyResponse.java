@@ -8,6 +8,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SaliencyResponse {
 
+    @JsonProperty("outcomeId")
+    private String outcomeId;
+
     @JsonProperty("outcomeName")
     private String outcomeName;
 
@@ -17,9 +20,14 @@ public class SaliencyResponse {
     private SaliencyResponse() {
     }
 
-    public SaliencyResponse(String outcomeName, List<FeatureImportanceResponse> featureImportance) {
+    public SaliencyResponse(String outcomeId, String outcomeName, List<FeatureImportanceResponse> featureImportance) {
+        this.outcomeId = outcomeId;
         this.outcomeName = outcomeName;
         this.featureImportance = featureImportance;
+    }
+
+    public String getOutcomeId() {
+        return outcomeId;
     }
 
     public String getOutcomeName() {

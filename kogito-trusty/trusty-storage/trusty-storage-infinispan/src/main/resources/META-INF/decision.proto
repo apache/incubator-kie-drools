@@ -103,28 +103,19 @@ message ExplainabilityResult {
     optional string executionId = 1;
 
     /* @Field(store = Store.YES) */
-    repeated ExplainabilityResultItem saliencies = 2;
-}
-
-/*
-  The "saliencies" field of "ExplainabilityResult" is supposed to be a "map<string, Saliency>",
-  but the MessageMarshaller API apparently doesn't contain a method to deserialize maps.
-  The purpose of this class is only to overcome this issue in the Infinispan storage module
-  without altering the generic model class.
- */
-/* @Indexed */
-message ExplainabilityResultItem {
-    /* @Field(store = Store.YES) */
-    optional string id = 1;
+    optional string status = 2;
 
     /* @Field(store = Store.YES) */
-    optional Saliency saliency = 2;
+    optional string statusDetails = 3;
+
+    /* @Field(store = Store.YES) */
+    repeated Saliency saliencies = 4;
 }
 
 /* @Indexed */
 message FeatureImportance {
     /* @Field(store = Store.YES) */
-    optional string featureId = 1;
+    optional string featureName = 1;
 
     /* @Field(store = Store.YES) */
     optional double score = 2;
@@ -145,7 +136,13 @@ message MessageExceptionField {
 /* @Indexed */
 message Saliency {
     /* @Field(store = Store.YES) */
-    repeated FeatureImportance featureImportance = 1;
+    optional string outcomeId = 1;
+
+    /* @Field(store = Store.YES) */
+    optional string outcomeName = 2;
+
+    /* @Field(store = Store.YES) */
+    repeated FeatureImportance featureImportance = 3;
 }
 
 /* @Indexed */

@@ -25,12 +25,17 @@ import org.kie.kogito.trusty.storage.api.model.FeatureImportance;
 import org.kie.kogito.trusty.storage.api.model.Saliency;
 import org.kie.kogito.trusty.storage.infinispan.testfield.AbstractTestField;
 import org.kie.kogito.trusty.storage.infinispan.testfield.ListTestField;
+import org.kie.kogito.trusty.storage.infinispan.testfield.StringTestField;
 
 import static org.kie.kogito.trusty.storage.api.model.Saliency.FEATURE_IMPORTANCE_FIELD;
+import static org.kie.kogito.trusty.storage.api.model.Saliency.OUTCOME_ID_FIELD;
+import static org.kie.kogito.trusty.storage.api.model.Saliency.OUTCOME_NAME_FIELD;
 
 public class SaliencyMarshallerTest extends MarshallerTestTemplate<Saliency> {
 
     private static final List<AbstractTestField<Saliency, ?>> TEST_FIELD_LIST = List.of(
+            new StringTestField<>(OUTCOME_ID_FIELD, "ID", Saliency::getOutcomeId, Saliency::setOutcomeId),
+            new StringTestField<>(OUTCOME_NAME_FIELD, "test", Saliency::getOutcomeName, Saliency::setOutcomeName),
             new ListTestField<>(FEATURE_IMPORTANCE_FIELD, Collections.emptyList(), Saliency::getFeatureImportance, Saliency::setFeatureImportance, FeatureImportance.class)
     );
 

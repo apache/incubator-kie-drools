@@ -59,11 +59,6 @@ public class ProtostreamProducer {
     }
 
     @Produces
-    org.infinispan.protostream.MessageMarshaller explainabilityResultItemMarshaller() {
-        return new ExplainabilityResultItemMarshaller(mapper);
-    }
-
-    @Produces
     org.infinispan.protostream.MessageMarshaller featureImportanceMarshaller() {
         return new FeatureImportanceMarshaller(mapper);
     }

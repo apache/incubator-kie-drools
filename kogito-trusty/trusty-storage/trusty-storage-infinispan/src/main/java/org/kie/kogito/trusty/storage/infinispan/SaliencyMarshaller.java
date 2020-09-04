@@ -32,12 +32,16 @@ public class SaliencyMarshaller extends AbstractModelMarshaller<Saliency> {
     @Override
     public Saliency readFrom(ProtoStreamReader reader) throws IOException {
         return new Saliency(
+                reader.readString(Saliency.OUTCOME_ID_FIELD),
+                reader.readString(Saliency.OUTCOME_NAME_FIELD),
                 reader.readCollection(Saliency.FEATURE_IMPORTANCE_FIELD, new ArrayList<>(), FeatureImportance.class)
         );
     }
 
     @Override
     public void writeTo(ProtoStreamWriter writer, Saliency input) throws IOException {
+        writer.writeString(Saliency.OUTCOME_ID_FIELD, input.getOutcomeId());
+        writer.writeString(Saliency.OUTCOME_NAME_FIELD, input.getOutcomeName());
         writer.writeCollection(Saliency.FEATURE_IMPORTANCE_FIELD, input.getFeatureImportance(), FeatureImportance.class);
     }
 

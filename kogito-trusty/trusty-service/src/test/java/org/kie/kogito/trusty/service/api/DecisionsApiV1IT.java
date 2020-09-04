@@ -46,7 +46,7 @@ import org.kie.kogito.trusty.service.responses.TypedVariableResponse;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
-import org.kie.kogito.trusty.storage.api.model.ExecutionTypeEnum;
+import org.kie.kogito.trusty.storage.api.model.ExecutionType;
 import org.kie.kogito.trusty.storage.api.model.Message;
 import org.kie.kogito.trusty.storage.api.model.MessageExceptionField;
 import org.kie.kogito.trusty.storage.api.model.TypedVariable;
@@ -355,7 +355,7 @@ class DecisionsApiV1IT {
                 null,
                 TEST_MODEL_NAME,
                 TEST_MODEL_NAMESPACE,
-                ExecutionTypeEnum.DECISION
+                ExecutionType.DECISION
         );
     }
 

@@ -24,7 +24,7 @@ import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.kie.kogito.trusty.storage.api.model.Execution;
-import org.kie.kogito.trusty.storage.api.model.ExecutionTypeEnum;
+import org.kie.kogito.trusty.storage.api.model.ExecutionType;
 
 public class DecisionMarshaller extends AbstractModelMarshaller<Decision> {
 
@@ -34,8 +34,8 @@ public class DecisionMarshaller extends AbstractModelMarshaller<Decision> {
 
     @Override
     public Decision readFrom(ProtoStreamReader reader) throws IOException {
-        ExecutionTypeEnum executionType = enumFromString(reader.readString(Execution.EXECUTION_TYPE_FIELD), ExecutionTypeEnum.class);
-        if (executionType != ExecutionTypeEnum.DECISION) {
+        ExecutionType executionType = enumFromString(reader.readString(Execution.EXECUTION_TYPE_FIELD), ExecutionType.class);
+        if (executionType != ExecutionType.DECISION) {
             throw new IllegalStateException("Unsupported execution type: " + executionType);
         }
         return new Decision(

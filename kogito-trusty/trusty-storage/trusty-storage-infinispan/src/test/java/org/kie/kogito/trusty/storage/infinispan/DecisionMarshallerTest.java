@@ -24,7 +24,7 @@ import org.infinispan.protostream.MessageMarshaller;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
-import org.kie.kogito.trusty.storage.api.model.ExecutionTypeEnum;
+import org.kie.kogito.trusty.storage.api.model.ExecutionType;
 import org.kie.kogito.trusty.storage.infinispan.testfield.AbstractTestField;
 import org.kie.kogito.trusty.storage.infinispan.testfield.BooleanTestField;
 import org.kie.kogito.trusty.storage.infinispan.testfield.CollectionTestField;
@@ -53,7 +53,7 @@ public class DecisionMarshallerTest extends MarshallerTestTemplate<Decision> {
             new StringTestField<>(EXECUTED_MODEL_NAME_FIELD, "modelName", Decision::getExecutedModelName, Decision::setExecutedModelName),
             new StringTestField<>(EXECUTED_MODEL_NAMESPACE_FIELD, "modelNamespace", Decision::getExecutedModelNamespace, Decision::setExecutedModelNamespace),
             new BooleanTestField<>(HAS_SUCCEEDED_FIELD, Boolean.TRUE, Decision::hasSucceeded, Decision::setSuccess),
-            new EnumTestField<>(EXECUTION_TYPE_FIELD, ExecutionTypeEnum.DECISION, Decision::getExecutionType, Decision::setExecutionType, ExecutionTypeEnum.class),
+            new EnumTestField<>(EXECUTION_TYPE_FIELD, ExecutionType.DECISION, Decision::getExecutionType, Decision::setExecutionType, ExecutionType.class),
             new CollectionTestField<>(INPUTS_FIELD, Collections.emptyList(), Decision::getInputs, Decision::setInputs, DecisionInput.class),
             new CollectionTestField<>(OUTCOMES_FIELD, Collections.emptyList(), Decision::getOutcomes, Decision::setOutcomes, DecisionOutcome.class)
     );
