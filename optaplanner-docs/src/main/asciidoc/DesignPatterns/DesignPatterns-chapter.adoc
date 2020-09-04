@@ -251,19 +251,6 @@ _The tasks within one bucket are not ordered_: it's up to the employee to decide
 This gives the employee more autonomy, but makes it harder to do certain optimization,
 such as minimize travel time between task locations.
 
-
-[[multiStagePlanning]]
-== Multi-stage Planning
-
-For practical or organizational reasons (such as Conway's law), complex planning problems are often broken down in multiple stages.
-A typical example is train scheduling, where one department decides where and when a train will arrive or depart, and another department assigns the operators to the actual train cars/locomotives.
-
-Each stage has its own solver configuration (and therefore its own ``SolverFactory``). Do not confuse it with <<solverPhase,multi-phase solving>> which uses a one-solver configuration.
-
-Similarly to <<partitionedSearch,Partitioned Search>>, multi-stage planning leads to suboptimal results.
-Nevertheless, it may be beneficial in order to simplify the maintenance, ownership, and help to start a project.
-
-
 [[cloudArchitecturePatterns]]
 == Cloud architecture patterns
 
