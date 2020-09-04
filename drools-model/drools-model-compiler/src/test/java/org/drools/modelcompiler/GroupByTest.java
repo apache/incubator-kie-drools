@@ -375,5 +375,76 @@ public class GroupByTest {
         assertEquals(1, (int) global.get(2)); // 2 maps to a key, and counts once.
     }
 
+    @Test
+    public void testGroupBy2Vars() throws Exception {
+        final Global<Map> var_results = D.globalOf(Map.class, "defaultpkg", "results");
 
+        final Variable<String> var_$key = D.declarationOf(String.class);
+        final Variable<Person> var_$p = D.declarationOf(Person.class);
+        final Variable<Integer> var_$age = D.declarationOf(Integer.class);
+        final Variable<String> var_$s = D.declarationOf(String.class);
+        final Variable<Integer> var_$l = D.declarationOf(Integer.class);
+        final Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
+
+        Rule rule1 = D.rule("R1").build(
+                D.groupBy(
+                        // Patterns
+                        D.and(
+                            D.pattern(var_$p).bind(var_$age, Person::getAge, D.reactOn("age")),
+                            D.pattern(var_$s).bind(var_$l, String::length, D.reactOn("length"))
+                        ),
+                        // Grouping Function
+                        var_$p, var_$s, var_$key, (person, string) -> person.getName().substring(0, 1) + string.length(),
+                        // Accumulate Result (can be more than one)
+                        D.accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges)),
+                // Filter
+                D.pattern(var_$sumOfAges).expr($sumOfAges -> EvaluationUtil.greaterThanNumbers($sumOfAges, 10)),
+                // Consequence
+                D.on(var_$key, var_results, var_$sumOfAges)
+                        .execute(($key, results, $sumOfAges) -> results.put($key, $sumOfAges))
+        );
+
+        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
+        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        Map results = new HashMap();
+        ksession.setGlobal( "results", results );
+
+        ksession.insert( "test" );
+        ksession.insert( "check" );
+        ksession.insert(new Person("Mark", 42));
+        ksession.insert(new Person("Edson", 38));
+        FactHandle meFH = ksession.insert(new Person("Mario", 45));
+        ksession.insert(new Person("Maciej", 39));
+        ksession.insert(new Person("Edoardo", 33));
+        FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
+        ksession.fireAllRules();
+
+        assertEquals( 6, results.size() );
+        assertEquals( 35, results.get("G4") );
+        assertEquals( 71, results.get("E4") );
+        assertEquals( 126, results.get("M4") );
+        assertEquals( 35, results.get("G5") );
+        assertEquals( 71, results.get("E5") );
+        assertEquals( 126, results.get("M5") );
+        results.clear();
+
+        ksession.delete( meFH );
+        ksession.fireAllRules();
+
+        assertEquals( 2, results.size() );
+        assertEquals( 81, results.get("M4") );
+        assertEquals( 81, results.get("M5") );
+        results.clear();
+
+        ksession.update(geoffreyFH, new Person("Geoffrey", 40));
+        ksession.insert(new Person("Matteo", 38));
+        ksession.fireAllRules();
+
+        assertEquals( 4, results.size() );
+        assertEquals( 40, results.get("G4") );
+        assertEquals( 119, results.get("M4") );
+        assertEquals( 40, results.get("G5") );
+        assertEquals( 119, results.get("M5") );
+    }
 }

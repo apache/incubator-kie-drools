@@ -541,6 +541,18 @@ public class DSL {
         return new GroupByExprViewItem<T, K>( viewItem, new Variable[] { var1, var2 }, varKey, toFunctionN( groupingFunction ), accumulateFunctionsOf( firstFunction, otherFunctions ) );
     }
 
+    public static <T, A, B, C, K> ExprViewItem<T> groupBy(ViewItem<T> viewItem,
+                                                          Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<K> varKey, Function3<A, B, C, K> groupingFunction,
+                                                          AccumulateFunction firstFunction, AccumulateFunction... otherFunctions) {
+        return new GroupByExprViewItem<T, K>( viewItem, new Variable[] { var1, var2, var3 }, varKey, toFunctionN( groupingFunction ), accumulateFunctionsOf( firstFunction, otherFunctions ) );
+    }
+
+    public static <T, A, B, C, D, K> ExprViewItem<T> groupBy(ViewItem<T> viewItem,
+                                                             Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<K> varKey, Function4<A, B, C, D, K> groupingFunction,
+                                                             AccumulateFunction firstFunction, AccumulateFunction... otherFunctions) {
+        return new GroupByExprViewItem<T, K>( viewItem, new Variable[] { var1, var2, var3, var4 }, varKey, toFunctionN( groupingFunction ), accumulateFunctionsOf( firstFunction, otherFunctions ) );
+    }
+
     // -- Temporal Constraints --
 
     public static TemporalPredicate not(TemporalPredicate predicate) {

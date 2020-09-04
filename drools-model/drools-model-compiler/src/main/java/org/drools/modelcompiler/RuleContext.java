@@ -143,7 +143,7 @@ public class RuleContext {
         return subRules == null ? Collections.emptyList() : subRules;
     }
 
-    void addSubRule(Rule rule) {
+    public void addSubRule(Rule rule) {
         if (subRules == null) {
             subRules = new ArrayList<>();
         }
