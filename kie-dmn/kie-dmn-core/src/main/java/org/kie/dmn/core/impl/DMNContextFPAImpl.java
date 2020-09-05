@@ -33,8 +33,6 @@ public class DMNContextFPAImpl implements DMNContext {
     private Deque<ScopeReference> stack = new LinkedList<>();
     private DMNMetadataImpl metadata;
 
-    public static final String STRONGLY_TYPED_FPA = "STRONGLY_TYPED_FPA"; // metadata key
-
     public DMNContextFPAImpl(FEELPropertyAccessible bean) {
         this.fpa = bean;
         this.metadata = new DMNMetadataImpl();

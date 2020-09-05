@@ -100,8 +100,10 @@ public class DMNTypeSafeTest extends BaseVariantTest {
         FEELPropertyAccessible context = outputSet(compiledClasses, tPersonInstance);
 
         DMNResult evaluateAll = evaluateTyped(context, runtime, dmnModel);
+        convertContext(evaluateAll, createInstanceFromCompiledClasses(compiledClasses, packageName, "OutputSet"));
 
         DMNContext result = evaluateAll.getContext();
+
         Map<String, Object> d = (Map<String, Object>) result.get("d");
         assertThat(d.get("Hello"), is("Hello Mr. x"));
 
@@ -159,8 +161,10 @@ public class DMNTypeSafeTest extends BaseVariantTest {
         context.fromMap(inputSetMap);
 
         DMNResult evaluateAll = evaluateTyped(context, runtime, dmnModel);
+        convertContext(evaluateAll, createInstanceFromCompiledClasses(classes, packageName, "OutputSet"));
 
         DMNContext result = evaluateAll.getContext();
+
         Map<String, Object> d = (Map<String, Object>) result.get("d");
         assertThat(d.get("Hello"), is("Hello Mr. x"));
 

@@ -38,8 +38,6 @@ public class DMNResultImpl implements DMNResult, DMNMessageManager {
     private Map<String, DMNDecisionResult> decisionResults;
     private final DMNModel model;
 
-    private boolean stronglyTyped = false;
-
     public DMNResultImpl(DMNModel model) {
         this.model = model;
         messages = new DefaultDMNMessagesManager();
@@ -129,12 +127,4 @@ public class DMNResultImpl implements DMNResult, DMNMessageManager {
     public void addAllUnfiltered(List<? extends DMNMessage> messages) {
         this.messages.addAllUnfiltered(messages);
     }
-
-	public boolean isStronglyTyped() {
-		return stronglyTyped;
-	}
-
-	public void setStronglyTyped(boolean stronglyTyped) {
-		this.stronglyTyped = stronglyTyped;
-	}
 }

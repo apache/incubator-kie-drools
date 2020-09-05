@@ -28,6 +28,7 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.impl.DMNContextFPAImpl;
+import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder.DMNRuntimeBuilderConfigured;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
@@ -246,23 +247,33 @@ public abstract class BaseVariantTest {
         Map<String, Object> inputMap = context.getAll();
         FEELPropertyAccessible outputSet;
         try {
-            outputSet = createInstanceFromCompiledClasses(allCompiledClasses, factory.create(dmnModel), "OutputSet");
+            outputSet = createOutputSetInstance(dmnModel);
             outputSet.fromMap(inputMap);
             DMNContext contextFpa = new DMNContextFPAImpl(outputSet);
-            return runtime.evaluateAll(dmnModel, contextFpa);
+            DMNResult result = runtime.evaluateAll(dmnModel, contextFpa);
+            return convertContext(result, createOutputSetInstance(dmnModel));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private DMNResult evaluateByIdTypeSafe(DMNRuntime runtime, DMNModel dmnModel, DMNContext context, String... decisionIds) {
+    protected DMNResult convertContext(DMNResult result, FEELPropertyAccessible outputSet) {
+        outputSet.fromMap(result.getContext().getAll());
+        DMNContext newContext = new DMNContextFPAImpl(outputSet);
+        ((DMNResultImpl)result).setContext(newContext);
+        return result;
+    }
+
+    private DMNResult evaluateByIdTypeSafe(DMNRuntime runtime, DMNModel dmnModel, DMNContext context,
+            String... decisionIds) {
         Map<String, Object> inputMap = context.getAll();
         FEELPropertyAccessible outputSet;
         try {
-            outputSet = createInstanceFromCompiledClasses(allCompiledClasses, factory.create(dmnModel), "OutputSet");
+            outputSet = createOutputSetInstance(dmnModel);
             outputSet.fromMap(inputMap);
             DMNContext contextFpa = new DMNContextFPAImpl(outputSet);
-            return runtime.evaluateById(dmnModel, contextFpa, decisionIds);
+            DMNResult result = runtime.evaluateById(dmnModel, contextFpa, decisionIds);
+            return convertContext(result, createOutputSetInstance(dmnModel));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -272,10 +283,11 @@ public abstract class BaseVariantTest {
         Map<String, Object> inputMap = context.getAll();
         FEELPropertyAccessible outputSet;
         try {
-            outputSet = createInstanceFromCompiledClasses(allCompiledClasses, factory.create(dmnModel), "OutputSet");
+            outputSet = createOutputSetInstance(dmnModel);
             outputSet.fromMap(inputMap);
             DMNContext contextFpa = new DMNContextFPAImpl(outputSet);
-            return runtime.evaluateByName(dmnModel, contextFpa, decisionNames);
+            DMNResult result = runtime.evaluateByName(dmnModel, contextFpa, decisionNames);
+            return convertContext(result, createOutputSetInstance(dmnModel));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -285,10 +297,11 @@ public abstract class BaseVariantTest {
         Map<String, Object> inputMap = context.getAll();
         FEELPropertyAccessible outputSet;
         try {
-            outputSet = createInstanceFromCompiledClasses(allCompiledClasses, factory.create(dmnModel), "OutputSet");
+            outputSet = createOutputSetInstance(dmnModel);
             outputSet.fromMap(inputMap);
             DMNContext contextFpa =  new DMNContextFPAImpl(outputSet);
-            return runtime.evaluateDecisionService(dmnModel, contextFpa, decisionServiceName);
+            DMNResult result = runtime.evaluateDecisionService(dmnModel, contextFpa, decisionServiceName);
+            return convertContext(result, createOutputSetInstance(dmnModel));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -307,6 +320,10 @@ public abstract class BaseVariantTest {
         assertThat(inputSetClass, notNullValue());
         Object inputSetInstance = inputSetClass.getDeclaredConstructor().newInstance();
         return (FEELPropertyAccessible) inputSetInstance;
+    }
+
+    protected FEELPropertyAccessible createOutputSetInstance(DMNModel dmnModel) throws Exception {
+        return createInstanceFromCompiledClasses(allCompiledClasses, factory.create(dmnModel), "OutputSet");
     }
 }
 

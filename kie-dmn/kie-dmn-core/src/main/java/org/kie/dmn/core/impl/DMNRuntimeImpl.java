@@ -36,7 +36,6 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -115,7 +114,6 @@ public class DMNRuntimeImpl
             evaluateDecision(context, result, decision, performRuntimeTypeCheck);
         }
         DMNRuntimeEventManagerUtils.fireAfterEvaluateAll( eventManager, model, result );
-        convertContext(result);
         return result;
     }
 
@@ -149,7 +147,6 @@ public class DMNRuntimeImpl
         for (String name : decisionNames) {
             evaluateByNameInternal( model, context, result, name );
         }
-        convertContext(result);
         return result;
     }
 
@@ -195,7 +192,6 @@ public class DMNRuntimeImpl
         for ( String id : decisionIds ) {
             evaluateByIdInternal( model, context, result, id );
         }
-        convertContext(result);
         return result;
     }
 
@@ -251,23 +247,8 @@ public class DMNRuntimeImpl
 
     private DMNResultImpl createResultImpl(DMNModel model, DMNContext context) {
         DMNResultImpl result = new DMNResultImpl(model);
-        if (context instanceof DMNContextFPAImpl) {
-            result.setStronglyTyped(true);
-            context.getMetadata().set(DMNContextFPAImpl.STRONGLY_TYPED_FPA, ((DMNContextFPAImpl)context).getFpa());
-            result.setContext(context.clone()); // DMNContextFPAImpl.clone() creates DMNContextImpl
-        } else {
-            result.setContext(context.clone());
-        }
+        result.setContext(context.clone()); // DMNContextFPAImpl.clone() creates DMNContextImpl
         return result;
-    }
-
-    private void convertContext(DMNResultImpl result) {
-        if (result.isStronglyTyped() && !(result.getContext() instanceof DMNContextFPAImpl)) {
-            FEELPropertyAccessible stronglyTypedFpa = (FEELPropertyAccessible)result.getContext().getMetadata().get(DMNContextFPAImpl.STRONGLY_TYPED_FPA);
-            stronglyTypedFpa.fromMap(result.getContext().getAll());
-            DMNContext newContext = new DMNContextFPAImpl(stronglyTypedFpa);
-            result.setContext(newContext);
-        }
     }
 
     @Override
@@ -342,7 +323,6 @@ public class DMNRuntimeImpl
                                   Msg.DECISION_SERVICE_NOT_FOUND_FOR_NAME,
                                   decisionServiceName);
         }
-        convertContext(result);
         return result;
     }
 
