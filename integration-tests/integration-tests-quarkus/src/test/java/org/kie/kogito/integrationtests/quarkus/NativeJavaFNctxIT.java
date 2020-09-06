@@ -18,8 +18,10 @@ package org.kie.kogito.integrationtests.quarkus;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.NativeImageTest;
+import org.junit.jupiter.api.Disabled;
 import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
+@Disabled("KOGITO-3269 NativeJavaFNctxIT not working in native mode (Quarkus 1.8 CR1 + GraalVM 20.2)")
 @NativeImageTest
 @QuarkusTestResource(InfinispanQuarkusTestResource.Conditional.class)
 class NativeJavaFNctxIT extends JavaFNctxTest {
