@@ -165,6 +165,7 @@ public class GroupByTest {
         final Variable<Person> var_$p = DSL.declarationOf(Person.class);
         final Variable<Integer> var_$age = DSL.declarationOf(Integer.class);
         final Variable<Integer> var_$sumOfAges = DSL.declarationOf(Integer.class);
+        final Variable<Integer> var_$derivedFromKey = DSL.declarationOf(Integer.class);
 
         final Rule rule1 = PatternDSL.rule("R1").build(
                 DSL.groupBy(
@@ -175,10 +176,12 @@ public class GroupByTest {
                         // Accumulate Result (can be more than one)
                         DSL.accFunction(IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges)),
                 // Filter
-                PatternDSL.pattern(var_$sumOfAges).expr($sumOfAges -> EvaluationUtil.greaterThanNumbers($sumOfAges, 10)),
+                PatternDSL.pattern(var_$sumOfAges)
+                        .expr($sumOfAges -> EvaluationUtil.greaterThanNumbers($sumOfAges, 10))
+                        .bind(var_$derivedFromKey, var_$key, k -> 1),
                 // Consequence
-                DSL.on(var_$key, var_results, var_$sumOfAges)
-                        .execute(($key, results, $sumOfAges) -> results.put($key, $sumOfAges))
+                DSL.on(var_$key, var_$derivedFromKey, var_results, var_$sumOfAges)
+                        .execute(($key, derived, results, $sumOfAges) -> results.put($key, $sumOfAges))
         );
 
         final Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
@@ -453,6 +456,11 @@ public class GroupByTest {
         assertEquals( 119, results.get("M4") );
         assertEquals( 40, results.get("G5") );
         assertEquals( 119, results.get("M5") );
+    }
+
+    @Test
+    public void testGroupBy1VarExtractFromKey() {
+
     }
 
     @Test
