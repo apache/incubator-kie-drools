@@ -15,9 +15,12 @@
 package org.drools.modelcompiler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
@@ -37,6 +40,7 @@ import org.drools.model.impl.ModelImpl;
 import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItem;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
+import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.dsl.pattern.D;
 import org.drools.modelcompiler.util.EvaluationUtil;
@@ -449,5 +453,78 @@ public class GroupByTest {
         assertEquals( 119, results.get("M4") );
         assertEquals( 40, results.get("G5") );
         assertEquals( 119, results.get("M5") );
+    }
+
+    @Test
+    public void testUnexpectedRuleMatch() {
+        // $a: Parent()
+        Variable<Parent> patternVar = PatternDSL.declarationOf(Parent.class);
+        PatternDSL.PatternDef<Parent> pattern = PatternDSL.pattern(patternVar);
+
+        // exists Child($a.getChild() == this)
+        Variable<Child> existsPatternVar = PatternDSL.declarationOf(Child.class);
+        PatternDSL.PatternDef<Child> existsPattern = PatternDSL.pattern(existsPatternVar)
+                .expr(patternVar, (child, parent) -> Objects.equals(parent.getChild(), child));
+        ExprViewItem existsViewItem = PatternDSL.exists(existsPattern);
+
+        // count(Parent::getChild)
+        Variable<Child> groupKeyVar = PatternDSL.declarationOf(Child.class);
+        Variable<Long> accumulateResult = PatternDSL.declarationOf(Long.class);
+        ExprViewItem groupBy = PatternDSL.groupBy(PatternDSL.and(pattern, existsViewItem),
+                patternVar, groupKeyVar, Parent::getChild,
+                DSL.accFunction(CountAccumulateFunction::new).as(accumulateResult));
+
+        List<List> results = new ArrayList<>();
+        Rule rule1 = D.rule("R1").build(groupBy,
+                D.on(groupKeyVar, accumulateResult)
+                        .execute(($child, $count) -> results.add(Arrays.asList($child, $count))));
+
+        Model model = new ModelImpl().addRule(rule1);
+        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        Child child1 = new Child("Child1", 1);
+        Parent parent1 = new Parent("Parent1", child1);
+        Child child2 = new Child("Child2", 2);
+        Parent parent2 = new Parent("Parent2", child2);
+
+        ksession.insert(parent1);
+        ksession.insert(parent2);
+        FactHandle toRemove = ksession.insert(child1);
+        ksession.insert(child2);
+
+        // Remove child1, therefore it does not exist, therefore there should be no groupBy matches for the child.
+        ksession.delete(toRemove);
+
+        // Yet, we still get (Child1, 0).
+        ksession.fireAllRules();
+        Assertions.assertThat(results)
+                .containsOnly(Arrays.asList(child2, 1L));
+    }
+
+    private static class Parent {
+
+        private final String name;
+        private final Child child;
+
+        public Parent(String name, Child child) {
+            this.name = name;
+            this.child = child;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Child getChild() {
+            return child;
+        }
+
+        @Override
+        public String toString() {
+            return new StringJoiner(", ", Parent.class.getSimpleName() + "[", "]")
+                    .add("child=" + child)
+                    .add("name='" + name + "'")
+                    .toString();
+        }
     }
 }
