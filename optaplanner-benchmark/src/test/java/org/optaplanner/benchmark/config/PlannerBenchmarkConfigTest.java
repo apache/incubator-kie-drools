@@ -34,7 +34,6 @@ import java.util.TreeSet;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.benchmark.impl.io.PlannerBenchmarkConfigIO;
-import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.io.jaxb.GenericJaxbIO;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
@@ -137,14 +136,6 @@ class PlannerBenchmarkConfigTest {
         assertThat(config.resolveParallelBenchmarkCountAutomatically(5)).isEqualTo(3);
         assertThat(config.resolveParallelBenchmarkCountAutomatically(6)).isEqualTo(4);
         assertThat(config.resolveParallelBenchmarkCountAutomatically(17)).isEqualTo(9);
-    }
-
-    @Test
-    void resolveParallelBenchmarkCountFromFormula() {
-        PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
-        config.setParallelBenchmarkCount(ConfigUtils.AVAILABLE_PROCESSOR_COUNT + "+1");
-        // resolved benchmark count cannot be higher than available processors
-        assertThat(config.resolveParallelBenchmarkCount()).isEqualTo(Runtime.getRuntime().availableProcessors());
     }
 
     @Test

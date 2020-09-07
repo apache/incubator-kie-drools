@@ -253,13 +253,6 @@ It does not hog all CPU cores on a multi-core machine.
 ----
 <runnablePartThreadLimit>2</runnablePartThreadLimit>
 ----
-* JavaScript formula: Formula for the number of CPU cores to occupy.
-It can use the variable `availableProcessorCount`. For example:
-+
-[source,xml,options="nowrap"]
-----
-<runnablePartThreadLimit>availableProcessorCount - 2</runnablePartThreadLimit>
-----
 
 [WARNING]
 ====

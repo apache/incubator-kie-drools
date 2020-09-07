@@ -49,12 +49,6 @@ class DefaultPartitionedSearchPhaseFactoryTest {
                 .resolveActiveThreadCount(PartitionedSearchPhaseConfig.ACTIVE_THREAD_COUNT_UNLIMITED)).isNull();
     }
 
-    @Test //TODO: The expression resolution could use much more testing
-    void resolveActiveThreadCountExpression() {
-        assertThat(createDefaultPartitionedSearchPhaseFactory()
-                .resolveActiveThreadCount("2*3-1")).isEqualTo(5);
-    }
-
     private Integer mockResolveActiveThreadCount(String runnablePartThreadLimit, int cpuCount) {
         DefaultPartitionedSearchPhaseFactory<TestdataSolution> partitionedSearchPhaseFactory =
                 spy(createDefaultPartitionedSearchPhaseFactory());

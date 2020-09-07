@@ -106,7 +106,7 @@ public class DefaultPartitionedSearchPhaseFactory<Solution_>
         } else if (runnablePartThreadLimit.equals(ACTIVE_THREAD_COUNT_UNLIMITED)) {
             resolvedActiveThreadCount = null;
         } else {
-            resolvedActiveThreadCount = ConfigUtils.resolveThreadPoolSizeScript("runnablePartThreadLimit",
+            resolvedActiveThreadCount = ConfigUtils.resolvePoolSize("runnablePartThreadLimit",
                     runnablePartThreadLimit, ACTIVE_THREAD_COUNT_AUTO, ACTIVE_THREAD_COUNT_UNLIMITED);
             if (resolvedActiveThreadCount < 1) {
                 throw new IllegalArgumentException("The runnablePartThreadLimit (" + runnablePartThreadLimit

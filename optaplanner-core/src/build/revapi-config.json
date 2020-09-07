@@ -8871,6 +8871,15 @@
           "classSimpleName": "SolverConfig",
           "elementKind": "class",
           "justification": "Declare XML type name."
+        },
+        {
+          "code": "java.field.removedWithConstant",
+          "old": "field org.optaplanner.core.config.util.ConfigUtils.AVAILABLE_PROCESSOR_COUNT",
+          "package": "org.optaplanner.core.config.util",
+          "classSimpleName": "ConfigUtils",
+          "fieldName": "AVAILABLE_PROCESSOR_COUNT",
+          "elementKind": "field",
+          "justification": "Constant no longer used."
         }
       ]
     }

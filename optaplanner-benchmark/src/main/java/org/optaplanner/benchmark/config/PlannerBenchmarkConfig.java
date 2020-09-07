@@ -584,8 +584,7 @@ public class PlannerBenchmarkConfig {
      * <p>
      * If there aren't enough processors available, it will be decreased.
      *
-     * @return null, a number, {@value #PARALLEL_BENCHMARK_COUNT_AUTO} or a JavaScript calculation using
-     *         {@value org.optaplanner.core.config.util.ConfigUtils#AVAILABLE_PROCESSOR_COUNT}.
+     * @return null, a number or {@value #PARALLEL_BENCHMARK_COUNT_AUTO}.
      */
     public String getParallelBenchmarkCount() {
         return parallelBenchmarkCount;
@@ -806,8 +805,8 @@ public class PlannerBenchmarkConfig {
         } else if (parallelBenchmarkCount.equals(PARALLEL_BENCHMARK_COUNT_AUTO)) {
             resolvedParallelBenchmarkCount = resolveParallelBenchmarkCountAutomatically(availableProcessorCount);
         } else {
-            resolvedParallelBenchmarkCount = ConfigUtils.resolveThreadPoolSizeScript(
-                    "parallelBenchmarkCount", parallelBenchmarkCount, PARALLEL_BENCHMARK_COUNT_AUTO);
+            resolvedParallelBenchmarkCount = ConfigUtils.resolvePoolSize("parallelBenchmarkCount",
+                    parallelBenchmarkCount, PARALLEL_BENCHMARK_COUNT_AUTO);
         }
         if (resolvedParallelBenchmarkCount < 1) {
             throw new IllegalArgumentException("The parallelBenchmarkCount (" + parallelBenchmarkCount

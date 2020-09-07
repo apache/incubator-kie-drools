@@ -107,9 +107,7 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
      * Use {@value #ACTIVE_THREAD_COUNT_UNLIMITED} to give it all CPU cores.
      * This is useful if you're handling the CPU consumption on an OS level.
      *
-     * @return null, a number, {@value #ACTIVE_THREAD_COUNT_AUTO}, {@value #ACTIVE_THREAD_COUNT_UNLIMITED}
-     *         or a JavaScript calculation using
-     *         {@value org.optaplanner.core.config.util.ConfigUtils#AVAILABLE_PROCESSOR_COUNT}.
+     * @return null, a number, {@value #ACTIVE_THREAD_COUNT_AUTO} or {@value #ACTIVE_THREAD_COUNT_UNLIMITED}.
      */
     public String getRunnablePartThreadLimit() {
         return runnablePartThreadLimit;

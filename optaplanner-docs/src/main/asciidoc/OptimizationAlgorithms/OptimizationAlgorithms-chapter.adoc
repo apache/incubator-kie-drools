@@ -953,12 +953,6 @@ On machines or containers with little or no CPUs, this falls back to the single 
 +
 This can be `1` to enforce running the multithreaded code with only 1 move thread
 (which is less efficient than `NONE`).
-* JavaScript formula: Formula for the number of move threads to run in parallel. It can use the variable ``availableProcessorCount``. For example:
-+
-[source,xml,options="nowrap"]
-----
-<moveThreadCount>(availableProcessorCount / 2) + 1</moveThreadCount>
-----
 
 It is counter-effective to set a `moveThreadCount`
 that is higher than the number of available CPU cores,

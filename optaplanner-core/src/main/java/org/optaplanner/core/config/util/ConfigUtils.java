@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,10 +38,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.config.AbstractConfig;
@@ -261,35 +257,13 @@ public class ConfigUtils {
         return (dividend / divisor) + correction;
     }
 
-    /**
-     * Name of the variable that represents {@link Runtime#availableProcessors()}.
-     */
-    public static final String AVAILABLE_PROCESSOR_COUNT = "availableProcessorCount";
-
-    public static int resolveThreadPoolSizeScript(String propertyName, String script, String... magicValues) {
-        final String scriptLanguage = "JavaScript";
-        ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName(scriptLanguage);
-        if (scriptEngine == null) {
-            throw new IllegalStateException("The " + propertyName + " (" + script
-                    + ") could not resolve because the JVM doesn't support scriptLanguage (" + scriptLanguage + ").\n"
-                    + "Maybe try running in a normal JVM.");
-        }
-        scriptEngine.put(AVAILABLE_PROCESSOR_COUNT, Runtime.getRuntime().availableProcessors());
-        Object scriptResult;
+    public static int resolvePoolSize(String propertyName, String value, String... magicValues) {
         try {
-            scriptResult = scriptEngine.eval(script);
-        } catch (ScriptException e) {
-            throw new IllegalArgumentException("The " + propertyName + " (" + script
-                    + ") is not in magicValues (" + Arrays.toString(magicValues)
-                    + ") and cannot be parsed in " + scriptLanguage
-                    + " with the variables ([" + AVAILABLE_PROCESSOR_COUNT + "]).", e);
+            return Integer.parseInt(value);
+        } catch (NumberFormatException ex) {
+            throw new IllegalStateException("The " + propertyName + " (" + value + ") resolved to neither of ("
+                    + Arrays.toString(magicValues) + ") nor a number.");
         }
-        if (!(scriptResult instanceof Number)) {
-            throw new IllegalArgumentException("The " + propertyName + " (" + script
-                    + ") is resolved to scriptResult (" + scriptResult + ") in " + scriptLanguage
-                    + " but is not a " + Number.class.getSimpleName() + ".");
-        }
-        return ((Number) scriptResult).intValue();
     }
 
     // ************************************************************************

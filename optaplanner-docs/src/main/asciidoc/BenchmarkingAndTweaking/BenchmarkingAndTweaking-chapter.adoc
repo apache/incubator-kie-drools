@@ -941,12 +941,6 @@ The following ``parallelBenchmarkCount``s are supported:
 ----
 <parallelBenchmarkCount>2</parallelBenchmarkCount>
 ----
-* JavaScript formula: Formula for the number of benchmarks to run in parallel. It can use the variable ``availableProcessorCount``. For example:
-+
-[source,xml,options="nowrap"]
-----
-<parallelBenchmarkCount>(availableProcessorCount / 2) + 1</parallelBenchmarkCount>
-----
 
 [NOTE]
 ====
