@@ -52,7 +52,7 @@ public interface TriConstraintCollector<A, B, C, ResultContainer_, Result_> {
      * accumulates it in the result container
      * and returns an undo operation for that accumulation.
      *
-     * @return never null, the undo operation. This lamdba is called when the facts no longer matches.
+     * @return never null, the undo operation. This lambda is called when the facts no longer matches.
      */
     QuadFunction<ResultContainer_, A, B, C, Runnable> accumulator();
 
