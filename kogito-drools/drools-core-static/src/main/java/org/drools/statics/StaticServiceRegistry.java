@@ -71,7 +71,7 @@ public class StaticServiceRegistry implements ServiceRegistry {
 
         constructorMap.put("TimerService", SimpleInstanceCreator.constructor("org.drools.core.time.impl.JDKTimerService"));
 
-        registerKieRuntimeService("org.kie.pmml.evaluator.api.executor.PMMLRuntime", "org.kie.pmml.evaluator.core.service.PMMLRuntimeService");
+        registerKieRuntimeService("org.kie.pmml.evaluator.api.executor.PMMLRuntime", "org.kie.pmml.evaluator.core.service.PMMLRuntimeService", false);
     }
 
     private void registerService(String service, String implementation, boolean mandatory) {
@@ -86,12 +86,16 @@ public class StaticServiceRegistry implements ServiceRegistry {
         }
     }
 
-    private void registerKieRuntimeService(String runtimeName, String kieRuntimeServiceImplementation) {
+    private void registerKieRuntimeService(String runtimeName, String kieRuntimeServiceImplementation, boolean mandatory) {
         try {
             KieRuntimeService kieRuntimeService = (KieRuntimeService)SimpleInstanceCreator.instance(kieRuntimeServiceImplementation);
             ((KieRuntimes) serviceMap.get(KieRuntimes.class)).getRuntimes().put(runtimeName, kieRuntimeService);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            if (mandatory) {
+                throw e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e);
+            } else {
+                log.debug("Ignored non-mandatory KieRuntimes service load error", e);
+            }
         }
     }
 
