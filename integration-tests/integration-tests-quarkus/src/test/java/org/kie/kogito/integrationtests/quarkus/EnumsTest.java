@@ -31,9 +31,9 @@ import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.emptyOrNullString;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanQuarkusTestResource.Conditional.class)
@@ -65,27 +65,25 @@ class EnumsTest {
             .extract()
                 .path("id");
 
-        Map<String, String> tasks = given()
-                .when()
-                    .get("/cinema/{pid}/tasks", pid)
-                .then()
-                    .statusCode(200)
-                .extract()
-                    .body()
-                    .as(Map.class);
-        assertEquals(1, tasks.size());
+        String taskId = given()
+            .when()
+            .get("/cinema/{pid}/tasks", pid)
+            .then()
+            .statusCode(200)
+            .body("$.size", is(1))
+            .body("[0].name", is("ReviewRatingTask"))
+            .extract()
+            .path("[0].id");
 
-        tasks.keySet().forEach(taskId -> {
-            Map<String, Object> reviewedRating = new HashMap<>();
-            reviewedRating.put("reviewedRating", Rating.PG_13);
-            given()
-                    .contentType(ContentType.JSON)
-                .when()
-                    .body(reviewedRating)
-                    .post("/cinema/{pid}/ReviewRatingTask/{taskId}", pid, taskId)
-                .then()
-                    .statusCode(200)
-                    .body("movie.rating", equalTo(Rating.PG_13.name()));
-        });
+        Map<String, Object> reviewedRating = new HashMap<>();
+        reviewedRating.put("reviewedRating", Rating.PG_13);
+        given()
+            .contentType(ContentType.JSON)
+            .when()
+            .body(reviewedRating)
+            .post("/cinema/{pid}/ReviewRatingTask/{taskId}", pid, taskId)
+            .then()
+            .statusCode(200)
+            .body("movie.rating", equalTo(Rating.PG_13.name()));
     }
 }

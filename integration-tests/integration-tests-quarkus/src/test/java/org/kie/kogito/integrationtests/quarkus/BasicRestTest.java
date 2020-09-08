@@ -27,9 +27,9 @@ import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.emptyOrNullString;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @QuarkusTest
@@ -186,7 +186,6 @@ class BasicRestTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testGetTasks() {
         Map<String, String> params = new HashMap<>();
         params.put("var1", "Kermit");
@@ -202,16 +201,12 @@ class BasicRestTest {
             .extract()
                 .path("id");
 
-        Map<String, String> tasks = given()
-                .contentType(ContentType.JSON)
+        given()
             .when()
-                .get("/AdHocFragments/{id}/tasks", id)
+            .get("/AdHocFragments/{id}/tasks", id)
             .then()
-                .statusCode(200)
-            .extract()
-                .body()
-                .as(Map.class);
-        assertEquals(1, tasks.size());
-        assertEquals("Task", tasks.values().iterator().next());
+            .statusCode(200)
+            .body("$.size", is(1))
+            .body("[0].name", is("Task"));
     }
 }

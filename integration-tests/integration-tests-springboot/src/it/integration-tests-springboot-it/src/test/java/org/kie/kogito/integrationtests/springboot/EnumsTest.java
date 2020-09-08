@@ -16,6 +16,7 @@
 
 package org.kie.kogito.integrationtests.springboot;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +26,8 @@ import org.acme.examples.model.MovieGenre;
 import org.acme.examples.model.Rating;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.integrationtests.quarkus.TestWorkItem;
+import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -32,6 +35,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -63,27 +67,24 @@ class EnumsTest extends BaseRestTest {
             .extract()
                 .path("id");
 
-        Map<String, String> tasks = given()
+        WorkItem task = given()
                 .when()
-                    .get("/cinema/{pid}/tasks", pid)
+                .get("/cinema/{pid}/tasks", pid)
                 .then()
-                    .statusCode(200)
+                .statusCode(200)
+                .body("$.size", is(1))
                 .extract()
-                    .body()
-                    .as(Map.class);
-        assertEquals(1, tasks.size());
+                .as(TestWorkItem[].class)[0];
 
-        tasks.keySet().forEach(taskId -> {
-            Map<String, Object> reviewedRating = new HashMap<>();
-            reviewedRating.put("reviewedRating", Rating.PG_13);
-            given()
-                    .contentType(ContentType.JSON)
-                .when()
-                    .body(reviewedRating)
-                    .post("/cinema/{pid}/ReviewRatingTask/{taskId}", pid, taskId)
-                .then()
-                    .statusCode(200)
-                    .body("movie.rating", equalTo(Rating.PG_13.name()));
-        });
-    }
+        assertEquals("ReviewRatingTask", task.getName());
+
+        given()
+            .contentType(ContentType.JSON)
+            .when()
+            .body(Collections.singletonMap("reviewedRating", Rating.PG_13))
+            .post("/cinema/{pid}/ReviewRatingTask/{taskId}", pid, task.getId())
+            .then()
+            .statusCode(200)
+            .body("movie.rating", equalTo(Rating.PG_13.name()));
+    
 }

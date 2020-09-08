@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import io.restassured.http.ContentType;
+import org.drools.core.process.instance.WorkItem;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -197,7 +198,7 @@ class BasicRestTest extends BaseRestTest {
             .extract()
                 .path("id");
 
-        Map<String, String> tasks = given()
+        WorkItem[] tasks = given()
                 .contentType(ContentType.JSON)
             .when()
                 .get("/AdHocFragments/{id}/tasks", id)
@@ -205,8 +206,8 @@ class BasicRestTest extends BaseRestTest {
                 .statusCode(200)
             .extract()
                 .body()
-                .as(Map.class);
-        assertEquals(1, tasks.size());
-        assertEquals("Task", tasks.values().iterator().next());
+                .as(TestWorkItem[].class);
+        assertEquals(1, tasks.length);
+        assertEquals("Task", tasks[0].getName());
     }
 }

@@ -120,13 +120,12 @@ public class $Type$Resource {
     @GET
     @Path("/{id}/tasks")
     @Produces(MediaType.APPLICATION_JSON)
-    public Map<String, String> getTasks_$name$(@PathParam("id") String id,
+    public List<WorkItem> getTasks_$name$(@PathParam("id") String id,
                                                @QueryParam("user") final String user,
                                                @QueryParam("group") final List<String> groups) {
         return process.instances()
                       .findById(id, ProcessInstanceReadMode.READ_ONLY)
                       .map(pi -> pi.workItems(Policies.of(user, groups)))
-                      .map(l -> l.stream().collect(Collectors.toMap(WorkItem::getId, WorkItem::getName)))
                       .orElseThrow(() -> new NotFoundException());
     }
 

@@ -128,7 +128,7 @@ public class $Type$ReactiveResource {
     @GET()
     @Path("/{id}/tasks")
     @Produces(MediaType.APPLICATION_JSON)
-    public CompletionStage<Map<String, String>> getTasks_$name$(@PathParam("id") String id,
+    public CompletionStage<List<WorkItem>> getTasks_$name$(@PathParam("id") String id,
                                                                 @QueryParam("user") final String user,
                                                                 @QueryParam("group") final List<String> groups) {
         return CompletableFuture
@@ -137,7 +137,6 @@ public class $Type$ReactiveResource {
                     .instances()
                     .findById(id, ProcessInstanceReadMode.READ_ONLY)
                     .map(pi -> pi.workItems(Policies.of(user, groups)))
-                    .map(l -> l.stream().collect(Collectors.toMap(WorkItem::getId, WorkItem::getName)))
                     .orElse(null));
     }
 }

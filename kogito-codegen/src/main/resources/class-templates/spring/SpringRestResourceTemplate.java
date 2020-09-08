@@ -18,6 +18,7 @@ package com.myspace.demo;
 
 import java.net.URI;
 import java.util.List;
+
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -132,14 +133,13 @@ public class $Type$Resource {
     }
 
     @GetMapping(value = "/{id}/tasks", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, String>> getTasks_$name$(@PathVariable("id") String id,
+    public ResponseEntity<List<WorkItem>> getTasks_$name$(@PathVariable("id") String id,
                                                @RequestParam(value = "user", required = false) final String user,
                                                @RequestParam(value = "group",
                                                              required = false) final List<String> groups) {
         return process.instances()
                       .findById(id, ProcessInstanceReadMode.READ_ONLY)
                       .map(pi -> pi.workItems(Policies.of(user, groups)))
-                      .map(l -> l.stream().collect(Collectors.toMap(WorkItem::getId, WorkItem::getName)))
                       .map(m -> ResponseEntity.ok(m))
                       .orElseGet(() -> ResponseEntity.notFound().build());
     }
