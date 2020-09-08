@@ -52,12 +52,8 @@ import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleFactoryImpl;
 import org.drools.core.util.TripleStore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class KieComponentFactory implements Serializable {
-
-    Logger logger = LoggerFactory.getLogger(KieComponentFactory.class);
 
     public static final KieComponentFactory DEFAULT = new KieComponentFactory();
 

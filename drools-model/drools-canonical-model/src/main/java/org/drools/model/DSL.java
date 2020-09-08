@@ -100,8 +100,11 @@ import org.drools.model.view.Expr8ViewItemImpl;
 import org.drools.model.view.Expr9ViewItemImpl;
 import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.FixedValueItem;
+import org.drools.model.view.GroupByExprViewItem;
 import org.drools.model.view.ViewItem;
 import org.drools.model.view.ViewItemBuilder;
+
+import static org.drools.model.functions.FunctionUtils.toFunctionN;
 
 public class DSL {
 
@@ -487,10 +490,14 @@ public class DSL {
     // -- Accumulate Functions --
 
     public static <T> ExprViewItem<T> accumulate(ViewItem<?> viewItem, AccumulateFunction firstFunction, AccumulateFunction... otherFunctions) {
+        return new AccumulateExprViewItem(viewItem, accumulateFunctionsOf( firstFunction, otherFunctions ));
+    }
+
+    private static AccumulateFunction[] accumulateFunctionsOf( AccumulateFunction firstFunction, AccumulateFunction[] otherFunctions ) {
         AccumulateFunction[] functions = new AccumulateFunction[otherFunctions.length+1];
         functions[0] = firstFunction;
         System.arraycopy( otherFunctions, 0, functions, 1, otherFunctions.length );
-        return new AccumulateExprViewItem(viewItem, functions);
+        return functions;
     }
 
     // Legay case - source is defined in the generated Invoker class
@@ -518,6 +525,32 @@ public class DSL {
                 throw new RuntimeException( e );
             }
         };
+    }
+
+    // -- GroupBy --
+
+    public static <T, A, K> ExprViewItem<T> groupBy(ViewItem<T> viewItem,
+                                                    Variable<A> var1, Variable<K> varKey, Function1<A, K> groupingFunction,
+                                                    AccumulateFunction firstFunction, AccumulateFunction... otherFunctions) {
+        return new GroupByExprViewItem<T, K>( viewItem, new Variable[] { var1 }, varKey, toFunctionN( groupingFunction ), accumulateFunctionsOf( firstFunction, otherFunctions ) );
+    }
+
+    public static <T, A, B, K> ExprViewItem<T> groupBy(ViewItem<T> viewItem,
+                                                       Variable<A> var1, Variable<B> var2, Variable<K> varKey, Function2<A, B, K> groupingFunction,
+                                                       AccumulateFunction firstFunction, AccumulateFunction... otherFunctions) {
+        return new GroupByExprViewItem<T, K>( viewItem, new Variable[] { var1, var2 }, varKey, toFunctionN( groupingFunction ), accumulateFunctionsOf( firstFunction, otherFunctions ) );
+    }
+
+    public static <T, A, B, C, K> ExprViewItem<T> groupBy(ViewItem<T> viewItem,
+                                                          Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<K> varKey, Function3<A, B, C, K> groupingFunction,
+                                                          AccumulateFunction firstFunction, AccumulateFunction... otherFunctions) {
+        return new GroupByExprViewItem<T, K>( viewItem, new Variable[] { var1, var2, var3 }, varKey, toFunctionN( groupingFunction ), accumulateFunctionsOf( firstFunction, otherFunctions ) );
+    }
+
+    public static <T, A, B, C, D, K> ExprViewItem<T> groupBy(ViewItem<T> viewItem,
+                                                             Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<K> varKey, Function4<A, B, C, D, K> groupingFunction,
+                                                             AccumulateFunction firstFunction, AccumulateFunction... otherFunctions) {
+        return new GroupByExprViewItem<T, K>( viewItem, new Variable[] { var1, var2, var3, var4 }, varKey, toFunctionN( groupingFunction ), accumulateFunctionsOf( firstFunction, otherFunctions ) );
     }
 
     // -- Temporal Constraints --
