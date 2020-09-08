@@ -90,7 +90,7 @@ public class ViewPatternBuilder implements ViewBuilder {
         return new CompositePatterns( Condition.Type.AND, conditions, consequences );
     }
 
-    private static Condition ruleItem2Condition(RuleItem ruleItem) {
+    public static Condition ruleItem2Condition(RuleItem ruleItem) {
         if ( ruleItem instanceof PatternDefImpl ) {
             PatternDefImpl<?> patternDef = ( PatternDefImpl ) ruleItem;
             Variable<?> patternVariable = patternDef.getFirstVariable();

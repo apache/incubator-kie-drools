@@ -40,6 +40,7 @@ import org.drools.model.functions.accumulate.GroupKey;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Customer;
+import org.drools.modelcompiler.domain.Parent;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.StockTick;
@@ -1860,6 +1861,63 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
+    public void testGroupBy3WithExists2() {
+        String str =
+                "import java.util.*;\n" +
+                "import " + GroupKey.class.getCanonicalName() + ";\n" +
+                "import " + Parent.class.getCanonicalName() + ";\n" +
+                "import " + Child.class.getCanonicalName() + ";\n" +
+                "global List results;\n" +
+                "rule R1 when\n" +
+                "    $p : Parent()\n" +
+                "    exists( Child( this == $p.child) )\n " +
+                "    not( GroupKey(topic ==\"a\", key == $p.getChild() ) )\n" +
+                "then\n" +
+                "    insert( new GroupKey( \"a\", $p.getChild() ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "    $group: GroupKey( topic ==\"a\", $key : key )\n" +
+                "    not( $p : Parent() and exists( Child( this == $key ) ) )\n" +
+                "then\n" +
+                "    delete( $group );\n" +
+                "end\n" +
+                "\n" +
+                "rule R3 when\n" +
+                "    GroupKey( topic ==\"a\", $k : key )\n" +
+                "    accumulate (\n" +
+                "            $p : Parent() and exists( Child( this == $p.getChild()) );\n" +
+                "            $count : count($p)\n" +
+                "         )\n" +
+                "then\n" +
+                "    results.add(java.util.Arrays.asList($k, $count));\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        List results = new ArrayList();
+        ksession.setGlobal( "results", results );
+
+        Child child1 = new Child("Child1", 1);
+        Parent parent1 = new Parent("Parent1", child1);
+        Child child2 = new Child("Child2", 2);
+        Parent parent2 = new Parent("Parent2", child2);
+
+        ksession.insert(parent1);
+        ksession.insert(parent2);
+        FactHandle toRemove = ksession.insert(child1);
+        ksession.insert(child2);
+
+        // Remove child1, therefore it does not exist, therefore there should be no groupBy matches for the child.
+        ksession.delete(toRemove);
+
+        // Yet, we still get (Child1, 0).
+        ksession.fireAllRules();
+        Assertions.assertThat(results)
+                .containsOnly(Arrays.asList(child2, 1L));
+    }
+
+    @Test
     public void testGroupBy3With2VarsKey() {
         String str =
                 "import java.util.*;\n" +
@@ -2068,7 +2126,6 @@ public class AccumulateTest extends BaseModelTest {
         List<Long> result = new ArrayList<>();
 
         KieSession ksession = getKieSession(drl);
-        ReteDumper.dumpRete( ksession );
         ksession.setGlobal("result", result);
 
         ksession.insert(new Interval(
