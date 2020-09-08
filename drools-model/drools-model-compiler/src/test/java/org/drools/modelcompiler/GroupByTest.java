@@ -15,9 +15,11 @@
 package org.drools.modelcompiler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
@@ -25,6 +27,7 @@ import org.drools.core.base.accumulators.CountAccumulateFunction;
 import org.drools.model.DSL;
 import org.drools.model.Global;
 import org.drools.model.Model;
+import org.drools.model.PatternDSL;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
@@ -34,6 +37,8 @@ import org.drools.model.impl.ModelImpl;
 import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItem;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
+import org.drools.modelcompiler.domain.Child;
+import org.drools.modelcompiler.domain.Parent;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.dsl.pattern.D;
 import org.drools.modelcompiler.util.EvaluationUtil;
@@ -46,6 +51,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 public class GroupByTest {
+
     @Test
     public void testSumPersonAgeGroupByInitialWithAcc() throws Exception {
         final Variable<Person> var_GENERATED_$pattern_Person$4$ = D.declarationOf(Person.class);
@@ -151,13 +157,67 @@ public class GroupByTest {
     }
 
     @Test
-    public void testSumPersonAgeGroupByInitial() throws Exception {
-        final Global<Map> var_results = D.globalOf(Map.class, "defaultpkg", "results");
+    public void testGroupPersonsInitial() throws Exception {
+        Global<List> var_results = D.globalOf(List.class, "defaultpkg", "results");
 
-        final Variable<String> var_$key = D.declarationOf(String.class);
-        final Variable<Person> var_$p = D.declarationOf(Person.class);
-        final Variable<Integer> var_$age = D.declarationOf(Integer.class);
-        final Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
+        Variable<String> var_$key = D.declarationOf(String.class);
+        Variable<Person> var_$p = D.declarationOf(Person.class);
+
+        Rule rule1 = D.rule("R1").build(
+                D.groupBy(
+                        // Patterns
+                        D.pattern(var_$p),
+                        // Grouping Function
+                        var_$p, var_$key, person -> person.getName().substring(0, 1)),
+                // Consequence
+                D.on(var_$key, var_results)
+                        .execute(($key, results) -> results.add($key))
+        );
+
+        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
+        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        List results = new ArrayList();
+        ksession.setGlobal( "results", results );
+
+        ksession.insert(new Person("Mark", 42));
+        ksession.insert(new Person("Edson", 38));
+        FactHandle meFH = ksession.insert(new Person("Mario", 45));
+        ksession.insert(new Person("Maciej", 39));
+        ksession.insert(new Person("Edoardo", 33));
+        FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
+        ksession.fireAllRules();
+
+        assertEquals( 3, results.size() );
+        Assertions.assertThat(results)
+                .containsExactlyInAnyOrder("G", "E", "M");
+        results.clear();
+
+        ksession.delete( meFH );
+        ksession.fireAllRules();
+
+        assertEquals( 1, results.size() );
+        Assertions.assertThat(results)
+                .containsExactlyInAnyOrder("M");
+        results.clear();
+
+        ksession.update(geoffreyFH, new Person("Geoffrey", 40));
+        ksession.insert(new Person("Matteo", 38));
+        ksession.fireAllRules();
+
+        assertEquals( 2, results.size() );
+        Assertions.assertThat(results)
+                .containsExactlyInAnyOrder("G", "M");
+    }
+
+    @Test
+    public void testSumPersonAgeGroupByInitial() throws Exception {
+        Global<Map> var_results = D.globalOf(Map.class, "defaultpkg", "results");
+
+        Variable<String> var_$key = D.declarationOf(String.class);
+        Variable<Person> var_$p = D.declarationOf(Person.class);
+        Variable<Integer> var_$age = D.declarationOf(Integer.class);
+        Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
 
         Rule rule1 = D.rule("R1").build(
                 D.groupBy(
@@ -168,7 +228,8 @@ public class GroupByTest {
                         // Accumulate Result (can be more than one)
                         D.accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges)),
                 // Filter
-                D.pattern(var_$sumOfAges).expr($sumOfAges -> EvaluationUtil.greaterThanNumbers($sumOfAges, 10)),
+                D.pattern(var_$sumOfAges)
+                        .expr($sumOfAges -> EvaluationUtil.greaterThanNumbers($sumOfAges, 10)),
                 // Consequence
                 D.on(var_$key, var_results, var_$sumOfAges)
                         .execute(($key, results, $sumOfAges) -> results.put($key, $sumOfAges))
@@ -447,4 +508,160 @@ public class GroupByTest {
         assertEquals( 40, results.get("G5") );
         assertEquals( 119, results.get("M5") );
     }
+
+    @Test
+    public void testUnexpectedRuleMatch() {
+        final Global<List> var_results = D.globalOf(List.class, "defaultpkg", "results");
+
+        // $a: Parent()
+        Variable<Parent> patternVar = D.declarationOf(Parent.class);
+        PatternDSL.PatternDef<Parent> pattern = D.pattern(patternVar);
+
+        // exists Child($a.getChild() == this)
+        Variable<Child> existsPatternVar = D.declarationOf(Child.class);
+        PatternDSL.PatternDef<Child> existsPattern = D.pattern(existsPatternVar)
+                .expr(patternVar, (child, parent) -> Objects.equals(parent.getChild(), child));
+
+        // count(Parent::getChild)
+        Variable<Child> groupKeyVar = D.declarationOf(Child.class);
+        Variable<Long> accumulateResult = D.declarationOf(Long.class);
+        ExprViewItem groupBy = PatternDSL.groupBy(D.and(pattern, D.exists(existsPattern)),
+                patternVar, groupKeyVar, Parent::getChild,
+                DSL.accFunction(CountAccumulateFunction::new).as(accumulateResult));
+
+        Rule rule1 = D.rule("R1").build(groupBy,
+                D.on(var_results, groupKeyVar, accumulateResult)
+                        .execute((results, $child, $count) -> results.add(Arrays.asList($child, $count))));
+
+        Model model = new ModelImpl().addRule(rule1).addGlobal(var_results);
+        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        List results = new ArrayList();
+        ksession.setGlobal( "results", results );
+
+        Child child1 = new Child("Child1", 1);
+        Parent parent1 = new Parent("Parent1", child1);
+        Child child2 = new Child("Child2", 2);
+        Parent parent2 = new Parent("Parent2", child2);
+
+        ksession.insert(parent1);
+        ksession.insert(parent2);
+        FactHandle toRemove = ksession.insert(child1);
+        ksession.insert(child2);
+
+        // Remove child1, therefore it does not exist, therefore there should be no groupBy matches for the child.
+        ksession.delete(toRemove);
+
+        // Yet, we still get (Child1, 0).
+        ksession.fireAllRules();
+        Assertions.assertThat(results)
+                .containsOnly(Arrays.asList(child2, 1L));
+    }
+
+    @Test
+    public void testCompositeKey() throws Exception {
+        Global<Map> var_results = D.globalOf(Map.class, "defaultpkg", "results");
+
+        Variable<CompositeKey> var_$key = D.declarationOf(CompositeKey.class);
+        Variable<Person> var_$p = D.declarationOf(Person.class);
+        Variable<Integer> var_$age = D.declarationOf(Integer.class);
+        Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
+
+        // Define key1 with from
+        Variable<Object> var_$key1 = D.declarationOf( Object.class, D.from( var_$key, CompositeKey::getKey1 ) );
+
+        Rule rule1 = D.rule("R1").build(
+                D.groupBy(
+                        // Patterns
+                        D.pattern(var_$p).bind(var_$age, person -> person.getAge(), D.reactOn("age")),
+                        // Grouping Function
+                        var_$p, var_$key, person -> new CompositeKey( person.getName().substring(0, 1), 1 ),
+                        // Accumulate Result (can be more than one)
+                        D.accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges)),
+                // Filter
+                D.pattern(var_$sumOfAges)
+                        .expr($sumOfAges -> EvaluationUtil.greaterThanNumbers($sumOfAges, 10)),
+                // Bind key1
+                D.pattern( var_$key1 ),
+                // Consequence
+                D.on(var_$key1, var_results, var_$sumOfAges)
+                        .execute(($key1, results, $sumOfAges) -> results.put($key1, $sumOfAges))
+        );
+
+        Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
+        KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
+
+        Map results = new HashMap();
+        ksession.setGlobal( "results", results );
+
+        ksession.insert(new Person("Mark", 42));
+        ksession.insert(new Person("Edson", 38));
+        FactHandle meFH = ksession.insert(new Person("Mario", 45));
+        ksession.insert(new Person("Maciej", 39));
+        ksession.insert(new Person("Edoardo", 33));
+        FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
+        ksession.fireAllRules();
+
+        assertEquals( 3, results.size() );
+        assertEquals( 35, results.get("G") );
+        assertEquals( 71, results.get("E") );
+        assertEquals( 126, results.get("M") );
+        results.clear();
+
+        ksession.delete( meFH );
+        ksession.fireAllRules();
+
+        assertEquals( 1, results.size() );
+        assertEquals( 81, results.get("M") );
+        results.clear();
+
+        ksession.update(geoffreyFH, new Person("Geoffrey", 40));
+        ksession.insert(new Person("Matteo", 38));
+        ksession.fireAllRules();
+
+        assertEquals( 2, results.size() );
+        assertEquals( 40, results.get("G") );
+        assertEquals( 119, results.get("M") );
+    }
+
+    public static class CompositeKey {
+        public final Object key1;
+        public final Object key2;
+
+        public CompositeKey( Object key1, Object key2 ) {
+            this.key1 = key1;
+            this.key2 = key2;
+        }
+
+        public Object getKey1() {
+            return key1;
+        }
+
+        public Object getKey2() {
+            return key2;
+        }
+
+        @Override
+        public boolean equals( Object o ) {
+            if ( this == o ) return true;
+            if ( o == null || getClass() != o.getClass() ) return false;
+            CompositeKey that = ( CompositeKey ) o;
+            return Objects.equals( key1, that.key1 ) &&
+                    Objects.equals( key2, that.key2 );
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash( key1, key2 );
+        }
+
+        @Override
+        public String toString() {
+            return "CompositeKey{" +
+                    "key1=" + key1 +
+                    ", key2=" + key2 +
+                    '}';
+        }
+    }
+
 }

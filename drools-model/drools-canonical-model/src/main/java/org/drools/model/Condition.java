@@ -30,6 +30,10 @@ public interface Condition {
 
     Variable<?>[] getBoundVariables();
 
+    default Condition cloneCondition() {
+        throw new UnsupportedOperationException();
+    }
+
     enum Type {
         PATTERN( false ), EVAL( false ), QUERY( false ),
         ACCUMULATE( false ), GROUP_BY( false ), TEMPORAL( false ),
