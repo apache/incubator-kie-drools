@@ -66,6 +66,8 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     private String kogitoRootProcessId;
     private String kogitoAddons;
 
+    public AbstractDataEvent() {}
+
     public AbstractDataEvent(String type,
                              String source,
                              T body,

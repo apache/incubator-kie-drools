@@ -44,7 +44,6 @@ public class MessageConsumerGenerator {
     private final String processClazzName;
     private String processId;
     private String dataClazzName;
-    private String modelfqcn;
     private final String processName;
     private final String appCanonicalName;
     private final String messageDataEventClassName;
@@ -67,7 +66,6 @@ public class MessageConsumerGenerator {
         String classPrefix = StringUtils.ucFirst(processName);
         this.resourceClazzName = classPrefix + "MessageConsumer_" + trigger.getOwnerId();
         this.relativePath = packageName.replace(".", "/") + "/" + resourceClazzName + ".java";
-        this.modelfqcn = modelfqcn;
         this.dataClazzName = modelfqcn.substring(modelfqcn.lastIndexOf('.') + 1);
         this.processClazzName = processfqcn;
         this.appCanonicalName = appCanonicalName;
@@ -95,7 +93,6 @@ public class MessageConsumerGenerator {
         CompilationUnit clazz = parse(
                 this.getClass().getResourceAsStream("/class-templates/MessageConsumerTemplate.java"));
         clazz.setPackageDeclaration(process.getPackageName());
-        clazz.addImport(modelfqcn);
 
         ClassOrInterfaceDeclaration template = clazz.findFirst(ClassOrInterfaceDeclaration.class).get();
         template.setName(resourceClazzName);        

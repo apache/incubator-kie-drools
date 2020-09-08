@@ -22,6 +22,9 @@ public abstract class AbstractProcessDataEvent<T> extends AbstractDataEvent<T> {
     protected String kogitoParentProcessinstanceId;
     protected String kogitoProcessinstanceState;
     protected String kogitoReferenceId;
+    protected String kogitoStartFromNode;
+
+    public AbstractProcessDataEvent() {}
 
     public AbstractProcessDataEvent(String source,
                                     T body,
@@ -54,6 +57,31 @@ public abstract class AbstractProcessDataEvent<T> extends AbstractDataEvent<T> {
                                     String kogitoRootProcessId,
                                     String kogitoProcessinstanceState,
                                     String kogitoAddons) {
+        this(
+            type,
+            source,
+            body,
+            kogitoProcessinstanceId,
+            kogitoParentProcessinstanceId,
+            kogitoRootProcessinstanceId,
+            kogitoProcessId,
+            kogitoRootProcessId,
+            kogitoProcessinstanceState,
+            kogitoAddons,
+            null);
+    }
+
+    public AbstractProcessDataEvent(String type,
+                                    String source,
+                                    T body,
+                                    String kogitoProcessinstanceId,
+                                    String kogitoParentProcessinstanceId,
+                                    String kogitoRootProcessinstanceId,
+                                    String kogitoProcessId,
+                                    String kogitoRootProcessId,
+                                    String kogitoProcessinstanceState,
+                                    String kogitoAddons,
+                                    String kogitoReferenceId) {
         super(type,
               source,
               body,
@@ -64,6 +92,7 @@ public abstract class AbstractProcessDataEvent<T> extends AbstractDataEvent<T> {
               kogitoAddons);
         this.kogitoParentProcessinstanceId = kogitoParentProcessinstanceId;
         this.kogitoProcessinstanceState = kogitoProcessinstanceState;
+        this.kogitoReferenceId = kogitoReferenceId;
     }
 
     public String getKogitoParentProcessinstanceId() {
@@ -78,7 +107,11 @@ public abstract class AbstractProcessDataEvent<T> extends AbstractDataEvent<T> {
         return this.kogitoReferenceId;
     }
 
-    public void setKogitoReferenceId(String kogitoReferenceId) {
-        this.kogitoReferenceId = kogitoReferenceId;
+    public void setKogitoStartFromNode(String kogitoStartFromNode) {
+        this.kogitoStartFromNode = kogitoStartFromNode;
+    }
+
+    public String getKogitoStartFromNode() {
+        return this.kogitoStartFromNode;
     }
 }

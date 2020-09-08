@@ -1,80 +1,31 @@
 package com.myspace.demo;
 
-import java.util.TimeZone;
 import java.util.Optional;
 
 import org.kie.kogito.Application;
-import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.process.Process;
-import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.impl.Sig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.StdDateFormat;
+import org.kie.kogito.services.event.EventConsumerFactory;
+import org.kie.kogito.event.impl.DefaultEventConsumerFactory;
 
 public class $Type$MessageConsumer {
-    
-    private static final Logger LOGGER = LoggerFactory.getLogger("MessageConsumer");
 
     Process<$Type$> process;
 
     Application application;
-    
+
     Optional<Boolean> useCloudEvents = Optional.of(true);
-    
-    private ObjectMapper json = new ObjectMapper();
 
-    {
-        json.setDateFormat(new StdDateFormat().withColonInTimeZone(true).withTimeZone(TimeZone.getDefault()));
-    }
+    EventConsumerFactory eventConsumerFactory = new DefaultEventConsumerFactory();
 
-    public void configure() {
+    public void configure() {}
 
+    public void consume(String payload) {
+        eventConsumerFactory
+            .get(event -> {
+                $Type$ model = new $Type$();
+                model.set$ModelRef$(event);
+                return model;
+            }, $DataType$.class, $DataEventType$.class, useCloudEvents)
+            .consume(application, process, payload, "$Trigger$");
     }
-    
-	public void consume(String payload) {
-	    final String trigger = "$Trigger$";
-        try {
-            
-            if (useCloudEvents.orElse(true)) {
-                final $DataEventType$ eventData = json.readValue(payload, $DataEventType$.class);
-        	    final $Type$ model = new $Type$();
-                model.set$ModelRef$(eventData.getData());
-                org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-                    
-                    if (eventData.getKogitoReferenceId() != null) {
-                        LOGGER.debug("Received message with reference id '{}' going to use it to send signal '{}'", eventData.getKogitoReferenceId(), trigger);
-                        process.instances().findById(eventData.getKogitoReferenceId()).ifPresent(pi -> pi.send(Sig.of("Message-"+trigger, eventData.getData(), eventData.getKogitoProcessinstanceId())));
-                    } else {  
-                        LOGGER.debug("Received message without reference id, staring new process instance with trigger '{}'", trigger);
-                        ProcessInstance<$Type$> pi = process.createInstance(model);
-                        
-                        if (eventData.getKogitoStartFromNode() != null) {
-                            pi.startFrom(eventData.getKogitoStartFromNode(), eventData.getKogitoProcessinstanceId());
-                        } else {
-                            pi.start(trigger, eventData.getKogitoProcessinstanceId());
-                        }
-                    }
-                    return null;
-                });
-            } else {
-                final $DataType$ eventData = json.readValue(payload, $DataType$.class);
-                final $Type$ model = new $Type$();
-                model.set$ModelRef$(eventData);
-                org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-                                    
-                    LOGGER.debug("Received message without reference id, staring new process instance with trigger '{}'", trigger);
-                    ProcessInstance<$Type$> pi = process.createInstance(model);
-                    pi.start(trigger, null);  
-                    
-                    return null;
-                });
-            }
-        } catch (Exception e) {
-            LOGGER.error("Error when consuming message for process {}", process.id(), e);
-        }
-    }
-	    
 }
