@@ -107,7 +107,7 @@ public class DecisionCodegen extends AbstractGenerator {
                                                  .buildConfiguration()
                                                  .fromResources(r2cr.keySet())
                                                  .getOrElseThrow(e -> new RuntimeException("Error compiling DMN model(s)", e));
-        List<DMNResource> dmnResources = dmnRuntime.getModels().stream().map(model -> new DMNResource(model, r2cr.get(model.getResource()).basePath())).collect(toList());
+        List<DMNResource> dmnResources = dmnRuntime.getModels().stream().map(model -> new DMNResource(model, r2cr.get(model.getResource()))).collect(toList());
         resources.addAll(dmnResources);
     }
 

@@ -18,14 +18,18 @@ package org.kie.kogito.codegen.decision;
 import java.nio.file.Path;
 
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.kogito.codegen.io.CollectedResource;
 
+/**
+ * A (DMNModel, CollectedResource) pair
+ */
 public class DMNResource {
     private final DMNModel dmnModel;
-    private final Path path;
+    private final CollectedResource collectedResource;
 
-    public DMNResource( DMNModel dmnModel, Path path ) {
+    public DMNResource(DMNModel dmnModel, CollectedResource collectedResource) {
         this.dmnModel = dmnModel;
-        this.path = path;
+        this.collectedResource = collectedResource;
     }
 
     public DMNModel getDmnModel() {
@@ -33,6 +37,10 @@ public class DMNResource {
     }
 
     public Path getPath() {
-        return path;
+        return collectedResource.basePath();
+    }
+
+    public CollectedResource getCollectedResource() {
+        return collectedResource;
     }
 }
