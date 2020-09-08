@@ -38,6 +38,7 @@ import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
@@ -50,8 +51,9 @@ import org.kie.internal.runtime.StatelessKnowledgeSession;
 import static org.junit.Assert.*;
 
 public class SerializedPackageMergeTwoSteps2Test {
-    
-    @Test
+
+    @Test @Ignore("DROOLS-5620 - test failed randomly and it doesn't reproduce the original issue (DROOLS-2224) scenario on CI."+
+                  "It can be tested manually")
     public void testBuildAndSerializePackagesInTwoSteps2() throws IOException, ClassNotFoundException    {        
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
