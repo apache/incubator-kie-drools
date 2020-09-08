@@ -11,14 +11,16 @@ import org.kie.kogito.services.event.EventMarshaller;
 
 
 import java.util.Optional;
-
+import java.util.TimeZone;
 
 public class MessageProducer {
-    
+
     Object emitter;
 
     Optional<Boolean> useCloudEvents = Optional.of(true);
-    
+
+    Optional<MessageDecorator> decorator = MessageDecoratorFactory.newInstance();
+
     EventMarshaller marshaller = new DefaultEventMarshaller();
 
     public void configure() {

@@ -104,6 +104,7 @@ public class KogitoAssetsProcessor {
     private static final DotName persistenceFactoryClass = DotName.createSimple("org.kie.kogito.persistence.KogitoProcessInstancesFactory");
     private static final DotName metricsClass = DotName.createSimple("org.kie.kogito.monitoring.rest.MetricsResource");
     private static final DotName tracingClass = DotName.createSimple("org.kie.kogito.tracing.decision.DecisionTracingListener");
+    private static final DotName knativeEventingClass = DotName.createSimple("org.kie.kogito.events.knative.ce.http.HttpRequestConverter");
 
     @Inject
     ArchiveRootBuildItem root;
@@ -153,11 +154,14 @@ public class KogitoAssetsProcessor {
                 .getClassByName(metricsClass) != null;
         boolean useTracing = !combinedIndexBuildItem.getIndex()
                 .getAllKnownSubclasses(tracingClass).isEmpty();
+        boolean useKnativeEventing = combinedIndexBuildItem.getIndex()
+                .getClassByName(knativeEventingClass) != null;
 
         AddonsConfig addonsConfig = new AddonsConfig()
                 .withPersistence(usePersistence)
                 .withMonitoring(useMonitoring)
-                .withTracing(useTracing);
+                .withTracing(useTracing)
+                .withKnativeEventing(useKnativeEventing);
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         GeneratorContext context = buildContext(appPaths, combinedIndexBuildItem.getIndex());
