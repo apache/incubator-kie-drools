@@ -143,6 +143,18 @@ class TypeTest {
         assertNotEquals(value, perturbedValue);
     }
 
+    @Test
+    void testPerturbCompositeFeatureTooManyPerturbations() {
+        PerturbationContext perturbationContext = new PerturbationContext(new Random(), 1000);
+        List<Feature> features = new LinkedList<>();
+        features.add(new Feature("f1", Type.TEXT, new Value<>("foo bar")));
+        features.add(new Feature("f2", Type.NUMBER, new Value<>(1d)));
+        Value<?> value = new Value<>(features);
+        Feature f = new Feature("name", Type.COMPOSITE, value);
+        Value<?> perturbedValue = f.getType().perturb(f.getValue(), perturbationContext);
+        assertNotEquals(value, perturbedValue);
+    }
+
     @ParameterizedTest
     @EnumSource
     void testDrop(Type type) {
