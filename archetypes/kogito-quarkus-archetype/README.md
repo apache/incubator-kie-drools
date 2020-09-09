@@ -6,7 +6,7 @@ To generate new project for KaaS (Kjar as a Service) based on [Quarkus](https://
      mvn archetype:generate \
     -DarchetypeGroupId=org.kie.kogito \
     -DarchetypeArtifactId=kogito-quarkus-archetype \
-    -DarchetypeVersion=8.0.0-SNAPSHOT \
+    -DarchetypeVersion=1.0.0-SNAPSHOT \
     -DgroupId=com.company \
     -DartifactId=sample-kogito
     ```
