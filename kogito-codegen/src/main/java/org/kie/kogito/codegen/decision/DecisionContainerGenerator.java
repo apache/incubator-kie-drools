@@ -16,6 +16,8 @@
 package org.kie.kogito.codegen.decision;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -91,8 +93,13 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
 
     private String getDecisionModelRelativeResourcePath(CollectedResource resource) {
         String source = getDecisionModelJarResourcePath(resource);
-        Path relativizedPath = resource.basePath().relativize(Paths.get(source));
-        return "/" + relativizedPath.toString().replace(File.separatorChar, '/');
+        try {
+            Path sourcePath = Paths.get(source).toAbsolutePath().toRealPath();
+            Path relativizedPath = resource.basePath().toAbsolutePath().toRealPath().relativize(sourcePath);
+            return "/" + relativizedPath.toString().replace(File.separatorChar, '/');
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     private void setupExecIdSupplierVariable(ClassOrInterfaceDeclaration typeDeclaration) {

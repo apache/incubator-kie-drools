@@ -15,6 +15,7 @@
 
 package org.kie.kogito.codegen.prediction;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratorContext;
+import org.kie.kogito.codegen.io.CollectedResource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -31,14 +33,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class PredictionCodegenTest extends AbstractCodegenTest {
 
     private static final String SOURCE = "prediction/test_regression.pmml";
-    private static final String FULL_SOURCE = "src/test/resources/" + SOURCE;
+    private static final Path BASE_PATH = Paths.get("src/test/resources/").toAbsolutePath();
+    private static final Path FULL_SOURCE = BASE_PATH.resolve(SOURCE);
 
     @Test
     public void generateAllFiles() throws Exception {
 
         GeneratorContext context = GeneratorContext.ofProperties(new Properties());
 
-        PredictionCodegen codeGenerator = PredictionCodegen.ofPath(Paths.get(FULL_SOURCE).toAbsolutePath());
+        PredictionCodegen codeGenerator = PredictionCodegen.ofCollectedResources(
+                CollectedResource.fromFiles(BASE_PATH, FULL_SOURCE.toFile()));
         codeGenerator.setContext(context);
 
         List<GeneratedFile> generatedFiles = codeGenerator.generate();

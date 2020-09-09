@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.AddonsConfig;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratorContext;
+import org.kie.kogito.codegen.io.CollectedResource;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,7 +48,7 @@ public class DecisionModelResourcesProviderCodegenTest {
         final GeneratorContext context = GeneratorContext.ofProperties(new Properties());
 
         final DecisionCodegen codeGenerator = DecisionCodegen
-                .ofPath(Paths.get("src/test/resources/decision/models/vacationDays").toAbsolutePath())
+                .ofCollectedResources(CollectedResource.fromPaths(Paths.get("src/test/resources/decision/models/vacationDays").toAbsolutePath()))
                 .withAddons(new AddonsConfig().withTracing(true));
         codeGenerator.setContext(context);
 

@@ -40,7 +40,6 @@ import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
-import org.drools.core.io.impl.FileSystemResource;
 import org.kie.kogito.Application;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
@@ -80,34 +79,28 @@ public class AbstractCodegenTest {
     private static final Map<TYPE, Function<List<String>, Generator>> generatorTypeMap = new HashMap<>();
 
     static {
-        generatorTypeMap.put(TYPE.PROCESS, strings -> ProcessCodegen.ofFiles(strings
-                                                                                     .stream()
-                                                                                     .map(resource -> new File(TEST_RESOURCES, resource))
-                                                                                     .collect(Collectors.toList())));
-        generatorTypeMap.put(TYPE.RULES, strings -> IncrementalRuleCodegen.ofFiles(strings
-                                                                                           .stream()
-                                                                                           .map(resource -> new File(
-                                                                                                   TEST_RESOURCES, resource))
-                                                                                           .collect(Collectors.toList())));
-        generatorTypeMap.put(TYPE.DECISION,
-                             strings -> {
-                                 List<CollectedResource> cResources = strings.stream()
-                                                                             .map(s -> new CollectedResource(Paths.get(TEST_RESOURCES).toAbsolutePath(),
-                                                                                                             new FileSystemResource(Paths.get(TEST_RESOURCES, s).toAbsolutePath().toFile())))
-                                                                             .collect(Collectors.toList());
-                                 return DecisionCodegen.ofCollectedResources(cResources);
-                             });
+        generatorTypeMap.put(TYPE.PROCESS, strings -> ProcessCodegen.ofCollectedResources(toCollectedResources(TEST_RESOURCES, strings)));
+        generatorTypeMap.put(TYPE.RULES, strings -> IncrementalRuleCodegen.ofCollectedResources(toCollectedResources(TEST_RESOURCES, strings)));
+        generatorTypeMap.put(TYPE.DECISION, strings -> DecisionCodegen.ofCollectedResources(toCollectedResources(TEST_RESOURCES, strings)));
 
-        generatorTypeMap.put(TYPE.JAVA, strings -> IncrementalRuleCodegen.ofJavaFiles(strings
-                                                                                              .stream()
-                                                                                              .map(resource -> new File(TEST_JAVA, resource))
-                                                                                              .collect(Collectors.toList())));
-        generatorTypeMap.put(TYPE.PREDICTION,
-                             strings -> PredictionCodegen.ofFiles(Paths.get(TEST_RESOURCES).toAbsolutePath(),
-                                                                  strings
-                                                                          .stream()
-                                                                          .map(resource -> new File(TEST_RESOURCES, resource))
-                                                                          .collect(Collectors.toList())));
+        generatorTypeMap.put(TYPE.JAVA, strings -> IncrementalRuleCodegen.ofJavaResources(toCollectedResources(TEST_JAVA, strings)));
+        generatorTypeMap.put(TYPE.PREDICTION, strings -> PredictionCodegen.ofCollectedResources(toCollectedResources(TEST_RESOURCES, strings)));
+    }
+
+    private static Collection<CollectedResource> toCollectedResources(String basePath, List<String> strings) {
+        File[] files = strings
+                .stream()
+                .map(resource -> new File(basePath, resource))
+                .toArray(File[]::new);
+        return CollectedResource.fromFiles(Paths.get(basePath), files);
+    }
+
+
+    private static List<File> toFiles(List<String> strings, String path) {
+        return strings
+                .stream()
+                .map(resource -> new File(path, resource))
+                .collect(Collectors.toList());
     }
 
     private boolean withSpringContext;

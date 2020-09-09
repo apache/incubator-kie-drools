@@ -17,15 +17,16 @@
 package org.kie.kogito.quarkus.deployment;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.kie.api.io.ResourceType;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.Generator;
+import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 
 public class DecisionTablesCompilationProvider extends KogitoCompilationProvider {
@@ -39,11 +40,11 @@ public class DecisionTablesCompilationProvider extends KogitoCompilationProvider
 
     @Override
     protected Generator addGenerator(ApplicationGenerator appGen, Set<File> filesToCompile, Context context, ClassLoader cl) {
+        Path resources = context.getProjectDirectory().toPath().resolve("src").resolve("main").resolve("resources");
         Collection<File> files = PackageWalker.getAllSiblings(filesToCompile);
         return appGen.withGenerator(
-                IncrementalRuleCodegen.ofFiles(
-                        files,
-                        ResourceType.DTABLE))
+                IncrementalRuleCodegen.ofCollectedResources(
+                        CollectedResource.fromFiles(resources, files.toArray(new File[0]))))
                 .withClassLoader(cl)
                 .withHotReloadMode();
     }

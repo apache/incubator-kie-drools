@@ -16,26 +16,16 @@
 package org.kie.kogito.codegen.rules;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -47,9 +37,6 @@ import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.core.io.impl.ByteArrayResource;
-import org.drools.core.io.impl.FileSystemResource;
-import org.drools.core.io.internal.InternalResource;
 import org.drools.modelcompiler.builder.GeneratedFile;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.kie.api.builder.model.KieBaseModel;
@@ -79,12 +66,9 @@ import org.kie.kogito.rules.RuleUnitConfig;
 import org.kie.kogito.rules.units.AssignableChecker;
 import org.kie.kogito.rules.units.ReflectiveRuleUnitDescription;
 
-import static java.util.stream.Collectors.toList;
-
 import static com.github.javaparser.StaticJavaParser.parse;
+import static java.util.stream.Collectors.toList;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
-import static org.kie.api.io.ResourceType.determineResourceType;
 import static org.kie.kogito.codegen.ApplicationGenerator.log;
 import static org.kie.kogito.codegen.ApplicationGenerator.logger;
 
@@ -93,105 +77,25 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     public static IncrementalRuleCodegen ofCollectedResources(Collection<CollectedResource> resources) {
         List<Resource> dmnResources = resources.stream()
                 .map(CollectedResource::resource)
-                .filter(IncrementalRuleCodegen::isSupportedResourceType)
+                .filter(r -> r.getResourceType() == ResourceType.DRL || r.getResourceType() == ResourceType.DTABLE)
                 .collect(toList());
         return ofResources(dmnResources);
     }
 
-    public static IncrementalRuleCodegen ofJar(Path... jarPaths) {
-        Collection<Resource> resources = new ArrayList<>();
-
-        for (Path jarPath : jarPaths) {
-            try (ZipFile zipFile = new ZipFile( jarPath.toFile() )) {
-                Enumeration<? extends ZipEntry> entries = zipFile.entries();
-                while (entries.hasMoreElements()) {
-                    ZipEntry entry = entries.nextElement();
-                    ResourceType resourceType = determineResourceType( entry.getName() );
-                    if ( resourceType != null ) {
-                        InternalResource resource = new ByteArrayResource( readBytesFromInputStream( zipFile.getInputStream( entry ) ) );
-                        resource.setResourceType( resourceType );
-                        resource.setSourcePath( entry.getName() );
-                        resources.add( resource );
-                    }
-                }
-            } catch (IOException e) {
-                throw new UncheckedIOException( e );
-            }
-        }
-
-        return new IncrementalRuleCodegen(resources);
-    }
-
-    public static IncrementalRuleCodegen ofPath(Path... paths) {
-        Set<Resource> resources = new HashSet<>();
-        for (Path path : paths) {
-            try (Stream<File> files = Files.walk( path ).map( Path::toFile )) {
-                resources.addAll( toResources( files ) );
-            } catch (IOException e) {
-                throw new UncheckedIOException( e );
-            }
-        }
-        return new IncrementalRuleCodegen(resources);
-    }
-
-    public static IncrementalRuleCodegen ofPath(Path basePath, ResourceType resourceType) {
-        try (Stream<File> files = Files.walk(basePath).map(Path::toFile)) {
-            Set<Resource> resources = toResources(files, resourceType);
-            return new IncrementalRuleCodegen(resources);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    public static IncrementalRuleCodegen ofFiles(Collection<File> files, ResourceType resourceType) {
-        return new IncrementalRuleCodegen(toResources(files.stream(), resourceType));
-    }
-
-    public static IncrementalRuleCodegen ofJavaFiles(Collection<File> files) {
+    public static IncrementalRuleCodegen ofJavaResources(Collection<CollectedResource> resources) {
         List<Resource> generatedRules =
-                AnnotatedClassPostProcessor.scan(files.stream().map(File::toPath)).generate();
+                AnnotatedClassPostProcessor.scan(
+                        resources.stream()
+                                .filter(r -> r.resource().getResourceType() == ResourceType.JAVA)
+                                .map(r -> new File(r.resource().getSourcePath()))
+                                .map(File::toPath)).generate();
         return ofResources(generatedRules);
-    }
-
-    public static IncrementalRuleCodegen ofFiles(Collection<File> files) {
-        return new IncrementalRuleCodegen(toResources(files.stream()));
     }
 
     public static IncrementalRuleCodegen ofResources(Collection<Resource> resources) {
         return new IncrementalRuleCodegen(resources);
     }
 
-    private static Set<Resource> toResources(Stream<File> files, ResourceType resourceType) {
-        return files.filter(f -> resourceType.matchesExtension(f.getName())).map(FileSystemResource::new).peek(r -> r.setResourceType(resourceType)).collect(Collectors.toSet());
-    }
-
-    private static Set<Resource> toResources(Stream<File> files) {
-        return files.map(FileSystemResource::new).peek(r -> r.setResourceType(typeOf(r))).filter(r -> r.getResourceType() != null).collect(Collectors.toSet());
-    }
-
-    private static boolean isSupportedResourceType(Resource r) {
-        for (ResourceType rt : resourceTypes) {
-            if (r.getResourceType() == rt) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static ResourceType typeOf(FileSystemResource r) {
-        for (ResourceType rt : resourceTypes) {
-            if (rt.matchesExtension(r.getFile().getName())) {
-                return rt;
-            }
-        }
-        return null;
-    }
-
-
-    private static final ResourceType[] resourceTypes = {
-            ResourceType.DRL,
-            ResourceType.DTABLE
-    };
     private static final String operationalDashboardDmnTemplate = "/grafana-dashboard-template/operational-dashboard-template.json";
     private final Collection<Resource> resources;
     private RuleUnitContainerGenerator moduleGenerator;
@@ -210,11 +114,6 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     private final boolean decisionTableSupported;
     private final Map<String, RuleUnitConfig> configs;
 
-
-    @Deprecated
-    public IncrementalRuleCodegen(Path basePath, Collection<File> files, ResourceType resourceType) {
-        this(toResources(files.stream(), resourceType));
-    }
 
     private IncrementalRuleCodegen(Collection<Resource> resources) {
         this.resources = resources;

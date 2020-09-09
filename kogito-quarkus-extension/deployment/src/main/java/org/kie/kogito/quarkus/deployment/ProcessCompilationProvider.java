@@ -17,12 +17,13 @@
 package org.kie.kogito.quarkus.deployment;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.Generator;
+import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 
 import static java.util.Arrays.asList;
@@ -36,8 +37,9 @@ public class ProcessCompilationProvider extends KogitoCompilationProvider {
 
     @Override
     protected Generator addGenerator(ApplicationGenerator appGen, Set<File> filesToCompile, Context context, ClassLoader cl) {
+        Path resources = context.getProjectDirectory().toPath().resolve("src").resolve("main").resolve("resources");
         return appGen.withGenerator(
-                ProcessCodegen.ofFiles(new ArrayList<>(filesToCompile)))
+                ProcessCodegen.ofCollectedResources(CollectedResource.fromFiles(resources, filesToCompile.toArray(new File[0]))))
                 .withClassLoader(cl);
     }
 }

@@ -16,13 +16,17 @@
 
 package org.kie.kogito.codegen.io;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -91,9 +95,11 @@ public class CollectedResource {
      */
     public static Collection<CollectedResource> fromDirectory(Path path) {
         Collection<CollectedResource> resources = new ArrayList<>();
-        try {
-            Files.walk(path).map(Path::toFile)
-                    .map(f -> new FileSystemResource(f).setResourceType(determineResourceType(f.getName())))
+        try (Stream<Path> paths = Files.walk(path)) {
+            paths.filter(Files::isRegularFile)
+                    .map(Path::toFile)
+                    .map(f -> new FileSystemResource(f)
+                            .setResourceType(determineResourceType(f.getName())))
                     .map(f -> new CollectedResource(path, f))
                     .forEach(resources::add);
         } catch (IOException e) {
@@ -102,10 +108,34 @@ public class CollectedResource {
         return resources;
     }
 
+    /**
+     * Returns a collection of CollectedResource from the given files
+     */
+    public static Collection<CollectedResource> fromFiles(Path basePath, File... files) {
+        Collection<CollectedResource> resources = new ArrayList<>();
+        try (Stream<File> paths = Arrays.stream(files)) {
+            paths.filter(File::isFile)
+                    .map(f -> new FileSystemResource(f)
+                            .setResourceType(determineResourceType(f.getName())))
+                    .map(f -> new CollectedResource(basePath, f))
+                    .forEach(resources::add);
+        }
+        return resources;
+    }
+
+
     private final Path basePath;
     private final Resource resource;
 
     public CollectedResource(Path basePath, Resource resource) {
+        // basePath must be a prefix of sourcePath
+        // unless it is a jar file, then the check is ignored
+        if (! basePath.toString().endsWith(".jar") &&
+                ! Paths.get(resource.getSourcePath()).toAbsolutePath().startsWith(basePath.toAbsolutePath())) {
+            throw new IllegalArgumentException(
+                    String.format("basePath %s is not a prefix to the resource sourcePath %s",
+                                  basePath, resource.getSourcePath()));
+        }
         this.basePath = basePath;
         this.resource = resource;
     }
