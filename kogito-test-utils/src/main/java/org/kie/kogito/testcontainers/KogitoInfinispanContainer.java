@@ -41,7 +41,7 @@ public class KogitoInfinispanContainer extends GenericContainer<KogitoInfinispan
         withEnv("USER", USER);
         withEnv("PASS", PASS);
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
-        waitingFor(Wait.forLogMessage(".*ISPN080001.*", 1));
+        waitingFor(Wait.forHttp("/"));
         setDockerImageName(System.getProperty(INFINISPAN_PROPERTY));
     }
 

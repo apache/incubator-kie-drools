@@ -77,7 +77,7 @@
     <version.jayway.jsonpath>2.4.0</version.jayway.jsonpath>
 
     <!-- this version property is used in plugins but also in dependencies too -->
-    <version.io.quarkus>1.7.0.Final</version.io.quarkus>
+    <version.io.quarkus>1.8.0.CR1</version.io.quarkus>
 
     <!-- dependencies versions -->
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
