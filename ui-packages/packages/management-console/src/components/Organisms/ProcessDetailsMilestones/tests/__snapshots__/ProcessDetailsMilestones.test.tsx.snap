@@ -19,7 +19,7 @@ exports[`Process details page milestones panel Snapshot test with default props 
       Object {
         "__typename": "Milestones",
         "id": "27107f38-d888-4edf-9a4f-11b9e6d75m88",
-        "name": "Milestone 3: Order delivered and closed",
+        "name": "Milestone 3: Order delivered and closed with customer sign off",
         "status": "AVAILABLE",
       },
       Object {
@@ -132,38 +132,47 @@ exports[`Process details page milestones panel Snapshot test with default props 
                   </Label>
                 </p>
               </Text>
-              <Text
-                component="p"
+              <Tooltip
+                content="Milestone 3: Order delivered and closed with customer sign off"
                 key="2"
               >
-                <p
-                  className=""
-                  data-pf-content={true}
+                <Text
+                  component="p"
                 >
-                  Milestone 3: Order delivered and closed
-                   
-                  <Label
-                    icon={<InfoCircleIcon />}
+                  <p
+                    className=""
+                    data-pf-content={true}
                   >
                     <span
-                      className="pf-c-label"
+                      className="kogito-management-console--milestones__nameTextEllipses"
+                    >
+                      Milestone 3: Order delivered and closed with customer sign off
+                    </span>
+                     
+                    <Label
+                      icon={<InfoCircleIcon />}
                     >
                       <span
-                        className="pf-c-label__content"
+                        className="pf-c-label"
                       >
                         <span
-                          className="pf-c-label__icon"
+                          className="pf-c-label__content"
                         >
-                          <InfoCircleIcon>
-                            <MockedComponent />
-                          </InfoCircleIcon>
+                          <span
+                            className="pf-c-label__icon"
+                          >
+                            <InfoCircleIcon>
+                              <MockedComponent />
+                            </InfoCircleIcon>
+                          </span>
+                          Available
                         </span>
-                        Available
                       </span>
-                    </span>
-                  </Label>
-                </p>
-              </Text>
+                    </Label>
+                  </p>
+                </Text>
+                 
+              </Tooltip>
               <Text
                 component="blockquote"
                 key="3"
@@ -237,7 +246,7 @@ exports[`Process details page milestones panel test assertions 1`] = `
       Object {
         "__typename": "Milestones",
         "id": "27107f38-d888-4edf-9a4f-11b9e6d75i86",
-        "name": "Manager decision and sign off",
+        "name": "Milestone 3: Order delivered and closed with customer sign off",
         "status": "COMPLETED",
       },
       Object {
@@ -414,39 +423,48 @@ exports[`Process details page milestones panel test assertions 1`] = `
                   </Label>
                 </p>
               </Text>
-              <Text
-                component="blockquote"
+              <Tooltip
+                content="Milestone 3: Order delivered and closed with customer sign off"
                 key="4"
               >
-                <blockquote
-                  className=""
-                  data-pf-content={true}
+                <Text
+                  component="blockquote"
                 >
-                  Manager decision and sign off
-                   
-                  <Label
-                    color="green"
-                    icon={<InfoCircleIcon />}
+                  <blockquote
+                    className=""
+                    data-pf-content={true}
                   >
                     <span
-                      className="pf-c-label pf-m-green"
+                      className="kogito-management-console--milestones__nameTextEllipses"
+                    >
+                      Milestone 3: Order delivered and closed with customer sign off
+                    </span>
+                     
+                    <Label
+                      color="green"
+                      icon={<InfoCircleIcon />}
                     >
                       <span
-                        className="pf-c-label__content"
+                        className="pf-c-label pf-m-green"
                       >
                         <span
-                          className="pf-c-label__icon"
+                          className="pf-c-label__content"
                         >
-                          <InfoCircleIcon>
-                            <MockedComponent />
-                          </InfoCircleIcon>
+                          <span
+                            className="pf-c-label__icon"
+                          >
+                            <InfoCircleIcon>
+                              <MockedComponent />
+                            </InfoCircleIcon>
+                          </span>
+                          Completed
                         </span>
-                        Completed
                       </span>
-                    </span>
-                  </Label>
-                </blockquote>
-              </Text>
+                    </Label>
+                  </blockquote>
+                </Text>
+                 
+              </Tooltip>
               <Text
                 component="p"
                 key="5"

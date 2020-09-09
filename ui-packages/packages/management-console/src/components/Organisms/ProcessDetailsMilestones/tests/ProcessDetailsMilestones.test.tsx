@@ -45,7 +45,7 @@ describe('Process details page milestones panel', () => {
       },
       {
         id: '27107f38-d888-4edf-9a4f-11b9e6d75m88',
-        name: 'Milestone 3: Order delivered and closed',
+        name: 'Milestone 3: Order delivered and closed with customer sign off',
         status: MilestoneStatus['Available'],
         __typename: 'Milestones'
       }
@@ -73,7 +73,7 @@ describe('Process details page milestones panel', () => {
       },
       {
         id: '27107f38-d888-4edf-9a4f-11b9e6d75i86',
-        name: 'Manager decision and sign off',
+        name: 'Milestone 3: Order delivered and closed with customer sign off',
         status: MilestoneStatus['Completed'],
         __typename: 'Milestones'
       },

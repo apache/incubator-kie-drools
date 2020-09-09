@@ -467,11 +467,13 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, {}, {}> &
                         <ProcessDetails data={data} from={currentPage} />
                       </FlexItem>
                     )}
-                    <FlexItem>
-                      <ProcessDetailsMilestones
-                        milestones={data.ProcessInstances[0].milestones}
-                      />
-                    </FlexItem>
+                    {data.ProcessInstances[0].milestones.length > 0 && (
+                      <FlexItem>
+                        <ProcessDetailsMilestones
+                          milestones={data.ProcessInstances[0].milestones}
+                        />
+                      </FlexItem>
+                    )}
                   </Flex>
                   <Flex
                     direction={{ default: 'column' }}
