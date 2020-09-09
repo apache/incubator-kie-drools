@@ -101,8 +101,8 @@ abstract class AbstractReactiveMessagingEventConsumerKafkaIT {
                                    given()
                                            .when().get("/metrics")
                                            .then().log().ifValidationFails().statusCode(200)
-                                           .body(containsString("application_mp_messaging_message_count_total{channel=\"kogito-processdomain-events\"} 2.0"),
-                                                 containsString("application_mp_messaging_message_count_total{channel=\"kogito-processinstances-events\"} 2.0"));
+                                           .body(containsString("base_mp_messaging_message_count_total{channel=\"kogito-processdomain-events\"} 2.0"),
+                                                 containsString("base_mp_messaging_message_count_total{channel=\"kogito-processinstances-events\"} 2.0"));
                                }
                 );
     }
