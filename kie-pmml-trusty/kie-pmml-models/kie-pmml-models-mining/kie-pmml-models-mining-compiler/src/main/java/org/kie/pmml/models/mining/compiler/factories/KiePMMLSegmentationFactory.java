@@ -38,6 +38,7 @@ import org.dmg.pmml.mining.Segmentation;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
@@ -85,14 +86,16 @@ public class KiePMMLSegmentationFactory {
                                                                 final TransformationDictionary transformationDictionary,
                                                                 final Segmentation segmentation,
                                                                 final String segmentationName,
-                                                                final KnowledgeBuilder kBuilder) {
+                                                                final KnowledgeBuilder kBuilder,
+                                                                final List<KiePMMLModel> nestedModels) {
         logger.debug("getSegmentationSourcesMap {}", segmentation);
         final String packageName = getSanitizedPackageName(parentPackageName + "." + segmentationName);
         final Map<String, String> toReturn = getSegmentsSourcesMap(packageName,
                                                                   dataDictionary,
                                                                   transformationDictionary,
                                                                   segmentation.getSegments(),
-                                                                  kBuilder);
+                                                                  kBuilder,
+                                                                   nestedModels);
         String className = getSanitizedClassName(segmentationName);
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName, KIE_PMML_SEGMENTATION_TEMPLATE_JAVA, KIE_PMML_SEGMENTATION_TEMPLATE);
         ClassOrInterfaceDeclaration segmentationTemplate = cloneCU.getClassByName(className)

@@ -34,6 +34,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
@@ -94,7 +95,8 @@ public class KiePMMLMiningModelFactory {
                                                                       final TransformationDictionary transformationDictionary,
                                                                       final MiningModel model,
                                                                       final String parentPackageName,
-                                                                      final KnowledgeBuilder kBuilder) {
+                                                                      final KnowledgeBuilder kBuilder,
+                                                                      final List<KiePMMLModel> nestedModels) {
         logger.trace("getKiePMMLMiningModelSourcesMap {} {} {}", dataDictionary, model, parentPackageName);
         final String segmentationName = String.format(SEGMENTATIONNAME_TEMPLATE, model.getModelName());
         final Map<String, String> toReturn = getSegmentationSourcesMap(parentPackageName,
@@ -102,7 +104,8 @@ public class KiePMMLMiningModelFactory {
                                                                        transformationDictionary,
                                                                        model.getSegmentation(),
                                                                        segmentationName,
-                                                                       kBuilder);
+                                                                       kBuilder,
+                                                                       nestedModels);
         String segmentationClass = getSanitizedPackageName(parentPackageName + "." + segmentationName) + "." + getSanitizedClassName(segmentationName);
         if (!toReturn.containsKey(segmentationClass)) {
             throw new KiePMMLException("Expected generated class " + segmentationClass + " not found");

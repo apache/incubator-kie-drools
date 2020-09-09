@@ -30,11 +30,13 @@ public class KiePMMLMiningModelWithSources extends KiePMMLMiningModel implements
 
     private final String kmodulePackageName;
     protected Map<String, String> sourcesMap;
+    protected List<KiePMMLModel> nestedModels;
 
-    public KiePMMLMiningModelWithSources(String modelName, String kmodulePackageName, Map<String, String> sourcesMap) {
+    public KiePMMLMiningModelWithSources(String modelName, String kmodulePackageName, Map<String, String> sourcesMap,List<KiePMMLModel> nestedModels) {
         super(modelName, Collections.emptyList());
         this.sourcesMap = Collections.unmodifiableMap(sourcesMap);
         this.kmodulePackageName = kmodulePackageName;
+        this.nestedModels = Collections.unmodifiableList(nestedModels);
     }
 
     @Override
@@ -59,6 +61,6 @@ public class KiePMMLMiningModelWithSources extends KiePMMLMiningModel implements
 
     @Override
     public List<KiePMMLModel> getNestedModels() {
-        return Collections.emptyList();
+        return nestedModels;
     }
 }
