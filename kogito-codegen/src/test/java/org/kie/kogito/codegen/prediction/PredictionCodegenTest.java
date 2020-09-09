@@ -41,7 +41,7 @@ public class PredictionCodegenTest extends AbstractCodegenTest {
 
         GeneratorContext context = GeneratorContext.ofProperties(new Properties());
 
-        PredictionCodegen codeGenerator = PredictionCodegen.ofCollectedResources(
+        PredictionCodegen codeGenerator = PredictionCodegen.ofCollectedResources(false,
                 CollectedResource.fromFiles(BASE_PATH, FULL_SOURCE.toFile()));
         codeGenerator.setContext(context);
 

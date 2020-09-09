@@ -105,6 +105,7 @@ public class KogitoAssetsProcessor {
     private static final DotName metricsClass = DotName.createSimple("org.kie.kogito.monitoring.rest.MetricsResource");
     private static final DotName tracingClass = DotName.createSimple("org.kie.kogito.tracing.decision.DecisionTracingListener");
     private static final DotName knativeEventingClass = DotName.createSimple("org.kie.kogito.events.knative.ce.http.HttpRequestConverter");
+    private static final DotName dmnJpmmlClass = DotName.createSimple( "org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
 
     @Inject
     ArchiveRootBuildItem root;
@@ -156,6 +157,8 @@ public class KogitoAssetsProcessor {
                 .getAllKnownSubclasses(tracingClass).isEmpty();
         boolean useKnativeEventing = combinedIndexBuildItem.getIndex()
                 .getClassByName(knativeEventingClass) != null;
+        boolean isJPMMLAvailable =combinedIndexBuildItem.getIndex()
+                .getClassByName(dmnJpmmlClass) != null;
 
         AddonsConfig addonsConfig = new AddonsConfig()
                 .withPersistence(usePersistence)
@@ -189,7 +192,7 @@ public class KogitoAssetsProcessor {
                 .withAddons(addonsConfig)
                 .withClassLoader(classLoader);
 
-        appGen.withGenerator(PredictionCodegen.ofCollectedResources(CollectedResource.fromPaths(paths)))
+        appGen.withGenerator(PredictionCodegen.ofCollectedResources(isJPMMLAvailable, CollectedResource.fromPaths(paths)))
                 .withAddons(addonsConfig);
 
         appGen.withGenerator(DecisionCodegen.ofCollectedResources(CollectedResource.fromPaths(paths)))

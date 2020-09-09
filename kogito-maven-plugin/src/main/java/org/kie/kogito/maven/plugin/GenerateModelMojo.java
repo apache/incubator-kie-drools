@@ -274,7 +274,8 @@ public class GenerateModelMojo extends AbstractKieMojo {
                     .withRestServices(useRestServices);
         }
 
-        appGen.withGenerator(PredictionCodegen.ofCollectedResources(CollectedResource.fromDirectory(kieSourcesDirectory.toPath())))
+        boolean isJPMMLAvailable = hasClassOnClasspath(project, "org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
+        appGen.withGenerator(PredictionCodegen.ofCollectedResources(isJPMMLAvailable, CollectedResource.fromDirectory(kieSourcesDirectory.toPath())))
                 .withAddons(addonsConfig);
 
         if (generateDecisions()) {
