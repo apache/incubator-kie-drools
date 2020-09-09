@@ -21,6 +21,13 @@
     <dependency>
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-persistence-jsonb</artifactId>
+      <exclusions>
+        <!-- Excluded due to incompatibility with the native image compilation. -->
+        <exclusion>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>drools-core-dynamic</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>jakarta.inject</groupId>

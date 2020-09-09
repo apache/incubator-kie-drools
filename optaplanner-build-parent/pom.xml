@@ -20,7 +20,7 @@
     <!-- ************************************************************************ -->
 
     <!-- SNAPSHOT and KIE dependency versions -->
-    <version.org.kie.kogito>0.12.0</version.org.kie.kogito>
+    <version.org.kie.kogito>1.0.0-SNAPSHOT</version.org.kie.kogito>
 
     <!-- Normal dependency versions -->
     <!-- TODO Do we want import the quarkus-bom instead of defining these ourselves? -->
@@ -89,7 +89,7 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- TODO use org.kie.kogito:kogito-bom instead once Kogito fixes https://issues.redhat.com/browse/KOGITO-2726 -->
+      <!-- TODO use org.kie.kogito:kogito-bom instead once Kogito fixes https://issues.redhat.com/browse/KOGITO-3309 -->
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-api</artifactId>

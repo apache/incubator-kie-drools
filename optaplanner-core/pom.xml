@@ -130,6 +130,7 @@
           <ignoredUnusedDeclaredDependencies>
             <!-- Provides org.drools:* dependencies -->
             <dependency>org.kie.kogito:kogito-drools-model</dependency>
+            <dependency>org.kie.kogito:drools-core</dependency>
           </ignoredUnusedDeclaredDependencies>
         </configuration>
       </plugin>
