@@ -60,8 +60,8 @@ module.exports = controller = {
   },
   callAbort: (req, res) => {
     const graphData = require('./graphql');
-    const failedAbortInstances=['8035b580-6ae4-4aa8-9ec0-e18e19809e0b2','8035b580-6ae4-4aa8-9ec0-e18e19809e0b3']
-    const data = graphData.filter(data => {
+    const failedAbortInstances = ['8035b580-6ae4-4aa8-9ec0-e18e19809e0b2', '8035b580-6ae4-4aa8-9ec0-e18e19809e0b3']
+    const data = graphData.ProcessInstanceData.filter(data => {
       return data.id === req.params.processInstanceId;
     });
     if (failedAbortInstances.includes(data[0].id)) {
@@ -73,28 +73,28 @@ module.exports = controller = {
   },
   callNodeRetrigger: (req, res) => {
     const graphData = require('./graphql');
-    const data = graphData.filter(data => {
+    const data = graphData.ProcessInstanceData.filter(data => {
       return data.id === req.params.processInstanceId;
     });
     const nodeObject = data[0].nodes.filter(node => node.id === req.params.nodeInstanceId);
-      if(nodeObject[0].name.includes('not found')){
-        res.status(404).send('node not found')
-      }
-      else{
-        nodeObject[0].start = new Date().toISOString();
-        res.status(200).send(data[0]);
-      }
+    if (nodeObject[0].name.includes('not found')) {
+      res.status(404).send('node not found')
+    }
+    else {
+      nodeObject[0].enter = new Date().toISOString();
+      res.status(200).send(data[0]);
+    }
   },
   callNodeCancel: (req, res) => {
     const graphData = require('./graphql');
-    const data = graphData.filter(data => {
+    const data = graphData.ProcessInstanceData.filter(data => {
       return data.id === req.params.processInstanceId;
     });
     const nodeObject = data[0].nodes.filter(node => node.id === req.params.nodeInstanceId);
-    if(nodeObject[0].name.includes('not found')){
+    if (nodeObject[0].name.includes('not found')) {
       res.status(404).send('node not found')
     }
-    else{
+    else {
       nodeObject[0].exit = new Date().toISOString();
       res.status(200).send(data[0]);
     }
