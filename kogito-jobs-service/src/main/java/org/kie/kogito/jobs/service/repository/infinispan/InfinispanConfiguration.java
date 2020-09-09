@@ -23,6 +23,8 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.health.HealthCheck;
+import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.Readiness;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.kie.kogito.infinispan.health.InfinispanHealthCheck;
@@ -46,12 +48,11 @@ public class InfinispanConfiguration {
 
     @Produces
     @Readiness
-    public InfinispanHealthCheck infinispanHealthCheck(@ConfigProperty(name = PERSISTENCE_CONFIG_KEY)
-                                                               Optional<String> persistence,
-                                                       Instance<RemoteCacheManager> cacheManagerInstance) {
+    public HealthCheck infinispanHealthCheck(@ConfigProperty(name = PERSISTENCE_CONFIG_KEY) Optional<String> persistence,
+                                             Instance<RemoteCacheManager> cacheManagerInstance) {
         return persistence
                 .filter("infinispan"::equals)
-                .map(p -> new InfinispanHealthCheck(cacheManagerInstance))
-                .orElse(null);
+                .<HealthCheck>map(p -> new InfinispanHealthCheck(cacheManagerInstance))
+                .orElse(() -> HealthCheckResponse.up("In Memory Persistence"));
     }
 }

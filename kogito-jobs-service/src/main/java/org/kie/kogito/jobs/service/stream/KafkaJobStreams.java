@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 public class KafkaJobStreams {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaJobStreams.class);
-    private static final String PUBLISH_EVENTS_CONFIG_KEY = "kogito.jobs-service.events-support";
+    public static final String PUBLISH_EVENTS_CONFIG_KEY = "kogito.jobs-service.events-support";
 
     private ObjectMapper objectMapper;
 
