@@ -312,7 +312,7 @@ public enum Type {
         @Override
         public Value<?> perturb(Value<?> value, PerturbationContext perturbationContext) {
             List<Feature> composite = getFeatures(value);
-            List<Feature> newList = new ArrayList<>(List.copyOf(composite));
+            List<Feature> newList = new ArrayList<>(composite);
             if (!newList.isEmpty()) {
                 int[] indexesToBePerturbed = perturbationContext.getRandom().ints(0, composite.size()).distinct().limit(perturbationContext.getNoOfPerturbations()).toArray();
                 for (int index : indexesToBePerturbed) {

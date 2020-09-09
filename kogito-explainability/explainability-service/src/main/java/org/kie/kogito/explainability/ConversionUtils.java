@@ -16,6 +16,8 @@
 
 package org.kie.kogito.explainability;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -28,9 +30,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.vertx.core.json.JsonObject;
 import org.apache.commons.lang3.tuple.Pair;
 import org.kie.kogito.explainability.model.Feature;
+import org.kie.kogito.explainability.model.FeatureFactory;
 import org.kie.kogito.explainability.model.Output;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
+import org.kie.kogito.tracing.typedvalue.CollectionValue;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
 
 public class ConversionUtils {
@@ -41,7 +45,7 @@ public class ConversionUtils {
 
     protected static Feature toFeature(String name, Object value) {
         if (value instanceof JsonObject) {
-            return new Feature(name, Type.COMPOSITE, new Value<>(toFeatureList((JsonObject) value)));
+            return FeatureFactory.newCompositeFeature(name, toFeatureList((JsonObject) value));
         }
         return toTypeValuePair(value)
                 .map(p -> new Feature(name, p.getLeft(), p.getRight()))
@@ -49,16 +53,28 @@ public class ConversionUtils {
     }
 
     public static Feature toFeature(String name, TypedValue value) {
-        // TODO: handle COLLECTION values https://issues.redhat.com/browse/KOGITO-3194
         if (value.isUnit()) {
             return toTypeValuePair(value.toUnit().getValue())
                     .map(p -> new Feature(name, p.getLeft(), p.getRight()))
                     .orElse(null);
+        } else if (value.isStructure()) {
+            return FeatureFactory.newCompositeFeature(name, toFeatureList(value.toStructure().getValue()));
+        } else if (value.isCollection()) {
+            return FeatureFactory.newCompositeFeature(name, toFeatureList(name, value.toCollection()));
+        } else {
+            throw new RuntimeException(String.format("unexpected value kind %s", value.getKind()));
         }
-        if (value.isStructure()) {
-            return new Feature(name, Type.COMPOSITE, new Value<>(toFeatureList(value.toStructure().getValue())));
+    }
+
+    protected static List<Feature> toFeatureList(String name, CollectionValue collectionValue) {
+        Collection<TypedValue> values = collectionValue.getValue();
+        List<Feature> list = new ArrayList<>(values.size());
+        int index = 0;
+        for (TypedValue typedValue : values) {
+            list.add(toFeature(name + "_" + index, typedValue));
+            index++;
         }
-        return null;
+        return list;
     }
 
     public static List<Feature> toFeatureList(JsonObject mainObj) {
@@ -99,14 +115,14 @@ public class ConversionUtils {
     }
 
     public static Output toOutput(String name, TypedValue value) {
-        // TODO: handle COLLECTION values https://issues.redhat.com/browse/KOGITO-3194
         if (value.isUnit()) {
             return toTypeValuePair(value.toUnit().getValue())
                     .map(p -> new Output(name, p.getLeft(), p.getRight(), 1d))
                     .orElse(null);
-        }
-        if (value.isStructure()) {
+        } else if (value.isStructure()) {
             return new Output(name, Type.COMPOSITE, new Value<>(toFeatureList(value.toStructure().getValue())), 1d);
+        } else if (value.isCollection()) {
+            return new Output(name, Type.COMPOSITE, new Value<>(toFeatureList(name, value.toCollection())), 1d);
         }
         return null;
     }

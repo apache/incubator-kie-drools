@@ -18,7 +18,6 @@ package org.kie.kogito.explainability;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.Output;

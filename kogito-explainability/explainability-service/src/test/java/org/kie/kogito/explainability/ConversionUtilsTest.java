@@ -33,6 +33,8 @@ import org.kie.kogito.tracing.typedvalue.StructureValue;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.kie.kogito.tracing.typedvalue.UnitValue;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -85,8 +87,81 @@ class ConversionUtilsTest {
         assertEquals(Type.TEXT, features.get(0).getType());
         assertEquals("stringValue", features.get(0).getValue().getUnderlyingObject());
 
-        // TODO add collection support https://issues.redhat.com/browse/KOGITO-3194
-        assertNull(ConversionUtils.toFeature("name", new CollectionValue("list")));
+        List<TypedValue> values = List.of(new UnitValue("number", new DoubleNode(0d)),
+                                          new UnitValue("number", new DoubleNode(1d)));
+        Feature collectionFeature = ConversionUtils.toFeature("name", new CollectionValue("list", values));
+        assertNotNull(collectionFeature);
+        assertEquals("name", collectionFeature.getName());
+        assertEquals(Type.COMPOSITE, collectionFeature.getType());
+        assertTrue(collectionFeature.getValue().getUnderlyingObject() instanceof List);
+        @SuppressWarnings("unchecked")
+        List<Feature> objects = (List<Feature>) collectionFeature.getValue().getUnderlyingObject();
+        assertEquals(2, objects.size());
+        for (Feature f : objects) {
+            assertNotNull(f);
+            assertNotNull(f.getName());
+            assertNotNull(f.getType());
+            assertEquals(Type.NUMBER, f.getType());
+            assertNotNull(f.getValue());
+        }
+    }
+
+    @Test
+    void testNestedCollection() {
+        Collection<TypedValue> depthTwoOne = new ArrayList<>(2);
+        depthTwoOne.add(new StructureValue("complex", singletonMap(
+                "key",
+                new UnitValue("string1", new TextNode("value one")))));
+        depthTwoOne.add(new StructureValue("complex", singletonMap(
+                "key",
+                new UnitValue("string1", new TextNode("value two")))));
+
+        Collection<TypedValue> depthTwoTwo = new ArrayList<>(2);
+        depthTwoTwo.add(new StructureValue("complex", singletonMap(
+                "key",
+                new UnitValue("string1", new TextNode("value three")))));
+        depthTwoTwo.add(new StructureValue("complex", singletonMap(
+                "key",
+                new UnitValue("string1", new TextNode("value four")))));
+
+        CollectionValue depthOneLeft = new CollectionValue("list", depthTwoOne);
+        CollectionValue depthOneRight = new CollectionValue("list", depthTwoTwo);
+        Collection<TypedValue> depthOne = new ArrayList<>(2);
+        depthOne.add(depthOneLeft);
+        depthOne.add(depthOneRight);
+        CollectionValue value = new CollectionValue("list", depthOne);
+        Feature collectionFeature = ConversionUtils.toFeature("name", value);
+        assertNotNull(collectionFeature);
+        assertEquals("name", collectionFeature.getName());
+        assertEquals(Type.COMPOSITE, collectionFeature.getType());
+        assertTrue(collectionFeature.getValue().getUnderlyingObject() instanceof List);
+        @SuppressWarnings("unchecked")
+        List<Feature> deepFeatures = (List<Feature>) collectionFeature.getValue().getUnderlyingObject();
+        assertEquals(2, deepFeatures.size());
+        for (Feature f : deepFeatures) {
+            assertNotNull(f);
+            assertNotNull(f.getName());
+            assertNotNull(f.getType());
+            assertEquals(Type.COMPOSITE, f.getType());
+            assertNotNull(f.getValue());
+            List<Feature> nestedOneValues = (List<Feature>) f.getValue().getUnderlyingObject();
+            for (Feature nestedOneValue : nestedOneValues) {
+                assertNotNull(nestedOneValue);
+                assertNotNull(nestedOneValue.getName());
+                assertNotNull(nestedOneValue.getType());
+                assertEquals(Type.COMPOSITE, nestedOneValue.getType());
+                assertNotNull(nestedOneValue.getValue());
+                List<Feature> nestedTwoValues = (List<Feature>) nestedOneValue.getValue().getUnderlyingObject();
+                for (Feature nestedTwoValue : nestedTwoValues) {
+                    assertNotNull(nestedTwoValue);
+                    assertNotNull(nestedTwoValue.getName());
+                    assertNotNull(nestedTwoValue.getType());
+                    assertEquals(Type.TEXT, nestedTwoValue.getType());
+                    assertNotNull(nestedTwoValue.getValue());
+                    assertTrue(nestedTwoValue.getValue().asString().contains("value"));
+                }
+            }
+        }
     }
 
     @Test
@@ -133,8 +208,9 @@ class ConversionUtilsTest {
         assertEquals(Type.TEXT, features.get(0).getType());
         assertEquals("stringValue", features.get(0).getValue().getUnderlyingObject());
 
-        // TODO add collection support https://issues.redhat.com/browse/KOGITO-3194
-        assertNull(ConversionUtils.toOutput("name", new CollectionValue("list")));
+        List<TypedValue> values = List.of(new UnitValue("number", new DoubleNode(0d)),
+                                          new UnitValue("number", new DoubleNode(1d)));
+        assertNotNull(ConversionUtils.toOutput("name", new CollectionValue("list", values)));
     }
 
     @Test
