@@ -519,4 +519,36 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         assertScore(scoreDirector,
                 assertMatchWithScore(-2, solution.getFirstEntityGroup(), 2));
     }
+
+    @TestTemplate
+    public void filteredFromUniquePair() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
+        TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup1);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity2);
+        TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", solution.getFirstEntityGroup(),
+                solution.getFirstValue());
+        solution.getEntityList().add(entity3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class,
+                    Joiners.equal(TestdataLavishEntity::getEntityGroup),
+                    Joiners.filtering((e1, e2) -> !e1.getCode().contains("My"))) // Filtering() caused PLANNER-2139.
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, entity3, solution.getFirstEntity()));
+
+        // Incremental
+        scoreDirector.beforeProblemFactRemoved(entity3);
+        solution.getEntityList().remove(entity3);
+        scoreDirector.afterProblemFactRemoved(entity3);
+        assertScore(scoreDirector);
+    }
 }

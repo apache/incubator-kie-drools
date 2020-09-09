@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.api.score.stream;
 
+import java.util.Arrays;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -30,6 +31,7 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.NoneBiJoiner;
 
 /**
@@ -131,11 +133,11 @@ public interface ConstraintFactory {
      * @param joiner1 never null
      * @param joiner2 never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
-     * @return a stream that matches every unique combination of A and another A for which all the {@link BiJoiner joiners} are
-     *         true
+     * @return a stream that matches every unique combination of A and another A for which all the
+     *         {@link BiJoiner joiners} are true
      */
     default <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2) {
-        return fromUniquePair(fromClass, AbstractBiJoiner.merge(joiner1, joiner2));
+        return fromUniquePair(fromClass, new BiJoiner[] { joiner1, joiner2 });
     }
 
     /**
@@ -146,12 +148,12 @@ public interface ConstraintFactory {
      * @param joiner2 never null
      * @param joiner3 never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
-     * @return a stream that matches every unique combination of A and another A for which all the {@link BiJoiner joiners} are
-     *         true
+     * @return a stream that matches every unique combination of A and another A for which all the
+     *         {@link BiJoiner joiners} are true
      */
     default <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2,
             BiJoiner<A, A> joiner3) {
-        return fromUniquePair(fromClass, AbstractBiJoiner.merge(joiner1, joiner2, joiner3));
+        return fromUniquePair(fromClass, new BiJoiner[] { joiner1, joiner2, joiner3 });
     }
 
     /**
@@ -163,12 +165,12 @@ public interface ConstraintFactory {
      * @param joiner3 never null
      * @param joiner4 never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
-     * @return a stream that matches every unique combination of A and another A for which all the {@link BiJoiner joiners} are
-     *         true
+     * @return a stream that matches every unique combination of A and another A for which all the
+     *         {@link BiJoiner joiners} are true
      */
     default <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2,
             BiJoiner<A, A> joiner3, BiJoiner<A, A> joiner4) {
-        return fromUniquePair(fromClass, AbstractBiJoiner.merge(joiner1, joiner2, joiner3, joiner4));
+        return fromUniquePair(fromClass, new BiJoiner[] { joiner1, joiner2, joiner3, joiner4 });
     }
 
     /**
@@ -181,11 +183,38 @@ public interface ConstraintFactory {
      * @param fromClass never null
      * @param joiners never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
-     * @return a stream that matches every unique combination of A and another A for which all the {@link BiJoiner joiners} are
-     *         true
+     * @return a stream that matches every unique combination of A and another A for which all the
+     *         {@link BiJoiner joiners} are true
      */
     default <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A>... joiners) {
-        return fromUniquePair(fromClass, AbstractBiJoiner.merge(joiners));
+        // First make sure filtering joiners are always last, if there are any.
+        int indexOfFirstFilter = -1;
+        for (int index = 0; index < joiners.length; index++) {
+            boolean seenFilterAlready = indexOfFirstFilter >= 0;
+            BiJoiner<A, A> joiner = joiners[index];
+            boolean isFilter = joiner instanceof FilteringBiJoiner;
+            if (!seenFilterAlready && isFilter) {
+                indexOfFirstFilter = index;
+                continue;
+            }
+            if (seenFilterAlready && !isFilter) {
+                throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow " +
+                        "a filtering joiner (" + joiners[indexOfFirstFilter] + ").\n" +
+                        "Maybe reorder the joiners such that filtering() joiners are later in the parameter list.");
+            }
+        }
+        if (indexOfFirstFilter < 0) {
+            // No filtering joiners. Simply merge all joiners and create the stream.
+            return fromUniquePair(fromClass, AbstractBiJoiner.merge(joiners));
+        }
+        // Merge indexing joiners, create stream and append filters for every subsequent filtering joiner.
+        BiJoiner<A, A> mergedJoiner = AbstractBiJoiner.merge(Arrays.copyOf(joiners, indexOfFirstFilter));
+        BiConstraintStream<A, A> resultingStream = fromUniquePair(fromClass, mergedJoiner);
+        for (int filterIndex = indexOfFirstFilter; filterIndex < joiners.length; filterIndex++) {
+            FilteringBiJoiner<A, A> filteringJoiner = (FilteringBiJoiner<A, A>) joiners[filterIndex];
+            resultingStream = resultingStream.filter(filteringJoiner.getFilter());
+        }
+        return resultingStream;
     }
 
 }
