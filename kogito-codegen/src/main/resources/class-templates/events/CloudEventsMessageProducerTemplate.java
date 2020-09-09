@@ -11,7 +11,6 @@ import org.kie.kogito.services.event.EventMarshaller;
 
 
 import java.util.Optional;
-import java.util.TimeZone;
 
 public class MessageProducer {
 
