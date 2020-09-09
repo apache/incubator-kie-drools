@@ -403,6 +403,7 @@ public class GroupByTest {
         Variable<String> existsVar = D.declarationOf(String.class);
         Variable<Integer> keyVar = D.declarationOf(Integer.class);
         Variable<Long> resultVar = D.declarationOf(Long.class);
+        Variable<Object> mappedResultVar = D.declarationOf(Object.class, D.from(resultVar));
 
         D.PatternDef<Integer> pattern = D.pattern(patternVar);
         D.PatternDef<String> exist = D.pattern(existsVar);
@@ -412,12 +413,13 @@ public class GroupByTest {
 
         ViewItem groupBy = D.groupBy(patternAndExists, patternVar, keyVar, Math::abs,
                 DSL.accFunction(CountAccumulateFunction::new).as(resultVar));
-        ConsequenceBuilder._3 consequence = D.on(keyVar, resultVar, groupResultVar)
+        PatternDSL.PatternDef mappedResult = D.pattern(mappedResultVar);
+        ConsequenceBuilder._3 consequence = D.on(keyVar, mappedResultVar, groupResultVar)
                 .execute((key, count, result) -> {
-                    result.put(key, count.intValue());
+                    result.put(key, count);
                 });
 
-        Rule rule = D.rule("R").build(groupBy, consequence);
+        Rule rule = D.rule("R").build(groupBy, mappedResult, consequence);
 
         Model model = new ModelImpl().addRule(rule).addGlobal( groupResultVar );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
