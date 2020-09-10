@@ -40,7 +40,6 @@ import org.drools.modelcompiler.builder.generator.drlxparse.MultipleDrlxParseSuc
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 
 import static java.util.Optional.of;
-
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
@@ -107,12 +106,12 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
     }
 
     private MethodCallExpr buildExpression(SingleDrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL) {
+        if (drlxParseResult.isTemporal()) {
+            return buildTemporalExpression(drlxParseResult, exprDSL);
+        }
+
         final List<String> usedDeclarationsWithUnification = new ArrayList<>();
         usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
-
-        if (drlxParseResult.isTemporal() && drlxParseResult.getLeft() != null && !drlxParseResult.getLeft().getExpression().isNameExpr()) {
-            exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getLeft(), drlxParseResult.getPatternType()));
-        }
 
         usedDeclarationsWithUnification.stream()
                 .filter( s -> !(drlxParseResult.isSkipThisAsParam() && s.equals( drlxParseResult.getPatternBinding() ) ) )
@@ -121,10 +120,6 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
         if (drlxParseResult.getRightLiteral() != null) {
             exprDSL.addArgument( "" + drlxParseResult.getRightLiteral() );
-        } else {
-            if (drlxParseResult.isTemporal() && drlxParseResult.getRight() != null && !drlxParseResult.getRight().getExpression().isNameExpr()) {
-                exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getRight(), drlxParseResult.getPatternType()));
-            }
         }
 
         exprDSL.addArgument(buildConstraintExpression(drlxParseResult, drlxParseResult.getExpr()));
