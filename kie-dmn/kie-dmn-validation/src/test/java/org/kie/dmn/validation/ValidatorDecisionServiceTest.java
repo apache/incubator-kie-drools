@@ -210,4 +210,32 @@ public class ValidatorDecisionServiceTest extends AbstractValidatorTest {
         assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
         assertThat(validate.get(1).toString(), validate.get(1).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
     }
+
+    @Test
+    public void testOUTPUTELEMENT_NOT_FOUND_FOR_DS_ReaderInput() throws IOException {
+        try (final Reader reader = getReader("decisionservice/DS1ofEach_missingOutput.dmn")) {
+            final List<DMNMessage> validate = validator.validate(reader,
+                                                                 VALIDATE_SCHEMA, VALIDATE_MODEL);
+            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1)); // DS-1 missing its reference now.
+            assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
+        }
+    }
+
+    @Test
+    public void testOUTPUTELEMENT_NOT_FOUND_FOR_DS_FileInput() {
+        final List<DMNMessage> validate = validator.validate(getFile("decisionservice/DS1ofEach_missingOutput.dmn"),
+                                                             VALIDATE_SCHEMA, VALIDATE_MODEL);
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+        assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
+    }
+
+    @Test
+    public void testOUTPUTELEMENT_NOT_FOUND_FOR_DS_DefinitionsInput() {
+        final List<DMNMessage> validate = validator.validate(getDefinitions("decisionservice/DS1ofEach_missingOutput.dmn",
+                                                                            "https://kiegroup.org/dmn/_40B3D02F-868C-4925-A1F2-5710DFEEF51E",
+                                                                            "DS1ofEach"),
+                                                             VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), greaterThanOrEqualTo(1));
+        assertThat(validate.get(0).toString(), validate.get(0).getMessageType(), is(DMNMessageType.REQ_NOT_FOUND));
+    }
 }
