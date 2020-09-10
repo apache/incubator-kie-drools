@@ -21,7 +21,7 @@ import org.kie.kogito.explainability.local.LocalExplanationException;
 import org.kie.kogito.explainability.model.Output;
 
 /**
- * Exception for when a dataset encoded for LIME is not (linearly) separable.
+ * Exception thrown when a dataset encoded for LIME is not (linearly) separable.
  */
 public class DatasetNotSeparableException extends LocalExplanationException {
 

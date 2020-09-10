@@ -177,4 +177,33 @@ class DummyModelsLimeExplainerTest {
             }
         }
     }
+
+    @Test
+    void testFixedOutput() throws Exception {
+        Random random = new Random();
+        for (int seed = 0; seed < 5; seed++) {
+            random.setSeed(seed);
+            List<Feature> features = new LinkedList<>();
+            features.add(FeatureFactory.newNumericalFeature("f1", 6));
+            features.add(FeatureFactory.newNumericalFeature("f2", 3));
+            features.add(FeatureFactory.newNumericalFeature("f3", 5));
+            PredictionProvider model = TestUtils.getFixedOutputClassifier();
+            PredictionInput input = new PredictionInput(features);
+            List<PredictionOutput> outputs = model.predictAsync(List.of(input))
+                    .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+            Prediction prediction = new Prediction(input, outputs.get(0));
+            LimeExplainer limeExplainer = new LimeExplainer(1000, 1, random);
+            Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
+                    .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+            for (Saliency saliency : saliencyMap.values()) {
+                assertNotNull(saliency);
+                List<FeatureImportance> topFeatures = saliency.getTopFeatures(3);
+                assertEquals(3, topFeatures.size());
+                for (FeatureImportance featureImportance : topFeatures) {
+                    assertEquals(0, featureImportance.getScore());
+                }
+                assertEquals(0d, ExplainabilityMetrics.impactScore(model, prediction, topFeatures));
+            }
+        }
+    }
 }

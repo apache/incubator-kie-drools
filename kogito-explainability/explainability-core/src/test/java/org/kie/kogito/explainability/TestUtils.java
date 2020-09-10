@@ -126,6 +126,17 @@ public class TestUtils {
         });
     }
 
+    public static PredictionProvider getFixedOutputClassifier() {
+        return inputs -> supplyAsync(() -> {
+            List<PredictionOutput> outputs = new LinkedList<>();
+            for (PredictionInput ignored : inputs) {
+                Output output = new Output("class", Type.BOOLEAN, new Value<>(false), 1d);
+                outputs.add(new PredictionOutput(List.of(output)));
+            }
+            return outputs;
+        });
+    }
+
     public static Feature getMockedNumericFeature() {
         return getMockedNumericFeature(1d);
     }
