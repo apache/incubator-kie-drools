@@ -95,7 +95,7 @@ class DMNDeclaredType implements TypeDefinition {
 
     @Override
     public List<MethodDefinition> getMethods() {
-        return new FEELPropertyAccessibleImplementation(fields).getMethods();
+        return new FEELPropertyAccessibleImplementation(fields, this).getMethods();
     }
 
     @Override
