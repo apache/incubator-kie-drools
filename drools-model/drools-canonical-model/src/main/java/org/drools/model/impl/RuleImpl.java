@@ -50,6 +50,10 @@ public class RuleImpl implements Rule, ModelComponent {
         this.metaAttributes = metaAttributes;
     }
 
+    public RuleImpl(String pkg, String name, String unit, CompositePatterns view) {
+        this(pkg, name, unit, view, Collections.emptyMap(), Collections.emptyMap());
+    }
+
     public RuleImpl(String pkg, String name, String unit, CompositePatterns view, Map<Attribute, Object> attributes, Map<String, Object> metaAttributes) {
         this.pkg = pkg;
         this.name = name;

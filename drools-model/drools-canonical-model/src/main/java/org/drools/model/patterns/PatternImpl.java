@@ -175,4 +175,9 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
                 "outputVar: " + variable + ", " +
                 "constraint: " + constraint + ")";
     }
+
+    @Override
+    public PatternImpl cloneCondition() {
+        return new PatternImpl(variable, constraint, bindings == null ? null : new ArrayList<>(bindings), type);
+    }
 }

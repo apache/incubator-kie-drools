@@ -32,7 +32,8 @@ import org.kie.dmn.api.core.FEELPropertyAccessible;
 
 abstract class AbstractDMNSetType implements TypeDefinition {
 
-    List<DMNDeclaredField> fields = new ArrayList<>();
+    List<DMNDeclaredField> dmnFields = new ArrayList<>();
+    List<FieldDefinition> extraFields = new ArrayList<>();
 
     Map<String, DMNType> fieldsKey = new HashMap<>();
 
@@ -53,15 +54,19 @@ abstract class AbstractDMNSetType implements TypeDefinition {
 
     @Override
     public List<? extends FieldDefinition> getFields() {
-        return fields;
+        List<FieldDefinition> combinedFields = new ArrayList<>();
+        combinedFields.addAll(dmnFields);
+        combinedFields.addAll(extraFields);
+        return combinedFields;
     }
 
     public void initFields() {
         FieldGenStrategy fieldGenStrategy = FieldGenStrategy.getFieldGenStrategy(fieldsKey.keySet(), getTypeName());
         for (Map.Entry<String, DMNType> f : fieldsKey.entrySet()) {
             DMNDeclaredField dmnDeclaredField = new DMNDeclaredField(index, f, codeGenConfig, fieldGenStrategy);
-            fields.add(dmnDeclaredField);
+            dmnFields.add(dmnDeclaredField);
         }
+        extraFields.add(new DefinedKeySetField());
     }
 
     @Override
@@ -81,7 +86,7 @@ abstract class AbstractDMNSetType implements TypeDefinition {
 
     @Override
     public List<MethodDefinition> getMethods() {
-        return new FEELPropertyAccessibleImplementation(fields).getMethods();
+        return new FEELPropertyAccessibleImplementation(dmnFields, this).getMethods();
     }
 
     @Override
@@ -101,5 +106,43 @@ abstract class AbstractDMNSetType implements TypeDefinition {
     @Override
     public Optional<String> getJavadoc() {
         return Optional.of(this.javadoc);
+    }
+
+    class DefinedKeySetField implements FieldDefinition {
+
+        @Override
+        public String getFieldName() {
+            return "definedKeySet";
+        }
+
+        @Override
+        public String getObjectType() {
+            return "java.util.Set<String>";
+        }
+
+        @Override
+        public String getInitExpr() {
+            return "new java.util.HashSet<>()";
+        }
+
+        @Override
+        public boolean isKeyField() {
+            return false;
+        }
+
+        @Override
+        public boolean createAccessors() {
+            return false;
+        }
+
+        @Override
+        public boolean isStatic() {
+            return false;
+        }
+
+        @Override
+        public boolean isFinal() {
+            return false;
+        }
     }
 }
