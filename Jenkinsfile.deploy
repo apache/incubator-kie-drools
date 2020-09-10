@@ -1,0 +1,132 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
+deployProperties = [:]
+
+pipeline {
+    agent {
+        label 'kie-rhel7 && kie-mem16g'
+    }
+
+    tools {
+        maven 'kie-maven-3.6.3'
+        jdk 'kie-jdk11'
+    }
+
+    options {
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
+    }
+
+    parameters {
+        string(name: 'DISPLAY_NAME', defaultValue: '', description: 'Setup a specific build display name')
+
+        // Git information
+        string(name: 'BUILD_BRANCH_NAME', defaultValue: 'master', description: 'Which branch to build? Set if you are not on a multibranch pipeline.')
+        string(name: 'GIT_AUTHOR', defaultValue: 'kiegroup', description: 'Which Git author repository ?')
+
+        // Deploy information
+        string(name: 'MAVEN_DEPLOY_REPOSITORY', defaultValue: '', description: 'Specify a Maven repository to deploy the artifacts.')
+    }
+
+    environment {
+        MAVEN_OPTS = '-Xms1024m -Xmx4g'
+    }
+
+    stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    cleanWs()
+
+                    if (params.DISPLAY_NAME != '') {
+                        currentBuild.displayName = params.DISPLAY_NAME
+                    }
+                }
+            }
+            post {
+                success {
+                    script {
+                        setDeployPropertyIfNeeded('git.branch', getBuildBranch())
+                        setDeployPropertyIfNeeded('git.author', getGitAuthor())
+                    }
+                }
+            }
+        }
+        stage('Clone repositories') {
+            steps {
+                checkoutRepo('optaplanner')
+            }
+        }
+        stage('Build optaplanner') {
+            steps {
+                mavenCleanInstall('optaplanner')
+            }
+            post {
+                always {
+                    saveReports()
+                }
+            }
+        }
+        stage('Deploy artifacts') {
+            steps {
+                mavenDeploy('optaplanner')
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                def propertiesStr = deployProperties.collect{ entry ->  "${entry.key}=${entry.value}" }.join("\n")
+                writeFile(text: propertiesStr, file: 'deployment.properties')
+                archiveArtifacts(artifacts: 'deployment.properties')
+            }
+            cleanWs()
+        }
+    }
+}
+
+void saveReports(boolean allowEmpty=false){
+    junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: allowEmpty
+}
+
+void checkoutRepo(String repo, String dirName=repo) {
+    dir(dirName) {
+        deleteDir()
+        checkout(githubscm.resolveRepository(repo, getGitAuthor(), getBuildBranch(), false))
+    }
+}
+
+String getGitAuthor(){
+    return params.GIT_AUTHOR
+}
+
+String getBuildBranch(){
+    return params.BUILD_BRANCH_NAME
+}
+
+void setDeployPropertyIfNeeded(String key, def value){
+    if (value != null && value != ''){
+        deployProperties[key] = value
+    }
+}
+
+void mavenCleanInstall(String directory, List profiles = [], String extraArgs = '') {
+    runMaven('clean install', directory, false, profiles, extraArgs)
+}
+
+void mavenDeploy(String directory) {
+    extraArgs = params.MAVEN_DEPLOY_REPOSITORY != '' ? "-DaltDeploymentRepository=runtimes-artifacts::default::${params.MAVEN_DEPLOY_REPOSITORY}" : ''
+    runMaven('clean deploy', directory, true, [], extraArgs)
+}
+
+void runMaven(String goals, String directory, boolean skipTests = false, List profiles = [], String extraArgs = '') {
+    mvnCmd = goals
+    if(!profiles.isEmpty()){
+        mvnCmd += " -P${profiles.join(',')}"
+    }
+    if(extraArgs != ''){
+        mvnCmd += " ${extraArgs}"
+    }
+    dir(directory) {
+        maven.runMavenWithSubmarineSettings(mvnCmd, skipTests)
+    }
+}
