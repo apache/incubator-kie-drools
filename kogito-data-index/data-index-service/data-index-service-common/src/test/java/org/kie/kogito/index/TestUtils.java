@@ -168,6 +168,7 @@ public final class TestUtils {
     public static KogitoJobCloudEvent getJobCloudEvent(String jobId, String processId, String processInstanceId, String rootProcessInstanceId, String rootProcessId, String status) {
         return KogitoJobCloudEvent.builder()
                 .id(UUID.randomUUID().toString())
+                .source(URI.create("http://localhost:8080/jobs"))
                 .data(getJob(jobId, processId, processInstanceId, rootProcessId, rootProcessInstanceId, status))
                 .build();
     }

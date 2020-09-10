@@ -189,7 +189,6 @@ message UserTaskInstanceMeta {
 
 /* @Indexed */
 message Job {
-
     /* @Field(store = Store.YES) */
     optional string id = 1;
     /* @Field(store = Store.YES) */
@@ -215,5 +214,5 @@ message Job {
     /* @Field(store = Store.YES) */
     optional int64 lastUpdate = 14;
     optional int32 executionCounter = 15;
-
+    optional string endpoint = 16;
 }

@@ -828,7 +828,8 @@ abstract class AbstractIndexingServiceIT {
                 .body("data.Jobs[0].scheduledId", is(event.getData().getScheduledId()))
                 .body("data.Jobs[0].retries", is(event.getData().getRetries()))
                 .body("data.Jobs[0].lastUpdate", is(formatZonedDateTime(event.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Jobs[0].executionCounter", is(event.getData().getExecutionCounter()));
+                .body("data.Jobs[0].executionCounter", is(event.getData().getExecutionCounter()))
+                .body("data.Jobs[0].endpoint", is(event.getData().getEndpoint()));
     }
 
     private void validateUserTaskInstance(String query, KogitoUserTaskCloudEvent event) {

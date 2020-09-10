@@ -181,7 +181,8 @@ public class KogitoCloudEventDeserializerTest {
                 .hasFieldOrPropertyWithValue("data.status", "SCHEDULED")
                 .hasFieldOrPropertyWithValue("data.executionCounter", 0)
                 .hasFieldOrPropertyWithValue("data.priority", 0)
-                .hasFieldOrPropertyWithValue("data.expirationTime", ZonedDateTime.parse("2020-01-16T20:40:58.918Z[UTC]", DateTimeFormatter.ISO_DATE_TIME));
+                .hasFieldOrPropertyWithValue("data.expirationTime", ZonedDateTime.parse("2020-01-16T20:40:58.918Z[UTC]", DateTimeFormatter.ISO_DATE_TIME))
+                .hasFieldOrPropertyWithValue("data.endpoint", "http://localhost:8080/jobs");
 
         softly.assertAll();
     }

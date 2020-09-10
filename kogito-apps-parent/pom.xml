@@ -21,6 +21,8 @@
     <version.npm>6.10.3</version.npm>
     <version.yarn>v1.19.1</version.yarn>
     <maven.compiler.release>11</maven.compiler.release>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
     <version.maven-remote-resources-plugin>1.7.0</version.maven-remote-resources-plugin>
 
     <version.org.infinispan.image>10.1.5.Final</version.org.infinispan.image>

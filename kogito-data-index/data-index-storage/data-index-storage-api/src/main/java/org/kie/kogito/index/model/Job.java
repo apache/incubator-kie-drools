@@ -42,6 +42,7 @@ public class Job {
     private String status;
     private ZonedDateTime lastUpdate;
     private Integer executionCounter;
+    private String endpoint;
 
     public String getId() {
         return id;
@@ -163,6 +164,14 @@ public class Job {
         this.executionCounter = executionCounter;
     }
 
+    public String getEndpoint() {
+        return endpoint;
+    }
+
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+    }
+
     @Override
     public String toString() {
         return "Job{" +
@@ -178,9 +187,10 @@ public class Job {
                 ", repeatLimit=" + repeatLimit +
                 ", scheduledId='" + scheduledId + '\'' +
                 ", retries=" + retries +
-                ", status=" + status +
+                ", status='" + status + '\'' +
                 ", lastUpdate=" + lastUpdate +
                 ", executionCounter=" + executionCounter +
+                ", endpoint='" + endpoint + '\'' +
                 '}';
     }
 

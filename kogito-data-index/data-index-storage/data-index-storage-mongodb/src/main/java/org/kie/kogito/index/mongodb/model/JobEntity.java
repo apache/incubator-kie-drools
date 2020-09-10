@@ -52,6 +52,8 @@ public class JobEntity {
     Long lastUpdate;
 
     Integer executionCounter;
+    
+    String endpoint;
 
     public String getId() {
         return id;
@@ -171,6 +173,14 @@ public class JobEntity {
 
     public void setExecutionCounter(Integer executionCounter) {
         this.executionCounter = executionCounter;
+    }
+
+    public String getEndpoint() {
+        return endpoint;
+    }
+
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
     }
 
     @Override

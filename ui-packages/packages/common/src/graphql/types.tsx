@@ -63,6 +63,7 @@ export namespace GraphQL {
     retries?: Maybe<Scalars['Int']>;
     lastUpdate?: Maybe<Scalars['DateTime']>;
     executionCounter?: Maybe<Scalars['Int']>;
+    endpoint?: Maybe<Scalars['String']>;
   };
 
   export type JobArgument = {

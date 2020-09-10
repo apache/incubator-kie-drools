@@ -47,6 +47,7 @@ public class JobMarshaller extends AbstractMarshaller implements MessageMarshall
         job.setStatus(reader.readString("status"));
         job.setLastUpdate(dateToZonedDateTime(reader.readDate("lastUpdate")));
         job.setExecutionCounter(reader.readInt("executionCounter"));
+        job.setEndpoint(reader.readString("endpoint"));
         return job;
     }
 
@@ -67,6 +68,7 @@ public class JobMarshaller extends AbstractMarshaller implements MessageMarshall
         writer.writeString("status", job.getStatus());
         writer.writeDate("lastUpdate", zonedDateTimeToDate(job.getLastUpdate()));
         writer.writeInt("executionCounter", job.getExecutionCounter());
+        writer.writeString("endpoint", job.getEndpoint());
     }
 
     @Override
