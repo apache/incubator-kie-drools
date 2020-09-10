@@ -15,6 +15,8 @@
  */
 package org.kie.pmml.models.mining.compiler.executor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.dmg.pmml.DataDictionary;
@@ -22,6 +24,7 @@ import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.MiningModel;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.models.mining.compiler.factories.KiePMMLMiningModelFactory;
@@ -65,10 +68,12 @@ public class MiningModelImplementationProvider implements ModelImplementationPro
             throw new KiePMMLException(String.format("Expecting KnowledgeBuilder, received %s",
                                                      kBuilder.getClass().getName()));
         }
+        final List<KiePMMLModel> nestedModels = new ArrayList<>();
         final Map<String, String> sourcesMap =
                 KiePMMLMiningModelFactory.getKiePMMLMiningModelSourcesMap(dataDictionary, transformationDictionary,
                                                                           model, packageName,
-                                                                          (KnowledgeBuilder) kBuilder);
-        return new KiePMMLMiningModelWithSources(model.getModelName(), packageName, sourcesMap);
+                                                                          (KnowledgeBuilder) kBuilder,
+                                                                          nestedModels);
+        return new KiePMMLMiningModelWithSources(model.getModelName(), packageName, sourcesMap, nestedModels);
     }
 }

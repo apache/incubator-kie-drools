@@ -98,13 +98,15 @@ public class KiePMMLSegmentFactory {
                                                             final DataDictionary dataDictionary,
                                                             final TransformationDictionary transformationDictionary,
                                                             final List<Segment> segments,
-                                                            final KnowledgeBuilder kBuilder) {
+                                                            final KnowledgeBuilder kBuilder,
+                                                            final List<KiePMMLModel> nestedModels) {
         logger.debug(GET_SEGMENTS, segments);
         final Map<String, String> toReturn = new HashMap<>();
         segments.forEach(segment -> toReturn.putAll(getSegmentSourcesMap(parentPackageName,
                                                                          dataDictionary,
                                                                          transformationDictionary, segment,
-                                                                         kBuilder)));
+                                                                         kBuilder,
+                                                                         nestedModels)));
 
         return toReturn;
     }
@@ -114,41 +116,38 @@ public class KiePMMLSegmentFactory {
             final DataDictionary dataDictionary,
             final TransformationDictionary transformationDictionary,
             final Segment segment,
-            final KnowledgeBuilder kBuilder) {
+            final KnowledgeBuilder kBuilder,
+            final List<KiePMMLModel> nestedModels) {
         logger.debug(GET_SEGMENT, segment);
         final String packageName = getSanitizedPackageName(parentPackageName + "." + segment.getId());
-        final KiePMMLModel kiePmmlModel = getFromCommonDataAndTransformationDictionaryAndModelFromPlugin(
+        final KiePMMLModel nestedModel = getFromCommonDataAndTransformationDictionaryAndModelFromPlugin(
                 packageName,
                 dataDictionary,
                 transformationDictionary,
                 segment.getModel(),
                 kBuilder)
                 .orElseThrow(() -> new KiePMMLException("Failed to get the KiePMMLModel for segment " + segment.getModel().getModelName()));
-        return getSegmentSourcesMap(packageName, dataDictionary, segment, kiePmmlModel);
+        if (!(nestedModel instanceof HasSourcesMap)) {
+            throw new KiePMMLException("Retrieved KiePMMLModel for segment " + segment.getModel().getModelName() + " " +
+                                               "does not implement HasSources");
+        }
+        nestedModels.add(nestedModel);
+        return getSegmentSourcesMap(packageName, dataDictionary, segment);
     }
 
     public static Map<String, String> getSegmentSourcesMap(
             final String packageName,
             final DataDictionary dataDictionary,
-            final Segment segment,
-            final KiePMMLModel kiePmmlModel) {
+            final Segment segment) {
         logger.debug(GET_SEGMENT, segment);
-        if (!(kiePmmlModel instanceof HasSourcesMap)) {
-            throw new KiePMMLException("Retrieved KiePMMLModel for segment " + segment.getModel().getModelName() + " " +
-                                               "does not implement HasSources");
-        }
-        final Map<String, String> toReturn = new HashMap<>(((HasSourcesMap) kiePmmlModel).getSourcesMap());
         String kiePMMLModelClass = packageName + "." + getSanitizedClassName(segment.getModel().getModelName());
-        if (!toReturn.containsKey(kiePMMLModelClass)) {
-            throw new KiePMMLException("Expected generated class " + kiePMMLModelClass + " not found");
-        }
         final String className = getSanitizedClassName(segment.getId());
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName, KIE_PMML_SEGMENT_TEMPLATE_JAVA, KIE_PMML_SEGMENT_TEMPLATE);
         ClassOrInterfaceDeclaration segmentTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         final ConstructorDeclaration constructorDeclaration = segmentTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, segmentTemplate.getName())));
         KiePMMLPredicate predicate = getPredicate(segment.getPredicate(), dataDictionary);
-        toReturn.putAll(getPredicateSourcesMap(predicate, packageName));
+        final Map<String, String> toReturn = new HashMap<>(getPredicateSourcesMap(predicate, packageName));
         String predicateClassName = packageName + "." +  getSanitizedClassName(predicate.getId());
         setConstructor(segment.getId(), className, constructorDeclaration, predicateClassName,  kiePMMLModelClass, segment.getWeight().doubleValue());
         toReturn.put(getFullClassName(cloneCU), cloneCU.toString());

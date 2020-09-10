@@ -38,15 +38,15 @@ import static org.kie.pmml.models.mining.compiler.executor.MiningModelImplementa
 
 public abstract class AbstractKiePMMLFactoryTest {
 
-    protected static final String SOURCE_REGRESSION = "MiningModel_Regression.pmml";
+    protected static final String SOURCE_MIXED = "MiningModel_Mixed.pmml";
     protected static final KnowledgeBuilderImpl KNOWLEDGE_BUILDER = new KnowledgeBuilderImpl();
     protected static DataDictionary DATA_DICTIONARY;
     protected static TransformationDictionary TRANSFORMATION_DICTIONARY;
     protected static MiningModel MINING_MODEL;
 
     protected static void innerSetup() throws JAXBException, SAXException, IOException {
-        FileInputStream fis = FileUtils.getFileInputStream(SOURCE_REGRESSION);
-        PMML pmml = KiePMMLUtil.load(fis, SOURCE_REGRESSION);
+        FileInputStream fis = FileUtils.getFileInputStream(SOURCE_MIXED);
+        PMML pmml = KiePMMLUtil.load(fis, SOURCE_MIXED);
         assertNotNull(pmml);
         DATA_DICTIONARY = pmml.getDataDictionary();
         assertNotNull(DATA_DICTIONARY);
