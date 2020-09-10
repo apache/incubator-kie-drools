@@ -16,6 +16,7 @@
 package org.kie.pmml.models.mining.compiler.executor;
 
 import java.io.FileInputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,7 @@ import org.dmg.pmml.mining.Segment;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.junit.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
@@ -32,6 +34,7 @@ import org.kie.pmml.models.mining.model.KiePMMLMiningModelWithSources;
 import org.kie.test.util.filesystem.FileUtils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -131,9 +134,18 @@ public class MiningModelImplementationProviderTest {
                                                                           (MiningModel) pmml.getModels().get(0),
                                                                           knowledgeBuilder);
         assertNotNull(retrieved);
+        assertNotNull(retrieved.getNestedModels());
+        assertFalse(retrieved.getNestedModels().isEmpty());
         assertTrue(retrieved instanceof KiePMMLMiningModelWithSources);
-        final Map<String, String> sourcesMap = ((KiePMMLMiningModelWithSources)retrieved).getSourcesMap();
-        assertNotNull(sourcesMap);
+        final Map<String, String> sourcesMap = new HashMap<>(((KiePMMLMiningModelWithSources)retrieved).getSourcesMap());
+        assertFalse(sourcesMap.isEmpty());
+        try {
+            KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
+            fail("Expecting compilation error without nested models sources");
+        } catch (Exception e) {
+            // Expected
+        }
+        retrieved.getNestedModels().forEach(nestedModel -> sourcesMap.putAll(((HasSourcesMap)nestedModel).getSourcesMap()));
         try {
             KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
         } catch (Exception e) {
