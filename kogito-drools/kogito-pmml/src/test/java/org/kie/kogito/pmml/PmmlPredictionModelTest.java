@@ -94,6 +94,11 @@ class PmmlPredictionModelTest {
             public PMML4Result evaluate(String s, PMMLContext pmmlContext) {
                 return PMML_4_RESULT;
             }
+            
+            @Override 
+            public KieBase getKnowledgeBase() { 
+                return null; 
+            } 
         };
     }
 
