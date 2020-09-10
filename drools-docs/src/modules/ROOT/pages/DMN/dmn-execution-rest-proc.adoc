@@ -160,7 +160,7 @@ Sample XML output:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<response type="SUCCESS" msg="Ok models successfully retrieved from container 'Traffic-Violation_1.0.0'">
+<response type="SUCCESS" msg="Ok models successfully retrieved from container 'traffic-violation_1.0.0-SNAPSHOT'">
     <dmn-model-info-list>
         <model>
             <model-namespace>https://github.com/kiegroup/drools/kie-dmn/_60b01f4d-e407-43f7-848e-258723b5fac8</model-namespace>
@@ -363,7 +363,7 @@ Sample JSON output:
 ----
 {
   "type" : "SUCCESS",
-  "msg" : "OK models successfully retrieved from container 'Traffic-Violation_1.0.0'",
+  "msg" : "OK models successfully retrieved from container 'Traffic-Violation_1.0.0-SNAPSHOT'",
   "result" : {
     "dmn-model-info-list" : {
       "models" : [ {
@@ -751,7 +751,7 @@ Example JSON response:
 ----
 {
   "type": "SUCCESS",
-  "msg": "OK from container 'Traffic-Violation_1.0.0'",
+  "msg": "OK from container 'Traffic-Violation_1.0.0-SNAPSHOT'",
   "result": {
       "dmn-evaluation-result": {
           "messages": [],
