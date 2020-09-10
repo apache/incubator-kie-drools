@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.DroolsQuery;
@@ -37,10 +36,6 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.marshalling.impl.PersisterHelper;
-import org.drools.core.marshalling.impl.ProtobufInputMarshaller.QueryElementContext;
-import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
-import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.phreak.StackEntry;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -151,24 +146,15 @@ public class QueryElementNode extends LeftTupleSource
     public InternalFactHandle createFactHandle(final PropagationContext context,
                                                final InternalWorkingMemory workingMemory,
                                                final LeftTuple leftTuple ) {
-        ProtobufMessages.FactHandle handle = null;
+        InternalFactHandle handle = null;
         if( context.getReaderContext() != null ) {
-            Map<TupleKey, QueryElementContext> map = (Map<TupleKey, QueryElementContext>) context.getReaderContext().getNodeMemories().get( getId() );
-            if( map != null ) {
-                handle = map.get( PersisterHelper.createTupleKey( leftTuple ) ).handle;
-            }
+            handle = context.getReaderContext().createQueryHandle( leftTuple, workingMemory, getId() );
         }
-        return handle != null ?
-                workingMemory.getFactHandleFactory().newFactHandle( handle.getId(),
-                                                                    null,
-                                                                    handle.getRecency(),
-                                                                    null,
-                                                                    workingMemory,
-                                                                    workingMemory ) :
-                workingMemory.getFactHandleFactory().newFactHandle( null,
-                                                                    null,
-                                                                    workingMemory,
-                                                                    workingMemory );
+
+        if (handle == null) {
+            handle = workingMemory.getFactHandleFactory().newFactHandle( null, null, workingMemory, workingMemory );
+        }
+        return handle;
     }
     
     public DroolsQuery createDroolsQuery(LeftTuple leftTuple,
@@ -406,24 +392,18 @@ public class QueryElementNode extends LeftTupleSource
         protected QueryElementFactHandle createQueryResultHandle(PropagationContext context,
                                                                InternalWorkingMemory workingMemory,
                                                                Object[] objects) {
-            ProtobufMessages.FactHandle handle = null;
-            if( context.getReaderContext() != null ) {
-                Map<TupleKey, QueryElementContext> map = (Map<TupleKey, QueryElementContext>) context.getReaderContext().getNodeMemories().get( node.getId() );
-                if( map != null ) {
-                    QueryElementContext queryElementContext = map.get( PersisterHelper.createTupleKey( leftTuple ) );
-                    if( queryElementContext != null ) {
-                        handle = queryElementContext.results.removeFirst();
-                    }
-                }
+            QueryElementFactHandle handle = null;
+            if (context.getReaderContext() != null ) {
+                handle = context.getReaderContext().createQueryResultHandle( leftTuple, workingMemory, objects, node.getId() );
             }
 
-            return handle != null ?
-                   new QueryElementFactHandle( objects,
-                                               handle.getId(),
-                                               handle.getRecency() ) :
-                   new QueryElementFactHandle( objects,
-                                               workingMemory.getFactHandleFactory().getNextId(),
-                                               workingMemory.getFactHandleFactory().getNextRecency() );
+            if (handle == null) {
+                handle = new QueryElementFactHandle( objects,
+                        workingMemory.getFactHandleFactory().getNextId(),
+                        workingMemory.getFactHandleFactory().getNextRecency() );
+            }
+
+            return handle;
         }
 
         @Override

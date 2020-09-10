@@ -259,7 +259,7 @@ public class KieBuilderImpl
     }
 
     void updateKieModuleMetaInfo() {
-        new KieMetaInfoBuilder( kModule ).writeKieModuleMetaInfo( trgMfs );
+        CompilationCacheProvider.get().writeKieModuleMetaInfo( kModule, trgMfs );
     }
 
     public static String getCompilationCachePath( AFReleaseId releaseId,
@@ -281,7 +281,7 @@ public class KieBuilderImpl
         if ( messages.filterMessages( Level.ERROR ).isEmpty() ) {
             InternalKieModule kModule = kProject.getInternalKieModule();
             if ( trgMfs != null ) {
-                new KieMetaInfoBuilder( kModule ).writeKieModuleMetaInfo( trgMfs );
+                CompilationCacheProvider.get().writeKieModuleMetaInfo( kModule, trgMfs );
                 kProject.writeProjectOutput(trgMfs, messages);
             }
             KieRepository kieRepository = KieServices.Factory.get().getRepository();

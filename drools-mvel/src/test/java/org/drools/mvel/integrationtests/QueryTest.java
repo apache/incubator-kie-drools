@@ -38,7 +38,6 @@ import org.drools.mvel.compiler.Interval;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.Worker;
 import org.drools.core.QueryResultsImpl;
-import org.drools.core.QueryResultsRowImpl;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
@@ -46,7 +45,6 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
-import org.drools.core.runtime.rule.impl.FlatQueryResultRow;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.spi.ObjectType;
 import org.junit.Before;
@@ -57,7 +55,6 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
-import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.QueryListenerOption;
@@ -159,61 +156,6 @@ public class QueryTest extends CommonTestMethodBase {
         jaxbClassList.add(Person.class);
         Class<?>[] jaxbClasses = jaxbClassList.toArray(new Class[jaxbClassList.size()]);
         return JAXBContext.newInstance(jaxbClasses);
-    }
-
-    @Test
-    public void testQuery() throws Exception {
-        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("simple_query_test.drl"));
-        KieSession session = createKieSession( kbase );
-
-        final Cheese stilton = new Cheese( "stinky",
-                                           5 );
-        FactHandle factHandle = session.insert( stilton );
-        session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
-
-        String queryName = "simple query";
-        org.kie.api.runtime.rule.QueryResults results = getQueryResults(session, queryName);
-        assertEquals( 1,
-                      results.size() );
-
-        QueryResultsRow row = results.iterator().next();
-        if( row instanceof FlatQueryResultRow ) {
-            FlatQueryResultRow flatRow = (FlatQueryResultRow) row;
-            assertEquals( 0, flatRow.getIdentifiers().size() );
-        } else if( row instanceof QueryResultsRowImpl ) {
-            QueryResultsRowImpl rowImpl = (QueryResultsRowImpl) row;
-            assertEquals( 0, rowImpl.getDeclarations().size() );
-        }
-    }
-
-    @Test
-    public void testQueryRemoval() throws Exception {
-        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("simple_query_test.drl"));
-        KieSession session = createKieSession( kbase );
-
-        final Cheese stilton = new Cheese( "stinky",
-                                           5 );
-        session.insert( stilton );
-        session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
-        org.kie.api.runtime.rule.QueryResults results = session.getQueryResults( "simple query" );
-        assertEquals( 1,
-                      results.size() );
-
-        Rule rule = kbase.getKiePackage( "org.drools.mvel.compiler.test" ).getRules().iterator().next();
-
-        assertEquals( "simple query",
-                      rule.getName());
-
-        kbase.removeQuery( "org.drools.mvel.compiler.test",
-                           "simple query" );
-
-        assertTrue( kbase.getKiePackage( "org.drools.mvel.compiler.test" ).getRules().isEmpty() );
-
-        try {
-            results = session.getQueryResults( "simple query" );
-        } catch ( Exception e ) {
-            assertTrue( e.getMessage().endsWith( "does not exist") );
-        }
     }
 
     @Test

@@ -22,23 +22,18 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Id;
 import javax.persistence.Persistence;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
-
 import org.drools.core.common.DroolsObjectInputStream;
-import org.drools.core.marshalling.impl.ProcessMarshallerWriteContext;
 import org.drools.persistence.api.TransactionAware;
 import org.drools.persistence.api.TransactionManager;
+import org.drools.serialization.protobuf.ProtobufProcessMarshallerWriteContext;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
@@ -235,13 +230,13 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
     }
 
     protected void addMapping(Object entityId, String entityType, Object entity, ObjectOutputStream context, EntityManager em) {
-        if (entityId instanceof Number && entity instanceof VariableEntity && context instanceof ProcessMarshallerWriteContext) {
+        if (entityId instanceof Number && entity instanceof VariableEntity && context instanceof ProtobufProcessMarshallerWriteContext ) {
 
-            ProcessMarshallerWriteContext processContext = (ProcessMarshallerWriteContext) context;
+            ProtobufProcessMarshallerWriteContext processContext = (ProtobufProcessMarshallerWriteContext) context;
             VariableEntity variableEntity = (VariableEntity) entity;
 
             MappedVariable mappedVariable = new MappedVariable(((Number)entityId).longValue(), entityType, processContext.getProcessInstanceId(), processContext.getTaskId(), processContext.getWorkItemId());
-            if (processContext.getState() == ProcessMarshallerWriteContext.STATE_ACTIVE) {
+            if (processContext.getState() == ProtobufProcessMarshallerWriteContext.STATE_ACTIVE) {
                 variableEntity.addMappedVariables(mappedVariable);
             } else {
                 MappedVariable toBeRemoved = variableEntity.findMappedVariables(mappedVariable);

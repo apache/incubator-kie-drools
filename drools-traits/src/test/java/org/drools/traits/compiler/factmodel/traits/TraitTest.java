@@ -32,30 +32,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.core.factmodel.traits.Trait;
-import org.drools.traits.compiler.CommonTraitTest;
-import org.drools.traits.compiler.Person;
-import org.drools.traits.compiler.ReviseTraitTestWithPRAlwaysCategory;
-import org.drools.traits.compiler.SerializationHelper;
 import org.drools.core.ObjectFilter;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
-import org.drools.traits.core.factmodel.Entity;
-import org.drools.traits.core.factmodel.LogicalTypeInconsistencyException;
-import org.drools.traits.core.factmodel.MapWrapper;
 import org.drools.core.factmodel.traits.Thing;
-import org.drools.traits.core.factmodel.TraitFactoryImpl;
-import org.drools.traits.core.factmodel.TraitProxyImpl;
-import org.drools.traits.core.factmodel.TraitRegistryImpl;
-import org.drools.traits.core.factmodel.TraitTypeMapImpl;
+import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.traits.core.factmodel.TripleBasedBean;
-import org.drools.traits.core.factmodel.TripleBasedStruct;
-import org.drools.traits.core.factmodel.VirtualPropertyMode;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -66,8 +52,22 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.rule.EntryPointId;
-import org.drools.traits.core.util.CodedHierarchyImpl;
 import org.drools.core.util.HierarchyEncoder;
+import org.drools.serialization.protobuf.SerializationHelper;
+import org.drools.traits.compiler.CommonTraitTest;
+import org.drools.traits.compiler.Person;
+import org.drools.traits.compiler.ReviseTraitTestWithPRAlwaysCategory;
+import org.drools.traits.core.factmodel.Entity;
+import org.drools.traits.core.factmodel.LogicalTypeInconsistencyException;
+import org.drools.traits.core.factmodel.MapWrapper;
+import org.drools.traits.core.factmodel.TraitFactoryImpl;
+import org.drools.traits.core.factmodel.TraitProxyImpl;
+import org.drools.traits.core.factmodel.TraitRegistryImpl;
+import org.drools.traits.core.factmodel.TraitTypeMapImpl;
+import org.drools.traits.core.factmodel.TripleBasedBean;
+import org.drools.traits.core.factmodel.TripleBasedStruct;
+import org.drools.traits.core.factmodel.VirtualPropertyMode;
+import org.drools.traits.core.util.CodedHierarchyImpl;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -99,6 +99,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 
+import static org.drools.serialization.protobuf.SerializationHelper.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -5951,7 +5952,7 @@ public class TraitTest extends CommonTraitTest {
         KieBase kbase = getKieBaseFromString( drl );
 
         try {
-            kbase = SerializationHelper.serializeObject(kbase, ((InternalKnowledgeBase) kbase).getRootClassLoader() );
+            kbase = serializeObject(kbase, ((InternalKnowledgeBase) kbase).getRootClassLoader() );
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
