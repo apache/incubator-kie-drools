@@ -65,6 +65,7 @@ public class KiePMMLSegmentationFactoryTest extends AbstractKiePMMLFactoryTest {
                                                                                                    KNOWLEDGE_BUILDER,
                                                                                                    nestedModels);
         assertNotNull(retrieved);
-        assertFalse(nestedModels.isEmpty());
+        int expectedNestedModels = MINING_MODEL.getSegmentation().getSegments().size();
+        assertEquals(expectedNestedModels, nestedModels.size());
     }
 }
