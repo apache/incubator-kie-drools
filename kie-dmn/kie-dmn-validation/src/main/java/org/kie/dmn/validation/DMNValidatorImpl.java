@@ -131,7 +131,7 @@ public class DMNValidatorImpl implements DMNValidator {
     private InternalKnowledgeBase kb11;
     private InternalKnowledgeBase kb12;
 
-    public DMNValidatorImpl(List<DMNProfile> dmnProfiles) {
+    public DMNValidatorImpl(ClassLoader cl, List<DMNProfile> dmnProfiles) {
         kb11 = KieBaseBuilder.createKieBaseFromModel(Arrays.asList(org.kie.dmn.validation.bootstrap.ValidationBootstrapModels.V1X_MODEL,
                                                                    org.kie.dmn.validation.bootstrap.ValidationBootstrapModels.V11_MODEL));
         kb12 = KieBaseBuilder.createKieBaseFromModel(Arrays.asList(org.kie.dmn.validation.bootstrap.ValidationBootstrapModels.V1X_MODEL,
@@ -139,7 +139,7 @@ public class DMNValidatorImpl implements DMNValidator {
         ChainedProperties localChainedProperties = new ChainedProperties();
         this.dmnProfiles.addAll(DMNAssemblerService.getDefaultDMNProfiles(localChainedProperties));
         this.dmnProfiles.addAll(dmnProfiles);
-        final ClassLoader classLoader = ClassLoaderUtil.findDefaultClassLoader();
+        final ClassLoader classLoader = cl == null ? ClassLoaderUtil.findDefaultClassLoader() : cl;
         this.dmnCompilerConfig = DMNAssemblerService.compilerConfigWithKModulePrefs(classLoader, localChainedProperties, this.dmnProfiles, (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration());
         dmnDTValidator = new DMNDTAnalyser(this.dmnProfiles);
     }

@@ -80,7 +80,7 @@ public class ValidatorClassloaderTest extends AbstractValidatorTest {
         final ClassLoader kieProjectCL = container.getClassLoader();
 
         List<DMNProfile> defaultDMNProfiles = DMNAssemblerService.getDefaultDMNProfiles(ChainedProperties.getChainedProperties(kieProjectCL));
-        final DMNValidator validatorWithCustomCL = DMNValidatorFactory.newValidator(defaultDMNProfiles);
+        final DMNValidator validatorWithCustomCL = DMNValidatorFactory.newValidator(kieProjectCL, defaultDMNProfiles);
         List<DMNMessage> validate = validatorWithCustomCL.validateUsing(VALIDATE_SCHEMA,
                                                                         VALIDATE_MODEL,
                                                                         VALIDATE_COMPILATION)
