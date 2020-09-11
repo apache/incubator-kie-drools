@@ -24,11 +24,15 @@ import org.kie.dmn.core.compiler.DMNProfile;
 public final class DMNValidatorFactory {
 
     public static DMNValidator newValidator() {
-        return new DMNValidatorImpl(Collections.emptyList());
+        return new DMNValidatorImpl(null, Collections.emptyList());
     }
 
     public static DMNValidator newValidator(List<DMNProfile> dmnProfiles) {
-        return new DMNValidatorImpl(dmnProfiles);
+        return new DMNValidatorImpl(null, dmnProfiles);
+    }
+
+    public static DMNValidator newValidator(ClassLoader cl, List<DMNProfile> dmnProfiles) {
+        return new DMNValidatorImpl(cl, dmnProfiles);
     }
 
     private DMNValidatorFactory() {
