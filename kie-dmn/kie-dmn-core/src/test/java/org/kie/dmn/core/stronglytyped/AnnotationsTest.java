@@ -16,7 +16,7 @@
 
 package org.kie.dmn.core.stronglytyped;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -61,8 +61,8 @@ public class AnnotationsTest extends BaseVariantTest {
 
         if (strongly) {
             Class<?> inputSetClass = getStronglyClassByName(dmnModel, "InputSet");
-            Method getDirection = inputSetClass.getMethod("getDirection");
-            org.eclipse.microprofile.openapi.annotations.media.Schema ann = getDirection.getDeclaredAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
+            Field directionAsField = inputSetClass.getDeclaredField("direction");
+            org.eclipse.microprofile.openapi.annotations.media.Schema ann = directionAsField.getDeclaredAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
             Assertions.assertThat(ann).isNotNull();
             Assertions.assertThat(ann.enumeration()).isNotNull().contains("North", "South", "East", "West");
         }
