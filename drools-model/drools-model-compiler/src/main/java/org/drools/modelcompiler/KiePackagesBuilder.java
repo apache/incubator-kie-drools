@@ -527,8 +527,8 @@ public class KiePackagesBuilder {
 
         pattern.setSource(buildAccumulate( ctx, accumulatePattern, source, pattern, new ArrayList<>(usedVariableName), sourcePattern != null ? sourcePattern.getBindings() : Collections.emptyList()) );
 
-        for (Variable v : accumulatePattern.getBoundVariables()) {
-            if (source instanceof Pattern) {
+        if (source instanceof Pattern) {
+            for (Variable v : accumulatePattern.getBoundVariables()) {
                 ctx.registerPattern(v, (Pattern) source);
             }
         }
@@ -715,6 +715,7 @@ public class KiePackagesBuilder {
                                                             pattern,
                                                             true);
             pattern.addDeclaration(declaration);
+            ctx.addInnerDeclaration( boundVar, declaration );
 
             Declaration[] requiredDeclarations = getRequiredDeclarationsForAccumulate( ctx, binding, accFunction );
             if (requiredDeclarations.length == 0 && source instanceof Pattern && bindingEvaluator != null && bindingEvaluator.getDeclarations() != null) {
@@ -741,11 +742,12 @@ public class KiePackagesBuilder {
                 final Accumulator accumulator = createAccumulator(usedVariableName, bindingEvaluator, accFunctions[i]);
 
                 Variable boundVar = accPattern.getBoundVariables()[i];
-                pattern.addDeclaration( new Declaration( boundVar.getName(),
-                                        new ArrayElementReader( reader, i, boundVar.getType() ),
-                                        pattern,
-                                        true ) );
-
+                Declaration declaration = new Declaration( boundVar.getName(),
+                                                           new ArrayElementReader( reader, i, boundVar.getType() ),
+                                                           pattern,
+                                                           true );
+                pattern.addDeclaration( declaration );
+                ctx.addInnerDeclaration( boundVar, declaration );
                 accumulators[i] = accumulator;
             }
 

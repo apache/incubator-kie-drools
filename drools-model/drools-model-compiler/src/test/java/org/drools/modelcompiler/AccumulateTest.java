@@ -70,7 +70,7 @@ public class AccumulateTest extends BaseModelTest {
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Result.class.getCanonicalName() + ";" +
                         "rule X when\n" +
-                        "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
+                        "  accumulate ( $p: Person ( getName().startsWith(\"M\") ); \n" +
                         "                $sum : sum($p.getAge())  \n" +
                         "              )                          \n" +
                         "then\n" +
@@ -88,6 +88,64 @@ public class AccumulateTest extends BaseModelTest {
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(1, results.size());
         assertEquals(77, results.iterator().next().getValue());
+    }
+
+   @Test
+    public void testFromOnAccumulatedValue() {
+        // DROOLS-5635
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  accumulate ( $p: Person ( getName().startsWith(\"M\") ); \n" +
+                        "                $sum : sum($p.getAge())  \n" +
+                        "              )                          \n" +
+                        "  $s: String() from $sum.toString()\n" +
+                        "then\n" +
+                        "  insert(new Result($s));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert("test");
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals("77", results.iterator().next().getValue());
+    }
+
+   @Test
+    public void testFromOnAccumulatedValueUsingExists() {
+        // DROOLS-5635
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Result.class.getCanonicalName() + ";" +
+                        "rule X when\n" +
+                        "  accumulate ( $p: Person ( getName().startsWith(\"M\") ) and exists(String()); \n" +
+                        "                $sum : sum($p.getAge())  \n" +
+                        "              )                          \n" +
+                        "  $s: String() from $sum.toString()\n" +
+                        "then\n" +
+                        "  insert(new Result($s));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert("test");
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals("77", results.iterator().next().getValue());
     }
 
     @Test

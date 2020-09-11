@@ -53,6 +53,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.ParseResultVoidVisit
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 import org.drools.modelcompiler.builder.generator.visitor.FromVisitor;
 
+import static org.drools.model.impl.VariableImpl.GENERATED_VARIABLE_PREFIX;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getPatternListenedProperties;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.validateDuplicateBindings;
@@ -60,8 +61,6 @@ import static org.drools.modelcompiler.util.StreamUtils.optionalToStream;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public abstract class PatternDSL implements DSLNode {
-
-    public static final String GENERATED_PATTERN_PREFIX = "GENERATED_";
 
     protected final RuleContext context;
     protected final PackageModel packageModel;
@@ -110,7 +109,7 @@ public abstract class PatternDSL implements DSLNode {
             final String patternNameAggregated = findFirstInnerBinding(constraintDescrs, patternType)
                     .map(ib -> context.getAggregatePatternMap().putIfAbsent(new AggregateKey(ib, patternType), generatedName))
                     .orElse(generatedName);
-            pattern.setIdentifier(GENERATED_PATTERN_PREFIX + patternNameAggregated);
+            pattern.setIdentifier( GENERATED_VARIABLE_PREFIX + patternNameAggregated);
         }
     }
 
