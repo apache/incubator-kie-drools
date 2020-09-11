@@ -30,6 +30,7 @@ import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDef
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.SimpleAnnotationDefinition;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.runtime.UnaryTestImpl;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -94,16 +95,6 @@ public class DMNDeclaredField implements FieldDefinition {
             annotations.add(new SimpleAnnotationDefinition("com.fasterxml.jackson.annotation.JsonProperty")
                                     .addValue("value", "\"" + originalMapKey + "\""));
         }
-        if (codeGenConfig.isWithMPOpenApiAnnotation()) {
-            if (fieldDMNType.getAllowedValues() != null && !fieldDMNType.getAllowedValues().isEmpty() && getObjectType().equals("java.lang.String")) {
-                String enumeration = fieldDMNType.getAllowedValues().stream()
-                                                 .map(UnaryTestImpl.class::cast)
-                                                 .map(UnaryTestImpl::toString)
-                                                 .collect(Collectors.joining(","));
-                annotations.add(new SimpleAnnotationDefinition("org.eclipse.microprofile.openapi.annotations.media.Schema")
-                                .addValue("enumeration", "{" + enumeration + "}"));
-            }
-        }
         return annotations;
     }
 
@@ -113,6 +104,41 @@ public class DMNDeclaredField implements FieldDefinition {
         if (codeGenConfig.isWithJacksonAnnotation()) {
             Optional<Class<?>> as = index.getJacksonDeserializeAs(fieldDMNType);
             as.ifPresent(asClass -> annotations.add(new SimpleAnnotationDefinition("com.fasterxml.jackson.databind.annotation.JsonDeserialize").addValue("as", asClass.getCanonicalName() + ".class")));
+        }
+        if (codeGenConfig.isWithMPOpenApiAnnotation()) {
+            if (getObjectType().equals("java.lang.String") && fieldDMNType.getAllowedValues() != null && !fieldDMNType.getAllowedValues().isEmpty()) {
+                String enumeration = fieldDMNType.getAllowedValues().stream()
+                                                 .map(UnaryTestImpl.class::cast)
+                                                 .map(UnaryTestImpl::toString)
+                                                 .collect(Collectors.joining(","));
+                annotations.add(new SimpleAnnotationDefinition("org.eclipse.microprofile.openapi.annotations.media.Schema").addValue("name", "\"" + originalMapKey + "\"")
+                                                                                                                           .addValue("enumeration", "{" + enumeration + "}")
+                );
+            } else {
+                boolean isTemporal = DMNTypeUtils.isFEELBuiltInType(fieldDMNType) &&
+                                     DMNAllTypesIndex.TEMPORALS.contains(DMNTypeUtils.getFEELBuiltInType(fieldDMNType));
+                boolean isTemporalCollection = fieldDMNType.isCollection() &&
+                                               DMNTypeUtils.isFEELBuiltInType(DMNTypeUtils.genericOfCollection(fieldDMNType)) &&
+                                               DMNAllTypesIndex.TEMPORALS.contains(DMNTypeUtils.getFEELBuiltInType(DMNTypeUtils.genericOfCollection(fieldDMNType)));
+                if (isTemporal || isTemporalCollection) {
+                    DMNType temporal = isTemporalCollection ? DMNTypeUtils.genericOfCollection(fieldDMNType) : fieldDMNType;
+                    Optional<Class<?>> as = index.getJacksonDeserializeAs(temporal);
+                    if (!as.isPresent()) {
+                        throw new IllegalStateException();
+                    }
+                    Class<?> clazz = as.get();
+                    AnnotationDefinition annDef = new SimpleAnnotationDefinition("org.eclipse.microprofile.openapi.annotations.media.Schema").addValue("name", "\"" + originalMapKey + "\"")
+                                                                                                                                             .addValue("implementation", clazz.getCanonicalName() + ".class");
+                    if (isTemporalCollection) {
+                        annDef.addValue("type", "org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY");
+                    }
+                    String temporalName = temporal.getName(); // intentionally use DMNType name
+                    if (SimpleType.YEARS_AND_MONTHS_DURATION.equals(temporalName) || "yearMonthDuration".equals(temporalName)) {
+                        annDef.addValue("example", "\"P1Y2M\"");
+                    }
+                    annotations.add(annDef);
+                }
+            }
         }
         return annotations;
     }

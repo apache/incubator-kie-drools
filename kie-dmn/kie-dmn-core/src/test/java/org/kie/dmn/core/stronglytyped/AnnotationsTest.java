@@ -17,6 +17,11 @@
 package org.kie.dmn.core.stronglytyped;
 
 import java.lang.reflect.Field;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Period;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -65,6 +70,36 @@ public class AnnotationsTest extends BaseVariantTest {
             org.eclipse.microprofile.openapi.annotations.media.Schema ann = directionAsField.getDeclaredAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
             Assertions.assertThat(ann).isNotNull();
             Assertions.assertThat(ann.enumeration()).isNotNull().contains("North", "South", "East", "West");
+        }
+    }
+
+    @Test
+    public void testOneOfEachType() throws Exception {
+        final DMNRuntime runtime = createRuntime("OneOfEachType.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_4f5608e9-4d74-4c22-a47e-ab657257fc9c", "OneOfEachType");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        // this is already tested for execution/evaluation semantic in its proper test unit, here we check Annotations presence.
+
+        if (strongly) {
+            Class<?> inputSetClass = getStronglyClassByName(dmnModel, "InputSet");
+            checkAnnOneOfEachType(inputSetClass, "inputDate", "InputDate", LocalDate.class);
+            checkAnnOneOfEachType(inputSetClass, "inputTime", "InputTime", LocalTime.class);
+            checkAnnOneOfEachType(inputSetClass, "inputDateAndTime", "InputDateAndTime", LocalDateTime.class);
+            checkAnnOneOfEachType(inputSetClass, "inputYMDuration", "InputYMDuration", Period.class);
+            checkAnnOneOfEachType(inputSetClass, "inputDTDuration", "InputDTDuration", Duration.class);
+        }
+    }
+
+    private void checkAnnOneOfEachType(Class<?> inputSetClass, String fieldName, String name, Class<?> implementation) throws Exception {
+        Field directionAsField = inputSetClass.getDeclaredField(fieldName);
+        org.eclipse.microprofile.openapi.annotations.media.Schema ann = directionAsField.getDeclaredAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
+        Assertions.assertThat(ann).isNotNull();
+        Assertions.assertThat(ann.name()).isEqualTo(name);
+        Assertions.assertThat(ann.implementation()).isEqualTo(implementation);
+        if (implementation == Period.class) {
+            Assertions.assertThat(ann.example()).isEqualTo("P1Y2M");
         }
     }
 }
