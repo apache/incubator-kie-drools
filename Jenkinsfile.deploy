@@ -23,6 +23,8 @@ pipeline {
         string(name: 'BUILD_BRANCH_NAME', defaultValue: 'master', description: 'Which branch to build? Set if you are not on a multibranch pipeline.')
         string(name: 'GIT_AUTHOR', defaultValue: 'kiegroup', description: 'Which Git author repository ?')
 
+        booleanParam(name: 'SKIP_TESTS', defaultValue: false, description: 'Skip tests')
+
         // Deploy information
         string(name: 'MAVEN_DEPLOY_REPOSITORY', defaultValue: '', description: 'Specify a Maven repository to deploy the artifacts.')
     }
@@ -58,7 +60,7 @@ pipeline {
         }
         stage('Build optaplanner') {
             steps {
-                mavenCleanInstall('optaplanner')
+                mavenCleanInstall('optaplanner', params.SKIP_TESTS)
             }
             post {
                 always {
@@ -109,8 +111,8 @@ void setDeployPropertyIfNeeded(String key, def value){
     }
 }
 
-void mavenCleanInstall(String directory, List profiles = [], String extraArgs = '') {
-    runMaven('clean install', directory, false, profiles, extraArgs)
+void mavenCleanInstall(String directory, boolean skipTests = false, List profiles = [], String extraArgs = '') {
+    runMaven('clean install', directory, skipTests, profiles, extraArgs)
 }
 
 void mavenDeploy(String directory) {
