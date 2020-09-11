@@ -57,15 +57,7 @@ public interface DMNTypeSafeTypeTemplate {
             Object propertyValues = values.get("$property$");
             if(propertyValues != null) {
                 $property$ = new java.util.ArrayList<>();
-                for (Object v : (java.util.Collection<Object>) propertyValues) {
-                    if (v instanceof PropertyType) {
-                        $property$.add((PropertyType)v);
-                    } else {
-                        PropertyType item = new PropertyType();
-                        item.fromMap((java.util.Map<String, Object>)v);
-                        $property$.add(item);
-                    }
-                }
+                processCompositeCollection($property$, (java.util.Collection)propertyValues, PropertyType.class);
             }
         }
 
@@ -81,4 +73,23 @@ public interface DMNTypeSafeTypeTemplate {
         }
     }
 
+    void processCompositeCollection(java.util.Collection destCol, java.util.Collection srcCol, Class<?> baseClass) {
+        for (Object v : (java.util.Collection<Object>) srcCol) {
+            if (v instanceof java.util.Collection) {
+                java.util.Collection innerDestcol = new java.util.ArrayList();
+                processCompositeCollection(innerDestcol, (java.util.Collection) v, baseClass);
+                destCol.add(innerDestcol);
+            } else if (baseClass.isAssignableFrom(v.getClass())) {
+                destCol.add(v);
+            } else {
+                try {
+                    org.kie.dmn.api.core.FEELPropertyAccessible item = (org.kie.dmn.api.core.FEELPropertyAccessible) baseClass.newInstance();
+                    item.fromMap((java.util.Map<String, Object>) v);
+                    destCol.add(item);
+                } catch (InstantiationException | IllegalAccessException e) {
+                    throw new org.kie.dmn.typesafe.DMNTypeSafeException(e);
+                }
+            }
+        }
+    }
 }

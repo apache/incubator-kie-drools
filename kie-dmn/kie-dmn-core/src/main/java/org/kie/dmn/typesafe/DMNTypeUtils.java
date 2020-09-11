@@ -67,6 +67,18 @@ public class DMNTypeUtils {
         return dmnType.getBaseType() != null ? dmnType.getBaseType() : dmnType; // handling of anonymous inner composite collection
     }
 
+    public static DMNType getRootBaseTypeOfCollection(DMNType dmnType) {
+        if (dmnType.isCollection()) {
+            if (dmnType.getBaseType() != null) {
+                return getRootBaseTypeOfCollection(dmnType.getBaseType());
+            } else {
+                return dmnType;
+            }
+        } else {
+            return dmnType.getBaseType() != null ? dmnType.getBaseType() : dmnType;
+        }
+    }
+
     public static DMNType getBelongingType(DMNType dmnType) {
         return ((BaseDMNTypeImpl) dmnType).getBelongingType();
     }
