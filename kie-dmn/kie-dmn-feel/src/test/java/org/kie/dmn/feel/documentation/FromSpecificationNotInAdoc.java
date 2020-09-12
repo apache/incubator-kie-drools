@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.runtime;
+package org.kie.dmn.feel.documentation;
 
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
+import org.kie.dmn.feel.runtime.BaseFEELTest;
 
 /**
  * Some examples (/tests) from the DMN spec were omitted in the ADOC due to policy about specific keywords
