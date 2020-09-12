@@ -20,9 +20,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -34,11 +34,12 @@ import org.drools.model.DSL;
 import org.drools.model.Global;
 import org.drools.model.Index;
 import org.drools.model.Model;
+import org.drools.model.PatternDSL;
 import org.drools.model.Query;
 import org.drools.model.Query2Def;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
-import org.drools.model.functions.accumulate.GroupKey;
+import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.drools.modelcompiler.domain.Adult;
@@ -51,7 +52,6 @@ import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
 import org.drools.modelcompiler.dsl.pattern.D;
-import org.drools.modelcompiler.util.EvaluationUtil;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -913,4 +913,38 @@ public class PatternDSLTest {
 
         assertEquals( 0, ksession.fireAllRules() );
     }
+
+    @Test
+    public void testNpeWhenJoining() {
+        Set<String> results = new HashSet<>();
+
+        Variable<String> aVar = declarationOf(String.class);
+        Variable<String> bVar = declarationOf(String.class);
+        Variable<String> bMappedVar = declarationOf(String.class);
+        Variable<String> cVar = declarationOf(String.class);
+
+        PatternDSL.PatternDef<String> aPattern = pattern(aVar);
+        PatternDSL.PatternDef<String> bPattern = pattern(bVar)
+                .bind(bMappedVar, aVar, (b, a) -> a + b);
+        PatternDSL.PatternDef<String> cPattern = pattern(cVar)
+                .expr("This triggers NPE.", bMappedVar, String::equals);
+        ConsequenceBuilder._1 consequence = on(cVar)
+                .execute(results::add);
+
+        Rule rule = rule("R").build(aPattern, bPattern, cPattern, consequence);
+        Model model = new ModelImpl().addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+        KieSession session = kieBase.newKieSession();
+
+        session.insert("A");
+        session.insert("B");
+        session.insert("C");
+        session.insert("AB");
+        session.insert("CX");
+
+        session.fireAllRules();
+        Assertions.assertThat(results)
+                .containsOnly("AB");
+    }
+
 }
