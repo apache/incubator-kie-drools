@@ -1,0 +1,53 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_8A1F9719-02AA-4517-97D4-5C4F5D22FE82" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_799643B8-00C5-4A76-A38E-8153AD34E85D" name="nextDays" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_8A1F9719-02AA-4517-97D4-5C4F5D22FE82">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_2B4E64A6-41FC-4FFB-A392-9427A6234AD7" name="ListOfDates" isCollection="true">
+    <dmn:typeRef>date</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:inputData id="_1BB18E2C-CFA4-4011-B468-93FCA377D701" name="few dates">
+    <dmn:extensionElements/>
+    <dmn:variable id="_01E18F0F-5542-40A0-9095-8849235F1B7B" name="few dates" typeRef="ListOfDates"/>
+  </dmn:inputData>
+  <dmn:decision id="_757ED63C-603E-40DC-BC7A-D3677A33378F" name="Decision-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_3369EC62-BDC9-416C-8538-52B6BFEB44F3" name="Decision-1" typeRef="ListOfDates"/>
+    <dmn:informationRequirement id="_813E9DF4-C512-4ACA-B981-9B22F1619D06">
+      <dmn:requiredInput href="#_1BB18E2C-CFA4-4011-B468-93FCA377D701"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_0695C515-CB27-4444-8E79-87199542E411">
+      <dmn:text>for d in few dates return d+duration("P1D")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_0695C515-CB27-4444-8E79-87199542E411">
+            <kie:width>503</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-_1BB18E2C-CFA4-4011-B468-93FCA377D701" dmnElementRef="_1BB18E2C-CFA4-4011-B468-93FCA377D701" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="194" y="179" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_757ED63C-603E-40DC-BC7A-D3677A33378F" dmnElementRef="_757ED63C-603E-40DC-BC7A-D3677A33378F" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="374" y="179" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-_813E9DF4-C512-4ACA-B981-9B22F1619D06" dmnElementRef="_813E9DF4-C512-4ACA-B981-9B22F1619D06">
+        <di:waypoint x="294" y="204"/>
+        <di:waypoint x="374" y="204"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>
