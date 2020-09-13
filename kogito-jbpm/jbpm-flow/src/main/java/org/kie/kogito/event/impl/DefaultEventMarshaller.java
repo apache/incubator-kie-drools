@@ -28,8 +28,9 @@ public class DefaultEventMarshaller implements EventMarshaller {
     private static final Logger logger = LoggerFactory.getLogger(DefaultEventMarshaller.class);
 
     @Override
-    public <T, P extends AbstractProcessDataEvent<T>> String marshall(T dataEvent, Function<T, P> cloudFunction,
-            Optional<Boolean> isCloudEvent) {
+    public <T, P extends AbstractProcessDataEvent<T>> String marshall(T dataEvent,
+                                                                      Function<T, P> cloudFunction,
+                                                                      Optional<Boolean> isCloudEvent) {
         Object event = isCloudEvent.orElse(true) ? cloudFunction.apply(dataEvent) : dataEvent;
         logger.debug("Marshalling event {}", event);
         try {

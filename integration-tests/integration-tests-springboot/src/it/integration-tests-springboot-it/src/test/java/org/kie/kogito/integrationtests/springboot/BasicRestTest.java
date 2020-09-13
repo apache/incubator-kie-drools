@@ -21,18 +21,21 @@ import java.util.Map;
 import java.util.UUID;
 
 import io.restassured.http.ContentType;
-import org.drools.core.process.instance.WorkItem;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
+@ContextConfiguration(initializers = InfinispanSpringBootTestResource.Conditional.class)
 class BasicRestTest extends BaseRestTest {
 
     @Test
@@ -198,16 +201,12 @@ class BasicRestTest extends BaseRestTest {
             .extract()
                 .path("id");
 
-        WorkItem[] tasks = given()
-                .contentType(ContentType.JSON)
+        given()
             .when()
                 .get("/AdHocFragments/{id}/tasks", id)
             .then()
                 .statusCode(200)
-            .extract()
-                .body()
-                .as(TestWorkItem[].class);
-        assertEquals(1, tasks.length);
-        assertEquals("Task", tasks[0].getName());
+                .body("$.size", is(1))
+                .body("[0].name", is("Task"));
     }
 }

@@ -26,7 +26,6 @@ import org.acme.examples.model.MovieGenre;
 import org.acme.examples.model.Rating;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kie.kogito.integrationtests.quarkus.TestWorkItem;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -68,23 +67,23 @@ class EnumsTest extends BaseRestTest {
                 .path("id");
 
         WorkItem task = given()
-                .when()
+            .when()
                 .get("/cinema/{pid}/tasks", pid)
-                .then()
+            .then()
                 .statusCode(200)
                 .body("$.size", is(1))
-                .extract()
+            .extract()
                 .as(TestWorkItem[].class)[0];
 
         assertEquals("ReviewRatingTask", task.getName());
 
         given()
-            .contentType(ContentType.JSON)
+                .contentType(ContentType.JSON)
             .when()
-            .body(Collections.singletonMap("reviewedRating", Rating.PG_13))
-            .post("/cinema/{pid}/ReviewRatingTask/{taskId}", pid, task.getId())
+                .body(Collections.singletonMap("reviewedRating", Rating.PG_13))
+                .post("/cinema/{pid}/ReviewRatingTask/{taskId}", pid, task.getId())
             .then()
-            .statusCode(200)
-            .body("movie.rating", equalTo(Rating.PG_13.name()));
-    
+                .statusCode(200)
+                .body("movie.rating", equalTo(Rating.PG_13.name()));
+    }
 }

@@ -1,4 +1,4 @@
-package org.kie.kogito.integrationtests.quarkus;
+package org.kie.kogito.integrationtests.springboot;
 
 import java.util.Map;
 

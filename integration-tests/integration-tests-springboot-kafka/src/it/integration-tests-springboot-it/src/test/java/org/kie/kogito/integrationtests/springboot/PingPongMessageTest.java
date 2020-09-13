@@ -16,68 +16,58 @@
 
 package org.kie.kogito.integrationtests.springboot;
 
+import java.time.Duration;
+
+import org.junit.jupiter.api.extension.ExtendWith;
+import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.testcontainers.springboot.KafkaSpringBootTestResource;
 import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.ContextConfiguration;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.emptyOrNullString;
-import static org.hamcrest.Matchers.nullValue;
+import static org.awaitility.Awaitility.await;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
-@ContextConfiguration(initializers = InfinispanSpringBootTestResource.Conditional.class)
-class SignalProcessTest extends BaseRestTest {
+@ContextConfiguration(initializers =  { KafkaSpringBootTestResource.class, InfinispanSpringBootTestResource.Conditional.class })
+public class PingPongMessageTest extends BaseRestTest {
 
     @Test
-    void testProcessSignals() {
-        String pid = given()
+    void testPingPongBetweenProcessInstances() {
+        String pId = given().body("{ \"message\": \"hello\" }")
                 .contentType(ContentType.JSON)
-            .when()
-                .post("/greetings")
-            .then()
+                .when()
+                .post("/ping_message")
+                .then()
                 .statusCode(201)
-                .body("id", not(emptyOrNullString()))
-                .body("test", nullValue())
-            .extract()
-                .path("id");
+                .extract().body().path("id");
+
+        await().atMost(Duration.ofSeconds(5))
+                .untilAsserted(() -> given()
+                        .contentType(ContentType.JSON)
+                        .when()
+                        .get("/ping_message/{pId}", pId)
+                        .then()
+                        .statusCode(200)
+                        .body("message", equalTo("hello world")));
 
         given()
                 .contentType(ContentType.JSON)
-            .when()
-                .body("testvalue")
-                .post("/greetings/{pid}/signalwithdata", pid)
-            .then()
-                .statusCode(200)
-                .body("id", not(emptyOrNullString()))
-                .body("test", is("testvalue"));
-
-        given()
-                .contentType(ContentType.JSON)
-            .when()
-                .get("/greetings/{pid}", pid)
-            .then()
-                .statusCode(200)
-                .body("test", is("testvalue"));
-
-        given()
-                .contentType(ContentType.JSON)
-            .when()
-                .post("/greetings/{pid}/signalwithoutdata", pid)
-            .then()
+                .when()
+                .post("/ping_message/{pId}/end", pId)
+                .then()
                 .statusCode(200);
 
         given()
                 .contentType(ContentType.JSON)
-            .when()
-                .get("/greetings/{pid}", pid)
-            .then()
+                .when()
+                .get("/ping_message/{pId}", pId)
+                .then()
                 .statusCode(404);
     }
 }

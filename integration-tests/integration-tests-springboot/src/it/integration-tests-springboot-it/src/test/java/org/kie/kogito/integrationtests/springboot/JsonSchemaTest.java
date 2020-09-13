@@ -37,7 +37,6 @@ public class JsonSchemaTest extends BaseRestTest {
 
     @Test
     void testJsonSchema() {
-        RestAssured.port = randomServerPort;
         given()
                 .contentType(ContentType.JSON)
             .when()

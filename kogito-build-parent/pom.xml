@@ -936,6 +936,7 @@
           <configuration>
             <skipInstallation>${skipTests}</skipInstallation>
             <skipInvocation>${skipTests}</skipInvocation>
+            <failIfNoProjects>true</failIfNoProjects>
           </configuration>
         </plugin>
         <plugin>
