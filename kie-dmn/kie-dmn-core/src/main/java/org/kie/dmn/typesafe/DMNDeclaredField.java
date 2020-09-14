@@ -122,11 +122,7 @@ public class DMNDeclaredField implements FieldDefinition {
                                            DMNAllTypesIndex.TEMPORALS.contains(DMNTypeUtils.getFEELBuiltInType(DMNTypeUtils.genericOfCollection(fieldDMNType)));
             if (isTemporal || isTemporalCollection) {
                 DMNType temporal = isTemporalCollection ? DMNTypeUtils.genericOfCollection(fieldDMNType) : fieldDMNType;
-                Optional<Class<?>> as = index.getJacksonDeserializeAs(temporal);
-                if (!as.isPresent()) {
-                    throw new IllegalStateException();
-                }
-                Class<?> clazz = as.get();
+                Class<?> clazz = index.getJacksonDeserializeAs(temporal).orElseThrow(IllegalStateException::new);
                 String temporalName = temporal.getName(); // intentionally use DMNType name
                 if (codeGenConfig.isWithMPOpenApiAnnotation()) {
                     AnnotationDefinition annDef = createOASAnnotationForTemporal("org.eclipse.microprofile.openapi.annotations.media.Schema", clazz, temporalName);
