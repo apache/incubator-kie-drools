@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -112,7 +111,7 @@ public interface InternalKnowledgeBuilder extends KnowledgeBuilder, DroolsAssemb
 
         @Override
         public Collection<KiePackage> getKnowledgePackages() {
-            return Arrays.stream(getKnowledgeBuilder().getPackages()).collect(Collectors.toList());
+            return Arrays.asList(getKnowledgeBuilder().getPackages());
         }
 
         @Override
