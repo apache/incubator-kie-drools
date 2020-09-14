@@ -20,10 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.kogito.explainability.Config;
@@ -43,7 +41,6 @@ import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.kogito.explainability.explainability.integrationtests.pmml.AbstractPMMLTest.getPMMLRuntime;
 
 class PmmlLimeExplainerTest {
@@ -103,11 +100,10 @@ class PmmlLimeExplainerTest {
     }
 
     @Test
-    @Disabled("https://issues.redhat.com/browse/KOGITO-3193")
     void testPMMLRegressionCategorical() throws Exception {
         List<Feature> features = new LinkedList<>();
-        features.add(FeatureFactory.newTextFeature("mapX", "red"));
-        features.add(FeatureFactory.newTextFeature("mapY", "classB"));
+        features.add(FeatureFactory.newCategoricalFeature("mapX", "red"));
+        features.add(FeatureFactory.newCategoricalFeature("mapY", "classB"));
         PredictionInput input = new PredictionInput(features);
 
         LimeExplainer limeExplainer = new LimeExplainer(10, 1);
@@ -132,17 +128,16 @@ class PmmlLimeExplainerTest {
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
         for (Saliency saliency : saliencyMap.values()) {
             assertNotNull(saliency);
-            List<String> strings = saliency.getPositiveFeatures(1).stream().map(f -> f.getFeature().getName()).collect(Collectors.toList());
-            assertTrue(strings.contains("red"));
+            double v = ExplainabilityMetrics.impactScore(model, prediction, saliency.getTopFeatures(1));
+            assertEquals(1d, v);
         }
     }
 
     @Test
-    @Disabled("https://issues.redhat.com/browse/KOGITO-3193")
     void testPMMLScorecardCategorical() throws Exception {
         List<Feature> features = new LinkedList<>();
-        features.add(FeatureFactory.newTextFeature("input1", "classA"));
-        features.add(FeatureFactory.newTextFeature("input2", "classB"));
+        features.add(FeatureFactory.newCategoricalFeature("input1", "classA"));
+        features.add(FeatureFactory.newCategoricalFeature("input2", "classB"));
         PredictionInput input = new PredictionInput(features);
 
         LimeExplainer limeExplainer = new LimeExplainer(10, 1);
@@ -174,8 +169,8 @@ class PmmlLimeExplainerTest {
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
         for (Saliency saliency : saliencyMap.values()) {
             assertNotNull(saliency);
-            List<String> strings = saliency.getPositiveFeatures(1).stream().map(f -> f.getFeature().getName()).collect(Collectors.toList());
-            assertTrue(strings.contains("classA"));
+            double v = ExplainabilityMetrics.impactScore(model, prediction, saliency.getTopFeatures(1));
+            assertEquals(0.33d, v, 1e-2);
         }
     }
 
