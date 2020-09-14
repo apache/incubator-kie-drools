@@ -490,22 +490,22 @@ A `BestSolutionChangedEvent` does not guarantee that every `ProblemFactChange` h
 . Use `Score.isSolutionInitialized()` instead of `Score.isFeasible()` to only ignore uninitialized solutions, but do accept infeasible solutions too.
 
 [[multiStagePlanning]]
-== Multi-stage Planning
+== Multi-stage planning
 
 In multi-stage planning, complex planning problems are broken down in multiple stages.
-A typical example is train scheduling, where one department decides where and when a train will arrive or depart,
-and another department assigns the operators to the actual train cars/locomotives.
+A typical example is train scheduling, where one department decides where and when a train will arrive or depart
+and another department assigns the operators to the actual train cars or locomotives.
 
 Each stage has its own solver configuration (and therefore its own ``SolverFactory``):
 
 image::RepeatedPlanning/multiStagePlanning.png[align="center"]
 
 Planning problems with different publication deadlines must use multi-stage planning.
-But also problems with the same publication deadline, solved by different organizational groups
-are - at first - better off with multi-stage planning, due to Conway's law
+But problems with the same publication deadline, solved by different organizational groups
+are also initially better off with multi-stage planning, because of Conway's law
 and the high risk associated with unifying such groups.
 
 Similarly to <<partitionedSearch,Partitioned Search>>, multi-stage planning leads to suboptimal results.
-Nevertheless, it may be beneficial in order to simplify the maintenance, ownership, and help to start a project.
+Nevertheless, it might be beneficial in order to simplify the maintenance, ownership, and help to start a project.
 
 Do not confuse multi-stage planning with <<solverPhase,multi-phase solving>>.
