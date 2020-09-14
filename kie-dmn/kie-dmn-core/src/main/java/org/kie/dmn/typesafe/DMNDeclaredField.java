@@ -106,59 +106,68 @@ public class DMNDeclaredField implements FieldDefinition {
             as.ifPresent(asClass -> annotations.add(new SimpleAnnotationDefinition("com.fasterxml.jackson.databind.annotation.JsonDeserialize").addValue("as", asClass.getCanonicalName() + ".class")));
         }
         if (codeGenConfig.isWithMPOpenApiAnnotation() || codeGenConfig.isWithIOSwaggerOASv3Annotation()) {
-            if (getObjectType().equals("java.lang.String") && fieldDMNType.getAllowedValues() != null && !fieldDMNType.getAllowedValues().isEmpty()) {
-                String enumeration = fieldDMNType.getAllowedValues().stream()
-                                                 .map(UnaryTestImpl.class::cast)
-                                                 .map(UnaryTestImpl::toString)
-                                                 .collect(Collectors.joining(","));
+            annotateFieldWithOAS(annotations);
+        }
+        return annotations;
+    }
+
+    private void annotateFieldWithOAS(List<AnnotationDefinition> annotations) {
+        if (getObjectType().equals("java.lang.String") && fieldDMNType.getAllowedValues() != null && !fieldDMNType.getAllowedValues().isEmpty()) {
+            annotateFieldWithOASEnumValues(annotations);
+        } else {
+            boolean isTemporal = DMNTypeUtils.isFEELBuiltInType(fieldDMNType) &&
+                                 DMNAllTypesIndex.TEMPORALS.contains(DMNTypeUtils.getFEELBuiltInType(fieldDMNType));
+            boolean isTemporalCollection = fieldDMNType.isCollection() &&
+                                           DMNTypeUtils.isFEELBuiltInType(DMNTypeUtils.genericOfCollection(fieldDMNType)) &&
+                                           DMNAllTypesIndex.TEMPORALS.contains(DMNTypeUtils.getFEELBuiltInType(DMNTypeUtils.genericOfCollection(fieldDMNType)));
+            if (isTemporal || isTemporalCollection) {
+                DMNType temporal = isTemporalCollection ? DMNTypeUtils.genericOfCollection(fieldDMNType) : fieldDMNType;
+                Optional<Class<?>> as = index.getJacksonDeserializeAs(temporal);
+                if (!as.isPresent()) {
+                    throw new IllegalStateException();
+                }
+                Class<?> clazz = as.get();
+                String temporalName = temporal.getName(); // intentionally use DMNType name
                 if (codeGenConfig.isWithMPOpenApiAnnotation()) {
-                    annotations.add(new SimpleAnnotationDefinition("org.eclipse.microprofile.openapi.annotations.media.Schema").addValue("name", "\"" + originalMapKey + "\"")
-                                                                                                                               .addValue("enumeration", "{" + enumeration + "}"));
+                    AnnotationDefinition annDef = createOASAnnotationForTemporal("org.eclipse.microprofile.openapi.annotations.media.Schema", clazz, temporalName);
+                    if (isTemporalCollection) {
+                        annDef.addValue("type", "org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY");
+                    }
+                    annotations.add(annDef);
                 }
                 if (codeGenConfig.isWithIOSwaggerOASv3Annotation()) {
-                    annotations.add(new SimpleAnnotationDefinition("io.swagger.v3.oas.annotations.media.Schema").addValue("name", "\"" + originalMapKey + "\"")
-                                                                                                                .addValue("allowableValues", "{" + enumeration + "}"));
-                }
-            } else {
-                boolean isTemporal = DMNTypeUtils.isFEELBuiltInType(fieldDMNType) &&
-                                     DMNAllTypesIndex.TEMPORALS.contains(DMNTypeUtils.getFEELBuiltInType(fieldDMNType));
-                boolean isTemporalCollection = fieldDMNType.isCollection() &&
-                                               DMNTypeUtils.isFEELBuiltInType(DMNTypeUtils.genericOfCollection(fieldDMNType)) &&
-                                               DMNAllTypesIndex.TEMPORALS.contains(DMNTypeUtils.getFEELBuiltInType(DMNTypeUtils.genericOfCollection(fieldDMNType)));
-                if (isTemporal || isTemporalCollection) {
-                    DMNType temporal = isTemporalCollection ? DMNTypeUtils.genericOfCollection(fieldDMNType) : fieldDMNType;
-                    Optional<Class<?>> as = index.getJacksonDeserializeAs(temporal);
-                    if (!as.isPresent()) {
-                        throw new IllegalStateException();
+                    AnnotationDefinition annDef = createOASAnnotationForTemporal("io.swagger.v3.oas.annotations.media.Schema", clazz, temporalName);
+                    if (isTemporalCollection) {
+                        annDef.addValue("type", "\"array\"");
                     }
-                    Class<?> clazz = as.get();
-                    String temporalName = temporal.getName(); // intentionally use DMNType name
-                    if (codeGenConfig.isWithMPOpenApiAnnotation()) {
-                        AnnotationDefinition annDef = new SimpleAnnotationDefinition("org.eclipse.microprofile.openapi.annotations.media.Schema").addValue("name", "\"" + originalMapKey + "\"")
-                                                                                                                                                 .addValue("implementation", clazz.getCanonicalName() + ".class");
-                        if (isTemporalCollection) {
-                            annDef.addValue("type", "org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY");
-                        }
-                        if (SimpleType.YEARS_AND_MONTHS_DURATION.equals(temporalName) || "yearMonthDuration".equals(temporalName)) {
-                            annDef.addValue("example", "\"P1Y2M\"");
-                        }
-                        annotations.add(annDef);
-                    }
-                    if (codeGenConfig.isWithIOSwaggerOASv3Annotation()) {
-                        AnnotationDefinition annDef = new SimpleAnnotationDefinition("io.swagger.v3.oas.annotations.media.Schema").addValue("name", "\"" + originalMapKey + "\"")
-                                                                                                                                  .addValue("implementation", clazz.getCanonicalName() + ".class");
-                        if (isTemporalCollection) {
-                            annDef.addValue("type", "\"array\"");
-                        }
-                        if (SimpleType.YEARS_AND_MONTHS_DURATION.equals(temporalName) || "yearMonthDuration".equals(temporalName)) {
-                            annDef.addValue("example", "\"P1Y2M\"");
-                        }
-                        annotations.add(annDef);
-                    }
+                    annotations.add(annDef);
                 }
             }
         }
-        return annotations;
+    }
+
+    private AnnotationDefinition createOASAnnotationForTemporal(String annFQCN, Class<?> clazz, String temporalName) {
+        AnnotationDefinition annDef = new SimpleAnnotationDefinition(annFQCN).addValue("name", "\"" + originalMapKey + "\"")
+                                                                             .addValue("implementation", clazz.getCanonicalName() + ".class");
+        if (SimpleType.YEARS_AND_MONTHS_DURATION.equals(temporalName) || "yearMonthDuration".equals(temporalName)) {
+            annDef.addValue("example", "\"P1Y2M\"");
+        }
+        return annDef;
+    }
+
+    private void annotateFieldWithOASEnumValues(List<AnnotationDefinition> annotations) {
+        String enumeration = fieldDMNType.getAllowedValues().stream()
+                                         .map(UnaryTestImpl.class::cast)
+                                         .map(UnaryTestImpl::toString)
+                                         .collect(Collectors.joining(","));
+        if (codeGenConfig.isWithMPOpenApiAnnotation()) {
+            annotations.add(new SimpleAnnotationDefinition("org.eclipse.microprofile.openapi.annotations.media.Schema").addValue("name", "\"" + originalMapKey + "\"")
+                                                                                                                       .addValue("enumeration", "{" + enumeration + "}"));
+        }
+        if (codeGenConfig.isWithIOSwaggerOASv3Annotation()) {
+            annotations.add(new SimpleAnnotationDefinition("io.swagger.v3.oas.annotations.media.Schema").addValue("name", "\"" + originalMapKey + "\"")
+                                                                                                        .addValue("allowableValues", "{" + enumeration + "}"));
+        }
     }
 
     @Override
