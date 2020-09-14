@@ -1,12 +1,14 @@
 package org.optaplanner.examples.flightcrewscheduling.optional.score;
 
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.overlapping;
+
 import java.time.LocalDate;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.examples.flightcrewscheduling.domain.Employee;
 import org.optaplanner.examples.flightcrewscheduling.domain.FlightAssignment;
 import org.optaplanner.examples.flightcrewscheduling.domain.Skill;
@@ -35,8 +37,9 @@ public class FlightCrewSchedulingConstraintProvider implements ConstraintProvide
     }
 
     private Constraint flightConflict(ConstraintFactory constraintFactory) {
-        return constraintFactory.fromUniquePair(FlightAssignment.class, Joiners.equal(FlightAssignment::getEmployee))
-                .filter((first, second) -> second.getFlight().overlaps(first.getFlight()))
+        return constraintFactory.fromUniquePair(FlightAssignment.class, equal(FlightAssignment::getEmployee),
+                overlapping(fa -> fa.getFlight().getDepartureUTCDateTime(),
+                        fa -> fa.getFlight().getArrivalUTCDateTime()))
                 .penalize("Flight conflict", HardSoftLongScore.ofHard(10));
     }
 

@@ -20,6 +20,7 @@ import static org.optaplanner.core.api.score.stream.Joiners.equal;
 import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 import static org.optaplanner.core.api.score.stream.Joiners.greaterThan;
 import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
+import static org.optaplanner.core.api.score.stream.Joiners.overlapping;
 
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
@@ -61,7 +62,9 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                 .join(MeetingAssignment.class,
                         equal(MeetingAssignment::getRoom),
                         lessThan(MeetingAssignment::getId),
-                        filtering((leftAssignment, rightAssignment) -> rightAssignment.calculateOverlap(leftAssignment) > 0))
+                        overlapping(assignment -> assignment.getStartingTimeGrain().getGrainIndex(),
+                                assignment -> assignment.getStartingTimeGrain().getGrainIndex() +
+                                        assignment.getMeeting().getDurationInGrains()))
                 .penalizeConfigurable("Room conflict",
                         (leftAssignment, rightAssignment) -> rightAssignment.calculateOverlap(leftAssignment));
     }
@@ -86,8 +89,12 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                         equal((leftRequiredAttendance, rightRequiredAttendance, leftAssignment) -> rightRequiredAttendance
                                 .getMeeting(),
                                 MeetingAssignment::getMeeting),
-                        filtering((leftRequiredAttendance, rightRequiredAttendance, leftAssignment,
-                                rightAssignment) -> rightAssignment.calculateOverlap(leftAssignment) > 0))
+                        overlapping((attendee1, attendee2, assignment) -> assignment.getStartingTimeGrain().getGrainIndex(),
+                                (attendee1, attendee2, assignment) -> assignment.getStartingTimeGrain().getGrainIndex() +
+                                        assignment.getMeeting().getDurationInGrains(),
+                                assignment -> assignment.getStartingTimeGrain().getGrainIndex(),
+                                assignment -> assignment.getStartingTimeGrain().getGrainIndex() +
+                                        assignment.getMeeting().getDurationInGrains()))
                 .penalizeConfigurable("Required attendance conflict",
                         (leftRequiredAttendance, rightRequiredAttendance, leftAssignment, rightAssignment) -> rightAssignment
                                 .calculateOverlap(leftAssignment));
@@ -126,8 +133,12 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                 .join(MeetingAssignment.class,
                         equal((requiredAttendance, preferredAttendance, leftAssignment) -> preferredAttendance.getMeeting(),
                                 MeetingAssignment::getMeeting),
-                        filtering((requiredAttendance, preferredAttendance, leftAssignment,
-                                rightAssignment) -> rightAssignment.calculateOverlap(leftAssignment) > 0))
+                        overlapping((attendee1, attendee2, assignment) -> assignment.getStartingTimeGrain().getGrainIndex(),
+                                (attendee1, attendee2, assignment) -> assignment.getStartingTimeGrain().getGrainIndex() +
+                                        assignment.getMeeting().getDurationInGrains(),
+                                assignment -> assignment.getStartingTimeGrain().getGrainIndex(),
+                                assignment -> assignment.getStartingTimeGrain().getGrainIndex() +
+                                        assignment.getMeeting().getDurationInGrains()))
                 .penalizeConfigurable("Required and preferred attendance conflict");
     }
 
@@ -142,8 +153,12 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                 .join(MeetingAssignment.class,
                         equal((leftAttendance, rightAttendance, leftAssignment) -> rightAttendance.getMeeting(),
                                 MeetingAssignment::getMeeting),
-                        filtering((leftAttendance, rightAttendance, leftAssignment,
-                                rightAssignment) -> rightAssignment.calculateOverlap(leftAssignment) > 0))
+                        overlapping((attendee1, attendee2, assignment) -> assignment.getStartingTimeGrain().getGrainIndex(),
+                                (attendee1, attendee2, assignment) -> assignment.getStartingTimeGrain().getGrainIndex() +
+                                        assignment.getMeeting().getDurationInGrains(),
+                                assignment -> assignment.getStartingTimeGrain().getGrainIndex(),
+                                assignment -> assignment.getStartingTimeGrain().getGrainIndex() +
+                                        assignment.getMeeting().getDurationInGrains()))
                 .penalizeConfigurable("Preferred attendance conflict");
     }
 
@@ -174,10 +189,12 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                 .join(MeetingAssignment.class,
                         greaterThan((leftAssignment) -> leftAssignment.getMeeting().getId(),
                                 (rightAssignment) -> rightAssignment.getMeeting().getId()),
+                        overlapping(assignment -> assignment.getStartingTimeGrain().getGrainIndex(),
+                                assignment -> assignment.getStartingTimeGrain().getGrainIndex() +
+                                        assignment.getMeeting().getDurationInGrains()),
                         filtering((leftAssignment, rightAssignment) -> rightAssignment.getStartingTimeGrain() != null),
                         filtering((leftAssignment,
-                                rightAssignment) -> leftAssignment.getMeeting() != rightAssignment.getMeeting()),
-                        filtering((leftAssignment, rightAssignment) -> leftAssignment.calculateOverlap(rightAssignment) != 0))
+                                rightAssignment) -> leftAssignment.getMeeting() != rightAssignment.getMeeting()))
                 .penalizeConfigurable("Overlapping meetings");
     }
 

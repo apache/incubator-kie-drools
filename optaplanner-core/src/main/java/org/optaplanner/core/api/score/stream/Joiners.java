@@ -31,13 +31,17 @@ import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.SingleBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
+import org.optaplanner.core.impl.score.stream.penta.AbstractPentaJoiner;
 import org.optaplanner.core.impl.score.stream.penta.FilteringPentaJoiner;
 import org.optaplanner.core.impl.score.stream.penta.SinglePentaJoiner;
+import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.SingleQuadJoiner;
+import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.SingleTriJoiner;
 
@@ -147,10 +151,48 @@ public final class Joiners {
      * }
      */
 
-    // TODO
-    // join(..., planningVariableContainsCached(Talk::getPeriod, (Period a, Period b) -> a.overlaps(b)))
-    // get the period value range, does a cartesian product on it, so it maps every period to an overlapping periodList
-    // then keep an index from every period to all talks in an overlapping period (possible the same period)
+    /**
+     * Joins every A and B that overlap for an interval which is specified by a start and end property on both A and B.
+     * These are exactly the pairs where {@code A.start < B.end} and {@code A.end > B.start}.
+     * 
+     * @param startMapping maps the argument to the start point of its interval (inclusive)
+     * @param endMapping maps the argument to the end point of its interval (exclusive)
+     * 
+     * @param <A> the type of both the first and second argument
+     * @param <Property_> the type used to define the interval, comparable
+     * 
+     * @return never null, an indexed joiner that filters the constraint stream to only include elements (A,B) where
+     *         A's and B's intervals (as defined by the function mapping) overlap
+     */
+    public static <A, Property_ extends Comparable<Property_>> BiJoiner<A, A> overlapping(
+            Function<A, Property_> startMapping,
+            Function<A, Property_> endMapping) {
+        return overlapping(startMapping, endMapping, startMapping, endMapping);
+    }
+
+    /**
+     * As defined by {@link #overlapping(Function, Function)}.
+     * 
+     * @param leftStartMapping maps the first argument to its interval start point (inclusive)
+     * @param leftEndMapping maps the first argument to its interval end point (exclusive)
+     * @param rightStartMapping maps the second argument to its interval start point (inclusive)
+     * @param rightEndMapping maps the second argument to its interval end point (exclusive)
+     * 
+     * @param <A> the type of the first argument
+     * @param <B> the type of the second argument
+     * @param <Property_> the type used to define the interval, comparable
+     * 
+     * @return never null, an indexed joiner that filters the constraint stream to only include elements (A,B) where
+     *         A's and B's intervals (as defined by the function mapping) overlap
+     */
+    public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> overlapping(
+            Function<A, Property_> leftStartMapping,
+            Function<A, Property_> leftEndMapping,
+            Function<B, Property_> rightStartMapping,
+            Function<B, Property_> rightEndMapping) {
+        return AbstractBiJoiner.merge(Joiners.lessThan(leftStartMapping, rightEndMapping),
+                Joiners.greaterThan(leftEndMapping, rightStartMapping));
+    }
 
     // ************************************************************************
     // TriJoiner
@@ -183,6 +225,31 @@ public final class Joiners {
 
     public static <A, B, C> TriJoiner<A, B, C> filtering(TriPredicate<A, B, C> filter) {
         return new FilteringTriJoiner<>(filter);
+    }
+
+    /**
+     * As defined by {@link #overlapping(Function, Function)}.
+     * 
+     * @param leftStartMapping maps the first and second arguments to their interval start point (inclusive)
+     * @param leftEndMapping maps the first and second arguments to their interval end point (exclusive)
+     * @param rightStartMapping maps the third argument to its interval start point (inclusive)
+     * @param rightEndMapping maps the third argument to its interval end point (exclusive)
+     * 
+     * @param <A> the type of the first argument
+     * @param <B> the type of the second argument
+     * @param <C> the type of the third argument
+     * @param <Property_> the type used to define the interval, comparable
+     * 
+     * @return never null, an indexed joiner that filters the constraint stream to only include elements (A,B,C) where
+     *         (A,B)'s and C's intervals (as defined by the function mapping) overlap
+     */
+    public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> overlapping(
+            BiFunction<A, B, Property_> leftStartMapping,
+            BiFunction<A, B, Property_> leftEndMapping,
+            Function<C, Property_> rightStartMapping,
+            Function<C, Property_> rightEndMapping) {
+        return AbstractTriJoiner.merge(Joiners.lessThan(leftStartMapping, rightEndMapping),
+                Joiners.greaterThan(leftEndMapping, rightStartMapping));
     }
 
     // ************************************************************************
@@ -218,6 +285,32 @@ public final class Joiners {
         return new FilteringQuadJoiner<>(filter);
     }
 
+    /**
+     * As defined by {@link #overlapping(Function, Function)}.
+     * 
+     * @param leftStartMapping maps the first, second and third arguments to their interval start point (inclusive)
+     * @param leftEndMapping maps the first, second and third arguments to their interval end point (exclusive)
+     * @param rightStartMapping maps the fourth argument to its interval start point (inclusive)
+     * @param rightEndMapping maps the fourth argument to its interval end point (exclusive)
+     * 
+     * @param <A> the type of the first argument
+     * @param <B> the type of the second argument
+     * @param <C> the type of the third argument
+     * @param <D> the type of the fourth argument
+     * @param <Property_> the type used to define the interval, comparable
+     * 
+     * @return never null, an indexed joiner that filters the constraint stream to only include elements (A,B,C,D)
+     *         where (A,B,C)'s and D's intervals (as defined by the function mapping) overlap
+     */
+    public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> overlapping(
+            TriFunction<A, B, C, Property_> leftStartMapping,
+            TriFunction<A, B, C, Property_> leftEndMapping,
+            Function<D, Property_> rightStartMapping,
+            Function<D, Property_> rightEndMapping) {
+        return AbstractQuadJoiner.merge(Joiners.lessThan(leftStartMapping, rightEndMapping),
+                Joiners.greaterThan(leftEndMapping, rightStartMapping));
+    }
+
     // ************************************************************************
     // PentaJoiner
     // ************************************************************************
@@ -249,6 +342,33 @@ public final class Joiners {
 
     public static <A, B, C, D, E> PentaJoiner<A, B, C, D, E> filtering(PentaPredicate<A, B, C, D, E> filter) {
         return new FilteringPentaJoiner<>(filter);
+    }
+
+    /**
+     * As defined by {@link #overlapping(Function, Function)}.
+     * 
+     * @param leftStartMapping maps the first, second, third and fourth arguments to their interval start point (inclusive)
+     * @param leftEndMapping maps the first, second, third and fourth arguments to their interval end point (exclusive)
+     * @param rightStartMapping maps the fifth argument to its interval start point (inclusive)
+     * @param rightEndMapping maps the fifth argument to its interval end point (exclusive)
+     * 
+     * @param <A> the type of the first argument
+     * @param <B> the type of the second argument
+     * @param <C> the type of the third argument
+     * @param <D> the type of the fourth argument
+     * @param <E> the type of the fifth argument
+     * @param <Property_> the type used to define the interval, comparable
+     * 
+     * @return never null, an indexed joiner that filters the constraint stream to only include elements (A,B,C,D,E)
+     *         where (A,B,C,D)'s and E's intervals (as defined by the function mapping) overlap
+     */
+    public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> overlapping(
+            QuadFunction<A, B, C, D, Property_> leftStartMapping,
+            QuadFunction<A, B, C, D, Property_> leftEndMapping,
+            Function<E, Property_> rightStartMapping,
+            Function<E, Property_> rightEndMapping) {
+        return AbstractPentaJoiner.merge(Joiners.lessThan(leftStartMapping, rightEndMapping),
+                Joiners.greaterThan(leftEndMapping, rightStartMapping));
     }
 
     private Joiners() {

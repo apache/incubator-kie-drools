@@ -19,6 +19,7 @@ package org.optaplanner.examples.conferencescheduling.optional.score;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 import static org.optaplanner.core.api.score.stream.Joiners.greaterThan;
 import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
+import static org.optaplanner.core.api.score.stream.Joiners.overlapping;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.AUDIENCE_LEVEL_DIVERSITY;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.LANGUAGE_DIVERSITY;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.POPULAR_TALKS;
@@ -116,9 +117,9 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
     }
 
     private Constraint roomConflict(ConstraintFactory factory) {
-        return factory.fromUniquePair(Talk.class, equal(Talk::getRoom))
-                // TODO Support joiner for time overlap
-                .filter(Talk::overlapsTime)
+        return factory.fromUniquePair(Talk.class, equal(Talk::getRoom),
+                overlapping(t -> t.getTimeslot().getStartDateTime(),
+                        t -> t.getTimeslot().getEndDateTime()))
                 .penalizeConfigurable(ROOM_CONFLICT,
                         Talk::overlappingDurationInMinutes);
     }
