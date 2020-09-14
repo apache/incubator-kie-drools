@@ -201,6 +201,7 @@ public abstract class BaseVariantTest {
             Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, index, factory)
                     .withJacksonAnnotation()
                     .withMPAnnotation()
+                    .withIOSwaggerOASv3()
                     .processTypes()
                     .generateSourceCodeOfAllTypes();
             allSources.putAll(allTypesSourceCode);

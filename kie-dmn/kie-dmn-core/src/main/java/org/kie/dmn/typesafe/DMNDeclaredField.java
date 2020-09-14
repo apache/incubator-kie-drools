@@ -105,15 +105,20 @@ public class DMNDeclaredField implements FieldDefinition {
             Optional<Class<?>> as = index.getJacksonDeserializeAs(fieldDMNType);
             as.ifPresent(asClass -> annotations.add(new SimpleAnnotationDefinition("com.fasterxml.jackson.databind.annotation.JsonDeserialize").addValue("as", asClass.getCanonicalName() + ".class")));
         }
-        if (codeGenConfig.isWithMPOpenApiAnnotation()) {
+        if (codeGenConfig.isWithMPOpenApiAnnotation() || codeGenConfig.isWithIOSwaggerOASv3Annotation()) {
             if (getObjectType().equals("java.lang.String") && fieldDMNType.getAllowedValues() != null && !fieldDMNType.getAllowedValues().isEmpty()) {
                 String enumeration = fieldDMNType.getAllowedValues().stream()
                                                  .map(UnaryTestImpl.class::cast)
                                                  .map(UnaryTestImpl::toString)
                                                  .collect(Collectors.joining(","));
-                annotations.add(new SimpleAnnotationDefinition("org.eclipse.microprofile.openapi.annotations.media.Schema").addValue("name", "\"" + originalMapKey + "\"")
-                                                                                                                           .addValue("enumeration", "{" + enumeration + "}")
-                );
+                if (codeGenConfig.isWithMPOpenApiAnnotation()) {
+                    annotations.add(new SimpleAnnotationDefinition("org.eclipse.microprofile.openapi.annotations.media.Schema").addValue("name", "\"" + originalMapKey + "\"")
+                                                                                                                               .addValue("enumeration", "{" + enumeration + "}"));
+                }
+                if (codeGenConfig.isWithIOSwaggerOASv3Annotation()) {
+                    annotations.add(new SimpleAnnotationDefinition("io.swagger.v3.oas.annotations.media.Schema").addValue("name", "\"" + originalMapKey + "\"")
+                                                                                                                .addValue("allowableValues", "{" + enumeration + "}"));
+                }
             } else {
                 boolean isTemporal = DMNTypeUtils.isFEELBuiltInType(fieldDMNType) &&
                                      DMNAllTypesIndex.TEMPORALS.contains(DMNTypeUtils.getFEELBuiltInType(fieldDMNType));
@@ -127,16 +132,29 @@ public class DMNDeclaredField implements FieldDefinition {
                         throw new IllegalStateException();
                     }
                     Class<?> clazz = as.get();
-                    AnnotationDefinition annDef = new SimpleAnnotationDefinition("org.eclipse.microprofile.openapi.annotations.media.Schema").addValue("name", "\"" + originalMapKey + "\"")
-                                                                                                                                             .addValue("implementation", clazz.getCanonicalName() + ".class");
-                    if (isTemporalCollection) {
-                        annDef.addValue("type", "org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY");
-                    }
                     String temporalName = temporal.getName(); // intentionally use DMNType name
-                    if (SimpleType.YEARS_AND_MONTHS_DURATION.equals(temporalName) || "yearMonthDuration".equals(temporalName)) {
-                        annDef.addValue("example", "\"P1Y2M\"");
+                    if (codeGenConfig.isWithMPOpenApiAnnotation()) {
+                        AnnotationDefinition annDef = new SimpleAnnotationDefinition("org.eclipse.microprofile.openapi.annotations.media.Schema").addValue("name", "\"" + originalMapKey + "\"")
+                                                                                                                                                 .addValue("implementation", clazz.getCanonicalName() + ".class");
+                        if (isTemporalCollection) {
+                            annDef.addValue("type", "org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY");
+                        }
+                        if (SimpleType.YEARS_AND_MONTHS_DURATION.equals(temporalName) || "yearMonthDuration".equals(temporalName)) {
+                            annDef.addValue("example", "\"P1Y2M\"");
+                        }
+                        annotations.add(annDef);
                     }
-                    annotations.add(annDef);
+                    if (codeGenConfig.isWithIOSwaggerOASv3Annotation()) {
+                        AnnotationDefinition annDef = new SimpleAnnotationDefinition("io.swagger.v3.oas.annotations.media.Schema").addValue("name", "\"" + originalMapKey + "\"")
+                                                                                                                                  .addValue("implementation", clazz.getCanonicalName() + ".class");
+                        if (isTemporalCollection) {
+                            annDef.addValue("type", "\"array\"");
+                        }
+                        if (SimpleType.YEARS_AND_MONTHS_DURATION.equals(temporalName) || "yearMonthDuration".equals(temporalName)) {
+                            annDef.addValue("example", "\"P1Y2M\"");
+                        }
+                        annotations.add(annDef);
+                    }
                 }
             }
         }

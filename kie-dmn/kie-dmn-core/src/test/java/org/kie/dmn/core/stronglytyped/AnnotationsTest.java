@@ -95,12 +95,19 @@ public class AnnotationsTest extends BaseVariantTest {
 
     private void checkAnnOneOfEachType(Class<?> inputSetClass, String fieldName, String name, Class<?> implementation) throws Exception {
         Field directionAsField = inputSetClass.getDeclaredField(fieldName);
-        org.eclipse.microprofile.openapi.annotations.media.Schema ann = directionAsField.getDeclaredAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
-        Assertions.assertThat(ann).isNotNull();
-        Assertions.assertThat(ann.name()).isEqualTo(name);
-        Assertions.assertThat(ann.implementation()).isEqualTo(implementation);
+        org.eclipse.microprofile.openapi.annotations.media.Schema annMP = directionAsField.getDeclaredAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
+        Assertions.assertThat(annMP).isNotNull();
+        Assertions.assertThat(annMP.name()).isEqualTo(name);
+        Assertions.assertThat(annMP.implementation()).isEqualTo(implementation);
         if (implementation == Period.class) {
-            Assertions.assertThat(ann.example()).isEqualTo("P1Y2M");
+            Assertions.assertThat(annMP.example()).isEqualTo("P1Y2M");
+        }
+        io.swagger.v3.oas.annotations.media.Schema annIOSwagger = directionAsField.getDeclaredAnnotation(io.swagger.v3.oas.annotations.media.Schema.class);
+        Assertions.assertThat(annIOSwagger).isNotNull();
+        Assertions.assertThat(annIOSwagger.name()).isEqualTo(name);
+        Assertions.assertThat(annIOSwagger.implementation()).isEqualTo(implementation);
+        if (implementation == Period.class) {
+            Assertions.assertThat(annIOSwagger.example()).isEqualTo("P1Y2M");
         }
     }
 
@@ -122,9 +129,12 @@ public class AnnotationsTest extends BaseVariantTest {
         if (strongly) {
             Class<?> inputSetClass = getStronglyClassByName(dmnModel, "InputSet");
             Field directionAsField = inputSetClass.getDeclaredField("few_32dates");
-            org.eclipse.microprofile.openapi.annotations.media.Schema ann = directionAsField.getDeclaredAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
-            Assertions.assertThat(ann).isNotNull();
-            Assertions.assertThat(ann.type()).isEqualTo(org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY);
+            org.eclipse.microprofile.openapi.annotations.media.Schema annMP = directionAsField.getDeclaredAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
+            Assertions.assertThat(annMP).isNotNull();
+            Assertions.assertThat(annMP.type()).isEqualTo(org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY);
+            io.swagger.v3.oas.annotations.media.Schema annIOSwagger = directionAsField.getDeclaredAnnotation(io.swagger.v3.oas.annotations.media.Schema.class);
+            Assertions.assertThat(annIOSwagger).isNotNull();
+            Assertions.assertThat(annIOSwagger.type()).isEqualTo("array");
         }
     }
 }
