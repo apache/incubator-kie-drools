@@ -138,7 +138,7 @@
                         <Export-Package>
                             org.drools.serialization.protobuf.*
                         </Export-Package>
-<!--                        <Bundle-Activator>org.drools.compiler.osgi.Activator</Bundle-Activator>-->
+                        <Bundle-Activator>org.drools.serialization.protobuf.osgi.Activator</Bundle-Activator>
                     </instructions>
                 </configuration>
             </plugin>
