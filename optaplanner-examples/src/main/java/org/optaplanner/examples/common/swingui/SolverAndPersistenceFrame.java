@@ -75,7 +75,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
     public static final ImageIcon OPTA_PLANNER_ICON = new ImageIcon(
             SolverAndPersistenceFrame.class.getResource("optaPlannerIcon.png"));
 
-    private final SolutionBusiness<Solution_> solutionBusiness;
+    private final SolutionBusiness<Solution_, ?> solutionBusiness;
     private final ImageIcon indictmentHeatMapTrueIcon;
     private final ImageIcon indictmentHeatMapFalseIcon;
     private final ImageIcon refreshScreenDuringSolvingTrueIcon;
@@ -102,7 +102,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
     private JTextField scoreField;
     private ShowConstraintMatchesDialogAction showConstraintMatchesDialogAction;
 
-    public SolverAndPersistenceFrame(SolutionBusiness<Solution_> solutionBusiness,
+    public SolverAndPersistenceFrame(SolutionBusiness<Solution_, ?> solutionBusiness,
             SolutionPanel<Solution_> solutionPanel, CommonApp.ExtraAction<Solution_>[] extraActions) {
         super(solutionBusiness.getAppName() + " OptaPlanner example");
         this.solutionBusiness = solutionBusiness;
@@ -112,7 +112,8 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         solutionPanel.setSolverAndPersistenceFrame(this);
         this.extraActions = new Action[extraActions.length];
         for (int i = 0; i < extraActions.length; i++) {
-            BiConsumer<SolutionBusiness<Solution_>, SolutionPanel<Solution_>> consumer = extraActions[i].getConsumer();
+            BiConsumer<SolutionBusiness<Solution_, ?>, SolutionPanel<Solution_>> consumer =
+                    extraActions[i].getConsumer();
             this.extraActions[i] = new AbstractAction(extraActions[i].getName()) {
                 @Override
                 public void actionPerformed(ActionEvent e) {

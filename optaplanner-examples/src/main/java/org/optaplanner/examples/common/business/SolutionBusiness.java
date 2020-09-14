@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.common.business;
 
-import static java.util.stream.Collectors.toList;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,10 +56,12 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.stream.Collectors.toList;
+
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class SolutionBusiness<Solution_> {
+public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> {
 
     private static final ProblemFileComparator FILE_COMPARATOR = new ProblemFileComparator();
 
@@ -83,7 +83,7 @@ public class SolutionBusiness<Solution_> {
     private volatile Solver<Solution_> solver;
     private String solutionFileName = null;
     private InnerScoreDirector<Solution_> guiScoreDirector;
-    private ScoreManager<Solution_> scoreManager;
+    private ScoreManager<Solution_, Score_> scoreManager;
 
     private final AtomicReference<Solution_> skipToBestSolutionRef = new AtomicReference<>();
 
@@ -223,7 +223,7 @@ public class SolutionBusiness<Solution_> {
         this.solutionFileName = solutionFileName;
     }
 
-    public Score getScore() {
+    public Score_ getScore() {
         return scoreManager.updateScore(getSolution());
     }
 
@@ -261,17 +261,17 @@ public class SolutionBusiness<Solution_> {
         return guiScoreDirector.isConstraintMatchEnabled();
     }
 
-    public List<ConstraintMatchTotal> getConstraintMatchTotalList() {
+    public List<ConstraintMatchTotal<Score_>> getConstraintMatchTotalList() {
         return scoreManager.explainScore(getSolution())
                 .getConstraintMatchTotalMap()
                 .values()
                 .stream()
-                .map(constraintMatchTotal -> (DefaultConstraintMatchTotal) constraintMatchTotal)
+                .map(constraintMatchTotal -> (DefaultConstraintMatchTotal<Score_>) constraintMatchTotal)
                 .sorted()
                 .collect(toList());
     }
 
-    public Map<Object, Indictment> getIndictmentMap() {
+    public Map<Object, Indictment<Score_>> getIndictmentMap() {
         return scoreManager.explainScore(getSolution()).getIndictmentMap();
     }
 

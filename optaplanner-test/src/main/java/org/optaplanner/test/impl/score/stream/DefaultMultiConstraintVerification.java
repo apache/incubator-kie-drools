@@ -42,7 +42,7 @@ public final class DefaultMultiConstraintVerification<Solution_>
     public final DefaultMultiConstraintAssertion given(Object... facts) {
         try (ConstraintSession<Solution_> constraintSession = scoreDirectorFactory.newConstraintStreamingSession(true, null)) {
             Arrays.stream(facts).forEach(constraintSession::insert);
-            return new DefaultMultiConstraintAssertion<>(constraintProvider, constraintSession.calculateScore(0),
+            return new DefaultMultiConstraintAssertion(constraintProvider, constraintSession.calculateScore(0),
                     constraintSession.getConstraintMatchTotalMap(), constraintSession.getIndictmentMap());
         }
     }
@@ -51,7 +51,7 @@ public final class DefaultMultiConstraintVerification<Solution_>
     public final DefaultMultiConstraintAssertion givenSolution(Solution_ solution) {
         try (InnerScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector(true, true)) {
             scoreDirector.setWorkingSolution(Objects.requireNonNull(solution));
-            return new DefaultMultiConstraintAssertion<>(constraintProvider, scoreDirector.calculateScore(),
+            return new DefaultMultiConstraintAssertion(constraintProvider, scoreDirector.calculateScore(),
                     scoreDirector.getConstraintMatchTotalMap(), scoreDirector.getIndictmentMap());
         }
     }

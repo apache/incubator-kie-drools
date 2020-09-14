@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -78,7 +78,7 @@ public abstract class AbstractConstraintStreamTest {
         return scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
     }
 
-    protected void assertScore(InnerScoreDirector<TestdataLavishSolution> scoreDirector,
+    protected <Score_ extends Score<Score_>> void assertScore(InnerScoreDirector<TestdataLavishSolution> scoreDirector,
             AssertableMatch... assertableMatches) {
         scoreDirector.triggerVariableListeners();
         SimpleScore score = (SimpleScore) scoreDirector.calculateScore();
@@ -88,9 +88,10 @@ public abstract class AbstractConstraintStreamTest {
         if (constraintMatchEnabled) {
             String constraintPackage = scoreDirector.getSolutionDescriptor().getSolutionClass().getPackage().getName();
             for (AssertableMatch assertableMatch : assertableMatches) {
-                Map<String, ConstraintMatchTotal> constraintMatchTotals = scoreDirector.getConstraintMatchTotalMap();
+                Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotals =
+                        scoreDirector.getConstraintMatchTotalMap();
                 String constraintId = composeConstraintId(constraintPackage, assertableMatch.constraintName);
-                ConstraintMatchTotal constraintMatchTotal = constraintMatchTotals.get(constraintId);
+                ConstraintMatchTotal<Score_> constraintMatchTotal = constraintMatchTotals.get(constraintId);
                 if (constraintMatchTotal == null) {
                     throw new IllegalStateException("Requested constraint matches for unknown constraint (" +
                             constraintId + ").");
@@ -101,16 +102,17 @@ public abstract class AbstractConstraintStreamTest {
                             + constraintMatchTotal.getConstraintMatchSet() + ").");
                 }
             }
-            List<ConstraintMatch> constraintMatches = scoreDirector.getConstraintMatchTotalMap().values()
-                    .stream()
-                    .flatMap(t -> t.getConstraintMatchSet().stream())
-                    .collect(Collectors.toList());
-            for (ConstraintMatch constraintMatch : constraintMatches) {
-                if (Arrays.stream(assertableMatches)
-                        .filter(assertableMatch -> assertableMatch.constraintName.equals(constraintMatch.getConstraintName()))
-                        .noneMatch(assertableMatch -> assertableMatch.isEqualTo(constraintMatch))) {
-                    fail("The constraintMatch (" + constraintMatch + ") is in excess,"
-                            + " it's not in the assertableMatches (" + Arrays.toString(assertableMatches) + ").");
+            Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap =
+                    scoreDirector.getConstraintMatchTotalMap();
+            for (ConstraintMatchTotal<Score_> constraintMatchTotal : constraintMatchTotalMap.values()) {
+                for (ConstraintMatch<Score_> constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
+                    if (Arrays.stream(assertableMatches)
+                            .filter(assertableMatch -> assertableMatch.constraintName
+                                    .equals(constraintMatch.getConstraintName()))
+                            .noneMatch(assertableMatch -> assertableMatch.isEqualTo(constraintMatch))) {
+                        fail("The constraintMatch (" + constraintMatch + ") is in excess,"
+                                + " it's not in the assertableMatches (" + Arrays.toString(assertableMatches) + ").");
+                    }
                 }
             }
         }

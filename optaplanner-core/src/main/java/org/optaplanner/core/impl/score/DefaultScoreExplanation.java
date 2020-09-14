@@ -25,16 +25,18 @@ import org.optaplanner.core.api.score.ScoreExplanation;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 
-public final class DefaultScoreExplanation<Solution_> implements ScoreExplanation<Solution_> {
+public final class DefaultScoreExplanation<Solution_, Score_ extends Score<Score_>>
+        implements ScoreExplanation<Solution_, Score_> {
 
     private final Solution_ solution;
-    private final Score score;
+    private final Score_ score;
     private final String summary;
-    private final Map<String, ConstraintMatchTotal> constraintMatchTotalMap;
-    private final Map<Object, Indictment> indictmentMap;
+    private final Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap;
+    private final Map<Object, Indictment<Score_>> indictmentMap;
 
-    public DefaultScoreExplanation(Solution_ solution, Score score, String summary,
-            Map<String, ConstraintMatchTotal> constraintMatchTotalMap, Map<Object, Indictment> indictmentMap) {
+    public DefaultScoreExplanation(Solution_ solution, Score_ score, String summary,
+            Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap,
+            Map<Object, Indictment<Score_>> indictmentMap) {
         this.solution = solution;
         this.score = requireNonNull(score);
         this.summary = requireNonNull(summary);
@@ -48,7 +50,7 @@ public final class DefaultScoreExplanation<Solution_> implements ScoreExplanatio
     }
 
     @Override
-    public Score getScore() {
+    public Score_ getScore() {
         return score;
     }
 
@@ -58,12 +60,12 @@ public final class DefaultScoreExplanation<Solution_> implements ScoreExplanatio
     }
 
     @Override
-    public Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap() {
+    public Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
         return constraintMatchTotalMap;
     }
 
     @Override
-    public Map<Object, Indictment> getIndictmentMap() {
+    public Map<Object, Indictment<Score_>> getIndictmentMap() {
         return indictmentMap;
     }
 

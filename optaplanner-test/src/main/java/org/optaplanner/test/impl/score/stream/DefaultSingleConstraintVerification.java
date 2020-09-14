@@ -37,7 +37,7 @@ public final class DefaultSingleConstraintVerification<Solution_>
     public final DefaultSingleConstraintAssertion given(Object... facts) {
         try (ConstraintSession<Solution_> constraintSession = scoreDirectorFactory.newConstraintStreamingSession(true, null)) {
             Arrays.stream(facts).forEach(constraintSession::insert);
-            return new DefaultSingleConstraintAssertion<>(scoreDirectorFactory, constraintSession.calculateScore(0),
+            return new DefaultSingleConstraintAssertion(scoreDirectorFactory, constraintSession.calculateScore(0),
                     constraintSession.getConstraintMatchTotalMap(), constraintSession.getIndictmentMap());
         }
     }
@@ -46,7 +46,7 @@ public final class DefaultSingleConstraintVerification<Solution_>
     public final DefaultSingleConstraintAssertion givenSolution(Solution_ solution) {
         try (InnerScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector(true, true)) {
             scoreDirector.setWorkingSolution(Objects.requireNonNull(solution));
-            return new DefaultSingleConstraintAssertion<>(scoreDirectorFactory, scoreDirector.calculateScore(),
+            return new DefaultSingleConstraintAssertion(scoreDirectorFactory, scoreDirector.calculateScore(),
                     scoreDirector.getConstraintMatchTotalMap(), scoreDirector.getIndictmentMap());
         }
     }

@@ -32,7 +32,7 @@ import org.optaplanner.core.api.score.stream.Constraint;
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public interface ScoreExplanation<Solution_> {
+public interface ScoreExplanation<Solution_, Score_ extends Score<Score_>> {
 
     /**
      * Retrieve the {@link PlanningSolution} that the score being explained comes from.
@@ -48,7 +48,7 @@ public interface ScoreExplanation<Solution_> {
      * 
      * @return never null
      */
-    Score getScore();
+    Score_ getScore();
 
     /**
      * Returns a diagnostic text that explains the {@link Score} through the {@link ConstraintMatch} API
@@ -74,7 +74,7 @@ public interface ScoreExplanation<Solution_> {
      *         (to create one, use {@link ConstraintMatchTotal#composeConstraintId(String, String)}).
      * @see #getIndictmentMap()
      */
-    Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap();
+    Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap();
 
     /**
      * Explains the impact of each planning entity or problem fact on the {@link Score}.
@@ -90,6 +90,6 @@ public interface ScoreExplanation<Solution_> {
      *         {@link PlanningEntity planning entity}
      * @see #getConstraintMatchTotalMap()
      */
-    Map<Object, Indictment> getIndictmentMap();
+    Map<Object, Indictment<Score_>> getIndictmentMap();
 
 }

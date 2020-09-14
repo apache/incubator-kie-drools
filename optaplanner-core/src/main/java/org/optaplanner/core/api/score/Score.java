@@ -37,7 +37,7 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
  * @see AbstractScore
  * @see HardSoftScore
  */
-public interface Score<Score_ extends Score> extends Comparable<Score_> {
+public interface Score<Score_ extends Score<Score_>> extends Comparable<Score_> {
 
     /**
      * The init score is the negative of the number of uninitialized genuine planning variables.

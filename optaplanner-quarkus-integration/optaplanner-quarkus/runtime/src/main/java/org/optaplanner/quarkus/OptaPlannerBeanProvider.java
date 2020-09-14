@@ -19,6 +19,7 @@ package org.optaplanner.quarkus;
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverManager;
@@ -47,7 +48,8 @@ public class OptaPlannerBeanProvider {
     @DefaultBean
     @Singleton
     @Produces
-    <Solution_> ScoreManager<Solution_> scoreManager(SolverFactory<Solution_> solverFactory) {
+    <Solution_, Score_ extends Score<Score_>> ScoreManager<Solution_, Score_> scoreManager(
+            SolverFactory<Solution_> solverFactory) {
         return ScoreManager.create(solverFactory);
     }
 

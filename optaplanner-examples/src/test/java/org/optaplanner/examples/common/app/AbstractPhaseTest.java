@@ -16,10 +16,6 @@
 
 package org.optaplanner.examples.common.app;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.DynamicContainer.dynamicContainer;
-import static org.junit.jupiter.api.DynamicTest.dynamicTest;
-
 import java.io.File;
 import java.util.stream.Stream;
 
@@ -31,6 +27,10 @@ import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicContainer.dynamicContainer;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -77,7 +77,7 @@ public abstract class AbstractPhaseTest<Solution_, T> extends LoggingTest {
 
         Solution_ bestSolution = solver.solve(problem);
         assertSolution(bestSolution);
-        ScoreManager<Solution_> scoreManager = ScoreManager.create(solverFactory);
+        ScoreManager<Solution_, ?> scoreManager = ScoreManager.create(solverFactory);
         assertThat(scoreManager.updateScore(bestSolution)).isNotNull();
     }
 

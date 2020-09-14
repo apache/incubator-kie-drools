@@ -41,14 +41,14 @@ public interface ConstraintSession<Solution_> extends AutoCloseable {
      *
      * @return never null
      */
-    Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap();
+    <Score_ extends Score<Score_>> Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap();
 
     /**
      * As defined by {@link InnerScoreDirector#getIndictmentMap()}.
      *
      * @return never null
      */
-    Map<Object, Indictment> getIndictmentMap();
+    <Score_ extends Score<Score_>> Map<Object, Indictment<Score_>> getIndictmentMap();
 
     @Override
     void close();

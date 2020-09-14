@@ -31,10 +31,10 @@ class DefaultScoreManagerTest {
     public void explainScore() {
         SolverFactory<TestdataSolution> solverFactory =
                 SolverFactory.createFromXmlResource("org/optaplanner/core/api/solver/testdataSolverConfig.xml");
-        ScoreManager<TestdataSolution> scoreManager = ScoreManager.create(solverFactory);
+        ScoreManager<TestdataSolution, ?> scoreManager = ScoreManager.create(solverFactory);
         assertThat(scoreManager).isNotNull();
         TestdataSolution solution = TestdataSolution.generateSolution();
-        ScoreExplanation<TestdataSolution> scoreExplanation = scoreManager.explainScore(solution);
+        ScoreExplanation<TestdataSolution, ?> scoreExplanation = scoreManager.explainScore(solution);
         assertThat(scoreExplanation).isNotNull();
         assertSoftly(softly -> {
             softly.assertThat(scoreExplanation.getScore()).isNotNull();

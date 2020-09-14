@@ -177,7 +177,7 @@ public class OptaPlannerAutoConfigurationTest {
                 .run(context -> {
                     SolverFactory<TestdataSpringSolution> solverFactory = context.getBean(SolverFactory.class);
                     assertThat(solverFactory).isNotNull();
-                    ScoreManager<TestdataSpringSolution> scoreManager = context.getBean(ScoreManager.class);
+                    ScoreManager<TestdataSpringSolution, ?> scoreManager = context.getBean(ScoreManager.class);
                     assertThat(scoreManager).isNotNull();
                     // TODO in 8.0, once SolverFactory.getScoreDirectorFactory() doesn't create a new instance every time
                     // assertSame(solverFactory.getScoreDirectorFactory(), ((DefaultScoreManager<TestdataSpringSolution>) scoreManager).getScoreDirectorFactory());

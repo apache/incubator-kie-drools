@@ -78,7 +78,7 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
     protected final String iconResource;
 
     protected SolverAndPersistenceFrame<Solution_> solverAndPersistenceFrame;
-    protected SolutionBusiness<Solution_> solutionBusiness;
+    protected SolutionBusiness<Solution_, ?> solutionBusiness;
 
     protected CommonApp(String name, String description, String solverConfigResource, String dataDirName, String iconResource) {
         this.name = name;
@@ -122,8 +122,8 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
         solverAndPersistenceFrame.setVisible(true);
     }
 
-    public SolutionBusiness<Solution_> createSolutionBusiness() {
-        SolutionBusiness<Solution_> solutionBusiness = new SolutionBusiness<>(this);
+    public SolutionBusiness<Solution_, ?> createSolutionBusiness() {
+        SolutionBusiness<Solution_, ?> solutionBusiness = new SolutionBusiness<>(this);
         DefaultSolverFactory<Solution_> solverFactory = (DefaultSolverFactory<Solution_>) createSolverFactory();
         solutionBusiness.setSolver(solverFactory);
         solutionBusiness.setDataDir(determineDataDir(dataDirName));
@@ -164,7 +164,7 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
 
         String getName();
 
-        BiConsumer<SolutionBusiness<Solution_>, SolutionPanel<Solution_>> getConsumer();
+        BiConsumer<SolutionBusiness<Solution_, ?>, SolutionPanel<Solution_>> getConsumer();
 
     }
 

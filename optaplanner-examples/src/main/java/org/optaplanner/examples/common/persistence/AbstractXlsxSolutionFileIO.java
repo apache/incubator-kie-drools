@@ -343,8 +343,8 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
         protected final Solution_ solution;
         protected final Score score;
         protected final ScoreDefinition scoreDefinition;
-        protected final Map<String, ConstraintMatchTotal> constraintMatchTotalsMap;
-        protected final Map<Object, Indictment> indictmentMap;
+        protected final Map<String, ConstraintMatchTotal<?>> constraintMatchTotalsMap;
+        protected final Map<Object, Indictment<?>> indictmentMap;
 
         protected XSSFWorkbook workbook;
         protected CreationHelper creationHelper;
@@ -378,8 +378,8 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             try (InnerScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
                 scoreDirector.setWorkingSolution(solution);
                 score = scoreDirector.calculateScore();
-                constraintMatchTotalsMap = scoreDirector.getConstraintMatchTotalMap();
-                indictmentMap = scoreDirector.getIndictmentMap();
+                constraintMatchTotalsMap = (Map) scoreDirector.getConstraintMatchTotalMap();
+                indictmentMap = (Map) scoreDirector.getIndictmentMap();
             }
         }
 

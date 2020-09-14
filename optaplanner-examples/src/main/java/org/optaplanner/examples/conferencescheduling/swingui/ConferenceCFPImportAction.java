@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public class ConferenceCFPImportAction implements CommonApp.ExtraAction<Conferen
     }
 
     @Override
-    public BiConsumer<SolutionBusiness<ConferenceSolution>, SolutionPanel<ConferenceSolution>> getConsumer() {
+    public BiConsumer<SolutionBusiness<ConferenceSolution, ?>, SolutionPanel<ConferenceSolution>> getConsumer() {
         return (solutionBusiness, solutionPanel) -> {
             String[] cfpArray = { "cfp-devoxx" };
             JComboBox<String> cfpConferenceBox = new JComboBox<>(cfpArray);
@@ -70,13 +70,13 @@ public class ConferenceCFPImportAction implements CommonApp.ExtraAction<Conferen
 
     private class ConferenceCFPImportWorker extends SwingWorker<ConferenceSolution, Void> {
 
-        private final SolutionBusiness<ConferenceSolution> solutionBusiness;
+        private final SolutionBusiness<ConferenceSolution, ?> solutionBusiness;
         private final SolutionPanel<ConferenceSolution> solutionPanel;
         private String conferenceBaseUrl;
 
         private final JDialog dialog;
 
-        public ConferenceCFPImportWorker(SolutionBusiness<ConferenceSolution> solutionBusiness,
+        public ConferenceCFPImportWorker(SolutionBusiness<ConferenceSolution, ?> solutionBusiness,
                 SolutionPanel<ConferenceSolution> solutionPanel,
                 String conferenceBaseUrl) {
             this.solutionBusiness = solutionBusiness;

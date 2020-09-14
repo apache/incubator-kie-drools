@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class DefaultScoreManager<Solution_> implements ScoreManager<Solution_> {
+public class DefaultScoreManager<Solution_, Score_ extends Score<Score_>> implements ScoreManager<Solution_, Score_> {
 
     private InnerScoreDirectorFactory<Solution_> scoreDirectorFactory;
 
@@ -39,10 +39,10 @@ public class DefaultScoreManager<Solution_> implements ScoreManager<Solution_> {
     }
 
     @Override
-    public Score updateScore(Solution_ solution) {
+    public Score_ updateScore(Solution_ solution) {
         try (InnerScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
             scoreDirector.setWorkingSolution(solution);
-            return scoreDirector.calculateScore();
+            return (Score_) scoreDirector.calculateScore();
         }
     }
 
@@ -52,7 +52,7 @@ public class DefaultScoreManager<Solution_> implements ScoreManager<Solution_> {
     }
 
     @Override
-    public ScoreExplanation<Solution_> explainScore(Solution_ solution) {
+    public ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution) {
         try (InnerScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector(true, true)) {
             scoreDirector.setWorkingSolution(solution); // Init the ScoreDirector first, else NPEs may be thrown.
             boolean constraintMatchEnabled = scoreDirector.isConstraintMatchEnabled();

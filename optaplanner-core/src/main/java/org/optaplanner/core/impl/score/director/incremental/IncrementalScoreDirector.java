@@ -112,7 +112,7 @@ public class IncrementalScoreDirector<Solution_>
     }
 
     @Override
-    public Map<Object, Indictment> getIndictmentMap() {
+    public <Score_ extends Score<Score_>> Map<Object, Indictment<Score_>> getIndictmentMap() {
         if (!isConstraintMatchEnabled()) {
             throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
                     + ") is disabled in the constructor, this method should not be called.");
@@ -120,17 +120,17 @@ public class IncrementalScoreDirector<Solution_>
         Map<Object, Indictment> incrementalIndictmentMap =
                 ((ConstraintMatchAwareIncrementalScoreCalculator<Solution_>) incrementalScoreCalculator).getIndictmentMap();
         if (incrementalIndictmentMap != null) {
-            return incrementalIndictmentMap;
+            return (Map) incrementalIndictmentMap;
         }
-        Map<Object, Indictment> indictmentMap = new LinkedHashMap<>(); // TODO use entitySize
-        Score zeroScore = getScoreDefinition().getZeroScore();
-        for (ConstraintMatchTotal constraintMatchTotal : getConstraintMatchTotalMap().values()) {
-            for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
+        Map<Object, Indictment<Score_>> indictmentMap = new LinkedHashMap<>(); // TODO use entitySize
+        Score_ zeroScore = (Score_) getScoreDefinition().getZeroScore();
+        for (ConstraintMatchTotal<Score_> constraintMatchTotal : getConstraintMatchTotalMap().values()) {
+            for (ConstraintMatch<Score_> constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
                 constraintMatch.getJustificationList().stream()
                         .distinct() // One match might have the same justification twice
                         .forEach(justification -> {
                             DefaultIndictment indictment = (DefaultIndictment) indictmentMap.computeIfAbsent(justification,
-                                    k -> new DefaultIndictment(justification, zeroScore));
+                                    k -> new DefaultIndictment<>(justification, zeroScore));
                             indictment.addConstraintMatch(constraintMatch);
                         });
             }

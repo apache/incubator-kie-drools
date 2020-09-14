@@ -28,13 +28,13 @@ import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
 /**
  * Retrievable from {@link ConstraintMatchTotal#getConstraintMatchSet()}.
  */
-public final class ConstraintMatch implements Comparable<ConstraintMatch> {
+public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comparable<ConstraintMatch<Score_>> {
 
     private final String constraintPackage;
     private final String constraintName;
 
     private final List<Object> justificationList;
-    private final Score score;
+    private final Score_ score;
 
     /**
      * @param constraintPackage never null
@@ -43,7 +43,7 @@ public final class ConstraintMatch implements Comparable<ConstraintMatch> {
      * @param score never null
      */
     public ConstraintMatch(String constraintPackage, String constraintName, List<Object> justificationList,
-            Score score) {
+            Score_ score) {
         this.constraintPackage = requireNonNull(constraintPackage);
         this.constraintName = requireNonNull(constraintName);
         this.justificationList = requireNonNull(justificationList);
@@ -62,7 +62,7 @@ public final class ConstraintMatch implements Comparable<ConstraintMatch> {
         return justificationList;
     }
 
-    public Score getScore() {
+    public Score_ getScore() {
         return score;
     }
 
@@ -79,7 +79,7 @@ public final class ConstraintMatch implements Comparable<ConstraintMatch> {
     }
 
     @Override
-    public int compareTo(ConstraintMatch other) {
+    public int compareTo(ConstraintMatch<Score_> other) {
         if (!constraintPackage.equals(other.constraintPackage)) {
             return constraintPackage.compareTo(other.constraintPackage);
         } else if (!constraintName.equals(other.constraintName)) {

@@ -26,7 +26,7 @@ import org.optaplanner.core.api.score.ScoreExplanation;
  * Explains the {@link Score} of a {@link PlanningSolution}, from the opposite side than {@link ConstraintMatchTotal}.
  * Retrievable from {@link ScoreExplanation#getIndictmentMap()}.
  */
-public interface Indictment {
+public interface Indictment<Score_ extends Score<Score_>> {
 
     /**
      * @return never null
@@ -36,7 +36,7 @@ public interface Indictment {
     /**
      * @return never null
      */
-    Set<ConstraintMatch> getConstraintMatchSet();
+    Set<ConstraintMatch<Score_>> getConstraintMatchSet();
 
     /**
      * @return {@code >= 0}
@@ -50,6 +50,6 @@ public interface Indictment {
      *
      * @return never null
      */
-    Score getScore();
+    Score_ getScore();
 
 }

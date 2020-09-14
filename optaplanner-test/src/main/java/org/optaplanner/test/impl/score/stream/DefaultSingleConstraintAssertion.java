@@ -36,17 +36,18 @@ import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.test.api.score.stream.SingleConstraintAssertion;
 
-public final class DefaultSingleConstraintAssertion<Solution_>
+public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Score<Score_>>
         implements SingleConstraintAssertion {
 
     private final ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory;
-    private final Score score;
-    private final Collection<ConstraintMatchTotal> constraintMatchTotalCollection;
-    private final Collection<Indictment> indictmentCollection;
+    private final Score_ score;
+    private final Collection<ConstraintMatchTotal<Score_>> constraintMatchTotalCollection;
+    private final Collection<Indictment<Score_>> indictmentCollection;
 
-    protected DefaultSingleConstraintAssertion(ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory,
-            Score score, Map<String, ConstraintMatchTotal> constraintMatchTotalMap,
-            Map<Object, Indictment> indictmentMap) {
+    protected DefaultSingleConstraintAssertion(
+            ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory,
+            Score_ score, Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap,
+            Map<Object, Indictment<Score_>> indictmentMap) {
         this.scoreDirectorFactory = requireNonNull(scoreDirectorFactory);
         this.score = requireNonNull(score);
         this.constraintMatchTotalCollection = requireNonNull(constraintMatchTotalMap).values();
@@ -112,8 +113,8 @@ public final class DefaultSingleConstraintAssertion<Solution_>
     }
 
     private Number deduceImpact() {
-        ScoreDefinition scoreDefinition = scoreDirectorFactory.getScoreDefinition();
-        Score zeroScore = scoreDefinition.getZeroScore();
+        ScoreDefinition<Score_> scoreDefinition = scoreDirectorFactory.getScoreDefinition();
+        Score_ zeroScore = scoreDefinition.getZeroScore();
         Number zero = zeroScore.toLevelNumbers()[0]; // Zero in the exact numeric type expected by the caller.
         if (constraintMatchTotalCollection.isEmpty()) {
             return zero;
@@ -121,7 +122,7 @@ public final class DefaultSingleConstraintAssertion<Solution_>
         // We do not know the matchWeight, so we need to deduce it.
         // Constraint matches give us a score, whose levels are in the form of (matchWeight * constraintWeight).
         // Here, we strip the constraintWeight.
-        Score totalMatchWeightedScore = constraintMatchTotalCollection.stream()
+        Score_ totalMatchWeightedScore = constraintMatchTotalCollection.stream()
                 .map(matchScore -> scoreDefinition.divideBySanitizedDivisor(matchScore.getScore(),
                         matchScore.getConstraintWeight()))
                 .reduce(zeroScore, Score::add);

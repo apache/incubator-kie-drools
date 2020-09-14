@@ -28,16 +28,17 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.test.api.score.stream.MultiConstraintAssertion;
 
-public final class DefaultMultiConstraintAssertion<Solution_>
+public final class DefaultMultiConstraintAssertion<Solution_, Score_ extends Score<Score_>>
         implements MultiConstraintAssertion {
 
     private final ConstraintProvider constraintProvider;
-    private final Score<?> actualScore;
-    private final Collection<ConstraintMatchTotal> constraintMatchTotalCollection;
-    private final Collection<Indictment> indictmentCollection;
+    private final Score_ actualScore;
+    private final Collection<ConstraintMatchTotal<Score_>> constraintMatchTotalCollection;
+    private final Collection<Indictment<Score_>> indictmentCollection;
 
-    protected DefaultMultiConstraintAssertion(ConstraintProvider constraintProvider, Score<?> actualScore,
-            Map<String, ConstraintMatchTotal> constraintMatchTotalMap, Map<Object, Indictment> indictmentMap) {
+    protected DefaultMultiConstraintAssertion(ConstraintProvider constraintProvider, Score_ actualScore,
+            Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap,
+            Map<Object, Indictment<Score_>> indictmentMap) {
         this.constraintProvider = requireNonNull(constraintProvider);
         this.actualScore = requireNonNull(actualScore);
         this.constraintMatchTotalCollection = requireNonNull(constraintMatchTotalMap).values();

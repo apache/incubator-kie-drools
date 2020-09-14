@@ -306,16 +306,16 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         calculationCount++;
     }
 
-    public static String explainScore(Score workingScore,
-            Collection<ConstraintMatchTotal> constraintMatchTotalCollection,
-            Collection<Indictment> indictmentCollection) {
+    public static <Score_ extends Score<Score_>> String explainScore(Score_ workingScore,
+            Collection<ConstraintMatchTotal<Score_>> constraintMatchTotalCollection,
+            Collection<Indictment<Score_>> indictmentCollection) {
         return explainScore(workingScore, constraintMatchTotalCollection, indictmentCollection,
                 DEFAULT_SCORE_EXPLANATION_INDICTMENT_LIMIT, DEFAULT_SCORE_EXPLANATION_CONSTRAINT_MATCH_LIMIT);
     }
 
-    public static String explainScore(Score workingScore,
-            Collection<ConstraintMatchTotal> constraintMatchTotalCollection,
-            Collection<Indictment> indictmentCollection, int indictmentLimit, int constraintMatchLimit) {
+    public static <Score_ extends Score<Score_>> String explainScore(Score_ workingScore,
+            Collection<ConstraintMatchTotal<Score_>> constraintMatchTotalCollection,
+            Collection<Indictment<Score_>> indictmentCollection, int indictmentLimit, int constraintMatchLimit) {
         StringBuilder scoreExplanation =
                 new StringBuilder((constraintMatchTotalCollection.size() + 4 + 2 * indictmentLimit) * 80);
         scoreExplanation.append("Explanation of score (").append(workingScore).append("):\n");
@@ -325,7 +325,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         constraintMatchTotalCollection.stream()
                 .sorted(constraintMatchTotalComparator)
                 .forEach(constraintMatchTotal -> {
-                    Set<ConstraintMatch> constraintMatchSet = constraintMatchTotal.getConstraintMatchSet();
+                    Set<ConstraintMatch<Score_>> constraintMatchSet = constraintMatchTotal.getConstraintMatchSet();
                     scoreExplanation
                             .append("        ").append(constraintMatchTotal.getScore().toShortString())
                             .append(": constraint (").append(constraintMatchTotal.getConstraintName())
@@ -355,7 +355,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                 .sorted(indictmentComparator)
                 .limit(indictmentLimit)
                 .forEach(indictment -> {
-                    Set<ConstraintMatch> constraintMatchSet = indictment.getConstraintMatchSet();
+                    Set<ConstraintMatch<Score_>> constraintMatchSet = indictment.getConstraintMatchSet();
                     scoreExplanation
                             .append("        ").append(indictment.getScore().toShortString())
                             .append(": justification (").append(indictment.getJustification())
@@ -379,7 +379,9 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     @Override
     public String explainScore() {
-        return explainScore(calculateScore(), getConstraintMatchTotalMap().values(), getIndictmentMap().values());
+        Collection constraintMatchTotalCollection = getConstraintMatchTotalMap().values();
+        Collection indictmentCollection = getIndictmentMap().values();
+        return explainScore(calculateScore(), constraintMatchTotalCollection, indictmentCollection);
     }
 
     @Override
@@ -755,8 +757,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
      * @param predicted true if the score was predicted and might have been calculated on another thread
      * @return never null
      */
-    protected String buildScoreCorruptionAnalysis(InnerScoreDirector<Solution_> uncorruptedScoreDirector,
-            boolean predicted) {
+    protected <Score_ extends Score<Score_>> String buildScoreCorruptionAnalysis(
+            InnerScoreDirector<Solution_> uncorruptedScoreDirector, boolean predicted) {
         if (!isConstraintMatchEnabled() || !uncorruptedScoreDirector.isConstraintMatchEnabled()) {
             return "Score corruption analysis could not be generated because"
                     + " either corrupted constraintMatchEnabled (" + isConstraintMatchEnabled()
@@ -765,10 +767,14 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                     + "  Check your score constraints manually.";
         }
 
-        Map<List<Object>, ConstraintMatch> corruptedMap = createConstraintMatchMap(getConstraintMatchTotalMap().values());
-        Map<List<Object>, ConstraintMatch> excessMap = new LinkedHashMap<>(corruptedMap);
-        Map<List<Object>, ConstraintMatch> missingMap =
-                createConstraintMatchMap(uncorruptedScoreDirector.getConstraintMatchTotalMap().values());
+        Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = getConstraintMatchTotalMap();
+        Map<List<Object>, ConstraintMatch<Score_>> corruptedMap =
+                createConstraintMatchMap(constraintMatchTotalMap.values());
+        Map<List<Object>, ConstraintMatch<Score_>> excessMap = new LinkedHashMap<>(corruptedMap);
+        Map<String, ConstraintMatchTotal<Score_>> uncorruptedConstraintMatchTotalMap =
+                uncorruptedScoreDirector.getConstraintMatchTotalMap();
+        Map<List<Object>, ConstraintMatch<Score_>> missingMap =
+                createConstraintMatchMap(uncorruptedConstraintMatchTotalMap.values());
         excessMap.keySet().removeAll(missingMap.keySet()); // missingMap == uncorruptedMap
         missingMap.keySet().removeAll(corruptedMap.keySet());
 
@@ -825,19 +831,19 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         return analysis.toString();
     }
 
-    private Map<List<Object>, ConstraintMatch> createConstraintMatchMap(
-            Collection<ConstraintMatchTotal> constraintMatchTotals) {
+    private <Score_ extends Score<Score_>> Map<List<Object>, ConstraintMatch<Score_>> createConstraintMatchMap(
+            Collection<ConstraintMatchTotal<Score_>> constraintMatchTotals) {
         Comparator<Object> comparator = new ClassAndPlanningIdComparator(false);
-        Map<List<Object>, ConstraintMatch> constraintMatchMap = new LinkedHashMap<>(constraintMatchTotals.size() * 16);
-        for (ConstraintMatchTotal constraintMatchTotal : constraintMatchTotals) {
-            for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
+        Map<List<Object>, ConstraintMatch<Score_>> constraintMatchMap = new LinkedHashMap<>(constraintMatchTotals.size() * 16);
+        for (ConstraintMatchTotal<Score_> constraintMatchTotal : constraintMatchTotals) {
+            for (ConstraintMatch<Score_> constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
                 // The order of justificationLists for constraints that include accumulates isn't stable, so we make it.
                 List<Object> justificationList = new ArrayList<>(constraintMatch.getJustificationList());
                 Collections.sort(justificationList, comparator);
                 // And now we store the reference to the constraint match.
                 List<Object> key = Arrays.asList(constraintMatchTotal.getConstraintPackage(),
                         constraintMatchTotal.getConstraintName(), justificationList, constraintMatch.getScore());
-                ConstraintMatch previousConstraintMatch = constraintMatchMap.put(key, constraintMatch);
+                ConstraintMatch<Score_> previousConstraintMatch = constraintMatchMap.put(key, constraintMatch);
                 if (previousConstraintMatch != null) {
                     throw new IllegalStateException("Score corruption because the constraintMatch (" + constraintMatch
                             + ") was added twice for constraintMatchTotal (" + constraintMatchTotal

@@ -159,27 +159,29 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
     }
 
     @Override
-    public Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap() {
-        Map<String, ConstraintMatchTotal> constraintMatchTotalMap = new LinkedHashMap<>(
+    public <Score_ extends Score<Score_>> Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
+        Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = new LinkedHashMap<>(
                 constraintIdToScoringNodeMap.size());
         constraintIdToScoringNodeMap.forEach((constraintId, scoringNode) -> {
-            ConstraintMatchTotal constraintMatchTotal = scoringNode.buildConstraintMatchTotal(zeroScore);
+            ConstraintMatchTotal<Score_> constraintMatchTotal = scoringNode.buildConstraintMatchTotal(zeroScore);
             constraintMatchTotalMap.put(constraintId, constraintMatchTotal);
         });
         return constraintMatchTotalMap;
     }
 
     @Override
-    public Map<Object, Indictment> getIndictmentMap() {
+    public <Score_ extends Score<Score_>> Map<Object, Indictment<Score_>> getIndictmentMap() {
         // TODO This is temporary, inefficient code, replace it!
-        Map<Object, Indictment> indictmentMap = new LinkedHashMap<>(); // TODO use entitySize
-        for (ConstraintMatchTotal constraintMatchTotal : getConstraintMatchTotalMap().values()) {
-            for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
+        Map<Object, Indictment<Score_>> indictmentMap = new LinkedHashMap<>(); // TODO use entitySize
+        Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = getConstraintMatchTotalMap();
+        for (ConstraintMatchTotal<Score_> constraintMatchTotal : constraintMatchTotalMap.values()) {
+            for (ConstraintMatch<Score_> constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
                 constraintMatch.getJustificationList().stream()
                         .distinct() // One match might have the same justification twice
                         .forEach(justification -> {
-                            DefaultIndictment indictment = (DefaultIndictment) indictmentMap.computeIfAbsent(justification,
-                                    k -> new DefaultIndictment(justification, zeroScore));
+                            DefaultIndictment<Score_> indictment =
+                                    (DefaultIndictment<Score_>) indictmentMap.computeIfAbsent(justification,
+                                            k -> new DefaultIndictment<>(justification, (Score_) zeroScore));
                             indictment.addConstraintMatch(constraintMatch);
                         });
             }

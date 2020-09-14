@@ -77,7 +77,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_>,
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
      * @see #getIndictmentMap()
      */
-    Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap();
+    <Score_ extends Score<Score_>> Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap();
 
     /**
      * Explains the impact of each planning entity or problem fact on the {@link Score}.
@@ -97,7 +97,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_>,
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
      * @see #getConstraintMatchTotalMap()
      */
-    Map<Object, Indictment> getIndictmentMap();
+    <Score_ extends Score<Score_>> Map<Object, Indictment<Score_>> getIndictmentMap();
 
     /**
      * Returns a diagnostic text that explains the {@link Score} through the {@link ConstraintMatch} API

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,56 +15,6 @@
  */
 
 package org.optaplanner.examples.conferencescheduling.persistence;
-
-import static java.util.Collections.disjoint;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.reverseOrder;
-import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.counting;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toCollection;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.AUDIENCE_LEVEL_DIVERSITY;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.AUDIENCE_TYPE_DIVERSITY;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.AUDIENCE_TYPE_THEME_TRACK_CONFLICT;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.CONSECUTIVE_TALKS_PAUSE;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.CONTENT_CONFLICT;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.CROWD_CONTROL;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.LANGUAGE_DIVERSITY;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.POPULAR_TALKS;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.PUBLISHED_ROOM;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.PUBLISHED_TIMESLOT;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.ROOM_CONFLICT;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.ROOM_UNAVAILABLE_TIMESLOT;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SAME_DAY_TALKS;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SECTOR_CONFLICT;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_CONFLICT;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_PREFERRED_ROOM_TAGS;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_PREFERRED_TIMESLOT_TAGS;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_PROHIBITED_ROOM_TAGS;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_PROHIBITED_TIMESLOT_TAGS;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_REQUIRED_ROOM_TAGS;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_REQUIRED_TIMESLOT_TAGS;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_UNAVAILABLE_TIMESLOT;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_UNDESIRED_ROOM_TAGS;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_UNDESIRED_TIMESLOT_TAGS;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_PREFERRED_ROOM_TAGS;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_PREFERRED_TIMESLOT_TAGS;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_PREREQUISITE_TALKS;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_PROHIBITED_ROOM_TAGS;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_PROHIBITED_TIMESLOT_TAGS;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_REQUIRED_ROOM_TAGS;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_REQUIRED_TIMESLOT_TAGS;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_UNDESIRED_ROOM_TAGS;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_UNDESIRED_TIMESLOT_TAGS;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.THEME_TRACK_CONFLICT;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.THEME_TRACK_ROOM_STABILITY;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -115,6 +65,56 @@ import org.optaplanner.examples.conferencescheduling.domain.Talk;
 import org.optaplanner.examples.conferencescheduling.domain.TalkType;
 import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import org.optaplanner.swing.impl.TangoColorFactory;
+
+import static java.util.Collections.disjoint;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.reverseOrder;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.AUDIENCE_LEVEL_DIVERSITY;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.AUDIENCE_TYPE_DIVERSITY;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.AUDIENCE_TYPE_THEME_TRACK_CONFLICT;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.CONSECUTIVE_TALKS_PAUSE;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.CONTENT_CONFLICT;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.CROWD_CONTROL;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.LANGUAGE_DIVERSITY;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.POPULAR_TALKS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.PUBLISHED_ROOM;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.PUBLISHED_TIMESLOT;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.ROOM_CONFLICT;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.ROOM_UNAVAILABLE_TIMESLOT;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SAME_DAY_TALKS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SECTOR_CONFLICT;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_CONFLICT;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_PREFERRED_ROOM_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_PREFERRED_TIMESLOT_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_PROHIBITED_ROOM_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_PROHIBITED_TIMESLOT_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_REQUIRED_ROOM_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_REQUIRED_TIMESLOT_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_UNAVAILABLE_TIMESLOT;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_UNDESIRED_ROOM_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_UNDESIRED_TIMESLOT_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_PREFERRED_ROOM_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_PREFERRED_TIMESLOT_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_PREREQUISITE_TALKS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_PROHIBITED_ROOM_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_PROHIBITED_TIMESLOT_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_REQUIRED_ROOM_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_REQUIRED_TIMESLOT_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_UNDESIRED_ROOM_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.TALK_UNDESIRED_TIMESLOT_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.THEME_TRACK_CONFLICT;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.THEME_TRACK_ROOM_STABILITY;
 
 public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<ConferenceSolution> {
 
@@ -1690,18 +1690,18 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                             .append(": ").append(talk.getTitle()).append("\n    ")
                             .append(talk.getSpeakerList().stream().map(Speaker::getName).collect(joining(", ")))
                             .append(talk.isPinnedByUser() ? "\nPINNED BY USER" : "");
-                    Indictment indictment = indictmentMap.get(talk);
+                    Indictment<?> indictment = indictmentMap.get(talk);
                     if (indictment != null) {
                         commentString.append("\n").append(indictment.getScore().toShortString())
                                 .append(" total");
-                        Set<ConstraintMatch> constraintMatchSet = indictment.getConstraintMatchSet().stream()
+                        Set<ConstraintMatch<?>> constraintMatchSet = indictment.getConstraintMatchSet().stream()
                                 .filter(constraintMatch -> filteredConstraintNameList == null
                                         || filteredConstraintNameList.contains(constraintMatch.getConstraintName()))
                                 .collect(toSet());
                         List<String> constraintNameList = constraintMatchSet.stream()
                                 .map(ConstraintMatch::getConstraintName).distinct().collect(toList());
                         for (String constraintName : constraintNameList) {
-                            List<ConstraintMatch> filteredConstraintMatchList = constraintMatchSet.stream()
+                            List<ConstraintMatch<?>> filteredConstraintMatchList = constraintMatchSet.stream()
                                     .filter(constraintMatch -> constraintMatch.getConstraintName().equals(constraintName)
                                             && (isValidJustificationList == null
                                                     || isValidJustificationList.test(constraintMatch.getJustificationList())))

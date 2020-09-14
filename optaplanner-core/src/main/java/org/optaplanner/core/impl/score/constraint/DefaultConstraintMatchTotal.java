@@ -29,26 +29,26 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 
-public final class DefaultConstraintMatchTotal implements ConstraintMatchTotal,
-        Comparable<DefaultConstraintMatchTotal> {
+public final class DefaultConstraintMatchTotal<Score_ extends Score<Score_>> implements ConstraintMatchTotal<Score_>,
+        Comparable<DefaultConstraintMatchTotal<Score_>> {
 
-    private static final Comparator<DefaultConstraintMatchTotal> COMPARATOR =
-            comparing(DefaultConstraintMatchTotal::getConstraintPackage)
+    private static final Comparator<DefaultConstraintMatchTotal<?>> COMPARATOR =
+            comparing((DefaultConstraintMatchTotal<?> constraintMatchTotal) -> constraintMatchTotal.constraintPackage)
                     .thenComparing(DefaultConstraintMatchTotal::getConstraintName);
 
     private final String constraintPackage;
     private final String constraintName;
-    private final Score constraintWeight;
+    private final Score_ constraintWeight;
 
-    private final Set<ConstraintMatch> constraintMatchSet = new LinkedHashSet<>();
-    private Score score;
+    private final Set<ConstraintMatch<Score_>> constraintMatchSet = new LinkedHashSet<>();
+    private Score_ score;
 
-    public DefaultConstraintMatchTotal(String constraintPackage, String constraintName, Score zeroScore) {
+    public DefaultConstraintMatchTotal(String constraintPackage, String constraintName, Score_ zeroScore) {
         this(constraintPackage, constraintName, null, zeroScore);
     }
 
-    public DefaultConstraintMatchTotal(String constraintPackage, String constraintName, Score constraintWeight,
-            Score zeroScore) {
+    public DefaultConstraintMatchTotal(String constraintPackage, String constraintName, Score_ constraintWeight,
+            Score_ zeroScore) {
         this.constraintPackage = requireNonNull(constraintPackage);
         this.constraintName = requireNonNull(constraintName);
         this.constraintWeight = constraintWeight;
@@ -66,17 +66,17 @@ public final class DefaultConstraintMatchTotal implements ConstraintMatchTotal,
     }
 
     @Override
-    public Score getConstraintWeight() {
+    public Score_ getConstraintWeight() {
         return constraintWeight;
     }
 
     @Override
-    public Set<ConstraintMatch> getConstraintMatchSet() {
+    public Set<ConstraintMatch<Score_>> getConstraintMatchSet() {
         return constraintMatchSet;
     }
 
     @Override
-    public Score getScore() {
+    public Score_ getScore() {
         return score;
     }
 
@@ -84,9 +84,9 @@ public final class DefaultConstraintMatchTotal implements ConstraintMatchTotal,
     // Worker methods
     // ************************************************************************
 
-    public ConstraintMatch addConstraintMatch(List<Object> justificationList, Score score) {
+    public ConstraintMatch<Score_> addConstraintMatch(List<Object> justificationList, Score_ score) {
         this.score = this.score.add(score);
-        ConstraintMatch constraintMatch = new ConstraintMatch(constraintPackage, constraintName,
+        ConstraintMatch<Score_> constraintMatch = new ConstraintMatch<>(constraintPackage, constraintName,
                 justificationList, score);
         boolean added = constraintMatchSet.add(constraintMatch);
         if (!added) {
@@ -97,7 +97,7 @@ public final class DefaultConstraintMatchTotal implements ConstraintMatchTotal,
         return constraintMatch;
     }
 
-    public void removeConstraintMatch(ConstraintMatch constraintMatch) {
+    public void removeConstraintMatch(ConstraintMatch<Score_> constraintMatch) {
         score = score.subtract(constraintMatch.getScore());
         boolean removed = constraintMatchSet.remove(constraintMatch);
         if (!removed) {
@@ -117,7 +117,7 @@ public final class DefaultConstraintMatchTotal implements ConstraintMatchTotal,
     }
 
     @Override
-    public int compareTo(DefaultConstraintMatchTotal other) {
+    public int compareTo(DefaultConstraintMatchTotal<Score_> other) {
         return COMPARATOR.compare(this, other);
     }
 

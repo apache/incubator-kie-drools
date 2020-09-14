@@ -100,7 +100,8 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
 
     @Bean
     @ConditionalOnMissingBean
-    public <Solution_> ScoreManager<Solution_> scoreManager(SolverFactory solverFactory) {
+    public <Solution_, Score_ extends Score<Score_>> ScoreManager<Solution_, Score_> scoreManager(
+            SolverFactory solverFactory) {
         return ScoreManager.create(solverFactory);
     }
 

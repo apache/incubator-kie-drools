@@ -29,7 +29,7 @@ import org.optaplanner.core.api.score.ScoreExplanation;
  * Explains the {@link Score} of a {@link PlanningSolution}, from the opposite side than {@link Indictment}.
  * Retrievable from {@link ScoreExplanation#getConstraintMatchTotalMap()}.
  */
-public interface ConstraintMatchTotal {
+public interface ConstraintMatchTotal<Score_ extends Score<Score_>> {
 
     /**
      * @param constraintPackage never null
@@ -57,12 +57,12 @@ public interface ConstraintMatchTotal {
      *
      * @return null if {@link ConstraintWeight} isn't used for this constraint
      */
-    Score getConstraintWeight();
+    Score_ getConstraintWeight();
 
     /**
      * @return never null
      */
-    Set<ConstraintMatch> getConstraintMatchSet();
+    Set<ConstraintMatch<Score_>> getConstraintMatchSet();
 
     /**
      * @return {@code >= 0}
@@ -76,7 +76,7 @@ public interface ConstraintMatchTotal {
      *
      * @return never null
      */
-    Score getScore();
+    Score_ getScore();
 
     /**
      * To create a constraintId, use {@link #composeConstraintId(String, String)}.

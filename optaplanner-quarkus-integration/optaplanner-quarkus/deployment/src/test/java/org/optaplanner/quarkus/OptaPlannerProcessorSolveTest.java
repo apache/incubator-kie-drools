@@ -16,21 +16,19 @@
 
 package org.optaplanner.quarkus;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.inject.Inject;
 
+import io.quarkus.test.QuarkusUnitTest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.optaplanner.core.api.score.ScoreManager;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
@@ -39,7 +37,9 @@ import org.optaplanner.quarkus.testdata.normal.constraints.TestdataQuarkusConstr
 import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusEntity;
 import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusSolution;
 
-import io.quarkus.test.QuarkusUnitTest;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OptaPlannerProcessorSolveTest {
 
@@ -55,7 +55,7 @@ public class OptaPlannerProcessorSolveTest {
     @Inject
     SolverManager<TestdataQuarkusSolution, Long> solverManager;
     @Inject
-    ScoreManager<TestdataQuarkusSolution> scoreManager;
+    ScoreManager<TestdataQuarkusSolution, SimpleScore> scoreManager;
 
     @Test
     public void singletonSolverFactory() {

@@ -36,7 +36,7 @@ import org.optaplanner.core.impl.solver.DefaultSolverFactory;
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public interface ScoreManager<Solution_> {
+public interface ScoreManager<Solution_, Score_ extends Score<Score_>> {
 
     // ************************************************************************
     // Static creation methods: SolverFactory
@@ -49,7 +49,8 @@ public interface ScoreManager<Solution_> {
      * @return never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
-    static <Solution_> ScoreManager<Solution_> create(SolverFactory<Solution_> solverFactory) {
+    static <Solution_, Score_ extends Score<Score_>> ScoreManager<Solution_, Score_> create(
+            SolverFactory<Solution_> solverFactory) {
         return new DefaultScoreManager<>(((DefaultSolverFactory<Solution_>) solverFactory).getScoreDirectorFactory());
     }
 
@@ -62,7 +63,7 @@ public interface ScoreManager<Solution_> {
      *
      * @param solution never null
      */
-    Score updateScore(Solution_ solution);
+    Score_ updateScore(Solution_ solution);
 
     /**
      * Returns a diagnostic text that explains the solution through the {@link ConstraintMatch} API to identify which
@@ -90,6 +91,6 @@ public interface ScoreManager<Solution_> {
      * @throws IllegalStateException when constraint matching is disabled or not supported by the underlying score
      *         calculator, such as {@link EasyScoreCalculator}.
      */
-    ScoreExplanation<Solution_> explainScore(Solution_ solution);
+    ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution);
 
 }

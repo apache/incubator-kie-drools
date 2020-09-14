@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JPanel;
 import javax.swing.JViewport;
@@ -57,7 +58,7 @@ public abstract class SolutionPanel<Solution_> extends JPanel implements Scrolla
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected SolverAndPersistenceFrame solverAndPersistenceFrame;
-    protected SolutionBusiness<Solution_> solutionBusiness;
+    protected SolutionBusiness<Solution_, ?> solutionBusiness;
 
     protected boolean useIndictmentColor = false;
     protected TangoColorFactory normalColorFactory;
@@ -71,11 +72,11 @@ public abstract class SolutionPanel<Solution_> extends JPanel implements Scrolla
         this.solverAndPersistenceFrame = solverAndPersistenceFrame;
     }
 
-    public SolutionBusiness<Solution_> getSolutionBusiness() {
+    public SolutionBusiness<Solution_, ?> getSolutionBusiness() {
         return solutionBusiness;
     }
 
-    public void setSolutionBusiness(SolutionBusiness<Solution_> solutionBusiness) {
+    public void setSolutionBusiness(SolutionBusiness<Solution_, ?> solutionBusiness) {
         this.solutionBusiness = solutionBusiness;
     }
 
@@ -196,7 +197,8 @@ public abstract class SolutionPanel<Solution_> extends JPanel implements Scrolla
             return "<html>No indictment</html>";
         }
         StringBuilder s = new StringBuilder("<html>Indictment: ").append(indictment.getScore().toShortString());
-        for (ConstraintMatch constraintMatch : indictment.getConstraintMatchSet()) {
+        Set<ConstraintMatch> constraintMatchSet = indictment.getConstraintMatchSet();
+        for (ConstraintMatch constraintMatch : constraintMatchSet) {
             s.append("<br/>&nbsp;&nbsp;").append(constraintMatch.getConstraintName())
                     .append(" = ").append(constraintMatch.getScore().toShortString());
         }

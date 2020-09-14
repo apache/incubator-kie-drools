@@ -23,14 +23,14 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.Indictment;
 
-public final class DefaultIndictment implements Indictment {
+public final class DefaultIndictment<Score_ extends Score<Score_>> implements Indictment<Score_> {
 
     private final Object justification;
 
-    private final Set<ConstraintMatch> constraintMatchSet;
-    private Score score;
+    private final Set<ConstraintMatch<Score_>> constraintMatchSet;
+    private Score_ score;
 
-    public DefaultIndictment(Object justification, Score zeroScore) {
+    public DefaultIndictment(Object justification, Score_ zeroScore) {
         this.justification = justification;
         constraintMatchSet = new LinkedHashSet<>();
         score = zeroScore;
@@ -42,12 +42,12 @@ public final class DefaultIndictment implements Indictment {
     }
 
     @Override
-    public Set<ConstraintMatch> getConstraintMatchSet() {
+    public Set<ConstraintMatch<Score_>> getConstraintMatchSet() {
         return constraintMatchSet;
     }
 
     @Override
-    public Score getScore() {
+    public Score_ getScore() {
         return score;
     }
 
@@ -55,7 +55,7 @@ public final class DefaultIndictment implements Indictment {
     // Worker methods
     // ************************************************************************
 
-    public void addConstraintMatch(ConstraintMatch constraintMatch) {
+    public void addConstraintMatch(ConstraintMatch<Score_> constraintMatch) {
         score = score.add(constraintMatch.getScore());
         boolean added = constraintMatchSet.add(constraintMatch);
         if (!added) {
@@ -65,7 +65,7 @@ public final class DefaultIndictment implements Indictment {
         }
     }
 
-    public void removeConstraintMatch(ConstraintMatch constraintMatch) {
+    public void removeConstraintMatch(ConstraintMatch<Score_> constraintMatch) {
         score = score.subtract(constraintMatch.getScore());
         boolean removed = constraintMatchSet.remove(constraintMatch);
         if (!removed) {
@@ -84,7 +84,7 @@ public final class DefaultIndictment implements Indictment {
         if (this == o) {
             return true;
         } else if (o instanceof DefaultIndictment) {
-            DefaultIndictment other = (DefaultIndictment) o;
+            DefaultIndictment<Score_> other = (DefaultIndictment<Score_>) o;
             return justification.equals(other.justification);
         } else {
             return false;
