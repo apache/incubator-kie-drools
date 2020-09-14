@@ -1,7 +1,7 @@
 import React from 'react';
 
-const MockedTaskStateColumn = (): React.ReactElement => {
+const MockedTaskState = (): React.ReactElement => {
   return <></>;
 };
 
-export default MockedTaskStateColumn;
+export default MockedTaskState;

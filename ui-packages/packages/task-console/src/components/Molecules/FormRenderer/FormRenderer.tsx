@@ -10,12 +10,14 @@ import { FormSchema } from '../../../util/uniforms/FormSchema';
 interface IOwnProps {
   formSchema: FormSchema;
   model?: any;
+  readOnly: boolean;
   formSubmitHandler: IFormSubmitHandler;
 }
 
 const FormRenderer: React.FC<IOwnProps> = ({
   formSchema,
   model,
+  readOnly,
   formSubmitHandler
 }) => {
   const validator = new DefaultFormValidator(formSchema);
@@ -36,14 +38,14 @@ const FormRenderer: React.FC<IOwnProps> = ({
     <AutoForm
       placeholder
       model={formData}
-      disabled={formSubmitHandler.getActions().length === 0}
+      disabled={readOnly || formSubmitHandler.getActions().length === 0}
       schema={bridge}
       showInlineError={true}
       onSubmit={formModel => formSubmitHandler.doSubmit(formModel)}
     >
       <ErrorsField />
       <AutoFields />
-      <FormFooter actions={formSubmitHandler.getActions()} />
+      {!readOnly && <FormFooter actions={formSubmitHandler.getActions()} />}
     </AutoForm>
   );
 };

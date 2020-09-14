@@ -1,0 +1,231 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UserTaskInstanceDetailsPage tests Test active task 1`] = `
+<UserTaskInstanceDetailsPage
+  history={
+    Object {
+      "action": "POP",
+      "block": [Function],
+      "createHref": [Function],
+      "go": [Function],
+      "goBack": [Function],
+      "goForward": [Function],
+      "length": 1,
+      "listen": [Function],
+      "location": Object {
+        "hash": "",
+        "pathname": "/",
+        "search": "",
+        "state": undefined,
+      },
+      "push": [Function],
+      "replace": [Function],
+    }
+  }
+  location={
+    Object {
+      "hash": "",
+      "pathname": "/",
+      "search": "",
+      "state": undefined,
+    }
+  }
+  match={
+    Object {
+      "isExact": false,
+      "params": Object {
+        "taskId": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
+      },
+      "path": "",
+      "url": "",
+    }
+  }
+>
+  <div
+    data-ouia-component-type="UserTaskInstanceDetails"
+    data-ouia-safe={true}
+  >
+    <PageSection
+      variant="light"
+    >
+      <section
+        className="pf-c-page__main-section pf-m-light"
+      >
+        <Breadcrumb>
+          <MockedComponent />
+        </Breadcrumb>
+        <MockedPageTitle
+          extra={
+            <MockedTaskState
+              task={
+                Object {
+                  "actualOwner": null,
+                  "adminGroups": Array [],
+                  "adminUsers": Array [],
+                  "completed": null,
+                  "description": null,
+                  "endpoint": "http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                  "excludedUsers": Array [],
+                  "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                  "inputs": "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}",
+                  "lastUpdate": "2020-02-19T11:11:56.282Z",
+                  "name": "VisaApplication",
+                  "outputs": "{}",
+                  "potentialGroups": Array [],
+                  "potentialUsers": Array [],
+                  "priority": "1",
+                  "processId": "travels",
+                  "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
+                  "referenceName": "Apply for visa",
+                  "rootProcessId": null,
+                  "rootProcessInstanceId": null,
+                  "started": "2020-02-19T11:11:56.282Z",
+                  "state": "Ready",
+                }
+              }
+              variant="label"
+            />
+          }
+          title="Apply for visa"
+        />
+        <Text
+          component="small"
+        >
+          <small
+            className=""
+            data-pf-content={true}
+          >
+            ID: 
+            45a73767-5da3-49bf-9c40-d533c3e77ef3
+          </small>
+        </Text>
+      </section>
+    </PageSection>
+    <PageSection>
+      <section
+        className="pf-c-page__main-section"
+      >
+        <Grid
+          className="pf-u-h-100"
+          hasGutter={true}
+          md={1}
+        >
+          <div
+            className="pf-l-grid pf-m-all-1-col-on-md pf-m-gutter pf-u-h-100"
+          >
+            <GridItem
+              className="pf-u-h-100"
+              span={12}
+            >
+              <div
+                className="pf-l-grid__item pf-m-12-col pf-u-h-100"
+              >
+                <Card
+                  className="pf-u-h-100"
+                >
+                  <article
+                    className="pf-c-card pf-u-h-100"
+                    data-ouia-component-id={0}
+                    data-ouia-component-type="PF4/Card"
+                    data-ouia-safe={true}
+                  >
+                    <CardBody
+                      className="pf-u-h-100"
+                    >
+                      <div
+                        className="pf-c-card__body pf-u-h-100"
+                      >
+                        <MockedTaskForm
+                          errorCallback={[Function]}
+                          successCallback={[Function]}
+                          userTaskInstance={
+                            Object {
+                              "actualOwner": null,
+                              "adminGroups": Array [],
+                              "adminUsers": Array [],
+                              "completed": null,
+                              "description": null,
+                              "endpoint": "http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                              "excludedUsers": Array [],
+                              "id": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
+                              "inputs": "{\\"Skippable\\":\\"true\\",\\"trip\\":{\\"city\\":\\"Boston\\",\\"country\\":\\"US\\",\\"begin\\":\\"2020-02-19T23:00:00.000+01:00\\",\\"end\\":\\"2020-02-26T23:00:00.000+01:00\\",\\"visaRequired\\":true},\\"TaskName\\":\\"VisaApplication\\",\\"NodeName\\":\\"Apply for visa\\",\\"traveller\\":{\\"firstName\\":\\"Rachel\\",\\"lastName\\":\\"White\\",\\"email\\":\\"rwhite@gorle.com\\",\\"nationality\\":\\"Polish\\",\\"address\\":{\\"street\\":\\"Cabalone\\",\\"city\\":\\"Zerf\\",\\"zipCode\\":\\"765756\\",\\"country\\":\\"Poland\\"}},\\"Priority\\":\\"1\\"}",
+                              "lastUpdate": "2020-02-19T11:11:56.282Z",
+                              "name": "VisaApplication",
+                              "outputs": "{}",
+                              "potentialGroups": Array [],
+                              "potentialUsers": Array [],
+                              "priority": "1",
+                              "processId": "travels",
+                              "processInstanceId": "9ae7ce3b-d49c-4f35-b843-8ac3d22fa427",
+                              "referenceName": "Apply for visa",
+                              "rootProcessId": null,
+                              "rootProcessInstanceId": null,
+                              "started": "2020-02-19T11:11:56.282Z",
+                              "state": "Ready",
+                            }
+                          }
+                        />
+                      </div>
+                    </CardBody>
+                  </article>
+                </Card>
+              </div>
+            </GridItem>
+          </div>
+        </Grid>
+      </section>
+    </PageSection>
+  </div>
+</UserTaskInstanceDetailsPage>
+`;
+
+exports[`UserTaskInstanceDetailsPage tests Test empty state 1`] = `
+<UserTaskInstanceDetailsPage
+  history={
+    Object {
+      "action": "POP",
+      "block": [Function],
+      "createHref": [Function],
+      "go": [Function],
+      "goBack": [Function],
+      "goForward": [Function],
+      "length": 1,
+      "listen": [Function],
+      "location": Object {
+        "hash": "",
+        "pathname": "/",
+        "search": "",
+        "state": undefined,
+      },
+      "push": [Function],
+      "replace": [Function],
+    }
+  }
+  location={
+    Object {
+      "hash": "",
+      "pathname": "/",
+      "search": "",
+      "state": undefined,
+    }
+  }
+  match={
+    Object {
+      "isExact": false,
+      "params": Object {
+        "taskId": "45a73767-5da3-49bf-9c40-d533c3e77ef3",
+      },
+      "path": "",
+      "url": "",
+    }
+  }
+>
+  <KogitoEmptyState
+    body="Cannot find task with id '45a73767-5da3-49bf-9c40-d533c3e77ef3'"
+    title="Cannot find task"
+    type={3}
+  >
+    <MockedComponent />
+  </KogitoEmptyState>
+</UserTaskInstanceDetailsPage>
+`;

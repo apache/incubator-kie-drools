@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import {
   Breadcrumb,
@@ -7,23 +7,29 @@ import {
   CardBody,
   Grid,
   GridItem,
-  PageSection
+  PageSection,
+  Text,
+  TextVariants
 } from '@patternfly/react-core';
 import {
-  ouiaPageTypeAndObjectId,
-  GraphQL,
   componentOuiaProps,
+  GraphQL,
+  KogitoEmptyState,
+  KogitoEmptyStateType,
+  ouiaPageTypeAndObjectId,
   OUIAProps
 } from '@kogito-apps/common';
-import PageTitle from '../../Molecules/PageTitle/PageTitle';
-import TaskForm from '../../Organisms/TaskForm/TaskForm';
 import TaskConsoleContext, {
   IContext
 } from '../../../context/TaskConsoleContext/TaskConsoleContext';
+import PageTitle from '../../Molecules/PageTitle/PageTitle';
+import TaskState from '../../Atoms/TaskState/TaskState';
+import TaskForm from '../../Organisms/TaskForm/TaskForm';
+import { TaskStateType } from '../../../util/Variants';
 import UserTaskInstance = GraphQL.UserTaskInstance;
 
 interface MatchProps {
-  taskID: string;
+  taskId: string;
 }
 
 const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<
@@ -32,7 +38,9 @@ const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<
   {}
 > &
   OUIAProps> = ({ ouiaId, ouiaSafe, ...props }) => {
-  const id = props.match.params.taskID;
+  const id = props.match.params.taskId;
+
+  const [userTask, setUserTask] = useState<UserTaskInstance>();
 
   const context: IContext<UserTaskInstance> = useContext(TaskConsoleContext);
 
@@ -46,18 +54,39 @@ const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<
     return ouiaPageTypeAndObjectId('user-tasks', id);
   });
 
-  const activeUserTask = context.getActiveItem();
+  useEffect(() => {
+    if (context.getActiveItem()) {
+      setUserTask(context.getActiveItem());
+    }
+  }, []);
+
+  if (!userTask) {
+    return (
+      <KogitoEmptyState
+        type={KogitoEmptyStateType.Info}
+        title={'Cannot find task'}
+        body={`Cannot find task with id '${id}'`}
+      />
+    );
+  }
 
   return (
     <React.Fragment>
       <div {...componentOuiaProps(ouiaId, 'UserTaskInstanceDetails', ouiaSafe)}>
         <PageSection variant="light">
-          <PageTitle title="Task Details" />
           <Breadcrumb>
             <BreadcrumbItem>
-              <Link to={'/'}>Home</Link>
+              <Link to={'/'}>Task Inbox</Link>
             </BreadcrumbItem>
+            <BreadcrumbItem>{userTask.referenceName}</BreadcrumbItem>
           </Breadcrumb>
+
+          <PageTitle
+            title={userTask.referenceName}
+            extra={<TaskState task={userTask} variant={TaskStateType.LABEL} />}
+          />
+
+          <Text component={TextVariants.small}>ID: {userTask.id}</Text>
         </PageSection>
         <PageSection>
           <Grid hasGutter md={1} className="pf-u-h-100">
@@ -65,9 +94,9 @@ const UserTaskInstanceDetailsPage: React.FC<RouteComponentProps<
               <Card className="pf-u-h-100">
                 <CardBody className="pf-u-h-100">
                   <TaskForm
-                    userTaskInstance={activeUserTask}
-                    successCallback={() => props.history.goBack()}
-                    errorCallback={() => props.history.goBack()}
+                    userTaskInstance={userTask}
+                    successCallback={() => props.history.push('/')}
+                    errorCallback={() => props.history.push('/')}
                   />
                 </CardBody>
               </Card>

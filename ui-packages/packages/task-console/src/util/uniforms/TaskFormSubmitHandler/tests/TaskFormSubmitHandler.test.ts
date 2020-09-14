@@ -54,6 +54,7 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 let formData;
 let handler;
 let formSchema;
+let onSubmit;
 let successCallback;
 let errorCallback;
 
@@ -77,11 +78,12 @@ const testSuccessfulRequest = async (phase: string, expectedPayload) => {
   const expectedEndpoint =
     userTaskInstance.endpoint +
     (phase ? '?phase=' + phase : '') +
-    '&user=test&group=group1,group2';
+    '&user=test&group=group1&group=group2';
 
   expect(postParams[0]).toBe(expectedEndpoint);
   expect(postParams[1]).toMatchObject(expectedPayload);
 
+  expect(onSubmit).toBeCalled();
   expect(successCallback).toBeCalledWith(phase);
   expect(errorCallback).not.toBeCalled();
 };
@@ -96,6 +98,7 @@ const testUnSuccessfulRequest = async (
   handler.getActions()[1].execute();
   await handler.doSubmit(formData);
 
+  expect(onSubmit).toBeCalled();
   expect(errorCallback).toBeCalledWith(phase, expecteErrorMessage);
   expect(successCallback).not.toBeCalled();
 };
@@ -112,6 +115,7 @@ const testUnexpectedRequestError = async (
 
   expect(mockedAxios.post).toBeCalled();
 
+  expect(onSubmit).toBeCalled();
   expect(errorCallback).toBeCalledWith(phase, expecteErrorMessage);
   expect(successCallback).not.toBeCalled();
 };
@@ -121,6 +125,7 @@ describe('TaskFormSubmitHandler tests', () => {
     formData = JSON.parse(userTaskInstance.inputs);
 
     formSchema = _.cloneDeep(ApplyForVisaForm);
+    onSubmit = jest.fn();
     successCallback = jest.fn();
     errorCallback = jest.fn();
 
@@ -128,6 +133,7 @@ describe('TaskFormSubmitHandler tests', () => {
       userTaskInstance,
       formSchema,
       testUser,
+      onSubmit,
       successCallback,
       errorCallback
     );
@@ -146,10 +152,14 @@ describe('TaskFormSubmitHandler tests', () => {
     handler = new TaskFormSubmitHandler(
       userTaskInstance,
       formSchema,
+      testUser,
+      onSubmit,
       successCallback,
       errorCallback
     );
     handler.doSubmit({});
+
+    expect(onSubmit).not.toBeCalled();
 
     expect(successCallback).not.toBeCalled();
     expect(errorCallback).not.toBeCalled();
