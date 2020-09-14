@@ -98,6 +98,7 @@ import static java.util.stream.Collectors.toList;
 
 import static org.drools.model.FlowDSL.input;
 import static org.drools.model.impl.NamesGenerator.generateName;
+import static org.drools.model.impl.VariableImpl.GENERATED_VARIABLE_PREFIX;
 
 public class ViewFlowBuilder implements ViewBuilder {
 
@@ -287,7 +288,7 @@ public class ViewFlowBuilder implements ViewBuilder {
     }
 
     private static Variable<?> findPatternVariable(ViewItem viewItem, Set<Variable<?>> vars ) {
-        Variable<?> patternVariable = viewItem.getFirstVariable();
+        Variable<?> patternVariable = findPatternSingleNonGeneratedVariable( viewItem );
         if (!vars.contains( patternVariable )) {
             return patternVariable;
         }
@@ -305,6 +306,22 @@ public class ViewFlowBuilder implements ViewBuilder {
             }
         }
 
+        return patternVariable;
+    }
+
+    private static Variable<?> findPatternSingleNonGeneratedVariable( ViewItem viewItem ) {
+        Variable<?> patternVariable = viewItem.getFirstVariable();
+        if (viewItem instanceof AccumulateExprViewItem && patternVariable == null) {
+            for (Variable itemVar : viewItem.getVariables()) {
+                if (!itemVar.getName().contains( GENERATED_VARIABLE_PREFIX )) {
+                    if (patternVariable == null) {
+                        patternVariable = itemVar;
+                    } else {
+                        return null;
+                    }
+                }
+            }
+        }
         return patternVariable;
     }
 
