@@ -49,10 +49,10 @@
   </build>
   <profiles>
     <profile>
-      <id>persistence-disabled</id>
+      <id>persistence</id>
       <activation>
         <property>
-          <name>persistence-disabled</name>
+          <name>persistence</name>
         </property>
       </activation>
       <build>
