@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.common.business;
 
+import static java.util.stream.Collectors.toList;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,8 +57,6 @@ import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

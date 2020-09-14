@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.common.app;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Map;
@@ -41,9 +44,6 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.optaplanner.examples.common.TestSystemProperties;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 /**
  * Runs an example {@link Solver}.
