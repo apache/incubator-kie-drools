@@ -71,6 +71,14 @@ public class AnnotationsTest extends BaseVariantTest {
             org.eclipse.microprofile.openapi.annotations.media.Schema ann = directionAsField.getDeclaredAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
             Assertions.assertThat(ann).isNotNull();
             Assertions.assertThat(ann.enumeration()).isNotNull().contains("North", "South", "East", "West");
+
+            Field definedKeySet = inputSetClass.getDeclaredField("definedKeySet");
+            org.eclipse.microprofile.openapi.annotations.media.Schema ann2 = definedKeySet.getDeclaredAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
+            Assertions.assertThat(ann2).isNotNull();
+            Assertions.assertThat(ann2.hidden()).isTrue();
+            io.swagger.v3.oas.annotations.media.Schema ann3 = definedKeySet.getDeclaredAnnotation(io.swagger.v3.oas.annotations.media.Schema.class);
+            Assertions.assertThat(ann3).isNotNull();
+            Assertions.assertThat(ann3.hidden()).isTrue();
         }
     }
 

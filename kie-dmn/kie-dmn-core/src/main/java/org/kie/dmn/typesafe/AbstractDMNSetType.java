@@ -26,6 +26,7 @@ import java.util.Optional;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.SimpleAnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
@@ -143,6 +144,18 @@ abstract class AbstractDMNSetType implements TypeDefinition {
         @Override
         public boolean isFinal() {
             return false;
+        }
+
+        @Override
+        public List<AnnotationDefinition> getFieldAnnotations() {
+            List<AnnotationDefinition> annoList = new ArrayList<>();
+            if (codeGenConfig.isWithMPOpenApiAnnotation()) {
+                annoList.add(new SimpleAnnotationDefinition("org.eclipse.microprofile.openapi.annotations.media.Schema").addValue("hidden", "true"));
+            }
+            if (codeGenConfig.isWithIOSwaggerOASv3Annotation()) {
+                annoList.add(new SimpleAnnotationDefinition("io.swagger.v3.oas.annotations.media.Schema").addValue("hidden", "true"));
+            }
+            return annoList;
         }
     }
 }
