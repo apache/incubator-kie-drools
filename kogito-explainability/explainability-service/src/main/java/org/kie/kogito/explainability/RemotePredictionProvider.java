@@ -54,9 +54,10 @@ public class RemotePredictionProvider implements PredictionProvider {
     }
 
     protected WebClient getClient(Vertx vertx, URI uri) {
+        int port = uri.getPort() != -1 ? uri.getPort() : 80;
         return WebClient.create(vertx, new WebClientOptions()
                 .setDefaultHost(uri.getHost())
-                .setDefaultPort(uri.getPort())
+                .setDefaultPort(port)
                 .setSsl("https".equalsIgnoreCase(uri.getScheme()))
                 .setLogActivity(true)
         );
