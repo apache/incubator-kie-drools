@@ -46,7 +46,13 @@ public class KiePMMLRegressionTableClassificationTemplate extends KiePMMLRegress
     }
 
     @Override
-    protected void populateOutputFieldsMap(final Map.Entry<String, Double> predictedEntry, final LinkedHashMap<String, Double> probabilityMap) {
+    protected void populateOutputFieldsMapWithResult(final Object result) {
 
     }
+
+     @Override
+     protected void populateOutputFieldsMapWithProbability(final Map.Entry<String, Double> predictedEntry, final LinkedHashMap<String, Double> probabilityMap) {
+
+     }
+
 }
