@@ -30,6 +30,7 @@ import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDef
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.SimpleAnnotationDefinition;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.runtime.UnaryTestImpl;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -94,16 +95,6 @@ public class DMNDeclaredField implements FieldDefinition {
             annotations.add(new SimpleAnnotationDefinition("com.fasterxml.jackson.annotation.JsonProperty")
                                     .addValue("value", "\"" + originalMapKey + "\""));
         }
-        if (codeGenConfig.isWithMPOpenApiAnnotation()) {
-            if (fieldDMNType.getAllowedValues() != null && !fieldDMNType.getAllowedValues().isEmpty() && getObjectType().equals("java.lang.String")) {
-                String enumeration = fieldDMNType.getAllowedValues().stream()
-                                                 .map(UnaryTestImpl.class::cast)
-                                                 .map(UnaryTestImpl::toString)
-                                                 .collect(Collectors.joining(","));
-                annotations.add(new SimpleAnnotationDefinition("org.eclipse.microprofile.openapi.annotations.media.Schema")
-                                .addValue("enumeration", "{" + enumeration + "}"));
-            }
-        }
         return annotations;
     }
 
@@ -114,7 +105,65 @@ public class DMNDeclaredField implements FieldDefinition {
             Optional<Class<?>> as = index.getJacksonDeserializeAs(fieldDMNType);
             as.ifPresent(asClass -> annotations.add(new SimpleAnnotationDefinition("com.fasterxml.jackson.databind.annotation.JsonDeserialize").addValue("as", asClass.getCanonicalName() + ".class")));
         }
+        if (codeGenConfig.isWithMPOpenApiAnnotation() || codeGenConfig.isWithIOSwaggerOASv3Annotation()) {
+            annotateFieldWithOAS(annotations);
+        }
         return annotations;
+    }
+
+    private void annotateFieldWithOAS(List<AnnotationDefinition> annotations) {
+        if (getObjectType().equals("java.lang.String") && fieldDMNType.getAllowedValues() != null && !fieldDMNType.getAllowedValues().isEmpty()) {
+            annotateFieldWithOASEnumValues(annotations);
+        } else {
+            boolean isTemporal = DMNTypeUtils.isFEELBuiltInType(fieldDMNType) &&
+                                 DMNAllTypesIndex.TEMPORALS.contains(DMNTypeUtils.getFEELBuiltInType(fieldDMNType));
+            boolean isTemporalCollection = fieldDMNType.isCollection() &&
+                                           DMNTypeUtils.isFEELBuiltInType(DMNTypeUtils.genericOfCollection(fieldDMNType)) &&
+                                           DMNAllTypesIndex.TEMPORALS.contains(DMNTypeUtils.getFEELBuiltInType(DMNTypeUtils.genericOfCollection(fieldDMNType)));
+            if (isTemporal || isTemporalCollection) {
+                DMNType temporal = isTemporalCollection ? DMNTypeUtils.genericOfCollection(fieldDMNType) : fieldDMNType;
+                Class<?> clazz = index.getJacksonDeserializeAs(temporal).orElseThrow(IllegalStateException::new);
+                String temporalName = temporal.getName(); // intentionally use DMNType name
+                if (codeGenConfig.isWithMPOpenApiAnnotation()) {
+                    AnnotationDefinition annDef = createOASAnnotationForTemporal("org.eclipse.microprofile.openapi.annotations.media.Schema", clazz, temporalName);
+                    if (isTemporalCollection) {
+                        annDef.addValue("type", "org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY");
+                    }
+                    annotations.add(annDef);
+                }
+                if (codeGenConfig.isWithIOSwaggerOASv3Annotation()) {
+                    AnnotationDefinition annDef = createOASAnnotationForTemporal("io.swagger.v3.oas.annotations.media.Schema", clazz, temporalName);
+                    if (isTemporalCollection) {
+                        annDef.addValue("type", "\"array\"");
+                    }
+                    annotations.add(annDef);
+                }
+            }
+        }
+    }
+
+    private AnnotationDefinition createOASAnnotationForTemporal(String annFQCN, Class<?> clazz, String temporalName) {
+        AnnotationDefinition annDef = new SimpleAnnotationDefinition(annFQCN).addValue("name", "\"" + originalMapKey + "\"")
+                                                                             .addValue("implementation", clazz.getCanonicalName() + ".class");
+        if (SimpleType.YEARS_AND_MONTHS_DURATION.equals(temporalName) || "yearMonthDuration".equals(temporalName)) {
+            annDef.addValue("example", "\"P1Y2M\"");
+        }
+        return annDef;
+    }
+
+    private void annotateFieldWithOASEnumValues(List<AnnotationDefinition> annotations) {
+        String enumeration = fieldDMNType.getAllowedValues().stream()
+                                         .map(UnaryTestImpl.class::cast)
+                                         .map(UnaryTestImpl::toString)
+                                         .collect(Collectors.joining(","));
+        if (codeGenConfig.isWithMPOpenApiAnnotation()) {
+            annotations.add(new SimpleAnnotationDefinition("org.eclipse.microprofile.openapi.annotations.media.Schema").addValue("name", "\"" + originalMapKey + "\"")
+                                                                                                                       .addValue("enumeration", "{" + enumeration + "}"));
+        }
+        if (codeGenConfig.isWithIOSwaggerOASv3Annotation()) {
+            annotations.add(new SimpleAnnotationDefinition("io.swagger.v3.oas.annotations.media.Schema").addValue("name", "\"" + originalMapKey + "\"")
+                                                                                                        .addValue("allowableValues", "{" + enumeration + "}"));
+        }
     }
 
     @Override
