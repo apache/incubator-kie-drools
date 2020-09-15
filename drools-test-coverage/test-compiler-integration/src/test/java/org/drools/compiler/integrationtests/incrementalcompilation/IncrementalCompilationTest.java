@@ -4598,6 +4598,40 @@ public class IncrementalCompilationTest {
     }
 
     @Test
+    public void testIncrementalCompilationFromEmptyProject2() {
+        // DROOLS-5584
+        final String drl1 =
+                "package org.drools.test;\n" +
+                "global java.util.List list;\n" +
+                "rule \"test1\" when then end\n";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        ReleaseId id = ks.newReleaseId("org.test", "foo", "1.0-SNAPSHOT");
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.generateAndWritePomXML(id);
+
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
+
+        assertEquals(0, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size());
+
+        kfs.write("src/main/resources/r1.drl", drl1);
+        final IncrementalResults addResults1 = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/r1.drl").build();
+        assertEquals(0, addResults1.getAddedMessages().size());
+
+        KieContainer kieContainer = ks.newKieContainer(id);
+        KieSession kieSession = kieContainer.newKieSession();
+
+        assertEquals( 1, kieSession.getKieBase().getKiePackages().size() );
+        assertNotNull( kieSession.getKieBase().getKiePackage("org.drools.test") );
+
+        kieSession.setGlobal( "list", new ArrayList() );
+        Collection<String> globals = kieSession.getGlobals().getGlobalKeys();
+        assertEquals( 1, globals.size() );
+        assertEquals( "list", globals.iterator().next() );
+    }
+
+    @Test
     public void testUnusedDeclaredTypeUpdate() throws Exception {
         // DROOLS-5560
         final String drl1 = "package org.example.rules \n" +
