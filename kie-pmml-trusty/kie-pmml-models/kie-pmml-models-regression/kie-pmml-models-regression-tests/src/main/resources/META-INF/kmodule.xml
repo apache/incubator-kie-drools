@@ -37,6 +37,9 @@
   <kbase name="NumericVariablesPolynomialRegression" packages="numericvariablespolynomialregression">
     <ksession name="NumericVariablesPolynomialRegressionSession" type="stateless"/>
   </kbase>
+  <kbase name="OrderApprovalRegression" packages="orderapprovalregression">
+    <ksession name="OrderApprovalRegressionSession" type="stateless"/>
+  </kbase>
   <kbase name="PredictorTermRegression" packages="predictortermregression">
     <ksession name="PredictorTermRegressionSession" type="stateless"/>
   </kbase>

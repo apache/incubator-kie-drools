@@ -69,6 +69,7 @@
       <MiningField name="number_of_claims" usageType="target"/>
     </MiningSchema>
     <Output>
+      <OutputField name="Number of Claims" feature="predictedValue" dataType="double" optype="continuous"/>
       <OutputField name="out_der_fun_car_location_referred" dataType="string" feature="transformedValue">
         <FieldRef field="der_fun_car_location_referred"/>
       </OutputField>
