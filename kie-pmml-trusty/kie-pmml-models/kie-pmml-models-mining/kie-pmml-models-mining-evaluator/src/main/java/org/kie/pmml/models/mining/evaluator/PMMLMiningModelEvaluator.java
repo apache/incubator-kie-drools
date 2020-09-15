@@ -57,7 +57,7 @@ import static org.kie.pmml.evaluator.core.utils.Converter.getUnwrappedParameters
 /**
  * Default <code>PMMLModelExecutor</code> for <b>Mining</b>
  */
-public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
+public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMiningModel> {
 
     private static final Logger logger = LoggerFactory.getLogger(PMMLMiningModelEvaluator.class.getName());
     private static final String EXPECTED_A_KIE_PMMLMINING_MODEL_RECEIVED = "Expected a KiePMMLMiningModel, received %s";
@@ -71,7 +71,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
 
     @Override
     public PMML4Result evaluate(final KieBase knowledgeBase,
-                                final KiePMMLModel model,
+                                final KiePMMLMiningModel model,
                                 final PMMLContext pmmlContext) {
         validate(model);
         return evaluateMiningModel((KiePMMLMiningModel) model, pmmlContext, knowledgeBase);
