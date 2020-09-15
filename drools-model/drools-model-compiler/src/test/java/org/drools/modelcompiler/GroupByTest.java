@@ -437,6 +437,47 @@ public class GroupByTest {
     }
 
     @Test
+    public void testWithGroupByAfterExistsWithFrom() {
+        Global<Map> groupResultVar = D.globalOf(Map.class, "defaultPkg", "glob");
+
+        Variable<Integer> patternVar = D.declarationOf(Integer.class);
+        Variable<String> existsVar = D.declarationOf(String.class);
+        Variable<Integer> keyVar = D.declarationOf(Integer.class);
+        Variable<Long> resultVar = D.declarationOf(Long.class);
+        Variable<Integer> mappedResultVar = D.declarationOf(Integer.class, D.from(resultVar, Long::intValue));
+
+        D.PatternDef<Integer> pattern = D.pattern(patternVar);
+        D.PatternDef<String> exist = D.pattern(existsVar);
+        ViewItem patternAndExists = D.and( pattern, D.exists(exist) );
+
+        ViewItem groupBy = D.groupBy(patternAndExists, patternVar, keyVar, Math::abs,
+                DSL.accFunction(CountAccumulateFunction::new).as(resultVar));
+        PatternDSL.PatternDef mappedResult = D.pattern(mappedResultVar);
+        ConsequenceBuilder._3 consequence = D.on(keyVar, mappedResultVar, groupResultVar)
+                .execute((key, count, result) -> {
+                    result.put(key, count);
+                });
+
+        Rule rule = D.rule("R").build(groupBy, mappedResult, consequence);
+
+        Model model = new ModelImpl().addRule(rule).addGlobal( groupResultVar );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
+        KieSession session = kieBase.newKieSession();
+        Map<Integer, Integer> global = new HashMap<>();
+        session.setGlobal("glob", global);
+
+        session.insert("Something");
+        session.insert(-1);
+        session.insert(1);
+        session.insert(2);
+        session.fireAllRules();
+
+        assertEquals(2, global.size());
+        assertEquals(2, (int) global.get(1)); // -1 and 1 will map to the same key, and count twice.
+        assertEquals(1, (int) global.get(2)); // 2 maps to a key, and counts once.
+    }
+
+    @Test
     public void testGroupBy2Vars() throws Exception {
         final Global<Map> var_results = D.globalOf(Map.class, "defaultpkg", "results");
 

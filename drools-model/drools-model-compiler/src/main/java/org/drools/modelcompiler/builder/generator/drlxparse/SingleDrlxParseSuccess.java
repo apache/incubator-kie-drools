@@ -46,7 +46,7 @@ import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.NOT_EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.OR;
-import static org.drools.modelcompiler.builder.generator.visitor.pattern.PatternDSL.GENERATED_PATTERN_PREFIX;
+import static org.drools.model.impl.VariableImpl.GENERATED_VARIABLE_PREFIX;
 import static org.drools.modelcompiler.util.ClassUtil.getAccessibleProperties;
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
@@ -213,7 +213,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     }
 
     public boolean hasGeneratedPatternBinding() {
-        return patternBinding != null && patternBinding.startsWith( GENERATED_PATTERN_PREFIX );
+        return patternBinding != null && patternBinding.startsWith( GENERATED_VARIABLE_PREFIX );
     }
 
     public void setExpr(Expression expr) {
