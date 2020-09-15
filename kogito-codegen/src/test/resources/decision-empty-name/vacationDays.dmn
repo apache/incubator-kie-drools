@@ -123,8 +123,8 @@
   <dmn:decisionService id="_fcf22829-0fd8-4f41-919e-3e909f01fbff" name="days">
     <dmn:extensionElements/>
     <dmn:variable id="_8ea3497e-8969-4aa6-9a39-254e4e8edea5" name="days" typeRef="Any"/>
+    <dmn:outputDecision href="#_5b8d18fb-39d8-4f5c-84a0-b79913b7aded"/>
     <dmn:encapsulatedDecision href="#_eac3ef9e-37de-4dca-8802-ee08ded9e268"/>
-    <dmn:encapsulatedDecision href="#_5b8d18fb-39d8-4f5c-84a0-b79913b7aded"/>
     <dmn:inputData href="#_89e85ee4-f052-4977-bee5-a3b81a600c6c"/>
   </dmn:decisionService>
   <dmndi:DMNDI>
