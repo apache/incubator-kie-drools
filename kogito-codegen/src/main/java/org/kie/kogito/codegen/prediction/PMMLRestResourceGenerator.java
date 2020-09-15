@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import org.drools.core.util.StringUtils;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.CodegenUtils;
@@ -32,6 +31,7 @@ import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
 import static com.github.javaparser.StaticJavaParser.parse;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
 public class PMMLRestResourceGenerator {
 
@@ -50,9 +50,9 @@ public class PMMLRestResourceGenerator {
     public PMMLRestResourceGenerator(KiePMMLModel model, String appCanonicalName) {
         this.kiePMMLModel = model;
         this.packageName = "org.kie.kogito." + CodegenStringUtil.escapeIdentifier(model.getClass().getPackage().getName());
-        this.nameURL = URLEncoder.encode(model.getName()).replaceAll("\\+", "%20");
+        String classPrefix = getSanitizedClassName(model.getName());
+        this.nameURL = URLEncoder.encode(classPrefix).replaceAll("\\+", "%20");
         this.appCanonicalName = appCanonicalName;
-        String classPrefix = StringUtils.ucFirst(model.getName());
         this.resourceClazzName = classPrefix + "Resource";
         this.relativePath = packageName.replace(".", "/") + "/" + resourceClazzName + ".java";
     }

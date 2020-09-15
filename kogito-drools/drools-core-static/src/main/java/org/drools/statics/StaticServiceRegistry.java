@@ -27,6 +27,7 @@ import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.api.internal.runtime.KieRuntimeService;
 import org.kie.api.internal.runtime.KieRuntimes;
 import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.weaver.KieWeaverService;
 import org.kie.api.internal.weaver.KieWeavers;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
@@ -72,17 +73,15 @@ public class StaticServiceRegistry implements ServiceRegistry {
         constructorMap.put("TimerService", SimpleInstanceCreator.constructor("org.drools.core.time.impl.JDKTimerService"));
 
         registerKieRuntimeService("org.kie.pmml.evaluator.api.executor.PMMLRuntime", "org.kie.pmml.evaluator.core.service.PMMLRuntimeService", false);
+        registerKieWeaverService("org.kie.pmml.evaluator.assembler.PMMLWeaverService", false);
+
     }
 
     private void registerService(String service, String implementation, boolean mandatory) {
         try {
             serviceMap.put(Class.forName(service), SimpleInstanceCreator.instance(implementation));
         } catch (Exception e) {
-            if (mandatory) {
-                throw e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e);
-            } else {
-                log.debug("Ignored non-mandatory service load error", e);
-            }
+            commonManageException(service, e, mandatory);
         }
     }
 
@@ -91,11 +90,25 @@ public class StaticServiceRegistry implements ServiceRegistry {
             KieRuntimeService kieRuntimeService = (KieRuntimeService)SimpleInstanceCreator.instance(kieRuntimeServiceImplementation);
             ((KieRuntimes) serviceMap.get(KieRuntimes.class)).getRuntimes().put(runtimeName, kieRuntimeService);
         } catch (Exception e) {
-            if (mandatory) {
-                throw e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e);
-            } else {
-                log.debug("Ignored non-mandatory KieRuntimes service load error", e);
-            }
+            commonManageException("KieRuntimes", e, mandatory);
+        }
+    }
+
+    private void registerKieWeaverService(String kieWeaverServiceImplementation, boolean mandatory) {
+        try {
+            final KieWeaversImpl kieWeavers = (KieWeaversImpl) serviceMap.get(KieWeavers.class);
+            KieWeaverService kieWeaverService = (KieWeaverService) SimpleInstanceCreator.instance(kieWeaverServiceImplementation);
+            kieWeavers.accept(kieWeaverService);
+        } catch (Exception e) {
+            commonManageException("KieWeaverService", e, mandatory);
+        }
+    }
+
+    private void commonManageException(String ignoredServiceType, Exception e, boolean mandatory ) {
+        if (mandatory) {
+            throw e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e);
+        } else {
+            log.debug("Ignored non-mandatory {} service load error", ignoredServiceType, e);
         }
     }
 
@@ -132,7 +145,7 @@ public class StaticServiceRegistry implements ServiceRegistry {
                                       type,
                                       configuration);
             } else {
-                log.debug("KieAssemblers: ignored " + type);
+                log.debug("KieAssemblers: ignored {}", type);
             }
         }
 
@@ -142,7 +155,7 @@ public class StaticServiceRegistry implements ServiceRegistry {
             if (assembler != null) {
                 assembler.addResources(knowledgeBuilder, resources, type);
             } else {
-                log.debug("KieAssemblers: ignored " + type);
+                log.debug("KieAssemblers: ignored {}", type);
             }
         }
     }

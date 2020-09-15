@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,7 @@ import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.io.CollectedResource;
 import org.kie.kogito.codegen.prediction.config.PredictionConfigGenerator;
 import org.kie.kogito.codegen.rules.RuleCodegenError;
+import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLFactoryModel;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -83,12 +84,11 @@ public class PredictionCodegen extends AbstractGenerator {
             logger.info("jpmml libraries available on classpath, skipping kie-pmml parsing and compilation");
             return ofPredictions(Collections.emptyList());
         }
-        List<PMMLResource> dmnResources = resources.stream()
+        List<PMMLResource> pmmlResources = resources.stream()
                 .filter(r -> r.resource().getResourceType() == ResourceType.PMML)
-                .flatMap(r -> parsePredictions(r.basePath(),
-                                               Collections.singletonList(r.resource())).stream())
+                .flatMap(r -> parsePredictions(r.basePath(), Collections.singletonList(r.resource())).stream())
                 .collect(toList());
-        return ofPredictions(dmnResources);
+        return ofPredictions(pmmlResources);
     }
 
     private static PredictionCodegen ofPredictions(List<PMMLResource> resources) {
@@ -147,15 +147,26 @@ public class PredictionCodegen extends AbstractGenerator {
         if (resources.isEmpty()) {
             return Collections.emptyList();
         }
-        ModelBuilderImpl<KogitoPackageSources> modelBuilder = new ModelBuilderImpl<>(KogitoPackageSources::dumpSources,
-                                                                                     new KnowledgeBuilderConfigurationImpl(getClass().getClassLoader()), new ReleaseIdImpl("dummy:dummy:0.0.0"), true, false);
-        CompositeKnowledgeBuilder batch = modelBuilder.batch();
         for (PMMLResource resource : resources) {
+            ModelBuilderImpl<KogitoPackageSources> modelBuilder =
+                    new ModelBuilderImpl<>(KogitoPackageSources::dumpSources,
+                                           new KnowledgeBuilderConfigurationImpl(getClass().getClassLoader()),
+                                           new ReleaseIdImpl("dummy:dummy:0.0.0"), true, false);
+            CompositeKnowledgeBuilder batch = modelBuilder.batch();
             List<KiePMMLModel> kiepmmlModels = resource.getKiePmmlModels();
-            for (KiePMMLModel model : kiepmmlModels) {
-                if (model.getName() == null || model.getName().isEmpty()) {
-                    String errorMessage = String.format("Model name should not be empty inside %s",
-                                                        resource.getModelPath());
+            addModels(kiepmmlModels, resource, batch);
+            List<String> generatedRuleMappers = new ArrayList<>();
+            generatedFiles.addAll(generateRules(modelBuilder, batch, generatedRuleMappers));
+            addPredictionRulesMapper(kiepmmlModels.get(0).getKModulePackageName(), generatedRuleMappers);
+        }
+        return generatedFiles;
+    }
+
+    private void addModels(final List<KiePMMLModel> kiepmmlModels, final PMMLResource resource,
+                           final CompositeKnowledgeBuilder batch) {
+        for (KiePMMLModel model : kiepmmlModels) {
+            if (model.getName() == null || model.getName().isEmpty()) {
+                    String errorMessage = String.format("Model name should not be empty inside %s", resource.getModelPath());
                     throw new RuntimeException(errorMessage);
                 }
                 if (!(model instanceof HasSourcesMap)) {
@@ -170,26 +181,35 @@ public class PredictionCodegen extends AbstractGenerator {
                     storeFile(GeneratedFile.Type.PMML, path, sourceMapEntry.getValue());
                 }
                 if (model instanceof KiePMMLDroolsModelWithSources) {
-                    PackageDescr packageDescr = ((KiePMMLDroolsModelWithSources) model).getPackageDescr();
-                    batch.add(new DescrResource(packageDescr), ResourceType.DESCR);
+                    PackageDescr packageDescr = ((KiePMMLDroolsModelWithSources)model).getPackageDescr();
+                    batch.add( new DescrResource( packageDescr ), ResourceType.DESCR );
                 }
                 if (!(model instanceof KiePMMLFactoryModel)) {
-                    PMMLRestResourceGenerator resourceGenerator = new PMMLRestResourceGenerator(model,
-                                                                                                applicationCanonicalName)
-                            .withDependencyInjection(annotator);
-                    storeFile(GeneratedFile.Type.PMML, resourceGenerator.generatedFilePath(),
-                              resourceGenerator.generate());
-                }
+                PMMLRestResourceGenerator resourceGenerator = new PMMLRestResourceGenerator(model,
+                                                                                            applicationCanonicalName)
+                        .withDependencyInjection(annotator);
+                    storeFile(GeneratedFile.Type.PMML, resourceGenerator.generatedFilePath(), resourceGenerator.generate());
+            }
+            if (model instanceof HasNestedModels) {
+                addModels(((HasNestedModels) model).getNestedModels(), resource, batch);
             }
         }
+    }
 
-        generatedFiles.addAll(generateRules(modelBuilder, batch));
-
-        return generatedFiles;
+    private void addPredictionRulesMapper(final String packageName, final List<String> generatedRuleMappers) {
+        String source = PredictionRuleMappersGenerator.getPredictionRuleMappersSource(packageName,
+                                                                                      generatedRuleMappers);
+        final String predictionRulesMapperPath = packageName + File.separator +
+                "PredictionRuleMappersImpl" +
+                ".java";
+        final String predictionRulesMapperClass = predictionRulesMapperPath.replace(File.separator, ".").replace(".java", "");
+        moduleGenerator.addPredictionRulesMapperClass(predictionRulesMapperClass);
+        storeFile(GeneratedFile.Type.CLASS, predictionRulesMapperPath, source);
     }
 
     private List<GeneratedFile> generateRules(ModelBuilderImpl<KogitoPackageSources> modelBuilder,
-                                              CompositeKnowledgeBuilder batch) {
+                                              CompositeKnowledgeBuilder batch,
+                                              List<String> generatedRuleMappers) {
         try {
             batch.build();
         } catch (RuntimeException e) {
@@ -207,17 +227,18 @@ public class PredictionCodegen extends AbstractGenerator {
             throw new RuleCodegenError(modelBuilder.getErrors().getErrors());
         }
 
-        return generateModels(modelBuilder).stream().map(f -> new org.kie.kogito.codegen.GeneratedFile(
+        return generateModels(modelBuilder, generatedRuleMappers).stream().map(f -> new org.kie.kogito.codegen.GeneratedFile(
                 org.kie.kogito.codegen.GeneratedFile.Type.RULE,
                 f.getPath(), f.getData())).collect(toList());
     }
 
-    private List<org.drools.modelcompiler.builder.GeneratedFile> generateModels(ModelBuilderImpl<KogitoPackageSources> modelBuilder) {
+    private List<org.drools.modelcompiler.builder.GeneratedFile> generateModels(ModelBuilderImpl<KogitoPackageSources> modelBuilder, List<String> generatedRuleMappers) {
         List<org.drools.modelcompiler.builder.GeneratedFile> toReturn = new ArrayList<>();
         for (KogitoPackageSources pkgSources : modelBuilder.getPackageSources()) {
-
             pkgSources.collectGeneratedFiles(toReturn);
-            toReturn.add(getRuleMapperClass(pkgSources));
+            org.drools.modelcompiler.builder.GeneratedFile ruleMapperClassFile = getRuleMapperClass(pkgSources);
+            toReturn.add(ruleMapperClassFile);
+            generatedRuleMappers.add(ruleMapperClassFile.getPath().replace(File.separator, ".").replace(".java", ""));
             org.drools.modelcompiler.builder.GeneratedFile reflectConfigSource = pkgSources.getReflectConfigSource();
             if (reflectConfigSource != null) {
                 toReturn.add(new org.drools.modelcompiler.builder.GeneratedFile(org.drools.modelcompiler.builder.GeneratedFile.Type.RULE, "../../classes/" + reflectConfigSource.getPath(), new String(reflectConfigSource.getData(), StandardCharsets.UTF_8)));
@@ -231,9 +252,11 @@ public class PredictionCodegen extends AbstractGenerator {
         final String fullRuleName =
                 pkgSources.getModelsByUnit().values().stream().filter(i -> i.endsWith("." + rulesFileName))
                         .findFirst().orElseThrow(() -> new RuntimeException("Failed to find mapped Rule file " + rulesFileName));
-        final String predictionRuleMapperPath =
-                fullRuleName.substring(0, fullRuleName.lastIndexOf('.')) + File.separator + "PredictionRuleMapperImpl" +
-                        ".java";
+        final String predictionRuleMapperDirectoryPath =
+                fullRuleName.substring(0, fullRuleName.lastIndexOf('.')).replace(".", File.separator);
+        final String predictionRuleMapperPath = predictionRuleMapperDirectoryPath + File.separator +
+                "PredictionRuleMapperImpl" +
+                ".java";
         final String predictionRuleMapperSource =
                 PredictionRuleMapperGenerator.getPredictionRuleMapperSource(fullRuleName);
         return new org.drools.modelcompiler.builder.GeneratedFile(org.drools.modelcompiler.builder.GeneratedFile.Type.CLASS, predictionRuleMapperPath, predictionRuleMapperSource);

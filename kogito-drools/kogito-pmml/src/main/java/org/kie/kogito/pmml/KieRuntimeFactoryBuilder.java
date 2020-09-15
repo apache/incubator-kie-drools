@@ -15,6 +15,15 @@
  */
 package org.kie.kogito.pmml;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.PackageDescr;
@@ -27,7 +36,9 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.kogito.prediction.PredictionRuleMapper;
+import org.kie.kogito.prediction.PredictionRuleMappers;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.api.container.PMMLPackage;
 import org.kie.pmml.evaluator.assembler.container.PMMLPackageImpl;
@@ -35,14 +46,6 @@ import org.kie.pmml.evaluator.assembler.service.PMMLCompilerService;
 import org.kie.pmml.evaluator.assembler.service.PMMLLoaderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.stream.Stream;
 
 import static org.kie.pmml.evaluator.assembler.service.PMMLAssemblerService.getFactoryClassNamePackageName;
 
@@ -70,63 +73,69 @@ public class KieRuntimeFactoryBuilder {
             final BiFunction<KnowledgeBuilderImpl, Resource, List<KiePMMLModel>> modelProducer) {
         final Map<KieBase, KieRuntimeFactory> toReturn = new HashMap<>();
         resources.forEach(resource -> {
-            final String[] factoryClassNamePackageName = getFactoryClassNamePackageName(resource);
             final KnowledgeBuilderImpl kbuilderImpl = createKnowledgeBuilderImpl(resource);
             List<KiePMMLModel> toAdd = modelProducer.apply(kbuilderImpl, resource);
             if (toAdd.isEmpty()) {
                 throw new KiePMMLException("Failed to retrieve compiled models");
             }
-            for (KiePMMLModel kiePMMLModel : toAdd) {
-                InternalKnowledgePackage internalKnowledgePackage =
-                        kbuilderImpl.getKnowledgeBase().getPackage(factoryClassNamePackageName[1]);
-                if (internalKnowledgePackage == null) {
-                    PackageDescr pkgDescr = new PackageDescr(kiePMMLModel.getKModulePackageName());
-                    PackageRegistry pkgReg = kbuilderImpl.getOrCreatePackageRegistry(pkgDescr);
-                    internalKnowledgePackage = pkgReg.getPackage();
-                }
-                PMMLPackage pmmlPkg =
-                        internalKnowledgePackage.getResourceTypePackages().computeIfAbsent(
-                                ResourceType.PMML,
-                                rtp -> new PMMLPackageImpl());
-                pmmlPkg.addAll(Collections.singletonList(kiePMMLModel));
-            }
+            addModels(kbuilderImpl, toAdd);
             KieBase kieBase = kbuilderImpl.getKnowledgeBase();
             toReturn.put(kieBase, KieRuntimeFactory.of(kieBase));
         });
         return toReturn;
     }
 
+    private static void addModels(final KnowledgeBuilderImpl kbuilderImpl, final List<KiePMMLModel> toAdd) {
+        for (KiePMMLModel kiePMMLModel : toAdd) {
+            PackageDescr pkgDescr = new PackageDescr(kiePMMLModel.getKModulePackageName());
+            PackageRegistry pkgReg = kbuilderImpl.getOrCreatePackageRegistry(pkgDescr);
+            InternalKnowledgePackage kpkgs = pkgReg.getPackage();
+            PMMLPackage pmmlPkg =
+                    kpkgs.getResourceTypePackages().computeIfAbsent(
+                            ResourceType.PMML,
+                            rtp -> new PMMLPackageImpl());
+            pmmlPkg.addAll(Collections.singletonList(kiePMMLModel));
+            if (kiePMMLModel instanceof HasNestedModels) {
+                addModels(kbuilderImpl, ((HasNestedModels) kiePMMLModel).getNestedModels());
+            }
+        }
+    }
+
     private static KnowledgeBuilderImpl createKnowledgeBuilderImpl(final Resource resource) {
         KnowledgeBaseImpl defaultKnowledgeBase = new KnowledgeBaseImpl("PMML", null);
         KnowledgeBuilderImpl toReturn = new KnowledgeBuilderImpl(defaultKnowledgeBase);
-        PredictionRuleMapper pmmlRuleMapper = loadPMMLRuleMapper(toReturn.getRootClassLoader(), resource);
-        if (pmmlRuleMapper != null) {
-            String ruleName = pmmlRuleMapper.getRuleName();
-            Model model = loadModel(toReturn.getRootClassLoader(), ruleName);
-            toReturn = new KnowledgeBuilderImpl(KieBaseBuilder.createKieBaseFromModel(model));
+        List<PredictionRuleMapper> pmmlRuleMappers = loadPMMLRuleMappers(toReturn.getRootClassLoader(), resource);
+        if (!pmmlRuleMappers.isEmpty()) {
+            List<Model> models =
+                    pmmlRuleMappers.stream()
+                            .map(PredictionRuleMapper::getModel)
+                            .collect(Collectors.toList());
+            toReturn = new KnowledgeBuilderImpl(KieBaseBuilder.createKieBaseFromModel(models));
         }
         return toReturn;
     }
 
-    private static PredictionRuleMapper loadPMMLRuleMapper(final ClassLoader classLoader,
-                                                           final Resource resource) {
-        String[] classNamePackageName = getFactoryClassNamePackageName(resource);
-        String packageName = classNamePackageName[1];
-        String fullPMMLRuleMapperClassName = packageName + ".PredictionRuleMapperImpl";
-        try {
-            return (PredictionRuleMapper) classLoader.loadClass(fullPMMLRuleMapperClassName).getDeclaredConstructor().newInstance();
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | ClassCastException | NoSuchMethodException | InvocationTargetException e) {
-            logger.info(String.format("%s class not found in rootClassLoader", fullPMMLRuleMapperClassName));
-            return null;
-        }
+    private static List<PredictionRuleMapper> loadPMMLRuleMappers(final ClassLoader classLoader,
+                                                                  final Resource resource) {
+        Optional<PredictionRuleMappers> predictionRuleMappers = loadPMMLRuleMappersClass(classLoader, resource);
+        return predictionRuleMappers.map(PredictionRuleMappers::getPredictionRuleMappers).orElse(Collections.emptyList());
     }
 
-    private static Model loadModel(final ClassLoader classLoader, final String ruleName) {
+    private static Optional<PredictionRuleMappers> loadPMMLRuleMappersClass(final ClassLoader classLoader,
+                                                                            final Resource resource) {
+        String[] classNamePackageName = getFactoryClassNamePackageName(resource);
+        String packageName = classNamePackageName[1];
+        String fullPMMLRuleMappersClassName = packageName + ".PredictionRuleMappersImpl";
         try {
-            return (Model) classLoader.loadClass(ruleName).getDeclaredConstructor().newInstance();
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | ClassCastException | NoSuchMethodException | InvocationTargetException e) {
-            logger.info(String.format("%s class not found in rootClassLoader", ruleName));
-            throw new KiePMMLException(String.format("Failed to load or instantiate %s ", ruleName));
+            PredictionRuleMappers predictionRuleMappers =
+                    (PredictionRuleMappers) classLoader.loadClass(fullPMMLRuleMappersClassName).getDeclaredConstructor().newInstance();
+            return Optional.of(predictionRuleMappers);
+        } catch (ClassNotFoundException e) {
+            logger.debug("{} class not found in rootClassLoader", fullPMMLRuleMappersClassName);
+            return Optional.empty();
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("%s class not instantiable",
+                                                     fullPMMLRuleMappersClassName), e);
         }
     }
 }

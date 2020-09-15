@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 
 package org.kie.kogito.codegen.prediction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.github.javaparser.StaticJavaParser;
@@ -40,6 +41,7 @@ public class PredictionContainerGenerator extends AbstractApplicationSection {
     final List<PMMLResource> resources;
     final String applicationCanonicalName;
     AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
+    final List<String> predictionRulesMapperClasses = new ArrayList<>();
 
     public PredictionContainerGenerator(String applicationCanonicalName, List<PMMLResource> resources) {
         super("PredictionModels", "predictionModels", PredictionModels.class);
@@ -60,6 +62,10 @@ public class PredictionContainerGenerator extends AbstractApplicationSection {
         return typeDeclaration;
     }
 
+    public void addPredictionRulesMapperClass(String predictionRulesMapperClass) {
+        predictionRulesMapperClasses.add(predictionRulesMapperClass);
+    }
+
     private void populateStaticKieRuntimeFactoryFunctionInit(ClassOrInterfaceDeclaration typeDeclaration) {
         final InitializerDeclaration staticDeclaration = typeDeclaration.getMembers()
                 .stream()
@@ -68,13 +74,13 @@ public class PredictionContainerGenerator extends AbstractApplicationSection {
                 .map(member -> (InitializerDeclaration) member)
                 .orElseThrow(() -> MODIFIED_TEMPLATE_EXCEPTION);
         final NodeList<Statement> statements = staticDeclaration.getBody().getStatements();
-        final VariableDeclarationExpr variableDeclarationExpr = statements.stream()
+        final VariableDeclarationExpr kieRuntimeFactories = statements.stream()
                 .filter(statement -> statement instanceof ExpressionStmt && ((ExpressionStmt) statement).getExpression() instanceof VariableDeclarationExpr)
                 .map(statement -> (VariableDeclarationExpr) ((ExpressionStmt) statement).getExpression())
                 .filter(expression -> expression.getVariable(0).getName().asString().equals("kieRuntimeFactories"))
                 .findFirst()
                 .orElseThrow(() -> MODIFIED_TEMPLATE_EXCEPTION);
-        final MethodCallExpr methodCallExpr = variableDeclarationExpr.getVariable(0)
+        MethodCallExpr methodCallExpr = kieRuntimeFactories.getVariable(0)
                 .getInitializer()
                 .map(expression -> (MethodCallExpr) expression)
                 .orElseThrow(() -> MODIFIED_TEMPLATE_EXCEPTION);

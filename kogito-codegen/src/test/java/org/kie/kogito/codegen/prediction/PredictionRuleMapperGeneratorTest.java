@@ -12,7 +12,7 @@ class PredictionRuleMapperGeneratorTest {
         final String fullRuleName = "FULL_RULE_NAME";
         String retrieved = PredictionRuleMapperGenerator.getPredictionRuleMapperSource(fullRuleName);
         assertNotNull(retrieved);
-        String expected = String.format("public final static String ruleName = \"%s\";", fullRuleName);
+        String expected = String.format("public final static Model model = new %s();", fullRuleName);
         assertTrue(retrieved.contains(expected));
     }
 
@@ -25,7 +25,7 @@ class PredictionRuleMapperGeneratorTest {
         assertNotNull(retrieved);
         String expected = String.format("package %s;", packageName);
         assertTrue(retrieved.contains(expected));
-        expected = String.format("public final static String ruleName = \"%s\";", fullRuleName);
+        expected = String.format("public final static Model model = new %s();", fullRuleName);
         assertTrue(retrieved.contains(expected));
     }
 }

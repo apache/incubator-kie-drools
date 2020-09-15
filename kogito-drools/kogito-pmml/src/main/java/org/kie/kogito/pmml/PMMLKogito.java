@@ -51,6 +51,9 @@ public class PMMLKogito {
      * Internal Utility class.<br/>
      * Use {@link Application#predictionModels()} of Kogito API to programmatically access PMML assets and evaluate
      * PMML decisions.
+     *
+     * @param pmmlPaths
+     * @return
      */
     public static Map<KieBase, KieRuntimeFactory> createKieRuntimeFactories(String... pmmlPaths) {
         return commonCreateKieRuntimeFactory(KieRuntimeFactoryBuilder::fromResources, pmmlPaths);

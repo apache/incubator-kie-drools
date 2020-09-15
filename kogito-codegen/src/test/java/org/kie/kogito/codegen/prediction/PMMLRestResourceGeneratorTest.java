@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.kie.kogito.codegen.prediction.PMMLRestResourceGenerator.TEMPLATE_JAVA;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
 class PMMLRestResourceGeneratorTest {
 
@@ -90,7 +91,8 @@ class PMMLRestResourceGeneratorTest {
 
     @Test
     void getNameURL() {
-        String expected = URLEncoder.encode(KIE_PMML_MODEL.getName()).replaceAll("\\+", "%20");
+        String classPrefix = getSanitizedClassName(KIE_PMML_MODEL.getName());
+        String expected = URLEncoder.encode(classPrefix).replaceAll("\\+", "%20");
         assertEquals(expected, pmmlRestResourceGenerator.getNameURL());
     }
 
@@ -111,7 +113,8 @@ class PMMLRestResourceGeneratorTest {
 
     @Test
     void className() {
-        String expected = StringUtils.ucFirst(KIE_PMML_MODEL.getName()) + "Resource";
+        String classPrefix = getSanitizedClassName(KIE_PMML_MODEL.getName());
+        String expected = StringUtils.ucFirst(classPrefix) + "Resource";
         assertEquals(expected, pmmlRestResourceGenerator.className());
     }
 
@@ -119,7 +122,8 @@ class PMMLRestResourceGeneratorTest {
     void generatedFilePath() {
         String retrieved = pmmlRestResourceGenerator.generatedFilePath();
         assertTrue(retrieved.startsWith("org/kie/kogito"));
-        String expected = StringUtils.ucFirst(KIE_PMML_MODEL.getName()) + "Resource.java";
+        String classPrefix = getSanitizedClassName(KIE_PMML_MODEL.getName());
+        String expected = StringUtils.ucFirst(classPrefix) + "Resource.java";
         assertTrue(retrieved.endsWith(expected));
     }
 
@@ -139,7 +143,8 @@ class PMMLRestResourceGeneratorTest {
         assertEquals("Path", retrieved.getName().asString());
         pmmlRestResourceGenerator.setPathValue(template);
         try {
-            String expected = URLEncoder.encode(KIE_PMML_MODEL.getName()).replaceAll("\\+", "%20");
+            String classPrefix = getSanitizedClassName(KIE_PMML_MODEL.getName());
+            String expected = URLEncoder.encode(classPrefix).replaceAll("\\+", "%20");
             assertEquals(expected, retrieved.getMemberValue().asStringLiteralExpr().asString());
         } catch (Exception e) {
             fail(e);
@@ -170,9 +175,10 @@ class PMMLRestResourceGeneratorTest {
 
     private void commonEvaluateGenerate(String retrieved) {
         assertNotNull(retrieved);
-        String expected = String.format("@Path(\"%s\")", KIE_PMML_MODEL.getName());
+        String classPrefix = getSanitizedClassName(KIE_PMML_MODEL.getName());
+        String expected = String.format("@Path(\"%s\")", classPrefix);
         assertTrue(retrieved.contains(expected));
-        expected = StringUtils.ucFirst(KIE_PMML_MODEL.getName()) + "Resource";
+        expected = StringUtils.ucFirst(classPrefix) + "Resource";
         expected = String.format("public class %s {", expected);
         assertTrue(retrieved.contains(expected));
         expected = String.format("org.kie.kogito.prediction.PredictionModel prediction = application.predictionModels" +

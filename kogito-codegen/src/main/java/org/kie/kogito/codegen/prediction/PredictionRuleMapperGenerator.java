@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 
 public class PredictionRuleMapperGenerator {
@@ -39,8 +40,10 @@ public class PredictionRuleMapperGenerator {
         }
         ClassOrInterfaceDeclaration typeDeclaration = (ClassOrInterfaceDeclaration) clazz.getTypes().get(0);
         FieldDeclaration ruleNameField =
-                typeDeclaration.getFieldByName("ruleName").orElseThrow(() -> new RuntimeException("The template " + TEMPLATE_JAVA + " has been modified."));
-        ruleNameField.getVariables().get(0).setInitializer(new StringLiteralExpr(fullRuleName));
+                typeDeclaration.getFieldByName("model").orElseThrow(() -> new RuntimeException("The template " + TEMPLATE_JAVA + " has been modified."));
+        ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
+        objectCreationExpr.setType(fullRuleName);
+        ruleNameField.getVariables().get(0).setInitializer(objectCreationExpr);
         return clazz.toString();
     }
 }

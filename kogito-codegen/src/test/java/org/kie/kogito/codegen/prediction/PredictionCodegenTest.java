@@ -46,7 +46,7 @@ public class PredictionCodegenTest extends AbstractCodegenTest {
         codeGenerator.setContext(context);
 
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
-        assertEquals(4, generatedFiles.size());
+        assertEquals(5, generatedFiles.size());
 
         ClassOrInterfaceDeclaration classDeclaration = codeGenerator.moduleGenerator().classDeclaration();
         assertNotNull(classDeclaration);
