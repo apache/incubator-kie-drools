@@ -149,6 +149,13 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
         return exprDSL;
     }
 
+    protected MethodCallExpr buildTemporalExpression(SingleDrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL) {
+        if (drlxParseResult.getPatternBinding() != null) {
+            exprDSL.addArgument(context.getVarExpr(drlxParseResult.getPatternBinding()));
+        }
+        return super.buildTemporalExpression(drlxParseResult, exprDSL);
+    }
+
     @Override
     public MethodCallExpr buildBinding(SingleDrlxParseSuccess drlxParseResult) {
         MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);

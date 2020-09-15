@@ -18,7 +18,9 @@ package org.drools.modelcompiler.builder.generator.expression;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -348,49 +350,65 @@ public abstract class AbstractExpressionBuilder {
     }
 
     protected MethodCallExpr buildTemporalExpression(SingleDrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL) {
-        if (drlxParseResult.getLeft() != null) {
-            if (!drlxParseResult.getLeft().getExpression().isNameExpr()) {
-                Expression varExpr = getVariableFromExpression(drlxParseResult.getLeft(), drlxParseResult);
-                if (varExpr != null) {
-                    exprDSL.addArgument(varExpr);
-                }
+        boolean thisOnRight = isThisOnRight(drlxParseResult);
+
+        // function for "this" should be added first
+        if (thisOnRight) {
+            if (drlxParseResult.getRight() != null && !drlxParseResult.getRight().getExpression().isNameExpr()) {
+                exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getRight(), drlxParseResult.getPatternType()));
+            }
+        } else {
+            if (drlxParseResult.getLeft() != null && !drlxParseResult.getLeft().getExpression().isNameExpr()) {
                 exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getLeft(), drlxParseResult.getPatternType()));
-            } else {
-                NameExpr name = drlxParseResult.getLeft().getExpression().asNameExpr();
-                if (name.equals(new NameExpr(THIS_PLACEHOLDER))) {
-                    exprDSL.addArgument(context.getVarExpr(drlxParseResult.getPatternBinding()));
-                } else {
-                    exprDSL.addArgument(context.getVarExpr(name.getName().asString()));
-                }
             }
         }
+
+        final List<String> usedDeclarationsWithUnification = new ArrayList<>();
+        usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
+
+        usedDeclarationsWithUnification.stream()
+                .filter( s -> !(drlxParseResult.isSkipThisAsParam() && s.equals( drlxParseResult.getPatternBinding() ) ) )
+                .map(context::getVarExpr)
+                .forEach(exprDSL::addArgument);
 
         if (drlxParseResult.getRightLiteral() != null) {
             exprDSL.addArgument( "" + drlxParseResult.getRightLiteral() );
         } else {
-            if (drlxParseResult.getRight() != null) {
-                if (!drlxParseResult.getRight().getExpression().isNameExpr()) {
-                    Expression varExpr = getVariableFromExpression(drlxParseResult.getRight(), drlxParseResult);
-                    if (varExpr != null) {
-                        exprDSL.addArgument(varExpr);
-                    }
+            // function for variable
+            if (thisOnRight) {
+                if (drlxParseResult.getLeft() != null && !drlxParseResult.getLeft().getExpression().isNameExpr()) {
+                    exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getLeft(), drlxParseResult.getPatternType()));
+                }
+            } else {
+                if (drlxParseResult.getRight() != null && !drlxParseResult.getRight().getExpression().isNameExpr()) {
                     exprDSL.addArgument(generateLambdaForTemporalConstraint(drlxParseResult.getRight(), drlxParseResult.getPatternType()));
-                } else {
-                    NameExpr name = drlxParseResult.getRight().getExpression().asNameExpr();
-                    if (name.equals(new NameExpr(THIS_PLACEHOLDER))) {
-                        exprDSL.addArgument(context.getVarExpr(drlxParseResult.getPatternBinding()));
-                    } else {
-                        exprDSL.addArgument(context.getVarExpr(name.getName().asString()));
-                    }
                 }
             }
         }
 
-        exprDSL.addArgument(buildConstraintExpression(drlxParseResult, drlxParseResult.getExpr()));
+        if (thisOnRight) {
+            exprDSL.addArgument(buildConstraintExpression(drlxParseResult, new MethodCallExpr(drlxParseResult.getExpr(), "thisOnRight")));
+        } else {
+            exprDSL.addArgument(buildConstraintExpression(drlxParseResult, drlxParseResult.getExpr()));
+        }
         return exprDSL;
     }
 
-    protected Expression getVariableFromExpression(TypedExpression typedExpression, SingleDrlxParseSuccess drlxParseResult) {
+    protected boolean isThisOnRight(SingleDrlxParseSuccess drlxParseResult) {
+        if (drlxParseResult.getRight() != null) {
+            if (drlxParseResult.getRight().getExpression().isNameExpr()) {
+                NameExpr name = drlxParseResult.getRight().getExpression().asNameExpr();
+                if (name.equals(new NameExpr(THIS_PLACEHOLDER))) {
+                    return true;
+                }
+            } else {
+                return containsThis(drlxParseResult.getRight());
+            }
+        }
+        return false;
+    }
+
+    protected boolean containsThis(TypedExpression typedExpression) {
         Expression expr = typedExpression.getExpression();
         Optional<String> opt = expr.findAll(NameExpr.class)
                 .stream()
@@ -398,13 +416,13 @@ public abstract class AbstractExpressionBuilder {
                 .map(SimpleName::getIdentifier)
                 .findFirst(); // just first one
         if (!opt.isPresent()) {
-            throw new RuntimeException("Cannot find a variable. expr :" + expr);
+            return false;
         }
         String nameStr = opt.get();
         if (nameStr.equals(THIS_PLACEHOLDER)) {
-            return context.getVarExpr(drlxParseResult.getPatternBinding());
+            return true;
         } else {
-            return context.getVarExpr(nameStr);
+            return false;
         }
     }
 }

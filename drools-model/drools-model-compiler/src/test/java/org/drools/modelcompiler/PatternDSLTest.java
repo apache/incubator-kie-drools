@@ -482,7 +482,6 @@ public class PatternDSLTest {
                                 alphaIndexedBy(String.class, Index.ConstraintType.EQUAL, 0, _this -> _this.getCompany(), "ACME"),
                                 reactOn("company"))
                         .expr("$expr$3$",
-                                var_$b,
                                 var_$a,
                                 not(after(5, java.util.concurrent.TimeUnit.SECONDS, 8, java.util.concurrent.TimeUnit.SECONDS))),
                 execute(() -> {
@@ -832,7 +831,6 @@ public class PatternDSLTest {
                                 alphaIndexedBy(String.class, Index.ConstraintType.EQUAL, 0, _this -> _this.getCompany(), "ACME"),
                                 reactOn("company"))
                         .expr("$expr$3$",
-                                var_$b,
                                 _this -> _this.getTimeFieldAsLong(),
                                 var_$a,
                                 $a -> $a.getTimeFieldAsLong(),
@@ -885,7 +883,6 @@ public class PatternDSLTest {
                                 "ACME"),
                         reactOn("company"))
                         .expr("$expr$6$",
-                                var_$b,
                                 var_$a,
                                 after(5L,
                                         java.util.concurrent.TimeUnit.SECONDS,

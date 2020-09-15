@@ -204,14 +204,14 @@ public class PatternDSL extends DSL {
                                                                 Variable<G> var8, Variable<H> var9, Variable<I> var10, Variable<J> var11, Variable<K> var12, Variable<L> var13,
                                                                 Predicate13<T, A, B, C, D, E, F, G, H, I, J, K, L> predicate, ReactOn reactOn );
 
-        PatternDef<T> expr( String exprId, Variable<T> thisVar, long value, TemporalPredicate temporalPredicate );
-        PatternDef<T> expr( String exprId, Variable<T> thisVar, Function1<T, ?> f, long value, TemporalPredicate temporalPredicate );
+        <U> PatternDef<T> expr( String exprId, Variable<U> var1, TemporalPredicate temporalPredicate );
+        PatternDef<T> expr( String exprId, long value, TemporalPredicate temporalPredicate );
+        PatternDef<T> expr( String exprId, Function1<T, ?> f, long value, TemporalPredicate temporalPredicate );
 
-        <A, B> PatternDef<T> expr( String exprId, Variable<A> var1, Variable<B> var2, TemporalPredicate temporalPredicate );
-        <A, B> PatternDef<T> expr( String exprId, Variable<A> var1, Function1<A,?> fVar1, Variable<B> var2, TemporalPredicate temporalPredicate );
-        <A, B> PatternDef<T> expr( String exprId, Variable<A> var1, Variable<B> var2, Function1<B,?> fVar2, TemporalPredicate temporalPredicate );
-        <A, B> PatternDef<T> expr( String exprId, Variable<A> var1, Function1<A,?> fVar1, Function1<B,?> fVar2, TemporalPredicate temporalPredicate );
-        <A, B> PatternDef<T> expr( String exprId, Variable<A> var1, Function1<A,?> fVar1, Variable<B> var2, Function1<B,?> fVar2, TemporalPredicate temporalPredicate );
+        <U> PatternDef<T> expr( String exprId, Variable<U> var1, Function1<U,?> fVar, TemporalPredicate temporalPredicate );
+        <U> PatternDef<T> expr( String exprId, Function1<T,?> fThis, Variable<U> var1, TemporalPredicate temporalPredicate );
+        PatternDef<T> expr( String exprId, Function1<T,?> fThis, Function1<T,?> fVar, TemporalPredicate temporalPredicate );
+        <U> PatternDef<T> expr( String exprId, Function1<T,?> fThis, Variable<U> var1, Function1<U,?> fVar, TemporalPredicate temporalPredicate );
 
         <A> PatternDef<T> bind( Variable<A> boundVar, Function1<T, A> f );
 
@@ -505,44 +505,44 @@ public class PatternDSL extends DSL {
         }
 
         @Override
-        public PatternDef<T> expr( String exprId, Variable<T> thisVar, long value, TemporalPredicate temporalPredicate ) {
+        public <U> PatternDef<T> expr( String exprId, Variable<U> var1, TemporalPredicate temporalPredicate ) {
+            items.add( new TemporalPatternExpr<>( exprId, null, var1, null, temporalPredicate) );
+            return this;
+        }
+
+        @Override
+        public PatternDef<T> expr( String exprId, long value, TemporalPredicate temporalPredicate ) {
             items.add( new FixedTemporalPatternExpr<>( exprId, null, value, temporalPredicate) );
             return this;
         }
 
         @Override
-        public PatternDef<T> expr( String exprId, Variable<T> thisVar, Function1<T, ?> f, long value, TemporalPredicate temporalPredicate ) {
+        public PatternDef<T> expr( String exprId, Function1<T, ?> f, long value, TemporalPredicate temporalPredicate ) {
             items.add( new FixedTemporalPatternExpr<>( exprId, new Function1.Impl<>( f ), value, temporalPredicate) );
             return this;
         }
 
         @Override
-        public <A, B> PatternDef<T> expr( String exprId, Variable<A> var1, Variable<B> var2, TemporalPredicate temporalPredicate ) {
-            items.add( new TemporalPatternExpr<>( exprId, var1, null, var2, null, temporalPredicate) );
+        public <U> PatternDef<T> expr( String exprId, Variable<U> var1, Function1<U, ?> fVar, TemporalPredicate temporalPredicate ) {
+            items.add( new TemporalPatternExpr<>( exprId, null, var1, new Function1.Impl<>( fVar ), temporalPredicate) );
             return this;
         }
 
         @Override
-        public <A, B> PatternDef<T> expr( String exprId, Variable<A> var1, Function1<A, ?> fVar1, Variable<B> var2, TemporalPredicate temporalPredicate ) {
-            items.add( new TemporalPatternExpr<>( exprId, var1, new Function1.Impl<>( fVar1 ), var2, null, temporalPredicate) );
+        public <U> PatternDef<T> expr( String exprId, Function1<T, ?> fThis, Variable<U> var1, TemporalPredicate temporalPredicate ) {
+            items.add( new TemporalPatternExpr<>( exprId, new Function1.Impl<>( fThis ), var1, null, temporalPredicate) );
             return this;
         }
 
         @Override
-        public <A, B> PatternDef<T> expr( String exprId, Variable<A> var1, Variable<B> var2, Function1<B, ?> fVar2, TemporalPredicate temporalPredicate ) {
-            items.add( new TemporalPatternExpr<>( exprId, var1, null, var2, new Function1.Impl<>( fVar2 ), temporalPredicate) );
+        public PatternDef<T> expr( String exprId, Function1<T, ?> fThis, Function1<T, ?> fVar, TemporalPredicate temporalPredicate ) {
+            items.add( new TemporalPatternExpr<>( exprId, new Function1.Impl<>( fThis ), getFirstVariable(), new Function1.Impl<>( fVar ), temporalPredicate) );
             return this;
         }
 
         @Override
-        public <A, B> PatternDef<T> expr( String exprId, Variable<A> var1, Function1<A, ?> fVar1, Function1<B, ?> fVar2, TemporalPredicate temporalPredicate ) {
-            items.add( new TemporalPatternExpr<>( exprId, var1, new Function1.Impl<>( fVar1 ), null, new Function1.Impl<>( fVar2 ), temporalPredicate) );
-            return this;
-        }
-
-        @Override
-        public <A, B> PatternDef<T> expr( String exprId, Variable<A> var1, Function1<A, ?> fVar1, Variable<B> var2, Function1<B, ?> fVar2, TemporalPredicate temporalPredicate ) {
-            items.add( new TemporalPatternExpr<>( exprId, var1, new Function1.Impl<>( fVar1 ), var2, new Function1.Impl<>( fVar2 ), temporalPredicate) );
+        public <U> PatternDef<T> expr( String exprId, Function1<T, ?> fThis, Variable<U> var1, Function1<U, ?> fVar, TemporalPredicate temporalPredicate ) {
+            items.add( new TemporalPatternExpr<>( exprId, new Function1.Impl<>( fThis ), var1, new Function1.Impl<>( fVar ), temporalPredicate) );
             return this;
         }
 
@@ -1219,25 +1219,27 @@ public class PatternDSL extends DSL {
         }
     }
 
-    public static class TemporalPatternExpr<T, A, B> extends PatternExprImpl<T> {
-        private final Function1<A, ?> fVar1;
-        private final Function1<B, ?> fVar2;
-        private final Variable<A> var1;
-        private final Variable<B> var2;
+    public static class TemporalPatternExpr<T, U> extends PatternExprImpl<T> {
+        private final Function1<T, ?> fThis;
+        private final Function1<U, ?> fVar;
+        private final Variable<U> var1;
         private final TemporalPredicate temporalPredicate;
 
-        public TemporalPatternExpr( String exprId, Variable<A> var1, Function1<A, ?> fVar1, Variable<B> var2, Function1<B, ?> fVar2, TemporalPredicate temporalPredicate) {
+        public TemporalPatternExpr(Variable<U> var2, TemporalPredicate temporalPredicate) {
+            this(randomUUID().toString(), null, var2, null, temporalPredicate);
+        }
+
+        public TemporalPatternExpr( String exprId, Function1<T, ?> fThis, Variable<U> var1, Function1<U, ?> fVar, TemporalPredicate temporalPredicate) {
             super( exprId, null );
+            this.fThis = fThis;
             this.var1 = var1;
-            this.fVar1 = fVar1;
-            this.var2 = var2;
-            this.fVar2 = fVar2;
+            this.fVar = fVar;
             this.temporalPredicate = temporalPredicate;
         }
 
         @Override
         public Constraint asConstraint(PatternDefImpl patternDef) {
-            return new VariableTemporalConstraint(getExprId(), var1, fVar1, var2, fVar2, temporalPredicate);
+            return new VariableTemporalConstraint(getExprId(), patternDef.getFirstVariable(), fThis, var1, fVar, temporalPredicate);
         }
     }
 
