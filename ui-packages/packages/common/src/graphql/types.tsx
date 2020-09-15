@@ -2,13 +2,11 @@
 import gql from 'graphql-tag';
 import * as ApolloReactCommon from '@apollo/react-common';
 import * as ApolloReactHooks from '@apollo/react-hooks';
-
 export namespace GraphQL {
   export type Maybe<T> = T | null;
   export type Exact<T extends { [key: string]: any }> = {
     [K in keyof T]: T[K];
   };
-
   /** All built-in and custom scalars, mapped to their actual values */
   export type Scalars = {
     ID: string;
@@ -972,6 +970,7 @@ export namespace GraphQL {
 
   export type GetUserTasksByStatesQueryVariables = Exact<{
     state?: Maybe<Array<Scalars['String']>>;
+    orderBy?: Maybe<UserTaskInstanceOrderBy>;
   }>;
 
   export type GetUserTasksByStatesQuery = { __typename?: 'Query' } & {
@@ -981,8 +980,9 @@ export namespace GraphQL {
           { __typename?: 'UserTaskInstance' } & Pick<
             UserTaskInstance,
             | 'id'
-            | 'description'
             | 'name'
+            | 'referenceName'
+            | 'description'
             | 'priority'
             | 'processInstanceId'
             | 'processId'
@@ -999,7 +999,6 @@ export namespace GraphQL {
             | 'potentialUsers'
             | 'inputs'
             | 'outputs'
-            | 'referenceName'
             | 'endpoint'
           >
         >
@@ -1720,11 +1719,15 @@ export namespace GraphQL {
     GetInputFieldsFromTypeQueryVariables
   >;
   export const GetUserTasksByStatesDocument = gql`
-    query getUserTasksByStates($state: [String!]) {
-      UserTaskInstances(where: { state: { in: $state } }) {
+    query getUserTasksByStates(
+      $state: [String!]
+      $orderBy: UserTaskInstanceOrderBy
+    ) {
+      UserTaskInstances(where: { state: { in: $state } }, orderBy: $orderBy) {
         id
-        description
         name
+        referenceName
+        description
         priority
         processInstanceId
         processId
@@ -1760,6 +1763,7 @@ export namespace GraphQL {
    * const { data, loading, error } = useGetUserTasksByStatesQuery({
    *   variables: {
    *      state: // value for 'state'
+   *      orderBy: // value for 'orderBy'
    *   },
    * });
    */
@@ -1908,7 +1912,6 @@ export namespace GraphQL {
         potentialUsers
         inputs
         outputs
-        referenceName
         lastUpdate
         endpoint
       }

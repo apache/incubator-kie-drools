@@ -6,7 +6,8 @@ import {
   TableBody,
   IRow,
   ITransform,
-  ICell
+  ICell,
+  sortable
 } from '@patternfly/react-table';
 import KogitoSpinner from '../../Atoms/KogitoSpinner/KogitoSpinner';
 import {
@@ -23,6 +24,7 @@ export interface DataTableColumn {
   path: string;
   label: string;
   bodyCellTransformer?: (value: any, rowDataObj?: any) => any;
+  isSortable?: boolean;
 }
 interface IOwnProps {
   data: any[];
@@ -33,6 +35,8 @@ interface IOwnProps {
   refetch: () => void;
   LoadingComponent?: React.ReactNode;
   ErrorComponent?: React.ReactNode;
+  sortBy?: object;
+  onSorting?: (index: number, direction: string) => void;
 }
 
 const getCellData = (dataObj: object, path: string) => {
@@ -65,7 +69,8 @@ const getColumns = (data: any[], columns: DataTableColumn[]) => {
                     };
                   }) as ITransform
                 ]
-              : undefined
+              : undefined,
+            transforms: column.isSortable ? [sortable] : undefined
           } as ICell;
         })
       : _.filter(_.keys(_.sample(data)), key => key !== '__typename').map(
@@ -106,6 +111,8 @@ const DataTable: React.FC<IOwnProps & OUIAProps> = ({
   LoadingComponent,
   ErrorComponent,
   refetch,
+  sortBy,
+  onSorting,
   ouiaId,
   ouiaSafe
 }) => {
@@ -123,6 +130,12 @@ const DataTable: React.FC<IOwnProps & OUIAProps> = ({
       setRows(getRows(data, columnList));
     }
   }, [columnList]);
+
+  const onSort = (event, index, direction) => {
+    if (_.isFunction(onSorting)) {
+      onSorting(index, direction);
+    }
+  };
 
   if (isLoading) {
     return LoadingComponent ? (
@@ -169,6 +182,8 @@ const DataTable: React.FC<IOwnProps & OUIAProps> = ({
             aria-label="Data Table"
             cells={columnList}
             rows={rows}
+            sortBy={sortBy}
+            onSort={onSort}
             {...componentOuiaProps(
               ouiaId,
               'data-table',

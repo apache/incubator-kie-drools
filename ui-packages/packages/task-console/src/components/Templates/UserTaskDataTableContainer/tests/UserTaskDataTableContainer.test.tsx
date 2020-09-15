@@ -1,8 +1,9 @@
 import React from 'react';
 import UserTaskDataTableContainer from '../UserTaskDataTableContainer';
-import { getWrapperAsync, GraphQL } from '@kogito-apps/common';
+import { getWrapperAsync, GraphQL, DataTable } from '@kogito-apps/common';
 import { MemoryRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/react-testing';
+import { act } from 'react-dom/test-utils';
 
 const MockedComponent = (): React.ReactElement => {
   return <></>;
@@ -111,6 +112,35 @@ describe('UserTaskDataTableContainer component tests', () => {
       'UserTaskDataTableContainer'
     );
     expect(wrapper).toMatchSnapshot();
+    expect(GraphQL.useGetUserTasksByStatesQuery).toBeCalled();
+  });
+
+  it('The onSorting function should work correctly', async () => {
+    GraphQL.useGetUserTasksByStatesQuery = jest.fn().mockReturnValue({
+      loading: false,
+      error: undefined,
+      refetch: jest.fn(),
+      networkStatus: 1
+    });
+
+    const wrapper = await getWrapperAsync(
+      <Router>
+        <MockedProvider>
+          <UserTaskDataTableContainer />
+        </MockedProvider>
+      </Router>,
+      'UserTaskDataTableContainer'
+    );
+
+    await act(async () => {
+      wrapper
+        .find(DataTable)
+        .props()
+        .onSorting(1, 'desc');
+    });
+
+    wrapper.update();
+
     expect(GraphQL.useGetUserTasksByStatesQuery).toBeCalled();
   });
 });

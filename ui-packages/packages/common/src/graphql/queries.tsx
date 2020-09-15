@@ -222,9 +222,14 @@ const GET_INPUT_FIELDS_FROM_TYPES = gql`
 `;
 
 const GET_USER_TASKS_BY_STATES = gql`
-  query getUserTasksByStates($state: [String!]) {
-    UserTaskInstances(where: { state: { in: $state } }) {
+  query getUserTasksByStates(
+    $state: [String!]
+    $orderBy: UserTaskInstanceOrderBy
+  ) {
+    UserTaskInstances(where: { state: { in: $state } }, orderBy: $orderBy) {
       id
+      name
+      referenceName
       description
       name
       priority
@@ -314,7 +319,6 @@ const GET_TASKS_FOR_USER = gql`
       potentialUsers
       inputs
       outputs
-      referenceName
       lastUpdate
       endpoint
     }

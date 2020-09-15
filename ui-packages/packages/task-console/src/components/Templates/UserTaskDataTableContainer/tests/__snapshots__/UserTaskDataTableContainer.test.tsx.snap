@@ -48,6 +48,7 @@ exports[`UserTaskDataTableContainer component tests Should render UserTaskDataTa
                             "path": "$.processId",
                           },
                           Object {
+                            "isSortable": true,
                             "label": "Name",
                             "path": "$.name",
                           },
@@ -61,6 +62,7 @@ exports[`UserTaskDataTableContainer component tests Should render UserTaskDataTa
                           },
                           Object {
                             "bodyCellTransformer": [Function],
+                            "isSortable": true,
                             "label": "State",
                             "path": "$.state",
                           },
@@ -120,7 +122,9 @@ exports[`UserTaskDataTableContainer component tests Should render UserTaskDataTa
                       }
                       isLoading={false}
                       networkStatus={1}
+                      onSorting={[Function]}
                       refetch={[MockFunction]}
+                      sortBy={Object {}}
                     >
                       <MockedComponent />
                     </DataTable>
@@ -184,6 +188,7 @@ exports[`UserTaskDataTableContainer component tests Should render UserTaskDataTa
                             "path": "$.processId",
                           },
                           Object {
+                            "isSortable": true,
                             "label": "Name",
                             "path": "$.name",
                           },
@@ -197,6 +202,7 @@ exports[`UserTaskDataTableContainer component tests Should render UserTaskDataTa
                           },
                           Object {
                             "bodyCellTransformer": [Function],
+                            "isSortable": true,
                             "label": "State",
                             "path": "$.state",
                           },
@@ -204,7 +210,9 @@ exports[`UserTaskDataTableContainer component tests Should render UserTaskDataTa
                       }
                       isLoading={false}
                       networkStatus={1}
+                      onSorting={[Function]}
                       refetch={[MockFunction]}
+                      sortBy={Object {}}
                     >
                       <MockedComponent />
                     </DataTable>

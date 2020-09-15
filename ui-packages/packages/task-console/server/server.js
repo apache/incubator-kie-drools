@@ -15,6 +15,8 @@ const data = require('./MockData/graphql');
 const controller = require('./MockData/controllers');
 const typeDefs = require('./MockData/types');
 
+const _ = require('lodash');
+
 function setPort(port = 4000) {
   app.set('port', parseInt(port, 10));
 }
@@ -73,7 +75,14 @@ const resolvers = {
 
         return false;
       });
-
+      if (args['orderBy']) {
+        console.log('sort by:', args['orderBy']);
+        result = _.orderBy(
+          result,
+          _.keys(args['orderBy']).map(key => key.toLowerCase()),
+          _.values(args['orderBy']).map(value => value.toLowerCase())
+        );
+      }
       await timeout(2000);
 
       if (args.pagination) {
