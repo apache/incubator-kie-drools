@@ -31,6 +31,7 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.internal.utils.DMNEvaluationUtils;
 import org.kie.dmn.core.internal.utils.DMNEvaluationUtils.DMNEvaluationResult;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
+import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.kogito.Application;
 import org.kie.kogito.dmn.rest.DMNResult;
 import org.slf4j.Logger;
@@ -60,6 +61,7 @@ public class DMNKogito {
 
     public static DMNRuntime createGenericDMNRuntime(Function<String, KieRuntimeFactory> kiePMMLRuntimeFactoryFunction, Reader... readers) {
         List<Resource> resources = Stream.of(readers).map(ReaderResource::new).collect(Collectors.toList());
+        EvalHelper.clearGenericAccessorCache(); // KOGITO-3325 DMN hot reload manage accessor cache when stronglytyped
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
                 .setKieRuntimeFactoryFunction(kiePMMLRuntimeFactoryFunction)
                 .buildConfiguration()
