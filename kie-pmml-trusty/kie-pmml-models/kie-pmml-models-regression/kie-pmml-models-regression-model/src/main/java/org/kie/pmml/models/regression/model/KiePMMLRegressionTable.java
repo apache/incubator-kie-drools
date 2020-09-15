@@ -24,6 +24,7 @@ public abstract class KiePMMLRegressionTable {
 
     protected Map<String, Function<Double, Double>> numericFunctionMap = new HashMap<>();
     protected Map<String, Function<Object, Double>> categoricalFunctionMap = new HashMap<>();
+    protected Map<String, Object> outputFieldsMap = new HashMap<>();
     protected Map<String, Function<Map<String, Object>, Double>> predictorTermsFunctionMap = new HashMap<>();
     protected double intercept;
     protected String targetField;
@@ -50,11 +51,13 @@ public abstract class KiePMMLRegressionTable {
         }
         resultMap.values().forEach(value -> result.accumulateAndGet(value, Double::sum));
         updateResult(result);
-        return result.get();
+        Object toReturn = result.get();
+        populateOutputFieldsMapWithResult(toReturn);
+        return toReturn;
     }
 
     public Map<String, Object> getOutputFieldsMap() {
-        return new HashMap<>();
+        return outputFieldsMap;
     }
 
     public String getTargetField() {
@@ -78,4 +81,7 @@ public abstract class KiePMMLRegressionTable {
     }
 
     protected abstract void updateResult(final AtomicReference<Double> toUpdate);
+
+    protected abstract void populateOutputFieldsMapWithResult(final Object result);
+
 }

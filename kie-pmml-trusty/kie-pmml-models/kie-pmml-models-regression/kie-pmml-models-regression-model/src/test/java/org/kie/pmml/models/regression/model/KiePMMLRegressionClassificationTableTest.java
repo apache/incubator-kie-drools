@@ -27,6 +27,7 @@ import java.util.function.DoubleUnaryOperator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -39,10 +40,10 @@ public class KiePMMLRegressionClassificationTableTest {
     private static final String CASE_B = "caseB";
     private static final String PROBABILITY_FALSE = String.format("probability(%s)", CASE_A);
     private static final String PROBABILITY_TRUE = String.format("probability(%s)", CASE_B);
-    private KiePMMLRegressionClassificationTable classificationTable;
-    private double firstTableResult;
-    private double secondTableResult;
-    private String expectedResult;
+    private final KiePMMLRegressionClassificationTable classificationTable;
+    private final double firstTableResult;
+    private final double secondTableResult;
+    private final String expectedResult;
 
     public KiePMMLRegressionClassificationTableTest(double firstTableResult, double secondTableResult,
                                                     String expectedResult) {
@@ -87,6 +88,22 @@ public class KiePMMLRegressionClassificationTableTest {
         assertEquals(expectedDouble, retrieved.get(CASE_B), 0.0);
         expectedDouble = SECOND_ITEM_OPERATOR.applyAsDouble(expectedDouble);
         assertEquals(expectedDouble, retrieved.get(CASE_A), 0.0);
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void getProbabilityMapFewInput() {
+        LinkedHashMap<String, Double> resultMap = new LinkedHashMap<>();
+        resultMap.put(CASE_B, firstTableResult);
+        classificationTable.getProbabilityMap(resultMap, FIRST_ITEM_OPERATOR,  SECOND_ITEM_OPERATOR);
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void getProbabilityMapTooManyInput() {
+        LinkedHashMap<String, Double> resultMap = new LinkedHashMap<>();
+        resultMap.put(CASE_B, firstTableResult);
+        resultMap.put(CASE_A, secondTableResult);
+        resultMap.put("CASE_ELSE", 444.1);
+        classificationTable.getProbabilityMap(resultMap, FIRST_ITEM_OPERATOR,  SECOND_ITEM_OPERATOR);
     }
 
     private KiePMMLRegressionClassificationTable getKiePMMLRegressionClassificationTable() {
