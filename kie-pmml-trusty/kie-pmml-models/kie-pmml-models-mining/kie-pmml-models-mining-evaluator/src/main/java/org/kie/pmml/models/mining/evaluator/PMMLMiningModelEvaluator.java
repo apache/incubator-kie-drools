@@ -228,7 +228,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
      */
     private Optional<PMML4Result> evaluateSegment(final KiePMMLSegment toEvaluate, final PMMLContext pmmlContext,
                                                   final KieBase knowledgeBase, final String containerModelName) {
-        logger.info("evaluateSegment {}", toEvaluate.getId());
+        logger.trace("evaluateSegment {}", toEvaluate.getId());
         final KiePMMLPredicate kiePMMLPredicate = toEvaluate.getKiePMMLPredicate();
         Optional<PMML4Result> toReturn = Optional.empty();
         Map<String, Object> values = getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
@@ -236,7 +236,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator {
         if (kiePMMLPredicate != null && kiePMMLPredicate.evaluate(values)) {
             final PMMLRuntime pmmlRuntime = getPMMLRuntime(toEvaluate.getModel().getKModulePackageName(),
                                                            knowledgeBase, containerModelName);
-            logger.info("{}: matching predicate, evaluating... ", toEvaluate.getId());
+            logger.trace("{}: matching predicate, evaluating... ", toEvaluate.getId());
             toReturn = Optional.of(pmmlRuntime.evaluate(modelName, pmmlContext));
         }
         return toReturn;
